@@ -7,11 +7,9 @@ package org.gluu.credmanager.ui.vm.admin;
 
 import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.core.ConfigurationHandler;
-import org.gluu.credmanager.core.ExtensionsManager;
 import org.gluu.credmanager.extension.navigation.MenuType;
 import org.gluu.credmanager.extension.navigation.NavigationMenu;
-import org.gluu.credmanager.misc.UIUtils;
-import org.gluu.credmanager.misc.Utils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.ui.MenuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

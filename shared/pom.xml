@@ -70,6 +70,12 @@
             <artifactId>commons-beanutils</artifactId>
             <version>${commons-beanutils}</version>
         </dependency>
+
+        <!-- SERVLET -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
     </dependencies>
 
 	<build>

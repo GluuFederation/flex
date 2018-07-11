@@ -7,7 +7,7 @@ package org.gluu.credmanager.ui.vm.admin;
 
 import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.core.ZKService;
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.ui.vm.admin.branding.BrandingOption;
 import org.gluu.credmanager.ui.vm.admin.branding.CssSnippetHandler;

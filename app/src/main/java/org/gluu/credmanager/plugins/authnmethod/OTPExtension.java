@@ -8,7 +8,6 @@ package org.gluu.credmanager.plugins.authnmethod;
 import org.gluu.credmanager.credential.BasicCredential;
 import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.misc.Utils;
-import org.gluu.credmanager.plugins.BaseSystemExtension;
 import org.gluu.credmanager.plugins.authnmethod.service.OTPService;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
  * @author jgomer
  */
 @Extension
-public class OTPExtension extends BaseSystemExtension implements AuthnMethod {
+public class OTPExtension implements AuthnMethod {
 
     public static final String ACR = "otp";
 

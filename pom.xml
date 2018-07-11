@@ -22,7 +22,7 @@
         <maven.min-version>3.0.3</maven.min-version>
         <weld.version>3.0.0.Final</weld.version>
         <pf4j.version>2.2.0</pf4j.version>
-        <crdmgr.version>3.1.3-SNAPSHOT</crdmgr.version>
+        <casa.version>3.1.3-SNAPSHOT</casa.version>
         <eventbus.version>3.1.1</eventbus.version>
         <log4j.version>2.8.2</log4j.version>
         <oxd.version>3.1.3.Final</oxd.version>
@@ -75,6 +75,13 @@
                 <version>${pf4j.version}</version>
             </dependency>
 
+            <!-- SERVLET -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.0.1</version>
+            </dependency>
+
             <!-- WELD -->
             <!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-shaded -->
             <dependency>
@@ -99,6 +106,12 @@
                 <groupId>org.zkoss.common</groupId>
                 <artifactId>zcommon</artifactId>
                 <version>${zk.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-jdk14</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>

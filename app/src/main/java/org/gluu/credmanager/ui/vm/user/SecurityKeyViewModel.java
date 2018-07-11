@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gluu.credmanager.core.pojo.BrowserInfo;
 import org.gluu.credmanager.core.pojo.SecurityKey;
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.plugins.authnmethod.SecurityKeyExtension;
 import org.gluu.credmanager.plugins.authnmethod.service.U2fService;

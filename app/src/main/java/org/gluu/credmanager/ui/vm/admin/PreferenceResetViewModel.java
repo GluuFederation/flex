@@ -6,7 +6,7 @@
 package org.gluu.credmanager.ui.vm.admin;
 
 import org.gluu.credmanager.core.UserService;
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.ui.model.PersonSearchMatch;
 import org.slf4j.Logger;

@@ -3,7 +3,7 @@
  *
  * Copyright (c) 20178, Gluu
  */
-package org.gluu.credmanager.misc;
+package org.gluu.credmanager.ui;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.util.Clients;

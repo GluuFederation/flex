@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gluu.credmanager.core.navigation.WebUtils;
 import org.gluu.credmanager.core.pojo.SuperGluuDevice;
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.plugins.authnmethod.SuperGluuExtension;
 import org.gluu.credmanager.plugins.authnmethod.conf.SGConfig;

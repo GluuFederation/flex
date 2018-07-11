@@ -4,7 +4,7 @@
  * Copyright (c) 2018, Gluu
  */
 /**
- * This package contains system extensions to handle openid authorization code flow, authentication mechanisms and navigation menus
+ * This package contains system extensions to handle authentication mechanisms
  * See <a href="http://www.pf4j.org/doc/defaultsystem-extension.html">PF4J Default/System extension</a>.
  * @author jgomer
  */

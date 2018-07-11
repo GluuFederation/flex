@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.gluu.credmanager.conf.sndfactor.EnforcementPolicy;
 import org.gluu.credmanager.conf.sndfactor.TrustedDevice;
 import org.gluu.credmanager.core.ConfigurationHandler;
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;

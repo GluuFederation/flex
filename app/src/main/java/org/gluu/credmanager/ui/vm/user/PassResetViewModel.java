@@ -5,7 +5,7 @@
  */
 package org.gluu.credmanager.ui.vm.user;
 
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

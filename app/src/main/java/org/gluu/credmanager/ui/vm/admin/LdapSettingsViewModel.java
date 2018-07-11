@@ -6,7 +6,7 @@
 package org.gluu.credmanager.ui.vm.admin;
 
 import org.gluu.credmanager.conf.LdapSettings;
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.service.LdapService;
 import org.slf4j.Logger;

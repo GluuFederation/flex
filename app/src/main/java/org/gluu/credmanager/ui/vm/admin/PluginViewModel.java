@@ -9,7 +9,7 @@ import org.gluu.credmanager.conf.PluginInfo;
 import org.gluu.credmanager.core.ExtensionsManager;
 import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.extension.navigation.NavigationMenu;
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.ui.model.PluginData;
 import org.pf4j.PluginDescriptor;

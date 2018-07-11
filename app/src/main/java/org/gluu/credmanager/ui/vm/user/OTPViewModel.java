@@ -6,7 +6,7 @@
 package org.gluu.credmanager.ui.vm.user;
 
 import org.gluu.credmanager.core.pojo.OTPDevice;
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.plugins.authnmethod.OTPExtension;
 import org.gluu.credmanager.plugins.authnmethod.conf.OTPConfig;

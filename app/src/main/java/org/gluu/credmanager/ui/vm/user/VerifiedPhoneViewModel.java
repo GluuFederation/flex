@@ -3,7 +3,7 @@ package org.gluu.credmanager.ui.vm.user;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gluu.credmanager.core.pojo.VerifiedMobile;
-import org.gluu.credmanager.misc.UIUtils;
+import org.gluu.credmanager.ui.UIUtils;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.plugins.authnmethod.OTPSmsExtension;
 import org.gluu.credmanager.plugins.authnmethod.rs.status.sms.SendCode;
