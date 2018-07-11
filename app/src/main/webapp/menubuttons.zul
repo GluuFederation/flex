@@ -1,0 +1,41 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <vlayout viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.MenuViewModel')">
+
+        <vlayout sclass="padded">
+            <n:span class="small">&#160;</n:span>
+        </vlayout>
+
+        <div visible="@load(not empty vm.authnMethods)">
+            <label value="${labels.usr.menu_main2fa}" />
+            <vlayout children="@load(vm.authnMethods)">
+                <template name="children">
+                    <a label="${c:l(each.panelTitleKey)}" href="${each.pageUrl}" />
+                </template>
+            </vlayout>
+        </div>
+
+        <zk if="${configurationHandler.settings.enablePassReset}">
+            <a href="/user/pass-reset.zul" label="${labels.usr.passreset_title}" />
+        </zk>
+
+        <a if="${sessionContext.user.admin}" label="${labels.usr.menu_adminconsole}" href="/admin.zul" />
+
+        <!-- menu items defined by plugins -->
+        <zk if="${not empty vm.pluginMenuItems}">
+            <n:hr />
+        </zk>
+        <div children="@load(vm.pluginMenuItems)">
+            <template name="children">
+                <include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
+                    <attribute name="base">${each.x}</attribute>
+                    <attribute name="priority">${each.y.priority}</attribute>
+                </include>
+            </template>
+        </div>
+
+    </vlayout>
+
+</zk>

@@ -1,0 +1,105 @@
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
+<?page title="${applicationScope.appName} - ${labels.usr.title}"?>
+<?link rel="icon" href="${sessionContext.faviconDataUri}" ?>
+<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
+<?script src="/scripts/main-util.js"?>
+
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.UserMainViewModel')"
+             self="@define(content)">
+
+        <div align="center"><label value="${labels.usr.title}" sclass="titled" /></div>
+        <vlayout sclass="padded">
+            <label value="@load(vm.introText)" />
+            <zk if="${vm.methodsAvailability and vm.has2faRequisites}">
+                <separator />
+                <div sclass="callout padded">
+                    <label value="${labels.usr.warn_lock}" />
+                </div>
+            </zk>
+            <zk if="${not vm.methodsAvailability}">
+                <separator />
+                <div sclass="callout padded">
+                    <label value="${labels.usr.strong.unavailable}" />
+                </div>
+            </zk>
+        </vlayout>
+
+        <zk if="${vm.methodsAvailability and vm.has2faRequisites}">
+            <include src="user/preferred.zul" />
+
+            <div children="@load(vm.widgets)">
+                <template name="children">
+
+                    <panel title="${c:l(each.panelTitleKey)}" sclass="padded" border="normal">
+                        <panelchildren sclass="padded">
+                            <vlayout>
+                                <label value="${c:l(each.panelTextKey)}"/>
+
+                                <zk if="${not empty each.getEnrolledCreds(sessionContext.user.id)}">
+                                    <separator />
+                                    <label value="${labels.usr.you_added}" />
+
+                                    <vlayout sclass="summary" children="@load(each.getEnrolledCreds(sessionContext.user.id))">
+                                        <template name="children">
+                                            <hlayout sclass="de_emphasized">
+                                                <label sclass="bold" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />
+                                                <zk if="${not empty each.addedOn}">
+                                                    <label value=" -" />
+                                                    <label value="@load(c:toLowerCase(c:l('general.added_on')))" />
+                                                    <label value="@load(each.addedOn) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d yyyy', offset = sessionContext.zoneOffset)" />
+                                                </zk>
+                                            </hlayout>
+                                        </template>
+                                    </vlayout>
+                                </zk>
+
+                                <div sclass="padded" align="center">
+                                    <vlayout>
+                                        <button label="${c:l(each.panelButtonKey)}" sclass="btn-success" href="${each.pageUrl}"/>
+                                        <zk if="${not empty each.panelBottomTextKey}">
+                                            <n:span class="de_emphasized">${c:l(each.panelBottomTextKey)}</n:span>
+                                        </zk>
+                                    </vlayout>
+                                </div>
+                            </vlayout>
+                        </panelchildren>
+                    </panel>
+
+                </template>
+            </div>
+        </zk>
+
+        <zk if="${vm.methodsAvailability and not vm.has2faRequisites}">
+
+            <vlayout sclass="padded">
+                <label value="${labels.usr.strong.requisite_text}" />
+                <separator />
+                <div style="padding:0 10px">
+                    <div sclass="row" children="@load(vm.pre2faMethods)">
+                        <template name="children">
+                            <!-- in medium sized devices or bigger, use two centered columns -->
+                            <div sclass="col-sm-6 col-md-4 ${forEachStatus.index mod 2 eq 0 ? 'col-md-offset-2' : ''}">
+                                <a sclass="thumbnail" href="${each.pageUrl}" style="text-decoration:none">
+                                    <vlayout sclass="caption">
+                                        <n:h4>${c:l(each.panelTitleKey)}</n:h4>
+                                        <label value="${c:l(each.panelTextKey)}" />
+                                        <div align="center">
+                                            <button label="${labels.general.go}" sclass="btn-success" href="${each.pageUrl}"/>
+                                        </div>
+                                    </vlayout>
+                                </a>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </vlayout>
+
+        </zk>
+
+    </vlayout>
+
+</zk>

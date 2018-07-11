@@ -1,0 +1,35 @@
+<!-- <?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?> -->
+<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
+<?page title="${applicationScope.appName} - ${labels.hello.title}"?>
+<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
+<?script src="/scripts/bootstrap/bootstrap.min.js"?>
+<?script src="/scripts/bootstrap/zk.js"?>
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <panel viewModel="@id('vm') @init('org.gluu.casa.HelloWorldVM')" sclass="padded" border="normal"
+           title="${labels.hello.title}"> <!-- self="@define(content)" -->
+
+        <panelchildren sclass="padded">
+            <div sclass="form-horizontal">
+
+                <div sclass="form-group">
+                    <label value="${labels.hello.user_message} ${sessionContext.user.userName}" sclass="control-label col-sm-3" />
+                    <div sclass="col-sm-9">
+                        <textbox sclass="form-control" value="@bind(vm.message)"/>
+                    </div>
+                </div>
+
+                <div align="center">
+                    <button label="${labels.hello.button_label}" sclass="btn-success" onClick="@command('loadOrgName')" />
+                </div>
+            </div>
+            <div visible="@load(not empty vm.organizationName)">
+                <label value="${labels.hello.org_name}" />
+                <label value="@load(vm.organizationName)" sclass="titled" />
+            </div>
+        </panelchildren>
+
+    </panel>
+
+</zk>

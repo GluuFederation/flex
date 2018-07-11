@@ -1,0 +1,44 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <div viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.UserPreferenceViewModel')">
+        <panel title="${labels.usr.preferred_title}" sclass="padded" border="normal" if="${vm.availMethods.size() gt 1}">
+            <panelchildren sclass="padded">
+                <vlayout>
+                    <label value="${labels.usr.preferred_text}"/>
+                    <vlayout sclass="padded">
+                        <hlayout valign="bottom">
+                            <label sclass="bold" value="@load(vm.selectedMethodName)"/>
+                            <image visible="@load(vm.uiEditable)" src="${sessionContext.custdir}/images/edit.png"
+                                   tooltip="tooltip_choose, after_pointer" sclass="icon_edit" onClick="@command('prepareUpdateMethod')" />
+                            <image visible="@load(not vm.uiEditable)" src="${sessionContext.custdir}/images/edit.png" sclass="icon_edit unactivated" />
+                        </hlayout>
+                        <label value="${c:l2('usr.preferred_disabled', c:split(configurationHandler.settings.minCredsFor2FA,''))}"
+                               sclass="de_emphasized" visible="@load(vm.uiNotEnoughCredsFor2FA)"/>
+                        <separator />
+                        <div align="center" visible="@load(vm.selectedMethod ne null and vm.uiAllowedToSetPolicy)">
+                            <vlayout>
+                                <label sclass="de_emphasized" value="${labels.usr.policy_default_text}" />
+                                <button label="${labels.usr.policy_go_manage}" sclass="btn-success" href="/user/policy.zul" />
+                            </vlayout>
+                        </div>
+                    </vlayout>
+                </vlayout>
+            </panelchildren>
+        </panel>
+
+        <popup id="tooltip_choose">${labels.usr.preferred_tooltip}</popup>
+
+        <window id="win" title="${labels.usr.preferred_title}" border="normal" mode="modal" visible="@load(vm.uiEditing)" width="330px">
+            <include src="/user/selector.zul" />
+            <div align="center">
+                <hlayout spacing="30px" sclass="padded">
+                    <button label="${labels.general.update}" sclass="btn-success" onClick="@command('update')" />
+                    <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')" />
+                </hlayout>
+            </div>
+        </window>
+    </div>
+</zk>

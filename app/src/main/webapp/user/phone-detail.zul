@@ -1,0 +1,97 @@
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/general.zul"?>
+<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver"?>
+<?page title="${applicationScope['appName']} - ${labels.usr.mobile_title}"?>
+<?link rel="icon" href="${sessionContext.faviconDataUri}"?>
+<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
+<?script src="/scripts/sms-util.js"?>
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.VerifiedPhoneViewModel')"
+             self="@define(content)">
+
+        <div align="center" sclass="dpadded"><label value="${labels.usr.mobile_title}" sclass="titled" /></div>
+        <div sclass="padded"><label value="${labels.usr.mobile_text}" /></div>
+
+        <window title="${labels.usr.mobile_edit}" border="normal" mode="modal" visible="@load(not empty vm.editingNumber)">
+            <vlayout sclass="padded">
+                <label value="${labels.general.new_nick}" />
+                <div sclass="dpadded">
+                    <textbox sclass="s12 form-control" value="@bind(vm.newPhone.nickName)" onOK="@command('update')"/>
+                </div>
+                <div align="center">
+                    <hlayout spacing="20px" sclass="padded">
+                        <button label="${labels.general.update}" sclass="btn-success" onClick="@command('update')" />
+                        <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancelUpdate')" />
+                    </hlayout>
+                </div>
+            </vlayout>
+        </window>
+
+        <!-- phones list -->
+        <div sclass="padded" visible="@load(not empty vm.phones)">
+            <grid model="@load(vm.phones)">
+                <template name="model">
+                    <row>
+                        <hlayout>
+                            <vlayout hflex="1" sclass="padded">
+                                <hlayout>
+                                    <label value="@load(each.number)" sclass="bold"/>
+                                    <label value="-" sclass="bold" />
+                                    <label value="@load(each.nickName)" sclass="bold"/>
+                                </hlayout>
+                                <hlayout>
+                                    <label value="${labels.general.added_on}" sclass="de_emphasized"/>
+                                    <label value="@load(each.addedOn) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
+                                </hlayout>
+                            </vlayout>
+                            <hlayout sclass="couple_icons">
+                                <image src="${sessionContext.custdir}/images/edit.png" sclass="icon_edit"
+                                       tooltip="tooltip_edit, after_pointer" onClick="@command('prepareForUpdate', phone=each)"/>
+                                <space sclass="minspace" />
+                                <image src="${sessionContext.custdir}/images/delete.png" sclass="icon_delete"
+                                       tooltip="tooltip_delete, after_pointer" onClick="@command('delete', phone=each)"/>
+                            </hlayout>
+                        </hlayout>
+                    </row>
+                </template>
+            </grid>
+        </div>
+
+        <panel title="${labels.usr.mobile_add}" collapsible="true" border="normal" sclass="padded" open="@bind(vm.uiPanelOpened)">
+            <panelchildren sclass="padded">
+                <vlayout>
+                    <hlayout spacing="10px">
+                        <textbox placeholder="${labels.general.phonenumber}" sclass="s8 form-control" value="@bind(vm.newPhone.number)"
+                                 tooltip="tooltip_format, at_pointer" focus="true"/>
+                        <button label="${labels.usr.mobile_send}" sclass="btn-success" onClick="@command('sendCode')"
+                                id="sendButton" w:onClick="tempDisable('sendButton', 4500, 'sentCode')" />
+                    </hlayout>
+                    <hlayout spacing="10px" valign="middle">
+                        <textbox placeholder="${labels.usr.mobile_code}" sclass="s6 form-control" value="@bind(vm.code)"
+                                 onOK="@command('checkCode')" id="sentCode"/>
+                        <button label="${labels.general.validate}" sclass="btn-success" onClick="@command('checkCode')" disabled="@load(vm.uiCodesMatch)"/>
+                        <image src="${sessionContext.custdir}/images/tick.png" width="32px" height="32px" visible="@load(vm.uiCodesMatch)"/>
+                        <!-- <label value="${labels.usr.mobile_code_wrong}" sclass="de_emphasized" visible="@load((not empty vm.code) and (not vm.uiCodesMatch) and (not empty vm.newPhone.number))" /> -->
+                    </hlayout>
+                    <separator/>
+                    <vlayout visible="@load(vm.uiCodesMatch)">
+                        <label value="${labels.usr.enter_nick}"/>
+                        <div sclass="padded">
+                            <textbox placeholder="${labels.general.nick}" width="290px" sclass="form-control"
+                                     onOK="@command('add')" value="@bind(vm.newPhone.nickName)"/>
+                        </div>
+                        <div align="center">
+                            <hlayout spacing="20px">
+                                <button label="${labels.general.add}" sclass="btn-success" onClick="@command('add')"/>
+                                <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')"/>
+                            </hlayout>
+                        </div>
+                    </vlayout>
+                </vlayout>
+            </panelchildren>
+        </panel>
+        <popup id="tooltip_format">${labels.usr.mobile_format}</popup>
+    </vlayout>
+
+</zk>

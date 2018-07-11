@@ -1,0 +1,43 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <hlayout width="100%" sclass="header" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.UserViewModel')" valign="middle">
+        <hlayout width="180px">
+            <image sclass="logo" src="${sessionContext.logoDataUri}"/>
+        </hlayout>
+        <div hflex="1" align="right" style="padding-right:5px">
+            <!--attribute name="width" if="${sessionContext.onMobile}">50px</attribute-->
+            <zk choose="">
+                <zk when="${sessionContext.onMobile}">
+                    <button sclass="btn-link dropdown-toggle" popup="pop, after_start, type=toggle"
+                            style="font-size:30px;padding-left:0px" label="☰" />
+                </zk>
+                <zk>
+                    <!-- these 3 buttons MUST go in the same line -->
+                    <button sclass="btn-link dropdown-toggle header" popup="pop, after_start, type=toggle" style="font-size:16px"
+                            label="@load(c:cat3(c:l('general.welcome'),' ', sessionContext.user.givenName))" /><button
+                        sclass="btn-link dropdown-toggle header usericon" popup="pop, after_end, type=toggle" label=""
+                        iconSclass="glyphicon glyphicon-user" style="font-size:40px; padding:15px 5px 0px 5px; color:#333;"
+                /><button popup="pop, after_end, type=toggle" label="" sclass="btn-link dropdown-toggle header" iconSclass="caret" />
+                    <!--div sclass="glyphicon glyphicon-user" style="..."> </div-->
+                </zk>
+            </zk>
+        </div>
+
+        <menupopup id="pop">
+            <!-- LANGUAGE SELECTOR>
+            <menuitem label="${labels.general.change_lang}"/ -->
+            <menuitem label="${labels.general.help}" href="https://gluu.org/docs/casa/3.1.3/user-guide/" target="_blank"/>
+            <zk forEach="${vm.contextMenuItems}">
+                <include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
+                    <attribute name="base">${each.x}</attribute>
+                    <attribute name="priority">${each.y.priority}</attribute>
+                </include>
+            </zk>
+            <menuseparator/>
+            <menuitem label="${labels.general.logout}" onClick="@command('logoutFromAuthzServer')"/>
+        </menupopup>
+    </hlayout>
+
+</zk>

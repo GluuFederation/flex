@@ -1,0 +1,37 @@
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <panel title="${labels.adm.methods_title}" border="normal" sclass="padded" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.AuthnMethodsViewModel')">
+        <panelchildren sclass="padded">
+            <vlayout spacing="12px">
+                <label value="${labels.adm.methods_text}"/>
+                <div align="center">
+                    <grid model="@load(vm.methods)" mold="paging" pageSize="15">
+                        <columns>
+                            <column width="${sessionContext.onMobile ? '30px' : '60px'}" label="${sessionContext.onMobile ? '' : labels.adm.methods_enabled_method}" />
+                            <column label="${labels.adm.methods_acr}" />
+                            <column width="40%" label="${labels.adm.methods_plugin}" />
+                        </columns>
+                        <template name="model">
+                            <row>
+                                <checkbox label="" checked="@load(each.enabled)" onCheck="@command('checkMethod', acr=each.acr, checked=self.checked)" />
+                                <label value="@load(c:cat3(each.acr, ' - ', each.name))" />
+                                <listbox width="${sessionContext.onMobile ? '90%' : '200px'}" mold="select" model="@load(each.plugins)"
+                                         onSelect="@command('selectionChanged', evt=event, acr=each.acr)">
+                                    <template name="model">
+                                        <listitem label="@load(each.y)" selected="@load(forEachStatus.previous.each.selectedPlugin eq each.x)" />
+                                    </template>
+                                </listbox>
+                            </row>
+                        </template>
+                    </grid>
+                    <separator />
+                    <separator />
+                    <button disabled="@load(empty vm.methods)" label="${labels.general.save}" sclass="btn-success" onClick="@command('save')" />
+                </div>
+                <n:span sclass="de_emphasized">${labels.adm.methods_hint}</n:span>
+            </vlayout>
+        </panelchildren>
+    </panel>
+
+</zk>

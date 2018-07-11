@@ -1,0 +1,1 @@
+This is the directory where plugin resources are copied (extracted) at runtime

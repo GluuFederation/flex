@@ -1,0 +1,30 @@
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <panel title="${labels.adm.ldap_title}" border="normal" sclass="padded" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.LdapSettingsViewModel')">
+        <panelchildren sclass="padded">
+            <vlayout>
+                <label value="${labels.adm.ldap_text}"/>
+                <separator />
+                <div sclass="form-horizontal panel5">
+                    <div sclass="form-group">
+                        <label value="${labels.adm.ldap_salt}" sclass="control-label form-label col-sm-3" />
+                        <div sclass="col-sm-9">
+                            <textbox sclass="form-control" value="@bind(vm.ldapSettings.saltLocation)"/>
+                        </div>
+                    </div>
+                    <div sclass="form-group">
+                        <label value="${labels.adm.ldap_ox_ldap}" sclass="control-label form-label col-sm-3" />
+                        <div sclass="col-sm-9">
+                            <textbox sclass="form-control" value="@bind(vm.ldapSettings.oxLdapLocation)"/>
+                        </div>
+                    </div>
+                    <div align="center">
+                        <button label="${labels.general.save}" sclass="btn-success" onClick="@command('save')" />
+                    </div>
+                </div>
+            </vlayout>
+        </panelchildren>
+    </panel>
+
+</zk>

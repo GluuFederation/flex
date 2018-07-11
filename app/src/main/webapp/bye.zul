@@ -1,0 +1,24 @@
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
+<?page title="${applicationScope['appName']} - ${labels.usr.logout.title}"?>
+<?link rel="icon" href="${sessionContext.faviconDataUri}" ?>
+<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
+<?script src="/scripts/bootstrap/bootstrap.min.js"?>
+<?script src="/scripts/bootstrap/ie10-viewport-bug-workaround.js"?>
+<?script src="/scripts/bootstrap/zk.js"?>
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <vlayout sclass="container mainDiv" width="${sessionContext.onMobile ? '100%' : '950px'}">
+        <div align="center">
+            <hlayout height="250px" sclass="padded">
+                <vlayout sclass="padded">
+                    <label value="${labels.usr.logout.title}" sclass="titled padded"/>
+                    <separator/>
+                    <button label="${labels.usr.logout.back_home}" sclass="btn-success" href="/"/>
+                </vlayout>
+            </hlayout>
+        </div>
+    </vlayout>
+
+</zk>

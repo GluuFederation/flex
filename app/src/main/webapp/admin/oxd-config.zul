@@ -1,0 +1,92 @@
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <panel title="${labels.adm.oxd_title}" border="normal" sclass="padded" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.OxdViewModel')">
+        <panelchildren sclass="padded">
+            <vlayout>
+                <label value="${labels.adm.oxd_text}"/>
+                <separator />
+                <div sclass="panel5 form-horizontal">
+                    <div sclass="form-group">
+                        <radiogroup id="foolish"/>
+                        <label value="${labels.adm.oxd_conn_type}" sclass="control-label form-label col-sm-4"/>
+
+                        <div sclass="col-sm-8">
+                            <hlayout spacing="15px" style="padding-bottom:5px">
+                                <radio label="${labels.adm.oxd_conn_server}" onCheck="@command('switchUseOxdExtension', use=false)"
+                                       selected="@load(not vm.oxdSettings.useHttpsExtension)" radiogroup="foolish" onClick="uiHost.focus()"/>
+                                <radio label="${labels.adm.oxd_conn_https}" onCheck="@command('switchUseOxdExtension', use=true)"
+                                       selected="@load(vm.oxdSettings.useHttpsExtension)" radiogroup="foolish" onClick="uiHost.focus()"/>
+                            </hlayout>
+
+                            <hlayout valign="middle" spacing="9px">
+                                <textbox sclass="s8 form-control" placeholder="${labels.adm.oxd_host_placeholder}" value="@bind(vm.oxdSettings.host)" id="uiHost" />
+                                :
+                                <intbox width="75px" sclass="form-control" placeholder="${labels.adm.oxd_port_placeholder}"
+                                        value="@bind(vm.oxdSettings.port)" tooltip="tooltip_port, after_pointer" maxlength="5" />
+                            </hlayout>
+                        </div>
+                    </div>
+                    <div sclass="form-group">
+                        <label value="${labels.adm.oxd_postlogout}" sclass="control-label form-label col-sm-4"/>
+                        <div sclass="col-sm-8">
+                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.postLogoutUri)" tooltip="tooltip_logout, after_pointer" />
+                        </div>
+                    </div>
+                    <div sclass="form-group">
+                        <div sclass="col-sm-4">&#160;</div>
+                        <div sclass="col-sm-8">
+                            <hlayout spacing="25px" sclass="padded">
+                                <button label="${labels.general.save}" sclass="btn-success" onClick="@command('saveOxdSettings')" />
+                                <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')" />
+                            </hlayout>
+                        </div>
+                    </div>
+                </div>
+                <n:hr n:style="margin-top:0" />
+                <div sclass="panel5 form-horizontal">
+                    <div sclass="form-group">
+                        <label value="${labels.adm.oxd_op_host}" sclass="control-label form-label col-sm-4"/>
+                        <div sclass="col-sm-8">
+                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.opHost)" readonly="true"/>
+                        </div>
+                    </div>
+                    <div sclass="form-group">
+                        <label value="${labels.adm.oxd_client_name}" sclass="control-label form-label col-sm-4"/>
+                        <div sclass="col-sm-8">
+                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.client.clientName)" readonly="true"/>
+                        </div>
+                    </div>
+                    <div sclass="form-group">
+                        <label value="${labels.adm.oxd_authz_redirect}" sclass="control-label form-label col-sm-4"/>
+                        <div sclass="col-sm-8">
+                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.redirectUri)" readonly="true"/>
+                        </div>
+                    </div>
+                    <div sclass="form-group">
+                        <label value="${labels.adm.oxd_oxdid}" sclass="control-label form-label col-sm-4"/>
+                        <div sclass="col-sm-8">
+                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.client.oxdId)" readonly="true"/>
+                        </div>
+                    </div>
+                    <div sclass="form-group" visible="@load(not empty vm.oxdSettings.client.clientId)">
+                        <label value="${labels.adm.oxd_client_id}" sclass="control-label form-label col-sm-4"/>
+                        <div sclass="col-sm-8">
+                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.client.clientId)" readonly="true"/>
+                        </div>
+                    </div>
+                    <div sclass="form-group" visible="@load(not empty vm.oxdSettings.client.clientSecret)">
+                        <label value="${labels.adm.oxd_client_secret}" sclass="control-label form-label col-sm-4"/>
+                        <div sclass="col-sm-8">
+                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.client.clientSecret)" readonly="true"/>
+                        </div>
+                    </div>
+                </div>
+                <popup id="tooltip_port">${labels.adm.oxd_port_tooltip}</popup>
+                <!--popup id="tooltip_redirect">${labels.adm.oxd_redirect_uri_tooltip}</popup-->
+                <popup id="tooltip_logout">${labels.adm.oxd_postlogout_uri_tooltip}</popup>
+            </vlayout>
+        </panelchildren>
+    </panel>
+
+</zk>

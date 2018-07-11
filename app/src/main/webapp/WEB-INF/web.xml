@@ -1,0 +1,46 @@
+<web-app	version="3.1"
+            xmlns="http://xmlns.jcp.org/xml/ns/javaee/"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <description>credential manager</description>
+    <display-name>cred-manager</display-name>
+
+    <context-param>
+        <param-name>org.eclipse.jetty.servlet.Default.dirAllowed</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <!--
+    <filter>
+        <filter-name>zkFilter</filter-name>
+        <filter-class>org.zkoss.zk.ui.http.DHtmlLayoutFilter</filter-class>
+        <init-param>
+            <param-name>extension</param-name>
+            <param-value>zul</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>zkFilter</filter-name>
+        <url-pattern>/custom/views/*.zul</url-pattern>
+    </filter-mapping>
+    -->
+
+    <!-- weld -->
+    <listener>
+        <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener</listener-class>
+    </listener>
+    <resource-env-ref>
+        <description>Object factory for the CDI Bean Manager</description>
+        <resource-env-ref-name>BeanManager</resource-env-ref-name>
+        <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
+    </resource-env-ref>
+    <context-param>
+        <param-name>org.jboss.weld.development</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+</web-app>

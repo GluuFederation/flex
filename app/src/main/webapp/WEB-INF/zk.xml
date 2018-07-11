@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Read the ZK 8 Configuration Reference manual to learn about tags here -->
+<zk>
+
+    <preference>
+        <name>org.zkoss.zk.ui.WebApp.name</name>
+        <value>Gluu Casa</value>
+    </preference>
+
+    <system-property>
+        <name>org.gluu.credmanager.css.mobile</name>
+        <value>/styles/mobile.css</value>
+    </system-property>
+    <system-property>
+        <name>org.gluu.credmanager.css.desktop</name>
+        <value>/styles/desktop.css</value>
+    </system-property>
+
+    <!-- session timeout redirect -->
+    <session-config>
+        <device-type>ajax</device-type>
+        <timeout-uri>/index.zul</timeout-uri>
+    </session-config>
+    <session-config>
+        <device-type>mil</device-type>
+        <timeout-uri>/index.zul</timeout-uri>
+    </session-config>
+
+    <library-property>
+        <name>org.zkoss.util.label.web.charset</name>
+        <value>UTF-8</value>
+    </library-property>
+    <!--library-property>
+        <name>org.zkoss.lang.contextClassLoader.class</name>
+        <value>org.gluu.credmanager.misc.CustomClassLoader</value>
+    </library-property-->
+
+    <!-- Override default molds with bootstrap ones -->
+    <library-property>
+        <name>org.zkoss.zul.Button.mold</name>
+        <value>bs</value>
+    </library-property>
+    <library-property>
+        <name>org.zkoss.zul.Menupopup.mold</name>
+        <value>bs</value>
+    </library-property>
+    <library-property>
+        <name>org.zkoss.zul.Paging.mold</name>
+        <value>bs</value>
+    </library-property>
+    <library-property>
+        <name>org.zkoss.theme.preferred</name>
+        <value>breeze</value>   <!-- preserve the theme used in first version of the app -->
+    </library-property>
+
+    <!-- unit: seconds. A greater value (>20s) could have been used, however developer testing their plugins need a short
+     times to be productive -->
+    <desktop-config>
+        <file-check-period>20</file-check-period>
+    </desktop-config>
+
+    <!-- important listeners -->
+    <listener>
+        <listener-class>org.gluu.credmanager.core.init.ZKInitializer</listener-class>
+    </listener>
+
+</zk>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{dd-MM HH:mm:ss.SSS} %-5p %C{4} %F:%L- %m%n" />
+        </Console>
+        <RollingFile name="LOG_FILE" fileName="${sys:log.base}/logs/cred-manager.log" filePattern="${sys:log.base}/logs/cred-manager-%d{dd-MM-HH-mm-ss}-%i.log">
+            <PatternLayout pattern="%d{dd-MM HH:mm:ss.SSS} %-5p [%t] %C{4} %F:%L- %m%n" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="2 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10" />
+        </RollingFile>
+
+    </Appenders>
+    <Loggers>
+        <Logger name="org.gluu.credmanager" level="INFO">
+            <!-- Configuration of this logger is tightly coupled with class org.gluu.credmanager.core.LogService -->
+            <AppenderRef ref="LOG_FILE" />
+        </Logger>
+        <Root level="ERROR">
+            <AppenderRef ref="Console" />
+        </Root>
+    </Loggers>
+
+</Configuration>

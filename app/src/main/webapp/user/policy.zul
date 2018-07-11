@@ -1,0 +1,96 @@
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/general.zul"?>
+<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver"?>
+<?page title="${applicationScope['appName']} - ${labels.usr.policy_page_title}"?>
+<?link rel="icon" href="${sessionContext.faviconDataUri}"?>
+<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.PolicyViewModel')" self="@define(content)">
+        <zk if="${vm.uiHasPreferredMethod and vm.uiAllowedToSetPolicy}">
+
+            <div align="center" sclass="dpadded"><label value="${labels.usr.policy_page_title}" sclass="titled"/></div>
+
+            <panel title="${labels.usr.policy_title}" sclass="padded" border="normal">
+                <panelchildren sclass="padded">
+                    <vlayout>
+                        <label value="${labels.usr.policy_text}"/>
+                        <separator />
+
+                        <checkbox sclass="col-sm-offset-1" label="${labels.usr.policy.EVERY_LOGIN}" id="EVERY_LOGIN"
+                                  checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', target=event.target)" />
+
+                        <checkbox sclass="col-sm-offset-1" label="${labels.usr.policy.LOCATION_UNKNOWN}" id="LOCATION_UNKNOWN"
+                                  disabled="@load(vm.enforcementPolicies.contains('EVERY_LOGIN'))"
+                                  checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', target=event.target)" />
+
+                        <checkbox sclass="col-sm-offset-1" label="${labels.usr.policy.DEVICE_UNKNOWN}" id="DEVICE_UNKNOWN"
+                                  disabled="@load(vm.enforcementPolicies.contains('EVERY_LOGIN'))"
+                                  checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', target=event.target)" />
+
+                        <div align="center" sclass="padded">
+                            <hlayout spacing="25px">
+                                <button label="${labels.general.save}" sclass="btn-success form_button"
+                                        disabled="@load(empty vm.enforcementPolicies)" onClick="@command('updatePolicy')" />
+                                <button label="${labels.general.cancel}" sclass="btn-success form_button" onClick="@command('cancel')"/>
+                            </hlayout>
+                        </div>
+                    </vlayout>
+                </panelchildren>
+            </panel>
+
+            <panel title="${labels.usr.trdevices_title}" sclass="padded" border="normal"
+                   visible="@load(vm.enforcementPolicies.contains('LOCATION_UNKNOWN') or vm.enforcementPolicies.contains('DEVICE_UNKNOWN'))">
+                <panelchildren sclass="padded">
+                    <label visible="@load(empty vm.trustedDevices)" value="${labels.usr.trdevices_empty}" />
+
+                    <label visible="@load(not empty vm.trustedDevices)" value="${labels.usr.trdevices_text}"/>
+                    <div visible="@load(not empty vm.trustedDevices)" align="center">
+                        <div>
+                            <attribute unless="${sessionContext.onMobile}" name="width">80%</attribute>
+                            <attribute unless="${sessionContext.onMobile}" name="sclass">padded</attribute>
+                            <separator />
+                            <grid model="@load(vm.trustedDevices)" mold="paging" pageSize="5">
+                                <template name="model">
+                                    <row>
+                                        <hlayout valign="middle">
+                                            <vlayout hflex="1" sclass="padded">
+                                                <hlayout>
+                                                    <label sclass="bold" value="@load(c:cat3(each.browser.name,' ', each.browser.version))" />
+                                                    <label sclass="bold" value="${labels.usr.trdevices_on}" />
+                                                    <label sclass="bold" value="@load(c:cat3(each.os.family,' ', each.os.version))"/>
+                                                </hlayout>
+                                                <div sclass="row" if="@load(not empty each.origins)">
+                                                    <!-- a small ugly to make it look not ugly in small screens :) -->
+                                                    <label value="${labels.usr.trdevices_last_location}" sclass="de_emphasized col-sm-2"
+                                                           style="padding-right:0;padding-top:${sessionContext.onMobile? '4' : '2'}px" />
+                                                    <hlayout sclass="col-sm-10">
+                                                        <label value="@load(c:cat4(each.origins.get(0).city,', ', each.origins.get(0).country,'.'))" />
+                                                        <label sclass="de_emphasized"
+                                                               value="@load(each.origins.get(0).timestamp) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a')"/>
+                                                    </hlayout>
+                                                </div>
+                                                <!--label visible="@load(not empty each.origins)" value="${labels.usr.trdevices_last_location}" sclass="de_emphasized" />
+                                                <vlayout sclass="col-sm-offset-1" visible="@load(not empty each.origins)" children="@load(each.origins)">
+                                                    <template name="children">
+                                                        <hlayout>
+                                                            <label value="@load(c:cat4(each.city,', ', each.country,'.'))" />
+                                                            <label sclass="de_emphasized" value="@load(each.timestamp) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a')"/>
+                                                        </hlayout>
+                                                    </template>
+                                                </vlayout-->
+                                            </vlayout>
+                                            <image src="${sessionContext.custdir}/images/delete.png" sclass="icon_delete"
+                                                   tooltip="tooltip_delete, after_pointer" onClick="@command('deleteDevice', idx = forEachStatus.index)"/>
+                                        </hlayout>
+                                    </row>
+                                </template>
+                            </grid>
+                        </div>
+                    </div>
+                </panelchildren>
+            </panel>
+
+        </zk>
+    </vlayout>
+</zk>

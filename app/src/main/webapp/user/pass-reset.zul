@@ -1,0 +1,57 @@
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
+<?page title="${applicationScope.appName} - ${labels.usr.passreset_title}"?>
+<?link rel="icon" href="${sessionContext.faviconDataUri}" ?>
+<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
+<?script src="/scripts/zxcvbn.js"?>
+<?script src="/scripts/main-util.js"?>
+
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <vlayout if="${empty pageScope.error and configurationHandler.settings.enablePassReset}" self="@define(content)"
+             viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.PassResetViewModel')">
+
+        <panel title="${labels.usr.passreset_title}" sclass="padded" border="normal" collapsible="true" open="@load(vm.uiPwdResetOpened)">
+            <panelchildren sclass="padded form-horizontal">
+                <div sclass="panel5">
+                    <div sclass="form-group">
+                        <label value="${labels.usr.passreset_current}" sclass="control-label form-label col-sm-5"/>
+                        <div sclass="col-sm-7">
+                            <textbox type="password" sclass="form-control" value="@bind(vm.currentPassword)" />
+                        </div>
+                    </div>
+                    <div sclass="form-group">
+                        <label value="${labels.usr.passreset_newpass}" sclass="control-label form-label col-sm-5" />
+                        <div sclass="col-sm-7">
+                            <textbox id="new_pass" type="password" sclass="form-control" tooltip="tooltip_pass_hint, after_center"
+                                     w:onBlur="updateStrength(this)" value="@bind(vm.newPassword)"/>
+                        </div>
+                    </div>
+                    <div sclass="form-group" style="margin-top:-10px">
+                        <label sclass="de_emphasized col-sm-offset-5" visible="@load(not empty vm.strengthText)"
+                               style="padding-left:20px" value="${labels.usr.pass.strength.title}" />
+                        <label sclass="de_emphasized bold" value="@load(vm.strengthText)"/>
+                    </div>
+                    <div sclass="form-group">
+                        <label value="${labels.usr.passreset_confirm}" sclass="control-label form-label col-sm-5"/>
+                        <div sclass="col-sm-7">
+                            <textbox type="password" sclass="form-control" value="@bind(vm.newPasswordConfirm)" />
+                        </div>
+                    </div>
+                    <div align="center">
+                        <separator />
+                        <hlayout spacing="20px" valign="bottom" sclass="padded">
+                            <button label="${labels.usr.passreset_change}" sclass="btn-success"
+                                    onClick="@command('resetPass')" disabled="@load(empty vm.currentPassword or empty vm.newPassword)"/>
+                            <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')"/>
+                        </hlayout>
+                    </div>
+                </div>
+            </panelchildren>
+        </panel>
+        <popup id="tooltip_pass_hint">${labels.usr.passreset_hint}</popup>
+
+    </vlayout>
+
+</zk>

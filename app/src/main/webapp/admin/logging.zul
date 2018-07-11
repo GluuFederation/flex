@@ -1,0 +1,20 @@
+<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <panel title="${labels.adm.logging_title}" border="normal" sclass="padded" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.LogLevelViewModel')">
+        <panelchildren sclass="padded">
+            <vlayout>
+                <label value="${labels.adm.logging_text}"/>
+                <radiogroup id="methods"/>
+                <div align="center" children="@load(vm.logLevels)">
+                    <template name="children">
+                        <radio label="@load(each)" onCheck="@command('change', level=each)"
+                               selected="@load(each eq vm.selectedLogLevel)" radiogroup="methods"/>
+                        <space width="@load(vm.logLevels.indexOf(each) eq (vm.logLevels.size()-1) ? '0px' : '11px')"/>
+                    </template>
+                </div>
+            </vlayout>
+        </panelchildren>
+    </panel>
+
+</zk>
