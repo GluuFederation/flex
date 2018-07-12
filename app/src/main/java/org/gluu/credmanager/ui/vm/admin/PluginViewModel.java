@@ -75,7 +75,9 @@ public class PluginViewModel extends MainViewModel {
 
     @Init//(superclass = true)
     public void init() {
-        reloadPluginList();
+        //a grid row might look like this: id version (details), state, implements, and control buttons
+        pluginList = new ArrayList<>();
+        extManager.getPlugins().forEach(wrapper -> pluginList.add(buildPluginData(wrapper)));
     }
 
     @NotifyChange({"pluginToShow", "uiAdding"})
@@ -95,6 +97,7 @@ public class PluginViewModel extends MainViewModel {
     @NotifyChange({"pluginToShow", "uiAdding"})
     @Command
     public void uploaded(@BindingParam("uplEvent") UploadEvent evt) {
+
         try {
             pluginToShow = null;
             byte[] blob = evt.getMedia().getByteData();
@@ -110,9 +113,10 @@ public class PluginViewModel extends MainViewModel {
                     if (pluginList.stream().anyMatch(pl -> pl.getDescriptor().getPluginId().equals(id))) {
                         UIUtils.showMessageUI(false, Labels.getLabel("adm.plugins_already_existing", new String[] { id }));
                     } else if (Stream.of(id, version).allMatch(Utils::isNotEmpty)) {
-                        //Copy the jar to plugins dir
                         try {
+                            //Copy the jar to plugins dir
                             Path path = Files.write(getPluginDestinationPath(evt.getMedia().getName()), blob, StandardOpenOption.CREATE_NEW);
+                            logger.info("Plugin jar file copied to app plugins directory");
                             String pluginId = extManager.loadPlugin(path);
 
                             if (pluginId == null) {
@@ -125,6 +129,17 @@ public class PluginViewModel extends MainViewModel {
                                 if (owrp.isPresent()) {
                                     pluginToShow = buildPluginData(owrp.get());
                                     uiAdding = true;
+
+                                    logger.info("Adding plugin to list of known plugins in settings");
+                                    PluginInfo info = new PluginInfo();
+                                    info.setId(id);
+                                    info.setRelativePath(Paths.get(pluginToShow.getPath()).getFileName().toString());
+                                    info.setState(PluginState.STOPPED.toString());
+
+                                    List<PluginInfo> list = Optional.ofNullable(getSettings().getKnownPlugins()).orElse(new ArrayList<>());
+                                    list.add(info);
+                                    getSettings().setKnownPlugins(list);
+                                    getSettings().save();
                                 } else {
                                     UIUtils.showMessageUI(false);
                                 }
@@ -135,10 +150,12 @@ public class PluginViewModel extends MainViewModel {
                         }
                     } else {
                         UIUtils.showMessageUI(false, Labels.getLabel("adm.plugins_invalid_plugin"));
+                        logger.error("Plugin's manifest file missing ID and/or Version");
                     }
 
                 } else {
                     UIUtils.showMessageUI(false, Labels.getLabel("adm.plugins_invalid_plugin"));
+                    logger.error("Jar file with no manifest file");
                 }
             }
         } catch (Exception e) {
@@ -149,6 +166,7 @@ public class PluginViewModel extends MainViewModel {
     @Command
     public void deletePlugin(@BindingParam("id") String pluginId, @BindingParam("provider") String provider) {
 
+        logger.info("Attempting to remove plugin {}", pluginId);
         provider = Utils.isEmpty(provider) ? Labels.getLabel("adm.plugins_nodata") : provider;
         String msg = Labels.getLabel("adm.plugins_confirm_del", new String[] {pluginId, provider});
 
@@ -160,15 +178,11 @@ public class PluginViewModel extends MainViewModel {
                         if (success) {
                             PluginData pluginData = pluginList.stream()
                                     .filter(pl -> pl.getDescriptor().getPluginId().equals(pluginId)).findAny().get();
+                            logger.trace("Removing plugin from UI list");
                             pluginList.remove(pluginData);
 
-                            Optional<PluginInfo> plOpt = getSettings().getKnownPlugins().stream().filter(apl -> apl.getId().equals(pluginId)).findAny();
-                            //It may happen the admin forgot to press the "add" button for this plugin, returned back to dashboard
-                            //and wants to delete it. In this case the plugin is not in the known set of config file (empty Optional)
-                            if (plOpt.isPresent()) {
-                                getSettings().getKnownPlugins().remove(plOpt.get());
-                                updateMainSettings();
-                            }
+                            removeFromKnownPlugins(pluginId);
+                            updateMainSettings();
                             BindUtils.postNotifyChange(null, null, PluginViewModel.this, "pluginList");
                         } else {
                             UIUtils.showMessageUI(false);
@@ -184,26 +198,22 @@ public class PluginViewModel extends MainViewModel {
     @NotifyChange({"pluginList", "pluginToShow", "uiAdding"})
     @Command
     public void addPlugin() {
+
         String id = pluginToShow.getDescriptor().getPluginId();
         boolean success = extManager.startPlugin(id);
 
         if (success) {
             String started = PluginState.STARTED.toString();
             pluginToShow.setState(Labels.getLabel("adm.plugins_state." + started));
-            pluginList.add(pluginToShow);
             //populate extension data
             pluginToShow.setExtensions(buildExtensionList(extManager.getPlugin(id)));
 
-            //Update backend config file
-            PluginInfo info = new PluginInfo();
-            info.setId(id);
-            info.setRelativePath(Paths.get(pluginToShow.getPath()).getFileName().toString());
-            info.setState(started);
+            logger.trace("Adding plugin to UI list");
+            pluginList.add(pluginToShow);
 
-            List<PluginInfo> list = Optional.ofNullable(getSettings().getKnownPlugins()).orElse(new ArrayList<>());
-            list.add(info);
+            PluginInfo pl = getSettings().getKnownPlugins().stream().filter(apl -> apl.getId().equals(id)).findAny().get();
+            pl.setState(started);
 
-            getSettings().setKnownPlugins(list);
             updateMainSettings();
             hidePluginDetails();
         } else {
@@ -218,7 +228,15 @@ public class PluginViewModel extends MainViewModel {
 
         String plugId = pluginToShow.getDescriptor().getPluginId();
         hidePluginDetails();
-        if (!extManager.unloadPlugin(plugId)) {
+        if (extManager.unloadPlugin(plugId)) {
+            try {
+                removeFromKnownPlugins(plugId);
+                getSettings().save();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                UIUtils.showMessageUI(false, e.getMessage());
+            }
+        } else {
             UIUtils.showMessageUI(false, Labels.getLabel("adm.plugins_error_unloaded"));
         }
         /*
@@ -241,7 +259,14 @@ public class PluginViewModel extends MainViewModel {
 
         boolean success = extManager.startPlugin(pluginId);
         if (success) {
+            if (pluginToShow.getExtensions() == null) {
+                //This can happen if the plugin was uploaded, but the add button was not pressed
+                pluginToShow.setExtensions(buildExtensionList(extManager.getPlugin(pluginId)));
+            }
+
             String started = PluginState.STARTED.toString();
+            logger.info("Updating plugin status");
+
             PluginData pluginData = pluginList.stream().filter(pl -> pl.getDescriptor().getPluginId().equals(pluginId))
                     .findAny().get();
             pluginData.setState(Labels.getLabel("adm.plugins_state." + started));
@@ -266,6 +291,8 @@ public class PluginViewModel extends MainViewModel {
             boolean success = extManager.stopPlugin(pluginId);
             if (success) {
                 String stopped = PluginState.STOPPED.toString();
+                logger.info("Updating plugin status");
+
                 PluginData pluginData = pluginList.stream().filter(pl -> pl.getDescriptor().getPluginId().equals(pluginId))
                         .findAny().get();
                 pluginData.setState(Labels.getLabel("adm.plugins_state." + stopped));
@@ -281,24 +308,24 @@ public class PluginViewModel extends MainViewModel {
 
     }
 
-    private void reloadPluginList() {
-        //a grid row might look like this: id version (details), state, implements + buttons to stop
-        pluginList = new ArrayList<>();
-        extManager.getPlugins().forEach(wrapper -> pluginList.add(buildPluginData(wrapper)));
-    }
-
     private PluginData buildPluginData(PluginWrapper pw) {
 
         PluginDescriptor pluginDescriptor = pw.getDescriptor();
+        logger.debug("Building a PluginData instance for plugin {}", pw.getPluginId());
         PluginData pl = new PluginData();
 
+        PluginState plState = pw.getPluginState();
         //In practice resolved (that is, just loaded not started) could be seen as stopped
-        String state = (pw.getPluginState().equals(PluginState.RESOLVED) ? PluginState.STOPPED : pw.getPluginState()).toString();
+        plState = plState.equals(PluginState.RESOLVED) ? PluginState.STOPPED : plState;
 
-        pl.setState(Labels.getLabel("adm.plugins_state." + state));
-        pl.setExtensions(buildExtensionList(pw));
+        pl.setState(Labels.getLabel("adm.plugins_state." + plState.toString()));
         pl.setPath(pw.getPluginPath().toString());
         pl.setDescriptor(pluginDescriptor);
+
+        if (PluginState.STARTED.equals(plState)) {
+            //pf4j doesn't give any info if not in started state
+            pl.setExtensions(buildExtensionList(pw));
+        }
 
         return pl;
 
@@ -349,8 +376,8 @@ public class PluginViewModel extends MainViewModel {
 
     private Path getPluginDestinationPath(String fileName) {
         /*
-        Add some "random" suffix since the same file can be uploaded multiples because as it's explained at
-        https://github.com/pf4j/pf4j/issues/217 there is no effective means to delete a plugin jar file
+        Add some "random" suffix since the same file can be uploaded multiples because as explained at
+        https://github.com/pf4j/pf4j/issues/217, there is no effective means to delete a plugin jar file
         */
         String suffix = Long.toString(System.currentTimeMillis());
         int aux = suffix.length();
@@ -360,6 +387,14 @@ public class PluginViewModel extends MainViewModel {
         aux = aux == -1 ? fileName.length() : aux;
         fileName = fileName.substring(0, aux) + suffix + ".jar";
         return Paths.get(extManager.getPluginsRoot().toString(), fileName);
+
+    }
+
+    private void removeFromKnownPlugins(String pluginId) {
+        //This list is not null here and there has to be such plugin in the list
+        List<PluginInfo> list = getSettings().getKnownPlugins();
+        PluginInfo pl = list.stream().filter(apl -> apl.getId().equals(pluginId)).findAny().get();
+        list.remove(pl);
 
     }
 

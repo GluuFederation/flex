@@ -125,7 +125,7 @@ public class ExtensionsManager implements IExtensionsManager {
                         }
                     }
                 }
-                logger.info("Plugins started {}", started);
+                logger.info("Total plugins started: {}", started);
             }
             zkService.refreshLabels();
 
@@ -262,11 +262,13 @@ public class ExtensionsManager implements IExtensionsManager {
     private boolean startPlugin(String pluginId, boolean refreshLabels) {
 
         boolean success = false;
-        PluginState state = pluginManager.startPlugin(pluginId);
-        Path path = pluginManager.getPlugin(pluginId).getPluginPath();
+        try {
+            PluginState state = pluginManager.startPlugin(pluginId);
+            Path path = pluginManager.getPlugin(pluginId).getPluginPath();
 
-        if (PluginState.STARTED.equals(state)) {
-            parsePluginAuthnMethodExtensions(pluginId);
+            if (PluginState.STARTED.equals(state)) {
+                logger.info("Plugin {} started", pluginId);
+                parsePluginAuthnMethodExtensions(pluginId);
 
             /*
             //Notifies activation/deactivation for extensions handling authentication methods
@@ -275,14 +277,17 @@ public class ExtensionsManager implements IExtensionsManager {
             for (String acr : acrs) {
                 getExtensionForAcr(acr).activate();
             } */
-            reconfigureServices(pluginId, path, pluginManager.getPluginClassLoader(pluginId));
-            success = true;
+                reconfigureServices(pluginId, path, pluginManager.getPluginClassLoader(pluginId));
+                success = true;
 
-            if (refreshLabels) {
-                zkService.refreshLabels();
+                if (refreshLabels) {
+                    zkService.refreshLabels();
+                }
+            } else {
+                logger.warn("Plugin loaded from {} not started. Current state is {}", path.toString(), state == null ? null : state.toString());
             }
-        } else {
-            logger.warn("Plugin loaded from {} not started. Current state is {}", path.toString(), state == null ? null : state.toString());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
         return success;
 
@@ -380,6 +385,7 @@ public class ExtensionsManager implements IExtensionsManager {
                     }
                 } else if (Files.isDirectory(p)) {
                     //TODO add support for directory-based plugins
+                    ;
                 }
             });
 
