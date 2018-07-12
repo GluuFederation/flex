@@ -40,7 +40,7 @@ public class MainViewModel {
     @WireVariable
     private MenuService menuService;
 
-    private List<Pair<String,NavigationMenu>> extraButtons;
+    private List<Pair<String, NavigationMenu>> extraButtons;
 
     private String subpage;
 
@@ -48,7 +48,7 @@ public class MainViewModel {
         return subpage;
     }
 
-    public List<Pair<String,NavigationMenu>> getExtraButtons() {
+    public List<Pair<String, NavigationMenu>> getExtraButtons() {
         return extraButtons;
     }
 
@@ -76,6 +76,7 @@ public class MainViewModel {
 
         boolean success = false;
         try {
+            logger.info("Updating global configuration settings");
             //update app-level config and persist
             getSettings().save();
             if (sucessMessage == null) {

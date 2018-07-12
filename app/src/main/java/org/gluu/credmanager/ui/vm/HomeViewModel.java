@@ -6,7 +6,6 @@
 package org.gluu.credmanager.ui.vm;
 
 import org.gluu.credmanager.core.SessionContext;
-import org.gluu.credmanager.core.UserService;
 import org.gluu.credmanager.core.pojo.BrowserInfo;
 import org.gluu.credmanager.core.pojo.User;
 import org.slf4j.Logger;
