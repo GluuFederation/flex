@@ -14,7 +14,10 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
 /**
- * Created by jgomer on 2018-07-10.
+ * A ZK <a href="http://books.zkoss.org/zk-mvvm-book/8.0/viewmodel/index.html" target="_blank">ViewModel</a> that acts
+ * as the "controller" of page <code>index.zul</code> in this sample plugin. See <code>viewModel</code> attribute of
+ * panel component of <code>index.zul</code>.
+ * @author jgomer
  */
 public class HelloWorldVM {
 
@@ -24,25 +27,44 @@ public class HelloWorldVM {
     private String organizationName;
     private ILdapService ldapService;
 
+    /**
+     * Getter of private class field <code>organizationName</code>.
+     * @return A string with the value of the organization name found in your Gluu installation. Find this value in
+     * Gluu Server oxTrust GUI at "Configuration" &gt; "Organization configuration"
+     */
     public String getOrganizationName() {
         return organizationName;
     }
 
+    /**
+     * Getter of private class field <code>message</code>.
+     * @return A string value
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Setter of private class field <code>message</code>.
+     * @param message A string with the contents typed in text box of page index.zul
+     */
     public void setMessage(String message) {
         this.message = message;
     }
 
+    /**
+     * Initialization method for this ViewModel.
+     */
     @Init
     public void init() {
         logger.info("Hello World ViewModel inited");
-        //TODO: use service locator?
         ldapService = Utils.managedBean(ILdapService.class);
     }
 
+    /**
+     * The method called when the button on page <code>index.zul</code> is pressed. It sets the value for
+     * <code>organizationName</code>.
+     */
     @NotifyChange("organizationName")
     @Command
     public void loadOrgName() {

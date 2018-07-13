@@ -9,7 +9,8 @@ import org.gluu.credmanager.extension.navigation.MenuType;
 import org.gluu.credmanager.extension.navigation.NavigationMenu;
 
 /**
- * Created by jgomer on 2018-07-10.
+ * A class implementing the {@link NavigationMenu} extension point.
+ * @author jgomer
  */
 public class HelloWorldMenu implements NavigationMenu {
 
@@ -22,7 +23,7 @@ public class HelloWorldMenu implements NavigationMenu {
     }
 
     public float getPriority() {
-        return 1;
+        return 0.5f;
     }
 
 }
