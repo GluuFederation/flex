@@ -57,10 +57,9 @@
                                     <label value="@load(each.addedOn) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))"/>
                                 </hlayout>
                             </vlayout>
-                            <hlayout sclass="couple_icons">
+                            <hlayout sclass="couple_icons" spacing="10px">
                                 <image src="${sessionContext.custdir}/images/edit.png" sclass="icon_edit"
                                        tooltip="tooltip_edit, after_pointer" onClick="@command('prepareForUpdate', device=each)"/>
-                                <space sclass="minspace"/>
                                 <image src="${sessionContext.custdir}/images/delete.png" sclass="icon_delete"
                                        tooltip="tooltip_delete, after_pointer" onClick="@command('delete', device=each)"/>
                             </hlayout>
