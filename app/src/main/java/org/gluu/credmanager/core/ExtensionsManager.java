@@ -158,7 +158,13 @@ public class ExtensionsManager implements IExtensionsManager {
     }
 
     public boolean pluginImplementsAuthnMethod(String acr, String plugId) {
-        return plugExtensionMap.get(plugId).stream().anyMatch(aMethod -> aMethod.getAcr().equals(acr));
+        return plugExtensionMap.containsKey(plugId)
+            && plugExtensionMap.get(plugId).stream().anyMatch(aMethod -> aMethod.getAcr().equals(acr));
+    }
+
+    public List<PluginDescriptor> authnMethodPluginImplementersStarted() {
+        return getPlugins().stream().filter(w -> w.getPluginState().equals(PluginState.STARTED)
+                && plugExtensionMap.keySet().contains(w.getPluginId())).map(PluginWrapper::getDescriptor).collect(Collectors.toList());
     }
 
     public ClassLoader getPluginClassLoader(String clsName) {

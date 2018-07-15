@@ -259,7 +259,7 @@ public class PluginViewModel extends MainViewModel {
 
         boolean success = extManager.startPlugin(pluginId);
         if (success) {
-            if (pluginToShow.getExtensions() == null) {
+            if (pluginToShow!=null && pluginToShow.getExtensions() == null) {
                 //This can happen if the plugin was uploaded, but the add button was not pressed
                 pluginToShow.setExtensions(buildExtensionList(extManager.getPlugin(pluginId)));
             }

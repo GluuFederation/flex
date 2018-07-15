@@ -58,8 +58,7 @@ public class AuthnMethodsViewModel extends MainViewModel {
     @Init//(superclass = true)
     public void init() {
 
-        List<PluginDescriptor> currentPlugins = extManager.getPlugins().stream().filter(w -> w.getPluginState().equals(PluginState.STARTED))
-                .map(PluginWrapper::getDescriptor).collect(Collectors.toList());
+        List<PluginDescriptor> currentPlugins = extManager.authnMethodPluginImplementersStarted();
         Map<String, String> mappedAcrs = getSettings().getAcrPluginMap();
         //The following map contains entries associated to active acr methods in oxauth
         Map<String, Integer> authnMethodLevels = confHandler.getAcrLevelMapping();
