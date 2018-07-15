@@ -6,7 +6,9 @@
     <script type="text/javascript" src="/scripts/spectrum.js" />
     <!-- end -->
 
-    <panel title="${labels.adm.branding_title}" border="normal" sclass="padded" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.CustomBrandingViewModel')">
+    <panel if="${sessionContext.user.admin}" title="${labels.adm.branding_title}" border="normal" sclass="padded"
+           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.CustomBrandingViewModel')">
+
         <panelchildren sclass="padded">
             <radiogroup id="groupie" />
             <vlayout>

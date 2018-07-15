@@ -1,7 +1,8 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <panel title="${labels.adm.logging_title}" border="normal" sclass="padded" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.LogLevelViewModel')">
+    <panel if="${sessionContext.user.admin}" title="${labels.adm.logging_title}" border="normal" sclass="padded"
+           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.LogLevelViewModel')">
         <panelchildren sclass="padded">
             <vlayout>
                 <label value="${labels.adm.logging_text}"/>

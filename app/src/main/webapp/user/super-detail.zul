@@ -1,5 +1,4 @@
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/general.zul"?>
-<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver"?>
 <?page title="${applicationScope['appName']} - ${labels.usr.supergluu_title}"?>
 <?link rel="icon" href="${sessionContext.faviconDataUri}"?>
 <?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>

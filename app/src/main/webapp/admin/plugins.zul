@@ -30,7 +30,7 @@
         }
     </script>
 
-    <panel title="${labels.adm.plugins_title2}" border="normal" sclass="padded"
+    <panel if="${sessionContext.user.admin}" title="${labels.adm.plugins_title2}" border="normal" sclass="padded"
            viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.PluginViewModel')">
         <panelchildren sclass="padded">
             <vlayout>

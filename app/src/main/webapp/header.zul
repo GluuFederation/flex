@@ -2,7 +2,9 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <hlayout width="100%" sclass="header" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.UserViewModel')" valign="middle">
+    <hlayout if="${sessionContext.user ne null}" width="100%" sclass="header" valign="middle"
+             viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.UserViewModel')">
+
         <hlayout width="180px">
             <image sclass="logo" src="${sessionContext.logoDataUri}"/>
         </hlayout>

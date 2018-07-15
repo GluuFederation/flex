@@ -8,8 +8,8 @@
             <n:span class="small">&#160;</n:span>
         </vlayout>
 
-        <div visible="@load(not empty vm.authnMethods)">
-            <label value="${labels.usr.menu_main2fa}" />
+        <div if="${sessionContext.user ne null}" visible="@load(not empty vm.authnMethods)">
+            <a href="/user.zul" label="${labels.usr.menu_main2fa}" />
             <vlayout children="@load(vm.authnMethods)">
                 <template name="children">
                     <a label="${c:l(each.panelTitleKey)}" href="${each.pageUrl}" />
@@ -17,7 +17,7 @@
             </vlayout>
         </div>
 
-        <zk if="${configurationHandler.settings.enablePassReset}">
+        <zk if="${sessionContext.user ne null and configurationHandler.settings.enablePassReset}">
             <a href="/user/pass-reset.zul" label="${labels.usr.passreset_title}" />
         </zk>
 

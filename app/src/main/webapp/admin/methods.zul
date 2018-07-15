@@ -1,7 +1,8 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <panel title="${labels.adm.methods_title}" border="normal" sclass="padded" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.AuthnMethodsViewModel')">
+    <panel if="${sessionContext.user.admin}" title="${labels.adm.methods_title}" border="normal" sclass="padded"
+           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.AuthnMethodsViewModel')">
         <panelchildren sclass="padded">
             <vlayout spacing="12px">
                 <label value="${labels.adm.methods_text}"/>

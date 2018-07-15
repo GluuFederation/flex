@@ -1,5 +1,4 @@
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/general.zul"?>
-<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver"?>
 <?page title="${applicationScope['appName']} - ${labels.usr.policy_page_title}"?>
 <?link rel="icon" href="${sessionContext.faviconDataUri}"?>
 <?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
@@ -60,7 +59,7 @@
                                                     <label sclass="bold" value="${labels.usr.trdevices_on}" />
                                                     <label sclass="bold" value="@load(c:cat3(each.os.family,' ', each.os.version))"/>
                                                 </hlayout>
-                                                <div sclass="row" if="@load(not empty each.origins)">
+                                                <div sclass="row" if="${not empty each.origins}">
                                                     <!-- a small ugly to make it look not ugly in small screens :) -->
                                                     <label value="${labels.usr.trdevices_last_location}" sclass="de_emphasized col-sm-2"
                                                            style="padding-right:0;padding-top:${sessionContext.onMobile? '4' : '2'}px" />
