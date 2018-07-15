@@ -5,7 +5,11 @@
  */
 package org.gluu.credmanager.ui.vm.admin;
 
+import org.gluu.credmanager.conf.MainSettings;
+import org.gluu.credmanager.conf.TrustedDevicesSettings;
 import org.gluu.credmanager.conf.sndfactor.EnforcementPolicy;
+import org.gluu.credmanager.service.TrustedDevicesSweeper;
+import org.gluu.credmanager.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
@@ -13,10 +17,10 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
+import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Messagebox;
@@ -29,6 +33,7 @@ import java.util.stream.Stream;
 
 import static org.gluu.credmanager.conf.sndfactor.EnforcementPolicy.CUSTOM;
 import static org.gluu.credmanager.conf.sndfactor.EnforcementPolicy.EVERY_LOGIN;
+import static org.gluu.credmanager.core.ConfigurationHandler.BOUNDS_MINCREDS_2FA;
 
 /**
  * @author jgomer
@@ -36,13 +41,24 @@ import static org.gluu.credmanager.conf.sndfactor.EnforcementPolicy.EVERY_LOGIN;
 @VariableResolver(DelegatingVariableResolver.class)
 public class StrongAuthViewModel extends MainViewModel {
 
-    public static final Pair<Integer, Integer> BOUNDS_MINCREDS_2FA = new Pair<>(1, 3);
-
     private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @WireVariable
+    private TrustedDevicesSweeper trustedDevicesSweeper;
 
     private int minCreds2FA;
     private List<Integer> minCredsList;
     private Set<String> enforcementPolicies;
+    private int locationExpiration;
+    private int deviceExpiration;
+
+    public int getLocationExpiration() {
+        return locationExpiration;
+    }
+
+    public int getDeviceExpiration() {
+        return deviceExpiration;
+    }
 
     public List<Integer> getMinCredsList() {
         return minCredsList;
@@ -56,12 +72,23 @@ public class StrongAuthViewModel extends MainViewModel {
         return enforcementPolicies;
     }
 
+    public void setLocationExpiration(int locationExpiration) {
+        this.locationExpiration = locationExpiration;
+    }
+
+    public void setDeviceExpiration(int deviceExpiration) {
+        this.deviceExpiration = deviceExpiration;
+    }
+
     @Init//(superclass = true)
     public void init() {
         reloadConfig();
     }
 
     private void reloadConfig() {
+
+        locationExpiration = (int) trustedDevicesSweeper.getLocationExpirationDays();
+        deviceExpiration = (int) trustedDevicesSweeper.getDeviceExpirationDays();
 
         minCreds2FA = getSettings().getMinCredsFor2FA();
         enforcementPolicies = getSettings().getEnforcement2FA().stream().map(EnforcementPolicy::toString).collect(Collectors.toSet());
@@ -126,14 +153,27 @@ public class StrongAuthViewModel extends MainViewModel {
     }
 
     private void processUpdate(int newval) {
-        update2FASettings(newval, enforcementPolicies.stream().map(EnforcementPolicy::valueOf).collect(Collectors.toList()));
-        reloadConfig();
+        if (locationExpiration > 0 && deviceExpiration > 0) {
+            update2FASettings(newval, enforcementPolicies.stream().map(EnforcementPolicy::valueOf).collect(Collectors.toList()));
+            reloadConfig();
+        } else {
+            UIUtils.showMessageUI(false, Labels.getLabel("adm.strongauth_exp_invalid"));
+        }
     }
 
     private void update2FASettings(int minCreds, List<EnforcementPolicy> policies) {
 
-        getSettings().setMinCredsFor2FA(minCreds);
-        getSettings().setEnforcement2FA(policies);
+        TrustedDevicesSettings tsettings = new TrustedDevicesSettings();
+        tsettings.setDeviceExpirationDays(deviceExpiration);
+        tsettings.setLocationExpirationDays(locationExpiration);
+
+        trustedDevicesSweeper.setup(tsettings);
+
+        MainSettings settings = getSettings();
+        settings.setTrustedDevicesSettings(tsettings);
+        settings.setMinCredsFor2FA(minCreds);
+        settings.setEnforcement2FA(policies);
+
         if (updateMainSettings(Labels.getLabel("adm.methods_change_success"))) {
             logger.info("Changed minimum number of enrolled credentials for 2FA usage to {}", minCreds);
             logger.info("Changed 2FA enforcement policy to {}", policies);

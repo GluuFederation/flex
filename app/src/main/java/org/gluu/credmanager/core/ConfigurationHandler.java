@@ -8,7 +8,6 @@ package org.gluu.credmanager.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.credmanager.conf.MainSettings;
-import org.gluu.credmanager.conf.TrustedDevicesSettings;
 import org.gluu.credmanager.conf.sndfactor.EnforcementPolicy;
 import org.gluu.credmanager.event.AppStateChangeEvent;
 import org.gluu.credmanager.extension.AuthnMethod;
@@ -32,7 +31,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -43,13 +41,11 @@ import java.util.stream.Collectors;
 public class ConfigurationHandler extends JobListenerSupport {
 
     public static final Pair<Integer, Integer> BOUNDS_MINCREDS_2FA = new Pair<>(1, 3);
-    public static final String DEFAULT_ACR = "credmanager";
+    public static final String DEFAULT_ACR = "casa";
     public static final List<String> DEFAULT_SUPPORTED_METHODS = Arrays.asList("u2f", "otp", "super_gluu", "twilio_sms");
 
     private static final int RETRIES = 15;
     private static final int RETRY_INTERVAL = 20;
-    private static final int TRUSTED_DEVICE_EXPIRATION_DAYS = 30;
-    private static final int TRUSTED_LOCATION_EXPIRATION_DAYS = 15;
 
     @Inject
     private Logger logger;
@@ -191,7 +187,8 @@ public class ConfigurationHandler extends JobListenerSupport {
                             refreshAcrPluginMapping();
                             //TODO: uncomment
                             //scriptsReloader.init();
-                            //initDevicesSweeper();
+                            devicesSweeper.setup(settings.getTrustedDevicesSettings());
+                            devicesSweeper.activate();
                             logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
                         } else {
                             logger.warn("oxd configuration could not be initialized.");
@@ -250,20 +247,6 @@ public class ConfigurationHandler extends JobListenerSupport {
         Set<String> plugged = new HashSet<>(settings.getAcrPluginMap().keySet());
         plugged.retainAll(retrieveAcrs());
         return plugged;
-    }
-
-    private void initDevicesSweeper() {
-
-        TrustedDevicesSettings tsettings = settings.getTrustedDevicesSettings();
-
-        long devicesExpiration = TimeUnit.DAYS.toMillis(Optional.ofNullable(tsettings)
-                .map(TrustedDevicesSettings::getDeviceExpirationDays).orElse(TRUSTED_DEVICE_EXPIRATION_DAYS));
-
-        long locationExpiration = TimeUnit.DAYS.toMillis(Optional.ofNullable(tsettings)
-                .map(TrustedDevicesSettings::getLocationExpirationDays).orElse(TRUSTED_LOCATION_EXPIRATION_DAYS));
-
-        devicesSweeper.activate(locationExpiration, devicesExpiration);
-
     }
 
     private void setAppState(AppStateEnum state) {

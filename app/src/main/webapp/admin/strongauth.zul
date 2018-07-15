@@ -1,7 +1,8 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <panel title="${labels.adm.strongauth_title}" border="normal" sclass="padded" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.StrongAuthViewModel')">
+    <panel if="${sessionContext.user.admin}" title="${labels.adm.strongauth_title}" border="normal" sclass="padded"
+           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.StrongAuthViewModel')">
         <panelchildren sclass="padded">
             <vlayout>
                 <label value="${labels.adm.strongauth_min2fa_text}"/>
@@ -31,7 +32,22 @@
                           disabled="@load(vm.enforcementPolicies.contains('EVERY_LOGIN'))"
                           checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', evt=event)" />
 
-                <div align="center" sclass="padded">
+                <div sclass="form-horizontal col-sm-offset-1 padded">
+                    <div sclass="form-group" visible="@load(vm.enforcementPolicies.contains('LOCATION_UNKNOWN') or vm.enforcementPolicies.contains('CUSTOM'))">
+                        <label value="${labels.adm.strongauth_location_exp}" sclass="control-label col-sm-4" />
+                        <div sclass="col-sm-2">
+                            <intbox sclass="form-control" value="@bind(vm.locationExpiration)" maxlength="3" />
+                        </div>
+                    </div>
+                    <div sclass="form-group" visible="@load(vm.enforcementPolicies.contains('DEVICE_UNKNOWN') or vm.enforcementPolicies.contains('CUSTOM'))">
+                        <label value="${labels.adm.strongauth_device_exp}" sclass="control-label col-sm-4" />
+                        <div sclass="col-sm-2">
+                            <intbox sclass="form-control" value="@bind(vm.deviceExpiration)" maxlength="3"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div align="center">
                     <button label="${labels.general.save}" sclass="btn-success"
                             disabled="@load(empty vm.enforcementPolicies)" onClick="@command('change2FASettings', val=mincreds.selectedIndex)" />
                 </div>
