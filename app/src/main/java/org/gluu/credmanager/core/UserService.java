@@ -227,7 +227,7 @@ public class UserService {
                 });
             }
 
-            String trustedDevicesInfo = ldapService.getEncryptedString(person.getTrustedDevicesInfo());
+            String trustedDevicesInfo = ldapService.getDecryptedString(person.getTrustedDevicesInfo());
             if (Utils.isNotEmpty(trustedDevicesInfo)) {
                 trustedDevices = mapper.readValue(trustedDevicesInfo, new TypeReference<List<TrustedDevice>>() { });
                 trustedDevices.forEach(TrustedDevice::sortOriginsDescending);
