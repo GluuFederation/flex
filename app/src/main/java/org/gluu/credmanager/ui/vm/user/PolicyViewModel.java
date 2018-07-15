@@ -56,6 +56,7 @@ public class PolicyViewModel extends UserViewModel {
     public List<TrustedDevice> getTrustedDevices() {
         return trustedDevices;
     }
+
     @Init(superclass = true)
     public void childInit() throws Exception {
 

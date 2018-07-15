@@ -22,27 +22,21 @@ import com.unboundid.ldap.sdk.persist.LDAPObject;
 public class gluuOrganization {
 
     // The field to use to hold a read-only copy of the associated entry.
-    @LDAPEntryField()
+    @LDAPEntryField
     private ReadOnlyEntry ldapEntry;
 
     // The field used for RDN attribute o.
-    @LDAPField(attribute="o",
-            objectClass="gluuOrganization",
-            inRDN=true,
+    @LDAPField(inRDN=true,
             filterUsage= FilterUsage.ALWAYS_ALLOWED,
             requiredForEncode=true)
     private String[] o;
 
     // The field used for optional attribute displayName.
-    @LDAPField(attribute="displayName",
-            objectClass="gluuOrganization",
-            filterUsage=FilterUsage.CONDITIONALLY_ALLOWED)
+    @LDAPField
     private String displayName;
 
     // The field used for optional attribute gluuManagerGroup.
-    @LDAPField(attribute="gluuManagerGroup",
-            objectClass="gluuOrganization",
-            filterUsage=FilterUsage.CONDITIONALLY_ALLOWED)
+    @LDAPField
     private DN[] gluuManagerGroup;
 
     /**
@@ -57,30 +51,6 @@ public class gluuOrganization {
     {
         return displayName;
     }
-
-    /**
-     * Retrieves the first value for the field associated with the
-     * gluuManagerGroup attribute as a DN, if present.
-     *
-     * @return  The first value for the field associated with the
-     *          gluuManagerGroup attribute, or
-     *          {@code null} if that attribute was not present in the entry or
-     *          does not have any values.
-     */
-    public DN getFirstGluuManagerGroupDN()
-    {
-        if ((gluuManagerGroup == null) ||
-                (gluuManagerGroup.length == 0))
-        {
-            return null;
-        }
-        else
-        {
-            return gluuManagerGroup[0];
-        }
-    }
-
-
 
     /**
      * Retrieves the values for the field associated with the

@@ -1,13 +1,7 @@
 package org.gluu.credmanager.core.ldap;
 
-import com.unboundid.ldap.sdk.DN;
 import com.unboundid.ldap.sdk.ReadOnlyEntry;
 import com.unboundid.ldap.sdk.persist.*;
-import org.gluu.credmanager.misc.Utils;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * This class provides an implementation of an object that can be used to
@@ -18,7 +12,7 @@ import java.util.List;
 public class BaseLdapPerson {
 
     // The field to use to hold a read-only copy of the associated entry.
-    @LDAPEntryField()
+    @LDAPEntryField
     private ReadOnlyEntry ldapEntry;
 
     // The field used for RDN attribute ou.
@@ -28,7 +22,7 @@ public class BaseLdapPerson {
     private String[] inum;
 
     // The field used for optional attribute uid.
-    @LDAPField()
+    @LDAPField
     private String[] uid;
 
     /**

@@ -79,7 +79,7 @@ public class UserViewModel {
             logger.trace("Log off attempt");
             purgeSession();
             //After End-User has logged out, the Client might request to log him out of the OP too
-            //TODO: what happens after session expiration?
+            //TODO: what happens after session expiration?, add in log trace who is logging out
             String idToken = authFlowContext.getIdToken();
             Executions.sendRedirect(oxdService.getLogoutUrl(idToken));
         } catch (Exception e) {

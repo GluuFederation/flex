@@ -28,8 +28,7 @@ import java.util.Map;
 public class MainSettingsProducer {
 
     private static final String DEFAULT_GLUU_BASE = "/etc/gluu";
-    //TODO: change4forprod
-    private static final String CONF_FILE_RELATIVE_PATH = "conf/cred-manager2.json";
+    private static final String CONF_FILE_RELATIVE_PATH = "conf/casa.json";
 
     @Inject
     private Logger logger;

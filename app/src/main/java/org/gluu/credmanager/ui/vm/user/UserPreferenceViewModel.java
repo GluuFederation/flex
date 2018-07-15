@@ -13,6 +13,7 @@ import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.Init;
@@ -138,6 +139,11 @@ public class UserPreferenceViewModel extends UserViewModel {
     public void prepareUpdateMethod() {
         prevSelectedMethod = selectedMethod;
         uiEditing = true;
+    }
+
+    @Command
+    public void change(@BindingParam("method") String cred){
+        selectedMethod = cred;
     }
 
 }

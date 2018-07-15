@@ -12,6 +12,7 @@ import org.gluu.credmanager.core.SessionContext;
 import org.gluu.credmanager.core.UserService;
 import org.gluu.credmanager.core.pojo.User;
 import org.gluu.credmanager.misc.Utils;
+import org.gluu.credmanager.misc.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.Pair;
@@ -40,7 +41,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
         super.doInit(page, map);
         if (page.getAttribute("error") == null) {
             //TODO: remove
-            if (true) return;
+            //if (true) return;
 
             flowContext = Utils.managedBean(AuthFlowContext.class);
             oxdService = Utils.managedBean(OxdService.class);

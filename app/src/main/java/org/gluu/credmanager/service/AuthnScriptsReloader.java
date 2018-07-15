@@ -142,15 +142,16 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
     @PostConstruct
     private void inited() {
+
         scriptsJobName = getClass().getSimpleName() + "_scripts";
         scriptHashes = new HashMap<>();
         mapper = new ObjectMapper();
 
-        //Inside chroot the env variable is not set... why?. TODO: really?
         //the following works fine in both windows dev environment, and linux VMs
-        pythonLibLocation = Optional.ofNullable(System.getenv("PYTHON_HOME")).orElse("/opt/gluu/python");
-        pythonLibLocation += File.separator + "lib";
+        pythonLibLocation = Optional.ofNullable(System.getenv("PYTHON_HOME")).orElse("/opt/jython");
+        pythonLibLocation += File.separator + "Lib";    //Upper-cased, yes!
         logger.info("Using {} as jython's lib path", pythonLibLocation);
+
     }
 
     private oxCustomScript getScript(String acr) {

@@ -69,6 +69,7 @@ public class HomeViewModel {
         //reloads this page so the navigation flow proceeds (see HomeInitiator class)
 
         //TODO: re-adjust (added oxauth went crazy)
+        /*
         User user = new User();
         user.setAdmin(true);
         user.setPreferredMethod("twilio_sms");
@@ -76,8 +77,8 @@ public class HomeViewModel {
         user.setUserName("admin");
         user.setGivenName("amin");
         sessionContext.setUser(user);
-
-        //Executions.sendRedirect(null);
+*/
+        Executions.sendRedirect(null);
 
     }
 

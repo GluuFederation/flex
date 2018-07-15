@@ -7,6 +7,8 @@ package org.gluu.credmanager.core;
 
 import org.gluu.credmanager.core.pojo.BrowserInfo;
 import org.gluu.credmanager.core.pojo.User;
+import org.gluu.credmanager.misc.Utils;
+import org.gluu.credmanager.service.ISessionContext;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -14,13 +16,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.time.ZoneOffset;
+import java.util.Optional;
 
 /**
  * @author jgomer
  */
 @Named
 @SessionScoped
-public class SessionContext implements Serializable {
+public class SessionContext implements ISessionContext, Serializable {
 
     @Inject
     private ZKService zkService;
@@ -75,7 +78,11 @@ public class SessionContext implements Serializable {
         return user;
     }
 
-    public boolean getOnMobile() {
+    public User getLoggedUser() {
+        return Optional.ofNullable(user).map(Utils::cloneObject).map(User.class::cast).orElse(null);
+    }
+
+    public boolean isOnMobile() {
         return onMobile;
     }
 
