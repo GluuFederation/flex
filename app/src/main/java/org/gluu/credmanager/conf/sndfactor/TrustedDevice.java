@@ -17,26 +17,35 @@ public class TrustedDevice {
 
     private Browser browser;
     private OperatingSystem os;
+    private long addedOn;
     private List<TrustedOrigin> origins;
 
     public Browser getBrowser() {
         return browser;
     }
 
-    public void setBrowser(Browser browser) {
-        this.browser = browser;
-    }
-
     public OperatingSystem getOs() {
         return os;
+    }
+
+    public long getAddedOn() {
+        return addedOn;
+    }
+
+    public List<TrustedOrigin> getOrigins() {
+        return origins;
+    }
+
+    public void setBrowser(Browser browser) {
+        this.browser = browser;
     }
 
     public void setOs(OperatingSystem os) {
         this.os = os;
     }
 
-    public List<TrustedOrigin> getOrigins() {
-        return origins;
+    public void setAddedOn(long addedOn) {
+        this.addedOn = addedOn;
     }
 
     public void setOrigins(List<TrustedOrigin> origins) {
