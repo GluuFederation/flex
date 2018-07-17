@@ -2,7 +2,7 @@
 # Copyright (c) 2018, Gluu
 #
 # Author: Jose Gonzalez
-# This is a modified version of original twilio_sms Gluu's script to work with cred-manager
+# This is a modified version of original twilio_sms Gluu's script to work with Casa
 
 from java.util import Arrays
 

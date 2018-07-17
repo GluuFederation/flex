@@ -42,7 +42,7 @@
                     <div sclass="form-group" visible="@load(vm.enforcementPolicies.contains('DEVICE_UNKNOWN') or vm.enforcementPolicies.contains('CUSTOM'))">
                         <label value="${labels.adm.strongauth_device_exp}" sclass="control-label col-sm-4" />
                         <div sclass="col-sm-2">
-                            <intbox sclass="form-control" value="@bind(vm.deviceExpiration)" maxlength="3"/>
+                            <intbox sclass="form-control" value="@bind(vm.deviceExpiration)" maxlength="3" onOK="@command('change2FASettings')"/>
                         </div>
                     </div>
                 </div>

@@ -36,7 +36,7 @@ class PersonAuthentication(PersonAuthenticationType):
     def init(self, configurationAttributes):
         print "Super-Gluu. Initialization"
 
-        # Modified for cred-manager compliance
+        # Modified for Casa compliance
         self.client_redirect_uri = configurationAttributes.get("client_redirect_uri").getValue2()
 
         if not configurationAttributes.containsKey("authentication_mode"):
@@ -304,7 +304,7 @@ class PersonAuthentication(PersonAuthenticationType):
             print "Super-Gluu. Prepare for step. redirect_uri is not set"
             return False
 
-        #This call is harmless with respect to cred-manager restrictions
+        #This call is harmless with respect to Casa restrictions
         self.setRequestScopedParameters(identity, step)
 
         if step == 1:
@@ -400,7 +400,7 @@ class PersonAuthentication(PersonAuthenticationType):
         return -1
 
     def getExtraParametersForStep(self, configurationAttributes, step):
-        #This violates cred-manager restriction. However, self.oneStep and self.twoStep have to be False/True
+        #This violates Casa restriction. However, self.oneStep and self.twoStep have to be False/True
         #respectively as in this scenario only 2 or more steps make sense to call an external script dynamically.
         #Parameter "display_register_action" used in default login.xhtml page of Gluu Server will not be set
         if step == 1:
@@ -444,7 +444,7 @@ class PersonAuthentication(PersonAuthenticationType):
     def processBasicAuthentication(self, credentials):
         authenticationService = CdiUtil.bean(AuthenticationService)
 
-        # Modified for cred-manager compliance
+        # Modified for Casa compliance
         user = authenticationService.getAuthenticatedUser()
         if user == None:
             user_name = credentials.getUsername()
@@ -920,7 +920,7 @@ class PersonAuthentication(PersonAuthenticationType):
         return targetEndpointArn
 
     def getClientRedirecUri(self, session_attributes):
-        # Modified for cred-manager compliance.
+        # Modified for Casa compliance.
         #if not session_attributes.containsKey("redirect_uri"):
         #    return None
         #return session_attributes.get("redirect_uri")
@@ -1025,7 +1025,7 @@ class PersonAuthentication(PersonAuthenticationType):
             body = "User log in: %s" % user_id
             mailService.sendMail(self.audit_email, subject, body)
 
-    # Added for cred-manager compliance
+    # Added for Casa compliance
 
     def hasEnrollments(self, configurationAttributes, user):
 

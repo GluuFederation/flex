@@ -102,7 +102,7 @@ class PersonAuthentication(PersonAuthenticationType):
         if step == 1:
             print "OTP. Authenticate for step 1"
 
-            # Modified for cred-manager compliance
+            # Modified for Casa compliance
             authenticated_user = authenticationService.getAuthenticatedUser()
             if authenticated_user == None:
                 authenticated_user = self.processBasicAuthentication(credentials)
@@ -115,11 +115,15 @@ class PersonAuthentication(PersonAuthenticationType):
             #if StringHelper.isNotEmpty(enrollment_mode):
             #    otp_auth_method = "enroll"
 
-            if otp_auth_method == "authenticate":
-                user_enrollments = self.findEnrollments(authenticated_user.getUserId())
-                if len(user_enrollments) == 0:
-                    otp_auth_method = "enroll"
-                    print "OTP. Authenticate for step 1. There is no OTP enrollment for user '%s'. Changing otp_auth_method to '%s'" % (authenticated_user.getUserId(), otp_auth_method)
+            # Modified for Casa compliance
+            if not self.hasEnrollments(configurationAttributes, authenticated_user):
+                return False
+
+            #if otp_auth_method == "authenticate":
+            #    user_enrollments = self.findEnrollments(authenticated_user.getUserId())
+            #    if len(user_enrollments) == 0:
+            #        otp_auth_method = "enroll"
+            #        print "OTP. Authenticate for step 1. There is no OTP enrollment for user '%s'. Changing otp_auth_method to '%s'" % (authenticated_user.getUserId(), otp_auth_method)
 
             if otp_auth_method == "enroll":
                 print "OTP. Authenticate for step 1. Setting count steps: '%s'" % 3
@@ -255,12 +259,12 @@ class PersonAuthentication(PersonAuthenticationType):
             identity = CdiUtil.bean(Identity)
 
             otp_auth_method = identity.getWorkingParameter("otp_auth_method")
-            print "OTP. Gep page for step 2. otp_auth_method: '%s'" % otp_auth_method
+            print "OTP. Get page for step 2. otp_auth_method: '%s'" % otp_auth_method
 
             if otp_auth_method == 'enroll':
                 return "/auth/otp/enroll.xhtml"
             else:
-                #Modified for cred-manager compliance
+                #Modified for Casa compliance
                 return "/cm/otplogin.xhtml"
         elif step == 3:
             return "/auth/otp/otplogin.xhtml"
@@ -342,7 +346,8 @@ class PersonAuthentication(PersonAuthenticationType):
 
         return find_user_by_uid
 
-    def findEnrollments(self, user_name, skipPrefix = True):
+    # Modified for Casa compliance
+    def findEnrollments(self, user_name, otpType, skipPrefix = True):
         result = []
 
         userService = CdiUtil.bean(UserService)
@@ -355,7 +360,8 @@ class PersonAuthentication(PersonAuthenticationType):
         if user_custom_ext_attribute == None:
             return result
 
-        otp_prefix = "%s:" % self.otpType
+        #otp_prefix = "%s:" % self.otpType
+        otp_prefix = "%s:" % otpType
 
         otp_prefix_length = len(otp_prefix)
         for user_external_uid in user_custom_ext_attribute.getValues():
@@ -433,14 +439,16 @@ class PersonAuthentication(PersonAuthenticationType):
 
                     print "OTP. Process TOTP authentication during enrollment. Failed to update user entry"
         elif otp_auth_method == "authenticate":
-            user_enrollments = self.findEnrollments(user_name)
+            # Modified for Casa compliance
 
-            if len(user_enrollments) == 0:
-                print "OTP. Process OTP authentication. There is no OTP enrollment for user '%s'" % user_name
-                facesMessages.add(FacesMessage.SEVERITY_ERROR, "There is no valid OTP user enrollments")
-                return False
+            user_enrollments = self.findEnrollments(user_name, "hotp")
 
-            if self.otpType == "hotp":
+            #if len(user_enrollments) == 0:
+            #    print "OTP. Process OTP authentication. There is no OTP enrollment for user '%s'" % user_name
+            #    facesMessages.add(FacesMessage.SEVERITY_ERROR, "There is no valid OTP user enrollments")
+            #    return False
+
+            if len(user_enrollments) > 0:
                 for user_enrollment in user_enrollments:
                     user_enrollment_data = user_enrollment.split(";")
                     otp_secret_key_encoded = user_enrollment_data[0]
@@ -462,7 +470,10 @@ class PersonAuthentication(PersonAuthenticationType):
                             return True
 
                         print "OTP. Process HOTP authentication during authentication. Failed to update user entry"
-            elif self.otpType == "totp":
+
+            user_enrollments = self.findEnrollments(user_name, "totp")
+
+            if len(user_enrollments) > 0:
                 for user_enrollment in user_enrollments:
                     otp_secret_key = self.fromBase64Url(user_enrollment)
 
@@ -564,16 +575,16 @@ class PersonAuthentication(PersonAuthenticationType):
         return BaseEncoding.base64Url().decode(chars)
 
 
-    # Added for cred-manager compliance
+    # Added for Casa compliance
     def hasEnrollments(self, configurationAttributes, user):
 
+        # Both hotp and totp are accounted
         hasEnrollments = False
-        prefix = self.otpType
         values = user.getAttributeValues("oxExternalUid")
 
         if values != None:
             for extUid in values:
                 if not hasEnrollments:
-                    hasEnrollments = extUid.find(prefix + ":") != -1
+                    hasEnrollments = extUid.find("hotp:") != -1 or extUid.find("totp:") != -1
 
         return hasEnrollments

@@ -205,7 +205,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
     def getPageForStep(self, configurationAttributes, step):
         if (step == 2):
-            #Modified for cred-manager compliance
+            #Modified for Casa compliance
             return "/cm/login.xhtml"
 
         return ""
@@ -213,7 +213,7 @@ class PersonAuthentication(PersonAuthenticationType):
     def logout(self, configurationAttributes, requestParameters):
         return True
 
-    # Added for cred-manager compliance
+    # Added for Casa compliance
 
     def hasEnrollments(self, configurationAttributes, user):
 
