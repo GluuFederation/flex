@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2018, Gluu
  */
-package org.gluu.casa.plugins.sample;
+package org.gluu.casa.plugins.helloworld;
 
 import org.gluu.credmanager.extension.navigation.MenuType;
 import org.gluu.credmanager.extension.navigation.NavigationMenu;
