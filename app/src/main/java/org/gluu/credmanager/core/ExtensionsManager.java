@@ -116,12 +116,11 @@ public class ExtensionsManager implements IExtensionsManager {
                             logger.info("Plugin {} ({}) started", pluginId, wrapper.getDescriptor().getPluginClass());
 
                             Set<String> classNames = pluginManager.getExtensionClassNames(pluginId);
-                            //classNames.remove(AUTHN_METHOD_CLASS.getName());
                             if (classNames.size() > 0) {
                                 logger.info("Plugin's extensions are at: {}", classNames.toString());
                             }
+                            //Add a breaking space
                             logger.info("");
-
                         }
                     }
                 }
@@ -141,20 +140,9 @@ public class ExtensionsManager implements IExtensionsManager {
     }
 
     public Optional<AuthnMethod> getExtensionForAcr(String acr) {
-
-        AuthnMethod handler = null;
         String plugId = mainSettings.getAcrPluginMap().get(acr);
-
-        List<AuthnMethod> exts = plugExtensionMap.get(plugId);
-        //Returns the first occurrence!
-        for (AuthnMethod aMethod : exts) {
-            if (aMethod.getAcr().equals(acr)) {
-                handler = exts.get(0);
-                break;
-            }
-        }
-        return Optional.ofNullable(handler);
-
+        //plugId can be null (means the set of system extensions)
+        return plugExtensionMap.get(plugId).stream().filter(aMethod -> aMethod.getAcr().equals(acr)).findFirst();
     }
 
     public boolean pluginImplementsAuthnMethod(String acr, String plugId) {
@@ -198,7 +186,6 @@ public class ExtensionsManager implements IExtensionsManager {
         for (PluginWrapper wrapper : getPlugins()) {
             String plId = wrapper.getPluginId();
             pluginManager.getExtensions(clazz, plId).forEach(cl -> pairs.add(new Pair<>(plId, cl)));
-
         }
         return pairs;
 
@@ -321,15 +308,10 @@ public class ExtensionsManager implements IExtensionsManager {
         List<AuthnMethod> ames = pluginManager.getExtensions(AUTHN_METHOD_CLASS, pluginId);
         if (ames.size() > 0) {
             logger.info("Plugin extends {} at {} point(s)", AUTHN_METHOD_CLASS.getName(), ames.size());
+            ames.forEach(ext -> logger.info("Extension point found to deal with acr value '{}'", ext.getAcr()));
 
-            for (AuthnMethod ext : ames) {
-                logger.info("Extension point found to deal with acr value '{}'", ext.getAcr());
-            }
-
-            List<AuthnMethod> exts = new ArrayList<>(ames);
             //I think this is safer than simply plugExtensionMap.put(pluginId, ames)
-            plugExtensionMap.put(pluginId, exts);
-
+            plugExtensionMap.put(pluginId, new ArrayList<>(ames));
         }
 
     }

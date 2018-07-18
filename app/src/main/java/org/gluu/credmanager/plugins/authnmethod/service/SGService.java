@@ -59,8 +59,8 @@ public class SGService extends FidoService {
 
     @PostConstruct
     private void inited() {
-        reloadConfiguration();
         mapper = new ObjectMapper();
+        reloadConfiguration();
     }
 
     public void reloadConfiguration() {
@@ -74,6 +74,11 @@ public class SGService extends FidoService {
             conf = SGConfig.get(props);
             if (conf != null) {
                 conf.setAppId(ldapService.getCustScriptConfigProperties(ConfigurationHandler.DEFAULT_ACR).get("supergluu_app_id"));
+                try {
+                    logger.info("Super Gluu settings found were: {}", mapper.writeValueAsString(conf));
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
 

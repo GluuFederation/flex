@@ -336,6 +336,7 @@ public class PluginViewModel extends MainViewModel {
         List<String> extList = new ArrayList<>();
         PluginManager manager = wrapper.getPluginManager();
         String pluginId = wrapper.getPluginId();
+        logger.trace("Building human-readable extensions list for plugin {}", pluginId);
 
         //plugin manager's getExtension methods outputs data only when the plugin is already started! (not simply loaded)
         for (Object obj : manager.getExtensions(pluginId)) {

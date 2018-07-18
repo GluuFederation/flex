@@ -37,7 +37,6 @@ public class SGConfig extends QRConfig {
         SGConfig cfg = new SGConfig();
         try {
             cfg.populate(propsMap);
-            LOG.info("Super Gluu settings found were: {}", MAPPER.writeValueAsString(cfg));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
             cfg = null;
