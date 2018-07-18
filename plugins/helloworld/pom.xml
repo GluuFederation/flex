@@ -4,7 +4,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.gluu</groupId>
+    <groupId>co.acme</groupId>
     <artifactId>${plugin.id}</artifactId>
     <version>${plugin.version}</version>
     <packaging>jar</packaging>
@@ -15,6 +15,14 @@
         <plugin.id>hello-world-plugin</plugin.id>
         <plugin.version>0.1</plugin.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>gluu</id>
+            <name>Gluu repository</name>
+            <url>http://ox.gluu.org/maven</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -29,13 +37,13 @@
                             <Plugin-Id>${plugin.id}</Plugin-Id>
                             <Plugin-Version>${plugin.version}</Plugin-Version>
                             <Plugin-Provider>Gluu Inc.</Plugin-Provider>
-                            <Plugin-Class>org.gluu.casa.HelloWorldPlugin</Plugin-Class>
+                            <Plugin-Class>org.gluu.casa.plugins.sample.HelloWorldPlugin</Plugin-Class>
                             <Plugin-Description>
                                 A minimalistic sample plugin. It adds an item to user menu and a UI page that showcases how
                                 to do a basic interaction with server side.
                             </Plugin-Description>
                             <Plugin-License>Available under the MIT License. See http://opensource.org/licenses/MIT for full text</Plugin-License>
-                            <Logger-Name>org.gluu.casa</Logger-Name>
+                            <Logger-Name>org.gluu.casa.plugins</Logger-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

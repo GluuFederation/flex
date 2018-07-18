@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2018, Gluu
  */
-package org.gluu.casa;
+package org.gluu.casa.plugins.sample;
 
 import org.pf4j.Extension;
 import org.pf4j.Plugin;
