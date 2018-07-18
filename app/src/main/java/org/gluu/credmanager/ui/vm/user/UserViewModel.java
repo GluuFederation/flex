@@ -41,51 +41,19 @@ public class UserViewModel {
     private ConfigurationHandler confHandler;
 
     @WireVariable
-    private OxdService oxdService;
-
-    @WireVariable
     private SessionContext sessionContext;
-
-    @WireVariable
-    private AuthFlowContext authFlowContext;
-
-    @WireVariable
-    private MenuService menuService;
 
     @WireVariable
     UserService userService;
 
-    private int minCredsFor2FA;
-
-    private List<Pair<String, NavigationMenu>> contextMenuItems;
-
     User user;
 
-    public List<Pair<String, NavigationMenu>> getContextMenuItems() {
-        return contextMenuItems;
-    }
+    private int minCredsFor2FA;
 
     @Init
     public void init() {
         user = sessionContext.getUser();
         minCredsFor2FA = confHandler.getSettings().getMinCredsFor2FA();
-        contextMenuItems = menuService.getMenusOfType(MenuType.AUXILIARY);
-    }
-
-    @Command
-    public void logoutFromAuthzServer() {
-
-        try {
-            logger.trace("Log off attempt");
-            purgeSession();
-            //After End-User has logged out, the Client might request to log him out of the OP too
-            //TODO: what happens after session expiration?, add in log trace who is logging out
-            String idToken = authFlowContext.getIdToken();
-            Executions.sendRedirect(oxdService.getLogoutUrl(idToken));
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-
     }
 
     int getScreenWidth() {
@@ -141,11 +109,6 @@ public class UserViewModel {
         }
         return message;
 
-    }
-
-    private void purgeSession() {
-        authFlowContext.setStage(AuthFlowContext.RedirectStage.NONE);
-        sessionContext.setUser(null);
     }
 
 }
