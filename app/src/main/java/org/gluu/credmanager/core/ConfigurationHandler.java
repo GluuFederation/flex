@@ -185,8 +185,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                         if (oxdService.initialize()) {
                             setAppState(AppStateEnum.OPERATING);
                             refreshAcrPluginMapping();
-                            //TODO: uncomment
-                            //scriptsReloader.init();
+                            scriptsReloader.init();
                             devicesSweeper.setup(settings.getTrustedDevicesSettings());
                             devicesSweeper.activate();
                             logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");

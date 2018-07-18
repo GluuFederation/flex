@@ -7,9 +7,7 @@ import com.unboundid.ldap.sdk.persist.LDAPField;
 import com.unboundid.ldap.sdk.persist.LDAPObject;
 import org.gluu.credmanager.misc.Utils;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class provides an implementation of an object that can be used to
@@ -68,31 +66,6 @@ public class oxCustomScript
   // The field used for optional attribute oxScriptType.
   @LDAPField
   private String[] oxScriptType;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        oxCustomScript that = (oxCustomScript) o;
-        return Objects.equals(ldapEntry, that.ldapEntry) &&
-                Arrays.equals(inum, that.inum) &&
-                Arrays.equals(description, that.description) &&
-                Objects.equals(displayName, that.displayName) &&
-                Arrays.equals(gluuStatus, that.gluuStatus) &&
-                Arrays.equals(oxConfigurationProperty, that.oxConfigurationProperty) &&
-                Arrays.equals(oxLevel, that.oxLevel) &&
-                Arrays.equals(oxModuleProperty, that.oxModuleProperty) &&
-                Arrays.equals(oxRevision, that.oxRevision) &&
-                Arrays.equals(oxScript, that.oxScript) &&
-                Arrays.equals(oxScriptType, that.oxScriptType);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ldapEntry, inum, description, displayName, gluuStatus, oxConfigurationProperty, oxLevel,
-                oxModuleProperty, oxRevision, oxScript, oxScriptType);
-    }
-
 
     public String getDisplayName() {
         return displayName;

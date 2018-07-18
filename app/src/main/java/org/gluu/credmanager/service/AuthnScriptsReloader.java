@@ -35,10 +35,10 @@ import java.util.*;
 @ApplicationScoped
 public class AuthnScriptsReloader extends JobListenerSupport {
 
-    private static final int SCAN_INTERVAL = 45;    //check the cust scripts every 45sec
-    public static final String LOCATION_TYPE_PROPERTY = "location_type";
-    public static final String LOCATION_PATH_PROPERTY = "location_path";
-    private static final String FILENAME_TEMPLATE = "cred-manager-external_{0}.py";
+    private static final int SCAN_INTERVAL = 60;    //check the cust scripts every 60sec
+    private static final String LOCATION_TYPE_PROPERTY = "location_type";
+    private static final String LOCATION_PATH_PROPERTY = "location_path";
+    private static final String FILENAME_TEMPLATE = "casa-external_{0}.py";
 
     @Inject
     private Logger logger;
@@ -56,7 +56,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
     private ExtensionsManager extManager;
 
     private String scriptsJobName;
-    private Map<String, Integer> scriptHashes;
+    private Map<String, Long> scriptFingerPrints;
     private String pythonLibLocation;
     private ObjectMapper mapper;
 
@@ -78,7 +78,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
 
-        Integer prevHash, currHash;
+        Long previous, current;
         oxCustomScript script;
 
         boolean anyChanged = false;
@@ -89,11 +89,11 @@ public class AuthnScriptsReloader extends JobListenerSupport {
             script = getScript(acr);
 
             if (script != null) {
-                prevHash = scriptHashes.get(acr);
-                currHash = script.hashCode();
-                scriptHashes.put(acr, currHash);
+                previous = scriptFingerPrints.get(acr);
+                current = scriptFingerPrint(script);
+                scriptFingerPrints.put(acr, current);
 
-                if (prevHash == null || !prevHash.equals(currHash)) {
+                if (previous != null && !previous.equals(current)) {
                     //the script changed... Out-of-the-box methods' scripts must not be copied
                     if (!ConfigurationHandler.DEFAULT_SUPPORTED_METHODS.contains(acr)) {
                         copyToLibsDir(script);
@@ -144,12 +144,12 @@ public class AuthnScriptsReloader extends JobListenerSupport {
     private void inited() {
 
         scriptsJobName = getClass().getSimpleName() + "_scripts";
-        scriptHashes = new HashMap<>();
+        scriptFingerPrints = new HashMap<>();
         mapper = new ObjectMapper();
 
         //the following works fine in both windows dev environment, and linux VMs
         pythonLibLocation = Optional.ofNullable(System.getenv("PYTHON_HOME")).orElse("/opt/jython");
-        pythonLibLocation += File.separator + "Lib";    //Upper-cased, yes!
+        pythonLibLocation += File.separator + "Lib";    //Capitalized... yes!
         logger.info("Using {} as jython's lib path", pythonLibLocation);
 
     }
@@ -168,6 +168,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         try {
             String acr = script.getDisplayName();
             byte[] contents = getScriptContents(script);
+
             if (contents != null) {
                 Path destPath = Paths.get(pythonLibLocation, MessageFormat.format(FILENAME_TEMPLATE, acr));
                 Files.write(destPath, contents);
@@ -197,7 +198,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                     bytes = script.getScript().getBytes(Charset.forName("utf-8"));
                     break;
                 default:
-                    logger.warn("getScriptContents. Unknown 'location_type' value for script '{}'", acr);
+                    throw new Exception("Unknown 'location_type' value for script " + acr);
             }
         } catch (Exception e) {
             logger.error("getScriptContents. There was an error reading the bytes of script '{}': {}", acr, e.getMessage());
@@ -218,6 +219,31 @@ public class AuthnScriptsReloader extends JobListenerSupport {
             }
         }
         return map;
+
+    }
+
+    private Long scriptFingerPrint(oxCustomScript script) {
+
+        Long fingerPrint = null;
+        String acr = script.getDisplayName();
+        try {
+            Map<String, String> moduleProperties = modulePropertyMap(script);
+            ScriptLocationType locType = ScriptLocationType.getByValue(moduleProperties.get(LOCATION_TYPE_PROPERTY));
+
+            switch (locType) {
+                case FILE:
+                    fingerPrint = Paths.get(moduleProperties.get(LOCATION_PATH_PROPERTY)).toFile().lastModified();
+                    break;
+                case LDAP:
+                    fingerPrint = Long.valueOf(script.getRevision());
+                    break;
+                default:
+                    throw new Exception("Unknown 'location_type' value for script " + acr);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return fingerPrint;
 
     }
 
