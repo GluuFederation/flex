@@ -7,7 +7,7 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <panel viewModel="@id('vm') @init('org.gluu.casa.HelloWorldVM')" sclass="padded" border="normal"
+    <panel viewModel="@id('vm') @init('org.gluu.casa.plugins.sample.HelloWorldVM')" sclass="padded" border="normal"
            title="${labels.hello.title}"> <!-- self="@define(content)" -->
 
         <panelchildren sclass="padded">
