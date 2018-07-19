@@ -53,6 +53,7 @@ public class LogService {
     private void inited() {
         loggerNames = new HashSet<>();
         loggerNames.add(MAIN_LOGGER);
+        loggerNames.add("org.gluu.credmanager.timer");
         loggerContext = LoggerContext.getContext(false);
         mainAppender = loggerContext.getConfiguration().getLoggerConfig(MAIN_LOGGER).getAppenders().get("LOG_FILE");
     }

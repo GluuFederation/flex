@@ -183,7 +183,6 @@ public class ZKService {
     }
 
     void refreshLabels() {
-        logger.info("");
         logger.info("Refreshing labels");
         //labelLocators.values().forEach(Labels::register);
         Labels.reset();

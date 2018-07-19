@@ -96,6 +96,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                 scriptFingerPrints.put(acr, current);
 
                 if (previous != null && !previous.equals(current)) {
+                    logger.info("Changes detected in {} script", acr);
                     //the script changed... Out-of-the-box methods' scripts must not be copied
                     if (!ConfigurationHandler.DEFAULT_SUPPORTED_METHODS.contains(acr)) {
                         copyToLibsDir(script);

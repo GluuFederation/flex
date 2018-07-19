@@ -131,7 +131,8 @@ public class ConfigurationHandler extends JobListenerSupport {
 
         try {
             String oidcEndpointURL = ldapService.getOIDCEndpoint();
-            logger.trace("Obtaining \"acr_values_supported\" from server {}", oidcEndpointURL);
+            //too noisy log statement
+            //logger.trace("Obtaining \"acr_values_supported\" from server {}", oidcEndpointURL);
             JsonNode values = mapper.readTree(new URL(oidcEndpointURL)).get("acr_values_supported");
 
             //Store server's supported acr values in a set
