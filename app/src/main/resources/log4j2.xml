@@ -12,7 +12,7 @@
             <DefaultRolloverStrategy max="10" />
         </RollingFile>
         <RollingFile name="TIMERS_FILE" fileName="${sys:log.base}/logs/casa_async_jobs.log" filePattern="${sys:log.base}/logs/casa_async_jobs-%d{dd-MM-HH-mm-ss}-%i.log">
-            <PatternLayout pattern="%d{dd-MM HH:mm:ss.SSS} %-5p [%t] %C{4} %F:%L- %m%n" />
+            <PatternLayout pattern="%d{dd-MM HH:mm:ss.SSS} %-5p [%t] %C{2} %F:%L- %m%n" />
             <Policies>
                 <SizeBasedTriggeringPolicy size="2 MB" />
             </Policies>
