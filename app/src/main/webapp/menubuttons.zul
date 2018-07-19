@@ -12,7 +12,7 @@
             <a href="/user.zul" label="${labels.usr.menu_main2fa}" />
             <vlayout children="@load(vm.authnMethods)">
                 <template name="children">
-                    <a label="${c:l(each.panelTitleKey)}" href="${each.pageUrl}" />
+                    <a label="${c:l(each.panelTitleKey)}" href="${vm.getAuthnMethodPageUrl(each)}" />
                 </template>
             </vlayout>
         </div>

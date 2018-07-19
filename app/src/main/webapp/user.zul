@@ -59,7 +59,7 @@
 
                                 <div sclass="padded" align="center">
                                     <vlayout>
-                                        <button label="${c:l(each.panelButtonKey)}" sclass="btn-success" href="${each.pageUrl}"/>
+                                        <button label="${c:l(each.panelButtonKey)}" sclass="btn-success" href="${vm.getAuthnMethodPageUrl(each)}" />
                                         <zk if="${not empty each.panelBottomTextKey}">
                                             <n:span class="de_emphasized">${c:l(each.panelBottomTextKey)}</n:span>
                                         </zk>

@@ -58,7 +58,7 @@ public class SecurityKeyExtension implements AuthnMethod {
     }
 
     public String getPageUrl() {
-        return "user/u2f-detail.zul";
+        return "/user/u2f-detail.zul";
     }
 
     public List<BasicCredential> getEnrolledCreds(String id) {

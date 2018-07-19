@@ -5,7 +5,6 @@
  */
 package org.gluu.credmanager.ui.vm.user;
 
-import org.gluu.credmanager.core.ConfigurationHandler;
 import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.core.LdapService;
 import org.slf4j.Logger;
@@ -28,9 +27,6 @@ import java.util.stream.Collectors;
 public class UserMainViewModel extends UserViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-
-    @WireVariable("configurationHandler")
-    private ConfigurationHandler confHandler;
 
     @WireVariable
     private LdapService ldapService;

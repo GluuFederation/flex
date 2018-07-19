@@ -59,7 +59,7 @@ public class OTPSmsExtension implements AuthnMethod {
     }
 
     public String getPageUrl() {
-        return "user/phone-detail.zul";
+        return "/user/phone-detail.zul";
     }
 
     public List<BasicCredential> getEnrolledCreds(String id) {

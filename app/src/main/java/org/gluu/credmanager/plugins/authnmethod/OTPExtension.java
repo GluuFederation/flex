@@ -59,7 +59,7 @@ public class OTPExtension implements AuthnMethod {
     }
 
     public String getPageUrl() {
-        return "user/otp-detail.zul";
+        return "/user/otp-detail.zul";
     }
 
     public List<BasicCredential> getEnrolledCreds(String id) {

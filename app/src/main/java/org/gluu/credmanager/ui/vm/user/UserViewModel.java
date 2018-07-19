@@ -37,14 +37,14 @@ public class UserViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @WireVariable("configurationHandler")
-    private ConfigurationHandler confHandler;
-
     @WireVariable
     private SessionContext sessionContext;
 
+    @WireVariable("configurationHandler")
+    ConfigurationHandler confHandler;
+
     @WireVariable
-    UserService userService;
+    public UserService userService;
 
     User user;
 
@@ -54,6 +54,18 @@ public class UserViewModel {
     public void init() {
         user = sessionContext.getUser();
         minCredsFor2FA = confHandler.getSettings().getMinCredsFor2FA();
+    }
+
+    public String getAuthnMethodPageUrl(AuthnMethod method) {
+
+        String page = method.getPageUrl();
+        String pluginId = confHandler.getSettings().getAcrPluginMap().get(method.getAcr());
+        if (pluginId != null) {
+            page = String.format("/%s/%s/%s", ExtensionsManager.PLUGINS_EXTRACTION_DIR, pluginId, page);
+        }
+        return page;
+
+
     }
 
     int getScreenWidth() {

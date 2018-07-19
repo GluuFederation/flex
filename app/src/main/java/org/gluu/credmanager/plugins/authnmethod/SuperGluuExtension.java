@@ -58,7 +58,7 @@ public class SuperGluuExtension implements AuthnMethod {
     }
 
     public String getPageUrl() {
-        return "user/super-detail.zul";
+        return "/user/super-detail.zul";
     }
 
     public List<BasicCredential> getEnrolledCreds(String id) {
