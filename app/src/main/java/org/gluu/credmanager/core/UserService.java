@@ -18,7 +18,6 @@ import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.plugins.authnmethod.SecurityKeyExtension;
 import org.gluu.credmanager.plugins.authnmethod.SuperGluuExtension;
-import org.gluu.credmanager.service.LdapService;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 

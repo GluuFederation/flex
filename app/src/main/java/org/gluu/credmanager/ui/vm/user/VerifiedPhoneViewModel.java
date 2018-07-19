@@ -8,7 +8,7 @@ import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.plugins.authnmethod.OTPSmsExtension;
 import org.gluu.credmanager.plugins.authnmethod.rs.status.sms.SendCode;
 import org.gluu.credmanager.plugins.authnmethod.service.MobilePhoneService;
-import org.gluu.credmanager.service.LdapService;
+import org.gluu.credmanager.core.LdapService;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;

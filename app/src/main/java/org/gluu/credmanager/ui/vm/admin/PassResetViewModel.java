@@ -5,7 +5,7 @@
  */
 package org.gluu.credmanager.ui.vm.admin;
 
-import org.gluu.credmanager.service.LdapService;
+import org.gluu.credmanager.core.LdapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;

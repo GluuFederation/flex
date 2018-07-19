@@ -7,7 +7,7 @@ package org.gluu.credmanager.ui.vm.user;
 
 import org.gluu.credmanager.core.ConfigurationHandler;
 import org.gluu.credmanager.extension.AuthnMethod;
-import org.gluu.credmanager.service.LdapService;
+import org.gluu.credmanager.core.LdapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;

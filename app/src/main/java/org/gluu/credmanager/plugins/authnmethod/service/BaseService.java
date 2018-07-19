@@ -6,7 +6,7 @@
 package org.gluu.credmanager.plugins.authnmethod.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gluu.credmanager.service.LdapService;
+import org.gluu.credmanager.core.LdapService;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;

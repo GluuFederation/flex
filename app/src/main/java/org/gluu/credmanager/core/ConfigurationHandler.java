@@ -14,7 +14,6 @@ import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.misc.AppStateEnum;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.service.AuthnScriptsReloader;
-import org.gluu.credmanager.service.LdapService;
 import org.gluu.credmanager.service.TrustedDevicesSweeper;
 import org.greenrobot.eventbus.EventBus;
 import org.quartz.JobExecutionContext;
@@ -132,7 +131,7 @@ public class ConfigurationHandler extends JobListenerSupport {
 
         try {
             String oidcEndpointURL = ldapService.getOIDCEndpoint();
-            logger.debug("Obtaining \"acr_values_supported\" from server {}", oidcEndpointURL);
+            logger.trace("Obtaining \"acr_values_supported\" from server {}", oidcEndpointURL);
             JsonNode values = mapper.readTree(new URL(oidcEndpointURL)).get("acr_values_supported");
 
             //Store server's supported acr values in a set

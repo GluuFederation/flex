@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2018, Gluu
  */
-package org.gluu.credmanager.service;
+package org.gluu.credmanager.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +17,7 @@ import org.gluu.credmanager.core.ldap.*;
 import org.gluu.credmanager.misc.Utils;
 //import org.gluu.persist.ldap.impl.LdapEntryManagerFactory;
 //import org.gluu.persist.ldap.operation.LdapOperationService;
+import org.gluu.credmanager.service.ILdapService;
 import org.gluu.site.ldap.LDAPConnectionProvider;
 import org.gluu.site.ldap.OperationsFacade;
 import org.gluu.site.ldap.persistence.LdapEntryManager;

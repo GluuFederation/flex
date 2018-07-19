@@ -21,7 +21,7 @@ import org.gluu.credmanager.core.ConfigurationHandler;
 import org.gluu.credmanager.core.pojo.SuperGluuDevice;
 import org.gluu.credmanager.plugins.authnmethod.SuperGluuExtension;
 import org.gluu.credmanager.plugins.authnmethod.conf.SGConfig;
-import org.gluu.credmanager.service.LdapService;
+import org.gluu.credmanager.core.LdapService;
 import org.slf4j.Logger;
 import org.xdi.oxauth.model.fido.u2f.protocol.DeviceData;
 import org.zkoss.util.resource.Labels;

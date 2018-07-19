@@ -20,7 +20,6 @@ import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.conf.OxdClientSettings;
 import org.gluu.credmanager.conf.OxdSettings;
 import org.gluu.credmanager.misc.Utils;
-import org.gluu.credmanager.service.LdapService;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
