@@ -44,7 +44,7 @@
                         <grid model="@load(vm.pluginList)" mold="paging" pageSize="4">
                             <columns sizable="false">
                                 <column label="${labels.adm.plugins_pluginId}">
-                                    <attribute unless="${sessionContext.onMobile}" name="width">100px</attribute>
+                                    <attribute unless="${sessionContext.onMobile}" name="width">120px</attribute>
                                 </column>
                                 <column width="65px" label="${labels.adm.plugins_status}" />
                                 <column unless="${sessionContext.onMobile}" label="${labels.adm.plugins_implements}" />
