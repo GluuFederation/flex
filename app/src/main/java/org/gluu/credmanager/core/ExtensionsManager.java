@@ -66,6 +66,7 @@ public class ExtensionsManager implements IExtensionsManager {
 
     private PluginManager pluginManager;
 
+    //Holds a mapping of plugin ids vs. authentication methods extensions (only started plugins are included)
     private Map<String, List<AuthnMethod>> plugExtensionMap;
 
     @PostConstruct
@@ -103,7 +104,7 @@ public class ExtensionsManager implements IExtensionsManager {
                     }
                 }
 
-                logger.info("Total plugins loaded {}", loaded.size());
+                logger.info("Total plugins loaded {}\n", loaded.size());
                 int started = 0;
 
                 for (String pluginId : loaded) {
@@ -124,7 +125,7 @@ public class ExtensionsManager implements IExtensionsManager {
                         }
                     }
                 }
-                logger.info("Total plugins started: {}", started);
+                logger.info("Total plugins started: {}\n", started);
             }
             zkService.refreshLabels();
 

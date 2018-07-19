@@ -71,11 +71,15 @@ public class MainSettingsProducer {
                     settings = mapper.readValue(srcConfigFile, MainSettings.class);
                     settings.setSourceFile(srcConfigFile);
 
+                    if (settings.getAcrPluginMap() == null) {
+                        settings.setAcrPluginMap(new HashMap<>());
+                    }
+
                     List<String> enabledMethods = settings.getEnabledMethods();
                     Map<String, String> acrPluginMapping = settings.getAcrPluginMap();
                     if (Utils.isNotEmpty(enabledMethods)) {
 
-                        if (Utils.isEmpty(acrPluginMapping)) {
+                        if (acrPluginMapping.size() == 0) {
                             //If acr plugin mapping does not exist and deprecated "enabled_methods" property does, migrate data
                             acrPluginMapping = new HashMap<>();
                             for (String acr : enabledMethods) {

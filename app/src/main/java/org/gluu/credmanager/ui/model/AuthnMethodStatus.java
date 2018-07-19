@@ -15,13 +15,18 @@ import java.util.List;
 public class AuthnMethodStatus {
 
     private boolean enabled;
+    private boolean deactivable;
     private String acr;
     private String name;
-    private String selectedPugin;
+    private String selectedPlugin;
     private List<Pair<String, String>> plugins;
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public boolean isDeactivable() {
+        return deactivable;
     }
 
     public String getAcr() {
@@ -32,8 +37,8 @@ public class AuthnMethodStatus {
         return name;
     }
 
-    public String getSelectedPugin() {
-        return selectedPugin;
+    public String getSelectedPlugin() {
+        return selectedPlugin;
     }
 
     public List<Pair<String, String>> getPlugins() {
@@ -44,6 +49,10 @@ public class AuthnMethodStatus {
         this.enabled = enabled;
     }
 
+    public void setDeactivable(boolean deactivable) {
+        this.deactivable = deactivable;
+    }
+
     public void setAcr(String acr) {
         this.acr = acr;
     }
@@ -52,8 +61,8 @@ public class AuthnMethodStatus {
         this.name = name;
     }
 
-    public void setSelectedPugin(String selectedPugin) {
-        this.selectedPugin = selectedPugin;
+    public void setSelectedPlugin(String selectedPlugin) {
+        this.selectedPlugin = selectedPlugin;
     }
 
     public void setPlugins(List<Pair<String, String>> plugins) {

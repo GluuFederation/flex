@@ -1,5 +1,6 @@
 package org.gluu.credmanager.core.ldap;
 
+import com.unboundid.ldap.sdk.persist.FilterUsage;
 import com.unboundid.ldap.sdk.persist.LDAPField;
 import com.unboundid.ldap.sdk.persist.LDAPObject;
 import org.gluu.credmanager.misc.Utils;
@@ -21,7 +22,7 @@ public class PersonPreferences extends BaseLdapPerson {
 
 
     // The field used for optional attribute oxPreferredMethod.
-    @LDAPField
+    @LDAPField(filterUsage= FilterUsage.ALWAYS_ALLOWED)
     private String[] oxPreferredMethod;
 
 
