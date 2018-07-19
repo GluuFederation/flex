@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2018, Gluu
  */
-package org.gluu.credmanager.service;
+package org.gluu.credmanager.timer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +11,7 @@ import com.unboundid.ldap.sdk.Filter;
 import org.gluu.credmanager.conf.TrustedDevicesSettings;
 import org.gluu.credmanager.conf.sndfactor.TrustedDevice;
 import org.gluu.credmanager.conf.sndfactor.TrustedOrigin;
+import org.gluu.credmanager.core.LdapService;
 import org.gluu.credmanager.core.TimerService;
 import org.gluu.credmanager.core.ldap.PersonPreferences;
 import org.quartz.JobExecutionContext;

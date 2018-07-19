@@ -3,12 +3,13 @@
  *
  * Copyright (c) 2018, Gluu
  */
-package org.gluu.credmanager.service;
+package org.gluu.credmanager.timer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.credmanager.core.ConfigurationHandler;
 import org.gluu.credmanager.core.ExtensionsManager;
+import org.gluu.credmanager.core.LdapService;
 import org.gluu.credmanager.core.TimerService;
 import org.gluu.credmanager.core.ldap.oxCustomScript;
 import org.gluu.credmanager.extension.AuthnMethod;
@@ -82,7 +83,8 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         oxCustomScript script;
 
         boolean anyChanged = false;
-        Set<String> acrs = confHandler.getEnabledAcrs();
+        Set<String> acrs = confHandler.getSettings().getAcrPluginMap().keySet();
+        acrs.retainAll(confHandler.getEnabledAcrs());
 
         logger.info("AuthnScriptsReloader. Running timer job for acrs: {}", acrs.toString());
         for (String acr : acrs) {
