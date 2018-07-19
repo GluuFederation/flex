@@ -8,7 +8,7 @@ package org.gluu.credmanager.ui.vm.admin;
 import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.conf.TrustedDevicesSettings;
 import org.gluu.credmanager.conf.sndfactor.EnforcementPolicy;
-import org.gluu.credmanager.service.TrustedDevicesSweeper;
+import org.gluu.credmanager.timer.TrustedDevicesSweeper;
 import org.gluu.credmanager.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
