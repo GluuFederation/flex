@@ -7,6 +7,7 @@ package org.gluu.credmanager.core;
 
 import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.conf.PluginInfo;
+import org.gluu.credmanager.core.plugin.CasaPluginManager;
 import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.service.IExtensionsManager;
@@ -73,7 +74,7 @@ public class ExtensionsManager implements IExtensionsManager {
     private void inited() {
 
         pluginsRoot = Paths.get(System.getProperty("server.base"), PLUGINS_DIR_NAME);
-        pluginManager = new DefaultPluginManager();
+        pluginManager = new CasaPluginManager();
         plugExtensionMap = new HashMap<>();    //It accepts null keys
 
         if (Files.isDirectory(pluginsRoot)) {
