@@ -28,11 +28,13 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                     <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
                         <manifestEntries>
                             <Plugin-Id>${plugin.id}</Plugin-Id>
                             <Plugin-Version>${plugin.version}</Plugin-Version>
@@ -47,17 +49,35 @@
                         </manifestEntries>
                     </archive>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        <!--
+            Add needed dependencies with scope = provided if they are already part of casa. To get a list do the following:
+            1. clone Gluu casa (git clone https://github.com/GluuFederation/casa.git)
+            2. swith to a proper branch (git checkout version_3.1.3)
+            3. get a list (mvn dependency:tree ¬¬pl app)
+            Alternatively, you may open file /opt/gluu/jetty/casa/webapps/casa.war and inspect subdirectory WEB_INF/lib
+         -->
         <dependency>
             <groupId>org.xdi</groupId>
             <artifactId>casa-shared</artifactId>
             <version>3.1.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Add other required dependencies here. All their classes will be shipped in your plugin's fat jar -->
     </dependencies>
 
 </project>
