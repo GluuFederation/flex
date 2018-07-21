@@ -348,13 +348,7 @@ public class PluginViewModel extends MainViewModel {
                 extList.add(getExtensionLabel(cls.getName()));
             }
         }
-        /*
-        for (String clsName : manager.getExtensionClassNames(pluginId)) {
-            if (!clsName.equals(AUTHN_METHOD.getName())) {
-                extList.add(getExtensionLabel(clsName));
-            }
-        }
-        */
+
         for (AuthnMethod method : manager.getExtensions(AUTHN_METHOD, pluginId)) {
             String text = Labels.getLabel(method.getUINameKey());
             String acr = method.getAcr();

@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 /**
  * @author jgomer
  */
-@ApplicationScoped
+//@ApplicationScoped
 public class InvocationWrapper {
 
     @Inject

@@ -8,8 +8,6 @@ package org.gluu.credmanager.core.plugin;
 import org.pf4j.DefaultPluginManager;
 import org.pf4j.ExtensionFactory;
 import org.pf4j.PluginState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 

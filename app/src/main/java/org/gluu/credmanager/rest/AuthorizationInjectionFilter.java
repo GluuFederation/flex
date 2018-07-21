@@ -8,7 +8,7 @@ import javax.ws.rs.ext.Provider;
  * A Client-side filter employed to "inject" the Authorization header to the outgoing request.
  * @author jgomer
  */
-@Provider
+//@Provider
 public class AuthorizationInjectionFilter implements ClientRequestFilter {
 
     public void filter(ClientRequestContext context) {
