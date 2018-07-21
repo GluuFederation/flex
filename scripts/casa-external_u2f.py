@@ -206,7 +206,7 @@ class PersonAuthentication(PersonAuthenticationType):
     def getPageForStep(self, configurationAttributes, step):
         if (step == 2):
             #Modified for Casa compliance
-            return "/cm/login.xhtml"
+            return "/casa/login.xhtml"
 
         return ""
 

@@ -265,7 +265,7 @@ class PersonAuthentication(PersonAuthenticationType):
                 return "/auth/otp/enroll.xhtml"
             else:
                 #Modified for Casa compliance
-                return "/cm/otplogin.xhtml"
+                return "/casa/otplogin.xhtml"
         elif step == 3:
             return "/auth/otp/otplogin.xhtml"
 

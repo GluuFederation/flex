@@ -434,7 +434,8 @@ class PersonAuthentication(PersonAuthenticationType):
                 if authmethod == "enroll":
                     return "/auth/super-gluu/login.xhtml"
                 else:
-                    return "/auth/super-gluu/login.xhtml"
+                	#Modified for Casa compliance
+                    return "/casa/sg_login.xhtml"
 
         return ""
 
