@@ -109,11 +109,16 @@ public class PluginViewModel extends MainViewModel {
                 if (m != null) {
                     String id = m.getMainAttributes().getValue("Plugin-Id");
                     String version = m.getMainAttributes().getValue("Plugin-Version");
+                    String deps = m.getMainAttributes().getValue("Plugin-Dependencies");
 
                     if (pluginList.stream().anyMatch(pl -> pl.getDescriptor().getPluginId().equals(id))) {
                         UIUtils.showMessageUI(false, Labels.getLabel("adm.plugins_already_existing", new String[] { id }));
                     } else if (Stream.of(id, version).allMatch(Utils::isNotEmpty)) {
                         try {
+                            if (Utils.isNotEmpty(deps)) {
+                                logger.warn("This plugin reports dependencies. This feature is not available in Gluu Casa");
+                                logger.warn("Your plugin may not work properly");
+                            }
                             //Copy the jar to plugins dir
                             Path path = Files.write(getPluginDestinationPath(evt.getMedia().getName()), blob, StandardOpenOption.CREATE_NEW);
                             logger.info("Plugin jar file copied to app plugins directory");
