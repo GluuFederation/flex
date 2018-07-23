@@ -68,16 +68,6 @@ public class HomeViewModel {
         sessionContext.updateCssPath();
         //reloads this page so the navigation flow proceeds (see HomeInitiator class)
 
-        //TODO: re-adjust (added oxauth went crazy)
-        /*
-        User user = new User();
-        user.setAdmin(true);
-        user.setPreferredMethod("twilio_sms");
-        user.setId("@!3245.DF39.6A34.9E97!0001!513A.9888!0000!A8F2.DE1E.D7FB");
-        user.setUserName("admin");
-        user.setGivenName("amin");
-        sessionContext.setUser(user);
-*/
         Executions.sendRedirect(null);
 
     }

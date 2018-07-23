@@ -8,6 +8,7 @@ package org.gluu.credmanager.plugins.authnmethod.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.twilio.sdk.TwilioRestClient;
 import com.twilio.sdk.resource.factory.MessageFactory;
+import com.twilio.sdk.resource.instance.Message;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.gluu.credmanager.core.ldap.PersonMobile;
@@ -89,11 +90,10 @@ public class MobilePhoneService extends BaseService {
                 messageParams.add(new BasicNameValuePair("From", fromNumber));
                 messageParams.add(new BasicNameValuePair("To", number));
                 messageParams.add(new BasicNameValuePair("Body", body));
-                //TODO: uncomment
-                //Message message = messageFactory.create(messageParams);
 
-                //String statusMsg = message.getStatus().toLowerCase();
-                String statusMsg = "ok";
+                Message message = messageFactory.create(messageParams);
+                String statusMsg = message.getStatus().toLowerCase();
+
                 logger.info("Message delivery status was {}", statusMsg);
                 switch (statusMsg) {
                     case "failed":

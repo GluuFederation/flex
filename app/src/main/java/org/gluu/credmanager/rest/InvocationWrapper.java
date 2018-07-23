@@ -25,7 +25,6 @@ public class InvocationWrapper {
 
     public Response invoke(Invocation invocation) {
         logger.debug("InvocationWrapper.invoke");
-        //TODO: implement UMA client flow
         //invocation.property("rpt", rpt);
         return invocation.invoke();
     }

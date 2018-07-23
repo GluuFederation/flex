@@ -365,6 +365,7 @@ public class ExtensionsManager implements IExtensionsManager {
             List<String> validFileNames = pls.stream().map(PluginInfo::getRelativePath).collect(Collectors.toList());
 
             Files.list(pluginsRoot).forEach(p -> {
+                //There is no support for directory-based or zip plugins
                 if (Files.isRegularFile(p)) {
                     if (!validFileNames.contains(p.getFileName().toString())) {
                         try {
@@ -373,9 +374,6 @@ public class ExtensionsManager implements IExtensionsManager {
                             logger.error("Error deleting unnecesary file {}: {}", p.toString(), e.getMessage());
                         }
                     }
-                } else if (Files.isDirectory(p)) {
-                    //TODO add support for directory-based plugins
-                    ;
                 }
             });
 

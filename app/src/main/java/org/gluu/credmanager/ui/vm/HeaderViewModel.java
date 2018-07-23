@@ -58,10 +58,11 @@ public class HeaderViewModel {
     public void logoutFromAuthzServer() {
 
         try {
-            logger.trace("Log off attempt");
+            //When the session expires, the browser is taken to /index.zul (see zk.xml), so theoretically, the calls
+            //to session-scoped method above will not yield null
+            logger.trace("Log off attempt for {}", sessionContext.getUser().getUserName());
             purgeSession();
             //After End-User has logged out, the Client might request to log him out of the OP too
-            //TODO: what happens after session expiration?, add in log trace who is logging out
             String idToken = authFlowContext.getIdToken();
             Executions.sendRedirect(oxdService.getLogoutUrl(idToken));
         } catch (Exception e) {

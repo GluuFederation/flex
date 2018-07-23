@@ -40,8 +40,6 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
 
         super.doInit(page, map);
         if (page.getAttribute("error") == null) {
-            //TODO: remove
-            //if (true) return;
 
             flowContext = Utils.managedBean(AuthFlowContext.class);
             oxdService = Utils.managedBean(OxdService.class);

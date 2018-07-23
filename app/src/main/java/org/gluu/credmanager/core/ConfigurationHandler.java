@@ -167,14 +167,14 @@ public class ConfigurationHandler extends JobListenerSupport {
                         logger.warn("Retrying in {} seconds", RETRY_INTERVAL);
                     }
                 } else {
-                    //TODO: uncomment this block for production
-                    /*
-                    //This is required to guarantee the list of acrs is really complete (after oxauth starts, the list
-                    //can still contain just a few elements)
-                    Thread.sleep(RETRIES * RETRY_INTERVAL * 100);
-                    logger.debug("Additional attempt");
-                    retrieveAcrs();
-                    */
+                    if (!Utils.onWindows()) {
+                        //This is required to guarantee the list of acrs is really complete (after oxauth starts, the list
+                        //can still contain just a few elements). In a development environment it's unlikely this occurs
+                        Thread.sleep(RETRIES * RETRY_INTERVAL * 100);
+                        logger.debug("Additional attempt");
+                        retrieveAcrs();
+                    }
+
                     if (serverAcrs.contains(DEFAULT_ACR)) {
                         computeBrandingPath();
                         computeMinCredsForStrongAuth();

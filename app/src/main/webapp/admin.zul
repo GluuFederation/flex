@@ -38,7 +38,6 @@
     <vlayout if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.MainViewModel')"
              self="@define(content)">
         <hlayout width="100%" spacing="0px" style="background-color:#eee;">
-            <!-- TODO: review workaround so sidebar can occupy 100% of available height. May change if zul-based menu items are used -->
             <vlayout sclass="sidebar" id="sidebar" vflex="1">
                 <!-- why the effect not working for sidebar?  action="show: slideIn({duration: 1000}); hide: slideOut({duration: 300})" -->
                 <vlayout sclass="padded">
