@@ -42,20 +42,12 @@ body{
 .z-panel-header{
     font-size: 13px;
 }
-/*
-.btn{
-    font-size: 13px;
-}*/
 .btn-link{
     padding: 0px 0px 0px 20px;
 }
 .z-panel-head{
     padding-left:12px;
 }
-/*
-.form_button{
-    font-size: 12px;
-}*/
 .de_emphasized{
     font-size: 12px;
     color:#666;

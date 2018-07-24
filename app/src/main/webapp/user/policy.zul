@@ -29,9 +29,9 @@
 
                         <div align="center" sclass="padded">
                             <hlayout spacing="25px">
-                                <button label="${labels.general.save}" sclass="btn-success form_button"
+                                <button label="${labels.general.save}" sclass="btn-success"
                                         disabled="@load(empty vm.enforcementPolicies)" onClick="@command('updatePolicy')" />
-                                <button label="${labels.general.cancel}" sclass="btn-success form_button" onClick="@command('cancel')"/>
+                                <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')"/>
                             </hlayout>
                         </div>
                     </vlayout>

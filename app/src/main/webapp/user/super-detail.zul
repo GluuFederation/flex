@@ -92,7 +92,7 @@
                         <n:hr class="rule-sm" />
                         <hlayout spacing="20px" valign="middle">
                             <label value="${labels.usr.supergluu_scan}"/>
-                            <button label="${labels.general.cancel}" sclass="btn-warning btn-sm form_button"
+                            <button label="${labels.general.cancel}" sclass="btn-warning btn-sm"
                                     disabled="@load(vm.uiEnrolled)" onClick="@command('cancel')"/>
                         </hlayout>
                         <n:div> <!-- these 2 must be grouped inside a div -->
