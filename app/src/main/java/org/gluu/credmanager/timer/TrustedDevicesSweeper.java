@@ -157,8 +157,7 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
 
         List<PersonPreferences> list = new ArrayList<>();
         try {
-            String filther = Filter.createPresenceFilter("oxTrustedDevicesInfo").toString();
-            list = ldapService.find(PersonPreferences.class, ldapService.getPeopleDn(), filther);
+            list = ldapService.find(PersonPreferences.class, ldapService.getPeopleDn(), Filter.createPresenceFilter("oxTrustedDevicesInfo"));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

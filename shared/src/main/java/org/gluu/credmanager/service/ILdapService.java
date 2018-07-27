@@ -5,6 +5,7 @@
  */
 package org.gluu.credmanager.service;
 
+import com.unboundid.ldap.sdk.Filter;
 import org.gluu.credmanager.core.ldap.gluuOrganization;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Map;
  */
 public interface ILdapService {
 
-    <T> List<T> find(Class<T> clazz, String parentDn, String filter);
+    <T> List<T> find(Class<T> clazz, String parentDn, Filter filter);
     <T> List<T> find(T object, Class<T> clazz, String parentDn);
     <T> boolean add(T object, Class<T> clazz, String parentDn);
     <T> T get(Class<T> clazz, String dn);

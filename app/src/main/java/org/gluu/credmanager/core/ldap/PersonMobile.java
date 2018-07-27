@@ -65,19 +65,6 @@ public class PersonMobile extends BaseLdapPerson {
         this.oxMobileDevices = v;
     }
 
-    /**
-     * Retrieves the values for the field associated with the
-     * mobile attribute, if present.
-     *
-     * @return  The values for the field associated with the
-     *          mobile attribute, or
-     *          {@code null} if that attribute was not present in the entry.
-     */
-    public String[] getMobile()
-    {
-        return mobile;
-    }
-
     public List<String> getMobileAsList() {
         if (Utils.isEmpty(mobile)) {
             return Collections.emptyList();

@@ -220,13 +220,13 @@ public class LdapService implements ILdapService {
 
     }
 
-    public <T> List<T> find(Class<T> clazz, String parentDn, String filter) {
+    public <T> List<T> find(Class<T> clazz, String parentDn, Filter filter) {
 
         List<T> results = new ArrayList<>();
         try {
             LDAPPersister<T> persister = LDAPPersister.getInstance(clazz);
             results = fromPersistedObjects(persister.search(ldapOperationService.getConnection(), parentDn, SearchScope.SUB,
-                    DereferencePolicy.NEVER, 0, 0, Filter.create(filter), null));
+                    DereferencePolicy.NEVER, 0, 0, filter == null ? Filter.create("(objectClass=top)") : filter));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
