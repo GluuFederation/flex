@@ -5,8 +5,6 @@
  */
 package org.gluu.credmanager.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -16,6 +14,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.conf.OxdClientSettings;
 import org.gluu.credmanager.conf.OxdSettings;
@@ -57,6 +56,11 @@ public class OxdService {
 
     private static final String LOGOUT_PAGE_URL = "bye.zul";
 
+    /*
+    The list of scopes required to be able to inspect the claims needed. See attributes of User class
+     */
+    private static final List<String> CASA_SCOPES = Arrays.asList("openid", "profile", "user_name", "clientinfo");
+
     @Inject
     private Logger logger;
 
@@ -69,7 +73,7 @@ public class OxdService {
     private int consecutive = 0;  //This is used only to debug and test
     private OxdSettings config;
     private ResteasyClient client;
-    private ObjectMapper mapper;
+    private ObjectMapper mapper;  //Important: do not use fasterxml mapper here: oxd-common classes use codehaus
 
     @PostConstruct
     public void inited() {
@@ -99,9 +103,7 @@ public class OxdService {
                     tmp = tmp.endsWith("/") ? tmp.substring(0, tmp.length() - 1) : tmp;
                     oxdConfig.setPostLogoutUri(tmp + "/" + LOGOUT_PAGE_URL);
                 }
-                //TODO: bug 3.1.1?  https://github.com/GluuFederation/oxd/issues/124
                 oxdConfig.setOpHost(issuerUrl);
-                //END
                 oxdConfig.setAcrValues(Collections.singletonList(DEFAULT_ACR));
 
                 try {
@@ -160,7 +162,7 @@ public class OxdService {
 
         try {
             if (config.isUseHttpsExtension()) {
-                clientName = "cred-manager-extension-" + consecutive;
+                clientName = "gluu-casa-extension-" + consecutive;
 
                 SetupClientParams cmdParams = new SetupClientParams();
                 cmdParams.setOpHost(config.getOpHost());
@@ -169,12 +171,7 @@ public class OxdService {
                 cmdParams.setAcrValues(config.getAcrValues());
                 cmdParams.setClientName(clientName);
 
-                //TODO: bug 3.1.1?
-                List<String> scopes = new ArrayList<>(Arrays.asList(UserService.OPEN_ID_SCOPES));
-                scopes.add("uma_protection");
-                cmdParams.setScope(scopes);
-                //END
-
+                cmdParams.setScope(CASA_SCOPES);
                 cmdParams.setResponseTypes(Collections.singletonList("code"));
                 cmdParams.setTrustedClient(true);
                 //cmdParams.setGrantType(Collections.singletonList("authorization_code"));      //this is the default grant
@@ -182,7 +179,7 @@ public class OxdService {
                 SetupClientResponse setup = restResponse(cmdParams, "setup-client", null, SetupClientResponse.class);
                 computedSettings = new OxdClientSettings(clientName, setup.getOxdId(), setup.getClientId(), setup.getClientSecret());
             } else {
-                clientName = "cred-manager-" + consecutive;
+                clientName = "gluu-casa-" + consecutive;
 
                 RegisterSiteParams cmdParams = new RegisterSiteParams();
                 cmdParams.setOpHost(config.getOpHost());
@@ -192,8 +189,7 @@ public class OxdService {
                 cmdParams.setClientName(clientName);
 
                 //These scopes should be set to default=true in LDAP (or using oxTrust). Otherwise the following will have no effect
-                cmdParams.setScope(Arrays.asList(UserService.OPEN_ID_SCOPES));
-
+                cmdParams.setScope(CASA_SCOPES);
                 cmdParams.setResponseTypes(Collections.singletonList("code"));  //Use "token","id_token" for implicit flow
                 cmdParams.setTrustedClient(true);
                 //cmdParams.setGrantType(Collections.singletonList("authorization_code"));      //this is the default grant
@@ -367,11 +363,14 @@ public class OxdService {
     }
 
     public boolean extendSiteLifeTime() {
-        /*
+
         //Extending the life time cannot take place because scopes are changed by those defaulted in Gluu Server
         //Unfortunately, the custom script that turns on the scopes is only run upon registration (not updates)
         //On the other hand, oxd site registration does not allow to set the expiration. To workaround it, the
         //associated client registration cust script is in charge of extending the lifetime
+        return true;
+        /*
+        logger.info("Extending registered oxd client life time");
         GregorianCalendar cal=new GregorianCalendar();
         cal.add(Calendar.YEAR, 1);
 
@@ -379,9 +378,13 @@ public class OxdService {
         cmdParams.setOxdId(config.getClient().getOxdId());
         cmdParams.setClientSecretExpiresAt(new Date(cal.getTimeInMillis()));
 
-        return doUpdate(cmdParams);
+        try {
+            return doUpdate(cmdParams);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
         */
-        return true;
 
     }
 
@@ -410,7 +413,7 @@ public class OxdService {
         cmdParams.setOpHost(config.getOpHost());
         cmdParams.setClientId(config.getClient().getClientId());
         cmdParams.setClientSecret(config.getClient().getClientSecret());
-        cmdParams.setScope(Arrays.asList(UserService.OPEN_ID_SCOPES));
+        cmdParams.setScope(CASA_SCOPES);
 
         GetClientTokenResponse resp = restResponse(cmdParams, "get-client-token", null, GetClientTokenResponse.class);
         String token = resp.getAccessToken();

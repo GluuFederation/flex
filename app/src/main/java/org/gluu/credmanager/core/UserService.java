@@ -37,11 +37,6 @@ import java.util.stream.Stream;
 @ApplicationScoped
 public class UserService {
 
-    /*
-    The list of OpenId scopes required to be able to inspect the claims needed. See attributes of User class
-     */
-    public static final String[] OPEN_ID_SCOPES = new String[]{ "openid", "profile", "user_name", "clientinfo" };
-
     private static final String PREFERRED_METHOD_ATTR = "oxPreferredMethod";
 
     @Inject
@@ -179,7 +174,7 @@ public class UserService {
                 Filter.createORFilter(stream.collect(Collectors.toList())),
                 Filter.createPresenceFilter(PREFERRED_METHOD_ATTR)
         );
-        return ldapService.find(Person.class, ldapService.getPeopleDn(), filter.toString());
+        return ldapService.find(Person.class, ldapService.getPeopleDn(), filter);
 
     }
 

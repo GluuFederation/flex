@@ -50,37 +50,37 @@
                     <div sclass="form-group">
                         <label value="${labels.adm.oxd_op_host}" sclass="control-label form-label col-sm-4"/>
                         <div sclass="col-sm-8">
-                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.opHost)" readonly="true"/>
+                            <textbox sclass="form-control" value="@load(vm.oxdSettings.opHost)" readonly="true"/>
                         </div>
                     </div>
                     <div sclass="form-group">
                         <label value="${labels.adm.oxd_client_name}" sclass="control-label form-label col-sm-4"/>
                         <div sclass="col-sm-8">
-                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.client.clientName)" readonly="true"/>
+                            <textbox sclass="form-control" value="@load(vm.oxdSettings.client.clientName)" readonly="true"/>
                         </div>
                     </div>
                     <div sclass="form-group">
                         <label value="${labels.adm.oxd_authz_redirect}" sclass="control-label form-label col-sm-4"/>
                         <div sclass="col-sm-8">
-                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.redirectUri)" readonly="true"/>
+                            <textbox sclass="form-control" value="@load(vm.oxdSettings.redirectUri)" readonly="true"/>
                         </div>
                     </div>
                     <div sclass="form-group">
                         <label value="${labels.adm.oxd_oxdid}" sclass="control-label form-label col-sm-4"/>
                         <div sclass="col-sm-8">
-                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.client.oxdId)" readonly="true"/>
+                            <textbox sclass="form-control" value="@load(vm.oxdSettings.client.oxdId)" readonly="true"/>
                         </div>
                     </div>
                     <div sclass="form-group" visible="@load(not empty vm.oxdSettings.client.clientId)">
                         <label value="${labels.adm.oxd_client_id}" sclass="control-label form-label col-sm-4"/>
                         <div sclass="col-sm-8">
-                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.client.clientId)" readonly="true"/>
+                            <textbox sclass="form-control" value="@load(vm.oxdSettings.client.clientId)" readonly="true"/>
                         </div>
                     </div>
                     <div sclass="form-group" visible="@load(not empty vm.oxdSettings.client.clientSecret)">
                         <label value="${labels.adm.oxd_client_secret}" sclass="control-label form-label col-sm-4"/>
                         <div sclass="col-sm-8">
-                            <textbox sclass="form-control" value="@bind(vm.oxdSettings.client.clientSecret)" readonly="true"/>
+                            <textbox sclass="form-control" value="@load(vm.oxdSettings.client.clientSecret)" readonly="true"/>
                         </div>
                     </div>
                 </div>
