@@ -121,13 +121,6 @@
             <artifactId>weld-servlet-shaded</artifactId>
         </dependency>
 
-        <!-- GREENROBOT'S EVENT BUS -->
-        <dependency>
-            <groupId>org.greenrobot</groupId>
-            <artifactId>eventbus</artifactId>
-            <version>${eventbus.version}</version>
-        </dependency>
-
         <!-- ZKOSS -->
         <dependency>
             <groupId>org.zkoss.zk</groupId>

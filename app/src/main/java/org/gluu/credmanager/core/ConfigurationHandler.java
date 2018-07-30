@@ -9,13 +9,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.conf.sndfactor.EnforcementPolicy;
-import org.gluu.credmanager.event.AppStateChangeEvent;
 import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.misc.AppStateEnum;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.timer.AuthnScriptsReloader;
 import org.gluu.credmanager.timer.TrustedDevicesSweeper;
-import org.greenrobot.eventbus.EventBus;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
@@ -57,9 +55,6 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     @Inject
     private OxdService oxdService;
-
-    @Inject
-    private EventBus eventBus;
 
     @Inject
     private ExtensionsManager extManager;
@@ -112,8 +107,8 @@ public class ConfigurationHandler extends JobListenerSupport {
                 setAppState(AppStateEnum.FAIL);
             }
         } catch (Exception e) {
-            setAppState(AppStateEnum.FAIL);
             logger.error(e.getMessage(), e);
+            setAppState(AppStateEnum.FAIL);
         }
 
     }
@@ -181,8 +176,8 @@ public class ConfigurationHandler extends JobListenerSupport {
                         computePassResetable();
                         compute2FAEnforcementPolicy();
 
-                        extManager.scan();
                         if (oxdService.initialize()) {
+                            extManager.scan();
                             setAppState(AppStateEnum.OPERATING);
                             refreshAcrPluginMapping();
                             scriptsReloader.init();
@@ -197,10 +192,6 @@ public class ConfigurationHandler extends JobListenerSupport {
                         logger.error("Your Gluu server is missing one critical acr value: {}.", DEFAULT_ACR);
                         setAppState(AppStateEnum.FAIL);
                     }
-                }
-                if (appState.equals(AppStateEnum.FAIL)) {
-                    logger.error("Application not in operable state, please fix configuration issues before proceeding.");
-                    logger.info("=== WEBAPP INITIALIZATION FAILED ===");
                 }
             }
         } catch (Exception e) {
@@ -250,8 +241,9 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     private void setAppState(AppStateEnum state) {
 
-        if (!state.equals(appState)) {
-            eventBus.post(new AppStateChangeEvent(state));
+        if (state.equals(AppStateEnum.FAIL)) {
+            logger.error("Application not in operable state, please fix configuration issues before proceeding.");
+            logger.info("=== WEBAPP INITIALIZATION FAILED ===");
         }
         appState = state;
 
