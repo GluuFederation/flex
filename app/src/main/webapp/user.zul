@@ -39,11 +39,11 @@
                             <vlayout>
                                 <label value="${c:l(each.panelTextKey)}"/>
 
-                                <zk if="${not empty each.getEnrolledCreds(sessionContext.user.id, true)}">
+                                <zk if="${not empty each.getEnrolledCreds(sessionContext.user.id)}">
                                     <separator />
                                     <label value="${labels.usr.you_added}" />
 
-                                    <vlayout sclass="summary" children="@load(each.getEnrolledCreds(sessionContext.user.id, true))">
+                                    <vlayout sclass="summary" children="@load(each.getEnrolledCreds(sessionContext.user.id))">
                                         <template name="children">
                                             <hlayout sclass="de_emphasized">
                                                 <label sclass="bold" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />

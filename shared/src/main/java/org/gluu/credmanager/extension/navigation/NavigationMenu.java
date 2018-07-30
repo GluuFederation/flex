@@ -28,10 +28,13 @@ public interface NavigationMenu extends ExtensionPoint {
     String getContentsUrl();
 
     /**
-     * Specifies the type of menu the extension deals with.
+     * Specifies the type of menu the extension deals with. This is a default interface method that returns always
+     * <code>MenuType.USER</code>. Override this method if you want to return a different value
      * @return A menu type (not null).
      */
-    MenuType menuType();
+    default MenuType menuType() {
+        return MenuType.USER;
+    }
 
     /**
      * A value used to determine a relative order among extensions that implement this particular extension point. That is, it

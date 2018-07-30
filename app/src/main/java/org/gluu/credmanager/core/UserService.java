@@ -123,7 +123,7 @@ public class UserService {
 
     public List<Pair<AuthnMethod, Integer>> getUserMethodsCount(String userId, Set<String> retainMethods) {
         return extManager.getAuthnMethodExts().stream().filter(aMethod -> retainMethods.contains(aMethod.getAcr()))
-                .map(aMethod -> new Pair<>(aMethod, aMethod.getTotalUserCreds(userId, true)))
+                .map(aMethod -> new Pair<>(aMethod, aMethod.getTotalUserCreds(userId)))
                 .filter(pair -> pair.getY() > 0).collect(Collectors.toList());
     }
 

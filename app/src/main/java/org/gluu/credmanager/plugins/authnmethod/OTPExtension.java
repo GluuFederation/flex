@@ -63,10 +63,6 @@ public class OTPExtension implements AuthnMethod {
     }
 
     public List<BasicCredential> getEnrolledCreds(String id) {
-        return getEnrolledCreds(id, true);
-    }
-
-    public List<BasicCredential> getEnrolledCreds(String id, boolean valid) {
 
         try {
             return otpService.getDevices(id).stream()
@@ -78,10 +74,6 @@ public class OTPExtension implements AuthnMethod {
     }
 
     public int getTotalUserCreds(String id) {
-        return getTotalUserCreds(id, true);
-    }
-
-    public int getTotalUserCreds(String id, boolean valid) {
         return otpService.getDevicesTotal(id);
     }
 

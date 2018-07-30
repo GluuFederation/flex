@@ -54,19 +54,11 @@ public class OTPSmsExtension implements AuthnMethod {
         return "usr.mobile_changeadd";
     }
 
-    public String getPanelBottomTextKey() {
-        return null;
-    }
-
     public String getPageUrl() {
         return "/user/phone-detail.zul";
     }
 
     public List<BasicCredential> getEnrolledCreds(String id) {
-        return getEnrolledCreds(id, true);
-    }
-
-    public List<BasicCredential> getEnrolledCreds(String id, boolean valid) {
 
         try {
             return mobService.getVerifiedPhones(id).stream()
@@ -80,10 +72,6 @@ public class OTPSmsExtension implements AuthnMethod {
     }
 
     public int getTotalUserCreds(String id) {
-        return getTotalUserCreds(id, true);
-    }
-
-    public int getTotalUserCreds(String id, boolean valid) {
         return mobService.getPhonesTotal(id);
     }
 

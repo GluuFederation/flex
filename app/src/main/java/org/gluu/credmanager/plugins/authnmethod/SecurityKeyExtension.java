@@ -62,12 +62,9 @@ public class SecurityKeyExtension implements AuthnMethod {
     }
 
     public List<BasicCredential> getEnrolledCreds(String id) {
-        return getEnrolledCreds(id, true);
-    }
 
-    public List<BasicCredential> getEnrolledCreds(String id, boolean active) {
         try {
-            return u2fService.getDevices(id, active).stream()
+            return u2fService.getDevices(id, true).stream()
                     .map(dev -> new BasicCredential(dev.getNickName(), dev.getCreationDate().getTime())).collect(Collectors.toList());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -76,15 +73,7 @@ public class SecurityKeyExtension implements AuthnMethod {
     }
 
     public int getTotalUserCreds(String id) {
-        return getTotalUserCreds(id, true);
-    }
-
-    public int getTotalUserCreds(String id, boolean valid) {
-        return u2fService.getDevicesTotal(id, valid);
-    }
-
-    public boolean mayBe2faActivationRequisite() {
-        return false;
+        return u2fService.getDevicesTotal(id, true);
     }
 
     public void reloadConfiguration() {

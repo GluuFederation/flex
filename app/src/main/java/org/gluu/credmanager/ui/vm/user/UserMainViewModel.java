@@ -71,7 +71,7 @@ public class UserMainViewModel extends UserViewModel {
             introText = Labels.getLabel("usr.main_intro", new String[] { orgName, helper.substring(2) });
 
             pre2faMethods = widgets.stream().filter(AuthnMethod::mayBe2faActivationRequisite).collect(Collectors.toList());
-            has2faRequisites = pre2faMethods.stream().anyMatch(aMethod ->  aMethod.getTotalUserCreds(user.getId(), true) > 0);
+            has2faRequisites = pre2faMethods.stream().anyMatch(aMethod ->  aMethod.getTotalUserCreds(user.getId()) > 0);
         }
 
     }
