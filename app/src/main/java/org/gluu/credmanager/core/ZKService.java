@@ -140,7 +140,10 @@ public class ZKService {
         ServletContext context = app.getServletContext();
         Set<String> labelsListing = context.getResourcePaths(SYS_LABELS_LOCATION);
 
-        if (labelsListing != null) {
+        if (labelsListing == null) {
+            logger.warn("No application labels will be available. Check '{}' contains properties files", SYS_LABELS_LOCATION);
+        } else {
+            logger.info("Loading application labels");
             labelsListing.stream().filter(path -> path.endsWith(".properties"))
                     .map(path -> {
                         try {

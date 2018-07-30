@@ -56,6 +56,7 @@ public class RSRegistryHandler {
 
     private Map<String, List<Class<?>>> registeredResources;
 
+    @SuppressWarnings("unchecked")
     @PostConstruct
     private void inited() {
         try {
