@@ -8,8 +8,6 @@ package org.gluu.credmanager.core.ldap;
 import com.unboundid.ldap.sdk.persist.*;
 import org.gluu.credmanager.misc.Utils;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -66,11 +64,7 @@ public class PersonMobile extends BaseLdapPerson {
     }
 
     public List<String> getMobileAsList() {
-        if (Utils.isEmpty(mobile)) {
-            return Collections.emptyList();
-        } else {
-            return Arrays.asList(mobile);
-        }
+        return Utils.listfromArray(mobile);
     }
 
     /**

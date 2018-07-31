@@ -3,7 +3,6 @@ package org.gluu.credmanager.core.ldap;
 import com.unboundid.ldap.sdk.persist.FilterUsage;
 import com.unboundid.ldap.sdk.persist.LDAPField;
 import com.unboundid.ldap.sdk.persist.LDAPObject;
-import org.gluu.credmanager.misc.Utils;
 
 /**
  * This class provides an implementation of an object that can be used to
@@ -105,24 +104,48 @@ public class PersonPreferences extends BaseLdapPerson {
      * Sets the values for the field associated with the
      * userPassword attribute.
      *
-     * @param  userPassword  The values for the field associated with the
+     * @param  v  The values for the field associated with the
      *            userPassword attribute.
      */
-    public void setPassword(final String userPassword)
+    public void setPassword(final String ...v)
     {
-        this.userPassword = Utils.stringArrayFrom(userPassword);
+        this.userPassword = v;
     }
 
-    public void setPreferredMethod(final String method) {
-        this.oxPreferredMethod = Utils.stringArrayFrom(method);
+    /**
+     * Sets the values for the field associated with the
+     * oxPreferredMethod attribute.
+     *
+     * @param  v  The values for the field associated with the
+     *            oxPreferredMethod attribute.
+     */
+    public void setPreferredMethod(final String... v)
+    {
+        this.oxPreferredMethod = v;
     }
 
-    public void setStrongAuthPolicy(String policy) {
-        this.oxStrongAuthPolicy = Utils.stringArrayFrom(policy);
+    /**
+     * Sets the values for the field associated with the
+     * oxStrongAuthPolicy attribute.
+     *
+     * @param  v  The values for the field associated with the
+     *            oxStrongAuthPolicy attribute.
+     */
+    public void setStrongAuthPolicy(final String... v)
+    {
+        this.oxStrongAuthPolicy = v;
     }
 
-    public void setTrustedDevices(String trustedDevicesInfo) {
-        this.oxTrustedDevicesInfo = Utils.stringArrayFrom(trustedDevicesInfo);
+    /**
+     * Sets the values for the field associated with the
+     * oxTrustedDevicesInfo attribute.
+     *
+     * @param  v  The values for the field associated with the
+     *            oxTrustedDevicesInfo attribute.
+     */
+    public void setTrustedDevices(final String... v)
+    {
+        this.oxTrustedDevicesInfo = v;
     }
 
 }

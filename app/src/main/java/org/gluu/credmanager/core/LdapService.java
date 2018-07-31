@@ -142,21 +142,7 @@ public class LdapService implements ILdapService {
 
             List<oxCustomScript> scripts = find(script, oxCustomScript.class, getCustomScriptsDn());
             if (scripts.size() > 0) {
-                String[] props = scripts.get(0).getConfigurationProperties();
-
-                properties = new HashMap<>();
-                if (Utils.isNotEmpty(props)) {
-                    for (String prop : props) {
-                        try {
-                            JsonNode node = mapper.readTree(prop);
-                            String key = node.get("value1").asText();
-                            String value = node.get("value2").asText();
-                            properties.put(key, value);
-                        } catch (Exception e) {
-                            logger.error("Error reading a custom script configuration property ({})", e.getMessage());
-                        }
-                    }
-                }
+                properties = Utils.scriptConfigPropertiesAsMap(scripts.get(0));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -199,11 +185,11 @@ public class LdapService implements ILdapService {
 
     public boolean isAdmin(String userId) {
         gluuOrganization organization = getOrganization();
-        DN[] dns = organization.getGluuManagerGroupDNs();
+        List<DN> dns = organization.getGluuManagerGroupDNs();
 
         Person personMember = get(Person.class, getPersonDn(userId));
         return personMember != null
-                && personMember.getMemberOfDNs().stream().anyMatch(m -> Stream.of(dns).anyMatch(dn -> dn.equals(m)));
+                && personMember.getMemberOfDNs().stream().anyMatch(m -> dns.stream().anyMatch(dn -> dn.equals(m)));
 
     }
 
@@ -269,6 +255,7 @@ public class LdapService implements ILdapService {
             LDAPPersister<T> persister = LDAPPersister.getInstance(clazz);
             LDAPResult ldapResult = persister.modify(object, ldapOperationService.getConnection(), null, true);
             if (ldapResult == null) {
+                success = true;
                 logger.trace("modify. No attribute changes took place for this modification");
             } else {
                 success = ldapResult.getResultCode().equals(ResultCode.SUCCESS);
