@@ -6,20 +6,21 @@
 package org.gluu.credmanager.extension.navigation;
 
 /**
- * An enumeration with the different types of menus that can be extended in Gluu Casa.
+ * Enumerates the type of menus that can be extended in Gluu Casa, that is menus to which items can be added via plugin
+ * extensions.
  * @author jgomer
  */
 public enum MenuType {
     /**
-     * The menu shown in the administrator's dashboard
+     * The menu shown in the administrator's dashboard.
      */
     ADMIN_CONSOLE,
     /**
-     * The menu shown top-right (where "Help" and "Logout" are)
+     * The menu shown top-right (where "Help" and "Logout" are).
      */
     AUXILIARY,
     /**
-     * The menu used by all users of the application (shown on the left of UI pages)
+     * The menu used by all users of the application (shown on the left of UI pages).
      */
     USER
 }

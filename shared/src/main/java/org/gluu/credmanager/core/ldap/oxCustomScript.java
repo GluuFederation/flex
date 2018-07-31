@@ -17,72 +17,84 @@ import java.util.List;
  * your needs.
  */
 @LDAPObject(structuralClass="oxCustomScript",
-            superiorClass="top")
+        superiorClass="top")
 public class oxCustomScript
 {
 
-  // The field to use to hold a read-only copy of the associated entry.
-  @LDAPEntryField()
-  private ReadOnlyEntry ldapEntry;
+    // The field to use to hold a read-only copy of the associated entry.
+    @LDAPEntryField()
+    private ReadOnlyEntry ldapEntry;
 
-  // The field used for RDN attribute inum.
-  @LDAPField(inRDN=true,
-             filterUsage=FilterUsage.ALWAYS_ALLOWED,
-             requiredForEncode=true)
-  private String[] inum;
+    // The field used for RDN attribute inum.
+    @LDAPField(inRDN=true,
+            filterUsage=FilterUsage.ALWAYS_ALLOWED,
+            requiredForEncode=true)
+    private String[] inum;
 
-  // The field used for optional attribute description.
-  @LDAPField
-  private String[] description;
+    // The field used for optional attribute description.
+    @LDAPField
+    private String[] description;
 
-  // The field used for optional attribute displayName.
-  @LDAPField(filterUsage=FilterUsage.ALWAYS_ALLOWED)
-  private String displayName;
+    // The field used for optional attribute displayName.
+    @LDAPField(filterUsage=FilterUsage.ALWAYS_ALLOWED)
+    private String displayName;
 
-  // The field used for optional attribute gluuStatus.
-  @LDAPField
-  private String[] gluuStatus;
+    // The field used for optional attribute gluuStatus.
+    @LDAPField
+    private String[] gluuStatus;
 
-  // The field used for optional attribute oxConfigurationProperty.
-  @LDAPField
-  private String[] oxConfigurationProperty;
+    // The field used for optional attribute oxConfigurationProperty.
+    @LDAPField
+    private String[] oxConfigurationProperty;
 
-  // The field used for optional attribute oxLevel.
-  @LDAPField
-  private String[] oxLevel;
+    // The field used for optional attribute oxLevel.
+    @LDAPField
+    private String[] oxLevel;
 
-  // The field used for optional attribute oxModuleProperty.
-  @LDAPField
-  private String[] oxModuleProperty;
+    // The field used for optional attribute oxModuleProperty.
+    @LDAPField
+    private String[] oxModuleProperty;
 
-  // The field used for optional attribute oxRevision.
-  @LDAPField
-  private String[] oxRevision;
+    // The field used for optional attribute oxRevision.
+    @LDAPField
+    private String[] oxRevision;
 
-  // The field used for optional attribute oxScript.
-  @LDAPField
-  private String[] oxScript;
+    // The field used for optional attribute oxScript.
+    @LDAPField
+    private String[] oxScript;
 
-  // The field used for optional attribute oxScriptType.
-  @LDAPField
-  private String[] oxScriptType;
+    // The field used for optional attribute oxScriptType.
+    @LDAPField
+    private String[] oxScriptType;
 
+    /**
+     * Retrieves the value for the field associated with the
+     * displayName attribute, if present.
+     *
+     * @return  The value for the field associated with the
+     *          displayName attribute, or
+     *          {@code null} if the field does not have a value.
+     */
     public String getDisplayName() {
         return displayName;
     }
+
     /**
      * Retrieves the values for the field associated with the
      * oxConfigurationProperty attribute, if present.
-     *
-     * @return  The values for the field associated with the
-     *          oxConfigurationProperty attribute, or
-     *          {@code null} if that attribute was not present in the entry.
+     * <p>This values hold json content in Gluu Server. For easier-to-consume data, you can use method
+     * {@link Utils#scriptConfigPropertiesAsMap(oxCustomScript)}.</p>
+     * @return A list of String objects (empty if oxConfigurationProperty not present)
      */
-    public String[] getConfigurationProperties()
-    {
-        return oxConfigurationProperty;
+    public List<String> getConfigurationProperties() {
+        return Utils.listfromArray(oxConfigurationProperty);
     }
 
+    /**
+     * Retrieves the values for the field associated with the
+     * oxModuleProperty attribute, if present.
+     * @return A list of String objects (empty if oxModuleProperty attribute not present).
+     */
     public List<String> getModuleProperties() {
         return Utils.listfromArray(oxModuleProperty);
     }
@@ -130,28 +142,29 @@ public class oxCustomScript
             return oxRevision[0];
         }
     }
- /**
-   * Sets the value for the field associated with the
-   * displayName attribute.
-   *
-   * @param displayName  The value for the field associated with the
-   *            displayName attribute.
-   */
-  public void setDisplayName(String displayName)
-  {
-    this.displayName = displayName;
-  }
+
+    /**
+     * Sets the value for the field associated with the
+     * displayName attribute.
+     *
+     * @param displayName  The value for the field associated with the
+     *            displayName attribute.
+     */
+    public void setDisplayName(String displayName)
+    {
+        this.displayName = displayName;
+    }
 
     /**
      * Sets the value for the field associated with the
      * oxRevision attribute.
      *
-     * @param revision  The value for the field associated with the
+     * @param v The value for the field associated with the
      *            oxRevision attribute.
      */
-    public void setRevision(String revision)
+    public void setRevision(final String ...v)
     {
-        this.oxRevision = new String[] { revision };
+        this.oxRevision = v;
     }
 
 }

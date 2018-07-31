@@ -9,6 +9,7 @@ import org.gluu.credmanager.core.pojo.BrowserInfo;
 import org.gluu.credmanager.core.pojo.User;
 
 /**
+ * An interface providing methods with basic descriptive information about the current user's session.
  * @author jgomer
  */
 public interface ISessionContext {

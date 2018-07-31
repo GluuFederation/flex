@@ -6,8 +6,8 @@
 package org.gluu.credmanager.core.pojo;
 
 /**
- * An object of this class represents an end-user, contains the most important things such as username, preferred authn
- * method, and set of enrolled credentials. This class is NOT being serialized or annotated to make it persist to LDAP
+ * A java bean representing an end-user. It contains the most common attributes such as id, username, preferred
+ * authentication method, etc. Use the setter and getters to manipulate values.
  * @author jgomer
  */
 public class User {

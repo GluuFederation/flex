@@ -13,6 +13,10 @@ import org.zkoss.lang.ContextClassLoaderFactory;
 import java.util.Arrays;
 
 /**
+ * A class implementing interface <code>org.zkoss.lang.ContextClassLoaderFactory</code>. Basically it allows to know
+ * based on (string) name, which classloader a class belongs to.
+ * <p>This is useful for the ZK rendering engine to instantiate view model classes. Plugin writers will normally not
+ * need to use or create instances of this class.</p>
  * @author jgomer
  */
 public class CustomClassLoader implements ContextClassLoaderFactory {
@@ -22,6 +26,9 @@ public class CustomClassLoader implements ContextClassLoaderFactory {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private IExtensionsManager extManager;
 
+    /**
+     * Constructs an instance of this object.
+     */
     public CustomClassLoader() {
         extManager = Utils.managedBean(IExtensionsManager.class);
         if (extManager == null) {
@@ -29,12 +36,21 @@ public class CustomClassLoader implements ContextClassLoaderFactory {
         }
     }
 
+    /**
+     * Returns the context ClassLoader for the reference class.
+     * @param reference the reference class where it is invoked from.
+     */
     //what senses does this method have?
     public ClassLoader getContextClassLoader(Class<?> reference) {
         return reference.getClassLoader();
         //return Thread.currentThread().getContextClassLoader();
     }
 
+    /**
+     * Returns the context ClassLoader for a class name.
+     * @param className the reference class name where it is invoked from.
+     * @return A java.lang.ClassLoader
+     */
     public ClassLoader getContextClassLoaderForName(String className) {
 
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
