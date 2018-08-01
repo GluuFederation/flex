@@ -97,19 +97,29 @@ public class ExtensionsManager implements IExtensionsManager {
             if (pls.size() > 0) {
                 logger.info("Loading external plugins...");
 
-                List<String> loaded = new ArrayList<>();
+                List<PluginInfo> loaded = new ArrayList<>();
                 for (PluginInfo pl : pls) {
-                    String id = loadPlugin(Paths.get(pluginsRoot.toString(), pl.getRelativePath()));
-                    if (id != null) {
-                        loaded.add(id);
+                    try {
+                        if (loadPlugin(Paths.get(pluginsRoot.toString(), pl.getRelativePath())) != null) {
+                            loaded.add(pl);
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
                     }
                 }
 
                 logger.info("Total plugins loaded {}\n", loaded.size());
-                int started = 0;
+                if (pls.retainAll(loaded)) {
+                    logger.warn("Some plugins have been removed from configuration...");
+                    mainSettings.setKnownPlugins(pls);
+                }
 
-                for (String pluginId : loaded) {
-                    if (pls.stream().anyMatch(pl -> pl.getId().equals(pluginId) && PluginState.STARTED.toString().equals(pl.getState()))) {
+                if (loaded.size() > 0) {
+                    int started = 0;
+
+                    pls = pls.stream().filter(pl -> PluginState.STARTED.toString().equals(pl.getState())).collect(Collectors.toList());
+                    for (PluginInfo pl : pls) {
+                        String pluginId = pl.getId();
 
                         if (startPlugin(pluginId, false)) {
                             started++;
@@ -125,8 +135,8 @@ public class ExtensionsManager implements IExtensionsManager {
                             logger.info("");
                         }
                     }
+                    logger.info("Total plugins started: {}\n", started);
                 }
-                logger.info("Total plugins started: {}\n", started);
             }
             zkService.refreshLabels();
 
@@ -265,13 +275,6 @@ public class ExtensionsManager implements IExtensionsManager {
                 logger.info("Plugin {} started", pluginId);
                 parsePluginAuthnMethodExtensions(pluginId);
 
-            /*
-            //Notifies activation/deactivation for extensions handling authentication methods
-            Set<String> acrs = configurationHandler.retrieveAcrs();
-            plugExtensionMap.forEach(pair -> pair.getX().deactivate());
-            for (String acr : acrs) {
-                getExtensionForAcr(acr).activate();
-            } */
                 reconfigureServices(pluginId, path, pluginManager.getPluginClassLoader(pluginId));
                 success = true;
 
@@ -370,6 +373,7 @@ public class ExtensionsManager implements IExtensionsManager {
                     if (!validFileNames.contains(p.getFileName().toString())) {
                         try {
                             Files.delete(p);
+                            logger.info("Unrecognized file {} deleted", p.toString());
                         } catch (Exception e) {
                             logger.error("Error deleting unnecesary file {}: {}", p.toString(), e.getMessage());
                         }

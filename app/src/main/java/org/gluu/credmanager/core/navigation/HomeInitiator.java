@@ -83,7 +83,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
                         //go straight without the need for showing UI
                         logger.debug("Taking user to homepage...");
                         User user = Utils.managedBean(SessionContext.class).getUser();
-                        WebUtils.execRedirect(user.isAdmin()? WebUtils.ADMIN_PAGE_URL : WebUtils.USER_PAGE_URL);
+                        WebUtils.execRedirect(/*user.isAdmin()? WebUtils.ADMIN_PAGE_URL : */WebUtils.USER_PAGE_URL);
                         break;
                     default:
                         //Added to pass style checker

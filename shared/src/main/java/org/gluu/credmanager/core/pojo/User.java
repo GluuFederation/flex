@@ -28,10 +28,6 @@ public class User {
         return givenName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public boolean isAdmin() {
         return admin;
     }
@@ -54,10 +50,6 @@ public class User {
 
     public void setGivenName(String givenName) {
         this.givenName = givenName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public void setAdmin(boolean admin) {

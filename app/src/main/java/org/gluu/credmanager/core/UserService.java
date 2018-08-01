@@ -59,6 +59,7 @@ public class UserService {
         u.setUserName(getClaim(claims, "user_name"));
         logger.trace("Creating a user instance from claims. Username is {}", u.getUserName());
 
+        u.setLastName(getClaim(claims, "family_name"));
         u.setGivenName(getClaim(claims, "given_name"));
         String inum = getClaim(claims, "inum");
 

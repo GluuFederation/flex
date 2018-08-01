@@ -40,6 +40,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
     private static final String LOCATION_TYPE_PROPERTY = "location_type";
     private static final String LOCATION_PATH_PROPERTY = "location_path";
     private static final String FILENAME_TEMPLATE = "casa-external_{0}.py";
+    private static final List<String> NOT_REPLACEABLE_SCRIPTS = ConfigurationHandler.DEFAULT_SUPPORTED_METHODS;
 
     @Inject
     private Logger logger;
@@ -84,7 +85,6 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
         boolean anyChanged = false;
         Set<String> acrs = confHandler.getSettings().getAcrPluginMap().keySet();
-        acrs.retainAll(confHandler.getEnabledAcrs());
 
         logger.info("AuthnScriptsReloader. Running timer job for acrs: {}", acrs.toString());
         for (String acr : acrs) {
@@ -95,10 +95,13 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                 current = scriptFingerPrint(script);
                 scriptFingerPrints.put(acr, current);
 
-                if (previous != null && !previous.equals(current)) {
+                if (previous == null && !NOT_REPLACEABLE_SCRIPTS.contains(acr)) {
+                    //This script has just appeared (ie it's the first run of this timer or was checked enabled in methods.zul)
+                    copyToLibsDir(script);
+                } else if (previous != null && !previous.equals(current)) {
                     logger.info("Changes detected in {} script", acr);
                     //the script changed... Out-of-the-box methods' scripts must not be copied
-                    if (!ConfigurationHandler.DEFAULT_SUPPORTED_METHODS.contains(acr)) {
+                    if (!NOT_REPLACEABLE_SCRIPTS.contains(acr)) {
                         copyToLibsDir(script);
                     }
                     //Force extension reloading (normally to re-read configuration properties)
