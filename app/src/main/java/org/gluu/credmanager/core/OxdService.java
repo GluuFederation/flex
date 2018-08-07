@@ -14,6 +14,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.conf.OxdClientSettings;
@@ -22,6 +24,7 @@ import org.gluu.credmanager.misc.Utils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import org.slf4j.Logger;
 import org.xdi.oxd.client.CommandClient;
 import org.xdi.oxd.common.Command;
@@ -78,7 +81,15 @@ public class OxdService {
     @PostConstruct
     public void inited() {
         mapper =  new ObjectMapper();
-        client = new ResteasyClientBuilder().build();
+
+        //provide means to revert to default connection manager... just in case
+        if (System.getProperty("httpclient.DefaultClientConnManager") != null) {
+            client = new ResteasyClientBuilder().build();
+        } else {
+            ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(new DefaultHttpClient(new PoolingClientConnectionManager()));
+            client = new ResteasyClientBuilder().httpEngine(engine).build();
+        }
+
     }
 
     public boolean initialize() {
@@ -432,10 +443,14 @@ public class OxdService {
         ResteasyWebTarget target = client.target(String.format("https://%s:%s/%s", config.getHost(), config.getPort(), path));
         Response response = target.request().header("Authorization", authz).post(Entity.json(payload));
 
-        CommandResponse cmdResponse = response.readEntity(CommandResponse.class);
-        logger.trace("Response received was \n{}", cmdResponse == null ? null : cmdResponse.getData().toString());
+        try {
+            CommandResponse cmdResponse = response.readEntity(CommandResponse.class);
+            logger.trace("Response received was \n{}", cmdResponse == null ? null : cmdResponse.getData().toString());
 
-        return cmdResponse.getStatus().equals(ResponseStatus.OK) ? mapper.convertValue(cmdResponse.getData(), responseClass) : null;
+            return cmdResponse.getStatus().equals(ResponseStatus.OK) ? mapper.convertValue(cmdResponse.getData(), responseClass) : null;
+        } finally {
+            response.close();
+        }
 
     }
 

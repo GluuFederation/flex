@@ -123,7 +123,7 @@ public class OxdViewModel extends MainViewModel {
         //Triger a new registration only if host/port changed, otherwise call update site operation
         if (lastWorkingConfig.getHost().equalsIgnoreCase(oxdSettings.getHost()) && lastWorkingConfig.getPort() == oxdSettings.getPort()) {
             try {
-                //TODO: oxd-3.1.4 will allow several post-logout uris: https://github.com/GluuFederation/oxd/issues/217
+                //TODO: oxd-4.0 will allow several post-logout uris: https://github.com/GluuFederation/oxd/issues/217
                 //This way instead of replacing the postlogout I might just add it, thus, when logging out oxauth will not give error
                 //When a new client is created (see else branch), the error at logout cannot be avoided
                 if (!oxdService.updateSite(oxdSettings.getPostLogoutUri(), null)) {
