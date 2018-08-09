@@ -2,15 +2,13 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <vlayout viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.MenuViewModel')">
+    <vlayout viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.MenuViewModel')" sclass="padded">
 
-        <vlayout sclass="padded">
-            <n:span class="small">&#160;</n:span>
-        </vlayout>
+        <vlayout sclass="padded">&#160;</vlayout>
 
         <div if="${sessionContext.user ne null}" visible="@load(not empty vm.authnMethods)">
             <a href="/user.zul" label="${labels.usr.menu_main2fa}" />
-            <vlayout children="@load(vm.authnMethods)">
+            <vlayout children="@load(vm.authnMethods)" style="padding-left:15px" sclass="dpadded">
                 <template name="children">
                     <a label="${c:l(each.panelTitleKey)}" href="${vm.getAuthnMethodPageUrl(each)}" />
                 </template>

@@ -5,9 +5,7 @@
  */
 package org.gluu.credmanager.ui.vm.user;
 
-import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.conf.sndfactor.EnforcementPolicy;
-import org.gluu.credmanager.core.ConfigurationHandler;
 import org.gluu.credmanager.core.ExtensionsManager;
 import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.ui.UIUtils;
@@ -38,9 +36,6 @@ import java.util.stream.Collectors;
 public class UserPreferenceViewModel extends UserViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-
-    @WireVariable("configurationHandler")
-    private ConfigurationHandler confHandler;
 
     @WireVariable("extensionsManager")
     private ExtensionsManager extManager;
@@ -89,11 +84,10 @@ public class UserPreferenceViewModel extends UserViewModel {
     @Init(superclass = true)
     public void childInit() {
 
-        MainSettings settings = confHandler.getSettings();
         selectedMethod = user.getPreferredMethod();
         noMethodName = Labels.getLabel("usr.method.none");
 
-        Set<String> enabledMethods = confHandler.getEnabledAcrs();
+        Set<String> enabledMethods = confSettings.getAcrPluginMap().keySet();
         List<Pair<AuthnMethod, Integer>> userMethodsCount = userService.getUserMethodsCount(user.getId(), enabledMethods);
 
         availMethods = userMethodsCount.stream().map(Pair::getX)
@@ -105,11 +99,11 @@ public class UserPreferenceViewModel extends UserViewModel {
 
         //Note: It may happen user already has enrolled credentials, but admin changed availability of method. In that
         //case user should not be able to edit
-        uiEditable = totalCreds >= settings.getMinCredsFor2FA() && availMethods.size() > 0;
-        uiNotEnoughCredsFor2FA = totalCreds < settings.getMinCredsFor2FA() && enabledMethods.size() > 0;
+        uiEditable = totalCreds >= confSettings.getMinCredsFor2FA() && availMethods.size() > 0;
+        uiNotEnoughCredsFor2FA = totalCreds < confSettings.getMinCredsFor2FA() && enabledMethods.size() > 0;
 
         availMethods.add(new Pair<>(null, noMethodName));
-        uiAllowedToSetPolicy = settings.getEnforcement2FA().contains(EnforcementPolicy.CUSTOM);
+        uiAllowedToSetPolicy = confSettings.getEnforcement2FA().contains(EnforcementPolicy.CUSTOM);
     }
 
     @NotifyChange({"uiEditing", "selectedMethod"})

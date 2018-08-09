@@ -5,7 +5,6 @@
  */
 package org.gluu.credmanager.ui.vm;
 
-import org.gluu.credmanager.core.UserService;
 import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.extension.navigation.MenuType;
 import org.gluu.credmanager.extension.navigation.NavigationMenu;
@@ -40,8 +39,8 @@ public class MenuViewModel extends UserViewModel {
         return authnMethods;
     }
 
-    @Init
-    public void init() {
+    @Init(superclass = true)
+    public void childInit() {
         authnMethods = userService.getLiveAuthnMethods();
         pluginMenuItems = menuService.getMenusOfType(MenuType.USER);
     }

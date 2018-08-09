@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gluu.credmanager.conf.sndfactor.EnforcementPolicy;
 import org.gluu.credmanager.conf.sndfactor.TrustedDevice;
-import org.gluu.credmanager.core.ConfigurationHandler;
 import org.gluu.credmanager.ui.UIUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -12,7 +11,6 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Checkbox;
 
@@ -31,9 +29,6 @@ import static org.gluu.credmanager.conf.sndfactor.EnforcementPolicy.EVERY_LOGIN;
 public class PolicyViewModel extends UserViewModel {
 
     private Logger logger = LogManager.getLogger(getClass());
-
-    @WireVariable("configurationHandler")
-    private ConfigurationHandler confHandler;
 
     private boolean uiHasPreferredMethod;
     private boolean uiAllowedToSetPolicy;
@@ -61,7 +56,7 @@ public class PolicyViewModel extends UserViewModel {
     public void childInit() throws Exception {
 
         uiHasPreferredMethod = user.getPreferredMethod() != null;
-        uiAllowedToSetPolicy = confHandler.getSettings().getEnforcement2FA().contains(EnforcementPolicy.CUSTOM);
+        uiAllowedToSetPolicy = confSettings.getEnforcement2FA().contains(EnforcementPolicy.CUSTOM);
         Pair<Set<String>, List<TrustedDevice>> police = userService.get2FAPolicyData(user.getId());
         enforcementPolicies = police.getX();
         trustedDevices = police.getY();

@@ -5,21 +5,17 @@
  */
 package org.gluu.credmanager.ui.vm.user;
 
+import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.core.*;
 import org.gluu.credmanager.core.pojo.BrowserInfo;
 import org.gluu.credmanager.core.pojo.User;
 import org.gluu.credmanager.extension.AuthnMethod;
-import org.gluu.credmanager.extension.navigation.MenuType;
-import org.gluu.credmanager.extension.navigation.NavigationMenu;
 import org.gluu.credmanager.ui.CredRemovalConflict;
-import org.gluu.credmanager.ui.MenuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
@@ -41,25 +37,26 @@ public class UserViewModel {
     private SessionContext sessionContext;
 
     @WireVariable("configurationHandler")
-    ConfigurationHandler confHandler;
+    private ConfigurationHandler confHandler;
 
     @WireVariable
     public UserService userService;
 
-    User user;
+    MainSettings confSettings;
 
-    private int minCredsFor2FA;
+    User user;
 
     @Init
     public void init() {
         user = sessionContext.getUser();
-        minCredsFor2FA = confHandler.getSettings().getMinCredsFor2FA();
+        //Note MainSettings is not injectable in ViewModels
+        confSettings = confHandler.getSettings();
     }
 
     public String getAuthnMethodPageUrl(AuthnMethod method) {
 
         String page = method.getPageUrl();
-        String pluginId = confHandler.getSettings().getAcrPluginMap().get(method.getAcr());
+        String pluginId = confSettings.getAcrPluginMap().get(method.getAcr());
         if (pluginId != null) {
             page = String.format("/%s/%s/%s", ExtensionsManager.PLUGINS_EXTRACTION_DIR, pluginId, page);
         }
@@ -95,9 +92,10 @@ public class UserViewModel {
 
         //Assume removal has no problem
         String message = null;
-        Set<String> enabledMethods = confHandler.getEnabledAcrs();
+        Set<String> enabledMethods = confSettings.getAcrPluginMap().keySet();
         List<Pair<AuthnMethod, Integer>> userMethodsCount = userService.getUserMethodsCount(user.getId(), enabledMethods);
         int totalCreds = userMethodsCount.stream().mapToInt(Pair::getY).sum();
+        int minCredsFor2FA = confSettings.getMinCredsFor2FA();
 
         if (totalCreds == minCredsFor2FA) {
             message = CredRemovalConflict.CREDS2FA_NUMBER_UNDERFLOW.getMessage(minCredsFor2FA);

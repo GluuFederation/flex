@@ -87,7 +87,7 @@
                                 <a sclass="thumbnail" href="${each.pageUrl}" style="text-decoration:none">
                                     <vlayout sclass="caption">
                                         <n:h4>${c:l(each.panelTitleKey)}</n:h4>
-                                        <label value="${c:l(each.panelTextKey)}" />
+                                        <label value="${c:l(each.panelTextKey)}" sclass="de_emphasized" />
                                         <div align="center">
                                             <button label="${labels.general.go}" sclass="btn-success" href="${each.pageUrl}"/>
                                         </div>
