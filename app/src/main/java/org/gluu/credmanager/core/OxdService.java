@@ -136,7 +136,6 @@ public class OxdService {
                                 logger.warn("An error occured while extending the lifetime of the associated oxd client.");
                             }
                         }
-                        settings.save();
                         success = true;
 
                     } else {

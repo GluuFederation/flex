@@ -72,12 +72,12 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
                 .map(TrustedDevicesSettings::getDeviceExpirationDays).orElse(TRUSTED_DEVICE_EXPIRATION_DAYS));
     }
 
-    public void activate() {
+    public void activate(int gap) {
         try {
             int oneDay = (int) TimeUnit.DAYS.toSeconds(1);
             timerService.addListener(this, quartzJobName);
             //Start in one second and repeat indefinitely once every day
-            timerService.schedule(quartzJobName, 1, -1, oneDay);
+            timerService.schedule(quartzJobName, gap, -1, oneDay);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

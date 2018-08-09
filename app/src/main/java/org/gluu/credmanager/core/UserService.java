@@ -293,10 +293,11 @@ public class UserService {
 
     private List<AuthnMethod> getLiveAuthnMethods(boolean sorted) {
 
-        Map<String, Integer> authnMethodLevels = confHandler.getAcrLevelMapping();
         Set<String> mappedAcrs = confHandler.getSettings().getAcrPluginMap().keySet();
         Stream<AuthnMethod> stream = extManager.getAuthnMethodExts().stream().filter(aMethod -> mappedAcrs.contains(aMethod.getAcr()));
         if (sorted) {
+            //An important invariant is that mappedAcrs set is fully contained in authnMethodLevels.keySet()
+            Map<String, Integer> authnMethodLevels = confHandler.getAcrLevelMapping();
             stream = stream.sorted(Comparator.comparing(aMethod -> -authnMethodLevels.get(aMethod.getAcr())));
         }
         return stream.collect(Collectors.toList());

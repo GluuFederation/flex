@@ -71,16 +71,12 @@ public class MainSettingsProducer {
                     settings = mapper.readValue(srcConfigFile, MainSettings.class);
                     settings.setSourceFile(srcConfigFile);
 
-                    if (settings.getAcrPluginMap() == null) {
-                        settings.setAcrPluginMap(new HashMap<>());
-                    }
-
                     List<String> enabledMethods = settings.getEnabledMethods();
-                    Map<String, String> acrPluginMapping = settings.getAcrPluginMap();
                     if (Utils.isNotEmpty(enabledMethods)) {
+                        //If acr plugin mapping does not exist and deprecated "enabled_methods" property does, migrate data
+                        Map<String, String> acrPluginMapping = settings.getAcrPluginMap();
 
-                        if (acrPluginMapping.size() == 0) {
-                            //If acr plugin mapping does not exist and deprecated "enabled_methods" property does, migrate data
+                        if (Utils.isEmpty(acrPluginMapping)) {
                             acrPluginMapping = new HashMap<>();
                             for (String acr : enabledMethods) {
                                 acrPluginMapping.put(acr, null);
@@ -89,7 +85,8 @@ public class MainSettingsProducer {
                         }
                         //Dismiss "enabled_methods" contents
                         settings.setEnabledMethods(null);
-                        settings.save();
+                        //Later, configuration handler will revise that the mapping generated makes sense and will save to disk
+                        //Additionally script reloader timer will only keep entries for enabled acrs
                     }
                 } catch (Exception e) {
                     logger.error("Error parsing configuration file {}", CONF_FILE_RELATIVE_PATH);

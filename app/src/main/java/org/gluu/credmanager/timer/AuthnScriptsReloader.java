@@ -7,6 +7,7 @@ package org.gluu.credmanager.timer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.core.ConfigurationHandler;
 import org.gluu.credmanager.core.ExtensionsManager;
 import org.gluu.credmanager.core.LdapService;
@@ -49,7 +50,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
     private TimerService timerService;
 
     @Inject
-    private ConfigurationHandler confHandler;
+    private MainSettings confSettings;
 
     @Inject
     private LdapService ldapService;
@@ -62,11 +63,11 @@ public class AuthnScriptsReloader extends JobListenerSupport {
     private String pythonLibLocation;
     private ObjectMapper mapper;
 
-    public void init() {
+    public void init(int gap) {
         try {
             timerService.addListener(this, scriptsJobName);
             //Start in 2 seconds and repeat indefinitely
-            timerService.schedule(scriptsJobName, 2, -1, SCAN_INTERVAL);
+            timerService.schedule(scriptsJobName, gap, -1, SCAN_INTERVAL);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -84,30 +85,48 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         oxCustomScript script;
 
         boolean anyChanged = false;
-        Set<String> acrs = confHandler.getSettings().getAcrPluginMap().keySet();
+        Set<String> acrs = confSettings.getAcrPluginMap().keySet();
+        List<String> toBeRemoved = new ArrayList<>();
 
         logger.info("AuthnScriptsReloader. Running timer job for acrs: {}", acrs.toString());
         for (String acr : acrs) {
             script = getScript(acr);
 
             if (script != null) {
-                previous = scriptFingerPrints.get(acr);
-                current = scriptFingerPrint(script);
-                scriptFingerPrints.put(acr, current);
+                if (script.isEnabled()) {
+                    previous = scriptFingerPrints.get(acr);
+                    current = scriptFingerPrint(script);
+                    scriptFingerPrints.put(acr, current);
 
-                if (previous == null && !NOT_REPLACEABLE_SCRIPTS.contains(acr)) {
-                    //This script has just appeared (ie it's the first run of this timer or was checked enabled in methods.zul)
-                    copyToLibsDir(script);
-                } else if (previous != null && !previous.equals(current)) {
-                    logger.info("Changes detected in {} script", acr);
-                    //the script changed... Out-of-the-box methods' scripts must not be copied
-                    if (!NOT_REPLACEABLE_SCRIPTS.contains(acr)) {
+                    if (previous == null && !NOT_REPLACEABLE_SCRIPTS.contains(acr)) {
+                        //This script has just appeared (ie it's the first run of this timer or was checked enabled in methods.zul)
                         copyToLibsDir(script);
+                        anyChanged = true;
+                    } else if (previous != null && !previous.equals(current)) {
+                        logger.info("Changes detected in {} script", acr);
+                        //the script changed... Out-of-the-box methods' scripts must not be copied
+                        if (!NOT_REPLACEABLE_SCRIPTS.contains(acr)) {
+                            copyToLibsDir(script);
+                        }
+                        //Force extension reloading (normally to re-read configuration properties)
+                        extManager.getExtensionForAcr(acr).ifPresent(AuthnMethod::reloadConfiguration);
+                        anyChanged = true;
                     }
-                    //Force extension reloading (normally to re-read configuration properties)
-                    extManager.getExtensionForAcr(acr).ifPresent(AuthnMethod::reloadConfiguration);
-                    anyChanged = true;
+                } else {
+                    toBeRemoved.add(acr);
                 }
+            }
+        }
+
+        if (toBeRemoved.size() > 0) {
+            logger.info("The following scripts were externally disabled: {}", toBeRemoved.toString());
+            logger.warn("They will be removed from Gluu Casa configuration file");
+            acrs.removeAll(toBeRemoved);
+
+            try {
+                confSettings.save();
+            } catch (Exception e) {
+                logger.error("Failure to update configuration file!");
             }
         }
 

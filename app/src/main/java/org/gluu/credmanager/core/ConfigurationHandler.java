@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.credmanager.conf.MainSettings;
 import org.gluu.credmanager.conf.sndfactor.EnforcementPolicy;
-import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.misc.AppStateEnum;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.timer.AuthnScriptsReloader;
@@ -28,7 +27,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author jgomer
@@ -71,13 +69,13 @@ public class ConfigurationHandler extends JobListenerSupport {
     @Inject
     private AuthnScriptsReloader scriptsReloader;
 
-    private Set<String> serverAcrs;
-
     private String acrQuartzJobName;
 
     private ObjectMapper mapper;
 
     private AppStateEnum appState;
+
+    private boolean acrsRetrieved;
 
     @PostConstruct
     private void inited() {
@@ -117,29 +115,6 @@ public class ConfigurationHandler extends JobListenerSupport {
         return settings;
     }
 
-    /**
-     * Performs a GET to the OIDC metadata URL and extracts the ACR values supported by the server
-     * @return A Set of String values
-     * @throws Exception If an networking or parsing error occurs
-     */
-    public Set<String> retrieveAcrs() {
-
-        try {
-            String oidcEndpointURL = ldapService.getOIDCEndpoint();
-            //too noisy log statement
-            //logger.trace("Obtaining \"acr_values_supported\" from server {}", oidcEndpointURL);
-            JsonNode values = mapper.readTree(new URL(oidcEndpointURL)).get("acr_values_supported");
-
-            //Store server's supported acr values in a set
-            serverAcrs = new HashSet<>();
-            values.forEach(node -> serverAcrs.add(node.asText()));
-        } catch (Exception e) {
-            logger.error("Could not retrieve the list of acrs supported by this server: {}", e.getMessage());
-        }
-        return serverAcrs;
-
-    }
-
     @Override
     public String getName() {
         return acrQuartzJobName;
@@ -148,13 +123,15 @@ public class ConfigurationHandler extends JobListenerSupport {
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
 
-        try {
-            if (serverAcrs == null) {
-                Date nextJobExecutionAt = context.getNextFireTime();
-                //Do an attempt to retrieve acrs
-                retrieveAcrs();
+        if (!acrsRetrieved) {
+            //Do an attempt to retrieve acrs
+            Set<String> serverAcrs = retrieveAcrs();
+            acrsRetrieved = serverAcrs != null;
 
-                if (serverAcrs == null) {
+            try {
+                if (!acrsRetrieved) {
+                    Date nextJobExecutionAt = context.getNextFireTime();
+
                     if (nextJobExecutionAt == null) {     //Run out of attempts!
                         logger.warn("The list of supported acrs could not be obtained.");
                         setAppState(AppStateEnum.FAIL);
@@ -166,8 +143,6 @@ public class ConfigurationHandler extends JobListenerSupport {
                         //This is required to guarantee the list of acrs is really complete (after oxauth starts, the list
                         //can still contain just a few elements). In a development environment it's unlikely this occurs
                         Thread.sleep(RETRIES * RETRY_INTERVAL * 100);
-                        logger.debug("Additional attempt");
-                        retrieveAcrs();
                     }
 
                     if (serverAcrs.contains(DEFAULT_ACR)) {
@@ -178,12 +153,20 @@ public class ConfigurationHandler extends JobListenerSupport {
 
                         if (oxdService.initialize()) {
                             extManager.scan();
-                            setAppState(AppStateEnum.OPERATING);
-                            refreshAcrPluginMapping();
-                            scriptsReloader.init();
-                            devicesSweeper.setup(settings.getTrustedDevicesSettings());
-                            devicesSweeper.activate();
-                            logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
+                            computeAcrPluginMapping();
+
+                            try {
+                                settings.save();
+                                setAppState(AppStateEnum.OPERATING);
+                            } catch (Exception e) {
+                                setAppState(AppStateEnum.FAIL);
+                            }
+                            if (appState.equals(AppStateEnum.OPERATING)) {
+                                logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
+                                scriptsReloader.init(1);
+                                devicesSweeper.setup(settings.getTrustedDevicesSettings());
+                                devicesSweeper.activate(10);
+                            }
                         } else {
                             logger.warn("oxd configuration could not be initialized.");
                             setAppState(AppStateEnum.FAIL);
@@ -193,10 +176,11 @@ public class ConfigurationHandler extends JobListenerSupport {
                         setAppState(AppStateEnum.FAIL);
                     }
                 }
-            }
-        } catch (Exception e) {
-            if (!appState.equals(AppStateEnum.OPERATING)) {
-                logger.error(e.getMessage(), e);
+
+            } catch (Exception e) {
+                if (!appState.equals(AppStateEnum.OPERATING)) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
 
@@ -233,10 +217,28 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     }
 
-    public Set<String> getEnabledAcrs() {
-        Set<String> plugged = new HashSet<>(settings.getAcrPluginMap().keySet());
-        plugged.retainAll(retrieveAcrs());
-        return plugged;
+    /**
+     * Performs a GET to the OIDC metadata URL and extracts the ACR values supported by the server
+     * @return A Set of String values or null if a networking or parsing error occurs
+     */
+    private Set<String> retrieveAcrs() {
+
+        try {
+            String oidcEndpointURL = ldapService.getOIDCEndpoint();
+            //too noisy log statement
+            //logger.trace("Obtaining \"acr_values_supported\" from server {}", oidcEndpointURL);
+            JsonNode values = mapper.readTree(new URL(oidcEndpointURL)).get("acr_values_supported");
+
+            //Add server's supported acr values
+            Set<String> serverAcrs = new HashSet<>();
+            values.forEach(node -> serverAcrs.add(node.asText()));
+            return serverAcrs;
+
+        } catch (Exception e) {
+            logger.error("Could not retrieve the list of acrs supported by this server: {}", e.getMessage());
+            return null;
+        }
+
     }
 
     private void setAppState(AppStateEnum state) {
@@ -259,7 +261,7 @@ public class ConfigurationHandler extends JobListenerSupport {
         Integer providedValue = settings.getMinCredsFor2FA();
 
         if (providedValue == null) {
-            logger.info("Using default value {} for minimum number of credentials to enable strong authentication");
+            logger.info("Using default value of {} for minimum number of credentials to enable strong authentication", defaultValue);
             settings.setMinCredsFor2FA(defaultValue);
         } else {
             if (providedValue < BOUNDS_MINCREDS_2FA.getX() || providedValue > BOUNDS_MINCREDS_2FA.getY()) {
@@ -301,24 +303,13 @@ public class ConfigurationHandler extends JobListenerSupport {
         }
     }
 
-    private void refreshAcrPluginMapping() {
+    private void computeAcrPluginMapping() {
 
         Map<String, String> mapping = settings.getAcrPluginMap();
+        Map<String, String> newMap = new HashMap<>();
 
-        if (Utils.isEmpty(mapping)) {
-            Set<String> acrs = extManager.getAuthnMethodExts().stream().map(AuthnMethod::getAcr).collect(Collectors.toSet());
-            acrs.addAll(DEFAULT_SUPPORTED_METHODS);
+        if (Utils.isNotEmpty(mapping)) {
 
-            //Try to build the map by inspecting system extensions
-            mapping = new HashMap<>();
-            for (String acr : acrs) {
-                if (extManager.pluginImplementsAuthnMethod(acr, null)) {
-                    mapping.put(acr, null);
-                }
-            }
-            settings.setAcrPluginMap(mapping);
-        } else {
-            Map<String, String> newMap = new HashMap<>();
             for (String acr : mapping.keySet()) {
                 //Is there a current runtime impl for this acr?
                 String plugId = mapping.get(acr);
@@ -330,16 +321,11 @@ public class ConfigurationHandler extends JobListenerSupport {
                     } else {
                         logger.warn("Plugin {} does not have extensions that can work with acr '{}' or plugin does not exist", plugId, acr);
                     }
-                    logger.warn("acr removed from configuration file...");
+                    logger.warn("acr removed from Gluu Casa configuration file...");
                 }
             }
-            settings.setAcrPluginMap(newMap);
-            try {
-                settings.save();
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
         }
+        settings.setAcrPluginMap(newMap);
 
     }
 
