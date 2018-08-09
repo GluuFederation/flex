@@ -24,9 +24,6 @@ public class organizationalUnit {
             requiredForEncode=true)
     private String[] ou;
 
-    @LDAPDNField
-    private String dn;
-
     /**
      * Retrieves the values for the field associated with the
      * ou attribute, if present.
@@ -50,14 +47,6 @@ public class organizationalUnit {
     public void setOu(final String... v)
     {
         this.ou = v;
-    }
-
-    public String getDn() {
-        return dn;
-    }
-
-    public void setDn(String dn) {
-        this.dn = dn;
     }
 
 }

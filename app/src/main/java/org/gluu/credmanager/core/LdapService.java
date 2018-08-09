@@ -314,15 +314,14 @@ public class LdapService implements ILdapService {
 
     public void prepareFidoBranch(String userInum){
 
-        String dn = String.format("ou=fido,inum=%s,%s", userInum, getPeopleDn());
-        organizationalUnit entry = get(organizationalUnit.class, dn);
+        String dn = getPersonDn(userInum);
+        organizationalUnit entry = get(organizationalUnit.class, String.format("ou=fido,%s", dn));
         if (entry == null) {
             logger.info("Non existing fido branch for {}, creating...", userInum);
             entry = new organizationalUnit();
-            entry.setDn(dn);
             entry.setOu("fido");
 
-            if (!modify(entry, organizationalUnit.class)) {
+            if (!add(entry, organizationalUnit.class, dn)) {
                 logger.error("Could not create fido branch");
             }
         }

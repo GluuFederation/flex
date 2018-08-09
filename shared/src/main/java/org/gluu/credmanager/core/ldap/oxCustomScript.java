@@ -31,10 +31,6 @@ public class oxCustomScript
             requiredForEncode=true)
     private String[] inum;
 
-    // The field used for optional attribute description.
-    @LDAPField
-    private String[] description;
-
     // The field used for optional attribute displayName.
     @LDAPField(filterUsage=FilterUsage.ALWAYS_ALLOWED)
     private String displayName;
@@ -62,10 +58,6 @@ public class oxCustomScript
     // The field used for optional attribute oxScript.
     @LDAPField
     private String[] oxScript;
-
-    // The field used for optional attribute oxScriptType.
-    @LDAPField
-    private String[] oxScriptType;
 
     /**
      * Retrieves the value for the field associated with the
@@ -141,6 +133,14 @@ public class oxCustomScript
         {
             return oxRevision[0];
         }
+    }
+
+    /**
+     * Whether the custom script represented by this object is enabled or not
+     * @return A boolean value
+     */
+    public boolean isEnabled() {
+        return Utils.isNotEmpty(gluuStatus) && Boolean.parseBoolean(gluuStatus[0]);
     }
 
     /**
