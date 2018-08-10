@@ -7,11 +7,13 @@ package org.gluu.casa.plugins.helloworld;
 
 import org.gluu.credmanager.extension.navigation.MenuType;
 import org.gluu.credmanager.extension.navigation.NavigationMenu;
+import org.pf4j.Extension;
 
 /**
- * A class implementing the {@link NavigationMenu} extension point.
+ * An extension class implementing the {@link NavigationMenu} extension point.
  * @author jgomer
  */
+@Extension
 public class HelloWorldMenu implements NavigationMenu {
 
     public String getContentsUrl() {
