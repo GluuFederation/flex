@@ -6,38 +6,45 @@
         <panelchildren sclass="padded">
             <vlayout spacing="12px">
                 <label value="${labels.adm.methods_text}"/>
-                <n:span sclass="de_emphasized">${labels.adm.methods_hint}</n:span>
-                <div align="center">
-                    <grid model="@load(vm.methods)" mold="paging" pageSize="15">
-                        <columns>
-                            <column width="35px" />
-                            <column label="${labels.adm.methods_acr}" />
-                            <column label="${labels.adm.methods_methodname}" />
-                            <column width="40%" label="${labels.adm.methods_plugin}" />
-                        </columns>
-                        <template name="model">
-                            <row>
-                                <checkbox checked="@load(each.enabled)" disabled="@load(each.enabled and not each.deactivable)"
-                                          onCheck="@command('checkMethod', acr=each.acr, checked=self.checked)" />
-                                <label value="${each.acr}" />
-                                <label value="${each.name}" />
-                                <listbox width="${sessionContext.onMobile ? '90%' : '200px'}" mold="select"
-                                         onSelect="@command('selectionChanged', acr=each.acr, index = self.selectedIndex)">
-                                    <listitem forEach="${each.plugins}" label="${each.y}" selected="${forEachStatus.previous.each.selectedPlugin eq each.x}" />
-                                </listbox>
-                                <!--listbox width="${sessionContext.onMobile ? '90%' : '200px'}" mold="select" model="@load(each.plugins)"
-                                         onSelect="@command('selectionChanged', evt=event, acr=each.acr)">
-                                    <template name="model">
-                                        <listitem label="@load(each.y)" selected="@load(forEachStatus.previous.each.selectedPlugin eq each.x)" />
-                                    </template>
-                                </listbox-->
-                            </row>
-                        </template>
-                    </grid>
-                    <separator />
-                    <separator />
-                    <button disabled="@load(empty vm.methods)" label="${labels.general.save}" sclass="btn-success" onClick="@command('save')" />
-                </div>
+                <zk choose="">
+                    <zk when="${empty vm.methods}">
+                        <n:p align="center"><n:br />${labels.adm.methods_hint_noscripts}</n:p>
+                    </zk>
+                    <zk>
+                        <n:span sclass="de_emphasized">${labels.adm.methods_hint}</n:span>
+                        <div align="center">
+                            <grid model="@load(vm.methods)" mold="paging" pageSize="15">
+                                <columns>
+                                    <column width="35px" />
+                                    <column label="${labels.adm.methods_acr}" />
+                                    <column label="${labels.adm.methods_methodname}" />
+                                    <column width="40%" label="${labels.adm.methods_plugin}" />
+                                </columns>
+                                <template name="model">
+                                    <row>
+                                        <checkbox checked="@load(each.enabled)" disabled="@load(each.enabled and not each.deactivable)"
+                                                  onCheck="@command('checkMethod', acr=each.acr, checked=self.checked)" />
+                                        <label value="${each.acr}" />
+                                        <label value="${each.name}" />
+                                        <listbox width="${sessionContext.onMobile ? '90%' : '200px'}" mold="select"
+                                                 onSelect="@command('selectionChanged', acr=each.acr, index = self.selectedIndex)">
+                                            <listitem forEach="${each.plugins}" label="${each.y}" selected="${forEachStatus.previous.each.selectedPlugin eq each.x}" />
+                                        </listbox>
+                                        <!--listbox width="${sessionContext.onMobile ? '90%' : '200px'}" mold="select" model="@load(each.plugins)"
+                                                 onSelect="@command('selectionChanged', evt=event, acr=each.acr)">
+                                            <template name="model">
+                                                <listitem label="@load(each.y)" selected="@load(forEachStatus.previous.each.selectedPlugin eq each.x)" />
+                                            </template>
+                                        </listbox-->
+                                    </row>
+                                </template>
+                            </grid>
+                            <separator />
+                            <separator />
+                            <button disabled="@load(empty vm.methods)" label="${labels.general.save}" sclass="btn-success" onClick="@command('save')" />
+                        </div>
+                    </zk>
+                </zk>
             </vlayout>
         </panelchildren>
     </panel>

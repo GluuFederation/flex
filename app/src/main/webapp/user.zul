@@ -23,7 +23,7 @@
             <zk if="${not vm.methodsAvailability}">
                 <separator />
                 <div sclass="callout padded">
-                    <label value="${labels.usr.strong.unavailable}" />
+                    <label value="${c:l(sessionContext.user.admin ? 'usr.strong.unavailable_admin' : 'usr.strong.unavailable')}" />
                 </div>
             </zk>
         </vlayout>
