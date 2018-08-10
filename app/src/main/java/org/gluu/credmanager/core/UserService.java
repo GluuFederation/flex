@@ -184,7 +184,7 @@ public class UserService {
         boolean success = false;
         try {
             PersonPreferences person = personPreferencesInstance(id);
-            person.setPreferredMethod(method);
+            person.setPreferredMethod(method == null ? new String[]{} : new String[]{method});
             success = ldapService.modify(person, PersonPreferences.class);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -278,16 +278,19 @@ public class UserService {
         logger.debug("Writing random enrollment code for {}", userId);
         String code = UUID.randomUUID().toString();
         Person person = ldapService.get(Person.class, ldapService.getPersonDn(userId));
-        person.setOxEnrollmentCode(code);
+        person.setEnrollmentCode(code);
         return ldapService.modify(person, Person.class) ? code : null;
 
     }
 
-    public boolean cleanRandEnrollmentCode(String userId) {
-        logger.trace("Removing enrollment code for {}", userId);
+    public void cleanRandEnrollmentCode(String userId) {
         Person person = ldapService.get(Person.class, ldapService.getPersonDn(userId));
-        person.setOxEnrollmentCode();
-        return ldapService.modify(person, Person.class);
+
+        if (Utils.isNotEmpty(person.getEnrollmentCode())) {
+            logger.trace("Removing enrollment code for {}", userId);
+            person.setEnrollmentCode();
+            ldapService.modify(person, Person.class);
+        }
     }
 
 

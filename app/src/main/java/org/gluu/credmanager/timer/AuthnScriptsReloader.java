@@ -14,6 +14,7 @@ import org.gluu.credmanager.core.LdapService;
 import org.gluu.credmanager.core.TimerService;
 import org.gluu.credmanager.core.ldap.oxCustomScript;
 import org.gluu.credmanager.extension.AuthnMethod;
+import org.gluu.credmanager.misc.Utils;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
@@ -173,9 +174,8 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         mapper = new ObjectMapper();
 
         //the following works fine in both windows dev environment, and linux VMs
-        pythonLibLocation = Optional.ofNullable(System.getenv("PYTHON_HOME")).orElse("/opt/jython");
-        pythonLibLocation += File.separator + "Lib";    //Capitalized... yes!
-        logger.info("Using {} as jython's lib path", pythonLibLocation);
+        pythonLibLocation = Utils.onWindows() ? System.getenv("PYTHON_HOME") + File.separator + "Lib" : "/opt/gluu/python/libs";
+        logger.info("Using {} as python's lib path", pythonLibLocation);
 
     }
 

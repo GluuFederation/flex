@@ -102,7 +102,7 @@ public class Person extends BaseLdapPerson {
      *          {@code null} if that attribute was not present in the entry or
      *          does not have any values.
      */
-    public String getFirstOxEnrollmentCode()
+    public String getEnrollmentCode()
     {
         if ((oxEnrollmentCode == null) ||
                 (oxEnrollmentCode.length == 0))
@@ -122,7 +122,7 @@ public class Person extends BaseLdapPerson {
      * @param  v  The values for the field associated with the
      *            oxEnrollmentCode attribute.
      */
-    public void setOxEnrollmentCode(final String... v)
+    public void setEnrollmentCode(final String... v)
     {
         this.oxEnrollmentCode = v;
     }
