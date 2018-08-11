@@ -10,6 +10,7 @@ import org.gluu.credmanager.core.OxdService;
 import org.gluu.credmanager.core.SessionContext;
 import org.gluu.credmanager.extension.navigation.MenuType;
 import org.gluu.credmanager.extension.navigation.NavigationMenu;
+import org.gluu.credmanager.misc.WebUtils;
 import org.gluu.credmanager.ui.MenuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,9 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author jgomer
@@ -61,19 +64,18 @@ public class HeaderViewModel {
             //When the session expires, the browser is taken to /index.zul (see zk.xml), so theoretically, the calls
             //to session-scoped method above will not yield null
             logger.trace("Log off attempt for {}", sessionContext.getUser().getUserName());
-            purgeSession();
+
             //After End-User has logged out, the Client might request to log him out of the OP too
             String idToken = authFlowContext.getIdToken();
             Executions.sendRedirect(oxdService.getLogoutUrl(idToken));
+
+            //Kill session
+            Optional.ofNullable(WebUtils.getServletRequest().getSession(false)).ifPresent(HttpSession::invalidate);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
 
     }
 
-    private void purgeSession() {
-        authFlowContext.setStage(AuthFlowContext.RedirectStage.NONE);
-        sessionContext.setUser(null);
-    }
 
 }

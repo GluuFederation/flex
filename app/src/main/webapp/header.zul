@@ -6,7 +6,7 @@
              viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.HeaderViewModel')">
 
         <hlayout width="180px">
-            <image sclass="logo" src="${sessionContext.logoDataUri}"/>
+            <image sclass="logo" src="${zkService.logoDataUri}"/>
         </hlayout>
         <div hflex="1" align="right" style="padding-right:5px">
             <!--attribute name="width" if="${sessionContext.onMobile}">50px</attribute-->

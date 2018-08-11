@@ -65,9 +65,8 @@ public class HomeViewModel {
             }
             updateBrowserInfo(jsonObject.get("name"), jsonObject.get("version"), mobile);
         }
-        sessionContext.updateCssPath();
-        //reloads this page so the navigation flow proceeds (see HomeInitiator class)
 
+        //reloads this page so the navigation flow proceeds (see HomeInitiator class)
         Executions.sendRedirect(null);
 
     }
