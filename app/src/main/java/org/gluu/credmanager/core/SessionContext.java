@@ -10,7 +10,6 @@ import org.gluu.credmanager.core.pojo.User;
 import org.gluu.credmanager.misc.Utils;
 import org.gluu.credmanager.service.ISessionContext;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -23,16 +22,13 @@ import java.util.Optional;
  */
 @Named
 @SessionScoped
+//TODO: methods getCustdir, getCssPath, getFaviconDataUri will all be transfered after UI re-design takes place, entails editing all .zul files
 public class SessionContext implements ISessionContext, Serializable {
 
     @Inject
     private ZKService zkService;
 
     private User user;
-
-    private String custdir;
-
-    private String cssPath;
 
     private boolean onMobile;
 
@@ -42,36 +38,12 @@ public class SessionContext implements ISessionContext, Serializable {
 
     private ZoneOffset zoneOffset;
 
-    private String logoDataUri;
-
-    private String faviconDataUri;
-
-    @PostConstruct
-    private void inited() {
-
-        //these 3 variables are fixed during the whole session no matter if a different thing was specified later via admin UI
-        custdir = zkService.getAssetsPrefix();
-        logoDataUri = zkService.getLogoDataUri();
-        faviconDataUri = zkService.getFaviconDataUri();
-        updateCssPath();
-
-    }
-
-    public void updateCssPath() {
-        String path = "org.gluu.credmanager.css.";
-        path += onMobile ? "mobile" : "desktop";
-        //The Java variables are defined in ZK descriptor, see zk.xml
-        path = custdir + System.getProperty(path);
-        setCssPath(path);
-
-    }
-
     public ZoneOffset getZoneOffset() {
         return zoneOffset;
     }
 
     public String getCustdir() {
-        return custdir;
+        return zkService.getAssetsPrefix();
     }
 
     public User getUser() {
@@ -91,15 +63,15 @@ public class SessionContext implements ISessionContext, Serializable {
     }
 
     public String getCssPath() {
-        return cssPath;
-    }
 
-    public String getLogoDataUri() {
-        return logoDataUri;
+        String path = "org.gluu.credmanager.css.";
+        path += onMobile ? "mobile" : "desktop";
+        //The Java variables are defined in ZK descriptor, see zk.xml
+        return getCustdir() + System.getProperty(path);
     }
 
     public String getFaviconDataUri() {
-        return faviconDataUri;
+        return zkService.getFaviconDataUri();
     }
 
     public int getScreenWidth() {
@@ -116,10 +88,6 @@ public class SessionContext implements ISessionContext, Serializable {
 
     public void setOnMobile(boolean onMobile) {
         this.onMobile = onMobile;
-    }
-
-    public void setCssPath(String cssPath) {
-        this.cssPath = cssPath;
     }
 
     public void setScreenWidth(int screenWidth) {

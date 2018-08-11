@@ -5,10 +5,9 @@
  */
 package org.gluu.credmanager.ui.vm.admin.branding;
 
-
 /**
  * @author jgomer
  */
 public enum BrandingOption {
-    NONE, CUSTOM_PATH, EXTRA_CSS
+    NONE, EXTERNAL_PATH, EXTRA_CSS
 }

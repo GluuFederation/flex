@@ -146,7 +146,6 @@ public class ConfigurationHandler extends JobListenerSupport {
                     }
 
                     if (serverAcrs.contains(DEFAULT_ACR)) {
-                        computeBrandingPath();
                         computeMinCredsForStrongAuth();
                         computePassResetable();
                         compute2FAEnforcementPolicy();
@@ -269,21 +268,6 @@ public class ConfigurationHandler extends JobListenerSupport {
                         BOUNDS_MINCREDS_2FA.getX(), BOUNDS_MINCREDS_2FA.getY(), defaultValue);
                 settings.setMinCredsFor2FA(defaultValue);
             }
-        }
-
-    }
-
-    private void computeBrandingPath() {
-
-        String path = settings.getBrandingPath();
-        try {
-            if (Utils.isNotEmpty(path) && !Files.isDirectory(Paths.get(path))) {
-                throw new IOException("Not a directory");
-            }
-        } catch (Exception e) {
-            logger.error("Filesystem directory {} for custom branding is wrong. Using default theme", path);
-            logger.error(e.getMessage(), e);
-            settings.setBrandingPath(null);
         }
 
     }

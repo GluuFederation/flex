@@ -16,17 +16,11 @@
                 <vlayout sclass="padded">
                     <radio label="${labels.adm.branding_use_default}" selected="@load(vm.brandingOption eq 'NONE')"
                            onCheck="@command('changeBranding', val='NONE')" radiogroup="groupie" onClick="@command('save')" />
-                    <radio label="${labels.adm.branding_use_custom}" selected="@load(vm.brandingOption eq 'CUSTOM_PATH')"
-                           onCheck="@command('changeBranding', val='CUSTOM_PATH')" onClick="path.focus()" radiogroup="groupie" />
+                    <radio label="${labels.adm.branding_use_custom}" selected="@load(vm.brandingOption eq 'EXTERNAL_PATH')"
+                           onCheck="@command('changeBranding', val='EXTERNAL_PATH')" radiogroup="groupie" onClick="@command('save')" />
 
-                    <vlayout visible="@load(vm.brandingOption eq 'CUSTOM_PATH')" spacing="12px"
-                             style="${sessionContext.onMobile ? '' : 'padding-left:30px'}" sclass="padded">
-                        <div sclass="s16" align="right">
-                            <textbox sclass="s16 form-control" value="@bind(vm.brandingPath)"
-                                     onOK="@command('save')" id="path" />
-                            <separator />
-                            <button label="${labels.general.save}" sclass="btn-success" onClick="@command('save')" />
-                        </div>
+                    <vlayout visible="@load(vm.brandingOption eq 'EXTERNAL_PATH')"
+                             style="${sessionContext.onMobile ? '' : 'padding-left:30px'}" sclass="dpadded">
                         <n:span class="de_emphasized">${labels.adm.branding_learn}</n:span>
                     </vlayout>
 
