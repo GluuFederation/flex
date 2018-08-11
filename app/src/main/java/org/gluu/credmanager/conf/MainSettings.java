@@ -33,6 +33,10 @@ public class MainSettings {
     @JsonProperty("enable_pass_reset")
     private boolean enablePassReset;
 
+    @JsonProperty("use_branding")
+    private boolean useExternalBranding;
+
+    //Maintained for backwards compatibility reasons
     @JsonProperty("branding_path")
     private String brandingPath;
 
@@ -103,6 +107,10 @@ public class MainSettings {
         return brandingPath;
     }
 
+    public boolean isUseExternalBranding() {
+        return useExternalBranding;
+    }
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public List<String> getEnabledMethods() {
         return enabledMethods;
@@ -163,6 +171,10 @@ public class MainSettings {
 
     public void setBrandingPath(String brandingPath) {
         this.brandingPath = brandingPath;
+    }
+
+    public void setUseExternalBranding(boolean useExternalBranding) {
+        this.useExternalBranding = useExternalBranding;
     }
 
     public void setMinCredsFor2FA(Integer minCredsFor2FA) {

@@ -36,6 +36,7 @@ public class ZKService {
 
     public static final String EXTERNAL_LABELS_DIR = "labels";
     public static final String DEFAULT_CUSTOM_PATH = "/custom";
+    public static final Path STATIC_FILEPATH = Paths.get(System.getProperty("server.base"), "static");
 
     private static final String DEFAULT_LOGO_URL = "/images/logo.png";
     private static final String DEFAULT_FAVICON_URL = "/images/favicon.ico";
@@ -90,7 +91,7 @@ public class ZKService {
     }
 
     public String getAssetsPrefix() {
-        return Utils.isEmpty(confHandler.getSettings().getBrandingPath()) ? "" : DEFAULT_CUSTOM_PATH;
+        return confHandler.getSettings().isUseExternalBranding() ? DEFAULT_CUSTOM_PATH : "";
     }
 
     public String getLogoDataUri() {

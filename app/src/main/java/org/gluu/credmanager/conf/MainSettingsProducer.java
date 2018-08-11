@@ -7,6 +7,8 @@ package org.gluu.credmanager.conf;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.gluu.credmanager.core.ResourceExtractor;
+import org.gluu.credmanager.core.ZKService;
 import org.gluu.credmanager.misc.Utils;
 import org.slf4j.Logger;
 
@@ -32,6 +34,9 @@ public class MainSettingsProducer {
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private ResourceExtractor resourceExtractor;
 
     private String getGluuBase() {
         String candidateGluuBase = System.getProperty("gluu.base");
@@ -87,6 +92,23 @@ public class MainSettingsProducer {
                         settings.setEnabledMethods(null);
                         //Later, configuration handler will revise that the mapping generated makes sense and will save to disk
                         //Additionally script reloader timer will only keep entries for enabled acrs
+                    }
+
+                    String brandingPathStr = settings.getBrandingPath();
+                    if (Utils.isNotEmpty(brandingPathStr)) {
+
+                        try {
+                            Path brandingPath = Paths.get(brandingPathStr);
+                            resourceExtractor.createDirectory(brandingPath, ZKService.STATIC_FILEPATH);
+
+                            logger.info("Transfer of files from {} to static directory completed", brandingPathStr);
+                            settings.setUseExternalBranding(true);
+                        } catch (Exception e) {
+                            logger.error("Error transfering contents from {} to static directory", brandingPathStr);
+                            logger.error(e.getMessage(), e);
+                        }
+                        //Dismiss "branding_path" contents regardless of success
+                        settings.setBrandingPath(null);
                     }
                 } catch (Exception e) {
                     logger.error("Error parsing configuration file {}", CONF_FILE_RELATIVE_PATH);
