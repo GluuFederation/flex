@@ -73,7 +73,6 @@ public class OxdService {
     @Inject
     private LdapService ldapService;
 
-    private int consecutive = 0;  //This is used only to debug and test
     private OxdSettings config;
     private ResteasyClient client;
     private ObjectMapper mapper;  //Important: do not use fasterxml mapper here: oxd-common classes use codehaus
@@ -171,8 +170,9 @@ public class OxdService {
                 config.getHost(), config.getPort(), config.isUseHttpsExtension(), config.getPostLogoutUri());
 
         try {
+            String timeStamp = Long.toString(System.currentTimeMillis()/1000);
             if (config.isUseHttpsExtension()) {
-                clientName = "gluu-casa-extension-" + consecutive;
+                clientName = "gluu-casa-extension_" + timeStamp;
 
                 SetupClientParams cmdParams = new SetupClientParams();
                 cmdParams.setOpHost(config.getOpHost());
@@ -189,7 +189,7 @@ public class OxdService {
                 SetupClientResponse setup = restResponse(cmdParams, "setup-client", null, SetupClientResponse.class);
                 computedSettings = new OxdClientSettings(clientName, setup.getOxdId(), setup.getClientId(), setup.getClientSecret());
             } else {
-                clientName = "gluu-casa-" + consecutive;
+                clientName = "gluu-casa_" + timeStamp;
 
                 RegisterSiteParams cmdParams = new RegisterSiteParams();
                 cmdParams.setOpHost(config.getOpHost());
@@ -214,10 +214,8 @@ public class OxdService {
                     CommandClient.closeQuietly(commandClient);
                 }
             }
-            consecutive++;
             logger.info("oxd client registered successfully, oxd-id={}", computedSettings.getOxdId());
         } catch (Exception e) {
-            consecutive++;
             String msg = "Setting oxd-server configs failed";
             logger.error(msg, e);
             throw new Exception(msg, e);
@@ -374,12 +372,7 @@ public class OxdService {
 
     public boolean extendSiteLifeTime() {
 
-        //Extending the life time cannot take place because scopes are changed by those defaulted in Gluu Server
-        //Unfortunately, the custom script that turns on the scopes is only run upon registration (not updates)
-        //On the other hand, oxd site registration does not allow to set the expiration. To workaround it, the
-        //associated client registration cust script is in charge of extending the lifetime
-        return true;
-        /*
+        //oxd site registration does not allow to set the expiration
         logger.info("Extending registered oxd client life time");
         GregorianCalendar cal=new GregorianCalendar();
         cal.add(Calendar.YEAR, 1);
@@ -394,13 +387,15 @@ public class OxdService {
             logger.error(e.getMessage(), e);
             return false;
         }
-        */
 
     }
 
     private boolean doUpdate(UpdateSiteParams cmdParams) throws Exception {
 
         UpdateSiteResponse resp = null;
+        //Do not remove the following line, sometimes problematic if missing
+        cmdParams.setGrantType(Collections.singletonList("authorization_code"));
+
         if (config.isUseHttpsExtension()) {
             resp = restResponse(cmdParams, "update-site", getPAT(), UpdateSiteResponse.class);
         } else {
