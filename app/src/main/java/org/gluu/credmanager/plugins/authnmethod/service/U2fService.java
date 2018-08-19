@@ -53,7 +53,7 @@ public class U2fService extends FidoService {
 
         conf = new U2FConfig();
         String metadataUri = Optional.ofNullable(settings.getU2fSettings()).map(U2fSettings::getRelativeMetadataUri)
-                .orElse(".well-known/fido-u2f-configuration");
+                .orElse(".well-known/fido-configuration");
         conf.setEndpointUrl(String.format("%s/%s", ldapService.getIssuerUrl(), metadataUri));
 
         try {
