@@ -40,7 +40,7 @@ public class UserViewModel {
     private ConfigurationHandler confHandler;
 
     @WireVariable
-    public UserService userService;
+    UserService userService;
 
     MainSettings confSettings;
 

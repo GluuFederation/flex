@@ -9,7 +9,7 @@ import org.gluu.credmanager.extension.AuthnMethod;
 import org.gluu.credmanager.extension.navigation.MenuType;
 import org.gluu.credmanager.extension.navigation.NavigationMenu;
 import org.gluu.credmanager.ui.MenuService;
-import org.gluu.credmanager.ui.vm.user.UserViewModel;
+import org.gluu.credmanager.ui.vm.user.UserMainViewModel;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -22,7 +22,7 @@ import java.util.List;
  * @author jgomer
  */
 @VariableResolver(DelegatingVariableResolver.class)
-public class MenuViewModel extends UserViewModel {
+public class MenuViewModel extends UserMainViewModel {
 
     @WireVariable
     private MenuService menuService;
@@ -40,8 +40,9 @@ public class MenuViewModel extends UserViewModel {
     }
 
     @Init(superclass = true)
-    public void childInit() {
-        authnMethods = userService.getLiveAuthnMethods();
+    //When using superclass = true, note child class's initial method should not override parent class's initial method
+    public void childChildInit() {
+        authnMethods = isHas2faRequisites() ? getWidgets() : getPre2faMethods();
         pluginMenuItems = menuService.getMenusOfType(MenuType.USER);
     }
 
