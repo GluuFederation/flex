@@ -139,7 +139,7 @@ public class SGService extends FidoService {
 
     /**
      * Returns the most recently added (with respect to the timestamp passed) Super Gluu device for the user in question
-     * @param userId
+     * @param userId The identifier (inum) of the user
      * @param time Timestamp (milliseconds from the "epoch")
      * @return A SuperGluuDevice object or null if no device could be found. Device has to have counter=-1 and no displayName yet
      */

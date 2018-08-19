@@ -195,7 +195,7 @@ public class UserService {
 
     /**
      * Determines if there are no users with this type of method as preferred in LDAP
-     * @param acr
+     * @param acr String that identifies an authentication mechanism
      * @return False if any user has type as his preferred. True otherwise
      */
     public boolean zeroPreferences(String acr){

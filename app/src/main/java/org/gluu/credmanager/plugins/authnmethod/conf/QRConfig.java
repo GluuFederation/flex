@@ -50,6 +50,7 @@ public class QRConfig {
 
     /**
      * Creates a string for a Json representation of two values: size and mSize for QR code
+     * @param maxWidth A parameter employed to limit the size of the QR
      * @return Json String
      */
     public String getFormattedQROptions(int maxWidth) {

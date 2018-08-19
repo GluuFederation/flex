@@ -28,7 +28,7 @@ public class SGConfig extends QRConfig {
 
     /**
      * Creates an SGConfig object to hold all properties required for SuperGluu operation
-     * @param propsMap
+     * @param propsMap A map of string-ed key/value pairs with the source of data for this operation
      * @return null if an error or inconsistency is found while inspecting the configuration properties of the custom script.
      * Otherwise returns a SGConfig object
      */

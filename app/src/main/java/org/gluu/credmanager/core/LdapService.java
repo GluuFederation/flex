@@ -286,8 +286,7 @@ public class LdapService implements ILdapService {
     /**
      * Tries to determine whether local installation of Gluu is using a backend LDAP. This reads the OxTrust configuration
      * Json and inspects inside property "sourceConfigs"
-     * @return
-     * @throws Exception
+     * @return A boolean value
      */
     public boolean isBackendLdapEnabled() {
 
