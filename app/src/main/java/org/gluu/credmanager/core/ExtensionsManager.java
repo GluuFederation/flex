@@ -251,7 +251,7 @@ public class ExtensionsManager implements IExtensionsManager {
 
     public boolean deletePlugin(String pluginId) {
 
-        //Not used, see: https://github.com/pf4j/pf4j/issues/217
+        //See: https://github.com/pf4j/pf4j/issues/217
         boolean success = pluginManager.deletePlugin(pluginId);
         if (!success) {
             logger.warn("Plugin '{}' could not be unloaded or deleted", pluginId);

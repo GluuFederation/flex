@@ -178,8 +178,9 @@ public class PluginViewModel extends MainViewModel {
         Messagebox.show(msg, null, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                 event -> {
                     if (Messagebox.ON_YES.equals(event.getName())) {
-                        boolean success = extManager.unloadPlugin(pluginId);
-                        //boolean success = extManager.deletePlugin(pluginId);    //IMPORTANT: See note at method getPluginDestinationPath
+                        //IMPORTANT: See note at method getPluginDestinationPath
+                        boolean success = Utils.onWindows() ? extManager.unloadPlugin(pluginId) : extManager.deletePlugin(pluginId);
+
                         if (success) {
                             PluginData pluginData = pluginList.stream()
                                     .filter(pl -> pl.getDescriptor().getPluginId().equals(pluginId)).findAny().get();
@@ -233,28 +234,18 @@ public class PluginViewModel extends MainViewModel {
 
         String plugId = pluginToShow.getDescriptor().getPluginId();
         hidePluginDetails();
-        if (extManager.unloadPlugin(plugId)) {
-            try {
+        try {
+            //IMPORTANT: See note at method getPluginDestinationPath
+            if (Utils.onWindows() ? extManager.unloadPlugin(plugId) : extManager.deletePlugin(plugId)) {
                 removeFromKnownPlugins(plugId);
                 getSettings().save();
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                UIUtils.showMessageUI(false, e.getMessage());
+            } else {
+                UIUtils.showMessageUI(false, Labels.getLabel("adm.plugins_error_unloaded"));
             }
-        } else {
-            UIUtils.showMessageUI(false, Labels.getLabel("adm.plugins_error_unloaded"));
-        }
-        /*
-        //IMPORTANT: See note at method getPluginDestinationPath
-        try {
-            String path = pluginToShow.getPath();
-            Files.delete(Paths.get(path));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            String message = Labels.getLabel("adm.plugins_error_delete", new String[] { path });
-            Messagebox.show(message, Labels.getLabel("general.warning"), Messagebox.OK, Messagebox.INFORMATION);
+            UIUtils.showMessageUI(false, e.getMessage());
         }
-        */
 
     }
 
@@ -374,17 +365,20 @@ public class PluginViewModel extends MainViewModel {
     }
 
     private Path getPluginDestinationPath(String fileName) {
-        /*
-        Add some "random" suffix since the same file can be uploaded multiples because as explained at
-        https://github.com/pf4j/pf4j/issues/217, there is no effective means to delete a plugin jar file
-        */
-        String suffix = Long.toString(System.currentTimeMillis());
-        int aux = suffix.length();
-        suffix = "_" +  suffix.substring(aux - 5, aux);
 
-        aux = fileName.lastIndexOf(".");
-        aux = aux == -1 ? fileName.length() : aux;
-        fileName = fileName.substring(0, aux) + suffix + ".jar";
+        if (Utils.onWindows()) {
+            /*
+            Add some "random" suffix since the same file can be uploaded multiples because as explained at
+            https://github.com/pf4j/pf4j/issues/217, there is no effective means to delete a plugin jar file
+            */
+            String suffix = Long.toString(System.currentTimeMillis());
+            int aux = suffix.length();
+            suffix = "_" + suffix.substring(aux - 5, aux);
+
+            aux = fileName.lastIndexOf(".");
+            aux = aux == -1 ? fileName.length() : aux;
+            fileName = fileName.substring(0, aux) + suffix + ".jar";
+        }
         return Paths.get(extManager.getPluginsRoot().toString(), fileName);
 
     }
