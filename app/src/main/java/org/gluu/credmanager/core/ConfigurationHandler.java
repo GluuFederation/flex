@@ -158,6 +158,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                                 settings.save();
                                 setAppState(AppStateEnum.OPERATING);
                             } catch (Exception e) {
+                                logger.error("Error updating configuration file: {}", e.getMessage());
                                 setAppState(AppStateEnum.FAIL);
                             }
                             if (appState.equals(AppStateEnum.OPERATING)) {
