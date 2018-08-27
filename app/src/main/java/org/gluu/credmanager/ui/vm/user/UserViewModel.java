@@ -97,15 +97,12 @@ public class UserViewModel {
         int totalCreds = userMethodsCount.stream().mapToInt(Pair::getY).sum();
         int minCredsFor2FA = confSettings.getMinCredsFor2FA();
 
-        if (totalCreds == minCredsFor2FA) {
-            message = CredRemovalConflict.CREDS2FA_NUMBER_UNDERFLOW.getMessage(minCredsFor2FA);
-        } else if (nCredsOfType == 1 && credentialType.equals(user.getPreferredMethod())){
-            message = CredRemovalConflict.PREFERRED_CREDENTIAL_REMOVED.getMessage();
-        } else {
+        if (nCredsOfType == 1) {
             List<AuthnMethod> methods = userService.get2FARequisiteMethods();
             boolean typeOfCredIs2FARequisite = methods.stream().map(AuthnMethod::getAcr).anyMatch(acr -> acr.equals(credentialType));
 
             if (typeOfCredIs2FARequisite) {
+                //Discard if credential being removed is the only registered that belongs to 2FARequisiteMethods
                 int nCredsBelongingTo2FARequisite = userMethodsCount.stream()
                         .filter(pair -> pair.getX().mayBe2faActivationRequisite()).mapToInt(Pair::getY).sum();
                 if (nCredsBelongingTo2FARequisite == 1) {
@@ -115,7 +112,15 @@ public class UserViewModel {
                     commaSepNames = commaSepNames.substring(1, commaSepNames.length() - 1);
                     message = CredRemovalConflict.REQUISITE_NOT_FULFILED.getMessage(commaSepNames);
                 }
+            } else if (credentialType.equals(user.getPreferredMethod())) {
+                message = CredRemovalConflict.PREFERRED_CREDENTIAL_REMOVED.getMessage();
             }
+        }
+        if (message == null && totalCreds == minCredsFor2FA) {
+            message = CredRemovalConflict.CREDS2FA_NUMBER_UNDERFLOW.getMessage(minCredsFor2FA);
+        }
+        if (message != null) {
+            message = Labels.getLabel("usr.del_conflict_revert", new String[]{ message });
         }
         return message;
 

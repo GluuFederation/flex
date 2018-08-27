@@ -199,8 +199,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
 
     }
 
-
-
     @Command
     public void delete(@BindingParam("device") VerifiedMobile phone) {
 
