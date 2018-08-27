@@ -78,7 +78,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
                 sid = configurationAttributes.get("twilio_sid").getValue2()
                 token = configurationAttributes.get("twilio_token").getValue2()
-                from_no = configurationAttributes.get("from_number").getValue2()
+                self.from_no = configurationAttributes.get("from_number").getValue2()
                 Twilio.init(sid, token)
 
                 if mobiles.size() == 1:
@@ -165,9 +165,9 @@ class PersonAuthentication(PersonAuthenticationType):
 
     def sendMessage(self, code, numb):
         try:
-            print "TwilioSMS. prepareForStep. Sending SMS message (%s) to %s" % (code, numb)
+            print "TwilioSMS. Sending SMS message (%s) to %s" % (code, numb)
             msg = "%s is your passcode to access your account" % code
-            #message = TwMessage.creator(PhoneNumber(numb), PhoneNumber(from_no), msg).create()
-            #print "TwilioSMS. prepareForStep. Message Sid: %s" % message.getSid()
+            message = TwMessage.creator(PhoneNumber(numb), PhoneNumber(self.from_no), msg).create()
+            print "TwilioSMS. Message Sid: %s" % message.getSid()
         except:
-            print "TwilioSMS. prepareForStep. Error sending message", sys.exc_info()[1]
+            print "TwilioSMS. Error sending message", sys.exc_info()[1]
