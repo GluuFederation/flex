@@ -85,11 +85,15 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         Long previous, current;
         oxCustomScript script;
 
-        boolean anyChanged = false;
+        //A flag used to force a reload of main cust script
+        boolean reload = false;
         Set<String> acrs = confSettings.getAcrPluginMap().keySet();
         List<String> toBeRemoved = new ArrayList<>();
 
         logger.info("AuthnScriptsReloader. Running timer job for acrs: {}", acrs.toString());
+        //In Gluu <= 3.1.4, every time a single script is changed via oxTrust, all custom scripts are reloaded. This is
+        //not the case when for instance, the oxRevision attribute of a cust script is altered manually (as when developing)
+        //In the future, oxTrust should only reload the script that has changed for performance reasons.
         for (String acr : acrs) {
             script = getScript(acr);
 
@@ -99,21 +103,25 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                     current = scriptFingerPrint(script);
                     scriptFingerPrints.put(acr, current);
 
-                    if (previous == null && !NOT_REPLACEABLE_SCRIPTS.contains(acr)) {
-                        //This script has just appeared (ie it's the first run of this timer or was checked enabled in methods.zul)
-                        copyToLibsDir(script);
-                        anyChanged = true;
-                    } else if (previous != null && !previous.equals(current)) {
-                        logger.info("Changes detected in {} script", acr);
-                        //the script changed... Out-of-the-box methods' scripts must not be copied
+                    if (!current.equals(previous)) {
+                        //When previous is null, it means it's the first run of this timer or the method was checked enabled in methods.zul
+                        //When non null, it means this script is known from a previous run of the timer and its contents changed
+                        //Under any of these circumstances we force a reload of main cust script in the end
+                        reload = true;
+                        if (previous != null) {
+                            logger.info("Changes detected in {} script", acr);
+                            //Force extension reloading (normally to re-read configuration properties)
+                            extManager.getExtensionForAcr(acr).ifPresent(AuthnMethod::reloadConfiguration);
+                        }
+                        //Out-of-the-box script methods must not be copied. This avoids transfering the default scripts
+                        //bundled with CE which are not suitable for Casa
                         if (!NOT_REPLACEABLE_SCRIPTS.contains(acr)) {
                             copyToLibsDir(script);
                         }
-                        //Force extension reloading (normally to re-read configuration properties)
-                        extManager.getExtensionForAcr(acr).ifPresent(AuthnMethod::reloadConfiguration);
-                        anyChanged = true;
                     }
                 } else {
+                    //This accounts for the case in which the method is part of the mapping, but admin has externally disabled
+                    //the cust script. This helps keep in sync the methods supported wrt to enabled methods in oxTrust GUI
                     toBeRemoved.add(acr);
                 }
             }
@@ -121,18 +129,28 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
         if (toBeRemoved.size() > 0) {
             logger.info("The following scripts were externally disabled: {}", toBeRemoved.toString());
-            logger.warn("They will be removed from Gluu Casa configuration file");
+            logger.warn("Corresponding acrs will be removed from Gluu Casa configuration file");
+            //Remove from the mapping
             acrs.removeAll(toBeRemoved);
+            toBeRemoved.forEach(acr -> scriptFingerPrints.remove(acr));
 
             try {
+                //Save mapping changes to disk
                 confSettings.save();
+                reload = true;
             } catch (Exception e) {
                 logger.error("Failure to update configuration file!");
             }
         }
 
-        if (anyChanged) {
-            //"touch" main script so that it gets reloaded as well
+        if (!reload) {
+            //It may happen that a method was disabled in method.zul, this should trigger a reload
+            //An easy way to detect this is when scriptFingerPrints contains more elements than acrs sets
+            reload = !acrs.containsAll(scriptFingerPrints.keySet());
+        }
+
+        if (reload) {
+            //"touch" main script so that it gets reloaded. This helps the script to keep the list of supported methods up-to-date
             try {
                 logger.info("Touching main interception script to trigger reload by oxAuth...");
                 script = getScript(ConfigurationHandler.DEFAULT_ACR);
