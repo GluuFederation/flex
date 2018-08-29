@@ -259,7 +259,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <version>2.3</version>
                     <configuration>
-                        <webappDirectory>C:\Users\jgomer\Desktop\ub14_shared\jetty-base\webapps\cred-manager</webappDirectory>
                         <archive>
                             <manifest>
                                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
