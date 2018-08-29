@@ -9,7 +9,7 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.SuperGluuViewModel')"
+    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.SuperGluuViewModel')"
              self="@define(content)">
 
         <style src="/styles/jquery-ui-1.12.1.min.css">
@@ -47,16 +47,16 @@
                                     <label value="${c:l('general.last_used')}" />
                                     <zk choose="">
                                         <zk when="${each.lastAccessTime ne null}">
-                                            <label value="@load(each.lastAccessTime) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
+                                            <label value="@load(each.lastAccessTime) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
                                         </zk>
                                         <zk>
-                                            <label value="@load(each.creationDate) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
+                                            <label value="@load(each.creationDate) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
                                         </zk>
                                     </zk>
                                 </hlayout>
                                 <hlayout>
                                     <label value="${labels.general.added_on}"/>
-                                    <label value="@load(each.creationDate) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
+                                    <label value="@load(each.creationDate) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
                                 </hlayout>
 
                             </vlayout>

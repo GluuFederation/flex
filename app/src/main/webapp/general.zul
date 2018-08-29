@@ -1,6 +1,6 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
-<?init class="org.gluu.credmanager.core.navigation.PageInitiator"?>
+<?init class="org.gluu.casa.core.navigation.PageInitiator"?>
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 

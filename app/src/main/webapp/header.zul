@@ -3,7 +3,7 @@
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
     <hlayout if="${sessionContext.user ne null}" width="100%" sclass="header" valign="middle"
-             viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.HeaderViewModel')">
+             viewModel="@id('vm') @init('org.gluu.casa.ui.vm.HeaderViewModel')">
 
         <hlayout width="180px">
             <image sclass="logo" src="${zkService.logoDataUri}"/>

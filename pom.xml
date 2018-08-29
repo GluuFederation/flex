@@ -6,7 +6,7 @@
 
 	<groupId>org.xdi</groupId>
 	<artifactId>casa-base</artifactId>
-    <version>3.1.3-SNAPSHOT</version>
+    <version>3.1.4-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 	<url>http://www.gluu.org</url>
@@ -22,7 +22,7 @@
         <maven.min-version>3.0.3</maven.min-version>
         <weld.version>3.0.0.Final</weld.version>
         <pf4j.version>2.2.0</pf4j.version>
-        <casa.version>3.1.3-SNAPSHOT</casa.version>
+        <casa.version>3.1.4-SNAPSHOT</casa.version>
         <log4j.version>2.8.2</log4j.version>
         <oxd.version>3.1.3.Final</oxd.version>
         <ox.version>3.1.3.Final</ox.version>
@@ -232,7 +232,7 @@
                         <failsOnError>true</failsOnError>
                         <linkXRef>false</linkXRef>
                         <!-- exclude generated sources -->
-                        <excludes>org/gluu/credmanager/core/ldap/*</excludes>
+                        <excludes>org/gluu/casa/core/ldap/*</excludes>
                     </configuration>
                 </plugin>
             </plugins>

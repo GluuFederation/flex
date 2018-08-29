@@ -2,7 +2,7 @@
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
     <panel if="${sessionContext.user.admin}" title="${labels.adm.strongauth_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.StrongAuthViewModel')">
+           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.StrongAuthViewModel')">
         <panelchildren sclass="padded">
             <vlayout>
                 <label value="${labels.adm.strongauth_min2fa_text}"/>

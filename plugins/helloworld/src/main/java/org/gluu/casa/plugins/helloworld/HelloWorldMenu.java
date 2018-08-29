@@ -5,8 +5,8 @@
  */
 package org.gluu.casa.plugins.helloworld;
 
-import org.gluu.credmanager.extension.navigation.MenuType;
-import org.gluu.credmanager.extension.navigation.NavigationMenu;
+import org.gluu.casa.extension.navigation.MenuType;
+import org.gluu.casa.extension.navigation.NavigationMenu;
 import org.pf4j.Extension;
 
 /**

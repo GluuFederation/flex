@@ -1,14 +1,13 @@
 # oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
-# Copyright (c) 2016, Gluu
+# Copyright (c) 2018, Gluu
 #
-# Author: Yuriy Movchan
-#
+# Author: Jose Gonzalez
 
 from org.xdi.model.custom.script.type.client import ClientRegistrationType
 from org.xdi.service.cdi.util import CdiUtil
 from org.xdi.oxauth.service import ScopeService
 from org.xdi.util import StringHelper, ArrayHelper
-from java.util import Arrays, ArrayList, HashSet, Date, GregorianCalendar
+from java.util import Arrays, ArrayList, HashSet
 
 import java
 
@@ -18,16 +17,38 @@ class ClientRegistration(ClientRegistrationType):
 
     def init(self, configurationAttributes):
         print "Casa client registration. Initialization"
-        
         self.clientRedirectUrisSet = self.prepareClientRedirectUris(configurationAttributes)
-
         print "Casa client registration. Initialized successfully"
-        return True   
+        return True
 
     def destroy(self, configurationAttributes):
         print "Casa client registration. Destroy"
         print "Casa client registration. Destroyed successfully"
-        return True   
+        return True
+
+    # Update client entry before persistent it
+    #   registerRequest is org.xdi.oxauth.client.RegisterRequest
+    #   client is org.xdi.oxauth.model.registration.Client
+    #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
+    def createClient(self, registerRequest, client, configurationAttributes):
+
+        print "Casa client registration. CreateClient method"
+        redirectUris = client.getRedirectUris()
+        print "Casa client registration. Redirect Uris: %s" % redirectUris
+
+        credManagerClient = False
+        for redirectUri in redirectUris:
+            if self.clientRedirectUrisSet.contains(redirectUri):
+                credManagerClient = True
+                break
+
+        if not credManagerClient:
+            return True
+
+        print "Casa client registration. Client is Gluu Casa"
+        self.setClientScopes(client, configurationAttributes.get("scopes"))
+
+        return True
 
     # Update client entry before persistent it
     #   registerRequest is org.xdi.oxauth.client.RegisterRequest
@@ -35,45 +56,31 @@ class ClientRegistration(ClientRegistrationType):
     #   configurationAttributes is java.util.Map<String, SimpleCustomProperty>
     def updateClient(self, registerRequest, client, configurationAttributes):
         print "Casa client registration. UpdateClient method"
+        self.setClientScopes(client, configurationAttributes.get("scopes"))
+        return True
 
-        redirectUris = client.getRedirectUris()
-        print "Casa client registration. Redirect Uris: %s" % redirectUris
+    def getApiVersion(self):
+        return 2
 
-        credManagerClient = False
-        for redirectUri in redirectUris:
-            if (self.clientRedirectUrisSet.contains(redirectUri)):
-                credManagerClient = True
-                break
-        
-        if not credManagerClient:
-            return True
+    def setClientScopes(self, client, requiredScopes):
 
-        print "Casa client registration. Client is Cred-manager"
+        if requiredScopes == None:
+            print "Casa client registration. No list of scopes was passed in script parameters"
+            return
 
+        requiredScopes = StringHelper.split(requiredScopes.getValue2(), ",")
         newScopes = client.getScopes()
-        
         scopeService = CdiUtil.bean(ScopeService)
 
-        requiredScopes = ["openid", "profile", "user_name", "clientinfo", "uma_protection"]
         for scopeName in requiredScopes:
             scope = scopeService.getScopeByDisplayName(scopeName)
             if not scope.getIsDefault():
                 print "Casa client registration. Adding scope '%s'" % scopeName
                 newScopes = ArrayHelper.addItemToStringArray(newScopes, scope.getDn())
 
-        print "Casa client registration. Result scopes: %s" % newScopes
+        print "Casa client registration. Result scopes are: %s" % newScopes
         client.setScopes(newScopes)
 
-        #Extend client lifetime for one year
-        cal=GregorianCalendar()
-        cal.add(1,1)
-        client.setClientSecretExpiresAt(Date(cal.getTimeInMillis()))
-        #this style complains:  client.setClientSecretExpiresAt(Date(Date().getTime + 31536000000))
-
-        return True
-
-    def getApiVersion(self):
-        return 1
 
     def prepareClientRedirectUris(self, configurationAttributes):
         clientRedirectUrisSet = HashSet()

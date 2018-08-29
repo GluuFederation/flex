@@ -61,7 +61,7 @@
     </style>
 
     <panel if="${sessionContext.user.admin}" title="${labels.adm.passreset_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.PassResetViewModel')">
+           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.PassResetViewModel')">
         <panelchildren sclass="padded">
             <vlayout spacing="10px">
                 <label value="${labels.adm.passreset_text}"/>

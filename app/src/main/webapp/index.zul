@@ -1,6 +1,6 @@
 <?page title="${applicationScope['appName']}"?>
 <?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
-<?init class="org.gluu.credmanager.core.navigation.HomeInitiator"?>
+<?init class="org.gluu.casa.core.navigation.HomeInitiator"?>
 <?link rel="icon" href="${sessionContext.faviconDataUri}"?>
 <?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
 <?script src="/scripts/platform.js"?>
@@ -14,7 +14,7 @@
             <vlayout sclass="padded">
                 <zk choose="">
                     <zk when="${empty pageScope.error}">
-                        <label value="${labels.general.wait}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.HomeViewModel')"
+                        <label value="${labels.general.wait}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.HomeViewModel')"
                                id="message" sclass="padded" />
                     </zk>
                     <zk>

@@ -21,7 +21,7 @@
         }
     </style>
 
-    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.OTPViewModel')"
+    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.OTPViewModel')"
              self="@define(content)">
 
         <div align="center" sclass="dpadded"><label value="${labels.usr.otp_title}" sclass="titled"/></div>
@@ -53,7 +53,7 @@
                                         , c:l(each.timeBased ? 'usr.otp_type_totp' : 'usr.otp_type_hotp')))" sclass="de_emphasized" />
                                 <hlayout>
                                     <label value="${labels.general.added_on}" sclass="de_emphasized"/>
-                                    <label value="@load(each.addedOn) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))"/>
+                                    <label value="@load(each.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))"/>
                                 </hlayout>
                             </vlayout>
                             <hlayout sclass="couple_icons" spacing="10px">

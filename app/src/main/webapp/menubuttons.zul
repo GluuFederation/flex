@@ -2,7 +2,7 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <vlayout viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.MenuViewModel')" sclass="padded">
+    <vlayout viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')" sclass="padded">
 
         <vlayout sclass="padded">&#160;</vlayout>
 

@@ -7,7 +7,7 @@
         }
     </style>
     <panel if="${sessionContext.user.admin}" title="${labels.adm.resets_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.PreferenceResetViewModel')">
+           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.PreferenceResetViewModel')">
         <panelchildren sclass="padded">
             <vlayout spacing="10px">
                 <vlayout spacing="12px">

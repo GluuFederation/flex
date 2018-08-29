@@ -8,11 +8,11 @@
     </preference>
 
     <system-property>
-        <name>org.gluu.credmanager.css.mobile</name>
+        <name>org.gluu.casa.css.mobile</name>
         <value>/styles/mobile.css</value>
     </system-property>
     <system-property>
-        <name>org.gluu.credmanager.css.desktop</name>
+        <name>org.gluu.casa.css.desktop</name>
         <value>/styles/desktop.css</value>
     </system-property>
 
@@ -32,7 +32,7 @@
     </library-property>
     <!--library-property>
         <name>org.zkoss.lang.contextClassLoader.class</name>
-        <value>org.gluu.credmanager.misc.CustomClassLoader</value>
+        <value>org.gluu.casa.misc.CustomClassLoader</value>
     </library-property-->
 
     <!-- Override default molds with bootstrap ones -->
@@ -61,7 +61,7 @@
 
     <!-- important listeners -->
     <listener>
-        <listener-class>org.gluu.credmanager.core.init.ZKInitializer</listener-class>
+        <listener-class>org.gluu.casa.core.init.ZKInitializer</listener-class>
     </listener>
 
 </zk>

@@ -8,7 +8,7 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.UserMainViewModel')"
+    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserMainViewModel')"
              self="@define(content)">
 
         <div align="center"><label value="${labels.usr.title}" sclass="titled" /></div>
@@ -50,7 +50,7 @@
                                                 <zk if="${not empty each.addedOn}">
                                                     <label value=" -" />
                                                     <label value="@load(c:toLowerCase(c:l('general.added_on')))" />
-                                                    <label value="@load(each.addedOn) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d yyyy', offset = sessionContext.zoneOffset)" />
+                                                    <label value="@load(each.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d yyyy', offset = sessionContext.zoneOffset)" />
                                                 </zk>
                                             </hlayout>
                                         </template>

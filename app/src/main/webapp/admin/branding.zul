@@ -7,7 +7,7 @@
     <!-- end -->
 
     <panel if="${sessionContext.user.admin}" title="${labels.adm.branding_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.CustomBrandingViewModel')">
+           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.CustomBrandingViewModel')">
 
         <panelchildren sclass="padded">
             <radiogroup id="groupie" />

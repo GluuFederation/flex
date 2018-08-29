@@ -1,7 +1,7 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <div if="${sessionContext.user ne null}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.UserPreferenceViewModel')">
+    <div if="${sessionContext.user ne null}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserPreferenceViewModel')">
         <panel title="${labels.usr.preferred_title}" sclass="padded" border="normal" if="${vm.availMethods.size() gt 1}">
             <panelchildren sclass="padded">
                 <vlayout>

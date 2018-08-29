@@ -2,7 +2,7 @@
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
     <panel if="${sessionContext.user.admin}" title="${labels.adm.methods_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.AuthnMethodsViewModel')">
+           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.AuthnMethodsViewModel')">
         <panelchildren sclass="padded">
             <vlayout spacing="12px">
                 <label value="${labels.adm.methods_text}"/>

@@ -5,7 +5,7 @@
 <zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
-    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.user.PolicyViewModel')" self="@define(content)">
+    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.PolicyViewModel')" self="@define(content)">
         <zk if="${vm.uiHasPreferredMethod and vm.uiAllowedToSetPolicy}">
 
             <div align="center" sclass="dpadded"><label value="${labels.usr.policy_page_title}" sclass="titled"/></div>
@@ -66,7 +66,7 @@
                                                     <hlayout sclass="col-sm-10">
                                                         <label value="@load(c:cat4(each.origins.get(0).city,', ', each.origins.get(0).country,'.'))" />
                                                         <label sclass="de_emphasized"
-                                                               value="@load(each.origins.get(0).timestamp) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a')"/>
+                                                               value="@load(each.origins.get(0).timestamp) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a')"/>
                                                     </hlayout>
                                                 </div>
                                                 <!--label visible="@load(not empty each.origins)" value="${labels.usr.trdevices_last_location}" sclass="de_emphasized" />
@@ -74,7 +74,7 @@
                                                     <template name="children">
                                                         <hlayout>
                                                             <label value="@load(c:cat4(each.city,', ', each.country,'.'))" />
-                                                            <label sclass="de_emphasized" value="@load(each.timestamp) @converter('org.gluu.credmanager.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a')"/>
+                                                            <label sclass="de_emphasized" value="@load(each.timestamp) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a')"/>
                                                         </hlayout>
                                                     </template>
                                                 </vlayout-->

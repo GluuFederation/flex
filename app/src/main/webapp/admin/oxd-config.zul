@@ -2,7 +2,7 @@
     xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
 
     <panel if="${sessionContext.user.admin}" title="${labels.adm.oxd_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.credmanager.ui.vm.admin.OxdViewModel')">
+           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.OxdViewModel')">
 
         <panelchildren sclass="padded">
             <vlayout>
