@@ -55,13 +55,11 @@ public class HomeViewModel {
             JSONObject jsonObject = opt.get();
             logger.info("Browser data is {} ", jsonObject.toJSONString());
 
+            updateOffset(jsonObject.get("offset"));
+            updateScreenWidth(jsonObject.get("screenWidth"));
+
             boolean mobile = Executions.getCurrent().getBrowser("mobile") != null;
             logger.trace("Detected browser is {} mobile", mobile ? "" : "not");
-
-            updateOffset(jsonObject.get("offset"));
-            if (mobile) {
-                updateMobile(jsonObject.get("screenWidth"));
-            }
             updateBrowserInfo(jsonObject.get("name"), jsonObject.get("version"), mobile);
         }
 
@@ -87,13 +85,11 @@ public class HomeViewModel {
 
     }
 
-    private void updateMobile(Object width) {
+    private void updateScreenWidth(Object width) {
 
         try {
             int w = (int) width;
             sessionContext.setScreenWidth(w);
-            //This attrib should be in the session, but it's more comfortable at the desktop level for testing purposes
-            sessionContext.setOnMobile(w < 992);    //If screen is wide enough, behave as desktop
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
