@@ -32,12 +32,6 @@ public class PassResetViewModel extends UserViewModel {
     private String newPasswordConfirm;
     private int strength;
 
-    private boolean uiPwdResetOpened;
-
-    public boolean isUiPwdResetOpened() {
-        return uiPwdResetOpened;
-    }
-
     @DependsOn("strength")
     public String getStrengthText() {
         String str = null;
@@ -77,7 +71,6 @@ public class PassResetViewModel extends UserViewModel {
 
     @Init(superclass = true)
     public void childInit() {
-        uiPwdResetOpened = true;
         strength = -1;
     }
 
@@ -106,7 +99,6 @@ public class PassResetViewModel extends UserViewModel {
                 if (userService.changePassword(user.getId(), newPassword)) {
                     logger.info(Labels.getLabel("app.pass_resetted"), user.getUserName());
                     resetPassSettings();
-                    uiPwdResetOpened = false;
                     UIUtils.showMessageUI(true, Labels.getLabel("usr.passreset_changed"));
                 } else {
                     UIUtils.showMessageUI(false);

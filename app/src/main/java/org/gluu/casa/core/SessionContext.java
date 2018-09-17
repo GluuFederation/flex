@@ -22,7 +22,6 @@ import java.util.Optional;
  */
 @Named
 @SessionScoped
-//TODO: methods getCustdir, getCssPath, getFaviconDataUri will all be transfered after UI re-design takes place, entails editing all .zul files
 public class SessionContext implements ISessionContext, Serializable {
 
     @Inject
@@ -42,10 +41,6 @@ public class SessionContext implements ISessionContext, Serializable {
         return zoneOffset;
     }
 
-    public String getCustdir() {
-        return zkService.getAssetsPrefix();
-    }
-
     public User getUser() {
         return user;
     }
@@ -54,24 +49,8 @@ public class SessionContext implements ISessionContext, Serializable {
         return Optional.ofNullable(user).map(Utils::cloneObject).map(User.class::cast).orElse(null);
     }
 
-    public boolean isOnMobile() {
-        return onMobile;
-    }
-
     public BrowserInfo getBrowser() {
         return browser;
-    }
-
-    public String getCssPath() {
-
-        String path = "org.gluu.casa.css.";
-        path += onMobile ? "mobile" : "desktop";
-        //The Java variables are defined in ZK descriptor, see zk.xml
-        return getCustdir() + System.getProperty(path);
-    }
-
-    public String getFaviconDataUri() {
-        return zkService.getFaviconDataUri();
     }
 
     public int getScreenWidth() {
@@ -84,10 +63,6 @@ public class SessionContext implements ISessionContext, Serializable {
 
     public void setZoneOffset(ZoneOffset zoneOffset) {
         this.zoneOffset = zoneOffset;
-    }
-
-    public void setOnMobile(boolean onMobile) {
-        this.onMobile = onMobile;
     }
 
     public void setScreenWidth(int screenWidth) {

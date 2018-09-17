@@ -55,6 +55,10 @@ public class ZKService {
 
     private String faviconDataUri;
 
+    private String contextPath;
+
+    private String appName;
+
     private WebApp app;
 
     private Map<String, PluginLabelLocator> labelLocators;
@@ -70,8 +74,9 @@ public class ZKService {
         try {
             this.app = app;
             confHandler.init();
-            //This attribute is stored here for future use inside zul templates
-            app.setAttribute("appName", app.getAppName());
+            //These attributes are stored here for future use inside zul templates
+            appName = app.getAppName();
+            contextPath = app.getServletContext().getContextPath();
 
             String cssSnippet = confHandler.getSettings().getExtraCssSnippet();
             if (Utils.isNotEmpty(cssSnippet)) {
@@ -79,7 +84,7 @@ public class ZKService {
                 setFaviconDataUri(snippetHandler.getFaviconDataUri());
                 setLogoDataUri(snippetHandler.getLogoDataUri());
             } else {
-                String prefix = getAssetsPrefix();
+                String prefix = getAssetsPrefix().substring(contextPath.length());
                 resetLogoDataUriEncoding(prefix);
                 resetFaviconDataUriEncoding(prefix);
             }
@@ -90,8 +95,16 @@ public class ZKService {
 
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
     public String getAssetsPrefix() {
-        return confHandler.getSettings().isUseExternalBranding() ? DEFAULT_CUSTOM_PATH : "";
+        return contextPath + (confHandler.getSettings().isUseExternalBranding() ? DEFAULT_CUSTOM_PATH : "");
     }
 
     public String getLogoDataUri() {
