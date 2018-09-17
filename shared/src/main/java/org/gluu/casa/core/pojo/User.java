@@ -19,6 +19,7 @@ public class User {
     private boolean admin;
     private String id;
     private String preferredMethod;
+    private String pictureURL;
 
     public String getUserName() {
         return userName;
@@ -44,6 +45,10 @@ public class User {
         return lastName;
     }
 
+    public String getPictureURL() {
+        return pictureURL;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -66,6 +71,10 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setPictureURL(String pictureURL) {
+        this.pictureURL = pictureURL;
     }
 
 }

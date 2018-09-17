@@ -6,6 +6,7 @@
 package org.gluu.casa.ui;
 
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.util.Clients;
 
 /**
@@ -51,10 +52,14 @@ public final class UIUtils {
      *                ZK developer's reference manual)
      */
     public static void showMessageUI(boolean success, String msg, String position) {
+        //Calls the showNotification javascript function supplying suitable params, note that after new UI design was
+        //introduced, position is ignored...
         if (success) {
-            Clients.showNotification(msg, Clients.NOTIFICATION_TYPE_INFO, null, position, FEEDBACK_DELAY_SUCC);
+            Clients.response(new AuInvoke("showAlert", msg, Clients.NOTIFICATION_TYPE_INFO, FEEDBACK_DELAY_SUCC));
+            //Clients.showNotification(msg, Clients.NOTIFICATION_TYPE_INFO, null, position, FEEDBACK_DELAY_SUCC);
         } else {
-            Clients.showNotification(msg, Clients.NOTIFICATION_TYPE_WARNING, null, position, FEEDBACK_DELAY_ERR);
+            Clients.response(new AuInvoke("showAlert", msg, Clients.NOTIFICATION_TYPE_WARNING, FEEDBACK_DELAY_ERR));
+            //Clients.showNotification(msg, Clients.NOTIFICATION_TYPE_WARNING, null, position, FEEDBACK_DELAY_ERR);
         }
     }
 
