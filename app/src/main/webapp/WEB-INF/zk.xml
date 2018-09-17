@@ -7,15 +7,6 @@
         <value>Gluu Casa</value>
     </preference>
 
-    <system-property>
-        <name>org.gluu.casa.css.mobile</name>
-        <value>/styles/mobile.css</value>
-    </system-property>
-    <system-property>
-        <name>org.gluu.casa.css.desktop</name>
-        <value>/styles/desktop.css</value>
-    </system-property>
-
     <!-- session timeout redirect -->
     <session-config>
         <device-type>ajax</device-type>
@@ -34,29 +25,23 @@
         <name>org.zkoss.lang.contextClassLoader.class</name>
         <value>org.gluu.casa.misc.CustomClassLoader</value>
     </library-property-->
+    <library-property>
+        <name>org.zkoss.zul.tablet.meta.viewport.disabled</name>
+        <value>true</value>
+    </library-property>
 
-    <!-- Override default molds with bootstrap ones -->
-    <library-property>
-        <name>org.zkoss.zul.Button.mold</name>
-        <value>bs</value>
-    </library-property>
-    <library-property>
-        <name>org.zkoss.zul.Menupopup.mold</name>
-        <value>bs</value>
-    </library-property>
-    <library-property>
-        <name>org.zkoss.zul.Paging.mold</name>
-        <value>bs</value>
-    </library-property>
     <library-property>
         <name>org.zkoss.theme.preferred</name>
         <value>breeze</value>   <!-- preserve the theme used in first version of the app -->
     </library-property>
 
-    <!-- unit: seconds. A greater value (>20s) could have been used, however developer testing their plugins need a short
+    <!-- TODO unit: seconds. A greater value (>20s) could have been used, however developer testing their plugins need a short
      times to be productive -->
-    <desktop-config>
+    <!--desktop-config>
         <file-check-period>20</file-check-period>
+    </desktop-config-->
+    <desktop-config>
+        <disable-theme-uri>~./zul/css/zk.wcs</disable-theme-uri>
     </desktop-config>
 
     <!-- important listeners -->
