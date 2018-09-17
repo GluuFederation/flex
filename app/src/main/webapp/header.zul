@@ -1,45 +1,81 @@
-<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native">
 
-    <hlayout if="${sessionContext.user ne null}" width="100%" sclass="header" valign="middle"
-             viewModel="@id('vm') @init('org.gluu.casa.ui.vm.HeaderViewModel')">
+    <header class="bg-white flex justify-between pv2 shadow-4" if="${sessionContext.user ne null}">
 
-        <hlayout width="180px">
-            <image sclass="logo" src="${zkService.logoDataUri}"/>
-        </hlayout>
-        <div hflex="1" align="right" style="padding-right:5px">
-            <!--attribute name="width" if="${sessionContext.onMobile}">50px</attribute-->
-            <zk choose="">
-                <zk when="${sessionContext.onMobile}">
-                    <button sclass="btn-link dropdown-toggle" popup="pop, after_start, type=toggle"
-                            style="font-size:30px;padding-left:0px" label="☰" />
-                </zk>
-                <zk>
-                    <!-- these 3 buttons MUST go in the same line -->
-                    <button sclass="btn-link dropdown-toggle header" popup="pop, after_start, type=toggle" style="font-size:16px"
-                            label="@load(c:cat3(c:l('general.welcome'),' ', sessionContext.user.givenName))" /><button
-                        sclass="btn-link dropdown-toggle header usericon" popup="pop, after_end, type=toggle" label=""
-                        iconSclass="glyphicon glyphicon-user" style="font-size:40px; padding:15px 5px 0px 5px; color:#333;"
-                /><button popup="pop, after_end, type=toggle" label="" sclass="btn-link dropdown-toggle header" iconSclass="caret" />
-                    <!--div sclass="glyphicon glyphicon-user" style="..."> </div-->
-                </zk>
-            </zk>
+        <div class="flex">
+            <!-- logo -->
+            <div class="w1-ns"></div>
+            <div class="w4 mh4-ns tc">
+                <a href="${zkService.contextPath}">
+                    <img src="${zkService.logoDataUri}" />
+                </a>
+            </div>
+            <div class="w1-ns"></div>
+
+            <!-- hamburguer -->
+            <div class="w3 tc">
+                <a href="javascript:partialCollapse()" class="dn di-ns green hover-green f2-cust">
+                    <i class="fas fa-bars" />
+                </a>
+                <a href="javascript:collapse()" class="di dn-ns green hover-green f2-cust">
+                    <i class="fas fa-bars" />
+                </a>
+            </div>
         </div>
 
-        <menupopup id="pop">
-            <!-- LANGUAGE SELECTOR>
-            <menuitem label="${labels.general.change_lang}"/ -->
-            <menuitem label="${labels.general.help}" href="https://gluu.org/docs/casa/3.1.3/user-guide/" target="_blank"/>
-            <zk forEach="${vm.contextMenuItems}">
-                <include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
-                    <attribute name="base">${each.x}</attribute>
-                    <attribute name="priority">${each.y.priority}</attribute>
-                </include>
-            </zk>
-            <menuseparator/>
-            <menuitem label="${labels.general.logout}" onClick="@command('logoutFromAuthzServer')"/>
-        </menupopup>
-    </hlayout>
+        <!-- notification badge -->
 
-</zk>
+        <!-- drop-down menu -->
+        <nav class="ph3">
+            <z:div class="dropdown" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.HeaderViewModel')">
+                <a href="javascript:;" class="dropdown-toggle gray hover-black-80" role="button" id="dropdownMenu"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="pr1">
+                        <z:zk if="${empty sessionContext.user.pictureURL}">
+                            <i class="fas fa-user f2-cust pt1" />
+                        </z:zk>
+                        <z:zk unless="${empty sessionContext.user.pictureURL}">
+                            <img src="${sessionContext.user.pictureURL}" class="w2 br-100 miw-2r"/>
+                        </z:zk>
+                    </span>
+                    <span class="dn di-ns f6">
+                        ${empty sessionContext.user.lastName ? c:cat4(c:l('general.welcome'), ' ', sessionContext.user.givenName, ' ')
+                        : c:cat4(sessionContext.user.givenName, ' ', sessionContext.user.lastName, ' ')}
+                        <i class="fas fa-chevron-down f7" style="padding-top:2px" />
+                    </span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right f7 shadow-5 br1 mt2 bw0 miw-2r w4" aria-labelledby="dropdownMenu">
+                    <!-- LANGUAGE SELECTOR>
+                    <a href="#"><i class="fas"></i> ${labels.general.change_lang}</a-->
+
+                    <li class="pv1 pl2 pr3 bg-white-70">
+                        <a class="link hover-green gray" href="https://gluu.org/docs/casa/3.1.4/user-guide/" target="_blank">
+                            <i class="fas fa-question-circle" />&amp;nbsp; ${labels.general.help}
+                        </a>
+                    </li>
+
+                    <zk forEach="${vm.contextMenuItems}">
+                        <li class="pv1 pl2 pr3 bg-white-70">
+                            <z:include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
+                                <attribute name="base">${each.x}</attribute>
+                                <attribute name="priority">${each.y.priority}</attribute>
+                            </z:include>
+                        </li>
+                    </zk>
+
+                    <div class="dropdown-divider" />
+
+                    <li class="pv1 pl2 pr3 bg-white-70">
+                        <z:span onClick="@command('logoutFromAuthzServer')">
+                            <a href="javascript:;" class="link hover-green gray">
+                                <i class="fas fa-sign-out-alt" />&amp;nbsp; ${labels.general.logout}
+                            </a>
+                        </z:span>
+                    </li>
+                </ul>
+            </z:div>
+        </nav>
+
+    </header>
+
+</z:zk>

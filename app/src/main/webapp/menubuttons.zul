@@ -1,39 +1,64 @@
-<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk" xmlns="native">
 
-    <vlayout viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')" sclass="padded">
+    <aside class="dn di-ns flex-shrink-0 w-14r br b--light-gray bg-white shadow-4">
+        <ul id="menu" class="list pl0">
 
-        <vlayout sclass="padded">&#160;</vlayout>
+            <z:div if="${sessionContext.user ne null}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')"
+                   visible="@load(not empty vm.authnMethods)">
+                <li>
+                    <a class="db pv3 hover-bg-near-white bl bw2 b--white pl1 pr2 link hover-green dark-blue2 bl-hover"
+                       href="${zkService.contextPath}/user.zul">
+                        <i class="mh1 fas fa-tags" /><!-- fa-key fa-address-book fa-address-book-o fa-address-card fa-address-card-o fa-id-badge fa-id-card fa-id-card-o -->
+                        <span class="collapsible-menu-item di">${labels.usr.menu_main2fa}</span>
+                    </a>
+                    <ul class="list pl0">
+                        <z:div children="@load(vm.authnMethods)">
+                            <z:template name="children">
+                                <li>
+                                    <a class="db pv1 hover-bg-near-white bl bw2 b--white bl-hover pl4 pr2 link hover-green dark-blue2 o-80"
+                                       href="${vm.getAuthnMethodPageUrl(each)}">
+                                        <span class="collapsible-menu-item di">${c:l(each.panelTitleKey)}</span>
+                                    </a>
+                                </li>
+                            </z:template>
+                        </z:div>
+                    </ul>
+                </li>
+            </z:div>
 
-        <div if="${sessionContext.user ne null}" visible="@load(not empty vm.authnMethods)">
-            <a href="/user.zul" label="${labels.usr.menu_main2fa}" />
-            <vlayout children="@load(vm.authnMethods)" style="padding-left:15px" sclass="dpadded">
+            <zk:zk if="${sessionContext.user ne null and configurationHandler.settings.enablePassReset}">
+                <li>
+                    <a class="db pv3 hover-bg-near-white bl bw2 b--white pl1 pr2 link hover-green dark-blue2 bl-hover"
+                       href="${zkService.contextPath}/user/pass-reset.zul">
+                        <i class="mh2 fas fa-lock" /><!-- fa-expeditedssl -->
+                        <span class="collapsible-menu-item di">${labels.usr.passreset_title}</span>
+                    </a>
+                </li>
+            </zk:zk>
+
+            <zk:zk if="${sessionContext.user.admin}">
+                <li>
+                    <a class="db pv3 hover-bg-near-white bl bw2 b--white pl1 pr2 link hover-green dark-blue2 bl-hover"
+                       href="${zkService.contextPath}/admin.zul">
+                        <i class="mh2 fas fa-wrench" /><!-- fa-sliders fa-cog fa-wrench -->
+                        <span class="collapsible-menu-item di">${labels.usr.menu_adminconsole}</span>
+                    </a>
+                </li>
+            </zk:zk>
+
+            <!-- plugin's menu items -->
+            <z:div sclass="bt b--light-gray" if="${not empty vm.pluginMenuItems}" />
+            <z:div children="@load(vm.pluginMenuItems)">
                 <template name="children">
-                    <a label="${c:l(each.panelTitleKey)}" href="${vm.getAuthnMethodPageUrl(each)}" />
+                    <z:include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
+                        <attribute name="base">${each.x}</attribute>
+                        <attribute name="priority">${each.y.priority}</attribute>
+                    </z:include>
                 </template>
-            </vlayout>
-        </div>
+            </z:div>
+        </ul>
+    </aside>
+    <!--z:div viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')">
+    </z:div> -->
 
-        <zk if="${sessionContext.user ne null and configurationHandler.settings.enablePassReset}">
-            <a href="/user/pass-reset.zul" label="${labels.usr.passreset_title}" />
-        </zk>
-
-        <a if="${sessionContext.user.admin}" label="${labels.usr.menu_adminconsole}" href="/admin.zul" />
-
-        <!-- menu items defined by plugins -->
-        <zk if="${not empty vm.pluginMenuItems}">
-            <n:hr />
-        </zk>
-        <div children="@load(vm.pluginMenuItems)">
-            <template name="children">
-                <include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
-                    <attribute name="base">${each.x}</attribute>
-                    <attribute name="priority">${each.y.priority}</attribute>
-                </include>
-            </template>
-        </div>
-
-    </vlayout>
-
-</zk>
+</z:zk>

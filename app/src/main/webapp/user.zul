@@ -1,106 +1,40 @@
+<?page language="xhtml"?>
 <?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
-<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
-<?page title="${applicationScope.appName} - ${labels.usr.title}"?>
-<?link rel="icon" href="${sessionContext.faviconDataUri}" ?>
-<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
-<?script src="/scripts/main-util.js"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns="native">
 
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <h:title self="@define(title)">${zkService.appName} - ${labels.usr.title}</h:title>
 
-    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserMainViewModel')"
-             self="@define(content)">
+    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserMainViewModel')"
+             self="@define(maincontent)">
 
-        <div align="center"><label value="${labels.usr.title}" sclass="titled" /></div>
-        <vlayout sclass="padded">
-            <label value="@load(vm.introText)" />
-            <zk if="${vm.methodsAvailability and vm.has2faRequisites}">
-                <separator />
-                <div sclass="callout padded">
-                    <label value="${labels.usr.warn_lock}" />
+        <div class="bg-white pa3 mb4 mb5-ns shadow-4">
+            <h1 class="f3 dark-blue2">${labels.usr.title}</h1>
+            <p class="f6">${vm.introText}</p>
+
+            <zk:zk if="${vm.methodsAvailability and vm.has2faRequisites}">
+                <div class="alert alert-warning" role="alert">${labels.usr.warn_lock}</div>
+            </zk:zk>
+            <zk:zk if="${not vm.methodsAvailability}">
+                <div class="alert alert-danger" role="alert">
+                    ${c:l(sessionContext.user.admin ? 'usr.strong.unavailable_admin' : 'usr.strong.unavailable')}
                 </div>
-            </zk>
-            <zk if="${not vm.methodsAvailability}">
-                <separator />
-                <div sclass="callout padded">
-                    <label value="${c:l(sessionContext.user.admin ? 'usr.strong.unavailable_admin' : 'usr.strong.unavailable')}" />
-                </div>
-            </zk>
-        </vlayout>
+            </zk:zk>
+        </div>
 
-        <zk if="${vm.methodsAvailability and vm.has2faRequisites}">
-            <include src="user/preferred.zul" />
-
-            <div children="@load(vm.widgets)">
-                <template name="children">
-
-                    <panel title="${c:l(each.panelTitleKey)}" sclass="padded" border="normal">
-                        <panelchildren sclass="padded">
-                            <vlayout>
-                                <label value="${c:l(each.panelTextKey)}"/>
-
-                                <zk if="${not empty each.getEnrolledCreds(sessionContext.user.id)}">
-                                    <separator />
-                                    <label value="${labels.usr.you_added}" />
-
-                                    <vlayout sclass="summary" children="@load(each.getEnrolledCreds(sessionContext.user.id))">
-                                        <template name="children">
-                                            <hlayout sclass="de_emphasized">
-                                                <label sclass="bold" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />
-                                                <zk if="${not empty each.addedOn}">
-                                                    <label value=" -" />
-                                                    <label value="@load(c:toLowerCase(c:l('general.added_on')))" />
-                                                    <label value="@load(each.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d yyyy', offset = sessionContext.zoneOffset)" />
-                                                </zk>
-                                            </hlayout>
-                                        </template>
-                                    </vlayout>
-                                </zk>
-
-                                <div sclass="padded" align="center">
-                                    <vlayout>
-                                        <button label="${c:l(each.panelButtonKey)}" sclass="btn-success" href="${vm.getAuthnMethodPageUrl(each)}" />
-                                        <!-- panelBottomTextKey property could not be referenced as each.panelBottomTextKey (default interface method...) -->
-                                        <zk if="${not empty each.getPanelBottomTextKey()}">
-                                            <n:span class="de_emphasized">${c:l(each.getPanelBottomTextKey())}</n:span>
-                                        </zk>
-                                    </vlayout>
-                                </div>
-                            </vlayout>
-                        </panelchildren>
-                    </panel>
-
-                </template>
+        <zk:zk if="${vm.methodsAvailability and vm.has2faRequisites}">
+            <div class="ph3 ph4-l">
+                <z:include src="user/preferred.zul" />
             </div>
-        </zk>
+        </zk:zk>
 
-        <zk if="${vm.methodsAvailability and not vm.has2faRequisites}">
+        <script>
+            /*
+            $(document).ready(function() {
+                alertRef = $('#feedback-alert');
+            });
+            */
+        </script>
 
-            <vlayout sclass="padded">
-                <label value="${labels.usr.strong.requisite_text}" />
-                <separator />
-                <div style="padding:0 10px">
-                    <div sclass="row" children="@load(vm.pre2faMethods)">
-                        <template name="children">
-                            <!-- in medium sized devices or bigger, use two centered columns -->
-                            <div sclass="col-sm-6 col-md-4 ${forEachStatus.index mod 2 eq 0 ? 'col-md-offset-2' : ''}">
-                                <a sclass="thumbnail" href="${each.pageUrl}" style="text-decoration:none">
-                                    <vlayout sclass="caption">
-                                        <n:h4>${c:l(each.panelTitleKey)}</n:h4>
-                                        <label value="${c:l(each.panelTextKey)}" sclass="de_emphasized" />
-                                        <div align="center">
-                                            <button label="${labels.general.go}" sclass="btn-success" href="${each.pageUrl}"/>
-                                        </div>
-                                    </vlayout>
-                                </a>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </vlayout>
+    </z:div>
 
-        </zk>
-
-    </vlayout>
-
-</zk>
+</zk:zk>

@@ -1,32 +1,24 @@
-<?page title="${applicationScope['appName']}"?>
-<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/basic.zul"?>
 <?init class="org.gluu.casa.core.navigation.HomeInitiator"?>
-<?link rel="icon" href="${sessionContext.faviconDataUri}"?>
-<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
-<?script src="/scripts/platform.js"?>
-<?script src="/scripts/main-util.js"?>
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns="native">
 
+    <h:title self="@define(title)">${zkService.appName}</h:title>
 
-    <div align="center">
-        <hlayout height="250px" sclass="padded">
-            <vlayout sclass="padded">
-                <zk choose="">
-                    <zk when="${empty pageScope.error}">
-                        <label value="${labels.general.wait}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.HomeViewModel')"
-                               id="message" sclass="padded" />
-                    </zk>
-                    <zk>
-                        <vlayout>
-                            <label value="${pageScope.error}" sclass="titled padded" />
-                            <separator />
-                            <label value="${pageScope.description}" />
-                        </vlayout>
-                    </zk>
-                </zk>
-            </vlayout>
-        </hlayout>
-    </div>
+    <z:div sclass="f7-cust flex justify-center mv4" self="@define(content)">
+        <div class="w-90 w-75-ns ba bw1 br2 b--light-gray flex flex-column items-center bg-white">
+            <z:div sclass="pa4 f6" if="${empty pageScope.error}" id="message"
+                   viewModel="@id('vm') @init('org.gluu.casa.ui.vm.HomeViewModel')">
+                ${labels.general.wait}
+            </z:div>
+            <div class="pa4" unless="${empty pageScope.error}">
+                <h4>${pageScope.error}</h4>
+            </div>
+            <div class="pa2 mb2" unless="${empty pageScope.error}">
+                <p>${pageScope.description}</p>
+            </div>
+        </div>
+        <script src="${zkService.contextPath}/scripts/platform.js" />
+    </z:div>
 
-</zk>
+</zk:zk>

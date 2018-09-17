@@ -1,16 +1,5 @@
-<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
-
-    <div align="center">
-        <hlayout height="250px" sclass="padded">
-            <vlayout sclass="padded">
-                <label value="${pageScope.error}" sclass="titled padded"/>
-                <label value="${pageScope.description}"/>
-                <separator/>
-                <button label="${labels.usr.logout.back_home}" sclass="btn-success" href="/"/>
-            </vlayout>
-        </hlayout>
-    </div>
-
-</zk>
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/basic.zul"?>
+<div xmlns="xhtml" xmlns:z="zul" self="@define(content)">
+    <z:include src="/error-body.zul" />
+</div>

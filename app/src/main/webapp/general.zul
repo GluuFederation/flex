@@ -1,44 +1,71 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
 <?init class="org.gluu.casa.core.navigation.PageInitiator"?>
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?init class="org.zkoss.zk.ui.util.Composition" template="/basic.zul"?>
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native">
 
-    <!-- width is set explicitly to avoid elements aligned to right become invisible when CSS loading is delayed -->
-    <vlayout sclass="container mainDiv" width="${sessionContext.onMobile ? '100%' : '950px'}">
-        <attribute name="spacing" if="${empty pageScope.error}">0px</attribute>
-        <!-- this overrides bootstrap's container padding and makes page appear centered before CSS files are loaded completely -->
-        <attribute name="style">margin:0 auto;padding:0</attribute>
+    <z:div self="@define(content)" if="${empty pageScope.error}" sclass="pa0 flex justify-center gray f7-cust">
 
-        <zk choose="">
-            <zk when="${empty pageScope.error}">
-
-                <include src="/header.zul"/>
-                <div self="@insert(content)" if="${c:endsWith(desktop.requestPath, '/admin.zul')}" />
-
-                <hlayout width="100%" unless="${c:endsWith(desktop.requestPath, '/admin.zul')}" spacing="0px" style="background-color:#eee;">
-                    <div vflex="1" sclass="sidebar" id="sidebar">
-                        <include src="/menubuttons.zul"/>
-                    </div>
-                    <div hflex="1" style="background-color:#fff;">
-                        <div sclass="padded"><button label="☰" onClick="sidebar.visible=!sidebar.visible" /></div>
-                        <div self="@insert(content)" />
-                    </div>
-                </hlayout>
-            </zk>
-            <zk>
-                <include src="/error.zul" />
-            </zk>
-        </zk>
-    </vlayout>
-
-    <zk if="${empty sessionContext.custdir}">
         <zk if="${not empty configurationHandler.settings.extraCssSnippet}">
+            <!-- load custom branding css snippets -->
             <style>${configurationHandler.settings.extraCssSnippet}</style>
         </zk>
-    </zk>
 
-    <script src="/scripts/bootstrap/bootstrap.min.js" />
-    <script src="/scripts/bootstrap/ie10-viewport-bug-workaround.js" />
-    <script src="/scripts/bootstrap/zk.js" />
-</zk>
+        <div class="miw-16r mw-60r w-100 bg-washed-blue2">
+            <z:include src="/header.zul"/>
+
+            <z:div sclass="flex justify-start">
+                <z:zk unless="${c:endsWith(desktop.requestPath, '/admin.zul')}">
+                   <z:include class="flex" src="/menubuttons.zul"/>
+                </z:zk>
+
+                <div style="width:1px"></div>
+                <!-- page's center content -->
+                <div class="relative z-1 flex-grow-1">
+                    <z:div self="@insert(maincontent)"/>
+                    <footer class="bg-white pa3 f7 shadow-4 dark-gray">
+                        Powered by
+                        <a href="https://gluu.org" class="link blue">Gluu</a>.
+                    </footer>
+                </div>
+
+                <!-- modal bootstrap box -->
+                <div id="modal_placeholder" />
+            </z:div>
+        </div>
+
+        <script src="${zkService.contextPath}/scripts/jquery-3.3.1.min.js" />
+        <script src="${zkService.contextPath}/scripts/popper.min.js" />
+        <script src="${zkService.contextPath}/scripts/bootstrap.min.js" />
+        <script src="${zkService.contextPath}/scripts/font-awesome-5.2.0.all.min.js" />
+        <script>
+            $(document).ready( () => {
+                // Tooltip
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        </script>
+    </z:div>
+
+    <z:div self="@define(content)" unless="${empty pageScope.error}">
+        <z:include src="/error-body.zul" />
+    </z:div>
+
+</z:zk>
+<!--
+<div self="@insert(content)" if="${c:endsWith(desktop.requestPath, '/admin.zul')}" />
+<div class="page-content">
+    <div class="content-wrapper content-pad">
+        <div class="row">
+            <z:div sclass="col-md-12" self="@insert(content)" />
+        </div>
+    </div>
+</div>
+<hlayout width="100%" unless="${c:endsWith(desktop.requestPath, '/admin.zul')}" spacing="0px" style="background-color:#eee;">
+    <div vflex="1" sclass="sidebar" id="sidebar">
+        <include src="/menubuttons.zul"/>
+    </div>
+    <div hflex="1" style="background-color:#fff;">
+        <div sclass="padded"><button label="☰" onClick="sidebar.visible=!sidebar.visible" /></div>
+        <div self="@insert(content)" />
+    </div>
+</hlayout-->
+

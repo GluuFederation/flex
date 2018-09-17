@@ -1,0 +1,14 @@
+<?page language="xhtml"?>
+<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver"?>
+<h:html xmlns:h="xhtml" xmlns="native">
+    <h:head self="@insert(title)">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <link rel="icon" href="${zkService.faviconDataUri}" />
+        <h:zkhead/>
+        <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/bootstrap.min.css" />
+        <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/tachyons.min.css" />
+        <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/gluu/style.css" />
+        <script src="${zkService.contextPath}/scripts/gluu/main-util.js" />
+    </h:head>
+    <h:body class="bg-near-white" self="@insert(content)" />
+</h:html>

@@ -1,0 +1,14 @@
+<?page language="xhtml"?>
+<div xmlns="native" class="f7-cust flex justify-center mv4">
+    <div class="w-90 w-75-ns ba bw1 br2 b--light-gray flex flex-column items-center bg-white">
+        <div class="pa4">
+            <h4>${pageScope.error}</h4>
+        </div>
+        <div class="pa2 mb2">
+            <p>${pageScope.description}</p>
+        </div>
+        <div class="pa3">
+            <button href="./" class="btn btn-success f7 bw0 br1 ph3 pv2">${labels.usr.logout.back_home}</button>
+        </div>
+    </div>
+</div>

@@ -1,24 +1,18 @@
-<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver" ?>
-<?page title="${applicationScope['appName']} - ${labels.usr.logout.title}"?>
-<?link rel="icon" href="${sessionContext.faviconDataUri}" ?>
-<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
-<?script src="/scripts/bootstrap/bootstrap.min.js"?>
-<?script src="/scripts/bootstrap/ie10-viewport-bug-workaround.js"?>
-<?script src="/scripts/bootstrap/zk.js"?>
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/basic.zul"?>
+<zk:zk xmlns:zk="zk" xmlns:h="xhtml" xmlns="native">
 
-    <vlayout sclass="container mainDiv" width="${sessionContext.onMobile ? '100%' : '950px'}">
-        <div align="center">
-            <hlayout height="250px" sclass="padded">
-                <vlayout sclass="padded">
-                    <label value="${labels.usr.logout.title}" sclass="titled padded"/>
-                    <separator/>
-                    <button label="${labels.usr.logout.back_home}" sclass="btn-success" href="/"/>
-                </vlayout>
-            </hlayout>
+    <h:title self="@define(title)">${zkService.appName} - ${labels.usr.logout.title}</h:title>
+
+    <h:div class="f7-cust flex justify-center mv4" self="@define(content)">
+        <div class="w-90 w-75-ns ba bw1 br2 b--light-gray flex flex-column items-center bg-white">
+            <div class="pa4">
+                <h4>${labels.usr.logout.title}</h4>
+            </div>
+            <div class="pa3">
+                <button href="./" class="btn btn-success f7 bw0 br1 ph3 pv2">${labels.usr.logout.back_home}</button>
+            </div>
         </div>
-    </vlayout>
+    </h:div>
 
-</zk>
+</zk:zk>
