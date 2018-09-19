@@ -1,27 +1,46 @@
-<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native" xmlns:h="xhtml" if="${sessionContext.user ne null}">
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client"
+      if="${sessionContext.user ne null}">
 
     <z:div viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserPreferenceViewModel')">
-        <z:div class="bg-white mb4 shadow-4" if="${vm.availMethods.size() gt 1}">
-            <div class="pa3 bb b--moon-gray">
+        <h:section class="${css.section}" if="${vm.availMethods.size() gt 1}">
+            <div class="${css.panel}">
                 <h2 class="f4 dark-blue2">${labels.usr.preferred_title}</h2>
                 <p>${labels.usr.preferred_text}</p>
             </div>
-            <div class="pa3 bb b--moon-gray">
+            <div class="${css.panel}">
                 <div class="flex justify-between ph3">
                     <div class="dark-blue2 f6">
                         <z:label value="@load(vm.selectedMethodName)"/>
                     </div>
                     <h:button class="btn f7 pv1 ph2 br1 bw0 blue2 bg-lightest-blue hover-bg-blue hover-white"
-                              visible="@load(vm.uiEditable)" onClick="@command('prepareUpdateMethod')"
-                              data-original-title="${labels.usr.preferred_tooltip}" data-toggle="tooltip" data-placement="top">
+                              onClick="@command('prepareUpdateMethod')">
+
+                        <zk:attribute name="data-original-title" if="${vm.uiEditable}">${labels.usr.preferred_tooltip}</zk:attribute>
+                        <zk:attribute name="data-toggle" if="${vm.uiEditable}">tooltip</zk:attribute>
+                        <zk:attribute name="data-placement" if="${vm.uiEditable}">top</zk:attribute>
+                        <zk:attribute unless="${vm.uiEditable}" name="disabled">true</zk:attribute>
+                        
                         <i class="fas fa-pencil-alt" />
                     </h:button>
                 </div>
+                <zk:zk if="${vm.uiNotEnoughCredsFor2FA}">
+                    <p class="pl3 black">${c:l2('usr.preferred_disabled', c:split(configurationHandler.settings.minCredsFor2FA,''))}</p>
+                </zk:zk>
+                <div class="pv1" /> <!-- avoids vertical margin collapse -->
+                <div class="alert alert-success dn" id="feedback-preferred" role="alert" />
             </div>
-        </z:div>
-        <z:window id="win" title="${labels.usr.preferred_title}" border="normal" mode="modal" visible="@load(vm.uiEditing)" width="330px">
-            <!--z:include src="/user/selector.zul" /-->
-            <div align="center">Hi
+            <z:div sclass="${css.panel} tc" visible="@load(vm.selectedMethod ne null and vm.uiAllowedToSetPolicy)">
+                <p><em>${labels.usr.policy_default_text}</em></p>
+                <z:button sclass="${css.primaryButton}" label="${labels.usr.policy_go_manage}" href="/user/policy.zul" />
+            </z:div>
+        </h:section>
+        <z:window id="win" title="${labels.usr.preferred_title}" border="normal" mode="modal" visible="@load(vm.uiEditing)"
+                  closable="true" onClose="@command('cancel', event=event)" sclass="${css.modalWindow}">
+            <z:include src="/user/selector.zul" />
+            <div class="w-100 flex justify-center">
+                <z:button sclass="${css.primaryButton} mr4" label="${labels.general.update}"
+                          w:onClick="alertRef = $('#feedback-preferred')" onClick="@command('update')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancel', event=event)" />
             </div>
         </z:window>
     </z:div>

@@ -18,6 +18,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
@@ -76,7 +77,6 @@ public class UserPreferenceViewModel extends UserViewModel {
 
     @DependsOn("selectedMethod")
     public String getSelectedMethodName() {
-
         return Optional.ofNullable(selectedMethod).map(extManager::getExtensionForAcr)
                 .map(aMethod -> Labels.getLabel(aMethod.get().getUINameKey())).orElse(noMethodName);
     }
@@ -108,9 +108,12 @@ public class UserPreferenceViewModel extends UserViewModel {
 
     @NotifyChange({"uiEditing", "selectedMethod"})
     @Command
-    public void cancel() {
+    public void cancel(@BindingParam("event") Event event) {
         uiEditing = false;
         selectedMethod = prevSelectedMethod;
+        if (event != null) {
+            event.stopPropagation();
+        }
     }
 
     @NotifyChange({"uiEditing", "selectedMethod"})

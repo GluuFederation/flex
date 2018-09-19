@@ -1,6 +1,6 @@
 <?page language="xhtml"?>
 <?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver"?>
-<h:html xmlns:h="xhtml" xmlns="native">
+<h:html xmlns:h="xhtml" xmlns:zk="zk" xmlns="native">
     <h:head self="@insert(title)">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <link rel="icon" href="${zkService.faviconDataUri}" />
@@ -8,7 +8,13 @@
         <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/bootstrap.min.css" />
         <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/tachyons.min.css" />
         <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/gluu/style.css" />
+
+        <zk:zk if="${not empty configurationHandler.settings.extraCssSnippet}">
+            <!-- load custom branding css snippets -->
+            <style>${configurationHandler.settings.extraCssSnippet}</style>
+        </zk:zk>
+
         <script src="${zkService.contextPath}/scripts/gluu/main-util.js" />
     </h:head>
-    <h:body class="bg-near-white" self="@insert(content)" />
+    <h:body class="bg-near-white cust-body-rule" self="@insert(content)" />
 </h:html>

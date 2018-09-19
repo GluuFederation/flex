@@ -1,6 +1,6 @@
 <?page language="xhtml"?>
 <div xmlns="native" class="f7-cust flex justify-center mv4">
-    <div class="w-90 w-75-ns ba bw1 br2 b--light-gray flex flex-column items-center bg-white">
+    <div class="w-90 w-75-ns ba bw1 br2 b--light-gray flex flex-column items-center bg-blank">
         <div class="pa4">
             <h4>${pageScope.error}</h4>
         </div>

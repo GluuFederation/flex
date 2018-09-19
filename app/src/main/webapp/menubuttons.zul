@@ -1,6 +1,6 @@
 <z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk" xmlns="native">
 
-    <aside class="dn di-ns flex-shrink-0 w-14r br b--light-gray bg-white shadow-4">
+    <aside class="dn di-ns flex-shrink-0 w-14r br b--light-gray shadow-4 bg-blank cust-menu-rule">
         <ul id="menu" class="list pl0">
 
             <z:div if="${sessionContext.user ne null}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')"

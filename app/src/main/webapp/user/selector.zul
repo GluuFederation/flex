@@ -1,16 +1,16 @@
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native">
 
-    <vlayout sclass="padded">
-        <radiogroup id="methods" />
-        <grid model="@load(vm.availMethods)">
-            <template name="model">
-                <row>
-                    <radio label="@load(each.y)" onCheck="@command('change', method=each.x)"
-                           selected="${each.x eq vm.selectedMethod}" radiogroup="methods" />
-                </row>
-            </template>
-        </grid>
-    </vlayout>
+    <z:radiogroup id="methods" />
+    <ul class="list-group mb4 f7-cust mb3">
+        <z:div children="@load(vm.availMethods)">
+            <z:template name="children">
+                <li class="list-group-item hover-bg-light-gray gray hover-black-80">
+                    <z:radio onCheck="@command('change', method=each.x)" selected="${each.x eq vm.selectedMethod}"
+                             radiogroup="methods" sclass="mr1" />
+                    ${each.y}
+                </li>
+            </z:template>
+        </z:div>
+    </ul>
 
-</zk>
+</z:zk>

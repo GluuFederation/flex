@@ -1,56 +1,76 @@
 <?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
 <?page title="${applicationScope.appName} - ${labels.usr.passreset_title}"?>
-<?link rel="icon" href="${sessionContext.faviconDataUri}" ?>
-<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
+<?link rel="icon" href="${zkService.faviconDataUri}"?>
+<?link rel="stylesheet" type="text/css" href="${zkService.assetsPrefix}/styles/style.css"?>
 <?script src="/scripts/zxcvbn.js"?>
-<?script src="/scripts/main-util.js"?>
+<?script src="/scripts/gluu/main-util.js"?>
+<z:zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"
+      xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns="native" xmlns:c="client" xmlns:ca="client/attribute">
 
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <z:div if="${empty pageScope.error and configurationHandler.settings.enablePassReset}" self="@define(content)"
+           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.PassResetViewModel')">
 
-    <vlayout if="${empty pageScope.error and configurationHandler.settings.enablePassReset}" self="@define(content)"
-             viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.PassResetViewModel')">
+        <div class="pass-panel">
+            <div class="row">
+                <div class="col-md-7 col-lg-7 col-xl-5">
+                    <div class="reset-pass">
+                        <h3>${labels.usr.passreset_title}</h3>
+                        <div class="input-container pass-input">
+                            <h:input id="c_pass" class="input" type="password" ca:required="required" value="@bind(vm.currentPassword)" />
+                            <label class="label" for="c_pass">${labels.usr.passreset_current}</label>
+                            <i class="icon fas fa-eye" onClick="javascript:togglePass(this, 'c_pass')" />
+                        </div>
+                        <div class="input-container pass-input">
+                            <h:input id="new_pass" class="input" type="password" ca:required="required"
+                                     onBlur="updateStrength('new_pass')" value="@bind(vm.newPassword)" />
+                            <label class="label" for="new_pass">${labels.usr.passreset_newpass}</label>
+                            <i class="icon fas fa-eye" onClick="javascript:togglePass(this, 'new_pass')" />
+                        </div>
+                        <div class="form-group" style="margin-top:-10px;padding-bottom:10px">
+                            <z:label sclass="de_emphasized " visible="@load(not empty vm.strengthText)"
+                                     style="padding-left:20px" value="${labels.usr.pass.strength.title}" />
+                            <z:label sclass="de_emphasized bold" value="@load(vm.strengthText)"/>
+                        </div>
+                        <div class="input-container pass-input">
+                            <h:input id="cn_pass" class="input" type="password" ca:required="required" value="@bind(vm.newPasswordConfirm)" />
+                            <label class="label" for="cn_pass">${labels.usr.passreset_confirm}</label>
+                            <i class="icon fas fa-eye" onClick="javascript:togglePass(this, 'cn_pass')" />
+                        </div>
 
-        <panel title="${labels.usr.passreset_title}" sclass="padded" border="normal" collapsible="true" open="@load(vm.uiPwdResetOpened)">
-            <panelchildren sclass="padded form-horizontal">
-                <div sclass="panel5">
-                    <div sclass="form-group">
-                        <label value="${labels.usr.passreset_current}" sclass="control-label form-label col-sm-5"/>
-                        <div sclass="col-sm-7">
-                            <textbox type="password" sclass="form-control" value="@bind(vm.currentPassword)" />
+                        <div class="text-btn">
+                            <z:separator />
+                            <z:a class="@load(c:cat('btn btn-success', (empty vm.currentPassword or empty vm.newPassword) ? ' disabled' : ''))"
+                                 disabled="@load(empty vm.currentPassword or empty vm.newPassword)" label="${labels.usr.passreset_change}"
+                                 onClick="@command('resetPass')" />
+                            <z:a class="btn btn-gray" onClick="@command('cancel')" label="${labels.general.cancel}" />
                         </div>
-                    </div>
-                    <div sclass="form-group">
-                        <label value="${labels.usr.passreset_newpass}" sclass="control-label form-label col-sm-5" />
-                        <div sclass="col-sm-7">
-                            <textbox id="new_pass" type="password" sclass="form-control" tooltip="tooltip_pass_hint, after_center"
-                                     w:onBlur="updateStrength(this)" value="@bind(vm.newPassword)"/>
-                        </div>
-                    </div>
-                    <div sclass="form-group" style="margin-top:-10px">
-                        <label sclass="de_emphasized col-sm-offset-5" visible="@load(not empty vm.strengthText)"
-                               style="padding-left:20px" value="${labels.usr.pass.strength.title}" />
-                        <label sclass="de_emphasized bold" value="@load(vm.strengthText)"/>
-                    </div>
-                    <div sclass="form-group">
-                        <label value="${labels.usr.passreset_confirm}" sclass="control-label form-label col-sm-5"/>
-                        <div sclass="col-sm-7">
-                            <textbox type="password" sclass="form-control" value="@bind(vm.newPasswordConfirm)" />
-                        </div>
-                    </div>
-                    <div align="center">
-                        <separator />
-                        <hlayout spacing="20px" valign="bottom" sclass="padded">
-                            <button label="${labels.usr.passreset_change}" sclass="btn-success"
-                                    onClick="@command('resetPass')" disabled="@load(empty vm.currentPassword or empty vm.newPassword)"/>
-                            <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')"/>
-                        </hlayout>
+
+                        <div class="alert alert-success" id="feedback-alert" role="alert" style="display:none" />
                     </div>
                 </div>
-            </panelchildren>
-        </panel>
-        <popup id="tooltip_pass_hint">${labels.usr.passreset_hint}</popup>
+            </div>
+        </div>
 
-    </vlayout>
+    </z:div>
 
-</zk>
+    <script src="${applicationScope['contextPath']}/scripts/hideShowPassword.min.js" />
+    <script>
+
+        //Computes the strength of password entered in the input element whose ID is passed and sends the score back to server
+        function updateStrength(id){
+        var widget = zk.$('$' + id);
+        var strength = zxcvbn(document.getElementById(id).value);
+        zAu.send(new zk.Event(widget, "onData", strength.score, {toServer:true}));
+        }
+
+        function togglePass(icon, elemID) {
+        $(icon).toggleClass('fa-eye-slash').toggleClass('fa-eye');
+        $('#' + elemID).togglePassword();
+        }
+
+        $(document).ready(function() {
+        alertRef = $('#feedback-alert');
+        });
+    </script>
+
+</z:zk>

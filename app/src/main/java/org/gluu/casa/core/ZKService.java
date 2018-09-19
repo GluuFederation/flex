@@ -7,6 +7,7 @@ package org.gluu.casa.core;
 
 import org.gluu.casa.core.label.PluginLabelLocator;
 import org.gluu.casa.core.label.SystemLabelLocator;
+import org.gluu.casa.misc.CssRulesResolver;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.ui.vm.admin.branding.CssSnippetHandler;
 import org.slf4j.Logger;
@@ -63,6 +64,8 @@ public class ZKService {
 
     private Map<String, PluginLabelLocator> labelLocators;
 
+    private ServletContext servletContext;
+
     @PostConstruct
     private void inited() {
         labelLocators = new HashMap<>();
@@ -76,8 +79,10 @@ public class ZKService {
             confHandler.init();
             //These attributes are stored here for future use inside zul templates
             appName = app.getAppName();
-            contextPath = app.getServletContext().getContextPath();
+            servletContext = app.getServletContext();
+            contextPath = servletContext.getContextPath();
 
+            CssRulesResolver.init(servletContext);
             String cssSnippet = confHandler.getSettings().getExtraCssSnippet();
             if (Utils.isNotEmpty(cssSnippet)) {
                 CssSnippetHandler snippetHandler = new CssSnippetHandler(cssSnippet);
@@ -151,8 +156,7 @@ public class ZKService {
 
     private void readSystemLabels() {
 
-        ServletContext context = app.getServletContext();
-        Set<String> labelsListing = context.getResourcePaths(SYS_LABELS_LOCATION);
+        Set<String> labelsListing = servletContext.getResourcePaths(SYS_LABELS_LOCATION);
 
         if (labelsListing == null) {
             logger.warn("No application labels will be available. Check '{}' contains properties files", SYS_LABELS_LOCATION);
@@ -161,7 +165,7 @@ public class ZKService {
             labelsListing.stream().filter(path -> path.endsWith(".properties"))
                     .map(path -> {
                         try {
-                            return context.getResource(path).toString();
+                            return servletContext.getResource(path).toString();
                         } catch (MalformedURLException e) {
                             logger.error("Error converting path {} to URL", path);
                             return null;
@@ -175,7 +179,7 @@ public class ZKService {
     }
 
     String getAppFileSystemRoot() {
-        return app.getServletContext().getRealPath("/");
+        return servletContext.getRealPath("/");
     }
 
     void readPluginLabels(String id, Path path) {

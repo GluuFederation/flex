@@ -48,5 +48,9 @@
     <listener>
         <listener-class>org.gluu.casa.core.init.ZKInitializer</listener-class>
     </listener>
+    <listener>
+        <listener-class>org.gluu.casa.misc.CssRulesResolver</listener-class>
+    </listener>
+
 
 </zk>

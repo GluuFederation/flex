@@ -114,6 +114,12 @@ button:disabled {
     border-radius: 2px;
 }
 
+
+.bg-blank {
+    /* bg-white is defined by both tachyons and bootstrap; the latter uses !important so we resort to this style */
+    background-color: #fff;
+}
+
 /* Overrides some default bootstrap stylings */
 body {
     font-family: 'Lato', sans-serif;
@@ -180,16 +186,12 @@ a:hover {
     zoom: 1;
 }
 
-.z-window-header-move {
-    cursor: move;
-}
-
 .z-window-header {
     /*font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;*/
-    font-size: 1rem; /*18px;*/
+    font-size: 1rem;/*18px;*/
     font-weight: normal;
     font-style: normal;
-    color: #34495c; /*rgba(0,0,0,0.57);*/
+    color: #34495c;/*rgba(0,0,0,0.57);*/
     /*line-height: 24px;*/
     /*padding-bottom: 16px;*/
     padding: .25rem 0;
@@ -199,13 +201,17 @@ a:hover {
     border-bottom: 1px solid #e9ecef;
 }
 
+.z-window-header-move {
+    cursor: move;
+}
+
 .z-window-icon {
     font-size: 1.5rem;/*18px;*/
     color: rgba(0,0,0,0.57);
     display: block;
     width: 28px;
     height: 24px;
-    margin: auto -5px; /*1px;*/
+    margin: auto -.25rem auto 1rem;/*auto 1px;*/
     /*padding: 4px;*/
     line-height: 20px;/*24px;*/
     text-align: center;
@@ -222,5 +228,6 @@ a:hover {
 }
 
 .z-icon-times:before{
+    /* times symbol */
     content: "\00D7";
 }

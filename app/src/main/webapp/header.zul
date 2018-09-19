@@ -1,6 +1,6 @@
 <z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native">
 
-    <header class="bg-white flex justify-between pv2 shadow-4" if="${sessionContext.user ne null}">
+    <header class="flex justify-between pv2 shadow-4 bg-blank cust-header-rule" if="${sessionContext.user ne null}">
 
         <div class="flex">
             <!-- logo -->

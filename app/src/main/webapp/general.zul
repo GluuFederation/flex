@@ -5,12 +5,7 @@
 
     <z:div self="@define(content)" if="${empty pageScope.error}" sclass="pa0 flex justify-center gray f7-cust">
 
-        <zk if="${not empty configurationHandler.settings.extraCssSnippet}">
-            <!-- load custom branding css snippets -->
-            <style>${configurationHandler.settings.extraCssSnippet}</style>
-        </zk>
-
-        <div class="miw-16r mw-60r w-100 bg-washed-blue2">
+        <div class="miw-16r mw-60r w-100 bg-washed-blue2 cust-content-rule">
             <z:include src="/header.zul"/>
 
             <z:div sclass="flex justify-start">
@@ -22,14 +17,11 @@
                 <!-- page's center content -->
                 <div class="relative z-1 flex-grow-1">
                     <z:div self="@insert(maincontent)"/>
-                    <footer class="bg-white pa3 f7 shadow-4 dark-gray">
+                    <footer class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
                         Powered by
                         <a href="https://gluu.org" class="link blue">Gluu</a>.
                     </footer>
                 </div>
-
-                <!-- modal bootstrap box -->
-                <div id="modal_placeholder" />
             </z:div>
         </div>
 
@@ -58,14 +50,5 @@
             <z:div sclass="col-md-12" self="@insert(content)" />
         </div>
     </div>
-</div>
-<hlayout width="100%" unless="${c:endsWith(desktop.requestPath, '/admin.zul')}" spacing="0px" style="background-color:#eee;">
-    <div vflex="1" sclass="sidebar" id="sidebar">
-        <include src="/menubuttons.zul"/>
-    </div>
-    <div hflex="1" style="background-color:#fff;">
-        <div sclass="padded"><button label="☰" onClick="sidebar.visible=!sidebar.visible" /></div>
-        <div self="@insert(content)" />
-    </div>
-</hlayout-->
+</div>-->
 

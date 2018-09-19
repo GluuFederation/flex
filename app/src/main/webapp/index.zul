@@ -6,7 +6,7 @@
     <h:title self="@define(title)">${zkService.appName}</h:title>
 
     <z:div sclass="f7-cust flex justify-center mv4" self="@define(content)">
-        <div class="w-90 w-75-ns ba bw1 br2 b--light-gray flex flex-column items-center bg-white">
+        <div class="w-90 w-75-ns ba bw1 br2 b--light-gray flex flex-column items-center bg-blank">
             <z:div sclass="pa4 f6" if="${empty pageScope.error}" id="message"
                    viewModel="@id('vm') @init('org.gluu.casa.ui.vm.HomeViewModel')">
                 ${labels.general.wait}
