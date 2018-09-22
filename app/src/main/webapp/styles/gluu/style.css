@@ -178,7 +178,7 @@ a:hover {
 }
 
 .z-window-content {
-    padding: 1rem /*16px*/;
+    padding: .5rem /*16px*/;
     background: #fff;
     /*
     color: rgba(0,0,0,0.9);
@@ -231,3 +231,139 @@ a:hover {
     /* times symbol */
     content: "\00D7";
 }
+
+.z-messagebox {
+    color: #777; /* gray */
+    font-size: .8rem; /* f7-cust */
+}
+
+.z-messagebox-buttons {
+    display: flex; /* flex */
+    justify-content: center; /* justify-center */
+}
+
+.z-hlayout-inner {
+    padding-left: .5rem; padding-right: .5rem; /* ph2 */
+}
+
+.z-messagebox-button {
+    font-size: .75rem; /* f7 */
+    border-width: 0; /* bw0 */
+    border-radius: .125rem; /* br1 */
+    padding-left: 1rem; padding-right: 1rem; /* ph3 */
+    padding-top: .5rem; padding-bottom: .5rem; /* pv2 */
+    color: #fff; /* white */
+    cursor: pointer; /* pointer */
+    background-color: #28a745;
+}
+
+/* wicked input box */
+
+.focused-text {
+    border: solid #bdc4c6;
+    border-width: 0 0 1px 0;
+    outline: none;
+    transition: .2s ease-in-out;
+    box-sizing: border-box;
+    background-color: transparent;
+}
+
+.focused-text:focus, .focused-text:invalid {
+    box-shadow: none;
+    border-bottom: 2px solid #28b025;
+}
+
+.focused-label {
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    font-size: .75rem;
+    cursor: text;
+    transition: .2s ease-in-out;
+    box-sizing: border-box;
+    height: .8rem;
+    width: 100%;
+    pointer-events: none;
+}
+
+.focused-text:valid + .focused-label,
+.focused-text:focus + .focused-label {
+    top: -22px;
+    font-size: .75rem;
+}
+
+/* intl-tel-input overrides */
+
+.iti-flag {
+    background-image: url("../../images/flags.png");
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2 / 1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  .iti-flag {background-image: url("../../images/flags@2x.png");}
+}
+
+.intl-tel-input {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    width: 100%;
+}
+
+.intl-tel-input .flag-container {
+    position: relative;
+}
+
+.intl-tel-input .focused-text {
+    margin-left: 20px !important;
+    border-radius: 0;
+    padding: 0 !important;
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    font-size: .8rem;
+}
+
+.intl-tel-input.separate-dial-code .selected-flag {
+    display: table;
+    background-color: transparent;
+    color: rgb( 120, 137, 147);
+    line-height: 1.412;
+    border-bottom: 1px solid #bdc4c6;
+    padding: .460rem 0;
+}
+
+.intl-tel-input .selected-flag .iti-arrow {
+    right: 0;
+    border-top: 5px dashed;
+    border-top: 4px solid\9;
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    color: rgb( 120, 137, 147);
+}
+
+.intl-tel-input.allow-dropdown .flag-container:hover .selected-flag {
+    background-color: transparent;
+}
+
+.intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-2 .selected-flag:focus {
+    outline: none;
+}
+
+.intl-tel-input .country-list {
+    border-radius: 4px;
+    margin-top: 10px;
+    border: 0;
+    font-size: 14px;
+    max-height: 400px;
+    overflow: auto;
+    box-shadow: 0 0 0 1px rgba(39, 44, 48, .05), 0 2px 7px 1px rgba(39, 44, 48, .16);
+}
+
+.intl-tel-input .country-list .divider {
+    border-bottom: 1px solid #e5e5e5;
+}
+

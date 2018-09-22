@@ -1,11 +1,45 @@
-//This is called when the send button is pushed
-function tempDisable(id, timeout, next){
-    button = zk.Widget.$("$" + id);
-    button.setDisabled(true);
-    setTimeout(enable, timeout, button);
-    zk.Widget.$("$" + next).focus(0);
+//Initializes the flag+phone mockery
+var phComponent = $("#phone");
+var widgetId = "phWidget";
+
+phComponent.intlTelInput({
+    separateDialCode: true,
+    preferredCountries: [ "us" ]
+});
+
+phComponent.on("countrychange", (e, countryData) => { updatePhoneValue() });
+
+function updatePhoneValue() {
+    var widget = zk.$("$" + widgetId);
+    widget.setValue($(".selected-dial-code").text() + phComponent.val());
+    widget.fireOnChange({});
 }
 
-function enable(button){
-    button.setDisabled(false);
+function resetPhoneValue() {
+    phComponent.val("");
+    updatePhoneValue();
+}
+
+//This is called when the send button is pushed
+function tempDisable(id, timeout, next){
+    button = zk.$("$" + id);
+    button.setDisabled(true);
+    setTimeout(w => { w.setDisabled(false) }, timeout, button);
+
+    if (next) {
+        var next = $("#" + next);
+        if (next) {
+            setTimeout(e => {
+                try {
+                    e.focus();
+                } catch (ex) {
+                }
+            }, 100, next);
+        }
+    }
+
+}
+
+function prepareAlert() {
+    alertRef = $('#feedback-phone-edit');
 }

@@ -72,8 +72,7 @@ public class MobilePhoneEnrollingWS {
             try {
                 String aCode = Integer.toString(new Double(100000 + Math.random() * 899999).intValue());
                 //Compose SMS body
-                String body = ldapService.getOrganization().getDisplayName();
-                body = Labels.getLabel("usr.mobile_sms_body", new String[]{ body, aCode });
+                String body = Labels.getLabel("usr.mobile_sms_body", new String[]{ aCode });
 
                 //Send message (service bean already knows all settings to perform this step)
                 result = mobilePhoneService.sendSMS(number, body);

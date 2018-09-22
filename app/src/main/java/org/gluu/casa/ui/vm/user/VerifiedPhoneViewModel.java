@@ -16,8 +16,10 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
@@ -40,7 +42,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     private MobilePhoneService mpService;
 
     private boolean uiCodesMatch;
-    private boolean uiPanelOpened;
+    private boolean uiSmsDelivered;
 
     private List<VerifiedMobile> phones;
     private VerifiedMobile newPhone;
@@ -50,10 +52,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
 
     public String getEditingNumber() {
         return editingNumber;
-    }
-
-    public boolean isUiPanelOpened() {
-        return uiPanelOpened;
     }
 
     public VerifiedMobile getNewPhone() {
@@ -72,6 +70,10 @@ public class VerifiedPhoneViewModel extends UserViewModel {
         return uiCodesMatch;
     }
 
+    public boolean isUiSmsDelivered() {
+        return uiSmsDelivered;
+    }
+
     public void setCode(String code) {
         this.code = code;
     }
@@ -80,17 +82,13 @@ public class VerifiedPhoneViewModel extends UserViewModel {
         this.newPhone = newPhone;
     }
 
-    public void setUiPanelOpened(boolean uiPanelOpened) {
-        this.uiPanelOpened = uiPanelOpened;
-    }
-
     @Init(superclass = true)
     public void childInit() throws Exception {
         newPhone = new VerifiedMobile(null);
         phones = mpService.getVerifiedPhones(user.getId());
-        uiPanelOpened=true;
     }
 
+    @NotifyChange("uiSmsDelivered")
     @Command
     public void sendCode(){
 
@@ -100,20 +98,17 @@ public class VerifiedPhoneViewModel extends UserViewModel {
             //Check for uniquess throughout all phones in LDAP. Only new numbers are accepted
             try {
                 if (mpService.isNumberRegistered(numb) || mpService.isNumberRegistered(numb.replaceAll("[-\\+\\s]", ""))) {
-                    Messagebox.show(Labels.getLabel("usr.mobile_already_exists"),
-                            Labels.getLabel("general.warning"), Messagebox.OK, Messagebox.INFORMATION);
+                    UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_WARNING, Labels.getLabel("usr.mobile_already_exists"));
                 } else {
                     //Generate random in [100000, 999999]
                     realCode = Integer.toString(new Double(100000 + Math.random() * 899999).intValue());
-                    //Compose SMS body
-                    String body = ldapService.getOrganization().getDisplayName();
-                    body = Labels.getLabel("usr.mobile_sms_body", new String[] { body, realCode });
+
+                    String body = Labels.getLabel("usr.mobile_sms_body", new String[] { realCode });
                     logger.trace("sendCode. code={}", realCode);
 
                     //Send message (service bean already knows all settings to perform this step)
-                    if (mpService.sendSMS(numb, body).equals(SendCode.SUCCESS)) {
-                        Messagebox.show(Labels.getLabel("usr.mobile_sms_sent", new String[]{ numb }), null, Messagebox.OK, Messagebox.INFORMATION);
-                    } else {
+                    uiSmsDelivered = mpService.sendSMS(numb, body).equals(SendCode.SUCCESS);
+                    if (!uiSmsDelivered) {
                         UIUtils.showMessageUI(false);
                     }
                 }
@@ -124,15 +119,20 @@ public class VerifiedPhoneViewModel extends UserViewModel {
         }
     }
 
-    @NotifyChange("uiCodesMatch")
+    @NotifyChange({ "uiCodesMatch", "uiSmsDelivered" })
     @Command
-    public void checkCode(){
-        uiCodesMatch=Utils.isNotEmpty(code) && Utils.isNotEmpty(realCode) && realCode.equals(code.trim());
+    public void checkCode() {
+        uiCodesMatch = Utils.isNotEmpty(code) && Utils.isNotEmpty(realCode) && realCode.equals(code.trim());
+        if (uiCodesMatch) {
+            uiSmsDelivered = false;
+        } else {
+            UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_WARNING, Labels.getLabel("usr.mobile_code_wrong"));
+        }
     }
 
-    @NotifyChange({"uiCodesMatch", "code", "phones", "uiPanelOpened", "newPhone"})
+    @NotifyChange({"uiCodesMatch", "code", "phones", "newPhone"})
     @Command
-    public void add(){
+    public void add() {
 
         if (Utils.isNotEmpty(newPhone.getNickName())) {
             try {
@@ -147,25 +147,25 @@ public class VerifiedPhoneViewModel extends UserViewModel {
         }
 
     }
-    @NotifyChange({"uiCodesMatch", "code", "uiPanelOpened", "newPhone"})
-    @Command
-    public void cancel(){
-        resetAddPhoneSettings();
-        uiPanelOpened = false;
-    }
 
-    private void resetAddPhoneSettings(){
+    @NotifyChange({"uiCodesMatch", "code", "newPhone", "uiSmsDelivered"})
+    @Command
+    public void cancel() {
         uiCodesMatch = false;
         realCode = null;
         code = null;
+        uiSmsDelivered = false;
         newPhone = new VerifiedMobile();
     }
 
     @NotifyChange({"newPhone", "editingNumber"})
     @Command
-    public void cancelUpdate(){
+    public void cancelUpdate(@BindingParam("event") Event event){
         newPhone.setNickName(null);
         editingNumber = null;
+        if (event != null) {
+            event.stopPropagation();
+        }
     }
 
     @NotifyChange({"newPhone", "editingNumber"})
@@ -186,7 +186,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
             int i = Utils.firstTrue(phones, p -> p.getNumber().equals(editingNumber));
             VerifiedMobile ph = phones.get(i);
             ph.setNickName(nick);
-            cancelUpdate();
+            cancelUpdate(null);
 
             try {
                 mpService.updateMobilePhonesAdd(user.getId(), phones, null);
@@ -200,7 +200,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @Command
-    public void delete(@BindingParam("device") VerifiedMobile phone) {
+    public void delete(@BindingParam("phone") VerifiedMobile phone) {
 
         String resetMessages = resetPreferenceMessage(OTPSmsExtension.ACR, phones.size());
         boolean reset = resetMessages != null;
@@ -217,7 +217,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
 
                                 mpService.updateMobilePhonesAdd(user.getId(), phones, null);
                                 //trigger refresh (this method is asynchronous...)
-                                BindUtils.postNotifyChange(null, null, VerifiedPhoneViewModel.this, "devices");
+                                BindUtils.postNotifyChange(null, null, VerifiedPhoneViewModel.this, "phones");
 
                                 UIUtils.showMessageUI(true);
                             }
