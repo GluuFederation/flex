@@ -5,7 +5,7 @@ var alertRef;
 function sendBrowserData() {
 
     if (platform) {
-        widget =  zk.Widget.$('$message');
+        var widget =  zk.$('$message');
         platform['ua'] = null;
         platform['offset'] = -60 * new Date().getTimezoneOffset();
         platform['screenWidth'] = screen.width;
@@ -44,7 +44,7 @@ function markupIconForType(type) {
             cls ="fa-exclamation-circle";
         break;
     }
-    return cls == "" ? cls : "<i class=\"fas " + cls + "\"></i> ";
+    return cls == "" ? cls : "<i class=\"fas " + cls + "\"></i>";
 
 }
 
@@ -57,7 +57,7 @@ function showAlert(message, type, delay) {
         alertRef.removeClass();
         alertRef.addClass('alert' + cls);
 
-        alertRef.html(markupIconForType(type) + message);
+        alertRef.html(markupIconForType(type) + "&nbsp;" + message);
         alertRef.show();
         alertRef.delay(delay).slideUp(200, function() {});
     }

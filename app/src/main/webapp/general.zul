@@ -3,7 +3,7 @@
 <?init class="org.zkoss.zk.ui.util.Composition" template="/basic.zul"?>
 <z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native">
 
-    <z:div self="@define(content)" if="${empty pageScope.error}" sclass="pa0 flex justify-center gray f7-cust">
+    <z:div self="@define(content) @insert(extra)" if="${empty pageScope.error}" sclass="pa0 flex justify-center gray f7-cust">
 
         <div class="miw-16r mw-60r w-100 bg-washed-blue2 cust-content-rule">
             <z:include src="/header.zul"/>

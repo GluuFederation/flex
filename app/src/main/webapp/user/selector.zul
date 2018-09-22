@@ -1,7 +1,7 @@
 <z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native">
 
     <z:radiogroup id="methods" />
-    <ul class="list-group mb4 f7-cust mb3">
+    <ul class="list-group f7-cust pt1 mb3">
         <z:div children="@load(vm.availMethods)">
             <z:template name="children">
                 <li class="list-group-item hover-bg-light-gray gray hover-black-80">

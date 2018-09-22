@@ -16,7 +16,7 @@
                             <z:template name="children">
                                 <li>
                                     <a class="db pv1 hover-bg-near-white bl bw2 b--white bl-hover pl4 pr2 link hover-green dark-blue2 o-80"
-                                       href="${vm.getAuthnMethodPageUrl(each)}">
+                                       href="${c:cat(zkService.assetsPrefix,vm.getAuthnMethodPageUrl(each))}">
                                         <span class="collapsible-menu-item di">${c:l(each.panelTitleKey)}</span>
                                     </a>
                                 </li>

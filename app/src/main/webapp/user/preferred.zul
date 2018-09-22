@@ -1,4 +1,4 @@
-<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client"
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns="native"
       if="${sessionContext.user ne null}">
 
     <z:div viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserPreferenceViewModel')">
@@ -12,8 +12,7 @@
                     <div class="dark-blue2 f6">
                         <z:label value="@load(vm.selectedMethodName)"/>
                     </div>
-                    <h:button class="btn f7 pv1 ph2 br1 bw0 blue2 bg-lightest-blue hover-bg-blue hover-white"
-                              onClick="@command('prepareUpdateMethod')">
+                    <h:button class="${css.editButton}" onClick="@command('prepareUpdateMethod')">
 
                         <zk:attribute name="data-original-title" if="${vm.uiEditable}">${labels.usr.preferred_tooltip}</zk:attribute>
                         <zk:attribute name="data-toggle" if="${vm.uiEditable}">tooltip</zk:attribute>
@@ -38,7 +37,7 @@
                   closable="true" onClose="@command('cancel', event=event)" sclass="${css.modalWindow}">
             <z:include src="/user/selector.zul" />
             <div class="w-100 flex justify-center">
-                <z:button sclass="${css.primaryButton} mr4" label="${labels.general.update}"
+                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
                           w:onClick="alertRef = $('#feedback-preferred')" onClick="@command('update')" />
                 <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancel', event=event)" />
             </div>

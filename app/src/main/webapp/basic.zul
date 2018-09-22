@@ -5,9 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <link rel="icon" href="${zkService.faviconDataUri}" />
         <h:zkhead/>
+        <!-- order of stylesheets is important, do not move -->
         <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/bootstrap.min.css" />
-        <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/tachyons.min.css" />
         <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/gluu/style.css" />
+        <link rel="stylesheet" href="${zkService.assetsPrefix}/styles/tachyons.min.css" />
 
         <zk:zk if="${not empty configurationHandler.settings.extraCssSnippet}">
             <!-- load custom branding css snippets -->
