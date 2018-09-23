@@ -6,15 +6,9 @@
     <h:title self="@define(title)">${zkService.appName} - ${labels.usr.mobile_title}</h:title>
 
     <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.VerifiedPhoneViewModel')"
-             self="@define(maincontent)">
+           self="@define(maincontent)">
 
-        <div class="${css.contentHeading} bg-green tc">
-            <a class="f6 na2 white hover-white db" href="${zkService.contextPath}/user.zul">
-                <i class="fas fa-arrow-left" />
-                &amp;nbsp;${labels.general.back_main}
-            </a>
-        </div>
-
+        <z:include src="/back-home.zul" />
         <div class="ph4 mb2">
             <div class="alert alert-success dn" id="feedback-phone-edit" role="alert" />
         </div>
@@ -82,7 +76,7 @@
 
                         <div class="pb3 flex flex-wrap">
                             <div class="relative w4 mv3 pr3">
-                                <h:input id="sentCode" class="focused-text w-100 pb1" value="@bind(vm.code)" ca:required="required"
+                                <z:textbox id="sentCode" class="focused-text w-100 pb1" value="@bind(vm.code)" ca:required="required"
                                          onOK="@command('checkCode')"/>
                                 <label class="focused-label" for="code">${labels.usr.mobile_code}</label>
                             </div>
@@ -103,7 +97,7 @@
                     <z:div sclass="pv3" visible="@load(vm.uiCodesMatch)">
                         <div>${labels.usr.enter_nick}</div>
                         <div class="flex flex-wrap pt2">
-                            <h:input class="focused-text mb1" value="@bind(vm.newPhone.nickName)" onOK="@command('add')"/>
+                            <z:textbox sclass="focused-text mb1" value="@bind(vm.newPhone.nickName)" onOK="@command('add')"/>
                             <z:button sclass="${css.primaryButton} mh3" label="${labels.general.add}" onClick="@command('add')" />
                             <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}"
                                       w:onClick="resetPhoneValue()" onClick="@command('cancel')" />
@@ -125,7 +119,7 @@
             <div sclass="pt1 mb3">
                 <span class="db f7-cust gray">${labels.general.new_nick}</span>
                 <div class="pa1">
-                    <z:textbox sclass="f6 pa2 ba b--black-20 black-60 w-100" value="@bind(vm.newPhone.nickName)" onOK="@command('update')"/>
+                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.newPhone.nickName)" onOK="@command('update')"/>
                 </div>
             </div>
             <div class="w-100 flex justify-center">

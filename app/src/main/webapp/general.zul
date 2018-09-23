@@ -9,18 +9,18 @@
             <z:include src="/header.zul"/>
 
             <z:div sclass="flex justify-start">
-                <z:zk unless="${c:endsWith(desktop.requestPath, '/admin.zul')}">
-                   <z:include class="flex" src="/menubuttons.zul"/>
-                </z:zk>
+                <z:include class="flex" src="${c:indexOf(desktop.requestPath, '/admin') == 0 ? '/admin/menu.zul' : '/menubuttons.zul'}"/>
 
                 <div style="width:1px"></div>
                 <!-- page's center content -->
-                <div class="relative z-1 flex-grow-1">
-                    <z:div self="@insert(maincontent)"/>
-                    <footer class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
-                        Powered by
-                        <a href="https://gluu.org" class="link blue">Gluu</a>.
-                    </footer>
+                <div class="relative z-1 flex flex-grow-1"> <!-- grow horizontally as much as possible -->
+                    <div class="flex flex-column flex-grow-1 justify-between"> <!-- grow vertically as much as possible -->
+                        <z:div self="@insert(maincontent)"/>
+                        <footer class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
+                            Powered by
+                            <a href="https://gluu.org" class="link blue">Gluu</a>.
+                        </footer>
+                    </div>
                 </div>
             </z:div>
         </div>

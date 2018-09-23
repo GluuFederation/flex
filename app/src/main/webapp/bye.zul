@@ -10,7 +10,7 @@
                 <h4>${labels.usr.logout.title}</h4>
             </div>
             <div class="pa3">
-                <button href="./" class="btn btn-success f7 bw0 br1 ph3 pv2">${labels.usr.logout.back_home}</button>
+                <a href="./" class="btn btn-success f7 bw0 br1 ph3 pv2">${labels.usr.logout.back_home}</a>
             </div>
         </div>
     </h:div>

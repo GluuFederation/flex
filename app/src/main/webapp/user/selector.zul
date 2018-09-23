@@ -6,8 +6,7 @@
             <z:template name="children">
                 <li class="list-group-item hover-bg-light-gray gray hover-black-80">
                     <z:radio onCheck="@command('change', method=each.x)" selected="${each.x eq vm.selectedMethod}"
-                             radiogroup="methods" sclass="mr1" />
-                    ${each.y}
+                             label="${each.y}" radiogroup="methods" sclass="mr1" />
                 </li>
             </z:template>
         </z:div>

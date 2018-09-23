@@ -109,15 +109,18 @@ button:disabled {
 }
 
 .tooltip-inner {
-    font-size: .75rem; /*f7*/
+    font-size: .7rem;
     background-color: #111;/*#4d4d56;*/
     border-radius: 2px;
 }
 
-
 .bg-blank {
     /* bg-white is defined by both tachyons and bootstrap; the latter uses !important so we resort to this style */
     background-color: #fff;
+}
+
+.text-field:focus {
+    border-color: rgba( 0, 0, 0, .4 ); /* black-40 */
 }
 
 /* Overrides some default bootstrap stylings */
@@ -155,7 +158,6 @@ a:hover {
     position: absolute;
     top: 0;
     left: 0;
-    -moz-outline: 0 none;
     outline: 0 none;
     -moz-user-select: text;
     -khtml-user-select: text;
@@ -166,10 +168,6 @@ a:hover {
     overflow: hidden;
     zoom: 1;
     border: 1px solid rgba(0,0,0,.2); /*#a8a8a8;*/
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -o-border-radius: 4px;
-    -ms-border-radius: 4px;
     border-radius: 4px;
     padding: 1rem;
     /*16px;*/
@@ -257,6 +255,11 @@ a:hover {
     background-color: #28a745;
 }
 
+.z-radio-content {
+    padding-left: .25rem; /* pl1 */
+    margin-bottom: 0;
+}
+
 /* wicked input box */
 
 .focused-text {
@@ -292,7 +295,8 @@ a:hover {
 .focused-text:valid + .focused-label,
 .focused-text:focus + .focused-label {
     top: -22px;
-    font-size: .75rem;
+    font-size: .7rem;
+    color: #15b565;
 }
 
 /* intl-tel-input overrides */
@@ -333,7 +337,7 @@ a:hover {
     color: rgb( 120, 137, 147);
     line-height: 1.412;
     border-bottom: 1px solid #bdc4c6;
-    padding: .460rem 0;
+    padding: .46rem 0;
 }
 
 .intl-tel-input .selected-flag .iti-arrow {
@@ -366,4 +370,3 @@ a:hover {
 .intl-tel-input .country-list .divider {
     border-bottom: 1px solid #e5e5e5;
 }
-

@@ -6,8 +6,7 @@
             <z:div if="${sessionContext.user ne null}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')"
                    visible="@load(not empty vm.authnMethods)">
                 <li>
-                    <a class="db pv3 hover-bg-near-white bl bw2 b--white pl1 pr2 link hover-green dark-blue2 bl-hover"
-                       href="${zkService.contextPath}/user.zul">
+                    <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}/user.zul">
                         <i class="mh1 fas fa-tags" /><!-- fa-key fa-address-book fa-address-book-o fa-address-card fa-address-card-o fa-id-badge fa-id-card fa-id-card-o -->
                         <span class="collapsible-menu-item di">${labels.usr.menu_main2fa}</span>
                     </a>
@@ -15,8 +14,7 @@
                         <z:div children="@load(vm.authnMethods)">
                             <z:template name="children">
                                 <li>
-                                    <a class="db pv1 hover-bg-near-white bl bw2 b--white bl-hover pl4 pr2 link hover-green dark-blue2 o-80"
-                                       href="${c:cat(zkService.assetsPrefix,vm.getAuthnMethodPageUrl(each))}">
+                                    <a class="db pv1 pl4 o-80 ${css.menuItem}" href="${c:cat(zkService.assetsPrefix,vm.getAuthnMethodPageUrl(each))}">
                                         <span class="collapsible-menu-item di">${c:l(each.panelTitleKey)}</span>
                                     </a>
                                 </li>
@@ -28,8 +26,7 @@
 
             <zk:zk if="${sessionContext.user ne null and configurationHandler.settings.enablePassReset}">
                 <li>
-                    <a class="db pv3 hover-bg-near-white bl bw2 b--white pl1 pr2 link hover-green dark-blue2 bl-hover"
-                       href="${zkService.contextPath}/user/pass-reset.zul">
+                    <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}/user/pass-reset.zul">
                         <i class="mh2 fas fa-lock" /><!-- fa-expeditedssl -->
                         <span class="collapsible-menu-item di">${labels.usr.passreset_title}</span>
                     </a>
@@ -38,10 +35,9 @@
 
             <zk:zk if="${sessionContext.user.admin}">
                 <li>
-                    <a class="db pv3 hover-bg-near-white bl bw2 b--white pl1 pr2 link hover-green dark-blue2 bl-hover"
-                       href="${zkService.contextPath}/admin.zul">
+                    <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}/admin.zul">
                         <i class="mh2 fas fa-wrench" /><!-- fa-sliders fa-cog fa-wrench -->
-                        <span class="collapsible-menu-item di">${labels.usr.menu_adminconsole}</span>
+                        <span class="collapsible-menu-item di">${labels.adm.title}</span>
                     </a>
                 </li>
             </zk:zk>
