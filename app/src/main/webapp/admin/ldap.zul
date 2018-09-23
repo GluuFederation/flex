@@ -1,31 +1,44 @@
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns="native">
 
-    <panel if="${sessionContext.user.admin}" title="${labels.adm.ldap_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.LdapSettingsViewModel')">
-        <panelchildren sclass="padded">
-            <vlayout>
-                <label value="${labels.adm.ldap_text}"/>
-                <separator />
-                <div sclass="form-horizontal panel5">
-                    <div sclass="form-group">
-                        <label value="${labels.adm.ldap_salt}" sclass="control-label form-label col-sm-3" />
-                        <div sclass="col-sm-9">
-                            <textbox sclass="form-control" value="@bind(vm.ldapSettings.saltLocation)"/>
-                        </div>
-                    </div>
-                    <div sclass="form-group">
-                        <label value="${labels.adm.ldap_ox_ldap}" sclass="control-label form-label col-sm-3" />
-                        <div sclass="col-sm-9">
-                            <textbox sclass="form-control" value="@bind(vm.ldapSettings.oxLdapLocation)"/>
-                        </div>
-                    </div>
-                    <div align="center">
-                        <button label="${labels.general.save}" sclass="btn-success" onClick="@command('save')" />
-                    </div>
+    <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
+
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.LdapSettingsViewModel')"
+           self="@define(maincontent)">
+
+        <z:include src="/back-home.zul"/>
+
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.adm.ldap_title}</h2>
+                    <p class="mb0">${labels.adm.ldap_text}</p>
                 </div>
-            </vlayout>
-        </panelchildren>
-    </panel>
+                <div class="${css.panel} flex flex-column justify-center">
 
-</zk>
+                    <div class="pb2 flex flex-wrap">
+                        <label class="ma2 w3 truncate">${labels.adm.ldap_salt}</label>
+                        <z:textbox sclass="${css.textInput} w4 w5-ns" value="@bind(vm.ldapSettings.saltLocation)" />
+                    </div>
+                    <div class="pb2 flex flex-wrap">
+                        <label class="ma2 w3 truncate">${labels.adm.ldap_ox_ldap}</label>
+                        <z:textbox sclass="${css.textInput} w4 w5-ns" value="@bind(vm.ldapSettings.oxLdapLocation)" />
+                    </div>
+                    <div class="pb2 flex flex-wrap">
+                        <label class="ma2 w3" />
+                        <z:button label="${labels.general.save}" sclass="${css.primaryButton} ph4"
+                                  w:onClick="alertRef = $('#feedback-ldap')" onClick="@command('save')" />
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <div class="ph4 mt2">
+            <div class="alert alert-success dn" id="feedback-ldap" role="alert" />
+        </div>
+
+    </z:div>
+
+</zk:zk>

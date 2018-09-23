@@ -1,21 +1,38 @@
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns="native">
 
-    <panel if="${sessionContext.user.admin}" title="${labels.adm.logging_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.LogLevelViewModel')">
-        <panelchildren sclass="padded">
-            <vlayout>
-                <label value="${labels.adm.logging_text}"/>
-                <radiogroup id="methods"/>
-                <div align="center" children="@load(vm.logLevels)">
-                    <template name="children">
-                        <radio label="@load(each)" onCheck="@command('change', level=each)"
-                               selected="@load(each eq vm.selectedLogLevel)" radiogroup="methods"/>
-                        <space width="@load(vm.logLevels.indexOf(each) eq (vm.logLevels.size()-1) ? '0px' : '11px')"/>
-                    </template>
+    <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
+
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.LogLevelViewModel')"
+           self="@define(maincontent)">
+
+        <z:include src="/back-home.zul" />
+
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.adm.logging_title}</h2>
+                    <p class="mb0">${labels.adm.logging_text}</p>
                 </div>
-            </vlayout>
-        </panelchildren>
-    </panel>
+                <div class="${css.panel}">
 
-</zk>
+                    <z:radiogroup id="methods"/>
+                    <z:div children="@load(vm.logLevels)" sclass="flex justify-around flex-wrap">
+                        <zk:template name="children">
+                            <z:radio label="${each}" selected="${each eq vm.selectedLogLevel}" radiogroup="methods" sclass="ph3"
+                                     w:onCheck="alertRef = $('#feedback-log-level')" onCheck="@command('change', level=each)"/>
+                        </zk:template>
+                    </z:div>
+
+                </div>
+            </section>
+        </div>
+
+        <div class="ph4 mt2">
+            <div class="alert alert-success dn" id="feedback-log-level" role="alert" />
+        </div>
+
+    </z:div>
+
+</zk:zk>

@@ -1,106 +1,31 @@
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client"
+       xmlns:ca="client/attribute" xmlns="native">
 
-    <!-- This block is only needed in browsers that do not support input[type="color"] -->
-    <style src="/styles/spectrum.css" />
-    <script type="text/javascript" src="/scripts/spectrum.js" />
-    <!-- end -->
+    <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
 
-    <panel if="${sessionContext.user.admin}" title="${labels.adm.branding_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.CustomBrandingViewModel')">
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.CustomBrandingViewModel')"
+           self="@define(maincontent)">
 
-        <panelchildren sclass="padded">
-            <radiogroup id="groupie" />
-            <vlayout>
-                <label value="${labels.adm.branding_text}"/>
-                <vlayout sclass="padded">
-                    <radio label="${labels.adm.branding_use_default}" selected="@load(vm.brandingOption eq 'NONE')"
-                           onCheck="@command('changeBranding', val='NONE')" radiogroup="groupie" onClick="@command('save')" />
-                    <radio label="${labels.adm.branding_use_custom}" selected="@load(vm.brandingOption eq 'EXTERNAL_PATH')"
-                           onCheck="@command('changeBranding', val='EXTERNAL_PATH')" radiogroup="groupie" onClick="@command('save')" />
+        <z:include src="/back-home.zul"/>
 
-                    <vlayout visible="@load(vm.brandingOption eq 'EXTERNAL_PATH')"
-                             style="${sessionContext.onMobile ? '' : 'padding-left:30px'}" sclass="dpadded">
-                        <n:span class="de_emphasized">${labels.adm.branding_learn}</n:span>
-                    </vlayout>
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.adm.branding_title}</h2>
+                    <p class="mb0">${labels.adm.branding_text}</p>
+                </div>
+            </section>
+        </div>
+    </z:div>
 
-                    <radio label="${labels.adm.branding_use_quick}" selected="@load(vm.brandingOption eq 'EXTRA_CSS')"
-                           onCheck="@command('changeBranding', val='EXTRA_CSS')" radiogroup="groupie" />
-                    <vlayout visible="@load(vm.brandingOption eq 'EXTRA_CSS')" style="${sessionContext.onMobile ? '' : 'padding-left:30px'}" sclass="padded">
-                        <div sclass="dpadded">
-                            <label value="${labels.adm.branding_quick_logo}" sclass="bold de_emphasized" />
-                            <separator />
-                            <vlayout sclass="col-md-offset-1">
-                                <image src="@load(vm.snippetHandler.logoDataUri)" sclass="image_preview" />
-                                <button label="${labels.adm.branding_quick_change}" upload="true,maxsize=100,multiple=false"
-                                        tooltip="tooltip_upload, after_end" sclass="upload_button" onUpload="@command('logoUploaded', evt = event)"/>
-                            </vlayout>
-                        </div>
-                        <div sclass="dpadded">
-                            <label value="${labels.adm.branding_quick_favicon}" sclass="bold de_emphasized" />
-                            <separator />
-                            <vlayout sclass="col-md-offset-1">
-                                <image src="@load(vm.snippetHandler.faviconDataUri)" sclass="image_preview" />
-                                <button label="${labels.adm.branding_quick_change}" upload="true,maxsize=10,multiple=false"
-                                        tooltip="tooltip_upload_favicon, after_end" sclass="upload_button" onUpload="@command('faviconUploaded', evt = event)"/>
-                            </vlayout>
-                        </div>
-                        <separator />
-                        <div sclass="row">
-                            <hlayout valign="middle" sclass="col-md-4 dpadded">
-                                <label value="${labels.adm.branding_quick_header}" sclass="bold de_emphasized" />
-                                <separator />
-                                <separator />
-                                <h:input type="color" class="color_picker" value="@bind(vm.snippetHandler.headerColor)"
-                                         data-preferred-format="hex" data-show-input="true"/>
-                            </hlayout>
-                            <hlayout valign="middle" sclass="col-md-4 dpadded">
-                                <label value="${labels.adm.branding_quick_panelheader}" sclass="bold de_emphasized" />
-                                <separator />
-                                <separator />
-                                <h:input type="color" class="color_picker" value="@bind(vm.snippetHandler.panelHeadColor)"
-                                         data-preferred-format="hex" data-show-input="true"/>
-                            </hlayout>
-                        </div>
-                        <vlayout sclass="dpadded">
-                            <label value="${labels.adm.branding_quick_button}" sclass="bold de_emphasized" />
-                            <separator />
-                            <vlayout sclass="col-md-offset-1">
-                                <!--n:span>${labels.adm.branding_quick_button_text}</n:span-->
+    <z:div self="@define(extra)">
+        <!-- This block is only needed in browsers that do not support input[type="color"] -->
+        <style>
+            @import url('${zkService.contextPath}/styles/spectrum.css');
+        </style>
+        <script src="${zkService.contextPath}/scripts/spectrum.js" />
+    </z:div>
 
-                                <radiogroup id="groupie2" />
-                                <radio label="${labels.adm.branding_quick_button_default}" selected="@load(not vm.uiOverrideButtonColors)"
-                                       onCheck="@command('buttonColorChanging', override=false)" radiogroup="groupie2" />
-                                <radio label="${labels.adm.branding_quick_button_override}" selected="@load(vm.uiOverrideButtonColors)"
-                                       onCheck="@command('buttonColorChanging', override=true)" radiogroup="groupie2" />
-
-                                <separator />
-                                <div visible="@load(vm.uiOverrideButtonColors)" sclass="row col-xs-offset-1">
-                                    <hlayout valign="middle" sclass="col-md-4 dpadded">
-                                        <label value="${labels.adm.branding_quick_button_main}" />
-                                        <separator />
-                                        <separator />
-                                        <h:input type="color" class="color_picker" value="@bind(vm.snippetHandler.mainButtonColor)"
-                                                 data-preferred-format="hex" data-show-input="true"/>
-                                    </hlayout>
-                                    <hlayout valign="middle" sclass="col-md-4 dpadded">
-                                        <label value="${labels.adm.branding_quick_button_auxiliary}" />
-                                        <separator />
-                                        <separator />
-                                        <h:input type="color" class="color_picker" value="@bind(vm.snippetHandler.auxButtonColor)"
-                                                 data-preferred-format="hex" data-show-input="true"/>
-                                    </hlayout>
-                                </div>
-                            </vlayout>
-                        </vlayout>
-                        <separator />
-                        <button label="${labels.adm.branding_quick_save}" sclass="btn-success" onClick="@command('save')" />
-                    </vlayout>
-                </vlayout>
-            </vlayout>
-        </panelchildren>
-    </panel>
-    <popup id="tooltip_upload">${labels.adm.branding_quick_logo_hint}</popup>
-    <popup id="tooltip_upload_favicon">${labels.adm.branding_quick_favicon_hint}</popup>
-
-</zk>
+</zk:zk>

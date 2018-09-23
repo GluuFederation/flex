@@ -1,94 +1,16 @@
-<?init class="org.zkoss.zk.ui.util.Composition" arg0="/general.zul"?>
-<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver"?>
-<?page title="${applicationScope['appName']} - ${labels.adm.title}"?>
-<?link rel="icon" href="${sessionContext.faviconDataUri}"?>
-<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns="native">
 
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
 
-    <style>
-        .z-toolbar {
-        border:none;
-        }
-        .z-toolbar-content {
-        width:100%;
-        }
-        .z-toolbarbutton{
-        padding:6px 5px;
-        }
-    </style>
-    <zscript>
-        <![CDATA[
-        void recheck(Event event){
-            target=event.getTarget();
-            for (Component comp : target.getParent().getChildren())
-                if (comp instanceof Toolbarbutton){
-                    tb=(Toolbarbutton)comp;
-                    if (!tb.equals(target) && tb.isChecked())
-                        tb.setChecked(false);
-                }
-        }
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" self="@define(maincontent)">
 
-        void goToPage(String url){
-            Executions.sendRedirect(url);
-        }
-        ]]>
-    </zscript>
-    <vlayout if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.MainViewModel')"
-             self="@define(content)">
-        <hlayout width="100%" spacing="0px" style="background-color:#eee;">
-            <vlayout sclass="sidebar" id="sidebar" vflex="1">
-                <!-- why the effect not working for sidebar?  action="show: slideIn({duration: 1000}); hide: slideOut({duration: 300})" -->
-                <vlayout sclass="padded">
-                    <n:span class="small">&#160;</n:span>
-                </vlayout>
+        <div class="${css.contentHeading}" style="margin-bottom:0">
+            <h1 class="f3 dark-blue2">${labels.adm.title}</h1>
+            <p class="f6">${labels.adm.main_intro}</p>
+        </div>
 
-                <toolbar orient="vertical">
-                    <div sclass="padded">
-                        <a onClick='goToPage("user.zul")'><label style="font-size:15px" value="${labels.adm.home_page}"/></a>
-                    </div>
-                    <toolbarbutton mode="toggle" label="${labels.adm.ldap_title}" onCheck="recheck(event)"
-                                   width="100%" onClick="@command('loadSubPage', page='/admin/ldap.zul')" />
-                    <toolbarbutton mode="toggle" label="${labels.adm.oxd_title}" onCheck="recheck(event)"
-                                   width="100%" onClick="@command('loadSubPage', page='/admin/oxd-config.zul')" />
-                    <toolbarbutton mode="toggle" label="${labels.adm.methods_title}" onCheck="recheck(event)"
-                                   width="100%" onClick="@command('loadSubPage', page='/admin/methods.zul')" />
-                    <toolbarbutton mode="toggle" label="${labels.adm.strongauth_title}" onCheck="recheck(event)"
-                                   width="100%" onClick="@command('loadSubPage', page='/admin/strongauth.zul')" />
-                    <toolbarbutton mode="toggle" label="${labels.adm.passreset_title}" onCheck="recheck(event)"
-                                   width="100%" onClick="@command('loadSubPage', page='/admin/pass-reset.zul')" />
-                    <toolbarbutton mode="toggle" label="${labels.adm.branding_title}" onCheck="recheck(event)"
-                                   width="100%" onClick="@command('loadSubPage', page='/admin/branding.zul')" />
-                    <toolbarbutton mode="toggle" label="${labels.adm.logging_title}" onCheck="recheck(event)"
-                                   width="100%" onClick="@command('loadSubPage', page='/admin/logging.zul')" />
-                    <toolbarbutton mode="toggle" label="${labels.adm.resets_title}" onCheck="recheck(event)"
-                                   width="100%" onClick="@command('loadSubPage', page='/admin/pref-reset.zul')" />
-                    <toolbarbutton mode="toggle" label="${labels.adm.plugins_title}" onCheck="recheck(event)"
-                                   width="100%" onClick="@command('loadSubPage', page='/admin/plugins.zul')" />
-                    <n:hr class="navsep" />
-                    <!-- extra buttons defined by pugins -->
-                    <div children="@load(vm.extraButtons)">
-                        <template name="children">
-                            <include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
-                                <attribute name="base">${each.x}</attribute>
-                                <attribute name="priority">${each.y.priority}</attribute>
-                            </include>
-                        </template>
-                    </div>
-                </toolbar>
+    </z:div>
 
-            </vlayout>
-
-            <vlayout hflex="1" style="background-color:#fff;">
-                <hlayout sclass="padded titled" valign="bottom" spacing="10px">
-                    <button label="☰" onClick="sidebar.visible=!sidebar.visible" />
-                    <n:span>${labels.adm.main_title}</n:span>
-                </hlayout>
-                <!--include src="/menubuttons.zul" /-->
-                <include src="@load(empty vm.subpage ? '/admin/default.zul' : vm.subpage)" />
-            </vlayout>
-        </hlayout>
-    </vlayout>
-
-</zk>
+</zk:zk>

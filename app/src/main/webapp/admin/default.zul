@@ -1,7 +1,0 @@
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
-
-    <hlayout valign="middle" sclass="padded" height="400px">
-        <label value="${labels.adm.main_intro}" style="font-style:italic" />
-    </hlayout>
-</zk>

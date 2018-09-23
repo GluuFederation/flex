@@ -42,12 +42,6 @@ public class MainViewModel {
 
     private List<Pair<String, NavigationMenu>> extraButtons;
 
-    private String subpage;
-
-    public String getSubpage() {
-        return subpage;
-    }
-
     public List<Pair<String, NavigationMenu>> getExtraButtons() {
         return extraButtons;
     }
@@ -55,17 +49,6 @@ public class MainViewModel {
     @Init
     public void init() {
         extraButtons = menuService.getMenusOfType(MenuType.ADMIN_CONSOLE);
-    }
-
-    /**
-     * Changes the page loaded in the content area. Also sets values needed in the UI (these are taken directly from
-     * calls to AdminService's getConfigSettings method.
-     * @param page The (string) url of the page that must be loaded (by default /admin/default.zul is being shown)
-     */
-    @Command
-    @NotifyChange({"subpage"})
-    public void loadSubPage(@BindingParam("page") String page) {
-        subpage = page;
     }
 
     public MainSettings getSettings() {
