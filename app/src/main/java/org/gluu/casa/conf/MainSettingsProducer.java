@@ -7,8 +7,8 @@ package org.gluu.casa.conf;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.gluu.casa.core.AssetsService;
 import org.gluu.casa.core.ResourceExtractor;
-import org.gluu.casa.core.ZKService;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 
@@ -99,9 +99,10 @@ public class MainSettingsProducer {
 
                         try {
                             Path brandingPath = Paths.get(brandingPathStr);
-                            resourceExtractor.createDirectory(brandingPath, ZKService.STATIC_FILEPATH);
+                            resourceExtractor.createDirectory(brandingPath, Paths.get(AssetsService.CUSTOM_FILEPATH));
 
                             logger.info("Transfer of files from {} to static directory completed", brandingPathStr);
+                            logger.warn("Review custom branding documentation page to learn how external css branding works now");
                             settings.setUseExternalBranding(true);
                         } catch (Exception e) {
                             logger.error("Error transfering contents from {} to static directory", brandingPathStr);

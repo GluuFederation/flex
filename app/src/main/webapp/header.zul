@@ -8,7 +8,7 @@
             <div class="w4 mh4-ns tc">
                 <!--a href="${zkService.contextPath}">
                 </a-->
-                <img src="${zkService.logoDataUri}" />
+                <img src="${zkService.contextPath}${assetsService.logoUrl}" />
             </div>
             <div class="w1-ns"></div>
 
@@ -28,7 +28,7 @@
         <!-- drop-down menu -->
         <nav class="ph3">
             <z:div class="dropdown" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.HeaderViewModel')">
-                <a href="javascript:;" class="dropdown-toggle gray hover-black-80" role="button" id="dropdownMenu"
+                <a href="javascript:;" class="dropdown-toggle gray hover-dark-gray" role="button" id="dropdownMenu"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span class="pr1">
                         <z:zk if="${empty sessionContext.user.pictureURL}">

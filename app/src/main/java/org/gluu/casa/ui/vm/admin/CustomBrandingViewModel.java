@@ -6,13 +6,15 @@
 package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.core.ZKService;
+import org.gluu.casa.core.AssetsService;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.ui.vm.admin.branding.BrandingOption;
 import org.gluu.casa.ui.vm.admin.branding.CssSnippetHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xdi.util.Pair;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
@@ -27,6 +29,7 @@ import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -35,20 +38,24 @@ import java.nio.file.Paths;
 @VariableResolver(DelegatingVariableResolver.class)
 public class CustomBrandingViewModel extends MainViewModel {
 
-    private static final String GLUU_LOGO_URL = "/images/default_logo.png";
-
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @WireVariable("zkService")
-    private ZKService zkService;
+    @WireVariable
+    private AssetsService assetsService;
 
     private MainSettings settings;
+
+    private BrandingOption previouslySelected;
 
     private BrandingOption brandingOption;
 
     private CssSnippetHandler snippetHandler;
 
     private boolean uiOverrideButtonColors;
+
+    private Pair<String, byte[]> logo;
+
+    private Pair<String, byte[]> favicon;
 
     public String getBrandingOption() {
         return brandingOption.toString();
@@ -62,8 +69,17 @@ public class CustomBrandingViewModel extends MainViewModel {
         return uiOverrideButtonColors;
     }
 
-    @Init//(superclass = true)
+    public Pair<String, byte[]> getLogo() {
+        return logo;
+    }
+
+    public Pair<String, byte[]> getFavicon() {
+        return favicon;
+    }
+
+    @Init
     public void init() {
+
         settings = getSettings();
         boolean pathPresent = settings.isUseExternalBranding();
         boolean cssSnippetPresent = Utils.isNotEmpty(settings.getExtraCssSnippet());
@@ -79,45 +95,32 @@ public class CustomBrandingViewModel extends MainViewModel {
 
     }
 
-    @NotifyChange({"brandingOption", "snippetHandler", "brandingPath", "uiOverrideButtonColors"})
+    @NotifyChange({"brandingOption", "logo", "favicon", "snippetHandler", "uiOverrideButtonColors"})
     @Command
     public void changeBranding(@BindingParam("val") String option) {
 
+        previouslySelected = brandingOption;
         brandingOption = BrandingOption.valueOf(option);
         if (brandingOption.equals(BrandingOption.EXTRA_CSS)) {
             snippetHandler = new CssSnippetHandler(settings.getExtraCssSnippet());
-            if (snippetHandler.getFaviconDataUri() == null) {
-                snippetHandler.setFaviconDataUri(zkService.getFaviconDataUri());
-            }
-            if (snippetHandler.getLogoDataUri() == null) {
-                snippetHandler.setLogoDataUri(zkService.getLogoDataUri());
-            }
-            snippetHandler.assignMissingHeaderColors();
-            uiOverrideButtonColors = snippetHandler.getMainButtonColor() != null;
+            uiOverrideButtonColors = snippetHandler.getPrimaryButtonColor() != null;
+            logo = new Pair<>(assetsService.getLogoUrl() + randomSuffix(), null);
+            favicon = new Pair<>(assetsService.getFaviconUrl() + randomSuffix(), null);
+            logger.debug("miedr\n {}", logo.getFirst());
         }
 
     }
 
-    @NotifyChange({"snippetHandler"})
+    @NotifyChange("logo")
     @Command
     public void logoUploaded(@BindingParam("evt") UploadEvent evt) {
-
-        String dataUri = processImageMedia(evt.getMedia());
-        if (dataUri != null) {
-            snippetHandler.setLogoDataUri(dataUri);
-        }
-
+        processUpload(logo, evt.getMedia());
     }
 
-    @NotifyChange({"snippetHandler"})
+    @NotifyChange("favicon")
     @Command
     public void faviconUploaded(@BindingParam("evt") UploadEvent evt) {
-
-        String dataUri = processImageMedia(evt.getMedia());
-        if (dataUri != null) {
-            snippetHandler.setFaviconDataUri(dataUri);
-        }
-
+        processUpload(favicon, evt.getMedia());
     }
 
     @Command
@@ -125,20 +128,21 @@ public class CustomBrandingViewModel extends MainViewModel {
 
         switch (brandingOption) {
             case NONE:
-                //Revert to original Gluu images in disk
-                zkService.resetLogoDataUriEncoding(null);
-                zkService.resetFaviconDataUriEncoding(null);
                 updateSettings(false, null);
                 break;
             case EXTERNAL_PATH:
-                String brandingPath = ZKService.STATIC_FILEPATH.toString();
+                String brandingPath = AssetsService.CUSTOM_FILEPATH;
                 //Check directory exists
-                if (!Files.isDirectory(Paths.get(brandingPath, "images")) || !Files.isDirectory(Paths.get(brandingPath, "styles"))) {
+                if (!Files.isDirectory(Paths.get(brandingPath, "images")) || !Files.isDirectory(Paths.get(brandingPath, "styles", "gluu"))) {
                     Messagebox.show(Labels.getLabel("adm.branding_no_subdirs", new String[]{brandingPath}), null,
                             Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                             event -> {
                                 if (Messagebox.ON_YES.equals(event.getName())) {
                                     updateSettings(true, null);
+                                    assetsService.reloadUrls();
+                                } else {
+                                    changeBranding(previouslySelected.toString());
+                                    BindUtils.postNotifyChange(null, null, CustomBrandingViewModel.this, "brandingOption");
                                 }
                             }
                     );
@@ -147,15 +151,32 @@ public class CustomBrandingViewModel extends MainViewModel {
                 }
                 break;
             case EXTRA_CSS:
-                //Update application level logo and icon
-                zkService.setLogoDataUri(snippetHandler.getLogoDataUri());
-                zkService.setFaviconDataUri(snippetHandler.getFaviconDataUri());
-
-                updateSettings(false, snippetHandler.getSnippet(uiOverrideButtonColors));
+                try {
+                    //Write favicon & logo to disk
+                    if (favicon.getSecond() == null) {
+                        favicon.setSecond(assetsService.getDefaultFaviconBytes());
+                    }
+                    if (favicon.getSecond() != null) {
+                        storeAsset(assetsService.getCustomPathForFavicon(), favicon.getSecond());
+                    }
+                    if (logo.getSecond() == null) {
+                        logo.setSecond(assetsService.getDefaultLogoBytes());
+                    }
+                    if (logo.getSecond() != null) {
+                        storeAsset(assetsService.getCustomPathForLogo(), logo.getSecond());
+                    }
+                    updateSettings(false, snippetHandler.getSnippet(uiOverrideButtonColors));
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                    UIUtils.showMessageUI(false, e.getMessage());
+                }
                 break;
             default:
                 //Added to pass style check
         }
+        //Update application level logo and icon
+        assetsService.reloadUrls();
+
     }
 
     @NotifyChange({"snippetHandler", "uiOverrideButtonColors"})
@@ -167,19 +188,14 @@ public class CustomBrandingViewModel extends MainViewModel {
         }
     }
 
-    private String processImageMedia(Media media) {
+    private String processImageMedia(String name, byte[] data) {
 
         String dataUri = null;
-        if (media instanceof Image) {
-            try {
-                logger.debug("Got file {}", media.getName());
-                dataUri = Utils.getImageDataUriEncoding(media.getByteData(), media.getName());
-            } catch (Exception e) {
-                logger.debug(e.getMessage(), e);
-                UIUtils.showMessageUI(false);
-            }
-        } else {
-            UIUtils.showMessageUI(false, Labels.getLabel("adm.branding_quick_noimg"));
+        try {
+            dataUri = Utils.getImageDataUriEncoding(data, name);
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+            UIUtils.showMessageUI(false);
         }
         return dataUri;
 
@@ -189,9 +205,30 @@ public class CustomBrandingViewModel extends MainViewModel {
 
         settings.setUseExternalBranding(useBranding);
         settings.setExtraCssSnippet(cssSnippet);
-        String msg = Labels.getLabel(brandingOption.equals(BrandingOption.NONE) ? "adm.branding_defaulted" : "adm.branding_changed");
+        String msg = brandingOption.equals(BrandingOption.NONE) ? null : Labels.getLabel( "adm.branding_changed");
         updateMainSettings(msg);
 
+    }
+
+    private void processUpload(Pair<String, byte[]> pair, Media media) {
+
+        if (media instanceof Image) {
+            logger.info("Processing upload {}", media.getName());
+            pair.setFirst(processImageMedia(media.getName(), media.getByteData()));
+            pair.setSecond(media.getByteData());
+        } else {
+            UIUtils.showMessageUI(false, Labels.getLabel("adm.branding_quick_noimg"));
+        }
+
+    }
+
+    private void storeAsset(Path destination, byte[] data) throws Exception {
+        Files.createDirectories(destination.getParent());
+        Files.write(destination, data);
+    }
+
+    private String randomSuffix() {
+        return "?" + Math.random();
     }
 
 }

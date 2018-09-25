@@ -9,7 +9,6 @@ import org.gluu.casa.core.label.PluginLabelLocator;
 import org.gluu.casa.core.label.SystemLabelLocator;
 import org.gluu.casa.misc.CssRulesResolver;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.ui.vm.admin.branding.CssSnippetHandler;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.WebApp;
@@ -20,13 +19,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author jgomer
@@ -36,11 +32,6 @@ import java.util.Set;
 public class ZKService {
 
     public static final String EXTERNAL_LABELS_DIR = "labels";
-    public static final String DEFAULT_CUSTOM_PATH = "/custom";
-    public static final Path STATIC_FILEPATH = Paths.get(System.getProperty("server.base"), "static");
-
-    private static final String DEFAULT_LOGO_URL = "/images/logo.png";
-    private static final String DEFAULT_FAVICON_URL = "/images/favicon.ico";
     private static final String SYS_LABELS_LOCATION = "/WEB-INF/classes/labels/";
 
     @Inject
@@ -49,18 +40,9 @@ public class ZKService {
     @Inject
     private ConfigurationHandler confHandler;
 
-    @Inject
-    private RSRegistryHandler registryHandler;
-
-    private String logoDataUri;
-
-    private String faviconDataUri;
-
     private String contextPath;
 
     private String appName;
-
-    private WebApp app;
 
     private Map<String, PluginLabelLocator> labelLocators;
 
@@ -75,24 +57,13 @@ public class ZKService {
     public void init(WebApp app) {
 
         try {
-            this.app = app;
             confHandler.init();
-            //These attributes are stored here for future use inside zul templates
+
             appName = app.getAppName();
             servletContext = app.getServletContext();
             contextPath = servletContext.getContextPath();
-
             CssRulesResolver.init(servletContext);
-            String cssSnippet = confHandler.getSettings().getExtraCssSnippet();
-            if (Utils.isNotEmpty(cssSnippet)) {
-                CssSnippetHandler snippetHandler = new CssSnippetHandler(cssSnippet);
-                setFaviconDataUri(snippetHandler.getFaviconDataUri());
-                setLogoDataUri(snippetHandler.getLogoDataUri());
-            } else {
-                String prefix = getAssetsPrefix().substring(contextPath.length());
-                resetLogoDataUriEncoding(prefix);
-                resetFaviconDataUriEncoding(prefix);
-            }
+
             readSystemLabels();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -106,52 +77,6 @@ public class ZKService {
 
     public String getContextPath() {
         return contextPath;
-    }
-
-    public String getAssetsPrefix() {
-        return contextPath + (confHandler.getSettings().isUseExternalBranding() ? DEFAULT_CUSTOM_PATH : "");
-    }
-
-    public String getLogoDataUri() {
-        return logoDataUri;
-    }
-
-    public void setLogoDataUri(String logoDataUri) {
-        this.logoDataUri = logoDataUri;
-    }
-
-    public String getFaviconDataUri() {
-        return faviconDataUri;
-    }
-
-    public void setFaviconDataUri(String faviconDataUri) {
-        this.faviconDataUri = faviconDataUri;
-    }
-
-    public void resetLogoDataUriEncoding(String prefix) {
-        prefix = Utils.isEmpty(prefix) ? "" : prefix + "/";
-        logoDataUri = getDataUriEncoding(prefix + DEFAULT_LOGO_URL);
-    }
-
-    public void resetFaviconDataUriEncoding(String prefix) {
-        prefix = Utils.isEmpty(prefix) ? "" : prefix + "/";
-        faviconDataUri = getDataUriEncoding(prefix + DEFAULT_FAVICON_URL);
-    }
-
-    private String getDataUriEncoding(String url) {
-
-        String encoded = null;
-        try {
-            int i = url.lastIndexOf("/");
-            String fileName = i == -1 ? null : url.substring(i + 1);
-
-            byte[] bytes = Files.readAllBytes(Paths.get(getAppFileSystemRoot(), url.split("/")));
-            encoded = Utils.getImageDataUriEncoding(bytes, fileName);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return encoded;
-
     }
 
     private void readSystemLabels() {
@@ -207,6 +132,39 @@ public class ZKService {
         logger.info("Refreshing labels");
         //labelLocators.values().forEach(Labels::register);
         Labels.reset();
+    }
+
+    byte[] getResourceBytes(String path) throws Exception {
+
+        InputStream stream = servletContext.getResourceAsStream(path);
+        List<byte[]> list = new ArrayList<>();
+        int l = 0;
+
+        int chunkSize = 8192;
+        byte[] b = new byte[chunkSize];
+        int read = stream.read(b);
+
+        while (read > 0) {
+            l += read;
+            list.add(b);
+            b = new byte[chunkSize];
+            read = stream.read(b);
+        }
+
+        int k = 0;
+        b = new byte[l];
+        for (int i = 0; i < list.size() - 1; i++) {
+            for (int j = 0; j < chunkSize; j++) {
+                b[k++] = list.get(i)[j];
+            }
+        }
+
+        int j = 0;
+        while (k < l) {
+            b[k++] = list.get(list.size() - 1)[j++];
+        }
+        return b;
+
     }
 
 }

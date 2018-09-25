@@ -9,8 +9,6 @@ import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,43 +19,33 @@ public class CssSnippetHandler {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final String LOGO_SELECTOR = "logo";
-    private static final String FAVICON_SELECTOR = "favicon";
-    private static final String HEADER_SELECTOR = "header";
-    private static final String PRIMARY_BUTTON_SELECTOR = "btn-success";
-    private static final String AUXILIARY_BUTTON_SELECTOR = "btn-warning";
-    private static final List<String> PANEL_HEADER_SELECTORS = Arrays.asList("z-panel-head", "z-panel-header");
+    /* Values of this constants are chosen with respect to file css-component-rules.properties */
+    private static final String HEADER_SELECTOR = "cust-header-rule";
+    private static final String PRIMARY_BUTTON_SELECTOR = "cust-primary-button";
+    private static final String SECONDARY_BUTTON_SELECTOR = "cust-secondary-button";
+    private static final String TERTIARY_BUTTON_SELECTOR = "cust-tertiary-button";
 
-    private static final String PRIMARY_BUTTON_DEF_COLOR = "#123456";
-    private static final String AUXILIARY_BUTTON_DEF_COLOR = "#654321";
-    private static final String HEADER_DEF_COLOR = "#ffffff";
-
-    private String logoDataUri;
-
-    private String faviconDataUri;
+    private static final String PRIMARY_BUTTON_DEF_COLOR = "#FF80CC"; /* pink */
+    private static final String SECONDARY_BUTTON_DEF_COLOR = "#9EEBCF"; /* light-green */
+    private static final String TERTIARY_BUTTON_DEF_COLOR = "#96CCFF"; /* light-blue */
+    private static final String HEADER_DEF_COLOR = "#FBF1A9" /* light yellow */;
 
     private String headerColor;
 
-    private String mainButtonColor;
+    private String primaryButtonColor;
 
-    private String auxButtonColor;
+    private String secondaryButtonColor;
 
-    private String panelHeadColor;
+    private String tertiaryButtonColor;
 
     public CssSnippetHandler(String str) {
-
         if (str != null) {
-            //Here .+? denotes one or more characters with reluctant consumption (not default greedy style of eating chars)
-            faviconDataUri = getMatchingString(FAVICON_SELECTOR, "\\s*//src\\s*:\\s*(.+?;base64,[^;]+)", str);
-            //Here .+? denotes one or more characters with reluctant consumption (not default greedy style of eating chars)
-            logoDataUri = getMatchingString(LOGO_SELECTOR, "\\s*//src\\s*:\\s*(.+?;base64,[^;]+)", str);
-
             headerColor = getMatchingString(HEADER_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
-            panelHeadColor = getMatchingString(PANEL_HEADER_SELECTORS.get(0), "\\s*background-color\\s*:\\s*([^;]+)", str);
-            mainButtonColor = getMatchingString(PRIMARY_BUTTON_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
-            auxButtonColor = getMatchingString(AUXILIARY_BUTTON_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
+            primaryButtonColor = getMatchingString(PRIMARY_BUTTON_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
+            secondaryButtonColor = getMatchingString(SECONDARY_BUTTON_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
+            tertiaryButtonColor = getMatchingString(TERTIARY_BUTTON_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
         }
-
+        assignMissingHeaderColors();
     }
 
     private String getMatchingString(String selector, String subregexp, String cssString) {
@@ -135,41 +123,36 @@ public class CssSnippetHandler {
 
     }
 
+    private void assignMissingHeaderColors() {
+        if (headerColor == null) {
+            headerColor = HEADER_DEF_COLOR;
+        }
+    }
+
     public String getSnippet(boolean includeButtons) {
 
         String snip = "";
         //this way of building correlates tightly with parsing logic at class constructor
         snip += String.format(".%s{ background-color : %s; }\n", HEADER_SELECTOR, headerColor);
-        snip += String.format(".%s{ //src : %s; \n}\n", LOGO_SELECTOR, logoDataUri);
-        snip += String.format(".%s{ //src : %s; \n}\n", FAVICON_SELECTOR, faviconDataUri);
-
-        for (String selector : PANEL_HEADER_SELECTORS) {
-            snip += String.format(".%s{ background-color : %s; \n}\n", selector, panelHeadColor);
-        }
 
         if (includeButtons) {
-            snip += getSnippetForButton(PRIMARY_BUTTON_SELECTOR, mainButtonColor);
-            snip += getSnippetForButton(AUXILIARY_BUTTON_SELECTOR, auxButtonColor);
+            snip += getSnippetForButton(PRIMARY_BUTTON_SELECTOR, primaryButtonColor);
+            snip += getSnippetForButton(SECONDARY_BUTTON_SELECTOR, secondaryButtonColor);
+            snip += getSnippetForButton(TERTIARY_BUTTON_SELECTOR, tertiaryButtonColor);
         }
         logger.debug("snippet is\n{}", snip);
         return snip;
     }
 
     public void assignMissingButtonColors() {
-        if (auxButtonColor == null) {
-            auxButtonColor = AUXILIARY_BUTTON_DEF_COLOR;
+        if (primaryButtonColor == null) {
+            primaryButtonColor = PRIMARY_BUTTON_DEF_COLOR;
         }
-        if (mainButtonColor == null) {
-            mainButtonColor = PRIMARY_BUTTON_DEF_COLOR;
+        if (secondaryButtonColor == null) {
+            secondaryButtonColor = SECONDARY_BUTTON_DEF_COLOR;
         }
-    }
-
-    public void assignMissingHeaderColors() {
-        if (headerColor == null) {
-            headerColor = HEADER_DEF_COLOR;
-        }
-        if (panelHeadColor == null) {
-            panelHeadColor = HEADER_DEF_COLOR;
+        if (tertiaryButtonColor == null) {
+            tertiaryButtonColor = TERTIARY_BUTTON_DEF_COLOR;
         }
     }
 
@@ -177,48 +160,32 @@ public class CssSnippetHandler {
         return headerColor;
     }
 
-    public String getMainButtonColor() {
-        return mainButtonColor;
+    public String getPrimaryButtonColor() {
+        return primaryButtonColor;
     }
 
-    public String getPanelHeadColor() {
-        return panelHeadColor;
+    public String getSecondaryButtonColor() {
+        return secondaryButtonColor;
     }
 
-    public String getAuxButtonColor() {
-        return auxButtonColor;
-    }
-
-    public String getLogoDataUri() {
-        return logoDataUri;
-    }
-
-    public String getFaviconDataUri() {
-        return faviconDataUri;
+    public String getTertiaryButtonColor() {
+        return tertiaryButtonColor;
     }
 
     public void setHeaderColor(String headerColor) {
         this.headerColor = headerColor;
     }
 
-    public void setMainButtonColor(String mainButtonColor) {
-        this.mainButtonColor = mainButtonColor;
+    public void setPrimaryButtonColor(String primaryButtonColor) {
+        this.primaryButtonColor = primaryButtonColor;
     }
 
-    public void setAuxButtonColor(String auxButtonColor) {
-        this.auxButtonColor = auxButtonColor;
+    public void setSecondaryButtonColor(String secondaryButtonColor) {
+        this.secondaryButtonColor = secondaryButtonColor;
     }
 
-    public void setLogoDataUri(String logoDataUri) {
-        this.logoDataUri = logoDataUri;
-    }
-
-    public void setFaviconDataUri(String faviconDataUri) {
-        this.faviconDataUri = faviconDataUri;
-    }
-
-    public void setPanelHeadColor(String panelHeadColor) {
-        this.panelHeadColor = panelHeadColor;
+    public void setTertiaryButtonColor(String tertiaryButtonColor) {
+        this.tertiaryButtonColor = tertiaryButtonColor;
     }
 
 }
