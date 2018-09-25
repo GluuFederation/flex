@@ -24,7 +24,8 @@
                     </div>
                     <div class="relative w5 mt4 pr3">
                         <h:input id="new_pass" class="focused-text w-100 pb1" type="password" ca:required="required"
-                                 onBlur="updateStrength('new_pass')" value="@bind(vm.newPassword)" />
+                                 onBlur="updateStrength('new_pass')" value="@bind(vm.newPassword)"
+                                 data-original-title="${labels.usr.passreset_hint}" data-toggle="tooltip" data-placement="bottom" />
                         <label class="focused-label" for="new_pass">${labels.usr.passreset_newpass}</label>
                         <i class="icon fas fa-eye absolute right-1 top-0 mt1" onClick="javascript:togglePass(this, 'new_pass')" />
                     </div>

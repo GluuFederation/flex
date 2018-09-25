@@ -58,27 +58,27 @@
                 <div class="${css.panel}">
                     <div class="pv1 flex flex-wrap items-center">
                         <label class="ma2 w4">${labels.adm.oxd_op_host}</label>
-                        <z:label sclass="black-80" value="@load(vm.oxdSettings.opHost)" />
+                        <z:label sclass="dark-gray" value="@load(vm.oxdSettings.opHost)" />
                     </div>
                     <div class="pv1 flex flex-wrap items-center">
                         <label class="ma2 w4">${labels.adm.oxd_client_name}</label>
-                        <z:label sclass="black-80" value="@load(vm.oxdSettings.client.clientName)" />
+                        <z:label sclass="dark-gray" value="@load(vm.oxdSettings.client.clientName)" />
                     </div>
                     <div class="pv1 flex flex-wrap items-center">
                         <label class="ma2 w4">${labels.adm.oxd_authz_redirect}</label>
-                        <z:label sclass="black-80" value="@load(vm.oxdSettings.redirectUri)" />
+                        <z:label sclass="dark-gray" value="@load(vm.oxdSettings.redirectUri)" />
                     </div>
                     <div class="pv1 flex flex-wrap items-center">
                         <label class="ma2 w4">${labels.adm.oxd_oxdid}</label>
-                        <z:label sclass="black-80" value="@load(vm.oxdSettings.client.oxdId)" />
+                        <z:label sclass="dark-gray" value="@load(vm.oxdSettings.client.oxdId)" />
                     </div>
                     <z:div sclass="pv1 flex flex-wrap items-center" visible="@load(vm.oxdSettings.client.clientId)">
                         <label class="ma2 w4">${labels.adm.oxd_client_id}</label>
-                        <z:label sclass="black-80" value="@load(vm.oxdSettings.client.clientId)" />
+                        <z:label sclass="dark-gray" value="@load(vm.oxdSettings.client.clientId)" />
                     </z:div>
                     <z:div sclass="pv1 flex flex-wrap items-center" visible="@load(not empty vm.oxdSettings.client.clientSecret)">
                         <label class="ma2 w4">${labels.adm.oxd_client_secret}</label>
-                        <z:label sclass="black-80" value="@load(vm.oxdSettings.client.clientSecret)" />
+                        <z:label sclass="dark-gray" value="@load(vm.oxdSettings.client.clientSecret)" />
                     </z:div>
                 </div>
             </section>
