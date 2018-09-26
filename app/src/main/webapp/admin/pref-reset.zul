@@ -1,62 +1,68 @@
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns="native">
 
-    <style>
-        .z-checkbox-content{
-        padding-left:0px;
-        }
-    </style>
-    <panel if="${sessionContext.user.admin}" title="${labels.adm.resets_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.PreferenceResetViewModel')">
-        <panelchildren sclass="padded">
-            <vlayout spacing="10px">
-                <vlayout spacing="12px">
-                    <label value="${labels.adm.resets_text}"/>
+    <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
 
-                    <n:p class="de_emphasized">${labels.adm.resets_note}</n:p>
-                </vlayout>
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.PreferenceResetViewModel')"
+           self="@define(maincontent)">
 
-                <div align="center">
-                    <hlayout spacing="10px" valign="bottom">
-                        <textbox sclass="s8 form-control" placeholder="${labels.adm.resets_textbox_placeholder}"
-                                 value="@bind(vm.searchPattern)" focus="true" id="pattern" onOK="@command('search', box=pattern)" />
-                        <button label="${labels.general.search}" sclass="btn-success" onClick="@command('search', box=pattern)" />
-                    </hlayout>
+        <z:include src="/back-home.zul" />
+
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.adm.resets_title}</h2>
+                    <p>${labels.adm.resets_text}</p>
+                    <p class="mb0">${labels.adm.resets_note}</p>
                 </div>
-
-                <separator />
-                <label visible="@load(not empty vm.users)" value="${labels.adm.resets_hintgrid}" />
-
-                <div align="center">
-                    <vlayout visible="@load(not empty vm.users)" spacing="14px">
-                        <grid model="@load(vm.users)" mold="paging" pageSize="10" sclass="grid_users">
-                            <columns sizable="true" >
-                                <column width="25px" label="" />
-                                <column width="${sessionContext.onMobile ? '80px' : '90px'}" label="${labels.adm.reset_column_username}" />
-                                <column unless="${sessionContext.onMobile}" label="${labels.adm.reset_column_name}" />
-                                <column label="${labels.adm.reset_column_familyname}" />
-                            </columns>
-                            <template name="model">
-                                <!--  w:onClick="javascript:doToggle('${each.userId}')" -->
-                                <row onClick="@command('rowClicked', evt=event, val=each)" style="cursor:pointer">
-                                    <checkbox id="@load(each.id)" disabled="@load(each.alreadyReset)" checked="@bind(each.checked)" />
-                                    <label value="@load(each.userName)" />
-                                    <label unless="${sessionContext.onMobile}" value="@load(each.givenName)" />
-                                    <label value="@load(each.lastName)" />
-                                </row>
-                            </template>
-                        </grid>
-                        <hlayout spacing="30px">
-                            <button label="${labels.adm.resets_reset}" sclass="btn-success" onClick="@command('doReset')" />
-                            <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancelReset')"/>
-                        </hlayout>
-
-                    </vlayout>
-                    <label value="${labels.adm.resets_nomatches}" sclass="de_emphasized" visible="@load((vm.users ne null) and (empty vm.users))" />
+                <div class="${css.panel}">
+                    <div class="pb2 flex flex-wrap items-center">
+                        <z:textbox sclass="${css.textInput} w4 w5-ns mr2" placeholder="${labels.adm.resets_textbox_placeholder}"
+                                   value="@bind(vm.searchPattern)" focus="true" id="pattern"
+                                   w:onChange="alertRef = $('#feedback-pref-reset')" onOK="@command('search')" />
+                        <z:button label="${labels.general.search}" sclass="${css.primaryButton}"
+                                  w:onClick="alertRef = $('#feedback-pref-reset')" onClick="@command('search')" />
+                        <z:label sclass="f7 dark-blue2 ml3" visible="@load((vm.users ne null) and (empty vm.users))" value="${labels.adm.resets_nomatches}" />
+                    </div>
+                    <div class="mt2">
+                        <div class="alert alert-success dn" id="feedback-pref-reset" role="alert" />
+                    </div>
                 </div>
+                <z:div sclass="${css.panel}" visible="@load(not empty vm.users)">
+                    <span sclass="dark-blue2">${labels.adm.resets_hintgrid}</span>
 
-            </vlayout>
-        </panelchildren>
-    </panel>
+                    <z:div sclass="flex items-center flex-column pt2 ph3-ns">
+                        <table class="table table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th scope="col"> </th>
+                                    <th scope="col">${labels.adm.reset_column_username}</th>
+                                    <th scope="col" class="dn dtc-ns">${labels.adm.reset_column_name}</th>
+                                    <th scope="col">${labels.adm.reset_column_familyname}</th>
+                                </tr>
+                            </thead>
+                            <h:tbody children="@load(vm.users)" sclass="f7">
+                                <zk:template name="children">
+                                    <h:tr sclass="pointer" style="@load(each.alreadyReset ? 'cursor:not-allowed' : '')"
+                                          onClick="@command('rowClicked', evt=event, val=each)">
+                                        <td><z:checkbox id="@load(each.id)" disabled="@load(each.alreadyReset)" checked="@bind(each.checked)" /></td>
+                                        <td><z:label value="@load(each.userName)" /></td>
+                                        <td class="dn dtc-ns"><z:label unless="${sessionContext.browser.mobile}" value="@load(each.givenName)" /></td>
+                                        <td><z:label value="@load(each.lastName)" /></td>
+                                    </h:tr>
+                                </zk:template>
+                            </h:tbody>
+                        </table>
 
-</zk>
+                        <div class="pt3">
+                            <z:button label="${labels.adm.resets_reset}" sclass="${css.primaryButton} mr3" onClick="@command('doReset')" />
+                            <z:button label="${labels.general.cancel}" sclass="${css.primaryButton} ph4" onClick="@command('cancelReset')"/>
+                        </div>
+                    </z:div>
+                </z:div>
+            </section>
+        </div>
+    </z:div>
+
+</zk:zk>

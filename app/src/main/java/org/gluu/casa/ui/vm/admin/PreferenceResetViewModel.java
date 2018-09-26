@@ -17,7 +17,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -57,31 +56,31 @@ public class PreferenceResetViewModel extends MainViewModel {
         return users;
     }
 
-    @Init//(superclass = true)
+    @Init
     public void init() {
-
     }
 
     @Command
-    public void search(@BindingParam("box") Component box) {
+    public void search() {
 
-        //Validates if input conforms to requirement of length
-        if (Utils.isNotEmpty(searchPattern) && searchPattern.trim().length() < MINLEN_SEARCH_PATTERN) {
-            Clients.showNotification(Labels.getLabel("adm.resets_textbox_hint", new Integer[] { MINLEN_SEARCH_PATTERN }),
-                    Clients.NOTIFICATION_TYPE_WARNING, box, "before_center", UIUtils.FEEDBACK_DELAY_ERR);
-        } else {
-            users = userService.searchUsers(searchPattern.trim()).stream() //avoid UI cheaters by trimming
-                    .map(person -> {
-                        PersonSearchMatch p = new PersonSearchMatch();
-                        p.setGivenName(person.getFirstGivenName());
-                        p.setLastName(person.getFirstSn());
-                        p.setUserName(person.getUid());
-                        p.setId(person.getInum());
-                        return p;
-                    }).sorted(Comparator.comparing(PersonSearchMatch::getUserName)).collect(Collectors.toList());
+        if (Utils.isNotEmpty(searchPattern)) {
+            //Validates if input conforms to requirement of length
+            if (searchPattern.trim().length() < MINLEN_SEARCH_PATTERN) {
+                UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_WARNING, Labels.getLabel("adm.resets_textbox_hint", new Integer[]{MINLEN_SEARCH_PATTERN}));
+            } else {
+                users = userService.searchUsers(searchPattern.trim()).stream() //avoid UI cheaters by trimming
+                        .map(person -> {
+                            PersonSearchMatch p = new PersonSearchMatch();
+                            p.setGivenName(person.getFirstGivenName());
+                            p.setLastName(person.getFirstSn());
+                            p.setUserName(person.getUid());
+                            p.setId(person.getInum());
+                            return p;
+                        }).sorted(Comparator.comparing(PersonSearchMatch::getUserName)).collect(Collectors.toList());
 
-            //triggers update of interface
-            BindUtils.postNotifyChange(null, null, this, "users");
+                //triggers update of interface
+                BindUtils.postNotifyChange(null, null, this, "users");
+            }
         }
 
     }
@@ -117,8 +116,7 @@ public class PreferenceResetViewModel extends MainViewModel {
     public void rowClicked(@BindingParam("evt") Event event, @BindingParam("val") PersonSearchMatch user) {
 
         try {
-            //IMPORTANT: Assuming the check is the first child of row!
-            Checkbox box = (Checkbox) event.getTarget().getFirstChild();
+            Checkbox box = (Checkbox) event.getTarget().getFellow(user.getId());
             if (!box.isDisabled()) {
                 //Simulate check on the checkbox
                 box.setChecked(!box.isChecked());
