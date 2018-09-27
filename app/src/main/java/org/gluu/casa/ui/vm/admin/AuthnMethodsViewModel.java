@@ -32,12 +32,12 @@ import java.util.stream.Collectors;
  * @author jgomer
  */
 @VariableResolver(DelegatingVariableResolver.class)
-
+/* TODO: remove commented code */
 public class AuthnMethodsViewModel extends MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private static final String NO_PLUGIN = "";
+    //private static final String NO_PLUGIN = "";
 
     @WireVariable("configurationHandler")
     private ConfigurationHandler confHandler;
@@ -54,7 +54,7 @@ public class AuthnMethodsViewModel extends MainViewModel {
         return methods;
     }
 
-    @Init//(superclass = true)
+    @Init
     public void init() {
 
         List<PluginDescriptor> currentPlugins = extManager.authnMethodPluginImplementersStarted();
@@ -68,6 +68,7 @@ public class AuthnMethodsViewModel extends MainViewModel {
         List<AuthnMethod> list = extManager.getAuthnMethodExts().stream().filter(aMethod -> authnMethodLevels.containsKey(aMethod.getAcr()))
                 .sorted(Comparator.comparing(aMethod -> -authnMethodLevels.get(aMethod.getAcr()))).collect(Collectors.toList());
 
+        logger.info("The following acrs have a corresponding plugin or system extension: {}", list.stream().map(AuthnMethod::getAcr).collect(Collectors.toList()));
         methods = new ArrayList<>();
         for (AuthnMethod aMethod : list) {
             String acr = aMethod.getAcr();
@@ -92,7 +93,7 @@ public class AuthnMethodsViewModel extends MainViewModel {
             ams.setPlugins(plugins);
             //Use as selected the one already in the acr/plugin mapping, or if missing, an empty string (which will make
             //the item not to match against any existing plugin
-            ams.setSelectedPlugin(mappedAcrs.getOrDefault(acr, NO_PLUGIN));
+            ams.setSelectedPlugin(mappedAcrs.getOrDefault(acr, /*NO_PLUGIN*/ plugins.get(0).getX()));
 
             methods.add(ams);
         }
@@ -109,24 +110,28 @@ public class AuthnMethodsViewModel extends MainViewModel {
         authnMethodStatus.setSelectedPlugin(pair.getX());
     }
 
+    /*
     @NotifyChange("methods")
     @Command
     public void checkMethod(@BindingParam("acr") String acr, @BindingParam("checked") boolean checked){
 
+        logger.debug("Method '{}' {}", acr, checked ? "checked" : "unchecked");
+
         AuthnMethodStatus methodStatus = methods.stream().filter(ams -> ams.getAcr().equals(acr)).findAny().get();
-        if (checked && Optional.ofNullable(methodStatus.getSelectedPlugin()).map(plid -> plid.equals(NO_PLUGIN)).orElse(false)) {
-            checked = false;
-            UIUtils.showMessageUI(false, Labels.getLabel("adm.methods_nopluginselected"));
-        }
+        //if (checked && Optional.ofNullable(methodStatus.getSelectedPlugin()).map(plid -> plid.equals(NO_PLUGIN)).orElse(false)) {
+        //    checked = false;
+        //    UIUtils.showMessageUI(false, Labels.getLabel("adm.methods_nopluginselected"));
+        //}
         methodStatus.setEnabled(checked);
 
-    }
+    }*/
 
     @Command
     public void save() {
 
         Map<String, String> pluginMapping = new HashMap<>();
         methods.stream().filter(AuthnMethodStatus::isEnabled).forEach(ams -> pluginMapping.put(ams.getAcr(), ams.getSelectedPlugin()));
+        logger.info("New plugin mapping will be: {}", pluginMapping);
         getSettings().setAcrPluginMap(pluginMapping);
         updateMainSettings();
 

@@ -1,52 +1,70 @@
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<?link rel="stylesheet" type="text/css" href="/styles/intlTelInput.min.css"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
 
-    <panel if="${sessionContext.user.admin}" title="${labels.adm.methods_title}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.AuthnMethodsViewModel')">
-        <panelchildren sclass="padded">
-            <vlayout spacing="12px">
-                <label value="${labels.adm.methods_text}"/>
-                <zk choose="">
-                    <zk when="${empty vm.methods}">
-                        <n:p align="center"><n:br />${labels.adm.methods_hint_noscripts}</n:p>
-                    </zk>
-                    <zk>
-                        <n:span sclass="de_emphasized">${labels.adm.methods_hint}</n:span>
-                        <div align="center">
-                            <grid model="@load(vm.methods)" mold="paging" pageSize="15">
-                                <columns>
-                                    <column width="35px" />
-                                    <column label="${labels.adm.methods_acr}" />
-                                    <column label="${labels.adm.methods_methodname}" />
-                                    <column width="40%" label="${labels.adm.methods_plugin}" />
-                                </columns>
-                                <template name="model">
-                                    <row>
-                                        <checkbox checked="@load(each.enabled)" disabled="@load(each.enabled and not each.deactivable)"
-                                                  onCheck="@command('checkMethod', acr=each.acr, checked=self.checked)" />
-                                        <label value="${each.acr}" />
-                                        <label value="${each.name}" />
-                                        <listbox width="${sessionContext.onMobile ? '90%' : '200px'}" mold="select"
-                                                 onSelect="@command('selectionChanged', acr=each.acr, index = self.selectedIndex)">
-                                            <listitem forEach="${each.plugins}" label="${each.y}" selected="${forEachStatus.previous.each.selectedPlugin eq each.x}" />
-                                        </listbox>
-                                        <!--listbox width="${sessionContext.onMobile ? '90%' : '200px'}" mold="select" model="@load(each.plugins)"
-                                                 onSelect="@command('selectionChanged', evt=event, acr=each.acr)">
-                                            <template name="model">
-                                                <listitem label="@load(each.y)" selected="@load(forEachStatus.previous.each.selectedPlugin eq each.x)" />
-                                            </template>
-                                        </listbox-->
-                                    </row>
-                                </template>
-                            </grid>
-                            <separator />
-                            <separator />
-                            <button disabled="@load(empty vm.methods)" label="${labels.general.save}" sclass="btn-success" onClick="@command('save')" />
-                        </div>
-                    </zk>
-                </zk>
-            </vlayout>
-        </panelchildren>
-    </panel>
+    <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
 
-</zk>
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.AuthnMethodsViewModel')"
+           self="@define(maincontent)">
+
+        <z:include src="/back-home.zul" />
+
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
+
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.adm.methods_title}</h2>
+                    <p>${labels.adm.methods_text}</p>
+
+                    <zk:zk if="${empty vm.methods}">
+                        <span class="dark-blue2">${labels.adm.methods_hint_noscripts}</span>
+                    </zk:zk>
+                </div>
+
+                <z:div sclass="${css.panel}" unless="${empty vm.methods}">
+                    <span class="dark-blue2">${labels.adm.methods_hint}</span>
+                    <div class="pt3 pb2">
+                        <table class="table table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th scope="col" />
+                                    <th scope="col">${labels.adm.methods_acr}</th>
+                                    <th scope="col">${labels.adm.methods_methodname}</th>
+                                    <th scope="col">${labels.adm.methods_plugin}</th>
+                                </tr>
+                            </thead>
+                            <h:tbody children="@load(vm.methods)" sclass="f7">
+                                <zk:template name="children">
+                                    <tr>
+                                        <td>
+                                            <z:checkbox checked="@bind(each.enabled)" disabled="@load(each.enabled and not each.deactivable)"
+                                                        style="@load(each.enabled and not each.deactivable ? 'cursor: not-allowed' : '')" />
+                                            <!-- onCheck="@command('checkMethod', acr=each.acr, checked=self.checked)" -->
+                                        </td>
+                                        <td><z:label value="${each.acr}" /></td>
+                                        <td><z:label value="${each.name}" /></td>
+                                        <td>
+                                            <z:listbox mold="select" onSelect="@command('selectionChanged', acr=each.acr, index = self.selectedIndex)">
+                                                <z:listitem forEach="${each.plugins}" label="${each.y}" selected="${forEachStatus.previous.each.selectedPlugin eq each.x}" />
+                                            </z:listbox>
+                                        </td>
+                                    </tr>
+                                </zk:template>
+                            </h:tbody>
+                        </table>
+                    </div>
+
+                    <div class="mb2">
+                        <div class="alert alert-success dn" id="feedback-methods" role="alert" />
+                    </div>
+                    <div class="tc">
+                        <z:button disabled="@load(empty vm.methods)" label="${labels.general.save}" sclass="${css.primaryButton}"
+                                  w:onClick="alertRef = $('#feedback-methods')" onClick="@command('save')" />
+                    </div>
+                </z:div>
+            </section>
+        </div>
+    </z:div>
+
+</zk:zk>

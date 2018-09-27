@@ -1,168 +1,160 @@
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
 
-    <style>
-        .chin {
-            padding-bottom:5px;
-        }
-    </style>
+    <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
 
-    <script>
-        zk.progressMonitor = zk.$extends(zk.Object, {
-            $init : function(uplder, filenm) {
-                //zk.Widget.$('$uplButton').setDisabled(true);
-                showThrobber();
-            },
-            update : function(sent, total) {
-                //this can be used to display progress %
-            },
-            destroy : function() {
-                hideThrobber();
-                //zk.Widget.$('$uplButton').setDisabled(false);
-            }
-        });
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.PluginViewModel')"
+           self="@define(maincontent)">
 
-        function showThrobber(){
-            zk.Widget.$('$throbber').show();
-        }
-        function hideThrobber(){
-            zk.Widget.$('$throbber').hide();
-        }
-    </script>
+        <z:include src="/back-home.zul"/>
 
-    <panel if="${sessionContext.user.admin}" title="${labels.adm.plugins_title2}" border="normal" sclass="padded"
-           viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.PluginViewModel')">
-        <panelchildren sclass="padded">
-            <vlayout>
-                <n:span>${labels.adm.plugins_text}</n:span>
-                <separator />
-                <label visible="@load(not empty vm.pluginList)" value="${labels.adm.plugins_text2}" />
-                <separator />
-
-                <div align="center" sclass="dpadded">
-                    <vlayout visible="@load(not empty vm.pluginList)">
-                        <grid model="@load(vm.pluginList)" mold="paging" pageSize="4">
-                            <columns sizable="false">
-                                <column label="${labels.adm.plugins_pluginId}">
-                                    <attribute unless="${sessionContext.onMobile}" name="width">120px</attribute>
-                                </column>
-                                <column width="65px" label="${labels.adm.plugins_status}" />
-                                <column unless="${sessionContext.onMobile}" label="${labels.adm.plugins_implements}" />
-                                <column width="120px" label="${labels.adm.plugins_manage}" />
-                            </columns>
-                            <template name="model">
-                                <row style="cursor:pointer" onClick="@command('showPlugin', id=each.descriptor.pluginId)" tooltip="tooltip_details, after_center">
-                                    <label value="@load(c:cat3(each.descriptor.pluginId, ' ', each.descriptor.version))" />
-                                    <label value="@load(each.state)" />
-                                    <vlayout unless="${sessionContext.onMobile}" children="@load(each.extensions)">
-                                        <template name="children">
-                                            <label value="@load(each)" />
-                                        </template>
-                                    </vlayout>
-                                    <hlayout>
-                                        <button label="${labels.adm.plugins_dostop}" sclass="btn-warning btn-sm"
-                                                onClick="@command('stopPlugin', id=each.descriptor.pluginId))" visible="@load(each.state eq 'started')" />
-
-                                        <button label="${labels.adm.plugins_dostart}" sclass="btn-warning btn-sm"
-                                                onClick="@command('startPlugin', id=each.descriptor.pluginId))" visible="@load(each.state eq 'stopped')" />
-
-                                        <button label="${labels.adm.plugins_dodelete}" sclass="btn-warning btn-sm" disabled="@load(each.state eq 'started')"
-                                                onClick="@command('deletePlugin', id=each.descriptor.pluginId, provider=each.descriptor.provider)" />
-                                    </hlayout>
-                                </row>
-                            </template>
-                        </grid>
-
-                    </vlayout>
-                    <label value="${labels.adm.plugins_empty}" sclass="bold de_emphasized" visible="@load(empty vm.pluginList)" />
-                </div>
-                <div align="right">
-                    <hlayout>
-                        <image src="${sessionContext.custdir}/images/throbber.gif" id="throbber" visible="false" />
-                        <button id="uplButton" label="${labels.adm.plugins_upload}" onUpload="@command('uploaded', uplEvent=event)"
-                                upload="zk.progressMonitor,maxsize=50240,multiple=false,accept=application/java-archive"
-                                disabled="@load(vm.uiAdding)" tooltip="tooltip_upload, after_end" sclass="upload_button" />
-                    </hlayout>
-                </div>
-            </vlayout>
-
-            <div visible="@load(vm.pluginToShow ne null)">
-                <n:hr style="border-top: 1px solid #666;margin-bottom:10px" />
-
-                <vlayout sclass="padded">
-                    <label visible="@load(vm.uiAdding)" value="${labels.adm.plugins_adding_text}" />
-                    <separator />
-                    <hlayout width="100%" visible="@load(not vm.uiAdding)">
-                        <div hflex="1" align="right">
-                            <button label="${labels.general.hide}" sclass="btn-warning btn-sm" onClick="@command('hidePluginDetails')" />
-                        </div>
-                    </hlayout>
-                    <div sclass="well" style="background-color:#fff">
-                        <div sclass="dpadded">
-                            <div sclass="row">
-                                <label value="${labels.adm.plugins_pluginId}" sclass="bold de_emphasized col-sm-2 chin" />
-                                <label value="@load(vm.pluginToShow.descriptor.pluginId)" sclass="control-label col-sm-10" />
-                            </div>
-                            <div sclass="row">
-                                <label value="${labels.adm.plugins_version}" sclass="bold de_emphasized col-sm-2 chin" />
-                                <label value="@load(vm.pluginToShow.descriptor.version)" sclass="control-label col-sm-10" />
-                            </div>
-                            <div sclass="row">
-                                <label value="${labels.adm.plugins_path}" sclass="bold de_emphasized col-sm-2 chin" />
-                                <label value="@load(vm.pluginToShow.path)" sclass="control-label col-sm-10" />
-                            </div>
-
-                            <div visible="@load(not vm.uiAdding and sessionContext.onMobile)">
-                                <!-- Implementation details are only available when the plugin is started (not yet when being added) -->
-                                <n:hr />
-                                <label value="${labels.adm.plugins_implements}" sclass="bold de_emphasized chin" />
-                                <vlayout children="@load(vm.pluginToShow.extensions)">
-                                    <template name="children">
-                                        <div sclass="row">
-                                            <label sclass="col-xs-offset-1" value="@load(each)" />
-                                        </div>
-                                    </template>
-                                </vlayout>
-                            </div>
-
-                            <n:hr />
-                            <label value="${labels.adm.plugins_developer}" sclass="bold de_emphasized chin" />
-                            <div sclass="row">
-                                <div sclass="col-xs-offset-1">
-                                    <label value="@load(empty vm.pluginToShow.descriptor.provider ? c:l('adm.plugins_nodata') : vm.pluginToShow.descriptor.provider)" />
-                                </div>
-                            </div>
-
-                            <n:hr />
-                            <label value="${labels.adm.plugins_description}" sclass="bold de_emphasized chin" />
-                            <div sclass="row">
-                                <div sclass="col-xs-offset-1">
-                                    <label value="@load(empty vm.pluginToShow.descriptor.pluginDescription ? c:l('adm.plugins_nodata') : vm.pluginToShow.descriptor.pluginDescription)" />
-                                </div>
-                            </div>
-
-                            <n:hr />
-                            <label value="${labels.adm.plugins_license}" sclass="bold de_emphasized chin" />
-                            <div sclass="row">
-                                <div sclass="col-xs-offset-1">
-                                    <label value="@load(empty vm.pluginToShow.descriptor.license ? c:l('adm.plugins_nodata') : vm.pluginToShow.descriptor.license)" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div align="center" visible="@load(vm.uiAdding)">
-                            <hlayout spacing="20px" sclass="padded">
-                                <button label="${labels.general.add}" sclass="btn-success" onClick="@command('addPlugin')" />
-                                <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancelAdd')" />
-                            </hlayout>
-                        </div>
-
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.adm.plugins_title2}</h2>
+                    <p>${labels.adm.plugins_text}</p>
+                    <div class="dark-blue2">
+                        <z:label visible="@load(not empty vm.pluginList)" value="${labels.adm.plugins_text2}" />
+                        <z:label visible="@load(empty vm.pluginList)" value="${labels.adm.plugins_empty}" />
                     </div>
-                </vlayout>
-            </div>
+                </div>
 
-        </panelchildren>
-    </panel>
-    <popup id="tooltip_upload">${labels.adm.plugins_upload_hint}</popup>
+                <div class="${css.panel}">
+                    <h:table class="table table-hover table-sm" visible="@load(not empty vm.pluginList)">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="w4-ns">${labels.adm.plugins_pluginId}</th>
+                                <th scope="col" class="w3">${labels.adm.plugins_status}</th>
+                                <th scope="col" class="dn dtc-ns">${labels.adm.plugins_implements}</th>
+                                <th scope="col" style="width:9rem">${labels.adm.plugins_manage}</th>
+                            </tr>
+                        </thead>
+                        <h:tbody children="@load(vm.pluginList)" sclass="f7">
+                            <zk:template name="children">
+                                <h:tr sclass="pointer" onClick="@command('showPlugin', id=each.descriptor.pluginId)">
+                                    <td><z:label value="@load(c:cat3(each.descriptor.pluginId, ' ', each.descriptor.version))" /></td>
+                                    <td><z:label value="@load(each.state)" /></td>
+                                    <td class="dn dtc-ns">
+                                        <z:div children="@load(each.extensions)">
+                                            <zk:template name="children">
+                                                <z:label sclass="db" value="@load(each)" />
+                                            </zk:template>
+                                        </z:div>
+                                    </td>
+                                    <td>
+                                        <z:button label="${labels.adm.plugins_dostop}" sclass="${css.secondaryButton} lh-tight mr1" visible="@load(each.state eq 'started')"
+                                                  w:onClick="prepareAlert()" onClick="@command('stopPlugin', id=each.descriptor.pluginId))" />
 
-</zk>
+                                        <z:button label="${labels.adm.plugins_dostart}" sclass="${css.secondaryButton} lh-tight mr1" visible="@load(each.state eq 'stopped')"
+                                                  w:onClick="prepareAlert()" onClick="@command('startPlugin', id=each.descriptor.pluginId))" />
+
+                                        <z:button label="${labels.adm.plugins_dodelete}" sclass="${css.secondaryButton} lh-tight" disabled="@load(each.state eq 'started')"
+                                                  w:onClick="prepareAlert()" onClick="@command('deletePlugin', id=each.descriptor.pluginId, provider=each.descriptor.provider)" />
+                                    </td>
+                                </h:tr>
+                            </zk:template>
+                        </h:tbody>
+                    </h:table>
+
+                    <div class="tr pb2">
+                        <image src="${zkService.contextPath}${assetsService.prefix}/images/throbber.gif" id="throbber" class="dn mr2" />
+                        <z:button label="${labels.adm.plugins_upload}" disabled="@load(vm.uiAdding)" sclass="${css.linkButton} f7-cust"
+                                  upload="zk.progressMonitor,maxsize=50240,multiple=false,accept=application/java-archive"
+                                  onUpload="@command('uploaded', uplEvent=event)" w:onClick="prepareAlert(); removeFocus(this)"
+                                  ca:data-original-title="${labels.adm.plugins_upload_hint}" ca:data-toggle="tooltip" ca:data-placement="top" />
+                    </div>
+
+                    <div class="alert alert-success dn" id="feedback-plug" role="alert" />
+                </div>
+
+                <z:div sclass="${css.panel}" visible="@load(vm.pluginToShow ne null)">
+
+                    <z:label sclass="dark-blue2" visible="@load(vm.uiAdding)" value="${labels.adm.plugins_adding_text}" />
+                    <z:div sclass="tr" visible="@load(not vm.uiAdding)">
+                        <z:button label="${labels.general.hide}" sclass="${css.secondaryButton} lh-tight mv2" onClick="@command('hidePluginDetails')" />
+                    </z:div>
+                    <div class="card pa3-ns">
+                        <div class="card-body">
+                            <table class="table table-sm">
+                                <tbody class="f7">
+                                    <tr>
+                                        <td>${labels.adm.plugins_pluginId}</td>
+                                        <td><z:label sclass="dark-gray" value="@load(vm.pluginToShow.descriptor.pluginId)" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>${labels.adm.plugins_version}</td>
+                                        <td><z:label sclass="dark-gray" value="@load(vm.pluginToShow.descriptor.version)" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>${labels.adm.plugins_path}</td>
+                                        <td><z:label sclass="dark-gray" value="@load(vm.pluginToShow.path)" /></td>
+                                    </tr>
+                                    <!-- Implementation details are only available when the plugin is started (not yet when being added) -->
+                                    <h:tr visible="@load(not vm.uiAdding)">
+                                        <td>${labels.adm.plugins_implements}</td>
+                                        <td>
+                                            <z:div children="@load(vm.pluginToShow.extensions)">
+                                                <zk:template name="children">
+                                                    <z:label sclass="db dark-gray" value="@load(each)" />
+                                                </zk:template>
+                                            </z:div>
+                                        </td>
+                                    </h:tr>
+                                    <tr>
+                                        <td>${labels.adm.plugins_developer}</td>
+                                        <td><z:label sclass="dark-gray" value="@load(empty vm.pluginToShow.descriptor.provider ? c:l('adm.plugins_nodata') : vm.pluginToShow.descriptor.provider)" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>${labels.adm.plugins_description}</td>
+                                        <td><z:label sclass="dark-gray" value="@load(empty vm.pluginToShow.descriptor.pluginDescription ? c:l('adm.plugins_nodata') : vm.pluginToShow.descriptor.pluginDescription)" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>${labels.adm.plugins_license}</td>
+                                        <td><z:label sclass="dark-gray" value="@load(empty vm.pluginToShow.descriptor.license ? c:l('adm.plugins_nodata') : vm.pluginToShow.descriptor.license)" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <z:div sclass="tc" visible="@load(vm.uiAdding)">
+                                <z:button label="${labels.general.add}" sclass="${css.primaryButton} lh-tight mr3" onClick="@command('addPlugin')" />
+                                <z:button label="${labels.general.cancel}" sclass="${css.primaryButton} lh-tight" onClick="@command('cancelAdd')" />
+                            </z:div>
+                        </div>
+                    </div>
+
+                </z:div>
+            </section>
+        </div>
+
+    </z:div>
+
+    <z:div self="@define(extra)">
+        <script>
+            zk.progressMonitor = zk.$extends(zk.Object, {
+                $init : function(uplder, filenm) {
+                    $("#throbber").show();
+                },
+                update : function(sent, total) {
+                    //this can be used to display progress %
+                },
+                destroy : function() {
+                    $("#throbber").hide();
+                }
+            });
+
+            function removeFocus(widget) {
+                //Removes the sticky tooltip from the upload button
+                try {
+                    var elId = widget.$n().id;
+                    $("#" + elId).focusout();
+                } catch (e) {
+                }
+            }
+
+            function prepareAlert() {
+                alertRef = $('#feedback-plug');
+            }
+        </script>
+    </z:div>
+
+</zk:zk>
