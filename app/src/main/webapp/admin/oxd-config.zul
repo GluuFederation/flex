@@ -19,9 +19,9 @@
 
                     <div class="pb2 flex flex-wrap">
                         <z:radiogroup id="foolish"/>
-                        <label class="ma2 w4">${labels.adm.oxd_conn_type}</label>
+                        <label class="mr2 w4">${labels.adm.oxd_conn_type}</label>
                         <div class="flex flex-column">
-                            <div class="flex flex-wrap">
+                            <div class="pb1 flex flex-wrap">
                                 <z:radio label="${labels.adm.oxd_conn_server}" onCheck="@command('switchUseOxdExtension', use=false)" sclass="pr3"
                                          selected="@load(not vm.oxdSettings.useHttpsExtension)" radiogroup="foolish" onClick="uiHost.focus()" />
                                 <z:radio label="${labels.adm.oxd_conn_https}" onCheck="@command('switchUseOxdExtension', use=true)"
@@ -39,12 +39,12 @@
                         </div>
                     </div>
                     <div class="pt1 pb2 flex flex-wrap">
-                        <label class="ma2 w4">${labels.adm.oxd_postlogout}</label>
+                        <label class="mr2 w4">${labels.adm.oxd_postlogout}</label>
                         <z:textbox sclass="${css.textInput} w5" value="@bind(vm.oxdSettings.postLogoutUri)" tooltip="tooltip_logout, after_pointer"
                                    ca:data-original-title="${labels.adm.oxd_postlogout_uri_tooltip}" ca:data-toggle="tooltip" ca:data-placement="bottom" />
                     </div>
                     <div class="pt2 pb2 flex flex-wrap">
-                        <label class="ma2 w4" />
+                        <label class="mr2 w4" />
                         <z:button label="${labels.general.save}" sclass="${css.primaryButton} mr3"
                                   w:onClick="alertRef = $('#feedback-oxd')" onClick="@command('saveOxdSettings')" />
                         <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}"
@@ -57,27 +57,27 @@
 
                 <div class="${css.panel}">
                     <div class="pv1 flex flex-wrap items-center">
-                        <label class="ma2 w4">${labels.adm.oxd_op_host}</label>
+                        <label class="mr2 w4">${labels.adm.oxd_op_host}</label>
                         <z:label sclass="dark-gray" value="@load(vm.oxdSettings.opHost)" />
                     </div>
                     <div class="pv1 flex flex-wrap items-center">
-                        <label class="ma2 w4">${labels.adm.oxd_client_name}</label>
+                        <label class="mr2 w4">${labels.adm.oxd_client_name}</label>
                         <z:label sclass="dark-gray" value="@load(vm.oxdSettings.client.clientName)" />
                     </div>
                     <div class="pv1 flex flex-wrap items-center">
-                        <label class="ma2 w4">${labels.adm.oxd_authz_redirect}</label>
+                        <label class="mr2 w4">${labels.adm.oxd_authz_redirect}</label>
                         <z:label sclass="dark-gray" value="@load(vm.oxdSettings.redirectUri)" />
                     </div>
                     <div class="pv1 flex flex-wrap items-center">
-                        <label class="ma2 w4">${labels.adm.oxd_oxdid}</label>
+                        <label class="mr2 w4">${labels.adm.oxd_oxdid}</label>
                         <z:label sclass="dark-gray" value="@load(vm.oxdSettings.client.oxdId)" />
                     </div>
                     <z:div sclass="pv1 flex flex-wrap items-center" visible="@load(vm.oxdSettings.client.clientId)">
-                        <label class="ma2 w4">${labels.adm.oxd_client_id}</label>
+                        <label class="mr2 w4">${labels.adm.oxd_client_id}</label>
                         <z:label sclass="dark-gray" value="@load(vm.oxdSettings.client.clientId)" />
                     </z:div>
                     <z:div sclass="pv1 flex flex-wrap items-center" visible="@load(not empty vm.oxdSettings.client.clientSecret)">
-                        <label class="ma2 w4">${labels.adm.oxd_client_secret}</label>
+                        <label class="mr2 w4">${labels.adm.oxd_client_secret}</label>
                         <z:label sclass="dark-gray" value="@load(vm.oxdSettings.client.clientSecret)" />
                     </z:div>
                 </div>

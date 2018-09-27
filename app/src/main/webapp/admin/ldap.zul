@@ -18,15 +18,15 @@
                 <div class="${css.panel} flex flex-column justify-center">
 
                     <div class="pb2 flex flex-wrap">
-                        <label class="ma2 w3 truncate">${labels.adm.ldap_salt}</label>
+                        <label class="mr2 w3 truncate">${labels.adm.ldap_salt}</label>
                         <z:textbox sclass="${css.textInput} w4 w5-ns" value="@bind(vm.ldapSettings.saltLocation)" />
                     </div>
                     <div class="pb2 flex flex-wrap">
-                        <label class="ma2 w3 truncate">${labels.adm.ldap_ox_ldap}</label>
+                        <label class="mr2 w3 truncate">${labels.adm.ldap_ox_ldap}</label>
                         <z:textbox sclass="${css.textInput} w4 w5-ns" value="@bind(vm.ldapSettings.oxLdapLocation)" />
                     </div>
-                    <div class="pb2 flex flex-wrap">
-                        <label class="ma2 w3" />
+                    <div class="pv2 flex flex-wrap">
+                        <label class="mr2 w3" />
                         <z:button label="${labels.general.save}" sclass="${css.primaryButton} ph4"
                                   w:onClick="alertRef = $('#feedback-ldap')" onClick="@command('save')" />
                     </div>

@@ -33,10 +33,7 @@
 
 html {
     font-family: 'Lato', sans-serif;
-    /*
-    overrides default browsers' size of 16. This will make "medium" breakpoint start at 600px and large at 1200px
-    (see tachyons responsive suffixes)
-    */
+    /* 1 rem = 20px in this style sheet. It defines the base of the rem scale used in tachyons */
     font-size: 20px;
 }
 
@@ -129,7 +126,16 @@ body {
 }
 
 a:hover {
-    text-decoration: none;
+    text-decoration: none; /* no-underline */
+}
+
+label {
+    margin-top: .5rem; /* mt2 */
+    margin-bottom: .25rem /*mb1*/
+}
+
+.lh-tight {
+    line-height: .75;
 }
 
 /* recover and override some useful ZK styles */
@@ -258,6 +264,10 @@ a:hover {
 .z-radio-content {
     padding-left: .25rem; /* pl1 */
     margin-bottom: 0;
+}
+
+.z-checkbox-content {
+    padding-left: .5rem; /* pl2 */
 }
 
 /* wicked input box */

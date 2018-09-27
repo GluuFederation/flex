@@ -40,7 +40,7 @@
                         <span class="i">${labels.adm.branding_quick_logo}</span>
                         <div class="pl4-ns pt2">
                             <z:image src="@load(vm.logo.first)" sclass="bg-light-gray ba b--black b--dashed" />
-                            <z:button class="f7 pa0 bw0 br0 blue hover-dark-blue underline-hover bg-transparent btn ml3" label="${labels.adm.branding_quick_change}"
+                            <z:button class="${css.linkButton} f7 ml3" label="${labels.adm.branding_quick_change}"
                                       upload="true,maxsize=100,multiple=false" onUpload="@command('logoUploaded', evt = event)"
                                       ca:data-original-title="${labels.adm.branding_quick_logo_hint}" ca:data-toggle="tooltip" ca:data-placement="bottom" />
                         </div>
