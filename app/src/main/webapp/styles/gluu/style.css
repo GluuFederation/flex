@@ -120,6 +120,10 @@ button:disabled {
     border-color: rgba( 0, 0, 0, .4 ); /* black-40 */
 }
 
+.lh-tight {
+    line-height: .75;
+}
+
 /* Overrides some default bootstrap stylings */
 body {
     font-family: 'Lato', sans-serif;
@@ -134,8 +138,8 @@ label {
     margin-bottom: .25rem /*mb1*/
 }
 
-.lh-tight {
-    line-height: .75;
+.btn-success:focus, .btn:focus {
+	box-shadow: none;
 }
 
 /* recover and override some useful ZK styles */
@@ -300,6 +304,7 @@ label {
     height: .8rem;
     width: 100%;
     pointer-events: none;
+    margin-top: .25rem;
 }
 
 .focused-text:valid + .focused-label,
