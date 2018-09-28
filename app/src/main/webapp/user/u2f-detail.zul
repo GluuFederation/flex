@@ -1,115 +1,121 @@
-<?init class="org.zkoss.zk.ui.util.Composition" arg0="/general.zul"?>
-<?page title="${applicationScope['appName']} - ${labels.usr.u2f_title}"?>
-<?link rel="icon" href="${sessionContext.faviconDataUri}"?>
-<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
-<?script src="/scripts/u2f-api.js"?>
-<?script src="/scripts/u2f-util.js"?>
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
 
-    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.SecurityKeyViewModel')"
-             self="@define(content)">
-        <div align="center" sclass="dpadded"><label value="${labels.usr.u2f_title}" sclass="titled" /></div>
-        <div sclass="padded"><label value="${labels.usr.u2f_text}" /></div>
+    <h:title self="@define(title)">${zkService.appName} - ${labels.usr.u2f_title}</h:title>
 
-        <window title="${labels.usr.u2f_edit}" border="normal" mode="modal" visible="@load(not empty vm.editingId)">
-            <vlayout sclass="padded">
-                <label value="${labels.general.new_nick}" />
-                <div sclass="dpadded">
-                    <textbox sclass="s12 form-control" value="@bind(vm.newDevice.nickName)" onOK="@command('update')" />
-                </div>
-                <div align="center">
-                    <hlayout spacing="20px" sclass="padded">
-                        <button label="${labels.general.update}" sclass="btn-success" onClick="@command('update')" />
-                        <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancelUpdate')" />
-                    </hlayout>
-                </div>
-            </vlayout>
-        </window>
+    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.SecurityKeyViewModel')"
+           self="@define(maincontent)">
 
-        <div sclass="padded" visible="@load(not empty vm.devices)">
-            <grid model="@load(vm.devices)">
-                <template name="model">
-                    <row>
-                        <hlayout>
-                            <vlayout hflex="1" sclass="padded">
-                                <label value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" sclass="bold"/>
-                                <hlayout>
-                                    <label value="${c:l('general.last_used')}" />
-                                    <zk choose="">
-                                        <zk when="${each.lastAccessTime ne null}">
-                                            <label value="@load(each.lastAccessTime) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))"/>
-                                        </zk>
-                                        <zk>
-                                            <label value="@load(each.creationDate) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))"/>
-                                        </zk>
-                                    </zk>
-                                </hlayout>
-                                <hlayout>
-                                    <label value="${labels.general.added_on}" />
-                                    <label value="@load(each.creationDate) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))"/>
-                                </hlayout>
-                            </vlayout>
-                            <hlayout sclass="couple_icons" spacing="10px">
-                                <image src="${sessionContext.custdir}/images/edit.png" sclass="icon_edit"
-                                       tooltip="tooltip_edit, after_pointer" onClick="@command('prepareForUpdate', device=each)"/>
-                                <image src="${sessionContext.custdir}/images/delete.png" sclass="icon_delete"
-                                       tooltip="tooltip_delete, after_pointer" onClick="@command('delete', device=each)"/>
-                            </hlayout>
-                        </hlayout>
-                    </row>
-                </template>
-            </grid>
+        <z:include src="/back-home.zul" />
+        <div class="ph4 mb2">
+            <div class="alert alert-success dn" id="feedback-key-edit" role="alert" />
         </div>
 
-        <panel title="${labels.usr.u2f_add}" collapsible="true" border="normal" sclass="padded" open="@load(vm.uiPanelOpened)">
-            <panelchildren sclass="padded">
-                <vlayout>
-                    <zk choose="">
-                        <zk when="${sessionContext.browser.mobile}">
-                            <div align="center">
-                                <label sclass="bold" value="${labels.usr.u2f_mobile_unsupported}" />
-                            </div>
-                        </zk>
-                        <zk when="${vm.u2fMayBeSupported}">
-                            <hlayout valign="middle">
-                                <label value="${labels.usr.u2f_pressready}" />
-                                <image src="${sessionContext.custdir}/images/throbber.gif" visible="@load(vm.uiAwaiting)" />
-                            </hlayout>
-                            <div align="center">
-                                <vlayout>
-                                    <button id="readyButton" w:onClick="initialize(this)" onClick="@command('triggerU2fRegisterRequest')"
-                                            label="&#160;${labels.general.ready}&#160;" sclass="btn-success" />
-                                    <zk unless="${empty vm.u2fSupportMessage}">
-                                        <n:span class="de_emphasized">${vm.u2fSupportMessage}</n:span>
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
+
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.usr.u2f_title}</h2>
+                    <p>${labels.usr.u2f_text}</p>
+                    <!--z:label visible="@load(not empty vm.phones)" sclass="dark-blue2" value="${labels.usr.you_added}" /-->
+                </div>
+
+                <!-- keys list -->
+                <z:div children="@load(vm.devices)">
+                    <zk:template name="children">
+                        <div class="${css.panel} flex justify-between">
+                            <div class="flex items-center">
+                                <img src="${zkService.contextPath}${assetsService.prefix}/images/u2fkey.png" />
+
+                                <p class="ml3 mb0">
+                                    <z:label sclass="f6 dark-blue2" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />
+                                    <br />
+                                    <span>${c:l('general.last_used')}</span>
+                                    <zk if="${each.lastAccessTime ne null}">
+                                        <z:label value="@load(each.lastAccessTime) @converter('org.gluu.casa.ui.CustomDateConverter',
+                                            format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))" />
                                     </zk>
-                                </vlayout>
-                            </div>
-                            <separator/>
-                            <vlayout visible="@load(vm.uiEnrolled)">
-                                <label value="${labels.usr.enter_nick}"/>
-                                <div sclass="dpadded">
-                                    <textbox placeholder="${labels.general.nick}" sclass="s12 form-control"
-                                             onOK="@command('add')" value="@bind(vm.newDevice.nickName)"/>
-                                </div>
-                                <div align="center">
-                                    <hlayout spacing="30px">
-                                        <button label="&#160;${labels.general.add}&#160;" sclass="btn-success" onClick="@command('add')"/>
-                                        <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')"/>
-                                    </hlayout>
-                                </div>
-                            </vlayout>
-                        </zk>
-                        <zk>
-                            <div align="center">
-                                <label sclass="bold" value="${labels.usr.u2f_unsupported_browser}" />
-                            </div>
-                        </zk>
-                    </zk>
-                </vlayout>
-            </panelchildren>
-        </panel>
+                                    <zk unless="${each.lastAccessTime ne null}">
+                                        <z:label value="@load(each.creationDate) @converter('org.gluu.casa.ui.CustomDateConverter',
+                                            format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))"/>
+                                    </zk>
 
-    </vlayout>
+                                    <br />
+                                    <span>${labels.general.added_on}</span>
+                                    <z:label value="@load(each.creationDate) @converter('org.gluu.casa.ui.CustomDateConverter',
+                                        format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
+                                </p>
+                            </div>
+                            <div class="pt2">
+                                <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert()" onClick="@command('prepareForUpdate', device=each)"
+                                          data-original-title="${labels.general.edit}" data-toggle="tooltip" data-placement="top">
+                                    <i class="fas fa-pencil-alt" />
+                                </h:button>
+                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@command('delete', device=each)"
+                                          data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
+                                    <i class="fas fa-trash-alt" />
+                                </h:button>
+                            </div>
+                        </div>
+                    </zk:template>
+                </z:div>
 
-</zk>
+                <div class="${css.panel} bg-near-white">
+                    <h2 class="f5 dark-blue2 pt1">${labels.usr.u2f_add}</h2>
+
+                    <div class="alert alert-success dn" id="feedback-key" role="alert" />
+                    <!-- this could have been better written but zk choose tag seems not to work in zhtml -->
+                    <z:label if="${sessionContext.browser.mobile}" value="${labels.usr.u2f_mobile_unsupported}" />
+                    <z:label if="${not sessionContext.browser.mobile and not vm.u2fMayBeSupported}" value="${labels.usr.u2f_unsupported_browser}" />
+                    <z:div if="${not sessionContext.browser.mobile and vm.u2fMayBeSupported}">
+                        <p class="pt2 dark-blue2">${vm.u2fSupportMessage}</p>
+                        <div class="pb1">
+                            <span class="mr2">${labels.usr.u2f_pressready}</span>
+                            <z:image src="${assetsService.prefix}/images/throbber.gif" visible="@load(vm.uiAwaiting)" />
+                        </div>
+                        <z:button id="readyButton" label="${labels.general.ready}" sclass="${css.primaryButton}"
+                                  w:onClick="alertRef = $('#feedback-key'); initialize(this)" onClick="@command('triggerU2fRegisterRequest')" />
+                    </z:div>
+
+                    <z:div sclass="flex flex-wrap pt2" visible="@load(vm.uiEnrolled)">
+                        <div class="relative w5 mt3 pr3">
+                            <z:textbox sclass="focused-text w-100 pb1" onOK="@command('add')" value="@bind(vm.newDevice.nickName)" ca:required="required" />
+                            <label class="focused-label">${labels.usr.enter_nick}</label>
+                        </div>
+
+                        <div class="pt2">
+                            <z:button label="${labels.general.add}" sclass="${css.primaryButton} mr2" onClick="@command('add')"/>
+                            <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton}" onClick="@command('cancel')"/>
+                        </div>
+                    </z:div>
+                </div>
+
+            </section>
+        </div>
+
+        <z:window title="${labels.usr.u2f_edit}" border="normal" mode="modal" visible="@load(not empty vm.editingId)"
+                  closable="true" onClose="@command('cancelUpdate', event=event)" sclass="${css.modalWindow}">
+
+            <div sclass="pt1 mb3">
+                <span class="db f7-cust gray">${labels.general.new_nick}</span>
+                <div class="pa1">
+                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.newDevice.nickName)" onOK="@command('update')"/>
+                </div>
+            </div>
+            <div class="w-100 flex justify-center">
+                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
+                          w:onClick="prepareAlert()" onClick="@command('update')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancelUpdate', event=event)" />
+            </div>
+
+        </z:window>
+
+    </z:div>
+
+    <z:div self="@define(extra)">
+        <script src="${zkService.contextPath}/scripts/u2f-api.js" />
+        <script src="${zkService.contextPath}/scripts/gluu/u2f-util.js" />
+    </z:div>
+
+</zk:zk>

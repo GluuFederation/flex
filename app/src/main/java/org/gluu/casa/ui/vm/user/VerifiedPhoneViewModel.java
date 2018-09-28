@@ -17,6 +17,7 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
@@ -163,7 +164,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     public void cancelUpdate(@BindingParam("event") Event event){
         newPhone.setNickName(null);
         editingNumber = null;
-        if (event != null) {
+        if (event != null && event.getName().equals(Events.ON_CLOSE)) {
             event.stopPropagation();
         }
     }

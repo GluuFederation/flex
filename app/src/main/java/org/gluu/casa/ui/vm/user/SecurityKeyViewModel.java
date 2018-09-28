@@ -22,6 +22,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -41,7 +42,6 @@ import java.util.List;
 public class SecurityKeyViewModel extends UserViewModel {
 
     private static final int REGISTRATION_TIMEOUT = 8000;
-    private static final int WAIT_ENROLL_TIME = 1000;
 
     private Logger logger = LogManager.getLogger(getClass());
 
@@ -123,7 +123,7 @@ public class SecurityKeyViewModel extends UserViewModel {
             String jsonRequest = u2fService.generateJsonRegisterMessage(user.getUserName(), userService.generateRandEnrollmentCode(user.getId()));
 
             //Notify browser to exec proper function
-            Clients.showNotification(Labels.getLabel("usr.u2f_touch"), Clients.NOTIFICATION_TYPE_INFO, null, "middle_center", WAIT_ENROLL_TIME);
+            UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_INFO, Labels.getLabel("usr.u2f_touch"));
             Clients.response(new AuInvoke("triggerU2fRegistration", new JavaScriptValue(jsonRequest), REGISTRATION_TIMEOUT));
         } catch (Exception e) {
             UIUtils.showMessageUI(false);
@@ -214,9 +214,12 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     @NotifyChange({"editingId", "newDevice"})
     @Command
-    public void cancelUpdate() {
+    public void cancelUpdate(@BindingParam("event") Event event) {
         newDevice.setNickName(null);
         editingId = null;
+        if (event != null && event.getName().equals(Events.ON_CLOSE)) {
+            event.stopPropagation();
+        }
     }
 
     @NotifyChange({"devices", "editingId", "newDevice"})
@@ -228,7 +231,7 @@ public class SecurityKeyViewModel extends UserViewModel {
             int i = Utils.firstTrue(devices, dev -> dev.getId().equals(editingId));
             SecurityKey dev = devices.get(i);
             dev.setNickName(nick);
-            cancelUpdate();
+            cancelUpdate(null);
 
             try {
                 u2fService.updateDevice(dev);
@@ -284,7 +287,11 @@ public class SecurityKeyViewModel extends UserViewModel {
 
             if (u2fMayBeSupported) {
                 if (name.contains("firefox")) {
-                    u2fSupportMessage = Labels.getLabel(browserVer >= 57 ? "usr.u2f_enabled_u2f_ff" : "usr.u2f_unsupported_ff");
+                    if (browserVer >= 57) {
+                        u2fSupportMessage = Labels.getLabel("usr.u2f_enabled_u2f_ff");
+                    } else {
+                        u2fSupportMessage = Labels.getLabel("usr.u2f_unsupported_ff", new Integer[]{ browserVer });
+                    }
                 } else if (name.contains("safari")){
                     u2fSupportMessage = Labels.getLabel("usr.u2f_unsupported_safari");
                 }

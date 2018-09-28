@@ -31,3 +31,7 @@ function startRegistration() {
 function sendBack(obj){
     zAu.send(new zk.Event(widget, "onData", obj, {toServer:true}));
 }
+
+function prepareAlert() {
+    alertRef = $('#feedback-key-edit');
+}

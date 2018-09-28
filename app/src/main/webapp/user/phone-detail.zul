@@ -75,12 +75,12 @@
                         </div>
 
                         <div class="pb3 flex flex-wrap">
-                            <div class="relative w4 mv3 pr3">
-                                <z:textbox id="sentCode" class="focused-text w-100 pb1" value="@bind(vm.code)" ca:required="required"
+                            <div class="relative w4 mt3 pr3">
+                                <z:textbox id="sentCode" sclass="focused-text w-100 pb1" value="@bind(vm.code)" ca:required="required"
                                          onOK="@command('checkCode')"/>
-                                <label class="focused-label" for="code">${labels.usr.mobile_code}</label>
+                                <label class="focused-label">${labels.usr.mobile_code}</label>
                             </div>
-                            <div class="pt1">
+                            <div class="pt2">
                                 <z:button sclass="${css.primaryButton} mr2" label="${labels.general.validate}" onClick="@command('checkCode')" />
                                 <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}"
                                           w:onClick="resetPhoneValue()" onClick="@command('cancel')" />
@@ -94,11 +94,14 @@
 
                     </z:div>
 
-                    <z:div sclass="pv3" visible="@load(vm.uiCodesMatch)">
-                        <div>${labels.usr.enter_nick}</div>
-                        <div class="flex flex-wrap pt2">
-                            <z:textbox sclass="focused-text mb1" value="@bind(vm.newPhone.nickName)" onOK="@command('add')"/>
-                            <z:button sclass="${css.primaryButton} mh3" label="${labels.general.add}" onClick="@command('add')" />
+
+                    <z:div sclass="flex flex-wrap pt2" visible="@load(vm.uiCodesMatch)">
+                        <div class="relative w5 mt3 pr3">
+                            <z:textbox sclass="focused-text w-100 pb1" value="@bind(vm.newPhone.nickName)" onOK="@command('add')" ca:required="required" />
+                            <label class="focused-label">${labels.usr.enter_nick}</label>
+                        </div>
+                        <div class="pt2">
+                            <z:button sclass="${css.primaryButton} mr3" label="${labels.general.add}" onClick="@command('add')" />
                             <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}"
                                       w:onClick="resetPhoneValue()" onClick="@command('cancel')" />
                         </div>
