@@ -37,6 +37,9 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class OTPService extends BaseService {
 
+    private static final String TOTP_PREFIX="totp:";
+    private static final String HOTP_PREFIX="hotp:";
+
     @Inject
     private Logger logger;
 
@@ -92,7 +95,7 @@ public class OTPService extends BaseService {
             json = Utils.isEmpty(json) ? "[]" : mapper.readTree(json).get("devices").toString();
 
             List<OTPDevice> devs = mapper.readValue(json, new TypeReference<List<OTPDevice>>() { });
-            devices = person.getExternalUids().stream().filter(uid -> uid.startsWith("totp:") || uid.startsWith("hotp:"))
+            devices = person.getExternalUids().stream().filter(uid -> uid.startsWith(TOTP_PREFIX) || uid.startsWith(HOTP_PREFIX))
                     .map(uid -> getExtraOTPInfo(uid, devs)).sorted().collect(Collectors.toList());
             logger.trace("getDevices. User '{}' has {}", userId, devices.stream().map(OTPDevice::getId).collect(Collectors.toList()));
         } catch (Exception e) {
@@ -151,9 +154,12 @@ public class OTPService extends BaseService {
 
         Optional<OTPDevice> extraInfoOTP = list.stream().filter(dev -> dev.getId() == hash).findFirst();
         if (extraInfoOTP.isPresent()) {
-            device.setAddedOn(extraInfoOTP.get().getAddedOn());
-            device.setNickName(extraInfoOTP.get().getNickName());
+            OTPDevice extraInfo = extraInfoOTP.get();
+            device.setAddedOn(extraInfo.getAddedOn());
+            device.setNickName(extraInfo.getNickName());
+            device.setSoft(extraInfo.getSoft());
         }
+        device.setTimeBased(uid.startsWith(TOTP_PREFIX));
         return device;
 
     }

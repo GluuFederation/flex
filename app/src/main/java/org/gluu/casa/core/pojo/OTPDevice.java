@@ -21,7 +21,7 @@ public class OTPDevice extends RegisteredCredential implements Comparable<OTPDev
     private int id;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    //Primite boolean not used to cope with cases where soft is not present (older cred-manager installations)
+    //Primite boolean not used so that we can cope with cases where soft is missing (cred-manager installations)
     private Boolean soft;
 
     @JsonIgnore

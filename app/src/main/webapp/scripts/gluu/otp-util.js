@@ -6,7 +6,7 @@ var timerID;
 
 //This is called when the ready button is pushed
 function initialize(id) {
-    throbber = zk.Widget.$('$' + id);
+    throbber = zk.$('$' + id);
     throbber.show();
 }
 
@@ -34,7 +34,7 @@ function callback(authResult) {
 }
 
 function tellServer(msg) {
-    var widget = zk.Widget.$('$readyButton');
+    var widget = zk.$('$readyButton');
     zAu.send(new zk.Event(widget, "onData", msg, {toServer:true}));
 }
 
@@ -48,4 +48,8 @@ function clean() {
 function stopPolling() {
     clearInterval(timerID);
     clean();
+}
+
+function prepareAlert() {
+    alertRef = $('#feedback-device-edit');
 }

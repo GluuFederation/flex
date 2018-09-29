@@ -61,17 +61,12 @@ public class OTPViewModel extends UserViewModel {
     private String tokenType;
     private OTPType hardTokenType;
 
-    private boolean uiPanelOpened;
     private boolean uiQRShown;
     private boolean uiCorrectCode;
     private boolean uiTokenPressing;
 
     public boolean isUiCorrectCode() {
         return uiCorrectCode;
-    }
-
-    public boolean isUiPanelOpened() {
-        return uiPanelOpened;
     }
 
     public boolean isUiQRShown() {
@@ -140,10 +135,6 @@ public class OTPViewModel extends UserViewModel {
         this.code = code;
     }
 
-    public void setUiPanelOpened(boolean uiPanelOpened) {
-        this.uiPanelOpened = uiPanelOpened;
-    }
-
     private OTPType getApplicableAlgorithmType() {
         //Assume TOTP if no selections have been made
         return tokenType != null && tokenType.equals("HARD") && hardTokenType != null
@@ -153,14 +144,14 @@ public class OTPViewModel extends UserViewModel {
     @Init(superclass = true)
     public void childInit() throws Exception {
         newDevice = new OTPDevice();
-        uiPanelOpened = true;
         devices = otpService.getDevices(user.getId());
         otpConfig = otpService.getConf();
     }
 
-    @NotifyChange({"tokenType"})
+    @NotifyChange("*")
     @Command
     public void chooseType(@BindingParam("type") String type, @BindingParam("component") HtmlBasedComponent comp) {
+        cancel();
         tokenType = type;
         if (comp != null) {
             comp.focus();
@@ -204,6 +195,7 @@ public class OTPViewModel extends UserViewModel {
     @NotifyChange("*")
     @Command
     public void cancel() {
+
         if (uiQRShown) {
             Clients.response(new AuInvoke("clean"));
             uiQRShown = false;
@@ -211,8 +203,11 @@ public class OTPViewModel extends UserViewModel {
         uiCorrectCode = false;
         uiTokenPressing = false;
         code = null;
-        newDevice = new OTPDevice();
         tokenType = null;
+        secretKeyString = null;
+        hardTokenType = null;
+        newDevice = new OTPDevice();
+
     }
 
     @NotifyChange({"hardTokenType"})
@@ -243,7 +238,7 @@ public class OTPViewModel extends UserViewModel {
 
     @NotifyChange("uiCorrectCode")
     @Command
-    public void validateCode(@BindingParam("ref") Component ref) {
+    public void validateCode() {
 
         String uid = null;
         if (code != null) {
@@ -266,8 +261,7 @@ public class OTPViewModel extends UserViewModel {
             }
         }
         if (uid == null) {
-            uid = Labels.getLabel("usr.code_wrong");
-            Clients.showNotification(uid, Clients.NOTIFICATION_TYPE_WARNING, ref, "before_center", UIUtils.FEEDBACK_DELAY_ERR);
+            UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_WARNING, Labels.getLabel("usr.code_wrong"));
         }
 
     }
@@ -280,7 +274,6 @@ public class OTPViewModel extends UserViewModel {
         if (Utils.isNotEmpty(newDevice.getNickName())) {
             if (enroll()) {
                 UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
-                uiPanelOpened = false;
                 cancel();
             } else {
                 UIUtils.showMessageUI(false, Labels.getLabel("usr.enroll.error"));
@@ -334,8 +327,8 @@ public class OTPViewModel extends UserViewModel {
         try {
             logger.trace("Updating/adding device {} for user {}", newDevice.getNickName(), user.getId());
             newDevice.setAddedOn(new Date().getTime());
-            newDevice.setTimeBased(OTPType.TOTP.equals(hardTokenType));
             newDevice.setSoft(tokenType.equals("SOFT"));
+            newDevice.setTimeBased(newDevice.getSoft() || OTPType.TOTP.equals(hardTokenType));
             otpService.updateDevicesAdd(user.getId(), devices, newDevice);
             success = true;
         } catch (Exception e) {

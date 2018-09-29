@@ -1,185 +1,173 @@
-<?init class="org.zkoss.zk.ui.util.Composition" arg0="/general.zul"?>
-<?page title="${applicationScope['appName']} - ${labels.usr.otp_title}"?>
-<?link rel="icon" href="${sessionContext.faviconDataUri}"?>
-<?link rel="stylesheet" type="text/css" href="${sessionContext.cssPath}"?>
-<?link rel="stylesheet" type="text/css" href="${sessionContext.custdir}/styles/jquery-ui-1.12.1.min.css"?>
-<?script src="/scripts/jquery.qrcode-0.12.0.min.js"?>
-<?script src="/scripts/jquery-ui-1.12.1.min.js"?>
-<?script src="/scripts/gluu-auth.js"?>
-<?script src="/scripts/otp-util.js"?>
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul" xmlns:w="client" xmlns:n="native"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<?link rel="stylesheet" type="text/css" href="/styles/jquery-ui-1.12.1.min.css"?>
+<?script src="/scripts/gluu/gluu-auth.js"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
 
-    <script>
-        function doFocus(name){
-        zk.Widget.$("$" + name).focus(0);
-        }
-    </script>
-    <style>
-        h3 {
-            margin-top:15px;
-        }
-    </style>
+    <h:title self="@define(title)">${zkService.appName} - ${labels.usr.otp_title}</h:title>
 
-    <vlayout if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.OTPViewModel')"
-             self="@define(content)">
+    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.OTPViewModel')"
+           self="@define(maincontent)">
 
-        <div align="center" sclass="dpadded"><label value="${labels.usr.otp_title}" sclass="titled"/></div>
-        <div sclass="padded"><label value="${labels.usr.otp_text}"/></div>
-
-        <window title="${labels.usr.gauth_edit}" border="normal" mode="modal" visible="@load(vm.editingId)">
-            <vlayout sclass="padded">
-                <label value="${labels.general.new_nick}" />
-                <div sclass="dpadded">
-                    <textbox sclass="s12 form-control" value="@bind(vm.newDevice.nickName)" onOK="@command('update')"/>
-                </div>
-                <div align="center">
-                    <hlayout spacing="20px" sclass="padded">
-                        <button label="${labels.general.update}" sclass="btn-success" onClick="@command('update')" />
-                        <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancelUpdate')" />
-                    </hlayout>
-                </div>
-            </vlayout>
-        </window>
-
-        <div sclass="padded" visible="@load(not empty vm.devices)">
-            <grid model="@load(vm.devices)">
-                <template name="model">
-                    <row>
-                        <hlayout>
-                            <vlayout hflex="1" sclass="padded">
-                                <label value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" sclass="bold"/>
-                                <label value="@load(c:cat4(c:l('usr.otp_type'), ' ', each.soft eq null ? '' : c:cat(c:l(each.soft ? 'usr.otp_soft' : 'usr.otp_hard'), ', ')
-                                        , c:l(each.timeBased ? 'usr.otp_type_totp' : 'usr.otp_type_hotp')))" sclass="de_emphasized" />
-                                <hlayout>
-                                    <label value="${labels.general.added_on}" sclass="de_emphasized"/>
-                                    <label value="@load(each.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))"/>
-                                </hlayout>
-                            </vlayout>
-                            <hlayout sclass="couple_icons" spacing="10px">
-                                <image src="${sessionContext.custdir}/images/edit.png" sclass="icon_edit"
-                                       tooltip="tooltip_edit, after_pointer" onClick="@command('prepareForUpdate', device=each)"/>
-                                <image src="${sessionContext.custdir}/images/delete.png" sclass="icon_delete"
-                                       tooltip="tooltip_delete, after_pointer" onClick="@command('delete', device=each)"/>
-                            </hlayout>
-                        </hlayout>
-                    </row>
-                </template>
-            </grid>
+        <z:include src="/back-home.zul" />
+        <div class="ph4 mb2">
+            <div class="alert alert-success dn" id="feedback-device-edit" role="alert" />
         </div>
 
-        <panel title="${labels.usr.otp_add}" collapsible="true" border="normal" sclass="padded" open="@bind(vm.uiPanelOpened)">
-            <panelchildren sclass="padded">
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
 
-                <div align="center">
-                    <label value="${labels.usr.otp_choose}" sclass="bold de_emphasized" />
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.usr.otp_title}</h2>
+                    <p>${labels.usr.otp_text}</p>
+                    <!--z:label visible="@load(not empty vm.phones)" sclass="dark-blue2" value="${labels.usr.you_added}" /-->
                 </div>
 
-                <div sclass="row padded">
-                    <div sclass="col-sm-6 col-md-4 col-md-offset-2">
-                        <a disabled="@load(vm.uiQRShown or vm.tokenType eq 'SOFT')" style="text-decoration:none" onClick="@command('chooseType', type='HARD', component=tokenKey)"
-                           sclass="@load(c:cat('thumbnail', vm.uiQRShown or vm.tokenType eq 'SOFT' ? ' unactivated' : ''))">
-                            <vlayout sclass="caption">
-                                <n:h3>${labels.usr.otp_hard}</n:h3>
-                                <div visible="@load(empty vm.tokenType)">
-                                    <div align="center" sclass="dpadded">
-                                        <image src="${sessionContext.custdir}/images/hard_otp_token_keyfob.png" sclass="dpadded" />
-                                        <image src="${sessionContext.custdir}/images/hard_otp_token_card.png" />
-                                    </div>
-                                    <label value="${labels.usr.otp_hard_text}" sclass="de_emphasized" />
-                                </div>
-                            </vlayout>
-                        </a>
-                    </div>
-
-                    <div sclass="col-sm-6 col-md-4">
-                        <a disabled="@load(vm.uiQRShown or vm.tokenType eq 'HARD')" style="text-decoration:none" onClick="@command('chooseType', type='SOFT')"
-                            sclass="@load(c:cat('thumbnail', vm.uiQRShown or vm.tokenType eq 'HARD' ? ' unactivated' : ''))">
-                            <vlayout sclass="caption">
-                                <n:h3>${labels.usr.otp_soft}</n:h3>
-                                <div visible="@load(empty vm.tokenType)">
-                                    <div align="center" sclass="dpadded">
-                                        <image src="${sessionContext.custdir}/images/soft_otp_token.jpg" />
-                                    </div>
-                                    <label value="${labels.usr.otp_soft_text}" sclass="de_emphasized" />
-                                </div>
-                            </vlayout>
-                        </a>
-                    </div>
-                </div>
-
-                <div visible="@load(vm.tokenType eq 'SOFT')">
-                    <hlayout valign="middle">
-                        <label value="${labels.usr.otp_gauth_install_ready}"/>
-                        <image id="throbber" src="${sessionScope.custdir}/images/throbber.gif" visible="false" />
-                    </hlayout>
-                    <div align="center">
-                        <hlayout sclass="padded" spacing="25px">
-                            <button id="readyButton" label="${labels.general.ready}" sclass="btn-success"
-                                    w:onClick="initialize('throbber')" onClick="@command('showQR')" disabled="@load(vm.uiQRShown)"/>
-                            <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')" />
-                        </hlayout>
-                        <n:span class="de_emphasized">${labels.usr.otp_gauth_download}</n:span>
-                    </div>
-
-                    <div align="center" visible="@load(vm.uiQRShown)">
-                        <n:hr class="rule-sm" />
-                        <label value="${labels.usr.otp_app_scan}"/>
-
-                        <n:div> <!-- these 2 must be grouped inside a div -->
-                            <n:div id="container"></n:div>
-                            <n:div id="progressbar" style="width:40%"></n:div>
-                        </n:div>
-                    </div>
-                </div>
-
-                <div visible="@load(vm.tokenType eq 'HARD' and not vm.uiCorrectCode)">
-                    <div sclass="dpadded">
-                        <label value="${labels.usr.otp_enter_key}"/>
-                    </div>
-                    <div sclass="row dpadded">
-                        <div sclass="col-sm-offset-1 col-sm-8">
-                            <textbox sclass="form-control" value="@bind(vm.secretKeyString)" id="tokenKey" />
+                <!-- tokens list -->
+                <z:div children="@load(vm.devices)">
+                    <zk:template name="children">
+                        <div class="${css.panel} flex justify-between">
+                            <div class="flex items-start">
+                                <!--h:i class="fas fa-mobile-alt f1" visible="@load(each.soft)" />
+                                <z:image src="${assetsService.prefix}/images/card-otp.jpg" visible="load(each.soft ne null and not each.soft)" /-->
+                                <p class="ml3 mb0">
+                                    <z:label sclass="f5 dark-blue2" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />
+                                    <br />
+                                    <label class="w4 ma0 truncate nb1">${labels.usr.otp_type}</label>
+                                    <z:label value="@load(c:cat(each.soft eq null ? '' : c:cat(c:l(each.soft ? 'usr.otp_soft' : 'usr.otp_hard'), ' - ')
+                                                , c:l(each.timeBased ? 'usr.otp_type_totp' : 'usr.otp_type_hotp')))" />
+                                    <br />
+                                    <label class="w4 ma0 truncate nb1">${labels.general.added_on}</label>
+                                    <z:label value="@load(each.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a',
+                                        offset = sessionContext.zoneOffset))"/>
+                                </p>
+                            </div>
+                            <div class="pt2">
+                                <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert()" onClick="@command('prepareForUpdate', device=each)"
+                                          data-original-title="${labels.general.edit}" data-toggle="tooltip" data-placement="top">
+                                    <i class="fas fa-pencil-alt" />
+                                </h:button>
+                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@command('delete', device=each)"
+                                          data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
+                                    <i class="fas fa-trash-alt" />
+                                </h:button>
+                            </div>
                         </div>
-                    </div>
-                    <label value="${labels.usr.otp_hotp_totp}" />
-                    <radiogroup id="groupie" />
-                    <vlayout sclass="padded">
-                        <radio label="${labels.usr.otp_totp}" onCheck="@command('changeHardType', time=true)" radiogroup="groupie" />
-                        <radio label="${labels.usr.otp_hotp}" onCheck="@command('changeHardType', time=false)" radiogroup="groupie" />
-                    </vlayout>
-                    <div align="center">
-                        <hlayout sclass="padded" spacing="25px">
-                            <button label="${labels.general.continue_}" sclass="btn-success" onClick="@command('changeTokenPressing', component=code)"
-                                    disabled="@load(vm.hardTokenType eq null or empty vm.secretKeyString)"/>
-                            <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')" />
-                        </hlayout>
-                    </div>
+                    </zk:template>
+                </z:div>
+
+                <div class="${css.panel} bg-near-white">
+                    <h2 class="f5 dark-blue2 pt1">${labels.usr.otp_add}</h2>
+
+                    <z:radiogroup id="style" />
+                    <p class="pt2 mb2">${labels.usr.otp_choose}</p>
+
+                    <z:div sclass="@load(empty vm.tokenType ? '' : 'flex flex-wrap')">
+                        <div class="mb2">
+                            <z:radio label="${labels.usr.otp_soft}" radiogroup="style" sclass="db dark-blue2 mr4" checked="@load(vm.tokenType eq 'SOFT')"
+                                     w:onClick="alertRef = $('#feedback-otp')" onCheck="@command('chooseType', type='SOFT')"/>
+                            <z:div class="f7 pl3-ns gray" visible="@load(empty vm.tokenType)">${labels.usr.otp_soft_text}</z:div>
+                        </div>
+                        <div class="mb2">
+                            <z:radio label="${labels.usr.otp_hard}" radiogroup="style" sclass="db dark-blue2" checked="@load(vm.tokenType eq 'HARD')"
+                                     w:onClick="alertRef = $('#feedback-otp')" onCheck="@command('chooseType', type='HARD', component=tokenKey)" />
+                            <z:div class="f7 pl3-ns gray" visible="@load(empty vm.tokenType)">${labels.usr.otp_hard_text}</z:div>
+                        </div>
+                    </z:div>
+
+                    <z:div sclass="pl3-ns" visible="@load(vm.tokenType eq 'SOFT')">
+                        <p>${labels.usr.otp_gauth_install_ready}</p>
+                        <div class="mb2">
+                            <z:button id="readyButton" label="${labels.general.ready}" sclass="${css.primaryButton} mr2"
+                                    w:onClick="initialize('throbber')" onClick="@command('showQR')" disabled="@load(vm.uiQRShown)"/>
+                            <z:image id="throbber" src="${assetsService.prefix}/images/throbber.gif" visible="false" />
+                        </div>
+                        <p class="dark-blue2">${labels.usr.otp_gauth_download}</p>
+
+                        <z:div sclass="ph3-ns flex flex-column items-center" visible="@load(vm.uiQRShown)">
+                            <div>
+                                <span class="mr2">${labels.usr.otp_app_scan}</span>
+                                <z:button label="${labels.general.cancel}" sclass="${css.secondaryButton} lh-tight" onClick="@command('cancel')" />
+                            </div>
+
+                            <div align="center" class="mb3"> <!-- these 2 must be grouped inside a div -->
+                                <div id="container"></div>
+                                <div align="center" id="progressbar" class="${css.progressBar}"></div>
+                            </div>
+                        </z:div>
+                    </z:div>
+
+                    <z:div sclass="pl3-ns" visible="@load(vm.tokenType eq 'HARD' and not vm.uiCorrectCode)">
+                        <p class="mb2">${labels.usr.otp_enter_key}</p>
+                        <div class="mb3 measure">
+                            <z:textbox sclass="${css.textInput} pv2 w-100" value="@bind(vm.secretKeyString)" id="tokenKey" />
+                        </div>
+                        <div>
+                            <z:radiogroup id="groupie" />
+                            <p>${labels.usr.otp_hotp_totp}</p>
+                            <div class="flex flex-wrap justify-center mb3">
+                                <z:radio label="${labels.usr.otp_totp}" onCheck="@command('changeHardType', time=true)" radiogroup="groupie" sclass="mr3" />
+                                <z:radio label="${labels.usr.otp_hotp}" onCheck="@command('changeHardType', time=false)" radiogroup="groupie" sclass="ml2" />
+                            </div>
+                            <div class="flex flex-wrap justify-center mb3">
+                                <z:button label="${labels.general.continue_}" sclass="${css.primaryButton} mr3" onClick="@command('changeTokenPressing', component=code)"
+                                          disabled="@load(vm.hardTokenType eq null or empty vm.secretKeyString)"/>
+                                <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton}" onClick="@command('cancel')" />
+                            </div>
+                        </div>
+                    </z:div>
+
+                    <z:div sclass="pl3-ns" visible="@load(vm.uiQRShown or vm.uiTokenPressing)">
+                        <z:label class="mb2 db" value="@load(c:l(vm.tokenType eq 'HARD' ? 'usr.otp_enter_code_hard' : 'usr.otp_enter_code_soft'))" />
+                        <div class="flex flex-wrap items-center">
+                            <z:textbox placeholder="@load(c:l2('usr.otp_enter_code_short',c:split(c:string(vm.digitLength),',')))"
+                                       sclass="${css.textInput} w4 mr2" value="@bind(vm.code)" id="code" onOK="@command('validateCode')" />
+                            <z:button label="${labels.general.validate}" sclass="${css.primaryButton} mr2" onClick="@command('validateCode')" />
+                            <h:i class="fas fa-check f3" visible="@load(vm.uiCorrectCode)"/>
+                        </div>
+                    </z:div>
+
+                    <div class="alert alert-success dn" id="feedback-otp" role="alert" />
+
+                    <z:div sclass="pl3-ns pt2 flex flex-wrap" visible="@load(vm.uiCorrectCode)">
+                        <div class="relative w5 mt3 pr3">
+                            <z:textbox sclass="focused-text w-100 pb1" onOK="@command('add')" value="@bind(vm.newDevice.nickName)" ca:required="required" />
+                            <label class="focused-label">${labels.usr.enter_nick}</label>
+                        </div>
+
+                        <div class="pt2">
+                            <z:button label="${labels.general.add}" sclass="${css.primaryButton} mr2" onClick="@command('add')"/>
+                            <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton}" onClick="@command('cancel')"/>
+                        </div>
+                    </z:div>
                 </div>
 
-                <vlayout sclass="padded" visible="@load(vm.uiQRShown or vm.uiTokenPressing)">
-                    <label value="@load(c:l(vm.tokenType eq 'HARD' ? 'usr.otp_enter_code_hard' : 'usr.otp_enter_code_soft'))"/>
-                    <hlayout spacing="10px" valign="middle">
-                        <textbox placeholder="@load(c:l2('usr.otp_enter_code_short',c:split(c:string(vm.digitLength),',')))"
-                                 sclass="s6 form-control" value="@bind(vm.code)" id="code"/>
-                        <button label="${labels.general.validate}" sclass="btn-success" onClick="@command('validateCode', ref=code)" />
-                        <image src="${sessionContext.custdir}/images/tick.png" width="32px" height="32px" visible="@load(vm.uiCorrectCode)"/>
-                    </hlayout>
-                </vlayout>
+            </section>
+        </div>
 
-                <vlayout sclass="padded" visible="@load(vm.uiCorrectCode)">
-                    <label value="${labels.usr.enter_nick}"/>
-                    <textbox placeholder="${labels.general.nick}" sclass="s12 form-control" value="@bind(vm.newDevice.nickName)"/>
-                    <div align="center">
-                        <hlayout spacing="30px" valign="middle" sclass="padded">
-                            <button label="&#160;${labels.general.add}&#160;" sclass="btn-success" onClick="@command('add')"/>
-                            <button label="${labels.general.cancel}" sclass="btn-success" onClick="@command('cancel')"/>
-                        </hlayout>
-                    </div>
-                </vlayout>
-            </panelchildren>
-        </panel>
+        <z:window title="${labels.usr.gauth_edit}" border="normal" mode="modal" visible="@load(vm.editingId)"
+                  closable="true" onClose="@command('cancelUpdate', event=event)" sclass="${css.modalWindow}">
 
-    </vlayout>
+            <div sclass="pt1 mb3">
+                <span class="db f7-cust gray">${labels.general.new_nick}</span>
+                <div class="pa1">
+                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.newDevice.nickName)" onOK="@command('update')"/>
+                </div>
+            </div>
+            <div class="w-100 flex justify-center">
+                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
+                          w:onClick="prepareAlert()" onClick="@command('update')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancelUpdate', event=event)" />
+            </div>
 
-</zk>
+        </z:window>
+
+    </z:div>
+
+    <z:div self="@define(extra)">
+        <script src="${zkService.contextPath}/scripts/jquery.qrcode-0.12.0.min.js" />
+        <script src="${zkService.contextPath}/scripts/jquery-ui-1.12.1.min.js" />
+        <script src="${zkService.contextPath}/scripts/gluu/otp-util.js" />
+    </z:div>
+
+</zk:zk>
