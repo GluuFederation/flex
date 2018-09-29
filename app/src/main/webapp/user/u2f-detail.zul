@@ -25,13 +25,13 @@
                 <z:div children="@load(vm.devices)">
                     <zk:template name="children">
                         <div class="${css.panel} flex justify-between">
-                            <div class="flex items-center">
+                            <div class="flex items-start">
                                 <img src="${zkService.contextPath}${assetsService.prefix}/images/u2fkey.png" />
 
                                 <p class="ml3 mb0">
-                                    <z:label sclass="f6 dark-blue2" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />
+                                    <z:label sclass="f5 dark-blue2" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />
                                     <br />
-                                    <span>${c:l('general.last_used')}</span>
+                                    <label class="w4 ma0 truncate nb1">${labels.general.last_used}</label>
                                     <zk if="${each.lastAccessTime ne null}">
                                         <z:label value="@load(each.lastAccessTime) @converter('org.gluu.casa.ui.CustomDateConverter',
                                             format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))" />
@@ -42,12 +42,12 @@
                                     </zk>
 
                                     <br />
-                                    <span>${labels.general.added_on}</span>
+                                    <label class="w4 ma0 truncate nb1">${labels.general.added_on}</label>
                                     <z:label value="@load(each.creationDate) @converter('org.gluu.casa.ui.CustomDateConverter',
                                         format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
                                 </p>
                             </div>
-                            <div class="pt2">
+                            <div class="pl2 pt2">
                                 <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert()" onClick="@command('prepareForUpdate', device=each)"
                                           data-original-title="${labels.general.edit}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-pencil-alt" />

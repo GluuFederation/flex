@@ -54,7 +54,6 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     private boolean uiAwaiting;
     private boolean uiEnrolled;
-    private boolean uiPanelOpened;
     private String editingId;
 
     private String u2fSupportMessage;
@@ -70,10 +69,6 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     public String getEditingId() {
         return editingId;
-    }
-
-    public boolean isUiPanelOpened() {
-        return uiPanelOpened;
     }
 
     public String getU2fSupportMessage() {
@@ -104,7 +99,6 @@ public class SecurityKeyViewModel extends UserViewModel {
     public void childInit() throws Exception {
         mapper = new ObjectMapper();
         newDevice = new SecurityKey();
-        uiPanelOpened = true;
         devices = u2fService.getDevices(user.getId(), true);
         checkU2fSupport();
     }
@@ -161,7 +155,7 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     }
 
-    @NotifyChange({"uiPanelOpened", "uiEnrolled", "newDevice", "devices"})
+    @NotifyChange({"uiEnrolled", "newDevice", "devices"})
     @Command
     public void add() {
 
@@ -174,7 +168,6 @@ public class SecurityKeyViewModel extends UserViewModel {
                 UIUtils.showMessageUI(false, Labels.getLabel("usr.error_updating"));
                 logger.error(e.getMessage(), e);
             }
-            uiPanelOpened = false;
             resetAddSettings();
         }
 

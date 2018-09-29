@@ -52,13 +52,8 @@ public class SuperGluuViewModel extends UserViewModel {
     private String editingId;
     private List<SuperGluuDevice> devices;
 
-    private boolean uiPanelOpened;
     private boolean uiQRShown;
     private boolean uiEnrolled;
-
-    public boolean isUiPanelOpened() {
-        return uiPanelOpened;
-    }
 
     public boolean isUiQRShown() {
         return uiQRShown;
@@ -74,10 +69,6 @@ public class SuperGluuViewModel extends UserViewModel {
 
     public SuperGluuDevice getNewDevice() {
         return newDevice;
-    }
-
-    public void setUiPanelOpened(boolean uiPanelOpened) {
-        this.uiPanelOpened = uiPanelOpened;
     }
 
     public void setNewDevice(SuperGluuDevice newDevice) {
@@ -98,7 +89,6 @@ public class SuperGluuViewModel extends UserViewModel {
         sgConfig = sgService.getConf();
 
         newDevice = new SuperGluuDevice();
-        uiPanelOpened = true;
     }
 
     @Command
@@ -180,7 +170,7 @@ public class SuperGluuViewModel extends UserViewModel {
     }
 
     @Command
-    @NotifyChange({"uiQRShown", "uiPanelOpened", "uiEnrolled", "newDevice", "devices"})
+    @NotifyChange({"uiQRShown", "uiEnrolled", "newDevice", "devices"})
     public void add() {
 
         if (Utils.isNotEmpty(newDevice.getNickName())) {
@@ -192,7 +182,6 @@ public class SuperGluuViewModel extends UserViewModel {
                 UIUtils.showMessageUI(false, Labels.getLabel("usr.error_updating"));
                 logger.error(e.getMessage(), e);
             }
-            uiPanelOpened = false;
             resetAddSettings();
         }
 

@@ -124,6 +124,23 @@ button:disabled {
     line-height: .75;
 }
 
+.unactivated{
+    opacity: 0.45;
+    cursor:not-allowed !important;
+}
+
+.prog-bar {
+    height: 1rem; /* lh-solid */
+}
+
+.prog-bar > .ui-progressbar-value {
+    margin: 0; /* ma0 */
+}
+
+.prog-bar > .ui-widget-header {
+    background-color: #19a974; /* bg-green */
+}
+
 /* Overrides some default bootstrap stylings */
 body {
     font-family: 'Lato', sans-serif;

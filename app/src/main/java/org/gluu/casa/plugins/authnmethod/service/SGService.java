@@ -164,7 +164,7 @@ public class SGService extends FidoService {
     /**
      * Determines if the device passed is enrolled exactly once or more times
      * @param dev A SuperGluuDevice instance
-     *  @param userId A reference to a user
+     * @param userId A reference to a user
      * @return Boolean value indicating whether a device with this device's UUID is enrolled once for some user
      * @throws Exception If the device is not even enrolled
      */
