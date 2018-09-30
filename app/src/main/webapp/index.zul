@@ -18,7 +18,7 @@
                 <p>${pageScope.description}</p>
             </div>
         </div>
-        <script src="${zkService.contextPath}/scripts/platform.js" />
+        <z:script src="/scripts/platform.js" />
     </z:div>
 
 </zk:zk>

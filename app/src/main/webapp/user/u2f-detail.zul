@@ -114,8 +114,8 @@
     </z:div>
 
     <z:div self="@define(extra)">
-        <script src="${zkService.contextPath}/scripts/u2f-api.js" />
-        <script src="${zkService.contextPath}/scripts/gluu/u2f-util.js" />
+        <z:script src="/scripts/u2f-api.js" />
+        <z:script src="/scripts/gluu/u2f-util.js" />
     </z:div>
 
 </zk:zk>

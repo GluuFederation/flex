@@ -25,10 +25,10 @@
             </z:div>
         </div>
 
-        <script src="${zkService.contextPath}/scripts/jquery-3.3.1.min.js" />
-        <script src="${zkService.contextPath}/scripts/popper.min.js" />
-        <script src="${zkService.contextPath}/scripts/bootstrap.min.js" />
-        <script src="${zkService.contextPath}/scripts/font-awesome-5.2.0.all.min.js" />
+        <z:script src="/scripts/jquery-3.3.1.min.js" />
+        <z:script src="/scripts/popper.min.js" />
+        <z:script src="/scripts/bootstrap.min.js" />
+        <z:script src="/scripts/font-awesome-5.2.0.all.min.js" />
         <script>
             $(document).ready( () => {
                 // Tooltip
@@ -42,13 +42,3 @@
     </z:div>
 
 </z:zk>
-<!--
-<div self="@insert(content)" if="${c:endsWith(desktop.requestPath, '/admin.zul')}" />
-<div class="page-content">
-    <div class="content-wrapper content-pad">
-        <div class="row">
-            <z:div sclass="col-md-12" self="@insert(content)" />
-        </div>
-    </div>
-</div>-->
-

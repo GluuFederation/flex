@@ -136,8 +136,8 @@
     </z:div>
 
     <z:div self="@define(extra)">
-        <script src="${zkService.contextPath}/scripts/intlTelInput.min.js" />
-        <script src="${zkService.contextPath}/scripts/gluu/sms-util.js" />
+        <z:script src="/scripts/intlTelInput.min.js" />
+        <z:script src="/scripts/gluu/sms-util.js" />
     </z:div>
 
 </zk:zk>

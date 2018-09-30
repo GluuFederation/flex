@@ -132,9 +132,9 @@
     </z:div>
 
     <z:div self="@define(extra)">
-        <script src="${zkService.contextPath}/scripts/jquery.qrcode-0.12.0.min.js" />
-        <script src="${zkService.contextPath}/scripts/jquery-ui-1.12.1.min.js" />
-        <script src="${zkService.contextPath}/scripts/gluu/otp-util.js" />
+        <z:script src="/scripts/jquery.qrcode-0.12.0.min.js" />
+        <z:script src="/scripts/jquery-ui-1.12.1.min.js" />
+        <z:script src="/scripts/gluu/otp-util.js" />
     </z:div>
 
 </zk:zk>

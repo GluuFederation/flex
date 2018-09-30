@@ -100,7 +100,7 @@
         <style>
             @import url('${zkService.contextPath}/styles/spectrum.css');
         </style>
-        <script src="${zkService.contextPath}/scripts/spectrum.js" />
+        <z:script src="/scripts/spectrum.js" />
     </z:div>
 
 </zk:zk>

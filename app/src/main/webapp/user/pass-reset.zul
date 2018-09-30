@@ -56,8 +56,8 @@
     </z:div>
 
     <z:div self="@define(extra)">
-        <script src="${zkService.contextPath}/scripts/zxcvbn.js" />
-        <script src="${zkService.contextPath}/scripts/hideShowPassword.min.js" />
+        <z:script src="/scripts/zxcvbn.js" />
+        <z:script src="/scripts/hideShowPassword.min.js" />
         <script>
             //Computes the strength of password entered in the input element whose ID is passed and sends the score back to server
             function updateStrength(id){
