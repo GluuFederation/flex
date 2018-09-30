@@ -58,7 +58,7 @@
                     </h:table>
 
                     <div class="tr pb2">
-                        <image src="${zkService.contextPath}${assetsService.prefix}/images/throbber.gif" id="throbber" class="dn mr2" />
+                        <image src="${zkService.contextPath}${assetsService.prefix}/images/throbber-white.gif" id="throbber" class="dn mr2" />
                         <z:button label="${labels.adm.plugins_upload}" disabled="@load(vm.uiAdding)" sclass="${css.linkButton} f7-cust"
                                   upload="zk.progressMonitor,maxsize=50240,multiple=false,accept=application/java-archive"
                                   onUpload="@command('uploaded', uplEvent=event)" w:onClick="prepareAlert(); removeFocus(this)"
@@ -70,7 +70,7 @@
 
                 <z:div sclass="${css.panel}" visible="@load(vm.pluginToShow ne null)">
 
-                    <z:label sclass="dark-blue2" visible="@load(vm.uiAdding)" value="${labels.adm.plugins_adding_text}" />
+                    <h:p sclass="dark-blue2" visible="@load(vm.uiAdding)">${labels.adm.plugins_adding_text}</h:p>
                     <z:div sclass="tr" visible="@load(not vm.uiAdding)">
                         <z:button label="${labels.general.hide}" sclass="${css.secondaryButton} lh-tight mv2" onClick="@command('hidePluginDetails')" />
                     </z:div>

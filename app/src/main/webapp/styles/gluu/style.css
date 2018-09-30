@@ -162,6 +162,35 @@ label {
 
 /* recover and override some useful ZK styles */
 
+.z-loading{
+    background-color: transparent;
+    position: absolute;
+    cursor: wait;
+    white-space: nowrap;
+    top: 0;
+    left: 0;
+    z-index: 31000
+}
+
+.z-loading-indicator{
+    color: rgba(0,0,0,0.57);
+    white-space: nowrap;
+    padding: 16px;
+    text-align: center
+}
+
+.z-loading-icon{
+    width: 72px;
+    height: 72px;
+    background: transparent no-repeat center;
+    background-image: url(../../images/progress-72.gif);
+    display: block;
+    vertical-align: top;
+    position: relative;
+    left: 50%;
+    margin-left: -36px
+}
+
 .z-temp,
 .z-modal-mask {
     width: 100%;
