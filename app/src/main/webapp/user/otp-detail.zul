@@ -104,7 +104,7 @@
                         </div>
                         <div>
                             <z:radiogroup id="groupie" />
-                            <p>${labels.usr.otp_hotp_totp}</p>
+                            <p class="f7 dark-blue2 mb0">${labels.usr.otp_hotp_totp}</p>
                             <div class="flex flex-wrap justify-center mb3">
                                 <z:radio label="${labels.usr.otp_totp}" onCheck="@command('changeHardType', time=true)" radiogroup="groupie" sclass="mr3" />
                                 <z:radio label="${labels.usr.otp_hotp}" onCheck="@command('changeHardType', time=false)" radiogroup="groupie" sclass="ml2" />

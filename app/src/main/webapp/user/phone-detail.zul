@@ -26,18 +26,18 @@
                 <z:div children="@load(vm.phones)">
                     <zk:template name="children">
                         <div class="${css.panel} flex justify-between">
-                            <div class="flex items-center">
+                            <div class="flex items-start">
                                 <i class="fas fa-phone f5" />
 
                                 <p class="ml3 mb0">
-                                    <z:label sclass="f6 dark-blue2" value="@load(c:cat3(each.number, ' - ', each.nickName))" />
+                                    <z:label sclass="f5 dark-blue2" value="@load(c:cat3(each.number, ' - ', each.nickName))" />
                                     <br />
                                     <span>${labels.general.added_on}</span>
                                     <z:label value="@load(each.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter',
                                         format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
                                 </p>
                             </div>
-                            <div class="pt2">
+                            <div class="pl2 pt2">
                                 <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert()" onClick="@command('prepareForUpdate', phone=each)"
                                           data-original-title="${labels.general.edit}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-pencil-alt" />

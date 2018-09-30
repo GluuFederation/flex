@@ -8,7 +8,7 @@
                 <p>${labels.usr.preferred_text}</p>
             </div>
             <div class="${css.panel}">
-                <div class="flex justify-between ph3">
+                <div class="flex justify-between ph3 nb2">
                     <div class="dark-blue2 f6">
                         <z:label value="@load(vm.selectedMethodName)"/>
                     </div>
@@ -29,19 +29,32 @@
                 <div class="alert alert-success dn" id="feedback-preferred" role="alert" />
             </div>
             <z:div sclass="${css.panel} tc" visible="@load(vm.selectedMethod ne null and vm.uiAllowedToSetPolicy)">
-                <p><em>${labels.usr.policy_default_text}</em></p>
+                <span class="i db pb1">${labels.usr.policy_default_text}</span>
                 <z:button sclass="${css.primaryButton}" label="${labels.usr.policy_go_manage}" href="/user/policy.zul" />
             </z:div>
         </h:section>
+
         <z:window id="win" title="${labels.usr.preferred_title}" border="normal" mode="modal" visible="@load(vm.uiEditing)"
                   closable="true" onClose="@command('cancel', event=event)" sclass="${css.modalWindow}">
-            <z:include src="/user/selector.zul" />
+
+            <z:radiogroup id="methods" />
+            <ul class="list-group f7-cust pt1 mb3">
+                <z:div children="@load(vm.availMethods)">
+                    <z:template name="children">
+                        <li class="list-group-item hover-bg-light-gray gray hover-dark-gray pt1">
+                            <z:radio onCheck="@command('change', method=each.x)" selected="${each.x eq vm.selectedMethod}"
+                                     label="${each.y}" radiogroup="methods" sclass="mr1" />
+                        </li>
+                    </z:template>
+                </z:div>
+            </ul>
             <div class="w-100 flex justify-center">
                 <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
                           w:onClick="alertRef = $('#feedback-preferred')" onClick="@command('update')" />
                 <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancel', event=event)" />
             </div>
         </z:window>
+
     </z:div>
 
 </z:zk>
