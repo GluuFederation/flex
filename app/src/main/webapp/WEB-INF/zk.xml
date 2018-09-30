@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Read the ZK 8 Configuration Reference manual to learn about tags here -->
 <zk>
-
     <preference>
         <name>org.zkoss.zk.ui.WebApp.name</name>
         <value>Gluu Casa</value>
@@ -35,11 +34,9 @@
         <value>breeze</value>   <!-- preserve the theme used in first version of the app -->
     </library-property>
 
-    <!-- TODO unit: seconds. A greater value (>20s) could have been used, however developer testing their plugins need a short
-     times to be productive -->
-    <!--desktop-config>
-        <file-check-period>20</file-check-period>
-    </desktop-config-->
+    <desktop-config>
+        <file-check-period>86400</file-check-period>
+    </desktop-config>
     <desktop-config>
         <disable-theme-uri>~./zul/css/zk.wcs</disable-theme-uri>
     </desktop-config>
@@ -51,6 +48,5 @@
     <listener>
         <listener-class>org.gluu.casa.misc.CssRulesResolver</listener-class>
     </listener>
-
 
 </zk>

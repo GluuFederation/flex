@@ -32,12 +32,9 @@ import java.util.stream.Collectors;
  * @author jgomer
  */
 @VariableResolver(DelegatingVariableResolver.class)
-/* TODO: remove commented code */
 public class AuthnMethodsViewModel extends MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-
-    //private static final String NO_PLUGIN = "";
 
     @WireVariable("configurationHandler")
     private ConfigurationHandler confHandler;
@@ -101,7 +98,6 @@ public class AuthnMethodsViewModel extends MainViewModel {
     }
 
     @Command
-    //public void selectionChanged(@BindingParam("evt") SelectEvent<Listitem, Pair<String, String>> event, @BindingParam("acr") String acr) {
     public void selectionChanged(@BindingParam("acr") String acr, @BindingParam("index") int index) {
         //Finds the right entry in methods and update selectedPlugin member
         AuthnMethodStatus authnMethodStatus = methods.stream().filter(ams -> ams.getAcr().equals(acr)).findAny().get();
@@ -110,27 +106,12 @@ public class AuthnMethodsViewModel extends MainViewModel {
         authnMethodStatus.setSelectedPlugin(pair.getX());
     }
 
-    /*
-    @NotifyChange("methods")
-    @Command
-    public void checkMethod(@BindingParam("acr") String acr, @BindingParam("checked") boolean checked){
-
-        logger.debug("Method '{}' {}", acr, checked ? "checked" : "unchecked");
-
-        AuthnMethodStatus methodStatus = methods.stream().filter(ams -> ams.getAcr().equals(acr)).findAny().get();
-        //if (checked && Optional.ofNullable(methodStatus.getSelectedPlugin()).map(plid -> plid.equals(NO_PLUGIN)).orElse(false)) {
-        //    checked = false;
-        //    UIUtils.showMessageUI(false, Labels.getLabel("adm.methods_nopluginselected"));
-        //}
-        methodStatus.setEnabled(checked);
-
-    }*/
-
     @Command
     public void save() {
 
         Map<String, String> pluginMapping = new HashMap<>();
         methods.stream().filter(AuthnMethodStatus::isEnabled).forEach(ams -> pluginMapping.put(ams.getAcr(), ams.getSelectedPlugin()));
+
         logger.info("New plugin mapping will be: {}", pluginMapping);
         getSettings().setAcrPluginMap(pluginMapping);
         updateMainSettings();

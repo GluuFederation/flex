@@ -57,16 +57,7 @@ public class AssetsService {
     public String getFaviconUrl() {
         return faviconUrl;
     }
-/*
-TODO remove commented code
-    public String getOriginalLogoDataUri() {
-        return originalLogoDataUri;
-    }
 
-    public String getOriginalFaviconDataUri() {
-        return originalFaviconDataUri;
-    }
-*/
     public String getPrefix() {
         return mainSettings.isUseExternalBranding() ? DEFAULT_CUSTOM_PATH : "";
     }
@@ -124,11 +115,6 @@ TODO remove commented code
     private void init() {
         mainSettings = confHandler.getSettings();
         reloadUrls();
-/*
-        String root = zkService.getAppFileSystemRoot() + File.separator;
-        originalLogoDataUri = getDataUriFor(DEFAULT_LOGO_URL, root);
-        originalFaviconDataUri = getDataUriFor(DEFAULT_FAVICON_URL, root);*/
-
     }
 
 }
