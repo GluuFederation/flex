@@ -1,7 +1,7 @@
 # oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
 # Copyright (c) 2016, Gluu
 #
-# Based on https://github.com/GluuFederation/oxAuth/blob/version_3.1.4/Server/integrations/otp/OtpExternalAuthenticator.py
+# Based on https://github.com/GluuFederation/oxAuth/blob/version_4.0.0/Server/integrations/otp/OtpExternalAuthenticator.py
 
 # Requires the following custom properties and values:
 #   otp_type: totp/htop
