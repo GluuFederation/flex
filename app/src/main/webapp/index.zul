@@ -1,6 +1,7 @@
 <?page language="xhtml"?>
 <?init class="org.zkoss.zk.ui.util.Composition" template="/basic.zul"?>
 <?init class="org.gluu.casa.core.navigation.HomeInitiator"?>
+<?script src="/scripts/platform.js"?>
 <zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns="native">
 
     <h:title self="@define(title)">${zkService.appName}</h:title>
@@ -18,7 +19,6 @@
                 <p>${pageScope.description}</p>
             </div>
         </div>
-        <z:script src="/scripts/platform.js" />
     </z:div>
 
 </zk:zk>

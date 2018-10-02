@@ -16,6 +16,7 @@
         </zk:zk>
 
         <script src="${zkService.contextPath}/scripts/gluu/main-util.js" />
+        <script src="${zkService.contextPath}/scripts/popper.min.js" />
     </h:head>
     <h:body class="bg-near-white cust-body-rule" self="@insert(content)" />
 </h:html>

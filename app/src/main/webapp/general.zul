@@ -26,14 +26,10 @@
         </div>
 
         <z:script src="/scripts/jquery-3.3.1.min.js" />
-        <z:script src="/scripts/popper.min.js" />
         <z:script src="/scripts/bootstrap.min.js" />
         <z:script src="/scripts/font-awesome-5.2.0.all.min.js" />
         <script>
-            $(document).ready( () => {
-                // Tooltip
-                $('[data-toggle="tooltip"]').tooltip();
-            });
+            setTimeout(() => { $('[data-toggle="tooltip"]').tooltip(); }, 2000, null);
         </script>
     </z:div>
 

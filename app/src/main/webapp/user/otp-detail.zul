@@ -1,7 +1,6 @@
 <?page language="xhtml"?>
 <?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
 <?link rel="stylesheet" type="text/css" href="/styles/jquery-ui-1.12.1.min.css"?>
-<?script src="/scripts/gluu/gluu-auth.js"?>
 <zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.usr.otp_title}</h:title>
@@ -106,8 +105,10 @@
                             <z:radiogroup id="groupie" />
                             <p class="f7 dark-blue2 mb0">${labels.usr.otp_hotp_totp}</p>
                             <div class="flex flex-wrap justify-center mb3">
-                                <z:radio label="${labels.usr.otp_totp}" onCheck="@command('changeHardType', time=true)" radiogroup="groupie" sclass="mr3" />
-                                <z:radio label="${labels.usr.otp_hotp}" onCheck="@command('changeHardType', time=false)" radiogroup="groupie" sclass="ml2" />
+                                <z:radio label="${labels.usr.otp_totp}" checked="@load(vm.hardTokenType ne null and vm.hardTokenType.toString() eq 'TOTP')"
+                                         onCheck="@command('changeHardType', time=true)" radiogroup="groupie" sclass="mr3" />
+                                <z:radio label="${labels.usr.otp_hotp}" checked="@load(vm.hardTokenType ne null and vm.hardTokenType.toString() eq 'HOTP')"
+                                         onCheck="@command('changeHardType', time=false)" radiogroup="groupie" sclass="ml2" />
                             </div>
                             <div class="flex flex-wrap justify-center mb3">
                                 <z:button label="${labels.general.continue_}" sclass="${css.primaryButton} mr3" onClick="@command('changeTokenPressing', component=code)"
@@ -117,7 +118,7 @@
                         </div>
                     </z:div>
 
-                    <z:div sclass="pl3-ns" visible="@load(vm.uiQRShown or vm.uiTokenPressing)">
+                    <z:div sclass="pl3-ns mb2" visible="@load(vm.uiQRShown or vm.uiTokenPressing)">
                         <z:label class="mb2 db" value="@load(c:l(vm.tokenType eq 'HARD' ? 'usr.otp_enter_code_hard' : 'usr.otp_enter_code_soft'))" />
                         <div class="flex flex-wrap items-center">
                             <z:textbox placeholder="@load(c:l2('usr.otp_enter_code_short',c:split(c:string(vm.digitLength),',')))"
@@ -167,6 +168,7 @@
     <z:div self="@define(extra)">
         <z:script src="/scripts/jquery.qrcode-0.12.0.min.js" />
         <z:script src="/scripts/jquery-ui-1.12.1.min.js" />
+        <z:script src="/scripts/gluu/gluu-auth.js" />
         <z:script src="/scripts/gluu/otp-util.js" />
     </z:div>
 

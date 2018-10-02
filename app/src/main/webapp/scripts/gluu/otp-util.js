@@ -1,6 +1,5 @@
 var throbber;
-//Store original value of object gluu_auth.progress
-var progress = gluu_auth.progress;
+var progress;
 //Timer reference if polling is performed
 var timerID;
 
@@ -13,6 +12,10 @@ function initialize(id) {
 //Displays a QR code and associated progress bar
 function startQR(request, label, qr_options, timeout, poll) {
     throbber.hide();
+	if (!progress){
+		//Store original value of object gluu_auth.progress
+		progress = gluu_auth.progress;
+	}
     gluu_auth.renderQrCode('#container', request, qr_options, label);
     gluu_auth.startProgressBar('#progressbar', timeout, callback);
     if (poll) {
