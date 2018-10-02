@@ -162,6 +162,9 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                         File f = Paths.get(moduleProperties.get(LOCATION_PATH_PROPERTY)).toFile();
                         if (f.setLastModified(System.currentTimeMillis())) {
                             logger.debug("Last modified timestamp of \"{}\" has been updated", f.getPath());
+                        } else {
+                            logger.warn("Timestamp of \"{}\" could not be altered. Ensure jetty user has enough permissions");
+                            logger.error("Latest changes to custom scripts were not picked");
                         }
                         break;
                     case LDAP:

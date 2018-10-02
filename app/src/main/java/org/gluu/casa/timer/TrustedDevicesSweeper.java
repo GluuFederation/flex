@@ -174,5 +174,4 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
 
     }
 
-
 }

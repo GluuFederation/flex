@@ -220,18 +220,24 @@ public class OTPViewModel extends UserViewModel {
     @Command
     public void changeTokenPressing(@BindingParam("component") HtmlBasedComponent comp) {
 
-        uiTokenPressing = !uiTokenPressing;
+        try {
+            //Generate the binary key based on user input
+            logger.trace("Computing key based on key typed for hard token");
+            String skey = secretKeyString.replaceAll("\\s", "");
 
-        //Generate the binary key based on user input
-        logger.trace("Computing key based on key typed for hard token");
-        String skey = secretKeyString.replaceAll("\\s", "");
-        secretKey = new byte[skey.length()/2];
-        for (int i = 0; i < secretKey.length; i++) {
-            secretKey[i] = (byte) (Integer.valueOf(skey.substring(i * 2, (i + 1) * 2), 16).intValue());
-        }
+            secretKey = new byte[skey.length() / 2];
+            for (int i = 0; i < secretKey.length; i++) {
+                secretKey[i] = (byte) (Integer.valueOf(skey.substring(i * 2, (i + 1) * 2), 16).intValue());
+            }
 
-        if (comp != null) {
-            comp.focus();
+            if (comp != null) {
+                comp.focus();
+            }
+            uiTokenPressing = !uiTokenPressing;
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_ERROR, Labels.getLabel("usr.otp_entered_key_wrong"));
         }
 
     }
