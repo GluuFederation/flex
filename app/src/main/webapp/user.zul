@@ -70,12 +70,12 @@
             <div class="${css['sectionsWrapper']}">
                 <section class="${css.section}">
                     <div class="${css.panel}">
-                        <p class="f6 dark-blue2">${labels.usr.strong.requisite_text}</p>
+                        <p class="dark-blue2">${labels.usr.strong.requisite_text}</p>
 
                         <z:div children="@load(vm.pre2faMethods)" sclass="pa2 flex flex-wrap justify-around">
                             <zk:template name="children">
                                 <div class="card grow mv2 w-14r hover-bg-near-white">
-                                    <a class="card-body" href="${each.pageUrl}">
+                                    <a class="card-body" href="${zkService.contextPath}${each.pageUrl}">
                                         <h5 class="card-title dark-blue2">${c:l(each.panelTitleKey)}</h5>
                                         <p class="gray">${c:l(each.panelTextKey)}</p>
                                     </a>

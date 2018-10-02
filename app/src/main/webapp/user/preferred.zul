@@ -7,8 +7,8 @@
                 <h2 class="f4 dark-blue2">${labels.usr.preferred_title}</h2>
                 <p>${labels.usr.preferred_text}</p>
             </div>
-            <div class="${css.panel}">
-                <div class="flex justify-between ph3 nb2">
+            <div class="${css.panel} pb2">
+                <div class="flex justify-between ph3">
                     <div class="dark-blue2 f6">
                         <z:label value="@load(vm.selectedMethodName)"/>
                     </div>
@@ -23,8 +23,9 @@
                     </h:button>
                 </div>
                 <zk:zk if="${vm.uiNotEnoughCredsFor2FA}">
-                    <p class="pl3 black">${c:l2('usr.preferred_disabled', c:split(configurationHandler.settings.minCredsFor2FA,''))}</p>
+                    <p class="pl3 pt1 mb0 black">${c:l2('usr.preferred_disabled', c:split(configurationHandler.settings.minCredsFor2FA,''))}</p>
                 </zk:zk>
+
                 <div class="pv1" /> <!-- avoids vertical margin collapse -->
                 <div class="alert alert-success dn" id="feedback-preferred" role="alert" />
             </div>
