@@ -9,6 +9,8 @@
         <div class="${css.contentHeading}" style="margin-bottom:0">
             <h1 class="f3 dark-blue2">${labels.adm.title}</h1>
             <p class="f6">${labels.adm.main_intro}</p>
+            ${labels.adm.main_subintro}
+            <a href="${zkService.contextPath}/user.zul">Return to your credentials page</a>.
         </div>
 
     </z:div>

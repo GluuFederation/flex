@@ -62,7 +62,7 @@
                         <z:button label="${labels.adm.plugins_upload}" disabled="@load(vm.uiAdding)" sclass="${css.linkButton} f7-cust"
                                   upload="zk.progressMonitor,maxsize=50240,multiple=false,accept=application/java-archive"
                                   onUpload="@command('uploaded', uplEvent=event)" w:onClick="prepareAlert(); removeFocus(this)"
-                                  ca:data-original-title="${labels.adm.plugins_upload_hint}" ca:data-toggle="tooltip" ca:data-placement="top" />
+                                  ca:data-original-title="${labels.adm.plugins_upload_hint}" ca:data-toggle="tooltip" ca:data-placement="left" />
                     </div>
 
                     <div class="alert alert-success dn" id="feedback-plug" role="alert" />
