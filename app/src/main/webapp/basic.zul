@@ -4,6 +4,9 @@
     <h:head self="@insert(title)">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <link rel="icon" href="${zkService.contextPath}${assetsService.faviconUrl}" />
+        <script src="${zkService.contextPath}/scripts/jquery-3.3.1.min.js" />
+        <script src="${zkService.contextPath}/scripts/popper.min.js" />
+        <!-- insert ZK javascripts -->
         <h:zkhead/>
         <!-- order of stylesheets is important, do not move -->
         <link rel="stylesheet" href="${zkService.contextPath}/styles/bootstrap.min.css" />
@@ -16,7 +19,6 @@
         </zk:zk>
 
         <script src="${zkService.contextPath}/scripts/gluu/main-util.js" />
-        <script src="${zkService.contextPath}/scripts/popper.min.js" />
     </h:head>
     <h:body class="bg-near-white cust-body-rule" self="@insert(content)" />
 </h:html>

@@ -5,7 +5,6 @@
  */
 package org.gluu.casa.plugins.authnmethod.service;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.ldap.oxDeviceRegistration;
 import org.gluu.casa.core.pojo.FidoDevice;
@@ -31,8 +30,6 @@ public class FidoService extends BaseService {
 
     @Inject
     MainSettings settings;
-
-    private ObjectMapper codehausMapper = new ObjectMapper();
 
     public boolean updateDevice(FidoDevice device) {
 

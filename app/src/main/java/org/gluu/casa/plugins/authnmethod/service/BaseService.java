@@ -21,9 +21,12 @@ class BaseService {
 
     ObjectMapper mapper;
 
+    org.codehaus.jackson.map.ObjectMapper codehausMapper;
+
     @PostConstruct
     private void inited() {
         mapper = new ObjectMapper();
+        codehausMapper = new org.codehaus.jackson.map.ObjectMapper();
     }
 
 }

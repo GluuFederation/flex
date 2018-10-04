@@ -1,6 +1,17 @@
 //A bootstrap alert to be used when receiving a response from server
 var alertRef;
 
+function initTooltips() {
+    setTimeout(() => {
+        try {
+            //Doing this inside document.ready callback throws error, thus we resort to timer
+            $('[data-toggle="tooltip"]').tooltip();
+            //Calling tooltip apparently does not always do its job very well
+        } catch (e) {
+        }
+    }, 2000, null);
+}
+
 //Sends some browser metadata
 function sendBrowserData() {
 

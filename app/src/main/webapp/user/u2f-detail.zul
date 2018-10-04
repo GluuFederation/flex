@@ -69,8 +69,8 @@
                     <z:label if="${sessionContext.browser.mobile}" value="${labels.usr.u2f_mobile_unsupported}" />
                     <z:label if="${not sessionContext.browser.mobile and not vm.u2fMayBeSupported}" value="${labels.usr.u2f_unsupported_browser}" />
                     <z:div if="${not sessionContext.browser.mobile and vm.u2fMayBeSupported}">
-                        <p class="pt2 dark-blue2">${vm.u2fSupportMessage}</p>
-                        <div class="pb1">
+                        <h:p class="pt2 dark-blue2" unless="${empty vm.u2fSupportMessage}">${vm.u2fSupportMessage}</h:p>
+                        <div class="pb2">
                             <span class="mr2">${labels.usr.u2f_pressready}</span>
                             <z:image src="${assetsService.prefix}/images/throbber.gif" visible="@load(vm.uiAwaiting)" />
                         </div>

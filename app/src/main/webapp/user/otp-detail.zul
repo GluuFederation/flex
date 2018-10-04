@@ -78,7 +78,7 @@
                         <p>${labels.usr.otp_gauth_install_ready}</p>
                         <div class="mb2">
                             <z:button id="readyButton" label="${labels.general.ready}" sclass="${css.primaryButton} mr2"
-                                    w:onClick="initialize('throbber')" onClick="@command('showQR')" disabled="@load(vm.uiQRShown)"/>
+                                    w:onClick="initialize('throbber')" onClick="@command('showQR', component=code)" disabled="@load(vm.uiQRShown)"/>
                             <z:image id="throbber" src="${assetsService.prefix}/images/throbber.gif" visible="false" />
                         </div>
                         <p class="dark-blue2">${labels.usr.otp_gauth_download}</p>

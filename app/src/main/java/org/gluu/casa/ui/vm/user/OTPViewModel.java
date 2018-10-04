@@ -153,14 +153,12 @@ public class OTPViewModel extends UserViewModel {
     public void chooseType(@BindingParam("type") String type, @BindingParam("component") HtmlBasedComponent comp) {
         cancel();
         tokenType = type;
-        if (comp != null) {
-            comp.focus();
-        }
+        focus(comp);
     }
 
     @NotifyChange({"uiQRShown", "uiCorrectCode"})
     @Command
-    public void showQR() {
+    public void showQR(@BindingParam("component") HtmlBasedComponent comp) {
 
         uiQRShown = true;
         uiCorrectCode = false;
@@ -175,11 +173,14 @@ public class OTPViewModel extends UserViewModel {
 
         //Calls the startQR javascript function supplying suitable params
         Clients.response(new AuInvoke("startQR", request, otpConfig.getLabel(), jvalue, QR_SCAN_TIMEOUT));
+        //Scroll down a little bit so content below QR code is noticeable
+        Clients.scrollBy(0, 10);
+        focus(comp);
 
     }
 
     @AfterCompose
-    public void afterCompose(@ContextParam(ContextType.VIEW) Component view){
+    public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
         Selectors.wireEventListeners(view, this);
     }
 
@@ -342,6 +343,12 @@ public class OTPViewModel extends UserViewModel {
         }
         return success;
 
+    }
+
+    private void focus(HtmlBasedComponent component) {
+        if (component != null){
+            component.focus();
+        }
     }
 
     @Command

@@ -25,12 +25,10 @@
             </z:div>
         </div>
 
-        <z:script src="/scripts/jquery-3.3.1.min.js" />
         <z:script src="/scripts/bootstrap.min.js" />
         <z:script src="/scripts/font-awesome-5.2.0.all.min.js" />
-        <script>
-            setTimeout(() => { $('[data-toggle="tooltip"]').tooltip(); }, 2000, null);
-        </script>
+        <script>initTooltips();</script>
+
     </z:div>
 
     <z:div self="@define(content)" unless="${empty pageScope.error}">
