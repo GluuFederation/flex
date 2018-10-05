@@ -114,7 +114,7 @@ public class OTPService extends BaseService {
                 vdevices.add(newDevice);
             }
             String[] uids = vdevices.stream().map(OTPDevice::getUid).toArray(String[]::new);
-            String json = uids.length == 0 ? null : mapper.writeValueAsString(Collections.singletonMap("devices", vdevices));
+            String json = uids.length > 0 ? mapper.writeValueAsString(Collections.singletonMap("devices", vdevices)) : null;
 
             logger.debug("Updating otp devices for user '{}'", userId);
             PersonOTP person = ldapService.get(PersonOTP.class, ldapService.getPersonDn(userId));

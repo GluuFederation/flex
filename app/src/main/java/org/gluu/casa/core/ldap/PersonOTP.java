@@ -76,9 +76,9 @@ public class PersonOTP extends BaseLdapPerson {
      * @param  value  The values for the field associated with the
      *            oxOTPDevices attribute.
      */
-    public void setOTPDevices(final String value)
+    public void setOTPDevices(final String... value)
     {
-        this.oxOTPDevices = new String[]{ value };
+        this.oxOTPDevices = value;
     }
 
 }

@@ -53,8 +53,6 @@ public class LdapService implements ILdapService {
     //private LdapOperationService ldapOperationService;
     private OperationsFacade ldapOperationService;
 
-    private LdapEntryManager ldapEntryManager;
-
     private String orgInum;
 
     private JsonNode oxAuthConfDynamic;
@@ -118,13 +116,12 @@ public class LdapService implements ILdapService {
             stringEncrypter = StringEncrypter.instance(salt);
             ldapProperties = PropertiesDecrypter.decryptProperties(stringEncrypter, ldapProperties);
         }
-        //3.2.0 style
+        //4.0 style
         //ldapOperationService = new LdapEntryManagerFactory().createEntryManager(ldapProperties).getOperationService();
         //ldapEntryManager = ldapOperationService.get...
 
         //3.1.x style:
-        ldapEntryManager = new LdapEntryManager(new OperationsFacade(new LDAPConnectionProvider(ldapProperties)));
-        ldapOperationService = ldapEntryManager.getLdapOperationService();
+        ldapOperationService = new OperationsFacade(new LDAPConnectionProvider(ldapProperties));
 
         //Initialize important class members
         return loadApplianceSettings(ldapProperties);
