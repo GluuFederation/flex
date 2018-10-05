@@ -7,7 +7,7 @@ phComponent.intlTelInput({
     preferredCountries: [ "us" ]
 });
 
-phComponent.on("countrychange", (e, countryData) => { updatePhoneValue() });
+phComponent.on("countrychange", function(e, countryData) { updatePhoneValue() });
 
 function updatePhoneValue() {
     var widget = zk.$("$" + widgetId);
@@ -24,12 +24,12 @@ function resetPhoneValue() {
 function tempDisable(id, timeout, next){
     button = zk.$("$" + id);
     button.setDisabled(true);
-    setTimeout(w => { w.setDisabled(false) }, timeout, button);
+    setTimeout(function(w) { w.setDisabled(false) }, timeout, button);
 
     if (next) {
         var next = $("#" + next);
         if (next) {
-            setTimeout(e => {
+            setTimeout(function(e) {
                 try {
                     e.focus();
                 } catch (ex) {

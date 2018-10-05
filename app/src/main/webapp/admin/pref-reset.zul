@@ -57,7 +57,7 @@
 
                         <div class="pt3">
                             <z:button label="${labels.adm.resets_reset}" sclass="${css.primaryButton} mr3" onClick="@command('doReset')" />
-                            <z:button label="${labels.general.cancel}" sclass="${css.primaryButton} ph4" onClick="@command('cancelReset')"/>
+                            <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton} ph4" onClick="@command('cancelReset')"/>
                         </div>
                     </z:div>
                 </z:div>

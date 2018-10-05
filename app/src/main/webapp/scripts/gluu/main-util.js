@@ -2,7 +2,7 @@
 var alertRef;
 
 function initTooltips() {
-    setTimeout(() => {
+    setTimeout(function() {
         try {
             //Doing this inside document.ready callback throws error, thus we resort to timer
             $('[data-toggle="tooltip"]').tooltip();

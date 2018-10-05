@@ -1,6 +1,6 @@
 <z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk" xmlns="native">
 
-    <aside class="dn di-ns flex-shrink-0 w-14r br b--light-gray shadow-4 bg-blank cust-menu-rule">
+    <aside class="dn di-ns w-14r br b--light-gray shadow-4 bg-blank cust-menu-rule">
         <div class="f6 pt3 pb2 tc">
             <a href="${zkService.contextPath}/admin.zul" class="link dark-blue2 hover-green collapsible-menu-item di">
                 <i class="fas fa-home" />
