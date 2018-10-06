@@ -1,6 +1,10 @@
-<zk xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zkoss.org/2005/zul"
-    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native">
 
-    <a href="${base}/index.zul" label="${labels.hello.title}" />
+    <li>
+        <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}${base}/index.zul">
+            <i class="mh2 fas fa-globe" />
+            <span class="collapsible-menu-item di">${labels.hello.title}</span>
+        </a>
+    </li>
 
-</zk>
+</z:zk>

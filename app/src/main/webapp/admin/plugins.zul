@@ -91,7 +91,7 @@
                                         <td><z:label sclass="dark-gray" value="@load(vm.pluginToShow.path)" /></td>
                                     </tr>
                                     <!-- Implementation details are only available when the plugin is started (not yet when being added) -->
-                                    <h:tr visible="@load(not vm.uiAdding)">
+                                    <h:tr visible="@load(vm.pluginToShow.state eq 'started')">
                                         <td>${labels.adm.plugins_implements}</td>
                                         <td>
                                             <z:div children="@load(vm.pluginToShow.extensions)">

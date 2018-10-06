@@ -1,10 +1,10 @@
-<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk" xmlns="native">
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk" xmlns:h="xhtml" xmlns="native">
 
     <aside class="dn di-ns w-14r br b--light-gray shadow-4 bg-blank cust-menu-rule">
-        <ul id="menu" class="list pl0">
+        <h:ul id="menu" class="list pl0"
+              if="${sessionContext.user ne null}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')">
 
-            <z:div if="${sessionContext.user ne null}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')"
-                   visible="@load(not empty vm.authnMethods)">
+            <z:div visible="@load(not empty vm.authnMethods)">
                 <li>
                     <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}/user.zul">
                         <i class="mh1 fas fa-tags" /><!-- fa-key fa-address-book fa-address-book-o fa-address-card fa-address-card-o fa-id-badge fa-id-card fa-id-card-o -->
@@ -24,7 +24,7 @@
                 </li>
             </z:div>
 
-            <zk:zk if="${sessionContext.user ne null and configurationHandler.settings.enablePassReset}">
+            <zk:zk if="${configurationHandler.settings.enablePassReset}">
                 <li>
                     <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}/user/pass-reset.zul">
                         <i class="mh2 fas fa-lock" /><!-- fa-expeditedssl -->
@@ -45,16 +45,14 @@
             <!-- plugin's menu items -->
             <z:div sclass="bt b--light-gray" if="${not empty vm.pluginMenuItems}" />
             <z:div children="@load(vm.pluginMenuItems)">
-                <template name="children">
+                <zk:template name="children">
                     <z:include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
-                        <attribute name="base">${each.x}</attribute>
-                        <attribute name="priority">${each.y.priority}</attribute>
+                        <zk:attribute name="base">${each.x}</zk:attribute>
+                        <zk:attribute name="priority">${each.y.priority}</zk:attribute>
                     </z:include>
-                </template>
+                </zk:template>
             </z:div>
-        </ul>
+        </h:ul>
     </aside>
-    <!--z:div viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')">
-    </z:div> -->
 
 </z:zk>
