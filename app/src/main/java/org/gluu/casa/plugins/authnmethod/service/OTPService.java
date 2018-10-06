@@ -78,7 +78,8 @@ public class OTPService extends BaseService {
         int total = 0;
         try {
             PersonOTP person = ldapService.get(PersonOTP.class, ldapService.getPersonDn(userId));
-            total = (int) person.getExternalUids().stream().filter(uid -> uid.startsWith("totp:") || uid.startsWith("hotp:")).count();
+            total = (int) person.getExternalUids().stream()
+                    .filter(uid -> uid.startsWith(TOTP_PREFIX) || uid.startsWith(HOTP_PREFIX)).count();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -118,7 +119,7 @@ public class OTPService extends BaseService {
 
             logger.debug("Updating otp devices for user '{}'", userId);
             PersonOTP person = ldapService.get(PersonOTP.class, ldapService.getPersonDn(userId));
-            person.setOTPDevices(json);
+            person.setOTPDevices(Utils.arrayFromValue(String.class, json));
             person.setExternalUid(uids);
 
             success = ldapService.modify(person, PersonOTP.class);

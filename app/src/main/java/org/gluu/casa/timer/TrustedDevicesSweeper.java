@@ -14,6 +14,7 @@ import org.gluu.casa.conf.sndfactor.TrustedOrigin;
 import org.gluu.casa.core.LdapService;
 import org.gluu.casa.core.TimerService;
 import org.gluu.casa.core.ldap.PersonPreferences;
+import org.gluu.casa.misc.Utils;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
@@ -169,7 +170,7 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
 
         String uid = person.getUid();
         logger.trace("TrustedDevicesSweeper. Cleaning expired trusted devices for user '{}'", uid);
-        person.setTrustedDevices(value);
+        person.setTrustedDevices(Utils.arrayFromValue(String.class, value));
         ldapService.modify(person, PersonPreferences.class);
 
     }

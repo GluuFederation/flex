@@ -191,6 +191,23 @@ public final class Utils {
     }
 
     /**
+     * Returns an array of length zero or one of the specified type
+     * @param cls Class to which the elements of the array belong
+     * @param value Single value the resulting array will contain. If null, the resulting array will be empty
+     * @param <T> Type of elements
+     * @return An array of T instances
+     */
+    public static <T> T[] arrayFromValue(Class<T> cls, T value) {
+
+        T[] arr = (T[]) java.lang.reflect.Array.newInstance(cls, value == null ? 0 : 1);
+        if (arr.length == 1) {
+            arr[0] = value;
+        }
+        return arr;
+
+    }
+
+    /**
      * Checks if a socket connection can be established.
      * @param address A {@link SocketAddress} to establish the connection.
      * @param timeout A timeout for connection in ms

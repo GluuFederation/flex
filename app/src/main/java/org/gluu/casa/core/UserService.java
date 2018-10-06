@@ -185,7 +185,7 @@ public class UserService {
         boolean success = false;
         try {
             PersonPreferences person = personPreferencesInstance(id);
-            person.setPreferredMethod(method == null ? new String[]{} : new String[]{method});
+            person.setPreferredMethod(Utils.arrayFromValue(String.class, method));
             success = ldapService.modify(person, PersonPreferences.class);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

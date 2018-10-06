@@ -132,7 +132,7 @@ public class MobilePhoneService extends BaseService {
 
             logger.debug("Updating phones for user '{}'", userId);
             PersonMobile person = ldapService.get(PersonMobile.class, ldapService.getPersonDn(userId));
-            person.setMobileDevices(json);
+            person.setMobileDevices(Utils.arrayFromValue(String.class, json));
             person.setMobile(numbers);
 
             success = ldapService.modify(person, PersonMobile.class);
