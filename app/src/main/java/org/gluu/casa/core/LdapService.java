@@ -15,12 +15,10 @@ import org.gluu.casa.conf.LdapSettings;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.ldap.*;
 import org.gluu.casa.misc.Utils;
-//import org.gluu.persist.ldap.impl.LdapEntryManagerFactory;
 //import org.gluu.persist.ldap.operation.LdapOperationService;
 import org.gluu.casa.service.ILdapService;
 import org.gluu.site.ldap.LDAPConnectionProvider;
 import org.gluu.site.ldap.OperationsFacade;
-import org.gluu.site.ldap.persistence.LdapEntryManager;
 import org.slf4j.Logger;
 import org.xdi.util.properties.FileConfiguration;
 import org.xdi.util.security.PropertiesDecrypter;
@@ -89,7 +87,7 @@ public class LdapService implements ILdapService {
     }
 
     public String getDecryptedString(String str) throws StringEncrypter.EncryptionException  {
-        return stringEncrypter == null ? str :  stringEncrypter.decrypt(str);
+        return (stringEncrypter == null || str == null) ? str :  stringEncrypter.decrypt(str);
     }
 
     @PostConstruct
@@ -118,7 +116,6 @@ public class LdapService implements ILdapService {
         }
         //4.0 style
         //ldapOperationService = new LdapEntryManagerFactory().createEntryManager(ldapProperties).getOperationService();
-        //ldapEntryManager = ldapOperationService.get...
 
         //3.1.x style:
         ldapOperationService = new OperationsFacade(new LDAPConnectionProvider(ldapProperties));
@@ -193,7 +190,7 @@ public class LdapService implements ILdapService {
         T object = null;
         try {
             LDAPPersister<T> persister = LDAPPersister.getInstance(clazz);
-            object = persister.get(dn, ldapOperationService.getConnection());
+            object = persister.get(dn, ldapOperationService.getConnectionPool());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -204,12 +201,18 @@ public class LdapService implements ILdapService {
     public <T> List<T> find(Class<T> clazz, String parentDn, Filter filter) {
 
         List<T> results = new ArrayList<>();
+        LDAPConnection conn = null;
         try {
             LDAPPersister<T> persister = LDAPPersister.getInstance(clazz);
-            results = fromPersistedObjects(persister.search(ldapOperationService.getConnection(), parentDn, SearchScope.SUB,
+            conn = ldapOperationService.getConnection();
+            results = fromPersistedObjects(persister.search(conn, parentDn, SearchScope.SUB,
                     DereferencePolicy.NEVER, 0, 0, filter == null ? Filter.create("(objectClass=top)") : filter));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            if (conn != null) {
+                ldapOperationService.getConnectionPool().releaseConnection(conn);
+            }
         }
         return results;
 
@@ -218,11 +221,17 @@ public class LdapService implements ILdapService {
     public <T> List<T> find(T object, Class<T> clazz, String parentDn) {
 
         List<T> results = new ArrayList<>();
+        LDAPConnection conn = null;
         try {
             LDAPPersister<T> persister = LDAPPersister.getInstance(clazz);
-            results = fromPersistedObjects(persister.search(object, ldapOperationService.getConnection(), parentDn, SearchScope.SUB));
+            conn = ldapOperationService.getConnection();
+            results = fromPersistedObjects(persister.search(object, conn, parentDn, SearchScope.SUB));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            if (conn != null) {
+                ldapOperationService.getConnectionPool().releaseConnection(conn);
+            }
         }
         return results;
 
@@ -233,7 +242,7 @@ public class LdapService implements ILdapService {
         boolean success = false;
         try {
             LDAPPersister<T> persister = LDAPPersister.getInstance(clazz);
-            LDAPResult ldapResult = persister.add(object, ldapOperationService.getConnection(), parentDn);
+            LDAPResult ldapResult = persister.add(object, ldapOperationService.getConnectionPool(), parentDn);
             success = ldapResult.getResultCode().equals(ResultCode.SUCCESS);
             logger.trace("add. Operation result was '{}'", ldapResult.getResultCode().getName());
         } catch (Exception e) {
@@ -248,7 +257,7 @@ public class LdapService implements ILdapService {
         boolean success = false;
         try {
             LDAPPersister<T> persister = LDAPPersister.getInstance(clazz);
-            LDAPResult ldapResult = persister.modify(object, ldapOperationService.getConnection(), null, true);
+            LDAPResult ldapResult = persister.modify(object, ldapOperationService.getConnectionPool(), null, true);
             if (ldapResult == null) {
                 success = true;
                 logger.trace("modify. No attribute changes took place for this modification");
@@ -268,7 +277,7 @@ public class LdapService implements ILdapService {
         boolean success = false;
         try {
             LDAPPersister<T> persister = LDAPPersister.getInstance(clazz);
-            LDAPResult ldapResult = persister.delete(object, ldapOperationService.getConnection());
+            LDAPResult ldapResult = persister.delete(object, ldapOperationService.getConnectionPool());
             success = ldapResult.getResultCode().equals(ResultCode.SUCCESS);
             logger.trace("delete. Operation result was '{}'", ldapResult.getResultCode().getName());
         } catch (Exception e) {
