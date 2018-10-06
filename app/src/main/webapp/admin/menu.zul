@@ -61,12 +61,12 @@
 
                 <!-- extra buttons defined by pugins -->
                 <z:div children="@load(vm.extraButtons)">
-                    <template name="children">
+                    <zk:template name="children">
                         <z:include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
-                            <attribute name="base">${each.x}</attribute>
-                            <attribute name="priority">${each.y.priority}</attribute>
+                            <zk:attribute name="base">${each.x}</zk:attribute>
+                            <zk:attribute name="priority">${each.y.priority}</zk:attribute>
                         </z:include>
-                    </template>
+                    </zk:template>
                 </z:div>
             </z:div>
         </ul>
