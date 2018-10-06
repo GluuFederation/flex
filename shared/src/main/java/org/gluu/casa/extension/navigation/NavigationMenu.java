@@ -22,7 +22,7 @@ public interface NavigationMenu extends ExtensionPoint {
      * <code>assests/abc/menu.zul</code> of your maven project (which will be web-accessible via
      * <code>https://host/casa/pl/my-plugin/abc/menu.zul</code>), you'll just have to return <code>abc/menu.zul</code>.</p>
      * <p>For more information, visit plugin's developer guide at Gluu Casa
-     * <a href="https://gluu.org/docs/casa/3.1.3/developer-guide/">docs</a></p>
+     * <a href="https://gluu.org/docs/casa/3.1.4/developer-guide/">docs</a></p>
      * @return The URL that serves the markup of this menu set.
      */
     String getContentsUrl();

@@ -72,7 +72,7 @@ public class OTPConfig extends QRConfig {
 
             if (Utils.isNotEmpty(jsonFile)) {
                 String contents = new String(Files.readAllBytes(Paths.get(jsonFile)), Charset.forName("utf-8"));
-                //Gluu Server 3.1.3 and earlier have a typo in default /etc/certs/otp_configuration.json, the following accommodates
+                //Gluu Server 3.1.4 and earlier have a typo in default /etc/certs/otp_configuration.json, the following accommodates
                 contents = contents.replaceFirst("\"htop\"", "\"hotp\"");
 
                 String json = MAPPER.readTree(contents).get("hotp").toString();
