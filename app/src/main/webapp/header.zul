@@ -1,4 +1,4 @@
-<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native">
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk" xmlns="native">
 
     <header class="flex justify-between pv2 shadow-4 bg-blank cust-header" if="${sessionContext.user ne null}">
 
@@ -54,14 +54,16 @@
                         </a>
                     </li>
 
-                    <zk forEach="${vm.contextMenuItems}">
-                        <li class="pv1 pl2 pr3 bg-white-70">
-                            <z:include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
-                                <attribute name="base">${each.x}</attribute>
-                                <attribute name="priority">${each.y.priority}</attribute>
-                            </z:include>
-                        </li>
-                    </zk>
+                    <z:div children="@load(vm.contextMenuItems)">
+                        <zk:template name="children">
+                            <li class="pv1 pl2 pr3 bg-white-70">
+                                <z:include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
+                                    <zk:attribute name="base">${each.x}</zk:attribute>
+                                    <zk:attribute name="priority">${each.y.priority}</zk:attribute>
+                                </z:include>
+                            </li>
+                        </zk:template>
+                    </z:div>
 
                     <div class="dropdown-divider" />
 
