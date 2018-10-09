@@ -31,12 +31,9 @@
                 <a href="javascript:;" class="dropdown-toggle gray hover-dark-gray" role="button" id="dropdownMenu"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span class="pr1">
-                        <z:zk if="${empty sessionContext.user.pictureURL}">
+                        <object data="${sessionContext.user.pictureURL}" class="w2 br-100 miw-2r">
                             <i class="fas fa-user f2-cust pt1" />
-                        </z:zk>
-                        <z:zk unless="${empty sessionContext.user.pictureURL}">
-                            <img src="${sessionContext.user.pictureURL}" class="w2 br-100 miw-2r"/>
-                        </z:zk>
+                        </object>
                     </span>
                     <span class="dn di-ns f6">
                         ${empty sessionContext.user.lastName ? c:cat4(c:l('general.welcome'), ' ', sessionContext.user.givenName, ' ')

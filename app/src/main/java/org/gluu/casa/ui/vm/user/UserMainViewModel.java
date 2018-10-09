@@ -15,6 +15,7 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,6 +64,7 @@ public class UserMainViewModel extends UserViewModel {
 
         widgets = userService.getLiveAuthnMethods();
         methodsAvailability = widgets.size() > 0;
+        pre2faMethods = new ArrayList<>();
 
         if (methodsAvailability) {
             StringBuffer helper = new StringBuffer();
