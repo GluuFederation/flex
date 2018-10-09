@@ -134,8 +134,10 @@ public class UserPreferenceViewModel extends UserViewModel {
     @NotifyChange({"uiEditing"})
     @Command
     public void prepareUpdateMethod() {
-        prevSelectedMethod = selectedMethod;
-        uiEditing = true;
+        if (uiEditable) {
+            prevSelectedMethod = selectedMethod;
+            uiEditing = true;
+        }
     }
 
     @Command

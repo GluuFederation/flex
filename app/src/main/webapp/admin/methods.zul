@@ -16,6 +16,9 @@
                 <div class="${css.panel}">
                     <h2 class="f4 dark-blue2">${labels.adm.methods_title}</h2>
                     <p>${labels.adm.methods_text}</p>
+                    <zk:zk unless="${empty vm.methods}">
+                        <p>${labels.adm.methods_text_otp}</p>
+                    </zk:zk>
 
                     <zk:zk if="${empty vm.methods}">
                         <span class="dark-blue2">${labels.adm.methods_hint_noscripts}</span>

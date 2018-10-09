@@ -5,23 +5,23 @@
     <h:title self="@define(title)">${zkService.appName} - ${labels.usr.title}</h:title>
 
     <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserMainViewModel')"
-             self="@define(maincontent)">
+           self="@define(maincontent)">
 
         <div class="${css.contentHeading}">
             <h1 class="f3 dark-blue2">${labels.usr.title}</h1>
             <p class="f6">${vm.introText}</p>
 
-            <zk:zk if="${vm.methodsAvailability and vm.has2faRequisites}">
+            <zk:zk if="${vm.has2faRequisites}">
                 <div class="alert alert-warning" role="alert">${labels.usr.warn_lock}</div>
             </zk:zk>
-            <zk:zk if="${not vm.methodsAvailability}">
+            <zk:zk if="${vm.pre2faMethods.size() eq 0}">
                 <div class="alert alert-danger" role="alert">
                     ${c:l(sessionContext.user.admin ? 'usr.strong.unavailable_admin' : 'usr.strong.unavailable')}
                 </div>
             </zk:zk>
         </div>
 
-        <zk:zk if="${vm.methodsAvailability and vm.has2faRequisites}">
+        <zk:zk if="${vm.has2faRequisites}">
             <div class="${css['sectionsWrapper']}">
                 <z:include src="user/preferred.zul" />
 
@@ -66,7 +66,7 @@
             </div>
         </zk:zk>
 
-        <zk:zk if="${vm.methodsAvailability and not vm.has2faRequisites}">
+        <zk:zk if="${(vm.pre2faMethods.size() gt 0) and not vm.has2faRequisites}">
             <div class="${css['sectionsWrapper']}">
                 <section class="${css.section}">
                     <div class="${css.panel}">
