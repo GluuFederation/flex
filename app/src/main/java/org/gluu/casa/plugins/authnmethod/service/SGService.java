@@ -51,9 +51,6 @@ public class SGService extends FidoService {
     @Inject
     private Logger logger;
 
-    @Inject
-    private LdapService ldapService;
-
     private SGConfig conf;
     private ObjectMapper mapper;
 

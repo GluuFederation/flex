@@ -24,7 +24,6 @@ import org.xdi.util.properties.FileConfiguration;
 import org.xdi.util.security.PropertiesDecrypter;
 import org.xdi.util.security.StringEncrypter;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,13 +39,14 @@ import java.util.Properties;
 @ApplicationScoped
 public class LdapService implements ILdapService {
 
+    private static final int RETRIES = 15;
+    private static final int RETRY_INTERVAL = 15;
+
     @Inject
     private Logger logger;
 
     @Inject
     private MainSettings settings;
-
-    private boolean inService;
 
     //private LdapOperationService ldapOperationService;
     private OperationsFacade ldapOperationService;
@@ -64,10 +64,6 @@ public class LdapService implements ILdapService {
     private ObjectMapper mapper;
 
     private StringEncrypter stringEncrypter;
-
-    public boolean isInService() {
-        return inService;
-    }
 
     public String getOIDCEndpoint() {
         return oxAuthConfDynamic.get("openIdConfigurationEndpoint").asText();
@@ -90,21 +86,25 @@ public class LdapService implements ILdapService {
         return (stringEncrypter == null || str == null) ? str :  stringEncrypter.decrypt(str);
     }
 
-    @PostConstruct
-    private void inited() {
+    public boolean initialize() {
 
+        boolean success = false;
         try {
             mapper = new ObjectMapper();
-            inService = setup(settings.getLdapSettings());
-
-            logger.info("LDAPService was{} initialized successfully", inService ? "" : " not");
+            success = setup(settings.getLdapSettings(), RETRIES, RETRY_INTERVAL);
+            logger.info("LDAPService was{} initialized successfully", success ? "" : " not");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        return success;
 
     }
 
     public boolean setup(LdapSettings ldapSettings) throws Exception {
+        return setup(ldapSettings, 1, 1);
+    }
+
+    private boolean setup(LdapSettings ldapSettings, int retries, int retry_interval) throws Exception {
 
         Properties ldapProperties = new FileConfiguration(ldapSettings.getOxLdapLocation()).getProperties();
         String saltFile = ldapSettings.getSaltLocation();
@@ -120,8 +120,14 @@ public class LdapService implements ILdapService {
         //3.1.x style:
         ldapOperationService = new OperationsFacade(new LDAPConnectionProvider(ldapProperties));
 
-        //Initialize important class members
-        return loadApplianceSettings(ldapProperties);
+        for (int i = 0; (i < retries) && (ldapOperationService.getConnectionPool() == null); i++) {
+            logger.warn("Could not retrieve LDAP connection pool, retrying in {} seconds", retry_interval);
+            Thread.sleep(retry_interval * 1000);
+            ldapOperationService = new OperationsFacade(new LDAPConnectionProvider(ldapProperties));
+        }
+
+        //Initialize important class members if valid
+        return ldapOperationService.getConnectionPool() != null && loadApplianceSettings(ldapProperties);
 
     }
 
@@ -353,7 +359,6 @@ public class LdapService implements ILdapService {
         oxAuthConfiguration conf = get(oxAuthConfiguration.class, dn);
         oxAuthConfDynamic = mapper.readTree(conf.getAuthConfDynamic());
         oxAuthConfStatic = mapper.readTree(conf.getAuthConfStatic());
-
 
     }
 

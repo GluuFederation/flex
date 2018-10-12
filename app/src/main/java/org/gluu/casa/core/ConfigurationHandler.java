@@ -87,7 +87,7 @@ public class ConfigurationHandler extends JobListenerSupport {
             //Update log level
             computeLoggingLevel();
             //Check LDAP access to proceed with acr timer
-            if (ldapService.isInService()) {
+            if (ldapService.initialize()) {
                 setAppState(AppStateEnum.LOADING);
 
                 //This is a trick so the timer event logic can be coded inside this managed bean
