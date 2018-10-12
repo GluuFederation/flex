@@ -126,7 +126,7 @@ public class OxdViewModel extends MainViewModel {
                 //TODO: oxd-4.0 will allow several post-logout uris: https://github.com/GluuFederation/oxd/issues/217
                 //This way instead of replacing the postlogout I might just add it, thus, when logging out oxauth will not give error
                 //When a new client is created (see else branch), the error at logout cannot be avoided
-                if (!oxdService.updateSite(oxdSettings.getPostLogoutUri(), null)) {
+                if (!oxdService.updateSite(oxdSettings.getPostLogoutUri())) {
                     msg = Labels.getLabel("adm.oxd_site_update_failure");
                 }
             } catch (Exception e) {
@@ -137,7 +137,6 @@ public class OxdViewModel extends MainViewModel {
             try {
                 //A new registration is made when pointing to a different oxd installation because the current oxd-id won't exist there
                 oxdService.setSettings(oxdSettings, true);
-                extendLifeTime();
 
                 //remove unneeded client
                 oxdService.removeSite(lastWorkingConfig.getClient().getOxdId());
@@ -156,12 +155,5 @@ public class OxdViewModel extends MainViewModel {
         return msg;
 
     }
-
-    private void extendLifeTime() {
-        if (!oxdService.extendSiteLifeTime()) {
-            logger.warn("An error occured while extending the lifetime of the associated oxd client.");
-        }
-    }
-
 
 }

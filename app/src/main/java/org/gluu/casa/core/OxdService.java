@@ -121,19 +121,9 @@ public class OxdService {
                         Optional<String> oxdIdOpt = Optional.ofNullable(oxdConfig.getClient()).map(OxdClientSettings::getOxdId);
                         if (oxdIdOpt.isPresent()) {
                             setSettings(oxdConfig);
-
-                            if (!extendSiteLifeTime()) {
-                                logger.warn("An error occured while extending the lifetime of the associated oxd client.");
-                                logger.info("Attempting a new site registration");
-                                setSettings(oxdConfig, true);
-                            }
                         } else {
                             //trigger registration
                             setSettings(oxdConfig, true);
-
-                            if (!extendSiteLifeTime()) {
-                                logger.warn("An error occured while extending the lifetime of the associated oxd client.");
-                            }
                         }
                         success = true;
 
@@ -356,37 +346,14 @@ public class OxdService {
 
     }
 
-    public boolean updateSite(String postLogoutUri, Long expiration) throws Exception {
+    public boolean updateSite(String postLogoutUri) throws Exception {
 
         UpdateSiteParams cmdParams = new UpdateSiteParams();
         cmdParams.setOxdId(config.getClient().getOxdId());
         if (postLogoutUri != null) {
             cmdParams.setPostLogoutRedirectUri(postLogoutUri);
         }
-        if (expiration != null) {
-            cmdParams.setClientSecretExpiresAt(new Date(expiration));
-        }
         return doUpdate(cmdParams);
-
-    }
-
-    public boolean extendSiteLifeTime() {
-
-        //oxd site registration does not allow to set the expiration
-        logger.info("Extending registered oxd client life time");
-        GregorianCalendar cal=new GregorianCalendar();
-        cal.add(Calendar.YEAR, 1);
-
-        UpdateSiteParams cmdParams = new UpdateSiteParams();
-        cmdParams.setOxdId(config.getClient().getOxdId());
-        cmdParams.setClientSecretExpiresAt(new Date(cal.getTimeInMillis()));
-
-        try {
-            return doUpdate(cmdParams);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        }
 
     }
 
