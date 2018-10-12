@@ -16,6 +16,7 @@ import org.gluu.casa.core.ldap.PersonPreferences;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.plugins.authnmethod.SecurityKeyExtension;
 import org.gluu.casa.plugins.authnmethod.SuperGluuExtension;
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class UserService {
         u.setUserName(getClaim(claims, "user_name"));
         logger.trace("Creating a user instance from claims. Username is {}", u.getUserName());
 
-        u.setPictureURL(getClaim(claims, "picture"));
+        u.setPictureURL(WebUtils.validateImageUrl(getClaim(claims, "picture")));
         u.setLastName(getClaim(claims, "family_name"));
         u.setGivenName(getClaim(claims, "given_name"));
         String inum = getClaim(claims, "inum");

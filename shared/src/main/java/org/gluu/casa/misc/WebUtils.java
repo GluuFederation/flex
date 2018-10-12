@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Provides utility methods for web-related functionalities. A good place to call these methods are ZK View Models.
@@ -81,6 +83,25 @@ public final class WebUtils {
     public static String getQueryParam(String param) {
         String[] values = Executions.getCurrent().getParameterValues(param);
         return Utils.isEmpty(values) ? null :  values[0];
+    }
+
+    /**
+     * Reads the contents of the URL passes as param and returns null if the contents received are not image-like (e.g.
+     * different file format or HTTP error)
+     * @param url String with URL to inspect
+     * @return The value received in parameter if it points to a valid image, null otherwise
+     */
+    public static String validateImageUrl(String url) {
+
+        String val = null;
+        try {
+            val = ImageIO.read(new URL(url)) == null ? null : url;
+        } catch (Exception e) {
+            LOG.warn("Error validating image url '{}'", url);
+            LOG.error(e.getMessage(), e);
+        }
+        return val;
+
     }
 
     private static void execRedirect(String url, boolean voidUI) {
