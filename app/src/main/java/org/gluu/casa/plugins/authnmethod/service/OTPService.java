@@ -63,7 +63,7 @@ public class OTPService extends BaseService {
     public void reloadConfiguration() {
 
         String acr = OTPExtension.ACR;
-        Map<String, String> props = ldapService.getCustScriptConfigProperties(acr);
+        props = ldapService.getCustScriptConfigProperties(acr);
         if (props == null) {
             logger.warn("Config. properties for custom script '{}' could not be read. Features related to {} will not be accessible",
                     acr, acr.toUpperCase());

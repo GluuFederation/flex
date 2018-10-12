@@ -14,7 +14,7 @@
             <zk:zk if="${vm.has2faRequisites}">
                 <div class="alert alert-warning" role="alert">${labels.usr.warn_lock}</div>
             </zk:zk>
-            <zk:zk if="${vm.pre2faMethods.size() eq 0}">
+            <zk:zk if="${not vm.methodsAvailability}">
                 <div class="alert alert-danger" role="alert">
                     ${c:l(sessionContext.user.admin ? 'usr.strong.unavailable_admin' : 'usr.strong.unavailable')}
                 </div>

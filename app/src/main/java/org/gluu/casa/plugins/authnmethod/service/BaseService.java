@@ -10,6 +10,8 @@ import org.gluu.casa.core.LdapService;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author jgomer
@@ -23,10 +25,17 @@ class BaseService {
 
     org.codehaus.jackson.map.ObjectMapper codehausMapper;
 
+    Map<String, String> props;
+
     @PostConstruct
     private void inited() {
         mapper = new ObjectMapper();
         codehausMapper = new org.codehaus.jackson.map.ObjectMapper();
+    }
+
+
+    public String getScriptPropertyValue(String key) {
+        return Optional.of(props).flatMap(m -> Optional.of(m.get(key))).orElse(null);
     }
 
 }

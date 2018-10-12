@@ -80,4 +80,8 @@ public class SuperGluuExtension implements AuthnMethod {
         sgService.reloadConfiguration();
     }
 
+    public boolean mayBe2faActivationRequisite() {
+        return Boolean.parseBoolean(sgService.getScriptPropertyValue("2fa_requisite"));
+    }
+
 }

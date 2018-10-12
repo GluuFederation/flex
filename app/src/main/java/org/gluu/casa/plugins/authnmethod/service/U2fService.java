@@ -11,6 +11,7 @@ import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.U2fSettings;
 import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.pojo.SecurityKey;
+import org.gluu.casa.plugins.authnmethod.SecurityKeyExtension;
 import org.gluu.casa.plugins.authnmethod.conf.U2FConfig;
 import org.slf4j.Logger;
 import org.xdi.oxauth.client.fido.u2f.FidoU2fClientFactory;
@@ -57,8 +58,8 @@ public class U2fService extends FidoService {
         conf.setEndpointUrl(String.format("%s/%s", ldapService.getIssuerUrl(), metadataUri));
 
         try {
-            Map<String, String> props = ldapService.getCustScriptConfigProperties(ConfigurationHandler.DEFAULT_ACR);
-            conf.setAppId(props.get("u2f_app_id"));
+            props = ldapService.getCustScriptConfigProperties(SecurityKeyExtension.ACR);
+            conf.setAppId(ldapService.getCustScriptConfigProperties(ConfigurationHandler.DEFAULT_ACR).get("u2f_app_id"));
 
             logger.info("U2f settings found were: {}", mapper.writeValueAsString(conf));
 

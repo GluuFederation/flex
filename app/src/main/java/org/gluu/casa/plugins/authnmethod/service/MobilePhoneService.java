@@ -51,7 +51,7 @@ public class MobilePhoneService extends BaseService {
 
     public void reloadConfiguration() {
 
-        Map<String, String> props = ldapService.getCustScriptConfigProperties(OTPSmsExtension.ACR);
+        props = ldapService.getCustScriptConfigProperties(OTPSmsExtension.ACR);
 
         if (props == null) {
             logger.warn("Config. properties for custom script '{}' could not be read. Features related to {} will not be accessible",

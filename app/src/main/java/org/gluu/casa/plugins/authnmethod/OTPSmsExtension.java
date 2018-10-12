@@ -76,7 +76,7 @@ public class OTPSmsExtension implements AuthnMethod {
     }
 
     public boolean mayBe2faActivationRequisite() {
-        return true;
+        return Boolean.parseBoolean(mobService.getScriptPropertyValue("2fa_requisite"));
     }
 
     public void reloadConfiguration() {

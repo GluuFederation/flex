@@ -80,4 +80,8 @@ public class SecurityKeyExtension implements AuthnMethod {
         u2fService.reloadConfiguration();
     }
 
+    public boolean mayBe2faActivationRequisite() {
+        return Boolean.parseBoolean(u2fService.getScriptPropertyValue("2fa_requisite"));
+    }
+
 }

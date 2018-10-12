@@ -78,7 +78,7 @@ public class OTPExtension implements AuthnMethod {
     }
 
     public boolean mayBe2faActivationRequisite() {
-        return true;
+        return Boolean.parseBoolean(otpService.getScriptPropertyValue("2fa_requisite"));
     }
 
     public void reloadConfiguration() {
