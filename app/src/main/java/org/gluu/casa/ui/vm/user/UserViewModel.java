@@ -11,8 +11,6 @@ import org.gluu.casa.core.pojo.BrowserInfo;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.ui.CredRemovalConflict;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
@@ -30,8 +28,6 @@ import java.util.stream.Collectors;
  */
 @VariableResolver(DelegatingVariableResolver.class)
 public class UserViewModel {
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @WireVariable
     private SessionContext sessionContext;

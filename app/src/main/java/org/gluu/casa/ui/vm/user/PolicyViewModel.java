@@ -1,7 +1,5 @@
 package org.gluu.casa.ui.vm.user;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.conf.sndfactor.TrustedDevice;
 import org.gluu.casa.ui.UIUtils;
@@ -27,8 +25,6 @@ import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.EVERY_LOGIN;
  */
 @VariableResolver(DelegatingVariableResolver.class)
 public class PolicyViewModel extends UserViewModel {
-
-    private Logger logger = LogManager.getLogger(getClass());
 
     private boolean uiHasPreferredMethod;
     private boolean uiAllowedToSetPolicy;
@@ -67,6 +63,7 @@ public class PolicyViewModel extends UserViewModel {
         enforcementPoliciesCopy = new HashSet<>(enforcementPolicies);
 
     }
+
     @NotifyChange("enforcementPolicies")
     @Command
     public void checkPolicy(@BindingParam("target") Checkbox box) {

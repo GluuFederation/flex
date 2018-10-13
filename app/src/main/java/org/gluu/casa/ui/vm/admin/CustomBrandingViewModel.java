@@ -106,7 +106,6 @@ public class CustomBrandingViewModel extends MainViewModel {
             uiOverrideButtonColors = snippetHandler.getPrimaryButtonColor() != null;
             logo = new Pair<>(assetsService.getLogoUrl() + randomSuffix(), null);
             favicon = new Pair<>(assetsService.getFaviconUrl() + randomSuffix(), null);
-            logger.debug("miedr\n {}", logo.getFirst());
         }
 
     }
