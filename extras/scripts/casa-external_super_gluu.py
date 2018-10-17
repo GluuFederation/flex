@@ -1,8 +1,7 @@
 # oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
 # Copyright (c) 2016, Gluu
 #
-# Author: Yuriy Movchan
-#
+# Based on oxAuth SuperGluuExternalAuthenticator.py
 
 from com.google.android.gcm.server import Sender, Message
 from com.notnoop.apns import APNS

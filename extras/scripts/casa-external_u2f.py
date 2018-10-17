@@ -1,7 +1,7 @@
 # oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
 # Copyright (c) 2018, Gluu
 #
-# Based on https://github.com/GluuFederation/oxAuth/blob/version_4.0.0/Server/integrations/u2f/U2fExternalAuthenticator.py
+# Based on oxAuth U2fExternalAuthenticator.py
 
 import java
 import sys
