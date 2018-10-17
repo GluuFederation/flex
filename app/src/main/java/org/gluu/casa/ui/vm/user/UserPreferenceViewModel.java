@@ -5,9 +5,9 @@
  */
 package org.gluu.casa.ui.vm.user;
 
-import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.extension.AuthnMethod;
+import org.gluu.casa.extension.PreferredMethodFragment;
 import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +41,7 @@ public class UserPreferenceViewModel extends UserViewModel {
     @WireVariable("extensionsManager")
     private ExtensionsManager extManager;
 
+    private List<Pair<String, String>> preferredFragments;
     private String noMethodName;
     private String prevSelectedMethod;
     private String selectedMethod;
@@ -49,7 +50,6 @@ public class UserPreferenceViewModel extends UserViewModel {
     private boolean uiEditing;
     private boolean uiEditable;
     private boolean uiNotEnoughCredsFor2FA;
-    private boolean uiAllowedToSetPolicy;
 
     public boolean isUiNotEnoughCredsFor2FA() {
         return uiNotEnoughCredsFor2FA;
@@ -63,16 +63,16 @@ public class UserPreferenceViewModel extends UserViewModel {
         return uiEditable;
     }
 
-    public boolean isUiAllowedToSetPolicy() {
-        return uiAllowedToSetPolicy;
-    }
-
     public List<Pair<String, String>> getAvailMethods() {
         return availMethods;
     }
 
     public String getSelectedMethod() {
         return selectedMethod;
+    }
+
+    public List<Pair<String, String>> getPreferredFragments() {
+        return preferredFragments;
     }
 
     @DependsOn("selectedMethod")
@@ -103,7 +103,11 @@ public class UserPreferenceViewModel extends UserViewModel {
         uiNotEnoughCredsFor2FA = totalCreds < confSettings.getMinCredsFor2FA() && enabledMethods.size() > 0;
 
         availMethods.add(new Pair<>(null, noMethodName));
-        uiAllowedToSetPolicy = confSettings.getEnforcement2FA().contains(EnforcementPolicy.CUSTOM);
+
+        preferredFragments = extManager.getPluginExtensionsForClass(PreferredMethodFragment.class).stream()
+                .map(p -> new Pair<>(String.format("/%s/%s", ExtensionsManager.PLUGINS_EXTRACTION_DIR, p.getX()), p.getY().getUrl()))
+                .collect(Collectors.toList());
+
     }
 
     @NotifyChange({"uiEditing", "selectedMethod"})

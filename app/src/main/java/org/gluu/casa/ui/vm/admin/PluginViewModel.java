@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -339,10 +340,10 @@ public class PluginViewModel extends MainViewModel {
         for (Object obj : manager.getExtensions(pluginId)) {
             Class cls = obj.getClass();
 
-            if (NavigationMenu.class.isAssignableFrom(cls)) {
-                extList.add(getExtensionLabel(NavigationMenu.class.getName(), cls.getSimpleName()));
-            } else if (!AUTHN_METHOD.isAssignableFrom(cls)) {
-                extList.add(getExtensionLabel(cls.getName()));
+            if (!AUTHN_METHOD.isAssignableFrom(cls)) {
+                extList.add(getExtensionLabel(
+                        Stream.of(cls.getInterfaces()).findFirst().map(Class::getName).orElse(""),
+                        cls.getSimpleName()));
             }
         }
 

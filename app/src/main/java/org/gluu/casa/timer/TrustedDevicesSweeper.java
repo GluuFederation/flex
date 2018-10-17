@@ -8,6 +8,7 @@ package org.gluu.casa.timer;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unboundid.ldap.sdk.Filter;
+import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.TrustedDevicesSettings;
 import org.gluu.casa.conf.sndfactor.TrustedDevice;
 import org.gluu.casa.conf.sndfactor.TrustedOrigin;
@@ -47,6 +48,9 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
     @Inject
     private LdapService ldapService;
 
+    @Inject
+    private MainSettings mainSettings;
+
     private String quartzJobName;
     private long locationExpiration;
     private long deviceExpiration;
@@ -56,17 +60,19 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
     private void inited() {
         mapper = new ObjectMapper();
         quartzJobName = getClass().getSimpleName() + "_sweep";
+        setup();
     }
 
-    public long getLocationExpirationDays() {
-        return TimeUnit.MILLISECONDS.toDays(locationExpiration);
+    public int getLocationExpirationDays() {
+        return (int) TimeUnit.MILLISECONDS.toDays(locationExpiration);
     }
 
-    public long getDeviceExpirationDays() {
-        return TimeUnit.MILLISECONDS.toDays(deviceExpiration);
+    public int getDeviceExpirationDays() {
+        return (int) TimeUnit.MILLISECONDS.toDays(deviceExpiration);
     }
 
-    public void setup(TrustedDevicesSettings tsettings) {
+    public void setup() {
+        TrustedDevicesSettings tsettings = mainSettings.getTrustedDevicesSettings();
         locationExpiration = TimeUnit.DAYS.toMillis(Optional.ofNullable(tsettings)
                 .map(TrustedDevicesSettings::getLocationExpirationDays).orElse(TRUSTED_LOCATION_EXPIRATION_DAYS));
         deviceExpiration = TimeUnit.DAYS.toMillis(Optional.ofNullable(tsettings)

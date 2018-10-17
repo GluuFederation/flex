@@ -1,0 +1,23 @@
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native" if="${sessionContext.user ne null}">
+
+    <z:div class="tc" visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'CUSTOM') gt 0)">
+        <span class="i db pb1">${labels.policy.default_text}</span>
+        <z:button sclass="${css.primaryButton}" label="${labels.policy.go_manage}" href="${base}/policy.zul" />
+    </z:div>
+
+    <z:div visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'CUSTOM') lt 0)">
+        <p class="mb2">${labels.policy.when_prompted}</p>
+        <ul class="mb0">
+            <z:div visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'EVERY_LOGIN') gt 0)">
+                <li class="f7">${labels.policy.EVERY_LOGIN}</li>
+            </z:div>
+            <z:div visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'LOCATION_UNKNOWN') gt 0)">
+                <li class="f7">${labels.policy.LOCATION_UNKNOWN}</li>
+            </z:div>
+            <z:div visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'DEVICE_UNKNOWN') gt 0)">
+                <li class="f7">${labels.policy.DEVICE_UNKNOWN}</li>
+            </z:div>
+        </ul>
+    </z:div>
+
+</z:zk>

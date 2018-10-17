@@ -161,7 +161,6 @@ public class ConfigurationHandler extends JobListenerSupport {
                             if (appState.equals(AppStateEnum.OPERATING)) {
                                 logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
                                 scriptsReloader.init(1);
-                                devicesSweeper.setup(settings.getTrustedDevicesSettings());
                                 devicesSweeper.activate(10);
                             }
                         } else {

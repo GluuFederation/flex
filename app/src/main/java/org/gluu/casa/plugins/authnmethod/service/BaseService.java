@@ -33,9 +33,8 @@ class BaseService {
         codehausMapper = new org.codehaus.jackson.map.ObjectMapper();
     }
 
-
     public String getScriptPropertyValue(String key) {
-        return Optional.of(props).flatMap(m -> Optional.of(m.get(key))).orElse(null);
+        return Optional.ofNullable(props).flatMap(m -> Optional.ofNullable(m.get(key))).orElse(null);
     }
 
 }

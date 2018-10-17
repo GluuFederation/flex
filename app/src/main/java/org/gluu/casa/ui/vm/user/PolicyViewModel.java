@@ -1,8 +1,15 @@
+/*
+ * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
+ *
+ * Copyright (c) 2018, Gluu
+ */
 package org.gluu.casa.ui.vm.user;
 
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.conf.sndfactor.TrustedDevice;
 import org.gluu.casa.ui.UIUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
@@ -25,6 +32,8 @@ import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.EVERY_LOGIN;
  */
 @VariableResolver(DelegatingVariableResolver.class)
 public class PolicyViewModel extends UserViewModel {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private boolean uiHasPreferredMethod;
     private boolean uiAllowedToSetPolicy;
@@ -51,8 +60,13 @@ public class PolicyViewModel extends UserViewModel {
     @Init(superclass = true)
     public void childInit() throws Exception {
 
+        logger.debug("Initializing ViewModel");
+
         uiHasPreferredMethod = user.getPreferredMethod() != null;
         uiAllowedToSetPolicy = confSettings.getEnforcement2FA().contains(EnforcementPolicy.CUSTOM);
+        logger.trace("User has a preferred method: {}", uiHasPreferredMethod);
+        logger.trace("Users are allowed to set their own policy: {}", uiAllowedToSetPolicy);
+
         Pair<Set<String>, List<TrustedDevice>> police = userService.get2FAPolicyData(user.getId());
         enforcementPolicies = police.getX();
         trustedDevices = police.getY();
@@ -77,12 +91,14 @@ public class PolicyViewModel extends UserViewModel {
         if (enforcementPolicies.contains(EVERY_LOGIN.toString())) {
             resetToDefaultPolicy();
         }
+        logger.debug("Enforcement policies are: {}", enforcementPolicies.toString());
 
     }
 
     @Command
     public void updatePolicy() {
 
+        logger.trace("Updating user's policies");
         if (userService.update2FAPolicies(user.getId(), enforcementPolicies)) {
             enforcementPoliciesCopy = new HashSet<>(enforcementPolicies);
             UIUtils.showMessageUI(true);
@@ -95,6 +111,7 @@ public class PolicyViewModel extends UserViewModel {
     @NotifyChange("trustedDevices")
     @Command
     public void deleteDevice(@BindingParam("idx") int index) {
+        logger.trace("Deleting user device");
         UIUtils.showMessageUI(userService.deleteTrustedDevice(user.getId(), trustedDevices, index));
     }
 

@@ -29,9 +29,12 @@
                 <div class="pv1" /> <!-- avoids vertical margin collapse -->
                 <div class="alert alert-success dn" id="feedback-preferred" role="alert" />
             </div>
-            <z:div sclass="${css.panel} tc" visible="@load(vm.selectedMethod ne null and vm.uiAllowedToSetPolicy)">
-                <span class="i db pb1">${labels.usr.policy_default_text}</span>
-                <z:button sclass="${css.primaryButton}" label="${labels.usr.policy_go_manage}" href="/user/policy.zul" />
+            <z:div sclass="${css.panel}" visible="@load(vm.selectedMethod ne null and not empty vm.preferredFragments)" children="@load(vm.preferredFragments)">
+                <zk:template name="children">
+                    <z:include src="@load(c:cat3(each.x,'/',each.y))">
+                        <zk:attribute name="base">${each.x}</zk:attribute>
+                    </z:include>
+                </zk:template>
             </z:div>
         </h:section>
 

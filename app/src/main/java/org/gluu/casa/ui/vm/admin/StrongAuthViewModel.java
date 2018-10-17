@@ -33,6 +33,8 @@ import java.util.stream.Stream;
 
 import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.CUSTOM;
 import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.EVERY_LOGIN;
+import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.LOCATION_UNKNOWN;
+import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.DEVICE_UNKNOWN;
 import static org.gluu.casa.core.ConfigurationHandler.BOUNDS_MINCREDS_2FA;
 
 /**
@@ -46,6 +48,7 @@ public class StrongAuthViewModel extends MainViewModel {
     @WireVariable
     private TrustedDevicesSweeper trustedDevicesSweeper;
 
+    private MainSettings settings;
     private int minCreds2FA;
     private List<Integer> minCredsList;
     private Set<String> enforcementPolicies;
@@ -80,45 +83,40 @@ public class StrongAuthViewModel extends MainViewModel {
         this.deviceExpiration = deviceExpiration;
     }
 
-    @Init//(superclass = true)
+    @Init
     public void init() {
+        logger.debug("Initializing ViewModel");
+        settings = getSettings();
         reloadConfig();
     }
 
-    private void reloadConfig() {
-
-        locationExpiration = (int) trustedDevicesSweeper.getLocationExpirationDays();
-        deviceExpiration = (int) trustedDevicesSweeper.getDeviceExpirationDays();
-
-        minCreds2FA = getSettings().getMinCredsFor2FA();
-        enforcementPolicies = getSettings().getEnforcement2FA().stream().map(EnforcementPolicy::toString).collect(Collectors.toSet());
-
-        if (minCredsList == null) {
-            minCredsList = new ArrayList<>();
-            for (int i = BOUNDS_MINCREDS_2FA.getX(); i <= BOUNDS_MINCREDS_2FA.getY(); i++) {
-                minCredsList.add(i);
-            }
-        }
-
-    }
-
-    @NotifyChange("enforcementPolicies")
+    @NotifyChange({"enforcementPolicies", "deviceExpiration", "locationExpiration"})
     @Command
     public void checkPolicy(@BindingParam("evt") Event event) {
 
         Checkbox box = (Checkbox) event.getTarget();
         String policy = box.getId();
 
+        logger.trace("Policy '{}' {}", policy, box.isChecked() ? "checked" : "unchecked");
         if (box.isChecked()) {
             enforcementPolicies.add(policy);
         } else {
             enforcementPolicies.remove(policy);
+            //Revert the numbers, this helps prevent entering negative numbers, then deselecting an option, and then saving
+            if (LOCATION_UNKNOWN.toString().equals(policy) || CUSTOM.toString().equals(policy)) {
+                deviceExpiration = trustedDevicesSweeper.getDeviceExpirationDays();
+            }
+            if (DEVICE_UNKNOWN.toString().equals(policy) || CUSTOM.toString().equals(policy)) {
+                locationExpiration = trustedDevicesSweeper.getLocationExpirationDays();
+            }
         }
         if (enforcementPolicies.contains(EVERY_LOGIN.toString())) {
             enforcementPolicies = Stream.of(EVERY_LOGIN.toString()).collect(Collectors.toSet());
         } else if (enforcementPolicies.contains(CUSTOM.toString())) {
             enforcementPolicies = Stream.of(CUSTOM.toString()).collect(Collectors.toSet());
         }
+        logger.trace("Newer enforcement policies: {}", enforcementPolicies.toString());
+
     }
 
     @Command
@@ -132,6 +130,25 @@ public class StrongAuthViewModel extends MainViewModel {
             promptBefore2FAProceed(Labels.getLabel("adm.strongauth_warning_up", new Integer[]{ minCreds2FA }), val);
         } else {
             processUpdate(val);
+        }
+
+    }
+
+    private void reloadConfig() {
+
+        locationExpiration = trustedDevicesSweeper.getLocationExpirationDays();
+        deviceExpiration = trustedDevicesSweeper.getDeviceExpirationDays();
+
+        minCreds2FA = settings.getMinCredsFor2FA();
+        enforcementPolicies = settings.getEnforcement2FA().stream().map(EnforcementPolicy::toString).collect(Collectors.toSet());
+        logger.trace("Minimum creds for 2FA: {}", minCreds2FA);
+        logger.trace("Current enforcement policies: {}", enforcementPolicies.toString());
+
+        if (minCredsList == null) {
+            minCredsList = new ArrayList<>();
+            for (int i = BOUNDS_MINCREDS_2FA.getX(); i <= BOUNDS_MINCREDS_2FA.getY(); i++) {
+                minCredsList.add(i);
+            }
         }
 
     }
@@ -153,12 +170,15 @@ public class StrongAuthViewModel extends MainViewModel {
     }
 
     private void processUpdate(int newval) {
+
         if (locationExpiration > 0 && deviceExpiration > 0) {
+            logger.trace("Updating settings");
             update2FASettings(newval, enforcementPolicies.stream().map(EnforcementPolicy::valueOf).collect(Collectors.toList()));
             reloadConfig();
         } else {
             UIUtils.showMessageUI(false, Labels.getLabel("adm.strongauth_exp_invalid"));
         }
+
     }
 
     private void update2FASettings(int minCreds, List<EnforcementPolicy> policies) {
@@ -167,16 +187,15 @@ public class StrongAuthViewModel extends MainViewModel {
         tsettings.setDeviceExpirationDays(deviceExpiration);
         tsettings.setLocationExpirationDays(locationExpiration);
 
-        trustedDevicesSweeper.setup(tsettings);
-
-        MainSettings settings = getSettings();
         settings.setTrustedDevicesSettings(tsettings);
         settings.setMinCredsFor2FA(minCreds);
         settings.setEnforcement2FA(policies);
 
         if (updateMainSettings(Labels.getLabel("adm.methods_change_success"))) {
             logger.info("Changed minimum number of enrolled credentials for 2FA usage to {}", minCreds);
-            logger.info("Changed 2FA enforcement policy to {}", policies);
+            logger.info("Changed 2FA enforcement policy to {}", policies.toString());
+            logger.trace("Refreshing devices sweeper timer job settings");
+            trustedDevicesSweeper.setup();
         }
 
     }
