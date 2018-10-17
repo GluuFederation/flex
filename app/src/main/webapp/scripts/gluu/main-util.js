@@ -12,6 +12,17 @@ function initTooltips() {
     }, 2000, null);
 }
 
+function regenerateFooter() {
+    try {
+        var foot = $('.cust-footer-rule');
+        var content = foot.css('content');
+        if (content && (content.charAt(0) == '"' || content.charAt(0) == "'")) {
+            content = eval(content); //This helps deal with escaped quotes
+            foot.html(content);
+        }
+    } catch (e) {}
+}
+
 //Sends some browser metadata
 function sendBrowserData() {
 

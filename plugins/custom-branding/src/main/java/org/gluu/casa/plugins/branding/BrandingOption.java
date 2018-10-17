@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2018, Gluu
  */
-package org.gluu.casa.ui.vm.admin.branding;
+package org.gluu.casa.plugins.branding;
 
 /**
  * @author jgomer

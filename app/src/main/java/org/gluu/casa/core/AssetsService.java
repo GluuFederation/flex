@@ -7,13 +7,13 @@ package org.gluu.casa.core;
 
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.service.IBrandingManager;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,32 +23,22 @@ import java.nio.file.Paths;
  */
 @Named
 @ApplicationScoped
-public class AssetsService {
-
-    public static final String CUSTOM_FILEPATH = System.getProperty("server.base") + File.separator + "static";
+public class AssetsService implements IBrandingManager {
 
     private static final String DEFAULT_LOGO_URL = "/images/logo.png";
     private static final String DEFAULT_FAVICON_URL = "/images/favicon.ico";
     private static final String DEFAULT_CUSTOM_PATH = "/custom";
+    private static final String EMPTY_SNIPPET = "/**/";
 
     @Inject
     private Logger logger;
 
     @Inject
-    private ZKService zkService;
-
-    @Inject
-    private ConfigurationHandler confHandler;
-
     private MainSettings mainSettings;
 
     private String logoUrl;
 
     private String faviconUrl;
-
-    private String originalLogoDataUri;
-
-    private String originalFaviconDataUri;
 
     public String getLogoUrl() {
         return logoUrl;
@@ -62,7 +52,77 @@ public class AssetsService {
         return mainSettings.isUseExternalBranding() ? DEFAULT_CUSTOM_PATH : "";
     }
 
-    public void reloadUrls() {
+    public String getExtraCss() {
+        return mainSettings.getExtraCssSnippet();
+    }
+
+    public void useExternalAssets() throws Exception {
+
+        if (!mainSettings.isUseExternalBranding()) {
+            try {
+                logger.info("Changing to use external assets directory");
+                mainSettings.setUseExternalBranding(true);
+                mainSettings.setExtraCssSnippet(null);
+                mainSettings.save();
+                reloadUrls();
+            } catch (Exception e) {
+                mainSettings.setUseExternalBranding(false);
+                throw e;
+            }
+        }
+
+    }
+
+    public void useExtraCss(String css) throws Exception {
+
+        String snip = mainSettings.getExtraCssSnippet();
+        try {
+            logger.info("Changing extra CSS code snippet");
+            mainSettings.setUseExternalBranding(false);
+            mainSettings.setExtraCssSnippet(css);
+            mainSettings.save();
+            reloadUrls();
+        } catch (Exception e) {
+            mainSettings.setExtraCssSnippet(snip);
+            throw e;
+        }
+
+    }
+
+    public void setLogoContent(byte[] blob) throws Exception {
+        logger.info("Setting newer logo content");
+        storeAsset(getCustomPathForLogo(), blob);
+    }
+
+    public void setFaviconContent(byte[] blob) throws Exception {
+        logger.info("Setting newer favicon content");
+        storeAsset(getCustomPathForFavicon(), blob);
+    }
+
+    public void factoryReset() throws Exception {
+
+        boolean external = mainSettings.isUseExternalBranding();
+        String snip = mainSettings.getExtraCssSnippet();
+        logger.info("Resetting to default Gluu theme");
+        try {
+            mainSettings.setUseExternalBranding(false);
+            mainSettings.setExtraCssSnippet(null);
+            mainSettings.save();
+            reloadUrls();
+        } catch (Exception e) {
+            mainSettings.setUseExternalBranding(external);
+            mainSettings.setExtraCssSnippet(snip);
+            throw e;
+        }
+
+    }
+
+    @PostConstruct
+    private void init() {
+        reloadUrls();
+    }
+
+    private void reloadUrls() {
 
         logoUrl = DEFAULT_LOGO_URL;
         faviconUrl = DEFAULT_FAVICON_URL;
@@ -83,38 +143,26 @@ public class AssetsService {
 
     }
 
-    public Path getCustomPathForLogo() {
+    private Path getCustomPathForLogo() {
         return Paths.get(CUSTOM_FILEPATH, DEFAULT_LOGO_URL.split("/"));
     }
 
-    public Path getCustomPathForFavicon() {
+    private Path getCustomPathForFavicon() {
         return Paths.get(CUSTOM_FILEPATH, DEFAULT_FAVICON_URL.split("/"));
     }
 
-    public byte[] getDefaultLogoBytes() {
-        return getBytesOf(DEFAULT_LOGO_URL);
-    }
+    private void updateEmptyCssSnippet() throws Exception {
 
-    public byte[] getDefaultFaviconBytes() {
-        return getBytesOf(DEFAULT_FAVICON_URL);
-    }
-
-    private byte[] getBytesOf(String relativePath) {
-
-        try {
-            logger.info("Getting bytes of {}", relativePath);
-            return zkService.getResourceBytes(relativePath);
-        } catch (Exception e){
-            logger.error(e.getMessage(), e);
-            return null;
+        if (Utils.isEmpty(mainSettings.getExtraCssSnippet())) {
+            useExtraCss(EMPTY_SNIPPET);
         }
 
     }
 
-    @PostConstruct
-    private void init() {
-        mainSettings = confHandler.getSettings();
-        reloadUrls();
+    private void storeAsset(Path destination, byte[] data) throws Exception {
+        logger.info("Saving file {}", destination.toString());
+        Files.createDirectories(destination.getParent());
+        Files.write(destination, data);
     }
 
 }

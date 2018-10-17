@@ -3,12 +3,13 @@
  *
  * Copyright (c) 2018, Gluu
  */
-package org.gluu.casa.ui.vm.admin.branding;
+package org.gluu.casa.plugins.branding;
 
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,7 @@ public class CssSnippetHandler {
     private static final String PRIMARY_BUTTON_SELECTOR = "cust-primary-button";
     private static final String SECONDARY_BUTTON_SELECTOR = "cust-secondary-button";
     private static final String TERTIARY_BUTTON_SELECTOR = "cust-tertiary-button";
+    private static final String FOOTER_SELECTOR = "cust-footer-rule";
 
     private static final String PRIMARY_BUTTON_DEF_COLOR = "#FF80CC"; /* pink */
     private static final String SECONDARY_BUTTON_DEF_COLOR = "#9EEBCF"; /* light-green */
@@ -38,14 +40,24 @@ public class CssSnippetHandler {
 
     private String tertiaryButtonColor;
 
-    public CssSnippetHandler(String str) {
+    private String footerInnerHtml;
+
+    CssSnippetHandler(String str, String defaultFooterHtml) {
+
         if (str != null) {
             headerColor = getMatchingString(HEADER_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
             primaryButtonColor = getMatchingString(PRIMARY_BUTTON_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
             secondaryButtonColor = getMatchingString(SECONDARY_BUTTON_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
             tertiaryButtonColor = getMatchingString(TERTIARY_BUTTON_SELECTOR, "\\s*background-color\\s*:\\s*([^;]+)", str);
+
+            footerInnerHtml = getMatchingString(FOOTER_SELECTOR, "\\s*content\\s*:\\s*([^;]+)", str);
+            if (footerInnerHtml != null) {
+                footerInnerHtml = footerInnerHtml.substring(1, footerInnerHtml.length() - 1); //Drops surrounding single quotes
+            }
         }
+        footerInnerHtml = Optional.ofNullable(footerInnerHtml).orElse(defaultFooterHtml);
         assignMissingHeaderColors();
+
     }
 
     private String getMatchingString(String selector, String subregexp, String cssString) {
@@ -129,22 +141,27 @@ public class CssSnippetHandler {
         }
     }
 
-    public String getSnippet(boolean includeButtons) {
+    String getSnippet(boolean includeButtons) {
 
         String snip = "";
         //this way of building correlates tightly with parsing logic at class constructor
         snip += String.format(".%s{ background-color : %s; }\n", HEADER_SELECTOR, headerColor);
+
+        //Note that content CSS property applies only to pseudoselectors ::before and ::after when using a string.
+        //This rules is just a dummy one aimed at storing the content. Actual footer content is set via Javascript
+        snip += String.format(".%s{ content: '%s'; }\n", FOOTER_SELECTOR, footerInnerHtml.replaceAll("\"", "\\\"").replaceAll("'", "\\\\'"));
 
         if (includeButtons) {
             snip += getSnippetForButton(PRIMARY_BUTTON_SELECTOR, primaryButtonColor);
             snip += getSnippetForButton(SECONDARY_BUTTON_SELECTOR, secondaryButtonColor);
             snip += getSnippetForButton(TERTIARY_BUTTON_SELECTOR, tertiaryButtonColor);
         }
-        logger.debug("snippet is\n{}", snip);
+        logger.debug("Generated CSS snippet is {}", snip);
         return snip;
+
     }
 
-    public void assignMissingButtonColors() {
+    void assignMissingButtonColors() {
         if (primaryButtonColor == null) {
             primaryButtonColor = PRIMARY_BUTTON_DEF_COLOR;
         }
@@ -172,6 +189,10 @@ public class CssSnippetHandler {
         return tertiaryButtonColor;
     }
 
+    public String getFooterInnerHtml() {
+        return footerInnerHtml;
+    }
+
     public void setHeaderColor(String headerColor) {
         this.headerColor = headerColor;
     }
@@ -186,6 +207,10 @@ public class CssSnippetHandler {
 
     public void setTertiaryButtonColor(String tertiaryButtonColor) {
         this.tertiaryButtonColor = tertiaryButtonColor;
+    }
+
+    public void setFooterInnerHtml(String footerInnerHtml) {
+        this.footerInnerHtml = footerInnerHtml;
     }
 
 }
