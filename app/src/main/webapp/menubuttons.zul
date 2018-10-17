@@ -43,7 +43,7 @@
             </zk:zk>
 
             <!-- plugin's menu items -->
-            <z:div sclass="bt b--light-gray" if="${not empty vm.pluginMenuItems}" />
+            <z:div sclass="bt b--moon-gray" if="${not empty vm.pluginMenuItems}" />
             <z:div children="@load(vm.pluginMenuItems)">
                 <zk:template name="children">
                     <z:include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">

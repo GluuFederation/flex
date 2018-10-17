@@ -7,17 +7,12 @@
                 &amp;nbsp; ${labels.adm.console_home}
             </a>
         </div>
-        <ul id="menu" class="list pl0">
+        <ul id="menu" class="list pl0"><!-- the ID is needed, see style.css -->
             <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.MainViewModel')">
 
                 <li class="collapsible-menu-item di">
                     <a class="db pv2 pl2 hover-bg-washed-blue ${css.menuItem}" href="${zkService.contextPath}/admin/methods.zul">
                         ${labels.adm.methods_title}
-                    </a>
-                </li>
-                <li class="collapsible-menu-item di">
-                    <a class="db pv2 pl2 hover-bg-washed-blue ${css.menuItem}" href="${zkService.contextPath}/admin/strongauth.zul">
-                        ${labels.adm.strongauth_title}
                     </a>
                 </li>
                 <li class="collapsible-menu-item di">
@@ -30,7 +25,7 @@
                         ${labels.adm.resets_title}
                     </a>
                 </li>
-                <li class="collapsible-menu-item di">
+                <li class="collapsible-menu-item di" id="basic_branding_menuitem">
                     <a class="db pv2 pl2 hover-bg-washed-blue ${css.menuItem}" href="${zkService.contextPath}/admin/branding.zul">
                         ${labels.adm.branding_title}
                     </a>
@@ -57,7 +52,7 @@
                 </li>
 
                 <!-- plugin's menu items -->
-                <z:div sclass="bt b--light-gray" if="${not empty vm.extraButtons}" />
+                <z:div sclass="bt b--moon-gray" if="${not empty vm.extraButtons}" />
 
                 <!-- extra buttons defined by pugins -->
                 <z:div children="@load(vm.extraButtons)">

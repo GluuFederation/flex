@@ -9,17 +9,18 @@
             <z:include src="/header.zul"/>
 
             <z:div sclass="flex justify-start">
-                <z:include class="flex flex-shrink-0" src="${c:indexOf(desktop.requestPath, '/admin') == 0 ? '/admin/menu.zul' : '/menubuttons.zul'}"/>
+                <z:include class="flex flex-shrink-0" src="${c:startsWith(desktop.requestPath, '/admin') or
+                            (c:startsWith(desktop.requestPath, '/pl/') and c:indexOf(desktop.requestPath, '/admin/') gt 0) ?
+                            '/admin/menu.zul' : '/menubuttons.zul'}"/>
 
                 <div style="width:1px"></div>
                 <!-- page's center content -->
                 <div class="relative z-1 flex flex-grow-1">
                     <!-- grow horizontally and vertically as much as possible -->
                     <div class="flex flex-column justify-between w-100 h-100">
-                        <z:div self="@insert(maincontent)"/>
+                        <z:div self="@insert(maincontent)" />
                         <footer class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
-                            Powered by
-                            <a href="https://gluu.org" class="link blue">Gluu</a>.
+                            ${labels.adm.branding_footer}
                         </footer>
                     </div>
                 </div>
@@ -29,7 +30,10 @@
         <z:script src="/scripts/bootstrap.min.js" />
         <z:script src="/scripts/font-awesome-5.2.0.all.min.js" />
         <!-- In practice this call appears in markup earlier than the couple of files above -->
-        <script>initTooltips();</script>
+        <script>
+            initTooltips();
+            regenerateFooter();
+        </script>
 
     </z:div>
 
