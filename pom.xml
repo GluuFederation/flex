@@ -27,7 +27,7 @@
         <oxd.version>3.1.4.Final</oxd.version>
         <ox.version>3.1.4.Final</ox.version>
         <!--ox.version>4.0.0-SNAPSHOT</ox.version-->
-        <jackson.version>2.5.3</jackson.version>
+        <jackson.version>2.9.4</jackson.version>
         <zk.version>8.5.0</zk.version>
         <ldapsdk.version>4.0.7</ldapsdk.version>
         <quartz.version>2.2.3</quartz.version>
