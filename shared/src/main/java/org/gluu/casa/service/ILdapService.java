@@ -35,7 +35,7 @@ public interface ILdapService {
 
     /**
      * Builds a {@link List} of objects of type <code>T</code> using an LDAP search (with scope of SUB) using <code>baseDn</code>
-     * as search base; his type of search accounts for the entry referenced in <code>baseDn</code> and any subordinate
+     * as search base; this type of search accounts for the entry referenced in <code>baseDn</code> and any subordinate
      * entries to any depth. The object passed as parameter is used to internally build an LDAP filter to perform the search.
      * <p>Note this search is performed in the context of the UnboundID LDAP SDK <a href="https://docs.ldap.com/ldap-sdk/docs/persist/index.html">
      * persistence framework</a>. In this sense, the Class referenced as parameter has to be annotated with

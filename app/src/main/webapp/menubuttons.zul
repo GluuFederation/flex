@@ -36,7 +36,7 @@
             <zk:zk if="${sessionContext.user.admin}">
                 <li>
                     <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}/admin.zul">
-                        <i class="mh2 fas fa-wrench" /><!-- fa-sliders fa-cog fa-wrench -->
+                        <i class="mh2 fas fa-sliders-h" /><!-- fa-wrench fa-cog -->
                         <span class="collapsible-menu-item di">${labels.adm.title}</span>
                     </a>
                 </li>

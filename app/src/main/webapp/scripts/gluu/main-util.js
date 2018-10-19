@@ -18,7 +18,11 @@ function regenerateFooter() {
         var content = foot.css('content');
         if (content && (content.charAt(0) == '"' || content.charAt(0) == "'")) {
             content = eval(content); //This helps deal with escaped quotes
-            foot.html(content);
+            if (content.length == 0) {
+                foot.remove();
+            } else {
+                foot.html(content);
+            }
         }
     } catch (e) {}
 }
@@ -113,4 +117,3 @@ function collapse() {
     }
     aside.is(":visible") ? aside.hide() : aside.show()
 }
-
