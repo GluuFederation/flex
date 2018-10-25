@@ -230,12 +230,6 @@ public class ExtensionsManager implements IExtensionsManager {
         return id;
     }
 
-    public boolean unloadPlugin(String pluginId) {
-        boolean unloaded = pluginManager.unloadPlugin(pluginId);
-        logger.debug("Plugin {} was{} unloaded", pluginId, unloaded ? "" : " not");
-        return unloaded;
-    }
-
     public boolean stopPlugin(String pluginId) {
 
         PluginState state = pluginManager.stopPlugin(pluginId);
@@ -256,8 +250,7 @@ public class ExtensionsManager implements IExtensionsManager {
 
     public boolean deletePlugin(String pluginId) {
 
-        //See: https://github.com/pf4j/pf4j/issues/217
-        boolean success = Utils.onWindows() ? unloadPlugin(pluginId) : pluginManager.deletePlugin(pluginId);
+        boolean success = pluginManager.deletePlugin(pluginId);
         if (!success) {
             logger.warn("Plugin '{}' could not be deleted", pluginId);
         }
