@@ -8,7 +8,10 @@ package org.gluu.casa.ui;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.extension.navigation.MenuType;
 import org.gluu.casa.extension.navigation.NavigationMenu;
+import org.slf4j.Logger;
 import org.zkoss.util.Pair;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,20 +21,39 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by jgomer on 2018-07-10.
+ * @author jgomer
  */
 @Named
 @ApplicationScoped
 public class MenuService {
 
     @Inject
+    private Logger logger;
+
+    @Inject
     private ExtensionsManager extManager;
 
     public List<Pair<String, NavigationMenu>> getMenusOfType(MenuType menuType) {
 
+        Execution execution = Executions.getCurrent();
+
         return extManager.getPluginExtensionsForClass(NavigationMenu.class).stream()
                 .filter(pair -> menuType.equals(pair.getY().menuType()))
                 .map(pair -> new Pair<>(String.format("/%s/%s", ExtensionsManager.PLUGINS_EXTRACTION_DIR, pair.getX()), pair.getY()))
+                .filter(pair -> {
+                    //Implements check for issue #18
+                    boolean validUrl = false;
+                    String url = null;
+                    try {
+                        url = pair.getX() + "/" + pair.getY().getContentsUrl();
+                        execution.getPageDefinition(url);
+                        validUrl = true;
+                    } catch (Exception e) {
+                        logger.error("An error occurred when building fragment '{}': {}", url, e.getMessage());
+                        logger.warn("This navigation menu will be skipped from page markup");
+                    }
+                    return validUrl;
+                })
                 .sorted(Comparator.comparing(pair -> -pair.getY().getPriority())).collect(Collectors.toList());
 
     }
