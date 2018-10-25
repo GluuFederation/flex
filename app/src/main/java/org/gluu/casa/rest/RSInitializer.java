@@ -3,12 +3,12 @@
  *
  * Copyright (c) 2018, Gluu
  */
-package org.gluu.casa.core.init;
+package org.gluu.casa.rest;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-import static org.gluu.casa.core.init.RSInitializer.ROOT_PATH;
+import static org.gluu.casa.rest.RSInitializer.ROOT_PATH;
 
 /**
  * @author jgomer

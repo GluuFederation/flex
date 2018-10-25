@@ -5,7 +5,7 @@
  */
 package org.gluu.casa.core;
 
-import org.gluu.casa.core.init.RSInitializer;
+import org.gluu.casa.rest.RSInitializer;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.rest.RSResourceScope;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;

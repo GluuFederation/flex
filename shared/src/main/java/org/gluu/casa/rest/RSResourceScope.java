@@ -1,3 +1,8 @@
+/*
+ * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
+ *
+ * Copyright (c) 2018, Gluu
+ */
 package org.gluu.casa.rest;
 
 import java.lang.annotation.ElementType;
@@ -6,10 +11,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A marker interface. Decorate your JAX-RS endpoints (eg classes annotated with <code>@javax.ws.rs.Path</code>) with this
- * annotation to make your endpoints added at runtime when the plugin they belong to is starting.
- * <p>By default it will be added as a singleton resource. If you want your class be instantiated upon every request,
- * supply the suitable parameter to the annotation</p>
+ * Use this annotation to decorate JAX-RS resources (eg classes annotated with <code>@javax.ws.rs.Path</code>) in order to
+ * specify whether the resource should be treated as a singleton or if you want your class be instantiated upon every request.
+ * By default, if this annotation is not used, it is assumed the resource is a singleton.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -20,4 +24,5 @@ public @interface RSResourceScope {
      * @return Boolean value
      */
     boolean singleton() default true;
+
 }
