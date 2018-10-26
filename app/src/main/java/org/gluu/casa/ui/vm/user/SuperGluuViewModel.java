@@ -30,7 +30,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -139,7 +138,7 @@ public class SuperGluuViewModel extends UserViewModel {
                     stopPolling();
                     break;
                 case "poll":
-                    newDevice = sgService.getLatestSuperGluuDevice(user.getId(), new Date().getTime());
+                    newDevice = sgService.getLatestSuperGluuDevice(user.getId(), System.currentTimeMillis());
                     if (newDevice != null) {    //New device detected, stop polling
                         stopPolling();
                         try {
@@ -272,7 +271,6 @@ public class SuperGluuViewModel extends UserViewModel {
                     }
                 });
     }
-
 
     private void resetAddSettings() {
         uiQRShown = false;
