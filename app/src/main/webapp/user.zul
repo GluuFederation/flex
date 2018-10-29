@@ -55,7 +55,7 @@
                                     <z:button label="${c:l(method.panelButtonKey)}" sclass="${css.primaryButton}" href="${vm.getAuthnMethodPageUrl(method)}" />
                                 </div>
                                 <!-- panelBottomTextKey property could not be referenced as each.panelBottomTextKey (default interface method...) -->
-                                <zk:zk if="${not empty each.getPanelBottomTextKey()}">
+                                <zk:zk if="${not empty method.getPanelBottomTextKey()}">
                                     <span class="dark-blue2">${c:l(method.getPanelBottomTextKey())}</span>
                                 </zk:zk>
                             </div>

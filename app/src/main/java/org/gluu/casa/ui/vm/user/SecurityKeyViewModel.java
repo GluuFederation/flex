@@ -31,7 +31,6 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -136,7 +135,7 @@ public class SecurityKeyViewModel extends UserViewModel {
             u2fService.finishRegistration(user.getUserName(), jsonStr);
             //To know exactly which entry is, we pass the current timestamp so we can pick the most suitable
             //entry by inspecting the creationDate attribute among all existing entries
-            newDevice = u2fService.getLatestSecurityKey(user.getId(), new Date().getTime());
+            newDevice = u2fService.getLatestSecurityKey(user.getId(), System.currentTimeMillis());
 
             if (newDevice != null) {
                 uiEnrolled = true;

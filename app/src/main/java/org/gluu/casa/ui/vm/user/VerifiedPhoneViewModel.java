@@ -6,7 +6,7 @@ import org.gluu.casa.core.pojo.VerifiedMobile;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPSmsExtension;
-import org.gluu.casa.plugins.authnmethod.rs.status.sms.SendCode;
+import org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus;
 import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
 import org.gluu.casa.core.LdapService;
 import org.zkoss.bind.BindUtils;
@@ -108,7 +108,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
                     logger.trace("sendCode. code={}", realCode);
 
                     //Send message (service bean already knows all settings to perform this step)
-                    uiSmsDelivered = mpService.sendSMS(numb, body).equals(SendCode.SUCCESS);
+                    uiSmsDelivered = mpService.sendSMS(numb, body).equals(SMSDeliveryStatus.SUCCESS);
                     if (!uiSmsDelivered) {
                         UIUtils.showMessageUI(false);
                     }
