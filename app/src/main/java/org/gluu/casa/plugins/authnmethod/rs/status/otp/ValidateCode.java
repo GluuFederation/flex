@@ -19,22 +19,21 @@ import static javax.ws.rs.core.Response.Status.OK;
 public enum ValidateCode {
     MISSING_PARAMS,
     NO_MATCH,
-    SUCCESS;
-
-    private String getEntity() {
-        return Utils.jsonFromObject(Collections.singletonMap("code", toString()));
-    }
+    INVALID_MODE,
+    MATCH;
 
     public Response getResponse() {
 
+        String json = null;
         Response.Status httpStatus;
-        switch (this) {
-            case MISSING_PARAMS:
-                httpStatus = BAD_REQUEST;
-            default:
-                httpStatus = OK;
+
+        if (equals(MATCH) || equals(NO_MATCH)) {
+            httpStatus = OK;
+        } else {
+            httpStatus = BAD_REQUEST;
         }
-        return Response.status(httpStatus).entity(getEntity()).build();
+        json = Utils.jsonFromObject(Collections.singletonMap("code", toString()));
+        return Response.status(httpStatus).entity(json).build();
 
     }
 

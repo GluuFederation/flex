@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2018, Gluu
  */
-package org.gluu.casa.plugins.authnmethod.rs.status.otp;
+package org.gluu.casa.plugins.authnmethod.rs.status.sg;
 
 import org.gluu.casa.misc.Utils;
 
@@ -13,14 +13,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
 /**
  * @author jgomer
  */
 public enum ComputeRequestCode {
-    NO_DISPLAY_NAME,
-    INVALID_MODE,
+    NO_USER_ID,
+    UNKNOWN_USER_ID,
     SUCCESS;
 
     public Response getResponse(String key, String request) {
@@ -35,12 +36,10 @@ public enum ComputeRequestCode {
             map.put("request", request);
 
             json = Utils.jsonFromObject(map);
-        }
-        else {
-            httpStatus = BAD_REQUEST;
+        } else {
+            httpStatus = equals(NO_USER_ID) ? BAD_REQUEST : NOT_FOUND;
             json = Utils.jsonFromObject(Collections.singletonMap("code", toString()));
         }
-
         return Response.status(httpStatus).entity(json).build();
 
     }

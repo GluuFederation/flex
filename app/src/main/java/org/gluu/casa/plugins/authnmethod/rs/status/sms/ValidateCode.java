@@ -18,25 +18,21 @@ import static javax.ws.rs.core.Response.Status.OK;
  */
 public enum ValidateCode {
     MATCH,
-    EXPIRED,
-    NO_MATCH,
+    NO_MATCH_OR_EXPIRED,
     NO_CODE;
-
-    private String getEntity() {
-        return Utils.jsonFromObject(Collections.singletonMap("code", toString()));
-    }
 
     public Response getResponse() {
 
+        String json = null;
         Response.Status httpStatus;
-        switch (this) {
-            case NO_CODE:
-                httpStatus = BAD_REQUEST;
-                break;
-            default:
-                httpStatus = OK;
+
+        if (equals(NO_CODE)) {
+            httpStatus = BAD_REQUEST;
+        } else {
+            httpStatus = OK;
         }
-        return Response.status(httpStatus).entity(getEntity()).build();
+        json = Utils.jsonFromObject(Collections.singletonMap("code", toString()));
+        return Response.status(httpStatus).entity(json).build();
 
     }
 
