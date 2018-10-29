@@ -76,7 +76,7 @@ public class FidoService extends BaseService {
 
         String id = device.getId();
         oxDeviceRegistration deviceRegistration = new oxDeviceRegistration();
-        deviceRegistration.setOxId(device.getId());
+        deviceRegistration.setOxId(id);
         List<oxDeviceRegistration> list = ldapService.find(deviceRegistration, oxDeviceRegistration.class, ldapService.getPeopleDn());
         if (list.size() == 1) {
             return list.get(0);

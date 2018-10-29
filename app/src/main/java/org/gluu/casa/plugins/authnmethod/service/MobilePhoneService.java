@@ -15,7 +15,6 @@ import org.gluu.casa.core.ldap.PersonMobile;
 import org.gluu.casa.core.pojo.VerifiedMobile;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPSmsExtension;
-import org.gluu.casa.plugins.authnmethod.rs.status.sms.SendCode;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -25,7 +24,6 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -80,9 +78,9 @@ public class MobilePhoneService extends BaseService {
 
     }
 
-    public SendCode sendSMS(String number, String body) {
+    public SMSDeliveryStatus sendSMS(String number, String body) {
 
-        SendCode status;
+        SMSDeliveryStatus status;
         if (messageFactory != null) {
 
             try {
@@ -97,21 +95,21 @@ public class MobilePhoneService extends BaseService {
                 logger.info("Message delivery status was {}", statusMsg);
                 switch (statusMsg) {
                     case "failed":
-                        status = SendCode.DELIVERY_FAILED;
+                        status = SMSDeliveryStatus.DELIVERY_FAILED;
                         break;
                     case "undelivered":
-                        status = SendCode.UNDELIVERED;
+                        status = SMSDeliveryStatus.UNDELIVERED;
                         break;
                     default:
-                        status = SendCode.SUCCESS;
+                        status = SMSDeliveryStatus.SUCCESS;
                         logger.info("Message \"{}\" sent to #{}", body, number);
                 }
             } catch (Exception e) {
-                status = SendCode.SMS_SERVICE_ERROR;
+                status = SMSDeliveryStatus.SMS_SERVICE_ERROR;
                 logger.error("No message was sent, error was: {}", e.getMessage());
             }
         } else {
-            status = SendCode.APP_SETUP_ERROR;
+            status = SMSDeliveryStatus.APP_SETUP_ERROR;
             logger.info("No message was sent, messageFactory was not initialized properly");
         }
         return status;
