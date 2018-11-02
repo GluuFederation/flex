@@ -258,6 +258,19 @@ public class ExtensionsManager implements IExtensionsManager {
 
     }
 
+    public void forceRemovePlugin(String pluginId) {
+
+        try {
+            PluginState state = pluginManager.getPlugin(pluginId).getPluginState();
+            if (state.equals(PluginState.STARTED)){
+                stopPlugin(pluginId);
+            }
+            deletePlugin(pluginId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
     public boolean startPlugin(String pluginId) {
         return startPlugin(pluginId, true);
     }

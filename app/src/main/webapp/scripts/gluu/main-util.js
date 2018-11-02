@@ -27,15 +27,19 @@ function regenerateFooter() {
     } catch (e) {}
 }
 
-//Sends some browser metadata
+function sendToServer(data) {
+    var widget =  zk.$('$message');
+    zAu.send(new zk.Event(widget, "onData", data, {toServer:true}));
+}
+
 function sendBrowserData() {
 
     if (platform) {
-        var widget =  zk.$('$message');
         platform['ua'] = null;
         platform['offset'] = -60 * new Date().getTimezoneOffset();
         platform['screenWidth'] = screen.width;
-        zAu.send(new zk.Event(widget, "onData", platform, {toServer:true}));
+        //Sends some browser metadata
+        sendToServer(platform);
     }
 
 }

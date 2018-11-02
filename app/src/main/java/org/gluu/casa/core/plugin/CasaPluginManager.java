@@ -44,8 +44,7 @@ public class CasaPluginManager extends DefaultPluginManager {
         Set<String> extensionsClassNames = getExtensionClassNames(pluginId);
         PluginState state = super.stopPlugin(pluginId);
         if (PluginState.STOPPED.equals(state)) {
-            extensionsClassNames.forEach(name -> extensionFactory.removeSingleton(name));
-
+            extensionsClassNames.forEach(extensionFactory::removeSingleton);
         }
         return state;
 

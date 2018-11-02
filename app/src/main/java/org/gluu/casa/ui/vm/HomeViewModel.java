@@ -26,7 +26,7 @@ import java.time.ZoneOffset;
 import java.util.Optional;
 
 /**
- * This class is employed to store in session some user settings
+ * This class is employed to store in session some user settings.
  * @author jgomer
  */
 @VariableResolver(DelegatingVariableResolver.class)
