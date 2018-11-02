@@ -105,7 +105,7 @@ public class MobilePhoneService extends BaseService {
                         logger.info("Message \"{}\" sent to #{}", body, number);
                 }
             } catch (Exception e) {
-                status = SMSDeliveryStatus.SMS_SERVICE_ERROR;
+                status = SMSDeliveryStatus.PROVIDER_ERROR;
                 logger.error("No message was sent, error was: {}", e.getMessage());
             }
         } else {

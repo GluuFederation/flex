@@ -35,8 +35,7 @@ public enum ComputeRequestCode {
             map.put("request", request);
 
             json = Utils.jsonFromObject(map);
-        }
-        else {
+        } else {
             httpStatus = BAD_REQUEST;
             json = Utils.jsonFromObject(Collections.singletonMap("code", toString()));
         }

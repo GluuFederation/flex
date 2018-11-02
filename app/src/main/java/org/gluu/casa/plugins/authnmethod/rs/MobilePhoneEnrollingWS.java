@@ -35,7 +35,7 @@ import static org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus.SUCCES
  * @author jgomer
  */
 @ApplicationScoped
-@Path(OTPSmsExtension.ACR)
+@Path("/enrollment/" + OTPSmsExtension.ACR)
 public class MobilePhoneEnrollingWS {
 
     private static final String SEPARATOR = ",";
@@ -101,8 +101,8 @@ public class MobilePhoneEnrollingWS {
         ValidateCode result;
         logger.trace("validateCode WS operation called");
 
-        if (Utils.isEmpty(code)) {
-            result = ValidateCode.NO_CODE;
+        if (Stream.of(code, userId).anyMatch(Utils::isEmpty)) {
+            result = ValidateCode.MISSING_PARAMS;
         } else {
             String value = recentCodes.get(userId + SEPARATOR + code);
             result = value == null ? ValidateCode.NO_MATCH_OR_EXPIRED : ValidateCode.MATCH;

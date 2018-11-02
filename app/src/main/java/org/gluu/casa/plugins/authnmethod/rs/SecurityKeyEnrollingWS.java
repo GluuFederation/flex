@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * @author jgomer
  */
 @ApplicationScoped
-@Path(SecurityKeyExtension.ACR)
+@Path("/enrollment/" + SecurityKeyExtension.ACR)
 public class SecurityKeyEnrollingWS {
 
     private static final int TIME_WINDOW_DEFAULT = 2;

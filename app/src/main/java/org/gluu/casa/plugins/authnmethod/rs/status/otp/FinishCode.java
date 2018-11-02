@@ -5,7 +5,6 @@
  */
 package org.gluu.casa.plugins.authnmethod.rs.status.otp;
 
-import org.gluu.casa.core.pojo.OTPDevice;
 import org.gluu.casa.misc.Utils;
 
 import javax.ws.rs.core.Response;
@@ -34,7 +33,7 @@ public enum FinishCode {
             httpStatus = equals(MISSING_PARAMS) ? BAD_REQUEST : INTERNAL_SERVER_ERROR;
             json = Utils.jsonFromObject(Collections.singletonMap("code", toString()));
         }
-        return Response.status(httpStatus).entity(json).build();
+        return Response.status(httpStatus).entity(json).header("Access-Control-Allow-Origin", "*").build();
 
     }
 

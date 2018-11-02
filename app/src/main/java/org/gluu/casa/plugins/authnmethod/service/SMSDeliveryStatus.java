@@ -37,10 +37,6 @@ public enum SMSDeliveryStatus {
      * The underlying Twilio API call threw an exception. This may happen in a variety of situations, for instance, providing
      * a non-valid phone number (e.g 555-1234-AB)
      */
-    SMS_SERVICE_ERROR,
-    /**
-     * Any other error not already listed
-     */
-    WS_SERVICE_ERROR;
+    PROVIDER_ERROR;
 
 }

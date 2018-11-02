@@ -35,7 +35,7 @@ import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
  * @author jgomer
  */
 @ApplicationScoped
-@Path(OTPExtension.ACR)
+@Path("/enrollment/" + OTPExtension.ACR)
 public class OTPEnrollingWS {
 
     private static final int TIME_WINDOW_DEFAULT = 2;
@@ -85,7 +85,7 @@ public class OTPEnrollingWS {
         ValidateCode result;
         logger.trace("validateCode WS operation called");
 
-        if (Stream.of(code, key).anyMatch(Utils::isEmpty)) {
+        if (Stream.of(code, key, mode).anyMatch(Utils::isEmpty)) {
             result = ValidateCode.MISSING_PARAMS;
         } else {
             try {
@@ -139,6 +139,7 @@ public class OTPEnrollingWS {
                 device.setUid(value);
                 device.setAddedOn(now);
                 device.setNickName(nickName);
+                device.setSoft(true);
 
                 if (otpService.addDevice(userId, device)) {
                     result = FinishCode.SUCCESS;

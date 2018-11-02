@@ -96,7 +96,7 @@ public class SGService extends FidoService {
     /**
      * Builds a string that encodes information in order to display a QR code
      * @param userName Username string
-     * @param code An enrollment code associated to the code
+     * @param code An enrollment code associated to the user
      * @param remoteIp An IP address to encode in the request (possibly null)
      * @return A string encoded in JSon format with the information for QR code display
      */

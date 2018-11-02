@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * @author jgomer
  */
 @ApplicationScoped
-@Path(SuperGluuExtension.ACR)
+@Path("/enrollment/" + SuperGluuExtension.ACR)
 public class SuperGluuEnrollingWS {
 
     private static final int MIN_CLIENT_POLL_PERIOD = 5;

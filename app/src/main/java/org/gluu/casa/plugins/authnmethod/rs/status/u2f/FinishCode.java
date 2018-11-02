@@ -36,7 +36,7 @@ public enum FinishCode {
             json = Utils.jsonFromObject(Collections.singletonMap("code", toString()));
             httpStatus = equals(MISSING_PARAMS) ? BAD_REQUEST : INTERNAL_SERVER_ERROR;
         }
-        return Response.status(httpStatus).entity(json).build();
+        return Response.status(httpStatus).entity(json).header("Access-Control-Allow-Origin", "*").build();
 
     }
 
