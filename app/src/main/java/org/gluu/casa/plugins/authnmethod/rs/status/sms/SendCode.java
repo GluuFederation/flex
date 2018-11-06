@@ -22,6 +22,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 public enum SendCode {
     SUCCESS,
     MISSING_PARAMS,
+    UNKNOWN_USER_ID,
     NUMBER_ALREADY_ENROLLED,
     FAILURE;
 

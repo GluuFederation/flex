@@ -6,6 +6,8 @@
 package org.gluu.casa.plugins.authnmethod.rs;
 
 import net.jodah.expiringmap.ExpiringMap;
+import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.ldap.Person;
 import org.gluu.casa.core.pojo.VerifiedMobile;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPSmsExtension;
@@ -48,6 +50,9 @@ public class MobilePhoneEnrollingWS {
     @Inject
     private MobilePhoneService mobilePhoneService;
 
+    @Inject
+    private LdapService ldapService;
+
     private Map<String, String> recentCodes;
 
     @GET
@@ -63,6 +68,8 @@ public class MobilePhoneEnrollingWS {
 
         if (Stream.of(number, userId).anyMatch(Utils::isEmpty)) {
             result = SendCode.MISSING_PARAMS;
+        } else if (ldapService.get(Person.class, ldapService.getPersonDn(userId)) == null) {
+            result = SendCode.UNKNOWN_USER_ID;
         } else if (mobilePhoneService.isNumberRegistered(number)
                 || mobilePhoneService.isNumberRegistered(number.replaceAll("[-\\+\\s]", ""))) {
             result = SendCode.NUMBER_ALREADY_ENROLLED;
@@ -166,6 +173,7 @@ public class MobilePhoneEnrollingWS {
 
     @PostConstruct
     private void inited() {
+        logger.trace("Service inited");
         recentCodes = ExpiringMap.builder()
                 .maxSize(MAX_STORED_ENTRIES).expiration(TIME_WINDOW_DEFAULT, TimeUnit.MINUTES).build();
     }

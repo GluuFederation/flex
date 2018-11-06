@@ -75,7 +75,7 @@ public class OTPEnrollingWS {
     }
 
     @GET
-    @Path("code-validity")
+    @Path("validate-code")
     @Produces(MediaType.APPLICATION_JSON)
     @ProtectedApi
     public Response validateCode(@QueryParam("code") String code,
@@ -90,12 +90,16 @@ public class OTPEnrollingWS {
         } else {
             try {
                 IOTPAlgorithm as = otpService.getAlgorithmService(OTPType.valueOf(mode.toUpperCase()));
-                String uid = as.getExternalUid(Base64.getDecoder().decode(key), code);
-                if (uid == null) {
-                    result = ValidateCode.NO_MATCH;
-                } else {
-                    keyExternalUidMapping.put(key, uid);
-                    result = ValidateCode.MATCH;
+                try {
+                    String uid = as.getExternalUid(Base64.getDecoder().decode(key), code);
+                    if (uid == null) {
+                        result = ValidateCode.NO_MATCH;
+                    } else {
+                        keyExternalUidMapping.put(key, uid);
+                        result = ValidateCode.MATCH;
+                    }
+                } catch (Exception e) {
+                    result = ValidateCode.FAILURE;
                 }
             } catch (Exception e) {
                 result = ValidateCode.INVALID_MODE;
@@ -156,6 +160,7 @@ public class OTPEnrollingWS {
 
     @PostConstruct
     private void inited() {
+        logger.trace("Service inited");
         keyExternalUidMapping = ExpiringMap.builder()
                 .maxSize(MAX_STORED_ENTRIES).expiration(TIME_WINDOW_DEFAULT, TimeUnit.MINUTES).build();
     }

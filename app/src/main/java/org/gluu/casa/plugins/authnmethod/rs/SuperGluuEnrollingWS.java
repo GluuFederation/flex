@@ -90,7 +90,6 @@ public class SuperGluuEnrollingWS {
                 qrRequest = sgService.generateRequest(userName, code, remoteIP);
                 return ComputeRequestCode.SUCCESS.getResponse(key, qrRequest);
             }
-
         }
         return result.getResponse();
 
@@ -196,6 +195,8 @@ public class SuperGluuEnrollingWS {
 
     @PostConstruct
     private void inited() {
+
+        logger.trace("Service inited");
 
         bannedLookupKeys = ExpiringMap.builder()
                 .maxSize(MAX_STORED_ENTRIES).expiration(MIN_CLIENT_POLL_PERIOD, TimeUnit.SECONDS).build();

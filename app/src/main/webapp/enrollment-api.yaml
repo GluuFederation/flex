@@ -82,7 +82,7 @@ paths:
             properties:
               code: 
                 type: string
-                example: FAILURE|NUMBER_ALREADY_ENROLLED
+                example: FAILURE|NUMBER_ALREADY_ENROLLED|UNKNOWN_USER_ID
               cause:
                 type: string
                 description: Cause of the failure (when code = FAILURE)
@@ -261,7 +261,7 @@ paths:
                 type: string
                 example: NO_DISPLAY_NAME|INVALID_MODE
                 
-  /enrollment/otp/code-validity:
+  /enrollment/otp/validate-code:
     get:
       tags:
         - otp
@@ -326,6 +326,16 @@ paths:
               code: 
                 type: string
                 example: MATCH|NO_MATCH
+        500:
+          description: An unexpected error occured
+          schema:
+            type: object
+            required:
+            - code
+            properties:
+              code:
+                type: string
+                example: FAILURE
 
   /enrollment/otp/creds/{userid}:
     post:
@@ -334,7 +344,7 @@ paths:
       description: |
         Saves a new (soft) OTP credential for the user whose ID is passed in path parameter. 
         Details of the credential are associated in credential parameter. This is 
-        supposed to be called **after** a successful `code-validity` operation with MATCH result
+        supposed to be called **after** a successful `validate-code` operation with MATCH result
 
       parameters:
         -
@@ -375,7 +385,7 @@ paths:
                 type: string
                 example: MISSING_PARAMS
         500:
-          description: The provided key is not recognized or there was a failure when saving the credential
+          description: The provided key/userid is not recognized or there was a failure when saving the credential
           schema:
             type: object
             required: 

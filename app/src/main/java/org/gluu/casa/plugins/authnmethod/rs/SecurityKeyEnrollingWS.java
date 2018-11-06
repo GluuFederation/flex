@@ -191,6 +191,8 @@ public class SecurityKeyEnrollingWS {
 
     @PostConstruct
     private void init() {
+
+        logger.trace("Service inited");
         mapper = new ObjectMapper();
 
         usersWithPendingRegistrations = ExpiringMap.builder()
