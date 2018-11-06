@@ -72,6 +72,7 @@ public class AuthorizationProcessingFilter implements ContainerRequestFilter {
                 ClientInfoClient clientInfoClient = new ClientInfoClient(clientInfoEndpoint);
                 ClientInfoResponse clientInfoResponse = clientInfoClient.execClientInfo(token);
                 if (clientInfoResponse.getErrorType() != null) {
+                    logger.error("Invalid token");
                     failureResponse = Response.status(Status.UNAUTHORIZED).entity("Invalid token");
                 }
             }
