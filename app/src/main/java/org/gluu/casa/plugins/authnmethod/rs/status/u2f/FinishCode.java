@@ -24,19 +24,18 @@ public enum FinishCode {
     FAILED,
     SUCCESS;
 
-    public Response getResponse(FidoDevice device) {
+    public Response getResponse() {
 
-        String json;
+        String json = null;
         Response.Status httpStatus;
 
         if (equals(SUCCESS)) {
-            json = Utils.jsonFromObject(device);
             httpStatus = OK;
         } else {
             json = Utils.jsonFromObject(Collections.singletonMap("code", toString()));
             httpStatus = equals(MISSING_PARAMS) ? BAD_REQUEST : INTERNAL_SERVER_ERROR;
         }
-        return Response.status(httpStatus).entity(json).header("Access-Control-Allow-Origin", "*").build();
+        return Response.status(httpStatus).entity(json).build();
 
     }
 

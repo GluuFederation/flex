@@ -141,7 +141,6 @@ public class SuperGluuEnrollingWS {
                 status = EnrollmentStatusCode.FAILED;
             }
         }
-
         return status.getResponse(newDevice);
 
     }
@@ -165,7 +164,6 @@ public class SuperGluuEnrollingWS {
         String nickName = Optional.ofNullable(credential).map(NamedCredential::getNickName).orElse(null);
         String deviceId = Optional.ofNullable(credential).map(NamedCredential::getKey).orElse(null);
 
-        FidoDevice dev = null;
         FinishCode result;
 
         if (Stream.of(nickName, deviceId).anyMatch(Utils::isEmpty)) {
@@ -173,7 +171,7 @@ public class SuperGluuEnrollingWS {
         } else if (!recentlyEnrolledDevices.containsKey(deviceId)) {
             result = FinishCode.NO_MATCH_OR_EXPIRED;
         } else {
-            dev = getDeviceWithID(deviceId);
+            FidoDevice dev = getDeviceWithID(deviceId);
             dev.setNickName(nickName);
 
             if (sgService.updateDevice(dev)) {
@@ -183,7 +181,7 @@ public class SuperGluuEnrollingWS {
                 result = FinishCode.FAILED;
             }
         }
-        return result.getResponse(dev);
+        return result.getResponse();
 
     }
 

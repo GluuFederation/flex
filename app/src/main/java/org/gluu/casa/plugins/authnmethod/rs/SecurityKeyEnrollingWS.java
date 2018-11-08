@@ -36,7 +36,8 @@ import java.util.stream.Stream;
  * @author jgomer
  */
 @ApplicationScoped
-@Path("/enrollment/" + SecurityKeyExtension.ACR)
+//TODO: temporarily disabled until FIDO 2 is supported
+//@Path("/enrollment/" + SecurityKeyExtension.ACR)
 public class SecurityKeyEnrollingWS {
 
     private static final int TIME_WINDOW_DEFAULT = 2;
@@ -97,11 +98,12 @@ public class SecurityKeyEnrollingWS {
     @Path("registration/{userid}")
     @Produces(MediaType.APPLICATION_JSON)
     @ProtectedApi
-    public Response receiveRegistrationResult(Map<String, Object> registrationResult,
-                                              @PathParam("userid") String userId) {
+    public Response sendRegistrationResult(Map<String, Object> registrationResult,
+                                           @PathParam("userid") String userId) {
 
         RegistrationCode result;
         SecurityKey newDevice = null;
+        logger.trace("sendRegistrationResult WS operation called");
 
         if (usersWithPendingRegistrations.containsKey(userId)) {
             usersWithPendingRegistrations.remove(userId);
@@ -161,7 +163,6 @@ public class SecurityKeyEnrollingWS {
         String nickName = Optional.ofNullable(credential).map(NamedCredential::getNickName).orElse(null);
         String deviceId = Optional.ofNullable(credential).map(NamedCredential::getKey).orElse(null);
 
-        FidoDevice dev = null;
         FinishCode result;
 
         if (Stream.of(nickName, deviceId).anyMatch(Utils::isEmpty)) {
@@ -169,7 +170,7 @@ public class SecurityKeyEnrollingWS {
         } else if (!recentlyEnrolledDevices.containsKey(deviceId)) {
             result = FinishCode.NO_MATCH_OR_EXPIRED;
         } else {
-            dev = getDeviceWithID(deviceId);
+            FidoDevice dev = getDeviceWithID(deviceId);
             dev.setNickName(nickName);
 
             if (u2fService.updateDevice(dev)) {
@@ -179,7 +180,7 @@ public class SecurityKeyEnrollingWS {
                 result = FinishCode.FAILED;
             }
         }
-        return result.getResponse(dev);
+        return result.getResponse();
 
     }
 
