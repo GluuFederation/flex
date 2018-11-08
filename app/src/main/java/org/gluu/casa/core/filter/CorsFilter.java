@@ -85,6 +85,7 @@ public class CorsFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        logger.info("CORS filter initialized");
         allowedHosts = new HashSet<>();
     }
 
@@ -98,6 +99,7 @@ public class CorsFilter implements Filter {
         if (now - reloadedAt > POLL_PERIOD) {
             reloadedAt = now;
             try (BufferedReader bfr = Files.newBufferedReader(Paths.get(basePath, ORIGINS_CORS_FILE))) {
+                logger.debug("Re-reading cors file");
                 allowedHosts = bfr.lines().collect(Collectors.toSet());
             }
         }
