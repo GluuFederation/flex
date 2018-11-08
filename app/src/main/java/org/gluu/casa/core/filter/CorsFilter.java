@@ -5,7 +5,6 @@
  */
 package org.gluu.casa.core.filter;
 
-import org.gluu.casa.conf.MainSettingsProducer;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.rest.RSInitializer;
 import org.slf4j.Logger;
@@ -32,7 +31,7 @@ public class CorsFilter implements Filter {
 
     private static final int POLL_PERIOD = 60000;  //1 min
     private static final String ORIGINS_CORS_FILE = "casa-cors-domains";
-    private static final String basePath = MainSettingsProducer.getGluuBase();
+    private static final String basePath = System.getProperty("server.base");
 
     private Set<String> allowedHosts;
     private long reloadedAt;

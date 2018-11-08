@@ -38,7 +38,7 @@ public class MainSettingsProducer {
     @Inject
     private ResourceExtractor resourceExtractor;
 
-    public static String getGluuBase() {
+    private static String getGluuBase() {
         String candidateGluuBase = System.getProperty("gluu.base");
         return (candidateGluuBase != null || Utils.onWindows()) ? candidateGluuBase : DEFAULT_GLUU_BASE;
     }
