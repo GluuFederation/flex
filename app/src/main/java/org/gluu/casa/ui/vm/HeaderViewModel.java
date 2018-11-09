@@ -61,8 +61,8 @@ public class HeaderViewModel {
     public void logoutFromAuthzServer() {
 
         try {
-            //When the session expires, the browser is taken to /index.zul (see zk.xml), so theoretically, the calls
-            //to session-scoped method above will not yield null
+            //When the session expires, the browser is taken to /session-expired.zul (see zk.xml), so theoretically, the
+            //calls to session-scoped method above will not yield null
             logger.trace("Log off attempt for {}", sessionContext.getUser().getUserName());
 
             //After End-User has logged out, the Client might request to log him out of the OP too
@@ -76,6 +76,5 @@ public class HeaderViewModel {
         }
 
     }
-
 
 }

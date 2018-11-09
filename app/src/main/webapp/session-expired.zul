@@ -1,0 +1,4 @@
+<?page language="xhtml"?>
+<?init class="org.gluu.casa.core.navigation.LogoutInitiator"?>
+<zk:zk xmlns:zk="zk">
+</zk:zk>

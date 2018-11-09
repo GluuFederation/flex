@@ -9,11 +9,11 @@
     <!-- session timeout redirect -->
     <session-config>
         <max-requests-per-session>8</max-requests-per-session>
-        <timeout-uri>/index.zul</timeout-uri>
+        <timeout-uri>/session-expired.zul</timeout-uri>
     </session-config>
     <session-config>
         <device-type>mil</device-type>
-        <timeout-uri>/index.zul</timeout-uri>
+        <timeout-uri>/session-expired.zul</timeout-uri>
     </session-config>
 
     <library-property>
