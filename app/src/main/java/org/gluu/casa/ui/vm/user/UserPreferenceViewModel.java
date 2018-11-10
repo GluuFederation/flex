@@ -87,9 +87,7 @@ public class UserPreferenceViewModel extends UserViewModel {
         selectedMethod = user.getPreferredMethod();
         noMethodName = Labels.getLabel("usr.method.none");
 
-        Set<String> enabledMethods = confSettings.getAcrPluginMap().keySet();
-        List<Pair<AuthnMethod, Integer>> userMethodsCount = userService.getUserMethodsCount(user.getId(), enabledMethods);
-
+        List<Pair<AuthnMethod, Integer>> userMethodsCount = userService.getUserMethodsCount(user.getId());
         availMethods = userMethodsCount.stream().map(Pair::getX)
                 .map(aMethod -> new Pair<>(aMethod.getAcr(), Labels.getLabel(aMethod.getUINameKey())))
                 .collect(Collectors.toList());
@@ -100,7 +98,7 @@ public class UserPreferenceViewModel extends UserViewModel {
         //Note: It may happen user already has enrolled credentials, but admin changed availability of method. In that
         //case user should not be able to edit
         uiEditable = totalCreds >= confSettings.getMinCredsFor2FA() && availMethods.size() > 0;
-        uiNotEnoughCredsFor2FA = totalCreds < confSettings.getMinCredsFor2FA() && enabledMethods.size() > 0;
+        uiNotEnoughCredsFor2FA = totalCreds < confSettings.getMinCredsFor2FA() && confSettings.getAcrPluginMap().size() > 0;
 
         availMethods.add(new Pair<>(null, noMethodName));
 

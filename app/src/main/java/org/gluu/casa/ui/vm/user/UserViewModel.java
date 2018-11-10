@@ -19,7 +19,6 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -88,8 +87,7 @@ public class UserViewModel {
 
         //Assume removal has no problem
         String message = null;
-        Set<String> enabledMethods = confSettings.getAcrPluginMap().keySet();
-        List<Pair<AuthnMethod, Integer>> userMethodsCount = userService.getUserMethodsCount(user.getId(), enabledMethods);
+        List<Pair<AuthnMethod, Integer>> userMethodsCount = userService.getUserMethodsCount(user.getId());
         int totalCreds = userMethodsCount.stream().mapToInt(Pair::getY).sum();
         int minCredsFor2FA = confSettings.getMinCredsFor2FA();
 

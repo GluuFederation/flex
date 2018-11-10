@@ -217,7 +217,7 @@ public class ConfigurationHandler extends JobListenerSupport {
      * Performs a GET to the OIDC metadata URL and extracts the ACR values supported by the server
      * @return A Set of String values or null if a networking or parsing error occurs
      */
-    private Set<String> retrieveAcrs() {
+    public Set<String> retrieveAcrs() {
 
         try {
             String oidcEndpointURL = ldapService.getOIDCEndpoint();

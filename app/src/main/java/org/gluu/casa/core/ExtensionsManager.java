@@ -46,9 +46,6 @@ public class ExtensionsManager implements IExtensionsManager {
     private Logger logger;
 
     @Inject
-    private ConfigurationHandler configurationHandler;
-
-    @Inject
     private ZKService zkService;
 
     @Inject
@@ -167,9 +164,9 @@ public class ExtensionsManager implements IExtensionsManager {
             && plugExtensionMap.get(plugId).stream().anyMatch(aMethod -> aMethod.getAcr().equals(acr));
     }
 
-    public List<PluginDescriptor> authnMethodPluginImplementersStarted() {
-        return getPlugins().stream().filter(w -> w.getPluginState().equals(PluginState.STARTED)
-                && plugExtensionMap.keySet().contains(w.getPluginId())).map(PluginWrapper::getDescriptor).collect(Collectors.toList());
+    public List<PluginDescriptor> authnMethodPluginImplementers() {
+        return getPlugins().stream().filter(pl -> plugExtensionMap.keySet().contains(pl.getPluginId()))
+                .map(PluginWrapper::getDescriptor).collect(Collectors.toList());
     }
 
     public ClassLoader getPluginClassLoader(String clsName) {
@@ -193,8 +190,9 @@ public class ExtensionsManager implements IExtensionsManager {
 
     }
 
-    public List<AuthnMethod> getAuthnMethodExts() {
-        return plugExtensionMap.values().stream().flatMap(List::stream).collect(Collectors.toList());
+    public List<AuthnMethod> getAuthnMethodExts(Set<String> plugIds) {
+        return plugExtensionMap.entrySet().stream().filter(e -> plugIds.contains(e.getKey())).map(Map.Entry::getValue)
+                .flatMap(List::stream).collect(Collectors.toList());
     }
 
     public <T> List<Pair<String, T>> getPluginExtensionsForClass(Class<T> clazz) {
@@ -324,10 +322,16 @@ public class ExtensionsManager implements IExtensionsManager {
         List<AuthnMethod> ames = pluginManager.getExtensions(AUTHN_METHOD_CLASS, pluginId);
         if (ames.size() > 0) {
             logger.info("Plugin extends {} at {} point(s)", AUTHN_METHOD_CLASS.getName(), ames.size());
-            ames.forEach(ext -> logger.info("Extension point found to deal with acr value '{}'", ext.getAcr()));
 
-            //I think this is safer than simply plugExtensionMap.put(pluginId, ames)
-            plugExtensionMap.put(pluginId, new ArrayList<>(ames));
+            List<AuthnMethod> filteredAmes = new ArrayList<>();
+            Set<String> acrs = ames.stream().map(AuthnMethod::getAcr).distinct().collect(Collectors.toSet());
+            acrs.forEach(acr -> {
+                //If this plugin implemented several AuthnMethods for the same acr, keep the first only
+                filteredAmes.add(ames.stream().filter(ext -> ext.getAcr().equals(acr)).findFirst().get());
+                logger.info("Extension point found to deal with acr value '{}'", acr);
+            });
+
+            plugExtensionMap.put(pluginId, filteredAmes);
         }
 
     }

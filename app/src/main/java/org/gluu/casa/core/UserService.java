@@ -124,8 +124,8 @@ public class UserService {
         return getLiveAuthnMethods(false).stream().filter(AuthnMethod::mayBe2faActivationRequisite).collect(Collectors.toList());
     }
 
-    public List<Pair<AuthnMethod, Integer>> getUserMethodsCount(String userId, Set<String> retainMethods) {
-        return extManager.getAuthnMethodExts().stream().filter(aMethod -> retainMethods.contains(aMethod.getAcr()))
+    public List<Pair<AuthnMethod, Integer>> getUserMethodsCount(String userId) {
+        return getLiveAuthnMethods(false).stream()
                 .map(aMethod -> new Pair<>(aMethod, aMethod.getTotalUserCreds(userId)))
                 .filter(pair -> pair.getY() > 0).collect(Collectors.toList());
     }
@@ -295,17 +295,23 @@ public class UserService {
         }
     }
 
-
     private List<AuthnMethod> getLiveAuthnMethods(boolean sorted) {
 
-        Set<String> mappedAcrs = confHandler.getSettings().getAcrPluginMap().keySet();
-        Stream<AuthnMethod> stream = extManager.getAuthnMethodExts().stream().filter(aMethod -> mappedAcrs.contains(aMethod.getAcr()));
+        List<AuthnMethod> methods = new ArrayList<>();
+        Map<String, String> acrPluginMap = confHandler.getSettings().getAcrPluginMap();
+
+        for (String acr : acrPluginMap.keySet()) {
+            extManager.getAuthnMethodExts(Collections.singleton(acrPluginMap.get(acr)))
+                    .stream().filter(am -> am.getAcr().equals(acr)).findFirst().ifPresent(methods::add);
+        }
+
         if (sorted) {
             //An important invariant is that mappedAcrs set is fully contained in authnMethodLevels.keySet()
             Map<String, Integer> authnMethodLevels = confHandler.getAcrLevelMapping();
-            stream = stream.sorted(Comparator.comparing(aMethod -> -authnMethodLevels.get(aMethod.getAcr())));
+            methods = methods.stream().sorted(Comparator.comparing(aMethod -> -authnMethodLevels.get(aMethod.getAcr())))
+                    .collect(Collectors.toList());
         }
-        return stream.collect(Collectors.toList());
+        return methods;
 
     }
 

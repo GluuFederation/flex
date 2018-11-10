@@ -9,7 +9,6 @@ import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.core.UserService;
 import org.gluu.casa.extension.AuthnMethod;
-import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.ui.model.AuthnMethodStatus;
 import org.pf4j.DefaultPluginDescriptor;
 import org.pf4j.PluginDescriptor;
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -54,24 +52,25 @@ public class AuthnMethodsViewModel extends MainViewModel {
     @Init
     public void init() {
 
-        List<PluginDescriptor> currentPlugins = extManager.authnMethodPluginImplementersStarted();
+        List<PluginDescriptor> currentPlugins = extManager.authnMethodPluginImplementers();
         //Add "null" (allows to account for system extensions)
         currentPlugins.add(0, new DefaultPluginDescriptor(null, null, null, "1.0", null, null, null));
 
         Map<String, String> mappedAcrs = getSettings().getAcrPluginMap();
-        //The following map contains entries associated to active acr methods in oxauth
-        Map<String, Integer> authnMethodLevels = confHandler.getAcrLevelMapping();
-        //These are the acrs which have a corresponding plugin or system extension implemented for it
-        List<AuthnMethod> list = extManager.getAuthnMethodExts().stream().filter(aMethod -> authnMethodLevels.containsKey(aMethod.getAcr()))
-                .sorted(Comparator.comparing(aMethod -> -authnMethodLevels.get(aMethod.getAcr()))).collect(Collectors.toList());
 
-        logger.info("The following acrs have a corresponding plugin or system extension: {}", list.stream().map(AuthnMethod::getAcr).collect(Collectors.toList()));
+        //This set contains entries associated to active acr methods in oxauth
+        Set<String> serverAcrs = Optional.ofNullable(confHandler.retrieveAcrs()).orElse(Collections.emptySet());
+
+        //These are authn methods belonging to a started plugin or system extension with a corresponding custom script enabled
+        Set<String> uniqueAcrs = extManager.getAuthnMethodExts(currentPlugins.stream().map(PluginDescriptor::getPluginId).collect(Collectors.toSet()))
+                .stream().map(AuthnMethod::getAcr).distinct().filter(serverAcrs::contains).collect(Collectors.toSet());
+
+        logger.info("The following acrs have a corresponding plugin or system extension: {}", uniqueAcrs);
         methods = new ArrayList<>();
-        for (AuthnMethod aMethod : list) {
-            String acr = aMethod.getAcr();
+
+        for (String acr : uniqueAcrs) {
             AuthnMethodStatus ams = new AuthnMethodStatus();
             ams.setAcr(acr);
-            ams.setName(Labels.getLabel(aMethod.getUINameKey()));
             ams.setEnabled(mappedAcrs.keySet().contains(acr));
             ams.setDeactivable(!ams.isEnabled() || userService.zeroPreferences(acr));
 
@@ -81,16 +80,21 @@ public class AuthnMethodsViewModel extends MainViewModel {
                 String id = de.getPluginId();
 
                 if (extManager.pluginImplementsAuthnMethod(acr, id)) {
-                    String displaName = id == null ? Labels.getLabel("adm.method_sysextension")
+                    String displayName = id == null ? Labels.getLabel("adm.method_sysextension")
                             : Labels.getLabel("adm.method_plugin_template", new String[] {id, de.getVersion()});
-                    plugins.add(new Pair<>(id, displaName));
+                    plugins.add(new Pair<>(id, displayName));
                 }
             }
 
             ams.setPlugins(plugins);
-            //Use as selected the one already in the acr/plugin mapping, or if missing, an empty string (which will make
-            //the item not to match against any existing plugin
-            ams.setSelectedPlugin(mappedAcrs.getOrDefault(acr, /*NO_PLUGIN*/ plugins.get(0).getX()));
+            //Use as selected the one already in the acr/plugin mapping, or if missing, the first plugin known to
+            //implement the behavior
+            ams.setSelectedPlugin(mappedAcrs.getOrDefault(acr, plugins.get(0).getX()));
+
+            //Pick the name for it
+            AuthnMethod aMethod = extManager.getAuthnMethodExts(Collections.singleton(ams.getSelectedPlugin()))
+                    .stream().filter(am -> am.getAcr().equals(acr)).findFirst().get();
+            ams.setName(Labels.getLabel(aMethod.getUINameKey()));
 
             methods.add(ams);
         }
