@@ -1,0 +1,68 @@
+## Gluu License Agreement for Gluu Casa
+
+**Gluu is willing to authorize Your access to software associated with this License Agreement (“Agreement”) only upon the condition that You accept that this Agreement governs Your use of the software. By installing or using the Programs You indicate Your acceptance of this Agreement and Your agreement, as an authorized representative of Your company or organization (if being acquired for use by an entity) or as an individual, to comply with the license terms that apply to the software that You wish to download and access. If You are not willing to be bound by this Agreement, do not download or access the software.**
+
+**Definitions**   
+"Gluu" refers to Gluu, Inc. "You" and "Your" refers to (a) a company or organization (each an “Entity”) accessing the Programs, if use of the Programs will be on behalf of such Entity; or (b) an individual accessing the Programs, if use of the Programs will not be on behalf of an Entity. “Contractors” refers to Your agents and contractors (including, without limitation, outsourcers). "Program(s)" refers to Gluu software provided by Gluu pursuant to this Agreement and any updates, error corrections, and/or Program Documentation provided by Gluu. “Program Documentation” refers to the documentation provided by Gluu with the Programs or accessible at https://gluu.org/docs/casa. 
+
+“Separate Terms” refers to separate license terms that are specified in the Program Documentation, readmes or notice files and that apply to Separately Licensed Third Party Technology. “Separately Licensed Third Party Technology” refers to third party technology that is licensed under Separate Terms and not under the terms of this Agreement.  “Application” refers to Gluu Casa.
+
+**License Rights and Restrictions**   
+Gluu grants You a nonexclusive, nontransferable, limited license to internally use the Programs, subject to the restrictions stated in this Agreement and Program Documentation, only for the purpose of developing, testing, prototyping and demonstrating Your Application and not for any other purpose. You may allow Your Contractor(s) to use the Programs, provided they are acting on Your behalf to exercise license rights granted in this Agreement and further provided that You are responsible for their compliance with this Agreement in such use.  You will have a written agreement with Your Contractor(s) that strictly limits their right to use the Programs and that otherwise protects Gluu’s intellectual property rights to the same extent as this Agreement. You may make copies of the Programs to the extent reasonably necessary to exercise the license rights granted in this Agreement. 
+
+Further, You may not:
+-    use the Programs for any data processing or any commercial, production, or internal business purposes other than developing, testing, prototyping, and demonstrating your Application;
+-    remove or modify any Program markings or any notice of Gluu’s or a licensor’s proprietary rights;
+-    make the Programs available in any manner to any third party (other than Contractors acting on Your behalf as set forth in this Agreement);
+-    assign this Agreement or distribute, give, or transfer the Programs or an interest in them to any third party, except as expressly permitted in this Agreement for Contractors (the foregoing shall not be construed to limit the rights You may otherwise have with respect to Separately Licensed Third Party Technology);
+-    cause or permit reverse engineering (unless required by law for interoperability), disassembly or decompilation of the Programs; and
+-    create, modify, or change the behavior of, classes, interfaces, or subpackages that are in any way identified as "casa", “Gluu” or similar convention as specified by Gluu in any naming convention designation.
+ 
+The Programs may contain source code that, unless expressly licensed in this Agreement for other purposes (for example, licensed under an open source license), is provided solely for reference purposes pursuant to the terms of this Agreement and may not be modified.
+
+All rights not expressly granted in this Agreement are reserved by Gluu. If You want to use the Programs for any purpose other than as expressly permitted under this Agreement, You must obtain from Gluu or a Gluu reseller a valid Programs license under a separate agreement permitting such use. However, You acknowledge that the Programs may not be intended for production use and/or Gluu may not make a version of the Programs available for production or other purposes; any development or other work You undertake with the Programs is at Your sole risk.
+
+**Ownership**   
+Gluu or its licensors retain all ownership and intellectual property rights to the Programs.
+
+**Third-Party Technology**    
+The Programs may contain or require the use of third party technology that is provided with the Programs. Gluu may provide certain notices to You in Program Documentation, readmes or notice files in connection with such third party technology. Third party technology will be licensed to You either under the terms of this Agreement or, if specified in the Program Documentation, readmes or notice files, under Separate Terms. Your rights to use Separately Licensed Third Party Technology under Separate Terms are not restricted in any way by this Agreement. However, for clarity, notwithstanding the existence of a notice, third party technology that is not Separately Licensed Third Party Technology shall be deemed part of the Programs and is licensed to You under the terms of this Agreement.
+
+**Export Controls**   
+Export laws and regulations of the United States and any other relevant local export laws and regulations apply to the Programs. You agree that such export control laws govern Your use of the Programs (including technical data) and any services deliverables provided under this agreement, and You agree to comply with all such export laws and regulations (including "deemed export" and "deemed re-export" regulations). You agree that no data, information, program and/or materials resulting from Programs or services (or direct products thereof) will be exported, directly or indirectly, in violation of these laws, or will be used for any purpose prohibited by these laws including, without limitation, nuclear, chemical, or biological weapons proliferation, or development of missile technology. Accordingly, You confirm:
+-    You will not download, provide, make available or otherwise export or re-export the Programs, directly or indirectly, to countries prohibited by applicable laws and regulations nor to citizens, nationals or residents of those countries.
+-    You are not listed on the United States Department of Treasury lists of Specially Designated Nationals and Blocked Persons, Specially Designated Terrorists, and Specially Designated Narcotic Traffickers, nor are You listed on the United States Department of Commerce Table of Denial Orders.
+-    You will not download or otherwise export or re-export the Programs, directly or indirectly, to persons on the above mentioned lists.
+-    You will not use the Programs for, and will not allow the Programs to be used for, any purposes prohibited by applicable law, including, without limitation, for the development, design, manufacture or production of nuclear, chemical or biological weapons of mass destruction.
+ 
+**Information Collection**   
+The Programs’ installation and/or update processes, if any, may transmit a limited amount of data to Gluu or its service provider about those processes to help Gluu understand and optimize them.  Gluu does not associate the data with personally identifiable information. Refer to Gluu’s Privacy Policy at https://www.gluu.org/privacy-policy/
+
+**Disclaimer of Warranties; Limitation of Liability**   
+THE PROGRAMS ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. Gluu FURTHER DISCLAIMS ALL WARRANTIES, EXPRESS AND IMPLIED, INCLUDING WITHOUT LIMITATION, ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NONINFRINGEMENT.
+
+IN NO EVENT WILL Gluu BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE OR CONSEQUENTIAL DAMAGES, OR DAMAGES FOR LOSS OF PROFITS, REVENUE, DATA OR DATA USE, INCURRED BY YOU OR ANY THIRD PARTY, WHETHER IN AN ACTION IN CONTRACT OR TORT, EVEN IF Gluu HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. Gluu’S ENTIRE LIABILITY FOR DAMAGES UNDER THIS AGREEMENT SHALL IN NO EVENT EXCEED ONE THOUSAND DOLLARS (U.S. $1,000).
+
+**Technical Support**   
+Unless Gluu support for the Programs, if any, is expressly included in a separate, current support agreement between You and Gluu, Gluu’s technical support organization is not obligated to provide technical support, phone support, or updates to You for the Programs provided under this Agreement.
+
+**Audit; Termination**   
+Gluu may audit Your use of the Programs. You may terminate this Agreement by destroying all copies of the Programs. This Agreement shall automatically terminate without notice if You fail to comply with any of the terms of this Agreement, in which case You shall promptly destroy all copies of the Programs.
+  
+**Relationship Between the Parties**        
+Gluu is an independent contractor and we agree that no partnership, joint venture, or agency relationship exists between us. We each will be responsible for paying our own employees, including employment related taxes and insurance. Nothing in this agreement shall be construed to limit either party's right to independently develop or distribute software that is functionally similar to the other party's products, so long as proprietary information of the other party is not included in such software.
+
+**Entire Agreement; Governing Law**   
+You agree that this Agreement is the complete agreement for the Programs and this Agreement supersedes all prior or contemporaneous agreements or representations, including any clickwrap, shrinkwrap or similar licenses, or license agreements for prior versions of the Programs. This Agreement may not be modified and the rights and restrictions may not be altered or waived except in a writing signed by authorized representatives of You and of Gluu. If any term of this Agreement is found to be invalid or unenforceable, the remaining provisions will remain effective.
+
+This Agreement is governed by the substantive and procedural laws of the State of Texas, USA, and You and Gluu agree to submit to the exclusive jurisdiction of, and venue in, the courts of Travis county in Texas in any dispute arising out of or relating to this Agreement.
+
+**Notices**   
+Should you have any questions concerning this License Agreement, or if you desire to contact Gluu for any reason, please write:
+
+Gluu, Inc.
+600 Congress Ave.
+Floor 14
+Austin, TX 78701
+
+**Gluu Employees:** Under no circumstances are Gluu Employees authorized to download software for the purpose of distributing it to customers. Gluu products are available to employees for internal use or demonstration purposes only. In keeping with Gluu's trade compliance obligations under U.S. and applicable multilateral law, failure to comply with this policy could result in disciplinary action up to and including termination.
