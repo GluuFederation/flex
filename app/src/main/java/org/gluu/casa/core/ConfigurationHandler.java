@@ -12,6 +12,7 @@ import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.misc.AppStateEnum;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.timer.AuthnScriptsReloader;
+import org.gluu.casa.timer.StatisticsTimer;
 import org.gluu.casa.timer.TrustedDevicesSweeper;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
@@ -65,6 +66,9 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     @Inject
     private AuthnScriptsReloader scriptsReloader;
+
+    @Inject
+    private StatisticsTimer statisticsTimer;
 
     private String acrQuartzJobName;
 
@@ -162,6 +166,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                                 logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
                                 scriptsReloader.init(1);
                                 devicesSweeper.activate(10);
+                                statisticsTimer.activate();
                             }
                         } else {
                             logger.warn("oxd configuration could not be initialized.");

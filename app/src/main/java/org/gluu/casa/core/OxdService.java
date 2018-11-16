@@ -117,7 +117,7 @@ public class OxdService {
                 oxdConfig.setAcrValues(Collections.singletonList(DEFAULT_ACR));
 
                 try {
-                    if (ldapService.getDynamicClientExpirationTime() > 0) {
+                    if (ldapService.getDynamicClientExpirationTime() >= 0) {
                         Optional<String> oxdIdOpt = Optional.ofNullable(oxdConfig.getClient()).map(OxdClientSettings::getOxdId);
                         if (oxdIdOpt.isPresent()) {
                             setSettings(oxdConfig);
@@ -126,10 +126,8 @@ public class OxdService {
                             setSettings(oxdConfig, true);
                         }
                         success = true;
-
                     } else {
-                        logger.error("Dynamic registration of OpenId Connect clients must be enabled in the server. "
-                                + "Check expiration time is greater than zero");
+                        logger.error("Dynamic registration of OpenId Connect clients must be enabled in the server.");
                     }
                 } catch (Exception e) {
                     logger.warn("Users will not be able to login until a new sucessful attempt to refresh oxd-associated "
@@ -244,9 +242,9 @@ public class OxdService {
      * @param acrValues List of acr_values. See OpenId Connect core 1.0 (section 3.1.2.1)
      * @param prompt See OpenId Connect core 1.0 (section 3.1.2.1)
      * @return String consisting of an authentication request with desired parameters
-     * @throws Exception
+     * @throws Exception A problem with oxd server occurred
      */
-    private String getAuthzUrl(List<String> acrValues, String prompt) throws Exception {
+    public String getAuthzUrl(List<String> acrValues, String prompt) throws Exception {
 
         GetAuthorizationUrlParams cmdParams = new GetAuthorizationUrlParams();
         cmdParams.setOxdId(config.getClient().getOxdId());

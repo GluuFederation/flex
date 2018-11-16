@@ -53,7 +53,7 @@ public class HomeViewModel {
         Optional<JSONObject> opt = Optional.ofNullable(evt.getData()).map(JSONObject.class::cast);
         if (opt.isPresent()) {
             JSONObject jsonObject = opt.get();
-            logger.info("Browser data is {} ", jsonObject.toJSONString());
+            logger.trace("Browser data is {} ", jsonObject.toJSONString());
 
             updateOffset(jsonObject.get("offset"));
             updateScreenWidth(jsonObject.get("screenWidth"));

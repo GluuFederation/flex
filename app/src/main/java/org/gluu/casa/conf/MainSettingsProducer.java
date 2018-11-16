@@ -40,11 +40,11 @@ public class MainSettingsProducer {
 
     private static String getGluuBase() {
         String candidateGluuBase = System.getProperty("gluu.base");
-        return (candidateGluuBase != null || Utils.onWindows()) ? candidateGluuBase : DEFAULT_GLUU_BASE;
+        return (candidateGluuBase == null && !Utils.onWindows()) ? DEFAULT_GLUU_BASE : candidateGluuBase;
     }
 
     /**
-     * Returns a reference to the configuration file of the application (cred-manager.json)
+     * Returns a reference to the configuration file of the application (casa.json)
      * @param baseDir Path to configuration file without the CONF_FILE_RELATIVE_PATH part
      * @return A File object
      */
