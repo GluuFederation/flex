@@ -62,6 +62,7 @@ public class CustomBrandingViewModel extends MainViewModel {
             if (logo.getSecond() != null) {
                 assetsService.setLogoContent(logo.getSecond());
             }
+            assetsService.useExtraCss("/* */");
             Messagebox.show(Labels.getLabel( "adm.branding_changed"), null, Messagebox.OK, Messagebox.INFORMATION);
         } catch (Exception e) {
             UIUtils.showMessageUI(false, e.getMessage());

@@ -75,7 +75,7 @@
                     <p>${labels.adm.passreset_text}</p>
 
                     <div class="flex justify-center">
-                        <h:label class="switch">
+                        <h:label class="switch mt0">
                             <h:input type="checkbox" disabled="${vm.passResetImpossible}" checked="@bind(vm.passResetEnabled)"
                                      w:onClick="alertRef = $('#feedback-pass-reset')" onClick="@command('change')" />
                             <span class="${vm.passResetImpossible ? 'disabled' : ''} slider round" />

@@ -111,9 +111,13 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
                 //logger.debug("List is {}",mapper.writeValueAsString(list));
 
                 if (removeExpiredData(list, now)) {
-                    //update list
-                    jsonStr = mapper.writeValueAsString(list);
-                    updateTrustedDevices(person, ldapService.getEncryptedString(jsonStr));
+                    if (list.size() > 0) {
+                        //update list
+                        jsonStr = mapper.writeValueAsString(list);
+                        updateTrustedDevices(person, ldapService.getEncryptedString(jsonStr));
+                    } else {
+                        updateTrustedDevices(person, null);
+                    }
                 }
             } catch (Exception e) {
                 if (jsonStr == null) {
