@@ -121,8 +121,9 @@ public class RSRegistryHandler {
                 }
             }
 
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
             //Intentionally left empty
+            //In plugin's jar there can be references to classes not included in the plugin (ie unnecessary deps)
         }
         return added;
 
@@ -187,10 +188,13 @@ public class RSRegistryHandler {
         if (enabled) {
             try {
                 registeredResources.put(id, new ArrayList<>());
-                //Recursively scan for @Path annotation in directory (or jar file)
+                //Recursively scan for @Path annotation jar file
+                /*
                 if (Files.isDirectory(path)) {
                     scannedResources = scanFolderForRSResources(id, path, classLoader);
-                } else if (Utils.isJarFile(path)) {
+                } else
+                    */
+                if (Utils.isJarFile(path)) {
                     try (JarInputStream jis = new JarInputStream(new BufferedInputStream(new FileInputStream(path.toString())), false)) {
                         scannedResources = scanJarForRSResources(id, jis, classLoader);
                     }

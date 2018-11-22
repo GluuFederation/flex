@@ -8,7 +8,6 @@ package org.gluu.casa.ui.vm.admin;
 import org.gluu.casa.conf.PluginInfo;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.extension.AuthnMethod;
-import org.gluu.casa.extension.navigation.NavigationMenu;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.ui.model.PluginData;
@@ -40,7 +39,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**

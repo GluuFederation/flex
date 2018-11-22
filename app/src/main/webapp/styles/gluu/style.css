@@ -106,6 +106,18 @@ button:disabled {
     background-color: #ec971f;
 }
 
+.bg-bsgreen-success {
+    background-color: #28a745;
+}
+
+.hover-bsgreen-success:hover {
+    background-color: #449d44;
+}
+
+.hover-bsgreen-success:focus {
+    background-color: #449d44;
+}
+
 .tooltip-inner {
     font-size: .7rem;
     background-color: #111;/*#4d4d56;*/

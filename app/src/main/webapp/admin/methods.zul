@@ -17,7 +17,7 @@
                     <h2 class="f4 dark-blue2">${labels.adm.methods_title}</h2>
                     <p>${labels.adm.methods_text}</p>
                     <zk:zk unless="${empty vm.methods}">
-                        <p>${labels.adm.methods_text_otp}</p>
+                        <p>${labels.adm.methods_text_requisite}</p>
                     </zk:zk>
 
                     <zk:zk if="${empty vm.methods}">

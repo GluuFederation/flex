@@ -17,6 +17,7 @@ import org.gluu.casa.core.ldap.BaseLdapPerson;
 import org.gluu.casa.misc.Utils;
 import org.pf4j.DefaultPluginDescriptor;
 import org.pf4j.PluginDescriptor;
+import org.pf4j.PluginState;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
@@ -179,7 +180,8 @@ public class StatisticsTimer extends JobListenerSupport {
 
         List<PluginDescriptor> pluginSummary = new ArrayList<>();
         extManager.getPlugins().stream()
-                .filter(pw -> pw.getDescriptor().getPluginClass().startsWith(GLUU_CASA_PLUGINS_PREFIX))
+                .filter(pw -> pw.getDescriptor().getPluginClass().startsWith(GLUU_CASA_PLUGINS_PREFIX)
+                                && pw.getPluginState().equals(PluginState.STARTED))
                 .forEach(pw -> pluginSummary.add(
                         new DefaultPluginDescriptor(pw.getPluginId(), null, null, pw.getDescriptor().getVersion(), null, null, null))
                 );

@@ -98,7 +98,7 @@ public final class WebUtils {
             val = ImageIO.read(new URL(url)) == null ? null : url;
         } catch (Exception e) {
             LOG.warn("Error validating image url '{}'", url);
-            LOG.error(e.getMessage(), e);
+            //LOG.error(e.getMessage(), e);
         }
         return val;
 
