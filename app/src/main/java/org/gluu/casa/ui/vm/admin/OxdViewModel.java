@@ -10,6 +10,7 @@ import org.gluu.casa.core.OxdService;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
@@ -57,7 +58,7 @@ public class OxdViewModel extends MainViewModel {
         oxdSettings.setPort(0);
     }
 
-    @NotifyChange({"oxdSettings"})
+    @NotifyChange("oxdSettings")
     @Command
     public void saveOxdSettings() {
 
@@ -86,6 +87,7 @@ public class OxdViewModel extends MainViewModel {
                             } else {
                                 reloadConfig();
                             }
+                            BindUtils.postNotifyChange(null, null, OxdViewModel.this, "oxdSettings");
                         }
                 );
             } else {
@@ -108,9 +110,10 @@ public class OxdViewModel extends MainViewModel {
         OxdSettings lastWorkingConfig = getSettings().getOxdSettings();
         String msg = updateOxdSettings(lastWorkingConfig);
         if (msg == null) {
+            getSettings().setOxdSettings(oxdSettings);
             updateMainSettings();
         } else {
-            oxdSettings = lastWorkingConfig;
+            reloadConfig();
             msg = Labels.getLabel("general.error.detailed", new String[] { msg });
             Messagebox.show(msg, null, Messagebox.OK, Messagebox.EXCLAMATION);
         }
@@ -122,6 +125,7 @@ public class OxdViewModel extends MainViewModel {
         String msg = null;
         //Triger a new registration only if host/port changed, otherwise call update site operation
         if (lastWorkingConfig.getHost().equalsIgnoreCase(oxdSettings.getHost()) && lastWorkingConfig.getPort() == oxdSettings.getPort()) {
+
             try {
                 //TODO: oxd-4.0 will allow several post-logout uris: https://github.com/GluuFederation/oxd/issues/217
                 //This way instead of replacing the postlogout I might just add it, thus, when logging out oxauth will not give error
@@ -134,6 +138,7 @@ public class OxdViewModel extends MainViewModel {
                 logger.error(msg, e);
             }
         } else {
+
             try {
                 //A new registration is made when pointing to a different oxd installation because the current oxd-id won't exist there
                 oxdService.setSettings(oxdSettings, true);
