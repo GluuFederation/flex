@@ -144,4 +144,10 @@ public interface ILdapService {
      */
     gluuOrganization getOrganization();
 
+    /**
+     * Returns the URL of (this) authorization server. Typically, it has the form https://host
+     * @return A string value
+     */
+    String getIssuerUrl();
+
 }
