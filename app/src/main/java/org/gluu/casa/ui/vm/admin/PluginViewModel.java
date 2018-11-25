@@ -255,17 +255,13 @@ public class PluginViewModel extends MainViewModel {
 
         boolean success = extManager.startPlugin(pluginId);
         if (success) {
-            if (pluginToShow!=null && pluginToShow.getExtensions() == null) {
-                //This can happen if the plugin was uploaded, but the add button was not pressed
-                pluginToShow.setExtensions(buildExtensionList(extManager.getPlugin(pluginId)));
-            }
-
             String started = PluginState.STARTED.toString();
             logger.info("Updating plugin status");
 
             PluginData pluginData = pluginList.stream().filter(pl -> pl.getDescriptor().getPluginId().equals(pluginId))
                     .findAny().get();
             pluginData.setState(Labels.getLabel("adm.plugins_state." + started));
+            pluginData.setExtensions(buildExtensionList(extManager.getPlugin(pluginId)));
 
             PluginInfo pl = getSettings().getKnownPlugins().stream().filter(apl -> apl.getId().equals(pluginId)).findAny().get();
             pl.setState(started);
