@@ -17,6 +17,7 @@ import org.gluu.casa.timer.TrustedDevicesSweeper;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
+import org.xdi.oxauth.model.util.SecurityProviderUtility;
 import org.zkoss.util.Pair;
 
 import javax.annotation.PostConstruct;
@@ -83,6 +84,7 @@ public class ConfigurationHandler extends JobListenerSupport {
         logger.info("ConfigurationHandler inited");
         mapper = new ObjectMapper();
         acrQuartzJobName = getClass().getSimpleName() + "_acr";
+        SecurityProviderUtility.installBCProvider();
     }
 
     void init() {

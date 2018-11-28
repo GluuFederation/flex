@@ -71,7 +71,7 @@ public class CorsFilter implements Filter {
                     }
                 }
             } catch (Exception e) {
-                logger.error("An error occurred in CORS filter: {}, bypassing...", e.getMessage());
+                logger.warn("Bypassing CORS filter... {}", e.getMessage());
                 filterChain.doFilter(request, response);
             }
 

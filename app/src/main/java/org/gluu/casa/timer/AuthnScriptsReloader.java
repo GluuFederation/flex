@@ -132,7 +132,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
             logger.warn("Corresponding acrs will be removed from Gluu Casa configuration file");
             //Remove from the mapping
             acrs.removeAll(toBeRemoved);
-            toBeRemoved.forEach(acr -> scriptFingerPrints.remove(acr));
+            toBeRemoved.forEach(scriptFingerPrints::remove);
 
             try {
                 //Save mapping changes to disk
@@ -144,7 +144,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         }
 
         if (!reload) {
-            //It may happen that a method was disabled in method.zul, this should trigger a reload
+            //It may happen that a method was disabled in methods.zul, this should trigger a reload
             //An easy way to detect this is when scriptFingerPrints contains more elements than acrs sets
             reload = !acrs.containsAll(scriptFingerPrints.keySet());
         }
