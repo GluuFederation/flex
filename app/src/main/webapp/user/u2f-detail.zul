@@ -32,14 +32,14 @@
                                     <z:label sclass="f5 dark-blue2" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />
                                     <br />
                                     <label class="w4 ma0 truncate nb1">${labels.general.last_used}</label>
-                                    <zk if="${each.lastAccessTime ne null}">
+                                    <zk:zk if="${each.lastAccessTime ne null}">
                                         <z:label value="@load(each.lastAccessTime) @converter('org.gluu.casa.ui.CustomDateConverter',
                                             format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))" />
-                                    </zk>
-                                    <zk unless="${each.lastAccessTime ne null}">
+                                    </zk:zk>
+                                    <zk:zk unless="${each.lastAccessTime ne null}">
                                         <z:label value="@load(each.creationDate) @converter('org.gluu.casa.ui.CustomDateConverter',
                                             format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset))"/>
-                                    </zk>
+                                    </zk:zk>
 
                                     <br />
                                     <label class="w4 ma0 truncate nb1">${labels.general.added_on}</label>

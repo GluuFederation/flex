@@ -127,6 +127,7 @@ public class FidoService extends BaseService {
             device.setId(deviceRegistration.getOxId());
             device.setCreationDate(deviceRegistration.getCreationDate());
             device.setCounter(deviceRegistration.getOxCounter());
+            device.setLastAccessTime(deviceRegistration.getLastAccessTime());
 
             devices.add(device);
         }
