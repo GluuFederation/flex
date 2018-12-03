@@ -142,40 +142,29 @@ public class ConfigurationHandler extends JobListenerSupport {
                         logger.warn("Retrying in {} seconds", RETRY_INTERVAL);
                     }
                 } else {
-                    if (!Utils.onWindows()) {
-                        //This is required to guarantee the list of acrs is really complete (after oxauth starts, the list
-                        //can still contain just a few elements). In a development environment it's unlikely this occurs
-                        Thread.sleep(RETRIES * RETRY_INTERVAL * 100);
-                    }
+                    computeMinCredsForStrongAuth();
+                    computePassResetable();
+                    compute2FAEnforcementPolicy();
 
-                    if (serverAcrs.contains(DEFAULT_ACR)) {
-                        computeMinCredsForStrongAuth();
-                        computePassResetable();
-                        compute2FAEnforcementPolicy();
+                    if (oxdService.initialize()) {
+                        extManager.scan();
+                        computeAcrPluginMapping();
 
-                        if (oxdService.initialize()) {
-                            extManager.scan();
-                            computeAcrPluginMapping();
-
-                            try {
-                                settings.save();
-                                setAppState(AppStateEnum.OPERATING);
-                            } catch (Exception e) {
-                                logger.error("Error updating configuration file: {}", e.getMessage());
-                                setAppState(AppStateEnum.FAIL);
-                            }
-                            if (appState.equals(AppStateEnum.OPERATING)) {
-                                logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
-                                scriptsReloader.init(1);
-                                devicesSweeper.activate(10);
-                                statisticsTimer.activate();
-                            }
-                        } else {
-                            logger.warn("oxd configuration could not be initialized.");
+                        try {
+                            settings.save();
+                            setAppState(AppStateEnum.OPERATING);
+                        } catch (Exception e) {
+                            logger.error("Error updating configuration file: {}", e.getMessage());
                             setAppState(AppStateEnum.FAIL);
                         }
+                        if (appState.equals(AppStateEnum.OPERATING)) {
+                            logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
+                            scriptsReloader.init(1);
+                            devicesSweeper.activate(10);
+                            statisticsTimer.activate();
+                        }
                     } else {
-                        logger.error("Your Gluu server is missing one critical acr value: {}.", DEFAULT_ACR);
+                        logger.warn("oxd configuration could not be initialized.");
                         setAppState(AppStateEnum.FAIL);
                     }
                 }
