@@ -35,7 +35,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PublicKey;
@@ -67,7 +66,7 @@ public class StatisticsTimer extends JobListenerSupport {
 
     private static final long DAY_IN_MILLIS = TimeUnit.DAYS.toMillis(1);
 
-    private static final int UPDATE_PERIOD = 1;
+    private static final long HOUR_IN_MILLIS = TimeUnit.HOURS.toMillis(1);
 
     private static final String LAST_LOGON_ATTR = "oxLastLogonTime";
 
@@ -105,10 +104,10 @@ public class StatisticsTimer extends JobListenerSupport {
 
         try {
             if (pub != null) {
-                int oneDay = (int) TimeUnit.DAYS.toSeconds(UPDATE_PERIOD);
+                int oneHour = (int) TimeUnit.HOURS.toSeconds(1);
                 timerService.addListener(this, quartzJobName);
-                //Start tomorrow and repeat indefinitely once every day
-                timerService.schedule(quartzJobName, oneDay, -1, oneDay);
+                //Repeat indefinitely every hour
+                timerService.schedule(quartzJobName, oneHour, -1, oneHour);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -124,55 +123,92 @@ public class StatisticsTimer extends JobListenerSupport {
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
 
+        //TODO: remove unnecessary comments
         logger.trace("StatisticsTimer. Running timer job");
 
         long now = System.currentTimeMillis();
-        long todayStartAt = now - now % DAY_IN_MILLIS;
-        //t belongs to yesterday
-        ZonedDateTime t = ZonedDateTime.ofInstant(Instant.ofEpochMilli(todayStartAt - 1), ZoneOffset.UTC);
+        ZonedDateTime t = ZonedDateTime.ofInstant(Instant.ofEpochMilli(now), ZoneOffset.UTC);
 
         String month = t.getMonth().toString();
         String year = Integer.toString(t.getYear());
-        Path tmpFilePath = Paths.get(TEMP_PATH, month + year);
-        Path statsPath = Paths.get(STATS_PATH, month + year);
+        Path tmpUsersFile = Paths.get(TEMP_PATH, "u" + month + year);
 
-        try {
-            boolean tmpExists = Files.isRegularFile(tmpFilePath);
-            if (tmpExists) {
-                //This prevents to inflate statistics when the app is restarted
-                long modified = Files.readAttributes(tmpFilePath, BasicFileAttributes.class).lastModifiedTime().toMillis();
-                if (modified > todayStartAt) {
-                    return;
+        try{
+            logger.trace("Computing active users");
+            int activeUsers = getUpdateActiveUsers(tmpUsersFile, now);
+            long todayStartAt = now - now % DAY_IN_MILLIS;
+
+            if (now - todayStartAt < HOUR_IN_MILLIS) {
+
+                Path tmpFilePath = Paths.get(TEMP_PATH, month + year);
+                Path statsPath = Paths.get(STATS_PATH, month + year);
+                boolean tmpExists = Files.isRegularFile(tmpFilePath);
+
+                if (tmpExists) {
+                    //This prevents to inflate statistics when the app is restarted
+                    if (tmpFilePath.toFile().lastModified() > todayStartAt) {
+                        return;
+                    }
                 }
-            }
+                int daysCovered = 1;
+                List<Map<String, Object>> plugins = Collections.emptyList();
 
-            int activeUsers = yesterdayLogins(todayStartAt);
-            int daysCovered = 1;
-            List<Map<String, Object>> plugins = Collections.emptyList();
+                if (tmpExists) {
+                    byte[] bytes = Files.readAllBytes(tmpFilePath);
+                    Map<String, Object> currStats = mapper.readValue(bytes, new TypeReference<Map<String, Object>>(){});
+                    daysCovered = Integer.parseInt(currStats.get("daysCovered").toString()) + 1;
 
-            if (tmpExists) {
-                byte[] bytes = Files.readAllBytes(tmpFilePath);
-                Map<String, Object> currStats = mapper.readValue(bytes, new TypeReference<Map<String, Object>>(){});
-                daysCovered = Integer.parseInt(currStats.get("daysCovered").toString()) + 1;
-                //This in average of active users during a period
-                activeUsers+= (daysCovered - 1) * Integer.parseInt(currStats.get("activeUsers").toString());
-                activeUsers = Double.valueOf(Math.rint(Integer.valueOf(activeUsers).doubleValue() / Integer.valueOf(daysCovered).doubleValue())).intValue();
-                plugins = (List<Map<String, Object>>) currStats.get("plugins");
+                    plugins = (List<Map<String, Object>>) currStats.get("plugins");
+                }
+                plugins = getPluginInfo(plugins);
+                serialize(month, year, activeUsers, daysCovered, plugins, statsPath, tmpFilePath);
             }
-            plugins = getPluginInfo(plugins);
-            serialize(month, year, activeUsers, daysCovered, plugins, statsPath, tmpFilePath);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
 
     }
 
-    private int yesterdayLogins(long todayStartAt) {
+    private int getUpdateActiveUsers(Path tmpUsersFile, long t) throws Exception {
+
+        Set<Integer> activeUsers = new HashSet<>();
+        boolean tmpExists = Files.isRegularFile(tmpUsersFile);
+        boolean update = true;
+
+        logger.trace("tmpExists is {}", tmpExists);
+        if (tmpExists) {
+            update = t - tmpUsersFile.toFile().lastModified() > HOUR_IN_MILLIS;
+            try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(tmpUsersFile))) {
+                activeUsers = (HashSet<Integer>) ois.readObject();
+            }
+        }
+        logger.trace("update is {}", update);
+        if (update) {
+            activeUsers.addAll(lastHourLogins(t));
+
+            try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(tmpUsersFile))) {
+                oos.writeObject(activeUsers);
+            }
+        }
+        logger.trace("active is {}", activeUsers.size());
+
+        return activeUsers.size();
+
+    }
+
+    private Set<Integer> lastHourLogins(long timeStamp) {
+
+        Set<Integer> huids = new HashSet<>();
         Filter filter = Filter.createANDFilter(
-                Filter.createGreaterOrEqualFilter(LAST_LOGON_ATTR, StaticUtils.encodeGeneralizedTime(todayStartAt - DAY_IN_MILLIS)),
-                Filter.createLessOrEqualFilter(LAST_LOGON_ATTR, StaticUtils.encodeGeneralizedTime(todayStartAt - 1))
+                Filter.createGreaterOrEqualFilter(LAST_LOGON_ATTR, StaticUtils.encodeGeneralizedTime(timeStamp - HOUR_IN_MILLIS)),
+                Filter.createLessOrEqualFilter(LAST_LOGON_ATTR, StaticUtils.encodeGeneralizedTime(timeStamp - 1))
         );
-        return ldapService.find(BaseLdapPerson.class, ldapService.getPeopleDn(), filter).size();
+        //I don't use streams here to avoid overhead
+        List<BaseLdapPerson> people = ldapService.find(BaseLdapPerson.class, ldapService.getPeopleDn(), filter);
+        for (BaseLdapPerson p : people) {
+            huids.add(p.getUid().hashCode());
+        }
+        return huids;
 
     }
 
@@ -181,7 +217,7 @@ public class StatisticsTimer extends JobListenerSupport {
         List<PluginDescriptor> pluginSummary = new ArrayList<>();
         extManager.getPlugins().stream()
                 .filter(pw -> pw.getDescriptor().getPluginClass().startsWith(GLUU_CASA_PLUGINS_PREFIX)
-                                && pw.getPluginState().equals(PluginState.STARTED))
+                        && pw.getPluginState().equals(PluginState.STARTED))
                 .forEach(pw -> pluginSummary.add(
                         new DefaultPluginDescriptor(pw.getPluginId(), null, null, pw.getDescriptor().getVersion(), null, null, null))
                 );
@@ -217,12 +253,12 @@ public class StatisticsTimer extends JobListenerSupport {
                            Path destination, Path tmpDestination) throws Exception {
 
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("activeUsers", activeUsers);
         map.put("daysCovered", days);
         map.put("plugins", plugins);
 
         Files.write(tmpDestination, mapper.writeValueAsBytes(map));
 
+        map.put("activeUsers", activeUsers);
         map.put("serverName", serverName);
         map.put("email", email);
 

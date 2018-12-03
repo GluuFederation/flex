@@ -49,7 +49,7 @@
                     <a href="#"><i class="fas"></i> ${labels.general.change_lang}</a-->
 
                     <li class="pv1 pl2 pr3 bg-white-70">
-                        <a class="link hover-green gray" href="https://gluu.org/docs/casa/4.0.0/user-guide/" target="_blank">
+                        <a class="link hover-green gray db" href="https://gluu.org/docs/casa/4.0.0/user-guide/" target="_blank">
                             <i class="fas fa-question-circle" />&amp;nbsp; ${labels.general.help}
                         </a>
                     </li>
@@ -69,7 +69,7 @@
 
                     <li class="pv1 pl2 pr3 bg-white-70">
                         <z:span onClick="@command('logoutFromAuthzServer')">
-                            <a href="javascript:;" class="link hover-green gray">
+                            <a class="link hover-green gray db" href="javascript:;">
                                 <i class="fas fa-sign-out-alt" />&amp;nbsp; ${labels.general.logout}
                             </a>
                         </z:span>
