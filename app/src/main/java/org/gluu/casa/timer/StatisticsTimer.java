@@ -123,7 +123,6 @@ public class StatisticsTimer extends JobListenerSupport {
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
 
-        //TODO: remove unnecessary comments
         logger.trace("StatisticsTimer. Running timer job");
 
         long now = System.currentTimeMillis();
@@ -134,7 +133,6 @@ public class StatisticsTimer extends JobListenerSupport {
         Path tmpUsersFile = Paths.get(TEMP_PATH, "u" + month + year);
 
         try{
-            logger.trace("Computing active users");
             int activeUsers = getUpdateActiveUsers(tmpUsersFile, now);
             long todayStartAt = now - now % DAY_IN_MILLIS;
 
@@ -175,14 +173,12 @@ public class StatisticsTimer extends JobListenerSupport {
         boolean tmpExists = Files.isRegularFile(tmpUsersFile);
         boolean update = true;
 
-        logger.trace("tmpExists is {}", tmpExists);
         if (tmpExists) {
             update = t - tmpUsersFile.toFile().lastModified() > HOUR_IN_MILLIS;
             try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(tmpUsersFile))) {
                 activeUsers = (HashSet<Integer>) ois.readObject();
             }
         }
-        logger.trace("update is {}", update);
         if (update) {
             activeUsers.addAll(lastHourLogins(t));
 
@@ -190,8 +186,6 @@ public class StatisticsTimer extends JobListenerSupport {
                 oos.writeObject(activeUsers);
             }
         }
-        logger.trace("active is {}", activeUsers.size());
-
         return activeUsers.size();
 
     }
