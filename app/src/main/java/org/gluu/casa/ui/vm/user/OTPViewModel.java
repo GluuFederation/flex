@@ -221,24 +221,13 @@ public class OTPViewModel extends UserViewModel {
     @Command
     public void changeTokenPressing(@BindingParam("component") HtmlBasedComponent comp) {
 
-        try {
-            //Generate the binary key based on user input
-            logger.trace("Computing key based on key typed for hard token");
-            String skey = secretKeyString.replaceAll("\\s", "");
-
-            secretKey = new byte[skey.length() / 2];
-            for (int i = 0; i < secretKey.length; i++) {
-                secretKey[i] = (byte) (Integer.valueOf(skey.substring(i * 2, (i + 1) * 2), 16).intValue());
-            }
-
+        //Generate the binary key based on user input
+        secretKey = getSecretKeyFrom(secretKeyString);
+        if (secretKey != null) {
             if (comp != null) {
                 comp.focus();
             }
             uiTokenPressing = !uiTokenPressing;
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_ERROR, Labels.getLabel("usr.otp_entered_key_wrong"));
         }
 
     }
@@ -250,6 +239,14 @@ public class OTPViewModel extends UserViewModel {
         String uid = null;
         if (code != null) {
             logger.trace("Validating code entered");
+
+            if (tokenType.equals("HARD")) {
+                //User may have retyped the key without pressing the "continue" button
+                secretKey = getSecretKeyFrom(secretKeyString);
+                if (secretKey == null) {
+                    return;
+                }
+            }
             //Determines if numeric code is valid with respect to secret key
             IOTPAlgorithm service = otpService.getAlgorithmService(getApplicableAlgorithmType());
             uid = service.getExternalUid(secretKey, code);
@@ -325,6 +322,26 @@ public class OTPViewModel extends UserViewModel {
                 logger.error(e.getMessage(), e);
             }
         }
+
+    }
+
+    private byte[] getSecretKeyFrom(String skey) {
+
+        try {
+            skey = skey.replaceAll("\\s", "");
+            byte[] sk = new byte[skey.length() / 2];
+
+            for (int i = 0; i < sk.length; i++) {
+                sk[i] = (byte) (Integer.valueOf(skey.substring(i * 2, (i + 1) * 2), 16).intValue());
+            }
+            return sk;
+
+        } catch (Exception e) {
+            logger.warn("Computing key based on key typed for hard token failed");
+            logger.error(e.getMessage(), e);
+            UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_ERROR, Labels.getLabel("usr.otp_entered_key_wrong"));
+        }
+        return null;
 
     }
 
