@@ -97,7 +97,7 @@ public class PassResetViewModel extends UserViewModel {
             if (newPasswordConfirm != null && newPasswordConfirm.equals(newPassword)) {
 
                 if (userService.changePassword(user.getId(), newPassword)) {
-                    logger.info(Labels.getLabel("app.pass_resetted"), user.getUserName());
+                    logger.info("User {} has changed his password", user.getUserName());
                     resetPassSettings();
                     UIUtils.showMessageUI(true, Labels.getLabel("usr.passreset_changed"));
                 } else {
@@ -117,7 +117,7 @@ public class PassResetViewModel extends UserViewModel {
 
     }
 
-    public void resetPassSettings() {
+    private void resetPassSettings() {
         newPassword = null;
         newPasswordConfirm = null;
         currentPassword = null;
