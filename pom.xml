@@ -6,7 +6,7 @@
 
 	<groupId>org.xdi</groupId>
 	<artifactId>casa-base</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>3.1.5-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 	<url>http://www.gluu.org</url>
@@ -26,7 +26,6 @@
         <log4j.version>2.8.2</log4j.version>
         <oxd.version>3.1.4.Final</oxd.version>
         <ox.version>3.1.4.Final</ox.version>
-        <!--ox.version>4.0.0-SNAPSHOT</ox.version-->
         <jackson.version>2.9.8</jackson.version>
         <zk.version>8.5.0</zk.version>
         <ldapsdk.version>4.0.7</ldapsdk.version>
@@ -191,11 +190,6 @@
                     <artifactId>maven-site-plugin</artifactId>
                     <version>2.1.1</version>
                 </plugin>
-                <!--plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.7.2</version>
-                </plugin-->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>findbugs-maven-plugin</artifactId>
