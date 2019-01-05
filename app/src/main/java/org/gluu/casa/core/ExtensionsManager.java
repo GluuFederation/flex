@@ -10,7 +10,6 @@ import org.gluu.casa.conf.PluginInfo;
 import org.gluu.casa.core.plugin.CasaPluginManager;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.service.IExtensionsManager;
 import org.pf4j.*;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @ApplicationScoped
 @Named
-public class ExtensionsManager implements IExtensionsManager {
+public class ExtensionsManager {
 
     public static final String ASSETS_DIR = "assets";
     public static final String PLUGINS_EXTRACTION_DIR = "pl";

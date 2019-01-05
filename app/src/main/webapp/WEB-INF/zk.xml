@@ -20,10 +20,10 @@
         <name>org.zkoss.util.label.web.charset</name>
         <value>UTF-8</value>
     </library-property>
-    <!--library-property>
+    <library-property>
         <name>org.zkoss.lang.contextClassLoader.class</name>
         <value>org.gluu.casa.misc.CustomClassLoader</value>
-    </library-property-->
+    </library-property>
     <library-property>
         <name>org.zkoss.zul.tablet.meta.viewport.disabled</name>
         <value>true</value>

@@ -1,11 +1,11 @@
 /*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
+ * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
  *
  * Copyright (c) 2018, Gluu
  */
 package org.gluu.casa.misc;
 
-import org.gluu.casa.service.IExtensionsManager;
+import org.gluu.casa.core.ExtensionsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.lang.ContextClassLoaderFactory;
@@ -15,8 +15,7 @@ import java.util.Arrays;
 /**
  * A class implementing interface <code>org.zkoss.lang.ContextClassLoaderFactory</code>. Basically it allows to know
  * based on (string) name, which classloader a class belongs to.
- * <p>This is useful for the ZK rendering engine to instantiate view model classes. Plugin writers will normally not
- * need to use or create instances of this class.</p>
+ * <p>This is useful for the ZK rendering engine to instantiate view model classes.</p>
  * @author jgomer
  */
 public class CustomClassLoader implements ContextClassLoaderFactory {
@@ -24,13 +23,13 @@ public class CustomClassLoader implements ContextClassLoaderFactory {
     private static final String[] DEFAULT_PACKAGES = {"org.zkoss", "java", "javax"};
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private IExtensionsManager extManager;
+    private ExtensionsManager extManager;
 
     /**
      * Constructs an instance of this object.
      */
     public CustomClassLoader() {
-        extManager = Utils.managedBean(IExtensionsManager.class);
+        extManager = Utils.managedBean(ExtensionsManager.class);
         if (extManager == null) {
             logger.error("Could not obtain a reference to ExtensionsManager bean");
         }
