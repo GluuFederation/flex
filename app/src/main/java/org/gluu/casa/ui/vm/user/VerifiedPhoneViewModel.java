@@ -16,6 +16,8 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.au.out.AuInvoke;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -91,7 +93,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
 
     @NotifyChange("uiSmsDelivered")
     @Command
-    public void sendCode(){
+    public void sendCode(@BindingParam("comp") HtmlBasedComponent toFocus){
 
         //Note similar logic exists at REST service MobilePhoneEnrollingWS
         String numb = newPhone.getNumber();
@@ -109,7 +111,11 @@ public class VerifiedPhoneViewModel extends UserViewModel {
 
                     //Send message (service bean already knows all settings to perform this step)
                     uiSmsDelivered = mpService.sendSMS(numb, body).equals(SMSDeliveryStatus.SUCCESS);
-                    if (!uiSmsDelivered) {
+                    if (uiSmsDelivered) {
+                        if (toFocus != null) {
+                            toFocus.focus();
+                        }
+                    } else {
                         UIUtils.showMessageUI(false);
                     }
                 }
@@ -122,9 +128,12 @@ public class VerifiedPhoneViewModel extends UserViewModel {
 
     @NotifyChange({ "uiCodesMatch", "uiSmsDelivered" })
     @Command
-    public void checkCode() {
+    public void checkCode(@BindingParam("comp") HtmlBasedComponent toFocus) {
         uiCodesMatch = Utils.isNotEmpty(code) && Utils.isNotEmpty(realCode) && realCode.equals(code.trim());
         if (uiCodesMatch) {
+            if (toFocus != null) {
+                toFocus.focus();
+            }
             uiSmsDelivered = false;
         } else {
             UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_WARNING, Labels.getLabel("usr.mobile_code_wrong"));
@@ -136,13 +145,13 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     public void add() {
 
         if (Utils.isNotEmpty(newPhone.getNickName())) {
-            try {
-                newPhone.setAddedOn(new Date().getTime());
-                mpService.updateMobilePhonesAdd(user.getId(), phones, newPhone);
+            newPhone.setAddedOn(new Date().getTime());
+
+            if (mpService.updateMobilePhonesAdd(user.getId(), phones, newPhone)) {
                 UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
-            } catch (Exception e) {
+                Clients.response(new AuInvoke("resetPhoneValue"));
+            } else {
                 UIUtils.showMessageUI(false, Labels.getLabel("usr.enroll.error"));
-                logger.error(e.getMessage(), e);
             }
             cancel();
         }

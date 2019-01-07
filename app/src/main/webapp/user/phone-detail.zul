@@ -1,6 +1,7 @@
 <?page language="xhtml"?>
 <?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
 <?link rel="stylesheet" type="text/css" href="/styles/intlTelInput.min.css"?>
+<?script src="/scripts/intlTelInput.min.js"?>
 <zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.usr.mobile_title}</h:title>
@@ -64,14 +65,14 @@
                             <input class="focused-text" placeholder="${labels.general.phonenumber}" id="phone" onChange="javascript:updatePhoneValue()" />
                         </div>
                         <div class="pt1">
-                            <z:button label="${labels.usr.mobile_send}" sclass="${css.primaryButton}" onClick="@command('sendCode')"
+                            <z:button label="${labels.usr.mobile_send}" sclass="${css.primaryButton}" onClick="@command('sendCode', comp = sentCode)"
                                       id="sendButton" w:onClick="tempDisable('sendButton', 7000, 'sentCode');  alertRef = $('#feedback-phone')" />
                         </div>
                     </z:div>
                     <z:div sclass="pt2 pb3" visible="@load(vm.uiSmsDelivered and not vm.uiCodesMatch)">
                         <div class="pb3">
                             <z:label value="@load(empty vm.newPhone.number ? '' :
-                            c:l2('usr.mobile_sms_sent', c:split(c:substring(vm.newPhone.number, 1, c:length(vm.newPhone.number)),',')))" />
+                            c:l2('usr.mobile_sms_sent', c:split(c:substring(vm.newPhone.number, 1, c:length(vm.newPhone.number)), ',')))" />
                         </div>
 
                         <div class="pb3 flex flex-wrap">
@@ -81,7 +82,7 @@
                                 <label class="focused-label">${labels.usr.mobile_code}</label>
                             </div>
                             <div class="pt2">
-                                <z:button sclass="${css.primaryButton} mr2" label="${labels.general.validate}" onClick="@command('checkCode')" />
+                                <z:button sclass="${css.primaryButton} mr2" label="${labels.general.validate}" onClick="@command('checkCode', comp = ninick)" />
                                 <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}"
                                           w:onClick="resetPhoneValue()" onClick="@command('cancel')" />
                             </div>
@@ -97,7 +98,8 @@
 
                     <z:div sclass="flex flex-wrap pt2" visible="@load(vm.uiCodesMatch)">
                         <div class="relative w5 mt3 pr3">
-                            <z:textbox sclass="focused-text w-100 pb1" value="@bind(vm.newPhone.nickName)" onOK="@command('add')" ca:required="required" />
+                            <z:textbox id="ninick" sclass="focused-text w-100 pb1" ca:required="required"
+                                       value="@bind(vm.newPhone.nickName)" onOK="@command('add')" />
                             <label class="focused-label">${labels.usr.enter_nick}</label>
                         </div>
                         <div class="pt2">
@@ -113,12 +115,6 @@
         <z:window title="${labels.usr.mobile_edit}" border="normal" mode="modal" visible="@load(not empty vm.editingNumber)"
                   closable="true" onClose="@command('cancelUpdate', event=event)" sclass="${css.modalWindow}">
 
-            <!--
-            <div class="relative w-100 mv3 pr3 gray">
-                <h:input id="newnick" class="focused-text w-100 pb1" value="" ca:required="required" />
-                <label class="focused-label" for="newnick">${labels.general.new_nick}</label>
-            </div>
-            -->
             <div sclass="pt1 mb3">
                 <span class="db f7-cust gray">${labels.general.new_nick}</span>
                 <div class="pa1">
@@ -136,7 +132,6 @@
     </z:div>
 
     <z:div self="@define(extra)">
-        <z:script src="/scripts/intlTelInput.min.js" />
         <z:script src="/scripts/gluu/sms-util.js" />
     </z:div>
 
