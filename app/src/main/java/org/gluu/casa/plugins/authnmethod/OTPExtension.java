@@ -51,7 +51,7 @@ public class OTPExtension implements AuthnMethod {
     }
 
     public String getPanelButtonKey() {
-        return "usr.otp_changeadd";
+        return "usr.otp_manage";
     }
 
     public String getPanelBottomTextKey() {

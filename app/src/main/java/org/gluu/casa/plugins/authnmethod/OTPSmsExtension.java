@@ -51,7 +51,7 @@ public class OTPSmsExtension implements AuthnMethod {
     }
 
     public String getPanelButtonKey() {
-        return "usr.mobile_changeadd";
+        return "usr.mobile_manage";
     }
 
     public String getPageUrl() {

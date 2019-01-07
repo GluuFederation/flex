@@ -50,7 +50,7 @@ public class SecurityKeyExtension implements AuthnMethod {
     }
 
     public String getPanelButtonKey() {
-        return "usr.u2f_changeadd";
+        return "usr.u2f_manage";
     }
 
     public String getPanelBottomTextKey() {

@@ -50,7 +50,7 @@ public class SuperGluuExtension implements AuthnMethod {
     }
 
     public String getPanelButtonKey() {
-        return "usr.supergluu_changeadd";
+        return "usr.supergluu_manage";
     }
 
     public String getPanelBottomTextKey() {
