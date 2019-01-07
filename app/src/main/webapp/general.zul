@@ -5,10 +5,10 @@
 
     <z:div self="@define(content) @insert(extra)" if="${empty pageScope.error}" sclass="pa0 flex justify-center gray f7-cust">
 
-        <div class="miw-16r mw-60r w-100 bg-washed-blue2 cust-content-rule">
+        <div class="flex flex-column min-vh-100 miw-16r mw-60r w-100 bg-washed-blue2 cust-content-rule">
             <z:include src="/header.zul"/>
 
-            <z:div sclass="flex justify-start">
+            <z:div sclass="flex flex-auto justify-start">
                 <z:include class="flex flex-shrink-0" src="${c:startsWith(desktop.requestPath, '/admin') or
                             (c:startsWith(desktop.requestPath, '/pl/') and c:indexOf(desktop.requestPath, '/admin/') gt 0) ?
                             '/admin/menu.zul' : '/menubuttons.zul'}"/>
