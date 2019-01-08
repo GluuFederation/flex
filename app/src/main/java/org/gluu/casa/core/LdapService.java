@@ -51,7 +51,7 @@ public class LdapService implements ILdapService {
     //private LdapOperationService ldapOperationService;
     private OperationsFacade ldapOperationService;
 
-    private String orgInum;
+    private String rootDn;
 
     private JsonNode oxAuthConfDynamic;
 
@@ -178,7 +178,7 @@ public class LdapService implements ILdapService {
     }
 
     public gluuOrganization getOrganization() {
-        return get(gluuOrganization.class, String.format("o=%s,o=gluu", getOrganizationInum()));
+        return get(gluuOrganization.class, String.format("o=%s,%s", getOrganizationInum(), rootDn));
     }
 
     public boolean isAdmin(String userId) {
@@ -314,10 +314,7 @@ public class LdapService implements ILdapService {
     }
 
     public boolean authenticate(String uid, String pass) throws Exception {
-        if (oxTrustConfApplication != null) {
-            return ldapOperationService.authenticate(uid, pass, oxTrustConfApplication.get("baseDN").asText());
-        }
-        throw new UnsupportedOperationException("LDAP authentication is not supported with current settings");
+        return ldapOperationService.authenticate(uid, pass, rootDn);
     }
 
 
@@ -342,7 +339,9 @@ public class LdapService implements ILdapService {
         boolean success = false;
         try {
             loadOxAuthSettings(properties.getProperty("oxauth_ConfigurationEntryDN"));
+            rootDn = "o=gluu";
             success = true;
+
             String dn = properties.getProperty("oxtrust_ConfigurationEntryDN");
             if (dn != null) {
                 loadOxTrustSettings(dn);
@@ -367,6 +366,7 @@ public class LdapService implements ILdapService {
         if (confT != null) {
             oxTrustConfApplication = mapper.readTree(confT.getOxTrustConfApplication());
             oxTrustConfCacheRefresh = mapper.readTree(confT.getOxTrustConfCacheRefresh());
+            rootDn = oxTrustConfApplication.get("baseDN").asText();
         }
     }
 

@@ -6,6 +6,7 @@
 package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.PasswordStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
@@ -25,6 +26,9 @@ public class PassResetViewModel extends MainViewModel {
     @WireVariable
     private LdapService ldapService;
 
+    @WireVariable("passwordStatusService")
+    private PasswordStatusService pst;
+
     private boolean passResetEnabled;
     private boolean passResetImpossible;
 
@@ -40,7 +44,7 @@ public class PassResetViewModel extends MainViewModel {
         this.passResetEnabled = passResetEnabled;
     }
 
-    @Init//(superclass = true)
+    @Init
     public void init() {
         passResetImpossible = ldapService.isBackendLdapEnabled();
         passResetEnabled = !passResetImpossible && getSettings().isEnablePassReset();
@@ -50,6 +54,7 @@ public class PassResetViewModel extends MainViewModel {
     public void change() {
         getSettings().setEnablePassReset(passResetEnabled);
         updateMainSettings();
+        pst.reloadStatus();
     }
 
 }

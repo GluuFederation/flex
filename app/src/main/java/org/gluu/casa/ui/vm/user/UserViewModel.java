@@ -37,15 +37,24 @@ public class UserViewModel {
     @WireVariable
     UserService userService;
 
+    @WireVariable("passwordStatusService")
+    private PasswordStatusService pst;
+
     MainSettings confSettings;
 
     User user;
+
+    //This getter is used in several ZK pages like menubuttons.zul  or user.zul
+    public PasswordStatusService getPst() {
+        return pst;
+    }
 
     @Init
     public void init() {
         user = sessionContext.getUser();
         //Note MainSettings is not injectable in ViewModels
         confSettings = confHandler.getSettings();
+        pst.reloadStatus();
     }
 
     public String getAuthnMethodPageUrl(AuthnMethod method) {

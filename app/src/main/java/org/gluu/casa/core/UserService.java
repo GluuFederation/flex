@@ -92,34 +92,6 @@ public class UserService {
 
     }
 
-    public boolean passwordMatch(String userName, String password) {
-
-        boolean match = false;
-        try {
-            match = ldapService.authenticate(userName, password);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return match;
-
-    }
-
-    public boolean changePassword(String userId, String newPassword) {
-
-        boolean success = false;
-        try {
-            if (Utils.isNotEmpty(newPassword)) {
-                PersonPreferences person = personPreferencesInstance(userId);
-                person.setPassword(newPassword);
-                success = ldapService.modify(person, PersonPreferences.class);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return success;
-
-    }
-
     public List<AuthnMethod> getLiveAuthnMethods() {
         return getLiveAuthnMethods(true);
     }

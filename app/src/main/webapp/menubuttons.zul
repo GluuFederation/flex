@@ -24,11 +24,20 @@
                 </li>
             </z:div>
 
-            <zk:zk if="${configurationHandler.settings.enablePassReset}">
+            <zk:zk if="${vm.pst.passResetAvailable}">
                 <li id="pass_reset_menuitem">
                     <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}/user/pass-reset.zul">
                         <i class="mh2 fas fa-lock" /><!-- fa-expeditedssl -->
                         <span class="collapsible-menu-item di">${labels.usr.passreset_title}</span>
+                    </a>
+                </li>
+            </zk:zk>
+
+            <zk:zk if="${vm.pst.passSetAvailable}">
+                <li id="pass_set_menuitem">
+                    <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}/user/pass-set.zul">
+                        <i class="mh2 fas fa-lock" />
+                        <span class="collapsible-menu-item di">${labels.usr.password_set.title}</span>
                     </a>
                 </li>
             </zk:zk>

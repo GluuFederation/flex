@@ -15,11 +15,6 @@ import com.unboundid.ldap.sdk.persist.LDAPObject;
         superiorClass="top")
 public class PersonPreferences extends BaseLdapPerson {
 
-    // The field used for optional attribute userPassword.
-    @LDAPField
-    private String[] userPassword;
-
-
     // The field used for optional attribute oxPreferredMethod.
     @LDAPField(filterUsage= FilterUsage.ALWAYS_ALLOWED)
     private String[] oxPreferredMethod;
@@ -98,18 +93,6 @@ public class PersonPreferences extends BaseLdapPerson {
         {
             return oxTrustedDevicesInfo[0];
         }
-    }
-
-    /**
-     * Sets the values for the field associated with the
-     * userPassword attribute.
-     *
-     * @param  v  The values for the field associated with the
-     *            userPassword attribute.
-     */
-    public void setPassword(final String ...v)
-    {
-        this.userPassword = v;
     }
 
     /**

@@ -5,6 +5,7 @@
  */
 package org.gluu.casa.ui.vm.user;
 
+import org.gluu.casa.core.PasswordStatusService;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
+import org.zkoss.zul.Messagebox;
 
 /**
  * Created by jgomer on 2018-07-09.
@@ -27,6 +29,7 @@ public class PassResetViewModel extends UserViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    private PasswordStatusService pst;
     private String currentPassword;
     private String newPassword;
     private String newPasswordConfirm;
@@ -71,7 +74,8 @@ public class PassResetViewModel extends UserViewModel {
 
     @Init(superclass = true)
     public void childInit() {
-        strength = -1;
+        resetPassSettings();
+        pst = getPst();
     }
 
     @AfterCompose
@@ -93,10 +97,10 @@ public class PassResetViewModel extends UserViewModel {
     @Command
     public void resetPass() {
 
-        if (userService.passwordMatch(user.getUserName(), currentPassword)) {
+        if (pst.passwordMatch(user.getUserName(), currentPassword)) {
             if (newPasswordConfirm != null && newPasswordConfirm.equals(newPassword)) {
 
-                if (userService.changePassword(user.getId(), newPassword)) {
+                if (pst.changePassword(user.getId(), newPassword)) {
                     logger.info("User {} has changed his password", user.getUserName());
                     resetPassSettings();
                     UIUtils.showMessageUI(true, Labels.getLabel("usr.passreset_changed"));
@@ -106,9 +110,9 @@ public class PassResetViewModel extends UserViewModel {
 
             } else {
                 UIUtils.showMessageUI(false, Labels.getLabel("usr.passreset_nomatch"));
-                newPasswordConfirm = null;
-                newPassword = null;
-                strength = -1;
+                String tmp = currentPassword;
+                resetPassSettings();
+                currentPassword = tmp;
             }
         } else {
             currentPassword = null;
@@ -117,17 +121,39 @@ public class PassResetViewModel extends UserViewModel {
 
     }
 
-    private void resetPassSettings() {
-        newPassword = null;
-        newPasswordConfirm = null;
-        currentPassword = null;
-        strength = -1;
+    @NotifyChange("*")
+    @Command
+    public void setPass() {
+
+        if ((newPasswordConfirm != null && newPasswordConfirm.equals(newPassword))) {
+
+            if (pst.changePassword(user.getId(), newPassword)) {
+                String userName = user.getUserName();
+                logger.info("User {} has changed his password", userName);
+                resetPassSettings();
+                pst.reloadStatus();
+                Messagebox.show(Labels.getLabel("usr.password_set.success", new String[]{userName}), null, Messagebox.OK, Messagebox.INFORMATION);
+            } else {
+                UIUtils.showMessageUI(false);
+            }
+        } else {
+            resetPassSettings();
+            UIUtils.showMessageUI(false, Labels.getLabel("usr.passreset_nomatch"));
+        }
+
     }
 
     @NotifyChange("*")
     @Command
     public void cancel() {
         resetPassSettings();
+    }
+
+    private void resetPassSettings() {
+        newPassword = null;
+        newPasswordConfirm = null;
+        currentPassword = null;
+        strength = -1;
     }
 
 }

@@ -121,3 +121,15 @@ function collapse() {
     }
     aside.is(":visible") ? aside.hide() : aside.show()
 }
+
+//Computes the strength of password entered in the input element whose ID is passed and sends the score back to server
+function updateStrength(id){
+    var widget = zk.$('$' + id);
+    var strength = zxcvbn(document.getElementById(id).value);
+    zAu.send(new zk.Event(widget, "onData", strength.score, {toServer:true}));
+}
+
+function togglePass(icon, elemID) {
+    $(icon).toggleClass('fa-eye-slash').toggleClass('fa-eye');
+    $('#' + elemID).togglePassword();
+}
