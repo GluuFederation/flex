@@ -22,8 +22,8 @@
                         <label class="focused-label" for="new_pass">${labels.usr.passreset_newpass}</label>
                         <i class="icon fas fa-eye absolute right-1 top-0 mt1" onClick="javascript:togglePass(this, 'new_pass')" />
                     </div>
-                    <div class="w5 pt1 tc">
-                        <z:label sclass="f7 i" visible="@load(not empty vm.strengthText)" value="${labels.usr.pass.strength.title}" />
+                    <div class="w5 pt1 tc f7">
+                        <z:label sclass="i" visible="@load(not empty vm.strengthText)" value="${labels.usr.pass.strength.title}" />
                         <z:label sclass="i b" value="@load(vm.strengthText)"/>
                     </div>
                     <div class="relative w5 mt4 pr3">

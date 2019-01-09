@@ -49,10 +49,11 @@ public class PasswordStatusService implements Serializable {
     public void reloadStatus() {
         /*
          offer pass set if
-          - user has no password but has oxExternalUid like passport-*
+          - user has no password and
+          - has oxExternalUid like passport-*
          offer pass reset if
           - user has password and
-          - app config allowed this
+          - app config allows this
          offer 2fa when
           - user has password or
           - backend ldap detected
