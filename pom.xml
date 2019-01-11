@@ -53,9 +53,9 @@
     </repositories>
 
     <scm>
-        <url>https://github.com/GluuFederation/cred-manager</url>
-        <connection>scm:git:git://github.com/GluuFederation/cred-manager.git</connection>
-        <developerConnection>scm:git:git@github.com:GluuFederation/cred-manager.git</developerConnection>
+        <url>https://github.com/GluuFederation/casa</url>
+        <connection>scm:git:git://github.com/GluuFederation/casa.git</connection>
+        <developerConnection>scm:git:git@github.com:GluuFederation/casa.git</developerConnection>
     </scm>
 
     <modules>
