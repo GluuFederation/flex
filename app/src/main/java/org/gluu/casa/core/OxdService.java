@@ -117,7 +117,7 @@ public class OxdService {
                 oxdConfig.setAcrValues(Collections.singletonList(DEFAULT_ACR));
 
                 try {
-                    if (ldapService.getDynamicClientExpirationTime() >= 0) {
+                    if (ldapService.getDynamicClientExpirationTime() != 0) {
                         Optional<String> oxdIdOpt = Optional.ofNullable(oxdConfig.getClient()).map(OxdClientSettings::getOxdId);
                         if (oxdIdOpt.isPresent()) {
                             setSettings(oxdConfig);
