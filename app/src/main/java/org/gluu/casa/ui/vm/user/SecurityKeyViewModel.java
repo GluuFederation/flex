@@ -57,6 +57,7 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     private String u2fSupportMessage;
     private boolean u2fMayBeSupported;
+    private boolean requiresU2f_v1_1;
 
     public boolean isUiAwaiting() {
         return uiAwaiting;
@@ -76,6 +77,10 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     public boolean isU2fMayBeSupported() {
         return u2fMayBeSupported;
+    }
+
+    public boolean isRequiresU2f_v1_1() {
+        return requiresU2f_v1_1;
     }
 
     public SecurityKey getNewDevice() {
@@ -117,7 +122,7 @@ public class SecurityKeyViewModel extends UserViewModel {
 
             //Notify browser to exec proper function
             UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_INFO, Labels.getLabel("usr.u2f_touch"));
-            Clients.response(new AuInvoke("triggerU2fRegistration", new JavaScriptValue(jsonRequest), REGISTRATION_TIMEOUT));
+            Clients.response(new AuInvoke("triggerU2fRegistration", new JavaScriptValue(jsonRequest), REGISTRATION_TIMEOUT, requiresU2f_v1_1));
         } catch (Exception e) {
             UIUtils.showMessageUI(false);
             logger.error(e.getMessage(), e);
@@ -281,6 +286,7 @@ public class SecurityKeyViewModel extends UserViewModel {
                 if (name.contains("firefox")) {
                     if (browserVer >= 57) {
                         u2fSupportMessage = Labels.getLabel("usr.u2f_enabled_u2f_ff");
+                        requiresU2f_v1_1 = true;
                     } else {
                         u2fSupportMessage = Labels.getLabel("usr.u2f_unsupported_ff", new Integer[]{ browserVer });
                     }

@@ -118,12 +118,15 @@ public class U2fService extends FidoService {
 
         if (tmp != null) {
             try {
-                value = U2fClientCodes.get(tmp.asInt()).toString();
-                logger.error("Registration failed with error: {}", value);
-                value = value.toLowerCase();
+                int code = tmp.asInt();
+                if (code > 0) {
+                    value = U2fClientCodes.get(code).toString();
+                    logger.error("Registration failed with error: {}", value);
+                    value = value.toLowerCase();
+                }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                value = Labels.getLabel("general.error.general");
+                value = e.getMessage();
             }
         }
         return value;

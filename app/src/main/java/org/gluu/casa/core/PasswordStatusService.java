@@ -9,8 +9,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 @Named
 @SessionScoped
@@ -65,8 +63,7 @@ public class PasswordStatusService implements Serializable {
         if (p.hasPassword()) {
             passResetAvailable = confSettings.isEnablePassReset();
         } else {
-            Predicate<String> pred = oxuid -> oxuid.startsWith(EXTERNAL_IDENTITIES_PREFIX);
-            passSetAvailable = Stream.of(p.getOxExternalUid()).anyMatch(pred) || Stream.of(p.getOxUnlinkedExternalUids()).anyMatch(pred);
+            passSetAvailable = hasPassportPrefix(p.getOxExternalUid()) || hasPassportPrefix(p.getOxUnlinkedExternalUids());
         }
         password2faRequisite = p.hasPassword() || ldapService.isBackendLdapEnabled();
 
@@ -98,6 +95,10 @@ public class PasswordStatusService implements Serializable {
         }
         return success;
 
+    }
+
+    private boolean hasPassportPrefix(String[] externalUids) {
+        return Utils.listfromArray(externalUids).stream().anyMatch(uid -> uid.startsWith(EXTERNAL_IDENTITIES_PREFIX));
     }
 
 }

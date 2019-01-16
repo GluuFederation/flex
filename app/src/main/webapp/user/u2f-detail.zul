@@ -114,10 +114,10 @@
 
         </z:window>
 
+        <z:script unless="${vm.requiresU2f_v1_1}" src="/scripts/u2f-api.js" />
     </z:div>
 
     <z:div self="@define(extra)">
-        <z:script src="/scripts/u2f-api.js" />
         <z:script src="/scripts/gluu/u2f-util.js" />
     </z:div>
 
