@@ -20,7 +20,7 @@ function triggerU2fRegistration(req, timeout, u2fv1_1){
 
 //Performs u2f registration: uses the google u2f object to do all registering stuff
 function startRegistration(u2fv1_1) {
-    if (u2fv1_1) {
+    if (u2fv1_1) {  //When it takes this branch, it will only work if the domain is protected by a prod SSL cert
         //u2f v1.1 differs from u2f v1.0 in u2f.register and sign signatures
         //see https://fidoalliance.org/specs/fido-u2f-v1.2-ps-20170411/fido-u2f-javascript-api-v1.1-v1.2-ps-20170411.html
         var appId = register_request.registerRequests[0].appId;
