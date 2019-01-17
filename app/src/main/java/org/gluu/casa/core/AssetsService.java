@@ -17,6 +17,7 @@ import javax.inject.Named;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 /**
  * Created by jgomer on 2018-09-24.
@@ -25,10 +26,11 @@ import java.nio.file.Paths;
 @ApplicationScoped
 public class AssetsService implements IBrandingManager {
 
+    public static final String EMPTY_SNIPPET = "/**/";
+
     private static final String DEFAULT_LOGO_URL = "/images/logo.png";
     private static final String DEFAULT_FAVICON_URL = "/images/favicon.ico";
     private static final String DEFAULT_CUSTOM_PATH = "/custom";
-    private static final String EMPTY_SNIPPET = "/**/";
 
     @Inject
     private Logger logger;
@@ -109,6 +111,17 @@ public class AssetsService implements IBrandingManager {
             mainSettings.setExtraCssSnippet(null);
             mainSettings.save();
             reloadUrls();
+
+            if (Utils.isNotEmpty(snip)) {
+                //Attempt to delete files
+                Stream.of(getCustomPathForLogo(), getCustomPathForFavicon()).forEach(p -> {
+                    try {
+                        Files.deleteIfExists(p);
+                    } catch (Exception e){
+                        //No need to log here
+                    }
+                });
+            }
         } catch (Exception e) {
             mainSettings.setUseExternalBranding(external);
             mainSettings.setExtraCssSnippet(snip);
