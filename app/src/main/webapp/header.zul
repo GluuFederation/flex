@@ -54,12 +54,10 @@
 
                     <z:div children="@load(vm.contextMenuItems)">
                         <zk:template name="children">
-                            <li class="pv1 pl2 pr3 bg-white-70">
-                                <z:include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
-                                    <zk:attribute name="base">${each.x}</zk:attribute>
-                                    <zk:attribute name="priority">${each.y.priority}</zk:attribute>
-                                </z:include>
-                            </li>
+                            <z:include src="${c:cat3(each.x, '/', each.y.contentsUrl)}">
+                                <zk:attribute name="base">${each.x}</zk:attribute>
+                                <zk:attribute name="priority">${each.y.priority}</zk:attribute>
+                            </z:include>
                         </zk:template>
                     </z:div>
 
