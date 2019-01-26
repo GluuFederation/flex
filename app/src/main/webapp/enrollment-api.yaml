@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "3.1.4"
+  version: "3.1.6"
   title: Gluu casa credentials enrollment
   description: Facilitates the process of credentials enrollment in the Gluu Server.
   license:
@@ -867,5 +867,5 @@ securityDefinitions:
     type: oauth2
     description: A OAuth2 bearer token in the header must be passed
     flow: application
-    tokenUrl: https://cred3.gluu.org/oxauth/restv1/token
+    tokenUrl: https://dc.gluu.org/oxauth/restv1/token
     

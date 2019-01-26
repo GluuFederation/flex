@@ -91,7 +91,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         List<String> toBeRemoved = new ArrayList<>();
 
         logger.info("AuthnScriptsReloader. Running timer job for acrs: {}", acrs.toString());
-        //In Gluu <= 3.1.4, every time a single script is changed via oxTrust, all custom scripts are reloaded. This is
+        //In Gluu <= 3.1.6, every time a single script is changed via oxTrust, all custom scripts are reloaded. This is
         //not the case when for instance, the oxRevision attribute of a cust script is altered manually (as when developing)
         //In the future, oxTrust should only reload the script that has changed for performance reasons.
         for (String acr : acrs) {

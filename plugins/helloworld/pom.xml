@@ -66,7 +66,7 @@
         <!--
             Add needed dependencies with scope = provided here if they are already part of casa. To get a list do the following:
             1. clone Gluu casa (git clone https://github.com/GluuFederation/casa.git)
-            2. swith to a proper branch (eg. git checkout version_3.1.5)
+            2. swith to a proper branch (eg. git checkout version_3.1.6)
             3. cd to application's project (cd app)
             3. get a list (mvn dependency:tree)
             Alternatively, you may open file /opt/gluu/jetty/casa/webapps/casa.war and inspect subdirectory WEB_INF/lib
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.xdi</groupId>
             <artifactId>casa-shared</artifactId>
-            <version>3.1.5-SNAPSHOT</version>
+            <version>3.1.6.Final</version>
             <scope>provided</scope>
         </dependency>
 

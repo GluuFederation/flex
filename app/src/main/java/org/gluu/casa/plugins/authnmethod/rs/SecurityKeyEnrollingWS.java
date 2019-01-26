@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  * @author jgomer
  */
 @ApplicationScoped
-//TODO: temporarily disabled until FIDO 2 is supported
+//TODO: Disabled: u2f will be deprecated in favor of FIDO 2
 //@Path("/enrollment/" + SecurityKeyExtension.ACR)
 public class SecurityKeyEnrollingWS {
 
