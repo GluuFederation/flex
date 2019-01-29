@@ -35,6 +35,7 @@ import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This is the ViewModel of page otp-detail.zul. It controls the CRUD of HOTP/TOTP devices
@@ -167,7 +168,8 @@ public class OTPViewModel extends UserViewModel {
         //For QR scan TOTP is used
         IOTPAlgorithm totpService = otpService.getAlgorithmService(OTPType.TOTP);
         secretKey = totpService.generateSecretKey();
-        String request = totpService.generateSecretKeyUri(secretKey, user.getGivenName());
+        String label = Optional.ofNullable(user.getGivenName()).orElse(user.getUserName());
+        String request = totpService.generateSecretKeyUri(secretKey, label);
 
         JavaScriptValue jvalue = new JavaScriptValue(otpConfig.getFormattedQROptions(getScreenWidth()));
 

@@ -114,13 +114,19 @@ public class OTPService extends BaseService {
             if (newDevice != null) {
                 vdevices.add(newDevice);
             }
-            String[] uids = vdevices.stream().map(OTPDevice::getUid).toArray(String[]::new);
-            String json = uids.length > 0 ? mapper.writeValueAsString(Collections.singletonMap("devices", vdevices)) : null;
+            List<String> uids = vdevices.stream().map(OTPDevice::getUid).collect(Collectors.toList());
+            String json = uids.size() > 0 ? mapper.writeValueAsString(Collections.singletonMap("devices", vdevices)) : null;
 
             logger.debug("Updating otp devices for user '{}'", userId);
             PersonOTP person = ldapService.get(PersonOTP.class, ldapService.getPersonDn(userId));
             person.setOTPDevices(Utils.arrayFromValue(String.class, json));
-            person.setExternalUid(uids);
+
+            //This helps prevent "losing" data (e.g. entries prefixed with passport)
+            List<String> alluids = new ArrayList<>(
+                    person.getExternalUids().stream().filter(uid -> !uid.startsWith(TOTP_PREFIX) && !uid.startsWith(HOTP_PREFIX))
+                            .collect(Collectors.toList()));
+            alluids.addAll(uids);
+            person.setExternalUid(alluids.toArray(new String[0]));
 
             success = ldapService.modify(person, PersonOTP.class);
 
