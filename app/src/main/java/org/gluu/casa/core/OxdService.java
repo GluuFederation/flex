@@ -168,11 +168,11 @@ public class OxdService {
                 cmdParams.setPostLogoutRedirectUri(config.getPostLogoutUri());
                 cmdParams.setAcrValues(config.getAcrValues());
                 cmdParams.setClientName(clientName);
+                cmdParams.setClientFrontchannelLogoutUri(Collections.singletonList(config.getFrontLogoutUri()));
 
                 cmdParams.setScope(CASA_SCOPES);
                 cmdParams.setResponseTypes(Collections.singletonList("code"));
                 cmdParams.setTrustedClient(true);
-                //cmdParams.setGrantType(Collections.singletonList("authorization_code"));      //this is the default grant
 
                 SetupClientResponse setup = restResponse(cmdParams, "setup-client", null, SetupClientResponse.class);
                 computedSettings = new OxdClientSettings(clientName, setup.getOxdId(), setup.getClientId(), setup.getClientSecret());
@@ -185,12 +185,12 @@ public class OxdService {
                 cmdParams.setPostLogoutRedirectUri(config.getPostLogoutUri());
                 cmdParams.setAcrValues(config.getAcrValues());
                 cmdParams.setClientName(clientName);
+                cmdParams.setClientFrontchannelLogoutUri(Collections.singletonList(config.getFrontLogoutUri()));
 
                 //These scopes should be set to default=true in LDAP (or using oxTrust). Otherwise the following will have no effect
                 cmdParams.setScope(CASA_SCOPES);
                 cmdParams.setResponseTypes(Collections.singletonList("code"));  //Use "token","id_token" for implicit flow
                 cmdParams.setTrustedClient(true);
-                //cmdParams.setGrantType(Collections.singletonList("authorization_code"));      //this is the default grant
 
                 CommandClient commandClient = null;
                 try {

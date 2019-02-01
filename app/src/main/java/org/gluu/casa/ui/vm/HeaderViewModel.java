@@ -22,9 +22,7 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author jgomer
@@ -61,8 +59,8 @@ public class HeaderViewModel {
     public void logoutFromAuthzServer() {
 
         try {
-            //When the session expires, the browser is taken to /session-expired.zul (see zk.xml), so theoretically, the
-            //calls to session-scoped method above will not yield null
+            //When the session expires, the browser is automatically taken to /session-expired.zul (see zk.xml), so
+            //in theory, the call below will not yield NPE, and authFlowContext.isHasSessionAtOP() is always true
             logger.trace("Log off attempt for {}", sessionContext.getUser().getUserName());
 
             //After End-User has logged out, the Client might request to log him out of the OP too
@@ -70,7 +68,7 @@ public class HeaderViewModel {
             Executions.sendRedirect(oxdService.getLogoutUrl(idToken));
 
             //Kill session
-            Optional.ofNullable(WebUtils.getServletRequest().getSession(false)).ifPresent(HttpSession::invalidate);
+            WebUtils.invalidateSession(WebUtils.getServletRequest());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

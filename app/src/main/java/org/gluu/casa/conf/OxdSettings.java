@@ -25,6 +25,9 @@ public class OxdSettings {
     @JsonProperty("post_logout_uri")
     private String postLogoutUri;
 
+    @JsonProperty("frontchannel_logout_uri")
+    private String frontLogoutUri;
+
     @JsonProperty("use_https_extension")
     private boolean useHttpsExtension;
 
@@ -65,6 +68,10 @@ public class OxdSettings {
         return acrValues;
     }
 
+    public String getFrontLogoutUri() {
+        return frontLogoutUri;
+    }
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public OxdClientSettings getClient() {
         return client;
@@ -101,4 +108,9 @@ public class OxdSettings {
     public void setClient(OxdClientSettings client) {
         this.client = client;
     }
+
+    public void setFrontLogoutUri(String frontLogoutUri) {
+        this.frontLogoutUri = frontLogoutUri;
+    }
+
 }

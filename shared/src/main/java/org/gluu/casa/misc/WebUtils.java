@@ -13,11 +13,14 @@ import org.zkoss.zk.ui.Executions;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 
 /**
- * Provides utility methods for web-related functionalities. A good place to call these methods are ZK View Models.
+ * Provides utility methods for web-related functionalities. A good place to call these methods are ZK View Models or
+ * ZK page initiators, that is, a context where there is a ZK Execution.
  * @author jgomer
  */
 public final class WebUtils {
@@ -47,6 +50,13 @@ public final class WebUtils {
      */
     public static String getRequestHeader(String headerName) {
         return getServletRequest().getHeader(headerName);
+    }
+
+    /**
+     * Invalidates the current http session.
+     */
+    public static void invalidateSession(HttpServletRequest request) {
+        Optional.ofNullable(request.getSession(false)).ifPresent(HttpSession::invalidate);
     }
 
     /**

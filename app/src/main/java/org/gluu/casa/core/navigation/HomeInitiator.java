@@ -75,6 +75,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
                                 Utils.managedBean(SessionContext.class).setUser(user);
                                 flowContext.setIdToken(idToken);
                                 flowContext.setStage(BYPASS);
+                                flowContext.setHasSessionAtOP(true);
                                 //This flow continues at index.zul
                             }
                         }
@@ -82,8 +83,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
                     case BYPASS:
                         //go straight without the need for showing UI
                         logger.debug("Taking user to homepage...");
-                        User user = Utils.managedBean(SessionContext.class).getUser();
-                        WebUtils.execRedirect(/*user.isAdmin()? WebUtils.ADMIN_PAGE_URL : */WebUtils.USER_PAGE_URL);
+                        WebUtils.execRedirect(WebUtils.USER_PAGE_URL);
                         break;
                     default:
                         //Added to pass style checker
