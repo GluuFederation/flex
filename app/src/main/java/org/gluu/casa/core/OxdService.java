@@ -45,6 +45,7 @@ import org.xdi.oxd.common.response.*;
 import org.zkoss.util.Pair;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.gluu.casa.core.ConfigurationHandler.DEFAULT_ACR;
 
@@ -56,8 +57,6 @@ import static org.gluu.casa.core.ConfigurationHandler.DEFAULT_ACR;
 @Named
 @ApplicationScoped
 public class OxdService {
-
-    private static final String LOGOUT_PAGE_URL = "bye.zul";
 
     /*
     The list of scopes required to be able to inspect the claims needed. See attributes of User class
@@ -94,26 +93,18 @@ public class OxdService {
     public boolean initialize() {
 
         boolean success = false;
-
         OxdSettings oxdConfig = settings.getOxdSettings();
+
         if (oxdConfig == null) {
             logger.error("No oxd configuration was provided");
         } else {
-            String issuerUrl = ldapService.getIssuerUrl();
-            String oxdHost = oxdConfig.getHost();
-            String oxdRedirectUri = oxdConfig.getRedirectUri();
+            boolean missing = Stream.of(oxdConfig.getHost(), oxdConfig.getRedirectUri(), oxdConfig.getPostLogoutUri(),
+                                        oxdConfig.getFrontLogoutUri()).anyMatch(Utils::isEmpty);
 
-            if (oxdConfig.getPort() <= 0 || Utils.isEmpty(oxdHost) || Utils.isEmpty(oxdRedirectUri)) {
-                logger.error("Host, port, and URI for redirect must be present in configuration file");
+            if (oxdConfig.getPort() <= 0 || missing) {
+                logger.error("The following must be present in configuration file: host, port, redirect URI, post logout URI, and front channel logout URI");
             } else {
-
-                String tmp = oxdConfig.getPostLogoutUri();
-                if (Utils.isEmpty(tmp)) {   //Use default post logout if not in config settings
-                    tmp = oxdRedirectUri;    //Remove trailing slash if any in redirect URI
-                    tmp = tmp.endsWith("/") ? tmp.substring(0, tmp.length() - 1) : tmp;
-                    oxdConfig.setPostLogoutUri(tmp + "/" + LOGOUT_PAGE_URL);
-                }
-                oxdConfig.setOpHost(issuerUrl);
+                oxdConfig.setOpHost(ldapService.getIssuerUrl());
                 oxdConfig.setAcrValues(Collections.singletonList(DEFAULT_ACR));
 
                 try {
