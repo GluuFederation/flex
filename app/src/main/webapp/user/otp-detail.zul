@@ -36,7 +36,7 @@
                                     <z:label value="@load(c:cat(each.soft eq null ? '' : c:cat(c:l(each.soft ? 'usr.otp_soft' : 'usr.otp_hard'), ' - ')
                                                 , c:l(each.timeBased ? 'usr.otp_type_totp' : 'usr.otp_type_hotp')))" />
                                     <br />
-                                    <label class="w4 ma0 truncate nb1">${labels.general.added_on}</label>
+                                    <h:label if="${each.addedOn > 0}" class="w4 ma0 truncate nb1">${labels.general.added_on}</h:label>
                                     <z:label value="@load(each.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter', format='MMM d, yyyy - hh:mm a',
                                         offset = sessionContext.zoneOffset))"/>
                                 </p>

@@ -33,7 +33,7 @@
                                 <p class="ml3 mb0">
                                     <z:label sclass="f5 dark-blue2" value="@load(c:cat3(each.number, ' - ', each.nickName))" />
                                     <br />
-                                    <span>${labels.general.added_on}</span>
+                                    <h:span if="${each.addedOn > 0}">${labels.general.added_on}</h:span>
                                     <z:label value="@load(each.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter',
                                         format='MMM d, yyyy - hh:mm a', offset = sessionContext.zoneOffset)"/>
                                 </p>
