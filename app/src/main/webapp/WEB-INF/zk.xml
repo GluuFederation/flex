@@ -21,10 +21,6 @@
         <value>UTF-8</value>
     </library-property>
     <library-property>
-        <name>org.zkoss.web.preferred.locale</name>
-        <value>en</value>
-    </library-property>
-    <library-property>
         <name>org.zkoss.lang.contextClassLoader.class</name>
         <value>org.gluu.casa.misc.CustomClassLoader</value>
     </library-property>
