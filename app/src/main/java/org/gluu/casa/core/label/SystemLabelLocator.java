@@ -1,14 +1,13 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core.label;
 
 import org.zkoss.util.resource.LabelLocator;
 
+import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Locale;
 
 /**
@@ -16,26 +15,42 @@ import java.util.Locale;
  */
 public class SystemLabelLocator implements LabelLocator {
 
-    private String path;
+    private String baseUri;
+    private String module;
+    private URI defaultURI;
 
-    public SystemLabelLocator(String path) {
-        this.path = path;
+    public SystemLabelLocator(String baseUri, String module) {
+        //baseUri ends in slash
+        this.baseUri = baseUri;
+        this.module = module;
+        try {
+            defaultURI = new URI(String.format("%s%s.properties",baseUri, module));
+        } catch (Exception e) {
+            defaultURI = null;
+        }
+
     }
 
     public URL locate(Locale locale) throws MalformedURLException {
 
-        String location = null;
+        URL url = null;
+        if (baseUri.startsWith("file:")) {
 
-        if (locale == null) {
-            if (path.substring(path.lastIndexOf("/")).indexOf("_") == -1) {
-                location = path;
-            }
-        } else {
-            if (path.endsWith(locale.toString())) {
-                location = path;
+            try {
+                URI uri;
+                if (locale == null) {
+                    uri = defaultURI;
+                } else {
+                    uri = new URI(String.format("%s%s_%s.properties", baseUri, module, locale.toString()));
+                }
+                if (new File(uri).exists()) {
+                    url = uri.toURL();
+                }
+            } catch (Exception e) {
+                //Intentionally left empty
             }
         }
-        return location == null ? null : new URL(location + ".properties");
+        return url;
 
     }
 

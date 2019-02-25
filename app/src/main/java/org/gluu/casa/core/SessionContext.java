@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core;
 
 import org.gluu.casa.core.pojo.BrowserInfo;
@@ -11,7 +6,6 @@ import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.ISessionContext;
 
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.time.ZoneOffset;
@@ -23,9 +17,6 @@ import java.util.Optional;
 @Named
 @SessionScoped
 public class SessionContext implements ISessionContext, Serializable {
-
-    @Inject
-    private ZKService zkService;
 
     private User user;
 

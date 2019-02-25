@@ -1,15 +1,10 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core;
 
 import org.gluu.casa.core.label.PluginLabelLocator;
 import org.gluu.casa.core.label.SystemLabelLocator;
 import org.gluu.casa.misc.CssRulesResolver;
-import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
+import org.zkoss.util.resource.LabelLocator;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.WebApp;
 
@@ -18,11 +13,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author jgomer
@@ -32,7 +31,8 @@ import java.util.*;
 public class ZKService {
 
     public static final String EXTERNAL_LABELS_DIR = "labels";
-    private static final String SYS_LABELS_LOCATION = "/WEB-INF/classes/labels/";
+    private static final String WAR_LABELS_LOCATION = "/WEB-INF/classes/labels";
+    private static final String FILESYSTEM_LABELS_LOCATION = System.getProperty("server.base") + File.separator + "static/i18n";
 
     @Inject
     private Logger logger;
@@ -58,13 +58,14 @@ public class ZKService {
 
         try {
             confHandler.init();
-
-            appName = app.getAppName();
             servletContext = app.getServletContext();
+            readSystemLabels();
+
+            appName = Optional.ofNullable(Labels.getLabel("general.appName")).orElse(app.getAppName());
+            app.setAppName(appName);
+
             contextPath = servletContext.getContextPath();
             CssRulesResolver.init(servletContext);
-
-            readSystemLabels();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -81,24 +82,68 @@ public class ZKService {
 
     private void readSystemLabels() {
 
-        Set<String> labelsListing = servletContext.getResourcePaths(SYS_LABELS_LOCATION);
+        logger.info("Loading application labels");
+        List<LabelLocator> locators = new ArrayList<>();
 
-        if (labelsListing == null) {
-            logger.warn("No application labels will be available. Check '{}' contains properties files", SYS_LABELS_LOCATION);
+        List<String> propFilesPaths = Optional.ofNullable(servletContext.getResourcePaths(WAR_LABELS_LOCATION))
+                .orElse(Collections.emptySet()).stream().filter(path -> path.endsWith(".properties")).collect(Collectors.toList());
+        //A set of "known" locales is built but currently unused
+        //See http://forum.zkoss.org/question/110980/how-to-constrain-to-a-set-of-locales/
+        Set<String> supportedLocales = new HashSet<>();
+
+        if (propFilesPaths.size() > 0) {
+            String base, temp = propFilesPaths.get(0);
+
+            try {
+                //temp is prefixed with WAR_LABELS_LOCATION
+                base = servletContext.getResource(temp).toString();
+                base = base.substring(0, base.length() - (temp.length() - WAR_LABELS_LOCATION.length()) + 1);
+                //Here warLabelBase looks like file://.../WEB-INF/classes/labels/
+                logger.trace("War labels base is {}", base);
+            } catch (Exception e) {
+                base = null;
+                logger.error(e.getMessage(), "Unable to determine war base");
+            }
+            if (base != null) {
+                String warLabelsBase = base;
+                HashSet<String> modules = new HashSet<>();
+                fillModules(propFilesPaths, WAR_LABELS_LOCATION, modules, supportedLocales);
+
+                logger.trace("War resource bundles are: {}", modules.toString());
+                modules.stream().map(module -> new SystemLabelLocator(warLabelsBase, module)).forEach(locators::add);
+            }
+        }
+
+        Path fsPath = Paths.get(FILESYSTEM_LABELS_LOCATION);
+        if (Files.isDirectory(fsPath)) {
+            String base = fsPath.toUri().toString();
+
+            try (DirectoryStream<Path> dstream = Files.newDirectoryStream(fsPath, "*.properties")) {
+
+                HashSet<String> modules = new HashSet<>();
+                List<String> paths = new ArrayList<>();
+
+                dstream.forEach(path -> paths.add(path.toString()));
+                fillModules(paths, FILESYSTEM_LABELS_LOCATION, modules, supportedLocales);
+
+                logger.trace("External resource bundles are: {}", modules.toString());
+                modules.stream().map(module -> new SystemLabelLocator(base, module)).forEach(locators::add);
+
+            } catch (Exception e) {
+                logger.error("An error occurred while processing labels at {}", FILESYSTEM_LABELS_LOCATION);
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        logger.trace("Locales supported are: {}", supportedLocales.toString());
+
+        if (locators.isEmpty()) {
+            logger.warn("No application labels will be available");
+            logger.info("Check '{}' or '{}' contain properties files", WAR_LABELS_LOCATION, FILESYSTEM_LABELS_LOCATION);
+            logger.info("Check Casa docs to learn how to support more locales and add resource bundles (localization)");
         } else {
-            logger.info("Loading application labels");
-            labelsListing.stream().filter(path -> path.endsWith(".properties"))
-                    .map(path -> {
-                        try {
-                            return servletContext.getResource(path).toString();
-                        } catch (MalformedURLException e) {
-                            logger.error("Error converting path {} to URL", path);
-                            return null;
-                        }
-                    })
-                    .filter(Utils::isNotEmpty)
-                    .map(strUrl -> new SystemLabelLocator(strUrl.substring(0, strUrl.lastIndexOf("."))))
-                    .forEach(Labels::register);
+            locators.forEach(Labels::register);
+            logger.info("Labels registered");
         }
 
     }
@@ -164,6 +209,27 @@ public class ZKService {
             b[k++] = list.get(list.size() - 1)[j++];
         }
         return b;
+
+    }
+
+    private void fillModules(List<String> propFilePath, String location, Set<String> modules, Set<String> locales) {
+
+        //location prefixes all elements in propFilePath
+        for (String path : propFilePath) {
+            int idx = path.lastIndexOf(".");
+            String temp = path.substring(location.length() + 1, idx);
+            //temp here contains only filename (without extension)
+            idx = temp.indexOf("_");
+
+            if (idx == -1) {
+                //No locale suffix
+                modules.add(temp);
+            } else {
+                modules.add(temp.substring(0, idx));
+                //Locale is after the underscore
+                locales.add(temp.substring(idx + 1));
+            }
+        }
 
     }
 

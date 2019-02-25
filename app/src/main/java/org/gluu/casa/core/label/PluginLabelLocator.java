@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core.label;
 
 import org.zkoss.util.resource.LabelLocator;
@@ -26,7 +21,7 @@ public class PluginLabelLocator implements LabelLocator, Closeable {
     private static final String DEFAULT_PROPS_FILE = "zk-label";
 
     private JarFile jarFile;
-    private String uri;
+    private String sUri;
     private String basePath;
     private String subDirectory;
     private boolean closed;
@@ -36,7 +31,7 @@ public class PluginLabelLocator implements LabelLocator, Closeable {
         try {
             this.subDirectory = subDir;
             this.basePath = path.toString();
-            uri = path.toUri().toString();
+            this.sUri = path.toUri().toString();
 
             if (Files.isRegularFile(path) && basePath.toLowerCase().endsWith(".jar")) {
                 jarFile = new JarFile(path.toFile(), false, ZipFile.OPEN_READ);
@@ -48,27 +43,23 @@ public class PluginLabelLocator implements LabelLocator, Closeable {
 
     public URL locate(Locale locale) throws MalformedURLException {
 
-        String location = null;
+        URL url = null;
         if (!closed) {
-
-            String suffix = DEFAULT_PROPS_FILE;
-            suffix += locale == null ? "" : "_" + locale.toString();
-            suffix += ".properties";
+            String suffix = String.format("%s%s.properties", DEFAULT_PROPS_FILE, locale == null ? "" : "_" + locale.toString());
 
             if (jarFile == null) {
                 Path path = Paths.get(basePath, subDirectory, suffix);
-                if (Files.exists(path)) {
-                    location = path.toUri().toString();
+                if (Files.isRegularFile(path)) {
+                    url = path.toUri().toURL();
                 }
             } else {
                 suffix = subDirectory + "/" + suffix;
                 if (jarFile.getEntry(suffix) != null) {
-                    location = "jar:" + uri + "!/" + suffix;
+                    url = new URL(String.format("jar:%s!/%s", sUri, suffix));
                 }
             }
-            //System.out.println("@locate " + location + "-" +  uri + "!/" + suffix);
         }
-        return location == null ? null : new URL(location);
+        return url;
 
     }
 
