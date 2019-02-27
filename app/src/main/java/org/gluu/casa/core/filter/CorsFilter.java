@@ -1,8 +1,3 @@
-/*
- * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core.filter;
 
 import org.gluu.casa.misc.Utils;
@@ -26,7 +21,7 @@ import java.util.stream.Stream;
 /**
  * @author jgomer
  */
-@WebFilter(asyncSupported = true, urlPatterns = { RSInitializer.ROOT_PATH + "/*" })
+@WebFilter(urlPatterns = { RSInitializer.ROOT_PATH + "/*" })
 public class CorsFilter implements Filter {
 
     private static final int POLL_PERIOD = 60000;  //1 min
@@ -38,6 +33,12 @@ public class CorsFilter implements Filter {
 
     @Inject
     private Logger logger;
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        logger.info("CORS filter initialized");
+        allowedHosts = new HashSet<>();
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
@@ -79,12 +80,6 @@ public class CorsFilter implements Filter {
             filterChain.doFilter(request, response);
         }
 
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        logger.info("CORS filter initialized");
-        allowedHosts = new HashSet<>();
     }
 
     @Override

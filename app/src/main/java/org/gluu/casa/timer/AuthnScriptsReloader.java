@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.timer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -90,7 +85,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         Set<String> acrs = confSettings.getAcrPluginMap().keySet();
         List<String> toBeRemoved = new ArrayList<>();
 
-        logger.info("AuthnScriptsReloader. Running timer job for acrs: {}", acrs.toString());
+        logger.debug("AuthnScriptsReloader. Running timer job for acrs: {}", acrs.toString());
         //In Gluu <= 3.1.6, every time a single script is changed via oxTrust, all custom scripts are reloaded. This is
         //not the case when for instance, the oxRevision attribute of a cust script is altered manually (as when developing)
         //In the future, oxTrust should only reload the script that has changed for performance reasons.
