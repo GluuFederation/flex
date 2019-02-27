@@ -48,6 +48,9 @@ public class ZKService {
 
     private ServletContext servletContext;
 
+    //A set of "known" locales
+    private Set<Locale> supportedLocales;
+
     @PostConstruct
     private void inited() {
         labelLocators = new HashMap<>();
@@ -80,6 +83,10 @@ public class ZKService {
         return contextPath;
     }
 
+    public Set<Locale> getSupportedLocales() {
+        return supportedLocales;
+    }
+
     private void readSystemLabels() {
 
         logger.info("Loading application labels");
@@ -87,9 +94,7 @@ public class ZKService {
 
         List<String> propFilesPaths = Optional.ofNullable(servletContext.getResourcePaths(WAR_LABELS_LOCATION))
                 .orElse(Collections.emptySet()).stream().filter(path -> path.endsWith(".properties")).collect(Collectors.toList());
-        //A set of "known" locales is built but currently unused
-        //See http://forum.zkoss.org/question/110980/how-to-constrain-to-a-set-of-locales/
-        Set<String> supportedLocales = new HashSet<>();
+        supportedLocales = new HashSet<>();
 
         if (propFilesPaths.size() > 0) {
             String base, temp = propFilesPaths.get(0);
@@ -109,7 +114,7 @@ public class ZKService {
                 HashSet<String> modules = new HashSet<>();
                 fillModules(propFilesPaths, WAR_LABELS_LOCATION, modules, supportedLocales);
 
-                logger.trace("War resource bundles are: {}", modules.toString());
+                logger.info("War resource bundles are: {}", modules.toString());
                 modules.stream().map(module -> new SystemLabelLocator(warLabelsBase, module)).forEach(locators::add);
             }
         }
@@ -126,7 +131,7 @@ public class ZKService {
                 dstream.forEach(path -> paths.add(path.toString()));
                 fillModules(paths, FILESYSTEM_LABELS_LOCATION, modules, supportedLocales);
 
-                logger.trace("External resource bundles are: {}", modules.toString());
+                logger.info("External resource bundles are: {}", modules.toString());
                 modules.stream().map(module -> new SystemLabelLocator(base, module)).forEach(locators::add);
 
             } catch (Exception e) {
@@ -135,7 +140,7 @@ public class ZKService {
             }
         }
 
-        logger.trace("Locales supported are: {}", supportedLocales.toString());
+        logger.debug("Locales supported are: {}", supportedLocales.toString());
 
         if (locators.isEmpty()) {
             logger.warn("No application labels will be available");
@@ -175,8 +180,36 @@ public class ZKService {
 
     void refreshLabels() {
         logger.info("Refreshing labels");
-        //labelLocators.values().forEach(Labels::register);
         Labels.reset();
+    }
+
+    private void fillModules(List<String> propFilePath, String location, Set<String> modules, Set<Locale> locales) {
+
+        //location prefixes all elements in propFilePath
+        for (String path : propFilePath) {
+            int idx = path.lastIndexOf(".");
+            String temp = path.substring(location.length() + 1, idx);
+            //temp here contains only filename (without extension)
+            idx = temp.indexOf("_");
+
+            if (idx == -1) {
+                //No locale suffix
+                modules.add(temp);
+            } else {
+                modules.add(temp.substring(0, idx));
+                //Locale is after the underscore
+                if (idx + 1 < temp.length()) {
+                    temp = temp.substring(idx + 1).replaceAll("_", "-");
+                    try {
+                        locales.add(Locale.forLanguageTag(temp));
+                    } catch (Exception e) {
+                        logger.warn("Unknown locale suffix '{}'", temp);
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
+
     }
 
     byte[] getResourceBytes(String path) throws Exception {
@@ -209,27 +242,6 @@ public class ZKService {
             b[k++] = list.get(list.size() - 1)[j++];
         }
         return b;
-
-    }
-
-    private void fillModules(List<String> propFilePath, String location, Set<String> modules, Set<String> locales) {
-
-        //location prefixes all elements in propFilePath
-        for (String path : propFilePath) {
-            int idx = path.lastIndexOf(".");
-            String temp = path.substring(location.length() + 1, idx);
-            //temp here contains only filename (without extension)
-            idx = temp.indexOf("_");
-
-            if (idx == -1) {
-                //No locale suffix
-                modules.add(temp);
-            } else {
-                modules.add(temp.substring(0, idx));
-                //Locale is after the underscore
-                locales.add(temp.substring(idx + 1));
-            }
-        }
 
     }
 

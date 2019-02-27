@@ -48,5 +48,8 @@
     <listener>
         <listener-class>org.gluu.casa.misc.CssRulesResolver</listener-class>
     </listener>
+    <listener>
+        <listener-class>org.gluu.casa.core.filter.LocaleInterceptor</listener-class>
+    </listener>
 
 </zk>
