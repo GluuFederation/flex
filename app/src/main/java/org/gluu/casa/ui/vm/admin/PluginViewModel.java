@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.conf.PluginInfo;
@@ -60,6 +55,8 @@ public class PluginViewModel extends MainViewModel {
 
     private boolean uiAdding;
 
+    private boolean engineAvailable;
+
     public List<PluginData> getPluginList() {
         return pluginList;
     }
@@ -72,10 +69,14 @@ public class PluginViewModel extends MainViewModel {
         return uiAdding;
     }
 
-    @Init//(superclass = true)
+    public boolean isEngineAvailable() {
+        return engineAvailable;
+    }
+
+    @Init
     public void init() {
-        //a grid row might look like this: id version (details), state, implements, and control buttons
         pluginList = new ArrayList<>();
+        engineAvailable = extManager.getPluginsRoot() != null;
         extManager.getPlugins().forEach(wrapper -> pluginList.add(buildPluginData(wrapper)));
     }
 
