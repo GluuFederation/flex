@@ -51,19 +51,8 @@ public class CasaPluginManager extends DefaultPluginManager {
     @Override
     public boolean deletePlugin(String pluginId) {
 
-        //TODO: remove when fixed
-        //See https://github.com/GluuFederation/casa-ee-plugins/issues/6
-        Plugin plugin = getPlugin(pluginId).getPlugin();
-        Stream.of(plugin.getClass().getDeclaredMethods()).filter(m -> m.getName().equals("delete")).forEach(m -> {
-            try {
-                logger.info("Calling delete method for plugin {}", pluginId);
-                m.invoke(plugin);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        });
-
-        //See: https://github.com/pf4j/pf4j/issues/217
+        //On windows, delete is not called but this is not a problem since in practice (production environments)
+        //Casa is only used in Linux (See: https://github.com/pf4j/pf4j/issues/217)
         return Utils.onWindows() ? unloadPlugin(pluginId) : super.deletePlugin(pluginId);
 
     }

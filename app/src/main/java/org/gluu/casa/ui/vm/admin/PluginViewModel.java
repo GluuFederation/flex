@@ -363,10 +363,9 @@ public class PluginViewModel extends MainViewModel {
     private Path getPluginDestinationPath(String fileName) {
 
         if (Utils.onWindows()) {
-            /*
-            Add some "random" suffix since the same file can be uploaded multiples because as explained at
-            https://github.com/pf4j/pf4j/issues/217, there is no effective means to delete a plugin jar file
-            */
+
+            //Add some "random" suffix since the same file can be uploaded multiples because in practice. As explained at
+            //https://github.com/pf4j/pf4j/issues/217, there is no effective means to delete a plugin jar file on windows
             String suffix = Long.toString(System.currentTimeMillis());
             int aux = suffix.length();
             suffix = "_" + suffix.substring(aux - 5, aux);
