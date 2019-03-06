@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core;
 
 import org.gluu.casa.conf.MainSettings;
@@ -70,7 +65,6 @@ public class ExtensionsManager {
     private void inited() {
 
         pluginsRoot = Paths.get(System.getProperty("server.base"), PLUGINS_DIR_NAME);
-        pluginManager = new CasaPluginManager();
         plugExtensionMap = new HashMap<>();    //It accepts null keys
 
         if (Files.isDirectory(pluginsRoot)) {
@@ -79,6 +73,7 @@ public class ExtensionsManager {
             pluginsRoot = null;
             logger.warn("External plugins directory does not exist: there is no valid location for searching");
         }
+        pluginManager = new CasaPluginManager(pluginsRoot);
 
     }
 
@@ -168,6 +163,11 @@ public class ExtensionsManager {
                 .map(PluginWrapper::getDescriptor).collect(Collectors.toList());
     }
 
+    public List<AuthnMethod> getAuthnMethodExts(Set<String> plugIds) {
+        return plugExtensionMap.entrySet().stream().filter(e -> plugIds.contains(e.getKey())).map(Map.Entry::getValue)
+                .flatMap(List::stream).collect(Collectors.toList());
+    }
+
     public ClassLoader getPluginClassLoader(String clsName) {
 
         ClassLoader clsLoader = null;
@@ -189,11 +189,6 @@ public class ExtensionsManager {
 
     }
 
-    public List<AuthnMethod> getAuthnMethodExts(Set<String> plugIds) {
-        return plugExtensionMap.entrySet().stream().filter(e -> plugIds.contains(e.getKey())).map(Map.Entry::getValue)
-                .flatMap(List::stream).collect(Collectors.toList());
-    }
-
     public <T> List<Pair<String, T>> getPluginExtensionsForClass(Class<T> clazz) {
 
         List<Pair<String, T>> pairs = new ArrayList<>();
@@ -206,7 +201,7 @@ public class ExtensionsManager {
     }
 
     public Path getPluginsRoot() {
-        return pluginsRoot;
+        return pluginManager.getPluginsRoot();
     }
 
     public List<PluginWrapper> getPlugins() {
@@ -218,13 +213,11 @@ public class ExtensionsManager {
     }
 
     public String loadPlugin(Path path) {
-        String id = pluginManager.loadPlugin(path);
-        if (id != null) {
-            logger.debug("Loaded plugin {}, now in state {}", id, pluginManager.getPlugin(id).getPluginState().toString());
-        } else {
-            logger.warn("Plugin found at {} could not be loaded", path.toString());
-        }
-        return id;
+        return pluginManager.loadPlugin(path);
+    }
+
+    public boolean deletePlugin(String pluginId) {
+        return pluginManager.deletePlugin(pluginId);
     }
 
     public boolean stopPlugin(String pluginId) {
@@ -245,16 +238,6 @@ public class ExtensionsManager {
 
     }
 
-    public boolean deletePlugin(String pluginId) {
-
-        boolean success = pluginManager.deletePlugin(pluginId);
-        if (!success) {
-            logger.warn("Plugin '{}' could not be deleted", pluginId);
-        }
-        return success;
-
-    }
-
     public void forceRemovePlugin(String pluginId) {
 
         try {
@@ -266,6 +249,7 @@ public class ExtensionsManager {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+
     }
 
     public boolean startPlugin(String pluginId) {
