@@ -1,21 +1,15 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.timer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unboundid.ldap.sdk.Filter;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.TrustedDevicesSettings;
 import org.gluu.casa.conf.sndfactor.TrustedDevice;
 import org.gluu.casa.conf.sndfactor.TrustedOrigin;
-import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.TimerService;
-import org.gluu.casa.core.ldap.PersonPreferences;
-import org.gluu.casa.misc.Utils;
+import org.gluu.casa.core.model.PersonPreferences;
+import org.gluu.search.filter.Filter;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
@@ -46,7 +40,7 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
     private TimerService timerService;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     @Inject
     private MainSettings mainSettings;
@@ -106,15 +100,14 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
         for (PersonPreferences person : people) {
             String jsonStr = null;
             try {
-                String trustedDevicesInfo = ldapService.getDecryptedString(person.getTrustedDevicesInfo());
-                List<TrustedDevice> list = mapper.readValue(trustedDevicesInfo, new TypeReference<List<TrustedDevice>>() { });
-                //logger.debug("List is {}",mapper.writeValueAsString(list));
+                String trustedDevicesInfo = persistenceService.getDecryptedString(person.getTrustedDevices());
+                List<TrustedDevice> list = mapper.readValue(trustedDevicesInfo, new TypeReference<List<TrustedDevice>>() {});
 
                 if (removeExpiredData(list, now)) {
                     if (list.size() > 0) {
                         //update list
                         jsonStr = mapper.writeValueAsString(list);
-                        updateTrustedDevices(person, ldapService.getEncryptedString(jsonStr));
+                        updateTrustedDevices(person, persistenceService.getEncryptedString(jsonStr));
                     } else {
                         updateTrustedDevices(person, null);
                     }
@@ -168,7 +161,7 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
 
         List<PersonPreferences> list = new ArrayList<>();
         try {
-            list = ldapService.find(PersonPreferences.class, ldapService.getPeopleDn(), Filter.createPresenceFilter("oxTrustedDevicesInfo"));
+            list = persistenceService.find(PersonPreferences.class, persistenceService.getPeopleDn(), Filter.createPresenceFilter("oxTrustedDevicesInfo"));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -180,8 +173,8 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
 
         String uid = person.getUid();
         logger.trace("TrustedDevicesSweeper. Cleaning expired trusted devices for user '{}'", uid);
-        person.setTrustedDevices(Utils.arrayFromValue(String.class, value));
-        ldapService.modify(person, PersonPreferences.class);
+        person.setTrustedDevices(value);
+        persistenceService.modify(person);
 
     }
 

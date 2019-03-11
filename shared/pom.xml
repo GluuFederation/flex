@@ -20,6 +20,13 @@
 
     <dependencies>
 
+        <!-- GLUU -->
+        <dependency>
+            <groupId>org.xdi</groupId>
+            <artifactId>oxcore-ldap</artifactId>
+            <version>${ox.version}</version>
+        </dependency>
+
         <!-- PLUGIN FRAMEWORK -->
         <dependency>
             <groupId>org.pf4j</groupId>

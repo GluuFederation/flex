@@ -1,12 +1,7 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2017, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.service;
 
 import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.core.ldap.oxDeviceRegistration;
+import org.gluu.casa.core.model.DeviceRegistration;
 import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.slf4j.Logger;
@@ -34,10 +29,10 @@ public class FidoService extends BaseService {
     public boolean updateDevice(FidoDevice device) {
 
         boolean success = false;
-        oxDeviceRegistration deviceRegistration = getDeviceRegistrationFor(device);
+        DeviceRegistration deviceRegistration = getDeviceRegistrationFor(device);
         if (deviceRegistration != null) {
             deviceRegistration.setDisplayName(device.getNickName());
-            success = ldapService.modify(deviceRegistration, oxDeviceRegistration.class);
+            success = persistenceService.modify(deviceRegistration);
         }
         return success;
 
@@ -46,9 +41,9 @@ public class FidoService extends BaseService {
     public boolean removeDevice(FidoDevice device) {
 
         boolean success = false;
-        oxDeviceRegistration deviceRegistration = getDeviceRegistrationFor(device);
+        DeviceRegistration deviceRegistration = getDeviceRegistrationFor(device);
         if (deviceRegistration != null) {
-            success = ldapService.delete(deviceRegistration, oxDeviceRegistration.class);
+            success = persistenceService.delete(deviceRegistration);
         }
         return success;
 
@@ -72,12 +67,14 @@ public class FidoService extends BaseService {
         return getRecentlyCreatedDevice(list, time);
     }
 
-    private oxDeviceRegistration getDeviceRegistrationFor(FidoDevice device) {
+    private DeviceRegistration getDeviceRegistrationFor(FidoDevice device) {
 
         String id = device.getId();
-        oxDeviceRegistration deviceRegistration = new oxDeviceRegistration();
+        DeviceRegistration deviceRegistration = new DeviceRegistration();
+        deviceRegistration.setBaseDn(persistenceService.getPeopleDn());
         deviceRegistration.setOxId(id);
-        List<oxDeviceRegistration> list = ldapService.find(deviceRegistration, oxDeviceRegistration.class, ldapService.getPeopleDn());
+
+        List<DeviceRegistration> list = persistenceService.find(deviceRegistration);
         if (list.size() == 1) {
             return list.get(0);
         } else {
@@ -87,15 +84,15 @@ public class FidoService extends BaseService {
 
     }
 
-    private List<oxDeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
+    private List<DeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
 
-        String parentDn = String.format("ou=fido,%s", ldapService.getPersonDn(userId));
-
-        oxDeviceRegistration deviceRegistration = new oxDeviceRegistration();
+        String parentDn = String.format("ou=fido,%s", persistenceService.getPersonDn(userId));
+        DeviceRegistration deviceRegistration = new DeviceRegistration();
+        deviceRegistration.setBaseDn(parentDn);
         deviceRegistration.setOxApplication(appId);
         deviceRegistration.setOxStatus(active ? DeviceRegistrationStatus.ACTIVE.getValue() : DeviceRegistrationStatus.COMPROMISED.getValue());
 
-        return ldapService.find(deviceRegistration, oxDeviceRegistration.class, parentDn);
+        return persistenceService.find(deviceRegistration);
 
     }
 
@@ -103,7 +100,7 @@ public class FidoService extends BaseService {
      * Returns a list of FidoDevice instances found under the given branch that matches the oxApplication value given and
      * whose oxStatus attribute equals to "active"
      * @param userId
-     * @param oxApplication Value to match for oxApplication attribute (see LDAP object class oxDeviceRegistration)
+     * @param oxApplication Value to match for oxApplication attribute (see LDAP object class DeviceRegistration)
      * @param clazz Any subclass of FidoDevice
      * @param <T>
      * @return List of FidoDevices
@@ -111,9 +108,9 @@ public class FidoService extends BaseService {
     private <T extends FidoDevice> List<T> getDevices(String userId, boolean active, String oxApplication, Class<T> clazz) throws Exception {
 
         List<T> devices = new ArrayList<>();
-        List<oxDeviceRegistration> list = getRegistrations(oxApplication, userId, active);
+        List<DeviceRegistration> list = getRegistrations(oxApplication, userId, active);
 
-        for (oxDeviceRegistration deviceRegistration : list) {
+        for (DeviceRegistration deviceRegistration : list) {
             T device = clazz.getConstructor().newInstance();
 
             if (clazz.equals(SuperGluuDevice.class)) {

@@ -1,12 +1,7 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2017, Gluu
- */
 package org.gluu.casa.ui.vm.user;
 
 import org.gluu.casa.extension.AuthnMethod;
-import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.PersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
@@ -30,7 +25,7 @@ public class UserMainViewModel extends UserViewModel {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @WireVariable
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     private String introText;
     private boolean methodsAvailability;
@@ -69,7 +64,7 @@ public class UserMainViewModel extends UserViewModel {
         if (methodsAvailability) {
             StringBuffer helper = new StringBuffer();
             widgets.forEach(aMethod -> helper.append(", ").append(Labels.getLabel(aMethod.getPanelTitleKey())));
-            String orgName = ldapService.getOrganization().getDisplayName();
+            String orgName = persistenceService.getOrganization().getDisplayName();
             introText = Labels.getLabel("usr.main_intro", new String[] { orgName, helper.substring(2) });
 
             pre2faMethods = widgets.stream().filter(AuthnMethod::mayBe2faActivationRequisite).collect(Collectors.toList());

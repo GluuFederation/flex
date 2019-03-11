@@ -1,11 +1,6 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.ui.vm.admin;
 
-import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.PasswordStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +19,7 @@ public class PassResetViewModel extends MainViewModel {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @WireVariable
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     @WireVariable("passwordStatusService")
     private PasswordStatusService pst;
@@ -46,7 +41,7 @@ public class PassResetViewModel extends MainViewModel {
 
     @Init
     public void init() {
-        passResetImpossible = ldapService.isBackendLdapEnabled();
+        passResetImpossible = persistenceService.isBackendLdapEnabled();
         passResetEnabled = !passResetImpossible && getSettings().isEnablePassReset();
     }
 

@@ -8,7 +8,6 @@ import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPSmsExtension;
 import org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus;
 import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
-import org.gluu.casa.core.LdapService;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -37,9 +36,6 @@ import java.util.List;
 public class VerifiedPhoneViewModel extends UserViewModel {
 
     private Logger logger = LogManager.getLogger(getClass());
-
-    @WireVariable
-    private LdapService ldapService;
 
     @WireVariable("mobilePhoneService")
     private MobilePhoneService mpService;

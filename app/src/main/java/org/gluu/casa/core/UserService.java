@@ -1,24 +1,19 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2017, Gluu
- */
 package org.gluu.casa.core;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unboundid.ldap.sdk.Filter;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.conf.sndfactor.TrustedDevice;
 import org.gluu.casa.conf.sndfactor.TrustedDeviceComparator;
-import org.gluu.casa.core.ldap.Person;
-import org.gluu.casa.core.ldap.PersonPreferences;
+import org.gluu.casa.core.model.Person;
+import org.gluu.casa.core.model.PersonPreferences;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.plugins.authnmethod.SecurityKeyExtension;
 import org.gluu.casa.plugins.authnmethod.SuperGluuExtension;
+import org.gluu.search.filter.Filter;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
@@ -44,7 +39,7 @@ public class UserService {
     private Logger logger;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     @Inject
     private ExtensionsManager extManager;
@@ -82,11 +77,11 @@ public class UserService {
         }
 
         u.setPreferredMethod(person.getPreferredMethod());
-        u.setAdmin(ldapService.isAdmin(inum));
+        u.setAdmin(persistenceService.isAdmin(inum));
         cleanRandEnrollmentCode(inum);
         if (confHandler.getSettings().getAcrPluginMap().keySet().stream()
                 .anyMatch(acr -> acr.equals(SecurityKeyExtension.ACR) || acr.equals(SuperGluuExtension.ACR))) {
-            ldapService.prepareFidoBranch(inum);
+            persistenceService.prepareFidoBranch(inum);
         }
         return u;
 
@@ -153,7 +148,7 @@ public class UserService {
                 Filter.createORFilter(stream.collect(Collectors.toList())),
                 Filter.createPresenceFilter(PREFERRED_METHOD_ATTR)
         );
-        return ldapService.find(Person.class, ldapService.getPeopleDn(), filter);
+        return persistenceService.find(Person.class, persistenceService.getPeopleDn(), filter);
 
     }
 
@@ -162,8 +157,8 @@ public class UserService {
         boolean success = false;
         try {
             PersonPreferences person = personPreferencesInstance(id);
-            person.setPreferredMethod(Utils.arrayFromValue(String.class, method));
-            success = ldapService.modify(person, PersonPreferences.class);
+            person.setPreferredMethod(method);
+            success = persistenceService.modify(person);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -179,7 +174,8 @@ public class UserService {
     public boolean zeroPreferences(String acr){
         PersonPreferences ppfs = new PersonPreferences();
         ppfs.setPreferredMethod(acr);
-        return ldapService.find(ppfs, PersonPreferences.class, ldapService.getPeopleDn()).size() == 0;
+        ppfs.setBaseDn(persistenceService.getPeopleDn());
+        return persistenceService.count(ppfs) == 0;
     }
 
     public Pair<Set<String>, List<TrustedDevice>> get2FAPolicyData(String userId) {
@@ -200,7 +196,7 @@ public class UserService {
                 });
             }
 
-            String trustedDevicesInfo = ldapService.getDecryptedString(person.getTrustedDevicesInfo());
+            String trustedDevicesInfo = persistenceService.getDecryptedString(person.getTrustedDevices());
             if (Utils.isNotEmpty(trustedDevicesInfo)) {
                 trustedDevices = mapper.readValue(trustedDevicesInfo, new TypeReference<List<TrustedDevice>>() { });
                 trustedDevices.forEach(TrustedDevice::sortOriginsDescending);
@@ -222,7 +218,7 @@ public class UserService {
         try {
             PersonPreferences person = personPreferencesInstance(userId);
             person.setStrongAuthPolicy(str.substring(2));
-            updated = ldapService.modify(person, PersonPreferences.class);
+            updated = persistenceService.modify(person);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -236,11 +232,11 @@ public class UserService {
         List<TrustedDevice> copyOfDevices = new ArrayList<>(devices);
         try {
             copyOfDevices.remove(index);
-            String updatedJson = ldapService.getEncryptedString(mapper.writeValueAsString(copyOfDevices));
+            String updatedJson = persistenceService.getEncryptedString(mapper.writeValueAsString(copyOfDevices));
 
             PersonPreferences person = personPreferencesInstance(userId);
             person.setTrustedDevices(updatedJson);
-            if (ldapService.modify(person, PersonPreferences.class)) {
+            if (persistenceService.modify(person)) {
                 devices.remove(index);
                 updated = true;
             }
@@ -255,19 +251,19 @@ public class UserService {
 
         logger.debug("Writing random enrollment code for {}", userId);
         String code = UUID.randomUUID().toString();
-        Person person = ldapService.get(Person.class, ldapService.getPersonDn(userId));
+        Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
         person.setEnrollmentCode(code);
-        return ldapService.modify(person, Person.class) ? code : null;
+        return persistenceService.modify(person) ? code : null;
 
     }
 
     public void cleanRandEnrollmentCode(String userId) {
-        Person person = ldapService.get(Person.class, ldapService.getPersonDn(userId));
+        Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
 
         if (Utils.isNotEmpty(person.getEnrollmentCode())) {
             logger.trace("Removing enrollment code for {}", userId);
-            person.setEnrollmentCode();
-            ldapService.modify(person, Person.class);
+            person.setEnrollmentCode(null);
+            persistenceService.modify(person);
         }
     }
 
@@ -304,7 +300,7 @@ public class UserService {
     }
 
     private PersonPreferences personPreferencesInstance(String id) {
-        return ldapService.get(PersonPreferences.class, ldapService.getPersonDn(id));
+        return persistenceService.get(PersonPreferences.class, persistenceService.getPersonDn(id));
     }
 
 }

@@ -83,7 +83,7 @@ public class ExtensionsManager {
         plugExtensionMap.put(null, scanInnerAuthnMechanisms());
 
         if (pluginsRoot != null) {
-            List<PluginInfo> pls = Optional.ofNullable(mainSettings.getKnownPlugins()).orElse(Collections.emptyList());
+            List<PluginInfo> pls = Utils.nonNullList(mainSettings.getKnownPlugins());
 
             if (pls.size() > 0) {
                 logger.info("Loading external plugins...");
@@ -362,7 +362,7 @@ public class ExtensionsManager {
         //Deletes all files in path directory as a consequence of https://github.com/pf4j/pf4j/issues/217
         //Also prevents cheating...
         try {
-            List<PluginInfo> pls = Optional.ofNullable(mainSettings.getKnownPlugins()).orElse(Collections.emptyList());
+            List<PluginInfo> pls = Utils.nonNullList(mainSettings.getKnownPlugins());
             List<String> validFileNames = pls.stream().map(PluginInfo::getRelativePath).collect(Collectors.toList());
 
             Files.list(pluginsRoot).forEach(p -> {

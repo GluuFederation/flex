@@ -8,7 +8,7 @@ package org.gluu.casa.ui.vm.admin;
 import org.gluu.casa.conf.LdapSettings;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.PersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
@@ -29,7 +29,7 @@ public class LdapSettingsViewModel extends MainViewModel {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @WireVariable
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     private LdapSettings ldapSettings;
 
@@ -78,7 +78,7 @@ public class LdapSettingsViewModel extends MainViewModel {
         String msg = null;
         try {
             logger.info("Testing newer LDAP settings");
-            success = ldapService.setup(ldapSettings);
+            success = persistenceService.setup(ldapSettings);
         } catch (Exception e) {
             msg = e.getMessage();
         }
@@ -89,7 +89,7 @@ public class LdapSettingsViewModel extends MainViewModel {
             try {
                 //Revert to good settings
                 logger.warn("Reverting to previously working LDAP settings");
-                if (ldapService.setup(getSettings().getLdapSettings())) {
+                if (persistenceService.setup(getSettings().getLdapSettings())) {
                     msg += "\n" + Labels.getLabel("admin.reverted");
                 } else {
                     msg += "\n" + Labels.getLabel("admin.error_reverting");

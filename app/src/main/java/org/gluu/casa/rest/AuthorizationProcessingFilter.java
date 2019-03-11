@@ -1,12 +1,7 @@
-/*
- * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.xdi.oxauth.client.ClientInfoClient;
@@ -40,7 +35,7 @@ public class AuthorizationProcessingFilter implements ContainerRequestFilter {
     private HttpHeaders httpHeaders;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     private String clientInfoEndpoint;
 
@@ -90,7 +85,7 @@ public class AuthorizationProcessingFilter implements ContainerRequestFilter {
 
         try {
             ObjectMapper mapper = new ObjectMapper();
-            clientInfoEndpoint = mapper.readTree(new URL(ldapService.getOIDCEndpoint())).get("clientinfo_endpoint").asText();
+            clientInfoEndpoint = mapper.readTree(new URL(persistenceService.getOIDCEndpoint())).get("clientinfo_endpoint").asText();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

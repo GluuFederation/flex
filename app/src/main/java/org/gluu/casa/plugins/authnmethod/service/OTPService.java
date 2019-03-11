@@ -1,13 +1,8 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.lochbridge.oath.otp.keyprovisioning.OTPKey;
-import org.gluu.casa.core.ldap.PersonOTP;
+import org.gluu.casa.core.model.PersonOTP;
 import org.gluu.casa.core.pojo.OTPDevice;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPExtension;
@@ -26,7 +21,6 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -63,7 +57,7 @@ public class OTPService extends BaseService {
     public void reloadConfiguration() {
 
         String acr = OTPExtension.ACR;
-        props = ldapService.getCustScriptConfigProperties(acr);
+        props = persistenceService.getCustScriptConfigProperties(acr);
         if (props == null) {
             logger.warn("Config. properties for custom script '{}' could not be read. Features related to {} will not be accessible",
                     acr, acr.toUpperCase());
@@ -77,7 +71,7 @@ public class OTPService extends BaseService {
 
         int total = 0;
         try {
-            PersonOTP person = ldapService.get(PersonOTP.class, ldapService.getPersonDn(userId));
+            PersonOTP person = persistenceService.get(PersonOTP.class, persistenceService.getPersonDn(userId));
             total = (int) person.getExternalUids().stream()
                     .filter(uid -> uid.startsWith(TOTP_PREFIX) || uid.startsWith(HOTP_PREFIX)).count();
         } catch (Exception e) {
@@ -91,7 +85,7 @@ public class OTPService extends BaseService {
 
         List<OTPDevice> devices = new ArrayList<>();
         try {
-            PersonOTP person = ldapService.get(PersonOTP.class, ldapService.getPersonDn(userId));
+            PersonOTP person = persistenceService.get(PersonOTP.class, persistenceService.getPersonDn(userId));
             String json = person.getOTPDevices();
             json = Utils.isEmpty(json) ? "[]" : mapper.readTree(json).get("devices").toString();
 
@@ -118,18 +112,17 @@ public class OTPService extends BaseService {
             String json = uids.size() > 0 ? mapper.writeValueAsString(Collections.singletonMap("devices", vdevices)) : null;
 
             logger.debug("Updating otp devices for user '{}'", userId);
-            PersonOTP person = ldapService.get(PersonOTP.class, ldapService.getPersonDn(userId));
-            person.setOTPDevices(Utils.arrayFromValue(String.class, json));
+            PersonOTP person = persistenceService.get(PersonOTP.class, persistenceService.getPersonDn(userId));
+            person.setOTPDevices(json);
 
             //This helps prevent "losing" data (e.g. entries prefixed with passport)
             List<String> alluids = new ArrayList<>(
                     person.getExternalUids().stream().filter(uid -> !uid.startsWith(TOTP_PREFIX) && !uid.startsWith(HOTP_PREFIX))
                             .collect(Collectors.toList()));
             alluids.addAll(uids);
-            person.setExternalUid(alluids.toArray(new String[0]));
+            person.setExternalUids(alluids);
 
-            success = ldapService.modify(person, PersonOTP.class);
-
+            success = persistenceService.modify(person);
             if (success && newDevice != null) {
                 devices.add(newDevice);
                 logger.debug("Added {}", newDevice.getNickName());

@@ -1,14 +1,9 @@
-/*
- * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.rs;
 
 import net.jodah.expiringmap.ExpiringMap;
-import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.UserService;
-import org.gluu.casa.core.ldap.Person;
+import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.gluu.casa.misc.Utils;
@@ -50,7 +45,7 @@ public class SuperGluuEnrollingWS {
     private SGService sgService;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     @Inject
     private UserService userService;
@@ -75,7 +70,7 @@ public class SuperGluuEnrollingWS {
         if (Utils.isEmpty(userId)) {
             result = ComputeRequestCode.NO_USER_ID;
         } else {
-            Person person = ldapService.get(Person.class, ldapService.getPersonDn(userId));
+            Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
             if (person == null) {
                 result = ComputeRequestCode.UNKNOWN_USER_ID;
             } else {

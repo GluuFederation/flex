@@ -14,11 +14,11 @@ import java.util.List;
  * Provides CRUD access to the underlying LDAP of you Gluu Server installation.
  * @author jgomer
  */
-public interface ILdapService {
+public interface ILdapService extends LocalDirectoryInfo {
 
     /**
-     * Builds a {@link List} of objects of type <code>T</code> using an LDAP search (with scope of SUB) using <code>baseDn</code>
-     * as search base; this type of search accounts for the entry referenced in <code>baseDn</code> and any subordinate
+     * Builds a {@link List} of objects of type <code>T</code> from an LDAP search (with scope of SUB) using <code>baseDn</code>
+     * as search base; this type of search accounts for the entry referenced at <code>baseDn</code> and any subordinate
      * entries to any depth. The search can use an instance of {@link com.unboundid.ldap.sdk.Filter} to include an LDAP
      * filter expression.
      * <p>Note this search is performed in the context of the UnboundID LDAP SDK <a href="https://docs.ldap.com/ldap-sdk/docs/persist/index.html">
@@ -34,8 +34,8 @@ public interface ILdapService {
     <T> List<T> find(Class<T> clazz, String baseDn, Filter filter);
 
     /**
-     * Builds a {@link List} of objects of type <code>T</code> using an LDAP search (with scope of SUB) using <code>baseDn</code>
-     * as search base; this type of search accounts for the entry referenced in <code>baseDn</code> and any subordinate
+     * Builds a {@link List} of objects of type <code>T</code> from an LDAP search (with scope of SUB) using <code>baseDn</code>
+     * as search base; this type of search accounts for the entry referenced at <code>baseDn</code> and any subordinate
      * entries to any depth. The object passed as parameter is used to internally build an LDAP filter to perform the search.
      * <p>Note this search is performed in the context of the UnboundID LDAP SDK <a href="https://docs.ldap.com/ldap-sdk/docs/persist/index.html">
      * persistence framework</a>. In this sense, the Class referenced as parameter has to be annotated with
@@ -54,11 +54,11 @@ public interface ILdapService {
      * @param clazz The class of the object (annotated with <code>com.unboundid.ldap.sdk.persist.LDAPObject</code> and
      *              potentially other annotations of the same package)
      * @param parentDn The parent DN of the resulting entry. See parentDN parameter of method
-     * {@link com.unboundid.ldap.sdk.persist.LDAPPersister#add(Object, LDAPInterface, String, Control...)}
+     * {@link com.unboundid.ldap.sdk.persist.LDAPPersister#add(Object, com.unboundid.ldap.sdk.LDAPInterface, String,
+     * com.unboundid.ldap.sdk.Control...)}
      * @param <T> Type parameter of clazz
      * @return A boolean value indicating the success (true) or failure (false) of the operation
      */
-
     <T> boolean add(T object, Class<T> clazz, String parentDn);
 
     /**
@@ -93,61 +93,10 @@ public interface ILdapService {
     <T> boolean delete(T object, Class<T> clazz);
 
     /**
-     * Returns the DN of a person in your local Gluu Server LDAP.
-     * @param id ID of person (<code>inum</code> attribute value). No checks are made with regard to the value passed actually
-     *           representing an existing LDAP entry
-     * @return A string value
-     */
-    String getPersonDn(String id);
-
-    /**
-     * Returns the DN of the <i>people</i> branch in your local Gluu Server LDAP.
-     * @return A string value
-     */
-    String getPeopleDn();
-
-    /**
-     * Returns the DN of the <i>groups</i> branch in your local Gluu Server LDAP.
-     * @return A string value
-     */
-    String getGroupsDn();
-
-    /**
-     * Returns the DN of the <i>scopes</i> branch in your local Gluu Server LDAP.
-     * @return A string value
-     */
-    String getScopesDn();
-
-    /**
-     * Returns the DN of the <i>clients</i> branch in your local Gluu Server LDAP.
-     * @return A string value
-     */
-    String getClientsDn();
-
-    /**
-     * Returns the DN of the <i>scripts</i> branch in your local Gluu Server LDAP.
-     * @return A string value
-     */
-    String getCustomScriptsDn();
-
-    /**
-     * Returns the ID (<code>inum</code> attribute value) of the <i>o</i> entry that contains most of Gluu Server
-     * LDAP branches like <i>people, groups, clients, etc.</i>.
-     * @return A string value
-     */
-    String getOrganizationInum();
-
-    /**
      * Returns an instance of {@link gluuOrganization} that represents the organization entry of your local Gluu Server LDAP.
      * This is the <i>o</i> entry that contains most of Gluu Server LDAP branches like <i>people, groups, clients, etc.</i>.
      * @return A {@link gluuOrganization} object
      */
     gluuOrganization getOrganization();
-
-    /**
-     * Returns the URL of (this) authorization server. Typically, it has the form https://host
-     * @return A string value
-     */
-    String getIssuerUrl();
 
 }

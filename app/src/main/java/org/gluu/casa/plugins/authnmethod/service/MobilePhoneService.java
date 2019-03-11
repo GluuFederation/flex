@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -11,7 +6,7 @@ import com.twilio.sdk.resource.factory.MessageFactory;
 import com.twilio.sdk.resource.instance.Message;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.gluu.casa.core.ldap.PersonMobile;
+import org.gluu.casa.core.model.PersonMobile;
 import org.gluu.casa.core.pojo.VerifiedMobile;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPSmsExtension;
@@ -49,7 +44,7 @@ public class MobilePhoneService extends BaseService {
 
     public void reloadConfiguration() {
 
-        props = ldapService.getCustScriptConfigProperties(OTPSmsExtension.ACR);
+        props = persistenceService.getCustScriptConfigProperties(OTPSmsExtension.ACR);
 
         if (props == null) {
             logger.warn("Config. properties for custom script '{}' could not be read. Features related to {} will not be accessible",
@@ -72,8 +67,10 @@ public class MobilePhoneService extends BaseService {
     public boolean isNumberRegistered(String number) {
 
         PersonMobile person = new PersonMobile();
-        person.setMobile(number);
-        List<PersonMobile> matchingPeople = ldapService.find(person, PersonMobile.class, ldapService.getPeopleDn());
+        person.setMobile(Collections.singletonList(number));
+        person.setBaseDn(persistenceService.getPeopleDn());
+
+        List<PersonMobile> matchingPeople = persistenceService.find(person);
         return Utils.isNotEmpty(matchingPeople);
 
     }
@@ -125,15 +122,15 @@ public class MobilePhoneService extends BaseService {
                 vphones.add(newPhone);
             }
 
-            String[] numbers = vphones.stream().map(VerifiedMobile::getNumber).toArray(String[]::new);
-            String json = numbers.length > 0 ? mapper.writeValueAsString(Collections.singletonMap("phones", vphones)) : null;
+            List<String> numbers = vphones.stream().map(VerifiedMobile::getNumber).collect(Collectors.toList());
+            String json = numbers.size() > 0 ? mapper.writeValueAsString(Collections.singletonMap("phones", vphones)) : null;
 
             logger.debug("Updating phones for user '{}'", userId);
-            PersonMobile person = ldapService.get(PersonMobile.class, ldapService.getPersonDn(userId));
-            person.setMobileDevices(Utils.arrayFromValue(String.class, json));
+            PersonMobile person = persistenceService.get(PersonMobile.class, persistenceService.getPersonDn(userId));
+            person.setMobileDevices(json);
             person.setMobile(numbers);
 
-            success = ldapService.modify(person, PersonMobile.class);
+            success = persistenceService.modify(person);
 
             if (success && newPhone != null) {
                 //modify list only if LDAP update took place
@@ -155,8 +152,8 @@ public class MobilePhoneService extends BaseService {
 
         int total = 0;
         try {
-            PersonMobile person = ldapService.get(PersonMobile.class, ldapService.getPersonDn(userId));
-            total = person.getMobileAsList().size();
+            PersonMobile person = persistenceService.get(PersonMobile.class, persistenceService.getPersonDn(userId));
+            total = person.getMobile().size();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -168,12 +165,12 @@ public class MobilePhoneService extends BaseService {
 
         List<VerifiedMobile> phones = new ArrayList<>();
         try {
-            PersonMobile person = ldapService.get(PersonMobile.class, ldapService.getPersonDn(userId));
+            PersonMobile person = persistenceService.get(PersonMobile.class, persistenceService.getPersonDn(userId));
             String json = person.getMobileDevices();
             json = Utils.isEmpty(json) ? "[]" : mapper.readTree(json).get("phones").toString();
 
             List<VerifiedMobile> vphones = mapper.readValue(json, new TypeReference<List<VerifiedMobile>>() { });
-            phones = person.getMobileAsList().stream().map(str -> getExtraPhoneInfo(str, vphones)).sorted()
+            phones = person.getMobile().stream().map(str -> getExtraPhoneInfo(str, vphones)).sorted()
                     .collect(Collectors.toList());
             logger.trace("getVerifiedPhones. User '{}' has {}", userId, phones.stream().map(VerifiedMobile::getNumber).collect(Collectors.toList()));
         } catch (Exception e) {

@@ -1,19 +1,13 @@
-/*
- * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.jodah.expiringmap.ExpiringMap;
-import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.UserService;
-import org.gluu.casa.core.ldap.Person;
+import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.plugins.authnmethod.SecurityKeyExtension;
 import org.gluu.casa.plugins.authnmethod.rs.status.u2f.FinishCode;
 import org.gluu.casa.plugins.authnmethod.rs.status.u2f.RegisterMessageCode;
 import org.gluu.casa.plugins.authnmethod.rs.status.u2f.RegistrationCode;
@@ -50,7 +44,7 @@ public class SecurityKeyEnrollingWS {
     private U2fService u2fService;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     @Inject
     private UserService userService;
@@ -74,7 +68,7 @@ public class SecurityKeyEnrollingWS {
         if (Utils.isEmpty(userId)) {
             result = RegisterMessageCode.NO_USER_ID;
         } else {
-            Person person = ldapService.get(Person.class, ldapService.getPersonDn(userId));
+            Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
             if (person == null) {
                 result = RegisterMessageCode.UNKNOWN_USER_ID;
             } else {
@@ -108,7 +102,7 @@ public class SecurityKeyEnrollingWS {
         if (usersWithPendingRegistrations.containsKey(userId)) {
             usersWithPendingRegistrations.remove(userId);
 
-            Person person = ldapService.get(Person.class, ldapService.getPersonDn(userId));
+            Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
             if (person == null) {
                 result = RegistrationCode.UNKNOWN_USER_ID;
             } else {

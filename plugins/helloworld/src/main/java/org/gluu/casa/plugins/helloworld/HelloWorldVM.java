@@ -1,12 +1,7 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.plugins.helloworld;
 
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.service.ILdapService;
+import org.gluu.casa.service.IPersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
@@ -25,7 +20,7 @@ public class HelloWorldVM {
 
     private String message;
     private String organizationName;
-    private ILdapService ldapService;
+    private IPersistenceService persistenceService;
 
     /**
      * Getter of private class field <code>organizationName</code>.
@@ -58,7 +53,7 @@ public class HelloWorldVM {
     @Init
     public void init() {
         logger.info("Hello World ViewModel inited");
-        ldapService = Utils.managedBean(ILdapService.class);
+        persistenceService = Utils.managedBean(IPersistenceService.class);
     }
 
     /**
@@ -69,7 +64,7 @@ public class HelloWorldVM {
     @Command
     public void loadOrgName() {
         logger.debug("You typed {}", message);
-        organizationName = ldapService.getOrganization().getDisplayName();
+        organizationName = persistenceService.getOrganization().getDisplayName();
     }
 
 }

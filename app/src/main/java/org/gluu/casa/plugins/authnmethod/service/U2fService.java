@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2017, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,7 +15,6 @@ import org.xdi.oxauth.client.fido.u2f.U2fConfigurationService;
 import org.xdi.oxauth.model.fido.u2f.U2fConfiguration;
 import org.xdi.oxauth.model.fido.u2f.protocol.RegisterRequestMessage;
 import org.xdi.oxauth.model.fido.u2f.protocol.RegisterStatus;
-import org.zkoss.util.resource.Labels;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -55,11 +49,11 @@ public class U2fService extends FidoService {
         conf = new U2FConfig();
         String metadataUri = Optional.ofNullable(settings.getU2fSettings()).map(U2fSettings::getRelativeMetadataUri)
                 .orElse(".well-known/fido-configuration");
-        conf.setEndpointUrl(String.format("%s/%s", ldapService.getIssuerUrl(), metadataUri));
+        conf.setEndpointUrl(String.format("%s/%s", persistenceService.getIssuerUrl(), metadataUri));
 
         try {
-            props = ldapService.getCustScriptConfigProperties(SecurityKeyExtension.ACR);
-            conf.setAppId(ldapService.getCustScriptConfigProperties(ConfigurationHandler.DEFAULT_ACR).get("u2f_app_id"));
+            props = persistenceService.getCustScriptConfigProperties(SecurityKeyExtension.ACR);
+            conf.setAppId(persistenceService.getCustScriptConfigProperties(ConfigurationHandler.DEFAULT_ACR).get("u2f_app_id"));
 
             logger.info("U2f settings found were: {}", mapper.writeValueAsString(conf));
 

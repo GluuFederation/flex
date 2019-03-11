@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -48,7 +43,7 @@ public class ConfigurationHandler extends JobListenerSupport {
     private MainSettings settings;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     @Inject
     private OxdService oxdService;
@@ -93,7 +88,7 @@ public class ConfigurationHandler extends JobListenerSupport {
             //Update log level
             computeLoggingLevel();
             //Check LDAP access to proceed with acr timer
-            if (ldapService.initialize()) {
+            if (persistenceService.initialize()) {
                 setAppState(AppStateEnum.LOADING);
 
                 //This is a trick so the timer event logic can be coded inside this managed bean
@@ -186,7 +181,7 @@ public class ConfigurationHandler extends JobListenerSupport {
 
         Map<String, Integer> map = new HashMap<>();
         try {
-            String oidcEndpointURL = ldapService.getOIDCEndpoint();
+            String oidcEndpointURL = persistenceService.getOIDCEndpoint();
             JsonNode levels = mapper.readTree(new URL(oidcEndpointURL)).get("auth_level_mapping");
             Iterator<Map.Entry<String, JsonNode>> it = levels.fields();
 
@@ -216,7 +211,7 @@ public class ConfigurationHandler extends JobListenerSupport {
     public Set<String> retrieveAcrs() {
 
         try {
-            String oidcEndpointURL = ldapService.getOIDCEndpoint();
+            String oidcEndpointURL = persistenceService.getOIDCEndpoint();
             //too noisy log statement
             //logger.trace("Obtaining \"acr_values_supported\" from server {}", oidcEndpointURL);
             JsonNode values = mapper.readTree(new URL(oidcEndpointURL)).get("acr_values_supported");
@@ -267,7 +262,7 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     private void computePassResetable() {
 
-        if (settings.isEnablePassReset() && ldapService.isBackendLdapEnabled()) {
+        if (settings.isEnablePassReset() && persistenceService.isBackendLdapEnabled()) {
             logger.error("Pass reset set automatically to false. Check if you are using a backend LDAP");
             settings.setEnablePassReset(false);
         }

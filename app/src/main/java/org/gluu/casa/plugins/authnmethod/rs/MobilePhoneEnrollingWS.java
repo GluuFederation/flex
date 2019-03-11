@@ -1,13 +1,8 @@
-/*
- * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.rs;
 
 import net.jodah.expiringmap.ExpiringMap;
-import org.gluu.casa.core.LdapService;
-import org.gluu.casa.core.ldap.Person;
+import org.gluu.casa.core.PersistenceService;
+import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.VerifiedMobile;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPSmsExtension;
@@ -51,7 +46,7 @@ public class MobilePhoneEnrollingWS {
     private MobilePhoneService mobilePhoneService;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     private Map<String, String> recentCodes;
 
@@ -68,7 +63,7 @@ public class MobilePhoneEnrollingWS {
 
         if (Stream.of(number, userId).anyMatch(Utils::isEmpty)) {
             result = SendCode.MISSING_PARAMS;
-        } else if (ldapService.get(Person.class, ldapService.getPersonDn(userId)) == null) {
+        } else if (persistenceService.get(Person.class, persistenceService.getPersonDn(userId)) == null) {
             result = SendCode.UNKNOWN_USER_ID;
         } else if (mobilePhoneService.isNumberRegistered(number)
                 || mobilePhoneService.isNumberRegistered(number.replaceAll("[-\\+\\s]", ""))) {

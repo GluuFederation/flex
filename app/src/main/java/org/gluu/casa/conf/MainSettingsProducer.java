@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.conf;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -110,6 +105,13 @@ public class MainSettingsProducer {
                         }
                         //Dismiss "branding_path" contents regardless of success
                         settings.setBrandingPath(null);
+                    }
+
+                    LdapSettings ldapSettings = settings.getLdapSettings();
+                    if (Utils.isNotEmpty(ldapSettings.getOxLdapLocation())) {
+                        ldapSettings.setType(LdapSettings.BACKEND.LDAP.getValue());
+                        ldapSettings.setConfigurationFile(ldapSettings.getOxLdapLocation());
+                        ldapSettings.setOxLdapLocation(null);
                     }
                 } catch (Exception e) {
                     logger.error("Error parsing configuration file {}", CONF_FILE_RELATIVE_PATH);

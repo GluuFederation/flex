@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2017, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,7 +16,6 @@ import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.gluu.casa.plugins.authnmethod.SuperGluuExtension;
 import org.gluu.casa.plugins.authnmethod.conf.SGConfig;
-import org.gluu.casa.core.LdapService;
 import org.slf4j.Logger;
 import org.xdi.oxauth.model.fido.u2f.protocol.DeviceData;
 import org.zkoss.util.resource.Labels;
@@ -63,14 +57,14 @@ public class SGService extends FidoService {
     public void reloadConfiguration() {
         String acr = SuperGluuExtension.ACR;
 
-        props = ldapService.getCustScriptConfigProperties(acr);
+        props = persistenceService.getCustScriptConfigProperties(acr);
         if (props == null) {
             logger.warn("Config. properties for custom script '{}' could not be read. Features related to {} will not be accessible",
                     acr, acr.toUpperCase());
         } else {
             conf = SGConfig.get(props);
             if (conf != null) {
-                conf.setAppId(ldapService.getCustScriptConfigProperties(ConfigurationHandler.DEFAULT_ACR).get("supergluu_app_id"));
+                conf.setAppId(persistenceService.getCustScriptConfigProperties(ConfigurationHandler.DEFAULT_ACR).get("supergluu_app_id"));
                 try {
                     logger.info("Super Gluu settings found were: {}", mapper.writeValueAsString(conf));
                 } catch (Exception e) {
@@ -107,7 +101,7 @@ public class SGService extends FidoService {
         Map<String, String> reqAsMap = new HashMap<>();
         reqAsMap.put("username", userName);
         reqAsMap.put("app", conf.getAppId());
-        reqAsMap.put("issuer", ldapService.getIssuerUrl());
+        reqAsMap.put("issuer", persistenceService.getIssuerUrl());
         reqAsMap.put("created", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         reqAsMap.put("enrollment", code);
         reqAsMap.put("method", "enroll");

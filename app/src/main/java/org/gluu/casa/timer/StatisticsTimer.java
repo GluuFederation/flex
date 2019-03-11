@@ -1,20 +1,15 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.timer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.util.StaticUtils;
 import org.gluu.casa.core.ExtensionsManager;
-import org.gluu.casa.core.LdapService;
+import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.TimerService;
-import org.gluu.casa.core.ldap.BaseLdapPerson;
+import org.gluu.casa.core.model.BasePerson;
 import org.gluu.casa.misc.Utils;
+import org.gluu.search.filter.Filter;
 import org.pf4j.DefaultPluginDescriptor;
 import org.pf4j.PluginDescriptor;
 import org.pf4j.PluginState;
@@ -80,7 +75,7 @@ public class StatisticsTimer extends JobListenerSupport {
     private Logger logger;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     @Inject
     private TimerService timerService;
@@ -197,11 +192,8 @@ public class StatisticsTimer extends JobListenerSupport {
                 Filter.createGreaterOrEqualFilter(LAST_LOGON_ATTR, StaticUtils.encodeGeneralizedTime(timeStamp - HOUR_IN_MILLIS)),
                 Filter.createLessOrEqualFilter(LAST_LOGON_ATTR, StaticUtils.encodeGeneralizedTime(timeStamp - 1))
         );
-        //I don't use streams here to avoid overhead
-        List<BaseLdapPerson> people = ldapService.find(BaseLdapPerson.class, ldapService.getPeopleDn(), filter);
-        for (BaseLdapPerson p : people) {
-            huids.add(p.getUid().hashCode());
-        }
+        persistenceService.find(BasePerson.class, persistenceService.getPeopleDn(), filter)
+                .forEach(p -> huids.add(p.getUid().hashCode()));
         return huids;
 
     }
@@ -322,7 +314,7 @@ public class StatisticsTimer extends JobListenerSupport {
             mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
             quartzJobName = getClass().getSimpleName() + "_timer";
-            serverName = ldapService.getIssuerUrl().replace("https://", "");
+            serverName = persistenceService.getIssuerUrl().replace("https://", "");
 
             try (BufferedReader reader = Files.newBufferedReader(Paths.get("/install/community-edition-setup/setup.log"))) {
                 String log = reader.lines().reduce("", (partial, next) -> partial + NEW_LINE + next);

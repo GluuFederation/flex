@@ -1,7 +1,7 @@
 package org.gluu.casa.core;
 
 import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.core.ldap.IdentityPerson;
+import org.gluu.casa.core.model.IdentityPerson;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 
@@ -9,6 +9,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.List;
 
 @Named
 @SessionScoped
@@ -20,7 +21,7 @@ public class PasswordStatusService implements Serializable {
     private Logger logger;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     @Inject
     private MainSettings confSettings;
@@ -58,14 +59,14 @@ public class PasswordStatusService implements Serializable {
          */
         passResetAvailable = false;
         passSetAvailable = false;
-        IdentityPerson p = ldapService.get(IdentityPerson.class, ldapService.getPersonDn(asco.getUser().getId()));
+        IdentityPerson p = persistenceService.get(IdentityPerson.class, persistenceService.getPersonDn(asco.getUser().getId()));
 
         if (p.hasPassword()) {
             passResetAvailable = confSettings.isEnablePassReset();
         } else {
             passSetAvailable = hasPassportPrefix(p.getOxExternalUid()) || hasPassportPrefix(p.getOxUnlinkedExternalUids());
         }
-        password2faRequisite = p.hasPassword() || ldapService.isBackendLdapEnabled();
+        password2faRequisite = p.hasPassword() || persistenceService.isBackendLdapEnabled();
 
     }
 
@@ -73,7 +74,7 @@ public class PasswordStatusService implements Serializable {
 
         boolean match = false;
         try {
-            match = ldapService.authenticate(userName, password);
+            match = persistenceService.authenticate(userName, password);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -86,9 +87,9 @@ public class PasswordStatusService implements Serializable {
         boolean success = false;
         try {
             if (Utils.isNotEmpty(newPassword)) {
-                IdentityPerson person = ldapService.get(IdentityPerson.class, ldapService.getPersonDn(userId));
+                IdentityPerson person = persistenceService.get(IdentityPerson.class, persistenceService.getPersonDn(userId));
                 person.setPassword(newPassword);
-                success = ldapService.modify(person, IdentityPerson.class);
+                success = persistenceService.modify(person);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -97,8 +98,8 @@ public class PasswordStatusService implements Serializable {
 
     }
 
-    private boolean hasPassportPrefix(String[] externalUids) {
-        return Utils.listfromArray(externalUids).stream().anyMatch(uid -> uid.startsWith(EXTERNAL_IDENTITIES_PREFIX));
+    private boolean hasPassportPrefix(List<String> externalUids) {
+        return Utils.nonNullList(externalUids).stream().anyMatch(uid -> uid.startsWith(EXTERNAL_IDENTITIES_PREFIX));
     }
 
 }

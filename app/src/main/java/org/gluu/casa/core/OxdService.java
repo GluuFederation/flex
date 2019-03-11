@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core;
 
 import javax.annotation.PostConstruct;
@@ -70,7 +65,7 @@ public class OxdService {
     private MainSettings settings;
 
     @Inject
-    private LdapService ldapService;
+    private PersistenceService persistenceService;
 
     private OxdSettings config;
     private ResteasyClient client;
@@ -104,11 +99,11 @@ public class OxdService {
             if (oxdConfig.getPort() <= 0 || missing) {
                 logger.error("The following must be present in configuration file: host, port, redirect URI, post logout URI, and front channel logout URI");
             } else {
-                oxdConfig.setOpHost(ldapService.getIssuerUrl());
+                oxdConfig.setOpHost(persistenceService.getIssuerUrl());
                 oxdConfig.setAcrValues(Collections.singletonList(DEFAULT_ACR));
 
                 try {
-                    if (ldapService.getDynamicClientExpirationTime() != 0) {
+                    if (persistenceService.getDynamicClientExpirationTime() != 0) {
                         Optional<String> oxdIdOpt = Optional.ofNullable(oxdConfig.getClient()).map(OxdClientSettings::getOxdId);
                         if (oxdIdOpt.isPresent()) {
                             setSettings(oxdConfig);

@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2017, Gluu
- */
 package org.gluu.casa.misc;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,8 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sf.jmimemagic.Magic;
 import org.apache.commons.beanutils.BeanUtils;
 import org.gluu.casa.core.ldap.oxCustomScript;
+import org.gluu.casa.core.model.CustomScript;
+import org.gluu.casa.service.IPersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xdi.model.SimpleCustomProperty;
 
 import java.net.Socket;
 import java.net.SocketAddress;
@@ -207,6 +205,10 @@ public final class Utils {
 
     }
 
+    public static <T> List<T> nonNullList(List<T> list) {
+        return Optional.ofNullable(list).orElse(Collections.emptyList());
+    }
+
     /**
      * Checks if a socket connection can be established.
      * @param address A {@link SocketAddress} to establish the connection.
@@ -274,12 +276,13 @@ public final class Utils {
 
     /**
      * Builds a map of name/value entries based on the configuration properties associated to an object of class
-     * {@link oxCustomScript}.
-     * <p>To obtain an instance of an already existing Gluu Server custom interception script, you may call method
-     * {@link org.gluu.casa.service.ILdapService#find(Object, Class, String)} supplying a {@link oxCustomScript}
-     * instance created with the default class constructor and having set an <code>acr</code> value (display name) using
-     * {@link oxCustomScript#setDisplayName(String)}. The <code>dn</code> for the lookup can be easily obtained with a
-     * call to {@link org.gluu.casa.service.ILdapService#getCustomScriptsDn()}.</p>
+     * {@link oxCustomScript}. <b>Note: </b> Starting with 4.0, the preferred method to obtain custom script config
+     * properties is via {@link #scriptConfigPropertiesAsMap(CustomScript)}.
+     * <p>If you still want to use this method, first obtain an instance of an already existing Gluu Server custom
+     * script, by calling {@link org.gluu.casa.service.ILdapService#find(Object, Class, String)} supplying a
+     * {@link oxCustomScript} instance created with the default class constructor and having set an <code>acr</code>
+     * value (display name) using {@link oxCustomScript#setDisplayName(String)}. The <code>dn</code> for the lookup
+     * can be easily obtained with a call to {@link org.gluu.casa.service.ILdapService#getCustomScriptsDn()}.</p>
      * @param script A {@link oxCustomScript} instance
      * @return A Mapping of property name / property value for the script
      */
@@ -300,6 +303,17 @@ public final class Utils {
         }
         return properties;
 
+    }
+
+    /**
+     * Analog method to {@link #scriptConfigPropertiesAsMap(oxCustomScript)} having as parameter an instance of
+     * {@link CustomScript} (which can be used not only in the context of LDAP but in other available persistence engines).
+     * @param script
+     * @return A Mapping of property name / property value for the script
+     */
+    public static Map<String, String> scriptConfigPropertiesAsMap(CustomScript script) {
+        return nonNullList(script.getConfigurationProperties()).stream()
+                .collect(Collectors.toMap(SimpleCustomProperty::getValue1, SimpleCustomProperty::getValue2));
     }
 
 }

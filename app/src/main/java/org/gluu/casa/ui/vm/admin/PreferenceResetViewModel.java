@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.core.UserService;
@@ -57,8 +52,7 @@ public class PreferenceResetViewModel extends MainViewModel {
     }
 
     @Init
-    public void init() {
-    }
+    public void init() { }
 
     @Command
     public void search() {
@@ -71,8 +65,8 @@ public class PreferenceResetViewModel extends MainViewModel {
                 users = userService.searchUsers(searchPattern.trim()).stream() //avoid UI cheaters by trimming
                         .map(person -> {
                             PersonSearchMatch p = new PersonSearchMatch();
-                            p.setGivenName(person.getFirstGivenName());
-                            p.setLastName(person.getFirstSn());
+                            p.setGivenName(person.getGivenName());
+                            p.setLastName(person.getSurname());
                             p.setUserName(person.getUid());
                             p.setId(person.getInum());
                             return p;
