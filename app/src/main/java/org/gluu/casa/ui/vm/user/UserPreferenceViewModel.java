@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2017, Gluu
- */
 package org.gluu.casa.ui.vm.user;
 
 import org.gluu.casa.core.ExtensionsManager;
@@ -25,7 +20,6 @@ import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

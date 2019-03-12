@@ -6,7 +6,6 @@ import net.sf.jmimemagic.Magic;
 import org.apache.commons.beanutils.BeanUtils;
 import org.gluu.casa.core.ldap.oxCustomScript;
 import org.gluu.casa.core.model.CustomScript;
-import org.gluu.casa.service.IPersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdi.model.SimpleCustomProperty;

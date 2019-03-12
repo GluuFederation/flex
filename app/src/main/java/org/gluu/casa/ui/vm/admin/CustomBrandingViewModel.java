@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.core.AssetsService;
@@ -63,7 +58,7 @@ public class CustomBrandingViewModel extends MainViewModel {
                 assetsService.setLogoContent(logo.getSecond());
             }
             assetsService.useExtraCss(AssetsService.EMPTY_SNIPPET);
-            Messagebox.show(Labels.getLabel( "adm.branding_changed"), null, Messagebox.OK, Messagebox.INFORMATION);
+            Messagebox.show(Labels.getLabel("adm.branding_changed"), null, Messagebox.OK, Messagebox.INFORMATION);
         } catch (Exception e) {
             UIUtils.showMessageUI(false, e.getMessage());
         }

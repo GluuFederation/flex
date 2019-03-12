@@ -25,13 +25,11 @@ public class PersonMobile extends BasePerson {
         return Utils.nonNullList(mobile);
     }
 
-    public void setMobileDevices(String v)
-    {
+    public void setMobileDevices(String v) {
         this.mobileDevices = v;
     }
 
-    public void setMobile(List<String> v)
-    {
+    public void setMobile(List<String> v) {
         this.mobile = v;
     }
 

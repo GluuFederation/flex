@@ -19,7 +19,7 @@ public class LogoutServlet extends HttpServlet {
     public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         WebUtils.invalidateSession(req);
         resp.setHeader("Cache-Control", "no-cache, no-store");
-        resp.setHeader("Pragma" ,"no-cache");
+        resp.setHeader("Pragma", "no-cache");
         resp.setHeader("Content-Type", "text/html");
     }
 

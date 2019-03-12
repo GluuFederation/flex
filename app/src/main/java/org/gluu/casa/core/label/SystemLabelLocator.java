@@ -6,8 +6,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Locale;
 
 /**
@@ -24,7 +22,7 @@ public class SystemLabelLocator implements LabelLocator {
         this.baseUri = baseUri;
         this.module = module;
         try {
-            defaultURI = new URI(String.format("%s%s.properties",baseUri, module));
+            defaultURI = new URI(String.format("%s%s.properties", baseUri, module));
         } catch (Exception e) {
             defaultURI = null;
         }
