@@ -99,7 +99,7 @@ public class PasswordStatusService implements Serializable {
     }
 
     private boolean hasPassportPrefix(List<String> externalUids) {
-        return Utils.nonNullList(externalUids).stream().anyMatch(uid -> uid.startsWith(EXTERNAL_IDENTITIES_PREFIX));
+        return externalUids.stream().anyMatch(uid -> uid.startsWith(EXTERNAL_IDENTITIES_PREFIX));
     }
 
 }

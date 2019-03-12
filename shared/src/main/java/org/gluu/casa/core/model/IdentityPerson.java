@@ -29,11 +29,11 @@ public class IdentityPerson extends BasePerson {
     }
 
     public List<String> getOxExternalUid() {
-        return oxExternalUid;
+        return Utils.nonNullList(oxExternalUid);
     }
 
     public List<String> getOxUnlinkedExternalUids() {
-        return oxUnlinkedExternalUids;
+        return Utils.nonNullList(oxUnlinkedExternalUids);
     }
 
     public void setPassword(String userPassword) {
