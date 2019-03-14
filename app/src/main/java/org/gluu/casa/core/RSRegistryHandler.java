@@ -1,7 +1,6 @@
 package org.gluu.casa.core;
 
 import org.gluu.casa.rest.RSInitializer;
-import org.gluu.casa.misc.Utils;
 import org.gluu.casa.rest.RSResourceScope;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.spi.Registry;
@@ -13,14 +12,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,7 +74,6 @@ public class RSRegistryHandler {
                 enabled = true;
             }
         }
-        //registry.removeRegistrations(RestService2.class);
 
     }
 
@@ -144,56 +137,15 @@ public class RSRegistryHandler {
 
     }
 
-    private int scanFolderForRSResources(String id, Path start, ClassLoader clsLoader) throws IOException {
-
-        final class MyCounterFileVisitor extends SimpleFileVisitor<Path> {
-
-            private int count = 0;
-            private int offset;
-
-            private MyCounterFileVisitor(String basePath) {
-                this.offset = basePath.length() + 1;    //Add one because trailing (back)slash is not in basePath
-            }
-
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-
-                String path = file.toString().substring(offset);
-                if (Utils.isClassFile(file) && skipFolders.stream().noneMatch(skip -> path.startsWith(skip + File.separator))) {
-                    String binaryName = path.startsWith("classes" + File.separator) ? path.substring("classes".length() + 1) : path;
-                    binaryName = binaryName.replace(File.separator, ".");
-                    binaryName = binaryName.substring(0, binaryName.length() - ".class".length());
-                    count += processClassEntry(id, binaryName, clsLoader, registeredResources.get(id)) ? 1 : 0;
-                }
-                return FileVisitResult.CONTINUE;
-            }
-
-        }
-
-        MyCounterFileVisitor visitor = new MyCounterFileVisitor(start.toString());
-        Files.walkFileTree(start, visitor);
-        return visitor.count;
-
-    }
-
     public void scan(String id, Path path, ClassLoader classLoader) {
 
         int scannedResources = 0;
-
         if (enabled) {
-            try {
-                registeredResources.put(id, new ArrayList<>());
-                //Recursively scan for @Path annotation jar file
-                /*
-                if (Files.isDirectory(path)) {
-                    scannedResources = scanFolderForRSResources(id, path, classLoader);
-                } else
-                    */
-                if (Utils.isJarFile(path)) {
-                    try (JarInputStream jis = new JarInputStream(new BufferedInputStream(new FileInputStream(path.toString())), false)) {
-                        scannedResources = scanJarForRSResources(id, jis, classLoader);
-                    }
-                }
+
+            registeredResources.put(id, new ArrayList<>());
+            //Recursively scan for @Path annotation jar file
+            try (JarInputStream jis = new JarInputStream(new BufferedInputStream(new FileInputStream(path.toString())), false)) {
+                scannedResources = scanJarForRSResources(id, jis, classLoader);
             } catch (IOException e) {
                 logger.error("Error scanning RestEasy resources: {}", e.getMessage());
             }

@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core;
 
 import org.apache.logging.log4j.Level;
@@ -60,23 +55,18 @@ public class LogService {
 
     public void addLoger(Path path) {
 
-        try {
-            if (Utils.isJarFile(path)) {
-                try (JarInputStream jis = new JarInputStream(new BufferedInputStream(new FileInputStream(path.toString())), false)) {
-                    String name = jis.getManifest().getMainAttributes().getValue("Logger-Name");
-                    if (name != null && !loggerNames.contains(name)) {
-                        logger.info("Adding logger for {}", name);
-                        Level level = getLoggingLevel();
-                        LoggerConfig loggerConfig = new LoggerConfig(name, level, false);
-                        loggerConfig.addAppender(mainAppender, level, null);
-                        loggerContext.getConfiguration().addLogger(name, loggerConfig);
-                        loggerNames.add(name);
-                        //loggerContext.updateLoggers();
-                    }
-                }
-            } else {
-                logger.warn("Not implemented: No logger can be configured for a directory-based plugin yet");
+        try (JarInputStream jis = new JarInputStream(new BufferedInputStream(new FileInputStream(path.toString())), false)) {
+            String name = jis.getManifest().getMainAttributes().getValue("Logger-Name");
+            if (name != null && !loggerNames.contains(name)) {
+                logger.info("Adding logger for {}", name);
+                Level level = getLoggingLevel();
+                LoggerConfig loggerConfig = new LoggerConfig(name, level, false);
+                loggerConfig.addAppender(mainAppender, level, null);
+                loggerContext.getConfiguration().addLogger(name, loggerConfig);
+                loggerNames.add(name);
+                //loggerContext.updateLoggers();
             }
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

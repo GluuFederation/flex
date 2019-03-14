@@ -327,33 +327,29 @@ public class ExtensionsManager {
 
         Path destPath = getDestinationPathForPlugin(pluginId);
         logger.info("Extracting resources for plugin {} to {}", pluginId, destPath.toString());
-
-        if (Files.isDirectory(path)) {
-            path = Paths.get(path.toString(), ASSETS_DIR);
-            if (Files.isDirectory(path)) {
-                resourceExtractor.createDirectory(path, destPath);
-            } else {
-                logger.info("No resources to extract");
-            }
-        } else if (Utils.isJarFile(path)) {
-            try (JarInputStream jis = new JarInputStream(new BufferedInputStream(new FileInputStream(path.toString())), false)) {
-                resourceExtractor.createDirectory(jis, ASSETS_DIR + "/", destPath);
-            }
+        try (JarInputStream jis = new JarInputStream(new BufferedInputStream(new FileInputStream(path.toString())), false)) {
+            resourceExtractor.createDirectory(jis, ASSETS_DIR + "/", destPath);
         }
 
     }
 
     private void reconfigureServices(String pluginId, Path path, ClassLoader cl) {
 
-        try {
-            extractResources(pluginId, path);
-        } catch (IOException e) {
-            logger.error("Error when extracting plugin resources");
-            logger.error(e.getMessage(), e);
+        if (Utils.isJarFile(path)) {
+
+            try {
+                extractResources(pluginId, path);
+            } catch (IOException e) {
+                logger.error("Error when extracting plugin resources");
+                logger.error(e.getMessage(), e);
+            }
+            zkService.readPluginLabels(pluginId, path);
+            registryHandler.scan(pluginId, path, cl);
+            logService.addLoger(path);
+
+        } else {
+            logger.error("Expected a path to a jar file instead of '{}'", path);
         }
-        zkService.readPluginLabels(pluginId, path);
-        registryHandler.scan(pluginId, path, cl);
-        logService.addLoger(path);
 
     }
 
