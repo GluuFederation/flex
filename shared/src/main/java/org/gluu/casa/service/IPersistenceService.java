@@ -30,7 +30,7 @@ public interface IPersistenceService extends LocalDirectoryInfo {
      * @param filter Filter to constrain the search (supply null to returned ALL entries under the base DN that can be
      *               associated to Class clazz)
      * @param <T> Type parameter of clazz
-     * @return A List of matching objects
+     * @return A List of matching objects. Empty if no matches
      */
     <T> List<T> find(Class<T> clazz, String baseDn, Filter filter);
 
@@ -44,7 +44,7 @@ public interface IPersistenceService extends LocalDirectoryInfo {
      * and potentially other annotations of the same package to be functional.</p>
      * @param object An object employed to build a filter
      * @param <T> Type parameter of clazz
-     * @return A List of matching objects
+     * @return A List of matching objects. Empty if no matches
      */
     <T> List<T> find(T object);
 
@@ -75,12 +75,11 @@ public interface IPersistenceService extends LocalDirectoryInfo {
     <T> T get(Class<T> clazz, String dn);
 
     /**
-     * Stores a previously obtained object (via get or find) - and potentially modified - to the persistence engine.
+     * Stores a previously obtained object (via get or find) - and potentially modified - into the persistence engine.
      * @param object An object whose attributes are potentially altered (eg. via setters) with respect to the original
      *              retrieved via get or find methods
      * @param <T> Type parameter of the class to which the object belongs to
-     * @return A boolean value indicating the success (true) or failure (false) of the operation. Success also accounts
-     * for cases in which no modifications were detected in the object and thus, no persistence took place.
+     * @return A boolean value indicating the success (true) or failure (false) of the operation.
      */
     <T> boolean modify(T object);
 

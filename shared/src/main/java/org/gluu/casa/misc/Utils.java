@@ -307,7 +307,7 @@ public final class Utils {
     /**
      * Analog method to {@link #scriptConfigPropertiesAsMap(oxCustomScript)} having as parameter an instance of
      * {@link CustomScript} (which can be used not only in the context of LDAP but in other available persistence engines).
-     * @param script
+     * @param script A {@link CustomScript} instance
      * @return A Mapping of property name / property value for the script
      */
     public static Map<String, String> scriptConfigPropertiesAsMap(CustomScript script) {

@@ -7,6 +7,9 @@ import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
 
 import java.util.List;
 
+/**
+ * Extends {@link BasePerson} in order to manipulate attributes <code>userPassword</code> and <code>oxExternalUid</code>.
+ */
 @LdapEntry
 @LdapObjectClass(values = { "top", "gluuPerson" })
 public class IdentityPerson extends BasePerson {

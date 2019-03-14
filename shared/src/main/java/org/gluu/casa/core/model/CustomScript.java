@@ -10,6 +10,10 @@ import org.xdi.model.SimpleCustomProperty;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A basic representation of a Gluu Server custom script. Use this class in conjuction with
+ * {@link org.gluu.casa.service.IPersistenceService} to read data, modify or delete custom scripts from the server.
+ */
 @LdapEntry
 @LdapObjectClass(values = { "top", "oxCustomScript" })
 public class CustomScript extends Entry {

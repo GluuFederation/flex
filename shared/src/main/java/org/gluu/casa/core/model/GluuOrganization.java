@@ -7,6 +7,11 @@ import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
 
 import java.util.List;
 
+/**
+ * A basic representation of the directory tree organization entry (see <code>gluuOrganization</code> object class of
+ * LDAP for instance).This class gives you access to data such as organization name, inum, and manager group.
+ * <p>To obtain an instance of this class use {@link org.gluu.casa.service.IPersistenceService}.</p>
+ */
 @LdapEntry
 @LdapObjectClass(values = { "top", "gluuOrganization" })
 public class GluuOrganization extends Entry {
@@ -21,6 +26,10 @@ public class GluuOrganization extends Entry {
         return displayName;
     }
 
+    /**
+     * Retrieves a list of DNs corresponding to defined manager groups.
+     * @return A list of Strings
+     */
     public List<String> getManagerGroups() {
         return managerGroups;
     }
