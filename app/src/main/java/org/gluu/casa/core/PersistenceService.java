@@ -74,88 +74,80 @@ public class PersistenceService implements IPersistenceService {
 
     public <T> List<T> find(Class<T> clazz, String baseDn, Filter filter) {
 
-        List<T> results = new ArrayList<>();
         try {
-            results = entryManager.findEntries(baseDn, clazz, filter);
+            return entryManager.findEntries(baseDn, clazz, filter);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            return Collections.emptyList();
         }
-        return results;
 
     }
 
     public <T> List<T> find(T object) {
 
-        List<T> results = new ArrayList<>();
         try {
-            results = entryManager.findEntries(object);
+            return entryManager.findEntries(object);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            return Collections.emptyList();
         }
-        return results;
     }
 
     public <T> int count(T object) {
 
-        int total = -1;
         try {
-            total = entryManager.countEntries(object);
+            return entryManager.countEntries(object);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            return -1;
         }
-        return total;
 
     }
 
     public <T> boolean add(T object) {
 
-        boolean success = false;
         try {
             entryManager.persist(object);
-            success = true;
+            return true;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            return false;
         }
-        return success;
 
     }
 
     public <T> T get(Class<T> clazz, String dn) {
 
-        T object = null;
         try {
-            object = entryManager.find(clazz, dn);
+            return entryManager.find(clazz, dn);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            return null;
         }
-        return object;
 
     }
 
     public <T> boolean modify(T object) {
 
-        boolean success = false;
         try {
             entryManager.merge(object);
-            success = true;
+            return true;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            return false;
         }
-        return success;
 
     }
 
     public <T> boolean delete(T object) {
 
-        boolean success = false;
         try {
             entryManager.remove(object);
-            success = true;
-            logger.trace("delete. Operation successful");
+            return true;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            return false;
         }
-        return success;
 
     }
 
@@ -274,8 +266,12 @@ public class PersistenceService implements IPersistenceService {
         script.setBaseDn(getCustomScriptsDn());
 
         List<CustomScript> scripts = find(script);
-        script = scripts.size() == 0 ? null : scripts.get(0);
-logger.trace("Script {} {}found", acr, script == null ? "not " : "");
+        if (scripts.size() == 0) {
+            logger.warn("Script '{}' not found", acr);
+            script = null;
+        } else {
+            script = scripts.get(0);
+        }
         return script;
 
     }

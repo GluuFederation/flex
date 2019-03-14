@@ -78,7 +78,7 @@ public class FidoService extends BaseService {
         if (list.size() == 1) {
             return list.get(0);
         } else {
-            logger.warn("Search for fido device rgistration with oxId {} returned {} results!", id, list.size());
+            logger.warn("Search for fido device registration with oxId {} returned {} results!", id, list.size());
             return null;
         }
 

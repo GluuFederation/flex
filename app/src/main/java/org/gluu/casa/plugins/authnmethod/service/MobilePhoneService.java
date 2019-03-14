@@ -69,9 +69,7 @@ public class MobilePhoneService extends BaseService {
         PersonMobile person = new PersonMobile();
         person.setMobile(Collections.singletonList(number));
         person.setBaseDn(persistenceService.getPeopleDn());
-
-        List<PersonMobile> matchingPeople = persistenceService.find(person);
-        return Utils.isNotEmpty(matchingPeople);
+        return persistenceService.count(person) > 0;
 
     }
 
