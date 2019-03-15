@@ -50,6 +50,8 @@ public class PersistenceService implements IPersistenceService {
 
     private JsonNode oxTrustConfCacheRefresh;
 
+    private Set<String> personCustomObjectClasses;
+
     private ObjectMapper mapper;
 
     private StringEncrypter stringEncrypter;
@@ -191,6 +193,10 @@ public class PersistenceService implements IPersistenceService {
         return oxAuthConfDynamic.get("issuer").asText();
     }
 
+    public Set<String> getPersonOCs() {
+        return personCustomObjectClasses;
+    }
+
     public boolean isAdmin(String userId) {
         GluuOrganization organization = getOrganization();
         List<String> dns = organization.getManagerGroups();
@@ -300,6 +306,22 @@ public class PersistenceService implements IPersistenceService {
         oxAuthConfiguration conf = get(oxAuthConfiguration.class, dn);
         oxAuthConfDynamic = mapper.readTree(conf.getOxAuthConfDynamic());
         oxAuthConfStatic = mapper.readTree(conf.getOxAuthConfStatic());
+
+        personCustomObjectClasses = Optional.ofNullable(oxAuthConfDynamic.get("personCustomObjectClassList"))
+                .map(node -> {
+                    try {
+                        Set<String> ocs = new HashSet<>();
+                        Iterator<JsonNode> it = node.elements();
+                        while (it.hasNext()) {
+                            ocs.add(it.next().asText());
+                        }
+                        return ocs;
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
+                        return null;
+                    }
+                })
+                .orElse(Collections.singleton("gluuCustomPerson"));
 
     }
 

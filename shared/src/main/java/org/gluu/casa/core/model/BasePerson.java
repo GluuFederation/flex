@@ -1,10 +1,14 @@
 package org.gluu.casa.core.model;
 
+import org.gluu.casa.misc.Utils;
+import org.gluu.casa.service.IPersistenceService;
 import org.gluu.persist.model.base.InumEntry;
 import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
 import org.gluu.site.ldap.persistence.annotation.LdapCustomObjectClass;
 import org.gluu.site.ldap.persistence.annotation.LdapEntry;
 import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+
+import java.util.Set;
 
 /**
  * Serves as a minimal representation of a user (person) entry in Gluu database directory. Plugin developers can extend
@@ -19,18 +23,23 @@ public class BasePerson extends InumEntry {
     private String uid;
 
     @LdapCustomObjectClass
-    private String[] customObjectClasses;
+    private static String[] customObjectClasses;
 
-    public BasePerson() {
-        //TODO: how to properly handle this!
-        setCustomObjectClasses(new String[]{"gluuCustomPerson"});
+    static {
+        IPersistenceService ips = Utils.managedBean(IPersistenceService.class);
+        if (ips != null) {
+            Set<String> ocs = ips.getPersonOCs();
+            ocs.remove("top");
+            ocs.remove("gluuPerson");
+            setCustomObjectClasses(ocs.toArray(new String[0]));
+        }
     }
 
     public String getUid() {
         return uid;
     }
 
-    public String[] getCustomObjectClasses() {
+    public static String[] getCustomObjectClasses() {
         return customObjectClasses;
     }
 
@@ -38,8 +47,8 @@ public class BasePerson extends InumEntry {
         this.uid = uid;
     }
 
-    public void setCustomObjectClasses(String[] customObjectClasses) {
-        this.customObjectClasses = customObjectClasses;
+    public static void setCustomObjectClasses(String[] customObjectClasses) {
+        BasePerson.customObjectClasses = customObjectClasses;
     }
 
 }

@@ -1,10 +1,8 @@
 package org.gluu.casa.service;
 
-import org.gluu.casa.core.model.GluuOrganization;
 import org.gluu.search.filter.Filter;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Provides CRUD access to the underlying persistence engine of you Gluu Server installation. Starting with Casa 4.0 this
@@ -13,9 +11,11 @@ import java.util.Map;
  * however classes/instances passed to these methods are supposed to use the <code>oxCore</code> annotations found in package
  * <code>org.gluu.site.ldap.persistence.annotation</code> in lieu of <code>com.unboundid.ldap.sdk.persist</code>
  * annotations of UnboundID LDAP SDK.</p>
+ * <p>To obtain an instance object that implements this interface, use method
+ * {@link org.gluu.casa.misc.Utils#managedBean(Class)}.</p>
  * @author jgomer
  */
-public interface IPersistenceService extends LocalDirectoryInfo {
+public interface IPersistenceService extends LocalDirectoryInfo2 {
 
     /**
      * Builds a {@link List} of objects of type <code>T</code> from a search (with scope of SUB) using <code>baseDn</code>
@@ -90,20 +90,5 @@ public interface IPersistenceService extends LocalDirectoryInfo {
      * @return A boolean value indicating the success (true) or failure (false) of the operation
      */
     <T> boolean delete(T object);
-
-    /**
-     * Returns an instance of {@link GluuOrganization} that represents the organization entry of your local Gluu Server.
-     * This is the <i>o</i> entry that contains most of Gluu Server directory branches like <i>people, groups, clients, etc.</i>.
-     * @return A {@link GluuOrganization} object
-     */
-    GluuOrganization getOrganization();
-
-    /**
-     * Returns a map with name/value pairs of the configuration properties belonging to a Gluu Server interception script
-     * identified by an <code>acr</code> value.
-     * @param acr ACR (display Name) value that identities the custom script
-     * @return A map. Null if no script is found associated with the acr passed
-     */
-    Map<String, String> getCustScriptConfigProperties(String acr);
 
 }
