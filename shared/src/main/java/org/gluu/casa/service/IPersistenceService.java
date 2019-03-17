@@ -35,6 +35,20 @@ public interface IPersistenceService extends LocalDirectoryInfo2 {
     <T> List<T> find(Class<T> clazz, String baseDn, Filter filter);
 
     /**
+     * Performs a search as method {@link #find(Class, String, Filter)} does except the first <code>start</code> elements
+     * are skipped and at most <code>count</code> results are included in the returned list
+     * @param clazz A class to which the search objects must belong to
+     * @param baseDn Search base DN
+     * @param filter Filter to constrain the search (supply null to returned ALL entries under the base DN that can be
+     *               associated to Class clazz)
+     * @param start Zero-based index at which the search starts
+     * @param count Maximum number of results to return
+     * @param <T> Type parameter of clazz
+     * @return A List of matching objects according to the rules specified above. Empty if no matches
+     */
+    <T> List<T> find(Class<T> clazz, String baseDn, Filter filter, int start, int count);
+
+    /**
      * Builds a {@link List} of objects of type <code>T</code> from a search (with scope of SUB) using as search base
      * the field annotated with <code>org.gluu.site.ldap.persistence.annotation.LdapDN</code> in the object passed as parameter;
      * this type of search accounts for the entry referenced at the search base and any subordinate
