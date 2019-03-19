@@ -236,7 +236,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
     }
 
     private Map<String, String> modulePropertyMap(CustomScript script) {
-        return Utils.nonNullList(script.getModuleProperties()).stream()
+        return script.getModuleProperties().stream()
                 .collect(Collectors.toMap(SimpleCustomProperty::getValue1, SimpleCustomProperty::getValue2));
     }
 

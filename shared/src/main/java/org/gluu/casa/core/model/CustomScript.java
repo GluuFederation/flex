@@ -1,5 +1,6 @@
 package org.gluu.casa.core.model;
 
+import org.gluu.casa.misc.Utils;
 import org.gluu.persist.model.base.Entry;
 import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
 import org.gluu.site.ldap.persistence.annotation.LdapEntry;
@@ -66,7 +67,7 @@ public class CustomScript extends Entry {
     }
 
     public List<SimpleCustomProperty> getModuleProperties() {
-        return moduleProperties;
+        return Utils.nonNullList(moduleProperties);
     }
 
     public Long getRevision() {

@@ -1,5 +1,6 @@
 package org.gluu.casa.core.model;
 
+import org.gluu.casa.misc.Utils;
 import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
 import org.gluu.site.ldap.persistence.annotation.LdapEntry;
 import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
@@ -36,7 +37,7 @@ public class Person extends BasePerson {
     }
 
     public List<String> getMemberOf() {
-        return memberOf;
+        return Utils.nonNullList(memberOf);
     }
 
     public void setGivenName(String givenName) {
