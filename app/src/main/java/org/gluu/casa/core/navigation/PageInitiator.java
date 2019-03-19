@@ -1,11 +1,7 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2017, Gluu
- */
 package org.gluu.casa.core.navigation;
 
 import org.gluu.casa.core.SessionContext;
+import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.misc.Utils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Page;
@@ -22,9 +18,12 @@ public class PageInitiator extends CommonInitiator implements Initiator {
 
     @Override
     public void doInit(Page page, Map<String, Object> map) throws Exception {
-        if (Utils.managedBean(SessionContext.class).getUser() == null) {
+
+        User user = Utils.managedBean(SessionContext.class).getUser();
+        if (user == null || (page.getAttribute("checkAdmin") != null && !user.isAdmin())) {
             setPageErrors(page, Labels.getLabel("usr.not_authorized"), null);
         }
+
     }
 
 }
