@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2017, Gluu
- */
 package org.gluu.casa.ui.vm.user;
 
 import org.gluu.casa.conf.MainSettings;
@@ -97,8 +92,7 @@ public class UserViewModel {
 
         //Assume removal has no problem
         String message = null;
-        String preferredMethod = user.getPreferredMethod();
-        if (Utils.isNotEmpty(preferredMethod)) {
+        if (user.getPreferredMethod() != null) {
 
             //Compute how many credentials current user has added
             List<Pair<AuthnMethod, Integer>> userMethodsCount = userService.getUserMethodsCount(user.getId());
@@ -120,8 +114,6 @@ public class UserViewModel {
                         commaSepNames = commaSepNames.substring(1, commaSepNames.length() - 1);
                         message = CredRemovalConflict.REQUISITE_NOT_FULFILED.getMessage(commaSepNames);
                     }
-                } else if (credentialType.equals(preferredMethod)) {
-                    message = CredRemovalConflict.PREFERRED_CREDENTIAL_REMOVED.getMessage();
                 }
             }
             if (message == null && totalCreds == minCredsFor2FA) {

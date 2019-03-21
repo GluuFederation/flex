@@ -123,7 +123,7 @@ public class UserService {
             for (String inum : userInums) {
                 if (setPreferredMethod(inum, null)) {
                     modified++;
-                    logger.info("Reset preferred method for user '{}'", inum);
+                    logger.info("Turned 2FA off for user '{}'", inum);
                 }
             }
         } catch (Exception e) {
@@ -164,18 +164,6 @@ public class UserService {
         }
         return success;
 
-    }
-
-    /**
-     * Determines if there are no users with this type of method as preferred in LDAP
-     * @param acr String that identifies an authentication mechanism
-     * @return False if any user has type as his preferred. True otherwise
-     */
-    public boolean zeroPreferences(String acr){
-        PersonPreferences ppfs = new PersonPreferences();
-        ppfs.setPreferredMethod(acr);
-        ppfs.setBaseDn(persistenceService.getPeopleDn());
-        return persistenceService.count(ppfs) == 0;
     }
 
     public Pair<Set<String>, List<TrustedDevice>> get2FAPolicyData(String userId) {

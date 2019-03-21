@@ -2,62 +2,32 @@
       if="${sessionContext.user ne null}">
 
     <z:div viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserPreferenceViewModel')">
-        <h:section class="${css.section}" if="${vm.availMethods.size() gt 1}">
-            <div class="${css.panel}">
-                <h2 class="f4 dark-blue2">${labels.usr.preferred_title}</h2>
-                <p>${labels.usr.preferred_text}</p>
-            </div>
+        <section class="${css.section}">
             <div class="${css.panel} pb2">
-                <div class="flex justify-between ph3">
-                    <div class="dark-blue2 f6">
-                        <z:label value="@load(vm.selectedMethodName)"/>
-                    </div>
-                    <h:button class="${css.editButton}" onClick="@command('prepareUpdateMethod')">
+                <h2 class="f4 dark-blue2">${labels.usr.mfa_title}</h2>
+                <p class="mb2">${labels.usr.mfa_onoff}</p>
 
-                        <zk:attribute name="data-original-title" if="${vm.uiEditable}">${labels.usr.preferred_tooltip}</zk:attribute>
-                        <zk:attribute name="data-toggle" if="${vm.uiEditable}">tooltip</zk:attribute>
-                        <zk:attribute name="data-placement" if="${vm.uiEditable}">top</zk:attribute>
-                        <zk:attribute unless="${vm.uiEditable}" name="disabled">true</zk:attribute>
-                        
-                        <i class="fas fa-pencil-alt" />
-                    </h:button>
+                <div class="flex justify-center">
+                    <z:checkbox mold="switch" label="@load(c:toUpperCase(c:l(vm.mfaEnabled ? 'general.on' : 'general.off')))"
+                                disabled="${not vm.uiEditable}" checked="@bind(vm.mfaEnabled)"
+                                w:onClick="alertRef = $('#feedback-preferred')" onCheck="@command('change')" />
                 </div>
+
                 <zk:zk if="${vm.uiNotEnoughCredsFor2FA}">
-                    <p class="pl3 pt1 mb0 black">${c:l2('usr.preferred_disabled', c:split(configurationHandler.settings.minCredsFor2FA,''))}</p>
+                    <div class="alert alert-danger mt2" role="alert">${c:l2('usr.mfa_disabled', c:split(configurationHandler.settings.minCredsFor2FA,''))}</div>
                 </zk:zk>
 
                 <div class="pv1" /> <!-- avoids vertical margin collapse -->
                 <div class="alert alert-success dn" id="feedback-preferred" role="alert" />
             </div>
-            <z:div sclass="${css.panel}" visible="@load(vm.selectedMethod ne null and not empty vm.preferredFragments)" children="@load(vm.preferredFragments)">
+            <z:div sclass="${css.panel}" visible="@load(vm.mfaEnabled and not empty vm.preferredFragments)" children="@load(vm.preferredFragments)">
                 <zk:template name="children">
                     <z:include src="@load(c:cat3(each.x,'/',each.y))">
                         <zk:attribute name="base">${each.x}</zk:attribute>
                     </z:include>
                 </zk:template>
             </z:div>
-        </h:section>
-
-        <z:window id="win" title="${labels.usr.preferred_title}" border="normal" mode="modal" visible="@load(vm.uiEditing)"
-                  closable="true" onClose="@command('cancel', event=event)" sclass="${css.modalWindow}">
-
-            <z:radiogroup id="methods" />
-            <ul class="list-group f7-cust pt1 mb3">
-                <z:div children="@load(vm.availMethods)">
-                    <z:template name="children">
-                        <li class="list-group-item hover-bg-light-gray gray hover-dark-gray pt1">
-                            <z:radio onCheck="@command('change', method=each.x)" selected="${each.x eq vm.selectedMethod}"
-                                     label="${each.y}" radiogroup="methods" sclass="mr1" />
-                        </li>
-                    </z:template>
-                </z:div>
-            </ul>
-            <div class="w-100 flex justify-center">
-                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
-                          w:onClick="alertRef = $('#feedback-preferred')" onClick="@command('update')" />
-                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancel', event=event)" />
-            </div>
-        </z:window>
+        </section>
 
     </z:div>
 

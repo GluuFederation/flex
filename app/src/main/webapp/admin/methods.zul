@@ -27,7 +27,6 @@
                 </div>
 
                 <z:div sclass="${css.panel}" unless="${empty vm.methods}">
-                    <span class="dark-blue2">${labels.adm.methods_hint}</span>
                     <div class="pt3 pb2">
                         <table class="table table-hover table-sm">
                             <thead>

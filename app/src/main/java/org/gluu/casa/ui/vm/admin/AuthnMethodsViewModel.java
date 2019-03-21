@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.core.ConfigurationHandler;
@@ -72,7 +67,7 @@ public class AuthnMethodsViewModel extends MainViewModel {
             AuthnMethodStatus ams = new AuthnMethodStatus();
             ams.setAcr(acr);
             ams.setEnabled(mappedAcrs.keySet().contains(acr));
-            ams.setDeactivable(!ams.isEnabled() || userService.zeroPreferences(acr));
+            ams.setDeactivable(!ams.isEnabled());
 
             List<Pair<String, String>> plugins = new ArrayList<>();
             //After this loop, plugins variable should not be empty

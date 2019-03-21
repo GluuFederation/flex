@@ -6,11 +6,7 @@ import org.gluu.casa.extension.PreferredMethodFragment;
 import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.DependsOn;
-import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.bind.annotation.*;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
@@ -36,12 +32,7 @@ public class UserPreferenceViewModel extends UserViewModel {
     private ExtensionsManager extManager;
 
     private List<Pair<String, String>> preferredFragments;
-    private String noMethodName;
-    private String prevSelectedMethod;
-    private String selectedMethod;
-    private List<Pair<String, String>> availMethods;
-
-    private boolean uiEditing;
+    private boolean mfaEnabled;
     private boolean uiEditable;
     private boolean uiNotEnoughCredsFor2FA;
 
@@ -49,40 +40,29 @@ public class UserPreferenceViewModel extends UserViewModel {
         return uiNotEnoughCredsFor2FA;
     }
 
-    public boolean isUiEditing() {
-        return uiEditing;
-    }
-
     public boolean isUiEditable() {
         return uiEditable;
     }
 
-    public List<Pair<String, String>> getAvailMethods() {
-        return availMethods;
+    public boolean isMfaEnabled() {
+        return mfaEnabled;
     }
 
-    public String getSelectedMethod() {
-        return selectedMethod;
+    public void setMfaEnabled(boolean mfaEnabled) {
+        this.mfaEnabled = mfaEnabled;
     }
 
     public List<Pair<String, String>> getPreferredFragments() {
         return preferredFragments;
     }
 
-    @DependsOn("selectedMethod")
-    public String getSelectedMethodName() {
-        return Optional.ofNullable(selectedMethod).map(extManager::getExtensionForAcr)
-                .map(aMethod -> Labels.getLabel(aMethod.get().getUINameKey())).orElse(noMethodName);
-    }
-
     @Init(superclass = true)
     public void childInit() {
 
-        selectedMethod = user.getPreferredMethod();
-        noMethodName = Labels.getLabel("usr.method.none");
+        mfaEnabled= user.getPreferredMethod() != null;
 
         List<Pair<AuthnMethod, Integer>> userMethodsCount = userService.getUserMethodsCount(user.getId());
-        availMethods = userMethodsCount.stream().map(Pair::getX)
+        List<Pair<String, String>> availMethods = userMethodsCount.stream().map(Pair::getX)
                 .map(aMethod -> new Pair<>(aMethod.getAcr(), Labels.getLabel(aMethod.getUINameKey())))
                 .collect(Collectors.toList());
 
@@ -94,51 +74,17 @@ public class UserPreferenceViewModel extends UserViewModel {
         uiEditable = totalCreds >= confSettings.getMinCredsFor2FA() && availMethods.size() > 0;
         uiNotEnoughCredsFor2FA = totalCreds < confSettings.getMinCredsFor2FA() && confSettings.getAcrPluginMap().size() > 0;
 
-        availMethods.add(new Pair<>(null, noMethodName));
-
         preferredFragments = extManager.getPluginExtensionsForClass(PreferredMethodFragment.class).stream()
                 .map(p -> new Pair<>(String.format("/%s/%s", ExtensionsManager.PLUGINS_EXTRACTION_DIR, p.getX()), p.getY().getUrl()))
                 .collect(Collectors.toList());
 
     }
 
-    @NotifyChange({"uiEditing", "selectedMethod"})
     @Command
-    public void cancel(@BindingParam("event") Event event) {
-        uiEditing = false;
-        selectedMethod = prevSelectedMethod;
-        if (event != null) {
-            event.stopPropagation();
-        }
-    }
-
-    @NotifyChange({"uiEditing", "selectedMethod"})
-    @Command
-    public void update() {
-
-        uiEditing = false;
+    public void change() {
+        String value = mfaEnabled ? Long.toString(System.currentTimeMillis()) : null;
         //saves to LDAP and updates user object afterwards
-        if (userService.setPreferredMethod(user, selectedMethod)) {
-            UIUtils.showMessageUI(true);
-        } else {
-            selectedMethod = prevSelectedMethod;
-            UIUtils.showMessageUI(false);
-        }
-
-    }
-
-    @NotifyChange({"uiEditing"})
-    @Command
-    public void prepareUpdateMethod() {
-        if (uiEditable) {
-            prevSelectedMethod = selectedMethod;
-            uiEditing = true;
-        }
-    }
-
-    @Command
-    public void change(@BindingParam("method") String cred){
-        selectedMethod = cred;
+        UIUtils.showMessageUI(userService.setPreferredMethod(user, value));
     }
 
 }
