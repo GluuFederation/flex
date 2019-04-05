@@ -44,13 +44,6 @@ public interface LocalDirectoryInfo {
     String getCustomScriptsDn();
 
     /**
-     * Returns the ID (<code>inum</code> attribute value) of the <i>o</i> entry that contains most of Gluu Server
-     * LDAP branches like <i>people, groups, clients, etc.</i>.
-     * @return A string value
-     */
-    String getOrganizationInum();
-
-    /**
      * Returns the URL of (this) authorization server. Typically, it has the form https://host
      * @return A string value
      */

@@ -163,7 +163,7 @@ public class LdapService implements ILdapService {
     }
 
     public String getOrganizationInum() {
-        return persistenceService.getOrganizationInum();
+        return null;
     }
 
     public String getIssuerUrl() {
@@ -171,7 +171,7 @@ public class LdapService implements ILdapService {
     }
 
     public gluuOrganization getOrganization() {
-        return get(gluuOrganization.class, String.format("o=%s,%s", getOrganizationInum(), persistenceService.getRootDn()));
+        return get(gluuOrganization.class, persistenceService.getRootDn());
     }
 
     private <T> List<T> fromPersistedObjects(PersistedObjects<T> objects) throws LDAPPersistException {

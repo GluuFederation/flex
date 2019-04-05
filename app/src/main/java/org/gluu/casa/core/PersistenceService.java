@@ -192,12 +192,8 @@ public class PersistenceService implements IPersistenceService {
         return oxAuthConfStatic.get("baseDn").get("scripts").asText();
     }
 
-    public String getOrganizationInum() {
-        return oxAuthConfDynamic.get("organizationInum").asText();
-    }
-
     public GluuOrganization getOrganization() {
-        return get(GluuOrganization.class, String.format("o=%s,%s", getOrganizationInum(), rootDn));
+        return get(GluuOrganization.class, rootDn);
     }
 
     public String getIssuerUrl() {

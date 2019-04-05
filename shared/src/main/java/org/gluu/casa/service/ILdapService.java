@@ -93,6 +93,16 @@ public interface ILdapService extends LocalDirectoryInfo {
     <T> boolean delete(T object, Class<T> clazz);
 
     /**
+     * This method must return <code>null</code>. It's kept for compatibility purposes. Originally this method
+     * returned the ID (<code>inum</code> attribute value) of the <i>o</i> entry that contained most of Gluu Server
+     * LDAP branches like <i>people, groups, clients, etc.</i>.
+     * <p>Starting with 4.0 the structure was flattened so all these branches are directly under <code>o=gluu</code></p>.
+     * @return Always null
+     */
+    @Deprecated
+    String getOrganizationInum();
+
+    /**
      * Returns an instance of {@link gluuOrganization} that represents the organization entry of your local Gluu Server LDAP.
      * This is the <i>o</i> entry that contains most of Gluu Server LDAP branches like <i>people, groups, clients, etc.</i>.
      * @return A {@link gluuOrganization} object
