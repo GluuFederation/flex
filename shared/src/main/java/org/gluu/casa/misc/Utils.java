@@ -8,7 +8,7 @@ import org.gluu.casa.core.ldap.oxCustomScript;
 import org.gluu.casa.core.model.CustomScript;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xdi.model.SimpleCustomProperty;
+import org.gluu.model.SimpleCustomProperty;
 
 import java.net.Socket;
 import java.net.SocketAddress;

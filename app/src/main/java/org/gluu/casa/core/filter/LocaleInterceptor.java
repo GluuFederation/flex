@@ -4,7 +4,7 @@ import org.gluu.casa.core.ZKService;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xdi.util.StringHelper;
+import org.gluu.util.StringHelper;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.util.RequestInterceptor;

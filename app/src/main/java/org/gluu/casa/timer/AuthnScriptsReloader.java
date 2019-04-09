@@ -11,8 +11,8 @@ import org.gluu.casa.misc.Utils;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
-import org.xdi.model.ScriptLocationType;
-import org.xdi.model.SimpleCustomProperty;
+import org.gluu.model.ScriptLocationType;
+import org.gluu.model.SimpleCustomProperty;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
