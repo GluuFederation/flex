@@ -23,12 +23,12 @@
         <!-- GLUU -->
         <dependency>
             <groupId>org.xdi</groupId>
-            <artifactId>oxcore-ldap</artifactId>
+            <artifactId>oxcore-persistence-ldap</artifactId>
             <version>${ox.version}</version>
         </dependency>
         <dependency>
             <groupId>org.xdi</groupId>
-            <artifactId>oxcore-persist-model</artifactId>
+            <artifactId>oxcore-persistence-model</artifactId>
             <version>${ox.version}</version>
         </dependency>
 
