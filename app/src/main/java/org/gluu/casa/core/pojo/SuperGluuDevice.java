@@ -5,7 +5,7 @@
  */
 package org.gluu.casa.core.pojo;
 
-import org.xdi.oxauth.model.fido.u2f.protocol.DeviceData;
+import org.gluu.oxauth.model.fido.u2f.protocol.DeviceData;
 
 /**
  * Created by jgomer on 2017-09-06.

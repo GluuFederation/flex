@@ -12,7 +12,7 @@ import org.gluu.casa.timer.TrustedDevicesSweeper;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
-import org.xdi.oxauth.model.util.SecurityProviderUtility;
+import org.gluu.oxauth.model.util.SecurityProviderUtility;
 import org.zkoss.util.Pair;
 
 import javax.annotation.PostConstruct;

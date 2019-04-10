@@ -14,9 +14,9 @@ import org.gluu.persist.model.SearchScope;
 import org.gluu.search.filter.Filter;
 import org.jboss.weld.inject.WeldInstance;
 import org.slf4j.Logger;
-import org.xdi.util.properties.FileConfiguration;
-import org.xdi.util.security.PropertiesDecrypter;
-import org.xdi.util.security.StringEncrypter;
+import org.gluu.util.properties.FileConfiguration;
+import org.gluu.util.security.PropertiesDecrypter;
+import org.gluu.util.security.StringEncrypter;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

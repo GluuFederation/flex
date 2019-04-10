@@ -5,7 +5,7 @@ import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xdi.util.Pair;
+import org.gluu.util.Pair;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
