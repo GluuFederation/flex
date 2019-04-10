@@ -8,13 +8,13 @@ import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.plugins.authnmethod.SecurityKeyExtension;
 import org.gluu.casa.plugins.authnmethod.conf.U2FConfig;
-import org.slf4j.Logger;
 import org.gluu.oxauth.client.fido.u2f.FidoU2fClientFactory;
 import org.gluu.oxauth.client.fido.u2f.RegistrationRequestService;
 import org.gluu.oxauth.client.fido.u2f.U2fConfigurationService;
 import org.gluu.oxauth.model.fido.u2f.U2fConfiguration;
 import org.gluu.oxauth.model.fido.u2f.protocol.RegisterRequestMessage;
 import org.gluu.oxauth.model.fido.u2f.protocol.RegisterStatus;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

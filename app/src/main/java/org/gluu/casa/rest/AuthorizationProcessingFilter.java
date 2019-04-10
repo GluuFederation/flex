@@ -3,9 +3,9 @@ package org.gluu.casa.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.misc.Utils;
-import org.slf4j.Logger;
 import org.gluu.oxauth.client.ClientInfoClient;
 import org.gluu.oxauth.client.ClientInfoResponse;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

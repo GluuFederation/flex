@@ -72,7 +72,7 @@
             Alternatively, you may open file /opt/gluu/jetty/casa/webapps/casa.war and inspect subdirectory WEB_INF/lib
          -->
         <dependency>
-            <groupId>org.gluu</groupId>
+            <groupId>org.xdi</groupId>
             <artifactId>casa-shared</artifactId>
             <version>4.0.0-SNAPSHOT</version>
             <scope>provided</scope>

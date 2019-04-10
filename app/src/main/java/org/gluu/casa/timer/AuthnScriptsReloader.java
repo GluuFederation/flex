@@ -8,11 +8,11 @@ import org.gluu.casa.core.TimerService;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
+import org.gluu.model.ScriptLocationType;
+import org.gluu.model.SimpleCustomProperty;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
-import org.gluu.model.ScriptLocationType;
-import org.gluu.model.SimpleCustomProperty;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

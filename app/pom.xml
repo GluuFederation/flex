@@ -9,7 +9,7 @@
 	<packaging>war</packaging>
 
 	<parent>
-		<groupId>org.gluu</groupId>
+		<groupId>org.xdi</groupId>
 		<artifactId>casa-base</artifactId>
         <version>4.0.0-SNAPSHOT</version>
 	</parent>
@@ -19,16 +19,20 @@
 
 	<dependencies>
         <dependency>
-            <groupId>org.gluu</groupId>
+            <groupId>org.xdi</groupId>
             <artifactId>casa-shared</artifactId>
             <version>${casa.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.gluu</groupId>
+            <groupId>org.xdi</groupId>
             <artifactId>oxd-client</artifactId>
             <version>${oxd.version}</version>
             <exclusions>
+                <exclusion>
+                    <groupId>org.xdi</groupId>
+                    <artifactId>oxcore-util</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>commons-codec</groupId>
                     <artifactId>commons-codec</artifactId>
@@ -60,7 +64,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.gluu</groupId>
+            <groupId>org.xdi</groupId>
             <artifactId>oxd-common</artifactId>
             <version>${oxd.version}</version>
             <exclusions>
@@ -92,20 +96,39 @@
                     <groupId>org.jboss.resteasy</groupId>
                     <artifactId>resteasy-jackson-provider</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.gluu</groupId>
+                <!--exclusion>
+                    <groupId>org.xdi</groupId>
                     <artifactId>oxauth-model</artifactId>
+                </exclusion-->
+                <exclusion>
+                    <groupId>org.xdi</groupId>
+                    <artifactId>oxcore-ldap-annotations</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
-            <artifactId>oxcore-persistence-ldap</artifactId>
+            <artifactId>oxauth-model</artifactId>
             <version>${ox.version}</version>
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
-            <artifactId>oxauth-model</artifactId>
+            <artifactId>oxauth-client</artifactId>
+            <version>${ox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxcore-util</artifactId>
+            <version>${ox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxcore-persist</artifactId>
+            <version>${ox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxcore-ldap</artifactId>
             <version>${ox.version}</version>
         </dependency>
 

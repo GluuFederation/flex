@@ -6,9 +6,9 @@ import net.sf.jmimemagic.Magic;
 import org.apache.commons.beanutils.BeanUtils;
 import org.gluu.casa.core.ldap.oxCustomScript;
 import org.gluu.casa.core.model.CustomScript;
+import org.gluu.model.SimpleCustomProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.gluu.model.SimpleCustomProperty;
 
 import java.net.Socket;
 import java.net.SocketAddress;

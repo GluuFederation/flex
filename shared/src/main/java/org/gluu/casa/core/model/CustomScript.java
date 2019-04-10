@@ -1,12 +1,12 @@
 package org.gluu.casa.core.model;
 
 import org.gluu.casa.misc.Utils;
+import org.gluu.model.SimpleCustomProperty;
 import org.gluu.persist.model.base.Entry;
 import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
 import org.gluu.site.ldap.persistence.annotation.LdapEntry;
 import org.gluu.site.ldap.persistence.annotation.LdapJsonObject;
 import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
-import org.gluu.model.SimpleCustomProperty;
 
 import java.util.List;
 import java.util.Optional;

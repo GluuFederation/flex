@@ -9,10 +9,10 @@ import org.gluu.casa.misc.Utils;
 import org.gluu.casa.timer.AuthnScriptsReloader;
 import org.gluu.casa.timer.StatisticsTimer;
 import org.gluu.casa.timer.TrustedDevicesSweeper;
+import org.gluu.oxauth.model.util.SecurityProviderUtility;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
-import org.gluu.oxauth.model.util.SecurityProviderUtility;
 import org.zkoss.util.Pair;
 
 import javax.annotation.PostConstruct;

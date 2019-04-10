@@ -16,8 +16,8 @@ import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.gluu.casa.plugins.authnmethod.SuperGluuExtension;
 import org.gluu.casa.plugins.authnmethod.conf.SGConfig;
-import org.slf4j.Logger;
 import org.gluu.oxauth.model.fido.u2f.protocol.DeviceData;
+import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 
 import javax.annotation.PostConstruct;

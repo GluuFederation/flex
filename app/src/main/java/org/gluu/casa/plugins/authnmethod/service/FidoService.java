@@ -4,9 +4,9 @@ import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.model.DeviceRegistration;
 import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
-import org.slf4j.Logger;
 import org.gluu.oxauth.model.fido.u2f.DeviceRegistrationStatus;
 import org.gluu.oxauth.model.fido.u2f.protocol.DeviceData;
+import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
 import javax.inject.Inject;

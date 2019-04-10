@@ -11,12 +11,12 @@ import org.gluu.persist.PersistenceEntryManager;
 import org.gluu.persist.PersistenceEntryManagerFactory;
 import org.gluu.persist.ldap.operation.LdapOperationService;
 import org.gluu.persist.model.SearchScope;
-import org.gluu.search.filter.Filter;
-import org.jboss.weld.inject.WeldInstance;
-import org.slf4j.Logger;
 import org.gluu.util.properties.FileConfiguration;
 import org.gluu.util.security.PropertiesDecrypter;
 import org.gluu.util.security.StringEncrypter;
+import org.gluu.search.filter.Filter;
+import org.jboss.weld.inject.WeldInstance;
+import org.slf4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -257,8 +257,8 @@ public class PersistenceService implements IPersistenceService {
 
     public void prepareFidoBranch(String userInum){
 
-        String dn = getPersonDn(userInum);
-        OrganizationalUnit entry = get(OrganizationalUnit.class, String.format("ou=fido,%s", dn));
+        String dn = "ou=fido," + getPersonDn(userInum);
+        OrganizationalUnit entry = get(OrganizationalUnit.class, dn);
         if (entry == null) {
             logger.info("Non existing fido branch for {}, creating...", userInum);
             entry = new OrganizationalUnit();

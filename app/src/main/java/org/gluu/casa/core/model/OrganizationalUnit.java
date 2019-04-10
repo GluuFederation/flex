@@ -12,6 +12,10 @@ public class OrganizationalUnit extends Entry {
     @LdapAttribute
     private String ou;
 
+    public String getOu() {
+        return ou;
+    }
+
     public void setOu(String ou) {
         this.ou = ou;
     }
