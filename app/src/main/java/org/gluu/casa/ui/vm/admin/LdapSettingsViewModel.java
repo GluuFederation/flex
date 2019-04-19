@@ -51,7 +51,7 @@ public class LdapSettingsViewModel extends MainViewModel {
     public void save() {
 
         //salt is optional
-        if (Utils.isNotEmpty(ldapSettings.getOxLdapLocation()) && ldapSettings.getOxLdapLocation().trim().length() > 0) {
+        if (Utils.isNotEmpty(ldapSettings.getConfigurationFile()) && ldapSettings.getConfigurationFile().trim().length() > 0) {
             String msg = updateLdapSettings();
             if (msg != null) {
                 reloadConfig();
@@ -60,7 +60,6 @@ public class LdapSettingsViewModel extends MainViewModel {
                 getSettings().setLdapSettings(ldapSettings);
                 updateMainSettings();
             }
-            //BindUtils.postNotifyChange(null, null, this, "ldapSettings");
         } else {
             UIUtils.showMessageUI(false, Labels.getLabel("adm.ldap_nonempty"));
         }
