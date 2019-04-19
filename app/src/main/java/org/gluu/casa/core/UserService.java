@@ -49,7 +49,7 @@ public class UserService {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    public User getUserFromClaims(Map<String, List<String>> claims) throws AttributeNotFoundException {
+    public User getUserFromClaims(Map claims) throws AttributeNotFoundException {
 
         User u = new User();
         u.setUserName(getClaim(claims, "user_name"));
@@ -282,9 +282,20 @@ public class UserService {
      * @param claimName Claim to inspect
      * @return First value of claim or null
      */
-    private String getClaim(Map<String, List<String>> claims, String claimName) {
-        List<String> values = claims.get(claimName);
-        return Utils.isEmpty(values) ? null : values.get(0);
+    private String getClaim(Map claims, String claimName) {
+
+        Object values = claims.get(claimName);
+        if (values != null) {
+            Object value = values;
+
+            if (Collection.class.isAssignableFrom(values.getClass())) {
+                List<Object> list = new ArrayList<Object>(Collection.class.cast(values));
+                value = Utils.isEmpty(list) ? null : list.get(0);
+            }
+            return value.toString();
+        }
+        return null;
+
     }
 
     private PersonPreferences personPreferencesInstance(String id) {

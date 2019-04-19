@@ -3,28 +3,13 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 
-    <description>credential manager</description>
-    <display-name>cred-manager</display-name>
+    <description>Gluu Casa</description>
+    <display-name>Casa</display-name>
 
     <context-param>
         <param-name>org.eclipse.jetty.servlet.Default.dirAllowed</param-name>
         <param-value>false</param-value>
     </context-param>
-
-    <!--
-    <filter>
-        <filter-name>zkFilter</filter-name>
-        <filter-class>org.zkoss.zk.ui.http.DHtmlLayoutFilter</filter-class>
-        <init-param>
-            <param-name>extension</param-name>
-            <param-value>zul</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>zkFilter</filter-name>
-        <url-pattern>/custom/views/*.zul</url-pattern>
-    </filter-mapping>
-    -->
 
     <!-- weld -->
     <listener>

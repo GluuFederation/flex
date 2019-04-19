@@ -1,20 +1,20 @@
 package org.gluu.casa.core.model;
 
 import org.gluu.casa.misc.Utils;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
 import java.util.List;
 
-@LdapEntry
-@LdapObjectClass(values = { "top", "gluuPerson" })
+@DataEntry
+@ObjectClass(values = { "top", "gluuPerson" })
 public class PersonMobile extends BasePerson {
 
-    @LdapAttribute(name = "oxMobileDevices")
+    @AttributeName(name = "oxMobileDevices")
     private String mobileDevices;
 
-    @LdapAttribute
+    @AttributeName
     private List<String> mobile;
 
     public String getMobileDevices(){

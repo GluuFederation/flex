@@ -1,18 +1,18 @@
 package org.gluu.casa.core.model;
 
 import org.gluu.persist.model.base.Entry;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
-@LdapEntry
-@LdapObjectClass(values = { "top", "oxAuthConfiguration" })
+@DataEntry
+@ObjectClass(values = { "top", "oxAuthConfiguration" })
 public class oxAuthConfiguration extends Entry {
 
-    @LdapAttribute
+    @AttributeName
     private String oxAuthConfDynamic;
 
-    @LdapAttribute
+    @AttributeName
     private String oxAuthConfStatic;
 
     public String getOxAuthConfDynamic() {

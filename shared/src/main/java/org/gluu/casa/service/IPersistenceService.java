@@ -9,7 +9,7 @@ import java.util.List;
  * interface is the mechanism of choice for interacting with data.
  * <p>This interface resembles {@link ILdapService} so developers with previous acquaintance can start coding quickly,
  * however classes/instances passed to these methods are supposed to use the <code>oxCore</code> annotations found in package
- * <code>org.gluu.site.ldap.persistence.annotation</code> in lieu of <code>com.unboundid.ldap.sdk.persist</code>
+ * <code>org.gluu.persist.annotation</code> in lieu of <code>com.unboundid.ldap.sdk.persist</code>
  * annotations of UnboundID LDAP SDK.</p>
  * <p>To obtain an instance object that implements this interface, use method
  * {@link org.gluu.casa.misc.Utils#managedBean(Class)}.</p>
@@ -23,7 +23,7 @@ public interface IPersistenceService extends LocalDirectoryInfo2 {
      * entries to any depth. The search can use an instance of <code>org.gluu.search.filter.Filter</code> to include an
      * LDAP-like filter expression.
      * <p>Note this search is performed in the context of <code>oxcore-persist</code>. In this sense, the Class
-     * referenced as parameter has to be annotated with <code>org.gluu.site.ldap.persistence.annotation.LdapEntry</code>
+     * referenced as parameter has to be annotated with <code>org.gluu.persist.model.base.Entry</code>
      * and potentially other annotations of the same package to be functional.</p>
      * @param clazz A class to which the search objects must belong to
      * @param baseDn Search base DN
@@ -54,7 +54,7 @@ public interface IPersistenceService extends LocalDirectoryInfo2 {
      * this type of search accounts for the entry referenced at the search base and any subordinate
      * entries to any depth. The object passed as parameter is used to internally build a filter to perform the search.
      * <p>Note this search is performed in the context of  <code>oxcore-persist</code>. In this sense, the class to which
-     * the object passed belongs to has to be annotated with <code>org.gluu.site.ldap.persistence.annotation.LdapEntry</code>
+     * the object passed belongs to has to be annotated with <code>org.gluu.persist.model.base.Entry</code>
      * and potentially other annotations of the same package to be functional.</p>
      * @param object An object employed to build a filter
      * @param <T> Type parameter of clazz
@@ -73,7 +73,7 @@ public interface IPersistenceService extends LocalDirectoryInfo2 {
     /**
      * Adds an entry in the underlying persistence engine.
      * @param object Represents the entry to be added. Its class should be annotated with
-     *               <code>org.gluu.site.ldap.persistence.annotation.LdapEntry</code>
+     *               <code>org.gluu.persist.model.base.Entry</code>
      * @param <T> Type parameter of clazz
      * @return A boolean value indicating the success (true) or failure (false) of the operation
      */

@@ -1,9 +1,9 @@
 package org.gluu.casa.core.model;
 
 import org.gluu.persist.model.base.Entry;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
 import java.util.List;
 
@@ -12,14 +12,14 @@ import java.util.List;
  * LDAP for instance).This class gives you access to data such as organization name, inum, and manager group.
  * <p>To obtain an instance of this class use {@link org.gluu.casa.service.IPersistenceService}.</p>
  */
-@LdapEntry
-@LdapObjectClass(values = { "top", "gluuOrganization" })
+@DataEntry
+@ObjectClass(values = { "top", "gluuOrganization" })
 public class GluuOrganization extends Entry {
 
-    @LdapAttribute
+    @AttributeName
     private String displayName;
 
-    @LdapAttribute(name = "gluuManagerGroup")
+    @AttributeName(name = "gluuManagerGroup")
     private List<String> managerGroups;
 
     public String getDisplayName() {

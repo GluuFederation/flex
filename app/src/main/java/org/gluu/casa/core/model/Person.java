@@ -1,27 +1,27 @@
 package org.gluu.casa.core.model;
 
 import org.gluu.casa.misc.Utils;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
 import java.util.List;
 
-@LdapEntry
-@LdapObjectClass(values = { "top", "gluuPerson" })
+@DataEntry
+@ObjectClass(values = { "top", "gluuPerson" })
 public class Person extends BasePerson {
 
-    @LdapAttribute
+    @AttributeName
     private String givenName;
 
-    @LdapAttribute(name = "sn")
+    @AttributeName(name = "sn")
     private String surname;
 
     // The field used for optional attribute sn.
-    @LdapAttribute(name = "oxEnrollmentCode")
+    @AttributeName(name = "oxEnrollmentCode")
     private String enrollmentCode;
 
-    @LdapAttribute
+    @AttributeName
     private List<String> memberOf;
 
     public String getGivenName() {

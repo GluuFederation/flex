@@ -3,10 +3,10 @@ package org.gluu.casa.core.model;
 import org.gluu.casa.misc.Utils;
 import org.gluu.model.SimpleCustomProperty;
 import org.gluu.persist.model.base.Entry;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapJsonObject;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.JsonObject;
+import org.gluu.persist.annotation.ObjectClass;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,31 +15,31 @@ import java.util.Optional;
  * A basic representation of a Gluu Server custom script. Use this class in conjuction with
  * {@link org.gluu.casa.service.IPersistenceService} to read data, modify or delete custom scripts from the server.
  */
-@LdapEntry
-@LdapObjectClass(values = { "top", "oxCustomScript" })
+@DataEntry
+@ObjectClass(values = { "top", "oxCustomScript" })
 public class CustomScript extends Entry {
 
-    @LdapAttribute
+    @AttributeName
     private String displayName;
 
-    @LdapAttribute(name = "gluuStatus")
+    @AttributeName(name = "gluuStatus")
     private Boolean enabled;
 
-    @LdapJsonObject
-    @LdapAttribute(name = "oxConfigurationProperty")
+    @JsonObject
+    @AttributeName(name = "oxConfigurationProperty")
     private List<SimpleCustomProperty> configurationProperties;
 
-    @LdapAttribute(name = "oxLevel")
+    @AttributeName(name = "oxLevel")
     private Integer level;
 
-    @LdapJsonObject
-    @LdapAttribute(name = "oxModuleProperty")
+    @JsonObject
+    @AttributeName(name = "oxModuleProperty")
     private List<SimpleCustomProperty> moduleProperties;
 
-    @LdapAttribute(name = "oxRevision")
+    @AttributeName(name = "oxRevision")
     private Long revision;
 
-    @LdapAttribute(name = "oxScript")
+    @AttributeName(name = "oxScript")
     private String script;
 
     public String getDisplayName() {

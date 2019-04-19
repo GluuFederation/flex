@@ -1,26 +1,26 @@
 package org.gluu.casa.core.model;
 
 import org.gluu.casa.misc.Utils;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
 import java.util.List;
 
 /**
  * Extends {@link BasePerson} in order to manipulate attributes <code>userPassword</code> and <code>oxExternalUid</code>.
  */
-@LdapEntry
-@LdapObjectClass(values = { "top", "gluuPerson" })
+@DataEntry
+@ObjectClass(values = { "top", "gluuPerson" })
 public class IdentityPerson extends BasePerson {
 
-    @LdapAttribute(name ="userPassword")
+    @AttributeName(name ="userPassword")
     private String password;
 
-    @LdapAttribute
+    @AttributeName
     private List<String> oxExternalUid;
 
-    @LdapAttribute
+    @AttributeName
     private List<String> oxUnlinkedExternalUids;
 
     public boolean hasPassword() {

@@ -8,6 +8,7 @@ import javax.inject.Named;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
@@ -16,27 +17,21 @@ import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;
 import org.gluu.casa.misc.Utils;
+import org.gluu.oxd.common.params.GetAuthorizationUrlParams;
+import org.gluu.oxd.common.params.GetClientTokenParams;
+import org.gluu.oxd.common.params.GetLogoutUrlParams;
+import org.gluu.oxd.common.params.GetTokensByCodeParams;
+import org.gluu.oxd.common.params.GetUserInfoParams;
+import org.gluu.oxd.common.params.IParams;
+import org.gluu.oxd.common.params.RegisterSiteParams;
+import org.gluu.oxd.common.params.RemoveSiteParams;
+import org.gluu.oxd.common.params.UpdateSiteParams;
+import org.gluu.oxd.common.response.*;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import org.slf4j.Logger;
-import org.xdi.oxd.client.CommandClient;
-import org.xdi.oxd.common.Command;
-import org.xdi.oxd.common.CommandResponse;
-import org.xdi.oxd.common.CommandType;
-import org.xdi.oxd.common.ResponseStatus;
-import org.xdi.oxd.common.params.GetAuthorizationUrlParams;
-import org.xdi.oxd.common.params.GetClientTokenParams;
-import org.xdi.oxd.common.params.GetLogoutUrlParams;
-import org.xdi.oxd.common.params.GetTokensByCodeParams;
-import org.xdi.oxd.common.params.GetUserInfoParams;
-import org.xdi.oxd.common.params.IParams;
-import org.xdi.oxd.common.params.RegisterSiteParams;
-import org.xdi.oxd.common.params.RemoveSiteParams;
-import org.xdi.oxd.common.params.SetupClientParams;
-import org.xdi.oxd.common.params.UpdateSiteParams;
-import org.xdi.oxd.common.response.*;
 import org.zkoss.util.Pair;
 
 import java.util.*;
@@ -56,7 +51,7 @@ public class OxdService {
     /*
     The list of scopes required to be able to inspect the claims needed. See attributes of User class
      */
-    private static final List<String> CASA_SCOPES = Arrays.asList("openid", "profile", "user_name", "clientinfo");
+    private static final List<String> CASA_SCOPES = Arrays.asList("openid", "profile", "user_name", "clientinfo", "oxd");
 
     @Inject
     private Logger logger;
@@ -145,49 +140,25 @@ public class OxdService {
 
         try {
             String timeStamp = Long.toString(System.currentTimeMillis()/1000);
-            if (config.isUseHttpsExtension()) {
-                clientName = "gluu-casa-extension_" + timeStamp;
+            clientName = "gluu-casa-extension_" + timeStamp;
 
-                SetupClientParams cmdParams = new SetupClientParams();
-                cmdParams.setOpHost(config.getOpHost());
-                cmdParams.setAuthorizationRedirectUri(config.getRedirectUri());
-                cmdParams.setPostLogoutRedirectUri(config.getPostLogoutUri());
-                cmdParams.setAcrValues(config.getAcrValues());
-                cmdParams.setClientName(clientName);
-                cmdParams.setClientFrontchannelLogoutUri(Collections.singletonList(config.getFrontLogoutUri()));
+            RegisterSiteParams cmdParams = new RegisterSiteParams();
+            cmdParams.setOpHost(config.getOpHost());
+            cmdParams.setAuthorizationRedirectUri(config.getRedirectUri());
+            cmdParams.setPostLogoutRedirectUri(config.getPostLogoutUri());
+            cmdParams.setAcrValues(config.getAcrValues());
+            cmdParams.setClientName(clientName);
+            cmdParams.setClientFrontchannelLogoutUris(Collections.singletonList(config.getFrontLogoutUri()));
+            //Why is this needed in 4.0, and not in oxd 3.1.4?
+            cmdParams.setGrantTypes(Collections.singletonList("client_credentials"));
 
-                cmdParams.setScope(CASA_SCOPES);
-                cmdParams.setResponseTypes(Collections.singletonList("code"));
-                cmdParams.setTrustedClient(true);
+            cmdParams.setScope(CASA_SCOPES);
+            cmdParams.setResponseTypes(Collections.singletonList("code"));
+            cmdParams.setTrustedClient(true);
 
-                SetupClientResponse setup = restResponse(cmdParams, "setup-client", null, SetupClientResponse.class);
-                computedSettings = new OxdClientSettings(clientName, setup.getOxdId(), setup.getClientId(), setup.getClientSecret());
-            } else {
-                clientName = "gluu-casa_" + timeStamp;
+            RegisterSiteResponse setup = restResponse(cmdParams, "register-site", null, RegisterSiteResponse.class);
+            computedSettings = new OxdClientSettings(clientName, setup.getOxdId(), setup.getClientId(), setup.getClientSecret());
 
-                RegisterSiteParams cmdParams = new RegisterSiteParams();
-                cmdParams.setOpHost(config.getOpHost());
-                cmdParams.setAuthorizationRedirectUri(config.getRedirectUri());
-                cmdParams.setPostLogoutRedirectUri(config.getPostLogoutUri());
-                cmdParams.setAcrValues(config.getAcrValues());
-                cmdParams.setClientName(clientName);
-                cmdParams.setClientFrontchannelLogoutUri(Collections.singletonList(config.getFrontLogoutUri()));
-
-                //These scopes should be set to default=true in LDAP (or using oxTrust). Otherwise the following will have no effect
-                cmdParams.setScope(CASA_SCOPES);
-                cmdParams.setResponseTypes(Collections.singletonList("code"));  //Use "token","id_token" for implicit flow
-                cmdParams.setTrustedClient(true);
-
-                CommandClient commandClient = null;
-                try {
-                    commandClient = new CommandClient(config.getHost(), config.getPort());
-                    Command command = new Command(CommandType.REGISTER_SITE).setParamsObject(cmdParams);
-                    RegisterSiteResponse site = commandClient.send(command).dataAsResponse(RegisterSiteResponse.class);
-                    computedSettings = new OxdClientSettings(clientName, site.getOxdId(), null, null);
-                } finally {
-                    CommandClient.closeQuietly(commandClient);
-                }
-            }
             logger.info("oxd client registered successfully, oxd-id={}", computedSettings.getOxdId());
         } catch (Exception e) {
             String msg = "Setting oxd-server configs failed";
@@ -202,20 +173,7 @@ public class OxdService {
 
         try {
             RemoveSiteParams cmdParams = new RemoveSiteParams(oxdId);
-            RemoveSiteResponse resp;
-
-            if (config.isUseHttpsExtension()) {
-                resp = restResponse(cmdParams, "remove-site", getPAT(), RemoveSiteResponse.class);
-            } else {
-                CommandClient commandClient = null;
-                try {
-                    commandClient = new CommandClient(config.getHost(), config.getPort());
-                    Command command = new Command(CommandType.REMOVE_SITE).setParamsObject(cmdParams);
-                    resp = commandClient.send(command).dataAsResponse(RemoveSiteResponse.class);
-                } finally {
-                    CommandClient.closeQuietly(commandClient);
-                }
-            }
+            RemoveSiteResponse resp = restResponse(cmdParams, "remove-site", getPAT(), RemoveSiteResponse.class);
             logger.info("Site removed {}", resp.getOxdId());
         } catch (Exception e) {
             logger.debug(e.getMessage(), e);
@@ -237,19 +195,7 @@ public class OxdService {
         cmdParams.setAcrValues(acrValues);
         cmdParams.setPrompt(prompt);
 
-        GetAuthorizationUrlResponse resp;
-        if (config.isUseHttpsExtension()) {
-            resp = restResponse(cmdParams, "get-authorization-url", getPAT(), GetAuthorizationUrlResponse.class);
-        } else {
-            CommandClient commandClient = null;
-            try {
-                commandClient = new CommandClient(config.getHost(), config.getPort());
-                Command command = new Command(CommandType.GET_AUTHORIZATION_URL).setParamsObject(cmdParams);
-                resp = commandClient.send(command).dataAsResponse(GetAuthorizationUrlResponse.class);
-            } finally {
-                CommandClient.closeQuietly(commandClient);
-            }
-        }
+        GetAuthorizationUrlResponse resp = restResponse(cmdParams, "get-authorization-url", getPAT(), GetAuthorizationUrlResponse.class);
         return resp.getAuthorizationUrl();
 
     }
@@ -265,44 +211,19 @@ public class OxdService {
         cmdParams.setCode(code);
         cmdParams.setState(state);
 
-        GetTokensByCodeResponse resp;
-        if (config.isUseHttpsExtension()) {
-            resp = restResponse(cmdParams, "get-tokens-by-code", getPAT(), GetTokensByCodeResponse.class);
-        } else {
-            CommandClient commandClient = null;
-            try {
-                commandClient = new CommandClient(config.getHost(), config.getPort());
-                Command command = new Command(CommandType.GET_TOKENS_BY_CODE).setParamsObject(cmdParams);
-                resp = commandClient.send(command).dataAsResponse(GetTokensByCodeResponse.class);
-            } finally {
-                CommandClient.closeQuietly(commandClient);
-            }
-        }
+        GetTokensByCodeResponse resp = restResponse(cmdParams, "get-tokens-by-code", getPAT(), GetTokensByCodeResponse.class);
         //validate accessToken with at_hash inside idToken: resp.getIdToken();
         return new Pair<>(resp.getAccessToken(), resp.getIdToken());
 
     }
 
-    public Map<String, List<String>> getUserClaims(String accessToken) throws Exception {
+    public Map getUserClaims(String accessToken) throws Exception {
 
         GetUserInfoParams cmdParams = new GetUserInfoParams();
         cmdParams.setOxdId(config.getClient().getOxdId());
         cmdParams.setAccessToken(accessToken);
 
-        GetUserInfoResponse resp;
-        if (config.isUseHttpsExtension()) {
-            resp = restResponse(cmdParams, "get-user-info", getPAT(), GetUserInfoResponse.class);
-        } else {
-            CommandClient commandClient = null;
-            try {
-                commandClient = new CommandClient(config.getHost(), config.getPort());
-                Command command = new Command(CommandType.GET_USER_INFO).setParamsObject(cmdParams);
-                resp = commandClient.send(command).dataAsResponse(GetUserInfoResponse.class);
-            } finally {
-                CommandClient.closeQuietly(commandClient);
-            }
-        }
-        return resp.getClaims();
+        return restResponse(cmdParams, "get-user-info", getPAT(), Map.class);
 
     }
 
@@ -313,19 +234,7 @@ public class OxdService {
         cmdParams.setPostLogoutRedirectUri(config.getPostLogoutUri());
         cmdParams.setIdTokenHint(idTokenHint);
 
-        LogoutResponse resp;
-        if (config.isUseHttpsExtension()) {
-            resp = restResponse(cmdParams, "get-logout-uri", getPAT(), LogoutResponse.class);
-        } else {
-            CommandClient commandClient = null;
-            try {
-                commandClient = new CommandClient(config.getHost(), config.getPort());
-                Command command = new Command(CommandType.GET_LOGOUT_URI).setParamsObject(cmdParams);
-                resp = commandClient.send(command).dataAsResponse(LogoutResponse.class);
-            } finally {
-                CommandClient.closeQuietly(commandClient);
-            }
-        }
+        GetLogoutUriResponse resp = restResponse(cmdParams, "get-logout-uri", getPAT(), GetLogoutUriResponse.class);
         return resp.getUri();
 
     }
@@ -343,22 +252,9 @@ public class OxdService {
 
     private boolean doUpdate(UpdateSiteParams cmdParams) throws Exception {
 
-        UpdateSiteResponse resp = null;
         //Do not remove the following line, sometimes problematic if missing
         cmdParams.setGrantType(Collections.singletonList("authorization_code"));
-
-        if (config.isUseHttpsExtension()) {
-            resp = restResponse(cmdParams, "update-site", getPAT(), UpdateSiteResponse.class);
-        } else {
-            CommandClient commandClient = null;
-            try {
-                commandClient = new CommandClient(config.getHost(), config.getPort());
-                Command command = new Command(CommandType.UPDATE_SITE).setParamsObject(cmdParams);
-                resp = commandClient.send(command).dataAsResponse(UpdateSiteResponse.class);
-            } finally {
-                CommandClient.closeQuietly(commandClient);
-            }
-        }
+        UpdateSiteResponse resp = restResponse(cmdParams, "update-site", getPAT(), UpdateSiteResponse.class);
         return resp != null;
 
     }
@@ -386,16 +282,11 @@ public class OxdService {
 
         String authz = StringUtils.isEmpty(token) ? null : "Bearer " + token;
         ResteasyWebTarget target = client.target(String.format("https://%s:%s/%s", config.getHost(), config.getPort(), path));
+
         Response response = target.request().header("Authorization", authz).post(Entity.json(payload));
-
-        try {
-            CommandResponse cmdResponse = response.readEntity(CommandResponse.class);
-            logger.trace("Response received was \n{}", cmdResponse == null ? null : cmdResponse.getData().toString());
-
-            return cmdResponse.getStatus().equals(ResponseStatus.OK) ? mapper.convertValue(cmdResponse.getData(), responseClass) : null;
-        } finally {
-            response.close();
-        }
+        response.bufferEntity();
+        logger.trace("Response received was \n{}", response.readEntity(String.class));
+        return response.readEntity(responseClass);
 
     }
 

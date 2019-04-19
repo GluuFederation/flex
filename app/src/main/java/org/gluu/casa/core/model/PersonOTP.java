@@ -1,20 +1,20 @@
 package org.gluu.casa.core.model;
 
 import org.gluu.casa.misc.Utils;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
 import java.util.List;
 
-@LdapEntry
-@LdapObjectClass(values = { "top", "gluuPerson" })
+@DataEntry
+@ObjectClass(values = { "top", "gluuPerson" })
 public class PersonOTP extends BasePerson {
 
-    @LdapAttribute(name ="oxExternalUid")
+    @AttributeName(name ="oxExternalUid")
     private List<String> externalUids;
 
-    @LdapAttribute(name = "oxOTPDevices")
+    @AttributeName(name = "oxOTPDevices")
     private String OTPDevices;
 
     public List<String> getExternalUids() {

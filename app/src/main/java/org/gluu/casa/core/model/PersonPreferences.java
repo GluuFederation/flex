@@ -1,20 +1,20 @@
 package org.gluu.casa.core.model;
 
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
-@LdapEntry
-@LdapObjectClass(values = { "top", "gluuPerson" })
+@DataEntry
+@ObjectClass(values = { "top", "gluuPerson" })
 public class PersonPreferences extends BasePerson {
 
-    @LdapAttribute(name = "oxPreferredMethod")
+    @AttributeName(name = "oxPreferredMethod")
     private String preferredMethod;
 
-    @LdapAttribute(name = "oxStrongAuthPolicy")
+    @AttributeName(name = "oxStrongAuthPolicy")
     private String strongAuthPolicy;
 
-    @LdapAttribute(name = "oxTrustedDevicesInfo")
+    @AttributeName(name = "oxTrustedDevicesInfo")
     private String trustedDevices;
 
     public String getPreferredMethod() {

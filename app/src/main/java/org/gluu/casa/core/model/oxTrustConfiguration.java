@@ -1,18 +1,18 @@
 package org.gluu.casa.core.model;
 
 import org.gluu.persist.model.base.Entry;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
-@LdapEntry
-@LdapObjectClass(values = { "top", "oxTrustConfiguration" })
+@DataEntry
+@ObjectClass(values = { "top", "oxTrustConfiguration" })
 public class oxTrustConfiguration extends Entry {
 
-    @LdapAttribute
+    @AttributeName
     private String oxTrustConfApplication;
 
-    @LdapAttribute
+    @AttributeName
     private String oxTrustConfCacheRefresh;
 
     public String getOxTrustConfApplication() {

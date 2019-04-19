@@ -3,10 +3,10 @@ package org.gluu.casa.core.model;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
 import org.gluu.persist.model.base.InumEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapCustomObjectClass;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.CustomObjectClass;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
 import java.util.Set;
 
@@ -15,14 +15,14 @@ import java.util.Set;
  * this class by adding fields needed (with their respective getters/setters) in order to have access to more attributes.
  * Use this class in conjuction with {@link org.gluu.casa.service.IPersistenceService} to CRUD users to your server.
  */
-@LdapEntry
-@LdapObjectClass(values = { "top", "gluuPerson" })
+@DataEntry
+@ObjectClass(values = { "top", "gluuPerson" })
 public class BasePerson extends InumEntry {
 
-    @LdapAttribute
+    @AttributeName
     private String uid;
 
-    @LdapCustomObjectClass
+    @CustomObjectClass
     private static String[] customObjectClasses;
 
     static {

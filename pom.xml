@@ -4,7 +4,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.xdi</groupId>
+	<groupId>org.gluu</groupId>
 	<artifactId>casa-base</artifactId>
     <version>4.0.0-SNAPSHOT</version>
 
@@ -24,7 +24,6 @@
         <pf4j.version>2.5.0</pf4j.version>
         <casa.version>4.0.0-SNAPSHOT</casa.version>
         <log4j.version>2.8.2</log4j.version>
-        <oxd.version>3.1.5.Final</oxd.version>
         <ox.version>4.0.0-SNAPSHOT</ox.version>
         <jackson.version>2.9.8</jackson.version>
         <zk.version>8.6.0.1</zk.version>

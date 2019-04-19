@@ -1,38 +1,38 @@
 package org.gluu.casa.core.model;
 
 import org.gluu.persist.model.base.Entry;
-import org.gluu.site.ldap.persistence.annotation.LdapAttribute;
-import org.gluu.site.ldap.persistence.annotation.LdapEntry;
-import org.gluu.site.ldap.persistence.annotation.LdapObjectClass;
+import org.gluu.persist.annotation.AttributeName;
+import org.gluu.persist.annotation.DataEntry;
+import org.gluu.persist.annotation.ObjectClass;
 
 import java.util.Date;
 
-@LdapEntry
-@LdapObjectClass(values = { "top", "oxDeviceRegistration" })
+@DataEntry
+@ObjectClass(values = { "top", "oxDeviceRegistration" })
 public class DeviceRegistration extends Entry {
 
-    @LdapAttribute
+    @AttributeName
     private String oxId;
 
-    @LdapAttribute
+    @AttributeName
     private String oxApplication;
 
-    @LdapAttribute
+    @AttributeName
     private Long oxCounter;
 
-    @LdapAttribute
+    @AttributeName
     private String displayName;
 
-    @LdapAttribute
+    @AttributeName
     private Date creationDate;
 
-    @LdapAttribute(name = "oxLastAccessTime")
+    @AttributeName(name = "oxLastAccessTime")
     private Date lastAccessTime;
 
-    @LdapAttribute
+    @AttributeName
     private String oxStatus;
 
-    @LdapAttribute(name = "oxDeviceData")
+    @AttributeName(name = "oxDeviceData")
     private String deviceData;
 
     public String getOxId() {
