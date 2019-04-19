@@ -41,9 +41,7 @@
                                 <zk:template name="children">
                                     <tr>
                                         <td>
-                                            <z:checkbox checked="@bind(each.enabled)" disabled="@load(each.enabled and not each.deactivable)"
-                                                        style="@load(each.enabled and not each.deactivable ? 'cursor: not-allowed' : '')" />
-                                            <!-- onCheck="@command('checkMethod', acr=each.acr, checked=self.checked)" -->
+                                            <z:checkbox checked="@bind(each.enabled)" />
                                         </td>
                                         <td><z:label value="${each.acr}" /></td>
                                         <td><z:label value="${each.name}" /></td>

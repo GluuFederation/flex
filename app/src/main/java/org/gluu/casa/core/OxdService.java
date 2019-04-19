@@ -140,7 +140,7 @@ public class OxdService {
 
         try {
             String timeStamp = Long.toString(System.currentTimeMillis()/1000);
-            clientName = "gluu-casa-extension_" + timeStamp;
+            clientName = "gluu-casa_" + timeStamp;
 
             RegisterSiteParams cmdParams = new RegisterSiteParams();
             cmdParams.setOpHost(config.getOpHost());
