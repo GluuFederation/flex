@@ -195,6 +195,8 @@ public class ZKService {
             if (idx == -1) {
                 //No locale suffix
                 modules.add(temp);
+                // 	add default language 
+                locales.add(Locale.forLanguageTag(Locale.ENGLISH.getLanguage()));
             } else {
                 modules.add(temp.substring(0, idx));
                 //Locale is after the underscore

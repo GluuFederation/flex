@@ -1,0 +1,40 @@
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk"
+	xmlns="native">
+
+
+
+
+	<footer
+		class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
+		<table>
+			<tr>
+				<td width="20%">
+					<z:div
+						viewModel="@id('vm') @init('org.gluu.casa.ui.vm.FooterViewModel')">
+						<zk>
+							${labels.general.Language}
+							<z:listbox mold="select"
+								model="@load(vm.locales)"
+								onSelect="@command('languageChanged', localeCode = self.getSelectedItem().getValue())"
+								sclass="gray" style="min-width:6rem"
+								selectedItem="@load(vm.selectedLocale)">
+								<z:template name="model">
+									<z:listitem
+										label="${each.displayLanguage}" />
+								</z:template>
+							</z:listbox>
+						</zk>
+
+					</z:div>
+				</td>
+
+				<td width="80%" align="center">
+					${labels.adm.branding_footer}
+				</td>
+			</tr>
+
+		</table>
+
+
+	</footer>
+</z:zk>
