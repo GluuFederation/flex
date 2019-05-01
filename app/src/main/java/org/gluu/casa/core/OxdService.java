@@ -8,7 +8,6 @@ import javax.inject.Named;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
