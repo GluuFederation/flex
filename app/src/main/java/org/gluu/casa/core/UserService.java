@@ -21,6 +21,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.management.AttributeNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,6 +36,8 @@ import java.util.stream.Stream;
 public class UserService {
 
     private static final String PREFERRED_METHOD_ATTR = "oxPreferredMethod";
+    private static final String ADMIN_LOCK_FILE = "administrable";
+    private static final String BASE_PATH = System.getProperty("server.base");
 
     @Inject
     private Logger logger;
@@ -77,7 +81,7 @@ public class UserService {
         }
 
         u.setPreferredMethod(person.getPreferredMethod());
-        u.setAdmin(persistenceService.isAdmin(inum));
+        u.setAdmin(persistenceService.isAdmin(inum) && administrationAllowed());
         cleanRandEnrollmentCode(inum);
         if (confHandler.getSettings().getAcrPluginMap().keySet().stream()
                 .anyMatch(acr -> acr.equals(SecurityKeyExtension.ACR) || acr.equals(SuperGluuExtension.ACR))) {
@@ -300,6 +304,10 @@ public class UserService {
 
     private PersonPreferences personPreferencesInstance(String id) {
         return persistenceService.get(PersonPreferences.class, persistenceService.getPersonDn(id));
+    }
+
+    private boolean administrationAllowed() {
+        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE));
     }
 
 }
