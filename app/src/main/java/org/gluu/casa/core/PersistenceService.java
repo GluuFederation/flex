@@ -360,8 +360,7 @@ public class PersistenceService implements IPersistenceService {
         Properties backendProperties = new FileConfiguration(ldapSettings.getConfigurationFile()).getProperties();
 
         if (Utils.isNotEmpty(saltFile)) {
-            String salt = new FileConfiguration(saltFile).getProperties().getProperty("encodeSalt");
-            stringEncrypter = StringEncrypter.instance(salt);
+            stringEncrypter = Utils.stringEncrypter(saltFile);
             backendProperties = PropertiesDecrypter.decryptProperties(stringEncrypter, backendProperties);
         }
 

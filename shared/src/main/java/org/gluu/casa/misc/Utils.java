@@ -7,6 +7,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.gluu.casa.core.ldap.oxCustomScript;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.model.SimpleCustomProperty;
+import org.gluu.util.properties.FileConfiguration;
+import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -313,6 +315,11 @@ public final class Utils {
     public static Map<String, String> scriptConfigPropertiesAsMap(CustomScript script) {
         return nonNullList(script.getConfigurationProperties()).stream()
                 .collect(Collectors.toMap(SimpleCustomProperty::getValue1, SimpleCustomProperty::getValue2));
+    }
+
+    public static StringEncrypter stringEncrypter(String saltFile) throws StringEncrypter.EncryptionException {
+        String salt = new FileConfiguration(saltFile).getProperties().getProperty("encodeSalt");
+        return StringEncrypter.instance(salt);
     }
 
 }

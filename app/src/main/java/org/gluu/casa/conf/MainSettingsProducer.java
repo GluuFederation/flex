@@ -2,8 +2,6 @@ package org.gluu.casa.conf;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gluu.casa.core.AssetsService;
-import org.gluu.casa.core.ResourceExtractor;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 
@@ -14,9 +12,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author jgomer
@@ -29,9 +24,6 @@ public class MainSettingsProducer {
 
     @Inject
     private Logger logger;
-
-    @Inject
-    private ResourceExtractor resourceExtractor;
 
     private static String getGluuBase() {
         String candidateGluuBase = System.getProperty("gluu.base");
@@ -71,47 +63,20 @@ public class MainSettingsProducer {
                     settings = mapper.readValue(srcConfigFile, MainSettings.class);
                     settings.setSourceFile(srcConfigFile);
 
-                    List<String> enabledMethods = settings.getEnabledMethods();
-                    if (Utils.isNotEmpty(enabledMethods)) {
-                        //If acr plugin mapping does not exist and deprecated "enabled_methods" property does, migrate data
-                        Map<String, String> acrPluginMapping = settings.getAcrPluginMap();
-
-                        if (Utils.isEmpty(acrPluginMapping)) {
-                            acrPluginMapping = new HashMap<>();
-                            for (String acr : enabledMethods) {
-                                acrPluginMapping.put(acr, null);
-                            }
-                            settings.setAcrPluginMap(acrPluginMapping);
-                        }
-                        //Dismiss "enabled_methods" contents
-                        settings.setEnabledMethods(null);
-                        //Later, configuration handler will revise that the mapping generated makes sense and will save to disk
-                        //Additionally script reloader timer will only keep entries for enabled acrs
-                    }
-
-                    String brandingPathStr = settings.getBrandingPath();
-                    if (Utils.isNotEmpty(brandingPathStr)) {
-
-                        try {
-                            Path brandingPath = Paths.get(brandingPathStr);
-                            resourceExtractor.createDirectory(brandingPath, Paths.get(AssetsService.CUSTOM_FILEPATH));
-
-                            logger.info("Transfer of files from {} to static directory completed", brandingPathStr);
-                            logger.warn("Review custom branding documentation page to learn how external css branding works now");
-                            settings.setUseExternalBranding(true);
-                        } catch (Exception e) {
-                            logger.error("Error transfering contents from {} to static directory", brandingPathStr);
-                            logger.error(e.getMessage(), e);
-                        }
-                        //Dismiss "branding_path" contents regardless of success
-                        settings.setBrandingPath(null);
-                    }
-
-                    LdapSettings ldapSettings = settings.getLdapSettings();
+                    //Migrate from 3.1.6 format to 4.0
+                    LdapSettings ldapSettings = settings.getLdapSettings(true);
                     if (Utils.isNotEmpty(ldapSettings.getOxLdapLocation())) {
                         ldapSettings.setType(LdapSettings.BACKEND.LDAP.getValue());
                         ldapSettings.setConfigurationFile(ldapSettings.getOxLdapLocation());
                         ldapSettings.setOxLdapLocation(null);
+                    }
+
+                    try {
+                        settings.updateMemoryStore();
+                    } catch (Exception e) {
+                        settings = null;
+                        logger.error("Unable to update data in memory store!");
+                        logger.error(e.getMessage(), e);
                     }
                 } catch (Exception e) {
                     logger.error("Error parsing configuration file {}", CONF_FILE_RELATIVE_PATH);
