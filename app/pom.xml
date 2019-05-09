@@ -57,8 +57,14 @@
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
-            <artifactId>oxcore-persistence-ldap</artifactId>
+            <artifactId>oxcore-service</artifactId>
             <version>${ox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.python</groupId>
+                    <artifactId>jython-standalone</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
 		<!-- WELD -->
@@ -119,13 +125,6 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
             <version>${log4j.version}</version>
-        </dependency>
-
-        <!-- QUARTZ -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>${quartz.version}</version>
         </dependency>
 
         <!-- RESTEASY -->
@@ -197,13 +196,6 @@
             <artifactId>jmimemagic</artifactId>
         </dependency>
 
-        <!-- EXPIRING MAP -->
-        <dependency>
-            <groupId>net.jodah</groupId>
-            <artifactId>expiringmap</artifactId>
-            <version>0.5.8</version>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -240,6 +232,30 @@
                     <doCheck>false</doCheck>
                     <doUpdate>false</doUpdate>
                 </configuration>
+            </plugin>
+
+            <!-- Remove beans.xml from ocore-service jar. It allows disabling jar scanning by Weld. It produces lot of errors as is -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>truezip-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>remove-a-file-in-sub-archive</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>remove</goal>
+                        </goals>
+                        <configuration>
+                            <fileset>
+                                <directory>target/casa-${casa.version}.war/WEB-INF/lib/oxcore-service-${ox.version}.jar/META-INF</directory>
+                                <includes>
+                                    <include>beans.xml</include>
+                                </includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
