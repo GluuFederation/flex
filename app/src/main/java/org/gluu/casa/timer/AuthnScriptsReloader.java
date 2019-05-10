@@ -18,7 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.io.File;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -223,7 +223,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                     bytes = Files.readAllBytes(Paths.get(moduleProperties.get(LOCATION_PATH_PROPERTY)));
                     break;
                 case LDAP:
-                    bytes = script.getScript().getBytes(Charset.forName("utf-8"));
+                    bytes = script.getScript().getBytes(StandardCharsets.UTF_8);
                     break;
                 default:
                     throw new Exception("Unknown 'location_type' value for script " + acr);

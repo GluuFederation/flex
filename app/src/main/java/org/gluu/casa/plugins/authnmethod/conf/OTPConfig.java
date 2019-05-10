@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.conf;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -12,7 +7,7 @@ import org.gluu.casa.plugins.authnmethod.conf.otp.TOTPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -71,7 +66,7 @@ public class OTPConfig extends QRConfig {
             String jsonFile = propsMap.get("otp_conf_file");
 
             if (Utils.isNotEmpty(jsonFile)) {
-                String contents = new String(Files.readAllBytes(Paths.get(jsonFile)), Charset.forName("utf-8"));
+                String contents = new String(Files.readAllBytes(Paths.get(jsonFile)), StandardCharsets.UTF_8);
                 //Gluu Server 3.1.5 and earlier have a typo in default /etc/certs/otp_configuration.json, the following accommodates
                 contents = contents.replaceFirst("\"htop\"", "\"hotp\"");
 
