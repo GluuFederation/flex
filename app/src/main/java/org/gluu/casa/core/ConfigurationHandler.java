@@ -158,9 +158,13 @@ public class ConfigurationHandler extends JobListenerSupport {
                         }
                         if (appState.equals(AppStateEnum.OPERATING)) {
                             logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
-                            scriptsReloader.init(1);
-                            devicesSweeper.activate(10);
-                            syncSettingsTimer.init(60);
+                            //Add some random seconds to gaps. This reduces the chance of timers running at the same time
+                            //in a multi node environment, which IMO it's somewhat safer
+                            int gap = Double.valueOf(Math.random() * 7).intValue();
+                            scriptsReloader.init(1 + gap);
+                            //Devices sweeper executes in a single node in theory...
+                            devicesSweeper.activate(10 + gap);
+                            syncSettingsTimer.init(60 + gap);
                             statisticsTimer.activate();
                         }
                     } else {

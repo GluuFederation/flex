@@ -40,18 +40,16 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class requires Java SE 8u151 or higher with crypto.policy=unlimited in JRE\lib\security\java.security or
- * a call to Security.setProperty("crypto.policy", "unlimited")
+ * a call to Security.setProperty("crypto.policy", "unlimited"). This is guaranteed in Gluu server 3.1.5 onwards.
  * @author jgomer
  */
 @ApplicationScoped
 public class StatisticsTimer extends JobListenerSupport {
 
-    private static final String NEW_LINE = System.getProperty("line.separator");
+    private static final String SETUP_PROPERTIES_LOCATION = "/install/community-edition-setup/setup.properties.last";
 
     private static final String DEFAULT_PUBLICKEY_PATH = "/etc/certs/casa.pub";
 
@@ -64,8 +62,6 @@ public class StatisticsTimer extends JobListenerSupport {
     private static final long HOUR_IN_MILLIS = TimeUnit.HOURS.toMillis(1);
 
     private static final String LAST_LOGON_ATTR = "oxLastLogonTime";
-
-    private static final Pattern mailPattern = Pattern.compile(".+?emailAddress=(.+?)" + NEW_LINE);
 
     private static final String GLUU_CASA_PLUGINS_PREFIX = "org.gluu.casa.plugins";
 
@@ -312,14 +308,13 @@ public class StatisticsTimer extends JobListenerSupport {
         try {
             mapper = new ObjectMapper();
             mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-
             quartzJobName = getClass().getSimpleName() + "_timer";
-            serverName = persistenceService.getIssuerUrl().replace("https://", "");
 
-            try (BufferedReader reader = Files.newBufferedReader(Paths.get("/install/community-edition-setup/setup.log"))) {
-                String log = reader.lines().reduce("", (partial, next) -> partial + NEW_LINE + next);
-                Matcher m = mailPattern.matcher(log);
-                email = m.find() ? m.group(1) : null;
+            try (BufferedReader reader = Files.newBufferedReader(Paths.get(SETUP_PROPERTIES_LOCATION))) {
+                Properties p = new Properties();
+                p.load(reader);
+                email = p.getProperty("admin_email");
+                serverName = p.getProperty("hostname").replace("https://", "");
             } catch (Exception e) {
                 if (!Utils.onWindows()) {
                     throw  e;

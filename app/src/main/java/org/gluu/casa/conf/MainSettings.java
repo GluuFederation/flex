@@ -26,6 +26,9 @@ import java.util.Map;
 import static org.gluu.casa.conf.StaticInstanceUtil.*;
 
 /**
+ * Important: getters of this class do not read values from internal private fields but from external memory store. Only
+ * setters modify internal fields values. To sync the store with respect to internal values a call to {@link #updateMemoryStore()}
+ * should be made. To persist store values to disk a call to {@link #updateConfigFile()} is necessary.
  * @author jgomer
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -206,9 +209,7 @@ public class MainSettings {
         //update file to disk: this provokes calling the getters of this object which in turn read the memory store
         String contents = mapper.writeValueAsString(this);
         int hash = contents.hashCode();
-//TODO:remove
-//logger.info("So the new hash is {} {}", hash, previousHash);
-//logger.info("\n{}", contents);
+
         if (previousHash != hash) {
             previousHash = hash;
             Files.write(filePath, contents.getBytes(StandardCharsets.UTF_8));

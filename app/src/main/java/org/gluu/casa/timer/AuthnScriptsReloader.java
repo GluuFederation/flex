@@ -9,7 +9,6 @@ import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
 import org.gluu.model.ScriptLocationType;
-import org.gluu.model.SimpleCustomProperty;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author jgomer
@@ -80,11 +78,12 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
         //A flag used to force a reload of main cust script
         boolean reload = false;
-        Set<String> acrs = confSettings.getAcrPluginMap().keySet();
+        Map<String, String> mapping = confSettings.getAcrPluginMap();
+        Set<String> acrs = mapping.keySet();
         List<String> toBeRemoved = new ArrayList<>();
 
         logger.debug("AuthnScriptsReloader. Running timer job for acrs: {}", acrs.toString());
-        //In Gluu <= 4.0, every time a single script is changed via oxTrust, all custom scripts are reloaded. This is
+        //In Gluu, every time a single script is changed via oxTrust, all custom scripts are reloaded. This is
         //not the case when for instance, the oxRevision attribute of a cust script is altered manually (as when developing)
         //In the future, oxTrust should only reload the script that has changed for performance reasons.
         for (String acr : acrs) {
@@ -114,7 +113,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                     }
                 } else {
                     //This accounts for the case in which the method is part of the mapping, but admin has externally disabled
-                    //the cust script. This helps keep in sync the methods supported wrt to enabled methods in oxTrust GUI
+                    //the cust script. This helps keeping in sync the methods supported in casa wrt to enabled methods in oxTrust
                     toBeRemoved.add(acr);
                 }
             }
@@ -123,31 +122,34 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         if (toBeRemoved.size() > 0) {
             logger.info("The following scripts were externally disabled: {}", toBeRemoved.toString());
             logger.warn("Corresponding acrs will be removed from Gluu Casa configuration file");
+
             //Remove from the mapping
             acrs.removeAll(toBeRemoved);
-            toBeRemoved.forEach(scriptFingerPrints::remove);
+            //Here mapping was altered since acrs is its associated keyset
+            confSettings.setAcrPluginMap(mapping);
 
             try {
                 //Save mapping changes to disk
                 confSettings.save();
                 reload = true;
             } catch (Exception e) {
-                logger.error("Failure to update configuration file!");
+                logger.error("Failure to update configuration settings!");
             }
         }
 
         if (!reload) {
-            //It may happen that a method was disabled in methods.zul, this should trigger a reload
-            //An easy way to detect this is when scriptFingerPrints contains more elements than acrs sets
+            //It may happen that a method was disabled in methods.zul, this should trigger a reload too
+            //An easy way to detect this is when scriptFingerPrints contains more elements than acrs set
             reload = !acrs.containsAll(scriptFingerPrints.keySet());
         }
+        scriptFingerPrints.keySet().retainAll(acrs);
 
         if (reload) {
             //"touch" main script so that it gets reloaded. This helps the script to keep the list of supported methods up-to-date
             try {
                 logger.info("Touching main interception script to trigger reload by oxAuth...");
                 script = persistenceService.getScript(ConfigurationHandler.DEFAULT_ACR);
-                Map<String, String> moduleProperties = modulePropertyMap(script);
+                Map<String, String> moduleProperties = Utils.scriptConfigPropertiesAsMap(script);
                 ScriptLocationType locType = ScriptLocationType.getByValue(moduleProperties.get(LOCATION_TYPE_PROPERTY));
 
                 switch (locType) {
@@ -215,7 +217,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         byte[] bytes = null;
         String acr = script.getDisplayName();
         try {
-            Map<String, String> moduleProperties = modulePropertyMap(script);
+            Map<String, String> moduleProperties = Utils.scriptConfigPropertiesAsMap(script);
             ScriptLocationType locType = ScriptLocationType.getByValue(moduleProperties.get(LOCATION_TYPE_PROPERTY));
 
             switch (locType) {
@@ -235,17 +237,12 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
     }
 
-    private Map<String, String> modulePropertyMap(CustomScript script) {
-        return script.getModuleProperties().stream()
-                .collect(Collectors.toMap(SimpleCustomProperty::getValue1, SimpleCustomProperty::getValue2));
-    }
-
     private Long scriptFingerPrint(CustomScript script) {
 
         Long fingerPrint = null;
         String acr = script.getDisplayName();
         try {
-            Map<String, String> moduleProperties = modulePropertyMap(script);
+            Map<String, String> moduleProperties = Utils.scriptConfigPropertiesAsMap(script);
             ScriptLocationType locType = ScriptLocationType.getByValue(moduleProperties.get(LOCATION_TYPE_PROPERTY));
 
             switch (locType) {

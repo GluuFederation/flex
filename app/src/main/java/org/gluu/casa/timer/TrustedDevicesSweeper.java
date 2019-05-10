@@ -8,6 +8,7 @@ import org.gluu.casa.conf.sndfactor.TrustedDevice;
 import org.gluu.casa.conf.sndfactor.TrustedOrigin;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.TimerService;
+import org.gluu.casa.core.inmemory.IStoreService;
 import org.gluu.casa.core.model.PersonPreferences;
 import org.gluu.search.filter.Filter;
 import org.quartz.JobExecutionContext;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * In theory, the removal of expired devices will be carried out by a single node only (see {@link #jobToBeExecuted(JobExecutionContext)}.
  * @author jgomer
  */
 @Named
@@ -32,6 +34,8 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
 
     private static final int TRUSTED_DEVICE_EXPIRATION_DAYS = 30;
     private static final int TRUSTED_LOCATION_EXPIRATION_DAYS = 15;
+
+    private final String ACTIVE_INSTANCE_PRESENCE = getClass().getName() + "_activeInstanceSet";
 
     @Inject
     private Logger logger;
@@ -45,17 +49,14 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
     @Inject
     private MainSettings mainSettings;
 
+    @Inject
+    private IStoreService storeService;
+
     private String quartzJobName;
     private long locationExpiration;
     private long deviceExpiration;
     private ObjectMapper mapper;
-
-    @PostConstruct
-    private void inited() {
-        mapper = new ObjectMapper();
-        quartzJobName = getClass().getSimpleName() + "_sweep";
-        setup();
-    }
+    private int oneDay;
 
     public int getLocationExpirationDays() {
         return (int) TimeUnit.MILLISECONDS.toDays(locationExpiration);
@@ -75,7 +76,6 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
 
     public void activate(int gap) {
         try {
-            int oneDay = (int) TimeUnit.DAYS.toSeconds(1);
             timerService.addListener(this, quartzJobName);
             //Start in one second and repeat indefinitely once every day
             timerService.schedule(quartzJobName, gap, -1, oneDay);
@@ -92,6 +92,15 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
 
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
+
+        //Optimistically, the following if-else allows the sweeping logic to be executed only by a single node
+        //(in a multi node environment)
+        if (storeService.get(ACTIVE_INSTANCE_PRESENCE) == null) {
+            //temporarily take the ownership for sweeping data
+            storeService.put(oneDay, ACTIVE_INSTANCE_PRESENCE, true);
+        } else {
+            return;
+        }
 
         logger.info("TrustedDevicesSweeper. Running timer job");
         long now = System.currentTimeMillis();
@@ -176,6 +185,14 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
         person.setTrustedDevices(value);
         persistenceService.modify(person);
 
+    }
+
+    @PostConstruct
+    private void inited() {
+        mapper = new ObjectMapper();
+        quartzJobName = getClass().getSimpleName() + "_sweep";
+        oneDay = (int) TimeUnit.DAYS.toSeconds(1);
+        setup();
     }
 
 }
