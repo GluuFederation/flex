@@ -8,6 +8,7 @@ import org.gluu.casa.misc.AppStateEnum;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.timer.AuthnScriptsReloader;
 import org.gluu.casa.timer.StatisticsTimer;
+import org.gluu.casa.timer.SyncSettingsTimer;
 import org.gluu.casa.timer.TrustedDevicesSweeper;
 import org.gluu.oxauth.model.util.SecurityProviderUtility;
 import org.quartz.JobExecutionContext;
@@ -65,6 +66,9 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     @Inject
     private StatisticsTimer statisticsTimer;
+
+    @Inject
+    private SyncSettingsTimer syncSettingsTimer;
 
     private String acrQuartzJobName;
 
@@ -156,6 +160,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                             logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
                             scriptsReloader.init(1);
                             devicesSweeper.activate(10);
+                            syncSettingsTimer.init(60);
                             statisticsTimer.activate();
                         }
                     } else {
