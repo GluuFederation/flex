@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,11 +32,11 @@ public class MainSettingsProducer {
     /**
      * Returns a reference to the configuration file of the application (casa.json)
      * @param baseDir Path to configuration file without the CONF_FILE_RELATIVE_PATH part
-     * @return A File object
+     * @return A Path object
      */
-    private File getConfigFile(String baseDir) {
+    private Path getConfigFilePath(String baseDir) {
         Path path = Paths.get(baseDir, CONF_FILE_RELATIVE_PATH);
-        return Files.exists(path) ? path.toFile() : null;
+        return Files.exists(path) ? path : null;
     }
 
     @Produces @ApplicationScoped
@@ -51,17 +50,17 @@ public class MainSettingsProducer {
 
         if (gluuBase != null) {
             //Get a reference to the config-file
-            File srcConfigFile = getConfigFile(gluuBase);
+            Path srcConfigFilePath = getConfigFilePath(gluuBase);
 
-            if (srcConfigFile == null) {
+            if (srcConfigFilePath == null) {
                 logger.error("init. Cannot read configuration file {}", CONF_FILE_RELATIVE_PATH);
             } else {
                 try {
                     ObjectMapper mapper = new ObjectMapper();
                     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
                     //Parses config file in a Configs instance
-                    settings = mapper.readValue(srcConfigFile, MainSettings.class);
-                    settings.setSourceFile(srcConfigFile);
+                    settings = mapper.readValue(srcConfigFilePath.toFile(), MainSettings.class);
+                    settings.setFilePath(srcConfigFilePath);
 
                     //Migrate from 3.1.6 format to 4.0
                     LdapSettings ldapSettings = settings.getLdapSettings(true);

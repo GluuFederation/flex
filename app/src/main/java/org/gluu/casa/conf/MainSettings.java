@@ -16,7 +16,9 @@ import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ import static org.gluu.casa.conf.StaticInstanceUtil.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MainSettings {
 
-    private final String INMEM_PREFIX = getClass().getSimpleName() + "_";
+    private final String INMEM_PREFIX = getClass().getName() + "_";
 
     @JsonIgnore
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -38,13 +40,16 @@ public class MainSettings {
     private IStoreService storeService;
 
     @JsonIgnore
-    private File sourceFile;
+    private Path filePath;
 
     @JsonIgnore
     private ObjectMapper mapper;
 
+    @JsonIgnore
+    private int previousHash;
+
     @JsonProperty("store_config")
-    private CacheConfiguration cacheConfiguration;
+    private CacheConfiguration memoryStoreConfiguration;
 
     @JsonProperty("enable_pass_reset")
     private boolean enablePassReset;
@@ -89,8 +94,7 @@ public class MainSettings {
 
     public void save() throws Exception {
         updateMemoryStore();
-        //update file to disk
-        mapper.writeValue(sourceFile, this);
+        updateConfigFile();
     }
 
     public boolean isEnablePassReset() {
@@ -141,6 +145,10 @@ public class MainSettings {
         return getInMemoryValue("enforcement2FA", TR_LIST_ENFORCEMENT_POLICY);
     }
 
+    public CacheConfiguration getMemoryStoreConfiguration() {
+        return memoryStoreConfiguration;
+    }
+
     public void setEnablePassReset(boolean enablePassReset) {
         this.enablePassReset = enablePassReset;
     }
@@ -189,8 +197,23 @@ public class MainSettings {
         this.knownPlugins = knownPlugins;
     }
 
-    public void setCacheConfiguration(CacheConfiguration cacheConfiguration) {
-        this.cacheConfiguration = cacheConfiguration;
+    public void setMemoryStoreConfiguration(CacheConfiguration memoryStoreConfiguration) {
+        this.memoryStoreConfiguration = memoryStoreConfiguration;
+    }
+
+    public void updateConfigFile() throws Exception {
+
+        //update file to disk: this provokes calling the getters of this object which in turn read the memory store
+        String contents = mapper.writeValueAsString(this);
+        int hash = contents.hashCode();
+//TODO:remove
+//logger.info("So the new hash is {} {}", hash, previousHash);
+//logger.info("\n{}", contents);
+        if (previousHash != hash) {
+            previousHash = hash;
+            Files.write(filePath, contents.getBytes(StandardCharsets.UTF_8));
+        }
+
     }
 
     MainSettings() {
@@ -199,13 +222,14 @@ public class MainSettings {
         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
+    //TODO: are u sure?
     //Needed for serializing (eg to disk)
-    File getSourceFile() {
-        return sourceFile;
+    Path getFilePath() {
+        return filePath;
     }
 
-    void setSourceFile(File sourceFile) {
-        this.sourceFile = sourceFile;
+    void setFilePath(Path filePath) {
+        this.filePath = filePath;
     }
 
     LdapSettings getLdapSettings(boolean skipStore) {
@@ -224,7 +248,7 @@ public class MainSettings {
             } catch (Exception e) {
                 logger.warn("Unable to create a StringDecrypter Instance");
             }
-            storeService = StoreFactory.getCacheProvider(cacheConfiguration,  encr);
+            storeService = StoreFactory.createMemoryStoreService(memoryStoreConfiguration,  encr);
         }
 
         //Iterate through fields of this class annotated with JsonProperty

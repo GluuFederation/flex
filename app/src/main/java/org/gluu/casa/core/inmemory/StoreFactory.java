@@ -19,18 +19,18 @@ import static org.gluu.service.cache.CacheProviderType.REDIS;
 @ApplicationScoped
 public class StoreFactory {
 
-    private static Class<IStoreService> ICacheServiceClass = IStoreService.class;
+    private static Class<IStoreService> IStoreServiceClass = IStoreService.class;
 
     private static IStoreService storeService;
 
     private static Logger logger = LoggerFactory.getLogger(StoreFactory.class);
 
     @Produces @ApplicationScoped
-    public IStoreService getCacheProvider() {
+    public IStoreService getMemoryStore() {
         return storeService;
     }
 
-    public static IStoreService getCacheProvider(CacheConfiguration cacheConfiguration, StringEncrypter stringEncrypter) throws Exception {
+    public static IStoreService createMemoryStoreService(CacheConfiguration cacheConfiguration, StringEncrypter stringEncrypter) throws Exception {
 
         //Initialize only upon first usage
         if (storeService == null) {
@@ -71,8 +71,8 @@ public class StoreFactory {
                 arp.create();
                 logger.info("Redis provider created");
 
-                storeService = ICacheServiceClass.cast(Proxy.newProxyInstance(ICacheServiceClass.getClassLoader(),
-                        new Class<?>[]{ ICacheServiceClass }, new RedisStoreWrapper(arp)));
+                storeService = IStoreServiceClass.cast(Proxy.newProxyInstance(IStoreServiceClass.getClassLoader(),
+                        new Class<?>[]{IStoreServiceClass}, new RedisStoreWrapper(arp)));
             }
         }
         return storeService;
