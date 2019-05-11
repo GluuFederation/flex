@@ -28,7 +28,7 @@ public class SyncSettingsTimer extends JobListenerSupport {
 
     private String jobName;
 
-    public void init(int gap) {
+    public void activate(int gap) {
 
         jobName = getClass().getSimpleName() + "_syncfile";
         try {
