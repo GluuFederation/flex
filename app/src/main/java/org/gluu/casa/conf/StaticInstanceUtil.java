@@ -23,8 +23,6 @@ public final class StaticInstanceUtil {
 
     static final TypeReference<Map<String, String>> TR_MAP_STRING_STRING = new TypeReference<Map<String, String>>() {};
 
-    static final TypeReference<List<PluginInfo>> TR_LIST_PLUGININFO = new TypeReference<List<PluginInfo>>() {};
-
     static final TypeReference<OxdSettings> TR_OXDSETTINGS = new TypeReference<OxdSettings>() {};
 
     static final TypeReference<U2fSettings> TR_U2FSETTINGS = new TypeReference<U2fSettings>() {};

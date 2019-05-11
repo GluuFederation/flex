@@ -80,10 +80,6 @@ public class MainSettings {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> acrPluginMap;
 
-    @JsonProperty("plugins")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<PluginInfo> knownPlugins;
-
     @JsonProperty("extra_css")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String extraCssSnippet;
@@ -126,10 +122,6 @@ public class MainSettings {
 
     public TrustedDevicesSettings getTrustedDevicesSettings() {
         return getInMemoryValue("trustedDevicesSettings", TR_TRUSTED_DEVICES_SETTINGS);
-    }
-
-    public List<PluginInfo> getKnownPlugins() {
-        return getInMemoryValue("knownPlugins", TR_LIST_PLUGININFO);
     }
 
     public OxdSettings getOxdSettings() {
@@ -194,10 +186,6 @@ public class MainSettings {
 
     public void setTrustedDevicesSettings(TrustedDevicesSettings trustedDevicesSettings) {
         this.trustedDevicesSettings = trustedDevicesSettings;
-    }
-
-    public void setKnownPlugins(List<PluginInfo> knownPlugins) {
-        this.knownPlugins = knownPlugins;
     }
 
     public void setMemoryStoreConfiguration(CacheConfiguration memoryStoreConfiguration) {

@@ -6,10 +6,7 @@ import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.misc.AppStateEnum;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.timer.AuthnScriptsReloader;
-import org.gluu.casa.timer.StatisticsTimer;
-import org.gluu.casa.timer.SyncSettingsTimer;
-import org.gluu.casa.timer.TrustedDevicesSweeper;
+import org.gluu.casa.timer.*;
 import org.gluu.oxauth.model.util.SecurityProviderUtility;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
@@ -69,6 +66,9 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     @Inject
     private SyncSettingsTimer syncSettingsTimer;
+
+    @Inject
+    private FSPluginChecker pluginChecker;
 
     private String acrQuartzJobName;
 
@@ -164,8 +164,10 @@ public class ConfigurationHandler extends JobListenerSupport {
                             scriptsReloader.init(1 + gap);
                             //Devices sweeper executes in a single node in theory...
                             devicesSweeper.activate(10 + gap);
-                            syncSettingsTimer.init(60 + gap);
+                            syncSettingsTimer.activate(60 + gap);
                             statisticsTimer.activate();
+                            //plugin checker is not shared-state related
+                            pluginChecker.activate(5);
                         }
                     } else {
                         logger.warn("oxd configuration could not be initialized.");

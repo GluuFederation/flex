@@ -59,8 +59,9 @@ public class ResourceExtractor {
 
     }
 
-    private void recursiveDelete(Path start) throws IOException {
+    public void recursiveDelete(Path start) throws IOException {
 
+        logger.debug("Removing directory {}", start);
         Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
 
             @Override
@@ -129,11 +130,6 @@ public class ResourceExtractor {
             }
         }
 
-    }
-
-    public void removeDestinationDirectory(Path destPath) throws IOException {
-        logger.debug("Removing directory {}", destPath.toString());
-        recursiveDelete(destPath);
     }
 
 }

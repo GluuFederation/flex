@@ -14,6 +14,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -61,14 +62,28 @@ public class ExtensionsManager {
     //Holds a mapping of plugin ids vs. authentication methods extensions (only started plugins are included)
     private Map<String, List<AuthnMethod>> plugExtensionMap;
 
+    private List<PluginInfo> knownPlugins;
+
+    private Path extractionDirectory;
+
+    public List<PluginInfo> getKnownPlugins() {
+        return knownPlugins;
+    }
+
+    public void setKnownPlugins(List<PluginInfo> knownPlugins) {
+        this.knownPlugins = knownPlugins;
+    }
+
     @PostConstruct
     private void inited() {
 
         pluginsRoot = Paths.get(System.getProperty("server.base"), PLUGINS_DIR_NAME);
         plugExtensionMap = new HashMap<>();    //It accepts null keys
+        knownPlugins = new ArrayList<>();
+        extractionDirectory = Paths.get(zkService.getAppFileSystemRoot(), PLUGINS_EXTRACTION_DIR);
 
         if (Files.isDirectory(pluginsRoot)) {
-            purgePluginsPath();
+            purgePluginsExtractionPath();
         } else {
             pluginsRoot = null;
             logger.warn("External plugins directory does not exist: there is no valid location for searching");
@@ -79,71 +94,110 @@ public class ExtensionsManager {
 
     void scan() {
 
-        //Load inner extensions first, then load plugins
-        plugExtensionMap.put(null, scanInnerAuthnMechanisms());
+        //Load inner extensions
+        List<AuthnMethod> actualAMEs = new ArrayList<>();
+        List<AuthnMethod> authnMethodExtensions = pluginManager.getExtensions(AUTHN_METHOD_CLASS);
+        if (authnMethodExtensions != null) {
 
-        if (pluginsRoot != null) {
-            List<PluginInfo> pls = Utils.nonNullList(mainSettings.getKnownPlugins());
+            for (AuthnMethod ext : authnMethodExtensions) {
+                String acr = ext.getAcr();
+                String name = ext.getClass().getName();
+                logger.info("Found system extension '{}' for {}", name, acr);
+                actualAMEs.add(ext);
+            }
+        }
+        plugExtensionMap.put(null, actualAMEs);
 
-            if (pls.size() > 0) {
-                logger.info("Loading external plugins...");
+    }
 
-                List<PluginInfo> loaded = new ArrayList<>();
-                for (PluginInfo pl : pls) {
+    public void updatePlugins(List<Pair<String, File>> toBeAdded, List<Pair<String, File>> toBeRemoved) {
+
+        List<PluginInfo> plugins = new ArrayList<>(knownPlugins);
+
+        //Removed the undesired
+        toBeRemoved.stream().map(Pair::getX).forEach(id -> {
+
+            if (Utils.firstTrue(knownPlugins, pi -> pi.getId().equals(id)) >= 0) {
+                logger.info("Removing plugin {}", id);
+
+                if (deletePlugin(id)) {
+                    int i = Utils.firstTrue(plugins, pi -> pi.getId().equals(id));
+                    if (i >= 0) {
+                        plugins.remove(i);
+                    }
+                } else {
+                    logger.error("Plugin removal failure!");
+                }
+            }
+        });
+
+        if (toBeAdded.size() > 0) {
+            logger.info("Loading external plugins...");
+            //Add the ones that appeared recently
+            List<Path> files = toBeAdded.stream().map(Pair::getY).map(File::toPath).collect(Collectors.toList());
+
+            for (Path path : files) {
+                PluginInfo pl = new PluginInfo();
+                pl.setId(loadPlugin(path));
+                if (pl.getId() != null) {
+                    pl.setRelativePath(path.toString());
+                    plugins.add(pl);
+                }
+            }
+            logger.info("Total plugins loaded {}", plugins.size());
+
+            if (files.size() > plugins.size()) {
+                //Some plugins didn't start successfully, let's remove them then
+                Set<String> loadedPaths = plugins.stream().map(PluginInfo::getRelativePath).collect(Collectors.toSet());
+                files.stream().filter(p -> !loadedPaths.contains(p.toString())).forEach(p -> {
                     try {
-                        if (loadPlugin(Paths.get(pluginsRoot.toString(), pl.getRelativePath())) != null) {
-                            loaded.add(pl);
-                        }
+                        Files.delete(p);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
-                }
-
-                logger.info("Total plugins loaded {}\n", loaded.size());
-                if (pls.retainAll(loaded)) {
-                    logger.warn("Some plugins have been removed from configuration...");
-                    mainSettings.setKnownPlugins(pls);
-                }
-
-                if (loaded.size() > 0) {
-                    int started = 0;
-
-                    pls = pls.stream().filter(pl -> PluginState.STARTED.toString().equals(pl.getState())).collect(Collectors.toList());
-                    for (PluginInfo pl : pls) {
-                        String pluginId = pl.getId();
-
-                        if (startPlugin(pluginId, false)) {
-                            started++;
-                            PluginWrapper wrapper = pluginManager.getPlugin(pluginId);
-
-                            logger.info("Plugin {} ({}) started", pluginId, wrapper.getDescriptor().getPluginClass());
-
-                            Set<String> classNames = pluginManager.getExtensionClassNames(pluginId);
-                            if (classNames.size() > 0) {
-                                logger.info("Plugin's extensions are at: {}", classNames.toString());
-                            }
-                            //Add a breaking space
-                            logger.info("");
-                        } else {
-                            //We'd better remove it since it can cause unstability
-                            mainSettings.getKnownPlugins().remove(pl);
-                            logger.warn("Plugin {} failed to start, will be deleted", pluginId);
-                            deletePlugin(pluginId);
-                        }
-                    }
-                    logger.info("Total plugins started: {}\n", started);
-                }
+                });
+                logger.warn("Some plugin files were removed from disk...");
             }
-            zkService.refreshLabels();
 
+            int started = 0;
+            int index = 0;
+            List<Integer> indexes = new ArrayList<>();
+
+            for (PluginInfo pl : plugins) {
+                String pluginId = pl.getId();
+
+                if (startPlugin(pluginId, false)) {
+                    started++;
+                    PluginWrapper wrapper = pluginManager.getPlugin(pluginId);
+                    logger.info("Plugin {} ({}) started", pluginId, wrapper.getDescriptor().getPluginClass());
+
+                    Set<String> classNames = pluginManager.getExtensionClassNames(pluginId);
+                    if (classNames.size() > 0) {
+                        logger.info("Plugin's extensions are at: {}", classNames.toString());
+                    }
+                    //Add a breaking space
+                    logger.info("");
+                } else {
+                    //We'd better remove it since it can cause unstability
+                    logger.warn("Plugin {} failed to start, will be deleted", pluginId);
+                    deletePlugin(pluginId);
+                    indexes.add(index, 0);
+                }
+                index++;
+            }
+
+            indexes.forEach(i -> plugins.remove(i.intValue()));
+            logger.info("Total plugins started: {}{}", started, started > 0 ? "\n" : "");
+            zkService.refreshLabels();
         }
 
         long distinctAcrs = plugExtensionMap.values().stream().flatMap(List::stream).map(AuthnMethod::getAcr).distinct().count();
         if (distinctAcrs < plugExtensionMap.values().stream().mapToLong(List::size).sum()) {
             logger.warn("Several extensions pretend to handle the same acr.");
-            logger.warn("Only the first one parsed for the plugin referenced in the config file will be effective");
+            logger.warn("Only the first one parsed for the plugin referenced in 'Enabled methods' of admin console will be effective");
             logger.warn("The system extension (if exists) will be used if no plugin can handle an acr");
         }
+        knownPlugins = plugins;
 
     }
 
@@ -208,19 +262,11 @@ public class ExtensionsManager {
         return pluginManager.getPlugins();
     }
 
-    public PluginWrapper getPlugin(String id) {
-        return pluginManager.getPlugin(id);
-    }
-
-    public String loadPlugin(Path path) {
+    private String loadPlugin(Path path) {
         return pluginManager.loadPlugin(path);
     }
 
-    public boolean deletePlugin(String pluginId) {
-        return pluginManager.deletePlugin(pluginId);
-    }
-
-    public boolean stopPlugin(String pluginId) {
+    private boolean deletePlugin(String pluginId) {
 
         PluginState state = pluginManager.stopPlugin(pluginId);
         try {
@@ -228,32 +274,14 @@ public class ExtensionsManager {
                 plugExtensionMap.remove(pluginId);
                 zkService.removePluginLabels(pluginId);
                 registryHandler.remove(pluginId);
-                resourceExtractor.removeDestinationDirectory(getDestinationPathForPlugin(pluginId));
+                resourceExtractor.recursiveDelete(getDestinationPathForPlugin(pluginId));
                 //There is no need to remove loggers from LogService (several plugins may be using the same logger)
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return state.equals(PluginState.STOPPED);
+        return state.equals(PluginState.STOPPED) && pluginManager.deletePlugin(pluginId);
 
-    }
-
-    public void forceRemovePlugin(String pluginId) {
-
-        try {
-            PluginState state = pluginManager.getPlugin(pluginId).getPluginState();
-            if (state.equals(PluginState.STARTED)){
-                stopPlugin(pluginId);
-            }
-            deletePlugin(pluginId);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-
-    }
-
-    public boolean startPlugin(String pluginId) {
-        return startPlugin(pluginId, true);
     }
 
     private boolean startPlugin(String pluginId, boolean refreshLabels) {
@@ -283,23 +311,6 @@ public class ExtensionsManager {
 
     }
 
-    private List<AuthnMethod> scanInnerAuthnMechanisms() {
-
-        List<AuthnMethod> actualAMEs = new ArrayList<>();
-        List<AuthnMethod> authnMethodExtensions = pluginManager.getExtensions(AUTHN_METHOD_CLASS);
-        if (authnMethodExtensions != null) {
-
-            for (AuthnMethod ext : authnMethodExtensions) {
-                String acr = ext.getAcr();
-                String name = ext.getClass().getName();
-                logger.info("Found system extension '{}' for {}", name, acr);
-                actualAMEs.add(ext);
-            }
-        }
-        return actualAMEs;
-
-    }
-
     private void parsePluginAuthnMethodExtensions(String pluginId) {
 
         List<AuthnMethod> ames = pluginManager.getExtensions(AUTHN_METHOD_CLASS, pluginId);
@@ -320,7 +331,7 @@ public class ExtensionsManager {
     }
 
     private Path getDestinationPathForPlugin(String pluginId) {
-        return Paths.get(zkService.getAppFileSystemRoot(), PLUGINS_EXTRACTION_DIR, pluginId);
+        return Paths.get(extractionDirectory.toString(), pluginId);
     }
 
     private void extractResources(String pluginId, Path path) throws IOException {
@@ -353,31 +364,21 @@ public class ExtensionsManager {
 
     }
 
-    private void purgePluginsPath() {
+    private void purgePluginsExtractionPath() {
 
-        //Deletes all files in path directory as a consequence of https://github.com/pf4j/pf4j/issues/217
-        //Also prevents cheating...
+        //Deletes all files in pl directory
         try {
-            List<PluginInfo> pls = Utils.nonNullList(mainSettings.getKnownPlugins());
-            List<String> validFileNames = pls.stream().map(PluginInfo::getRelativePath).collect(Collectors.toList());
-
-            Files.list(pluginsRoot).forEach(p -> {
-                //There is no support for directory-based or zip plugins
-                if (Files.isRegularFile(p)) {
-                    if (!validFileNames.contains(p.getFileName().toString())) {
+            Files.list(extractionDirectory).filter(p -> Files.isDirectory(p))
+                    .forEach(p -> {
                         try {
-                            Files.delete(p);
-                            logger.info("Unrecognized file {} deleted", p.toString());
+                            resourceExtractor.recursiveDelete(p);
                         } catch (Exception e) {
-                            logger.error("Error deleting unnecesary file {}: {}", p.toString(), e.getMessage());
+                            logger.error(e.getMessage());
                         }
-                    }
-                }
-            });
+                    });
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            logger.warn("An error occured while cleaning plugins directory {}", pluginsRoot.toString());
+            logger.error(e.getMessage());
         }
 
     }

@@ -26,16 +26,14 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="w4-ns">${labels.adm.plugins_pluginId}</th>
-                                <th scope="col" class="w3">${labels.adm.plugins_status}</th>
                                 <th scope="col" class="dn dtc-ns">${labels.adm.plugins_implements}</th>
-                                <th scope="col" style="width:9rem">${labels.adm.plugins_manage}</th>
+                                <th scope="col" style="width:9rem"></th>
                             </tr>
                         </thead>
                         <h:tbody children="@load(vm.pluginList)" sclass="f7">
                             <zk:template name="children">
                                 <h:tr sclass="pointer" onClick="@command('showPlugin', id=each.descriptor.pluginId)">
                                     <td><z:label value="@load(c:cat3(each.descriptor.pluginId, ' ', each.descriptor.version))" /></td>
-                                    <td><z:label value="@load(each.state)" /></td>
                                     <td class="dn dtc-ns">
                                         <z:div children="@load(each.extensions)">
                                             <zk:template name="children">
@@ -44,13 +42,7 @@
                                         </z:div>
                                     </td>
                                     <td>
-                                        <z:button label="${labels.adm.plugins_dostop}" sclass="${css.secondaryButton} lh-tight mr1" visible="@load(each.state eq 'started')"
-                                                  w:onClick="prepareAlert()" onClick="@command('stopPlugin', id=each.descriptor.pluginId))" />
-
-                                        <z:button label="${labels.adm.plugins_dostart}" sclass="${css.secondaryButton} lh-tight mr1" visible="@load(each.state eq 'stopped')"
-                                                  w:onClick="prepareAlert()" onClick="@command('startPlugin', id=each.descriptor.pluginId))" />
-
-                                        <z:button label="${labels.adm.plugins_dodelete}" sclass="${css.secondaryButton} lh-tight" disabled="@load(each.state eq 'started')"
+                                        <z:button label="${labels.adm.plugins_dodelete}" sclass="${css.secondaryButton} lh-tight"
                                                   w:onClick="prepareAlert()" onClick="@command('deletePlugin', id=each.descriptor.pluginId, provider=each.descriptor.provider)" />
                                     </td>
                                 </h:tr>
@@ -60,7 +52,7 @@
 
                     <h:div class="tr pb2" if="${vm.engineAvailable}">
                         <image src="${zkService.contextPath}${assetsService.prefix}/images/throbber-white.gif" id="throbber" class="dn mr2" />
-                        <z:button label="${labels.adm.plugins_upload}" disabled="@load(vm.uiAdding)" sclass="${css.linkButton} f7-cust"
+                        <z:button label="${labels.adm.plugins_upload}" sclass="${css.linkButton} f7-cust"
                                   upload="zk.progressMonitor,maxsize=50240,multiple=false,accept=application/java-archive"
                                   onUpload="@command('uploaded', uplEvent=event)" w:onClick="prepareAlert(); removeFocus(this)"
                                   ca:data-original-title="${labels.adm.plugins_upload_hint}" ca:data-toggle="tooltip" ca:data-placement="top" />
@@ -72,9 +64,7 @@
                 </div>
 
                 <z:div sclass="${css.panel}" visible="@load(vm.pluginToShow ne null)">
-
-                    <h:p sclass="dark-blue2" visible="@load(vm.uiAdding)">${labels.adm.plugins_adding_text}</h:p>
-                    <z:div sclass="tr" visible="@load(not vm.uiAdding)">
+                    <z:div sclass="tr">
                         <z:button label="${labels.general.hide}" sclass="${css.secondaryButton} lh-tight mv2" onClick="@command('hidePluginDetails')" />
                     </z:div>
                     <div class="card pa3-ns">
@@ -93,17 +83,14 @@
                                         <td>${labels.adm.plugins_path}</td>
                                         <td><z:label sclass="dark-gray" value="@load(vm.pluginToShow.path)" /></td>
                                     </tr>
-                                    <!-- Implementation details are only available when the plugin is started (not yet when being added) -->
-                                    <h:tr visible="@load(vm.pluginToShow.state eq 'started')">
-                                        <td>${labels.adm.plugins_implements}</td>
-                                        <td>
-                                            <z:div children="@load(vm.pluginToShow.extensions)">
-                                                <zk:template name="children">
-                                                    <z:label sclass="db dark-gray" value="@load(each)" />
-                                                </zk:template>
-                                            </z:div>
-                                        </td>
-                                    </h:tr>
+                                    <td>${labels.adm.plugins_implements}</td>
+                                    <td>
+                                        <z:div children="@load(vm.pluginToShow.extensions)">
+                                            <zk:template name="children">
+                                                <z:label sclass="db dark-gray" value="@load(each)" />
+                                            </zk:template>
+                                        </z:div>
+                                    </td>
                                     <tr>
                                         <td>${labels.adm.plugins_developer}</td>
                                         <td><z:label sclass="dark-gray" value="@load(empty vm.pluginToShow.descriptor.provider ? c:l('adm.plugins_nodata') : vm.pluginToShow.descriptor.provider)" /></td>
@@ -118,10 +105,6 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <z:div sclass="tc" visible="@load(vm.uiAdding)">
-                                <z:button label="${labels.general.add}" sclass="${css.primaryButton} lh-tight mr3" onClick="@command('addPlugin')" />
-                                <z:button label="${labels.general.cancel}" sclass="${css.primaryButton} lh-tight" onClick="@command('cancelAdd')" />
-                            </z:div>
                         </div>
                     </div>
 

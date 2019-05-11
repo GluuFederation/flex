@@ -63,9 +63,18 @@ public class CasaPluginManager extends DefaultPluginManager {
     @Override
     public boolean deletePlugin(String pluginId) {
 
-        //On windows, delete is not called but this is not a problem since in practice (production environments)
-        //Casa is only used in Linux (See: https://github.com/pf4j/pf4j/issues/217)
-        boolean success = Utils.onWindows() ? unloadPlugin(pluginId) : super.deletePlugin(pluginId);
+        boolean success;
+        if (Utils.onWindows()) {
+            //On windows, delete is not called but this is not a problem since in practice (production environments)
+            //Casa is only used in Linux (See: https://github.com/pf4j/pf4j/issues/217)
+            success = unloadPlugin(pluginId);
+        } else {
+            //In casa 4.0 plugin removals are triggered by removal of the plugin file itself, this will cause deletePlugin
+            //of DefaultPluginManager return false despite the operation succeeds. It's safe to return true here (see
+            //AbstractPluginManager#deletePlugin
+            super.deletePlugin(pluginId);
+            success = true;
+        }
         if (!success) {
             logger.warn("Plugin '{}' could not be deleted", pluginId);
         }
