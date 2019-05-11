@@ -317,6 +317,16 @@ public final class Utils {
                 .collect(Collectors.toMap(SimpleCustomProperty::getValue1, SimpleCustomProperty::getValue2));
     }
 
+    /**
+     * Analog method to {@link #scriptConfigPropertiesAsMap(CustomScript)}, this time for obtaining module properties
+     * @param script A {@link CustomScript} instance
+     * @return A Mapping of property name / property value for the script
+     */
+    public static Map<String, String> scriptModulePropertiesAsMap(CustomScript script) {
+        return nonNullList(script.getModuleProperties()).stream()
+                .collect(Collectors.toMap(SimpleCustomProperty::getValue1, SimpleCustomProperty::getValue2));
+    }
+
     public static StringEncrypter stringEncrypter(String saltFile) throws StringEncrypter.EncryptionException {
         String salt = new FileConfiguration(saltFile).getProperties().getProperty("encodeSalt");
         return StringEncrypter.instance(salt);

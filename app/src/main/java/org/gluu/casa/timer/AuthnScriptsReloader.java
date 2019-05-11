@@ -149,7 +149,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
             try {
                 logger.info("Touching main interception script to trigger reload by oxAuth...");
                 script = persistenceService.getScript(ConfigurationHandler.DEFAULT_ACR);
-                Map<String, String> moduleProperties = Utils.scriptConfigPropertiesAsMap(script);
+                Map<String, String> moduleProperties = Utils.scriptModulePropertiesAsMap(script);
                 ScriptLocationType locType = ScriptLocationType.getByValue(moduleProperties.get(LOCATION_TYPE_PROPERTY));
 
                 switch (locType) {
@@ -217,7 +217,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         byte[] bytes = null;
         String acr = script.getDisplayName();
         try {
-            Map<String, String> moduleProperties = Utils.scriptConfigPropertiesAsMap(script);
+            Map<String, String> moduleProperties = Utils.scriptModulePropertiesAsMap(script);
             ScriptLocationType locType = ScriptLocationType.getByValue(moduleProperties.get(LOCATION_TYPE_PROPERTY));
 
             switch (locType) {
@@ -241,8 +241,9 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
         Long fingerPrint = null;
         String acr = script.getDisplayName();
+logger.debug("acr {}", acr);
         try {
-            Map<String, String> moduleProperties = Utils.scriptConfigPropertiesAsMap(script);
+            Map<String, String> moduleProperties = Utils.scriptModulePropertiesAsMap(script);
             ScriptLocationType locType = ScriptLocationType.getByValue(moduleProperties.get(LOCATION_TYPE_PROPERTY));
 
             switch (locType) {
@@ -258,6 +259,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+logger.debug("figer {}", fingerPrint);
         return fingerPrint;
 
     }
