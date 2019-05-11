@@ -1,5 +1,7 @@
 package org.gluu.casa.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -11,7 +13,6 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;
@@ -281,6 +282,7 @@ public class OxdService {
 
         String authz = StringUtils.isEmpty(token) ? null : "Bearer " + token;
         ResteasyWebTarget target = client.target(String.format("https://%s:%s/%s", config.getHost(), config.getPort(), path));
+        //import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
 
         Response response = target.request().header("Authorization", authz).post(Entity.json(payload));
         response.bufferEntity();
