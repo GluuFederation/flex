@@ -3,7 +3,6 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.LdapSettings;
-import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.model.*;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
@@ -11,6 +10,7 @@ import org.gluu.persist.PersistenceEntryManager;
 import org.gluu.persist.PersistenceEntryManagerFactory;
 import org.gluu.persist.ldap.operation.LdapOperationService;
 import org.gluu.persist.model.SearchScope;
+import org.gluu.service.cache.CacheConfiguration;
 import org.gluu.util.properties.FileConfiguration;
 import org.gluu.util.security.PropertiesDecrypter;
 import org.gluu.util.security.StringEncrypter;
@@ -34,9 +34,6 @@ public class PersistenceService implements IPersistenceService {
     private Logger logger;
 
     @Inject
-    private MainSettings settings;
-
-    @Inject
     private WeldInstance<PersistenceEntryManagerFactory> pFactoryInstance;
 
     private PersistenceEntryManager entryManager;
@@ -57,12 +54,14 @@ public class PersistenceService implements IPersistenceService {
 
     private StringEncrypter stringEncrypter;
 
-    public boolean initialize() {
+    private CacheConfiguration cacheConfiguration;
+
+    public boolean initialize(LdapSettings ldapSettings) {
 
         boolean success = false;
         try {
             mapper = new ObjectMapper();
-            success = setup(settings.getLdapSettings(), RETRIES, RETRY_INTERVAL);
+            success = setup(ldapSettings, RETRIES, RETRY_INTERVAL);
             logger.info("PersistenceService was{} initialized successfully", success ? "" : " not");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -223,12 +222,12 @@ public class PersistenceService implements IPersistenceService {
         return dynRegEnabled ? oxAuthConfDynamic.get("dynamicRegistrationExpirationTime").asInt() : -1;
     }
 
-    public String getEncryptedString(String str) throws StringEncrypter.EncryptionException {
-        return stringEncrypter == null ? str : stringEncrypter.encrypt(str);
+    public StringEncrypter getStringEncrypter() {
+        return stringEncrypter;
     }
 
-    public String getDecryptedString(String str) throws StringEncrypter.EncryptionException  {
-        return (stringEncrypter == null || str == null) ? str :  stringEncrypter.decrypt(str);
+    public CacheConfiguration getCacheConfiguration() {
+        return cacheConfiguration;
     }
 
     /**
@@ -296,6 +295,11 @@ public class PersistenceService implements IPersistenceService {
             loadOxAuthSettings(properties.getProperty("oxauth_ConfigurationEntryDN"));
             rootDn = "o=gluu";
             success = true;
+
+            GluuConfiguration gluuConf = new GluuConfiguration();
+            gluuConf.setBaseDn(oxAuthConfStatic.get("baseDn").get("configuration").asText());
+            gluuConf = find(gluuConf).get(0);
+            cacheConfiguration = gluuConf.getCacheConfiguration();
 
             String dn = properties.getProperty("oxtrust_ConfigurationEntryDN");
             if (dn != null) {

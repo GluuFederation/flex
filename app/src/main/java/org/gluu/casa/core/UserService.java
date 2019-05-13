@@ -188,7 +188,7 @@ public class UserService {
                 });
             }
 
-            String trustedDevicesInfo = persistenceService.getDecryptedString(person.getTrustedDevices());
+            String trustedDevicesInfo = persistenceService.getStringEncrypter().decrypt(person.getTrustedDevices());
             if (Utils.isNotEmpty(trustedDevicesInfo)) {
                 trustedDevices = mapper.readValue(trustedDevicesInfo, new TypeReference<List<TrustedDevice>>() { });
                 trustedDevices.forEach(TrustedDevice::sortOriginsDescending);
@@ -224,7 +224,7 @@ public class UserService {
         List<TrustedDevice> copyOfDevices = new ArrayList<>(devices);
         try {
             copyOfDevices.remove(index);
-            String updatedJson = persistenceService.getEncryptedString(mapper.writeValueAsString(copyOfDevices));
+            String updatedJson = persistenceService.getStringEncrypter().encrypt(mapper.writeValueAsString(copyOfDevices));
 
             PersonPreferences person = personPreferencesInstance(userId);
             person.setTrustedDevices(updatedJson);

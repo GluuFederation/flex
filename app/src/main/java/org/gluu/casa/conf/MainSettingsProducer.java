@@ -70,13 +70,6 @@ public class MainSettingsProducer {
                         ldapSettings.setOxLdapLocation(null);
                     }
 
-                    try {
-                        settings.updateMemoryStore();
-                    } catch (Exception e) {
-                        settings = null;
-                        logger.error("Unable to update data in memory store!");
-                        logger.error(e.getMessage(), e);
-                    }
                 } catch (Exception e) {
                     logger.error("Error parsing configuration file {}", CONF_FILE_RELATIVE_PATH);
                     logger.error(e.getMessage(), e);

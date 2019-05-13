@@ -109,14 +109,14 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
         for (PersonPreferences person : people) {
             String jsonStr = null;
             try {
-                String trustedDevicesInfo = persistenceService.getDecryptedString(person.getTrustedDevices());
+                String trustedDevicesInfo = persistenceService.getStringEncrypter().decrypt(person.getTrustedDevices());
                 List<TrustedDevice> list = mapper.readValue(trustedDevicesInfo, new TypeReference<List<TrustedDevice>>() {});
 
                 if (removeExpiredData(list, now)) {
                     if (list.size() > 0) {
                         //update list
                         jsonStr = mapper.writeValueAsString(list);
-                        updateTrustedDevices(person, persistenceService.getEncryptedString(jsonStr));
+                        updateTrustedDevices(person, persistenceService.getStringEncrypter().encrypt(jsonStr));
                     } else {
                         updateTrustedDevices(person, null);
                     }

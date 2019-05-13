@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.core.inmemory.StoreFactory;
 import org.gluu.casa.core.inmemory.IStoreService;
-import org.gluu.casa.misc.Utils;
 import org.gluu.service.cache.CacheConfiguration;
 import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
@@ -50,9 +49,6 @@ public class MainSettings {
 
     @JsonIgnore
     private int previousHash;
-
-    @JsonProperty("store_config")
-    private CacheConfiguration memoryStoreConfiguration;
 
     @JsonProperty("enable_pass_reset")
     private boolean enablePassReset;
@@ -101,7 +97,11 @@ public class MainSettings {
     }
 
     public String getLogLevel() {
-        return getInMemoryValue("logLevel", TR_STRING);
+        return getLogLevel(false);
+    }
+
+    public String getLogLevel(boolean skipStore) {
+        return skipStore ? logLevel : getInMemoryValue("logLevel", TR_STRING);
     }
 
     public boolean isUseExternalBranding() {
@@ -136,12 +136,12 @@ public class MainSettings {
         return getLdapSettings(false);
     }
 
-    public List<EnforcementPolicy> getEnforcement2FA() {
-        return getInMemoryValue("enforcement2FA", TR_LIST_ENFORCEMENT_POLICY);
+    public LdapSettings getLdapSettings(boolean skipStore) {
+        return skipStore ? ldapSettings : getInMemoryValue("ldapSettings", TR_LDAPSETTINGS);
     }
 
-    public CacheConfiguration getMemoryStoreConfiguration() {
-        return memoryStoreConfiguration;
+    public List<EnforcementPolicy> getEnforcement2FA() {
+        return getInMemoryValue("enforcement2FA", TR_LIST_ENFORCEMENT_POLICY);
     }
 
     public void setEnablePassReset(boolean enablePassReset) {
@@ -188,8 +188,9 @@ public class MainSettings {
         this.trustedDevicesSettings = trustedDevicesSettings;
     }
 
-    public void setMemoryStoreConfiguration(CacheConfiguration memoryStoreConfiguration) {
-        this.memoryStoreConfiguration = memoryStoreConfiguration;
+    public void setupMemoryStore(CacheConfiguration storeConfiguration, StringEncrypter encrypter) throws Exception {
+        storeService = StoreFactory.createMemoryStoreService(storeConfiguration, encrypter);
+        updateMemoryStore();
     }
 
     public void updateConfigFile() throws Exception {
@@ -221,24 +222,7 @@ public class MainSettings {
         this.filePath = filePath;
     }
 
-    LdapSettings getLdapSettings(boolean skipStore) {
-        return skipStore ? ldapSettings : getInMemoryValue("ldapSettings", TR_LDAPSETTINGS);
-    }
-
-    void updateMemoryStore() throws Exception {
-
-        if (storeService == null) {
-            StringEncrypter encr = null;
-            try {
-                String saltFile = ldapSettings.getSaltLocation();
-                if (Utils.isNotEmpty(saltFile)) {
-                    encr = Utils.stringEncrypter(saltFile);
-                }
-            } catch (Exception e) {
-                logger.warn("Unable to create a StringDecrypter Instance");
-            }
-            storeService = StoreFactory.createMemoryStoreService(memoryStoreConfiguration,  encr);
-        }
+    private void updateMemoryStore() throws Exception {
 
         //Iterate through fields of this class annotated with JsonProperty
         Arrays.stream(getClass().getDeclaredFields()).filter(f -> f.getAnnotation(JsonProperty.class) != null)
@@ -253,16 +237,22 @@ public class MainSettings {
                         logger.error(e.getMessage(), e);
                     }
                 });
+
     }
 
     private <T> T getInMemoryValue(String property, TypeReference<T> valueTypeRef) {
 
+        T value = null;
         try {
-            return mapper.readValue(storeService.get(INMEM_PREFIX + property).toString(), valueTypeRef);
+            if (storeService == null) {
+                logger.error("No memory store has been configured yet!");
+            } else {
+                value = mapper.readValue(storeService.get(INMEM_PREFIX + property).toString(), valueTypeRef);
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return null;
         }
+        return value;
 
     }
 

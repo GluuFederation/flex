@@ -92,7 +92,8 @@ public class ConfigurationHandler extends JobListenerSupport {
             //Update log level
             computeLoggingLevel();
             //Check LDAP access to proceed with acr timer
-            if (persistenceService.initialize()) {
+            if (persistenceService.initialize(settings.getLdapSettings(true))) {
+                settings.setupMemoryStore(persistenceService.getCacheConfiguration(), persistenceService.getStringEncrypter());
                 setAppState(AppStateEnum.LOADING);
 
                 //This is a trick so the timer event logic can be coded inside this managed bean
@@ -250,7 +251,7 @@ public class ConfigurationHandler extends JobListenerSupport {
     }
 
     private void computeLoggingLevel() {
-        settings.setLogLevel(logService.updateLoggingLevel(settings.getLogLevel()));
+        settings.setLogLevel(logService.updateLoggingLevel(settings.getLogLevel(true)));
     }
 
     private void computeMinCredsForStrongAuth() {
