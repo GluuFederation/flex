@@ -66,14 +66,6 @@ public class ExtensionsManager {
 
     private Path extractionDirectory;
 
-    public List<PluginInfo> getKnownPlugins() {
-        return knownPlugins;
-    }
-
-    public void setKnownPlugins(List<PluginInfo> knownPlugins) {
-        this.knownPlugins = knownPlugins;
-    }
-
     @PostConstruct
     private void inited() {
 
@@ -139,8 +131,10 @@ public class ExtensionsManager {
             for (Path path : files) {
                 PluginInfo pl = new PluginInfo();
                 pl.setId(loadPlugin(path));
+
                 if (pl.getId() != null) {
-                    pl.setRelativePath(path.toString());
+                    pl.setState(PluginState.RESOLVED);
+                    pl.setPath(path);
                     plugins.add(pl);
                 }
             }
@@ -148,7 +142,7 @@ public class ExtensionsManager {
 
             if (files.size() > plugins.size()) {
                 //Some plugins didn't start successfully, let's remove them then
-                Set<String> loadedPaths = plugins.stream().map(PluginInfo::getRelativePath).collect(Collectors.toSet());
+                Set<String> loadedPaths = plugins.stream().map(pi -> pi.getPath().toString()).collect(Collectors.toSet());
                 files.stream().filter(p -> !loadedPaths.contains(p.toString())).forEach(p -> {
                     try {
                         Files.delete(p);
@@ -163,25 +157,30 @@ public class ExtensionsManager {
             int index = 0;
             List<Integer> indexes = new ArrayList<>();
 
+            //Start those which are not yet started
             for (PluginInfo pl : plugins) {
-                String pluginId = pl.getId();
-
-                if (startPlugin(pluginId, false)) {
+                if (pl.getState().equals(PluginState.STARTED)) {
                     started++;
-                    PluginWrapper wrapper = pluginManager.getPlugin(pluginId);
-                    logger.info("Plugin {} ({}) started", pluginId, wrapper.getDescriptor().getPluginClass());
-
-                    Set<String> classNames = pluginManager.getExtensionClassNames(pluginId);
-                    if (classNames.size() > 0) {
-                        logger.info("Plugin's extensions are at: {}", classNames.toString());
-                    }
-                    //Add a breaking space
-                    logger.info("");
                 } else {
-                    //We'd better remove it since it can cause unstability
-                    logger.warn("Plugin {} failed to start, will be deleted", pluginId);
-                    deletePlugin(pluginId);
-                    indexes.add(index, 0);
+                    String pluginId = pl.getId();
+
+                    if (startPlugin(pluginId, false)) {
+                        pl.setState(PluginState.STARTED);
+                        started++;
+                        logger.info("Plugin {} ({}) started", pluginId, pluginManager.getPlugin(pluginId).getDescriptor().getPluginClass());
+
+                        Set<String> classNames = pluginManager.getExtensionClassNames(pluginId);
+                        if (classNames.size() > 0) {
+                            logger.info("Plugin's extensions are at: {}", classNames.toString());
+                        }
+                        //Add a breaking space
+                        logger.info("");
+                    } else {
+                        //We'd better remove it since it can cause unstability
+                        logger.warn("Plugin {} failed to start, will be deleted", pluginId);
+                        deletePlugin(pluginId);
+                        indexes.add(index, 0);
+                    }
                 }
                 index++;
             }

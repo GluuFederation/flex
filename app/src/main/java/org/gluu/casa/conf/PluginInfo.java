@@ -1,9 +1,8 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.conf;
+
+import org.pf4j.PluginState;
+
+import java.nio.file.Path;
 
 /**
  * @author jgomer
@@ -11,8 +10,8 @@ package org.gluu.casa.conf;
 public class PluginInfo {
 
     private String id;
-    private String relativePath;
-    private String state;
+    private Path path;
+    private PluginState state;
 
     public String getId() {
         return id;
@@ -22,19 +21,19 @@ public class PluginInfo {
         this.id = id;
     }
 
-    public String getRelativePath() {
-        return relativePath;
+    public Path getPath() {
+        return path;
     }
 
-    public void setRelativePath(String relativePath) {
-        this.relativePath = relativePath;
+    public void setPath(Path path) {
+        this.path = path;
     }
 
-    public String getState() {
+    public PluginState getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(PluginState state) {
         this.state = state;
     }
 

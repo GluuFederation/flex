@@ -11,6 +11,7 @@ import org.zkoss.util.Pair;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 /**
  * @author jgomer
  */
+@Named
 @ApplicationScoped
 public class FSPluginChecker extends JobListenerSupport {
 
@@ -55,6 +57,19 @@ public class FSPluginChecker extends JobListenerSupport {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+
+    }
+
+    public boolean removePluginFile(String pluginId) {
+
+        boolean success = false;
+        File f = contents.stream().filter(pair -> pair.getX().equals(pluginId)).findFirst().map(Pair::getY).orElse(null);
+        try {
+            success = f != null && f.delete();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return success;
 
     }
 

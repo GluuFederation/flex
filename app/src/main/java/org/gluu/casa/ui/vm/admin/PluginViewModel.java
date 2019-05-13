@@ -2,6 +2,7 @@ package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.extension.AuthnMethod;
+import org.gluu.casa.timer.FSPluginChecker;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.ui.model.PluginData;
@@ -46,6 +47,9 @@ public class PluginViewModel extends MainViewModel {
 
     @WireVariable("extensionsManager")
     private ExtensionsManager extManager;
+
+    @WireVariable("fSPluginChecker")
+    private FSPluginChecker fspchecker;
 
     private List<PluginData> pluginList;
 
@@ -139,7 +143,11 @@ public class PluginViewModel extends MainViewModel {
             Messagebox.show(msg, null, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                     event -> {
                         if (Messagebox.ON_YES.equals(event.getName())) {
-                            Messagebox.show(Labels.getLabel("adm.plugins_undeploy_pending"));
+                            if (fspchecker.removePluginFile(pluginId)) {
+                                Messagebox.show(Labels.getLabel("adm.plugins_undeploy_pending"));
+                            } else {
+                                Messagebox.show(Labels.getLabel("adm.plugins_removal_failed"));
+                            }
                             pluginToShow = null;
                             BindUtils.postNotifyChange(null, null, PluginViewModel.this, "pluginToShow");
                         }
@@ -147,6 +155,13 @@ public class PluginViewModel extends MainViewModel {
             );
         }
 
+    }
+
+
+    @NotifyChange({"pluginToShow"})
+    @Command
+    public void hidePluginDetails() {
+        pluginToShow = null;
     }
 
     private PluginData buildPluginData(PluginWrapper pw) {

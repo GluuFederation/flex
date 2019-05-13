@@ -26,8 +26,8 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="w4-ns">${labels.adm.plugins_pluginId}</th>
-                                <th scope="col" class="dn dtc-ns">${labels.adm.plugins_implements}</th>
-                                <th scope="col" style="width:9rem"></th>
+                                <th scope="col" class="dtc-ns">${labels.adm.plugins_implements}</th>
+                                <th scope="col" class="w3"></th>
                             </tr>
                         </thead>
                         <h:tbody children="@load(vm.pluginList)" sclass="f7">
