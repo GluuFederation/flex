@@ -368,8 +368,7 @@ public class ExtensionsManager {
 
         //Deletes all files in pl directory
         try {
-            Files.list(extractionDirectory).filter(p -> Files.isDirectory(p))
-                    .forEach(p -> {
+            Files.list(extractionDirectory).filter(p -> Files.isDirectory(p)).forEach(p -> {
                         try {
                             resourceExtractor.recursiveDelete(p);
                         } catch (Exception e) {

@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;
@@ -282,7 +283,7 @@ public class OxdService {
 
         String authz = StringUtils.isEmpty(token) ? null : "Bearer " + token;
         ResteasyWebTarget target = client.target(String.format("https://%s:%s/%s", config.getHost(), config.getPort(), path));
-        //import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
+        target.register(JacksonJsonProvider.class);
 
         Response response = target.request().header("Authorization", authz).post(Entity.json(payload));
         response.bufferEntity();
