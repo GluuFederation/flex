@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.conf.LdapSettings;
@@ -30,10 +25,10 @@ public class LdapSettingsViewModel extends MainViewModel {
     private Logger logger = LoggerFactory.getLogger(getClass());
     
     // to use constants inside a zul page, use static final property with a non static getter
-    private static final String databaseTypeLdap=LdapSettings.BACKEND.LDAP.getValue();
+    private static final String databaseTypeLdap = LdapSettings.BACKEND.LDAP.getValue();
     
-    private static String databaseTypeCouchbase = LdapSettings.BACKEND.COUCHBASE.getValue();
-    
+    private static final String databaseTypeCouchbase = LdapSettings.BACKEND.COUCHBASE.getValue();
+
     private boolean isLdapType =false;
 
     public boolean isLdapType() {
@@ -43,6 +38,7 @@ public class LdapSettingsViewModel extends MainViewModel {
 	public void setLdapType(boolean isLdapType) {
 		this.isLdapType = isLdapType;
 	}
+
 	@WireVariable
     private PersistenceService persistenceService;
 
@@ -56,13 +52,11 @@ public class LdapSettingsViewModel extends MainViewModel {
         this.ldapSettings = ldapSettings;
     }
 
-    public String getDatabaseTypeLdap()
-    {
+    public String getDatabaseTypeLdap() {
     	return databaseTypeLdap;
     }
     
-    public String getDatabaseTypeCouchbase()
-    {
+    public String getDatabaseTypeCouchbase() {
     	return databaseTypeCouchbase;
     }
 
@@ -93,9 +87,7 @@ public class LdapSettingsViewModel extends MainViewModel {
 
     private void reloadConfig() {
         ldapSettings = (LdapSettings) Utils.cloneObject(getSettings().getLdapSettings());
-        if(getDatabaseTypeLdap().equalsIgnoreCase(ldapSettings.getType()))
-        isLdapType = true;
-        else isLdapType = false;
+        isLdapType = getDatabaseTypeLdap().equalsIgnoreCase(ldapSettings.getType());
     }
 
     //This method does not change application level settings
@@ -129,14 +121,17 @@ public class LdapSettingsViewModel extends MainViewModel {
         return msg;
 
     }
+
     @NotifyChange("ldapSettings")
     @Command
     public void setType(@BindingParam("type") String type) {
     	
-    	if(getDatabaseTypeLdap().equalsIgnoreCase(type))
-    	ldapSettings.setType(LdapSettings.BACKEND.LDAP.getValue());
-    	else if(getDatabaseTypeCouchbase().equalsIgnoreCase(type))
-            	ldapSettings.setType(LdapSettings.BACKEND.COUCHBASE.getValue());
+    	if (getDatabaseTypeLdap().equalsIgnoreCase(type)) {
+            ldapSettings.setType(LdapSettings.BACKEND.LDAP.getValue());
+        } else if (getDatabaseTypeCouchbase().equalsIgnoreCase(type)) {
+            ldapSettings.setType(LdapSettings.BACKEND.COUCHBASE.getValue());
+        }
     
     }
+
 }

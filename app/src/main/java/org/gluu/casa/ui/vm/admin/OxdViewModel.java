@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.conf.OxdSettings;
@@ -11,7 +6,6 @@ import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
@@ -21,7 +15,7 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
-import java.net.InetSocketAddress;
+import java.net.URL;
 import java.util.stream.Stream;
 
 /**
@@ -65,12 +59,11 @@ public class OxdViewModel extends MainViewModel {
             boolean connected = false;    //Try to guess if it looks like an oxd-server
             try {
                 oxdHost = oxdHost.trim();
-               
-                    connected = Utils.hostAvailabilityCheck(oxdHost, oxdPort);
-               
+                connected = Utils.urlAvailabilityCheck(new URL("https", oxdHost, oxdPort, "/health-check"));
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
+
             if (!connected) {
                 Messagebox.show(Labels.getLabel("adm.oxd_no_connection"), null, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                         event -> {
