@@ -9,10 +9,10 @@
 
 override_dh_strip_nondeterminism:
 override_dh_fixperms:
-		dh_fixperms
-		chmod 755 debian/gluu-casa/opt/gluu-server-4.0/install/community-edition-setup/setup_casa.py
-		chmod 755 debian/gluu-casa/opt/gluu-server-4.0/install/community-edition-setup/casa_cleanup.py
-		chmod 755 debian/gluu-casa/opt/gluu-server-4.0/opt/gluu/python/libs/casa-external_otp.py
-		chmod 755 debian/gluu-casa/opt/gluu-server-4.0/opt/gluu/python/libs/casa-external_super_gluu.py
-		chmod 755 debian/gluu-casa/opt/gluu-server-4.0/opt/gluu/python/libs/casa-external_twilio_sms.py
-  		chmod 755 debian/gluu-casa/opt/gluu-server-4.0/opt/gluu/python/libs/casa-external_u2f.py
+	dh_fixperms
+	chmod 755 debian/gluu-casa/opt/gluu-server-4.0/install/community-edition-setup/setup_casa.py
+	chmod 755 debian/gluu-casa/opt/gluu-server-4.0/install/community-edition-setup/casa_cleanup.py
+	chmod 755 debian/gluu-casa/opt/gluu-server-4.0/opt/gluu/python/libs/casa-external_otp.py
+	chmod 755 debian/gluu-casa/opt/gluu-server-4.0/opt/gluu/python/libs/casa-external_super_gluu.py
+	chmod 755 debian/gluu-casa/opt/gluu-server-4.0/opt/gluu/python/libs/casa-external_twilio_sms.py
+  	chmod 755 debian/gluu-casa/opt/gluu-server-4.0/opt/gluu/python/libs/casa-external_u2f.py
