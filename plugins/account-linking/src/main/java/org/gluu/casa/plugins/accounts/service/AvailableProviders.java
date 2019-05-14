@@ -2,7 +2,7 @@ package org.gluu.casa.plugins.accounts.service;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.plugins.accounts.model.oxPassportConfiguration;
+import org.gluu.config.oxtrust.LdapOxPassportConfiguration;
 import org.gluu.casa.plugins.accounts.pojo.Provider;
 import org.gluu.casa.service.IPersistenceService;
 import org.gluu.model.passport.PassportConfiguration;
@@ -30,7 +30,6 @@ public class AvailableProviders {
 
     private static Logger logger = LoggerFactory.getLogger(AvailableProviders.class);
 
-    //This has to be a codehaus mapper (see PassportConfiguration.class)
     private static ObjectMapper mapper;
 
     private static IPersistenceService persistenceService;
@@ -78,8 +77,8 @@ public class AvailableProviders {
             //skip uninteresting chars
             dn = dn.replaceFirst("[\\W]*=[\\W]*","");
 
-            List<org.gluu.model.passport.Provider> details = Optional.ofNullable(persistenceService.get(oxPassportConfiguration.class, dn))
-                    .map(oxPassportConfiguration::getConfig).map(PassportConfiguration::getProviders)
+            List<org.gluu.model.passport.Provider> details = Optional.ofNullable(persistenceService.get(LdapOxPassportConfiguration.class, dn))
+                    .map(LdapOxPassportConfiguration::getPassportConfiguration).map(PassportConfiguration::getProviders)
                     .orElse(Collections.emptyList());
 
             details = details.stream().filter(org.gluu.model.passport.Provider::isEnabled).collect(Collectors.toList());
