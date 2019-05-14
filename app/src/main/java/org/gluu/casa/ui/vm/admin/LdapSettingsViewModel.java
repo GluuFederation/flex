@@ -6,11 +6,12 @@
 package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.conf.LdapSettings;
-import org.gluu.casa.ui.UIUtils;
-import org.gluu.casa.misc.Utils;
 import org.gluu.casa.core.PersistenceService;
+import org.gluu.casa.misc.Utils;
+import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
@@ -27,13 +28,27 @@ import org.zkoss.zul.Messagebox;
 public class LdapSettingsViewModel extends MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+    
+    // to use constants inside a zul page, use static final property with a non static getter
+    private static final String databaseTypeLdap=LdapSettings.BACKEND.LDAP.getValue();
+    
+    private static String databaseTypeCouchbase = LdapSettings.BACKEND.COUCHBASE.getValue();
+    
+    private boolean isLdapType =false;
 
-    @WireVariable
+    public boolean isLdapType() {
+		return isLdapType;
+	}
+
+	public void setLdapType(boolean isLdapType) {
+		this.isLdapType = isLdapType;
+	}
+	@WireVariable
     private PersistenceService persistenceService;
 
     private LdapSettings ldapSettings;
-
-    public LdapSettings getLdapSettings() {
+    
+	public LdapSettings getLdapSettings() {
         return ldapSettings;
     }
 
@@ -41,7 +56,17 @@ public class LdapSettingsViewModel extends MainViewModel {
         this.ldapSettings = ldapSettings;
     }
 
-    @Init//(superclass = true)
+    public String getDatabaseTypeLdap()
+    {
+    	return databaseTypeLdap;
+    }
+    
+    public String getDatabaseTypeCouchbase()
+    {
+    	return databaseTypeCouchbase;
+    }
+
+	@Init//(superclass = true)
     public void init() {
         reloadConfig();
     }
@@ -68,6 +93,9 @@ public class LdapSettingsViewModel extends MainViewModel {
 
     private void reloadConfig() {
         ldapSettings = (LdapSettings) Utils.cloneObject(getSettings().getLdapSettings());
+        if(getDatabaseTypeLdap().equalsIgnoreCase(ldapSettings.getType()))
+        isLdapType = true;
+        else isLdapType = false;
     }
 
     //This method does not change application level settings
@@ -101,5 +129,14 @@ public class LdapSettingsViewModel extends MainViewModel {
         return msg;
 
     }
-
+    @NotifyChange("ldapSettings")
+    @Command
+    public void setType(@BindingParam("type") String type) {
+    	
+    	if(getDatabaseTypeLdap().equalsIgnoreCase(type))
+    	ldapSettings.setType(LdapSettings.BACKEND.LDAP.getValue());
+    	else if(getDatabaseTypeCouchbase().equalsIgnoreCase(type))
+            	ldapSettings.setType(LdapSettings.BACKEND.COUCHBASE.getValue());
+    
+    }
 }

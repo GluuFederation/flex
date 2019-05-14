@@ -20,14 +20,9 @@
 
                     <div class="pb2 flex flex-wrap">
                         <z:radiogroup id="foolish"/>
-                        <label class="mr2 w4">${labels.adm.oxd_conn_type}</label>
+                        <label class="mr2 w4">${labels.adm.oxd_server_location}</label>
                         <div class="flex flex-column">
-                            <div class="pb1 flex flex-wrap">
-                                <z:radio label="${labels.adm.oxd_conn_server}" onCheck="@command('switchUseOxdExtension', use=false)" sclass="pr3"
-                                         selected="@load(not vm.oxdSettings.useHttpsExtension)" radiogroup="foolish" onClick="uiHost.focus()" />
-                                <z:radio label="${labels.adm.oxd_conn_https}" onCheck="@command('switchUseOxdExtension', use=true)"
-                                         selected="@load(vm.oxdSettings.useHttpsExtension)" radiogroup="foolish" onClick="uiHost.focus()" />
-                            </div>
+                            
                             <div class="flex flex-wrap">
                                 <z:textbox sclass="${css.textInput} w4" placeholder="${labels.adm.oxd_host_placeholder}"
                                            value="@bind(vm.oxdSettings.host)" id="uiHost" />

@@ -12,6 +12,7 @@ import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.URL;
@@ -24,6 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.CDI;
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Provides miscelaneous utilities.
@@ -331,5 +333,21 @@ public final class Utils {
         String salt = new FileConfiguration(saltFile).getProperties().getProperty("encodeSalt");
         return StringEncrypter.instance(salt);
     }
+    public static boolean hostAvailabilityCheck(String host, int port) throws IOException {
 
+		try {
+			URL siteURL = new URL("https", host, port, "/health-check");
+			HttpsURLConnection connection = (HttpsURLConnection) siteURL.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setConnectTimeout(3000);
+			connection.connect();
+
+			if (connection.getResponseCode() == 200)
+				return true;
+			return false;
+		} catch (Exception e) {
+			throw e;
+
+		}
+    }
 }

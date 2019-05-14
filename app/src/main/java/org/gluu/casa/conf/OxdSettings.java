@@ -28,9 +28,6 @@ public class OxdSettings {
     @JsonProperty("frontchannel_logout_uri")
     private String frontLogoutUri;
 
-    @JsonProperty("use_https_extension")
-    private boolean useHttpsExtension;
-
     @JsonProperty("client")
     private OxdClientSettings client;
 
@@ -50,10 +47,6 @@ public class OxdSettings {
 
     public String getRedirectUri() {
         return redirectUri;
-    }
-
-    public boolean isUseHttpsExtension() {
-        return useHttpsExtension;
     }
 
     public String getPostLogoutUri() {
@@ -83,10 +76,6 @@ public class OxdSettings {
 
     public void setRedirectUri(String redirectUri) {
         this.redirectUri = redirectUri;
-    }
-
-    public void setUseHttpsExtension(boolean useHttpsExtension) {
-        this.useHttpsExtension = useHttpsExtension;
     }
 
     public void setPostLogoutUri(String postLogoutUri) {

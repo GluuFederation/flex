@@ -18,14 +18,25 @@
                 </div>
                 <div class="${css.panel} flex flex-column justify-center">
 
-                    <div class="pb2 flex flex-wrap">
-                        <label class="mr2 w3 truncate">${labels.adm.ldap_salt}</label>
+                    <div class="pb1 flex flex-wrap">
+                        <label class="mr2 w4">${labels.adm.salt_file}</label>
                         <z:textbox sclass="${css.textInput} w4 w5-ns" value="@bind(vm.ldapSettings.saltLocation)" />
                     </div>
-                    <div class="pb2 flex flex-wrap">
-                        <label class="mr2 w3 truncate">${labels.adm.ldap_ox_ldap}</label>
-                        <z:textbox sclass="${css.textInput} w4 w5-ns" value="@bind(vm.ldapSettings.oxLdapLocation)" />
+                    <div class="pb1 flex flex-wrap">
+                        <label class="mr2 w4">${labels.adm.configuration_file}</label>
+                        <z:textbox sclass="${css.textInput} w4 w5-ns" value="@bind(vm.ldapSettings.configurationFile)" />
                     </div>
+                     <div class="pb1 flex flex-wrap">
+ 						<label class="mr2 w4">${labels.adm.configuration_type}</label>
+ 						<z:radiogroup id="dbType"   />
+		                    <z:div sclass="flex justify-around flex-wrap">
+	                            <z:radio  label="${labels.adm.configuration_type_ldap}" value="@bind(vm.databaseTypeLdap)"  selected="@load(vm.ldapType)" radiogroup="dbType" sclass="ph3"  onCheck="@command('setType', type = 'ldap')" />
+		                    </z:div>
+	                    
+	    	                <z:div sclass="flex justify-around flex-wrap">
+								<z:radio  label="${labels.adm.configuration_type_couchbase}" value="@bind(vm.databaseTypeCouchbase)" selected="@load(not vm.ldapType)"  radiogroup="dbType" sclass="ph3" onCheck="@command('setType', type = 'couchbase')"  />
+	            	        </z:div>
+					</div>
                     <div class="pv2 flex flex-wrap">
                         <label class="mr2 w3" />
                         <z:button label="${labels.general.save}" sclass="${css.primaryButton} ph4"
@@ -33,7 +44,7 @@
                     </div>
 
                 </div>
-            </section>
+            </section> 
         </div>
 
         <div class="ph4 mt2">

@@ -50,13 +50,7 @@ public class OxdViewModel extends MainViewModel {
         oxdSettings = (OxdSettings) Utils.cloneObject(getSettings().getOxdSettings());
     }
 
-    @NotifyChange("oxdSettings")
-    @Command
-    public void switchUseOxdExtension(@BindingParam("use") boolean useExtension) {
-        oxdSettings.setUseHttpsExtension(useExtension);
-        oxdSettings.setHost(null);
-        oxdSettings.setPort(0);
-    }
+   
 
     @NotifyChange("oxdSettings")
     @Command
@@ -71,11 +65,9 @@ public class OxdViewModel extends MainViewModel {
             boolean connected = false;    //Try to guess if it looks like an oxd-server
             try {
                 oxdHost = oxdHost.trim();
-                if (oxdSettings.isUseHttpsExtension()) {
-                    connected = true;     //TODO: Check not implemented
-                } else {
-                    connected = Utils.hostAvailabilityCheck(new InetSocketAddress(oxdHost, oxdPort), 3500);
-                }
+               
+                    connected = Utils.hostAvailabilityCheck(oxdHost, oxdPort);
+               
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
