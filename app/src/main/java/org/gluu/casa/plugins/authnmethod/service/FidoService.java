@@ -114,8 +114,7 @@ public class FidoService extends BaseService {
             T device = clazz.getConstructor().newInstance();
 
             if (clazz.equals(SuperGluuDevice.class)) {
-                //DeviceData class is annotated with org.codehaus and has no default constructor so using normal mapper gives trouble
-                DeviceData data = codehausMapper.readValue(deviceRegistration.getDeviceData(), DeviceData.class);
+                DeviceData data = mapper.readValue(deviceRegistration.getDeviceData(), DeviceData.class);
                 ((SuperGluuDevice) device).setDeviceData(data);
             }
             device.setApplication(deviceRegistration.getOxApplication());

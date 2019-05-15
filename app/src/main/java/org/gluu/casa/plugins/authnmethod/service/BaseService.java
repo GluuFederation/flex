@@ -18,14 +18,11 @@ class BaseService {
 
     ObjectMapper mapper;
 
-    org.codehaus.jackson.map.ObjectMapper codehausMapper;
-
     Map<String, String> props;
 
     @PostConstruct
     private void inited() {
         mapper = new ObjectMapper();
-        codehausMapper = new org.codehaus.jackson.map.ObjectMapper();
     }
 
     public String getScriptPropertyValue(String key) {

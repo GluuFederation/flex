@@ -65,7 +65,7 @@ public class OxdService {
 
     private OxdSettings config;
     private ResteasyClient client;
-    private ObjectMapper mapper;  //Important: do not use fasterxml mapper here: oxd-common classes use codehaus
+    private ObjectMapper mapper;
 
     @PostConstruct
     public void inited() {

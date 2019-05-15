@@ -1,6 +1,5 @@
 package org.gluu.casa.plugins.accounts.service;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.gluu.casa.misc.Utils;
 import org.gluu.config.oxtrust.LdapOxPassportConfiguration;
 import org.gluu.casa.plugins.accounts.pojo.Provider;
@@ -30,12 +29,9 @@ public class AvailableProviders {
 
     private static Logger logger = LoggerFactory.getLogger(AvailableProviders.class);
 
-    private static ObjectMapper mapper;
-
     private static IPersistenceService persistenceService;
 
     static {
-        mapper = new ObjectMapper();
         persistenceService = Utils.managedBean(IPersistenceService.class);
         //Lookup the authentication providers supported in the current Passport installation
         providers = retrieveProviders();

@@ -1,7 +1,7 @@
 package org.gluu.casa.plugins.authnmethod.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.codehaus.jackson.type.TypeReference;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.U2fSettings;
 import org.gluu.casa.core.ConfigurationHandler;
@@ -84,7 +84,7 @@ public class U2fService extends FidoService {
     public String generateJsonRegisterMessage(String userName, String enrollmentCode) throws Exception {
 
         RegisterRequestMessage message = registrationRequestService.startRegistration(userName, conf.getAppId(), null, enrollmentCode);
-        Map<String, Object> request = codehausMapper.convertValue(message, new TypeReference<Map<String, Object>>() { });
+        Map<String, Object> request = mapper.convertValue(message, new TypeReference<Map<String, Object>>() { });
         request.remove("authenticateRequests"); //Needed, otherwise chrome complains
         logger.info("Beginning registration start with uid={}, app_id={}", userName, conf.getAppId());
         return mapper.writeValueAsString(request);

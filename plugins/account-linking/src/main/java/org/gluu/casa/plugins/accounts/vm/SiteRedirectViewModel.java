@@ -1,6 +1,6 @@
 package org.gluu.casa.plugins.accounts.vm;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.service.IPersistenceService;
