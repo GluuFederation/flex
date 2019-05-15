@@ -294,11 +294,11 @@ public class PersistenceService implements IPersistenceService {
 
     }
 
-    private boolean loadApplianceSettings(Properties properties) {
+    private boolean loadApplianceSettings(String prefix, Properties properties) {
 
         boolean success = false;
         try {
-            loadOxAuthSettings(properties.getProperty("oxauth_ConfigurationEntryDN"));
+            loadOxAuthSettings(properties.getProperty(prefix + "oxauth_ConfigurationEntryDN"));
             rootDn = "o=gluu";
             success = true;
 
@@ -307,7 +307,7 @@ public class PersistenceService implements IPersistenceService {
             gluuConf = find(gluuConf).get(0);
             cacheConfiguration = gluuConf.getCacheConfiguration();
 
-            String dn = properties.getProperty("oxtrust_ConfigurationEntryDN");
+            String dn = properties.getProperty(prefix + "oxtrust_ConfigurationEntryDN");
             if (dn != null) {
                 loadOxTrustSettings(dn);
             }
@@ -431,7 +431,7 @@ public class PersistenceService implements IPersistenceService {
                     ldapOperationService = (LdapOperationService) entryManager.getOperationService();
                 }
                 //Initialize important class members
-                ret = loadApplianceSettings(backendProperties);
+                ret = loadApplianceSettings(type + ".", backendProperties);
             }
         } else {
             logger.error("No persistence factory found for type '{}'", type);
