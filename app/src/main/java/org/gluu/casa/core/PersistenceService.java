@@ -9,7 +9,9 @@ import org.gluu.casa.service.IPersistenceService;
 import org.gluu.persist.PersistenceEntryManager;
 import org.gluu.persist.PersistenceEntryManagerFactory;
 import org.gluu.persist.ldap.operation.LdapOperationService;
+import org.gluu.persist.model.PersistenceConfiguration;
 import org.gluu.persist.model.SearchScope;
+import org.gluu.persist.service.PersistanceFactoryService;
 import org.gluu.service.cache.CacheConfiguration;
 import org.gluu.util.properties.FileConfiguration;
 import org.gluu.util.security.PropertiesDecrypter;
@@ -22,6 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
+import java.util.stream.Stream;
 
 @Named
 @ApplicationScoped
@@ -32,6 +35,9 @@ public class PersistenceService implements IPersistenceService {
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private PersistanceFactoryService persistanceFactoryService;
 
     @Inject
     private WeldInstance<PersistenceEntryManagerFactory> pFactoryInstance;
@@ -357,23 +363,55 @@ public class PersistenceService implements IPersistenceService {
 
     private boolean setup(LdapSettings ldapSettings, int retries, int retry_interval) throws Exception {
 
+        Properties backendProperties;
         boolean ret = false;
         PersistenceEntryManagerFactory factory = null;
         String saltFile = ldapSettings.getSaltLocation();
         String type = ldapSettings.getType();
-        Properties backendProperties = new FileConfiguration(ldapSettings.getConfigurationFile()).getProperties();
+        String file = ldapSettings.getConfigurationFile();
 
         if (Utils.isNotEmpty(saltFile)) {
             stringEncrypter = Utils.stringEncrypter(saltFile);
-            backendProperties = PropertiesDecrypter.decryptProperties(stringEncrypter, backendProperties);
         }
 
-        for (WeldInstance.Handler<PersistenceEntryManagerFactory> handler : pFactoryInstance.handlers()) {
-            if (handler.get().getPersistenceType().equals(type)) {
-                factory = handler.get();
-                break;
+        //Obtain an instance of PersistenceEntryManagerFactory
+        if (Stream.of(type, file).allMatch(Utils::isNotEmpty)) {
+            //load configuration manually
+            backendProperties = new FileConfiguration(file).getProperties();
+
+            Set<String> rawProps = backendProperties.stringPropertyNames();
+            for (String prop : rawProps) {
+                backendProperties.setProperty(String.format("%s.%s", type, prop), backendProperties.getProperty(prop));
             }
+
+            for (WeldInstance.Handler<PersistenceEntryManagerFactory> handler : pFactoryInstance.handlers()) {
+                if (handler.get().getPersistenceType().equals(type)) {
+                    factory = handler.get();
+                    break;
+                }
+            }
+
+        } else {
+            //load the configuration using the oxcore-persistence-cdi API
+            PersistenceConfiguration persistenceConf = persistanceFactoryService.loadPersistenceConfiguration();
+            FileConfiguration persistenceConfig = persistenceConf.getConfiguration();
+            backendProperties = persistenceConfig.getProperties();
+            factory = persistanceFactoryService.getPersistenceEntryManagerFactory(persistenceConf);
+
+            type = factory.getPersistenceType();
+            logger.info("Underlying database of type '{}' detected", type);
+            file = String.format("/etc/gluu/conf/%s", persistenceConf.getFileName());
+            logger.info("Using config file: {}", file);
+
+            //Fill missing data
+            ldapSettings.setType(type);
+            ldapSettings.setConfigurationFile(file);
         }
+
+        if (stringEncrypter != null) {
+            backendProperties = PropertiesDecrypter.decryptAllProperties(stringEncrypter, backendProperties);
+        }
+
         if (factory != null) {
 
             int i = 0;
