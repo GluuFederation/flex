@@ -314,7 +314,7 @@ public class StatisticsTimer extends JobListenerSupport {
                 Properties p = new Properties();
                 p.load(reader);
                 email = p.getProperty("admin_email");
-                serverName = p.getProperty("hostname").replace("https://", "");
+                serverName = p.getProperty("hostname");
             } catch (Exception e) {
                 if (!Utils.onWindows()) {
                     throw  e;
