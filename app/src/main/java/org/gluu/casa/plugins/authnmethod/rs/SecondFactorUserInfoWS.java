@@ -47,19 +47,19 @@ public class SecondFactorUserInfoWS {
         logger.trace("get2FAUserData WS operation called");
 
         if (Utils.isEmpty(userId)) {
-            result.setStatus(NO_USER_ID);
+            result.setCode(NO_USER_ID);
         } else {
             PersonPreferences person = persistenceService.get(PersonPreferences.class, persistenceService.getPersonDn(userId));
             if (person == null) {
-                result.setStatus(UNKNOWN_USER_ID);
+                result.setCode(UNKNOWN_USER_ID);
             } else {
                 try {
                     Stream<AuthnMethod> acrStream = userService.getUserMethodsCount(userId).stream().map(Pair::getX);
                     result.setEnrolledMethods(acrStream.map(AuthnMethod::getAcr).collect(Collectors.toList()));
                     result.setTurnedOn(person.getPreferredMethod() != null);
-                    result.setStatus(SUCCESS);
+                    result.setCode(SUCCESS);
                 } catch (Exception e) {
-                    result.setStatus(FAILED);
+                    result.setCode(FAILED);
                     logger.error(e.getMessage(), e);
                 }
             }

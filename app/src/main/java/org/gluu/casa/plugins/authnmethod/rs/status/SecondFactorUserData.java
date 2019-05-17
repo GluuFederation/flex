@@ -25,7 +25,7 @@ public class SecondFactorUserData {
         FAILED;
     }
 
-    private StatusCode status;
+    private StatusCode code;
 
     //Allows this field being ignored if null (ie not set)
     @JsonProperty("turned_on")
@@ -34,8 +34,8 @@ public class SecondFactorUserData {
     @JsonProperty("enrolled_methods")
     private List<String> enrolledMethods;
 
-    public StatusCode getStatus() {
-        return status;
+    public StatusCode getCode() {
+        return code;
     }
 
     public Boolean getTurnedOn() {
@@ -46,8 +46,8 @@ public class SecondFactorUserData {
         return enrolledMethods;
     }
 
-    public void setStatus(StatusCode status) {
-        this.status = status;
+    public void setCode(StatusCode code) {
+        this.code = code;
     }
 
     public void setTurnedOn(boolean turnedOn) {
@@ -64,13 +64,12 @@ public class SecondFactorUserData {
 
         Response.Status httpStatus;
 
-        if (status.equals(SUCCESS)) {
+        if (code.equals(SUCCESS)) {
             httpStatus = OK;
-        }
-        else if (status.equals(UNKNOWN_USER_ID)) {
+        } else if (code.equals(UNKNOWN_USER_ID)) {
             httpStatus = NOT_FOUND;
         } else {
-            httpStatus = status.equals(FAILED) ? INTERNAL_SERVER_ERROR : BAD_REQUEST;
+            httpStatus = code.equals(FAILED) ? INTERNAL_SERVER_ERROR : BAD_REQUEST;
         }
         return Response.status(httpStatus).entity(Utils.jsonFromObject(this)).build();
 

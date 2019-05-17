@@ -1,12 +1,12 @@
 swagger: '2.0'
 
 info:
-  version: "3.1.6"
+  version: "4.0.0"
   title: Gluu casa credentials enrollment
   description: Facilitates the process of credentials enrollment in the Gluu Server.
   license:
-    name: MIT
-    url: http://opensource.org/licenses/MIT
+    name: Gluu Casa
+    url: https://github.com/GluuFederation/casa/blob/master/LICENSE.md
 
 #Demo server host
 host: cred3.gluu.org
@@ -20,23 +20,23 @@ tags:
    description: Credentials based on One-Time passcodes
  - name: fido
    description: Credentials based on FIDO standard
- 
+
 consumes:
   - application/json
 produces:
   - application/json
-  
+
 paths:
 
   /enrollment/twilio_sms/send-code:
     get:
       tags:
         - otp
-      
+
       description: |
-        Initiates the process of verifying a mobile phone number for a user 
+        Initiates the process of verifying a mobile phone number for a user
         by sending and OTP via SMS
-        
+
       security:
         - casa_auth: []
 
@@ -47,19 +47,19 @@ paths:
           description: Mobile phone number
           required: true
           type: string
-        - 
+        -
           name: userid
           in: query
-          description: Identifier (inum) of the user attempting the enrollment 
+          description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
-        - 
+        -
           name: Authorization
           description: Contains a bearer token
           in: header
           required: true
           type: string
-          
+
       responses:
         200:
           description: Successful response. Empty body
@@ -70,24 +70,24 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: MISSING_PARAMS
         500:
           description: There was a failure executing the operation
           schema:
             type: object
-            required: 
+            required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: FAILURE|NUMBER_ALREADY_ENROLLED|UNKNOWN_USER_ID
               cause:
                 type: string
                 description: Cause of the failure (when code = FAILURE)
                 example: UNDELIVERED|DELIVERY_FAILED|APP_SETUP_ERROR|SMS_SERVICE_ERROR
-                
+
   /enrollment/twilio_sms/validate-code:
     get:
       tags:
@@ -100,23 +100,23 @@ paths:
           name: code
           in: query
           description: |
-            Code user claims to have received in SMS. It is compared with the 
+            Code user claims to have received in SMS. It is compared with the
             value sent in `send-code` operation
           required: true
           type: string
-        - 
+        -
           name: userid
           in: query
-          description: Identifier (inum) of the user attempting the enrollment 
+          description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
-        - 
+        -
           name: Authorization
           description: Contains a bearer token
           in: header
           required: true
           type: string
-          
+
       responses:
         200:
           description: Successful response (codes match). Empty body
@@ -127,26 +127,26 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: MISSING_PARAMS
         500:
           description: Codes don't match or the validation couldn't be carried out
           schema:
             type: object
-            required: 
+            required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: NO_MATCH_OR_EXPIRED
-                
+
   /enrollment/twilio_sms/creds/{userid}:
     post:
       tags:
         - otp
       description: |
-        Saves a new credential (verified mobile phone) for the user whose ID 
+        Saves a new credential (verified mobile phone) for the user whose ID
         is passed in path parameter. Details of the credential are associated
         in credential parameter. This is supposed to be called **after** a
         successful `validate-code` operation result
@@ -159,26 +159,26 @@ paths:
             Contains a nickname for this credential and the code used to
             originally validate the mobile phone number
           required: true
-          schema: 
+          schema:
             $ref: '#/definitions/NamedCredential'
-        - 
+        -
           name: userid
           in: path
-          description: Identifier (inum) of the user attempting the enrollment 
+          description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
-        - 
+        -
           name: Authorization
           description: Contains a bearer token
           in: header
           required: true
           type: string
-          
+
       responses:
         201:
           description: Credential enrolled (saved) successfully
           schema:
-            $ref: '#/definitions/VerifiedMobile'            
+            $ref: '#/definitions/VerifiedMobile'
         400:
           description: A parameter is missing
           schema:
@@ -186,17 +186,17 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: MISSING_PARAMS
         500:
           description: The provided key code is not recognized or there was a failure when saving the credential
           schema:
             type: object
-            required: 
+            required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: NO_MATCH_OR_EXPIRED|FAILED
 
@@ -204,10 +204,10 @@ paths:
     get:
       tags:
         - otp
-      
+
       description: |
         Generates a secret key URI suitable for displaying a QR code in the browser
-        
+
       security:
         - casa_auth: []
       parameters:
@@ -219,7 +219,7 @@ paths:
             given name, email, uid, etc.
           required: true
           type: string
-        - 
+        -
           name: mode
           in: query
           description: The OTP mode, HOTP (event based) or TOTP (time based)
@@ -228,13 +228,13 @@ paths:
           enum:
           - totp
           - hotp
-        - 
+        -
           name: Authorization
           description: Contains a bearer token
           in: header
           required: true
           type: string
-          
+
       responses:
         200:
           description: Successful response.
@@ -244,10 +244,10 @@ paths:
              - request
              - key
             properties:
-              key: 
+              key:
                 type: string
                 description: The secret key associated to enrollment attempt
-              request: 
+              request:
                 type: string
                 description: The secret key URI suitable for QR code generation
         400:
@@ -257,19 +257,19 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: NO_DISPLAY_NAME|INVALID_MODE
-                
+
   /enrollment/otp/validate-code:
     get:
       tags:
         - otp
-      
+
       description: |
-        Determines whether the OTP code supplied is valid with respect to a key 
+        Determines whether the OTP code supplied is valid with respect to a key
         previously obtained by a call to `qr-request`
-        
+
       security:
         - casa_auth: []
       parameters:
@@ -281,13 +281,13 @@ paths:
             by means of an OTP mobile application
           required: true
           type: string
-        - 
+        -
           name: key
           in: query
           description: The key returned as response of a `qr-request` call
           required: true
           type: string
-        - 
+        -
           name: mode
           in: query
           description: The OTP mode being used for the enrollment, HOTP (event based) or TOTP (time based)
@@ -296,13 +296,13 @@ paths:
           enum:
           - totp
           - hotp
-        - 
+        -
           name: Authorization
           description: Contains a bearer token
           in: header
           required: true
           type: string
-          
+
       responses:
         200:
           description: |
@@ -313,9 +313,9 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
-                example: 
+                example:
         400:
           description: A parameter is missing or inconsistent
           schema:
@@ -323,7 +323,7 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: MATCH|NO_MATCH
         500:
@@ -342,8 +342,8 @@ paths:
       tags:
         - otp
       description: |
-        Saves a new (soft) OTP credential for the user whose ID is passed in path parameter. 
-        Details of the credential are associated in credential parameter. This is 
+        Saves a new (soft) OTP credential for the user whose ID is passed in path parameter.
+        Details of the credential are associated in credential parameter. This is
         supposed to be called **after** a successful `validate-code` operation with MATCH result
 
       parameters:
@@ -354,26 +354,26 @@ paths:
             Contains a nickname for this credential and the key used to
             originally validate the OTP code
           required: true
-          schema: 
+          schema:
             $ref: '#/definitions/NamedCredential'
-        - 
+        -
           name: userid
           in: path
-          description: Identifier (inum) of the user attempting the enrollment 
+          description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
-        - 
+        -
           name: Authorization
           description: Contains a bearer token
           in: header
           required: true
           type: string
-          
+
       responses:
         201:
           description: Credential enrolled (saved) successfully. `soft` property is always true
           schema:
-            $ref: '#/definitions/OTPDevice'            
+            $ref: '#/definitions/OTPDevice'
         400:
           description: A parameter is missing
           schema:
@@ -381,17 +381,17 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: MISSING_PARAMS
         500:
           description: The provided key/userid is not recognized or there was a failure when saving the credential
           schema:
             type: object
-            required: 
+            required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: NO_MATCH_OR_EXPIRED|FAILED
 
@@ -399,10 +399,10 @@ paths:
     get:
       tags:
         - fido
-      
+
       description: |
         Generates a QR request for enrolling a supergluu device
-        
+
       security:
         - casa_auth: []
       parameters:
@@ -412,13 +412,13 @@ paths:
           description: The IP of the user that will attempt the enrollment
           required: false
           type: string
-        - 
+        -
           name: userid
           in: query
-          description: Identifier (inum) of the user attempting the enrollment 
+          description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
-        - 
+        -
           name: Authorization
           description: Contains a bearer token
           in: header
@@ -434,10 +434,10 @@ paths:
              - request
              - key
             properties:
-              key: 
+              key:
                 type: string
                 description: Serves an identifier for clients to poll status afterwards
-              request: 
+              request:
                 type: string
                 description: The data to use for QR code generation at the browser
         400:
@@ -447,7 +447,7 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: NO_USER_ID
         404:
@@ -457,18 +457,18 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: UNKNOWN_USER_ID
-                
+
   /enrollment/super_gluu/status:
     get:
       tags:
         - fido
       description: |
-        This method returns the status of the enrollment operation since it 
+        This method returns the status of the enrollment operation since it
         is actually triggered after the user does approval in the mobile app.
-        Repeated calls to this method for the same key must separated by a 
+        Repeated calls to this method for the same key must separated by a
         lag of at least 5 seconds
 
       parameters:
@@ -478,18 +478,18 @@ paths:
           description: A value obtained by a previous call to `qr-request`
           required: true
           type: string
-        - 
+        -
           name: Authorization
           description: Contains a bearer token
           in: header
           required: true
           type: string
-          
+
       responses:
         201:
           description: Credential enrolled (saved) successfully
           schema:
-            $ref: '#/definitions/SuperGluuDevice'       
+            $ref: '#/definitions/SuperGluuDevice'
         202:
           description: The request to this method has been accepted but there
             is no response ready yet
@@ -498,11 +498,11 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: PENDING
         500:
-          description: The enrollment was not successful. It also accounts for 
+          description: The enrollment was not successful. It also accounts for
             the case when a user attempted to enroll a device he already enrolled
             in the past
           schema:
@@ -510,17 +510,17 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: DUPLICATED|FAILED
-  
+
   /enrollment/super_gluu/creds/{userid}:
-    post: 
+    post:
       tags:
         - fido
       description: |
-        Assigns the nick name for a **recently** enrolled super gluu device whose 
-        associated user ID is passed in path parameter. Details of the credential 
+        Assigns the nick name for a **recently** enrolled super gluu device whose
+        associated user ID is passed in path parameter. Details of the credential
         are passed in credential parameter. This is supposed to be called **after**
         a call to `status` having received the data of the credential
 
@@ -529,24 +529,24 @@ paths:
           name: credential
           in: body
           description: |
-            Contains a nickname for this credential and the identifier (key) obtained in 
+            Contains a nickname for this credential and the identifier (key) obtained in
             a previous `status` call.
           required: true
-          schema: 
+          schema:
             $ref: '#/definitions/NamedCredential'
-        - 
+        -
           name: userid
           in: path
           description: Identifier (inum) of the user owning the device
           required: true
           type: string
-        - 
+        -
           name: Authorization
           description: Contains a bearer token
           in: header
           required: true
           type: string
-          
+
       responses:
         200:
           description: Update successfully applied. Empty body
@@ -557,18 +557,18 @@ paths:
             required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: MISSING_PARAMS
         500:
-          description: The provided key in credential parameter is not 
+          description: The provided key in credential parameter is not
             recognized as a recent enrollment or the update failed
           schema:
             type: object
-            required: 
+            required:
              - code
             properties:
-              code: 
+              code:
                 type: string
                 example: NO_MATCH_OR_EXPIRED|FAILED
 
@@ -576,20 +576,20 @@ paths:
 #    get:
 #      tags:
 #        - fido
-#      
+#
 #      description: |
 #        Gets a U2F registration message to be used in the browser using the U2F client API
-#        
+#
 #      security:
 #        - casa_auth: []
 #      parameters:
-#        - 
+#        -
 #          name: userid
 #          in: query
-#          description: Identifier (inum) of the user attempting the enrollment 
+#          description: Identifier (inum) of the user attempting the enrollment
 #          required: true
 #          type: string
-#        - 
+#        -
 #          name: Authorization
 #          description: Contains a bearer token
 #          in: header
@@ -608,7 +608,7 @@ paths:
 #            required:
 #             - code
 #            properties:
-#              code: 
+#              code:
 #                type: string
 #                example: NO_USER_ID
 #        404:
@@ -618,7 +618,7 @@ paths:
 #            required:
 #             - code
 #            properties:
-#              code: 
+#              code:
 #                type: string
 #                example: UNKNOWN_USER_ID
 #        500:
@@ -628,12 +628,12 @@ paths:
 #            required:
 #             - code
 #            properties:
-#              code: 
+#              code:
 #                type: string
 #                example: FAILED
 #
 #  /enrollment/u2f/registration/{userid}:
-#    post: 
+#    post:
 #      tags:
 #        - fido
 #      description: |
@@ -645,25 +645,25 @@ paths:
 #          name: registrationResult
 #          in: body
 #          required: true
-#          schema: 
+#          schema:
 #            type: object
-#        - 
+#        -
 #          name: userid
 #          in: path
 #          description: Identifier (inum) of the user owning the device
 #          required: true
 #          type: string
-#        - 
+#        -
 #          name: Authorization
 #          description: Contains a bearer token
 #          in: header
 #          required: true
 #          type: string
-#          
+#
 #      responses:
 #        201:
 #          description: Successful enrollment of device
-#          schema: 
+#          schema:
 #            $ref: '#/definitions/SecurityKey'
 #
 #        404:
@@ -674,27 +674,27 @@ paths:
 #            required:
 #             - code
 #            properties:
-#              code: 
+#              code:
 #                type: string
 #                example: NO_MATCH_OR_EXPIRED|UNKNOWN_USER_ID
 #        500:
 #          description: The operation of enrollment failed
 #          schema:
 #            type: object
-#            required: 
+#            required:
 #             - code
 #            properties:
-#              code: 
+#              code:
 #                type: string
 #                example: FAILED
 #
 #  /enrollment/u2f/creds/{userid}:
-#    post: 
+#    post:
 #      tags:
 #        - fido
 #      description: |
-#        Assigns the nick name for a **recently** enrolled security key device whose 
-#        associated user ID is passed in path parameter. Details of the credential 
+#        Assigns the nick name for a **recently** enrolled security key device whose
+#        associated user ID is passed in path parameter. Details of the credential
 #        are passed in credential parameter. This is supposed to be called **after**
 #        a call to `registration/{userid}` having received the data of the credential
 #
@@ -703,24 +703,24 @@ paths:
 #          name: credential
 #          in: body
 #          description: |
-#            Contains a nickname for this credential and the identifier (key) obtained in 
+#            Contains a nickname for this credential and the identifier (key) obtained in
 #            a previous `registration` call.
 #          required: true
-#          schema: 
+#          schema:
 #            $ref: '#/definitions/NamedCredential'
-#        - 
+#        -
 #          name: userid
 #          in: path
 #          description: Identifier (inum) of the user owning the device
 #          required: true
 #          type: string
-#        - 
+#        -
 #          name: Authorization
 #          description: Contains a bearer token
 #          in: header
 #          required: true
 #          type: string
-#          
+#
 #      responses:
 #        200:
 #          description: Update successfully applied. Empty body
@@ -731,21 +731,96 @@ paths:
 #            required:
 #             - code
 #            properties:
-#              code: 
+#              code:
 #                type: string
 #                example: MISSING_PARAMS
 #        500:
-#          description: The provided key in credential parameter is not 
+#          description: The provided key in credential parameter is not
 #            recognized as a recent enrollment or the update failed
 #          schema:
 #            type: object
-#            required: 
+#            required:
 #             - code
 #            properties:
-#              code: 
+#              code:
 #                type: string
 #                example: NO_MATCH_OR_EXPIRED|FAILED
 #
+  /2fa-info/user:
+    get:
+
+      description: |
+        Retrieves general info about credentials enrolled for a specific user
+
+      security:
+        - casa_auth: []
+
+      parameters:
+        -
+          name: userid
+          in: query
+          description: Identifier (inum) of the user to query
+          required: true
+          type: string
+        -
+          name: Authorization
+          description: Contains a bearer token
+          in: header
+          required: true
+          type: string
+
+      responses:
+        200:
+          description: |
+            Successful response that contains if the given user has currently 2FA enabled and a list of authentication methods IDs for which the user has enrolled one or more credentials
+          schema:
+            type: object
+            required:
+             - code
+             - turned_on
+             - enrolled_methods
+            properties:
+              code:
+                type: string
+                example: SUCCESS
+              turned_on:
+                type: boolean
+                example: true
+              enrolled_methods:
+                type: array
+                items:
+                  type: string
+                example: ["otp", "u2f"]
+        400:
+          description: userid parameter is missing
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: NO_USER_ID
+        404:
+          description: userid parameter references a non-existing user
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: UNKNOWN_USER_ID
+        500:
+          description: There was a failure executing the operation
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: FAILURE
 
 definitions:
   NamedCredential:
@@ -760,7 +835,7 @@ definitions:
       nickName:
         type: string
         description: The nickname associated to a credential. This piece of data is tipically assigned by the end-user in the process
-  
+
   VerifiedMobile:
     type: object
     required:
@@ -819,7 +894,7 @@ definitions:
 #        application:
 #          type: string
 #          description: An identifier of the FIDO application ID under which this device was enrolled
-          
+
   SuperGluuDevice:
     type: object
     properties:
@@ -846,7 +921,7 @@ definitions:
         deviceData:
           type: object
           properties:
-            type: 
+            type:
               type: string
               example: iPhone
             platform:
@@ -861,11 +936,11 @@ definitions:
             os_version:
               type: string
               example: 11.2.4
-                       
+
 securityDefinitions:
   casa_auth:
     type: oauth2
-    description: A OAuth2 bearer token in the header must be passed
+    description: An OAuth2 bearer token in the header must be passed
     flow: application
     tokenUrl: https://dc.gluu.org/oxauth/restv1/token
     
