@@ -71,6 +71,17 @@
             <artifactId>oxcore-persistence-cdi</artifactId>
             <version>${ox.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxtrust-model</artifactId>
+            <version>${ox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         
 		<!-- WELD -->
 		<dependency>

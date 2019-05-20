@@ -3,7 +3,13 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.LdapSettings;
-import org.gluu.casa.core.model.*;
+import org.gluu.casa.core.model.CustomScript;
+import org.gluu.casa.core.model.GluuOrganization;
+import org.gluu.casa.core.model.oxAuthConfiguration;
+import org.gluu.casa.core.model.oxTrustConfiguration;
+import org.gluu.casa.core.model.Person;
+import org.gluu.oxtrust.model.GluuConfiguration;
+import org.gluu.oxtrust.model.OrganizationalUnit;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
 import org.gluu.persist.PersistenceEntryManager;
@@ -52,7 +58,7 @@ public class PersistenceService implements IPersistenceService {
 
     private JsonNode oxAuthConfStatic;
 
-    private JsonNode oxTrustConfCacheRefresh;
+    private boolean backendLdapEnabled;
 
     private Set<String> personCustomObjectClasses;
 
@@ -236,24 +242,8 @@ public class PersistenceService implements IPersistenceService {
         return cacheConfiguration;
     }
 
-    /**
-     * Tries to determine whether local installation of Gluu is using a backend LDAP. This reads the OxTrust configuration
-     * Json and inspects inside property "sourceConfigs"
-     * @return A boolean value
-     */
     public boolean isBackendLdapEnabled() {
-
-        try {
-            if (oxTrustConfCacheRefresh != null) {
-                List<Boolean> enabledList = new ArrayList<>();
-                oxTrustConfCacheRefresh.get("sourceConfigs").forEach(node -> enabledList.add(node.get("enabled").asBoolean()));
-                return enabledList.stream().anyMatch(Boolean::booleanValue);
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return false;
-
+        return backendLdapEnabled;
     }
 
     public boolean authenticate(String uid, String pass) throws Exception {
@@ -304,8 +294,11 @@ public class PersistenceService implements IPersistenceService {
 
             GluuConfiguration gluuConf = new GluuConfiguration();
             gluuConf.setBaseDn(oxAuthConfStatic.get("baseDn").get("configuration").asText());
+
             gluuConf = find(gluuConf).get(0);
             cacheConfiguration = gluuConf.getCacheConfiguration();
+            backendLdapEnabled = gluuConf.isVdsCacheRefreshEnabled();
+            logger.info("Backend ldap for cache refresh was{} detected", backendLdapEnabled ? "" : " not");
 
             String dn = properties.getProperty(prefix + "oxtrust_ConfigurationEntryDN");
             if (dn != null) {
@@ -347,7 +340,6 @@ public class PersistenceService implements IPersistenceService {
         oxTrustConfiguration confT = get(oxTrustConfiguration.class, dn);
         if (confT != null) {
             JsonNode oxTrustConfApplication = mapper.readTree(confT.getOxTrustConfApplication());
-            oxTrustConfCacheRefresh = mapper.readTree(confT.getOxTrustConfCacheRefresh());
             rootDn = oxTrustConfApplication.get("baseDN").asText();
         }
 
