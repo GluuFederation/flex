@@ -11,8 +11,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OxdClientSettings;
@@ -75,7 +76,8 @@ public class OxdService {
         if (System.getProperty("httpclient.DefaultClientConnManager") != null) {
             client = new ResteasyClientBuilder().build();
         } else {
-            ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(new DefaultHttpClient(new PoolingClientConnectionManager()));
+            HttpClient httpClient = HttpClientBuilder.create().setConnectionManager(new PoolingHttpClientConnectionManager()).build();
+            ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(httpClient);
             client = new ResteasyClientBuilder().httpEngine(engine).build();
         }
 
