@@ -25,7 +25,7 @@
         <casa.version>4.0.0-SNAPSHOT</casa.version>
         <log4j.version>2.8.2</log4j.version>
         <ox.version>4.0.0-SNAPSHOT</ox.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.version>2.9.9</jackson.version>
         <zk.version>8.6.0.1</zk.version>
         <ldapsdk.version>4.0.7</ldapsdk.version>
         <resteasy.version>3.0.21.Final</resteasy.version>
