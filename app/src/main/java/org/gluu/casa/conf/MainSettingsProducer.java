@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -24,9 +25,12 @@ public class MainSettingsProducer {
     @Inject
     private Logger logger;
 
-    private static String getGluuBase() {
+    public static String GLUU_BASE;
+
+    @PostConstruct
+    private void init() {
         String candidateGluuBase = System.getProperty("gluu.base");
-        return (candidateGluuBase == null && !Utils.onWindows()) ? DEFAULT_GLUU_BASE : candidateGluuBase;
+        GLUU_BASE = (candidateGluuBase == null && !Utils.onWindows()) ? DEFAULT_GLUU_BASE : candidateGluuBase;
     }
 
     /**
@@ -45,12 +49,11 @@ public class MainSettingsProducer {
         MainSettings settings = null;
         logger.info("init. Obtaining global settings");
 
-        String gluuBase = getGluuBase();
-        logger.info("init. Gluu base inferred was {}", gluuBase);
+        logger.info("init. Gluu base inferred was {}", GLUU_BASE);
 
-        if (gluuBase != null) {
+        if (GLUU_BASE != null) {
             //Get a reference to the config-file
-            Path srcConfigFilePath = getConfigFilePath(gluuBase);
+            Path srcConfigFilePath = getConfigFilePath(GLUU_BASE);
 
             if (srcConfigFilePath == null) {
                 logger.error("init. Cannot read configuration file {}", CONF_FILE_RELATIVE_PATH);

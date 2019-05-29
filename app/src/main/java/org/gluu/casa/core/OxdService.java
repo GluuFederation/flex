@@ -281,7 +281,7 @@ public class OxdService {
     private <T> T restResponse(IParams params, String path, String token, Class<T> responseClass) throws Exception {
 
         String payload = mapper.writeValueAsString(params);
-        logger.trace("Sending /{} request to oxd-https-extension with payload \n{}", path, payload);
+        logger.trace("Sending /{} request to oxd-server with payload \n{}", path, payload);
 
         String authz = StringUtils.isEmpty(token) ? null : "Bearer " + token;
         ResteasyWebTarget target = client.target(String.format("https://%s:%s/%s", config.getHost(), config.getPort(), path));

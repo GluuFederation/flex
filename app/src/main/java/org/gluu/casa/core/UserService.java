@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 public class UserService {
 
     private static final String PREFERRED_METHOD_ATTR = "oxPreferredMethod";
-    private static final String ADMIN_LOCK_FILE = "administrable";
+    private static final String ADMIN_LOCK_FILE = ".administrable";
     private static final String BASE_PATH = System.getProperty("server.base");
 
     @Inject

@@ -3,6 +3,7 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.LdapSettings;
+import org.gluu.casa.conf.MainSettingsProducer;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.model.GluuOrganization;
 import org.gluu.casa.core.model.oxAuthConfiguration;
@@ -29,6 +30,8 @@ import org.slf4j.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.FileReader;
+import java.io.Reader;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -284,23 +287,20 @@ public class PersistenceService implements IPersistenceService {
 
     }
 
-    private boolean loadApplianceSettings(String prefix, Properties properties) {
+    private boolean loadApplianceSettings(Properties properties) {
 
         boolean success = false;
         try {
-            loadOxAuthSettings(properties.getProperty(prefix + "oxauth_ConfigurationEntryDN"));
+            loadOxAuthSettings(properties.getProperty("oxauth_ConfigurationEntryDN"));
             rootDn = "o=gluu";
             success = true;
 
-            GluuConfiguration gluuConf = new GluuConfiguration();
-            gluuConf.setBaseDn(oxAuthConfStatic.get("baseDn").get("configuration").asText());
-
-            gluuConf = find(gluuConf).get(0);
+            GluuConfiguration gluuConf = get(GluuConfiguration.class, oxAuthConfStatic.get("baseDn").get("configuration").asText());
             cacheConfiguration = gluuConf.getCacheConfiguration();
             backendLdapEnabled = gluuConf.isVdsCacheRefreshEnabled();
             logger.info("Backend ldap for cache refresh was{} detected", backendLdapEnabled ? "" : " not");
 
-            String dn = properties.getProperty(prefix + "oxtrust_ConfigurationEntryDN");
+            String dn = properties.getProperty("oxtrust_ConfigurationEntryDN");
             if (dn != null) {
                 loadOxTrustSettings(dn);
             }
@@ -392,7 +392,7 @@ public class PersistenceService implements IPersistenceService {
 
             type = factory.getPersistenceType();
             logger.info("Underlying database of type '{}' detected", type);
-            file = String.format("/etc/gluu/conf/%s", persistenceConf.getFileName());
+            file = String.format("%s/conf/%s", MainSettingsProducer.GLUU_BASE, persistenceConf.getFileName());
             logger.info("Using config file: {}", file);
 
             //Fill missing data
@@ -422,8 +422,15 @@ public class PersistenceService implements IPersistenceService {
                 if (type.equals(LdapSettings.BACKEND.LDAP.getValue())) {
                     ldapOperationService = (LdapOperationService) entryManager.getOperationService();
                 }
-                //Initialize important class members
-                ret = loadApplianceSettings(type + ".", backendProperties);
+                try (Reader f = new FileReader(String.format("%s/conf/gluu.properties", MainSettingsProducer.GLUU_BASE))) {
+
+                    Properties generalProps = new Properties();
+                    generalProps.load(f);
+                    //Initialize important class members
+                    ret = loadApplianceSettings(generalProps);
+                } catch (Exception e) {
+                    logger.error("Fatal: gluu.properties not readable", e);
+                }
             }
         } else {
             logger.error("No persistence factory found for type '{}'", type);
