@@ -6,6 +6,7 @@ import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.misc.AppStateEnum;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.plugins.authnmethod.*;
 import org.gluu.casa.timer.*;
 import org.gluu.oxauth.model.util.SecurityProviderUtility;
 import org.quartz.JobExecutionContext;
@@ -29,7 +30,8 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     public static final Pair<Integer, Integer> BOUNDS_MINCREDS_2FA = new Pair<>(1, 3);
     public static final String DEFAULT_ACR = "casa";
-    public static final List<String> DEFAULT_SUPPORTED_METHODS = Arrays.asList("u2f", "otp", "super_gluu", "twilio_sms");
+    public static final List<String> DEFAULT_SUPPORTED_METHODS = Arrays.asList(
+            SecurityKey2Extension.ACR, SecurityKeyExtension.ACR, OTPExtension.ACR, SuperGluuExtension.ACR, OTPSmsExtension.ACR);
 
     private static final int RETRIES = 15;
     private static final int RETRY_INTERVAL = 20;
@@ -146,7 +148,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                     computePassResetable();
                     compute2FAEnforcementPolicy();
 
-                    if (oxdService.initialize()) {
+                    if (oxdService.initialize(settings.getOxdSettings(true))) {
                         extManager.scan();
                         computeAcrPluginMapping();
 

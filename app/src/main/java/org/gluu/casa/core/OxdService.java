@@ -11,14 +11,12 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.rest.RSUtils;
 import org.gluu.oxd.common.params.GetAuthorizationUrlParams;
 import org.gluu.oxd.common.params.GetClientTokenParams;
 import org.gluu.oxd.common.params.GetLogoutUrlParams;
@@ -30,9 +28,7 @@ import org.gluu.oxd.common.params.RemoveSiteParams;
 import org.gluu.oxd.common.params.UpdateSiteParams;
 import org.gluu.oxd.common.response.*;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
@@ -71,23 +67,12 @@ public class OxdService {
     @PostConstruct
     public void inited() {
         mapper =  new ObjectMapper();
-
-        //provide means to revert to default connection manager... just in case
-        if (System.getProperty("httpclient.DefaultClientConnManager") != null) {
-            client = new ResteasyClientBuilder().build();
-        } else {
-            HttpClient httpClient = HttpClientBuilder.create().setConnectionManager(new PoolingHttpClientConnectionManager()).build();
-            ApacheHttpClient4Engine engine = new ApacheHttpClient4Engine(httpClient);
-            client = new ResteasyClientBuilder().httpEngine(engine).build();
-        }
-
+        client = RSUtils.getClient();
     }
 
-    public boolean initialize() {
+    public boolean initialize(OxdSettings oxdConfig) {
 
         boolean success = false;
-        OxdSettings oxdConfig = settings.getOxdSettings();
-
         if (oxdConfig == null) {
             logger.error("No oxd configuration was provided");
         } else {

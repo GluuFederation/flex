@@ -125,7 +125,11 @@ public class MainSettings {
     }
 
     public OxdSettings getOxdSettings() {
-        return getInMemoryValue("oxdSettings", TR_OXDSETTINGS);
+        return getOxdSettings(false);
+    }
+
+    public OxdSettings getOxdSettings(boolean skipStore) {
+        return skipStore ? oxdSettings : getInMemoryValue("oxdSettings", TR_OXDSETTINGS);
     }
 
     public Integer getMinCredsFor2FA() {
@@ -230,7 +234,7 @@ public class MainSettings {
                     try {
                         //Convert this field value to json
                         String value = mapper.writeValueAsString(f.get(this));
-                        //Underlying oxcore library for Redis access does not like classes not implementing Serializable,
+                        //Underlying oxcore library for Redis access does not like non-Serializable classes,
                         //so only strings representations are stored
                         storeService.put(INMEM_PREFIX + f.getName(), value);
                     } catch (Exception e) {

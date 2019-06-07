@@ -38,7 +38,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.gluu</groupId>
             <artifactId>oxauth-model</artifactId>
@@ -54,6 +53,28 @@
             <groupId>org.gluu</groupId>
             <artifactId>oxauth-client</artifactId>
             <version>${ox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxauth-fido2-server</artifactId>
+            <version>${ox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxauth-fido2-client</artifactId>
+            <version>${ox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
@@ -250,23 +271,39 @@
                 </configuration>
             </plugin>
 
-            <!-- Remove beans.xml from ocore-service jar. It allows disabling jar scanning by Weld. It produces lot of errors as is -->
+            <!-- Remove beans.xml from oxcore-service and oxauth-fido2-server jars.
+            It allows disabling jar scanning by Weld. It produces lots of errors as is -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>truezip-maven-plugin</artifactId>
                 <version>1.1</version>
                 <executions>
                     <execution>
-                        <id>remove-a-file-in-sub-archive</id>
+                        <id>remove-beans-file-oxcore-service</id>
                         <phase>package</phase>
                         <goals>
                             <goal>remove</goal>
                         </goals>
                         <configuration>
                             <fileset>
-                                <directory>target/casa-${casa.version}.war/WEB-INF/lib/oxcore-service-${ox.version}.jar/META-INF</directory>
+                                <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/oxcore-service-${ox.version}.jar</directory>
                                 <includes>
-                                    <include>beans.xml</include>
+                                    <include>META-INF/beans.xml</include>
+                                </includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>remove-beans-file-oxauth-fido2-server</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>remove</goal>
+                        </goals>
+                        <configuration>
+                            <fileset>
+                                <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/oxauth-fido2-server-${ox.version}.jar</directory>
+                                <includes>
+                                    <include>META-INF/beans.xml</include>
                                 </includes>
                             </fileset>
                         </configuration>

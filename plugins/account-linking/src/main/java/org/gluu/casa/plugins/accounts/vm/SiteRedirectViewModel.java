@@ -61,6 +61,7 @@ public class SiteRedirectViewModel {
     private String getPassportToken() {
 
         try {
+            //TODO: why a RS client here, using mapper.readTree(URL) should suffice?
             ResteasyClient client = new ResteasyClientBuilder().build();
             String url = String.format("%s/passport/token", serverUrl);
             logger.info("Requesting token at {}", url);
