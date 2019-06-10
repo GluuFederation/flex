@@ -119,7 +119,7 @@ public class FSPluginChecker extends JobListenerSupport {
                         || fileMatch.length() != file.length()) {
                     logger.info("File for plugin {} has changed. Plugin will be redeployed", pluginId);
                     toDelete.add(pair);
-                    toAdd.add(pair);
+                    toAdd.add(new Pair<>(pluginId, fileMatch));
                 }
             }
         }

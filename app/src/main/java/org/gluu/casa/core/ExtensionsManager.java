@@ -109,14 +109,12 @@ public class ExtensionsManager {
         //Removed the undesired
         toBeRemoved.stream().map(Pair::getX).forEach(id -> {
 
-            if (Utils.firstTrue(knownPlugins, pi -> pi.getId().equals(id)) >= 0) {
+            int i = Utils.firstTrue(plugins, pi -> pi.getId().equals(id));
+            if (i >= 0) {
                 logger.info("Removing plugin {}", id);
 
                 if (deletePlugin(id)) {
-                    int i = Utils.firstTrue(plugins, pi -> pi.getId().equals(id));
-                    if (i >= 0) {
-                        plugins.remove(i);
-                    }
+                    plugins.remove(i);
                 } else {
                     logger.error("Plugin removal failure!");
                 }
@@ -141,9 +139,9 @@ public class ExtensionsManager {
             logger.info("Total plugins loaded {}", plugins.size());
 
             if (files.size() > plugins.size()) {
-                //Some plugins didn't start successfully, let's remove them then
-                Set<String> loadedPaths = plugins.stream().map(pi -> pi.getPath().toString()).collect(Collectors.toSet());
-                files.stream().filter(p -> !loadedPaths.contains(p.toString())).forEach(p -> {
+                //Some plugins didn't start successfully, let's remove them from disk then
+                Set<Path> loadedPaths = plugins.stream().map(PluginInfo::getPath).collect(Collectors.toSet());
+                files.stream().filter(p -> !loadedPaths.contains(p)).forEach(p -> {
                     try {
                         Files.delete(p);
                     } catch (Exception e) {
