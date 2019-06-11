@@ -38,8 +38,9 @@ public class SingletonExtensionFactory extends DefaultExtensionFactory {
     }
 
     void removeSingleton(String extensionClassName) {
-        logger.info("Removing extension for {}", extensionClassName);
-        singletons.remove(extensionClassName);
+        if (singletons.remove(extensionClassName) != null) {
+            logger.info("Extension for {} was removed", extensionClassName);
+        }
     }
 
 }

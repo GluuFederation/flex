@@ -197,7 +197,10 @@ public class ExtensionsManager {
             }
 
             indexes.forEach(i -> plugins.remove(i.intValue()));
-            logger.info("{}Total plugins started: {}", started > 0 ? "\n" : "", started);
+            if (started > 0) {
+                logger.info("");
+            }
+            logger.info("Total plugins started: {}", started);
             zkService.refreshLabels();
         }
 
