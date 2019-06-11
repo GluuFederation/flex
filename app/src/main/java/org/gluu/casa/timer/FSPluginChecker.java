@@ -44,6 +44,8 @@ public class FSPluginChecker extends JobListenerSupport {
 
     private Path pluginsRoot;
 
+    private Map<String, Long> timeStamps;
+
     private List<Pair<String, File>> contents;
 
     public void activate(int gap) {
@@ -110,13 +112,13 @@ public class FSPluginChecker extends JobListenerSupport {
         //Search those matching but with differences in file contents
         for (Pair<String, File> pair : contents) {
             String pluginId = pair.getX();
-            File file = pair.getY();
             File fileMatch = currContents.stream().filter(p -> p.getX().equals(pluginId))
                     .findFirst().map(Pair::getY).orElse(null);
 
             if (fileMatch != null) {
-                if (!fileMatch.getName().equals(file.getName()) || fileMatch.lastModified() != file.lastModified()
-                        || fileMatch.length() != file.length()) {
+                String name = fileMatch.getName();
+                if (!name.equals(pair.getY().getName())
+                        || fileMatch.lastModified() != Optional.ofNullable(timeStamps.get(name)).orElse(0L)) {
                     logger.info("File for plugin {} has changed. Plugin will be redeployed", pluginId);
                     toDelete.add(pair);
                     toAdd.add(new Pair<>(pluginId, fileMatch));
@@ -125,6 +127,8 @@ public class FSPluginChecker extends JobListenerSupport {
         }
         extManager.updatePlugins(toAdd, toDelete);
         contents = currContents;
+        //Update timestamps
+        timeStamps = contents.stream().collect(Collectors.toMap(p -> p.getY().getName(), p -> p.getY().lastModified()));
 
     }
 
@@ -185,6 +189,7 @@ public class FSPluginChecker extends JobListenerSupport {
         jobName = getClass().getSimpleName() + "_fschecker";
         pluginsRoot = extManager.getPluginsRoot();
         contents = new ArrayList<>();
+        timeStamps = new HashMap<>();
     }
 
 }

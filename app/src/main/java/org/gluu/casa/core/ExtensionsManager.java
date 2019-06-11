@@ -108,21 +108,36 @@ public class ExtensionsManager {
 
         //Removed the undesired
         toBeRemoved.stream().map(Pair::getX).forEach(id -> {
-
             int i = Utils.firstTrue(plugins, pi -> pi.getId().equals(id));
-            if (i >= 0) {
-                logger.info("Removing plugin {}", id);
 
-                if (deletePlugin(id)) {
-                    plugins.remove(i);
+            if (i >= 0) {
+                //Determine if it needs to be removed or stopped only
+                int j = Utils.firstTrue(toBeAdded, p -> p.getX().equals(id));
+                if (j >= 0) {
+                    logger.info("Unloading plugin {}", id);
+
+                    //Unloads prevents the plugin file to be removed from filesystem
+                    if (unloadPlugin(id)) {
+                        //It will be re-added when looping through the list toBeAdded
+                        plugins.remove(i);
+                    } else {
+                        logger.error("Failure unloading plugin!. Plugin won't be redeployed");
+                        toBeAdded.remove(j);
+                    }
                 } else {
-                    logger.error("Plugin removal failure!");
+                    logger.info("Removing plugin {}", id);
+
+                    if (deletePlugin(id)) {
+                        plugins.remove(i);
+                    } else {
+                        logger.error("Plugin removal failure!");
+                    }
                 }
             }
         });
 
         if (toBeAdded.size() > 0) {
-            logger.info("Loading external plugins...");
+            logger.info("Loading new plugins...");
             //Add the ones that appeared recently
             List<Path> files = toBeAdded.stream().map(Pair::getY).map(File::toPath).collect(Collectors.toList());
 
@@ -171,8 +186,6 @@ public class ExtensionsManager {
                         if (classNames.size() > 0) {
                             logger.info("Plugin's extensions are at: {}", classNames.toString());
                         }
-                        //Add a breaking space
-                        logger.info("");
                     } else {
                         //We'd better remove it since it can cause unstability
                         logger.warn("Plugin {} failed to start, will be deleted", pluginId);
@@ -184,7 +197,7 @@ public class ExtensionsManager {
             }
 
             indexes.forEach(i -> plugins.remove(i.intValue()));
-            logger.info("Total plugins started: {}{}", started, started > 0 ? "\n" : "");
+            logger.info("{}Total plugins started: {}", started > 0 ? "\n" : "", started);
             zkService.refreshLabels();
         }
 
@@ -263,7 +276,7 @@ public class ExtensionsManager {
         return pluginManager.loadPlugin(path);
     }
 
-    private boolean deletePlugin(String pluginId) {
+    private boolean stopPlugin(String pluginId) {
 
         PluginState state = pluginManager.stopPlugin(pluginId);
         try {
@@ -277,7 +290,29 @@ public class ExtensionsManager {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return state.equals(PluginState.STOPPED) && pluginManager.deletePlugin(pluginId);
+        return state.equals(PluginState.STOPPED);
+
+    }
+
+    private boolean unloadPlugin(String pluginId) {
+
+        try {
+            return stopPlugin(pluginId) && pluginManager.unloadPlugin(pluginId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+
+    }
+
+    private boolean deletePlugin(String pluginId) {
+
+        try {
+            return stopPlugin(pluginId) && pluginManager.deletePlugin(pluginId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
 
     }
 
