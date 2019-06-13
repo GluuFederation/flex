@@ -22,7 +22,7 @@ public class CustomScript extends Entry {
     @AttributeName
     private String displayName;
 
-    @AttributeName(name = "gluuStatus")
+    @AttributeName(name = "oxEnabled")
     private Boolean enabled;
 
     @JsonObject

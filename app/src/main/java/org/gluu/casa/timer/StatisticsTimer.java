@@ -140,7 +140,7 @@ public class StatisticsTimer extends JobListenerSupport {
                     }
                 }
                 int daysCovered = 1;
-                List<Map<String, Object>> plugins = Collections.emptyList();
+                List<Map<String, Object>> plugins = null;
 
                 if (tmpExists) {
                     byte[] bytes = Files.readAllBytes(tmpFilePath);
@@ -149,7 +149,7 @@ public class StatisticsTimer extends JobListenerSupport {
 
                     plugins = (List<Map<String, Object>>) currStats.get("plugins");
                 }
-                plugins = getPluginInfo(plugins);
+                plugins = getPluginInfo(Optional.ofNullable(plugins).orElse(Collections.emptyList()));
                 serialize(month, year, activeUsers, daysCovered, plugins, statsPath, tmpFilePath);
             }
         } catch (Exception e) {

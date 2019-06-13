@@ -216,12 +216,6 @@ public class MainSettings {
         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
-    //TODO: are u sure?
-    //Needed for serializing (eg to disk)
-    Path getFilePath() {
-        return filePath;
-    }
-
     void setFilePath(Path filePath) {
         this.filePath = filePath;
     }
