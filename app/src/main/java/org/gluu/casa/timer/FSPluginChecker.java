@@ -154,7 +154,7 @@ public class FSPluginChecker extends JobListenerSupport {
                             logger.info("File '{}' implements plugin {}", name, pluginId);
 
                             if (pluginIdsList.contains(pluginId)) {
-                                logger.info("There is a file already implementing this plugin. Current file will be removed");
+                                logger.info("There is another file already implementing this plugin. Current file will be removed");
                             } else {
                                 pluginIdsList.add(pluginId);
                                 currContents.add(new Pair<>(pluginId, f));

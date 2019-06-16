@@ -14,7 +14,7 @@
                         <z:div children="@load(vm.authnMethods)">
                             <z:template name="children">
                                 <li>
-                                    <a class="db pv1 pl4 o-80 ${css.menuItem}" href="${c:cat3(zkService.contextPath, assetsService.prefix, vm.getAuthnMethodPageUrl(each))}">
+                                    <a class="db pv1 pl4 o-80 ${css.menuItem}" href="${c:cat(zkService.contextPath, vm.getAuthnMethodPageUrl(each))}">
                                         <span class="collapsible-menu-item di">${c:l(each.panelTitleKey)}</span>
                                     </a>
                                 </li>

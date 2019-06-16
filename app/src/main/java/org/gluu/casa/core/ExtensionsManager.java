@@ -154,7 +154,7 @@ public class ExtensionsManager {
             logger.info("Total plugins loaded {}", plugins.size());
 
             if (files.size() > plugins.size()) {
-                //Some plugins didn't start successfully, let's remove them from disk then
+                //Some plugins didn't load successfully, let's remove them from disk then
                 Set<Path> loadedPaths = plugins.stream().map(PluginInfo::getPath).collect(Collectors.toSet());
                 files.stream().filter(p -> !loadedPaths.contains(p)).forEach(p -> {
                     try {

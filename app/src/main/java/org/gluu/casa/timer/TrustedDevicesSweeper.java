@@ -77,7 +77,7 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
     public void activate(int gap) {
         try {
             timerService.addListener(this, quartzJobName);
-            //Start in one second and repeat indefinitely once every day
+            //Start in gap seconds and repeat indefinitely once every day
             timerService.schedule(quartzJobName, gap, -1, oneDay);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
