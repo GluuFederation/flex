@@ -253,18 +253,26 @@ public class PersistenceService implements IPersistenceService {
         return entryManager.authenticate(rootDn, uid, pass);
     }
 
-    public void prepareFidoBranch(String userInum){
+    public void prepareFidoBranch(String userInum) {
+        prepareBranch(userInum, "fido");
+    }
 
-        String dn = "ou=fido," + getPersonDn(userInum);
+    public void prepareFido2Branch(String userInum) {
+        prepareBranch(userInum, "fido2_register");
+    }
+
+    private void prepareBranch(String userInum, String ou) {
+
+        String dn = String.format("ou=%s,%s", ou, getPersonDn(userInum));
         OrganizationalUnit entry = get(OrganizationalUnit.class, dn);
         if (entry == null) {
-            logger.info("Non existing fido branch for {}, creating...", userInum);
+            logger.info("Non existing {} branch for {}, creating...", ou, userInum);
             entry = new OrganizationalUnit();
-            entry.setOu("fido");
+            entry.setOu(ou);
             entry.setDn(dn);
 
             if (!add(entry)) {
-                logger.error("Could not create fido branch");
+                logger.error("Could not create {} branch", ou);
             }
         }
 
