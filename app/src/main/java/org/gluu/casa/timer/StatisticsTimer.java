@@ -42,8 +42,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class requires Java SE 8u151 or higher with crypto.policy=unlimited in JRE\lib\security\java.security or
- * a call to Security.setProperty("crypto.policy", "unlimited"). This is guaranteed in Gluu server 3.1.5 onwards.
+ * Generates Casa usage data.
+ * <p>This class requires Java SE 8u151 or higher with crypto.policy=unlimited in JRE\lib\security\java.security or
+ * a call to Security.setProperty("crypto.policy", "unlimited"). This is guaranteed in Gluu server 3.1.5 onwards.</p>
  * @author jgomer
  */
 @ApplicationScoped
@@ -119,22 +120,27 @@ public class StatisticsTimer extends JobListenerSupport {
         long now = System.currentTimeMillis();
         ZonedDateTime t = ZonedDateTime.ofInstant(Instant.ofEpochMilli(now), ZoneOffset.UTC);
 
+        //Computes current month and year
         String month = t.getMonth().toString();
         String year = Integer.toString(t.getYear());
         Path tmpUsersFile = Paths.get(TEMP_PATH, "u" + month + year);
 
         try{
             int activeUsers = getUpdateActiveUsers(tmpUsersFile, now);
+            //Computes the moment of time (relative to UNIX epoch) where the current day started (assuming UTC time)
             long todayStartAt = now - now % DAY_IN_MILLIS;
 
+            //The following check guarantees the logic below is executed only once a day (normally between 00:00:00 UTC and 00:59:59UTC)
             if (now - todayStartAt < HOUR_IN_MILLIS) {
 
+                //File pointed by tmpFilePath contains plain plugin data and overall days covered
                 Path tmpFilePath = Paths.get(TEMP_PATH, month + year);
+                //File pointed by statsPath contains encrypted data of tmpFilePath plus some extra descriptive info
                 Path statsPath = Paths.get(STATS_PATH, month + year);
                 boolean tmpExists = Files.isRegularFile(tmpFilePath);
 
                 if (tmpExists) {
-                    //This prevents to inflate statistics when the app is restarted
+                    //This check prevents to inflate statistics when the app is restarted several times in a day
                     if (tmpFilePath.toFile().lastModified() > todayStartAt) {
                         return;
                     }
@@ -143,13 +149,16 @@ public class StatisticsTimer extends JobListenerSupport {
                 List<Map<String, Object>> plugins = null;
 
                 if (tmpExists) {
+                    //Read stats from tmpFilePath and updates daysCovered variable
                     byte[] bytes = Files.readAllBytes(tmpFilePath);
                     Map<String, Object> currStats = mapper.readValue(bytes, new TypeReference<Map<String, Object>>(){});
                     daysCovered = Integer.parseInt(currStats.get("daysCovered").toString()) + 1;
 
                     plugins = (List<Map<String, Object>>) currStats.get("plugins");
                 }
+                //Updates plugin data
                 plugins = getPluginInfo(Optional.ofNullable(plugins).orElse(Collections.emptyList()));
+                //Saves to disk plain and encrypted file
                 serialize(month, year, activeUsers, daysCovered, plugins, statsPath, tmpFilePath);
             }
         } catch (Exception e) {
@@ -158,6 +167,18 @@ public class StatisticsTimer extends JobListenerSupport {
 
     }
 
+    /**
+     * Reads the file represented by <code>tmpUsersFile</code> (which contains the set of user IDs who have logged in to
+     * any app protected by the server) in a given period, and returns the size of such set. If the time passed in
+     * parameter <code>t</code> falls beyond an hour of the last modified timestamp of such file, the file is updated
+     * to include users who have logged in in the previous hour.
+     * <p>This file is built via standard Java serialization techniques, not Json. It saves some disk space as well as
+     * computing time since this method is called often.</p>
+     * @param tmpUsersFile Path to file (it covers a specific month)
+     * @param t A instant in time (in terms of UNIX epoch)
+     * @return Number of (different) users who have logged in using Gluu Server for the period covered by tmpUsersFile
+     * @throws Exception Anomaly reading or updating the file
+     */
     private int getUpdateActiveUsers(Path tmpUsersFile, long t) throws Exception {
 
         Set<Integer> activeUsers = new HashSet<>();
@@ -181,6 +202,12 @@ public class StatisticsTimer extends JobListenerSupport {
 
     }
 
+    /**
+     * Computes a set of hashed user IDs. IDs are obtained by checking the oxLastLogonTime attribute of LDAP belonging
+     * to the timeframe [<code>timeStamp</code> - 1 hour, <code>timeStamp</code>).
+     * @param timeStamp An time instant (in terms of UNIX epoch)
+     * @return The set built
+     */
     private Set<Integer> lastHourLogins(long timeStamp) {
 
         Set<Integer> huids = new HashSet<>();
@@ -194,8 +221,14 @@ public class StatisticsTimer extends JobListenerSupport {
 
     }
 
+    /**
+     * Computes a list with plugins usage data based on previous data
+     * @param plugins Previous data
+     * @return Up-to-date data
+     */
     private List<Map<String, Object>> getPluginInfo(List<Map<String, Object>> plugins) {
 
+        //Computes a temporary list with info (id + version) about plugins which are currently installed
         List<PluginDescriptor> pluginSummary = new ArrayList<>();
         extManager.getPlugins().stream()
                 .filter(pw -> pw.getDescriptor().getPluginClass().startsWith(GLUU_CASA_PLUGINS_PREFIX)
@@ -204,6 +237,7 @@ public class StatisticsTimer extends JobListenerSupport {
                         new DefaultPluginDescriptor(pw.getPluginId(), null, null, pw.getDescriptor().getVersion(), null, null, null))
                 );
 
+        //Correlates pluginSummary vs. plugins variables and updates the days of usage
         for (Map<String, Object> map : plugins) {
             String pluginId = map.get("pluginId").toString();
             String version = map.get("version").toString();
@@ -215,7 +249,7 @@ public class StatisticsTimer extends JobListenerSupport {
         }
 
         List<Map<String, Object>> list = new ArrayList<>(plugins);
-        //Search plugins added recently
+        //Adds the relevant information found in pluginSummary and not present in plugins
         for (PluginDescriptor pd : pluginSummary) {
             if (plugins.stream().noneMatch(map -> map.get("pluginId").toString().equals(pd.getPluginId())
                     && map.get("version").toString().equals(pd.getVersion()))) {
@@ -231,15 +265,29 @@ public class StatisticsTimer extends JobListenerSupport {
 
     }
 
+    /**
+     * Updates the files referenced by params <code>destination</code> (encrypted) and <code>tempDestination</code> (plain text)
+     * @param month Displayable name of current month
+     * @param year Displayable name of current year
+     * @param activeUsers Number of current users
+     * @param days Number of days actually covered by this update
+     * @param plugins List with up-to-date info about plugins
+     * @param destination References a file to update
+     * @param tmpDestination References a file to update
+     * @throws Exception A problem occurred saving files, encrypting, serializing data, etc.
+     */
     private void serialize(String month, String year, int activeUsers, int days, List<Map<String, Object>> plugins,
                            Path destination, Path tmpDestination) throws Exception {
 
+        //A LinkedHashMap guarantees JSON data is serialized in the same order of key insertion
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("daysCovered", days);
         map.put("plugins", plugins);
 
+        //Overwrites or creates tmpDestination file with info in map
         Files.write(tmpDestination, mapper.writeValueAsBytes(map));
 
+        //Adds more context information to map
         map.put("activeUsers", activeUsers);
         map.put("serverName", serverName);
         map.put("email", email);
@@ -251,11 +299,14 @@ public class StatisticsTimer extends JobListenerSupport {
         //See https://stackoverflow.com/questions/1199058/how-to-use-rsa-to-encrypt-files-huge-data-in-c-sharp
         //https://stackoverflow.com/questions/5583379/what-is-the-limit-to-the-amount-of-data-that-can-be-encrypted-with-rsa
         byte[] encrKey = encrypt(symmetricKey.getEncoded(), pub, "RSA/ECB/PKCS1Padding");
+        //Writes a header to the file consisting of an encrypted key. It will be used to know how to decrypt the remaining contents
         Files.write(destination, encrKey);
         //It always holds that encrKey.size == 256
 
+        //Encrypts a byte array consisting of the info stored in map variable
         byte[] bytes = mapper.writeValueAsBytes(map);
         bytes = encrypt(bytes, symmetricKey, "AES");  // AES/CBC/PKCS5Padding
+        //Appends encrypted data to file
         Files.write(destination, bytes, StandardOpenOption.APPEND);
 
     }
@@ -310,6 +361,7 @@ public class StatisticsTimer extends JobListenerSupport {
             mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             quartzJobName = getClass().getSimpleName() + "_timer";
 
+            //Obtains email and server name from the current Gluu installation
             try (BufferedReader reader = Files.newBufferedReader(Paths.get(SETUP_PROPERTIES_LOCATION))) {
                 Properties p = new Properties();
                 p.load(reader);
@@ -321,6 +373,7 @@ public class StatisticsTimer extends JobListenerSupport {
                 }
             }
 
+            //Create stats directories if missing
             Files.createDirectories(Paths.get(TEMP_PATH));
             Files.createDirectories(Paths.get(STATS_PATH));
 
