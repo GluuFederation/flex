@@ -270,7 +270,7 @@ public class OxdService {
 
         String authz = StringUtils.isEmpty(token) ? null : "Bearer " + token;
         ResteasyWebTarget target = client.target(String.format("https://%s:%s/%s", config.getHost(), config.getPort(), path));
-        target.register(JacksonJsonProvider.class);
+        //target.register(JacksonJsonProvider.class);
 
         Response response = target.request().header("Authorization", authz).post(Entity.json(payload));
         response.bufferEntity();
