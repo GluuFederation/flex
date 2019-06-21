@@ -300,13 +300,9 @@
             			var logo = prov.logo_img
             			var name = prov.displayName ? prov.displayName : provider
 
-            			if (logo == null) {
-            				logo = "img/" + name.toLowerCase() + ".png"
-            			}
-            			if (logo.indexOf("http") != 0) {
-            				//logo is assumed to be located relative to /oxauth/auth/passport
-            				logo = "auth/passport/" + logo
-            			}
+				        if (logo == null) {
+					        logo = "/oxauth/img/glu_icon.png"
+				        }
             			
             			imgMarkup = '<img alt="' + provider + '" src="' + logo + '" width="40"></img>'
             			aMarkup = '<a style="padding:6px;color:black;text-decoration:none" href="javascript:idp_redirect(\'' + provider + '\')">' + imgMarkup + ' ' + name + '</a>' 
