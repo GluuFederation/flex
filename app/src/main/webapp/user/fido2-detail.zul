@@ -1,5 +1,9 @@
 <?page language="xhtml"?>
 <?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<!-- Putting these scripts as part of extra section (see at the bottom) gives trouble in FF and Opera -->
+<?script src="/../oxauth/auth/fido2/js/base64js.js"?>
+<?script src="/../oxauth/auth/fido2/js/base64url.js"?>
+<?script src="/../oxauth/auth/fido2/js/webauthn.js"?>
 <zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.usr.fido2_title}</h:title>
@@ -97,9 +101,6 @@
 
     <z:div self="@define(extra)">
         <z:script src="/scripts/gluu/fido2-util.js" />
-        <z:script src="/../oxauth/auth/fido2/js/base64js.js" />
-        <z:script src="/../oxauth/auth/fido2/js/base64url.js" />
-        <z:script src="/../oxauth/auth/fido2/js/webauthn.js" />
     </z:div>
 
 </zk:zk>

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Named
 @ApplicationScoped
@@ -77,7 +78,7 @@ public class Fido2Service extends BaseService {
             sk.setNickName(entry.getDisplayName());
             devices.add(sk);
         }
-        return devices;
+        return devices.stream().sorted().collect(Collectors.toList());
 
     }
 
@@ -145,6 +146,22 @@ public class Fido2Service extends BaseService {
 
     public boolean verifyRegistration(String tokenResponse) throws Exception {
         return Response.Status.OK.getStatusCode() == attestationService.verify(tokenResponse).getStatus();
+    }
+
+    public SecurityKey getLatestSecurityKey(String userId, long time) {
+
+        SecurityKey sk = null;
+        try {
+            List<SecurityKey> list = getDevices(userId, true);
+            sk = FidoService.getRecentlyCreatedDevice(list, time);
+            if (sk != null && sk.getNickName() != null) {
+                sk = null;    //should have no name
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return sk;
+
     }
 
 }

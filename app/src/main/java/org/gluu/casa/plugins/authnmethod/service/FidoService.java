@@ -153,11 +153,10 @@ public class FidoService extends BaseService {
      * @return The best matching device (only devices added before the time supplied are considered). Null if no suitable
      * device could be found
      */
-    private <T extends FidoDevice> T getRecentlyCreatedDevice(List<T> devices, long time) {
+    public static <T extends FidoDevice> T getRecentlyCreatedDevice(List<T> devices, long time) {
 
         long[] diffs = devices.stream().mapToLong(key -> time - key.getCreationDate().getTime()).toArray();
 
-        logger.trace("getRecentlyCreatedDevice. diffs {}", Arrays.asList(diffs));
         //Search for the smallest time difference
         int i;
         Pair<Long, Integer> min = new Pair<>(Long.MAX_VALUE, -1);

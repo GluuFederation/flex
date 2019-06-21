@@ -3,12 +3,12 @@ package org.gluu.casa.ui.vm.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.gluu.casa.core.pojo.BrowserInfo;
 import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
 import org.gluu.casa.plugins.authnmethod.service.Fido2Service;
 import org.gluu.casa.ui.UIUtils;
-import org.gluu.oxauth.fido2.client.Fido2ClientFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.*;
 import org.zkoss.json.JSONObject;
@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Created by jgomer on 2017-07-23.
  * This is the ViewModel of page fido2-detail.zul. It controls the CRUD of security keys
  */
 @VariableResolver(DelegatingVariableResolver.class)
@@ -78,6 +77,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
         mapper = new ObjectMapper();
         newDevice = new SecurityKey();
         devices = fido2Service.getDevices(user.getId(), true);
+        checkFido2Support();
     }
 
     @AfterCompose
@@ -109,8 +109,9 @@ public class SecurityKey2ViewModel extends UserViewModel {
         String errMessage = null;
         try {
             if (fido2Service.verifyRegistration(mapper.writeValueAsString(event.getData()))) {
-                logger.debug("\nTODO");
-                //TODO: finish enrollment part
+                //pick the most suitable recent entry
+                newDevice = fido2Service.getLatestSecurityKey(user.getId(), System.currentTimeMillis());
+
                 if (newDevice != null) {
                     uiEnrolled = true;
                     BindUtils.postNotifyChange(null, null, this, "uiEnrolled");
@@ -154,6 +155,47 @@ public class SecurityKey2ViewModel extends UserViewModel {
         uiAwaiting = false;
         BindUtils.postNotifyChange(null, null, this, "uiAwaiting");
         UIUtils.showMessageUI(false, message);
+
+    }
+
+    @NotifyChange({"uiEnrolled", "newDevice", "devices"})
+    @Command
+    public void add() {
+
+        if (Utils.isNotEmpty(newDevice.getNickName())) {
+            try {
+                fido2Service.updateDevice(newDevice);
+                devices.add(newDevice);
+                UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
+            } catch (Exception e) {
+                UIUtils.showMessageUI(false, Labels.getLabel("usr.error_updating"));
+                logger.error(e.getMessage(), e);
+            }
+            resetAddSettings();
+        }
+
+    }
+
+    @NotifyChange({"uiEnrolled", "newDevice"})
+    @Command
+    public void cancel() {
+
+        boolean success;
+        try {
+            /*
+             Remove the recently enrolled key. This is so because once the user touches his key button, oxAuth creates the
+             corresponding entry in LDAP, and if the user regrets adding the current key by not supplying a nickname
+             (and thus pressing cancel), we need to be obliterate the entry
+             */
+            success = fido2Service.removeDevice(newDevice);
+        } catch (Exception e) {
+            success = false;
+            logger.error(e.getMessage(), e);
+        }
+        if (!success) {
+            UIUtils.showMessageUI(false);
+        }
+        resetAddSettings();
 
     }
 
@@ -226,6 +268,31 @@ public class SecurityKey2ViewModel extends UserViewModel {
                         }
                     }
                 });
+    }
+
+    private void resetAddSettings() {
+        uiEnrolled = false;
+        newDevice = new SecurityKey();
+    }
+
+    private void checkFido2Support() {
+
+        boolean probablySupported = false;
+        try {
+            BrowserInfo binfo = getBrowserInfo();
+            String name = binfo.getName().toLowerCase();
+            int browserVer = binfo.getMainVersion();
+
+            probablySupported = (name.contains("edge") && browserVer >= 18) || (name.contains("firefox") && browserVer >= 64)
+                    || (name.contains("chrome") && browserVer >= 71) || (name.contains("opera") && browserVer >= 54);
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        if (!probablySupported) {
+            UIUtils.showMessageUI(false, Labels.getLabel("usr.fido2_unsupported_browser"));
+        }
+
     }
 
 }
