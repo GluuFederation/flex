@@ -46,7 +46,7 @@ class PersonAuthentication(PersonAuthenticationType):
         self.uid_attr = self.getLocalPrimaryKey()
 
         custScriptService = CdiUtil.bean(CustomScriptService)
-        self.scriptsList = custScriptService.findCustomScripts(Collections.singletonList(CustomScriptType.PERSON_AUTHENTICATION), "oxConfigurationProperty", "displayName", "gluuStatus", "oxLevel")
+        self.scriptsList = custScriptService.findCustomScripts(Collections.singletonList(CustomScriptType.PERSON_AUTHENTICATION), "oxConfigurationProperty", "displayName", "oxEnabled", "oxLevel")
         dynamicMethods = self.computeMethods(self.scriptsList)
 
         if len(dynamicMethods) > 0:
@@ -80,6 +80,7 @@ class PersonAuthentication(PersonAuthenticationType):
             mobile_methods = configurationAttributes.get("mobile_methods")
             self.mobile_methods = [] if mobile_methods == None else StringHelper.split(mobile_methods.getValue2(), ",")
 
+        self.passportDN = self.getPassportConfigDN()
         print "Casa. init. Initialized successfully"
         return True
 
@@ -310,7 +311,7 @@ class PersonAuthentication(PersonAuthenticationType):
         #Pick (one) attribute where user id is stored (e.g. uid/mail)
         oxAuthInitializer = CdiUtil.bean(AppInitializer)
         #This call does not create anything, it's like a getter (see oxAuth's AppInitializer)
-        ldapAuthConfigs = oxAuthInitializer.createLdapAuthConfigs()
+        ldapAuthConfigs = oxAuthInitializer.createPersistenceAuthConfigs()
         uid_attr = ldapAuthConfigs.get(0).getLocalPrimaryKey()
         print "Casa. init. uid attribute is '%s'" % uid_attr
         return uid_attr
@@ -662,10 +663,10 @@ class PersonAuthentication(PersonAuthenticationType):
 
     def getPreselectionIDPParams(self):
     
-        param = { "saml" : None, "social": None }
+        param = { "saml": None, "social": None }
         acrs = [self.getAcrFor(True), self.getAcrFor(False)]
         custScriptService = CdiUtil.bean(CustomScriptService)
-        scriptsList = custScriptService.findCustomScripts(Collections.singletonList(CustomScriptType.PERSON_AUTHENTICATION), "oxConfigurationProperty", "displayName", "gluuStatus")
+        scriptsList = custScriptService.findCustomScripts(Collections.singletonList(CustomScriptType.PERSON_AUTHENTICATION), "oxConfigurationProperty", "displayName", "oxEnabled")
 
         for customScript in scriptsList:
             if customScript.isEnabled() and customScript.getName() in acrs:
@@ -690,7 +691,20 @@ class PersonAuthentication(PersonAuthenticationType):
     def getAcrFor(self, isSaml):
         return "passport_saml" if isSaml else "passport_social"        
 
-    
+
+    def getPassportConfigDN(self):
+
+        f = open('/etc/gluu/conf/gluu.properties', 'r')
+        for line in f:
+            prop = line.split("=")
+            if prop[0] == "oxpassport_ConfigurationEntryDN":
+              prop.pop(0)
+              break
+
+        f.close()
+        return "=".join(prop).strip()
+
+
     def parseProviderConfigs(self):
 
         print "Casa. parseProviderConfigs. Adding external providers"
@@ -698,11 +712,10 @@ class PersonAuthentication(PersonAuthenticationType):
         preSelParams = self.getPreselectionIDPParams()
 
         try:
-            passportDN = CdiUtil.bean(ConfigurationFactory).getPersistenceConfiguration().getConfiguration().getString("oxpassport_ConfigurationEntryDN")
             entryManager = CdiUtil.bean(AppInitializer).createPersistenceEntryManager()
 
             config = LdapOxPassportConfiguration()
-            config = entryManager.find(config.getClass(), passportDN).getPassportConfiguration()
+            config = entryManager.find(config.getClass(), self.passportDN).getPassportConfiguration()
             config = config.getProviders() if config != None else config
 
             if config != None and len(config) > 0:      
