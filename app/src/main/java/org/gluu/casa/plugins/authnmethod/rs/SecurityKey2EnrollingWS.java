@@ -163,6 +163,7 @@ public class SecurityKey2EnrollingWS {
     @PostConstruct
     private void init() {
         logger.trace("Service inited");
+        mapper = new ObjectMapper();
 
         usersWithPendingRegistrations = ExpiringMap.builder()
                 .maxSize(MAX_STORED_ENTRIES).expiration(TIME_WINDOW_DEFAULT, TimeUnit.MINUTES).build();
