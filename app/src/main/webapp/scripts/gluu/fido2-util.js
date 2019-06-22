@@ -29,7 +29,7 @@ function startAttestation(request) {
                 errObj['message'] = err.message
             } else {
                 let messages = err.messages
-                if (messages && messages.lenth > 0) {
+                if (messages && messages.length > 0) {
                     errObj['message'] = messages[0].message
                 }
             }

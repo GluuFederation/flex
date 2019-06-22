@@ -9,7 +9,7 @@ info:
     url: https://github.com/GluuFederation/casa/blob/master/LICENSE.md
 
 #Demo server host
-host: cred3.gluu.org
+host: dc.gluu.org
 
 basePath: /casa/rest
 schemes:

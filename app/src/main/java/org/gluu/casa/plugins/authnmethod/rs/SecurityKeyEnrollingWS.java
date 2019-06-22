@@ -137,7 +137,6 @@ public class SecurityKeyEnrollingWS {
 
     }
 
-
     @GET
     @Path("creds/{userid}/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -164,7 +163,8 @@ public class SecurityKeyEnrollingWS {
         } else if (!recentlyEnrolledDevices.containsKey(deviceId)) {
             result = FinishCode.NO_MATCH_OR_EXPIRED;
         } else {
-            FidoDevice dev = getDeviceWithID(deviceId);
+            FidoDevice dev = new FidoDevice();
+            dev.setId(deviceId);
             dev.setNickName(nickName);
 
             if (u2fService.updateDevice(dev)) {
@@ -176,12 +176,6 @@ public class SecurityKeyEnrollingWS {
         }
         return result.getResponse();
 
-    }
-
-    private FidoDevice getDeviceWithID(String id) {
-        FidoDevice dev = new FidoDevice();
-        dev.setId(id);
-        return dev;
     }
 
     @PostConstruct
