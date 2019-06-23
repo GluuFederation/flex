@@ -6,8 +6,10 @@ This is a client-side only application (HTML+JS). Intended to be illustrative an
 
 - To try it, HTML files have to be served via HTTP/HTTPs (use a server such as Apache)
 
+- Use fully qualified domain names for both client and server. `localhost` will not work
+
 - Edit file **globals.js** prior to use. Ensure to add your domain to the authorized Javascript origins of the OpenID client
 
-- Ensure to include this domain in [casa cors config](https://gluu.org/docs/casa/3.1.6/developer/rest-services/#cross-domain-consumption-of-services)
+- Ensure to include this domain in [casa cors config](https://gluu.org/docs/casa/4.0/developer/rest-services/#cross-domain-consumption-of-services)
 
 - This app has been tested on Firefox only

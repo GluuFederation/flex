@@ -105,13 +105,16 @@ public class SecurityKey2EnrollingWS {
 
                     if (fido2Service.verifyRegistration(jsonStr)) {
                         newDevice = fido2Service.getLatestSecurityKey(userId, System.currentTimeMillis());
+
                         if (newDevice == null){
+                            logger.info("Entry of recently registered fido 2 key could not be found for user {}", userId);
                             result = RegistrationCode.FAILED;
                         } else {
                             recentlyEnrolledDevices.put(newDevice.getId(), userId);
                             result = RegistrationCode.SUCCESS;
                         }
                     } else {
+                        logger.error("Verification has failed. See oxauth logs");
                         result = RegistrationCode.FAILED;
                     }
                 } catch (Exception e) {

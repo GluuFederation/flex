@@ -71,6 +71,7 @@ public class Fido2Service extends BaseService {
         List<SecurityKey> devices = new ArrayList<>();
         Fido2RegistrationEntry rentry = getSampleRegistrationEntry(userId, active);
 
+        logger.trace("Finding Fido 2 devices with state={} for user={}", active ? Fido2RegistrationStatus.registered : Fido2RegistrationStatus.pending, userId);
         for (Fido2RegistrationEntry entry : persistenceService.find(rentry)) {
             SecurityKey sk = new SecurityKey();
             sk.setId(entry.getId());
@@ -152,7 +153,7 @@ public class Fido2Service extends BaseService {
 
         SecurityKey sk = null;
         try {
-            List<SecurityKey> list = getDevices(userId, true);
+            List<SecurityKey> list = getDevices(userId, false);
             sk = FidoService.getRecentlyCreatedDevice(list, time);
             if (sk != null && sk.getNickName() != null) {
                 sk = null;    //should have no name
