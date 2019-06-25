@@ -94,6 +94,16 @@
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
+            <artifactId>oxcore-persistence-ldap</artifactId>
+            <version>${ox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxcore-persistence-couchbase</artifactId>
+            <version>${ox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
             <artifactId>oxtrust-model</artifactId>
             <version>${ox.version}</version>
             <exclusions>
