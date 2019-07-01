@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.service.IPersistenceService;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
@@ -61,14 +58,9 @@ public class SiteRedirectViewModel {
     private String getPassportToken() {
 
         try {
-            //TODO: why a RS client here, using mapper.readTree(URL) should suffice?
-            ResteasyClient client = new ResteasyClientBuilder().build();
             String url = String.format("%s/passport/token", serverUrl);
             logger.info("Requesting token at {}", url);
-
-            ResteasyWebTarget target = client.target(url);
-            String data = target.request().get(String.class);
-            return mapper.readTree(data).get("token_").asText();
+            return mapper.readTree(url).get("token_").asText();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return null;
