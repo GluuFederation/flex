@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
  */
 public class ClientAuthorizationsService {
 
+    private static final String TOKENS_DN = "ou=tokens,o=gluu";
+
     private Logger logger = LoggerFactory.getLogger(getClass());
     private IPersistenceService persistenceService;
 
@@ -38,12 +40,10 @@ public class ClientAuthorizationsService {
                 .collect(Collectors.toList()).toArray(new Filter[]{});
         List<Client> clients = persistenceService.find(Client.class, persistenceService.getClientsDn(), Filter.createORFilter(filters));
 
-        //Obtain all scope ids ... displayNames :(
-        Set<String> scopeNames = authorizations.stream().map(ClientAuthorization::getScopes).flatMap(List::stream)
-                .collect(Collectors.toSet());
+        Set<String> scopeIds = authorizations.stream().map(ClientAuthorization::getScopes).flatMap(List::stream).collect(Collectors.toSet());
 
         //Do the analog for scopes
-        filters = scopeNames.stream().map(id -> Filter.createEqualityFilter("displayName", id))
+        filters = scopeIds.stream().map(id -> Filter.createEqualityFilter("oxId", id))
                 .collect(Collectors.toList()).toArray(new Filter[]{});
         List<Scope> scopes = persistenceService.find(Scope.class, persistenceService.getScopesDn(), Filter.createORFilter(filters));
 
@@ -56,7 +56,7 @@ public class ClientAuthorizationsService {
             for (ClientAuthorization auth : authorizations) {
                 if (auth.getOxAuthClientId().equals(client.getInum())) {
                     for (String scopeName : auth.getScopes()) {
-                        scopes.stream().filter(sc -> sc.getDisplayName().equals(scopeName)).findAny().ifPresent(clientScopes::add);
+                        scopes.stream().filter(sc -> sc.getId().equals(scopeName)).findAny().ifPresent(clientScopes::add);
                     }
                 }
             }
@@ -78,7 +78,7 @@ public class ClientAuthorizationsService {
         persistenceService.find(sampleAuth).forEach(auth -> persistenceService.delete(auth));
 
         Token sampleToken = new Token();
-        sampleToken.setBaseDn(persistenceService.getClientsDn());
+        sampleToken.setBaseDn(TOKENS_DN);
         sampleToken.setOxAuthClientId(clientId);
         sampleToken.setOxAuthTokenType("refresh_token");
         sampleToken.setOxAuthUserId(userName);
@@ -86,7 +86,7 @@ public class ClientAuthorizationsService {
         logger.info("Removing refresh tokens associated to this user/client pair");
         //Here we ignore the return value of deletion
         persistenceService.find(sampleToken).forEach(token -> {
-                    logger.debug("Deleting token {}", token.getUniqueIdentifier());
+                    logger.debug("Deleting token {}", token.getOxAuthTokenCode());
                     persistenceService.delete(token);
                 });
 

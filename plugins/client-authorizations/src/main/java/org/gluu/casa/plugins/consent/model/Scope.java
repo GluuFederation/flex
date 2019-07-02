@@ -14,32 +14,32 @@ public class Scope extends InumEntry {
     @AttributeName
     private String description;
 
-    @AttributeName
-    private String displayName;
+    @AttributeName(name = "oxId")
+    private String id;
 
     public String getDescription() {
         return description;
     }
 
-    public String getDisplayName()
+    public String getId()
     {
-        return displayName;
+        return id;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
     public boolean equals(Object o) {
         boolean equal = o != null && o instanceof Scope;
         if (equal) {
-            String otherName = Scope.class.cast(o).getDisplayName();
-            equal = Optional.ofNullable(getDisplayName()).map(name -> name.equals(otherName)).orElse(otherName == null);
+            String otherId = Scope.class.cast(o).getId();
+            equal = Optional.ofNullable(getId()).map(name -> name.equals(otherId)).orElse(otherId == null);
         }
         return equal;
     }

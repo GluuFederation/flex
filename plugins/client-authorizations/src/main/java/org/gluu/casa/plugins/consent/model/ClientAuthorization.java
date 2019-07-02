@@ -9,7 +9,7 @@ import org.gluu.persist.model.base.Entry;
 import java.util.List;
 
 @DataEntry
-@ObjectClass(values = { "top", "oxAuthClient" })
+@ObjectClass(values = { "top", "oxClientAuthorizations" })
 public class ClientAuthorization extends Entry {
 
     @AttributeName

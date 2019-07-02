@@ -10,7 +10,7 @@ import org.gluu.persist.model.base.Entry;
 public class Token extends Entry {
 
     @AttributeName
-    private String uniqueIdentifier;
+    private String oxAuthTokenCode;
 
     @AttributeName
     private String oxAuthClientId;
@@ -21,8 +21,8 @@ public class Token extends Entry {
     @AttributeName
     private String oxAuthUserId;
 
-    public String getUniqueIdentifier() {
-        return uniqueIdentifier;
+    public String getOxAuthTokenCode() {
+        return oxAuthTokenCode;
     }
 
     public String getOxAuthClientId() {
@@ -37,8 +37,8 @@ public class Token extends Entry {
         return oxAuthUserId;
     }
 
-    public void setUniqueIdentifier(String uniqueIdentifier) {
-        this.uniqueIdentifier = uniqueIdentifier;
+    public void setOxAuthTokenCode(String oxAuthTokenCode) {
+        this.oxAuthTokenCode = oxAuthTokenCode;
     }
 
     public void setOxAuthClientId(String v) {
