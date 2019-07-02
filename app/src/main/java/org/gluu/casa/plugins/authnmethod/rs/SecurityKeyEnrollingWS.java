@@ -30,7 +30,7 @@ import java.util.stream.Stream;
  * @author jgomer
  */
 @ApplicationScoped
-//TODO: Disabled: u2f will be deprecated in favor of FIDO 2
+//Disabled: u2f will deprecated in favor of FIDO 2, see SecurityKey2EnrollingWS
 //@Path("/enrollment/" + SecurityKeyExtension.ACR)
 public class SecurityKeyEnrollingWS {
 

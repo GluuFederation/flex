@@ -27,7 +27,7 @@ public class LdapSettings {
     @JsonProperty("config_file")
     private String configurationFile;
 
-    //This will be unused after MainSettingsProduces migrates data
+    //This will be unused after MainSettingsProducer migrates data
     @JsonProperty("ox-ldap_location")
     private String oxLdapLocation;
 
