@@ -19,4 +19,4 @@ casa_cleanup.py /opt/gluu-server/install/community-edition-setup/
 casa.pub /opt/gluu-server/etc/certs/
 
 # systemd
-#casa.service /lib/systemd/system/
+#casa.service /opt/gluu-server/lib/systemd/system/
