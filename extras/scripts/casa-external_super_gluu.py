@@ -21,13 +21,15 @@ from org.gluu.service import MailService
 from org.gluu.oxauth.service.push.sns import PushPlatform, PushSnsService
 from org.gluu.oxnotify.client import NotifyClientFactory
 from java.util import Arrays, HashMap, IdentityHashMap, Date
+from java.time import ZonedDateTime
+from java.time.format import DateTimeFormatter
 
 try:
     from org.gluu.oxd.license.client.js import Product
     from org.gluu.oxd.license.validator import LicenseValidator
     has_license_api = True
 except ImportError:
-    print "Super-Gluu. Load. Licensing API not loaded"
+    print "Super-Gluu. Load. Failed to load licensing API"
     has_license_api = False
 
 import datetime
@@ -43,12 +45,13 @@ class PersonAuthentication(PersonAuthenticationType):
     def init(self, configurationAttributes):
         print "Super-Gluu. Initialization"
 
-        # Modified for Casa compliance
-        self.client_redirect_uri = configurationAttributes.get("client_redirect_uri").getValue2()
-
         if not configurationAttributes.containsKey("authentication_mode"):
             print "Super-Gluu. Initialization. Property authentication_mode is mandatory"
             return False
+
+        self.applicationId = None
+        if configurationAttributes.containsKey("application_id"):
+            self.applicationId = configurationAttributes.get("application_id").getValue2()
 
         self.registrationUri = None
         if configurationAttributes.containsKey("registration_uri"):
@@ -166,7 +169,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
         session_attributes = identity.getSessionId().getSessionAttributes()
 
-        client_redirect_uri = self.getClientRedirecUri(session_attributes)
+        client_redirect_uri = self.getApplicationUri(session_attributes)
         if client_redirect_uri == None:
             print "Super-Gluu. Authenticate. redirect_uri is not set"
             return False
@@ -332,7 +335,7 @@ class PersonAuthentication(PersonAuthenticationType):
         identity = CdiUtil.bean(Identity)
         session_attributes = identity.getSessionId().getSessionAttributes()
 
-        client_redirect_uri = self.getClientRedirecUri(session_attributes)
+        client_redirect_uri = self.getApplicationUri(session_attributes)
         if client_redirect_uri == None:
             print "Super-Gluu. Prepare for step. redirect_uri is not set"
             return False
@@ -354,7 +357,7 @@ class PersonAuthentication(PersonAuthenticationType):
                                    'issuer': issuer,
                                    'state': session_id,
                                    'licensed': self.valid_license,
-                                   'created': datetime.datetime.now().isoformat()}
+                                   'created': DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now().withNano(0))}
 
                 self.addGeolocationData(session_attributes, super_gluu_request_dictionary)
 
@@ -402,7 +405,7 @@ class PersonAuthentication(PersonAuthenticationType):
                                'method': auth_method,
                                'state': session_id,
                                'licensed': self.valid_license,
-                               'created': datetime.datetime.now().isoformat()}
+                               'created': DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now().withNano(0))}
 
             self.addGeolocationData(session_attributes, super_gluu_request_dictionary)
 
@@ -955,12 +958,14 @@ class PersonAuthentication(PersonAuthenticationType):
 
         return targetEndpointArn
 
-    def getClientRedirecUri(self, session_attributes):
-        # Modified for Casa compliance.
-        #if not session_attributes.containsKey("redirect_uri"):
-        #    return None
-        #return session_attributes.get("redirect_uri")
-        return self.client_redirect_uri
+    def getApplicationUri(self, session_attributes):
+        if self.applicationId != None:
+            return self.applicationId
+
+        if not session_attributes.containsKey("redirect_uri"):
+            return None
+
+        return session_attributes.get("redirect_uri")
 
     def setRequestScopedParameters(self, identity, step):
         downloadMap = HashMap()
