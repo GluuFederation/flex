@@ -745,7 +745,179 @@ paths:
 #              code:
 #                type: string
 #                example: NO_MATCH_OR_EXPIRED|FAILED
-#
+
+  /enrollment/fido2/attestation:
+    get:
+      tags:
+        - fido
+
+      description: |
+        Gets an attestation message to be used in the browser
+
+      security:
+        - casa_auth: []
+      parameters:
+        -
+          name: userid
+          in: query
+          description: Identifier (inum) of the user attempting the enrollment
+          required: true
+          type: string
+        -
+          name: Authorization
+          description: Contains a bearer token
+          in: header
+          required: true
+          type: string
+
+      responses:
+        200:
+          description: |
+            A json containing an object useful to be passed to `webauthn.createCredential` javascript method.
+        400:
+          description: A parameter is missing or inconsistent
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: NO_USER_ID
+        404:
+          description: The user passed does not exist
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: UNKNOWN_USER_ID
+        500:
+          description: An unexpected error occurred when processing the request
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: FAILED
+
+  /enrollment/fido2/registration/{userid}:
+    post:
+      tags:
+        - fido
+      description: |
+        Sends back to server the result obtained after the call to `webauthn.createCredential` was
+        made. This occurs after the user touches the security key button
+
+      parameters:
+        -
+          name: registrationResult
+          in: body
+          required: true
+          schema:
+            type: object
+        -
+          name: userid
+          in: path
+          description: Identifier (inum) of the user owning the device
+          required: true
+          type: string
+        -
+          name: Authorization
+          description: Contains a bearer token
+          in: header
+          required: true
+          type: string
+
+      responses:
+        201:
+          description: Successful enrollment of device
+          schema:
+            $ref: '#/definitions/SecurityKey'
+
+        404:
+          description: The user supplied does not exist or is not recognized
+            to have a recent call to `attestation`
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: NO_MATCH_OR_EXPIRED|UNKNOWN_USER_ID
+        500:
+          description: The operation of enrollment failed
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: FAILED
+
+  /enrollment/fido2/creds/{userid}:
+    post:
+      tags:
+        - fido
+      description: |
+        Assigns the nick name for a **recently** enrolled security key device whose
+        associated user ID is passed in path parameter. Details of the credential
+        are passed in credential parameter. This is supposed to be called **after**
+        a call to `registration/{userid}` having received the data of the credential
+
+      parameters:
+        -
+          name: credential
+          in: body
+          description: |
+            Contains a nickname for this credential and the identifier (key) obtained in a previous `registration` call.
+          required: true
+          schema:
+            $ref: '#/definitions/NamedCredential'
+        -
+          name: userid
+          in: path
+          description: Identifier (inum) of the user owning the device
+          required: true
+          type: string
+        -
+          name: Authorization
+          description: Contains a bearer token
+          in: header
+          required: true
+          type: string
+
+      responses:
+        200:
+          description: Update successfully applied. Empty body
+        400:
+          description: A parameter is missing
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: MISSING_PARAMS
+        500:
+          description: The provided key in credential parameter is not
+            recognized as a recent enrollment or the update failed
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: NO_MATCH_OR_EXPIRED|FAILED
+
   /2fa-info/user:
     get:
 
@@ -790,7 +962,7 @@ paths:
                 type: array
                 items:
                   type: string
-                example: ["otp", "u2f"]
+                example: ["otp", "u2f", "fido2"]
         400:
           description: userid parameter is missing
           schema:
@@ -871,29 +1043,26 @@ definitions:
        format: int64
        description: The timestamp representing the moment in which the credential was added
 
-#  SecurityKey:
-#    type: object
-#    properties:
-#        id:
-#          type: string
-#          description: Unique identifier assigned to this device
-#        creationDate:
-#          type: integer
-#          format: int64
-#          description: The timestamp representing the moment in which the credential was added
-#        lastAccessTime:
-#          type: integer
-#          format: int64
-#          description: The timestamp representing the moment in which the credential was used the last time (equivalent to creationDate) after enrollment
-#        status:
-#          type: string
-#          description: Status of device. 'active' after enrollment takes place
-#          enum:
-#          - active
-#          - compromised
-#        application:
-#          type: string
-#          description: An identifier of the FIDO application ID under which this device was enrolled
+  SecurityKey:
+    type: object
+    properties:
+        id:
+          type: string
+          description: Unique identifier assigned to this device
+        creationDate:
+          type: integer
+          format: int64
+          description: The timestamp representing the moment in which the credential was added
+        lastAccessTime:
+          type: integer
+          format: int64
+          description: The timestamp representing the moment in which the credential was used the last time (equivalent to creationDate) after enrollment
+        status:
+          type: string
+          description: Status of device. 'registered' after enrollment takes place
+          enum:
+          - registered
+          - pending
 
   SuperGluuDevice:
     type: object
@@ -943,4 +1112,3 @@ securityDefinitions:
     description: An OAuth2 bearer token in the header must be passed
     flow: application
     tokenUrl: https://dc.gluu.org/oxauth/restv1/token
-    
