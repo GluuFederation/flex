@@ -28,7 +28,7 @@ public class AssetsService implements IBrandingManager {
 
     public static final String EMPTY_SNIPPET = "/**/";
 
-    private static final String DEFAULT_LOGO_URL = "/images/logo.png";
+    private static final String DEFAULT_LOGO_URL = "/images/logo.svg";
     private static final String DEFAULT_FAVICON_URL = "/images/favicon.ico";
     private static final String DEFAULT_CUSTOM_PATH = "/custom";
 
