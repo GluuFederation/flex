@@ -3,6 +3,7 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.MainSettings;
+import org.gluu.casa.conf.OxdSettings;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.misc.AppStateEnum;
 import org.gluu.casa.misc.Utils;
@@ -148,7 +149,8 @@ public class ConfigurationHandler extends JobListenerSupport {
                     computePassResetable();
                     compute2FAEnforcementPolicy();
 
-                    if (oxdService.initialize(settings.getOxdSettings(true))) {
+                    OxdSettings oxdSettings = Optional.ofNullable(settings.getOxdSettings()).orElse(settings.getOxdSettings(true));
+                    if (oxdService.initialize(oxdSettings)) {
                         extManager.scan();
                         computeAcrPluginMapping();
 

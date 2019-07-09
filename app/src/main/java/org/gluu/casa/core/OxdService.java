@@ -88,12 +88,7 @@ public class OxdService {
                 try {
                     if (persistenceService.getDynamicClientExpirationTime() != 0) {
                         Optional<String> oxdIdOpt = Optional.ofNullable(oxdConfig.getClient()).map(OxdClientSettings::getOxdId);
-                        if (oxdIdOpt.isPresent()) {
-                            setSettings(oxdConfig);
-                        } else {
-                            //trigger registration
-                            setSettings(oxdConfig, true);
-                        }
+                        setSettings(oxdConfig, !oxdIdOpt.isPresent());
                         success = true;
                     } else {
                         logger.error("Dynamic registration of OpenId Connect clients must be enabled in the server.");
@@ -106,10 +101,6 @@ public class OxdService {
         }
         return success;
 
-    }
-
-    public void setSettings(OxdSettings config) throws Exception {
-        setSettings(config, false);
     }
 
     public void setSettings(OxdSettings config, boolean triggerRegistration) throws Exception {
