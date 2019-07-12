@@ -123,7 +123,7 @@ public class OxdService {
 
             RegisterSiteParams cmdParams = new RegisterSiteParams();
             cmdParams.setOpHost(config.getOpHost());
-            cmdParams.setAuthorizationRedirectUri(config.getRedirectUri());
+            cmdParams.setRedirectUris(Collections.singletonList(config.getRedirectUri()));
             cmdParams.setPostLogoutRedirectUris(Collections.singletonList(config.getPostLogoutUri()));
             cmdParams.setAcrValues(config.getAcrValues());
             cmdParams.setClientName(clientName);
