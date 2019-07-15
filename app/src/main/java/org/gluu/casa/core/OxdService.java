@@ -70,6 +70,7 @@ public class OxdService {
         client = RSUtils.getClient();
     }
 
+    //This method modifies the param supplied
     public boolean initialize(OxdSettings oxdConfig) {
 
         boolean success = false;
@@ -96,6 +97,7 @@ public class OxdService {
                 } catch (Exception e) {
                     logger.warn("Users will not be able to login until a new sucessful attempt to refresh oxd-associated "
                             + "clients takes place. Restart the app to trigger the update immediately");
+                    logger.error(e.getMessage());
                 }
             }
         }
@@ -103,11 +105,13 @@ public class OxdService {
 
     }
 
-    public void setSettings(OxdSettings config, boolean triggerRegistration) throws Exception {
-        this.config = config;
+    public void setSettings(OxdSettings cfg, boolean triggerRegistration) throws Exception {
+
+        this.config = cfg;
         if (triggerRegistration) {
-            config.setClient(doRegister());
+            cfg.setClient(doRegister());
         }
+
     }
 
     public OxdClientSettings doRegister() throws Exception {

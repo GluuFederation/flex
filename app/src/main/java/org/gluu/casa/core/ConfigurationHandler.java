@@ -104,7 +104,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                 /*
                  A gap of 5 seconds is enough for the RestEasy scanning process to take place (in case oxAuth is already up and running)
                  RETRIES*RETRY_INTERVAL seconds gives room to recover the acr list. This big amount of time may be required
-                 in cases where cred-manager service starts too soon (even before oxAuth itself)
+                 in cases where casa service starts too soon (even before oxAuth itself)
                 */
                 timerService.schedule(acrQuartzJobName, 5, RETRIES, RETRY_INTERVAL);
             } else {
@@ -149,7 +149,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                     computePassResetable();
                     compute2FAEnforcementPolicy();
 
-                    OxdSettings oxdSettings = Optional.ofNullable(settings.getOxdSettings()).orElse(settings.getOxdSettings(true));
+                    OxdSettings oxdSettings = settings.getOxdSettings(true);
                     if (oxdService.initialize(oxdSettings)) {
                         extManager.scan();
                         computeAcrPluginMapping();
