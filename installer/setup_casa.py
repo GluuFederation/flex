@@ -45,7 +45,7 @@ class SetupCasa(object):
         self.twilio_jar = 'twilio-7.17.0.jar'
         self.twilio_url = 'http://central.maven.org/maven2/com/twilio/sdk/twilio/7.17.0/%s' % self.twilio_jar
 
-        self.application_max_ram = None  # in MB
+        self.application_max_ram = 1024  # in MB
 
         # Gluu components installation status
         self.install_oxd = False
@@ -69,12 +69,6 @@ class SetupCasa(object):
             salt_property = f.read()
             self.key = salt_property.split("=")[1].strip()
 
-
-    def check_properties(self):
-
-        setupObject.logIt('Checking properties')
-        if not setupObject.application_max_ram:
-            setupObject.application_max_ram = 1024
 
     def propertiesForOxd(self):
 
