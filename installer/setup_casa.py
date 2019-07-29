@@ -227,6 +227,16 @@ class SetupCasa(object):
         else:
             setupObject.run([setupObject.cmd_dpkg, '--install', packageName])
 
+        #set trust_all_certs: true in oxd-server.yml 
+        oxd_yaml_fn ='/opt/oxd-server/conf/oxd-server.yml'
+        oxd_yaml = setupObject.readFile(oxd_yaml_fn).split('\n')
+        
+        for i, l in enumerate(oxd_yaml[:]):
+            if l.strip().startswith('trust_all_certs'):
+                oxd_yaml[i] = 'trust_all_certs: true'
+        
+        setupObject.writeFile(oxd_yaml_fn, '\n'.join(oxd_yaml))
+
         # Enable service autoload on Gluu-Server startup
         applicationName = 'oxd-server'
         setupObject.enable_service_at_start(applicationName)
@@ -236,21 +246,6 @@ class SetupCasa(object):
         # change start.sh permission
         setupObject.run(['chmod', '+x', '/opt/oxd-server/bin/oxd-start.sh'])
         setupObject.run_service_command(applicationName, 'start')
-        
-        #Add oxd dummy cert to java trust store
-        tmpCertPath = "/tmp/oxd_sample.cer"
-        if not os.path.exists(tmpCertPath):
-            keytoolPath = "/opt/jre/jre/bin/keytool"
-            keystorePath = "/opt/oxd-server/conf/oxd-server.keystore"
-            keystorePass = "example"
-            entryAlias = "localhost"
-            truststorePath="/opt/jre/jre/lib/security/cacerts"
-            
-            #Extract cert from keystore
-            setupObject.run([keytoolPath, '-exportcert', '-alias', entryAlias, '-file', tmpCertPath, '-keystore', keystorePath, '-storepass', keystorePass, '-rfc'], None, None, True)
-            #Import into cacerts
-            print "Adding oxd certificate..."
-            setupObject.run([keytoolPath, '-import', '-trustcacerts', '-keystore', truststorePath, '-storepass', 'changeit', '-noprompt', '-alias', 'oxd_sample', '-file', tmpCertPath], None, None, True)
 
 
     def install_casa(self):
