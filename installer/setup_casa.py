@@ -254,20 +254,7 @@ class SetupCasa(object):
             #Import into cacerts
             print "Adding oxd certificate..."
             setupObject.run([keytoolPath, '-import', '-trustcacerts', '-keystore', truststorePath, '-storepass', 'changeit', '-noprompt', '-alias', 'oxd_sample', '-file', tmpCertPath], None, None, True)
-            
-        
-    def checkCryptoLevel(self):
 
-        setupObject.logIt("Modifying java.security File for Unlimited Crypto..")
-
-        javaSecurityFN = '/opt/jre/jre/lib/security/java.security'
-        javaSecurity = open(javaSecurityFN).read()
-        javaSecurity = javaSecurity.replace('#crypto.policy=unlimited', 'crypto.policy=unlimited')
-        javaSecurityFile = open(javaSecurityFN, 'w')
-        javaSecurityFile.write(javaSecurity)
-        javaSecurityFile.close
-
-        setupObject.logIt('java.security crypto level configured.')
 
     def install_casa(self):
         setupObject.logIt("Configuring Casa...")
@@ -277,9 +264,6 @@ class SetupCasa(object):
                                                  [self.jetty_app_configuration['casa']],
                                                 )
 
-        
-        self.checkCryptoLevel()
-        
         setupObject.copyFile('%s/casa.json' % setupObject.outputFolder, setupObject.configFolder)
         setupObject.run(['chmod', 'g+w', '/opt/gluu/python/libs'])
 
