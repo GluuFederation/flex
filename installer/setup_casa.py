@@ -40,10 +40,8 @@ class SetupCasa(object):
         self.savedProperties = os.path.join(self.install_dir, 'setup_casa.properties.last')
 
         # Change this to final version
-        self.casa_war = 'https://ox.gluu.org/maven/org/gluu/casa/4.0.0-SNAPSHOT/casa-4.0.0-SNAPSHOT.war'
-
-        self.twilio_jar = 'twilio-7.17.0.jar'
-        self.twilio_url = 'http://central.maven.org/maven2/com/twilio/sdk/twilio/7.17.0/%s' % self.twilio_jar
+        self.casa_war_url = 'https://ox.gluu.org/maven/org/gluu/casa/4.0.0-SNAPSHOT/casa-4.0.0-SNAPSHOT.war'
+        self.twilio_jar_url = 'http://central.maven.org/maven2/com/twilio/sdk/twilio/7.17.0/twilio-7.17.0.jar'
 
         self.application_max_ram = 1024  # in MB
 
@@ -92,22 +90,17 @@ class SetupCasa(object):
             sys.exit()
 
     def download_files(self):
-
         setupObject.logIt("Downloading files")
+        
         # Casa is not part of CE package. We need to download it if needed
-        distCasaPath = '%s/%s' % (setupObject.distGluuFolder, "casa.war")
-        if not os.path.exists(distCasaPath):
-            print "\nDownloading Casa war file...\n"
-            setupObject.run(
-                ['/usr/bin/wget', self.casa_war, '--no-verbose', '--retry-connrefused', '--tries=10', '-O', distCasaPath])
-
-        # Download Twilio
-        twilioJarPath = '%s/%s' % (setupObject.distGluuFolder, self.twilio_jar)
-        if not os.path.exists(twilioJarPath):
-            print "Downloading Twilio jar file..."
-            setupObject.run(
-                ['/usr/bin/wget', self.twilio_url, '--no-verbose', '--retry-connrefused', '--tries=10', '-O', twilioJarPath])
-
+        for download_url in (self.casa_war_url, self.twilio_jar_url):
+            fname = os.path.basename(download_url)
+            if fname.startswith('casa'):
+                fname = 'casa.war'
+            dest_path = os.path.join(setupObject.distGluuFolder, fname)
+            if not os.path.exists(dest_path):
+                print "Downloading:", fname
+                setupObject.run(['/usr/bin/wget', download_url, '--no-verbose', '--retry-connrefused', '--tries=10', '-O', dest_path])
 
     def promptForProperties(self):
 
@@ -299,7 +292,8 @@ class SetupCasa(object):
         setupObject.copyFile('%s/casa.war' % setupObject.distGluuFolder, jettyServiceWebapps)
 
         jettyServiceOxAuthCustomLibsPath = '%s/%s/%s' % (setupObject.jetty_base, "oxauth", "custom/libs")
-        setupObject.copyFile('%s/%s' % (setupObject.distGluuFolder, self.twilio_jar), jettyServiceOxAuthCustomLibsPath)
+        setupObject.copyFile(os.path.join(setupObject.distGluuFolder, os.path.basename(self.twilio_jar_url)), jettyServiceOxAuthCustomLibsPath)
+        
         setupObject.run([setupObject.cmd_chown, '-R', 'jetty:jetty', jettyServiceOxAuthCustomLibsPath])
 
         # Make necessary Directories for Casa
@@ -343,8 +337,6 @@ class SetupCasa(object):
 
         for k in p.keys():
             setattr(self, k, p[k])
-
-        print self.casa_war
 
 if __name__ == '__main__':
 
