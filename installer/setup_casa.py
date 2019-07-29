@@ -245,13 +245,7 @@ class SetupCasa(object):
 
         # Enable service autoload on Gluu-Server startup
         applicationName = 'oxd-server'
-        if setupObject.os_type in ['centos', 'fedora', 'red']:
-            if setupObject.os_initdaemon == 'systemd':
-                setupObject.run(["/usr/bin/systemctl", 'enable', applicationName])
-            else:
-                setupObject.run(["/sbin/chkconfig", applicationName, "on"])
-        elif setupObject.os_type in ['ubuntu', 'debian']:
-            setupObject.run(["/usr/sbin/update-rc.d", applicationName, 'defaults', '50', '25'])
+        setupObject.enable_service_at_start(applicationName)
 
         # Start oxd-server
         print "Starting oxd-server..."
