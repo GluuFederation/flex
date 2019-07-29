@@ -52,7 +52,6 @@ class SetupCasa(object):
         self.oxd_server_https = ""
         self.distFolder = '/opt/dist'
         self.casa = '/etc/gluu/conf/casa.json'
-        self.detectedHostname = self.detectHostName()
         self.jetty_app_configuration = {
             'casa': {'name': 'casa',
                                 'jetty': {'modules': 'server,deploy,resources,http,http-forwarded,console-capture,jsp'},
@@ -61,6 +60,7 @@ class SetupCasa(object):
                                 }
         }
 
+        self.detectedHostname = setupObject.detect_hostname()
         self.oxd_hostname = None
         self.ldif_scripts_casa = '%s/scripts_casa.ldif' % setupObject.outputFolder
         self.casa_config = '%s/casa.json' % setupObject.outputFolder
@@ -114,24 +114,6 @@ class SetupCasa(object):
             setupObject.run(
                 ['/usr/bin/wget', self.twilio_url, '--no-verbose', '--retry-connrefused', '--tries=10', '-O', twilioJarPath])
 
-    def detectHostName(self):
-
-        detectedHostname = None
-        
-        if os.path.exists('output/hostname'):
-            detectedHostname = setupObject.readFile('output/hostname').strip()
-        
-        if not detectedHostname:
-            try:
-                detectedHostname = socket.gethostbyaddr(self.ip)[0]
-            except:
-                try:
-                    detectedHostname = os.popen("/bin/hostname").read().strip()
-                except:
-                    pass
-
-        return detectedHostname
-
 
     def promptForProperties(self):
 
@@ -145,7 +127,7 @@ class SetupCasa(object):
                 "n")[0].lower()
 
             if have_oxd == 'y':
-                oxd_server_https = 'https://{}:8443'.format(self.detectHostName())
+                oxd_server_https = 'https://{}:8443'.format(self.detectedHostname)
                 self.oxd_server_https = setupObject.getPrompt("Enter the URL + port of your oxd-server", oxd_server_https).lower()
             else:
                 install_oxd = setupObject.getPrompt("Install oxd-server on this host now?", "Y")[0].lower()
@@ -414,7 +396,7 @@ if __name__ == '__main__':
     # Get the OS and init type
     (setupObject.os_type, setupObject.os_version) = setupObject.detect_os_type()
     setupObject.os_initdaemon = setupObject.detect_initd()
-
+    
     print "\nInstalling Gluu Casa...\n"
     print "Detected OS  :  %s %s" % (setupObject.os_type, setupObject.os_version)
     print "Detected init:  %s" % setupObject.os_initdaemon
