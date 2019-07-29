@@ -342,28 +342,6 @@ class SetupCasa(object):
             setupObject.logIt("Error starting Casa", True)
             setupObject.logIt(traceback.format_exc(), True)
 
-    def save_properties(self):
-        setupObject.logIt('Saving properties to %s' % setupObject.savedProperties)
-
-        def getString(value):
-            if isinstance(value, str):
-                return value.strip()
-            elif isinstance(value, bool):
-                return str(value)
-            else:
-                return ""
-        try:
-            p = Properties.Properties()
-            keys = self.__dict__.keys()
-            keys.sort()
-            for key in keys:
-                value = getString(self.__dict__[key])
-                if value != '':
-                    p[key] = value
-            p.store(open(self.savedProperties, 'w'))
-        except:
-            setupObject.logIt("Error saving properties", True)
-            setupObject.logIt(traceback.format_exc(), True)
 
     def load_properties(self, fn):
         setupObject.logIt('Loading Properties %s' % fn)
@@ -411,7 +389,7 @@ if __name__ == '__main__':
         installObject.install_casa()
         installObject.import_ldif()
         installObject.start_services()
-        installObject.save_properties()
+        setupObject.save_properties(installObject.savedProperties, installObject)
     except:
         setupObject.logIt("***** Error caught in main loop *****", True)
         setupObject.logIt(traceback.format_exc(), True)
