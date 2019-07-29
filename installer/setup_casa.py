@@ -5,8 +5,6 @@ import os
 import os.path
 import json
 import traceback
-import socket
-import getopt
 import base64
 import pyDes
 from setup import *
@@ -14,6 +12,7 @@ from pylib import Properties
 
 cur_dir = os.path.dirname(os.path.realpath(__file__))
 
+#TODO: add command line options with argprase
 
 def get_properties(prop_fn, current_properties=None):
     if not current_properties:
@@ -216,8 +215,6 @@ class SetupCasa(object):
         for file in os.listdir(oxdDistFolder):
             if file.endswith(packageExtension):
                 packageName = "%s/%s" % ( oxdDistFolder, file )
-
-        #print packageName
 
         if packageName == None:
             setupObject.logIt('Failed to find oxd package in folder %s !' % oxdDistFolder)
