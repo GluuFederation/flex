@@ -33,6 +33,16 @@ def get_properties(prop_fn, current_properties=None):
 
     return p
 
+
+with open("/etc/gluu/conf/salt") as f:
+    salt_property = f.read().strip()
+    key = salt_property.split("=")[1].strip()
+
+def unobscure(s):
+    cipher = pyDes.triple_des(key)
+    decrypted = cipher.decrypt(base64.b64decode(s), padmode=pyDes.PAD_PKCS5)
+    return decrypted
+
 class SetupCasa(object):
 
     def __init__(self, install_dir):
@@ -64,16 +74,7 @@ class SetupCasa(object):
         self.ldif_scripts_casa = '%s/scripts_casa.ldif' % setupObject.outputFolder
         self.casa_config = '%s/casa.json' % setupObject.outputFolder
     
-        with open("/etc/gluu/conf/salt") as f:
-            salt_property = f.read()
-            self.key = salt_property.split("=")[1].strip()
 
-
-    def unobscure(self,s=""):
-
-        cipher = pyDes.triple_des( self.key )
-        decrypted = cipher.decrypt(base64.b64decode(s), padmode=pyDes.PAD_PKCS5)
-        return decrypted
 
     def check_installed(self):
 
@@ -159,7 +160,7 @@ class SetupCasa(object):
         attribDataTypes.startup(setupObject.install_dir)
 
         setupObject.prepare_multivalued_list()
-        setupObject.cbm = CBM(p['servers'].split(',')[0], p['auth.userName'], self.unobscure(p['auth.userPassword']))
+        setupObject.cbm = CBM(p['servers'].split(',')[0], p['auth.userName'], unobscure(p['auth.userPassword']))
         setupObject.import_ldif_couchebase([os.path.join('.','output/scripts_casa.ldif')],'gluu')
 
 
@@ -171,7 +172,7 @@ class SetupCasa(object):
 
         p = get_properties(setupObject.ox_ldap_properties)
 
-        setupObject.ldapPass = self.unobscure(p['bindPassword'])
+        setupObject.ldapPass = unobscure(p['bindPassword'])
         setupObject.ldap_hostname = p['servers'].split(',')[0].split(':')[0]
 
         setupObject.createLdapPw()
