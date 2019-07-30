@@ -61,7 +61,6 @@ class SetupCasa(object):
         }
 
         self.detectedHostname = setupObject.detect_hostname()
-        self.oxd_hostname = None
         self.ldif_scripts_casa = '%s/scripts_casa.ldif' % setupObject.outputFolder
         self.casa_config = '%s/casa.json' % setupObject.outputFolder
     
@@ -69,13 +68,6 @@ class SetupCasa(object):
             salt_property = f.read()
             self.key = salt_property.split("=")[1].strip()
 
-
-    def propertiesForOxd(self):
-
-        conf = "\n"
-        if self.install_oxd:
-            conf += 'oxd https URL'.ljust(30) + self.oxd_server_https.rjust(35)
-        print conf
 
     def unobscure(self,s=""):
 
@@ -173,7 +165,6 @@ class SetupCasa(object):
 
     def import_ldif_ldap(self):
         setupObject.logIt("Importing LDIF files into LDAP")
-        ldappassword = ""
         
         if not os.path.exists(setupObject.gluu_properties_fn):
             sys.exit("ldap properties file does not exist on this server. Terminating installation.")
