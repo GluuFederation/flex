@@ -5,8 +5,10 @@ import os
 import os.path
 import json
 import traceback
+import ssl
 import base64
 import pyDes
+from urlparse import urlparse
 from setup import *
 from pylib import Properties
 
@@ -43,6 +45,7 @@ class SetupCasa(object):
         self.twilio_jar_url = 'http://central.maven.org/maven2/com/twilio/sdk/twilio/7.17.0/twilio-7.17.0.jar'
 
         self.application_max_ram = 1024  # in MB
+
 
         # Gluu components installation status
         self.install_oxd = False
@@ -132,27 +135,18 @@ class SetupCasa(object):
 
     def casa_json_config(self):
         data = setupObject.readFile(self.casa_config)
-
         datastore = json.loads(data)
-            
-        try:
-            url=self.oxd_server_https.replace("https://", "", 1)
-            url=url.split(":")
 
-            datastore['oxd_config']['host'] = url[0]
-            if len(url)==1:
-                setupObject.logIt("No port in https url (default 443 assumed)", True)
-                datastore['oxd_config']['port'] = 443
-            else:
-                datastore['oxd_config']['port'] = int(url[1])
+        o = urlparse(self.oxd_server_https)
+        self.oxd_hostname = o.hostname
+        self.oxd_port = o.port if o.port else 8443
 
-        except:
-            setupObject.logIt("Problem parsing https url", True)
-            setupObject.logIt(traceback.format_exc(), True)
+        datastore['oxd_config']['host'] = self.oxd_hostname
+        datastore['oxd_config']['port'] = self.oxd_port
 
         datastore_str = json.dumps(datastore, indent=2)
         setupObject.writeFile(self.casa, datastore_str)
-        
+
 
     def import_ldif(self):
         
@@ -306,6 +300,18 @@ class SetupCasa(object):
             setupObject.logIt("Error starting Casa", True)
             setupObject.logIt(traceback.format_exc(), True)
 
+    def import_oxd_certificate2javatruststore(self):
+        setupObject.logIt("Importing oxd certificate")
+        oxd_cert = ssl.get_server_certificate((self.oxd_hostname, self.oxd_port))
+        oxd_alias = 'oxd_' + self.oxd_hostname.replace('.','_')
+        oxd_cert_tmp_fn = '/tmp/{}.crt'.format(oxd_alias)
+
+        with open(oxd_cert_tmp_fn,'w') as w:
+            w.write(oxd_cert)
+
+        setupObject.run(['/opt/jre/jre/bin/keytool', '-import', '-trustcacerts', '-keystore', 
+                        '/opt/jre/jre/lib/security/cacerts', '-storepass', 'changeit', 
+                        '-noprompt', '-alias', oxd_alias, '-file', oxd_cert_tmp_fn])
 
     def load_properties(self, fn):
         setupObject.logIt('Loading Properties %s' % fn)
@@ -350,6 +356,7 @@ if __name__ == '__main__':
 
         installObject.install_casa()
         installObject.import_ldif()
+        installObject.import_oxd_certificate2javatruststore()
         installObject.start_services()
         setupObject.save_properties(installObject.savedProperties, installObject)
     except:
