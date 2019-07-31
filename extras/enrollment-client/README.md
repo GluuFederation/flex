@@ -8,8 +8,17 @@ This is a client-side only application (HTML+JS). Intended to be illustrative an
 
 - Use fully qualified domain names for both client and server. `localhost` will not work
 
-- Edit file **globals.js** prior to use. Ensure to add your domain to the authorized Javascript origins of the OpenID client
+- Edit file **globals.js** prior to use
 
-- Ensure to include this domain in [casa cors config](https://gluu.org/docs/casa/4.0/developer/rest-services/#cross-domain-consumption-of-services)
+- Ensure to include this origin in [casa cors config](https://gluu.org/docs/casa/4.0/developer/rest-services/#cross-domain-consumption-of-services),
+  that is, the domain you are using to serve this client (eg. https://my.local.org)
 
 - This app has been tested on Firefox only
+
+## Troubleshooting
+
+If you face errors (in the browser's developer console) when accessing endpoints such as `/.well-known/openid-configuration`
+or `/oxauth/restv1/token`, obtain a token manually and then gently add a line like `token = "token-value"` as the first statement
+in the document.ready event handler for the page you are trying to visualize. The following shows how to obtain a token:
+
+`curl -k -u 'clientId:clientSecret' -d grant_type=client_credentials https://<gluu-host-name>/oxauth/restv1/token`
