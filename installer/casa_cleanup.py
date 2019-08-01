@@ -175,7 +175,7 @@ if __name__ == '__main__':
     prompt = raw_input("Do you want to continue? [N/y] ")
 
     if not prompt.strip() or prompt[0].lower() != 'y':
-        print "Givin up Casa cleanup..."
+        print "Giving up Casa cleanup..."
         sys.exit()
 
     setupObject = Setup(cur_dir)
