@@ -63,6 +63,8 @@ class casaCleanup(object):
 
     def del_casa_custom_scripts(self):
 
+        print "Deleting Casa Custom Scripts"
+
         default_location = self.get_storage_location('default')
 
         if default_location == LDAP:
@@ -79,6 +81,9 @@ class casaCleanup(object):
 
 
     def del_casa_clients(self):
+        
+        print "Deleting Casa Clients"
+        
         clients_location = self.get_storage_location('clients')
         
         if clients_location == LDAP:
@@ -96,6 +101,7 @@ class casaCleanup(object):
 
 
     def del_casa_user_attributes(self):
+        print "Removing Casa attributes for people. This may take a while..."
 
         attrlist = [
                     'oxPreferredMethod',
@@ -125,10 +131,69 @@ class casaCleanup(object):
         elif people_location == COUCHBASE:
             self.cbm.exec_query('UPDATE gluu_user UNSET {}'.format(', '.join(attrlist)))
 
+
+    def delCasaFiles(self):
+
+        print('Deleting Casa Files..')
+
+        if os.path.exists('/opt/gluu/jetty/casa/'):
+            setupObject.run(['rm','-r', '-f', '/opt/gluu/jetty/casa/'])
+
+        casafiles = [
+                    '/etc/gluu/conf/casa.json',
+                    '/etc/default/casa',
+                    '/etc/init.d/casa',
+                    '/etc/init.d/casa.gluu-3.1.6~',
+                    '/etc/rc0.d/K01casa',
+                    '/etc/rc2.d/S01casa',
+                    '/etc/rc3.d/S01casa',
+                    '/etc/rc4.d/S01casa',
+                    '/etc/rc5.d/S01casa',
+                    '/etc/rc6.d/K01casa',
+                    '/run/jetty/casa-start.log',
+                    '/run/jetty/casa.pid'
+                    ]
+
+        for fn in casafiles:
+            if os.path.exists(fn):
+                setupObject.run(['rm', '-f', fn])
+
+        libdir = '/opt/gluu/python/libs'
+
+        for lib in os.listdir(libdir):
+            if lib.startswith('casa'):
+                setupObject.run(['rm', '-f', (os.path.join(libdir,lib))])
+
 if __name__ == '__main__':
 
+    if not os.path.exists('/etc/gluu/conf/casa.json'):
+        print "Casa is not installed."
+        sys.exit()
+        
+    print "\033[91m\nThis script will remove all information pertaining to Casa from the disk and,"
+    print "DB backends including Casa related entries and user attributes.\033[0m"
+    prompt = raw_input("Do you want to continue? [N/y] ")
+
+    if not prompt.strip() or prompt[0].lower() != 'y':
+        print "Givin up Casa cleanup..."
+        sys.exit()
+
     setupObject = Setup(cur_dir)
+    setupObject.log = os.path.join(cur_dir, 'clean_casa.log')
+    setupObject.logError = os.path.join(cur_dir, 'clean_casa_error.log')
+    
+    # Get the OS and init type
+    (setupObject.os_type, setupObject.os_version) = setupObject.detect_os_type()
+    setupObject.os_initdaemon = setupObject.detect_initd()
+    
     casaCleanupObject = casaCleanup(cur_dir)
+    print "Stopping Casa"
+    setupObject.run_service_command('casa', 'stop')
+    
     casaCleanupObject.del_casa_custom_scripts()
     casaCleanupObject.del_casa_clients()
     casaCleanupObject.del_casa_user_attributes()
+    casaCleanupObject.delCasaFiles()
+    
+    print "Restarting oxAuth"
+    setupObject.run_service_command('oxauth', 'restart')
