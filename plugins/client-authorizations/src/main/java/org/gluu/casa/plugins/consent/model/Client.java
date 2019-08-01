@@ -13,9 +13,10 @@ import java.util.Optional;
 @ObjectClass(values = { "top", "oxAuthClient" })
 public class Client extends InumEntry {
 
-    @AttributeName(name ="associatedPerson")
+    @AttributeName(name = "associatedPerson")
     private List<String> associatedPeople;
 
+    @AttributeName
     private String displayName;
 
     @AttributeName
@@ -30,15 +31,14 @@ public class Client extends InumEntry {
     @AttributeName(name = "oxAuthPolicyURI")
     private String policyURI;
 
-    @AttributeName(name ="oxAuthTosURI")
+    @AttributeName(name = "oxAuthTosURI")
     private String tosURI;
 
     public List<String> getAssociatedPeople() {
         return Utils.nonNullList(associatedPeople);
     }
 
-    public String getDisplayName()
-    {
+    public String getDisplayName() {
         return displayName;
     }
 

@@ -9,7 +9,7 @@ import org.gluu.persist.model.base.Entry;
 import java.util.List;
 
 @DataEntry
-@ObjectClass(values = { "top", "oxClientAuthorizations" })
+@ObjectClass(values = { "top", "oxClientAuthorization" })
 public class ClientAuthorization extends Entry {
 
     @AttributeName
@@ -18,12 +18,23 @@ public class ClientAuthorization extends Entry {
     @AttributeName(name = "oxAuthScope")
     private List<String> scopes;
 
+    @AttributeName(name = "oxAuthUserId")
+    private String userId;
+
     public String getOxAuthClientId() {
         return oxAuthClientId;
     }
 
     public List<String> getScopes() {
         return Utils.nonNullList(scopes);
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void setOxAuthClientId(String v) {

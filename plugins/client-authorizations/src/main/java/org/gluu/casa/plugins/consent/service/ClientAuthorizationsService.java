@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class ClientAuthorizationsService {
 
     private static final String TOKENS_DN = "ou=tokens,o=gluu";
+    private static final String AUTHORIZATIONS_DN = "ou=authorizations,o=gluu";
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private IPersistenceService persistenceService;
@@ -30,7 +31,10 @@ public class ClientAuthorizationsService {
 
     public Map<Client, Set<Scope>> getUserClientPermissions(String userId) {
 
-        List<ClientAuthorization> authorizations = persistenceService.find(ClientAuthorization.class, authorizationDNOf(userId), null);
+        ClientAuthorization caSample = new ClientAuthorization();
+        caSample.setBaseDn(AUTHORIZATIONS_DN);
+        caSample.setUserId(userId);
+        List<ClientAuthorization> authorizations = persistenceService.find(caSample);
 
         //Obtain client ids from all this user's client authorizations
         Set<String> clientIds = authorizations.stream().map(ClientAuthorization::getOxAuthClientId).collect(Collectors.toSet());
@@ -69,13 +73,14 @@ public class ClientAuthorizationsService {
 
     public void removeClientAuthorizations(String userId, String userName, String clientId) {
 
-        ClientAuthorization sampleAuth = new ClientAuthorization();
-        sampleAuth.setOxAuthClientId(clientId);
-        sampleAuth.setDn(authorizationDNOf(userId));
+        ClientAuthorization caSample = new ClientAuthorization();
+        caSample.setOxAuthClientId(clientId);
+        caSample.setBaseDn(AUTHORIZATIONS_DN);
+        caSample.setUserId(userId);
 
         logger.info("Removing client authorizations for user {}", userName);
         //Here we ignore the return value of deletion
-        persistenceService.find(sampleAuth).forEach(auth -> persistenceService.delete(auth));
+        persistenceService.find(caSample).forEach(auth -> persistenceService.delete(auth));
 
         Token sampleToken = new Token();
         sampleToken.setBaseDn(TOKENS_DN);
@@ -90,10 +95,6 @@ public class ClientAuthorizationsService {
                     persistenceService.delete(token);
                 });
 
-    }
-
-    private String authorizationDNOf(String userId) {
-        return "ou=clientAuthorizations," + persistenceService.getPersonDn(userId);
     }
 
 }
