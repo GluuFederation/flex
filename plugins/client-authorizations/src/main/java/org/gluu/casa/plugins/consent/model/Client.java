@@ -47,7 +47,7 @@ public class Client extends InumEntry {
     }
 
     public List<String> getContacts() {
-        return contacts;
+        return Utils.nonNullList(contacts);
     }
 
     public String getLogoURI() {
