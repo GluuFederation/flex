@@ -6,8 +6,6 @@
             <!-- logo -->
             <div class="w1-ns"></div>
             <div class="w4 mh4-ns tc">
-                <!--a href="${zkService.contextPath}">
-                </a-->
                 <img src="${zkService.contextPath}${assetsService.logoUrl}" />
             </div>
             <div class="w1-ns"></div>
