@@ -24,8 +24,8 @@ public class SamlEnrollmentManager extends AbstractEnrollmentManager {
 
                 int i = externalUid.lastIndexOf(":");
                 if (i > OXEXTERNALUID_PREFIX.length() && i < externalUid.length() - 1) {
-                    String providerName = externalUid.substring(OXEXTERNALUID_PREFIX.length(), i);
-                    if (provider.getDisplayName().equals(providerName)) {
+                    String providerId = externalUid.substring(OXEXTERNALUID_PREFIX.length(), i);
+                    if (provider.getId().equals(providerId)) {
                         return externalUid.substring(i+1);
                     }
                 }
@@ -88,7 +88,7 @@ public class SamlEnrollmentManager extends AbstractEnrollmentManager {
 
     private String removeProvider(IdentityPerson p) {
 
-        String pattern = String.format("%s%s:",OXEXTERNALUID_PREFIX, provider.getDisplayName());
+        String pattern = String.format("%s%s:",OXEXTERNALUID_PREFIX, provider.getId());
 
         Set<String> externalUids = new HashSet<>(p.getOxExternalUid());
         Set<String> unlinkedUids = new HashSet<>(p.getOxUnlinkedExternalUids());

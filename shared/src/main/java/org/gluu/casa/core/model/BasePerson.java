@@ -16,7 +16,7 @@ import java.util.Set;
  * Use this class in conjuction with {@link org.gluu.casa.service.IPersistenceService} to CRUD users to your server.
  */
 @DataEntry
-@ObjectClass(values = { "top", "gluuPerson" })
+@ObjectClass(value = "gluuPerson" )
 public class BasePerson extends InumEntry {
 
     @AttributeName

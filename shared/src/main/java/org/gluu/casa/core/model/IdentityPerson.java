@@ -11,7 +11,7 @@ import java.util.List;
  * Extends {@link BasePerson} in order to manipulate attributes <code>userPassword</code> and <code>oxExternalUid</code>.
  */
 @DataEntry
-@ObjectClass(values = { "top", "gluuPerson" })
+@ObjectClass(value = "gluuPerson")
 public class IdentityPerson extends BasePerson {
 
     @AttributeName(name ="userPassword")

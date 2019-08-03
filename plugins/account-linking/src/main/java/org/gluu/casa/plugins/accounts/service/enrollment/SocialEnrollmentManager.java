@@ -27,7 +27,7 @@ public class SocialEnrollmentManager extends AbstractEnrollmentManager {
                 if (i > OXEXTERNALUID_PREFIX.length()) {
                     String prv = externalUid.substring(OXEXTERNALUID_PREFIX.length(), i);
 
-                    if (prv.equals(provider.getDisplayName())) {
+                    if (prv.equals(provider.getId())) {
                         return externalUid.substring(i+1);
                     }
                 }
@@ -105,7 +105,7 @@ public class SocialEnrollmentManager extends AbstractEnrollmentManager {
                 if (i > OXEXTERNALUID_PREFIX.length()) {
                     String prv = externalUid.substring(OXEXTERNALUID_PREFIX.length(), i);
 
-                    if (prv.equals(provider.getDisplayName())) {
+                    if (prv.equals(provider.getId())) {
                         oxExternalUid = externalUid;
                     } else {
                         list.add(externalUid);
@@ -133,7 +133,7 @@ public class SocialEnrollmentManager extends AbstractEnrollmentManager {
     }
 
     private String getFormatedAttributeVal(String uid) {
-        return String.format("passport-%s:%s", provider.getDisplayName(), uid);
+        return String.format("passport-%s:%s", provider.getId(), uid);
     }
 
 }

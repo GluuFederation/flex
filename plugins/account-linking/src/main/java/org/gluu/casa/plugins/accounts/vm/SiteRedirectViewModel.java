@@ -11,6 +11,8 @@ import org.zkoss.bind.annotation.QueryParam;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 
+import java.net.URL;
+
 /**
  * @author jgomer
  */
@@ -60,7 +62,7 @@ public class SiteRedirectViewModel {
         try {
             String url = String.format("%s/passport/token", serverUrl);
             logger.info("Requesting token at {}", url);
-            return mapper.readTree(url).get("token_").asText();
+            return mapper.readTree(new URL(url)).get("token_").asText();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return null;

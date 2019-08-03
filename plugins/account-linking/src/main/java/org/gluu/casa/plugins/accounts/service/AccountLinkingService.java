@@ -45,7 +45,7 @@ public class AccountLinkingService {
 
     public boolean link(String id, String provider, String externalId) {
         IdentityPerson p = getPerson(id);
-        Provider op = AvailableProviders.getByName(provider).get(); //Assume it exists
+        Provider op = AvailableProviders.get(provider).get(); //Assume it exists
         return op.getEnrollmentManager().link(p, externalId);
     }
 

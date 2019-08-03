@@ -725,7 +725,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
                         if (preSelParams["saml"] != None and isSaml) or (preSelParams["social"] != None and not isSaml):
                             registeredProviders[prvdetails.getId()] = {     
-                                "logo_img": prvdetails.getLogoImg()
+                                "logo_img": prvdetails.getLogoImg(),
                                 "displayName": prvdetails.getDisplayName(),
                                 "saml": isSaml
                             }

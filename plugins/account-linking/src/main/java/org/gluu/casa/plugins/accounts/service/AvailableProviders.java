@@ -21,8 +21,7 @@ import java.util.stream.Stream;
  */
 public class AvailableProviders {
 
-    private static final String[] CONFIG_FILES = new String[]{ "/etc/gluu/conf/gluu-couchbase.properties",
-            "/etc/gluu/conf/gluu-ldap.properties" };
+    private static final String CONFIG_FILE = "/etc/gluu/conf/gluu.properties";
     private static final String OXPASSPORT_PROPERTY = "oxpassport_ConfigurationEntryDN";
 
     private static List<Provider> providers;
@@ -48,12 +47,8 @@ public class AvailableProviders {
         return providers;
     }
 
-    public static Optional<Provider> getByName(String name) {
-        return providers.stream().filter(p -> p.getDisplayName().equals(name)).findFirst();
-    }
-
-    private static Path getConfigFile() {
-        return Stream.of(CONFIG_FILES).map(Paths::get).filter(Files::isRegularFile).findFirst().orElse(null);
+    public static Optional<Provider> get(String id) {
+        return providers.stream().filter(p -> p.getId().equals(id)).findFirst();
     }
 
     private static List<Provider> retrieveProviders() {
@@ -62,7 +57,7 @@ public class AvailableProviders {
         logger.info("Loading providers info");
         try {
             logger.debug("Reading DN of passport configuration");
-            Path path = getConfigFile();
+            Path path = Paths.get(CONFIG_FILE);
 
             if (path == null) {
                 throw new IOException("No configuration file found in /etc/gluu/conf");
@@ -89,11 +84,7 @@ public class AvailableProviders {
 
                 //Fix the logo
                 String logo = provider.getLogoImg();
-                if (logo == null) {
-                    //Most providers already have their logo in img folder of passport...
-                    logo = String.format("img/%s.png", provider.getDisplayName().toLowerCase());
-                }
-                if (!logo.startsWith("http")) {
+                if (logo != null && !logo.startsWith("http")) {
                     //It's not an absolute URL
                     logo = "/oxauth/auth/passport/" + logo;
                 }
