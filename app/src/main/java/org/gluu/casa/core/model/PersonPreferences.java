@@ -5,7 +5,7 @@ import org.gluu.persist.annotation.DataEntry;
 import org.gluu.persist.annotation.ObjectClass;
 
 @DataEntry
-@ObjectClass(values = { "top", "gluuPerson" })
+@ObjectClass("gluuPerson")
 public class PersonPreferences extends BasePerson {
 
     @AttributeName(name = "oxPreferredMethod")

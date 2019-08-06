@@ -13,7 +13,7 @@ import java.util.List;
  * <p>To obtain an instance of this class use {@link org.gluu.casa.service.IPersistenceService}.</p>
  */
 @DataEntry
-@ObjectClass(values = { "top", "gluuOrganization" })
+@ObjectClass("gluuOrganization")
 public class GluuOrganization extends Entry {
 
     @AttributeName

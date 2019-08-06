@@ -8,7 +8,7 @@ import org.gluu.persist.annotation.ObjectClass;
 import java.util.Date;
 
 @DataEntry
-@ObjectClass(values = { "top", "oxDeviceRegistration" })
+@ObjectClass("oxDeviceRegistration")
 public class DeviceRegistration extends Entry {
 
     @AttributeName

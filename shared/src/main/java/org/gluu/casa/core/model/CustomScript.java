@@ -16,7 +16,7 @@ import java.util.Optional;
  * {@link org.gluu.casa.service.IPersistenceService} to read data, modify or delete custom scripts from the server.
  */
 @DataEntry
-@ObjectClass(values = { "top", "oxCustomScript" })
+@ObjectClass("oxCustomScript")
 public class CustomScript extends Entry {
 
     @AttributeName

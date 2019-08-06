@@ -8,7 +8,7 @@ import org.gluu.persist.annotation.ObjectClass;
 import java.util.List;
 
 @DataEntry
-@ObjectClass(values = { "top", "gluuPerson" })
+@ObjectClass("gluuPerson")
 public class PersonOTP extends BasePerson {
 
     @AttributeName(name ="oxExternalUid")

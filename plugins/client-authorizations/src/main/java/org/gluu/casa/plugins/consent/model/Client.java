@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @DataEntry
-@ObjectClass(values = { "top", "oxAuthClient" })
+@ObjectClass("oxAuthClient")
 public class Client extends InumEntry {
 
     @AttributeName(name = "associatedPerson")

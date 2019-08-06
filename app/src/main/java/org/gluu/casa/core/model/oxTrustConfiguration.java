@@ -6,7 +6,7 @@ import org.gluu.persist.annotation.DataEntry;
 import org.gluu.persist.annotation.ObjectClass;
 
 @DataEntry
-@ObjectClass(values = { "top", "oxTrustConfiguration" })
+@ObjectClass("oxTrustConfiguration")
 public class oxTrustConfiguration extends Entry {
 
     @AttributeName

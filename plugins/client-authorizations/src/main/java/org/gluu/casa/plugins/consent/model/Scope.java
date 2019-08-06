@@ -8,7 +8,7 @@ import org.gluu.persist.model.base.InumEntry;
 import java.util.Optional;
 
 @DataEntry
-@ObjectClass(values = { "top", "oxAuthCustomScope" })
+@ObjectClass("oxAuthCustomScope")
 public class Scope extends InumEntry {
 
     @AttributeName

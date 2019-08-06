@@ -6,7 +6,7 @@ import org.gluu.persist.annotation.ObjectClass;
 import org.gluu.persist.model.base.Entry;
 
 @DataEntry
-@ObjectClass(values = {"top", "oxAuthToken"})
+@ObjectClass("oxAuthToken")
 public class Token extends Entry {
 
     @AttributeName
