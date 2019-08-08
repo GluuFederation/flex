@@ -9,6 +9,7 @@ import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.model.PersonPreferences;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.extension.AuthnMethod;
+import org.gluu.casa.license.LicenseUtils;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
@@ -313,7 +314,7 @@ public class UserService {
     }
 
     private boolean administrationAllowed() {
-        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE));
+        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE)) &&  LicenseUtils.verifyLicense();
     }
 
 }
