@@ -6,15 +6,15 @@
 
 	<footer
 		class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
-		<table>
+		<table width="100%" style="margin: 0px">
 			<tr>
-				<td width="20%">
+				<td width="50%">
 					<z:div
 						viewModel="@id('vm') @init('org.gluu.casa.ui.vm.FooterViewModel')">
 						<zk>
 							${labels.general.Language}
-							<z:listbox mold="select"
-								model="@load(vm.locales)"
+							<z:listbox mold="select" 
+								model="@load(vm.locales)" visible="@load(vm.locales.size() gt 1)"
 								onSelect="@command('languageChanged', localeCode = self.getSelectedItem().getValue())"
 								sclass="gray" style="min-width:6rem"
 								selectedItem="@load(vm.selectedLocale)">
@@ -28,7 +28,7 @@
 					</z:div>
 				</td>
 
-				<td width="80%" align="center">
+				<td width="50%"  align="left">
 					${labels.adm.branding_footer}
 				</td>
 			</tr>
