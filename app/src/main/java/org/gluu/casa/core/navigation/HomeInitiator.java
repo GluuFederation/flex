@@ -67,7 +67,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
                                 Pair<String, String> tokens = oxdService.getTokens(code, WebUtils.getQueryParam("state"));
                                 String accessToken = tokens.getX();
                                 String idToken = tokens.getY();
-                                logger.debug("Authorization code={}, Access token={}, Id token {}", code, accessToken, idToken);
+                                logger.debug("Authorization code={}, Access token={}, Id token {}", new String[] { code, accessToken, idToken});
 
                                 User user = Utils.managedBean(UserService.class).getUserFromClaims(oxdService.getUserClaims(accessToken));
                                 //Store in session

@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -268,8 +269,9 @@ public class ConfigurationHandler extends JobListenerSupport {
             settings.setMinCredsFor2FA(defaultValue);
         } else {
             if (providedValue < BOUNDS_MINCREDS_2FA.getX() || providedValue > BOUNDS_MINCREDS_2FA.getY()) {
-                logger.info("Value for min_creds_2FA={} not in interval [{},{}]. Defaulting to {}", providedValue,
+            	String message = MessageFormat.format("Value for min_creds_2FA={} not in interval [{},{}]. Defaulting to {}", providedValue,
                         BOUNDS_MINCREDS_2FA.getX(), BOUNDS_MINCREDS_2FA.getY(), defaultValue);
+                logger.info(message);
                 settings.setMinCredsFor2FA(defaultValue);
             }
         }
