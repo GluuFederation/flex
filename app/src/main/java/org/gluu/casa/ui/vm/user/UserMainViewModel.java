@@ -1,7 +1,11 @@
 package org.gluu.casa.ui.vm.user;
 
 import org.gluu.casa.extension.AuthnMethod;
+import org.gluu.casa.license.LicenseUtils;
+import org.gluu.casa.misc.Utils;
 import org.gluu.casa.core.PersistenceService;
+import org.gluu.casa.core.SessionContext;
+import org.gluu.casa.core.pojo.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
@@ -10,6 +14,9 @@ import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +33,7 @@ public class UserMainViewModel extends UserViewModel {
 
     @WireVariable
     private PersistenceService persistenceService;
-
+    private String licenseRelatedMessage;
     private String introText;
     private boolean methodsAvailability;
     private boolean has2faRequisites;
@@ -54,7 +61,13 @@ public class UserMainViewModel extends UserViewModel {
         return pre2faMethods;
     }
 
-    @Init(superclass = true)
+    public String getLicenseRelatedMessage() {
+		return licenseRelatedMessage;
+	}
+
+	
+
+	@Init(superclass = true)
     public void childInit() {
 
         widgets = userService.getLiveAuthnMethods();
@@ -71,6 +84,15 @@ public class UserMainViewModel extends UserViewModel {
             has2faRequisites = pre2faMethods.size() == 0 || pre2faMethods.stream().anyMatch(aMethod ->  aMethod.getTotalUserCreds(user.getId()) > 0);
         }
 
+		LocalDateTime expiryDate = LicenseUtils.getTrialExpiryDate();
+		String date = expiryDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
+		if (LicenseUtils.isTrialPeriod(expiryDate) == true && LicenseUtils.verifyLicense() == false ) {
+
+			licenseRelatedMessage = Labels.getLabel("usr.casa.trial.period", new String[] { date });
+		} else if (LicenseUtils.verifyLicense() == false) {
+			licenseRelatedMessage = Labels.getLabel("usr.casa.invalid.license", new String[] { date });
+		}
+        
     }
 
 }

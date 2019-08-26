@@ -6,10 +6,16 @@
 
     <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserMainViewModel')"
            self="@define(maincontent)">
+           
+		<zk:zk if="${vm.licenseRelatedMessage ne null}">
+                <div class="alert alert-danger" role="alert">${vm.licenseRelatedMessage}</div>
+            </zk:zk>
 
         <div class="${css.contentHeading}">
             <h1 class="f3 dark-blue2">${labels.usr.title}</h1>
             <p class="f6">${vm.introText}</p>
+
+			
 
             <zk:zk if="${vm.has2faRequisites and vm.pst.password2faRequisite}">
                 <div class="alert alert-warning" role="alert">${labels.usr.warn_lock}</div>
@@ -48,7 +54,7 @@
 
                                         <z:label if="${not empty cred.addedOn}" value="@load(c:cat(' - ',c:toLowerCase(c:l('general.added_on'))))" />
                                         <z:label if="${not empty cred.addedOn}" value="@load(cred.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter',
-                                        format='MMM d yyyy', offset = sessionContext.zoneOffset)" />
+                                        format='MMM d yyyy', offset = sessionContext.zoneOffset)"  />
                                     </div>
                                 </zk:template>
                             </z:div>

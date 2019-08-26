@@ -9,6 +9,7 @@ import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.model.PersonPreferences;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.extension.AuthnMethod;
+import org.gluu.casa.license.LicenseUtils;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
@@ -312,8 +313,12 @@ public class UserService {
         return persistenceService.get(PersonPreferences.class, persistenceService.getPersonDn(id));
     }
 
+    /**
+     * Administration functionalities are enabled only if .administrable file exists and a valid license for casa exists (or the product is within 30 day trial period)
+     * @return boolean value
+     */
     private boolean administrationAllowed() {
-        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE)) ;
+        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE)) && (LicenseUtils.verifyLicense() || LicenseUtils.isTrialPeriod(LicenseUtils.getTrialExpiryDate()));
     }
 
 }
