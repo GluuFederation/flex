@@ -50,7 +50,7 @@ public interface IPersistenceService extends LocalDirectoryInfo2 {
 
     /**
      * Builds a {@link List} of objects of type <code>T</code> from a search (with scope of SUB) using as search base
-     * the field annotated with <code>org.gluu.site.ldap.persistence.annotation.LdapDN</code> in the object passed as parameter;
+     * the field annotated with <code>org.gluu.persist.annotation.DN</code> in the object passed as parameter;
      * this type of search accounts for the entry referenced at the search base and any subordinate
      * entries to any depth. The object passed as parameter is used to internally build a filter to perform the search.
      * <p>Note this search is performed in the context of  <code>oxcore-persist</code>. In this sense, the class to which
