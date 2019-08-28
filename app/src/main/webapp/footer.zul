@@ -1,12 +1,8 @@
-<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk"
-	xmlns="native">
-
-
-
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk" xmlns="native">
 
 	<footer
 		class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
-		<table width="100%" style="margin: 0px">
+		<table width="100%" class="ma0">
 			<tr>
 				<td width="50%">
 					<z:div
@@ -28,13 +24,11 @@
 					</z:div>
 				</td>
 
-				<td width="50%"  align="left">
+				<td width="50%" align="left">
 					${labels.adm.branding_footer}
 				</td>
 			</tr>
-
 		</table>
-
-
 	</footer>
+
 </z:zk>
