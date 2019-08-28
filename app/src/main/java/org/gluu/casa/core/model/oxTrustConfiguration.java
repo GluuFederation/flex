@@ -12,23 +12,12 @@ public class oxTrustConfiguration extends Entry {
     @AttributeName
     private String oxTrustConfApplication;
 
-    @AttributeName
-    private String oxTrustConfCacheRefresh;
-
     public String getOxTrustConfApplication() {
         return oxTrustConfApplication;
     }
 
-    public String getOxTrustConfCacheRefresh() {
-        return oxTrustConfCacheRefresh;
-    }
-
     public void setOxTrustConfApplication(String oxTrustConfApplication) {
         this.oxTrustConfApplication = oxTrustConfApplication;
-    }
-
-    public void setOxTrustConfCacheRefresh(String oxTrustConfCacheRefresh) {
-        this.oxTrustConfCacheRefresh = oxTrustConfCacheRefresh;
     }
 
 }
