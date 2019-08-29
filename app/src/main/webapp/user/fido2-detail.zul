@@ -55,7 +55,7 @@
                 </z:div>
 
                 <div class="${css.panel} bg-near-white">
-                    <h2 class="f5 dark-blue2 pt1">${labels.usr.u2f_add}</h2>
+                    <h2 class="f5 dark-blue2 pt1">${labels.usr.fido2_add}</h2>
                     <div class="alert alert-success dn" id="feedback-key" role="alert" />
 
                     <div class="pb2">
