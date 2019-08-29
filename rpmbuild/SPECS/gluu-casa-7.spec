@@ -8,7 +8,7 @@ License:        Gluu License Agreement for Gluu Casa
 URL:            http://www.gluu.org
 Source0:        %{name}.tar.gz
 BuildArch:      noarch
-Requires:       gluu-server-4.0
+Requires:       gluu-server = 4.0
 
 %description
 User-facing dashboard for people to manage authentication and authorization data in the Gluu Server
