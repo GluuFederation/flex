@@ -11,7 +11,7 @@ import org.zkoss.util.Pair;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +25,8 @@ public class FidoService extends BaseService {
 
     @Inject
     MainSettings settings;
+
+    private static final String U2F_OU = "fido";
 
     public boolean updateDevice(FidoDevice device) {
 
@@ -50,15 +52,7 @@ public class FidoService extends BaseService {
     }
 
     public int getDevicesTotal(String appId, String userId, boolean active) {
-
-        int total = 0;
-        try {
-            total = getRegistrations(appId, userId, active).size();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return total;
-
+        return getRegistrations(appId, userId, active).size();
     }
 
     public <T extends FidoDevice> T getLatestFidoDevice(String userId, long time, String oxApp, Class<T> clazz) throws Exception {
@@ -86,13 +80,19 @@ public class FidoService extends BaseService {
 
     private List<DeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
 
-        String parentDn = String.format("ou=fido,%s", persistenceService.getPersonDn(userId));
-        DeviceRegistration deviceRegistration = new DeviceRegistration();
-        deviceRegistration.setBaseDn(parentDn);
-        deviceRegistration.setOxApplication(appId);
-        deviceRegistration.setOxStatus(active ? DeviceRegistrationStatus.ACTIVE.getValue() : DeviceRegistrationStatus.COMPROMISED.getValue());
+        String parentDn = persistenceService.getPersonDn(userId);
+        if (branchMissing(U2F_OU, parentDn)) {
+            return Collections.emptyList();
+        } else {
+            parentDn = String.format("ou=%s,%s", U2F_OU, parentDn);
 
-        return persistenceService.find(deviceRegistration);
+            DeviceRegistration deviceRegistration = new DeviceRegistration();
+            deviceRegistration.setBaseDn(parentDn);
+            deviceRegistration.setOxApplication(appId);
+            deviceRegistration.setOxStatus(active ? DeviceRegistrationStatus.ACTIVE.getValue() : DeviceRegistrationStatus.COMPROMISED.getValue());
+
+            return persistenceService.find(deviceRegistration);
+        }
 
     }
 

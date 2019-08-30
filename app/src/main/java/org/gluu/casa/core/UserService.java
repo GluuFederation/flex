@@ -12,9 +12,6 @@ import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.license.LicenseUtils;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
-import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
-import org.gluu.casa.plugins.authnmethod.SecurityKeyExtension;
-import org.gluu.casa.plugins.authnmethod.SuperGluuExtension;
 import org.gluu.search.filter.Filter;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
@@ -86,14 +83,6 @@ public class UserService {
         u.setAdmin(persistenceService.isAdmin(inum) && administrationAllowed());
         cleanRandEnrollmentCode(inum);
 
-        //The following avoids noise in logs due to inexisting fido branches under user entry
-        Set<String> acrSet = confHandler.getSettings().getAcrPluginMap().keySet();
-        if (acrSet.contains(SecurityKeyExtension.ACR) || acrSet.contains(SuperGluuExtension.ACR)) {
-            persistenceService.prepareFidoBranch(inum);
-        }
-        if (acrSet.contains(SecurityKey2Extension.ACR)) {
-            persistenceService.prepareFido2Branch(inum);
-        }
         return u;
 
     }

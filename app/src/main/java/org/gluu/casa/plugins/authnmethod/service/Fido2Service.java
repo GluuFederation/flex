@@ -33,6 +33,8 @@ public class Fido2Service extends BaseService {
 
     private AttestationService attestationService;
 
+    private static final String FIDO2_OU = "fido2_register";
+
     @PostConstruct
     private void inited() {
         reloadConfiguration();
@@ -63,29 +65,34 @@ public class Fido2Service extends BaseService {
     }
 
     public int getDevicesTotal(String userId, boolean active) {
-        return persistenceService.count(getSampleRegistrationEntry(userId, active));
+        String dn = persistenceService.getPersonDn(userId);
+        return branchMissing(FIDO2_OU, dn) ? 0 : persistenceService.count(getSampleRegistrationEntry(dn, active));
     }
 
     public List<SecurityKey> getDevices(String userId, boolean active) {
 
         List<SecurityKey> devices = new ArrayList<>();
-        Fido2RegistrationEntry rentry = getSampleRegistrationEntry(userId, active);
-
+        String dn = persistenceService.getPersonDn(userId);
         logger.trace("Finding Fido 2 devices with state={} for user={}", active ? Fido2RegistrationStatus.registered : Fido2RegistrationStatus.pending, userId);
-        for (Fido2RegistrationEntry entry : persistenceService.find(rentry)) {
-            SecurityKey sk = new SecurityKey();
-            sk.setId(entry.getId());
-            sk.setCreationDate(entry.getCreationDate());
-            sk.setNickName(entry.getDisplayName());
-            devices.add(sk);
+
+        if (!branchMissing(FIDO2_OU, dn)) {
+            Fido2RegistrationEntry rentry = getSampleRegistrationEntry(dn, active);
+
+            for (Fido2RegistrationEntry entry : persistenceService.find(rentry)) {
+                SecurityKey sk = new SecurityKey();
+                sk.setId(entry.getId());
+                sk.setCreationDate(entry.getCreationDate());
+                sk.setNickName(entry.getDisplayName());
+                devices.add(sk);
+            }
         }
         return devices.stream().sorted().collect(Collectors.toList());
 
     }
 
-    private Fido2RegistrationEntry getSampleRegistrationEntry(String userId, boolean active) {
+    private Fido2RegistrationEntry getSampleRegistrationEntry(String userDN, boolean active) {
 
-        String dn = String.format("ou=fido2_register,%s", persistenceService.getPersonDn(userId));
+        String dn = String.format("ou=%s,%s", FIDO2_OU, userDN);
         Fido2RegistrationEntry rentry = new Fido2RegistrationEntry();
 
         rentry.setBaseDn(dn);
