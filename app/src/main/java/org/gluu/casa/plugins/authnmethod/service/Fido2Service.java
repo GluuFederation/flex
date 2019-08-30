@@ -96,6 +96,7 @@ public class Fido2Service extends BaseService {
         return rentry;
 
     }
+
     public boolean updateDevice(FidoDevice device) {
 
         boolean success = false;

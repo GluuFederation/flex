@@ -40,10 +40,10 @@ public class LicenseUtils {
 					new Date(Long.parseLong(currentTimeInMilliseconds)));
 			return c.isValid();
 		} catch (InvalidLicenseException e) {
-			LOG.error("License not valid - InvalidLicenseException - " + e.getMessage());
+			LOG.error("License not valid - {} - {}", e.getClass().getSimpleName(), e.getMessage());
 			return false;
 		} catch (IOException e) {
-			LOG.error("License verification failed - IOException - " + e.getMessage());
+			LOG.warn("License verification failed - {} - {}", e.getClass().getSimpleName(), e.getMessage());
 			return false;
 		}
 	}
