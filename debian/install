@@ -10,6 +10,7 @@ casa-external_otp.py /opt/gluu-server/opt/gluu/python/libs/
 casa-external_super_gluu.py /opt/gluu-server/opt/gluu/python/libs/
 casa-external_twilio_sms.py /opt/gluu-server/opt/gluu/python/libs/
 casa-external_u2f.py /opt/gluu-server/opt/gluu/python/libs/
+casa-external_fido2.py /opt/gluu-server/opt/gluu/python/libs/
 
 # /install/community-edition-setup
 setup_casa.py /opt/gluu-server/install/community-edition-setup/
