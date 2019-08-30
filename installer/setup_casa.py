@@ -120,7 +120,7 @@ class SetupCasa(object):
                     self.install_oxd = True
                     self.oxd_server_https = 'https://localhost:8443'
 
-            promptForLicense = setupObject.getPrompt("\nGluu License Agreement: https://github.com/GluuFederation/casa/blob/master/LICENSE.md\n\nDo you acknowledge that Casa is commercial software, and use of Casa is only permitted\nunder the Gluu License Agreement for Gluu Casa? [Y/n]", "n")[0].lower()
+            promptForLicense = setupObject.getPrompt("\n\nDo you acknowledge that Casa is commercial software, and use of Casa is only permitted\nunder the Gluu License Agreement for Gluu Casa? [Y/n]", "n")[0].lower()
             if promptForLicense == 'n':
                 print("You must accept the Gluu License Agreement to continue. Exiting.\n")
                 sys.exit()
