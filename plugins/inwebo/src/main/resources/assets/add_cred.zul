@@ -1,0 +1,63 @@
+<?page language="xhtml"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?init class="org.gluu.casa.plugins.inwebo.InweboInitiator"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/basic.zul"?>
+<?variable-resolver class="org.zkoss.zkplus.cdi.DelegatingVariableResolver"?>
+<h:html xmlns:h="xhtml" xmlns:zk="zk" xmlns="native">
+   
+                
+        <script type="text/javascript"
+		src="https://ult-inwebo.com/va/client.js" />
+		<script type="text/javascript">
+		//<![CDATA[
+		var getUrlParameter = function getUrlParameter(sParam) {
+	    var sPageURL = window.location.search.substring(1),
+	        sURLVariables = sPageURL.split('&'),
+	        sParameterName,
+	        i;
+	
+	    for (i = 0; i < sURLVariables.length; i++) {
+		        sParameterName = sURLVariables[i].split('=');
+		
+		        if (sParameterName[0] === sParam) {
+		            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+		        }
+		    }
+		};
+		
+		
+			VA_jQuery(document).ready( function() 
+			{ 
+				var activation_code = getUrlParameter('code');
+				document.getElementById("inweboactivationcode").innerHTML = activation_code;
+				iwstart("myStart", function(iw, data) 
+						{
+						//Successful authentication
+							if (data.type == "success" && data.action == "activation" &&	data.code == "ok") 
+							{
+								redirectURL = window.location.origin + "/casa"
+								window.location.replace(redirectURL);
+							}
+							else if(data.code == "err")
+							{
+								alert("error - "+data.code)
+							}
+												}
+						);
+			}); // ]]>
+			</script>
+          
+   
+    <h:body class="bg-near-white cust-body-rule"  >
+   
+		    <div id="inweboactivationcode" style="display:none"></div>
+			<div id="myContainer" style="display: none;"></div>
+			<div id="myStart" data-action="activation"
+				data-container="myContainer" data-quiet-start="1" data-lang="auto"
+				data-nopin="0" data-alias="3edaf592678e1b0f9028403efd70f51c">
+			</div>
+	
+    
+    </h:body>
+</h:html>
+	
