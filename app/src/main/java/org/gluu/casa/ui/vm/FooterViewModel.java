@@ -1,9 +1,8 @@
 package org.gluu.casa.ui.vm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
-import org.gluu.casa.core.SessionContext;
 import org.gluu.casa.core.ZKService;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
@@ -15,16 +14,12 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 @VariableResolver(DelegatingVariableResolver.class)
 public class FooterViewModel {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
-
-	@WireVariable
-	private SessionContext sessionContext;
 
 	private List<Locale> locales;
 	private ZKService zkService;
@@ -34,7 +29,7 @@ public class FooterViewModel {
 	public void init() {
 		zkService = Utils.managedBean(ZKService.class);
 		// TODO: check if Set can be rendered in the listbox, if yes, change this to Set
-		locales = zkService.getSupportedLocales().stream().collect(Collectors.toList());
+		locales = new ArrayList<>(zkService.getSupportedLocales());
 		// auto select English as default language
 		if (WebUtils.getServletRequest().getSession().getAttribute(Attributes.PREFERRED_LOCALE) == null) {
 			selectedLocale = Locale.ENGLISH;
@@ -66,4 +61,5 @@ public class FooterViewModel {
 	public void setLocales(List<Locale> locales) {
 		this.locales = locales;
 	}
+
 }

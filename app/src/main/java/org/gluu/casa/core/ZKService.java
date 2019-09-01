@@ -94,7 +94,7 @@ public class ZKService {
 
         List<String> propFilesPaths = Optional.ofNullable(servletContext.getResourcePaths(WAR_LABELS_LOCATION))
                 .orElse(Collections.emptySet()).stream().filter(path -> path.endsWith(".properties")).collect(Collectors.toList());
-        supportedLocales = new HashSet<>();
+        supportedLocales = new TreeSet<>(Comparator.comparing(Locale::getDisplayLanguage));
 
         if (propFilesPaths.size() > 0) {
             String base, temp = propFilesPaths.get(0);

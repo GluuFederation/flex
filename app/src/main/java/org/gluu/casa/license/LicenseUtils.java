@@ -62,14 +62,9 @@ public class LicenseUtils {
 		LocalDateTime trialExpiryDate = installDate.plusDays(EXPIRY_PERIOD_IN_DAYS);
 		return trialExpiryDate;
 	}
-	public static boolean isTrialPeriod(LocalDateTime trialExpiryDate) 
-	{
-		LocalDateTime today = LocalDateTime.now();
-		if (today.isBefore(trialExpiryDate)) {
-			return true;
-		} else {
-			return false;
-		}
+
+	public static boolean isTrialPeriod(LocalDateTime trialExpiryDate) {
+		return LocalDateTime.now().isBefore(trialExpiryDate);
 	}
 
 	private static LocalDateTime getInstallDate() {

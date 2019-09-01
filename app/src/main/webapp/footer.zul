@@ -2,33 +2,28 @@
 
 	<footer
 		class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
-		<table width="100%" class="ma0">
-			<tr>
-				<td width="50%">
-					<z:div
-						viewModel="@id('vm') @init('org.gluu.casa.ui.vm.FooterViewModel')">
-						<zk>
-							${labels.general.Language}
-							<z:listbox mold="select" 
-								model="@load(vm.locales)" visible="@load(vm.locales.size() gt 1)"
-								onSelect="@command('languageChanged', localeCode = self.getSelectedItem().getValue())"
-								sclass="gray" style="min-width:6rem"
-								selectedItem="@load(vm.selectedLocale)">
-								<z:template name="model">
-									<z:listitem
-										label="${each.displayLanguage}" />
-								</z:template>
-							</z:listbox>
-						</zk>
 
-					</z:div>
-				</td>
+        <z:div sclass="flex justify-between"
+            viewModel="@id('vm') @init('org.gluu.casa.ui.vm.FooterViewModel')">
 
-				<td width="50%" align="left">
-					${labels.adm.branding_footer}
-				</td>
-			</tr>
-		</table>
+            <div>${labels.adm.branding_footer}</div>
+            <z:div if="${vm.locales.size() gt 1}">
+                <span class="pr1">${labels.general.language}</span>
+
+                <z:listbox mold="select"
+                    model="@load(vm.locales)"
+                    onSelect="@command('languageChanged', localeCode = self.selectedItem.value)"
+                    sclass="gray" style="min-width:6rem"
+                    selectedItem="@load(vm.selectedLocale)">
+                    <z:template name="model">
+                        <z:listitem
+                            label="${each.displayLanguage}" />
+                    </z:template>
+                </z:listbox>
+            </z:div>
+
+        </z:div>
+
 	</footer>
 
 </z:zk>
