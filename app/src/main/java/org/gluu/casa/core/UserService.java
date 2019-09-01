@@ -81,6 +81,7 @@ public class UserService {
 
         u.setPreferredMethod(person.getPreferredMethod());
         u.setAdmin(persistenceService.isAdmin(inum) && administrationAllowed());
+        u.setRoleAdmin(persistenceService.isAdmin(inum));
         cleanRandEnrollmentCode(inum);
 
         return u;
@@ -310,4 +311,5 @@ public class UserService {
         return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE)) && (LicenseUtils.verifyLicense() || LicenseUtils.isTrialPeriod(LicenseUtils.getTrialExpiryDate()));
     }
 
+    
 }

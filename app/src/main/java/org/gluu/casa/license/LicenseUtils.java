@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.ParseException;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.stream.Stream;
 
 import org.gluu.oxd.license.client.js.Product;
@@ -70,18 +70,12 @@ public class LicenseUtils {
 	private static LocalDateTime getInstallDate() {
 		String SETUP_CASA_LOG_LOCATION = "/install/community-edition-setup/setup_casa.log";
 		
-		try (Stream<String> lines = Files.lines(Paths.get(SETUP_CASA_LOG_LOCATION), Charset.defaultCharset())) {
-
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss MM/dd/yy");
-			String line1 = lines.findFirst().get();
-			
-			  LocalDateTime installDate = LocalDateTime.parse(line1.substring(0, line1.indexOf("Installing Gluu Casa")-1), formatter);
-			return installDate;
-		}
-		catch (Exception e) {
-			LOG.error("ParseException in setup_casa.log - " + e.getMessage());
-			return null;
-		}
+		File file = new File(SETUP_CASA_LOG_LOCATION);
+		LocalDateTime installDate =
+		        LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified()), 
+		                                TimeZone.getDefault().toZoneId());  
+		
+		return installDate;
 	}
 	
 }
