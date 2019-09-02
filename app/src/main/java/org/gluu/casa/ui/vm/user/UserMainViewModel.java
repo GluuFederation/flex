@@ -84,14 +84,14 @@ public class UserMainViewModel extends UserViewModel {
             has2faRequisites = pre2faMethods.size() == 0 || pre2faMethods.stream().anyMatch(aMethod ->  aMethod.getTotalUserCreds(user.getId()) > 0);
         }
 
-        if(user.isRoleAdmin())
-        {
+        if(user.isRoleAdmin()) {
 			LocalDateTime expiryDate = LicenseUtils.getTrialExpiryDate();
 			String date = expiryDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
-			if ( LicenseUtils.isTrialPeriod(expiryDate) == true && LicenseUtils.verifyLicense() == false ) {
-	
+			boolean verified = LicenseUtils.verifyLicense();
+
+			if (LicenseUtils.isTrialPeriod(expiryDate) && !verified) {
 				licenseRelatedMessage = Labels.getLabel("usr.casa.trial.period", new String[] { date });
-			} else if (LicenseUtils.verifyLicense() == false) {
+			} else if (!verified) {
 				licenseRelatedMessage = Labels.getLabel("usr.casa.invalid.license", new String[] { date });
 			}
 		}
