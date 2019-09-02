@@ -308,7 +308,8 @@ public class UserService {
      * @return boolean value
      */
     private boolean administrationAllowed() {
-        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE)) && (LicenseUtils.verifyLicense() || LicenseUtils.isTrialPeriod(LicenseUtils.getTrialExpiryDate()));
+        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE))
+                && (LicenseUtils.verifyLicense() || LicenseUtils.isTrialPeriod(LicenseUtils.getTrialExpiryDate()));
     }
 
     

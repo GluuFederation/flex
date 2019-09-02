@@ -3,16 +3,12 @@ package org.gluu.casa.timer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unboundid.util.StaticUtils;
 import org.gluu.casa.core.ExtensionsManager;
-import org.gluu.casa.core.PersistenceService;
+import org.gluu.casa.core.ITrackable;
 import org.gluu.casa.core.TimerService;
-import org.gluu.casa.core.model.BasePerson;
 import org.gluu.casa.misc.Utils;
-import org.gluu.search.filter.Filter;
-import org.pf4j.DefaultPluginDescriptor;
-import org.pf4j.PluginDescriptor;
-import org.pf4j.PluginState;
+import org.gluu.casa.service.IPersistenceService;
+import org.pf4j.*;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
@@ -40,6 +36,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Generates Casa usage data.
@@ -60,10 +57,6 @@ public class StatisticsTimer extends JobListenerSupport {
 
     private static final long DAY_IN_MILLIS = TimeUnit.DAYS.toMillis(1);
 
-    private static final long HOUR_IN_MILLIS = TimeUnit.HOURS.toMillis(1);
-
-    private static final String LAST_LOGON_ATTR = "oxLastLogonTime";
-
     private static final String GLUU_CASA_PLUGINS_PREFIX = "org.gluu.casa.plugins";
 
     private static final int AES_KEY_SIZE = 256;
@@ -72,7 +65,7 @@ public class StatisticsTimer extends JobListenerSupport {
     private Logger logger;
 
     @Inject
-    private PersistenceService persistenceService;
+    private IPersistenceService persistenceService;
 
     @Inject
     private TimerService timerService;
@@ -123,44 +116,40 @@ public class StatisticsTimer extends JobListenerSupport {
         //Computes current month and year
         String month = t.getMonth().toString();
         String year = Integer.toString(t.getYear());
-        Path tmpUsersFile = Paths.get(TEMP_PATH, "u" + month + year);
 
         try{
-            int activeUsers = getUpdateActiveUsers(tmpUsersFile, now);
             //Computes the moment of time (relative to UNIX epoch) where the current day started (assuming UTC time)
             long todayStartAt = now - now % DAY_IN_MILLIS;
 
-            //The following check guarantees the logic below is executed only once a day (normally between 00:00:00 UTC and 00:59:59UTC)
-            if (now - todayStartAt < HOUR_IN_MILLIS) {
+            //File pointed by tmpFilePath contains plain plugin data and overall days covered
+            Path tmpFilePath = Paths.get(TEMP_PATH, month + year);
+            //File pointed by statsPath contains encrypted data of tmpFilePath plus some extra descriptive info
+            Path statsPath = Paths.get(STATS_PATH, month + year);
+            boolean tmpExists = Files.isRegularFile(tmpFilePath);
 
-                //File pointed by tmpFilePath contains plain plugin data and overall days covered
-                Path tmpFilePath = Paths.get(TEMP_PATH, month + year);
-                //File pointed by statsPath contains encrypted data of tmpFilePath plus some extra descriptive info
-                Path statsPath = Paths.get(STATS_PATH, month + year);
-                boolean tmpExists = Files.isRegularFile(tmpFilePath);
-
-                if (tmpExists) {
-                    //This check prevents to inflate statistics when the app is restarted several times in a day
-                    if (tmpFilePath.toFile().lastModified() > todayStartAt) {
-                        return;
-                    }
+            if (tmpExists) {
+                //This check prevents to recompute statistics when the app is restarted several times in a day
+                if (tmpFilePath.toFile().lastModified() > todayStartAt) {
+                    return;
                 }
-                int daysCovered = 1;
-                List<Map<String, Object>> plugins = null;
-
-                if (tmpExists) {
-                    //Read stats from tmpFilePath and updates daysCovered variable
-                    byte[] bytes = Files.readAllBytes(tmpFilePath);
-                    Map<String, Object> currStats = mapper.readValue(bytes, new TypeReference<Map<String, Object>>(){});
-                    daysCovered = Integer.parseInt(currStats.get("daysCovered").toString()) + 1;
-
-                    plugins = (List<Map<String, Object>>) currStats.get("plugins");
-                }
-                //Updates plugin data
-                plugins = getPluginInfo(Optional.ofNullable(plugins).orElse(Collections.emptyList()));
-                //Saves to disk plain and encrypted file
-                serialize(month, year, activeUsers, daysCovered, plugins, statsPath, tmpFilePath);
             }
+
+            int daysCovered = 1;
+            List<PluginMetric> plugins = null;
+
+            if (tmpExists) {
+                //Read stats from tmpFilePath and updates daysCovered variable
+                byte[] bytes = Files.readAllBytes(tmpFilePath);
+                Map<String, Object> currStats = mapper.readValue(bytes, new TypeReference<Map<String, Object>>(){});
+                daysCovered = Integer.parseInt(currStats.get("daysCovered").toString()) + 1;
+
+                plugins = mapper.convertValue(currStats.get("plugins"), new TypeReference<List<PluginMetric>>(){});
+            }
+            //Updates plugin data accounting from first day of present month to current time
+            long start = todayStartAt - (t.getDayOfMonth() - 1) * DAY_IN_MILLIS;
+            plugins = getPluginInfo(Optional.ofNullable(plugins).orElse(Collections.emptyList()), start, now);
+            //Saves to disk plain and encrypted file
+            serialize(month, year, getActiveUsers(), daysCovered, plugins, statsPath, tmpFilePath);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -168,57 +157,17 @@ public class StatisticsTimer extends JobListenerSupport {
     }
 
     /**
-     * Reads the file represented by <code>tmpUsersFile</code> (which contains the set of user IDs who have logged in to
-     * any app protected by the server) in a given period, and returns the size of such set. If the time passed in
-     * parameter <code>t</code> falls beyond an hour of the last modified timestamp of such file, the file is updated
-     * to include users who have logged in in the previous hour.
-     * <p>This file is built via standard Java serialization techniques, not Json. It saves some disk space as well as
-     * computing time since this method is called often.</p>
-     * @param tmpUsersFile Path to file (it covers a specific month)
-     * @param t A instant in time (in terms of UNIX epoch)
-     * @return Number of (different) users who have logged in using Gluu Server for the period covered by tmpUsersFile
-     * @throws Exception Anomaly reading or updating the file
+     * Computes the number of distinct users who have at least one enrolled credential mapped to any of the extensions'
+     * acr values found in package org.gluu.casa.plugins.authnmethod
+     * @return Number of users (in case of problem conducting the computation, 0 is returned)
      */
-    private int getUpdateActiveUsers(Path tmpUsersFile, long t) throws Exception {
+    private int getActiveUsers() {
+        /*
+        List<AuthnMethod> extensions = extManager.getDefaultExtensions(AuthnMethod.class);
 
-        Set<Integer> activeUsers = new HashSet<>();
-        boolean tmpExists = Files.isRegularFile(tmpUsersFile);
-        boolean update = true;
-
-        if (tmpExists) {
-            update = t - tmpUsersFile.toFile().lastModified() > HOUR_IN_MILLIS;
-            try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(tmpUsersFile))) {
-                activeUsers = (HashSet<Integer>) ois.readObject();
-            }
-        }
-        if (update) {
-            activeUsers.addAll(lastHourLogins(t));
-
-            try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(tmpUsersFile))) {
-                oos.writeObject(activeUsers);
-            }
-        }
-        return activeUsers.size();
-
-    }
-
-    /**
-     * Computes a set of hashed user IDs. IDs are obtained by checking the oxLastLogonTime attribute of LDAP belonging
-     * to the timeframe [<code>timeStamp</code> - 1 hour, <code>timeStamp</code>).
-     * @param timeStamp An time instant (in terms of UNIX epoch)
-     * @return The set built
-     */
-    private Set<Integer> lastHourLogins(long timeStamp) {
-
-        Set<Integer> huids = new HashSet<>();
-        Filter filter = Filter.createANDFilter(
-                Filter.createGreaterOrEqualFilter(LAST_LOGON_ATTR, StaticUtils.encodeGeneralizedTime(timeStamp - HOUR_IN_MILLIS)),
-                Filter.createLessOrEqualFilter(LAST_LOGON_ATTR, StaticUtils.encodeGeneralizedTime(timeStamp - 1))
-        );
-        persistenceService.find(BasePerson.class, persistenceService.getPeopleDn(), filter)
-                .forEach(p -> huids.add(p.getUid().hashCode()));
-        return huids;
-
+        ListpersistenceService.find(BasePerson.class, persistenceService.getPeopleDn(), null);*/
+        //TODO
+        return 0;
     }
 
     /**
@@ -226,39 +175,57 @@ public class StatisticsTimer extends JobListenerSupport {
      * @param plugins Previous data
      * @return Up-to-date data
      */
-    private List<Map<String, Object>> getPluginInfo(List<Map<String, Object>> plugins) {
+    private List<PluginMetric> getPluginInfo(List<PluginMetric> plugins, long start, long end) {
 
         //Computes a temporary list with info (id + version) about plugins which are currently installed
-        List<PluginDescriptor> pluginSummary = new ArrayList<>();
-        extManager.getPlugins().stream()
+        List<PluginWrapper> pluginSummary = extManager.getPlugins().stream()
                 .filter(pw -> pw.getDescriptor().getPluginClass().startsWith(GLUU_CASA_PLUGINS_PREFIX)
-                        && pw.getPluginState().equals(PluginState.STARTED))
-                .forEach(pw -> pluginSummary.add(
-                        new DefaultPluginDescriptor(pw.getPluginId(), null, null, pw.getDescriptor().getVersion(), null, null, null))
-                );
+                        && pw.getPluginState().equals(PluginState.STARTED)).collect(Collectors.toList());
 
         //Correlates pluginSummary vs. plugins variables and updates the days of usage
-        for (Map<String, Object> map : plugins) {
-            String pluginId = map.get("pluginId").toString();
-            String version = map.get("version").toString();
+        for (PluginMetric metric : plugins) {
+            String pluginId = metric.getPluginId();
+            String version = metric.getVersion();
 
             //Search this occurrence in currently installed plugins
-            if (pluginSummary.stream().anyMatch(pd -> pd.getVersion().equals(version) && pd.getPluginId().equals(pluginId))) {
-                map.put("daysUsed", Integer.parseInt(map.get("daysUsed").toString()) + 1);
+            PluginWrapper wrapper = pluginSummary.stream()
+                    .filter(pw -> pw.getDescriptor().getVersion().equals(version)
+                            && pw.getPluginId().equals(pluginId)).findFirst().orElse(null);
+
+            if (wrapper != null) {
+                try {
+                    //Is plugin implementing ITrackable?
+                     int users = ITrackable.class.cast(wrapper.getPlugin()).getActiveUsers(start, end);
+                     if (users < 0) {
+                         logger.warn("Computing active users for plugin '{}' failed", pluginId);
+                         Integer prevActiveUsers = metric.getActiveUsers();
+
+                         if (prevActiveUsers != null) {
+                             //Preserve the greatest in history
+                             metric.setActiveUsers(Math.max(users, prevActiveUsers));
+                         }
+                     }
+                } catch (ClassCastException e) {
+                    logger.info("Plugin {} does not implement ITrackable. Cannot compute active users");
+                }
+                metric.setDaysUsed(metric.getDaysUsed() + 1);
             }
         }
 
-        List<Map<String, Object>> list = new ArrayList<>(plugins);
+        List<PluginMetric> list = new ArrayList<>(plugins);
         //Adds the relevant information found in pluginSummary and not present in plugins
-        for (PluginDescriptor pd : pluginSummary) {
-            if (plugins.stream().noneMatch(map -> map.get("pluginId").toString().equals(pd.getPluginId())
-                    && map.get("version").toString().equals(pd.getVersion()))) {
+        for (PluginWrapper pw : pluginSummary) {
+            String pluginId = pw.getPluginId();
+            String version = pw.getDescriptor().getVersion();
 
-                Map<String, Object> map = new LinkedHashMap<>();
-                map.put("pluginId", pd.getPluginId());
-                map.put("version", pd.getVersion());
-                map.put("daysUsed", 1);
-                list.add(map);
+            if (plugins.stream().noneMatch(m -> m.getPluginId().equals(pluginId) && m.getVersion().equals(version))) {
+
+                PluginMetric metric = new PluginMetric();
+                metric.setPluginId(pluginId);
+                metric.setVersion(version);
+                metric.setDaysUsed(1);
+
+                list.add(metric);
             }
         }
         return list;
@@ -276,7 +243,7 @@ public class StatisticsTimer extends JobListenerSupport {
      * @param tmpDestination References a file to update
      * @throws Exception A problem occurred saving files, encrypting, serializing data, etc.
      */
-    private void serialize(String month, String year, int activeUsers, int days, List<Map<String, Object>> plugins,
+    private void serialize(String month, String year, int activeUsers, int days, List<PluginMetric> plugins,
                            Path destination, Path tmpDestination) throws Exception {
 
         //A LinkedHashMap guarantees JSON data is serialized in the same order of key insertion
