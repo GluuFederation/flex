@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.core.ITrackable;
 import org.gluu.casa.core.TimerService;
+import org.gluu.casa.core.model.BasePerson;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
+import org.gluu.persist.model.base.SimpleBranch;
+import org.gluu.search.filter.Filter;
 import org.pf4j.*;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
@@ -157,17 +160,44 @@ public class StatisticsTimer extends JobListenerSupport {
     }
 
     /**
-     * Computes the number of distinct users who have at least one enrolled credential mapped to any of the extensions'
-     * acr values found in package org.gluu.casa.plugins.authnmethod
+     * Computes the number of distinct users who have at least one enrolled for the default authentication mechanisms
+     * supported
      * @return Number of users (in case of problem conducting the computation, 0 is returned)
      */
     private int getActiveUsers() {
-        /*
-        List<AuthnMethod> extensions = extManager.getDefaultExtensions(AuthnMethod.class);
 
-        ListpersistenceService.find(BasePerson.class, persistenceService.getPeopleDn(), null);*/
-        //TODO
-        return 0;
+        Set<Integer> hashes = new HashSet<>();
+        //This could be easily implemented by obtaining the default extensions and then call, per every user in the database
+        //the method org.gluu.casa.extension.AuthnMethod.getTotalUserCreds(). However it is prohibitely expensive: we
+        //have to solve it by using just a couple of low level direct queries
+        try {
+            String peopleDN = persistenceService.getPeopleDn();
+            Filter filter = Filter.createORFilter(
+                    Filter.createPresenceFilter("mobile"),      //Accounts for OTP (SMS)
+                    Filter.createPresenceFilter("oxExternalUid")    //Accounts for OTP (time or event based) or external identities
+            );
+            hashes.addAll(persistenceService.find(BasePerson.class, peopleDN, filter)
+                    .stream().map(p -> p.getInum().hashCode()).collect(Collectors.toList()));
+
+            SimpleBranch u2fB = new SimpleBranch(peopleDN);
+            String ous[] = new String[]{"fido", "fido2_register"};
+            //Compute owners of u2f or supergluu enrollments, and then fido2
+            for (String ou : ous) {
+                u2fB.setOrganizationalUnitName(ou);
+
+                hashes.addAll(persistenceService.find(u2fB).stream().map(SimpleBranch::getDn)
+                        .map(dn -> dn.substring(    //Extract the inum from the DN of the enrollment
+                                        dn.indexOf("inum=") + 5,
+                                        dn.length() - peopleDN.length() - 1
+                                    ).hashCode())
+                        .collect(Collectors.toList()));
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return hashes.size();
     }
 
     /**
