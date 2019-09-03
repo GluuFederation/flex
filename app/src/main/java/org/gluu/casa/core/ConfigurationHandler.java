@@ -170,7 +170,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                             //Devices sweeper executes in a single node in theory...
                             devicesSweeper.activate(10 + gap);
                             syncSettingsTimer.activate(60 + gap);
-                            statisticsTimer.activate();
+                            statisticsTimer.activate(120);
                             //plugin checker is not shared-state related
                             pluginChecker.activate(5);
                         }

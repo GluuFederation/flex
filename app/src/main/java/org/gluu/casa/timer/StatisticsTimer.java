@@ -88,14 +88,13 @@ public class StatisticsTimer extends JobListenerSupport {
 
     private SecretKeySpec symmetricKey;
 
-    public void activate() {
+    public void activate(int gap) {
 
         try {
             if (pub != null) {
-                int oneHour = (int) TimeUnit.HOURS.toSeconds(1);
                 timerService.addListener(this, quartzJobName);
-                //Repeat indefinitely every hour
-                timerService.schedule(quartzJobName, oneHour, -1, oneHour);
+                //Repeat indefinitely every day
+                timerService.schedule(quartzJobName, gap, -1, (int) TimeUnit.DAYS.toSeconds(1));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -179,14 +178,14 @@ public class StatisticsTimer extends JobListenerSupport {
             hashes.addAll(persistenceService.find(BasePerson.class, peopleDN, filter)
                     .stream().map(p -> p.getInum().hashCode()).collect(Collectors.toList()));
 
-            SimpleBranch u2fB = new SimpleBranch(peopleDN);
+            SimpleBranch sb = new SimpleBranch(peopleDN);
             String ous[] = new String[]{"fido", "fido2_register"};
             //Compute owners of u2f or supergluu enrollments, and then fido2
             for (String ou : ous) {
-                u2fB.setOrganizationalUnitName(ou);
+                sb.setOrganizationalUnitName(ou);
 
-                hashes.addAll(persistenceService.find(u2fB).stream().map(SimpleBranch::getDn)
-                        .map(dn -> dn.substring(    //Extract the inum from the DN of the enrollment
+                hashes.addAll(persistenceService.find(sb).stream().map(SimpleBranch::getDn)
+                        .map(dn -> dn.substring(    //Extract the user inum from the enrolled device DN
                                         dn.indexOf("inum=") + 5,
                                         dn.length() - peopleDN.length() - 1
                                     ).hashCode())
@@ -228,12 +227,14 @@ public class StatisticsTimer extends JobListenerSupport {
                      int users = ITrackable.class.cast(wrapper.getPlugin()).getActiveUsers(start, end);
                      if (users < 0) {
                          logger.warn("Computing active users for plugin '{}' failed", pluginId);
+                     } else {
                          Integer prevActiveUsers = metric.getActiveUsers();
 
                          if (prevActiveUsers != null) {
                              //Preserve the greatest in history
-                             metric.setActiveUsers(Math.max(users, prevActiveUsers));
+                             users = Math.max(users, prevActiveUsers);
                          }
+                         metric.setActiveUsers(users);
                      }
                 } catch (ClassCastException e) {
                     logger.info("Plugin {} does not implement ITrackable. Cannot compute active users");
