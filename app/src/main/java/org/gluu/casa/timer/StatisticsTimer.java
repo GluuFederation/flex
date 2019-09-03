@@ -121,6 +121,8 @@ public class StatisticsTimer extends JobListenerSupport {
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
 
+        //TODO: this method implementation is not well-suited for a multinode environment
+
         //Optimistically, the following if-else allows the metrics logic to be executed only by a single node
         //(in a multi node environment)
         if (storeService.get(ACTIVE_INSTANCE_PRESENCE) == null) {
@@ -143,7 +145,6 @@ public class StatisticsTimer extends JobListenerSupport {
             //Computes the moment of time (relative to UNIX epoch) where the current day started (assuming UTC time)
             long todayStartAt = now - now % DAY_IN_MILLIS;
 
-            //TODO: do not use the file system (temp_path) but write encrypted data to LDAP
             //File pointed by tmpFilePath contains plain plugin data and overall days covered
             Path tmpFilePath = Paths.get(TEMP_PATH, month + year);
             //File pointed by statsPath contains encrypted data of tmpFilePath plus some extra descriptive info
