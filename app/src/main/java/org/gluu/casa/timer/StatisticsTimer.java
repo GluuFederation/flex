@@ -3,9 +3,11 @@ package org.gluu.casa.timer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unboundid.util.StaticUtils;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.core.ITrackable;
 import org.gluu.casa.core.TimerService;
+import org.gluu.casa.core.inmemory.IStoreService;
 import org.gluu.casa.core.model.BasePerson;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
@@ -60,15 +62,22 @@ public class StatisticsTimer extends JobListenerSupport {
 
     private static final long DAY_IN_MILLIS = TimeUnit.DAYS.toMillis(1);
 
+    private static final String LAST_LOGON_ATTR = "oxLastLogonTime";
+
     private static final String GLUU_CASA_PLUGINS_PREFIX = "org.gluu.casa.plugins";
 
     private static final int AES_KEY_SIZE = 256;
+
+    private final String ACTIVE_INSTANCE_PRESENCE = getClass().getName() + "_activeInstanceSet";
 
     @Inject
     private Logger logger;
 
     @Inject
     private IPersistenceService persistenceService;
+
+    @Inject
+    private IStoreService storeService;
 
     @Inject
     private TimerService timerService;
@@ -88,13 +97,15 @@ public class StatisticsTimer extends JobListenerSupport {
 
     private SecretKeySpec symmetricKey;
 
+    private int oneDay;
+
     public void activate(int gap) {
 
         try {
             if (pub != null) {
                 timerService.addListener(this, quartzJobName);
                 //Repeat indefinitely every day
-                timerService.schedule(quartzJobName, gap, -1, (int) TimeUnit.DAYS.toSeconds(1));
+                timerService.schedule(quartzJobName, gap, -1, oneDay);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -110,6 +121,15 @@ public class StatisticsTimer extends JobListenerSupport {
     @Override
     public void jobToBeExecuted(JobExecutionContext context) {
 
+        //Optimistically, the following if-else allows the metrics logic to be executed only by a single node
+        //(in a multi node environment)
+        if (storeService.get(ACTIVE_INSTANCE_PRESENCE) == null) {
+            //temporarily take the ownership for computing data
+            storeService.put(oneDay, ACTIVE_INSTANCE_PRESENCE, true);
+        } else {
+            return;
+        }
+
         logger.trace("StatisticsTimer. Running timer job");
 
         long now = System.currentTimeMillis();
@@ -123,6 +143,7 @@ public class StatisticsTimer extends JobListenerSupport {
             //Computes the moment of time (relative to UNIX epoch) where the current day started (assuming UTC time)
             long todayStartAt = now - now % DAY_IN_MILLIS;
 
+            //TODO: do not use the file system (temp_path) but write encrypted data to LDAP
             //File pointed by tmpFilePath contains plain plugin data and overall days covered
             Path tmpFilePath = Paths.get(TEMP_PATH, month + year);
             //File pointed by statsPath contains encrypted data of tmpFilePath plus some extra descriptive info
@@ -151,7 +172,8 @@ public class StatisticsTimer extends JobListenerSupport {
             long start = todayStartAt - (t.getDayOfMonth() - 1) * DAY_IN_MILLIS;
             plugins = getPluginInfo(Optional.ofNullable(plugins).orElse(Collections.emptyList()), start, now);
             //Saves to disk plain and encrypted file
-            serialize(month, year, getActiveUsers(), daysCovered, plugins, statsPath, tmpFilePath);
+            int activeUsers = getActiveUsers(start, now);
+            serialize(month, year, activeUsers, daysCovered, plugins, statsPath, tmpFilePath);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -160,23 +182,37 @@ public class StatisticsTimer extends JobListenerSupport {
 
     /**
      * Computes the number of distinct users who have at least one enrolled for the default authentication mechanisms
-     * supported
+     * supported and have logged in at least once during the period [start, end)
+     * @param start Initial time to account for user activity
+     * @param end Upper limit
      * @return Number of users (in case of problem conducting the computation, 0 is returned)
      */
-    private int getActiveUsers() {
+    private int getActiveUsers(long start, long end) {
 
         Set<Integer> hashes = new HashSet<>();
-        //This could be easily implemented by obtaining the default extensions and then call, per every user in the database
-        //the method org.gluu.casa.extension.AuthnMethod.getTotalUserCreds(). However it is prohibitely expensive: we
-        //have to solve it by using just a couple of low level direct queries
+        List<Integer> hashesValidUsers = Collections.emptyList();
+        //Implementing this method by iterating through every user in the database and calling method
+        //org.gluu.casa.extension.AuthnMethod.getTotalUserCreds() is prohibitely expensive: we
+        //have to solve it by using low-level direct queries
         try {
             String peopleDN = persistenceService.getPeopleDn();
-            Filter filter = Filter.createORFilter(
-                    Filter.createPresenceFilter("mobile"),      //Accounts for OTP (SMS)
-                    Filter.createPresenceFilter("oxExternalUid")    //Accounts for OTP (time or event based) or external identities
+            String startTime = StaticUtils.encodeGeneralizedTime(start);
+            String endTime = StaticUtils.encodeGeneralizedTime(end - 1);
+
+            //Employed to compute users who have logged in a time period
+            Filter filter = Filter.createANDFilter(
+                    Filter.createGreaterOrEqualFilter(LAST_LOGON_ATTR, startTime),
+                    Filter.createLessOrEqualFilter(LAST_LOGON_ATTR, endTime)
+            );
+            hashesValidUsers = persistenceService.find(BasePerson.class, peopleDN, filter)
+                    .stream().map(BasePerson::getInum).map(String::hashCode).collect(Collectors.toList());
+
+            filter = Filter.createORFilter(
+                Filter.createPresenceFilter("mobile"),      //Accounts for OTP (SMS)
+                Filter.createPresenceFilter("oxExternalUid")    //Accounts for OTP (time or event based) or external identities
             );
             hashes.addAll(persistenceService.find(BasePerson.class, peopleDN, filter)
-                    .stream().map(p -> p.getInum().hashCode()).collect(Collectors.toList()));
+                    .stream().map(BasePerson::getInum).map(String::hashCode).collect(Collectors.toList()));
 
             SimpleBranch sb = new SimpleBranch(peopleDN);
             String ous[] = new String[]{"fido", "fido2_register"};
@@ -196,7 +232,9 @@ public class StatisticsTimer extends JobListenerSupport {
             logger.error(e.getMessage(), e);
         }
 
+        hashes.retainAll(hashesValidUsers);
         return hashes.size();
+
     }
 
     /**
@@ -358,6 +396,7 @@ public class StatisticsTimer extends JobListenerSupport {
             mapper = new ObjectMapper();
             mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             quartzJobName = getClass().getSimpleName() + "_timer";
+            oneDay = (int) TimeUnit.DAYS.toSeconds(1);
 
             //Obtains email and server name from the current Gluu installation
             try (BufferedReader reader = Files.newBufferedReader(Paths.get(SETUP_PROPERTIES_LOCATION))) {
