@@ -23,9 +23,9 @@ import org.zkoss.json.JSONObject;
  */
 @ApplicationScoped
 @Path("/billing/")
-public class CasaBillingRS {
+public class BillingWS {
 
-	private static final String statsDirectoryPath = "/opt/gluu/jetty/casa/stats/";
+	private static final String statsDirectoryPath = System.getProperty("server.base") + File.separator + "stats";
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@GET
@@ -66,4 +66,5 @@ public class CasaBillingRS {
 		o.put("files", files);
 		return Response.status(Response.Status.OK).entity(o).build();
 	}
+
 }
