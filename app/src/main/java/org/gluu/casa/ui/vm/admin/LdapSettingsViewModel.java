@@ -23,21 +23,10 @@ import org.zkoss.zul.Messagebox;
 public class LdapSettingsViewModel extends MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-    
-    // to use constants inside a zul page, use static final property with a non static getter
-    private static final String databaseTypeLdap = LdapSettings.BACKEND.LDAP.getValue();
-    
-    private static final String databaseTypeCouchbase = LdapSettings.BACKEND.COUCHBASE.getValue();
 
-    private boolean isLdapType =false;
-
-    public boolean isLdapType() {
-		return isLdapType;
-	}
-
-	public void setLdapType(boolean isLdapType) {
-		this.isLdapType = isLdapType;
-	}
+    public LdapSettings.BACKEND[] getBackends() {
+        return LdapSettings.BACKEND.values();
+    }
 
 	@WireVariable
     private PersistenceService persistenceService;
@@ -52,15 +41,7 @@ public class LdapSettingsViewModel extends MainViewModel {
         this.ldapSettings = ldapSettings;
     }
 
-    public String getDatabaseTypeLdap() {
-    	return databaseTypeLdap;
-    }
-    
-    public String getDatabaseTypeCouchbase() {
-    	return databaseTypeCouchbase;
-    }
-
-	@Init//(superclass = true)
+	@Init
     public void init() {
         reloadConfig();
     }
@@ -87,7 +68,6 @@ public class LdapSettingsViewModel extends MainViewModel {
 
     private void reloadConfig() {
         ldapSettings = (LdapSettings) Utils.cloneObject(getSettings().getLdapSettings());
-        isLdapType = getDatabaseTypeLdap().equalsIgnoreCase(ldapSettings.getType());
     }
 
     //This method does not change application level settings
@@ -124,14 +104,8 @@ public class LdapSettingsViewModel extends MainViewModel {
 
     @NotifyChange("ldapSettings")
     @Command
-    public void setType(@BindingParam("type") String type) {
-    	
-    	if (getDatabaseTypeLdap().equalsIgnoreCase(type)) {
-            ldapSettings.setType(LdapSettings.BACKEND.LDAP.getValue());
-        } else if (getDatabaseTypeCouchbase().equalsIgnoreCase(type)) {
-            ldapSettings.setType(LdapSettings.BACKEND.COUCHBASE.getValue());
-        }
-    
+    public void setType(@BindingParam("type") LdapSettings.BACKEND type) {
+    	ldapSettings.setType(type.getValue());
     }
 
 }

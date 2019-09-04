@@ -28,8 +28,7 @@
                                            value="@bind(vm.oxdSettings.host)" id="uiHost" />
                                 <span class="ph2 pt2">:</span>
                                 <z:intbox sclass="${css.textInput} w3" placeholder="${labels.adm.oxd_port_placeholder}"
-                                          value="@bind(vm.oxdSettings.port)" tooltip="tooltip_port, after_pointer" maxlength="5"
-                                          ca:data-original-title="${labels.adm.oxd_port_tooltip}" ca:data-toggle="tooltip" ca:data-placement="bottom" />
+                                          value="@bind(vm.oxdSettings.port)" maxlength="5" />
                             </div>
 
                         </div>

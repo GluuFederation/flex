@@ -365,6 +365,7 @@ public class PersistenceService implements IPersistenceService {
 
         Properties backendProperties;
         boolean ret = false;
+        entryManager = null;
         PersistenceEntryManagerFactory factory = null;
         String saltFile = ldapSettings.getSaltLocation();
         String type = ldapSettings.getType();
@@ -384,6 +385,7 @@ public class PersistenceService implements IPersistenceService {
                 backendProperties.setProperty(String.format("%s.%s", type, prop), backendProperties.getProperty(prop));
             }
 
+            logger.debug("Obtaining PersistenceEntryManagerFactory from available Weld Instances");
             for (WeldInstance.Handler<PersistenceEntryManagerFactory> handler : pFactoryInstance.handlers()) {
                 if (handler.get().getPersistenceType().equals(type)) {
                     factory = handler.get();
@@ -393,6 +395,7 @@ public class PersistenceService implements IPersistenceService {
 
         } else {
             //load the configuration using the oxcore-persistence-cdi API
+            logger.debug("Obtaining PersistenceEntryManagerFactory from persistence API");
             PersistenceConfiguration persistenceConf = persistanceFactoryService.loadPersistenceConfiguration();
             FileConfiguration persistenceConfig = persistenceConf.getConfiguration();
             backendProperties = persistenceConfig.getProperties();
@@ -409,12 +412,15 @@ public class PersistenceService implements IPersistenceService {
         }
 
         if (stringEncrypter != null) {
+            logger.debug("Decrypting backend properties");
             backendProperties = PropertiesDecrypter.decryptAllProperties(stringEncrypter, backendProperties);
         }
 
         if (factory != null) {
 
+            logger.info("Obtaining a Persistence EntryManager");
             int i = 0;
+
             do {
                 try {
                     i++;
@@ -425,7 +431,9 @@ public class PersistenceService implements IPersistenceService {
                 }
             } while (entryManager == null && i < retries);
 
-            if (entryManager != null) {
+            if (entryManager == null) {
+                logger.error("No EntryManager could be obtained");
+            } else {
 
                 if (type.equals(LdapSettings.BACKEND.LDAP.getValue())) {
                     ldapOperationService = (LdapOperationService) entryManager.getOperationService();

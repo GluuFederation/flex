@@ -26,17 +26,18 @@
                         <label class="mr2 w4">${labels.adm.configuration_file}</label>
                         <z:textbox sclass="${css.textInput} w4 w5-ns" value="@bind(vm.ldapSettings.configurationFile)" />
                     </div>
-                     <div class="pb1 flex flex-wrap">
- 						<label class="mr2 w4">${labels.adm.configuration_type}</label>
- 						<z:radiogroup id="dbType"   />
-		                    <z:div sclass="flex justify-around flex-wrap">
-	                            <z:radio  label="${labels.adm.configuration_type_ldap}" value="@bind(vm.databaseTypeLdap)"  selected="@load(vm.ldapType)" radiogroup="dbType" sclass="ph3"  onCheck="@command('setType', type = 'ldap')" />
-		                    </z:div>
-	                    
-	    	                <z:div sclass="flex justify-around flex-wrap">
-								<z:radio  label="${labels.adm.configuration_type_couchbase}" value="@bind(vm.databaseTypeCouchbase)" selected="@load(not vm.ldapType)"  radiogroup="dbType" sclass="ph3" onCheck="@command('setType', type = 'couchbase')"  />
-	            	        </z:div>
-					</div>
+                    <div class="pb1 flex flex-wrap">
+                        <label class="mr2 w4">${labels.adm.configuration_type}</label>
+                        <z:radiogroup id="dbType" />
+
+                        <z:div sclass="flex justify-around flex-wrap" children="@load(vm.backends)">
+                            <zk:template name="children">
+                                <z:radio label="${c:l(c:cat('adm.configuration_type_', each.name()))}"
+                                         selected="@load(vm.ldapSettings.type eq each.value)" onCheck="@command('setType', type=each)"
+                                         radiogroup="dbType" sclass="ph3" />
+                            </zk:template>
+                        </z:div>
+                    </div>
                     <div class="pv2 flex flex-wrap">
                         <label class="mr2 w3" />
                         <z:button label="${labels.general.save}" sclass="${css.primaryButton} ph4"

@@ -10,9 +10,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class LdapSettings {
 
     public enum BACKEND {
-        LDAP, COUCHBASE;
+        LDAP, COUCHBASE, HYBRID;
 
         public String getValue() {
+            //This is needed to match the value returned by PersistenceEntryManagerFactory.getPersistenceType()
             return toString().toLowerCase();
         }
 
