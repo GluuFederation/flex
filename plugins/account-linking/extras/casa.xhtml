@@ -291,10 +291,13 @@ border-color: #d6e9c6;
             			var name = prov.displayName ? prov.displayName : provider
 
 				        if (logo_img == null) {
-					        logo_img = "/oxauth/img/favicon_icosahedron.ico"
+					        logo_img = "/oxauth/img/glu_icon.png"
+				        } else if (logo_img.substring(0,4) != "http"){
+				            //passportlogin.xhtml and this page are not in the same location, so we have to fix it here
+                            logo_img = "auth/passport/" + logo_img
 				        }
 
-                        imgMarkup = '<img style="cursor: pointer" class="img-responsive" alt="'
+                        imgMarkup = '<img style="cursor: pointer;max-width:48px" alt="'
                                 + name
                                 + '" onclick="idp_redirect(\''
                                 + provider
