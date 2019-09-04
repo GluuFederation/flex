@@ -105,7 +105,7 @@ public class PassportLinkingService {
                 if (jwt != null) {
                     logger.info("user profile JWT validated successfully\n{}", jwt);
                     String profile = jwt.getClaims().getClaimAsString("data");
-                    String uid = mapper.readTree(profile).get("uid").asText();
+                    String uid = mapper.readTree(profile).get("uid").get(0).asText();
 
                     //Verify it's not already enrolled by someone
                     if (!prv.getEnrollmentManager().isAssigned(uid)) {
