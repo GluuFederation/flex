@@ -33,34 +33,28 @@ public class LicenseUtils {
 
 		try {
 			LicenseInfo licenseInfo = readLicenseFile();
-			String currentTimeInMilliseconds = String.valueOf(System.currentTimeMillis());
 
 			LicenseContent c = LicenseValidator.validate(licenseInfo.getPublicKey(), licenseInfo.getPublicPassword(),
-					licenseInfo.getLicensePassword(), licenseInfo.getLicense(), Product.CASA,
-					new Date(Long.parseLong(currentTimeInMilliseconds)));
+					licenseInfo.getLicensePassword(), licenseInfo.getLicense(), Product.CASA, new Date());
 			return c.isValid();
 		} catch (InvalidLicenseException e) {
 			LOG.error("License not valid - {} - {}", e.getClass().getSimpleName(), e.getMessage());
-			return false;
 		} catch (IOException e) {
 			LOG.warn("License verification failed - {} - {}", e.getClass().getSimpleName(), e.getMessage());
-			return false;
 		}
+        return false;
+
 	}
 
 	private static LicenseInfo readLicenseFile() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
-
 		File file = new File(LICENSE_FILE_PATH);
-
-		LicenseInfo licenseInfo = mapper.readValue(file, LicenseInfo.class);
-		return licenseInfo;
+		return mapper.readValue(file, LicenseInfo.class);
 	}
 
 	public static LocalDateTime getTrialExpiryDate() {
 		LocalDateTime installDate = getInstallDate();
-		LocalDateTime trialExpiryDate = installDate.plusDays(EXPIRY_PERIOD_IN_DAYS);
-		return trialExpiryDate;
+		return installDate.plusDays(EXPIRY_PERIOD_IN_DAYS);
 	}
 
 	public static boolean isTrialPeriod(LocalDateTime trialExpiryDate) {
@@ -68,14 +62,8 @@ public class LicenseUtils {
 	}
 
 	private static LocalDateTime getInstallDate() {
-		String SETUP_CASA_LOG_LOCATION = "/install/community-edition-setup/setup_casa.log";
-		
-		File file = new File(SETUP_CASA_LOG_LOCATION);
-		LocalDateTime installDate =
-		        LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified()), 
-		                                TimeZone.getDefault().toZoneId());  
-		
-		return installDate;
+		File file = new File("/install/community-edition-setup/setup_casa.log");
+		return LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified()), TimeZone.getDefault().toZoneId());
 	}
 	
 }

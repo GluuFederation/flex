@@ -304,7 +304,8 @@ public class UserService {
     }
 
     /**
-     * Administration functionalities are enabled only if .administrable file exists and a valid license for casa exists (or the product is within 30 day trial period)
+     * Administration functionalities are enabled only if .administrable file exists and a valid license for casa exists
+     * (or the product is within 30 day trial period)
      * @return boolean value
      */
     private boolean administrationAllowed() {
@@ -312,5 +313,4 @@ public class UserService {
                 && (LicenseUtils.verifyLicense() || LicenseUtils.isTrialPeriod(LicenseUtils.getTrialExpiryDate()));
     }
 
-    
 }
