@@ -194,6 +194,3 @@ if __name__ == '__main__':
     casaCleanupObject.del_casa_clients()
     casaCleanupObject.del_casa_user_attributes()
     casaCleanupObject.delCasaFiles()
-    
-    print "Restarting oxAuth"
-    setupObject.run_service_command('oxauth', 'restart')
