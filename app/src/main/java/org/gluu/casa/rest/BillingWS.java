@@ -2,7 +2,6 @@
 package org.gluu.casa.rest;
 
 import java.io.File;
-import java.security.PrivateKey;
 import java.time.Month;
 
 import javax.enterprise.context.ApplicationScoped;
