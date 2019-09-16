@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.gluu.casa.conf.StaticInstanceUtil.*;
 
@@ -93,7 +94,7 @@ public class MainSettings {
     }
 
     public boolean isEnablePassReset() {
-        return getInMemoryValue("enablePassReset", TR_BOOLEAN);
+        return Optional.ofNullable(getInMemoryValue("enablePassReset", TR_BOOLEAN)).orElse(false);
     }
 
     public String getLogLevel() {
@@ -105,7 +106,7 @@ public class MainSettings {
     }
 
     public boolean isUseExternalBranding() {
-        return getInMemoryValue("useExternalBranding", TR_BOOLEAN);
+        return Optional.ofNullable(getInMemoryValue("useExternalBranding", TR_BOOLEAN)).orElse(false);
     }
 
     public Map<String, String> getAcrPluginMap() {
