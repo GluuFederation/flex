@@ -111,6 +111,13 @@ class SetupCasa(object):
             if have_oxd == 'y':
                 oxd_server_https = 'https://{}:8443'.format(self.detectedHostname)
                 self.oxd_server_https = setupObject.getPrompt("Enter the URL + port of your oxd-server", oxd_server_https).lower()
+
+                o = urlparse(self.oxd_server_https)
+                oxd_hostname = o.hostname
+
+                if oxd_hostname in (self.detectedHostname, 'localhost'):
+                    self.start_oxd_server('restart')
+
             else:
                 install_oxd = setupObject.getPrompt("Install oxd-server on this host now?", "Y")[0].lower()
                 if install_oxd == 'n':
@@ -224,14 +231,16 @@ class SetupCasa(object):
         setupObject.writeFile(oxd_yaml_fn, '\n'.join(oxd_yaml))
 
         # Enable service autoload on Gluu-Server startup
-        applicationName = 'oxd-server'
-        setupObject.enable_service_at_start(applicationName)
-
-        # Start oxd-server
-        print "Starting oxd-server..."
+        setupObject.enable_service_at_start('oxd-server')
         # change start.sh permission
         setupObject.run(['chmod', '+x', '/opt/oxd-server/bin/oxd-start.sh'])
-        setupObject.run_service_command(applicationName, 'start')
+        
+        # Start oxd-server
+        self.start_oxd_server()
+
+    def start_oxd_server(self, cmd='start'):
+        print "Starting oxd-server..."
+        setupObject.run_service_command('oxd-server', cmd)
 
 
     def install_casa(self):
