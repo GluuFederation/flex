@@ -109,7 +109,7 @@ class SetupCasa(object):
                 "n")[0].lower()
 
             if have_oxd == 'y':
-                oxd_server_https = 'https://{}:8443'.format(self.detectedHostname)
+                oxd_server_https = 'https://localhost:8443'
                 self.oxd_server_https = setupObject.getPrompt("Enter the URL + port of your oxd-server", oxd_server_https).lower()
 
                 o = urlparse(self.oxd_server_https)
