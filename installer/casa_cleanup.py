@@ -153,7 +153,8 @@ class casaCleanup(object):
                     '/etc/rc5.d/S01casa',
                     '/etc/rc6.d/K01casa',
                     '/run/jetty/casa-start.log',
-                    '/run/jetty/casa.pid'
+                    '/run/jetty/casa.pid',
+                    '/opt/dist/scripts/casa',
                     ]
 
         for fn in casafiles:
