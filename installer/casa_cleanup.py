@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import re
 from setup import *
 from pylib import Properties
 from pylib.cbm import CBM
@@ -24,7 +25,8 @@ class casaCleanup(object):
         self.ldap_conn = None
         self.conf_prop = get_properties(setupObject.gluu_properties_fn)
         self.detectedHostname = setupObject.detect_hostname()
-        
+        self.twilio_version = '7.17.0'
+
         if os.path.exists(setupObject.gluu_hybrid_roperties):
              get_properties(setupObject.gluu_hybrid_roperties, self.conf_prop)
 
@@ -164,6 +166,22 @@ class casaCleanup(object):
             if lib.startswith('casa'):
                 setupObject.run(['rm', '-f', (os.path.join(libdir,lib))])
 
+    def removeTwilioPathOxauth(self):
+        print "Removing twilio jar path form oxauth.xml"
+        oxauth_xml_fn = '/opt/gluu/jetty/oxauth/webapps/oxauth.xml'
+        if os.path.exists(oxauth_xml_fn):
+            oxauth_xml = setupObject.readFile(oxauth_xml_fn)
+            oxauth_xml = oxauth_xml.splitlines()
+
+            for l in oxauth_xml[:]:
+                if re.search('twilio-(.*)\.jar', l):
+                    oxauth_xml.remove(l)
+                    break
+
+            oxauth_xml = '\n'.join(oxauth_xml)
+            setupObject.writeFile(oxauth_xml_fn, oxauth_xml)
+
+
 if __name__ == '__main__':
 
     if not os.path.exists('/etc/gluu/conf/casa.json'):
@@ -194,3 +212,4 @@ if __name__ == '__main__':
     casaCleanupObject.del_casa_clients()
     casaCleanupObject.del_casa_user_attributes()
     casaCleanupObject.delCasaFiles()
+    casaCleanupObject.removeTwilioPathOxauth()
