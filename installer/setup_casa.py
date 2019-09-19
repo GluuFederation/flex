@@ -8,6 +8,7 @@ import traceback
 import ssl
 import base64
 import pyDes
+import re
 from urlparse import urlparse
 from setup import *
 from pylib import Properties
@@ -51,11 +52,11 @@ class SetupCasa(object):
         self.savedProperties = os.path.join(self.install_dir, 'setup_casa.properties.last')
 
         # Change this to final version
+        self.twilio_version = '7.17.0'
         self.casa_war_url = 'https://ox.gluu.org/maven/org/gluu/casa/4.0.0-SNAPSHOT/casa-4.0.0-SNAPSHOT.war'
-        self.twilio_jar_url = 'http://central.maven.org/maven2/com/twilio/sdk/twilio/7.17.0/twilio-7.17.0.jar'
+        self.twilio_jar_url = 'http://central.maven.org/maven2/com/twilio/sdk/twilio/{0}/twilio-{0}.jar'.format(self.twilio_version)
 
         self.application_max_ram = 1024  # in MB
-
 
         # Gluu components installation status
         self.install_oxd = False
@@ -244,6 +245,7 @@ class SetupCasa(object):
 
 
     def install_casa(self):
+        print "Installing Casa"
         setupObject.logIt("Configuring Casa...")
         
         setupObject.calculate_aplications_memory(self.application_max_ram, 
@@ -273,6 +275,25 @@ class SetupCasa(object):
                 setupObject.run(['mkdir', '-p', path])
                 setupObject.run(['chown', '-R', 'jetty:jetty', path])
         
+        #Adding twilio jar path to oxauth.xml
+        oxauth_xml_fn = '/opt/gluu/jetty/oxauth/webapps/oxauth.xml'
+        if os.path.exists(oxauth_xml_fn):
+            oxauth_xml = setupObject.readFile(oxauth_xml_fn)
+            oxauth_xml = oxauth_xml.splitlines()
+
+            n = -1
+
+            for i, l in enumerate(oxauth_xml[:]):
+                ls = l.strip()
+                if ls == '</Configure>':
+                    n = i
+                if re.search('twilio-(.*)\.jar', ls):
+                    oxauth_xml.remove(l)
+                    n -= 1
+
+            oxauth_xml.insert(n, '\t<Set name="extraClasspath">./custom/libs/twilio-{}.jar</Set>'.format(self.twilio_version))
+            oxauth_xml = '\n'.join(oxauth_xml)
+            setupObject.writeFile(oxauth_xml_fn, oxauth_xml)
         
         setupObject.run(['chown', '-R', 'jetty:jetty', '%s/casa.json' % setupObject.configFolder])
         setupObject.run(['chmod', 'g+w', '%s/casa.json' % setupObject.configFolder])
