@@ -1,0 +1,9 @@
+# exclude everything
+*
+
+# include required files/directories
+!certs
+!scripts
+!templates
+!LICENSE
+!requirements.txt
