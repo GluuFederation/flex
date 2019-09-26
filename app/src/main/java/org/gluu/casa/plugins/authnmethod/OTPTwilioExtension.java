@@ -8,7 +8,7 @@ package org.gluu.casa.plugins.authnmethod;
 import org.gluu.casa.credential.BasicCredential;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
+import org.gluu.casa.plugins.authnmethod.service.TwilioMobilePhoneService;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +22,16 @@ import java.util.stream.Collectors;
  * @author jgomer
  */
 @Extension
-public class OTPSmsExtension implements AuthnMethod {
+public class OTPTwilioExtension implements AuthnMethod {
 
     public static final String ACR = "twilio_sms";
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private MobilePhoneService mobService;
+    private TwilioMobilePhoneService mobService;
 
-    public OTPSmsExtension() {
-        mobService = Utils.managedBean(MobilePhoneService.class);
+    public OTPTwilioExtension() {
+        mobService = Utils.managedBean(TwilioMobilePhoneService.class);
     }
 
     public String getUINameKey() {
@@ -55,7 +55,7 @@ public class OTPSmsExtension implements AuthnMethod {
     }
 
     public String getPageUrl() {
-        return "/user/phone-detail.zul";
+        return "/user/twilio-phone-detail.zul";
     }
 
     public List<BasicCredential> getEnrolledCreds(String id) {

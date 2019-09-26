@@ -5,7 +5,6 @@ import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.VerifiedMobile;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.plugins.authnmethod.OTPSmsExtension;
 import org.gluu.casa.plugins.authnmethod.rs.status.otp.FinishCode;
 import org.gluu.casa.plugins.authnmethod.rs.status.sms.SendCode;
 import org.gluu.casa.plugins.authnmethod.rs.status.sms.ValidateCode;
@@ -16,7 +15,6 @@ import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -31,8 +29,6 @@ import static org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus.SUCCES
 /**
  * @author jgomer
  */
-@ApplicationScoped
-@Path("/enrollment/" + OTPSmsExtension.ACR)
 public class MobilePhoneEnrollingWS {
 
     private static final String SEPARATOR = ",";
@@ -42,7 +38,6 @@ public class MobilePhoneEnrollingWS {
     @Inject
     private Logger logger;
 
-    @Inject
     private MobilePhoneService mobilePhoneService;
 
     @Inject
