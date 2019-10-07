@@ -66,25 +66,23 @@ public class Fido2Service extends BaseService {
 
     public int getDevicesTotal(String userId, boolean active) {
         String dn = persistenceService.getPersonDn(userId);
-        return branchMissing(FIDO2_OU, dn) ? 0 : persistenceService.count(getSampleRegistrationEntry(dn, active));
+        return persistenceService.count(getSampleRegistrationEntry(dn, active));
     }
 
     public List<SecurityKey> getDevices(String userId, boolean active) {
 
         List<SecurityKey> devices = new ArrayList<>();
         String dn = persistenceService.getPersonDn(userId);
+
         logger.trace("Finding Fido 2 devices with state={} for user={}", active ? Fido2RegistrationStatus.registered : Fido2RegistrationStatus.pending, userId);
+        Fido2RegistrationEntry rentry = getSampleRegistrationEntry(dn, active);
 
-        if (!branchMissing(FIDO2_OU, dn)) {
-            Fido2RegistrationEntry rentry = getSampleRegistrationEntry(dn, active);
-
-            for (Fido2RegistrationEntry entry : persistenceService.find(rentry)) {
-                SecurityKey sk = new SecurityKey();
-                sk.setId(entry.getId());
-                sk.setCreationDate(entry.getCreationDate());
-                sk.setNickName(entry.getDisplayName());
-                devices.add(sk);
-            }
+        for (Fido2RegistrationEntry entry : persistenceService.find(rentry)) {
+            SecurityKey sk = new SecurityKey();
+            sk.setId(entry.getId());
+            sk.setCreationDate(entry.getCreationDate());
+            sk.setNickName(entry.getDisplayName());
+            devices.add(sk);
         }
         return devices.stream().sorted().collect(Collectors.toList());
 

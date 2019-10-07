@@ -80,19 +80,14 @@ public class FidoService extends BaseService {
 
     private List<DeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
 
-        String parentDn = persistenceService.getPersonDn(userId);
-        if (branchMissing(U2F_OU, parentDn)) {
-            return Collections.emptyList();
-        } else {
-            parentDn = String.format("ou=%s,%s", U2F_OU, parentDn);
+        String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));
 
-            DeviceRegistration deviceRegistration = new DeviceRegistration();
-            deviceRegistration.setBaseDn(parentDn);
-            deviceRegistration.setOxApplication(appId);
-            deviceRegistration.setOxStatus(active ? DeviceRegistrationStatus.ACTIVE.getValue() : DeviceRegistrationStatus.COMPROMISED.getValue());
+        DeviceRegistration deviceRegistration = new DeviceRegistration();
+        deviceRegistration.setBaseDn(parentDn);
+        deviceRegistration.setOxApplication(appId);
+        deviceRegistration.setOxStatus(active ? DeviceRegistrationStatus.ACTIVE.getValue() : DeviceRegistrationStatus.COMPROMISED.getValue());
 
-            return persistenceService.find(deviceRegistration);
-        }
+        return persistenceService.find(deviceRegistration);
 
     }
 
