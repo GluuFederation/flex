@@ -25,6 +25,8 @@ abstract public class MobilePhoneService extends BaseService {
 
     abstract public void reloadConfiguration();
 
+    abstract public SMSDeliveryStatus sendSMS(String number, String body);
+
     public boolean isNumberRegistered(String number) {
 
         PersonMobile person = new PersonMobile();
@@ -33,8 +35,6 @@ abstract public class MobilePhoneService extends BaseService {
         return persistenceService.count(person) > 0;
 
     }
-
-    abstract public SMSDeliveryStatus sendSMS(String number, String body);
 
     public boolean updateMobilePhonesAdd(String userId, List<VerifiedMobile> mobiles, VerifiedMobile newPhone) {
 

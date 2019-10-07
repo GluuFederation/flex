@@ -1,27 +1,31 @@
 /*
  * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
  *
- * Copyright (c) 2018, Gluu
+ * Copyright (c) 2019, Gluu
  */
 package org.gluu.casa.plugins.authnmethod.rs;
 
 import org.gluu.casa.plugins.authnmethod.OTPTwilioExtension;
-import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
+import org.gluu.casa.plugins.authnmethod.service.TwilioMobilePhoneService;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.ws.rs.*;
 
 /**
- * @author jgomer
+ * @author Stefan Andersson
  */
 @ApplicationScoped
 @Path("/enrollment/" + OTPTwilioExtension.ACR)
 public class TwilioMobilePhoneEnrollingWS extends MobilePhoneEnrollingWS {
 
     @Inject
-    @Named("twilioMobilePhoneService")
-    private MobilePhoneService mobilePhoneService;
+    private TwilioMobilePhoneService twilioService;
+
+    @PostConstruct
+    private void init() {
+        mobilePhoneService = twilioService;
+    }
 
 }

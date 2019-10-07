@@ -10,6 +10,7 @@ import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
@@ -17,9 +18,7 @@ import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 import java.util.Date;
@@ -29,13 +28,12 @@ import java.util.List;
  * Created by jgomer on 2018-06-18.
  * This is the ViewModel of page phone-detail-shared.zul. It controls the CRUD of verified phones
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class VerifiedPhoneViewModel extends UserViewModel {
 
     private Logger logger = LogManager.getLogger(getClass());
 
-    public String ACR;
-    public MobilePhoneService mpService;
+    String ACR;
+    MobilePhoneService mpService;
 
     private boolean uiCodesMatch;
     private boolean uiSmsDelivered;
@@ -78,8 +76,8 @@ public class VerifiedPhoneViewModel extends UserViewModel {
         this.newPhone = newPhone;
     }
 
+    @Init(superclass = true)
     public void childInit() throws Exception {
-        super.init();
         newPhone = new VerifiedMobile(null);
         phones = mpService.getVerifiedPhones(user.getId());
     }

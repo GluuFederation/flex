@@ -2,7 +2,6 @@
 # Copyright (c) 2018, Gluu
 # Copyright (c) 2019, Tele2
 
-# Author: Jose Gonzalez
 # Author: Stefan Andersson
 
 from java.util import Arrays, Date
@@ -260,7 +259,7 @@ class PersonAuthentication(PersonAuthenticationType):
                 else:
                     chopped = [number[-4:] for number in numbers]
 
-                    # converting to comma-separated list (identity does not remember lists in 3.1.3)
+                    # converting to comma-separated list (identity does not remember lists)
                     identity.setWorkingParameter("numbers", ",".join(numbers))
                     identity.setWorkingParameter("choppedNos", ",".join(chopped))
                     return True
@@ -294,11 +293,11 @@ class PersonAuthentication(PersonAuthenticationType):
 
     def getNumbers(self, user):
         numbers = set()
-        for number_type in ("employeeNumber", "mobile", "telephoneNumber"):
-            tmp = user.getAttributeValues(number_type)
-            if tmp:
-                for t in tmp:
-                    numbers.add(t)
+
+        tmp = user.getAttributeValues("mobile")
+        if tmp:
+            for t in tmp:
+                numbers.add(t)
 
         return list(numbers)
 

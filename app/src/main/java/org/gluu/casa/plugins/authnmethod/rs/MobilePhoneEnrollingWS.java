@@ -38,7 +38,7 @@ public class MobilePhoneEnrollingWS {
     @Inject
     private Logger logger;
 
-    private MobilePhoneService mobilePhoneService;
+    MobilePhoneService mobilePhoneService;
 
     @Inject
     private PersistenceService persistenceService;
