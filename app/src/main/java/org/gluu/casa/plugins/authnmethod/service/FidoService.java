@@ -82,6 +82,7 @@ public class FidoService extends BaseService {
     private List<DeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
 
         String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));
+        //In CB the ou=fido branch exists!
         if (persistenceService.count(new SimpleBranch(parentDn)) <= 0) {
             return Collections.emptyList();
         } else {

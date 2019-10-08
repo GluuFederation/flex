@@ -7,6 +7,7 @@ import org.gluu.casa.rest.RSUtils;
 import org.gluu.oxauth.fido2.client.AttestationService;
 import org.gluu.oxauth.fido2.model.entry.Fido2RegistrationEntry;
 import org.gluu.oxauth.fido2.model.entry.Fido2RegistrationStatus;
+import org.gluu.search.filter.Filter;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.slf4j.Logger;
 
@@ -17,6 +18,7 @@ import javax.inject.Named;
 import javax.ws.rs.core.Response;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,40 +67,35 @@ public class Fido2Service extends BaseService {
     }
 
     public int getDevicesTotal(String userId, boolean active) {
-        String dn = persistenceService.getPersonDn(userId);
-        return persistenceService.count(getSampleRegistrationEntry(dn, active));
+        return getDevices(userId, active).size();
     }
 
     public List<SecurityKey> getDevices(String userId, boolean active) {
 
+        //Ugly hack targetting couchbase. In CB the ou=fido2_register branch does not exist (not a hierarchical DB)
+        logger.trace("Finding Fido 2 devices with state={} for user={}",
+                active ? Fido2RegistrationStatus.registered : Fido2RegistrationStatus.pending, userId);
+        Filter filter = Filter.createANDFilter(
+                Filter.createEqualityFilter("oxStatus", Fido2RegistrationStatus.registered.getValue()),
+                Filter.createEqualityFilter("personInum", userId));
+
         List<SecurityKey> devices = new ArrayList<>();
-        String dn = persistenceService.getPersonDn(userId);
+        try {
+            List<Fido2RegistrationEntry> list = persistenceService.find(Fido2RegistrationEntry.class,
+                    String.format("ou=%s,%s", FIDO2_OU, persistenceService.getPersonDn(userId)), filter);
 
-        logger.trace("Finding Fido 2 devices with state={} for user={}", active ? Fido2RegistrationStatus.registered : Fido2RegistrationStatus.pending, userId);
-        Fido2RegistrationEntry rentry = getSampleRegistrationEntry(dn, active);
-
-        for (Fido2RegistrationEntry entry : persistenceService.find(rentry)) {
-            SecurityKey sk = new SecurityKey();
-            sk.setId(entry.getId());
-            sk.setCreationDate(entry.getCreationDate());
-            sk.setNickName(entry.getDisplayName());
-            devices.add(sk);
+            for (Fido2RegistrationEntry entry : list) {
+                SecurityKey sk = new SecurityKey();
+                sk.setId(entry.getId());
+                sk.setCreationDate(entry.getCreationDate());
+                sk.setNickName(entry.getDisplayName());
+                devices.add(sk);
+            }
+            return devices.stream().sorted().collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+            return Collections.emptyList();
         }
-        return devices.stream().sorted().collect(Collectors.toList());
-
-    }
-
-    private Fido2RegistrationEntry getSampleRegistrationEntry(String userDN, boolean active) {
-
-        String dn = String.format("ou=%s,%s", FIDO2_OU, userDN);
-        Fido2RegistrationEntry rentry = new Fido2RegistrationEntry();
-
-        rentry.setBaseDn(dn);
-        if (active) {
-            rentry.setRegistrationStatus(Fido2RegistrationStatus.registered);
-        }
-
-        return rentry;
 
     }
 
