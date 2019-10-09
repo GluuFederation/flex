@@ -252,7 +252,7 @@ public class PersistenceService implements IPersistenceService {
     }
 
     public boolean authenticate(String uid, String pass) throws Exception {
-        return entryManager.authenticate(rootDn, uid, pass);
+        return entryManager.authenticate(rootDn, Person.class, uid, pass);
     }
 
     public void prepareFidoBranch(String userInum) {
