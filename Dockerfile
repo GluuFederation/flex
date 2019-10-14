@@ -31,8 +31,8 @@ EXPOSE 8080
 # Casa
 # ====
 
-ENV GLUU_VERSION=4.0.rc2 \
-    GLUU_BUILD_DATE=2019-09-20
+ENV GLUU_VERSION=4.0.Final \
+    GLUU_BUILD_DATE=2019-10-11
 
 # Install Casa
 RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war -O /tmp/casa.war \
@@ -153,7 +153,8 @@ RUN mkdir -p /etc/certs \
     /opt/gluu/jetty/casa/static \
     /opt/gluu/jetty/casa/plugins \
     /deploy \
-    /app/templates
+    /app/templates \
+    /app/tmp
 
 COPY certs/casa.pub /etc/certs/
 COPY templates/casa_web_resources.xml /opt/gluu/jetty/casa/webapps/
