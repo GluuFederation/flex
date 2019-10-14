@@ -46,7 +46,7 @@
                                 Gluu account. Your Gluu installation needs Passport component configured and running to
                                 be able to support this feature.
                             </Plugin-Description>
-                            <Plugin-License>Visit https://github.com/GluuFederation/casa-ee-plugins/raw/master/LICENSE</Plugin-License>
+                            <Plugin-License>Visit https://gluu.org/docs/casa/#license</Plugin-License>
                             <Logger-Name>org.gluu.casa.plugins</Logger-Name>
                         </manifestEntries>
                     </archive>

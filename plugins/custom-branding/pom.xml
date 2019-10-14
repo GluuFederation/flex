@@ -44,7 +44,7 @@
                                 Allows administrators to apply a quick design customization by choosing logo, favicon,
                                 button colors, and footer text. Alternatively, admins can supply all assets (images and CSS files) externally.
                             </Plugin-Description>
-                            <Plugin-License>Visit https://github.com/GluuFederation/casa-ee-plugins/raw/master/LICENSE</Plugin-License>
+                            <Plugin-License>https://gluu.org/docs/casa/#license</Plugin-License>
                             <Logger-Name>org.gluu.casa.plugins</Logger-Name>
                         </manifestEntries>
                     </archive>

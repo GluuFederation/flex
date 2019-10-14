@@ -45,7 +45,7 @@
                                 are able to turn on 2FA, and choose from a set of predefined policies for when 2FA should
                                 be prompted.
                             </Plugin-Description>
-                            <Plugin-License>Visit https://github.com/GluuFederation/casa-ee-plugins/raw/master/LICENSE</Plugin-License>
+                            <Plugin-License>Visit https://gluu.org/docs/casa/#license</Plugin-License>
                             <Logger-Name>org.gluu.casa.plugins</Logger-Name>
                         </manifestEntries>
                     </archive>
