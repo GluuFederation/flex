@@ -115,7 +115,9 @@ public class PersistenceService implements IPersistenceService {
         try {
             return entryManager.findEntries(object);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            //logger.error(e.getMessage(), e);
+            //TODO: uncomment the above once https://github.com/GluuFederation/oxCore/issues/160 is solved
+            logger.error(e.getMessage());
             return Collections.emptyList();
         }
     }
