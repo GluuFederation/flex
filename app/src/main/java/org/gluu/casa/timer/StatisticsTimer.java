@@ -11,6 +11,8 @@ import org.gluu.casa.core.inmemory.IStoreService;
 import org.gluu.casa.core.model.BasePerson;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
+import org.gluu.oxauth.fido2.model.entry.Fido2RegistrationEntry;
+import org.gluu.oxauth.fido2.model.entry.Fido2RegistrationStatus;
 import org.gluu.persist.model.base.SimpleBranch;
 import org.gluu.search.filter.Filter;
 import org.pf4j.*;
@@ -216,8 +218,8 @@ public class StatisticsTimer extends JobListenerSupport {
                     .stream().map(BasePerson::getInum).map(String::hashCode).collect(Collectors.toList()));
 
             SimpleBranch sb = new SimpleBranch(peopleDN);
-            String ous[] = new String[]{"fido", "fido2_register"};
             //Compute owners of u2f or supergluu enrollments, and then fido2
+            String ous[] = new String[]{"fido"};    //, "fido2_register"
             for (String ou : ous) {
                 sb.setOrganizationalUnitName(ou);
 
@@ -228,6 +230,16 @@ public class StatisticsTimer extends JobListenerSupport {
                                     ).hashCode())
                         .collect(Collectors.toList()));
             }
+
+            //Fido2 people cannot be computed as in the case of fido because fido2 base branch does not exist in CB...
+            List<Fido2RegistrationEntry> list = new ArrayList<>();
+            try {
+                list = persistenceService.find(Fido2RegistrationEntry.class, persistenceService.getPeopleDn(),
+                        Filter.createEqualityFilter("oxStatus", Fido2RegistrationStatus.registered.getValue()));
+            } catch (Exception e) {
+                //Remove this catch once https://github.com/GluuFederation/oxCore/issues/160 is solved
+            }
+            hashes.addAll(list.stream().map(e -> e.getUserInum().hashCode()).collect(Collectors.toList()));
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

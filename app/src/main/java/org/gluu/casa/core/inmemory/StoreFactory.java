@@ -46,7 +46,7 @@ public class StoreFactory {
             logger.info("Using In-memory store of type = {}", type);
 
             if (!type.equals(REDIS) && !type.equals(IN_MEMORY)) {
-                logger.warn("Casa does not supported this cache provider. Defaulting to {}", IN_MEMORY);
+                logger.warn("Casa does not support this cache provider. Defaulting to {}", IN_MEMORY);
                 type = IN_MEMORY;
             }
 
