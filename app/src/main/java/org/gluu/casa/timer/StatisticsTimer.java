@@ -232,13 +232,8 @@ public class StatisticsTimer extends JobListenerSupport {
             }
 
             //Fido2 people cannot be computed as in the case of fido because fido2 base branch does not exist in CB...
-            List<Fido2RegistrationEntry> list = new ArrayList<>();
-            try {
-                list = persistenceService.find(Fido2RegistrationEntry.class, persistenceService.getPeopleDn(),
-                        Filter.createEqualityFilter("oxStatus", Fido2RegistrationStatus.registered.getValue()));
-            } catch (Exception e) {
-                //Remove this catch once https://github.com/GluuFederation/oxCore/issues/160 is solved
-            }
+            List<Fido2RegistrationEntry> list = persistenceService.find(Fido2RegistrationEntry.class, persistenceService.getPeopleDn(),
+                    Filter.createEqualityFilter("oxStatus", Fido2RegistrationStatus.registered.getValue()));
             hashes.addAll(list.stream().map(e -> e.getUserInum().hashCode()).collect(Collectors.toList()));
 
         } catch (Exception e) {

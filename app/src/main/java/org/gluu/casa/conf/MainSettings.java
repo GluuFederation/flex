@@ -230,8 +230,8 @@ public class MainSettings {
                         //Convert this field value to json
                         String value = mapper.writeValueAsString(f.get(this));
                         //Underlying oxcore library for Redis access does not like non-Serializable classes,
-                        //so only strings representations are stored
-                        storeService.put(INMEM_PREFIX + f.getName(), value);
+                        //so only strings representations are stored (regardless of store type)
+                        storeService.put(Integer.MAX_VALUE,INMEM_PREFIX + f.getName(), value);
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }

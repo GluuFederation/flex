@@ -1,6 +1,5 @@
 package org.gluu.casa.core.inmemory;
 
-import org.gluu.service.cache.AbstractRedisProvider;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 
@@ -10,15 +9,15 @@ import java.lang.reflect.Method;
 /**
  * @author jgomer
  */
-public class RedisStoreWrapper implements InvocationHandler {
+public class StoreWrapper implements InvocationHandler {
 
     private Object store;
 
     //private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public RedisStoreWrapper(AbstractRedisProvider store) {
-        //It is assumed store implements methods found in IStoreService interface although it does not explicitly
-        //implement that interface
+    public StoreWrapper(Object store) {
+        //It is assumed store object implements all IStoreService methods despite it does not explicitly
+        //implement such interface
         this.store = store;
     }
 

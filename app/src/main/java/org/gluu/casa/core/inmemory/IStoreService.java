@@ -8,6 +8,5 @@ import org.gluu.service.cache.CacheInterface;
 public interface IStoreService extends CacheInterface {
 
     void destroy();
-    void put(String key, Object object);
 
 }
