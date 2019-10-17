@@ -53,7 +53,7 @@ class SetupCasa(object):
 
         # Change this to final version
         self.twilio_version = '7.17.0'
-        self.casa_war_url = 'https://ox.gluu.org/maven/org/gluu/casa/4.1.0-SNAPSHOT/casa-4.1.0-SNAPSHOT.war'
+        self.casa_war_url = 'https://ox.gluu.org/maven/org/gluu/casa/4.1.0-Final/casa-4.1.0-Final.war'
         self.twilio_jar_url = 'http://central.maven.org/maven2/com/twilio/sdk/twilio/{0}/twilio-{0}.jar'.format(self.twilio_version)
 
         self.application_max_ram = 1024  # in MB
