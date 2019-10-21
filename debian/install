@@ -5,6 +5,10 @@ twilio-7.17.0.jar /opt/gluu-server/opt/dist/gluu/
 # /opt/dist/oxd
 %OXD_SERVER% /opt/gluu-server/opt/dist/oxd/
 
+#/opt/dist/gluu/casa-al
+casa.xhtml /opt/gluu-server/opt/dist/gluu/casa-al/
+casa.py /opt/gluu-server/opt/dist/gluu/casa-al/
+
 # /opt/gluu/python/libs
 casa-external_otp.py /opt/gluu-server/opt/gluu/python/libs/
 casa-external_super_gluu.py /opt/gluu-server/opt/gluu/python/libs/
