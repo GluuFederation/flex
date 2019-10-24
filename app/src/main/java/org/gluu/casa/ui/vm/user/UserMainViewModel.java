@@ -17,6 +17,7 @@ import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,12 @@ import java.util.stream.Collectors;
 public class UserMainViewModel extends UserViewModel {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
+
+	private String licenseRelatedMessage;
+
+	public String getLicenseRelatedMessage() {
+		return licenseRelatedMessage;
+	}
 
 	@WireVariable
 	private PersistenceService persistenceService;
@@ -68,6 +75,14 @@ public class UserMainViewModel extends UserViewModel {
 		widgets = userService.getLiveAuthnMethods();
 		methodsAvailability = widgets.size() > 0;
 		pre2faMethods = new ArrayList<>();
+
+		// roleAdmin - if the user has admin role
+		// isAdmin - if the application has administrator operations enabled
+		if (sessionContext.getUser().isRoleAdmin() && LicenseUtils.verifyLicense() == false) 
+		{
+				licenseRelatedMessage = Labels.getLabel("usr.casa.invalid.license.for.administrator");
+		}
+		// if the product is within trial period, admin features will be enabled and the warning will be shown to admin user only via admin console.
 
 		if (methodsAvailability) {
 			StringBuffer helper = new StringBuffer();

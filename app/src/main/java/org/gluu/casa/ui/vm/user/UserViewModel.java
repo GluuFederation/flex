@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class UserViewModel {
 
     @WireVariable
-    private SessionContext sessionContext;
+    protected SessionContext sessionContext;
 
     @WireVariable("configurationHandler")
     private ConfigurationHandler confHandler;
