@@ -147,12 +147,12 @@ class PersonAuthentication(PersonAuthenticationType):
         print "TwilioSMS. getPageForStep called %s" % step
         print "numbers are %s" % CdiUtil.bean(Identity).getWorkingParameter("numbers")
 
-        defPage = "/casa/twiliosms.xhtml"
+        defPage = "/casa/otp_sms.xhtml"
         if step == 2:
             if CdiUtil.bean(Identity).getWorkingParameter("numbers") == None:
                 return defPage
             else:
-                return "/casa/twiliosms_prompt.xhtml"
+                return "/casa/otp_sms_prompt.xhtml"
         elif step == 3:
             return defPage
         return ""
