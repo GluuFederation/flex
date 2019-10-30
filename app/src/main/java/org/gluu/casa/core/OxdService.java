@@ -1,5 +1,6 @@
 package org.gluu.casa.core;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.annotation.PostConstruct;
@@ -11,7 +12,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.gluu.casa.core.inmemory.IStoreService;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static org.gluu.casa.core.ConfigurationHandler.DEFAULT_ACR;
@@ -51,6 +53,10 @@ public class OxdService {
      */
     private static final List<String> CASA_SCOPES = Arrays.asList("openid", "profile", "user_name", "clientinfo", "oxd");
 
+    private final String OXD_SETTINGS_KEY = getClass().getName() + "_oxdSettings";
+
+    private static final int REGISTRATION_WAIT_TIME = 12;	//12 seconds
+
     @Inject
     private Logger logger;
 
@@ -59,6 +65,9 @@ public class OxdService {
 
     @Inject
     private PersistenceService persistenceService;
+
+    @Inject
+    private IStoreService storeService;
 
     private OxdSettings config;
     private ResteasyClient client;
@@ -70,8 +79,48 @@ public class OxdService {
         client = RSUtils.getClient();
     }
 
+    //This method does a best effort to avoid multiple client registrations in a multi node environment
+    public boolean initialize() {
+
+        boolean success = false;
+        OxdSettings oxdSettings = settings.getOxdSettings(true);
+
+        try {
+            String oxdId = Optional.ofNullable(oxdSettings).map(OxdSettings::getClient)
+                    .map(OxdClientSettings::getOxdId).orElse(null);
+
+            if (oxdId == null) {
+                if (storeService.get(OXD_SETTINGS_KEY) == null) {
+                    //temporarily take the ownership for attempting registration
+                    storeService.put(REGISTRATION_WAIT_TIME, OXD_SETTINGS_KEY, true);   //Any non-null value is OK
+                    success = initialize(oxdSettings);
+                    if (success) {
+                        storeService.put(REGISTRATION_WAIT_TIME, OXD_SETTINGS_KEY, mapper.writeValueAsString(oxdSettings));
+                    } else {
+                        storeService.remove(OXD_SETTINGS_KEY);
+                    }
+                } else {
+                    //Block for some time hoping a registration operation was performed
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(REGISTRATION_WAIT_TIME));
+                    oxdSettings = mapper.readValue(storeService.get(OXD_SETTINGS_KEY).toString(), new TypeReference<OxdSettings>(){});
+                    //If it reaches this point, it means registration took place successfully while sleeping
+                    //Replace local copy with cache copy
+                    settings.setOxdSettings(oxdSettings);
+                    //Simulate initialization
+                    success = initialize(oxdSettings);
+                }
+            } else {
+                success = initialize(oxdSettings);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return success;
+
+    }
+
     //This method modifies the param supplied
-    public boolean initialize(OxdSettings oxdConfig) {
+    private boolean initialize(OxdSettings oxdConfig) {
 
         boolean success = false;
         if (oxdConfig == null) {
@@ -114,7 +163,7 @@ public class OxdService {
 
     }
 
-    public OxdClientSettings doRegister() throws Exception {
+    private OxdClientSettings doRegister() throws Exception {
 
         OxdClientSettings computedSettings;
         String clientName;

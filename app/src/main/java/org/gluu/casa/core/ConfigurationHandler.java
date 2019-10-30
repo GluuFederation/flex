@@ -3,7 +3,6 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.conf.OxdSettings;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.misc.AppStateEnum;
 import org.gluu.casa.misc.Utils;
@@ -148,12 +147,11 @@ public class ConfigurationHandler extends JobListenerSupport {
                     computeMinCredsForStrongAuth();
                     computePassResetable();
                     compute2FAEnforcementPolicy();
+                    extManager.scan();
+                    computeAcrPluginMapping();
 
-                    OxdSettings oxdSettings = settings.getOxdSettings(true);
-                    if (oxdService.initialize(oxdSettings)) {
-                        extManager.scan();
-                        computeAcrPluginMapping();
-
+                    if (oxdService.initialize()) {
+                        //Call to initialize should be followed by a save (accounting more safety in HA environment)
                         try {
                             settings.save();
                             setAppState(AppStateEnum.OPERATING);
@@ -294,28 +292,9 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     private void computeAcrPluginMapping() {
 
-        Map<String, String> mapping = settings.getAcrPluginMap();
-        Map<String, String> newMap = new HashMap<>();
-
-        if (Utils.isNotEmpty(mapping)) {
-
-            for (String acr : mapping.keySet()) {
-                //Is there a current runtime impl for this acr?
-                String plugId = mapping.get(acr);
-                if (extManager.pluginImplementsAuthnMethod(acr, plugId)) {
-                    newMap.put(acr, plugId);
-                } else {
-                    if (plugId == null) {
-                        logger.warn("There is no system extension that can work with acr '{}'", acr);
-                    } else {
-                        logger.warn("Plugin {} does not have extensions that can work with acr '{}' or plugin does not exist", plugId, acr);
-                    }
-                    logger.warn("acr removed from Gluu Casa configuration file...");
-                }
-            }
+        if (settings.getAcrPluginMap() == null) {
+            settings.setAcrPluginMap(new HashMap<>());
         }
-        settings.setAcrPluginMap(newMap);
-
     }
 
 }
