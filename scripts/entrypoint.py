@@ -142,8 +142,8 @@ def main():
         "/usr/lib/jvm/default-jvm/jre/lib/security/cacerts",
         "changeit",
     )
-
-    render_casa_json()
+    if not (os.path.isfile('/etc/gluu/conf/casa.json') and os.path.getsize('/etc/gluu/conf/casa.json')) > 0:
+        render_casa_json()
     modify_jetty_xml()
     modify_webdefault_xml()
 
