@@ -9,14 +9,14 @@ import java.lang.reflect.Method;
 /**
  * @author jgomer
  */
-public class StoreWrapper implements InvocationHandler {
+public class CacheWrapper implements InvocationHandler {
 
     private Object store;
 
     //private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public StoreWrapper(Object store) {
-        //It is assumed store object implements all IStoreService methods despite it does not explicitly
+    public CacheWrapper(Object store) {
+        //It is assumed store object implements all CacheInterface methods despite it does not explicitly
         //implement such interface
         this.store = store;
     }

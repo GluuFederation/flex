@@ -7,7 +7,7 @@ import com.unboundid.util.StaticUtils;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.core.ITrackable;
 import org.gluu.casa.core.TimerService;
-import org.gluu.casa.core.inmemory.IStoreService;
+import org.gluu.service.cache.CacheInterface;
 import org.gluu.casa.core.model.BasePerson;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
@@ -79,7 +79,7 @@ public class StatisticsTimer extends JobListenerSupport {
     private IPersistenceService persistenceService;
 
     @Inject
-    private IStoreService storeService;
+    private CacheInterface storeService;
 
     @Inject
     private TimerService timerService;

@@ -20,20 +20,20 @@ import static org.gluu.service.cache.CacheProviderType.REDIS;
  * @author jgomer
  */
 @ApplicationScoped
-public class StoreFactory {
+public class CacheFactory {
 
-    private static Class<IStoreService> IStoreServiceClass = IStoreService.class;
+    private static Class<CacheInterface> IStoreServiceClass = CacheInterface.class;
 
-    private static IStoreService storeService;
+    private static CacheInterface storeService;
 
-    private static Logger logger = LoggerFactory.getLogger(StoreFactory.class);
+    private static Logger logger = LoggerFactory.getLogger(CacheFactory.class);
 
     @Produces @ApplicationScoped
-    public IStoreService getMemoryStore() {
+    public CacheInterface getMemoryStore() {
         return storeService;
     }
 
-    public static IStoreService createMemoryStoreService(CacheConfiguration cacheConfiguration, StringEncrypter stringEncrypter) throws Exception {
+    public static CacheInterface createMemoryStoreService(CacheConfiguration cacheConfiguration, StringEncrypter stringEncrypter) throws Exception {
 
         //Initialize only upon first usage
         if (storeService == null) {
@@ -89,7 +89,7 @@ public class StoreFactory {
                 logger.info("Defaulting to {} provider", IN_MEMORY);
             }
             storeService = IStoreServiceClass.cast(Proxy.newProxyInstance(IStoreServiceClass.getClassLoader(),
-                    new Class<?>[]{IStoreServiceClass}, new StoreWrapper(store)));
+                    new Class<?>[]{IStoreServiceClass}, new CacheWrapper(store)));
         }
         return storeService;
 

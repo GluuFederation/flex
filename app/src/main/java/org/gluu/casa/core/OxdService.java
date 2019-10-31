@@ -12,7 +12,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.gluu.casa.core.inmemory.IStoreService;
+import org.gluu.service.cache.CacheInterface;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;
@@ -67,7 +67,7 @@ public class OxdService {
     private PersistenceService persistenceService;
 
     @Inject
-    private IStoreService storeService;
+    private CacheInterface storeService;
 
     private OxdSettings config;
     private ResteasyClient client;

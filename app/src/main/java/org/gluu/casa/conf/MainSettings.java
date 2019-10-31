@@ -8,8 +8,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
-import org.gluu.casa.core.inmemory.StoreFactory;
-import org.gluu.casa.core.inmemory.IStoreService;
+import org.gluu.casa.core.inmemory.CacheFactory;
+import org.gluu.service.cache.CacheInterface;
 import org.gluu.service.cache.CacheConfiguration;
 import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class MainSettings {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @JsonIgnore
-    private IStoreService storeService;
+    private CacheInterface storeService;
 
     @JsonIgnore
     private Path filePath;
@@ -194,7 +194,7 @@ public class MainSettings {
     }
 
     public void setupMemoryStore(CacheConfiguration storeConfiguration, StringEncrypter encrypter) throws Exception {
-        storeService = StoreFactory.createMemoryStoreService(storeConfiguration, encrypter);
+        storeService = CacheFactory.createMemoryStoreService(storeConfiguration, encrypter);
         updateMemoryStore();
     }
 

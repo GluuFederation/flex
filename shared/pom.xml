@@ -31,6 +31,12 @@
             <artifactId>oxcore-persistence-filter</artifactId>
             <version>${ox.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxcore-service</artifactId>
+            <version>${ox.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- PLUGIN FRAMEWORK -->
         <dependency>

@@ -8,7 +8,7 @@ import org.gluu.casa.conf.sndfactor.TrustedDevice;
 import org.gluu.casa.conf.sndfactor.TrustedOrigin;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.TimerService;
-import org.gluu.casa.core.inmemory.IStoreService;
+import org.gluu.service.cache.CacheInterface;
 import org.gluu.casa.core.model.PersonPreferences;
 import org.gluu.search.filter.Filter;
 import org.quartz.JobExecutionContext;
@@ -50,7 +50,7 @@ public class TrustedDevicesSweeper extends JobListenerSupport {
     private MainSettings mainSettings;
 
     @Inject
-    private IStoreService storeService;
+    private CacheInterface storeService;
 
     private String quartzJobName;
     private long locationExpiration;
