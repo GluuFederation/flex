@@ -83,7 +83,7 @@ public class OxdService {
     public boolean initialize() {
 
         boolean success = false;
-        OxdSettings oxdSettings = settings.getOxdSettings(true);
+        OxdSettings oxdSettings = settings.getOxdSettings();
 
         try {
             String oxdId = Optional.ofNullable(oxdSettings).map(OxdSettings::getClient)
@@ -104,8 +104,6 @@ public class OxdService {
                     Thread.sleep(TimeUnit.SECONDS.toMillis(REGISTRATION_WAIT_TIME));
                     oxdSettings = mapper.readValue(storeService.get(OXD_SETTINGS_KEY).toString(), new TypeReference<OxdSettings>(){});
                     //If it reaches this point, it means registration took place successfully while sleeping
-                    //Replace local copy with cache copy
-                    settings.setOxdSettings(oxdSettings);
                     //Simulate initialization
                     success = initialize(oxdSettings);
                 }
@@ -114,6 +112,10 @@ public class OxdService {
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
+        }
+        if (success) {
+            //Replace local copy
+            settings.setOxdSettings(oxdSettings);
         }
         return success;
 
