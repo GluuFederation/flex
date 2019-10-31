@@ -69,7 +69,8 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
                                 String idToken = tokens.getY();
                                 logger.debug("Authorization code={}, Access token={}, Id token {}", code, accessToken, idToken);
 
-                                User user = Utils.managedBean(UserService.class).getUserFromClaims(oxdService.getUserClaims(accessToken));
+                                User user = Utils.managedBean(UserService.class)
+                                        .getUserFromClaims((Map<String, Object>) oxdService.getUserClaims(accessToken));
                                 //Store in session
                                 logger.debug("Adding user to session");
                                 Utils.managedBean(SessionContext.class).setUser(user);

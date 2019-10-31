@@ -52,31 +52,28 @@ public class UserService {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    public User getUserFromClaims(Map claims) throws AttributeNotFoundException {
+    public User getUserFromClaims(Map<String, Object> claims) throws AttributeNotFoundException {
 
         User u = new User();
-        u.setUserName(getClaim(claims, "user_name"));
-        logger.trace("Creating a user instance from claims. Username is {}", u.getUserName());
+        u.setClaims(claims);
 
-        String img = getClaim(claims, "picture");
+        String username = u.getUserName();
+        String inum = u.getId();
+        logger.trace("User instance created. Username is {}", username);
+
+        if (inum == null || username == null) {
+            logger.error("Could not obtain minimal user claims!");
+            throw new AttributeNotFoundException("Cannot retrieve claims for logged user");
+        }
+
+        String img = u.getPictureURL();
         if (Utils.isNotEmpty(img)) {
             u.setPictureURL(WebUtils.validateImageUrl(img));
         }
 
-        u.setLastName(getClaim(claims, "family_name"));
-        u.setGivenName(getClaim(claims, "given_name"));
-        String inum = getClaim(claims, "inum");
-
-        if (inum != null) {
-            u.setId(inum);
-        }
-        if (u.getId() == null || u.getUserName() == null) {
-            logger.error("Could not obtain minimal user claims!");
-            throw new AttributeNotFoundException("Cannot retrieve claims for logged user");
-        }
         PersonPreferences person = personPreferencesInstance(inum);
         if (person == null) {
-            throw new AttributeNotFoundException("Cannot retrieve user's info from LDAP");
+            throw new AttributeNotFoundException("Cannot retrieve user's info from database");
         }
 
         u.setPreferredMethod(person.getPreferredMethod());
@@ -273,29 +270,6 @@ public class UserService {
                     .collect(Collectors.toList());
         }
         return methods;
-
-    }
-
-    /**
-     * From a collection of claims, it extracts the first value found for a claim whose name is passed. If claim is not
-     * found or has an empty list associated, it returns null
-     * @param claims Map with claims (as gathered via oxd)
-     * @param claimName Claim to inspect
-     * @return First value of claim or null
-     */
-    private String getClaim(Map claims, String claimName) {
-
-        Object values = claims.get(claimName);
-        if (values != null) {
-            Object value = values;
-
-            if (Collection.class.isAssignableFrom(values.getClass())) {
-                List<Object> list = new ArrayList<Object>(Collection.class.cast(values));
-                value = Utils.isEmpty(list) ? null : list.get(0);
-            }
-            return value.toString();
-        }
-        return null;
 
     }
 
