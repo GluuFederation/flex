@@ -298,7 +298,13 @@ public class OxdService {
         client.setScopes(scopeService.getDNsFromIds(new ArrayList<>(scopeSet)));
 
         logger.info("Updating client with new scopes {} and post logout URI {}", newScopes, postLogoutUri);
-        return persistenceService.modify(client);
+        boolean ret = persistenceService.modify(client);
+        if (ret) {
+            //Update global state of this bean
+            config.setScopes(client.getScopes());
+            config.setPostLogoutUri(client.getPostLogoutURI());
+        }
+        return ret;
 
     }
 
