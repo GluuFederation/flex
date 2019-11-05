@@ -38,6 +38,27 @@
                         <z:textbox sclass="${css.textInput} w5" value="@bind(vm.oxdSettings.postLogoutUri)" tooltip="tooltip_logout, after_pointer"
                                    ca:data-original-title="${labels.adm.oxd_postlogout_uri_tooltip}" ca:data-toggle="tooltip" ca:data-placement="bottom" />
                     </div>
+                    <div class="pt1 pb2 flex flex-wrap">
+                        <label class="mt0 mr2 w4">${labels.adm.oxd_scopes}</label>
+                        <div class="pb1">
+                            <span class="dark-gray f7">${labels.adm.oxd_scopes_text}</span>
+                            <z:div children="@load(vm.oxdSettings.scopes)" sclass="pt2 pl3-ns">
+                                <zk:template name="children">
+                                    <div>
+                                        <z:label value="@load(each)" sclass="dib mr1-ns w4" />
+
+                                        <h:button class="${css.deleteButton} mb2" onClick="@command('dropScope', id=each)"
+                                                  data-original-title="${labels.general.delete}" data-toggle="tooltip"
+                                                  data-placement="top" disabled="@load(vm.requiredScopes.contains(each))">
+                                            <i class="fas fa-trash-alt" />
+                                        </h:button>
+                                    </div>
+                                </zk:template>
+                            </z:div>
+                            <z:button label="${labels.adm.oxd_scopes_add}" sclass="${css.secondaryButton} lh-tight mv2 ml3-ns"
+                                      onClick="@command('preAddScopes')" />
+                        </div>
+                    </div>
                     <div class="pt2 pb2 flex flex-wrap">
                         <label class="mr2 w4" />
                         <z:button label="${labels.general.save}" sclass="${css.primaryButton} mr3"
@@ -78,6 +99,34 @@
                 </div>
             </section>
         </div>
+
+        <z:window title="${labels.adm.oxd_scopes_select}" border="normal" mode="modal" visible="@load(vm.uiEditingScopes)"
+                  closable="true" onClose="@command('cancelAddScopes', event=event)" sclass="${css.modalWindow}">
+
+            <ul class="list-group f7-cust pt1 mb3">
+                <z:div children="@load(vm.selectableScopes)">
+                    <zk:template name="children">
+                        <li class="list-group-item hover-bg-light-gray gray hover-dark-gray pv1">
+                            <z:checkbox label="@load(each)" onCheck="@command('scopedChecked', target=event.target, scope=each)" />
+                        </li>
+                    </zk:template>
+                </z:div>
+            </ul>
+            <div class="w-100 flex justify-center">
+                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.add}"
+                          w:onClick="alertRef = $('#feedback-oxd')" onClick="@command('addScopes')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancelAddScopes', event=event)" />
+            </div>
+        </z:window>
+
+    </z:div>
+
+    <z:div self="@define(extra)">
+        <style>
+            .z-checkbox-content {
+                margin: 0;
+            }
+        </style>
     </z:div>
 
 </zk:zk>

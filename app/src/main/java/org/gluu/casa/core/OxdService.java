@@ -12,6 +12,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
+import org.gluu.casa.core.model.OIDCClient;
 import org.gluu.service.cache.CacheInterface;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OxdClientSettings;
@@ -51,7 +52,7 @@ public class OxdService {
     /*
     The list of scopes required to be able to inspect the claims needed. See attributes of User class
      */
-    private static final List<String> CASA_SCOPES = Arrays.asList("openid", "profile", "user_name", "clientinfo", "oxd");
+    public static final List<String> REQUIRED_SCOPES = Arrays.asList("openid", "profile", "user_name", "clientinfo", "oxd");
 
     private final String OXD_SETTINGS_KEY = getClass().getName() + "_oxdSettings";
 
@@ -68,6 +69,9 @@ public class OxdService {
 
     @Inject
     private CacheInterface storeService;
+
+    @Inject
+    private ScopeService scopeService;
 
     private OxdSettings config;
     private ResteasyClient client;
@@ -139,6 +143,11 @@ public class OxdService {
 
                 try {
                     if (persistenceService.getDynamicClientExpirationTime() != 0) {
+
+                        if (Utils.isEmpty(settings.getOxdSettings().getScopes())) {
+                            oxdConfig.setScopes(REQUIRED_SCOPES);
+                        }
+
                         Optional<String> oxdIdOpt = Optional.ofNullable(oxdConfig.getClient()).map(OxdClientSettings::getOxdId);
                         setSettings(oxdConfig, !oxdIdOpt.isPresent());
                         success = true;
@@ -183,10 +192,9 @@ public class OxdService {
             cmdParams.setAcrValues(config.getAcrValues());
             cmdParams.setClientName(clientName);
             cmdParams.setClientFrontchannelLogoutUris(Collections.singletonList(config.getFrontLogoutUri()));
-            //Why is this needed in 4.0, and not in oxd 3.1.4?
             cmdParams.setGrantTypes(Collections.singletonList("client_credentials"));
 
-            cmdParams.setScope(CASA_SCOPES);
+            cmdParams.setScope(config.getScopes());
             cmdParams.setResponseTypes(Collections.singletonList("code"));
             cmdParams.setTrustedClient(true);
 
@@ -228,6 +236,7 @@ public class OxdService {
         cmdParams.setOxdId(config.getClient().getOxdId());
         cmdParams.setAcrValues(acrValues);
         cmdParams.setPrompt(prompt);
+        cmdParams.setScope(config.getScopes());
 
         GetAuthorizationUrlResponse resp = restResponse(cmdParams, "get-authorization-url", getPAT(), GetAuthorizationUrlResponse.class);
         return resp.getAuthorizationUrl();
@@ -273,22 +282,39 @@ public class OxdService {
 
     }
 
+    public boolean updateSite(String postLogoutUri, List<String> newScopes) throws Exception {
+        //This method updates the OIDC client directly (does not use oxd). Less tinkering
+
+        OIDCClient client = new OIDCClient();
+        client.setOxdId(config.getClient().getOxdId());
+        client.setBaseDn(persistenceService.getClientsDn());
+
+        client = persistenceService.find(client).get(0);
+        client.setPostLogoutURI(postLogoutUri);
+
+        Set<String> scopeSet = new HashSet<>(REQUIRED_SCOPES);
+        scopeSet.addAll(newScopes);
+        client.setScopes(scopeService.getDNsFromIds(new ArrayList<>(scopeSet)));
+
+        return persistenceService.modify(client);
+
+    }
+
+
+    //This does not seem to work properly (strange side effects)
     public boolean updateSite(String postLogoutUri) throws Exception {
 
         UpdateSiteParams cmdParams = new UpdateSiteParams();
         cmdParams.setOxdId(config.getClient().getOxdId());
+
         if (postLogoutUri != null) {
             cmdParams.setPostLogoutRedirectUris(Collections.singletonList(postLogoutUri));
         }
-        return doUpdate(cmdParams);
-
-    }
-
-    private boolean doUpdate(UpdateSiteParams cmdParams) throws Exception {
-
-        //Do not remove the following line, sometimes problematic if missing
-        cmdParams.setGrantType(Collections.singletonList("authorization_code"));
+        //Do not remove the following lines, sometimes problematic if missing
+        cmdParams.setGrantType(Collections.singletonList("client_credentials"));
+        cmdParams.setResponseTypes(Collections.singletonList("code"));
         UpdateSiteResponse resp = restResponse(cmdParams, "update-site", getPAT(), UpdateSiteResponse.class);
+
         return resp != null;
 
     }
@@ -299,7 +325,7 @@ public class OxdService {
         cmdParams.setOpHost(config.getOpHost());
         cmdParams.setClientId(config.getClient().getClientId());
         cmdParams.setClientSecret(config.getClient().getClientSecret());
-        cmdParams.setScope(CASA_SCOPES);
+        cmdParams.setScope(config.getScopes());
 
         GetClientTokenResponse resp = restResponse(cmdParams, "get-client-token", null, GetClientTokenResponse.class);
         String token = resp.getAccessToken();
@@ -316,7 +342,6 @@ public class OxdService {
 
         String authz = StringUtils.isEmpty(token) ? null : "Bearer " + token;
         ResteasyWebTarget target = client.target(String.format("https://%s:%s/%s", config.getHost(), config.getPort(), path));
-        //target.register(JacksonJsonProvider.class);
 
         Response response = target.request().header("Authorization", authz).post(Entity.json(payload));
         response.bufferEntity();
