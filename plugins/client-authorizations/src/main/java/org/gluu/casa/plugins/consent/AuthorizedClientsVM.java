@@ -1,6 +1,6 @@
 package org.gluu.casa.plugins.consent;
 
-import org.gluu.casa.plugins.consent.model.Scope;
+import org.gluu.casa.core.model.Scope;
 import org.gluu.casa.plugins.consent.model.Client;
 import org.gluu.casa.plugins.consent.service.ClientAuthorizationsService;
 import org.gluu.casa.plugins.consent.service.ClientService;
