@@ -152,6 +152,8 @@ public class OxdViewModel extends MainViewModel {
     public void scopedChecked(@BindingParam("target") Checkbox box, @BindingParam("scope") String scope) {
         if (box.isChecked()) {
             selectedScopes.add(scope);
+        } else {
+            selectedScopes.remove(scope);
         }
     }
 
@@ -216,7 +218,7 @@ public class OxdViewModel extends MainViewModel {
         selectableScopes = scopeService.getNonUMAScopes().stream().map(Scope::getId).collect(Collectors.toSet());
         //Remove already checked ones
         selectableScopes.removeAll(oxdSettings.getScopes());
-        logger.debug("Selectable scopes are: {}",selectableScopes);
+        logger.debug("Selectable scopes are: {}", selectableScopes);
     }
 
 }

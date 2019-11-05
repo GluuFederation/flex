@@ -11,18 +11,11 @@ import java.util.List;
 @ObjectClass("oxAuthClient")
 public class OIDCClient extends InumEntry {
 
-    @AttributeName
-    private String oxdId;
-
     @AttributeName(name = "oxAuthPostLogoutRedirectURI")
     private String postLogoutURI;
 
     @AttributeName(name = "oxAuthScope")
     private List<String> scopes;
-
-    public String getOxdId() {
-        return oxdId;
-    }
 
     public String getPostLogoutURI() {
         return postLogoutURI;
@@ -30,10 +23,6 @@ public class OIDCClient extends InumEntry {
 
     public List<String> getScopes() {
         return scopes;
-    }
-
-    public void setOxdId(String oxdId) {
-        this.oxdId = oxdId;
     }
 
     public void setPostLogoutURI(String postLogoutURI) {

@@ -286,9 +286,10 @@ public class OxdService {
         //This method updates the OIDC client directly (does not use oxd). Less tinkering
 
         OIDCClient client = new OIDCClient();
-        client.setOxdId(config.getClient().getOxdId());
+        client.setInum(config.getClient().getClientId());
         client.setBaseDn(persistenceService.getClientsDn());
 
+        logger.info("Looking up Casa client...");
         client = persistenceService.find(client).get(0);
         client.setPostLogoutURI(postLogoutUri);
 
@@ -296,6 +297,7 @@ public class OxdService {
         scopeSet.addAll(newScopes);
         client.setScopes(scopeService.getDNsFromIds(new ArrayList<>(scopeSet)));
 
+        logger.info("Updating client with new scopes {} and post logout URI {}", newScopes, postLogoutUri);
         return persistenceService.modify(client);
 
     }
