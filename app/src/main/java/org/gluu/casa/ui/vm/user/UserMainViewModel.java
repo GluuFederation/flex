@@ -78,11 +78,12 @@ public class UserMainViewModel extends UserViewModel {
 
 		// roleAdmin - if the user has admin role
 		// isAdmin - if the application has administrator operations enabled
-		if (sessionContext.getUser().isRoleAdmin() && LicenseUtils.verifyLicense() == false) 
-		{
-				licenseRelatedMessage = Labels.getLabel("usr.casa.invalid.license.for.administrator");
-		}
 		// if the product is within trial period, admin features will be enabled and the warning will be shown to admin user only via admin console.
+		if (sessionContext.getUser().isRoleAdmin() && !LicenseUtils.verifyLicense()  && !(LicenseUtils.isTrialPeriod(LicenseUtils.getTrialExpiryDate()))) 
+		{
+				licenseRelatedMessage = Labels.getLabel("usr.casa.invalid.license.for.administrator") ;
+		}
+		
 
 		if (methodsAvailability) {
 			StringBuffer helper = new StringBuffer();
@@ -91,7 +92,7 @@ public class UserMainViewModel extends UserViewModel {
 			introText = Labels.getLabel("usr.main_intro", new String[] { orgName, helper.substring(2) });
 
 			pre2faMethods = widgets.stream().filter(AuthnMethod::mayBe2faActivationRequisite).collect(Collectors.toList());
-			has2faRequisites = pre2faMethods.size() == 0
+			has2faRequisites = pre2faMethods.size() == 0 
 					|| pre2faMethods.stream().anyMatch(aMethod -> aMethod.getTotalUserCreds(user.getId()) > 0);
 		}
 
