@@ -21,6 +21,7 @@ import java.util.List;
  */
 @Named
 @ApplicationScoped
+@Deprecated
 public class LdapService implements ILdapService {
 
     @Inject

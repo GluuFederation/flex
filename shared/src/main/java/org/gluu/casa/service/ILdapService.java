@@ -14,6 +14,7 @@ import java.util.List;
  * Provides CRUD access to the underlying LDAP of you Gluu Server installation.
  * @author jgomer
  */
+@Deprecated
 public interface ILdapService extends LocalDirectoryInfo {
 
     /**
