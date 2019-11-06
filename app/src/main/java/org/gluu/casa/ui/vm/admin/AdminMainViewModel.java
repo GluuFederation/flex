@@ -41,10 +41,11 @@ public class AdminMainViewModel {
 			boolean verified = LicenseUtils.verifyLicense();
 			
 			if (LicenseUtils.isTrialPeriod(expiryDate) && !verified) {
-				licenseRelatedMessage = Labels.getLabel("adm.casa.trial.period", new String[] {daysUntilExpiry });
+				licenseRelatedMessage = Labels.getLabel("adm.casa.trial.period", new String[] { daysUntilExpiry });
 			} else if (!verified) {
 				licenseRelatedMessage = Labels.getLabel("adm.casa.invalid.license");
 			}
 		}
 	}
+
 }
