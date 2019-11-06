@@ -58,7 +58,7 @@ public class MainViewModel {
         try {
             logger.info("Updating global configuration settings");
             //update app-level config and persist
-            getSettings().save();
+            confHandler.saveSettings();
             if (sucessMessage == null) {
                 UIUtils.showMessageUI(true);
             } else {

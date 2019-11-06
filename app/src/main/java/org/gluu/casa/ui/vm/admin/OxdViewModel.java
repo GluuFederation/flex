@@ -71,7 +71,7 @@ public class OxdViewModel extends MainViewModel {
     }
 
     private void reloadConfig() {
-        oxdSettings = (OxdSettings) Utils.cloneObject(getSettings().getOxdSettings(true));
+        oxdSettings = (OxdSettings) Utils.cloneObject(getSettings().getOxdSettings());
     }
 
     @NotifyChange("oxdSettings")

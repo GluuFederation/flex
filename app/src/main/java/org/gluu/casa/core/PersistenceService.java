@@ -3,7 +3,6 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.LdapSettings;
-import org.gluu.casa.conf.MainSettingsProducer;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.model.GluuOrganization;
 import org.gluu.casa.core.model.oxAuthConfiguration;
@@ -33,7 +32,6 @@ import javax.inject.Named;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Named
 @ApplicationScoped
@@ -41,6 +39,8 @@ public class PersistenceService implements IPersistenceService {
 
     private static final int RETRIES = 15;
     private static final int RETRY_INTERVAL = 15;
+    private static final String DEFAULT_CONF_BASE = "/etc/gluu/conf";
+    private static final String CE_SALT_PATH = DEFAULT_CONF_BASE + "/salt";
 
     @Inject
     private Logger logger;
@@ -71,22 +71,18 @@ public class PersistenceService implements IPersistenceService {
 
     private CacheConfiguration cacheConfiguration;
 
-    public boolean initialize(LdapSettings ldapSettings) {
+    public boolean initialize() {
 
         boolean success = false;
         try {
             mapper = new ObjectMapper();
-            success = setup(ldapSettings, RETRIES, RETRY_INTERVAL);
+            success = setup(RETRIES, RETRY_INTERVAL);
             logger.info("PersistenceService was{} initialized successfully", success ? "" : " not");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
         return success;
 
-    }
-
-    public boolean setup(LdapSettings ldapSettings) throws Exception {
-        return setup(ldapSettings, 1, 1);
     }
 
     public <T> List<T> find(Class<T> clazz, String baseDn, Filter filter, int start, int count) {
@@ -371,96 +367,58 @@ public class PersistenceService implements IPersistenceService {
         return rootDn;
     }
 
-    private boolean setup(LdapSettings ldapSettings, int retries, int retry_interval) throws Exception {
+    private boolean setup(int retries, int retry_interval) throws Exception {
 
-        Properties backendProperties;
         boolean ret = false;
         entryManager = null;
-        PersistenceEntryManagerFactory factory = null;
-        String saltFile = ldapSettings.getSaltLocation();
-        String type = ldapSettings.getType();
-        String file = ldapSettings.getConfigurationFile();
+        stringEncrypter = Utils.stringEncrypter(CE_SALT_PATH);
 
-        if (Utils.isNotEmpty(saltFile)) {
-            stringEncrypter = Utils.stringEncrypter(saltFile);
-        }
+        //load the configuration using the oxcore-persistence-cdi API
+        logger.debug("Obtaining PersistenceEntryManagerFactory from persistence API");
+        PersistenceConfiguration persistenceConf = persistanceFactoryService.loadPersistenceConfiguration();
+        FileConfiguration persistenceConfig = persistenceConf.getConfiguration();
+        Properties backendProperties = persistenceConfig.getProperties();
+        PersistenceEntryManagerFactory factory = persistanceFactoryService.getPersistenceEntryManagerFactory(persistenceConf);
 
-        //Obtain an instance of PersistenceEntryManagerFactory
-        if (Stream.of(type, file).allMatch(Utils::isNotEmpty)) {
-            //load configuration manually
-            backendProperties = new FileConfiguration(file).getProperties();
+        String type = factory.getPersistenceType();
+        logger.info("Underlying database of type '{}' detected", type);
+        String file = String.format("%s/%s", DEFAULT_CONF_BASE, persistenceConf.getFileName());
+        logger.info("Using config file: {}", file);
 
-            Set<String> rawProps = backendProperties.stringPropertyNames();
-            for (String prop : rawProps) {
-                backendProperties.setProperty(String.format("%s.%s", type, prop), backendProperties.getProperty(prop));
+        logger.debug("Decrypting backend properties");
+        backendProperties = PropertiesDecrypter.decryptAllProperties(stringEncrypter, backendProperties);
+
+        logger.info("Obtaining a Persistence EntryManager");
+        int i = 0;
+
+        do {
+            try {
+                i++;
+                entryManager = factory.createEntryManager(backendProperties);
+            } catch (Exception e) {
+                logger.warn("Unable to create persistence entry manager, retrying in {} seconds", retry_interval);
+                Thread.sleep(retry_interval * 1000);
             }
+        } while (entryManager == null && i < retries);
 
-            logger.debug("Obtaining PersistenceEntryManagerFactory from available Weld Instances");
-            for (WeldInstance.Handler<PersistenceEntryManagerFactory> handler : pFactoryInstance.handlers()) {
-                if (handler.get().getPersistenceType().equals(type)) {
-                    factory = handler.get();
-                    break;
-                }
-            }
-
+        if (entryManager == null) {
+            logger.error("No EntryManager could be obtained");
         } else {
-            //load the configuration using the oxcore-persistence-cdi API
-            logger.debug("Obtaining PersistenceEntryManagerFactory from persistence API");
-            PersistenceConfiguration persistenceConf = persistanceFactoryService.loadPersistenceConfiguration();
-            FileConfiguration persistenceConfig = persistenceConf.getConfiguration();
-            backendProperties = persistenceConfig.getProperties();
-            factory = persistanceFactoryService.getPersistenceEntryManagerFactory(persistenceConf);
 
-            type = factory.getPersistenceType();
-            logger.info("Underlying database of type '{}' detected", type);
-            file = String.format("%s/conf/%s", MainSettingsProducer.GLUU_BASE, persistenceConf.getFileName());
-            logger.info("Using config file: {}", file);
-
-            //Fill missing data
-            ldapSettings.setType(type);
-            ldapSettings.setConfigurationFile(file);
-        }
-
-        if (stringEncrypter != null) {
-            logger.debug("Decrypting backend properties");
-            backendProperties = PropertiesDecrypter.decryptAllProperties(stringEncrypter, backendProperties);
-        }
-
-        if (factory != null) {
-
-            logger.info("Obtaining a Persistence EntryManager");
-            int i = 0;
-
-            do {
-                try {
-                    i++;
-                    entryManager = factory.createEntryManager(backendProperties);
-                } catch (Exception e) {
-                    logger.warn("Unable to create persistence entry manager, retrying in {} seconds", retry_interval);
-                    Thread.sleep(retry_interval * 1000);
-                }
-            } while (entryManager == null && i < retries);
-
-            if (entryManager == null) {
-                logger.error("No EntryManager could be obtained");
-            } else {
-
-                if (type.equals(LdapSettings.BACKEND.LDAP.getValue())) {
-                    ldapOperationService = (LdapOperationService) entryManager.getOperationService();
-                }
-                try (Reader f = new FileReader(String.format("%s/conf/gluu.properties", MainSettingsProducer.GLUU_BASE))) {
-
-                    Properties generalProps = new Properties();
-                    generalProps.load(f);
-                    //Initialize important class members
-                    ret = loadApplianceSettings(generalProps);
-                } catch (Exception e) {
-                    logger.error("Fatal: gluu.properties not readable", e);
-                }
+            if (type.equals(LdapSettings.BACKEND.LDAP.getValue())) {
+                ldapOperationService = (LdapOperationService) entryManager.getOperationService();
             }
-        } else {
-            logger.error("No persistence factory found for type '{}'", type);
+            try (Reader f = new FileReader(String.format("%s/gluu.properties", DEFAULT_CONF_BASE))) {
+
+                Properties generalProps = new Properties();
+                generalProps.load(f);
+                //Initialize important class members
+                ret = loadApplianceSettings(generalProps);
+            } catch (Exception e) {
+                logger.error("Fatal: gluu.properties not readable", e);
+            }
         }
+
         return ret;
 
     }

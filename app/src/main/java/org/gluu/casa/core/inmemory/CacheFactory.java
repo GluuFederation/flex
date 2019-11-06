@@ -5,10 +5,10 @@ import org.gluu.casa.misc.Utils;
 import org.gluu.service.cache.*;
 import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.util.Optional;
 
@@ -24,22 +24,24 @@ public class CacheFactory {
 
     private static Class<CacheInterface> IStoreServiceClass = CacheInterface.class;
 
-    private static CacheInterface storeService;
+    private CacheInterface storeService;
 
-    private static Logger logger = LoggerFactory.getLogger(CacheFactory.class);
+    @Inject
+    private Logger logger;
+
+    @Inject
+    private PersistenceService persistenceService;
 
     @Produces @ApplicationScoped
     public CacheInterface getMemoryStore() {
-        return storeService;
-    }
-
-    public static CacheInterface createMemoryStoreService(CacheConfiguration cacheConfiguration, StringEncrypter stringEncrypter) throws Exception {
 
         //Initialize only upon first usage
         if (storeService == null) {
-
             Object store = null;
+            CacheConfiguration cacheConfiguration= persistenceService.getCacheConfiguration();
+            StringEncrypter stringEncrypter = persistenceService.getStringEncrypter();
             CacheProviderType type = Optional.ofNullable(cacheConfiguration).map(CacheConfiguration::getCacheProviderType).orElse(null);
+
             if (type != null) {
 
                 try {
