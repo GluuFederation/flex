@@ -12,9 +12,7 @@ import javax.inject.Inject;
 import java.lang.reflect.Proxy;
 import java.util.Optional;
 
-import static org.gluu.service.cache.CacheProviderType.IN_MEMORY;
-import static org.gluu.service.cache.CacheProviderType.NATIVE_PERSISTENCE;
-import static org.gluu.service.cache.CacheProviderType.REDIS;
+import static org.gluu.service.cache.CacheProviderType.*;
 
 /**
  * @author jgomer
@@ -71,6 +69,15 @@ public class CacheFactory {
                         naive.create();
                         store = naive;
                         logger.info("Native provider created");
+
+                    } else if (type.equals(MEMCACHED)) {
+                        MemcachedProvider memcached = new MemcachedProvider();
+                        memcached.setCacheConfiguration(cacheConfiguration);
+                        memcached.init();
+
+                        memcached.create();
+                        store = memcached;
+                        logger.info("Memcached provider created");
 
                     } else if (!type.equals(IN_MEMORY)) {
                         logger.warn("Casa does not support this cache provider");
