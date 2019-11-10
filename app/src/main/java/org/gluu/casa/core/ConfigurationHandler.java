@@ -173,6 +173,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                     compute2FAEnforcementPolicy();
                     extManager.scan();
                     computeAcrPluginMapping();
+                    computeCorsOrigins();
 
                     if (oxdService.initialize()) {
                         //Call to initialize should be followed by saving
@@ -318,6 +319,14 @@ public class ConfigurationHandler extends JobListenerSupport {
         if (settings.getAcrPluginMap() == null) {
             settings.setAcrPluginMap(new HashMap<>());
         }
+    }
+
+    private void computeCorsOrigins() {
+
+        if (settings.getCorsDomains() == null) {
+            settings.setCorsDomains(new ArrayList<>());
+        }
+
     }
 
 }

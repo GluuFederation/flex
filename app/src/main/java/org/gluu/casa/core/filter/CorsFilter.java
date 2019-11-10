@@ -1,5 +1,6 @@
 package org.gluu.casa.core.filter;
 
+import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.rest.RSInitializer;
 import org.slf4j.Logger;
@@ -9,13 +10,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -24,20 +19,15 @@ import java.util.stream.Stream;
 @WebFilter(urlPatterns = { RSInitializer.ROOT_PATH + "/*" })
 public class CorsFilter implements Filter {
 
-    private static final int POLL_PERIOD = 60000;  //1 min
-    private static final String ORIGINS_CORS_FILE = "casa-cors-domains";
-    private static final String basePath = System.getProperty("server.base");
-
-    private Set<String> allowedHosts;
-    private long reloadedAt;
-
     @Inject
     private Logger logger;
+
+    @Inject
+    private MainSettings settings;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         logger.info("CORS filter initialized");
-        allowedHosts = new HashSet<>();
     }
 
     @Override
@@ -51,7 +41,7 @@ public class CorsFilter implements Filter {
         if (Stream.of(origin, method).noneMatch(Utils::isEmpty)) {
 
             try {
-                if (originAllowed(origin)) {
+                if (settings.getCorsDomains().contains(origin)) {
                     HttpServletResponse res = (HttpServletResponse) response;
                     res.setHeader("Access-Control-Allow-Origin", origin);
                     res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -84,21 +74,5 @@ public class CorsFilter implements Filter {
 
     @Override
     public void destroy() { }
-
-    private boolean originAllowed(String origin) throws Exception {
-
-        long now = System.currentTimeMillis();
-
-        if (now - reloadedAt > POLL_PERIOD) {
-            reloadedAt = now;
-            try (BufferedReader bfr = Files.newBufferedReader(Paths.get(basePath, ORIGINS_CORS_FILE))) {
-                logger.debug("Re-reading cors file");
-                allowedHosts = bfr.lines().collect(Collectors.toSet());
-            }
-        }
-        //Search for a match with origin
-        return allowedHosts.contains(origin);
-
-    }
 
 }

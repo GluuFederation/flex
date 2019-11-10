@@ -47,7 +47,8 @@
                                     <div>
                                         <z:label value="@load(each)" sclass="dib mr1-ns w4" />
 
-                                        <h:button class="${css.deleteButton} mb2" onClick="@command('dropScope', id=each)"
+                                        <h:button class="${css.deleteButton} mb2" w:onClick="alertRef = $('#feedback-oxd')"
+                                                  onClick="@command('dropScope', id=each)"
                                                   data-original-title="${labels.general.delete}" data-toggle="tooltip"
                                                   data-placement="top" disabled="@load(vm.requiredScopes.contains(each))">
                                             <i class="fas fa-trash-alt" />

@@ -44,6 +44,9 @@ public class MainSettings {
     @JsonProperty("oxd_config")
     private OxdSettings oxdSettings;
 
+    @JsonProperty("allowed_cors_domains")
+    private List<String> corsDomains;
+
     @JsonProperty("u2f_settings")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private U2fSettings u2fSettings;
@@ -88,6 +91,10 @@ public class MainSettings {
         return enforcement2FA;
     }
 
+    public List<String> getCorsDomains() {
+        return corsDomains;
+    }
+
     public void setEnablePassReset(boolean enablePassReset) {
         this.enablePassReset = enablePassReset;
     }
@@ -126,6 +133,10 @@ public class MainSettings {
 
     public void setTrustedDevicesSettings(TrustedDevicesSettings trustedDevicesSettings) {
         this.trustedDevicesSettings = trustedDevicesSettings;
+    }
+
+    public void setCorsDomains(List<String> corsDomains) {
+        this.corsDomains = corsDomains;
     }
 
 }
