@@ -49,8 +49,8 @@ public class CORSViewModel extends MainViewModel {
     public void addOrigin() {
 
         if (Utils.isValidUrl(origin)) {
-            if (!origins.contains(origin)) {
-                origins.add(origin);
+            if (!origins.contains(origin.toLowerCase())) {
+                origins.add(origin.toLowerCase());
                 if (updateMainSettings()) {
                     origin = "";
                 }
