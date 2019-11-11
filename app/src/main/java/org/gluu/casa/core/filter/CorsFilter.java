@@ -41,7 +41,7 @@ public class CorsFilter implements Filter {
         if (Stream.of(origin, method).noneMatch(Utils::isEmpty)) {
 
             try {
-                if (settings.getCorsDomains().contains(origin)) {
+                if (settings.getCorsDomains().contains(origin.toLowerCase())) {
                     HttpServletResponse res = (HttpServletResponse) response;
                     res.setHeader("Access-Control-Allow-Origin", origin);
                     res.setHeader("Access-Control-Allow-Credentials", "true");
