@@ -15,7 +15,7 @@
 	</parent>
 
     <properties>
-        <oxd.version>4.0-SNAPSHOT</oxd.version>
+        <oxd.version>4.0.Final</oxd.version>
     </properties>
 
 	<dependencies>
