@@ -39,7 +39,6 @@ public class FooterViewModel {
 			selectedLocale = locales.stream().filter(locale-> locale.getLanguage().equals(((Locale) WebUtils.getServletRequest().getSession().getAttribute(Attributes.PREFERRED_LOCALE)).getLanguage())).findFirst().orElse(null);
 			
 		}
-		logger.info(selectedLocale.getLanguage());
 	}
 
 	@Command
