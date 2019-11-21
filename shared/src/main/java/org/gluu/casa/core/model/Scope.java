@@ -1,4 +1,4 @@
-package org.gluu.casa.plugins.consent.model;
+package org.gluu.casa.core.model;
 
 import org.gluu.persist.annotation.AttributeName;
 import org.gluu.persist.annotation.DataEntry;

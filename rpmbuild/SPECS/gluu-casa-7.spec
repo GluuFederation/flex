@@ -35,6 +35,7 @@ install -m 755 casa-external_super_gluu.py %{buildroot}/opt/gluu-server/opt/gluu
 install -m 755 casa-external_twilio_sms.py %{buildroot}/opt/gluu-server/opt/gluu/python/libs
 install -m 755 casa-external_u2f.py %{buildroot}/opt/gluu-server/opt/gluu/python/libs
 install -m 755 casa-external_fido2.py %{buildroot}/opt/gluu-server/opt/gluu/python/libs
+install -m 755 casa-external_smpp.py %{buildroot}/opt/gluu-server/opt/gluu/python/libs
 install -m 755 setup_casa.py %{buildroot}/opt/gluu-server/install/community-edition-setup/
 install -m 755 casa_cleanup.py %{buildroot}/opt/gluu-server/install/community-edition-setup/
 install -m 644 casa.pub %{buildroot}/opt/gluu-server/etc/certs/
@@ -53,6 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 /opt/gluu-server/opt/gluu/python/libs/casa-external_twilio_sms.py
 /opt/gluu-server/opt/gluu/python/libs/casa-external_u2f.py
 /opt/gluu-server/opt/gluu/python/libs/casa-external_fido2.py
+/opt/gluu-server/opt/gluu/python/libs/casa-external_smpp.py
 /opt/gluu-server/install/community-edition-setup/setup_casa.py
 /opt/gluu-server/install/community-edition-setup/casa_cleanup.py
 /opt/gluu-server/etc/certs/casa.pub

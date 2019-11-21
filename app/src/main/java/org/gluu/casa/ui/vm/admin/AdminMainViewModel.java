@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit;
 
 import org.gluu.casa.core.SessionContext;
 import org.gluu.casa.core.pojo.User;
-import org.gluu.casa.license.LicenseUtils;
+import org.gluu.casa.plugins.authnmethod.service.LicenseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
@@ -23,6 +23,9 @@ public class AdminMainViewModel {
 	private String licenseRelatedMessage;
 
 	@WireVariable
+	private LicenseService licenseService;
+	
+	@WireVariable
 	private SessionContext sessionContext;
 
 	User user;
@@ -36,15 +39,16 @@ public class AdminMainViewModel {
 
 		user = sessionContext.getUser();
 		if (user.isRoleAdmin()) {
-			LocalDateTime expiryDate = LicenseUtils.getTrialExpiryDate();
+			LocalDateTime expiryDate = licenseService.getTrialExpiryDate();
 			String daysUntilExpiry = String.valueOf(LocalDateTime.now().until( expiryDate,ChronoUnit.DAYS));
-			boolean verified = LicenseUtils.verifyLicense();
+			boolean verified = licenseService.verifyLicense();
 			
-			if (LicenseUtils.isTrialPeriod(expiryDate) && !verified) {
-				licenseRelatedMessage = Labels.getLabel("adm.casa.trial.period", new String[] {daysUntilExpiry });
+			if (licenseService.isTrialPeriod() && !verified) {
+				licenseRelatedMessage = Labels.getLabel("adm.casa.trial.period", new String[] { daysUntilExpiry });
 			} else if (!verified) {
 				licenseRelatedMessage = Labels.getLabel("adm.casa.invalid.license");
 			}
 		}
 	}
+
 }

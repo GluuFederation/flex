@@ -1,14 +1,4 @@
-<?page language="xhtml"?>
-<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
-<?link rel="stylesheet" type="text/css" href="/styles/intlTelInput.min.css"?>
-<?script src="/scripts/intlTelInput.min.js"?>
 <zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
-
-    <h:title self="@define(title)">${zkService.appName} - ${labels.usr.mobile_title}</h:title>
-
-    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.VerifiedPhoneViewModel')"
-           self="@define(maincontent)">
-
         <z:include src="/back-home.zul" />
         <div class="ph4 mb2">
             <div class="alert alert-success dn" id="feedback-phone-edit" role="alert" />
@@ -128,11 +118,4 @@
             </div>
 
         </z:window>
-
-    </z:div>
-
-    <z:div self="@define(extra)">
-        <z:script src="/scripts/gluu/sms-util.js" />
-    </z:div>
-
 </zk:zk>

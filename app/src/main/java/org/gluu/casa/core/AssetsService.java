@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core;
 
 import org.gluu.casa.conf.MainSettings;
@@ -36,6 +31,9 @@ public class AssetsService implements IBrandingManager {
     private Logger logger;
 
     @Inject
+    private ConfigurationHandler confHandler;
+
+    @Inject
     private MainSettings mainSettings;
 
     private String logoUrl;
@@ -65,7 +63,7 @@ public class AssetsService implements IBrandingManager {
                 logger.info("Changing to use external assets directory");
                 mainSettings.setUseExternalBranding(true);
                 mainSettings.setExtraCssSnippet(null);
-                mainSettings.save();
+                confHandler.saveSettings();
                 reloadUrls();
             } catch (Exception e) {
                 mainSettings.setUseExternalBranding(false);
@@ -82,7 +80,7 @@ public class AssetsService implements IBrandingManager {
             logger.info("Changing extra CSS code snippet");
             mainSettings.setUseExternalBranding(false);
             mainSettings.setExtraCssSnippet(css);
-            mainSettings.save();
+            confHandler.saveSettings();
             reloadUrls();
         } catch (Exception e) {
             mainSettings.setExtraCssSnippet(snip);
@@ -109,7 +107,7 @@ public class AssetsService implements IBrandingManager {
         try {
             mainSettings.setUseExternalBranding(false);
             mainSettings.setExtraCssSnippet(null);
-            mainSettings.save();
+            confHandler.saveSettings();
             reloadUrls();
 
             if (Utils.isNotEmpty(snip)) {

@@ -1,8 +1,8 @@
 package org.gluu.casa.ui.vm.user;
 
 import org.gluu.casa.extension.AuthnMethod;
-import org.gluu.casa.license.LicenseUtils;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.plugins.authnmethod.service.LicenseService;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.SessionContext;
 import org.gluu.casa.core.pojo.User;
@@ -17,6 +17,7 @@ import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,15 @@ public class UserMainViewModel extends UserViewModel {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
+	private String licenseRelatedMessage;
+
+	public String getLicenseRelatedMessage() {
+		return licenseRelatedMessage;
+	}
+
+	@WireVariable
+	private LicenseService licenseService;
+	
 	@WireVariable
 	private PersistenceService persistenceService;
 	private String introText;
@@ -59,7 +69,7 @@ public class UserMainViewModel extends UserViewModel {
 	}
 
 	public List<AuthnMethod> getPre2faMethods() {
-		return pre2faMethods;
+		return pre2faMethods; 
 	}
 
 	@Init(superclass = true)
@@ -69,6 +79,15 @@ public class UserMainViewModel extends UserViewModel {
 		methodsAvailability = widgets.size() > 0;
 		pre2faMethods = new ArrayList<>();
 
+		// roleAdmin - if the user has admin role
+		// isAdmin - if the application has administrator operations enabled
+		// if the product is within trial period, admin features will be enabled and the warning will be shown to admin user only via admin console.
+		if (sessionContext.getUser().isRoleAdmin() && !licenseService.verifyLicense()
+                && !(licenseService.isTrialPeriod())) {
+		    licenseRelatedMessage = Labels.getLabel("adm.casa.invalid.license.for.administrator");
+		}
+		
+
 		if (methodsAvailability) {
 			StringBuffer helper = new StringBuffer();
 			widgets.forEach(aMethod -> helper.append(", ").append(Labels.getLabel(aMethod.getPanelTitleKey())));
@@ -76,7 +95,7 @@ public class UserMainViewModel extends UserViewModel {
 			introText = Labels.getLabel("usr.main_intro", new String[] { orgName, helper.substring(2) });
 
 			pre2faMethods = widgets.stream().filter(AuthnMethod::mayBe2faActivationRequisite).collect(Collectors.toList());
-			has2faRequisites = pre2faMethods.size() == 0
+			has2faRequisites = pre2faMethods.size() == 0 
 					|| pre2faMethods.stream().anyMatch(aMethod -> aMethod.getTotalUserCreds(user.getId()) > 0);
 		}
 

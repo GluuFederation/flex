@@ -1,6 +1,5 @@
 package org.gluu.casa.timer;
 
-import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.core.PersistenceService;
@@ -43,7 +42,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
     private TimerService timerService;
 
     @Inject
-    private MainSettings confSettings;
+    private ConfigurationHandler confHandler;
 
     @Inject
     private PersistenceService persistenceService;
@@ -78,7 +77,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
         //A flag used to force a reload of main cust script
         boolean reload = false;
-        Map<String, String> mapping = confSettings.getAcrPluginMap();
+        Map<String, String> mapping = confHandler.getSettings().getAcrPluginMap();
         Set<String> acrs = mapping.keySet();
         List<String> toBeRemoved = new ArrayList<>();
 
@@ -126,11 +125,11 @@ public class AuthnScriptsReloader extends JobListenerSupport {
             //Remove from the mapping
             acrs.removeAll(toBeRemoved);
             //Here mapping was altered since acrs is its associated keyset
-            confSettings.setAcrPluginMap(mapping);
+            confHandler.getSettings().setAcrPluginMap(mapping);
 
             try {
                 //Save mapping changes to disk
-                confSettings.save();
+                confHandler.saveSettings();
                 reload = true;
             } catch (Exception e) {
                 logger.error("Failure to update configuration settings!");

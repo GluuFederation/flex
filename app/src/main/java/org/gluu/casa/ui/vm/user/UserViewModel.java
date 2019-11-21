@@ -21,11 +21,10 @@ import java.util.stream.Collectors;
  * This is the superclass of all ViewModels associated to zul pages used by regular users of the application
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class UserViewModel {
 
     @WireVariable
-    private SessionContext sessionContext;
+    protected SessionContext sessionContext;
 
     @WireVariable("configurationHandler")
     private ConfigurationHandler confHandler;

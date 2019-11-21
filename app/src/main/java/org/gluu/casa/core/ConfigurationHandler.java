@@ -3,13 +3,14 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.conf.OxdSettings;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
+import org.gluu.casa.core.model.ApplicationConfiguration;
 import org.gluu.casa.misc.AppStateEnum;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.*;
 import org.gluu.casa.timer.*;
 import org.gluu.oxauth.model.util.SecurityProviderUtility;
+import org.gluu.persist.exception.operation.PersistenceException;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.zkoss.util.Pair;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.net.URL;
@@ -32,16 +34,13 @@ public class ConfigurationHandler extends JobListenerSupport {
     public static final Pair<Integer, Integer> BOUNDS_MINCREDS_2FA = new Pair<>(1, 3);
     public static final String DEFAULT_ACR = "casa";
     public static final List<String> DEFAULT_SUPPORTED_METHODS = Arrays.asList(
-            SecurityKey2Extension.ACR, SecurityKeyExtension.ACR, OTPExtension.ACR, SuperGluuExtension.ACR, OTPSmsExtension.ACR);
+            SecurityKey2Extension.ACR, SecurityKeyExtension.ACR, OTPExtension.ACR, SuperGluuExtension.ACR, OTPTwilioExtension.ACR, OTPSmppExtension.ACR);
 
     private static final int RETRIES = 15;
     private static final int RETRY_INTERVAL = 20;
 
     @Inject
     private Logger logger;
-
-    @Inject
-    private MainSettings settings;
 
     @Inject
     private PersistenceService persistenceService;
@@ -68,10 +67,11 @@ public class ConfigurationHandler extends JobListenerSupport {
     private StatisticsTimer statisticsTimer;
 
     @Inject
-    private SyncSettingsTimer syncSettingsTimer;
-
-    @Inject
     private FSPluginChecker pluginChecker;
+
+    private ApplicationConfiguration appConfiguration;
+
+    private MainSettings settings;
 
     private String acrQuartzJobName;
 
@@ -89,14 +89,29 @@ public class ConfigurationHandler extends JobListenerSupport {
         SecurityProviderUtility.installBCProvider();
     }
 
+    private boolean initializeSettings() {
+
+        logger.info("init. Obtaining global settings");
+        try {
+            appConfiguration = new ApplicationConfiguration();
+            appConfiguration.setBaseDn(String.format("ou=casa,ou=configuration,%s", persistenceService.getRootDn()));
+            appConfiguration = persistenceService.find(appConfiguration).get(0);
+            settings = appConfiguration.getSettings();
+        } catch (Exception e) {
+            logger.error("Error parsing configuration settings");
+            logger.error(e.getMessage(), e);
+        }
+        return settings != null;
+
+    }
+
     void init() {
 
         try {
-            //Update log level
-            computeLoggingLevel();
-            //Check LDAP access to proceed with acr timer
-            if (persistenceService.initialize(settings.getLdapSettings(true))) {
-                settings.setupMemoryStore(persistenceService.getCacheConfiguration(), persistenceService.getStringEncrypter());
+            //Check DB access to proceed with acr timer
+            if (persistenceService.initialize() && initializeSettings()) {
+                //Update log level ASAP
+                computeLoggingLevel();
                 setAppState(AppStateEnum.LOADING);
 
                 //This is a trick so the timer event logic can be coded inside this managed bean
@@ -117,8 +132,16 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     }
 
+    @Produces @ApplicationScoped
     public MainSettings getSettings() {
         return settings;
+    }
+
+    public void saveSettings() throws PersistenceException {
+        logger.info("Persisting settings to database");
+        if (!persistenceService.modify(appConfiguration)) {
+            throw new PersistenceException("Config changes could not be saved to database");
+        }
     }
 
     @Override
@@ -148,17 +171,17 @@ public class ConfigurationHandler extends JobListenerSupport {
                     computeMinCredsForStrongAuth();
                     computePassResetable();
                     compute2FAEnforcementPolicy();
+                    extManager.scan();
+                    computeAcrPluginMapping();
+                    computeCorsOrigins();
 
-                    OxdSettings oxdSettings = settings.getOxdSettings(true);
-                    if (oxdService.initialize(oxdSettings)) {
-                        extManager.scan();
-                        computeAcrPluginMapping();
-
+                    if (oxdService.initialize()) {
+                        //Call to initialize should be followed by saving
                         try {
-                            settings.save();
+                            saveSettings();
                             setAppState(AppStateEnum.OPERATING);
                         } catch (Exception e) {
-                            logger.error("Error updating configuration file: {}", e.getMessage());
+                            logger.error(e.getMessage());
                             setAppState(AppStateEnum.FAIL);
                         }
                         if (appState.equals(AppStateEnum.OPERATING)) {
@@ -169,7 +192,6 @@ public class ConfigurationHandler extends JobListenerSupport {
                             scriptsReloader.init(1 + gap);
                             //Devices sweeper executes in a single node in theory...
                             devicesSweeper.activate(10 + gap);
-                            syncSettingsTimer.activate(60 + gap);
                             //statistics timer executes in a single node in theory...
                             statisticsTimer.activate(120 + gap);
                             //plugin checker is not shared-state related
@@ -256,7 +278,7 @@ public class ConfigurationHandler extends JobListenerSupport {
     }
 
     private void computeLoggingLevel() {
-        settings.setLogLevel(logService.updateLoggingLevel(settings.getLogLevel(true)));
+        settings.setLogLevel(logService.updateLoggingLevel(settings.getLogLevel()));
     }
 
     private void computeMinCredsForStrongAuth() {
@@ -294,27 +316,16 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     private void computeAcrPluginMapping() {
 
-        Map<String, String> mapping = settings.getAcrPluginMap();
-        Map<String, String> newMap = new HashMap<>();
-
-        if (Utils.isNotEmpty(mapping)) {
-
-            for (String acr : mapping.keySet()) {
-                //Is there a current runtime impl for this acr?
-                String plugId = mapping.get(acr);
-                if (extManager.pluginImplementsAuthnMethod(acr, plugId)) {
-                    newMap.put(acr, plugId);
-                } else {
-                    if (plugId == null) {
-                        logger.warn("There is no system extension that can work with acr '{}'", acr);
-                    } else {
-                        logger.warn("Plugin {} does not have extensions that can work with acr '{}' or plugin does not exist", plugId, acr);
-                    }
-                    logger.warn("acr removed from Gluu Casa configuration file...");
-                }
-            }
+        if (settings.getAcrPluginMap() == null) {
+            settings.setAcrPluginMap(new HashMap<>());
         }
-        settings.setAcrPluginMap(newMap);
+    }
+
+    private void computeCorsOrigins() {
+
+        if (settings.getCorsDomains() == null) {
+            settings.setCorsDomains(new ArrayList<>());
+        }
 
     }
 

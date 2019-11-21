@@ -159,7 +159,8 @@ border-color: #d6e9c6;
                                     <h:form id="loginForm">
                                         <h:panelGroup rendered="#{not identity.loggedIn}">
                                             <p class="text-danger errormsg" style="display: none"></p>
-                                            <h:inputHidden id="provider" />
+                                            <h:inputHidden id="platform"/>
+                                            <h:inputHidden id="provider"/>
                                             <h:messages class="text-danger" />
                                             <div class="row form-group">
 												<span class="input-name col-md-3"> <h:outputLabel

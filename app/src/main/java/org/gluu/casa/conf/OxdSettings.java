@@ -28,6 +28,8 @@ public class OxdSettings {
     @JsonProperty("frontchannel_logout_uri")
     private String frontLogoutUri;
 
+    private List<String> scopes;
+
     @JsonProperty("client")
     private OxdClientSettings client;
 
@@ -65,6 +67,10 @@ public class OxdSettings {
         return frontLogoutUri;
     }
 
+    public List<String> getScopes() {
+        return scopes;
+    }
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public OxdClientSettings getClient() {
         return client;
@@ -100,6 +106,10 @@ public class OxdSettings {
 
     public void setFrontLogoutUri(String frontLogoutUri) {
         this.frontLogoutUri = frontLogoutUri;
+    }
+
+    public void setScopes(List<String> scopes) {
+        this.scopes = scopes;
     }
 
 }

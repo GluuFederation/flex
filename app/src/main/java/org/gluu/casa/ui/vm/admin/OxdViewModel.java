@@ -2,20 +2,25 @@ package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.conf.OxdSettings;
 import org.gluu.casa.core.OxdService;
+import org.gluu.casa.core.ScopeService;
+import org.gluu.casa.core.model.Scope;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.bind.annotation.*;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Messagebox;
 
 import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -29,22 +34,45 @@ public class OxdViewModel extends MainViewModel {
     @WireVariable
     private OxdService oxdService;
 
+    @WireVariable
+    private ScopeService scopeService;
+
     private OxdSettings oxdSettings;
+
+    private boolean uiEditingScopes;
+
+    private Set<String> selectableScopes;
+
+    private Set<String> selectedScopes;
+
+    private Set<String> requiredScopes;
 
     public OxdSettings getOxdSettings() {
         return oxdSettings;
     }
 
+    public boolean isUiEditingScopes() {
+        return uiEditingScopes;
+    }
+
+    public Set<String> getSelectableScopes() {
+        return selectableScopes;
+    }
+
+    @Immutable
+    public Set<String> getRequiredScopes() {
+        return requiredScopes;
+    }
+
     @Init//(superclass = true)
     public void init() {
         reloadConfig();
+        requiredScopes = new HashSet<>(OxdService.REQUIRED_SCOPES);
     }
 
     private void reloadConfig() {
-        oxdSettings = (OxdSettings) Utils.cloneObject(getSettings().getOxdSettings(true));
+        oxdSettings = (OxdSettings) Utils.cloneObject(getSettings().getOxdSettings());
     }
-
-   
 
     @NotifyChange("oxdSettings")
     @Command
@@ -105,6 +133,46 @@ public class OxdViewModel extends MainViewModel {
 
     }
 
+    @NotifyChange("oxdSettings")
+    @Command
+    public void dropScope(@BindingParam("id") String scope) {
+        oxdSettings.getScopes().remove(scope);
+        logger.debug("New scope list is {}", oxdSettings.getScopes());
+    }
+
+    @NotifyChange({"uiEditingScopes", "selectableScopes"})
+    @Command
+    public void preAddScopes() {
+        uiEditingScopes = true;
+        computeSelectableScopes();
+        selectedScopes = new HashSet<>();
+    }
+
+    @Command
+    public void scopedChecked(@BindingParam("target") Checkbox box, @BindingParam("scope") String scope) {
+        if (box.isChecked()) {
+            selectedScopes.add(scope);
+        } else {
+            selectedScopes.remove(scope);
+        }
+    }
+
+    @NotifyChange("uiEditingScopes")
+    @Command
+    public void cancelAddScopes(@BindingParam("event") Event event) {
+        uiEditingScopes = false;
+        if (event != null && event.getName().equals(Events.ON_CLOSE)) {
+            event.stopPropagation();
+        }
+    }
+
+    @NotifyChange({"uiEditingScopes", "oxdSettings"})
+    @Command
+    public void addScopes() {
+        uiEditingScopes = false;
+        oxdSettings.getScopes().addAll(selectedScopes);
+    }
+
     private String updateOxdSettings(OxdSettings lastWorkingConfig) {
 
         String msg = null;
@@ -115,7 +183,7 @@ public class OxdViewModel extends MainViewModel {
                 //TODO: oxd-4.0 will allow several post-logout uris: https://github.com/GluuFederation/oxd/issues/217
                 //This way instead of replacing the postlogout I might just add it, thus, when logging out oxauth will not give error
                 //When a new client is created (see else branch), the error at logout cannot be avoided
-                if (!oxdService.updateSite(oxdSettings.getPostLogoutUri())) {
+                if (!oxdService.updateSite(oxdSettings.getPostLogoutUri(), oxdSettings.getScopes())) {
                     msg = Labels.getLabel("adm.oxd_site_update_failure");
                 }
             } catch (Exception e) {
@@ -144,6 +212,13 @@ public class OxdViewModel extends MainViewModel {
         }
         return msg;
 
+    }
+
+    private void computeSelectableScopes() {
+        selectableScopes = scopeService.getNonUMAScopes().stream().map(Scope::getId).collect(Collectors.toSet());
+        //Remove already checked ones
+        selectableScopes.removeAll(oxdSettings.getScopes());
+        logger.debug("Selectable scopes are: {}", selectableScopes);
     }
 
 }

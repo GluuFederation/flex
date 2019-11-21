@@ -6,6 +6,7 @@ import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.gluu.oxauth.model.fido.u2f.DeviceRegistrationStatus;
 import org.gluu.oxauth.model.fido.u2f.protocol.DeviceData;
+import org.gluu.persist.model.base.SimpleBranch;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
@@ -80,12 +81,11 @@ public class FidoService extends BaseService {
 
     private List<DeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
 
-        String parentDn = persistenceService.getPersonDn(userId);
-        if (branchMissing(U2F_OU, parentDn)) {
+        String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));
+        //In CB the ou=fido branch exists!
+        if (persistenceService.count(new SimpleBranch(parentDn)) <= 0) {
             return Collections.emptyList();
         } else {
-            parentDn = String.format("ou=%s,%s", U2F_OU, parentDn);
-
             DeviceRegistration deviceRegistration = new DeviceRegistration();
             deviceRegistration.setBaseDn(parentDn);
             deviceRegistration.setOxApplication(appId);

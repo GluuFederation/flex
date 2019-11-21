@@ -32,9 +32,12 @@ public class FooterViewModel {
 		locales = new ArrayList<>(zkService.getSupportedLocales());
 		// auto select English as default language
 		if (WebUtils.getServletRequest().getSession().getAttribute(Attributes.PREFERRED_LOCALE) == null) {
-			selectedLocale = Locale.ENGLISH;
+			selectedLocale = locales.stream().filter(locale-> locale.getLanguage().equals(Locale.ENGLISH.getLanguage())).findAny().orElse(null);
+
 		} else {
-			selectedLocale = (Locale) WebUtils.getServletRequest().getSession().getAttribute(Attributes.PREFERRED_LOCALE);
+			
+			selectedLocale = locales.stream().filter(locale-> locale.getLanguage().equals(((Locale) WebUtils.getServletRequest().getSession().getAttribute(Attributes.PREFERRED_LOCALE)).getLanguage())).findFirst().orElse(null);
+			
 		}
 	}
 

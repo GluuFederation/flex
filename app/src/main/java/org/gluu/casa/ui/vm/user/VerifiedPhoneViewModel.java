@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.gluu.casa.core.pojo.VerifiedMobile;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.plugins.authnmethod.OTPSmsExtension;
 import org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus;
 import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
 import org.zkoss.bind.BindUtils;
@@ -19,10 +18,7 @@ import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 import java.util.Date;
@@ -30,15 +26,14 @@ import java.util.List;
 
 /**
  * Created by jgomer on 2018-06-18.
- * This is the ViewModel of page phone-detail.zul. It controls the CRUD of verified phones
+ * This is the ViewModel of page phone-detail-shared.zul. It controls the CRUD of verified phones
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class VerifiedPhoneViewModel extends UserViewModel {
 
     private Logger logger = LogManager.getLogger(getClass());
 
-    @WireVariable("mobilePhoneService")
-    private MobilePhoneService mpService;
+    String ACR;
+    MobilePhoneService mpService;
 
     private boolean uiCodesMatch;
     private boolean uiSmsDelivered;
@@ -208,7 +203,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     @Command
     public void delete(@BindingParam("phone") VerifiedMobile phone) {
 
-        String resetMessages = resetPreferenceMessage(OTPSmsExtension.ACR, phones.size());
+        String resetMessages = resetPreferenceMessage(ACR, phones.size());
         boolean reset = resetMessages != null;
         Pair<String, String> delMessages = getDeleteMessages(phone.getNickName(), resetMessages);
 

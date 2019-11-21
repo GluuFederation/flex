@@ -1,5 +1,6 @@
 package org.gluu.casa.core;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.annotation.PostConstruct;
@@ -11,7 +12,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.gluu.casa.core.model.OIDCClient;
+import org.gluu.service.cache.CacheInterface;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;
@@ -33,6 +35,7 @@ import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static org.gluu.casa.core.ConfigurationHandler.DEFAULT_ACR;
@@ -49,7 +52,11 @@ public class OxdService {
     /*
     The list of scopes required to be able to inspect the claims needed. See attributes of User class
      */
-    private static final List<String> CASA_SCOPES = Arrays.asList("openid", "profile", "user_name", "clientinfo", "oxd");
+    public static final List<String> REQUIRED_SCOPES = Arrays.asList("openid", "profile", "user_name", "clientinfo", "oxd");
+
+    private final String OXD_SETTINGS_KEY = getClass().getName() + "_oxdSettings";
+
+    private static final int REGISTRATION_WAIT_TIME = 12;	//12 seconds
 
     @Inject
     private Logger logger;
@@ -59,6 +66,12 @@ public class OxdService {
 
     @Inject
     private PersistenceService persistenceService;
+
+    @Inject
+    private CacheInterface storeService;
+
+    @Inject
+    private ScopeService scopeService;
 
     private OxdSettings config;
     private ResteasyClient client;
@@ -70,8 +83,50 @@ public class OxdService {
         client = RSUtils.getClient();
     }
 
+    //This method does a best effort to avoid multiple client registrations in a multi node environment
+    public boolean initialize() {
+
+        boolean success = false;
+        OxdSettings oxdSettings = settings.getOxdSettings();
+
+        try {
+            String oxdId = Optional.ofNullable(oxdSettings).map(OxdSettings::getClient)
+                    .map(OxdClientSettings::getOxdId).orElse(null);
+
+            if (oxdId == null) {
+                if (storeService.get(OXD_SETTINGS_KEY) == null) {
+                    //temporarily take the ownership for attempting registration
+                    storeService.put(REGISTRATION_WAIT_TIME, OXD_SETTINGS_KEY, true);   //Any non-null value is OK
+                    success = initialize(oxdSettings);
+                    if (success) {
+                        storeService.put(REGISTRATION_WAIT_TIME, OXD_SETTINGS_KEY, mapper.writeValueAsString(oxdSettings));
+                    } else {
+                        storeService.remove(OXD_SETTINGS_KEY);
+                    }
+                } else {
+                    //Block for some time hoping a registration operation was performed
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(REGISTRATION_WAIT_TIME));
+                    oxdSettings = mapper.readValue(storeService.get(OXD_SETTINGS_KEY).toString(), new TypeReference<OxdSettings>(){});
+                    //If it reaches this point, it means registration took place successfully while sleeping
+                    //Simulate initialization
+                    success = initialize(oxdSettings);
+                }
+            } else {
+                success = initialize(oxdSettings);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        if (success) {
+            //Replace local copy
+            settings.setOxdSettings(oxdSettings);
+        }
+        return success;
+
+    }
+
     //This method modifies the param supplied
-    public boolean initialize(OxdSettings oxdConfig) {
+    private boolean initialize(OxdSettings oxdConfig) {
 
         boolean success = false;
         if (oxdConfig == null) {
@@ -88,6 +143,11 @@ public class OxdService {
 
                 try {
                     if (persistenceService.getDynamicClientExpirationTime() != 0) {
+
+                        if (Utils.isEmpty(settings.getOxdSettings().getScopes())) {
+                            oxdConfig.setScopes(REQUIRED_SCOPES);
+                        }
+
                         Optional<String> oxdIdOpt = Optional.ofNullable(oxdConfig.getClient()).map(OxdClientSettings::getOxdId);
                         setSettings(oxdConfig, !oxdIdOpt.isPresent());
                         success = true;
@@ -114,7 +174,7 @@ public class OxdService {
 
     }
 
-    public OxdClientSettings doRegister() throws Exception {
+    private OxdClientSettings doRegister() throws Exception {
 
         OxdClientSettings computedSettings;
         String clientName;
@@ -132,10 +192,9 @@ public class OxdService {
             cmdParams.setAcrValues(config.getAcrValues());
             cmdParams.setClientName(clientName);
             cmdParams.setClientFrontchannelLogoutUris(Collections.singletonList(config.getFrontLogoutUri()));
-            //Why is this needed in 4.0, and not in oxd 3.1.4?
             cmdParams.setGrantTypes(Collections.singletonList("client_credentials"));
 
-            cmdParams.setScope(CASA_SCOPES);
+            cmdParams.setScope(config.getScopes());
             cmdParams.setResponseTypes(Collections.singletonList("code"));
             cmdParams.setTrustedClient(true);
 
@@ -177,6 +236,7 @@ public class OxdService {
         cmdParams.setOxdId(config.getClient().getOxdId());
         cmdParams.setAcrValues(acrValues);
         cmdParams.setPrompt(prompt);
+        cmdParams.setScope(config.getScopes());
 
         GetAuthorizationUrlResponse resp = restResponse(cmdParams, "get-authorization-url", getPAT(), GetAuthorizationUrlResponse.class);
         return resp.getAuthorizationUrl();
@@ -222,22 +282,48 @@ public class OxdService {
 
     }
 
+    public boolean updateSite(String postLogoutUri, List<String> newScopes) throws Exception {
+        //This method updates the OIDC client directly (does not use oxd). Less tinkering
+
+        OIDCClient client = new OIDCClient();
+        client.setInum(config.getClient().getClientId());
+        client.setBaseDn(persistenceService.getClientsDn());
+
+        logger.info("Looking up Casa client...");
+        client = persistenceService.find(client).get(0);
+        client.setPostLogoutURI(postLogoutUri);
+
+        Set<String> scopeSet = new HashSet<>(REQUIRED_SCOPES);
+        scopeSet.addAll(newScopes);
+        newScopes = new ArrayList<>(scopeSet);
+        client.setScopes(scopeService.getDNsFromIds(newScopes));
+
+        logger.info("Updating client with new scopes {} and post logout URI {}", newScopes, postLogoutUri);
+        boolean ret = persistenceService.modify(client);
+        if (ret) {
+            //Update global state of this bean
+            config.setScopes(newScopes);
+            config.setPostLogoutUri(client.getPostLogoutURI());
+        }
+        return ret;
+
+    }
+
+
+    //This does not seem to work properly (strange side effects)
     public boolean updateSite(String postLogoutUri) throws Exception {
 
         UpdateSiteParams cmdParams = new UpdateSiteParams();
         cmdParams.setOxdId(config.getClient().getOxdId());
+
         if (postLogoutUri != null) {
             cmdParams.setPostLogoutRedirectUris(Collections.singletonList(postLogoutUri));
         }
-        return doUpdate(cmdParams);
-
-    }
-
-    private boolean doUpdate(UpdateSiteParams cmdParams) throws Exception {
-
-        //Do not remove the following line, sometimes problematic if missing
-        cmdParams.setGrantType(Collections.singletonList("authorization_code"));
+        //Do not remove the following lines, sometimes problematic if missing
+        cmdParams.setGrantType(Collections.singletonList("client_credentials"));
+        cmdParams.setResponseTypes(Collections.singletonList("code"));
         UpdateSiteResponse resp = restResponse(cmdParams, "update-site", getPAT(), UpdateSiteResponse.class);
+
         return resp != null;
 
     }
@@ -248,7 +334,7 @@ public class OxdService {
         cmdParams.setOpHost(config.getOpHost());
         cmdParams.setClientId(config.getClient().getClientId());
         cmdParams.setClientSecret(config.getClient().getClientSecret());
-        cmdParams.setScope(CASA_SCOPES);
+        cmdParams.setScope(config.getScopes());
 
         GetClientTokenResponse resp = restResponse(cmdParams, "get-client-token", null, GetClientTokenResponse.class);
         String token = resp.getAccessToken();
@@ -265,7 +351,6 @@ public class OxdService {
 
         String authz = StringUtils.isEmpty(token) ? null : "Bearer " + token;
         ResteasyWebTarget target = client.target(String.format("https://%s:%s/%s", config.getHost(), config.getPort(), path));
-        //target.register(JacksonJsonProvider.class);
 
         Response response = target.request().header("Authorization", authz).post(Entity.json(payload));
         response.bufferEntity();

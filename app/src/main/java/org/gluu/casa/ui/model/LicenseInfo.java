@@ -1,4 +1,4 @@
-package org.gluu.casa.license;
+package org.gluu.casa.ui.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
