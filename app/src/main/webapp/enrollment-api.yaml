@@ -6,7 +6,7 @@ info:
   description: Facilitates the process of credentials enrollment in the Gluu Server.
   license:
     name: Gluu Casa
-    url: https://github.com/GluuFederation/casa/blob/master/LICENSE.md
+    url: https://gluu.org/docs/casa/#license
 
 #Demo server host
 host: dc.gluu.org

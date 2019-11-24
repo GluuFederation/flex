@@ -6,7 +6,7 @@ info:
   
   license:
     name: "Gluu casa"
-    url: "https://github.com/GluuFederation/casa/blob/master/LICENSE.md"
+    url: "https://gluu.org/docs/casa/#license"
 host: "madhu-ubu16.infinity.com"
 basePath: "/casa/rest"
 tags:
