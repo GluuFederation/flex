@@ -33,8 +33,9 @@ public class StrongAuthnSettingsPlugin extends Plugin implements ITrackable {
         Logger logger = LoggerFactory.getLogger(getClass());
         try {
             Class<?> clazz = Class.forName("org.gluu.casa.core.ConfigurationHandler");
+            Object confHandler = Utils.managedBean(clazz);
             Method method = getAMethod("getSettings", clazz);
-            Object settings = method.invoke(Utils.managedBean(clazz));
+            Object settings = method.invoke(confHandler);
 
             logger.info("MainSettings obtained");
             clazz = settings.getClass();
@@ -52,8 +53,8 @@ public class StrongAuthnSettingsPlugin extends Plugin implements ITrackable {
             method = getAMethod("setEnforcement2FA", clazz);
             method.invoke(settings, Collections.singletonList(epclsInstance));
 
-            method = getAMethod("save", clazz);
-            method.invoke(settings);
+            method = getAMethod("saveSettings", confHandler.getClass());
+            method.invoke(confHandler);
 
             logger.info("Done");
         } catch (Exception e) {
