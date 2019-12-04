@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,9 @@ public class MainSettings {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private U2fSettings u2fSettings;
 
+    @JsonProperty("plugins_settings")
+    private Map<String, Map<String,Object>> pluginSettings = new HashMap<>();
+
     public boolean isEnablePassReset() {
         return enablePassReset;
     }
@@ -95,6 +99,10 @@ public class MainSettings {
         return corsDomains;
     }
 
+    public Map<String, Map<String, Object>> getPluginSettings() {
+        return pluginSettings;
+    }
+
     public void setEnablePassReset(boolean enablePassReset) {
         this.enablePassReset = enablePassReset;
     }
@@ -137,6 +145,10 @@ public class MainSettings {
 
     public void setCorsDomains(List<String> corsDomains) {
         this.corsDomains = corsDomains;
+    }
+
+    public void setPluginSettings(Map<String, Map<String, Object>> pluginSettings) {
+        this.pluginSettings = pluginSettings;
     }
 
 }

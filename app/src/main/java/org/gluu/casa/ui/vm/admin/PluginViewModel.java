@@ -209,7 +209,7 @@ public class PluginViewModel extends MainViewModel {
             String text = Labels.getLabel(method.getUINameKey());
             String acr = method.getAcr();
 
-            if (Optional.ofNullable(getSettings().getAcrPluginMap().get(acr)).map(id -> pluginId.equals(id)).orElse(false)) {
+            if (Optional.ofNullable(getSettings().getAcrPluginMap().get(acr)).map(pluginId::equals).orElse(false)) {
                 text += Labels.getLabel("adm.plugins_acr_handler", new String[]{ acr });
             }
             extList.add(getExtensionLabel(AUTHN_METHOD.getName(), text));
