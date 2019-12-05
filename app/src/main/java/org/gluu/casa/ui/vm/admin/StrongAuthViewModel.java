@@ -12,6 +12,7 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
@@ -30,7 +31,6 @@ import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.CUSTOM;
 import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.EVERY_LOGIN;
 import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.LOCATION_UNKNOWN;
 import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.DEVICE_UNKNOWN;
-import static org.gluu.casa.core.ConfigurationHandler.BOUNDS_MINCREDS_2FA;
 
 /**
  * @author jgomer
@@ -38,6 +38,7 @@ import static org.gluu.casa.core.ConfigurationHandler.BOUNDS_MINCREDS_2FA;
 @VariableResolver(DelegatingVariableResolver.class)
 public class StrongAuthViewModel extends MainViewModel {
 
+    private static final Pair<Integer, Integer> BOUNDS_MINCREDS_2FA = new Pair<>(1, 3);
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @WireVariable

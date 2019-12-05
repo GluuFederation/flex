@@ -14,7 +14,6 @@ import org.gluu.persist.exception.operation.PersistenceException;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
-import org.zkoss.util.Pair;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -31,11 +30,11 @@ import java.util.*;
 @ApplicationScoped
 public class ConfigurationHandler extends JobListenerSupport {
 
-    public static final Pair<Integer, Integer> BOUNDS_MINCREDS_2FA = new Pair<>(1, 3);
     public static final String DEFAULT_ACR = "casa";
     public static final List<String> DEFAULT_SUPPORTED_METHODS = Arrays.asList(
             SecurityKey2Extension.ACR, SecurityKeyExtension.ACR, OTPExtension.ACR, SuperGluuExtension.ACR, OTPTwilioExtension.ACR, OTPSmppExtension.ACR);
 
+    private static final int MIN_CREDS_2FA_DEFAULT = 2;
     private static final int RETRIES = 15;
     private static final int RETRY_INTERVAL = 20;
 
@@ -283,18 +282,9 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     private void computeMinCredsForStrongAuth() {
 
-        int defaultValue = (BOUNDS_MINCREDS_2FA.getX() + BOUNDS_MINCREDS_2FA.getY()) / 2;
-        Integer providedValue = settings.getMinCredsFor2FA();
-
-        if (providedValue == null) {
-            logger.info("Using default value of {} for minimum number of credentials to enable strong authentication", defaultValue);
-            settings.setMinCredsFor2FA(defaultValue);
-        } else {
-            if (providedValue < BOUNDS_MINCREDS_2FA.getX() || providedValue > BOUNDS_MINCREDS_2FA.getY()) {
-                logger.info("Value for min_creds_2FA={} not in interval [{},{}]. Defaulting to {}", providedValue,
-                        BOUNDS_MINCREDS_2FA.getX(), BOUNDS_MINCREDS_2FA.getY(), defaultValue);
-                settings.setMinCredsFor2FA(defaultValue);
-            }
+        if (settings.getMinCredsFor2FA() == null) {
+            logger.info("Using default value of {} for minimum number of credentials to enable strong authentication", MIN_CREDS_2FA_DEFAULT);
+            settings.setMinCredsFor2FA(MIN_CREDS_2FA_DEFAULT);
         }
 
     }
