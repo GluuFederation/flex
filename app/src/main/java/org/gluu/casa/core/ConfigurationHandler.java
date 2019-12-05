@@ -305,18 +305,15 @@ public class ConfigurationHandler extends JobListenerSupport {
     }
 
     private void computeAcrPluginMapping() {
-
         if (settings.getAcrPluginMap() == null) {
             settings.setAcrPluginMap(new HashMap<>());
         }
     }
 
     private void computeCorsOrigins() {
-
         if (settings.getCorsDomains() == null) {
             settings.setCorsDomains(new ArrayList<>());
         }
-
     }
 
 }

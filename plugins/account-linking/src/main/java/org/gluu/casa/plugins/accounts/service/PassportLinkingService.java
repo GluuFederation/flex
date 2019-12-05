@@ -11,6 +11,7 @@ import org.gluu.oxauth.model.common.WebKeyStorage;
 import org.gluu.oxauth.model.configuration.AppConfiguration;
 import org.gluu.oxauth.model.crypto.CryptoProviderFactory;
 import org.gluu.oxauth.model.jwt.Jwt;
+import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -31,11 +32,15 @@ import java.util.*;
 @Path("/idp-linking")
 public class PassportLinkingService {
 
+    private static final String CE_SALT_PATH = "/etc/gluu/conf/salt";
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private ObjectMapper mapper = new ObjectMapper();
 
     private IPersistenceService persistenceService;
+
+    private StringEncrypter stringEncrypter;
 
     private Map<ProviderType, PassportScriptProperties> passportProperties;
 
@@ -48,6 +53,7 @@ public class PassportLinkingService {
             logger.info("Creating an instance of PassportLinkingService");
             mapper = new ObjectMapper();
             persistenceService = Utils.managedBean(IPersistenceService.class);
+            stringEncrypter = Utils.stringEncrypter(CE_SALT_PATH);
 
             passportProperties = new HashMap<>();
             for (ProviderType pt : ProviderType.values()) {
@@ -103,8 +109,11 @@ public class PassportLinkingService {
 
                 Jwt jwt = validateJWT(userJwt, psp);
                 if (jwt != null) {
-                    logger.info("user profile JWT validated successfully\n{}", jwt);
+                    logger.info("JWT validated successfully\n{}", jwt);
                     String profile = jwt.getClaims().getClaimAsString("data");
+
+                    logger.info("Decrypting user profile data...");
+                    profile = stringEncrypter.decrypt(profile);
                     String uid = mapper.readTree(profile).get("uid").get(0).asText();
 
                     //Verify it's not already enrolled by someone
