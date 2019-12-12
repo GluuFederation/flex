@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -20,17 +21,16 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.min-version>3.0.3</maven.min-version>
-        <weld.version>3.1.0.Final</weld.version>
-        <pf4j.version>2.5.0</pf4j.version>
+        <weld.version>3.1.2.Final</weld.version>
+        <pf4j.version>3.2.0</pf4j.version>
         <casa.version>4.1.0-SNAPSHOT</casa.version>
-        <log4j.version>2.8.2</log4j.version>
+        <log4j.version>2.11.2</log4j.version>
         <ox.version>4.1.0-SNAPSHOT</ox.version>
-        <jackson.version>2.9.9</jackson.version>
-        <zk.version>8.6.0.1</zk.version>
+        <jackson.version>2.10.1</jackson.version>
+        <zk.version>9.0.0</zk.version>
         <ldapsdk.version>4.0.7</ldapsdk.version>
-        <resteasy.version>3.0.21.Final</resteasy.version>
-        <jaxr.version>3.0.12.Final</jaxr.version>
-        <mimemagic.version>0.1.3</mimemagic.version>
+        <resteasy.version>3.7.0.Final</resteasy.version>
+        <mimemagic.version>0.1.5</mimemagic.version>
     </properties>
 
     <repositories>
@@ -75,11 +75,10 @@
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
-                <version>3.0.1</version>
+                <version>3.1.0</version>
             </dependency>
 
             <!-- WELD -->
-            <!-- https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-shaded -->
             <dependency>
                 <groupId>org.jboss.weld.servlet</groupId>
                 <artifactId>weld-servlet-shaded</artifactId>
@@ -93,6 +92,7 @@
                 <version>${ldapsdk.version}</version>
             </dependency>
 
+            <!-- ZK -->
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>

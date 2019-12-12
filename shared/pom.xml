@@ -14,10 +14,6 @@
         <version>4.1.0-SNAPSHOT</version>
 	</parent>
 
-    <properties>
-        <commons-beanutils>1.8.3</commons-beanutils>
-    </properties>
-
     <dependencies>
 
         <!-- GLUU -->
@@ -86,7 +82,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>${commons-beanutils}</version>
+            <version>1.9.3</version>
         </dependency>
 
         <!-- SERVLET -->
@@ -99,8 +95,9 @@
         <dependency>
             <groupId>org.jboss.spec.javax.ws.rs</groupId>
             <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
-            <version>1.0.1.Beta1</version>
+            <version>1.0.1.Final</version>
         </dependency>
+
     </dependencies>
 
 	<build>

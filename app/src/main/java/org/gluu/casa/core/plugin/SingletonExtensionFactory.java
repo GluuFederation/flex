@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2018, Gluu
- */
 package org.gluu.casa.core.plugin;
 
 import org.pf4j.DefaultExtensionFactory;
@@ -22,7 +17,7 @@ public class SingletonExtensionFactory extends DefaultExtensionFactory {
     private Map<String, Object> singletons = new HashMap<>();
 
     @Override
-    public Object create(Class<?> extensionClass) {
+    public <T> T create(Class<T> extensionClass) {
 
         String className = extensionClass.getName();
         Object obj = singletons.get(className);
@@ -33,7 +28,7 @@ public class SingletonExtensionFactory extends DefaultExtensionFactory {
                 singletons.put(className, obj);
             }
         }
-        return obj;
+        return extensionClass.cast(obj);
 
     }
 
