@@ -1,6 +1,3 @@
-# oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
-# Copyright (c) 2018, Gluu
-#
 # Based on oxAuth Fido2ExternalAuthenticator.py
 
 from javax.ws.rs.core import Response

@@ -1,7 +1,3 @@
-# oxAuth is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
-# Copyright (c) 2018, Gluu
-# Copyright (c) 2019, Tele2
-
 # Author: Stefan Andersson
 
 from java.util import Arrays, Date

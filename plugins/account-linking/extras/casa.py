@@ -1,5 +1,3 @@
-# https://github.com/GluuFederation/casa-ee-plugins/raw/master/LICENSE
-
 from java.lang import String
 from java.util import Collections, HashMap, HashSet, ArrayList, Arrays, Date
 from java.net import URLEncoder
