@@ -1,8 +1,3 @@
-/*
- * cred-manager is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 20178, Gluu
- */
 package org.gluu.casa.ui;
 
 import org.zkoss.util.resource.Labels;

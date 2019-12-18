@@ -1,8 +1,3 @@
-/*
- * casa is available under the MIT License (2008). See http://opensource.org/licenses/MIT for full text.
- *
- * Copyright (c) 2019, Gluu
- */
 package org.gluu.casa.plugins.authnmethod.rs;
 
 import org.gluu.casa.plugins.authnmethod.OTPTwilioExtension;
