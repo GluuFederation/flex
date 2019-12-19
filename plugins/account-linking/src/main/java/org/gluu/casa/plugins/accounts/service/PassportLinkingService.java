@@ -160,6 +160,7 @@ public class PassportLinkingService {
             appCfg.setWebKeysStorage(WebKeyStorage.KEYSTORE);
             appCfg.setKeyStoreFile(properties.getKeyStoreFile());
             appCfg.setKeyStoreSecret(properties.getKeyStorePassword());
+            appCfg.setKeyRegenerationEnabled(false);
 
             return CryptoProviderFactory.getCryptoProvider(appCfg).verifySignature(jwt.getSigningInput(), jwt.getEncodedSignature(),
                     jwt.getHeader().getKeyId(), null, null, jwt.getHeader().getAlgorithm()) ? jwt : null;
