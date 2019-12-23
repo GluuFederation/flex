@@ -1,6 +1,7 @@
 # /opt/dist/gluu
 casa.war /opt/gluu-server/opt/dist/gluu/
 twilio-7.17.0.jar /opt/gluu-server/opt/dist/gluu/
+jsmpp-2.3.7.jar /opt/gluu-server/opt/dist/gluu
 
 # /opt/dist/oxd
 %OXD_SERVER% /opt/gluu-server/opt/dist/oxd/
