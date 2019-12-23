@@ -29,6 +29,7 @@ install -d %{buildroot}/opt/gluu-server/etc/certs
 install -d %{buildroot}/opt/gluu-server/lib/systemd/system
 install -m 644 casa.war %{buildroot}/opt/gluu-server/opt/dist/gluu
 install -m 644 twilio-7.17.0.jar %{buildroot}/opt/gluu-server/opt/dist/gluu
+install -m 644 jsmpp-2.3.7.jar %{buildroot}/opt/gluu-server/opt/dist/gluu
 install -m 644 %OXD_SERVER% %{buildroot}/opt/gluu-server/opt/dist/oxd
 install -m 755 casa-external_otp.py %{buildroot}/opt/gluu-server/opt/gluu/python/libs
 install -m 755 casa-external_super_gluu.py %{buildroot}/opt/gluu-server/opt/gluu/python/libs
@@ -48,6 +49,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 /opt/gluu-server/opt/dist/gluu/casa.war
 /opt/gluu-server/opt/dist/gluu/twilio-7.17.0.jar
+/opt/gluu-server/opt/dist/gluu/jsmpp-2.3.7.jar
 /opt/gluu-server/opt/dist/oxd/%OXD_SERVER%
 /opt/gluu-server/opt/gluu/python/libs/casa-external_otp.py
 /opt/gluu-server/opt/gluu/python/libs/casa-external_super_gluu.py
@@ -61,5 +63,5 @@ rm -rf $RPM_BUILD_ROOT
 /opt/gluu-server/lib/systemd/system/casa.service
 
 %changelog
-* Fri Nov 30 2018 Davit Nikoghosyan <davit@gluu.org> - gluu-casa 4.0
-- Release 4.0
+* Mon Dec 23 2019 Davit Nikoghosyan <davit@gluu.org> - gluu-casa 4.1.0
+- Release 4.1.0
