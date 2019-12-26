@@ -280,7 +280,9 @@ public class SecurityKeyViewModel extends UserViewModel {
             if (u2fMayBeSupported) {
                 if (name.contains("firefox")) {
                     if (browserVer >= 57) {
-                        u2fSupportMessage = Labels.getLabel("usr.u2f_enabled_u2f_ff");
+                        if (browserVer < 67) {
+                            u2fSupportMessage = Labels.getLabel("usr.u2f_enabled_u2f_ff");
+                        }
                         requiresU2f_v1_1 = true;
                     } else {
                         u2fSupportMessage = Labels.getLabel("usr.u2f_unsupported_ff", new Integer[]{ browserVer });
