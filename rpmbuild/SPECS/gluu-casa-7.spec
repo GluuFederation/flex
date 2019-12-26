@@ -4,7 +4,7 @@ Version:        %VERSION%
 Release:        %DIST%
 Summary:        Gluu Server Extension
 Group:          System Environment/Daemons
-License:        Gluu License Agreement for Gluu Casa
+License:        Apache-2.0
 URL:            http://www.gluu.org
 Source0:        %{name}.tar.gz
 BuildArch:      noarch
