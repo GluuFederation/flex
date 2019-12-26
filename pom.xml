@@ -28,7 +28,7 @@
         <ox.version>4.2.0-SNAPSHOT</ox.version>
         <jackson.version>2.10.1</jackson.version>
         <zk.version>9.0.0</zk.version>
-        <ldapsdk.version>4.0.7</ldapsdk.version>
+        <ldapsdk.version>4.0.14</ldapsdk.version>
         <resteasy.version>3.9.3.Final</resteasy.version>
         <mimemagic.version>0.1.5</mimemagic.version>
     </properties>
