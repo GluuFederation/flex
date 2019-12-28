@@ -215,11 +215,11 @@
             <version>${ldapsdk.version}</version>
         </dependency>
 
-        <!-- Twilio SDK. Dependency problems with 7.x.x -->
+        <!-- Twilio SDK -->
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio-java-sdk</artifactId>
-            <version>6.3.0</version>
+            <version>7.47.1</version>
         </dependency>
 
         <!-- OTP -->
