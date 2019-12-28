@@ -218,7 +218,7 @@
         <!-- Twilio SDK -->
         <dependency>
             <groupId>com.twilio.sdk</groupId>
-            <artifactId>twilio-java-sdk</artifactId>
+            <artifactId>twilio</artifactId>
             <version>7.47.1</version>
         </dependency>
 
