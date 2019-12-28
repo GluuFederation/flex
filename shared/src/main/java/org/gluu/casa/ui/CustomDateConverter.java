@@ -1,11 +1,12 @@
 package org.gluu.casa.ui;
 
+import org.gluu.casa.misc.WebUtils;
 import org.zkoss.bind.BindContext;
 import org.zkoss.bind.Converter;
+import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 
-import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -13,6 +14,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * This class is a custom ZK converter employed to display dates appropriately according to user location.
@@ -50,8 +52,14 @@ public class CustomDateConverter implements Converter {
             Instant instant = Instant.ofEpochMilli(timeStamp);
             OffsetDateTime odt = OffsetDateTime.ofInstant(instant, zid);
 
-            ServletRequest request = (ServletRequest) Executions.getCurrent().getNativeRequest();
-            Locale locale = request.getLocale() == null ? Locale.getDefault() : request.getLocale();
+            HttpServletRequest request = WebUtils.getServletRequest();
+            Locale locale;
+            try {
+                locale = Optional.ofNullable(request.getSession(false).getAttribute(Attributes.PREFERRED_LOCALE))
+                        .map(Locale.class::cast).orElseThrow(Exception::new);
+            } catch (Exception e) {
+                locale = Optional.ofNullable(request.getLocale()).orElse(WebUtils.DEFAULT_LOCALE);
+            }
             return odt.format(DateTimeFormatter.ofPattern(format, locale));
         } else {
             return null;

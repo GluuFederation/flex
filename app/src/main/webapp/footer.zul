@@ -1,23 +1,18 @@
 <z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk" xmlns="native">
 
-	<footer
-		class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
+	<footer class="pa3 f7 dark-gray shadow-4 bg-blank cust-footer-rule">
 
-        <z:div sclass="flex justify-between"
-            viewModel="@id('vm') @init('org.gluu.casa.ui.vm.FooterViewModel')">
+        <z:div sclass="flex justify-between" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.FooterViewModel')">
 
             <div>${labels.adm.branding_footer}</div>
             <z:div if="${vm.locales.size() gt 1}">
                 <span class="pr1">${labels.general.language}</span>
 
-                <z:listbox mold="select"
-                    model="@load(vm.locales)"
-                    onSelect="@command('languageChanged', localeCode = self.selectedItem.value)"
-                    sclass="gray" style="min-width:6rem"
+                <z:listbox mold="select" model="@load(vm.locales)" sclass="gray" style="min-width:6rem"
+                    onSelect="@command('localeChanged', locale = self.selectedItem.value)"
                     selectedItem="@load(vm.selectedLocale)">
                     <z:template name="model">
-                        <z:listitem
-                            label="${each.displayLanguage}" />
+                        <z:listitem value="${each}" label="${each.getDisplayName(each)}" />
                     </z:template>
                 </z:listbox>
             </z:div>

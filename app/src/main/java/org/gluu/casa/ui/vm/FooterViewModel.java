@@ -1,11 +1,16 @@
 package org.gluu.casa.ui.vm;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.Locale;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.gluu.casa.core.ZKService;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
+import org.gluu.util.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
@@ -19,50 +24,53 @@ import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 @VariableResolver(DelegatingVariableResolver.class)
 public class FooterViewModel {
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private List<Locale> locales;
-	private ZKService zkService;
-	private Locale selectedLocale;
+    private SortedSet<Locale> locales;
+    private Locale selectedLocale;
 
-	@Init
-	public void init() {
-		zkService = Utils.managedBean(ZKService.class);
-		// TODO: check if Set can be rendered in the listbox, if yes, change this to Set
-		locales = new ArrayList<>(zkService.getSupportedLocales());
-		// auto select English as default language
-		if (WebUtils.getServletRequest().getSession().getAttribute(Attributes.PREFERRED_LOCALE) == null) {
-			selectedLocale = locales.stream().filter(locale-> locale.getLanguage().equals(Locale.ENGLISH.getLanguage())).findAny().orElse(null);
+    @Init
+    public void init() {
 
-		} else {
-			
-			selectedLocale = locales.stream().filter(locale-> locale.getLanguage().equals(((Locale) WebUtils.getServletRequest().getSession().getAttribute(Attributes.PREFERRED_LOCALE)).getLanguage())).findFirst().orElse(null);
-			
-		}
-	}
+        Locale localeInSession = Optional.ofNullable(WebUtils.getServletRequest().getSession(false)
+                .getAttribute(Attributes.PREFERRED_LOCALE)).map(Locale.class::cast).orElse(null);
+        //do nothing if there is no locale in session
+        if (localeInSession != null && locales == null) {
+            //locales null check above prevents recomputing the list to be displayed upon every page load
+            Set<Locale> tmp = Utils.managedBean(ZKService.class).getSupportedLocales();
 
-	@Command
-	public void languageChanged(@BindingParam("localeCode") String localeCode) {
+            if (tmp != null) {
+                //Use a comparator based on locales' display name
+                locales = new TreeSet<>(Comparator.comparing(locale -> locale.getDisplayName(locale).toLowerCase()));
+                locales.addAll(tmp);
 
-		selectedLocale = org.zkoss.util.Locales.getLocale(localeCode);
-		WebUtils.getServletRequest().getSession().setAttribute(Attributes.PREFERRED_LOCALE, selectedLocale);
-		Executions.sendRedirect(null); // reload the same page
-	}
+                if (locales.contains(localeInSession)) {
+                    selectedLocale = localeInSession;
+                } else {
+                    //Pick a good fit based on session's locale language
+                    String language = localeInSession.getLanguage();
+                    selectedLocale = locales.stream().filter(loc -> StringHelper.equalsIgnoreCase(loc.getLanguage(), language))
+                            .findFirst().orElse(WebUtils.DEFAULT_LOCALE);
+                }
+                logger.debug("Selected locale in UI will be '{}'", selectedLocale.getDisplayName(selectedLocale));
+            }
+        }
 
-	public Locale getSelectedLocale() {
-		return selectedLocale;
-	}
+    }
 
-	public void setSelectedLocale(Locale selectedLocale) {
-		this.selectedLocale = selectedLocale;
-	}
+    @Command
+    public void localeChanged(@BindingParam("locale") Locale locale) {
+        selectedLocale = locale;
+        WebUtils.getServletRequest().getSession().setAttribute(Attributes.PREFERRED_LOCALE, selectedLocale);
+        Executions.sendRedirect(null); // reload the same page
+    }
 
-	public List<Locale> getLocales() {
-		return locales;
-	}
+    public Locale getSelectedLocale() {
+        return selectedLocale;
+    }
 
-	public void setLocales(List<Locale> locales) {
-		this.locales = locales;
-	}
+    public Set<Locale> getLocales() {
+        return locales;
+    }
 
 }

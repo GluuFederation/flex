@@ -2,6 +2,7 @@ package org.gluu.casa.core.filter;
 
 import org.gluu.casa.core.ZKService;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.misc.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.gluu.util.StringHelper;
@@ -18,8 +19,6 @@ import java.util.Set;
  * This class solves the problem described here: http://forum.zkoss.org/question/110980/how-to-constrain-to-a-set-of-locales/
  */
 public class LocaleInterceptor implements RequestInterceptor {
-
-    private Locale defaultLocale = Locale.ENGLISH;
 
     private Logger logger =  LoggerFactory.getLogger(getClass());
 
@@ -38,9 +37,10 @@ public class LocaleInterceptor implements RequestInterceptor {
 
                 if (allowed != null) {
                     //The set of allowed locales is ready (may be empty though)
-                    Locale val = defaultLocale;
+                    Locale val = WebUtils.DEFAULT_LOCALE;
                     Locale requestedLocale = ((ServletRequest) request).getLocale();
 
+                    logger.info("Browser locale is '{}'", requestedLocale);
                     if (allowed.contains(requestedLocale)) {
                         val = requestedLocale;
                     } else {
@@ -48,7 +48,7 @@ public class LocaleInterceptor implements RequestInterceptor {
 
                         if (Utils.isNotEmpty(language)) {
                             val = allowed.stream().filter(loc -> StringHelper.equalsIgnoreCase(loc.getLanguage(), language))
-                                    .findFirst().orElse(defaultLocale);
+                                    .findFirst().orElse(WebUtils.DEFAULT_LOCALE);
                         }
                     }
                     logger.info("Locale for this session will be '{}'", val);

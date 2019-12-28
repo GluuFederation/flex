@@ -83,7 +83,7 @@
                         <z:div children="@load(vm.pre2faMethods)" sclass="pa2 flex flex-wrap justify-around">
                             <zk:template name="children" var="method">
                                 <div class="card grow mv2 w-14r hover-bg-near-white">
-                                    <a class="card-body" href="${zkService.contextPath}${vm.getAuthnMethodPageUrl(method)}">
+                                    <a class="card-body" href="${zkService.contextPath}${vm.getAuthnMethodPageUrl(each)}">
                                         <h5 class="card-title dark-blue2">${c:l(each.panelTitleKey)}</h5>
                                         <p class="gray">${c:l(each.panelTextKey)}</p>
                                     </a>

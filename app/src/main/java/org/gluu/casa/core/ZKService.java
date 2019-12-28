@@ -3,6 +3,7 @@ package org.gluu.casa.core;
 import org.gluu.casa.core.label.PluginLabelLocator;
 import org.gluu.casa.core.label.SystemLabelLocator;
 import org.gluu.casa.misc.CssRulesResolver;
+import org.gluu.casa.misc.WebUtils;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.LabelLocator;
 import org.zkoss.util.resource.Labels;
@@ -94,7 +95,7 @@ public class ZKService {
 
         List<String> propFilesPaths = Optional.ofNullable(servletContext.getResourcePaths(WAR_LABELS_LOCATION))
                 .orElse(Collections.emptySet()).stream().filter(path -> path.endsWith(".properties")).collect(Collectors.toList());
-        supportedLocales = new TreeSet<>(Comparator.comparing(Locale::getDisplayLanguage));
+        supportedLocales = new HashSet<>();
 
         if (propFilesPaths.size() > 0) {
             String base, temp = propFilesPaths.get(0);
@@ -195,8 +196,8 @@ public class ZKService {
             if (idx == -1) {
                 //No locale suffix
                 modules.add(temp);
-                // 	add default language 
-                locales.add(Locale.forLanguageTag(Locale.ENGLISH.getLanguage()));
+                //add default locale
+                locales.add(WebUtils.DEFAULT_LOCALE);
             } else {
                 modules.add(temp.substring(0, idx));
                 //Locale is after the underscore

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -27,6 +28,7 @@ public final class WebUtils {
      */
     public static final String USER_PAGE_URL ="user.zul";
     public static final String ADMIN_PAGE_URL ="admin.zul";
+    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     private WebUtils() { }
 
