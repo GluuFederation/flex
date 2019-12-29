@@ -6,19 +6,19 @@ import org.gluu.persist.annotation.ObjectClass;
 import org.gluu.persist.model.base.Entry;
 
 @DataEntry
-@ObjectClass("oxAuthToken")
+@ObjectClass("token")
 public class Token extends Entry {
 
-    @AttributeName
+    @AttributeName(name = "tknCde")
     private String oxAuthTokenCode;
 
-    @AttributeName
+    @AttributeName(name = "clnId")
     private String oxAuthClientId;
 
-    @AttributeName
+    @AttributeName(name = "tknTyp")
     private String oxAuthTokenType;
 
-    @AttributeName
+    @AttributeName(name = "usrId")
     private String oxAuthUserId;
 
     public String getOxAuthTokenCode() {
