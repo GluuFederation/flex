@@ -32,17 +32,15 @@ import java.util.*;
 @Path("/idp-linking")
 public class PassportLinkingService {
 
-    private static final String CE_SALT_PATH = "/etc/gluu/conf/salt";
+    private static final String SALT_FILE = "/etc/gluu/conf/salt";
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private IPersistenceService persistenceService;
+    private Map<ProviderType, PassportScriptProperties> passportProperties;
 
     private StringEncrypter stringEncrypter;
-
-    private Map<ProviderType, PassportScriptProperties> passportProperties;
 
     @Context
     private UriInfo uriInfo;
@@ -52,8 +50,8 @@ public class PassportLinkingService {
         try {
             logger.info("Creating an instance of PassportLinkingService");
             mapper = new ObjectMapper();
-            persistenceService = Utils.managedBean(IPersistenceService.class);
-            stringEncrypter = Utils.stringEncrypter(CE_SALT_PATH);
+            IPersistenceService persistenceService = Utils.managedBean(IPersistenceService.class);
+            stringEncrypter = Utils.stringEncrypter(SALT_FILE);
 
             passportProperties = new HashMap<>();
             for (ProviderType pt : ProviderType.values()) {
@@ -109,10 +107,11 @@ public class PassportLinkingService {
 
                 Jwt jwt = validateJWT(userJwt, psp);
                 if (jwt != null) {
-                    logger.info("JWT validated successfully\n{}", jwt);
+                    logger.info("user profile JWT validated successfully");
+                    logger.trace("JWT = {}", jwt);
                     String profile = jwt.getClaims().getClaimAsString("data");
 
-                    logger.info("Decrypting user profile data...");
+                    logger.info("decrypting profile...");
                     profile = stringEncrypter.decrypt(profile);
                     String uid = mapper.readTree(profile).get("uid").get(0).asText();
 
