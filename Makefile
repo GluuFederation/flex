@@ -1,4 +1,4 @@
-GLUU_VERSION=4.0.0
+GLUU_VERSION=4.1.0
 IMAGE_NAME=gluufederation/casa
 UNSTABLE_VERSION=dev
 

@@ -12,7 +12,7 @@ RUN apk update \
 # Jetty
 # =====
 
-ENV JETTY_VERSION=9.4.15.v20190215 \
+ENV JETTY_VERSION=9.4.24.v20191120 \
     JETTY_HOME=/opt/jetty \
     JETTY_BASE=/opt/gluu/jetty \
     JETTY_USER_HOME_LIB=/home/jetty/lib
@@ -31,8 +31,8 @@ EXPOSE 8080
 # Casa
 # ====
 
-ENV GLUU_VERSION=4.0.Final \
-    GLUU_BUILD_DATE=2019-11-30
+ENV GLUU_VERSION=4.1.0.Final \
+    GLUU_BUILD_DATE=2019-12-26
 
 # Install Casa
 RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war -O /tmp/casa.war \
@@ -142,7 +142,7 @@ ENV GLUU_MAX_RAM_PERCENTAGE=75.0 \
 LABEL name="Casa" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
-    version="4.0.0" \
+    version="4.1.0" \
     release="dev" \
     summary="Gluu Casa" \
     description="Casa"
