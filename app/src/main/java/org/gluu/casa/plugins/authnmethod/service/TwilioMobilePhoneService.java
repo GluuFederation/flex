@@ -1,10 +1,8 @@
 package org.gluu.casa.plugins.authnmethod.service;
 
-import com.twilio.sdk.TwilioRestClient;
-import com.twilio.sdk.resource.factory.MessageFactory;
-import com.twilio.sdk.resource.instance.Message;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPTwilioExtension;
 import org.slf4j.Logger;
@@ -13,8 +11,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -29,7 +25,7 @@ public class TwilioMobilePhoneService extends MobilePhoneService {
     private Logger logger;
 
     private String fromNumber;
-    private MessageFactory messageFactory;
+    private boolean initialized;
 
     @PostConstruct
     private void inited() {
@@ -39,6 +35,7 @@ public class TwilioMobilePhoneService extends MobilePhoneService {
     @Override
     public void reloadConfiguration() {
 
+        initialized = false;
         props = persistenceService.getCustScriptConfigProperties(OTPTwilioExtension.ACR);
 
         if (props == null) {
@@ -52,8 +49,12 @@ public class TwilioMobilePhoneService extends MobilePhoneService {
             if (Stream.of(sid, token, fromNumber).anyMatch(Utils::isEmpty)) {
                 logger.warn("Error parsing SMS settings. Please check LDAP entry of SMS custom script");
             } else {
-                TwilioRestClient client = new TwilioRestClient(sid, token);
-                messageFactory = client.getAccount().getMessageFactory();
+                try {
+                    Twilio.init(sid, token);
+                    initialized = true;
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
 
@@ -63,23 +64,18 @@ public class TwilioMobilePhoneService extends MobilePhoneService {
     public SMSDeliveryStatus sendSMS(String number, String body) {
 
         SMSDeliveryStatus status;
-        if (messageFactory != null) {
+        if (initialized) {
 
             try {
-                List<NameValuePair> messageParams = new ArrayList<>();
-                messageParams.add(new BasicNameValuePair("From", fromNumber));
-                messageParams.add(new BasicNameValuePair("To", number));
-                messageParams.add(new BasicNameValuePair("Body", body));
+                Message message = Message.creator(new PhoneNumber(number), new PhoneNumber(fromNumber), body).create();
+                Message.Status statusMsg = message.getStatus();
 
-                Message message = messageFactory.create(messageParams);
-                String statusMsg = message.getStatus().toLowerCase();
-
-                logger.info("Message delivery status was {}", statusMsg);
+                logger.info("Message delivery status was {}", statusMsg.toString());
                 switch (statusMsg) {
-                    case "failed":
+                    case FAILED:
                         status = SMSDeliveryStatus.DELIVERY_FAILED;
                         break;
-                    case "undelivered":
+                    case UNDELIVERED:
                         status = SMSDeliveryStatus.UNDELIVERED;
                         break;
                     default:
