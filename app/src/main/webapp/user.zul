@@ -84,8 +84,8 @@
                             <zk:template name="children" var="method">
                                 <div class="card grow mv2 w-14r hover-bg-near-white">
                                     <a class="card-body" href="${zkService.contextPath}${vm.getAuthnMethodPageUrl(method)}">
-                                        <h5 class="card-title dark-blue2">${c:l(each.panelTitleKey)}</h5>
-                                        <p class="gray">${c:l(each.panelTextKey)}</p>
+                                        <h5 class="card-title dark-blue2">${c:l(method.panelTitleKey)}</h5>
+                                        <p class="gray">${c:l(method.panelTextKey)}</p>
                                     </a>
                                 </div>
                             </zk:template>
