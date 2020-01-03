@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "4.0.0"
+  version: "4.2.0"
   title: Gluu casa credentials enrollment
   description: Facilitates the process of credentials enrollment in the Gluu Server.
   license:
@@ -35,7 +35,7 @@ paths:
 
       description: |
         Initiates the process of verifying a mobile phone number for a user
-        by sending and OTP via SMS
+        by sending and OTP via SMS (backend technology: Twilio service)
 
       security:
         - casa_auth: []
@@ -142,6 +142,178 @@ paths:
                 example: NO_MATCH_OR_EXPIRED
 
   /enrollment/twilio_sms/creds/{userid}:
+    post:
+      tags:
+        - otp
+      description: |
+        Saves a new credential (verified mobile phone) for the user whose ID
+        is passed in path parameter. Details of the credential are associated
+        in credential parameter. This is supposed to be called **after** a
+        successful `validate-code` operation result
+
+      parameters:
+        -
+          name: credential
+          in: body
+          description: |
+            Contains a nickname for this credential and the code used to
+            originally validate the mobile phone number
+          required: true
+          schema:
+            $ref: '#/definitions/NamedCredential'
+        -
+          name: userid
+          in: path
+          description: Identifier (inum) of the user attempting the enrollment
+          required: true
+          type: string
+        -
+          name: Authorization
+          description: Contains a bearer token
+          in: header
+          required: true
+          type: string
+
+      responses:
+        201:
+          description: Credential enrolled (saved) successfully
+          schema:
+            $ref: '#/definitions/VerifiedMobile'
+        400:
+          description: A parameter is missing
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: MISSING_PARAMS
+        500:
+          description: The provided key code is not recognized or there was a failure when saving the credential
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: NO_MATCH_OR_EXPIRED|FAILED
+
+  /enrollment/smpp/send-code:
+    get:
+      tags:
+        - otp
+
+      description: |
+        Initiates the process of verifying a mobile phone number for a user
+        by sending and OTP via SMS (backend technology: SMPP)
+
+      security:
+        - casa_auth: []
+
+      parameters:
+        -
+          name: number
+          in: query
+          description: Mobile phone number
+          required: true
+          type: string
+        -
+          name: userid
+          in: query
+          description: Identifier (inum) of the user attempting the enrollment
+          required: true
+          type: string
+        -
+          name: Authorization
+          description: Contains a bearer token
+          in: header
+          required: true
+          type: string
+
+      responses:
+        200:
+          description: Successful response. Empty body
+        400:
+          description: A parameter is missing
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: MISSING_PARAMS
+        500:
+          description: There was a failure executing the operation
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: FAILURE|NUMBER_ALREADY_ENROLLED|UNKNOWN_USER_ID
+              cause:
+                type: string
+                description: Cause of the failure (when code = FAILURE)
+                example: UNDELIVERED|DELIVERY_FAILED|APP_SETUP_ERROR|SMS_SERVICE_ERROR
+
+  /enrollment/smpp/validate-code:
+    get:
+      tags:
+        - otp
+      description: |
+        Checks validity of code received by user in SMS
+
+      parameters:
+        -
+          name: code
+          in: query
+          description: |
+            Code user claims to have received in SMS. It is compared with the
+            value sent in `send-code` operation
+          required: true
+          type: string
+        -
+          name: userid
+          in: query
+          description: Identifier (inum) of the user attempting the enrollment
+          required: true
+          type: string
+        -
+          name: Authorization
+          description: Contains a bearer token
+          in: header
+          required: true
+          type: string
+
+      responses:
+        200:
+          description: Successful response (codes match). Empty body
+        400:
+          description: A parameter is missing
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: MISSING_PARAMS
+        500:
+          description: Codes don't match or the validation couldn't be carried out
+          schema:
+            type: object
+            required:
+             - code
+            properties:
+              code:
+                type: string
+                example: NO_MATCH_OR_EXPIRED
+
+  /enrollment/smpp/creds/{userid}:
     post:
       tags:
         - otp
