@@ -288,6 +288,7 @@ public final class Utils {
      * @param script A {@link oxCustomScript} instance
      * @return A Mapping of property name / property value for the script
      */
+    @Deprecated
     public static Map<String, String> scriptConfigPropertiesAsMap(oxCustomScript script) {
 
         List<String> props = script.getConfigurationProperties();

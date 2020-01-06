@@ -17,6 +17,7 @@ import java.util.List;
  * UnboundID LDAP SDK for Java.  It may be customized as desired to better suit
  * your needs.
  */
+@Deprecated
 @LDAPObject(structuralClass="gluuOrganization",
         superiorClass="top")
 public class gluuOrganization {
