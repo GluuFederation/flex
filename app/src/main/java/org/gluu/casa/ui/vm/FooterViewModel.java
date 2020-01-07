@@ -10,50 +10,39 @@ import java.util.TreeSet;
 import org.gluu.casa.core.ZKService;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
-import org.gluu.util.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.*;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
+import org.zkoss.zk.ui.Session;
 
-@VariableResolver(DelegatingVariableResolver.class)
 public class FooterViewModel {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static SortedSet<Locale> locales;
 
-    private SortedSet<Locale> locales;
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private Locale selectedLocale;
 
     @Init
-    public void init() {
+    public void init(@ContextParam(ContextType.SESSION) Session session) {
 
-        Locale localeInSession = Optional.ofNullable(WebUtils.getServletRequest().getSession(false)
-                .getAttribute(Attributes.PREFERRED_LOCALE)).map(Locale.class::cast).orElse(null);
-        //do nothing if there is no locale in session
-        if (localeInSession != null && locales == null) {
-            //locales null check above prevents recomputing the list to be displayed upon every page load
-            Set<Locale> tmp = Utils.managedBean(ZKService.class).getSupportedLocales();
-
-            if (tmp != null) {
-                //Use a comparator based on locales' display name
-                locales = new TreeSet<>(Comparator.comparing(locale -> locale.getDisplayName(locale).toLowerCase()));
-                locales.addAll(tmp);
-
-                if (locales.contains(localeInSession)) {
-                    selectedLocale = localeInSession;
-                } else {
-                    //Pick a good fit based on session's locale language
-                    String language = localeInSession.getLanguage();
-                    selectedLocale = locales.stream().filter(loc -> StringHelper.equalsIgnoreCase(loc.getLanguage(), language))
-                            .findFirst().orElse(WebUtils.DEFAULT_LOCALE);
+        try {
+            //this check prevents recomputing the list to be displayed upon every page load
+            if (locales == null) {
+                Set<Locale> tmp = Utils.managedBean(ZKService.class).getSupportedLocales();
+                if (tmp != null) {
+                    //Use a comparator based on locales' display name
+                    locales = new TreeSet<>(Comparator.comparing(locale -> locale.getDisplayName(locale).toLowerCase()));
+                    locales.addAll(tmp);
                 }
-                logger.debug("Selected locale in UI will be '{}'", selectedLocale.getDisplayName(selectedLocale));
             }
+
+            selectedLocale = Optional.ofNullable(session.getAttribute(Attributes.PREFERRED_LOCALE))
+                    .map(Locale.class::cast).orElse(WebUtils.DEFAULT_LOCALE);
+            //It always holds selectedLocale is contained in supported locales (See org.gluu.casa.core.filter.LocaleInterceptor#request)
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
 
     }
