@@ -34,6 +34,9 @@ public final class Utils {
 
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
     private static ObjectMapper MAPPER = new ObjectMapper();
+    private static final String SALT_FILE_LOCATION = "/etc/gluu/conf/salt";
+
+    public static final int MIN_CREDS_2FA_DEFAULT = 2;
 
     private Utils() { }
 
@@ -332,6 +335,16 @@ public final class Utils {
     public static StringEncrypter stringEncrypter(String saltFile) throws StringEncrypter.EncryptionException {
         String salt = new FileConfiguration(saltFile).getProperties().getProperty("encodeSalt");
         return StringEncrypter.instance(salt);
+    }
+
+    /**
+     * Returns a default instance of an encryption/decryption utility object. This is compatible with the
+     * <code>EncryptionService</code> accessible in Gluu custom scripts
+     * @return Utility object
+     * @throws StringEncrypter.EncryptionException
+     */
+    public static StringEncrypter stringEncrypter() throws StringEncrypter.EncryptionException {
+        return stringEncrypter(SALT_FILE_LOCATION);
     }
 
     public static boolean urlAvailabilityCheck(URL siteURL) throws Exception {

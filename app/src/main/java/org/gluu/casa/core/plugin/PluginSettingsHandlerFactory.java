@@ -12,8 +12,8 @@ public class PluginSettingsHandlerFactory implements IPluginSettingsHandlerFacto
 
     private Map<String, IPluginSettingsHandler> registered = new HashMap<>();
 
-    public <T> IPluginSettingsHandler<T> getHandler(String pluginID, Class<T> clss) {
-        registered.computeIfAbsent(pluginID, PluginSettingsHandler<T>::new);
+    public <T> IPluginSettingsHandler<T> getHandler(String pluginID, Class<T> configClass) {
+        registered.computeIfAbsent(pluginID, key -> new PluginSettingsHandler<T>(key, configClass));
         return registered.get(pluginID);
     }
 

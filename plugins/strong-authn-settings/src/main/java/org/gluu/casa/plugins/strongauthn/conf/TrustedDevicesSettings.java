@@ -1,11 +1,8 @@
-package org.gluu.casa.conf;
+package org.gluu.casa.plugins.strongauthn.conf;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by jgomer on 2018-04-23.
- */
 public class TrustedDevicesSettings {
 
     @JsonProperty("location_exp_days")

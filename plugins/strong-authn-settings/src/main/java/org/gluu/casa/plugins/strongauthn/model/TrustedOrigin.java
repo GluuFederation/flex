@@ -1,4 +1,4 @@
-package org.gluu.casa.conf.sndfactor;
+package org.gluu.casa.plugins.strongauthn.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

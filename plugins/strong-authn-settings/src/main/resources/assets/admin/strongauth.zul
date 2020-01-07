@@ -5,7 +5,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
 
-    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.StrongAuthViewModel')"
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.plugins.strongauthn.vm.StrongAuthViewModel')"
            self="@define(maincontent)">
 
         <z:include src="/back-home.zul" />
@@ -29,19 +29,19 @@
                     <div class="f7 pl4-ns dark-blue2">
                         <z:checkbox id="EVERY_LOGIN" label="${labels.adm.strongauth.policy.EVERY_LOGIN}" sclass="db"
                                     disabled="@load(vm.enforcementPolicies.contains('CUSTOM'))"
-                                    checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', evt=event)" />
+                                    checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', cbox=event.target)" />
 
                         <z:checkbox id="LOCATION_UNKNOWN" label="${labels.adm.strongauth.policy.LOCATION_UNKNOWN}" sclass="db"
                                     disabled="@load(vm.enforcementPolicies.contains('EVERY_LOGIN') or vm.enforcementPolicies.contains('CUSTOM'))"
-                                    checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', evt=event)" />
+                                    checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', cbox=event.target)" />
 
                         <z:checkbox id="DEVICE_UNKNOWN" label="${labels.adm.strongauth.policy.DEVICE_UNKNOWN}" sclass="db"
                                     disabled="@load(vm.enforcementPolicies.contains('EVERY_LOGIN') or vm.enforcementPolicies.contains('CUSTOM'))"
-                                    checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', evt=event)" />
+                                    checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', cbox=event.target)" />
 
                         <z:checkbox id="CUSTOM" label="${labels.adm.strongauth.policy.CUSTOM}" sclass="db"
                                     disabled="@load(vm.enforcementPolicies.contains('EVERY_LOGIN'))"
-                                    checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', evt=event)" />
+                                    checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', cbox=event.target)" />
 
                         <z:div sclass="pt1 pb2 flex flex-wrap" visible="@load(vm.enforcementPolicies.contains('LOCATION_UNKNOWN') or vm.enforcementPolicies.contains('CUSTOM'))">
                             <label class="mr2">${labels.adm.strongauth_location_exp}</label>

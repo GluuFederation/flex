@@ -1,8 +1,5 @@
-package org.gluu.casa.conf.sndfactor;
+package org.gluu.casa.plugins.strongauthn.conf;
 
-/**
- * Created by jgomer on 2018-04-15.
- */
 public enum EnforcementPolicy {
     EVERY_LOGIN, LOCATION_UNKNOWN, DEVICE_UNKNOWN, CUSTOM
 }

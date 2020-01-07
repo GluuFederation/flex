@@ -1,23 +1,21 @@
-<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns="native" if="${sessionContext.user ne null}">
+<z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns="native" if="${sessionContext.user ne null}">
 
-    <z:div class="tc" visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'CUSTOM') gt 0)">
-        <span class="i db pb1">${labels.policy.default_text}</span>
-        <z:button sclass="${css.primaryButton}" label="${labels.policy.go_manage}" href="${base}/policy.zul" />
-    </z:div>
+    <z:div viewModel="@id('vm') @init('org.gluu.casa.plugins.strongauthn.vm.FragmentViewModel')">
 
-    <z:div visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'CUSTOM') lt 0)">
-        <p class="mb2">${labels.policy.when_prompted}</p>
-        <ul class="mb0">
-            <z:div visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'EVERY_LOGIN') gt 0)">
-                <li class="f7">${labels.policy.EVERY_LOGIN}</li>
-            </z:div>
-            <z:div visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'LOCATION_UNKNOWN') gt 0)">
-                <li class="f7">${labels.policy.LOCATION_UNKNOWN}</li>
-            </z:div>
-            <z:div visible="@load(c:indexOf(configurationHandler.settings.enforcement2FA.toString(), 'DEVICE_UNKNOWN') gt 0)">
-                <li class="f7">${labels.policy.DEVICE_UNKNOWN}</li>
-            </z:div>
-        </ul>
+        <z:div class="tc" visible="@load(vm.customPolicy)">
+            <span class="i db pb1">${labels.policy.default_text}</span>
+            <z:button sclass="${css.primaryButton}" label="${labels.policy.go_manage}" href="${base}/policy.zul" />
+        </z:div>
+
+        <z:div visible="@load(not vm.customPolicy)">
+            <p class="mb2">${labels.policy.when_prompted}</p>
+            <h:ul class="mb0" children="@load(vm.policies)">
+                <zk:template name="children">
+                    <li class="f7">${c:l(c:cat('policy.', each))}</li>
+                </zk:template>
+            </h:ul>
+        </z:div>
+
     </z:div>
 
 </z:zk>

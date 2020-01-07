@@ -18,13 +18,16 @@ public class PluginSettingsHandler<T> implements IPluginSettingsHandler<T> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private String pluginKey;
+    private Class<T> classRef;
 
-    public PluginSettingsHandler(String pluginKey) {
+    public PluginSettingsHandler(String pluginKey, Class<T> configClass) {
         this.pluginKey = pluginKey;
+        //configClass is needed due to Java type erasure :-|
+        this.classRef = configClass;
     }
 
     public void save() throws Exception {
-/*
+
         //Hack for happy 2fa plugin
         try {
             if (pluginKey.equals("strong-authn-settings")) {
@@ -34,14 +37,14 @@ public class PluginSettingsHandler<T> implements IPluginSettingsHandler<T> {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } //hack end
-*/
+
         configurationHandler.saveSettings();
 
     }
 
     public T getSettings() {
         Map<String, Object> map = getSettingsMap();
-        return map == null ? null : mapper.convertValue(map, new TypeReference<T>(){});
+        return map == null ? null : mapper.convertValue(map, classRef);
     }
 
     public void setSettings(T settings) {

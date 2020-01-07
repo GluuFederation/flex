@@ -1,7 +1,12 @@
-package org.gluu.casa.ui.vm.user;
+package org.gluu.casa.plugins.strongauthn.vm;
 
-import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
-import org.gluu.casa.conf.sndfactor.TrustedDevice;
+import org.gluu.casa.core.pojo.User;
+import org.gluu.casa.misc.Utils;
+import org.gluu.casa.plugins.strongauthn.conf.Configuration;
+import org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy;
+import org.gluu.casa.plugins.strongauthn.model.TrustedDevice;
+import org.gluu.casa.plugins.strongauthn.service.StrongAuthSettingsService;
+import org.gluu.casa.service.ISessionContext;
 import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,23 +15,16 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Checkbox;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.EVERY_LOGIN;
+import static org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy.EVERY_LOGIN;
 
-/**
- * Created by jgomer on 2018-06-12.
- */
-@VariableResolver(DelegatingVariableResolver.class)
-public class PolicyViewModel extends UserViewModel {
+public class PolicyViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -35,6 +33,10 @@ public class PolicyViewModel extends UserViewModel {
     private Set<String> enforcementPolicies;
     private Set<String> enforcementPoliciesCopy;
     private List<TrustedDevice> trustedDevices;
+
+    private StrongAuthSettingsService sass;;
+    private User user;
+    private ISessionContext sessionContext;
 
     public boolean isUiHasPreferredMethod() {
         return uiHasPreferredMethod;
@@ -52,17 +54,21 @@ public class PolicyViewModel extends UserViewModel {
         return trustedDevices;
     }
 
-    @Init(superclass = true)
-    public void childInit() throws Exception {
+    @Init
+    public void init() {
 
         logger.debug("Initializing ViewModel");
 
+        sass = StrongAuthSettingsService.instance();
+        Configuration settings = sass.getSettingsHandler().getSettings();
+        user = Utils.managedBean(ISessionContext.class).getLoggedUser();
+
         uiHasPreferredMethod = user.getPreferredMethod() != null;
-        uiAllowedToSetPolicy = confSettings.getEnforcement2FA().contains(EnforcementPolicy.CUSTOM);
+        uiAllowedToSetPolicy = settings.getEnforcement2FA().contains(EnforcementPolicy.CUSTOM);
         logger.trace("User has a preferred method: {}", uiHasPreferredMethod);
         logger.trace("Users are allowed to set their own policy: {}", uiAllowedToSetPolicy);
 
-        Pair<Set<String>, List<TrustedDevice>> police = userService.get2FAPolicyData(user.getId());
+        Pair<Set<String>, List<TrustedDevice>> police = sass.get2FAPolicyData(user.getId());
         enforcementPolicies = police.getX();
         trustedDevices = police.getY();
 
@@ -94,7 +100,7 @@ public class PolicyViewModel extends UserViewModel {
     public void updatePolicy() {
 
         logger.trace("Updating user's policies");
-        if (userService.update2FAPolicies(user.getId(), enforcementPolicies)) {
+        if (sass.update2FAPolicies(user.getId(), enforcementPolicies)) {
             enforcementPoliciesCopy = new HashSet<>(enforcementPolicies);
             UIUtils.showMessageUI(true);
         } else {
@@ -107,7 +113,7 @@ public class PolicyViewModel extends UserViewModel {
     @Command
     public void deleteDevice(@BindingParam("idx") int index) {
         logger.trace("Deleting user device");
-        UIUtils.showMessageUI(userService.deleteTrustedDevice(user.getId(), trustedDevices, index));
+        UIUtils.showMessageUI(sass.deleteTrustedDevice(user.getId(), trustedDevices, index));
     }
 
     @NotifyChange("enforcementPolicies")
@@ -117,7 +123,7 @@ public class PolicyViewModel extends UserViewModel {
     }
 
     private void resetToDefaultPolicy() {
-        enforcementPolicies = Stream.of(EVERY_LOGIN.toString()).collect(Collectors.toSet());
+        enforcementPolicies = new HashSet<>(Collections.singleton(EVERY_LOGIN.toString()));
     }
 
 }

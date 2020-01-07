@@ -1,9 +1,10 @@
-package org.gluu.casa.ui.vm.admin;
+package org.gluu.casa.plugins.strongauthn.vm;
 
-import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.conf.TrustedDevicesSettings;
-import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
-import org.gluu.casa.timer.TrustedDevicesSweeper;
+import org.gluu.casa.plugins.strongauthn.conf.TrustedDevicesSettings;
+import org.gluu.casa.plugins.strongauthn.conf.Configuration;
+import org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy;
+import org.gluu.casa.plugins.strongauthn.service.StrongAuthSettingsService;
+import org.gluu.casa.service.settings.IPluginSettingsHandler;
 import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,37 +15,29 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Messagebox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.CUSTOM;
-import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.EVERY_LOGIN;
-import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.LOCATION_UNKNOWN;
-import static org.gluu.casa.conf.sndfactor.EnforcementPolicy.DEVICE_UNKNOWN;
+import static org.gluu.casa.plugins.strongauthn.StrongAuthnSettingsPlugin.*;
+import static org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy.*;
 
 /**
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
-public class StrongAuthViewModel extends MainViewModel {
+public class StrongAuthViewModel {
 
     private static final Pair<Integer, Integer> BOUNDS_MINCREDS_2FA = new Pair<>(1, 3);
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @WireVariable
-    private TrustedDevicesSweeper trustedDevicesSweeper;
-
-    private MainSettings settings;
+    private IPluginSettingsHandler<Configuration> settingsHandler;
+    private Configuration settings;
     private int minCreds2FA;
     private List<Integer> minCredsList;
     private Set<String> enforcementPolicies;
@@ -82,15 +75,15 @@ public class StrongAuthViewModel extends MainViewModel {
     @Init
     public void init() {
         logger.debug("Initializing ViewModel");
-        settings = getSettings();
+        settingsHandler = StrongAuthSettingsService.instance().getSettingsHandler();
+        settings = settingsHandler.getSettings();
         reloadConfig();
     }
 
     @NotifyChange({"enforcementPolicies", "deviceExpiration", "locationExpiration"})
     @Command
-    public void checkPolicy(@BindingParam("evt") Event event) {
+    public void checkPolicy(@BindingParam("cbox") Checkbox box) {
 
-        Checkbox box = (Checkbox) event.getTarget();
         String policy = box.getId();
 
         logger.trace("Policy '{}' {}", policy, box.isChecked() ? "checked" : "unchecked");
@@ -100,10 +93,10 @@ public class StrongAuthViewModel extends MainViewModel {
             enforcementPolicies.remove(policy);
             //Revert the numbers, this helps prevent entering negative numbers, then deselecting an option, and then saving
             if (LOCATION_UNKNOWN.toString().equals(policy) || CUSTOM.toString().equals(policy)) {
-                deviceExpiration = trustedDevicesSweeper.getDeviceExpirationDays();
+                deviceExpiration = settings.getTrustedDevicesSettings().getDeviceExpirationDays();
             }
             if (DEVICE_UNKNOWN.toString().equals(policy) || CUSTOM.toString().equals(policy)) {
-                locationExpiration = trustedDevicesSweeper.getLocationExpirationDays();
+                locationExpiration = settings.getTrustedDevicesSettings().getLocationExpirationDays();
             }
         }
         if (enforcementPolicies.contains(EVERY_LOGIN.toString())) {
@@ -132,8 +125,9 @@ public class StrongAuthViewModel extends MainViewModel {
 
     private void reloadConfig() {
 
-        locationExpiration = trustedDevicesSweeper.getLocationExpirationDays();
-        deviceExpiration = trustedDevicesSweeper.getDeviceExpirationDays();
+        Optional<TrustedDevicesSettings> opt = Optional.ofNullable(settings.getTrustedDevicesSettings());
+        locationExpiration = opt.map(TrustedDevicesSettings::getLocationExpirationDays).orElse(TRUSTED_LOCATION_EXPIRATION_DAYS);
+        deviceExpiration = opt.map(TrustedDevicesSettings::getDeviceExpirationDays).orElse(TRUSTED_DEVICE_EXPIRATION_DAYS);
 
         minCreds2FA = settings.getMinCredsFor2FA();
         enforcementPolicies = settings.getEnforcement2FA().stream().map(EnforcementPolicy::toString).collect(Collectors.toSet());
@@ -187,12 +181,29 @@ public class StrongAuthViewModel extends MainViewModel {
         settings.setMinCredsFor2FA(minCreds);
         settings.setEnforcement2FA(policies);
 
-        if (updateMainSettings(Labels.getLabel("adm.methods_change_success"))) {
-            logger.info("Changed minimum number of enrolled credentials for 2FA usage to {}", minCreds);
-            logger.info("Changed 2FA enforcement policy to {}", policies.toString());
-            logger.trace("Refreshing devices sweeper timer job settings");
-            trustedDevicesSweeper.setup();
+        updateMainSettings(Labels.getLabel("adm.methods_change_success"));
+
+    }
+
+    private boolean updateMainSettings(String sucessMessage) {
+
+        boolean success = false;
+        try {
+            logger.info("Updating global configuration settings");
+            //update app-level config and persist
+            settingsHandler.setSettings(settings);
+            settingsHandler.save();
+            if (sucessMessage == null) {
+                UIUtils.showMessageUI(true);
+            } else {
+                Messagebox.show(sucessMessage, null, Messagebox.OK, Messagebox.INFORMATION);
+            }
+            success = true;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            UIUtils.showMessageUI(false, Labels.getLabel("adm.conffile_error_update"));
         }
+        return success;
 
     }
 

@@ -3,7 +3,6 @@ package org.gluu.casa.conf;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +25,6 @@ public class MainSettings {
 
     @JsonProperty("min_creds_2FA")
     private Integer minCredsFor2FA;
-
-    @JsonProperty("policy_2fa")
-    private List<EnforcementPolicy> enforcement2FA;
-
-    @JsonProperty("trusted_dev_settings")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private TrustedDevicesSettings trustedDevicesSettings;
 
     @JsonProperty("acr_plugin_mapping")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -79,20 +71,12 @@ public class MainSettings {
         return u2fSettings;
     }
 
-    public TrustedDevicesSettings getTrustedDevicesSettings() {
-        return trustedDevicesSettings;
-    }
-
     public OxdSettings getOxdSettings() {
         return oxdSettings;
     }
 
     public Integer getMinCredsFor2FA() {
         return minCredsFor2FA;
-    }
-
-    public List<EnforcementPolicy> getEnforcement2FA() {
-        return enforcement2FA;
     }
 
     public List<String> getCorsDomains() {
@@ -131,16 +115,8 @@ public class MainSettings {
         this.oxdSettings = oxdSettings;
     }
 
-    public void setEnforcement2FA(List<EnforcementPolicy> enforcement2FA) {
-        this.enforcement2FA = enforcement2FA;
-    }
-
     public void setU2fSettings(U2fSettings u2fSettings) {
         this.u2fSettings = u2fSettings;
-    }
-
-    public void setTrustedDevicesSettings(TrustedDevicesSettings trustedDevicesSettings) {
-        this.trustedDevicesSettings = trustedDevicesSettings;
     }
 
     public void setCorsDomains(List<String> corsDomains) {

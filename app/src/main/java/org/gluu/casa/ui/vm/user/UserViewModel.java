@@ -39,7 +39,7 @@ public class UserViewModel {
 
     User user;
 
-    //This getter is used in several ZK pages like menubuttons.zul  or user.zul
+    //This getter is used in several ZK pages like menubuttons.zul or user.zul
     public PasswordStatusService getPst() {
         return pst;
     }

@@ -3,10 +3,8 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
 import org.gluu.casa.core.model.ApplicationConfiguration;
 import org.gluu.casa.misc.AppStateEnum;
-import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.*;
 import org.gluu.casa.timer.*;
 import org.gluu.oxauth.model.util.SecurityProviderUtility;
@@ -23,6 +21,8 @@ import javax.inject.Named;
 import java.net.URL;
 import java.util.*;
 
+import static org.gluu.casa.misc.Utils.MIN_CREDS_2FA_DEFAULT;
+
 /**
  * @author jgomer
  */
@@ -34,7 +34,6 @@ public class ConfigurationHandler extends JobListenerSupport {
     public static final List<String> DEFAULT_SUPPORTED_METHODS = Arrays.asList(
             SecurityKey2Extension.ACR, SecurityKeyExtension.ACR, OTPExtension.ACR, SuperGluuExtension.ACR, OTPTwilioExtension.ACR, OTPSmppExtension.ACR);
 
-    private static final int MIN_CREDS_2FA_DEFAULT = 2;
     private static final int RETRIES = 15;
     private static final int RETRY_INTERVAL = 20;
 
@@ -55,9 +54,6 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     @Inject
     private LogService logService;
-
-    @Inject
-    private TrustedDevicesSweeper devicesSweeper;
 
     @Inject
     private AuthnScriptsReloader scriptsReloader;
@@ -169,7 +165,6 @@ public class ConfigurationHandler extends JobListenerSupport {
                 } else {
                     computeMinCredsForStrongAuth();
                     computePassResetable();
-                    compute2FAEnforcementPolicy();
                     extManager.scan();
                     computeAcrPluginMapping();
                     computeCorsOrigins();
@@ -189,8 +184,6 @@ public class ConfigurationHandler extends JobListenerSupport {
                             //in a multi node environment, which IMO it's somewhat safer
                             int gap = Double.valueOf(Math.random() * 7).intValue();
                             scriptsReloader.init(1 + gap);
-                            //Devices sweeper executes in a single node in theory...
-                            devicesSweeper.activate(10 + gap);
                             //statistics timer executes in a single node in theory...
                             statisticsTimer.activate(120 + gap);
                             //plugin checker is not shared-state related
@@ -296,12 +289,6 @@ public class ConfigurationHandler extends JobListenerSupport {
             settings.setEnablePassReset(false);
         }
 
-    }
-
-    private void compute2FAEnforcementPolicy() {
-        if (Utils.isEmpty(settings.getEnforcement2FA())) {
-            settings.setEnforcement2FA(Collections.singletonList(EnforcementPolicy.EVERY_LOGIN));
-        }
     }
 
     private void computeAcrPluginMapping() {

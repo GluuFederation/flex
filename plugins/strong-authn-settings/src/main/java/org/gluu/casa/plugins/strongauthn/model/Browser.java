@@ -1,4 +1,4 @@
-package org.gluu.casa.conf.sndfactor;
+package org.gluu.casa.plugins.strongauthn.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -6,17 +6,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Created by jgomer on 2018-04-18.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OperatingSystem {
+public class Browser {
 
-    private String family;
+    private String name;
     private String version;
 
-    public String getFamily() {
-        return family;
+    public String getName() {
+        return name;
     }
 
-    public void setFamily(String family) {
-        this.family = family;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getVersion() {

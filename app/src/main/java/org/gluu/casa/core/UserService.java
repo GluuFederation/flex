@@ -1,12 +1,6 @@
 package org.gluu.casa.core;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gluu.casa.conf.sndfactor.EnforcementPolicy;
-import org.gluu.casa.conf.sndfactor.TrustedDevice;
-import org.gluu.casa.conf.sndfactor.TrustedDeviceComparator;
 import org.gluu.casa.core.model.Person;
-import org.gluu.casa.core.model.PersonPreferences;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
@@ -53,8 +47,6 @@ public class UserService {
     @Inject
     private ConfigurationHandler confHandler;
 
-    private ObjectMapper mapper = new ObjectMapper();
-
     public User getUserFromClaims(Map<String, Object> claims) throws AttributeNotFoundException {
 
         User u = new User();
@@ -74,7 +66,7 @@ public class UserService {
             u.setPictureURL(WebUtils.validateImageUrl(img));
         }
 
-        PersonPreferences person = personPreferencesInstance(inum);
+        Person person = personInstance(inum);
         if (person == null) {
             throw new AttributeNotFoundException("Cannot retrieve user's info from database");
         }
@@ -157,82 +149,13 @@ public class UserService {
 
         boolean success = false;
         try {
-            PersonPreferences person = personPreferencesInstance(id);
+            Person person = personInstance(id);
             person.setPreferredMethod(method);
             success = persistenceService.modify(person);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
         return success;
-
-    }
-
-    public Pair<Set<String>, List<TrustedDevice>> get2FAPolicyData(String userId) {
-
-        Set<String> list = new HashSet<>();
-        List<TrustedDevice> trustedDevices = new ArrayList<>();
-        try {
-            PersonPreferences person = personPreferencesInstance(userId);
-            String policy = person.getStrongAuthPolicy();
-
-            if (Utils.isNotEmpty(policy)) {
-                Stream.of(policy.split(",\\s*")).forEach(str -> {
-                    try {
-                        list.add(EnforcementPolicy.valueOf(str.toUpperCase()).toString());
-                    } catch (Exception e) {
-                        logger.error("The policy '{}' is not recognized", str);
-                    }
-                });
-            }
-
-            String trustedDevicesInfo = persistenceService.getStringEncrypter().decrypt(person.getTrustedDevices());
-            if (Utils.isNotEmpty(trustedDevicesInfo)) {
-                trustedDevices = mapper.readValue(trustedDevicesInfo, new TypeReference<List<TrustedDevice>>() { });
-                trustedDevices.forEach(TrustedDevice::sortOriginsDescending);
-
-                TrustedDeviceComparator comparator = new TrustedDeviceComparator(true);
-                trustedDevices.sort((first, second) -> comparator.compare(second, first));
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return new Pair<>(list, trustedDevices);
-
-    }
-
-    public boolean update2FAPolicies(String userId, Set<String> policies) {
-
-        boolean updated = false;
-        String str = policies.stream().map(String::toLowerCase).reduce("", (partial, next) -> partial + ", " + next);
-        try {
-            PersonPreferences person = personPreferencesInstance(userId);
-            person.setStrongAuthPolicy(str.substring(2));
-            updated = persistenceService.modify(person);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return updated;
-
-    }
-
-    public boolean deleteTrustedDevice(String userId, List<TrustedDevice> devices, int index) {
-
-        boolean updated = false;
-        List<TrustedDevice> copyOfDevices = new ArrayList<>(devices);
-        try {
-            copyOfDevices.remove(index);
-            String updatedJson = persistenceService.getStringEncrypter().encrypt(mapper.writeValueAsString(copyOfDevices));
-
-            PersonPreferences person = personPreferencesInstance(userId);
-            person.setTrustedDevices(updatedJson);
-            if (persistenceService.modify(person)) {
-                devices.remove(index);
-                updated = true;
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return updated;
 
     }
 
@@ -276,8 +199,8 @@ public class UserService {
 
     }
 
-    private PersonPreferences personPreferencesInstance(String id) {
-        return persistenceService.get(PersonPreferences.class, persistenceService.getPersonDn(id));
+    private Person personInstance(String id) {
+        return persistenceService.get(Person.class, persistenceService.getPersonDn(id));
     }
 
     /**

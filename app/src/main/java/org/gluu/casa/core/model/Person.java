@@ -17,9 +17,11 @@ public class Person extends BasePerson {
     @AttributeName(name = "sn")
     private String surname;
 
-    // The field used for optional attribute sn.
     @AttributeName(name = "oxEnrollmentCode")
     private String enrollmentCode;
+
+    @AttributeName(name = "oxPreferredMethod")
+    private String preferredMethod;
 
     @AttributeName
     private List<String> memberOf;
@@ -40,6 +42,10 @@ public class Person extends BasePerson {
         return Utils.nonNullList(memberOf);
     }
 
+    public String getPreferredMethod() {
+        return preferredMethod;
+    }
+
     public void setGivenName(String givenName) {
         this.givenName = givenName;
     }
@@ -54,6 +60,10 @@ public class Person extends BasePerson {
 
     public void setMemberOf(List<String> memberOf) {
         this.memberOf = memberOf;
+    }
+
+    public void setPreferredMethod(String preferredMethod) {
+        this.preferredMethod = preferredMethod;
     }
 
 }

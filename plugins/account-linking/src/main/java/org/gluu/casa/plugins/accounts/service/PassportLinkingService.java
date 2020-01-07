@@ -32,8 +32,6 @@ import java.util.*;
 @Path("/idp-linking")
 public class PassportLinkingService {
 
-    private static final String SALT_FILE = "/etc/gluu/conf/salt";
-
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -51,7 +49,7 @@ public class PassportLinkingService {
             logger.info("Creating an instance of PassportLinkingService");
             mapper = new ObjectMapper();
             IPersistenceService persistenceService = Utils.managedBean(IPersistenceService.class);
-            stringEncrypter = Utils.stringEncrypter(SALT_FILE);
+            stringEncrypter = Utils.stringEncrypter();
 
             passportProperties = new HashMap<>();
             for (ProviderType pt : ProviderType.values()) {

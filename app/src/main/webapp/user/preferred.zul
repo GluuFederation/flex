@@ -14,7 +14,7 @@
                 </div>
 
                 <zk:zk if="${vm.uiNotEnoughCredsFor2FA}">
-                    <div class="alert alert-danger mt2" role="alert">${c:l2('usr.mfa_disabled', c:split(configurationHandler.settings.minCredsFor2FA,''))}</div>
+                    <div class="alert alert-danger mt2" role="alert">${c:l2('usr.mfa_disabled', c:split(vm.minCredsFor2FA,''))}</div>
                 </zk:zk>
 
                 <div class="pv1" /> <!-- avoids vertical margin collapse -->

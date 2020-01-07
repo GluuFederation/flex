@@ -13,9 +13,9 @@
         <link rel="stylesheet" href="${zkService.contextPath}${assetsService.prefix}/styles/gluu/style.css" />
         <link rel="stylesheet" href="${zkService.contextPath}/styles/tachyons.min.css" />
 
-        <zk:zk if="${not empty configurationHandler.settings.extraCssSnippet}">
+        <zk:zk if="${not empty assetsService.extraCss}">
             <!-- load custom branding css snippets -->
-            <style>${configurationHandler.settings.extraCssSnippet}</style>
+            <style>${assetsService.extraCss}</style>
         </zk:zk>
 
         <script src="${zkService.contextPath}/scripts/gluu/main-util.js" />

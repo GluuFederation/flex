@@ -40,7 +40,6 @@ public class PersistenceService implements IPersistenceService {
     private static final int RETRIES = 15;
     private static final int RETRY_INTERVAL = 15;
     private static final String DEFAULT_CONF_BASE = "/etc/gluu/conf";
-    private static final String CE_SALT_PATH = DEFAULT_CONF_BASE + "/salt";
 
     @Inject
     private Logger logger;
@@ -371,7 +370,7 @@ public class PersistenceService implements IPersistenceService {
 
         boolean ret = false;
         entryManager = null;
-        stringEncrypter = Utils.stringEncrypter(CE_SALT_PATH);
+        stringEncrypter = Utils.stringEncrypter();
 
         //load the configuration using the oxcore-persistence-cdi API
         logger.debug("Obtaining PersistenceEntryManagerFactory from persistence API");

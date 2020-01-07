@@ -36,6 +36,10 @@ public class UserPreferenceViewModel extends UserViewModel {
     private boolean uiEditable;
     private boolean uiNotEnoughCredsFor2FA;
 
+    public int getMinCredsFor2FA() {
+        return confSettings.getMinCredsFor2FA();
+    }
+
     public boolean isUiNotEnoughCredsFor2FA() {
         return uiNotEnoughCredsFor2FA;
     }

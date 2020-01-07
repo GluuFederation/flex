@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.UserService;
-import org.gluu.casa.core.model.PersonPreferences;
+import org.gluu.casa.core.model.Person;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.rs.status.SecondFactorUserData;
@@ -49,7 +49,7 @@ public class SecondFactorUserInfoWS {
         if (Utils.isEmpty(userId)) {
             result.setCode(NO_USER_ID);
         } else {
-            PersonPreferences person = persistenceService.get(PersonPreferences.class, persistenceService.getPersonDn(userId));
+            Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
             if (person == null) {
                 result.setCode(UNKNOWN_USER_ID);
             } else {
