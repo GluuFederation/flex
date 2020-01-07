@@ -2,6 +2,7 @@ package org.gluu.casa.plugins.accounts.vm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.pojo.User;
+import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.plugins.accounts.pojo.LinkingSummary;
 import org.gluu.casa.plugins.accounts.pojo.PendingLinks;
 import org.gluu.casa.service.ISessionContext;
@@ -10,13 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.QueryParam;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 /**
@@ -77,14 +76,14 @@ public class PostAccountLinkingViewModel {
     }
 
     private void expirePassportCookie(String provider) {
+
         //Clean cookie set in password by a call to /casa/:provider/:token
         Cookie coo = new Cookie("casa-" + provider, "");
         coo.setPath("/");
         coo.setSecure(true);
         coo.setHttpOnly(true);
         coo.setMaxAge(0);
-        HttpServletResponse response = (HttpServletResponse) Executions.getCurrent().getNativeResponse();
-        response.addCookie(coo);
+        WebUtils.getServletResponse().addCookie(coo);
 
     }
 

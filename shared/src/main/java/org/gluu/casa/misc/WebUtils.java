@@ -41,6 +41,14 @@ public final class WebUtils {
     }
 
     /**
+     * Gets the current {@link HttpServletResponse} object.
+     * @return The servlet response
+     */
+    public static HttpServletResponse getServletResponse() {
+        return (HttpServletResponse) Executions.getCurrent().getNativeResponse();
+    }
+
+    /**
      * Gets the value of the selected header.
      * @param headerName Header name
      * @return Value of the header or null if the servlet request does not contain such header
@@ -92,13 +100,11 @@ public final class WebUtils {
     public static void execRedirect(String url, boolean voidUI) {
 
         try {
-            Execution exec = Executions.getCurrent();
-            HttpServletResponse response = (HttpServletResponse) exec.getNativeResponse();
-
+            HttpServletResponse response = getServletResponse();
             LOG.debug("Redirecting to URL={}", url);
             response.sendRedirect(response.encodeRedirectURL(url));
             if (voidUI) {
-                exec.setVoided(voidUI); //no need to create UI since redirect will take place
+                Executions.getCurrent().setVoided(voidUI); //no need to create UI since redirect will take place
             }
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
