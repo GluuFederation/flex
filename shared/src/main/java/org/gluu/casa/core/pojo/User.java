@@ -22,10 +22,7 @@ public class User {
     private String id;
     private String preferredMethod;
     private String pictureURL;
-    // this variable roleAdmin has been introduced to avoid a call to persistenceService
-    // the boolean variable admin is true if the user has admin role + if administration is enabled on casa node by virtue of .administrable file + if the license file is valid
-    // the roleAdmin variable - only indicates if the user has admin role 
-    private boolean roleAdmin;
+   
 
     private Map<String, Object> claims;
 
@@ -65,14 +62,6 @@ public class User {
         return null;
 
     }
-
-    public boolean isRoleAdmin() {
-		return roleAdmin;
-	}
-
-	public void setRoleAdmin(boolean roleAdmin) {
-		this.roleAdmin = roleAdmin;
-	}
 
 	public String getUserName() {
         return userName;

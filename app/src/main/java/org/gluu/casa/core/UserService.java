@@ -5,7 +5,6 @@ import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
-import org.gluu.casa.plugins.authnmethod.service.LicenseService;
 import org.gluu.search.filter.Filter;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
@@ -38,9 +37,6 @@ public class UserService {
     @Inject
     private PersistenceService persistenceService;
     
-    @Inject
-    private LicenseService licenseService;
-
     @Inject
     private ExtensionsManager extManager;
 
@@ -204,13 +200,12 @@ public class UserService {
     }
 
     /**
-     * Administration functionalities are enabled only if .administrable file exists and a valid license for casa exists
-     * (or the product is within 30 day trial period)
+     * Administration functionalities are enabled only if .administrable file exists 
      * @return boolean value
      */
     private boolean administrationAllowed() {
-        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE))
-                && (licenseService.verifyLicense() || licenseService.isTrialPeriod());
+        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE));
+        
     }
 
 }

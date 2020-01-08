@@ -2,7 +2,6 @@ package org.gluu.casa.ui.vm.user;
 
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.plugins.authnmethod.service.LicenseService;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.SessionContext;
 import org.gluu.casa.core.pojo.User;
@@ -34,15 +33,6 @@ public class UserMainViewModel extends UserViewModel {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private String licenseRelatedMessage;
-
-	public String getLicenseRelatedMessage() {
-		return licenseRelatedMessage;
-	}
-
-	@WireVariable
-	private LicenseService licenseService;
-	
 	@WireVariable
 	private PersistenceService persistenceService;
 	private String introText;
@@ -78,15 +68,6 @@ public class UserMainViewModel extends UserViewModel {
 		widgets = userService.getLiveAuthnMethods();
 		methodsAvailability = widgets.size() > 0;
 		pre2faMethods = new ArrayList<>();
-
-		// roleAdmin - if the user has admin role
-		// isAdmin - if the application has administrator operations enabled
-		// if the product is within trial period, admin features will be enabled and the warning will be shown to admin user only via admin console.
-		if (sessionContext.getUser().isRoleAdmin() && !licenseService.verifyLicense()
-                && !(licenseService.isTrialPeriod())) {
-		    licenseRelatedMessage = Labels.getLabel("adm.casa.invalid.license.for.administrator");
-		}
-		
 
 		if (methodsAvailability) {
 			StringBuffer helper = new StringBuffer();
