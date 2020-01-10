@@ -14,6 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -81,21 +82,47 @@ public class ClientReset {
 
         ApplicationConfiguration appConfig = entryManager.find(ApplicationConfiguration.class, dn);
         String strSettings = appConfig.getSettings();
-        out.println("...found!");
+        out.println(" ...found!\n");
 
+        boolean changes = false;
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> settings = mapper.readValue(strSettings, new TypeReference<Map<String, Object>>(){});
         Map<String, Object> oxdSettings = (Map<String, Object>) settings.get("oxd_config");
 
         if (oxdSettings.containsKey("client")) {
             oxdSettings.remove("client");
-            out.println("Flushing client section...");
+            changes = true;
+        } else {
+            out.println("Client section in configuration is absent.");
+        }
 
+        out.print("Do you want to change oxd server location? [Y|n]: ");
+        Scanner sc = new Scanner(System.in);
+        if (sc.nextLine().trim().toLowerCase().startsWith("y")) {
+
+            out.print("   Enter oxd host: ");
+            String host = sc.nextLine();
+            out.print("   Enter oxd port: ");
+            try {
+                int port = sc.nextInt();
+                oxdSettings.put("host", host);
+                oxdSettings.put("port", port);
+                changes = true;
+            } catch (Exception e) {
+                out.println("Not a valid port number. Skipping oxd location update...");
+            }
+
+        }
+
+        if (changes) {
+            out.println();
+            out.println("Applying changes...");
             appConfig.setSettings(mapper.writeValueAsString(settings));
             entryManager.merge(appConfig);
+
             out.println("Done. Please restart Casa to trigger a new registration by oxd.");
         } else {
-            out.println("Client section in configuration is absent. Nothing to do.");
+            out.println("Nothing to do. Exiting...");
         }
 
     }
