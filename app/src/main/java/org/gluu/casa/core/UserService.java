@@ -69,7 +69,7 @@ public class UserService {
 
         u.setPreferredMethod(person.getPreferredMethod());
         u.setAdmin(persistenceService.isAdmin(inum) && administrationAllowed());
-        u.setRoleAdmin(persistenceService.isAdmin(inum));
+        
         cleanRandEnrollmentCode(inum);
 
         return u;
