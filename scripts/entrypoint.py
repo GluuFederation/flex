@@ -1,4 +1,4 @@
-import json
+# import json
 import os
 import re
 
@@ -27,25 +27,25 @@ def resolve_oxd_url(url):
     return scheme, host, port
 
 
-def render_casa_json():
-    oxd_url = os.environ.get("GLUU_OXD_SERVER_URL", "localhost:8443")
+# def render_casa_json():
+#     oxd_url = os.environ.get("GLUU_OXD_SERVER_URL", "localhost:8443")
 
-    src = "/app/templates/casa.json"
-    dst = "/etc/gluu/conf/casa.json"
-    ctx = {
-        "hostname": manager.config.get("hostname"),
-        "configFolder": "/etc/gluu/conf"
-    }
+#     src = "/app/templates/casa.json"
+#     dst = "/etc/gluu/conf/casa.json"
+#     ctx = {
+#         "hostname": manager.config.get("hostname"),
+#         "configFolder": "/etc/gluu/conf"
+#     }
 
-    with open(src) as fr:
-        data = json.loads(fr.read() % ctx)
-        _, oxd_host, oxd_port = resolve_oxd_url(oxd_url)
+#     with open(src) as fr:
+#         data = json.loads(fr.read() % ctx)
+#         _, oxd_host, oxd_port = resolve_oxd_url(oxd_url)
 
-        data["oxd_config"]["host"] = oxd_host
-        data["oxd_config"]["port"] = int(oxd_port)
+#         data["oxd_config"]["host"] = oxd_host
+#         data["oxd_config"]["port"] = int(oxd_port)
 
-        with open(dst, "w") as fw:
-            fw.write(json.dumps(data))
+#         with open(dst, "w") as fw:
+#             fw.write(json.dumps(data))
 
 
 def modify_webdefault_xml():
@@ -142,8 +142,8 @@ def main():
         "/usr/lib/jvm/default-jvm/jre/lib/security/cacerts",
         "changeit",
     )
-    if not (os.path.isfile('/etc/gluu/conf/casa.json') and os.path.getsize('/etc/gluu/conf/casa.json')) > 0:
-        render_casa_json()
+    # if not (os.path.isfile('/etc/gluu/conf/casa.json') and os.path.getsize('/etc/gluu/conf/casa.json')) > 0:
+    #     render_casa_json()
     modify_jetty_xml()
     modify_webdefault_xml()
 
