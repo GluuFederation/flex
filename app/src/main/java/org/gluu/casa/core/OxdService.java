@@ -104,10 +104,20 @@ public class OxdService {
                         storeService.remove(OXD_SETTINGS_KEY);
                     }
                 } else {
-                    //Block for some time hoping a registration operation was performed
-                    Thread.sleep(TimeUnit.SECONDS.toMillis(REGISTRATION_WAIT_TIME));
-                    oxdSettings = mapper.readValue(storeService.get(OXD_SETTINGS_KEY).toString(), new TypeReference<OxdSettings>(){});
-                    //If it reaches this point, it means registration took place successfully while sleeping
+                    logger.info("It seems another node is attempting to perform client registration...");
+                    //do some attempts to catch a useful value
+                    for (int i = 0; i < REGISTRATION_WAIT_TIME; i++) {
+                        try {
+                            String val = storeService.get(OXD_SETTINGS_KEY).toString();
+                            oxdSettings = mapper.readValue(val, new TypeReference<OxdSettings>(){});
+                            //If it reaches this point, it means registration took place successfully in another node
+                            logger.info("Client registration data detected");
+                            break;
+                        } catch (Exception e) {
+                            //Block for one sec
+                            Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+                        }
+                    }
                     //Simulate initialization
                     success = initialize(oxdSettings);
                 }
@@ -115,7 +125,7 @@ public class OxdService {
                 success = initialize(oxdSettings);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
         if (success) {
             //Replace local copy
