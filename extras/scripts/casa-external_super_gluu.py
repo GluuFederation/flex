@@ -1069,7 +1069,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
         inum = user.getAttribute("inum")
         devRegService = CdiUtil.bean(DeviceRegistrationService)
-        app_id = configurationAttributes.get("client_redirect_uri").getValue2()
+        app_id = configurationAttributes.get("application_id").getValue2()
         userDevices = devRegService.findUserDeviceRegistrations(inum, app_id, "oxStatus")
 
         hasDevices = False
