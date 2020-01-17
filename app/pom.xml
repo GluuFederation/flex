@@ -77,14 +77,19 @@
             <version>${ox.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.python</groupId>
-                    <artifactId>jython-standalone</artifactId>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
-            <artifactId>oxcore-persistence-cdi</artifactId>
+            <artifactId>oxcore-cache</artifactId>
+            <version>${ox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxcore-persistence-hybrid</artifactId>
             <version>${ox.version}</version>
         </dependency>
         <dependency>
@@ -241,6 +246,13 @@
 			<version>2.3.7</version>
 		</dependency>
 
+        <!-- QUARTZ -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -279,7 +291,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Remove beans.xml from oxcore-service and oxauth-fido2-server jars.
+            <!-- Remove beans.xml from oxcore-service, oxcore-cache and oxauth-fido2-server jars.
             It allows disabling jar scanning by Weld. It produces lots of errors as is -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -295,6 +307,21 @@
                         <configuration>
                             <fileset>
                                 <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/oxcore-service-${ox.version}.jar</directory>
+                                <includes>
+                                    <include>META-INF/beans.xml</include>
+                                </includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>remove-beans-file-oxcore-cache</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>remove</goal>
+                        </goals>
+                        <configuration>
+                            <fileset>
+                                <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/oxcore-cache-${ox.version}.jar</directory>
                                 <includes>
                                     <include>META-INF/beans.xml</include>
                                 </includes>
