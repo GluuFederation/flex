@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.JarInputStream;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author jgomer
@@ -402,8 +403,8 @@ public class ExtensionsManager {
     private void purgePluginsExtractionPath() {
 
         //Deletes all files in pl directory
-        try {
-            Files.list(extractionDirectory).filter(p -> Files.isDirectory(p)).forEach(p -> {
+        try (Stream<Path> directoryStream = Files.list(extractionDirectory)) {
+            directoryStream.filter(p -> Files.isDirectory(p)).forEach(p -> {
                         try {
                             resourceExtractor.recursiveDelete(p);
                         } catch (Exception e) {
