@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author jgomer
@@ -136,9 +137,11 @@ public class FSPluginChecker extends JobListenerSupport {
 
         List<Pair<String, File>> currContents = new ArrayList<>();
         logger.info("Checking files in plugins directory {}", pluginsRoot);
-        try {
-            List<Path> list = Files.list(pluginsRoot).filter(Utils::isJarFile).collect(Collectors.toList());
-            Set<String> pluginIdsList = new HashSet<>();
+        List<Path> list = null;
+		//https://stackoverflow.com/questions/38652295/java-nio2-directory-is-not-closed-causes-too-many-open-files-error
+		try (Stream<Path> stream = Files.list(pluginsRoot).filter(Utils::isJarFile)) {
+			list = stream.collect(Collectors.toList());
+			Set<String> pluginIdsList = new HashSet<>();
 
             for (Path p : list) {
                 File f = p.toFile();
