@@ -59,6 +59,10 @@
     <modules>
         <module>app</module>
         <module>shared</module>
+        <module>plugins/account-linking</module>
+        <module>plugins/client-authorizations</module>
+        <module>plugins/custom-branding</module>
+        <module>plugins/strong-authn-settings</module>
     </modules>
 
     <dependencyManagement>
