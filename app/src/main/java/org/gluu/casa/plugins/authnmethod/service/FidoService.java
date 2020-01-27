@@ -6,7 +6,7 @@ import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.gluu.oxauth.model.fido.u2f.DeviceRegistrationStatus;
 import org.gluu.oxauth.model.fido.u2f.protocol.DeviceData;
-import org.gluu.persist.model.base.SimpleBranch;
+import org.gluu.search.filter.Filter;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
@@ -82,16 +82,18 @@ public class FidoService extends BaseService {
     private List<DeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
 
         String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));
-        //In CB the ou=fido branch exists!
-        if (persistenceService.count(new SimpleBranch(parentDn)) <= 0) {
-            return Collections.emptyList();
-        } else {
-            DeviceRegistration deviceRegistration = new DeviceRegistration();
-            deviceRegistration.setBaseDn(parentDn);
-            deviceRegistration.setOxApplication(appId);
-            deviceRegistration.setOxStatus(active ? DeviceRegistrationStatus.ACTIVE.getValue() : DeviceRegistrationStatus.COMPROMISED.getValue());
+        String state = active ? DeviceRegistrationStatus.ACTIVE.getValue() : DeviceRegistrationStatus.COMPROMISED.getValue();
+        logger.trace("Finding U2F devices with state={} for user={}", state, userId);
+        //Starting with 4.1 in CB the ou=fido branch does not exist (https://github.com/GluuFederation/oxAuth/commit/7e5606e0ef51dfbea3a17ff3a2516f9e97f9b35a)
+        Filter filter = Filter.createANDFilter(
+                Filter.createEqualityFilter("oxStatus", state),
+                Filter.createEqualityFilter("oxApplication", appId));
 
-            return persistenceService.find(deviceRegistration);
+        try {
+            return persistenceService.find(DeviceRegistration.class, parentDn, filter);
+        } catch (Exception e) {
+            logger.warn(e.getMessage());
+            return Collections.emptyList();
         }
 
     }

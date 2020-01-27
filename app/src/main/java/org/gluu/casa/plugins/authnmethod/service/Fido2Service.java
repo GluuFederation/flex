@@ -72,11 +72,11 @@ public class Fido2Service extends BaseService {
 
     public List<SecurityKey> getDevices(String userId, boolean active) {
 
-        //Ugly hack targetting couchbase. In CB the ou=fido2_register branch does not exist (not a hierarchical DB)
-        logger.trace("Finding Fido 2 devices with state={} for user={}",
-                active ? Fido2RegistrationStatus.registered : Fido2RegistrationStatus.pending, userId);
+        //In CB the ou=fido2_register branch does not exist (not a hierarchical DB)
+        String state = active ? Fido2RegistrationStatus.registered.getValue() : Fido2RegistrationStatus.pending.getValue();
+        logger.trace("Finding Fido 2 devices with state={} for user={}", state, userId);
         Filter filter = Filter.createANDFilter(
-                Filter.createEqualityFilter("oxStatus", Fido2RegistrationStatus.registered.getValue()),
+                Filter.createEqualityFilter("oxStatus", state),
                 Filter.createEqualityFilter("personInum", userId));
 
         List<SecurityKey> devices = new ArrayList<>();
