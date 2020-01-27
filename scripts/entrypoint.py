@@ -1,8 +1,5 @@
-# import json
 import os
 import re
-
-import six.moves
 
 from pygluu.containerlib import get_manager
 from pygluu.containerlib.persistence import render_couchbase_properties
@@ -16,36 +13,10 @@ from pygluu.containerlib.persistence import sync_ldap_truststore
 from pygluu.containerlib.utils import cert_to_truststore
 from pygluu.containerlib.utils import get_server_certificate
 
+from casa_config import CasaConfig
+from oxd import get_oxd_cert
+
 manager = get_manager()
-
-
-def resolve_oxd_url(url):
-    result = six.moves.urllib_parse.urlparse(url)
-    scheme = result.scheme or "https"
-    host = result.hostname or result.path.split(":")[0]
-    port = result.port or int(result.path.split(":")[-1])
-    return scheme, host, port
-
-
-# def render_casa_json():
-#     oxd_url = os.environ.get("GLUU_OXD_SERVER_URL", "localhost:8443")
-
-#     src = "/app/templates/casa.json"
-#     dst = "/etc/gluu/conf/casa.json"
-#     ctx = {
-#         "hostname": manager.config.get("hostname"),
-#         "configFolder": "/etc/gluu/conf"
-#     }
-
-#     with open(src) as fr:
-#         data = json.loads(fr.read() % ctx)
-#         _, oxd_host, oxd_port = resolve_oxd_url(oxd_url)
-
-#         data["oxd_config"]["host"] = oxd_host
-#         data["oxd_config"]["port"] = int(oxd_port)
-
-#         with open(dst, "w") as fw:
-#             fw.write(json.dumps(data))
 
 
 def modify_webdefault_xml():
@@ -88,14 +59,6 @@ def modify_jetty_xml():
 
     with open(fn, "w") as f:
         f.write(updates)
-
-
-def get_oxd_cert():
-    oxd_url = os.environ.get("GLUU_OXD_SERVER_URL", "localhost:8443")
-    _, host, port = resolve_oxd_url(oxd_url)
-
-    if not os.path.isfile("/etc/certs/oxd.crt"):
-        get_server_certificate(host, port, "/etc/certs/oxd.crt")
 
 
 def main():
@@ -142,10 +105,11 @@ def main():
         "/usr/lib/jvm/default-jvm/jre/lib/security/cacerts",
         "changeit",
     )
-    # if not (os.path.isfile('/etc/gluu/conf/casa.json') and os.path.getsize('/etc/gluu/conf/casa.json')) > 0:
-    #     render_casa_json()
     modify_jetty_xml()
     modify_webdefault_xml()
+
+    config = CasaConfig(manager)
+    config.setup()
 
 
 if __name__ == "__main__":
