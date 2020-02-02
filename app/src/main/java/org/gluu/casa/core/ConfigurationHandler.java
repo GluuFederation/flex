@@ -17,7 +17,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.net.URL;
 import java.util.*;
 
@@ -26,7 +25,6 @@ import static org.gluu.casa.misc.Utils.MIN_CREDS_2FA_DEFAULT;
 /**
  * @author jgomer
  */
-@Named
 @ApplicationScoped
 public class ConfigurationHandler extends JobListenerSupport {
 

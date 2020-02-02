@@ -12,14 +12,12 @@ import org.slf4j.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author jgomer
  */
-@Named
 @ApplicationScoped
 @Deprecated
 public class LdapService implements ILdapService {

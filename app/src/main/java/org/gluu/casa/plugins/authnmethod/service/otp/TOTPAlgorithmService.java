@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.concurrent.TimeUnit;
 
 import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
@@ -22,7 +21,6 @@ import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
  * An app. scoped bean that encapsulates logic related to generating and validating OTP keys.
  * See https://tools.ietf.org/html/rfc6238 and https://tools.ietf.org/html/rfc4226.
  */
-@Named
 @ApplicationScoped
 public class TOTPAlgorithmService implements IOTPAlgorithm {
 

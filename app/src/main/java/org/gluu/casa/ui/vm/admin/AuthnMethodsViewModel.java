@@ -4,6 +4,7 @@ import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.core.UserService;
 import org.gluu.casa.extension.AuthnMethod;
+import org.gluu.casa.misc.Utils;
 import org.gluu.casa.ui.model.AuthnMethodStatus;
 import org.pf4j.DefaultPluginDescriptor;
 import org.pf4j.PluginDescriptor;
@@ -29,9 +30,6 @@ public class AuthnMethodsViewModel extends MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @WireVariable("configurationHandler")
-    private ConfigurationHandler confHandler;
-
     @WireVariable("extensionsManager")
     private ExtensionsManager extManager;
 
@@ -54,7 +52,8 @@ public class AuthnMethodsViewModel extends MainViewModel {
         Map<String, String> mappedAcrs = getSettings().getAcrPluginMap();
 
         //This set contains entries associated to active acr methods in oxauth
-        Set<String> serverAcrs = Optional.ofNullable(confHandler.retrieveAcrs()).orElse(Collections.emptySet());
+        Set<String> serverAcrs = Optional.ofNullable(Utils.managedBean(ConfigurationHandler.class).retrieveAcrs())
+                .orElse(Collections.emptySet());
 
         //These are authn methods belonging to a started plugin or system extension with a corresponding custom script enabled
         Set<String> uniqueAcrs = extManager.getAuthnMethodExts(currentPlugins.stream().map(PluginDescriptor::getPluginId).collect(Collectors.toSet()))

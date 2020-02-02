@@ -10,14 +10,12 @@ import org.slf4j.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.stream.Stream;
 
 /**
  * An app. scoped bean to serve the purpose of sending SMS using the Twilio service
  * @author jgomer
  */
-@Named
 @ApplicationScoped
 public class TwilioMobilePhoneService extends MobilePhoneService {
 

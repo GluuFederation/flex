@@ -4,6 +4,7 @@ import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.extension.navigation.MenuType;
 import org.gluu.casa.extension.navigation.NavigationMenu;
+import org.gluu.casa.misc.Utils;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.ui.MenuService;
 import org.slf4j.Logger;
@@ -26,7 +27,6 @@ public class MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @WireVariable("configurationHandler")
     private ConfigurationHandler confHandler;
 
     @WireVariable
@@ -40,6 +40,7 @@ public class MainViewModel {
 
     @Init
     public void init() {
+        confHandler = Utils.managedBean(ConfigurationHandler.class);
         extraButtons = menuService.getMenusOfType(MenuType.ADMIN_CONSOLE);
     }
 

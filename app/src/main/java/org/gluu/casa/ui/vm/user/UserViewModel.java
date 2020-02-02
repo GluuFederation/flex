@@ -26,9 +26,6 @@ public class UserViewModel {
     @WireVariable
     protected SessionContext sessionContext;
 
-    @WireVariable("configurationHandler")
-    private ConfigurationHandler confHandler;
-
     @WireVariable
     UserService userService;
 
@@ -48,7 +45,7 @@ public class UserViewModel {
     public void init() {
         user = sessionContext.getUser();
         //Note MainSettings is not injectable in ViewModels
-        confSettings = confHandler.getSettings();
+        confSettings = Utils.managedBean(ConfigurationHandler.class).getSettings();
         pst.reloadStatus();
     }
 

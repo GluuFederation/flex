@@ -28,12 +28,10 @@ import org.slf4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.*;
 
-@Named
 @ApplicationScoped
 public class PersistenceService implements IPersistenceService {
 

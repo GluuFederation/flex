@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.Date;
 import java.util.stream.Stream;
 import java.io.IOException;
@@ -33,7 +32,6 @@ import java.io.IOException;
  * An app. scoped bean to serve the purpose of sending SMS using SMPP service
  * @author Stefan Andersson
  */
-@Named
 @ApplicationScoped
 public class SmppMobilePhoneService extends MobilePhoneService {
 

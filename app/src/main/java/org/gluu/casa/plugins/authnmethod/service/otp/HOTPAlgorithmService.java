@@ -12,7 +12,6 @@ import org.zkoss.util.Pair;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
 
@@ -21,7 +20,6 @@ import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
  * An app. scoped bean that encapsulates logic related to generating and validating OTP keys.
  * See https://tools.ietf.org/html/rfc6238 and https://tools.ietf.org/html/rfc4226.
  */
-@Named
 @ApplicationScoped
 public class HOTPAlgorithmService implements IOTPAlgorithm {
 
