@@ -13,6 +13,7 @@ import org.gluu.casa.plugins.authnmethod.rs.status.sg.EnrollmentStatusCode;
 import org.gluu.casa.plugins.authnmethod.rs.status.u2f.FinishCode;
 import org.gluu.casa.plugins.authnmethod.service.SGService;
 import org.gluu.casa.rest.ProtectedApi;
+import org.gluu.service.cache.CacheProvider;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -34,12 +35,17 @@ import java.util.stream.Stream;
 @Path("/enrollment/" + SuperGluuExtension.ACR)
 public class SuperGluuEnrollingWS {
 
-    private static final int MIN_CLIENT_POLL_PERIOD = 5;
-    private static final int TIME_WINDOW_DEFAULT = 2;
-    private static final int MAX_STORED_ENTRIES = 300;
+    private static final String BANNED_KEYS_PREFIX = "casa_blk_";   //Banned lookup keys
+    private static final String PENDING_ENROLLS_PREFIX = "casa_pend_"; //Pending enrollments
+    private static final String RECENT_DEVICES_PREFIX = "casa_recdev_"; //Recently enrolled devices
+    private static final int MIN_CLIENT_POLL_PERIOD = 5000;
+    private static final int EXPIRATION = (int) TimeUnit.MINUTES.toSeconds(2);
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private CacheProvider cacheProvider;
 
     @Inject
     private SGService sgService;
@@ -50,11 +56,7 @@ public class SuperGluuEnrollingWS {
     @Inject
     private UserService userService;
 
-    private Map<String, String> bannedLookupKeys;
-
-    private Map<String, String> pendingEnrollments;
-
-    private Map<String, String> recentlyEnrolledDevices;
+    private Map<String, String> usersWithRandEnrollmentCodes;
 
     @GET
     @Path("qr-request")
@@ -76,11 +78,15 @@ public class SuperGluuEnrollingWS {
             } else {
                 String userName = person.getUid();
                 String code = userService.generateRandEnrollmentCode(userId);
+                usersWithRandEnrollmentCodes.put(userId, null);
 
                 //key serves an identifier for clients to poll status afterwards
                 String key = UUID.randomUUID().toString();
-                bannedLookupKeys.put(key, null);
-                pendingEnrollments.put(key, userId);
+
+                //Store the time after which the key should not be consider banned anymore. This is so because the lifetime
+                //is small (few seconds) compared to the minimum realistc expiration of a cache entry (~1min)
+                cacheProvider.put(EXPIRATION, BANNED_KEYS_PREFIX + key, System.currentTimeMillis() + MIN_CLIENT_POLL_PERIOD);
+                cacheProvider.put(EXPIRATION, PENDING_ENROLLS_PREFIX + key, userId);
 
                 qrRequest = sgService.generateRequest(userName, code, remoteIP);
                 return ComputeRequestCode.SUCCESS.getResponse(key, qrRequest);
@@ -98,7 +104,8 @@ public class SuperGluuEnrollingWS {
 
         logger.trace("enrollmentReady WS operation called");
 
-        if (bannedLookupKeys.containsKey(key)) {
+        Long exp = (Long) cacheProvider.get(BANNED_KEYS_PREFIX + key);
+        if (exp != null && System.currentTimeMillis() < exp) {
             //early abort
             return EnrollmentStatusCode.PENDING.getResponse();
         }
@@ -106,7 +113,8 @@ public class SuperGluuEnrollingWS {
         //If it gets here, a reasonable amount of time have elapsed for client to check status
         EnrollmentStatusCode status;
         SuperGluuDevice newDevice = null;
-        String userId = pendingEnrollments.get(key);
+        key = PENDING_ENROLLS_PREFIX + key;
+        String userId = Optional.ofNullable(cacheProvider.get(key)).map(Object::toString).orElse(null);
 
         if (userId == null) {
             status = EnrollmentStatusCode.FAILED;
@@ -114,17 +122,16 @@ public class SuperGluuEnrollingWS {
 
             newDevice = sgService.getLatestSuperGluuDevice(userId, System.currentTimeMillis());
             if (newDevice == null) {
-                bannedLookupKeys.put(userId, null);
                 return EnrollmentStatusCode.PENDING.getResponse();
             }
 
             //Enrollment was made!
-            pendingEnrollments.remove(key);
+            cacheProvider.remove(key);
             try {
                 boolean enrolled = sgService.isDeviceUnique(newDevice, userId);
                 if (enrolled) {
                     status = EnrollmentStatusCode.SUCCESS;
-                    recentlyEnrolledDevices.put(newDevice.getId(), userId);
+                    cacheProvider.put(EXPIRATION, RECENT_DEVICES_PREFIX + newDevice.getId(), userId);
                 } else {
                     sgService.removeDevice(newDevice);
                     logger.info("Duplicated SuperGluu device {} has been removed", newDevice.getDeviceData().getUuid());
@@ -163,7 +170,7 @@ public class SuperGluuEnrollingWS {
 
         if (Stream.of(nickName, deviceId).anyMatch(Utils::isEmpty)) {
             result = FinishCode.MISSING_PARAMS;
-        } else if (!recentlyEnrolledDevices.containsKey(deviceId)) {
+        } else if (!cacheProvider.hasKey(RECENT_DEVICES_PREFIX + deviceId)) {
             result = FinishCode.NO_MATCH_OR_EXPIRED;
         } else {
             FidoDevice dev = getDeviceWithID(deviceId);
@@ -171,7 +178,7 @@ public class SuperGluuEnrollingWS {
 
             if (sgService.updateDevice(dev)) {
                 result = FinishCode.SUCCESS;
-                recentlyEnrolledDevices.remove(deviceId);
+                cacheProvider.remove(RECENT_DEVICES_PREFIX + deviceId);
             } else {
                 result = FinishCode.FAILED;
             }
@@ -188,23 +195,14 @@ public class SuperGluuEnrollingWS {
 
     @PostConstruct
     private void inited() {
-
         logger.trace("Service inited");
-
-        bannedLookupKeys = ExpiringMap.builder()
-                .maxSize(MAX_STORED_ENTRIES).expiration(MIN_CLIENT_POLL_PERIOD, TimeUnit.SECONDS).build();
-
-        pendingEnrollments = ExpiringMap.builder()
-                .maxSize(MAX_STORED_ENTRIES).expiration(TIME_WINDOW_DEFAULT, TimeUnit.MINUTES)
-                .asyncExpirationListener((deviceId, userId) -> {
-                    //Removes the random code if it status was never checked (see #enrollmentReady)
+        usersWithRandEnrollmentCodes = ExpiringMap.builder().expiration(EXPIRATION, TimeUnit.MINUTES)
+                .asyncExpirationListener((userId, dummy) ->
+                    //Removes the user's random enrollment code if #enrollmentReady was never called
                     //sgService.removeDevice(getDeviceWithID(deviceId.toString()));
-                    userService.cleanRandEnrollmentCode(userId.toString());
-                })
+                    userService.cleanRandEnrollmentCode(userId.toString())
+                )
                 .build();
-
-        recentlyEnrolledDevices = ExpiringMap.builder()
-                .maxSize(MAX_STORED_ENTRIES).expiration(TIME_WINDOW_DEFAULT, TimeUnit.MINUTES).build();
 
     }
 

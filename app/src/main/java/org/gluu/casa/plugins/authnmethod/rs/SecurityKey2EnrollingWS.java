@@ -1,7 +1,6 @@
 package org.gluu.casa.plugins.authnmethod.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.jodah.expiringmap.ExpiringMap;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.SecurityKey;
@@ -12,6 +11,7 @@ import org.gluu.casa.plugins.authnmethod.rs.status.u2f.RegisterMessageCode;
 import org.gluu.casa.plugins.authnmethod.rs.status.u2f.RegistrationCode;
 import org.gluu.casa.plugins.authnmethod.service.Fido2Service;
 import org.gluu.casa.rest.ProtectedApi;
+import org.gluu.service.cache.CacheProvider;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -32,21 +32,21 @@ import java.util.stream.Stream;
 @Path("/enrollment/" + SecurityKey2Extension.ACR)
 public class SecurityKey2EnrollingWS {
 
-    private static final int TIME_WINDOW_DEFAULT = 2;
-    private static final int MAX_STORED_ENTRIES = 1000;   //one thousand entries stored at most
+    private static final String USERS_PENDING_REG_PREFIX = "casa_upreg_";    //Users with pending registrations
+    private static final String RECENT_DEVICES_PREFIX = "casa_recdev_";     //Recently enrolled devices
+    private static final int EXPIRATION = (int) TimeUnit.MINUTES.toSeconds(2);
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private CacheProvider cacheProvider;
 
     @Inject
     private Fido2Service fido2Service;
 
     @Inject
     private PersistenceService persistenceService;
-
-    private Map<String, String> usersWithPendingRegistrations;
-
-    private Map<String, String> recentlyEnrolledDevices;
 
     private ObjectMapper mapper;
 
@@ -71,7 +71,7 @@ public class SecurityKey2EnrollingWS {
                     String userName = person.getUid();
                     request = fido2Service.doRegister(userName, Optional.ofNullable(person.getGivenName()).orElse(userName));
                     result = RegisterMessageCode.SUCCESS;
-                    usersWithPendingRegistrations.put(userId, null);
+                    cacheProvider.put(EXPIRATION, USERS_PENDING_REG_PREFIX + userId, "");
                 } catch (Exception e) {
                     result = RegisterMessageCode.FAILED;
                     logger.error(e.getMessage(), e);
@@ -92,9 +92,10 @@ public class SecurityKey2EnrollingWS {
         RegistrationCode result;
         SecurityKey newDevice = null;
         logger.trace("sendRegistrationResult WS operation called");
+        String key = USERS_PENDING_REG_PREFIX + userId;
 
-        if (usersWithPendingRegistrations.containsKey(userId)) {
-            usersWithPendingRegistrations.remove(userId);
+        if (cacheProvider.hasKey(key)) {
+            cacheProvider.remove(key);
 
             Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
             if (person == null) {
@@ -110,7 +111,7 @@ public class SecurityKey2EnrollingWS {
                             logger.info("Entry of recently registered fido 2 key could not be found for user {}", userId);
                             result = RegistrationCode.FAILED;
                         } else {
-                            recentlyEnrolledDevices.put(newDevice.getId(), userId);
+                            cacheProvider.put(EXPIRATION, RECENT_DEVICES_PREFIX + newDevice.getId(), userId);
                             result = RegistrationCode.SUCCESS;
                         }
                     } else {
@@ -145,7 +146,7 @@ public class SecurityKey2EnrollingWS {
 
         if (Stream.of(nickName, deviceId).anyMatch(Utils::isEmpty)) {
             result = FinishCode.MISSING_PARAMS;
-        } else if (!recentlyEnrolledDevices.containsKey(deviceId)) {
+        } else if (!cacheProvider.hasKey(RECENT_DEVICES_PREFIX + deviceId)) {
             result = FinishCode.NO_MATCH_OR_EXPIRED;
         } else {
             SecurityKey key = new SecurityKey();
@@ -154,7 +155,7 @@ public class SecurityKey2EnrollingWS {
 
             if (fido2Service.updateDevice(key)) {
                 result = FinishCode.SUCCESS;
-                recentlyEnrolledDevices.remove(deviceId);
+                cacheProvider.remove(RECENT_DEVICES_PREFIX + deviceId);
             } else {
                 result = FinishCode.FAILED;
             }
@@ -167,12 +168,6 @@ public class SecurityKey2EnrollingWS {
     private void init() {
         logger.trace("Service inited");
         mapper = new ObjectMapper();
-
-        usersWithPendingRegistrations = ExpiringMap.builder()
-                .maxSize(MAX_STORED_ENTRIES).expiration(TIME_WINDOW_DEFAULT, TimeUnit.MINUTES).build();
-
-        recentlyEnrolledDevices = ExpiringMap.builder()
-                .maxSize(MAX_STORED_ENTRIES).expiration(TIME_WINDOW_DEFAULT, TimeUnit.MINUTES).build();
     }
 
 }

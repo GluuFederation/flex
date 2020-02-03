@@ -1,6 +1,5 @@
 package org.gluu.casa.plugins.authnmethod.rs;
 
-import net.jodah.expiringmap.ExpiringMap;
 import org.gluu.casa.core.pojo.OTPDevice;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPExtension;
@@ -10,16 +9,15 @@ import org.gluu.casa.plugins.authnmethod.rs.status.otp.ValidateCode;
 import org.gluu.casa.plugins.authnmethod.service.OTPService;
 import org.gluu.casa.plugins.authnmethod.service.otp.IOTPAlgorithm;
 import org.gluu.casa.rest.ProtectedApi;
+import org.gluu.service.cache.CacheProvider;
 import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Base64;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -33,16 +31,17 @@ import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
 @Path("/enrollment/" + OTPExtension.ACR)
 public class OTPEnrollingWS {
 
-    private static final int TIME_WINDOW_DEFAULT = 2;
-    private static final int MAX_STORED_ENTRIES = 1000;   //one thousand entries stored at most
+    private static final String KEY_EXTERNALUID_MAPPING_PREFIX = "casa_kemp_";
+    private static final int EXPIRATION = (int) TimeUnit.MINUTES.toSeconds(2);
 
     @Inject
     private Logger logger;
 
     @Inject
-    private OTPService otpService;
+    private CacheProvider cacheProvider;
 
-    private Map<String, String> keyExternalUidMapping;
+    @Inject
+    private OTPService otpService;
 
     @GET
     @Path("qr-request")
@@ -90,7 +89,7 @@ public class OTPEnrollingWS {
                     if (uid == null) {
                         result = ValidateCode.NO_MATCH;
                     } else {
-                        keyExternalUidMapping.put(key, uid);
+                        cacheProvider.put(EXPIRATION, KEY_EXTERNALUID_MAPPING_PREFIX + key, uid);
                         result = ValidateCode.MATCH;
                     }
                 } catch (Exception e) {
@@ -129,20 +128,21 @@ public class OTPEnrollingWS {
         if (Stream.of(nickName, key).anyMatch(Utils::isEmpty)) {
             result = FinishCode.MISSING_PARAMS;
         } else {
+            key  = KEY_EXTERNALUID_MAPPING_PREFIX  + key;
             long now = System.currentTimeMillis();
-            String value = keyExternalUidMapping.get(key);
+            Object value = cacheProvider.get(key);
             if (value == null) {
                 result = FinishCode.NO_MATCH_OR_EXPIRED;
             } else {
                 device = new OTPDevice();
-                device.setUid(value);
+                device.setUid(value.toString());
                 device.setAddedOn(now);
                 device.setNickName(nickName);
                 device.setSoft(true);
 
                 if (otpService.addDevice(userId, device)) {
                     result = FinishCode.SUCCESS;
-                    keyExternalUidMapping.remove(key);
+                    cacheProvider.remove(key);
                 } else {
                     result = FinishCode.FAILED;
                     device = null;
@@ -151,13 +151,6 @@ public class OTPEnrollingWS {
         }
         return result.getResponse(device);
 
-    }
-
-    @PostConstruct
-    private void inited() {
-        logger.trace("Service inited");
-        keyExternalUidMapping = ExpiringMap.builder()
-                .maxSize(MAX_STORED_ENTRIES).expiration(TIME_WINDOW_DEFAULT, TimeUnit.MINUTES).build();
     }
 
 }

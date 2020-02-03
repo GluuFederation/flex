@@ -1,6 +1,5 @@
 package org.gluu.casa.plugins.authnmethod.rs;
 
-import net.jodah.expiringmap.ExpiringMap;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.VerifiedMobile;
@@ -11,15 +10,14 @@ import org.gluu.casa.plugins.authnmethod.rs.status.sms.ValidateCode;
 import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
 import org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus;
 import org.gluu.casa.rest.ProtectedApi;
+import org.gluu.service.cache.CacheProvider;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -32,18 +30,19 @@ import static org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus.SUCCES
 public class MobilePhoneEnrollingWS {
 
     private static final String SEPARATOR = ",";
-    private static final int TIME_WINDOW_DEFAULT = 2;
-    private static final int MAX_STORED_ENTRIES = 1000;   //one thousand entries stored at most
+    private static final String RECENT_CODES_PREFIX = "casa_reccode_";
+    private static final int EXPIRATION = (int) TimeUnit.MINUTES.toSeconds(2);
 
     @Inject
     private Logger logger;
 
-    MobilePhoneService mobilePhoneService;
+    @Inject
+    private CacheProvider cacheProvider;
 
     @Inject
     private PersistenceService persistenceService;
 
-    private Map<String, String> recentCodes;
+    MobilePhoneService mobilePhoneService;
 
     @GET
     @Path("send-code")
@@ -73,7 +72,7 @@ public class MobilePhoneEnrollingWS {
                 SMSDeliveryStatus deliveryStatus = mobilePhoneService.sendSMS(number, body);
                 if (deliveryStatus.equals(SUCCESS)) {
                     logger.trace("sendCode. code={}", aCode);
-                    recentCodes.put(userId + SEPARATOR + aCode, number);
+                    cacheProvider.put(EXPIRATION, RECENT_CODES_PREFIX + userId + SEPARATOR + aCode, number);
                     result = SendCode.SUCCESS;
                 } else {
                     result = SendCode.FAILURE;
@@ -101,7 +100,7 @@ public class MobilePhoneEnrollingWS {
         if (Stream.of(code, userId).anyMatch(Utils::isEmpty)) {
             result = ValidateCode.MISSING_PARAMS;
         } else {
-            String value = recentCodes.get(userId + SEPARATOR + code);
+            Object value = cacheProvider.get(RECENT_CODES_PREFIX + userId + SEPARATOR + code);
             result = value == null ? ValidateCode.NO_MATCH_OR_EXPIRED : ValidateCode.MATCH;
         }
         return result.getResponse();
@@ -134,9 +133,9 @@ public class MobilePhoneEnrollingWS {
             //One or more params are missing
             result = FinishCode.MISSING_PARAMS;
         } else {
-            String key = userId + SEPARATOR + code;
+            String key = RECENT_CODES_PREFIX + userId + SEPARATOR + code;
             long now = System.currentTimeMillis();
-            String value = recentCodes.get(key);
+            Object value = cacheProvider.get(key);
 
             if (value == null) {
                 //No match
@@ -146,11 +145,11 @@ public class MobilePhoneEnrollingWS {
                 phone = new VerifiedMobile();
                 phone.setNickName(nickName);
                 phone.setAddedOn(now);
-                phone.setNumber(value);
+                phone.setNumber(value.toString());
 
                 if (mobilePhoneService.addPhone(userId, phone)) {
                     result = FinishCode.SUCCESS;
-                    recentCodes.remove(key);
+                    cacheProvider.remove(RECENT_CODES_PREFIX + key);
                 } else {
                     result = FinishCode.FAILED;
                     phone = null;
@@ -159,13 +158,6 @@ public class MobilePhoneEnrollingWS {
         }
         return result.getResponse(phone);
 
-    }
-
-    @PostConstruct
-    private void inited() {
-        logger.trace("Service inited");
-        recentCodes = ExpiringMap.builder()
-                .maxSize(MAX_STORED_ENTRIES).expiration(TIME_WINDOW_DEFAULT, TimeUnit.MINUTES).build();
     }
 
 }
