@@ -156,7 +156,7 @@ public class Fido2Service extends BaseService {
 
         SecurityKey sk = null;
         try {
-            List<SecurityKey> list = getDevices(userId, false);
+            List<SecurityKey> list = getDevices(userId, true);
             sk = FidoService.getRecentlyCreatedDevice(list, time);
             if (sk != null && sk.getNickName() != null) {
                 sk = null;    //should have no name
