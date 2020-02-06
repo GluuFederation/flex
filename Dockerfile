@@ -32,7 +32,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=4.2.0-SNAPSHOT \
-    GLUU_BUILD_DATE=2020-01-28
+    GLUU_BUILD_DATE=2020-02-05
 
 # Install Casa
 RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war -O /tmp/casa.war \
@@ -46,8 +46,10 @@ RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_
 # ===========
 
 ENV TWILIO_VERSION 7.17.0
-RUN mkdir -p ${JETTY_BASE}/oxauth/custom/libs \
-    && wget -q https://repo1.maven.org/maven2/com/twilio/sdk/twilio/${TWILIO_VERSION}/twilio-${TWILIO_VERSION}.jar -O ${JETTY_BASE}/oxauth/custom/libs/twilio-${TWILIO_VERSION}.jar
+RUN wget -q https://repo1.maven.org/maven2/com/twilio/sdk/twilio/${TWILIO_VERSION}/twilio-${TWILIO_VERSION}.jar -O /tmp/twilio.jar
+
+ENV JSMPP_VERSION 2.3.7
+RUN wget -q https://repo1.maven.org/maven2/org/jsmpp/jsmpp/${JSMPP_VERSION}/jsmpp-${JSMPP_VERSION}.jar -O /tmp/jsmpp.jar
 
 # ====
 # Tini
@@ -157,7 +159,6 @@ RUN mkdir -p /etc/certs \
     /app/tmp
 
 COPY certs/casa.pub /etc/certs/
-COPY templates/casa_web_resources.xml /opt/gluu/jetty/casa/webapps/
 COPY templates /app/templates/
 COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh \

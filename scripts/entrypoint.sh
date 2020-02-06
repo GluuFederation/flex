@@ -6,6 +6,18 @@ set -e
 # =========
 
 run_entrypoint() {
+    # move twilio lib
+    if [ ! -f /opt/gluu/jetty/oxauth/custom/libs/twilio.jar ]; then
+        mkdir -p /opt/gluu/jetty/oxauth/custom/libs
+        mv /tmp/twilio.jar /opt/gluu/jetty/oxauth/custom/libs/twilio.jar
+    fi
+
+    # move jsmpp lib
+    if [ ! -f /opt/gluu/jetty/oxauth/custom/libs/jsmpp.jar ]; then
+        mkdir -p /opt/gluu/jetty/oxauth/custom/libs
+        mv /tmp/jsmpp.jar /opt/gluu/jetty/oxauth/custom/libs/jsmpp.jar
+    fi
+
     if [ ! -f /deploy/touched ]; then
         python /app/scripts/entrypoint.py
         touch /deploy/touched
