@@ -4,7 +4,7 @@
 
         <z:div sclass="flex justify-between" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.FooterViewModel')">
 
-            <div>${labels.adm.branding_footer}</div>
+            <div class="cust-footer-msg-rule">${labels.adm.branding_footer}</div>
             <z:div if="${vm.locales.size() gt 1}">
                 <span class="pr1">${labels.general.language}</span>
 

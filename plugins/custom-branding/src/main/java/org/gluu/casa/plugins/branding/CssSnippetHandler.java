@@ -20,7 +20,7 @@ public class CssSnippetHandler {
     private static final String PRIMARY_BUTTON_SELECTOR = "cust-primary-button";
     private static final String SECONDARY_BUTTON_SELECTOR = "cust-cancel-button";
     private static final String TERTIARY_BUTTON_SELECTOR = "cust-misc-button";
-    private static final String FOOTER_SELECTOR = "cust-footer-rule";
+    private static final String FOOTER_SELECTOR = "cust-footer-msg-rule";
 
     private static final String PRIMARY_BUTTON_DEF_COLOR = "#FF80CC"; /* pink */
     private static final String SECONDARY_BUTTON_DEF_COLOR = "#96CCFF"; /* light-blue */
