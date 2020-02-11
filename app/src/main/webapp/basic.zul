@@ -11,6 +11,7 @@
         <!-- order of stylesheets is important, do not move -->
         <link rel="stylesheet" href="${zkService.contextPath}/styles/bootstrap.min.css" />
         <link rel="stylesheet" href="${zkService.contextPath}${assetsService.prefix}/styles/gluu/style.css" />
+        <link rel="stylesheet" href="${zkService.contextPath}${assetsService.prefix}/styles/gluu/zk-overrides.css" />
         <link rel="stylesheet" href="${zkService.contextPath}/styles/tachyons.min.css" />
 
         <zk:zk if="${not empty assetsService.extraCss}">

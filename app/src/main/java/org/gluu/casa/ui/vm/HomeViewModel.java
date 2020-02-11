@@ -53,7 +53,7 @@ public class HomeViewModel {
             updateOffset(jsonObject.get("offset"));
             updateScreenWidth(jsonObject.get("screenWidth"));
 
-            boolean mobile = Executions.getCurrent().getBrowser("mobile") != null;
+            boolean mobile = (boolean) jsonObject.get("isMobile");
             logger.trace("Detected browser is {} mobile", mobile ? "" : "not");
             updateBrowserInfo(jsonObject.get("name"), jsonObject.get("version"), mobile);
         }
