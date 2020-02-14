@@ -5,7 +5,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
 
-    <z:div if="${empty pageScope.error and sessionContext.user.admin}">
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" self="@define(maincontent)">
         <div class="${css.contentHeading} mb0">
             <h1 class="f3 dark-blue2">${labels.adm.title}</h1>
             <p class="f6">${labels.adm.main_intro}</p>

@@ -27,7 +27,7 @@ public class MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private ConfigurationHandler confHandler;
+    private static ConfigurationHandler confHandler;
 
     @WireVariable
     private MenuService menuService;
@@ -38,9 +38,12 @@ public class MainViewModel {
         return extraButtons;
     }
 
+    static {
+        confHandler = Utils.managedBean(ConfigurationHandler.class);
+    }
+
     @Init
     public void init() {
-        confHandler = Utils.managedBean(ConfigurationHandler.class);
         extraButtons = menuService.getMenusOfType(MenuType.ADMIN_CONSOLE);
     }
 
