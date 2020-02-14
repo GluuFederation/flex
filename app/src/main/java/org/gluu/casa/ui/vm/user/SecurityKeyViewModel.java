@@ -52,7 +52,6 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     private String u2fSupportMessage;
     private boolean u2fMayBeSupported;
-    private boolean requiresU2f_v1_1;
 
     public boolean isUiAwaiting() {
         return uiAwaiting;
@@ -72,10 +71,6 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     public boolean isU2fMayBeSupported() {
         return u2fMayBeSupported;
-    }
-
-    public boolean isRequiresU2f_v1_1() {
-        return requiresU2f_v1_1;
     }
 
     public SecurityKey getNewDevice() {
@@ -112,12 +107,11 @@ public class SecurityKeyViewModel extends UserViewModel {
         try {
             uiAwaiting = true;
             BindUtils.postNotifyChange(null, null, this, "uiAwaiting");
-
             String jsonRequest = u2fService.generateJsonRegisterMessage(user.getUserName(), userService.generateRandEnrollmentCode(user.getId()));
 
             //Notify browser to exec proper function
             UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_INFO, Labels.getLabel("usr.u2f_touch"));
-            Clients.response(new AuInvoke("triggerU2fRegistration", new JavaScriptValue(jsonRequest), REGISTRATION_TIMEOUT, requiresU2f_v1_1));
+            Clients.response(new AuInvoke("triggerU2fRegistration", new JavaScriptValue(jsonRequest), REGISTRATION_TIMEOUT));
         } catch (Exception e) {
             UIUtils.showMessageUI(false);
             logger.error(e.getMessage(), e);
@@ -274,22 +268,13 @@ public class SecurityKeyViewModel extends UserViewModel {
             String name = binfo.getName().toLowerCase();
             int browserVer = binfo.getMainVersion();
 
-            u2fMayBeSupported =  (name.contains("chrome") && browserVer >= 41) || (name.contains("opera") && browserVer >= 41)
-                    || (name.contains("safari") && browserVer > 10) || name.contains("firefox");
+            //I can guarantee it only works in the following versions, however older browsers might work too (with some
+            //config flag tweaking or plugin installation)
+            u2fMayBeSupported = (name.contains("chrome") && browserVer >= 70) || (name.contains("opera") && browserVer >= 57)
+                    || (name.contains("safari") && browserVer > 10) || (name.contains("firefox") && browserVer >= 71);
 
-            if (u2fMayBeSupported) {
-                if (name.contains("firefox")) {
-                    if (browserVer >= 57) {
-                        if (browserVer < 67) {
-                            u2fSupportMessage = Labels.getLabel("usr.u2f_enabled_u2f_ff");
-                        }
-                        requiresU2f_v1_1 = true;
-                    } else {
-                        u2fSupportMessage = Labels.getLabel("usr.u2f_unsupported_ff", new Integer[]{ browserVer });
-                    }
-                } else if (name.contains("safari")){
-                    u2fSupportMessage = Labels.getLabel("usr.u2f_unsupported_safari");
-                }
+            if ((u2fMayBeSupported) && (name.contains("safari"))) {
+                u2fSupportMessage = Labels.getLabel("usr.u2f_unsupported_safari");
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
