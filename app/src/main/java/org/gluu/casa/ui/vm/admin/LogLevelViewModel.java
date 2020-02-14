@@ -37,7 +37,7 @@ public class LogLevelViewModel extends MainViewModel {
         return selectedLogLevel;
     }
 
-    @Init//(superclass = true)
+    @Init
     public void init() {
         //it seems ZK doesn't like ummodifiable lists
         logLevels = Stream.of("ERROR", "WARN", "INFO", "DEBUG", "TRACE").collect(Collectors.toList());  //SLF4J_LEVELS

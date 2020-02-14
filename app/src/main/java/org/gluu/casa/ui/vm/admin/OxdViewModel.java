@@ -64,7 +64,7 @@ public class OxdViewModel extends MainViewModel {
         return requiredScopes;
     }
 
-    @Init//(superclass = true)
+    @Init
     public void init() {
         reloadConfig();
         requiredScopes = new HashSet<>(OxdService.REQUIRED_SCOPES);

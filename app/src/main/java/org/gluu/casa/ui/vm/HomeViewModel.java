@@ -45,15 +45,14 @@ public class HomeViewModel {
     @Listen("onData=#message")
     public void notified(Event evt) {
 
-        Optional<JSONObject> opt = Optional.ofNullable(evt.getData()).map(JSONObject.class::cast);
-        if (opt.isPresent()) {
-            JSONObject jsonObject = opt.get();
+        JSONObject jsonObject = Optional.ofNullable(evt.getData()).map(JSONObject.class::cast).orElse(null);
+        if (jsonObject != null) {
             logger.trace("Browser data is {} ", jsonObject.toJSONString());
 
             updateOffset(jsonObject.get("offset"));
             updateScreenWidth(jsonObject.get("screenWidth"));
 
-            boolean mobile = (boolean) jsonObject.get("isMobile");
+            boolean mobile = Optional.ofNullable(jsonObject.get("isMobile")).map(Boolean.class::cast).orElse(false);
             logger.trace("Detected browser is {} mobile", mobile ? "" : "not");
             updateBrowserInfo(jsonObject.get("name"), jsonObject.get("version"), mobile);
         }
