@@ -1,28 +1,28 @@
 //Initializes the flag+phone mockery
-var phComponent = $("#phone");
-var widgetId = "phWidget";
+let phComponent = document.querySelector("#phone")
+let widgetId = "phWidget"
 
-phComponent.intlTelInput({
+let iti = intlTelInput(phComponent, {
     separateDialCode: true,
     preferredCountries: [ "us" ]
-});
+})
 
-phComponent.on("countrychange", function(e, countryData) { updatePhoneValue() });
+phComponent.addEventListener("countrychange", function() { updatePhoneValue() });
 
 function updatePhoneValue() {
-    var widget = zk.$("$" + widgetId);
-    widget.setValue($(".selected-dial-code").text() + phComponent.val());
+    let widget = zk.$("$" + widgetId);
+    widget.setValue(iti.getSelectedCountryData().dialCode + phComponent.value);
     widget.fireOnChange({});
 }
 
 function resetPhoneValue() {
-    phComponent.val("");
+    phComponent.value = "";
     updatePhoneValue();
 }
 
 //This is called when the send button is pushed
 function tempDisable(id, timeout, next){
-    button = zk.$("$" + id);
+    let button = zk.$("$" + id);
     button.setDisabled(true);
     setTimeout(function(w) { w.setDisabled(false) }, timeout, button);
 

@@ -214,15 +214,15 @@ label {
 
 /* intl-tel-input overrides */
 
-.iti-flag {
+.iti__flag {
     background-image: url("../../images/flags.png");
 }
 
-@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2 / 1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
-  .iti-flag {background-image: url("../../images/flags@2x.png");}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .iti__flag {background-image: url("../../images/flags@2x.png");}
 }
 
-.intl-tel-input {
+.iti {
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -230,22 +230,23 @@ label {
     width: 100%;
 }
 
-.intl-tel-input .flag-container {
+.iti__flag-container {
     position: relative;
+    padding: 0 !important;
 }
 
-.intl-tel-input .focused-text {
-    margin-left: 20px !important;
+.iti .focused-text {
+    margin-left: 10px !important;
+    margin-top: 3px !important;
     border-radius: 0;
-    padding: 0 !important;
+    padding: 0 0 0 10px !important;
     position: relative;
     flex: 1 1 auto;
     width: 1%;
     font-size: .8rem;
 }
 
-.intl-tel-input.separate-dial-code .selected-flag {
-    display: table;
+.iti__selected-flag {
     background-color: transparent;
     color: rgb( 120, 137, 147);
     line-height: 1.412;
@@ -253,7 +254,7 @@ label {
     padding: .46rem 0;
 }
 
-.intl-tel-input .selected-flag .iti-arrow {
+.iti__selected-flag .iti__arrow {
     right: 0;
     border-top: 5px dashed;
     border-top: 4px solid\9;
@@ -262,15 +263,15 @@ label {
     color: rgb( 120, 137, 147);
 }
 
-.intl-tel-input.allow-dropdown .flag-container:hover .selected-flag {
+.iti--separate-dial-code .iti__selected-flag {
     background-color: transparent;
 }
 
-.intl-tel-input.separate-dial-code.allow-dropdown.iti-sdc-2 .selected-flag:focus {
+.iti__selected-flag:focus {
     outline: none;
 }
 
-.intl-tel-input .country-list {
+.iti__country-list {
     border-radius: 4px;
     margin-top: 10px;
     border: 0;
@@ -280,6 +281,10 @@ label {
     box-shadow: 0 0 0 1px rgba(39, 44, 48, .05), 0 2px 7px 1px rgba(39, 44, 48, .16);
 }
 
-.intl-tel-input .country-list .divider {
+.iti__divider {
     border-bottom: 1px solid #e5e5e5;
+}
+
+.iti__arrow--up {
+    border-bottom: 0;
 }

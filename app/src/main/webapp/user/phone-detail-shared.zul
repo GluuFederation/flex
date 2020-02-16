@@ -1,5 +1,7 @@
 <zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
+
         <z:include src="/back-home.zul" />
+
         <div class="ph4 mb2">
             <div class="alert alert-success dn" id="feedback-phone-edit" role="alert" />
         </div>
@@ -52,7 +54,8 @@
 
                     <z:div sclass="pl3-ns pt2 pb3 flex flex-wrap" visible="@load(not vm.uiSmsDelivered and not vm.uiCodesMatch)">
                         <div class="mr3" style="width:11rem">
-                            <input class="focused-text" placeholder="${labels.general.phonenumber}" id="phone" onChange="javascript:updatePhoneValue()" />
+                            <input class="focused-text" placeholder="${labels.general.phonenumber}" id="phone"
+                                   onChange="javascript:updatePhoneValue()" ca:type="tel" />
                         </div>
                         <div class="pt1">
                             <z:button label="${labels.usr.mobile_send}" sclass="${css.primaryButton}" onClick="@command('sendCode', comp = sentCode)"

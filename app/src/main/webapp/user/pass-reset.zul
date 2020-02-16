@@ -54,8 +54,8 @@
     </z:div>
 
     <z:div self="@define(extra)">
-        <z:script src="/scripts/zxcvbn.js" />
-        <z:script src="/scripts/hideShowPassword.min.js" />
+        <z:script src="/scripts/zxcvbn-4.4.2.js" />
+        <z:script src="/scripts/hideShowPassword-2.1.1.min.js" />
     </z:div>
 
 </zk:zk>

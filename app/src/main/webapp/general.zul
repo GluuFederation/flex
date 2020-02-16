@@ -26,7 +26,7 @@
         </div>
 
         <z:script src="/scripts/bootstrap.min.js" />
-        <z:script src="/scripts/font-awesome-5.2.0.all.min.js" />
+        <z:script src="/scripts/font-awesome-5.12.1.all.min.js" />
         <!-- In practice this call appears in markup earlier than the couple of files above -->
         <script>
             initTooltips();
