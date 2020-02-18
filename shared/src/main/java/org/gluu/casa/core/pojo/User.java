@@ -22,7 +22,6 @@ public class User {
     private String id;
     private String preferredMethod;
     private String pictureURL;
-   
 
     private Map<String, Object> claims;
 

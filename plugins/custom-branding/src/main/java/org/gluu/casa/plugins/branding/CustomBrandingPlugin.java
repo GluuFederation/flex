@@ -23,8 +23,7 @@ public class CustomBrandingPlugin extends Plugin {
     public void delete() {
 
         try {
-            IBrandingManager brandingManager = Utils.managedBean(IBrandingManager.class);
-            brandingManager.factoryReset();
+            Utils.managedBean(IBrandingManager.class).factoryReset();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

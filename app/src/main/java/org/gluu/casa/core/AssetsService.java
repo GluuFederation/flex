@@ -1,8 +1,11 @@
 package org.gluu.casa.core;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IBrandingManager;
+import org.gluu.service.cache.CacheProvider;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +15,8 @@ import javax.inject.Named;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -22,6 +27,7 @@ import java.util.stream.Stream;
 public class AssetsService implements IBrandingManager {
 
     public static final String EMPTY_SNIPPET = "/**/";
+    private static final String ASSETS_CACHE_KEY = "casa_assets";
 
     private static final String DEFAULT_LOGO_URL = "/images/logo.png";
     private static final String DEFAULT_FAVICON_URL = "/images/favicon.ico";
@@ -35,6 +41,14 @@ public class AssetsService implements IBrandingManager {
 
     @Inject
     private MainSettings mainSettings;
+
+    @Inject
+    private CacheProvider cacheProvider;
+
+    @Inject
+    private ZKService zkService;
+
+    private ObjectMapper mapper;
 
     private String logoUrl;
 
@@ -129,7 +143,8 @@ public class AssetsService implements IBrandingManager {
     }
 
     @PostConstruct
-    private void init() {
+    void init() {
+        mapper = new ObjectMapper();
         reloadUrls();
     }
 
@@ -151,6 +166,7 @@ public class AssetsService implements IBrandingManager {
             logoUrl = customLogoUrl;
             faviconUrl = customFaviconUrl;
         }
+        updateAssetsCache();
 
     }
 
@@ -162,18 +178,27 @@ public class AssetsService implements IBrandingManager {
         return Paths.get(CUSTOM_FILEPATH, DEFAULT_FAVICON_URL.split("/"));
     }
 
-    private void updateEmptyCssSnippet() throws Exception {
-
-        if (Utils.isEmpty(mainSettings.getExtraCssSnippet())) {
-            useExtraCss(EMPTY_SNIPPET);
-        }
-
-    }
-
     private void storeAsset(Path destination, byte[] data) throws Exception {
         logger.info("Saving file {}", destination.toString());
         Files.createDirectories(destination.getParent());
         Files.write(destination, data);
+    }
+
+    private void updateAssetsCache() {
+
+        //Store changes in cache: this data is needed in Casa custom script
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.putAll(mapper.convertValue(this, new TypeReference<Map<String, Object>>(){}));
+            map.put("contextPath", zkService.getContextPath());
+
+            //it should not expire
+            cacheProvider.put(Integer.MAX_VALUE, ASSETS_CACHE_KEY, map);
+            logger.debug("Cache updated with Casa UI assets data");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
     }
 
 }

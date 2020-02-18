@@ -61,14 +61,14 @@ public class ZKService {
     public void init(WebApp app) {
 
         try {
-            confHandler.init();
             servletContext = app.getServletContext();
+            contextPath = servletContext.getContextPath();
+            confHandler.init();
             readSystemLabels();
 
             appName = Optional.ofNullable(Labels.getLabel("general.appName")).orElse(app.getAppName());
             app.setAppName(appName);
 
-            contextPath = servletContext.getContextPath();
             CssRulesResolver.init(servletContext);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

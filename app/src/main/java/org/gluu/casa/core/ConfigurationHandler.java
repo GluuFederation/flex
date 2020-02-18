@@ -39,6 +39,9 @@ public class ConfigurationHandler extends JobListenerSupport {
     private Logger logger;
 
     @Inject
+    private AssetsService assetsService;
+
+    @Inject
     private PersistenceService persistenceService;
 
     @Inject
@@ -106,6 +109,8 @@ public class ConfigurationHandler extends JobListenerSupport {
                 //Update log level ASAP
                 computeLoggingLevel();
                 setAppState(AppStateEnum.LOADING);
+                //Force early initialization of assets service before it is used in zul templates
+                assetsService.init();
 
                 //This is a trick so the timer event logic can be coded inside this managed bean
                 timerService.addListener(this, acrQuartzJobName);

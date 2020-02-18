@@ -1,12 +1,13 @@
 package org.gluu.casa.core.navigation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.beanutils.BeanUtils;
-import org.gluu.casa.core.*;
+import org.gluu.casa.core.AuthFlowContext;
+import org.gluu.casa.core.ConfigurationHandler;
+import org.gluu.casa.core.OxdService;
+import org.gluu.casa.core.SessionContext;
+import org.gluu.casa.core.UserService;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
-import org.gluu.oxauth.model.util.Base64Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.Pair;
@@ -14,8 +15,6 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.util.Initiator;
 
-import javax.servlet.http.Cookie;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static org.gluu.casa.core.AuthFlowContext.RedirectStage.*;
@@ -27,23 +26,10 @@ import static org.gluu.casa.core.AuthFlowContext.RedirectStage.*;
  */
 public class HomeInitiator extends CommonInitiator implements Initiator {
 
-    private static final String ASSETS_COOKIE_NAME = "casa_assets";
-
-    private static ObjectMapper mapper;
-    private static OxdService oxdService;
-    private static AssetsService assetsService;
-    private static ZKService zkService;
-
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private AuthFlowContext flowContext;
-
-    static {
-        oxdService = Utils.managedBean(OxdService.class);
-        assetsService = Utils.managedBean(AssetsService.class);
-        zkService = Utils.managedBean(ZKService.class);
-        mapper = new ObjectMapper();
-    }
+    private OxdService oxdService;
 
     public void doInit(Page page, Map<String, Object> map) throws Exception {
 
@@ -51,6 +37,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
         if (page.getAttribute("error") == null) {
 
             flowContext = Utils.managedBean(AuthFlowContext.class);
+            oxdService = Utils.managedBean(OxdService.class);
             try {
                 switch (flowContext.getStage()) {
                     case NONE:
@@ -110,35 +97,8 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
     private void goForAuthorization() throws Exception {
         flowContext.setStage(INITIAL);
         logger.debug("Starting authorization flow");
-        setAssetsCookie();
         //do Authz Redirect
         WebUtils.execRedirect(oxdService.getAuthzUrl(ConfigurationHandler.DEFAULT_ACR));
-    }
-
-    private void setAssetsCookie() {
-
-        try {
-            logger.info("Computing value for '{}' cookie", ASSETS_COOKIE_NAME);
-            //This is needed because mapper.writeValueAsString(assetsService) throws an Exception!
-            Map<String, String> map = BeanUtils.describe(assetsService);
-            map.put("contextPath", zkService.getContextPath());
-            map.remove("class");
-            //Drop weld garbage
-            map.remove("metadata");
-
-            byte bytes[] = mapper.writeValueAsString(map).getBytes(StandardCharsets.UTF_8);
-            Cookie coo = new Cookie(ASSETS_COOKIE_NAME, Base64Util.base64urlencode(bytes));
-            coo.setPath("/");
-            coo.setSecure(true);
-            coo.setHttpOnly(true);
-            coo.setMaxAge(2592000); //1 month
-
-            logger.debug("Cookie added to response");
-            WebUtils.getServletResponse().addCookie(coo);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-
     }
 
     private boolean errorsParsed(Page page) {
