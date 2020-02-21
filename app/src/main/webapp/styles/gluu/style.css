@@ -106,6 +106,10 @@ button:disabled {
     background-color: #ec971f;
 }
 
+.bsgreen {
+    color: #28a745;
+}
+
 .bg-bsgreen-success {
     background-color: #28a745;
 }
@@ -170,6 +174,14 @@ label {
 
 .btn-success:focus, .btn:focus {
 	box-shadow: none;
+}
+
+.table{
+    color: gray;
+}
+
+.table-hover tbody tr:hover{
+    color: gray;
 }
 
 /* wicked input box */
