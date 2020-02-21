@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.model.ApplicationConfiguration;
 import org.gluu.casa.misc.AppStateEnum;
-import org.gluu.casa.plugins.authnmethod.*;
 import org.gluu.casa.timer.*;
 import org.gluu.oxauth.model.util.SecurityProviderUtility;
 import org.gluu.persist.exception.operation.PersistenceException;
@@ -29,8 +28,6 @@ import static org.gluu.casa.misc.Utils.MIN_CREDS_2FA_DEFAULT;
 public class ConfigurationHandler extends JobListenerSupport {
 
     public static final String DEFAULT_ACR = "casa";
-    public static final List<String> DEFAULT_SUPPORTED_METHODS = Arrays.asList(
-            SecurityKey2Extension.ACR, SecurityKeyExtension.ACR, OTPExtension.ACR, SuperGluuExtension.ACR, OTPTwilioExtension.ACR, OTPSmppExtension.ACR);
 
     private static final int RETRIES = 15;
     private static final int RETRY_INTERVAL = 20;

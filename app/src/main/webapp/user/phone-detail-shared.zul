@@ -12,7 +12,6 @@
                 <div class="${css.panel}">
                     <h2 class="f4 dark-blue2">${labels.usr.mobile_title}</h2>
                     <p>${labels.usr.mobile_text}</p>
-                    <!--z:label visible="@load(not empty vm.phones)" sclass="dark-blue2" value="${labels.usr.you_added}" /-->
                 </div>
 
                 <!-- phones list -->
@@ -121,4 +120,5 @@
             </div>
 
         </z:window>
+
 </zk:zk>

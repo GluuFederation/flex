@@ -7,6 +7,7 @@ import org.gluu.casa.core.TimerService;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.plugins.authnmethod.*;
 import org.gluu.model.ScriptLocationType;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
@@ -33,7 +34,8 @@ public class AuthnScriptsReloader extends JobListenerSupport {
     private static final String LOCATION_TYPE_PROPERTY = "location_type";
     private static final String LOCATION_PATH_PROPERTY = "location_path";
     private static final String FILENAME_TEMPLATE = "casa-external_{0}.py";
-    private static final List<String> NOT_REPLACEABLE_SCRIPTS = ConfigurationHandler.DEFAULT_SUPPORTED_METHODS;
+    private static final List<String> NOT_REPLACEABLE_SCRIPTS = Arrays.asList(SecurityKey2Extension.ACR,
+            SecurityKeyExtension.ACR, OTPExtension.ACR, SuperGluuExtension.ACR, OTPTwilioExtension.ACR, OTPSmppExtension.ACR);
 
     @Inject
     private Logger logger;

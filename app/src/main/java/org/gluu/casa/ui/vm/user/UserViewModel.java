@@ -58,7 +58,6 @@ public class UserViewModel {
         }
         return page;
 
-
     }
 
     int getScreenWidth() {
