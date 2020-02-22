@@ -27,7 +27,7 @@
             <zk:zk if="${vm.pst.passResetAvailable}">
                 <li id="pass_reset_menuitem">
                     <a class="db pv3 pl1 ${css.menuItem}" href="${zkService.contextPath}/user/pass-reset.zul">
-                        <i class="mh2 fas fa-lock" /><!-- fa-expeditedssl -->
+                        <i class="mh2 fas fa-lock" />
                         <span class="collapsible-menu-item di">${labels.usr.passreset_title}</span>
                     </a>
                 </li>

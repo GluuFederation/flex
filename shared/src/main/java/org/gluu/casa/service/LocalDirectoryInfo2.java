@@ -13,7 +13,7 @@ public interface LocalDirectoryInfo2 extends LocalDirectoryInfo {
     /**
      * Returns a map with name/value pairs of the configuration properties belonging to a Gluu Server interception script
      * identified by an <code>acr</code> value.
-     * @param acr ACR (display Name) value that identities the custom script
+     * @param acr ACR (display Name) value that identifies the custom script
      * @return A map. Null if no script is found associated with the acr passed
      */
     Map<String, String> getCustScriptConfigProperties(String acr);
