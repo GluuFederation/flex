@@ -2,6 +2,7 @@ package org.gluu.casa.plugins.helloworld;
 
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
+import org.gluu.casa.service.ISessionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
@@ -21,6 +22,7 @@ public class HelloWorldVM {
     private String message;
     private String organizationName;
     private IPersistenceService persistenceService;
+    private ISessionContext sessionContext;
 
     /**
      * Getter of private class field <code>organizationName</code>.
@@ -54,6 +56,12 @@ public class HelloWorldVM {
     public void init() {
         logger.info("Hello World ViewModel inited");
         persistenceService = Utils.managedBean(IPersistenceService.class);
+
+        sessionContext = Utils.managedBean(ISessionContext.class);
+        if (sessionContext.getLoggedUser() != null) {
+            logger.info("There is a user logged in!");
+        }
+
     }
 
     /**

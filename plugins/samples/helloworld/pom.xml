@@ -13,7 +13,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <plugin.id>hello-world-plugin</plugin.id>
-        <plugin.version>0.1</plugin.version>
+        <plugin.version>0.2</plugin.version>
     </properties>
 
     <repositories>
