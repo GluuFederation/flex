@@ -243,7 +243,7 @@ public class SecurityKeyViewModel extends UserViewModel {
                         try {
                             if (devices.remove(device)) {
                                 if (reset) {
-                                    userService.setPreferredMethod(user, null);
+                                    userService.turn2faOff(user);
                                 }
 
                                 u2fService.removeDevice(device);

@@ -253,7 +253,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
                         try {
                             if (devices.remove(device)) {
                                 if (reset) {
-                                    userService.setPreferredMethod(user, null);
+                                    userService.turn2faOff(user);
                                 }
 
                                 fido2Service.removeDevice(device);

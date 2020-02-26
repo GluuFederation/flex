@@ -9,13 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.*;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -86,9 +84,8 @@ public class UserPreferenceViewModel extends UserViewModel {
 
     @Command
     public void change() {
-        String value = mfaEnabled ? Long.toString(System.currentTimeMillis()) : null;
-        //saves to LDAP and updates user object afterwards
-        UIUtils.showMessageUI(userService.setPreferredMethod(user, value));
+        boolean outcome = mfaEnabled ? userService.turn2faOn(user) : userService.turn2faOff(user);
+        UIUtils.showMessageUI(outcome);
     }
 
 }

@@ -250,7 +250,7 @@ public class SuperGluuViewModel extends UserViewModel {
                         try {
                             if (devices.remove(device)) {
                                 if (reset) {
-                                    userService.setPreferredMethod(user, null);
+                                    userService.turn2faOff(user);
                                 }
 
                                 sgService.removeDevice(device);

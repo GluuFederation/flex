@@ -213,7 +213,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
                         try {
                             if (phones.remove(phone)) {
                                 if (reset) {
-                                    userService.setPreferredMethod(user, null);
+                                    userService.turn2faOff(user);
                                 }
 
                                 mpService.updateMobilePhonesAdd(user.getId(), phones, null);
