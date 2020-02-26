@@ -207,21 +207,22 @@ public class VerifiedPhoneViewModel extends UserViewModel {
         boolean reset = resetMessages != null;
         Pair<String, String> delMessages = getDeleteMessages(phone.getNickName(), resetMessages);
 
-        Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO, reset ? Messagebox.EXCLAMATION : Messagebox.QUESTION,
+        Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO,
+                reset ? Messagebox.EXCLAMATION : Messagebox.QUESTION,
                 event -> {
                     if (Messagebox.ON_YES.equals(event.getName())) {
                         try {
-                            if (phones.remove(phone)) {
+                            boolean success = mpService.updateMobilePhonesAdd(user.getId(), phones, null);
+                            if (success) {
                                 if (reset) {
                                     userService.turn2faOff(user);
                                 }
+                                phones.remove(phone);
 
-                                mpService.updateMobilePhonesAdd(user.getId(), phones, null);
                                 //trigger refresh (this method is asynchronous...)
                                 BindUtils.postNotifyChange(null, null, VerifiedPhoneViewModel.this, "phones");
-
-                                UIUtils.showMessageUI(true);
                             }
+                            UIUtils.showMessageUI(success);
                         } catch (Exception e) {
                             UIUtils.showMessageUI(false);
                             logger.error(e.getMessage(), e);

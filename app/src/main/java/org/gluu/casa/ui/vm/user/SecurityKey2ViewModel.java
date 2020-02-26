@@ -247,21 +247,22 @@ public class SecurityKey2ViewModel extends UserViewModel {
         boolean reset = resetMessages != null;
         Pair<String, String> delMessages = getDeleteMessages(device.getNickName(), resetMessages);
 
-        Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO, reset ? Messagebox.EXCLAMATION : Messagebox.QUESTION,
+        Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO,
+                reset ? Messagebox.EXCLAMATION : Messagebox.QUESTION,
                 event -> {
                     if (Messagebox.ON_YES.equals(event.getName())) {
                         try {
-                            if (devices.remove(device)) {
+                            boolean success = fido2Service.removeDevice(device);
+                            if (success) {
                                 if (reset) {
                                     userService.turn2faOff(user);
                                 }
+                                devices.remove(device);
 
-                                fido2Service.removeDevice(device);
                                 //trigger refresh (this method is asynchronous...)
                                 BindUtils.postNotifyChange(null, null, SecurityKey2ViewModel.this, "devices");
-
-                                UIUtils.showMessageUI(true);
                             }
+                            UIUtils.showMessageUI(success);
                         } catch (Exception e) {
                             UIUtils.showMessageUI(false);
                             logger.error(e.getMessage(), e);

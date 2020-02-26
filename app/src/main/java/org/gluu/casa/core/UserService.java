@@ -109,19 +109,25 @@ public class UserService implements SndFactorAuthenticationUtils {
         if (user.getPreferredMethod() != null) {
 
             //Compute how many credentials current user has added
+            logger.info("Checking potential conflicts if a credential of type '{}' is removed from '{}'", credentialType, user.getId());
             List<Pair<AuthnMethod, Integer>> userMethodsCount = getUserMethodsCount(user.getId());
+
             int totalCreds = userMethodsCount.stream().mapToInt(Pair::getY).sum();
             int minCredsFor2FA = confHandler.getSettings().getMinCredsFor2FA();
+            logger.debug("Total number of user creds is {}", totalCreds);
 
             if (nCredsOfType == 1) {
                 List<AuthnMethod> methods = get2FARequisiteMethods();
                 boolean typeOfCredIs2FARequisite = methods.stream().map(AuthnMethod::getAcr).anyMatch(acr -> acr.equals(credentialType));
 
                 if (typeOfCredIs2FARequisite) {
+                    logger.debug("Credential belongs to 2FA requisite");
                     //Check if credential being removed is the only one belonging to 2FARequisiteMethods
                     int nCredsBelongingTo2FARequisite = userMethodsCount.stream()
                             .filter(pair -> pair.getX().mayBe2faActivationRequisite()).mapToInt(Pair::getY).sum();
+
                     if (nCredsBelongingTo2FARequisite == 1) {
+                        logger.debug("There is only one credential belonging to 2FA requisite methods for this user");
                         //Compute the names of those authentication methods which are requisite for 2FA activation
                         String commaSepNames = methods.stream().map(aMethod -> Labels.getLabel(aMethod.getUINameKey()))
                                 .collect(Collectors.toList()).toString();
@@ -133,6 +139,7 @@ public class UserService implements SndFactorAuthenticationUtils {
                 }
             }
             if (message == null && totalCreds == minCredsFor2FA) {
+                logger.debug("Removal of credential would result in less than {} (minimum required for 2FA)", minCredsFor2FA);
                 conflict = CredentialRemovalConflict.CREDS2FA_NUMBER_UNDERFLOW;
                 message = Labels.getLabel("usr.del_conflict_underflow", new Integer[]{ minCredsFor2FA });
             }
@@ -145,7 +152,7 @@ public class UserService implements SndFactorAuthenticationUtils {
 
     }
 
-    public boolean setPreferredMethod(User user, String method) {
+    private boolean setPreferredMethod(User user, String method) {
 
         boolean success = setPreferredMethod(user.getId(), method);
         if (success) {

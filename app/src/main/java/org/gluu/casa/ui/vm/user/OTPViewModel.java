@@ -372,21 +372,22 @@ public class OTPViewModel extends UserViewModel {
         boolean reset = resetMessages != null;
         Pair<String, String> delMessages = getDeleteMessages(device.getNickName(), resetMessages);
 
-        Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO, reset ? Messagebox.EXCLAMATION : Messagebox.QUESTION,
+        Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO,
+                reset ? Messagebox.EXCLAMATION : Messagebox.QUESTION,
                 event -> {
                     if (Messagebox.ON_YES.equals(event.getName())) {
                         try {
-                            if (devices.remove(device)) {
+                            boolean success = otpService.updateDevicesAdd(user.getId(), devices, null);
+                            if (success) {
                                 if (reset) {
                                     userService.turn2faOff(user);
                                 }
+                                devices.remove(device);
 
-                                otpService.updateDevicesAdd(user.getId(), devices, null);
                                 //trigger refresh (this method is asynchronous...)
                                 BindUtils.postNotifyChange(null, null, OTPViewModel.this, "devices");
-
-                                UIUtils.showMessageUI(true);
                             }
+                            UIUtils.showMessageUI(success);
                         } catch (Exception e) {
                             UIUtils.showMessageUI(false);
                             logger.error(e.getMessage(), e);
