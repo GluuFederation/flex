@@ -155,7 +155,7 @@ public class CertService {
                 } else {
                     if (enroll) {
                         logger.info("Associating presented cert to user");
-                        List<String> oeuid = Optional.ofNullable(person.getOxExternalUid()).orElse(new ArrayList<>());
+                        List<String> oeuid = new ArrayList<>(Optional.ofNullable(person.getOxExternalUid()).orElse(Collections.emptyList()));
                         oeuid.add(externalUid);
                         person.setOxExternalUid(oeuid);
 

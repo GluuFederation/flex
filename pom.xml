@@ -63,6 +63,7 @@
         <module>plugins/client-authorizations</module>
         <module>plugins/custom-branding</module>
         <module>plugins/strong-authn-settings</module>
+        <module>plugins/cert-authn</module>
     </modules>
 
     <dependencyManagement>
