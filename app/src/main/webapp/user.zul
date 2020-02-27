@@ -47,8 +47,8 @@
                                     <div class="${css.panel} f6 pl4">
                                         <span class="dark-blue2">${empty cred.nickName ? c:l('general.no_named') : cred.nickName}</span>
 
-                                        <z:label if="${not empty cred.addedOn}" value="@load(c:cat(' - ',c:toLowerCase(c:l('general.added_on'))))" />
-                                        <z:label if="${not empty cred.addedOn}" value="@load(cred.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter',
+                                        <z:label if="${cred.addedOn > 0}" value="@load(c:cat(' - ',c:toLowerCase(c:l('general.added_on'))))" />
+                                        <z:label if="${cred.addedOn > 0}" value="@load(cred.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter',
                                         format='MMM d yyyy', offset = sessionContext.zoneOffset)"  />
                                     </div>
                                 </zk:template>
