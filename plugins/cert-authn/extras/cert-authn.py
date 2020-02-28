@@ -1,12 +1,12 @@
-from java.util import Arrays
-from java.net import URLEncoder
 from org.gluu.jsf2.message import FacesMessages
-
 from org.gluu.oxauth.security import Identity
 from org.gluu.oxauth.service import AuthenticationService, UserService, EncryptionService
 from org.gluu.jsf2.service import FacesService
 from org.gluu.model.custom.script.type.auth import PersonAuthenticationType
 from org.gluu.service.cdi.util import CdiUtil
+
+from java.net import URLEncoder
+from java.util import Arrays
 
 from javax.faces.context import FacesContext
 from javax.faces.application import FacesMessage
@@ -14,6 +14,11 @@ from javax.faces.application import FacesMessage
 import uuid
 import sys
 import java
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 class PersonAuthentication(PersonAuthenticationType):
     def __init__(self, currentTimeMillis):
@@ -67,13 +72,23 @@ class PersonAuthentication(PersonAuthenticationType):
                     print "Cert. Expected cookie not found"
                 else:
                     key = identity.getSessionId().getSessionAttributes().get("rndkey")
-
                     cookie = CdiUtil.bean(EncryptionService).decrypt(cookie.getValue())
-                    tokens = cookie.split(";")
+                    cookie = json.loads(cookie)
 
-                    if tokens[0] == key:
-                        # See enumeration org.gluu.casa.plugins.cert.service.UserCertificateMatch
-                        result = tokens[1]
+                    if cookie["key"] != key:
+                        print "Cert. Inconsistent cookie value"
+                    else:
+                        result = cookie["status"]
+
+                        if result == 3:
+                            # See enumeration org.gluu.casa.plugins.cert.service.UserCertificateMatch
+                            result = cookie["match"]
+                        elif result == 2:
+                            result = "NOT_VALID"
+                        elif result == 1:
+                            result = "UNPARSABLE"
+                        elif result == 0:
+                            result = "NOT_SELECTED"
 
                         print "Cert. Authentication result was %s" % result
                         #Set error messages to show
@@ -81,8 +96,6 @@ class PersonAuthentication(PersonAuthenticationType):
                             return True
 
                         self.setMessageError(FacesMessage.SEVERITY_ERROR, result)
-                    else:
-                        print "Cert. Inconsistent cookie value"
             except:
                 print "Cert. Exception: ", sys.exc_info()[1]
 
@@ -118,7 +131,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
     def getPageForStep(self, configurationAttributes, step):
         if step == 2:
-            return "/casa/cert-prompt.xhtml"
+            return "/casa/cert.xhtml"
         return ""
 
     def logout(self, configurationAttributes, requestParameters):
@@ -138,7 +151,13 @@ class PersonAuthentication(PersonAuthenticationType):
 
     def setMessageError(self, severity, result):
 
-        if result == "CERT_ENROLLED_OTHER_USER":
+        if result == "NOT_VALID":
+            msg = "Your certificate is not valid"
+        elif result == "UNPARSABLE":
+            msg = "Your certificate couldn't be processed by the server"
+        elif result == "NOT_SELECTED":
+            msg = "You did not select any certificate"
+        elif result == "CERT_ENROLLED_OTHER_USER":
             msg = "The certificate presented is registered to a different account"
         elif result == "CERT_NOT_RECOGNIZED":
             msg = "The certificate presented has not been enrolled yet in Casa"

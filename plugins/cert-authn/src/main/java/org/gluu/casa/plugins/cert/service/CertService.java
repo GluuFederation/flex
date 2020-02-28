@@ -106,7 +106,7 @@ public class CertService {
                         verifier = new GenericCertificateVerifier();
                         break;
                     case PATH:
-                        verifier = new PathCertificateVerifier(false);
+                        verifier = new PathCertificateVerifier(true);
                         break;
                     case OSCP:
                         verifier = new OCSPCertificateVerifier();

@@ -20,7 +20,7 @@
                     </zk:zk>
 
                     <zk:zk if="${not vm.hasConfigErrors and not vm.present}">
-                        ${labels.usrcert.note_selected}
+                        ${labels.usrcert.not_selected}
                     </zk:zk>
 
                     <zk:zk if="${not vm.hasConfigErrors and vm.present and not vm.parsed}">

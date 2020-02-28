@@ -1,5 +1,6 @@
 package org.gluu.casa.plugins.cert.vm;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
@@ -16,6 +17,8 @@ import org.zkoss.util.Pair;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 
 import javax.servlet.http.Cookie;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.security.cert.X509Certificate;
 
@@ -109,17 +112,15 @@ public class CertAuthenticationViewModel {
         X509Certificate userCert = processCert();
         //If parsed is true, present is too
         //If valid is true, parsed is too
-        if (valid) {
-            userCertMatch = certService.processMatch(userCert, userId, inCasaSession);
+        userCertMatch = valid ? certService.processMatch(userCert, userId, inCasaSession) : null;
 
-            if (!inCasaSession) {
-                logger.debug("Setting cookie with outcome of operation");
-                setCookie(key, userCertMatch.name());
+        if (!inCasaSession) {
+            logger.debug("Setting cookie with outcome of operation");
+            setCookie(key, present, parsed, valid, userCertMatch);
 
-                logger.info("Preparing redirect for completion of authentication flow");
-                String url = Utils.managedBean(IPersistenceService.class).getIssuerUrl();
-                WebUtils.execRedirect(String.format("%s/oxauth/postlogin.htm", url), true);
-            }
+            logger.info("Preparing redirect for completion of authentication flow");
+            String url = Utils.managedBean(IPersistenceService.class).getIssuerUrl();
+            WebUtils.execRedirect(String.format("%s/oxauth/postlogin.htm", url), true);
         }
 
     }
@@ -130,7 +131,7 @@ public class CertAuthenticationViewModel {
         String clientCertString = WebUtils.getRequestHeader(CERT_HEADER);
 
         try {
-            if (clientCertString == null) {
+            if (Utils.isEmpty(clientCertString)) {
                 String attribute = "javax.servlet.request.X509Certificate";
                 Optional<?> optAttr = Optional.ofNullable(WebUtils.getServletRequest().getAttribute(attribute));
 
@@ -150,7 +151,7 @@ public class CertAuthenticationViewModel {
         }
 
         if (clientCert == null) {
-            logger.warn("No client certificate was found");
+            logger.warn("No client certificate was found. Probably the user hit the Cancel button in the browser prompt");
         } else {
             //parsing was successful
             parsed = true;
@@ -177,13 +178,25 @@ public class CertAuthenticationViewModel {
 
     }
 
-    private void setCookie(String rndkey, String value) {
+    private void setCookie(String rndkey, boolean present, boolean parsed, boolean valid, UserCertificateMatch match) {
 
         try {
-            //value = new String(Base64.getEncoder().encode(value.getBytes()), StandardCharsets.UTF_8);
-            value = stringEncrypter.encrypt(rndkey + ";" + value);
+            int val = present ? 1 : 0;
+            val+= parsed ? 1 : 0;
+            val+= valid ? 1 : 0;
 
-            Cookie coo = new Cookie("casa-cert-authn", value);
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("key", rndkey);
+            map.put("status", val);
+
+            if (valid) {
+                map.put("match", match.name());
+            }
+
+            //value = new String(Base64.getEncoder().encode(value.getBytes()), StandardCharsets.UTF_8);
+            String value = new ObjectMapper().writeValueAsString(map);
+
+            Cookie coo = new Cookie("casa-cert-authn", stringEncrypter.encrypt(value));
             coo.setPath("/");
             coo.setSecure(true);
             coo.setHttpOnly(true);
@@ -194,4 +207,5 @@ public class CertAuthenticationViewModel {
         }
 
     }
+
 }
