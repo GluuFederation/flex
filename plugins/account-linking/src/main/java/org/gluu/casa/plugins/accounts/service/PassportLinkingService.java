@@ -160,7 +160,7 @@ public class PassportLinkingService {
             appCfg.setKeyRegenerationEnabled(false);
 
             return CryptoProviderFactory.getCryptoProvider(appCfg).verifySignature(jwt.getSigningInput(), jwt.getEncodedSignature(),
-                    jwt.getHeader().getKeyId(), null, null, jwt.getHeader().getAlgorithm()) ? jwt : null;
+                    jwt.getHeader().getKeyId(), null, null, jwt.getHeader().getSignatureAlgorithm()) ? jwt : null;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return null;
