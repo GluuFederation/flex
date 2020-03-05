@@ -151,21 +151,11 @@ class PersonAuthentication(PersonAuthenticationType):
 
     def setMessageError(self, severity, result):
 
-        if result == "NOT_VALID":
-            msg = "Your certificate is not valid"
-        elif result == "UNPARSABLE":
-            msg = "Your certificate couldn't be processed by the server"
-        elif result == "NOT_SELECTED":
-            msg = "You did not select any certificate"
-        elif result == "CERT_ENROLLED_OTHER_USER":
-            msg = "The certificate presented is registered to a different account"
-        elif result == "CERT_NOT_RECOGNIZED":
-            msg = "The certificate presented has not been enrolled yet in Casa"
-        elif result == "UNKNOWN_USER":
-            msg = "Inexisting user"
-        # elif result = "UNKNOWN_ERROR":
+        if result != "UNKNOWN_ERROR":
+            # Posible values are NOT_VALID, UNPARSABLE, NOT_SELECTED, CERT_ENROLLED_OTHER_USER, CERT_NOT_RECOGNIZED, UNKNOWN_USER
+            msgId = "casa.cert.error." + result.lower()
 
-        facesMessages = CdiUtil.bean(FacesMessages)
-        facesMessages.setKeepMessages()
-        facesMessages.clear()
-        facesMessages.add(severity, msg)
+            facesMessages = CdiUtil.bean(FacesMessages)
+            facesMessages.setKeepMessages()
+            facesMessages.clear()
+            facesMessages.add(severity, "#{msgs['" + msgId + "']}")
