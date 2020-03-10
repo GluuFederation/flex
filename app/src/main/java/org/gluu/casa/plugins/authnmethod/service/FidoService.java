@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -148,7 +149,8 @@ public class FidoService extends BaseService {
 
 
     /**
-     * Chooses one device from a list of devices, such that its creation time is the closest to the timestamp given
+     * Chooses one device from a list of devices, such that its creation time is the closest to the timestamp given and
+     * falls one minute before the timestamp
      * @param devices A non-null list of fido devices
      * @param time A timestamp as milliseconds elapsed from the "epoch"
      * @param <T>
@@ -158,13 +160,14 @@ public class FidoService extends BaseService {
     public static <T extends FidoDevice> T getRecentlyCreatedDevice(List<T> devices, long time) {
 
         long[] diffs = devices.stream().mapToLong(key -> time - key.getCreationDate().getTime()).toArray();
+        long minute = TimeUnit.MINUTES.toMillis(1);
 
         //Search for the smallest time difference
         int i;
         Pair<Long, Integer> min = new Pair<>(Long.MAX_VALUE, -1);
         //it always holds that diffs.length==devices.size()
         for (i = 0; i < diffs.length; i++) {
-            if (diffs[i] >= 0 && min.getX() > diffs[i]) {  //Only search non-negative differences
+            if (diffs[i] >= 0 && diffs[i] < minute && min.getX() > diffs[i]) {  //Only search non-negative differences
                 min = new Pair<>(diffs[i], i);
             }
         }
