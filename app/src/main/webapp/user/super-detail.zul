@@ -131,7 +131,7 @@
     </z:div>
 
     <z:div self="@define(extra)">
-        <z:script src="/scripts/jquery.qrcode-0.17.0.min.js" />
+        <z:script src="/scripts/jquery-qrcode-0.17.0.min.js" />
         <z:script src="/scripts/jquery-ui-1.12.1.min.js" />
         <z:script src="/scripts/gluu/gluu-auth.js" />
         <z:script src="/scripts/gluu/otp-util.js" />
