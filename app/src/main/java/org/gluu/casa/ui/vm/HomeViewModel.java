@@ -70,8 +70,6 @@ public class HomeViewModel {
                 ZoneOffset zoffset = ZoneOffset.ofTotalSeconds(offset);
                 sessionContext.setZoneOffset(zoffset);
                 logger.trace("Time offset for session is {}", zoffset.toString());
-                //Ideally zone should be associated to something like "America/Los_Angeles", not a raw offset like "GMT+0010"
-                //but this is not achievable unless the user is asked to directly provide his zone
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

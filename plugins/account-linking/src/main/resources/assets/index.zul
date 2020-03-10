@@ -51,15 +51,11 @@
                                                 <z:div visible="@load(vm.accounts.get(each) eq null)">
                                                     <a href="interlude.zul?provider=${c:encodeURIComponent(each.id)}"
                                                        target="_blank" w:onClick="initiateLink('${each.id}')"
-                                                       class="${css.primaryButton} hover-white lh-tight mt1 mr2">
+                                                       class="${css.primaryButton} lh-tight mt1 mr2">
                                                         ${labels.sociallogin.buttons.link}
                                                     </a>
                                                 </z:div>
                                                 <z:div visible="@load(vm.accounts.get(each) ne null)">
-                                                    <!--z:div visible="@load(vm.accounts.get(each).getX())">
-                                                        <z:button label="${labels.sociallogin.buttons.disable}"
-                                                                  sclass="${css.secondaryButton} lh-tight mt1 mr2" onClick="@command('disable', provider=each)" />
-                                                    </z:div-->
                                                     <z:div visible="@load(not vm.accounts.get(each).getX())">
                                                         <z:button label="${labels.sociallogin.buttons.enable}"
                                                                   sclass="${css.secondaryButton} lh-tight mt1 mr2" onClick="@command('enable', provider=each)" />

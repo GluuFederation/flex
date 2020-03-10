@@ -56,8 +56,8 @@ public class ConfigurationHandler extends JobListenerSupport {
     @Inject
     private AuthnScriptsReloader scriptsReloader;
 
-    @Inject
-    private StatisticsTimer statisticsTimer;
+    //@Inject
+    //private StatisticsTimer statisticsTimer;
 
     @Inject
     private FSPluginChecker pluginChecker;
@@ -185,7 +185,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                             int gap = Double.valueOf(Math.random() * 7).intValue();
                             scriptsReloader.init(1 + gap);
                             //statistics timer executes in a single node in theory...
-                            statisticsTimer.activate(120 + gap);
+                            //statisticsTimer.activate(120 + gap);
                             //plugin checker is not shared-state related
                             pluginChecker.activate(5);
                         }
