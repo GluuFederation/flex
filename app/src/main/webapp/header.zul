@@ -37,9 +37,11 @@
                         </z:zk>
                     </span>
                     <span class="dn di-ns f6">
-                        ${empty sessionContext.user.lastName ?
+                        ${c:escapeXML(
+                        empty sessionContext.user.lastName ?
                         (empty sessionContext.user.givenName ? c:l('general.welcome') : c:cat4(c:l('general.welcome'), ' ', sessionContext.user.givenName, ' '))
-                        : c:cat4(sessionContext.user.givenName, ' ', sessionContext.user.lastName, ' ')}
+                        : c:cat4(sessionContext.user.givenName, ' ', sessionContext.user.lastName, ' ')
+                        )}
                         <i class="fas fa-chevron-down f7" style="padding-top:2px" />
                     </span>
                 </a>

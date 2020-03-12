@@ -45,7 +45,7 @@
                             <z:div children="@load(method.getEnrolledCreds(sessionContext.user.id))">
                                 <zk:template name="children" var="cred">
                                     <div class="${css.panel} f6 pl4">
-                                        <span class="dark-blue2">${empty cred.nickName ? c:l('general.no_named') : cred.nickName}</span>
+                                        <span class="dark-blue2">${c:escapeXML(empty cred.nickName ? c:l('general.no_named') : cred.nickName)}</span>
 
                                         <z:label if="${cred.addedOn > 0}" value="@load(c:cat(' - ',c:toLowerCase(c:l('general.added_on'))))" />
                                         <z:label if="${cred.addedOn > 0}" value="@load(cred.addedOn) @converter('org.gluu.casa.ui.CustomDateConverter',
