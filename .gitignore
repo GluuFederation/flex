@@ -89,11 +89,13 @@ ENV/
 
 # Spyder project settings
 .spyderproject
-.spyproject
+.spyprojects
 
 # Rope project settings
 .ropeproject
 
+# PyCharm project settings
+.idea
 # mkdocs documentation
 /site
 
