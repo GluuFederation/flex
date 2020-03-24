@@ -2,6 +2,7 @@ package org.gluu.casa.ui.vm.admin;
 
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.PasswordStatusService;
+import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
@@ -18,7 +19,6 @@ public class PassResetViewModel extends MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    @WireVariable
     private PersistenceService persistenceService;
 
     @WireVariable("passwordStatusService")
@@ -41,6 +41,7 @@ public class PassResetViewModel extends MainViewModel {
 
     @Init
     public void init() {
+        persistenceService = Utils.managedBean(PersistenceService.class);
         passResetImpossible = persistenceService.isBackendLdapEnabled();
         passResetEnabled = !passResetImpossible && getSettings().isEnablePassReset();
     }
