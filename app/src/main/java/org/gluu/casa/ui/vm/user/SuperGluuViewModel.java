@@ -249,15 +249,17 @@ public class SuperGluuViewModel extends UserViewModel {
                 event -> {
                     if (Messagebox.ON_YES.equals(event.getName())) {
                         try {
+                            devices.remove(device);
                             boolean success = sgService.removeDevice(device);
+
                             if (success) {
                                 if (reset) {
                                     userService.turn2faOff(user);
                                 }
-                                devices.remove(device);
-
                                 //trigger refresh (this method is asynchronous...)
                                 BindUtils.postNotifyChange(null, null, SuperGluuViewModel.this, "devices");
+                            } else {
+                                devices.add(device);
                             }
                             UIUtils.showMessageUI(success);
                         } catch (Exception e) {

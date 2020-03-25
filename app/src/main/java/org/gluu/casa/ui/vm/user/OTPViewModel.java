@@ -377,15 +377,17 @@ public class OTPViewModel extends UserViewModel {
                 event -> {
                     if (Messagebox.ON_YES.equals(event.getName())) {
                         try {
+                            devices.remove(device);
                             boolean success = otpService.updateDevicesAdd(user.getId(), devices, null);
+
                             if (success) {
                                 if (reset) {
                                     userService.turn2faOff(user);
                                 }
-                                devices.remove(device);
-
                                 //trigger refresh (this method is asynchronous...)
                                 BindUtils.postNotifyChange(null, null, OTPViewModel.this, "devices");
+                            } else {
+                                devices.add(device);
                             }
                             UIUtils.showMessageUI(success);
                         } catch (Exception e) {

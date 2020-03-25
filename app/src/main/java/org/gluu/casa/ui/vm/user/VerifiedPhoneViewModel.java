@@ -212,15 +212,17 @@ public class VerifiedPhoneViewModel extends UserViewModel {
                 event -> {
                     if (Messagebox.ON_YES.equals(event.getName())) {
                         try {
+                            phones.remove(phone);
                             boolean success = mpService.updateMobilePhonesAdd(user.getId(), phones, null);
+
                             if (success) {
                                 if (reset) {
                                     userService.turn2faOff(user);
                                 }
-                                phones.remove(phone);
-
                                 //trigger refresh (this method is asynchronous...)
                                 BindUtils.postNotifyChange(null, null, VerifiedPhoneViewModel.this, "phones");
+                            } else {
+                                phones.add(phone);
                             }
                             UIUtils.showMessageUI(success);
                         } catch (Exception e) {
