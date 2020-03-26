@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.gluu.casa.misc.AppStateEnum.FAIL;
 
@@ -20,13 +21,15 @@ public class HealthServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (cfgHandler.getAppState().equals(FAIL)) {
+
+        if (Optional.ofNullable(cfgHandler.getAppState()).map(state -> state.equals(FAIL)).orElse(false)) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } else {
             response.getWriter().print("OK");
             response.setContentType("text/plain");
             response.setDateHeader("Expires", System.currentTimeMillis() + 10000);
         }
+
     }
 
 }

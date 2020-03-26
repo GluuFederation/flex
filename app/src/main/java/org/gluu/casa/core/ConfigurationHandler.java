@@ -76,6 +76,7 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     @PostConstruct
     private void inited() {
+        setAppState(AppStateEnum.LOADING);
         logger.info("ConfigurationHandler inited");
         mapper = new ObjectMapper();
         acrQuartzJobName = getClass().getSimpleName() + "_acr";
@@ -105,7 +106,6 @@ public class ConfigurationHandler extends JobListenerSupport {
             if (persistenceService.initialize() && initializeSettings()) {
                 //Update log level ASAP
                 computeLoggingLevel();
-                setAppState(AppStateEnum.LOADING);
                 //Force early initialization of assets service before it is used in zul templates
                 assetsService.init();
 
