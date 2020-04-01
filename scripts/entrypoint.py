@@ -108,6 +108,9 @@ def main():
     modify_jetty_xml()
     modify_webdefault_xml()
 
+    manager.secret.to_file("passport_rp_jks_base64", "/etc/certs/passport-rp.jks",
+                           decode=True, binary_mode=True)
+
     config = CasaConfig(manager)
     config.setup()
 
