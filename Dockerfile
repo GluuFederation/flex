@@ -161,7 +161,6 @@ RUN mkdir -p /etc/certs \
     /app/templates \
     /app/tmp
 
-COPY certs/casa.pub /etc/certs/
 COPY templates /app/templates/
 COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh \
@@ -184,4 +183,4 @@ RUN chmod +x /app/scripts/entrypoint.sh \
 # USER 1000
 
 ENTRYPOINT ["tini", "-g", "--"]
-CMD ["/app/scripts/entrypoint.sh"]
+CMD ["sh", "/app/scripts/entrypoint.sh"]
