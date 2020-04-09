@@ -164,14 +164,14 @@ public final class Utils {
     /**
      * Returns a clone of the object passsed.
      * @param obj Object to be cloned
-     * @return A clone (as a result of applying cloneBean method of org.apache.commons.beanutils.BeanUtils.BeanUtils class
+     * @return A deep clone (using Jackson objectmapper conversion: object -> json string -> object)
      * (null if the cloning process thew an exception)
      */
     public static Object cloneObject(Object obj) {
 
         Object result = null;
         try {
-            result = BeanUtils.cloneBean(obj);
+            result = MAPPER.readValue(MAPPER.writeValueAsString(obj), obj.getClass());
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }

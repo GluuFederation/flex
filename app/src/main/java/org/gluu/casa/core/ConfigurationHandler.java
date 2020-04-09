@@ -56,6 +56,9 @@ public class ConfigurationHandler extends JobListenerSupport {
     @Inject
     private AuthnScriptsReloader scriptsReloader;
 
+    @Inject
+    private SyncSettingsTimer syncSettingsTimer;
+
     //@Inject
     //private StatisticsTimer statisticsTimer;
 
@@ -84,19 +87,10 @@ public class ConfigurationHandler extends JobListenerSupport {
     }
 
     private boolean initializeSettings() {
-
-        logger.info("init. Obtaining global settings");
-        try {
-            appConfiguration = new ApplicationConfiguration();
-            appConfiguration.setBaseDn(String.format("ou=casa,ou=configuration,%s", persistenceService.getRootDn()));
-            appConfiguration = persistenceService.find(appConfiguration).get(0);
-            settings = appConfiguration.getSettings();
-        } catch (Exception e) {
-            logger.error("Error parsing configuration settings");
-            logger.error(e.getMessage(), e);
-        }
+        logger.info("initializeSettings. Obtaining global settings");
+        appConfiguration = persistenceService.getAppConfiguration();
+        settings = appConfiguration.getSettings();
         return settings != null;
-
     }
 
     void init() {
@@ -107,7 +101,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                 //Update log level ASAP
                 computeLoggingLevel();
                 //Force early initialization of assets service before it is used in zul templates
-                assetsService.init();
+                assetsService.reloadUrls();
 
                 //This is a trick so the timer event logic can be coded inside this managed bean
                 timerService.addListener(this, acrQuartzJobName);
@@ -184,6 +178,7 @@ public class ConfigurationHandler extends JobListenerSupport {
                             //in a multi node environment, which IMO it's somewhat safer
                             int gap = Double.valueOf(Math.random() * 7).intValue();
                             scriptsReloader.init(1 + gap);
+                            syncSettingsTimer.activate(60 + gap);
                             //statistics timer executes in a single node in theory...
                             //statisticsTimer.activate(120 + gap);
                             //plugin checker is not shared-state related

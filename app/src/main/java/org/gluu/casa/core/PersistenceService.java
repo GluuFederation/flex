@@ -3,6 +3,7 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.LdapSettings;
+import org.gluu.casa.core.model.ApplicationConfiguration;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.model.GluuOrganization;
 import org.gluu.casa.core.model.oxAuthConfiguration;
@@ -262,6 +263,11 @@ public class PersistenceService implements IPersistenceService {
 
     public void prepareFido2Branch(String userInum) {
         prepareBranch(userInum, "fido2_register");
+    }
+
+    public ApplicationConfiguration getAppConfiguration() {
+        String baseDn = String.format("ou=casa,ou=configuration,%s", getRootDn());
+        return find(ApplicationConfiguration.class, baseDn, null, 0, 1).get(0);
     }
 
     private void prepareBranch(String userInum, String ou) {

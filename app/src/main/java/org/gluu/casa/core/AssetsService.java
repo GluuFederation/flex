@@ -143,12 +143,11 @@ public class AssetsService implements IBrandingManager {
     }
 
     @PostConstruct
-    void init() {
+    private void init() {
         mapper = new ObjectMapper();
-        reloadUrls();
     }
 
-    private void reloadUrls() {
+    public void reloadUrls() {
 
         logoUrl = DEFAULT_LOGO_URL;
         faviconUrl = DEFAULT_FAVICON_URL;

@@ -4,10 +4,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.misc.Utils;
-import org.quartz.JobExecutionContext;
-import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,22 +28,13 @@ import java.util.jar.JarInputStream;
  */
 @Named
 @ApplicationScoped
-public class LogService extends JobListenerSupport {
-
-    private static final int SCAN_INTERVAL = 60;
+public class LogService {
 
     @Inject
     private Logger logger;
 
-    @Inject
-    private MainSettings settings;
-
-    @Inject
-    private TimerService timerService;
-
     private static final String MAIN_LOGGER = "org.gluu.casa";
 
-    private String jobName;
     private Set<String> loggerNames;
     private Appender mainAppender;
     private LoggerContext loggerContext;
@@ -54,24 +42,6 @@ public class LogService extends JobListenerSupport {
     @Produces
     public Logger loggerInstance(InjectionPoint ip) {
         return LoggerFactory.getLogger(ip.getMember().getDeclaringClass().getName());
-    }
-
-    @Override
-    public void jobToBeExecuted(JobExecutionContext context) {
-
-        logger.debug("LogService timer running...");
-        String globalLevel = settings.getLogLevel();
-
-        if (!globalLevel.equals(getLoggingLevel().name())) {
-            logger.info("Updating local log level to {}", globalLevel);
-            updateLoggingLevel(globalLevel);
-        }
-
-    }
-
-    @Override
-    public String getName() {
-        return jobName;
     }
 
     public void addLoger(Path path) {
@@ -131,16 +101,6 @@ public class LogService extends JobListenerSupport {
 
     @PostConstruct
     private void inited() {
-
-        jobName = getClass().getSimpleName() + "_levelchecker";
-        try {
-            timerService.addListener(this, jobName);
-            //Start in 20 seconds and repeat indefinitely
-            timerService.schedule(jobName,  20, -1, SCAN_INTERVAL);
-        } catch (Exception e) {
-            logger.warn("Automatic synchronization of log level won't be available");
-            logger.error(e.getMessage(), e);
-        }
 
         loggerNames = new HashSet<>();
         loggerNames.add(MAIN_LOGGER);
