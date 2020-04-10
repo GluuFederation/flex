@@ -27,7 +27,6 @@ public class MainSettings {
     private Integer minCredsFor2FA;
 
     @JsonProperty("acr_plugin_mapping")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> acrPluginMap;
 
     @JsonProperty("extra_css")
