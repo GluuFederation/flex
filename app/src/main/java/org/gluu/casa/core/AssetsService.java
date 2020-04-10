@@ -193,7 +193,7 @@ public class AssetsService implements IBrandingManager {
 
             //it should not expire
             cacheProvider.put(Integer.MAX_VALUE, ASSETS_CACHE_KEY, map);
-            logger.debug("Cache updated with Casa UI assets data");
+            logger.trace("Cache updated with Casa UI assets data");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
