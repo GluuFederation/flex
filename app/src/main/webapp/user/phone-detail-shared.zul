@@ -64,7 +64,7 @@
                     <z:div sclass="pt2 pb3" visible="@load(vm.uiSmsDelivered and not vm.uiCodesMatch)">
                         <div class="pb3">
                             <z:label value="@load(empty vm.newPhone.number ? '' :
-                            c:l2('usr.mobile_sms_sent', c:split(c:substring(vm.newPhone.number, 1, c:length(vm.newPhone.number)), ',')))" />
+                            c:l2('usr.mobile_sms_sent', c:split(vm.newPhone.number, ',')))" />
                         </div>
 
                         <div class="pb3 flex flex-wrap">
