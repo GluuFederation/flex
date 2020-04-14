@@ -640,7 +640,7 @@ paths:
       description: |
         This method returns the status of the enrollment operation since it
         is actually triggered after the user does approval in the mobile app.
-        Repeated calls to this method for the same key must separated by a
+        Repeated calls to this method for the same key must be separated by a
         lag of at least 5 seconds
 
       parameters:

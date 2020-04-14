@@ -8,10 +8,10 @@ This is a client-side only application (HTML+JS). Intended to be illustrative an
 
 - Use fully qualified domain names for both client and server. `localhost` will not work
 
-- Edit file **globals.js** prior to use
+- Edit file **globals.js** prior to use. Also visit in your browser the OIDC config endpoint of your server, eg. `https://my.gluu.co/.well-known/openid-configuration` (this is required when using a self-signed cert)
 
 - Ensure to include this origin in [casa cors config](https://gluu.org/docs/casa/4.0/developer/rest-services/#cross-domain-consumption-of-services),
-  that is, the domain you are using to serve this client (eg. https://my.local.org)
+  that is, the domain you are using to serve this client (eg. https://my.local.org, https://acme.co:123)
 
 - This app has been tested on Firefox only
 
@@ -22,3 +22,5 @@ or `/oxauth/restv1/token`, obtain a token manually and then gently add a line li
 in the document.ready event handler for the page you are trying to visualize. The following shows how to obtain a token:
 
 `curl -k -u 'clientId:clientSecret' -d grant_type=client_credentials https://<gluu-host-name>/oxauth/restv1/token`
+
+Alternatively, enrollment pages have a text field at the bottom where you can simply paste the token value.

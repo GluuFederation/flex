@@ -83,10 +83,9 @@ public class SuperGluuEnrollingWS {
                 //key serves an identifier for clients to poll status afterwards
                 String key = UUID.randomUUID().toString();
 
-                //Store the time after which the key should not be consider banned anymore. This is so because the lifetime
-                //is small (few seconds) compared to the minimum realistc expiration of a cache entry (~1min)
-                cacheProvider.put(EXPIRATION, BANNED_KEYS_PREFIX + key, System.currentTimeMillis() + MIN_CLIENT_POLL_PERIOD);
                 cacheProvider.put(EXPIRATION, PENDING_ENROLLS_PREFIX + key, userId);
+                //ensure method enrollmentReady is not abused
+                cacheProvider.put(MIN_CLIENT_POLL_PERIOD, BANNED_KEYS_PREFIX + key, "");
 
                 qrRequest = sgService.generateRequest(userName, code, remoteIP);
                 return ComputeRequestCode.SUCCESS.getResponse(key, qrRequest);
@@ -104,8 +103,7 @@ public class SuperGluuEnrollingWS {
 
         logger.trace("enrollmentReady WS operation called");
 
-        Long exp = (Long) cacheProvider.get(BANNED_KEYS_PREFIX + key);
-        if (exp != null && System.currentTimeMillis() < exp) {
+        if (cacheProvider.get(BANNED_KEYS_PREFIX + key) != null) {
             //early abort
             return EnrollmentStatusCode.PENDING.getResponse();
         }
@@ -113,6 +111,7 @@ public class SuperGluuEnrollingWS {
         //If it gets here, a reasonable amount of time have elapsed for client to check status
         EnrollmentStatusCode status;
         SuperGluuDevice newDevice = null;
+        String queryParamKey = key;
         key = PENDING_ENROLLS_PREFIX + key;
         String userId = Optional.ofNullable(cacheProvider.get(key)).map(Object::toString).orElse(null);
 
@@ -122,6 +121,8 @@ public class SuperGluuEnrollingWS {
 
             newDevice = sgService.getLatestSuperGluuDevice(userId, System.currentTimeMillis());
             if (newDevice == null) {
+                //Not ready yet (probably due to delayed push or user delayed to approve)
+                cacheProvider.put(MIN_CLIENT_POLL_PERIOD, BANNED_KEYS_PREFIX + queryParamKey, "");
                 return EnrollmentStatusCode.PENDING.getResponse();
             }
 
