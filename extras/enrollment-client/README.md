@@ -10,7 +10,7 @@ This is a client-side only application (HTML+JS). Intended to be illustrative an
 
 - Edit file **globals.js** prior to use. Also visit in your browser the OIDC config endpoint of your server, eg. `https://my.gluu.co/.well-known/openid-configuration` (this is required when using a self-signed cert)
 
-- Ensure to include this origin in [casa cors config](https://gluu.org/docs/casa/4.0/developer/rest-services/#cross-domain-consumption-of-services),
+- Ensure to include this origin in [casa cors config](https://gluu.org/docs/casa/4.2/developer/rest-services/#cross-domain-consumption-of-services),
   that is, the domain you are using to serve this client (eg. https://my.local.org, https://acme.co:123)
 
 - This app has been tested on Firefox only

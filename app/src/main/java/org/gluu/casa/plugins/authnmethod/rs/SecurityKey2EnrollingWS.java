@@ -20,7 +20,6 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -86,8 +85,7 @@ public class SecurityKey2EnrollingWS {
     @Path("registration/{userid}")
     @Produces(MediaType.APPLICATION_JSON)
     @ProtectedApi
-    public Response sendRegistrationResult(Map<String, Object> registrationResult,
-                                           @PathParam("userid") String userId) {
+    public Response sendRegistrationResult(String body, @PathParam("userid") String userId) {
 
         RegistrationCode result;
         SecurityKey newDevice = null;
@@ -102,9 +100,7 @@ public class SecurityKey2EnrollingWS {
                 result = RegistrationCode.UNKNOWN_USER_ID;
             } else {
                 try {
-                    String jsonStr = mapper.writeValueAsString(registrationResult);
-
-                    if (fido2Service.verifyRegistration(jsonStr)) {
+                    if (fido2Service.verifyRegistration(body)) {
                         newDevice = fido2Service.getLatestSecurityKey(userId, System.currentTimeMillis());
 
                         if (newDevice == null){

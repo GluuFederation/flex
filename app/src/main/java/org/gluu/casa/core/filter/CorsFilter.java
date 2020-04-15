@@ -34,11 +34,12 @@ public class CorsFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
 
+        boolean invokeNext = true;
         HttpServletRequest req = (HttpServletRequest) request;
         String origin = req.getHeader("Origin");
         String method = req.getMethod();
 
-        if (Stream.of(origin, method).noneMatch(Utils::isEmpty)) {
+        if (Stream.of(origin, method).allMatch(Utils::isNotEmpty)) {
 
             try {
                 if (settings.getCorsDomains().contains(origin.toLowerCase())) {
@@ -58,16 +59,15 @@ public class CorsFilter implements Filter {
                         res.setContentLength(0);
 
                         logger.info("Preflight request for origin {} validated", origin);
-                    } else {
-                        filterChain.doFilter(request, response);
+                        invokeNext = false;
                     }
                 }
             } catch (Exception e) {
                 logger.warn("Bypassing CORS filter... {}", e.getMessage());
-                filterChain.doFilter(request, response);
             }
+        }
 
-        } else {
+        if (invokeNext){
             filterChain.doFilter(request, response);
         }
 
