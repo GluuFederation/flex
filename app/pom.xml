@@ -89,6 +89,11 @@
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
+            <artifactId>oxcore-document-store</artifactId>
+            <version>${ox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
             <artifactId>oxcore-persistence-hybrid</artifactId>
             <version>${ox.version}</version>
         </dependency>
