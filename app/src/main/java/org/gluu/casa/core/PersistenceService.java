@@ -13,6 +13,7 @@ import org.gluu.oxtrust.model.GluuConfiguration;
 import org.gluu.oxtrust.model.OrganizationalUnit;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
+import org.gluu.exception.ConfigurationException;
 import org.gluu.persist.PersistenceEntryManager;
 import org.gluu.persist.PersistenceEntryManagerFactory;
 import org.gluu.persist.ldap.operation.LdapOperationService;
@@ -20,14 +21,18 @@ import org.gluu.persist.model.PersistenceConfiguration;
 import org.gluu.persist.model.SearchScope;
 import org.gluu.persist.service.PersistanceFactoryService;
 import org.gluu.service.cache.CacheConfiguration;
+import org.gluu.service.document.store.conf.DocumentStoreConfiguration;
+import org.gluu.util.StringHelper;
 import org.gluu.util.properties.FileConfiguration;
 import org.gluu.util.security.PropertiesDecrypter;
 import org.gluu.util.security.StringEncrypter;
+import org.gluu.util.security.StringEncrypter.EncryptionException;
 import org.gluu.search.filter.Filter;
 import org.jboss.weld.inject.WeldInstance;
 import org.slf4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.io.FileReader;
 import java.io.Reader;
@@ -68,6 +73,7 @@ public class PersistenceService implements IPersistenceService {
     private StringEncrypter stringEncrypter;
 
     private CacheConfiguration cacheConfiguration;
+    private DocumentStoreConfiguration documentStoreConfiguration;
 
     public boolean initialize() {
 
@@ -241,12 +247,18 @@ public class PersistenceService implements IPersistenceService {
         return dynRegEnabled ? oxAuthConfDynamic.get("dynamicRegistrationExpirationTime").asInt() : -1;
     }
 
+	@Produces
+	@ApplicationScoped
     public StringEncrypter getStringEncrypter() {
         return stringEncrypter;
     }
 
     public CacheConfiguration getCacheConfiguration() {
         return cacheConfiguration;
+    }
+
+    public DocumentStoreConfiguration getDocumentStoreConfiguration() {
+        return documentStoreConfiguration;
     }
 
     public boolean isBackendLdapEnabled() {
@@ -316,6 +328,8 @@ public class PersistenceService implements IPersistenceService {
             cacheConfiguration = gluuConf.getCacheConfiguration();
             backendLdapEnabled = gluuConf.isVdsCacheRefreshEnabled();
             logger.info("Backend ldap for cache refresh was{} detected", backendLdapEnabled ? "" : " not");
+
+            documentStoreConfiguration = gluuConf.getDocumentStoreConfiguration();
 
             String dn = properties.getProperty("oxtrust_ConfigurationEntryDN");
             if (dn != null) {
