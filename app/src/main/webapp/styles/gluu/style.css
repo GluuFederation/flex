@@ -161,6 +161,9 @@ button:disabled {
 /* Overrides some default bootstrap stylings */
 body {
     font-family: 'Lato', sans-serif;
+    /* Temporal fix for https://tracker.zkoss.org/browse/ZK-4483 */
+	height: initial;	/* auto ? */
+	position: relative;
 }
 
 a:hover {
