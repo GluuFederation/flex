@@ -276,7 +276,7 @@ public class PersistenceService implements IPersistenceService {
 
     public ApplicationConfiguration getAppConfiguration() {
         String baseDn = String.format("ou=casa,ou=configuration,%s", getRootDn());
-        return find(ApplicationConfiguration.class, baseDn, null, 0, 1).get(0);
+        return get(ApplicationConfiguration.class, baseDn);
     }
 
     private void prepareBranch(String userInum, String ou) {
