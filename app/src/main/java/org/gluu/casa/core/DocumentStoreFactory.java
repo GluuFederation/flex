@@ -1,15 +1,11 @@
 package org.gluu.casa.core;
 
 import org.gluu.service.document.store.conf.*;
-import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import java.util.Optional;
-
-import static org.gluu.service.cache.CacheProviderType.*;
 
 /**
  * @author Yuriy Movchan
@@ -25,6 +21,8 @@ public class DocumentStoreFactory {
 
     @Produces @ApplicationScoped
    	public DocumentStoreConfiguration getDocumentStoreConfiguration() {
+   		//There is no actual use of Document Store in Casa, return a simple configuration to satisfy Weld requirement
+   		/*
     	DocumentStoreConfiguration documentStoreConfiguration = persistenceService.getDocumentStoreConfiguration();
    		if ((documentStoreConfiguration == null) || (documentStoreConfiguration.getDocumentStoreType() == null)) {
    			logger.error("Failed to read document store configuration from DB. Please check configuration oxDocumentStoreConfiguration attribute " +
@@ -38,6 +36,9 @@ public class DocumentStoreFactory {
 		}
 
    		logger.info("Document store configuration: " + documentStoreConfiguration);
+   		*/
+   		documentStoreConfiguration = new DocumentStoreConfiguration();
+   		documentStoreConfiguration.setLocalConfiguration(new LocalDocumentStoreConfiguration());
    		return documentStoreConfiguration;
    	}
 
