@@ -37,7 +37,7 @@ public class DocumentStoreFactory {
 
    		logger.info("Document store configuration: " + documentStoreConfiguration);
    		*/
-   		documentStoreConfiguration = new DocumentStoreConfiguration();
+   		DocumentStoreConfiguration documentStoreConfiguration = new DocumentStoreConfiguration();
    		documentStoreConfiguration.setLocalConfiguration(new LocalDocumentStoreConfiguration());
    		return documentStoreConfiguration;
    	}
