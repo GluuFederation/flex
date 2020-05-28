@@ -1,5 +1,6 @@
 package org.gluu.casa.core;
 
+import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.credential.CredentialRemovalConflict;
@@ -45,6 +46,9 @@ public class UserService implements SndFactorAuthenticationUtils {
 
     @Inject
     private ConfigurationHandler confHandler;
+
+    @Inject
+    private MainSettings mainSettings;
 
     public User getUserFromClaims(Map<String, Object> claims) throws AttributeNotFoundException {
 
@@ -113,7 +117,7 @@ public class UserService implements SndFactorAuthenticationUtils {
             List<Pair<AuthnMethod, Integer>> userMethodsCount = getUserMethodsCount(user.getId());
 
             int totalCreds = userMethodsCount.stream().mapToInt(Pair::getY).sum();
-            int minCredsFor2FA = confHandler.getSettings().getMinCredsFor2FA();
+            int minCredsFor2FA = mainSettings.getBasic2FASettings().getMinCreds();
             logger.debug("Total number of user creds is {}", totalCreds);
 
             if (nCredsOfType == 1) {
@@ -150,6 +154,23 @@ public class UserService implements SndFactorAuthenticationUtils {
 
         return new Pair<>(conflict, message);
 
+    }
+    
+    public void notifyEnrollment(User user, String credentialType) {
+    	attemptAutoEnable2FA(user, getUserMethodsCount(user.getId()).stream().mapToInt(Pair::getY).sum());
+    	//What else to call here?    	
+    }
+    
+    public void attemptAutoEnable2FA(User user, int totalCreds) {
+
+    	if (user.getPreferredMethod() == null && mainSettings.getBasic2FASettings().isAutoEnable() 
+    		&& totalCreds >= mainSettings.getBasic2FASettings().getMinCreds()) {
+    		
+    		if (turn2faOn(user)) {
+    			logger.info("2FA has been automatically enabled for user '{}'", user.getUserName());
+    		}
+    	}
+    	
     }
 
     private boolean setPreferredMethod(User user, String method) {
@@ -240,7 +261,7 @@ public class UserService implements SndFactorAuthenticationUtils {
     private List<AuthnMethod> getLiveAuthnMethods(boolean sorted) {
 
         List<AuthnMethod> methods = new ArrayList<>();
-        Map<String, String> acrPluginMap = confHandler.getSettings().getAcrPluginMap();
+        Map<String, String> acrPluginMap = mainSettings.getAcrPluginMap();
 
         for (String acr : acrPluginMap.keySet()) {
             extManager.getAuthnMethodExts(Collections.singleton(acrPluginMap.get(acr)))

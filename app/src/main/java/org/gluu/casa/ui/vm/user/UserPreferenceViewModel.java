@@ -31,19 +31,18 @@ public class UserPreferenceViewModel extends UserViewModel {
 
     private List<Pair<String, String>> preferredFragments;
     private boolean mfaEnabled;
-    private boolean uiEditable;
     private boolean uiNotEnoughCredsFor2FA;
 
     public int getMinCredsFor2FA() {
-        return confSettings.getMinCredsFor2FA();
+        return confSettings.getBasic2FASettings().getMinCreds();
+    }
+
+    public boolean isEnableDisableAllowed() {
+        return confSettings.getBasic2FASettings().isAllowSelfEnableDisable();
     }
 
     public boolean isUiNotEnoughCredsFor2FA() {
         return uiNotEnoughCredsFor2FA;
-    }
-
-    public boolean isUiEditable() {
-        return uiEditable;
     }
 
     public boolean isMfaEnabled() {
@@ -61,20 +60,16 @@ public class UserPreferenceViewModel extends UserViewModel {
     @Init(superclass = true)
     public void childInit() {
 
-        mfaEnabled= user.getPreferredMethod() != null;
-
         List<Pair<AuthnMethod, Integer>> userMethodsCount = userService.getUserMethodsCount(user.getId());
-        List<Pair<String, String>> availMethods = userMethodsCount.stream().map(Pair::getX)
-                .map(aMethod -> new Pair<>(aMethod.getAcr(), Labels.getLabel(aMethod.getUINameKey())))
-                .collect(Collectors.toList());
-
         int totalCreds = userMethodsCount.stream().mapToInt(Pair::getY).sum();
         logger.info("Number of credentials for user {}: {}", user.getUserName(), totalCreds);
-
-        //Note: It may happen user already has enrolled credentials, but admin changed availability of method. In that
-        //case user should not be able to edit
-        uiEditable = totalCreds >= confSettings.getMinCredsFor2FA() && availMethods.size() > 0;
-        uiNotEnoughCredsFor2FA = totalCreds < confSettings.getMinCredsFor2FA() && confSettings.getAcrPluginMap().size() > 0;
+        
+        //Try to autoenable 2FA. This covers the case in which admin sets the autoenable feature after users
+        //have already enrolled creds in the system. Users will be prompted for 2FA the next time they login
+    	userService.attemptAutoEnable2FA(user, totalCreds);
+        
+    	mfaEnabled = user.getPreferredMethod() != null;
+        uiNotEnoughCredsFor2FA = totalCreds < getMinCredsFor2FA();
 
         preferredFragments = extManager.getPluginExtensionsForClass(PreferredMethodFragment.class).stream()
                 .map(p -> new Pair<>(String.format("/%s/%s", ExtensionsManager.PLUGINS_EXTRACTION_DIR, p.getX()), p.getY().getUrl()))

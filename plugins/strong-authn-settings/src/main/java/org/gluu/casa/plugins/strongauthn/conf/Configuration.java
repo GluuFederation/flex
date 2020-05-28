@@ -3,12 +3,14 @@ package org.gluu.casa.plugins.strongauthn.conf;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.gluu.casa.core.pojo.Basic2FASettings;
+
 import java.util.List;
 
 public class Configuration {
 
-    @JsonProperty("min_creds_2FA")
-    private Integer minCredsFor2FA;
+	@JsonProperty("basic_2fa_settings")
+    private Basic2FASettings basic2FASettings;
 
     @JsonProperty("policy_2fa")
     private List<EnforcementPolicy> enforcement2FA;
@@ -17,8 +19,8 @@ public class Configuration {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private TrustedDevicesSettings trustedDevicesSettings;
 
-    public Integer getMinCredsFor2FA() {
-        return minCredsFor2FA;
+    public Basic2FASettings getBasic2FASettings() {
+    	return basic2FASettings;
     }
 
     public TrustedDevicesSettings getTrustedDevicesSettings() {
@@ -29,8 +31,8 @@ public class Configuration {
         return enforcement2FA;
     }
 
-    public void setMinCredsFor2FA(Integer minCredsFor2FA) {
-        this.minCredsFor2FA = minCredsFor2FA;
+    public void setBasic2FASettings(Basic2FASettings basic2FASettings) {
+    	this.basic2FASettings = basic2FASettings;
     }
 
     public void setEnforcement2FA(List<EnforcementPolicy> enforcement2FA) {

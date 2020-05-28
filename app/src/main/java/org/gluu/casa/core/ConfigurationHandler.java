@@ -19,8 +19,6 @@ import javax.inject.Inject;
 import java.net.URL;
 import java.util.*;
 
-import static org.gluu.casa.misc.Utils.MIN_CREDS_2FA_DEFAULT;
-
 /**
  * @author jgomer
  */
@@ -157,7 +155,6 @@ public class ConfigurationHandler extends JobListenerSupport {
                         logger.warn("Retrying in {} seconds", RETRY_INTERVAL);
                     }
                 } else {
-                    computeMinCredsForStrongAuth();
                     computePassResetable();
                     extManager.scan();
                     computeAcrPluginMapping();
@@ -266,15 +263,6 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     private void computeLoggingLevel() {
         settings.setLogLevel(logService.updateLoggingLevel(settings.getLogLevel()));
-    }
-
-    private void computeMinCredsForStrongAuth() {
-
-        if (settings.getMinCredsFor2FA() == null) {
-            logger.info("Using default value of {} for minimum number of credentials to enable strong authentication", MIN_CREDS_2FA_DEFAULT);
-            settings.setMinCredsFor2FA(MIN_CREDS_2FA_DEFAULT);
-        }
-
     }
 
     private void computePassResetable() {

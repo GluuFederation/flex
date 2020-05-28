@@ -1,6 +1,7 @@
 package org.gluu.casa.plugins.strongauthn;
 
 import org.gluu.casa.core.ITrackable;
+import org.gluu.casa.core.pojo.Basic2FASettings;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.strongauthn.conf.Configuration;
 import org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static org.gluu.casa.misc.Utils.MIN_CREDS_2FA_DEFAULT;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 /**
@@ -57,7 +57,7 @@ public class StrongAuthnSettingsPlugin extends Plugin implements ITrackable {
             try {
                 logger.info("Initializing missing 2FA settings");
                 Configuration conf = new Configuration();
-                conf.setMinCredsFor2FA(MIN_CREDS_2FA_DEFAULT);
+                conf.setBasic2FASettings(new Basic2FASettings());
                 conf.setEnforcement2FA(Collections.singletonList(EnforcementPolicy.EVERY_LOGIN));
 
                 settingsHandler.setSettings(conf);
@@ -89,7 +89,7 @@ public class StrongAuthnSettingsPlugin extends Plugin implements ITrackable {
 
             logger.warn("Resetting strong authentication settings...");
             Configuration currentConfig = settingsHandler.getSettings();
-            currentConfig.setMinCredsFor2FA(MIN_CREDS_2FA_DEFAULT);
+            currentConfig.setBasic2FASettings(new Basic2FASettings());
             currentConfig.setTrustedDevicesSettings(null);
             currentConfig.setEnforcement2FA(Collections.singletonList(EnforcementPolicy.EVERY_LOGIN));
 

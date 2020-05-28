@@ -36,5 +36,15 @@ public interface SndFactorAuthenticationUtils {
      * the user can easily understand the effect of the removal operation (null if there is no conflict)
      */
     Pair<CredentialRemovalConflict, String> removalConflict(String credentialType, int nCredsOfType, User user);
+    
+    /**
+     * This method should be called after the user has successfully a enrolled a credential. While not mandatory, plugin 
+     * writers are encouraged to invoke this method so keep some internals of the application up-to-date. This is
+     * specially relevant for auto enablement of 2FA to take effect.
+     * @param user Object representing the user that the enrollment belongs to. The instance must have been obtained 
+     *             from the SessionContext
+     * @param credentialType The type of credential to added (an ACR value)
+     */
+    void notifyEnrollment(User user, String credentialType);
 
 }

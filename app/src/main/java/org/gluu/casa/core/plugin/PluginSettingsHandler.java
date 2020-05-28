@@ -2,7 +2,9 @@ package org.gluu.casa.core.plugin;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.gluu.casa.core.ConfigurationHandler;
+import org.gluu.casa.core.pojo.Basic2FASettings;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.settings.IPluginSettingsHandler;
 import org.slf4j.Logger;
@@ -31,8 +33,10 @@ public class PluginSettingsHandler<T> implements IPluginSettingsHandler<T> {
         //Hack for happy 2fa plugin
         try {
             if (pluginKey.equals("strong-authn-settings")) {
-                Optional.ofNullable(getSettingsMap()).map(m -> m.get("min_creds_2FA")).map(Integer.class::cast)
-                        .ifPresent(configurationHandler.getSettings()::setMinCredsFor2FA);
+            	
+            	Basic2FASettings b2s = mapper.convertValue(
+            		getSettingsMap().get("basic_2fa_settings"), new TypeReference<Basic2FASettings>(){});
+                configurationHandler.getSettings().setBasic2FASettings(b2s);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

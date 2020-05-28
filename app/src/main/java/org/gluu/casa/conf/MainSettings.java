@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.gluu.casa.core.pojo.Basic2FASettings;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +25,6 @@ public class MainSettings {
     @JsonProperty("log_level")
     private String logLevel;
 
-    @JsonProperty("min_creds_2FA")
-    private Integer minCredsFor2FA;
-
     @JsonProperty("acr_plugin_mapping")
     private Map<String, String> acrPluginMap;
 
@@ -43,6 +42,9 @@ public class MainSettings {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private U2fSettings u2fSettings;
 
+    @JsonProperty("basic_2fa_settings")
+    private Basic2FASettings basic2FASettings = new Basic2FASettings();
+    
     @JsonProperty("plugins_settings")
     private Map<String, Map<String,Object>> pluginSettings = new HashMap<>();
 
@@ -74,12 +76,12 @@ public class MainSettings {
         return oxdSettings;
     }
 
-    public Integer getMinCredsFor2FA() {
-        return minCredsFor2FA;
-    }
-
     public List<String> getCorsDomains() {
         return corsDomains;
+    }
+    
+    public Basic2FASettings getBasic2FASettings() {
+    	return basic2FASettings;
     }
 
     public Map<String, Map<String, Object>> getPluginSettings() {
@@ -96,10 +98,6 @@ public class MainSettings {
 
     public void setUseExternalBranding(boolean useExternalBranding) {
         this.useExternalBranding = useExternalBranding;
-    }
-
-    public void setMinCredsFor2FA(Integer minCredsFor2FA) {
-        this.minCredsFor2FA = minCredsFor2FA;
     }
 
     public void setAcrPluginMap(Map<String, String> acrPluginMap) {
@@ -122,6 +120,10 @@ public class MainSettings {
         this.corsDomains = corsDomains;
     }
 
+    public void setBasic2FASettings(Basic2FASettings basic2FASettings) {
+    	this.basic2FASettings = basic2FASettings;
+    }
+    
     public void setPluginSettings(Map<String, Map<String, Object>> pluginSettings) {
         this.pluginSettings = pluginSettings;
     }

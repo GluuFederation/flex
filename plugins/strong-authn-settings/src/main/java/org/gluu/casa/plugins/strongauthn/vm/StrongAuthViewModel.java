@@ -129,7 +129,7 @@ public class StrongAuthViewModel {
         locationExpiration = opt.map(TrustedDevicesSettings::getLocationExpirationDays).orElse(TRUSTED_LOCATION_EXPIRATION_DAYS);
         deviceExpiration = opt.map(TrustedDevicesSettings::getDeviceExpirationDays).orElse(TRUSTED_DEVICE_EXPIRATION_DAYS);
 
-        minCreds2FA = settings.getMinCredsFor2FA();
+        minCreds2FA = settings.getBasic2FASettings().getMinCreds();
         enforcementPolicies = settings.getEnforcement2FA().stream().map(EnforcementPolicy::toString).collect(Collectors.toSet());
         logger.trace("Minimum creds for 2FA: {}", minCreds2FA);
         logger.trace("Current enforcement policies: {}", enforcementPolicies.toString());
@@ -178,7 +178,7 @@ public class StrongAuthViewModel {
         tsettings.setLocationExpirationDays(locationExpiration);
 
         settings.setTrustedDevicesSettings(tsettings);
-        settings.setMinCredsFor2FA(minCreds);
+        settings.getBasic2FASettings().setMinCreds(minCreds);
         settings.setEnforcement2FA(policies);
 
         updateMainSettings(Labels.getLabel("adm.methods_change_success"));
