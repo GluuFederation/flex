@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
+import org.gluu.casa.plugins.cert.CertAuthenticationExtension;
 import org.gluu.casa.plugins.cert.service.CertService;
 import org.gluu.casa.plugins.cert.service.UserCertificateMatch;
 import org.gluu.casa.service.IPersistenceService;
 import org.gluu.casa.service.ISessionContext;
+import org.gluu.casa.service.SndFactorAuthenticationUtils;
 import org.gluu.oxauth.model.util.CertUtils;
 import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
@@ -34,6 +36,7 @@ public class CertAuthenticationViewModel {
     @WireVariable
     private ISessionContext sessionContext;
 
+    private User user;
     private boolean hasConfigErrors;
     private boolean present;
     private boolean parsed;
@@ -75,7 +78,7 @@ public class CertAuthenticationViewModel {
     public void init() throws Exception {
 
         logger.info("Loading certificate validation page...");
-        User user = sessionContext.getLoggedUser();
+        user = sessionContext.getLoggedUser();
         stringEncrypter = Utils.stringEncrypter();
 
         //Truthy value means usage of this page is in the context of enrollment only (not authentication)
@@ -114,7 +117,11 @@ public class CertAuthenticationViewModel {
         //If valid is true, parsed is too
         userCertMatch = valid ? certService.processMatch(userCert, userId, inCasaSession) : null;
 
-        if (!inCasaSession) {
+        if (inCasaSession) {
+        	if (userCertMatch.equals(UserCertificateMatch.SUCCESS)) {
+        		Utils.managedBean(SndFactorAuthenticationUtils.class).notifyEnrollment(user, CertAuthenticationExtension.ACR);
+        	}
+        } else {
             logger.debug("Setting cookie with outcome of operation");
             setCookie(key, present, parsed, valid, userCertMatch);
 

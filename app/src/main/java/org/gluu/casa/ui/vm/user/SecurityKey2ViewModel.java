@@ -167,6 +167,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
                 fido2Service.updateDevice(newDevice);
                 devices.add(newDevice);
                 UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
+                userService.notifyEnrollment(user, SecurityKey2Extension.ACR);
             } catch (Exception e) {
                 UIUtils.showMessageUI(false, Labels.getLabel("usr.error_updating"));
                 logger.error(e.getMessage(), e);

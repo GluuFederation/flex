@@ -172,6 +172,7 @@ public class SuperGluuViewModel extends UserViewModel {
                 sgService.updateDevice(newDevice);
                 devices.add(newDevice);
                 UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
+                userService.notifyEnrollment(user, SuperGluuExtension.ACR);
             } catch (Exception e) {
                 UIUtils.showMessageUI(false, Labels.getLabel("usr.error_updating"));
                 logger.error(e.getMessage(), e);

@@ -19,7 +19,6 @@ import static org.gluu.casa.plugins.authnmethod.rs.status.SecondFactorUserData.S
 public class SecondFactorUserData {
 
     public enum StatusCode {
-        NO_USER_ID,
         UNKNOWN_USER_ID,
         SUCCESS,
         FAILED;
@@ -34,6 +33,9 @@ public class SecondFactorUserData {
     @JsonProperty("enrolled_methods")
     private List<String> enrolledMethods;
 
+    @JsonProperty("total_creds")
+    private int totalCreds;
+
     public StatusCode getCode() {
         return code;
     }
@@ -46,6 +48,10 @@ public class SecondFactorUserData {
         return enrolledMethods;
     }
 
+    public int getTotalCreds() {
+    	return totalCreds;
+    }
+    
     public void setCode(StatusCode code) {
         this.code = code;
     }
@@ -56,6 +62,10 @@ public class SecondFactorUserData {
 
     public void setEnrolledMethods(List<String> enrolledMethods) {
         this.enrolledMethods = enrolledMethods;
+    }
+
+    public void setTotalCreds(int totalCreds) {
+        this.totalCreds = totalCreds;
     }
 
     //Prevents a loop in serialization process

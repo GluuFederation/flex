@@ -141,6 +141,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
             if (mpService.updateMobilePhonesAdd(user.getId(), phones, newPhone)) {
                 UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
                 Clients.response(new AuInvoke("resetPhoneValue"));
+                userService.notifyEnrollment(user, ACR);
             } else {
                 UIUtils.showMessageUI(false, Labels.getLabel("usr.enroll.error"));
             }

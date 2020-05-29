@@ -276,6 +276,7 @@ public class OTPViewModel extends UserViewModel {
             if (enroll()) {
                 UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
                 cancel();
+                userService.notifyEnrollment(user, OTPExtension.ACR);
             } else {
                 UIUtils.showMessageUI(false, Labels.getLabel("usr.enroll.error"));
             }

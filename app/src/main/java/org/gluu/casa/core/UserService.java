@@ -163,12 +163,16 @@ public class UserService implements SndFactorAuthenticationUtils {
     
     public void attemptAutoEnable2FA(User user, int totalCreds) {
 
-    	if (user.getPreferredMethod() == null && mainSettings.getBasic2FASettings().isAutoEnable() 
-    		&& totalCreds >= mainSettings.getBasic2FASettings().getMinCreds()) {
-    		
-    		if (turn2faOn(user)) {
-    			logger.info("2FA has been automatically enabled for user '{}'", user.getUserName());
-    		}
+    	try {
+			if (user.getPreferredMethod() == null && mainSettings.getBasic2FASettings().isAutoEnable() 
+				&& totalCreds >= mainSettings.getBasic2FASettings().getMinCreds()) {
+				
+				if (turn2faOn(user)) {
+					logger.info("2FA has been automatically enabled for user '{}'", user.getUserName());
+				}
+			}
+    	} catch (Exception e) {
+    		logger.error(e.getMessage(), e);
     	}
     	
     }
