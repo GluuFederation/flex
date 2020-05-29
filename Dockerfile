@@ -62,6 +62,7 @@ RUN wget -q https://github.com/krallin/tini/releases/download/v0.18.0/tini-stati
 # Python
 # ======
 
+RUN apk add --no-cache py3-cryptography
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install -U pip \
     && pip install --no-cache-dir -r /tmp/requirements.txt
