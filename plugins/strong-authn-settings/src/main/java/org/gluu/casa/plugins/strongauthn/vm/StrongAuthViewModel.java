@@ -1,5 +1,6 @@
 package org.gluu.casa.plugins.strongauthn.vm;
 
+import org.gluu.casa.core.pojo.Basic2FASettings;
 import org.gluu.casa.plugins.strongauthn.conf.TrustedDevicesSettings;
 import org.gluu.casa.plugins.strongauthn.conf.Configuration;
 import org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy;
@@ -43,6 +44,8 @@ public class StrongAuthViewModel {
     private Set<String> enforcementPolicies;
     private int locationExpiration;
     private int deviceExpiration;
+    private boolean autoEnable;
+    private boolean hideSwitch;
 
     public int getLocationExpiration() {
         return locationExpiration;
@@ -63,6 +66,14 @@ public class StrongAuthViewModel {
     public Set<String> getEnforcementPolicies() {
         return enforcementPolicies;
     }
+    
+    public boolean isAutoEnable() {
+    	return autoEnable;
+    }
+    
+    public boolean isHideSwitch() {
+    	return hideSwitch;
+    }
 
     public void setLocationExpiration(int locationExpiration) {
         this.locationExpiration = locationExpiration;
@@ -70,6 +81,10 @@ public class StrongAuthViewModel {
 
     public void setDeviceExpiration(int deviceExpiration) {
         this.deviceExpiration = deviceExpiration;
+    }
+
+    public void setHideSwitch(boolean hideSwitch) {
+        this.hideSwitch = hideSwitch;
     }
 
     @Init
@@ -80,6 +95,15 @@ public class StrongAuthViewModel {
         reloadConfig();
     }
 
+    @NotifyChange({"autoEnable", "hideSwitch"})
+    @Command
+    public void checkAutoEnable(@BindingParam("val") boolean checked) {
+    	autoEnable = checked;
+    	if (!checked) {
+    		hideSwitch = false;
+    	}
+    }
+    
     @NotifyChange({"enforcementPolicies", "deviceExpiration", "locationExpiration"})
     @Command
     public void checkPolicy(@BindingParam("cbox") Checkbox box) {
@@ -129,7 +153,11 @@ public class StrongAuthViewModel {
         locationExpiration = opt.map(TrustedDevicesSettings::getLocationExpirationDays).orElse(TRUSTED_LOCATION_EXPIRATION_DAYS);
         deviceExpiration = opt.map(TrustedDevicesSettings::getDeviceExpirationDays).orElse(TRUSTED_DEVICE_EXPIRATION_DAYS);
 
-        minCreds2FA = settings.getBasic2FASettings().getMinCreds();
+        Basic2FASettings b2s = settings.getBasic2FASettings(); 
+        minCreds2FA = b2s.getMinCreds();
+        autoEnable = b2s.isAutoEnable();
+        hideSwitch = !b2s.isAllowSelfEnableDisable();
+
         enforcementPolicies = settings.getEnforcement2FA().stream().map(EnforcementPolicy::toString).collect(Collectors.toSet());
         logger.trace("Minimum creds for 2FA: {}", minCreds2FA);
         logger.trace("Current enforcement policies: {}", enforcementPolicies.toString());
@@ -178,8 +206,12 @@ public class StrongAuthViewModel {
         tsettings.setLocationExpirationDays(locationExpiration);
 
         settings.setTrustedDevicesSettings(tsettings);
-        settings.getBasic2FASettings().setMinCreds(minCreds);
         settings.setEnforcement2FA(policies);
+        
+        Basic2FASettings b2s = settings.getBasic2FASettings();
+        b2s.setMinCreds(minCreds);
+        b2s.setAutoEnable(autoEnable);
+        b2s.setAllowSelfEnableDisable(!hideSwitch);
 
         updateMainSettings(Labels.getLabel("adm.methods_change_success"));
 
