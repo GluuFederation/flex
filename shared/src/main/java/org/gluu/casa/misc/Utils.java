@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sf.jmimemagic.Magic;
 import org.apache.commons.beanutils.BeanUtils;
-import org.gluu.casa.core.ldap.oxCustomScript;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.model.SimpleCustomProperty;
 import org.gluu.util.properties.FileConfiguration;
@@ -279,39 +278,7 @@ public final class Utils {
 
     /**
      * Builds a map of name/value entries based on the configuration properties associated to an object of class
-     * {@link oxCustomScript}. <b>Note: </b> Starting with 4.0, the preferred method to obtain custom script config
-     * properties is via {@link #scriptConfigPropertiesAsMap(CustomScript)}.
-     * <p>If you still want to use this method, first obtain an instance of an already existing Gluu Server custom
-     * script, by calling {@link org.gluu.casa.service.ILdapService#find(Object, Class, String)} supplying a
-     * {@link oxCustomScript} instance created with the default class constructor and having set an <code>acr</code>
-     * value (display name) using {@link oxCustomScript#setDisplayName(String)}. The <code>dn</code> for the lookup
-     * can be easily obtained with a call to {@link org.gluu.casa.service.ILdapService#getCustomScriptsDn()}.</p>
-     * @param script A {@link oxCustomScript} instance
-     * @return A Mapping of property name / property value for the script
-     */
-    @Deprecated
-    public static Map<String, String> scriptConfigPropertiesAsMap(oxCustomScript script) {
-
-        List<String> props = script.getConfigurationProperties();
-        Map<String, String> properties = new HashMap<>();
-
-        for (String prop : props) {
-            try {
-                JsonNode node = MAPPER.readTree(prop);
-                String key = node.get("value1").asText();
-                String value = node.get("value2").asText();
-                properties.put(key, value);
-            } catch (Exception e) {
-                LOG.error("Error reading a custom script configuration property ({})", e.getMessage());
-            }
-        }
-        return properties;
-
-    }
-
-    /**
-     * Analog method to {@link #scriptConfigPropertiesAsMap(CustomScript)} having as parameter an instance of
-     * {@link CustomScript} (which can be used not only in the context of LDAP but in other available persistence engines).
+     * {@link CustomScript}.
      * @param script A {@link CustomScript} instance
      * @return A Mapping of property name / property value for the script
      */
