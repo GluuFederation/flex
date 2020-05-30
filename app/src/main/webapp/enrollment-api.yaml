@@ -1090,7 +1090,7 @@ paths:
                 type: string
                 example: NO_MATCH_OR_EXPIRED|FAILED
 
-  /2fa-info/user:
+  /2fa/user-info/{userid}:
     get:
 
       description: |
@@ -1102,7 +1102,7 @@ paths:
       parameters:
         -
           name: userid
-          in: query
+          in: path
           description: Identifier (inum) of the user to query
           required: true
           type: string
@@ -1123,6 +1123,7 @@ paths:
              - code
              - turned_on
              - enrolled_methods
+             - total_creds
             properties:
               code:
                 type: string
@@ -1135,16 +1136,9 @@ paths:
                 items:
                   type: string
                 example: ["otp", "u2f", "fido2"]
-        400:
-          description: userid parameter is missing
-          schema:
-            type: object
-            required:
-             - code
-            properties:
-              code:
-                type: string
-                example: NO_USER_ID
+              total_creds:
+                type: integer
+                example: 3
         404:
           description: userid parameter references a non-existing user
           schema:
@@ -1165,6 +1159,34 @@ paths:
               code:
                 type: string
                 example: FAILURE
+
+  /2fa/turn-on:
+    post:
+      description: |
+        Enables 2FA for the user whose identifier (inum) is passed in the body 
+        of the payload
+
+      responses:
+        200:
+          description: Operation carried out successfully
+        404:
+          description: The identifier supplied does not match the ID of any user
+        500:
+          description: A failure occurred when processing this operation
+
+  /2fa/turn-off:
+    post:
+      description: |
+        Disables (turns off) 2FA for the user whose identifier (inum) is passed in the body 
+        of the payload
+
+      responses:
+        200:
+          description: Operation carried out successfully
+        404:
+          description: The identifier supplied does not match the ID of any user
+        500:
+          description: A failure occurred when processing this operation
 
 definitions:
   NamedCredential:
