@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.gluu.casa.core.ldap.oxCustomScript;
+import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.service.ILdapService;
+import org.gluu.casa.service.IPersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -45,7 +45,7 @@ public class InweboService {
 	private static String PASSPHRASE_FOR_CERTIFICATE = "CERT_PASSWORD";
 	private static String SERVICE_ID = "iw_service_id";
 
-	private ILdapService ldapService;
+	private IPersistenceService ldapService;
 	private final ConsoleAdminService cas;
 	private final ConsoleAdmin consoleAdmin;
 	private final long serviceId;
@@ -53,7 +53,7 @@ public class InweboService {
 	private final String p12file;
 
 	private InweboService() {
-		ldapService = Utils.managedBean(ILdapService.class);
+		ldapService = Utils.managedBean(IPersistenceService.class);
 		reloadConfiguration();
 
 		cas = new ConsoleAdminService();
@@ -203,11 +203,12 @@ public class InweboService {
 	public boolean updateInWeboDevice(String userName, long deviceId, String tooltype, String newName) {
 
 		// User user = getUser(userName);
-		String result = consoleAdmin.loginUpdateTool(0, serviceId, deviceId, tooltype, newName);
+		// This method is available only for inWebo Safe Transactions or Enterprise.
+		/*String result = consoleAdmin.loginUpdateTool(0, serviceId, deviceId, tooltype, newName);
 
 		if ("OK".equalsIgnoreCase(result))
 			return true;
-		else
+		else*/
 			return false;
 	}
 
@@ -229,22 +230,20 @@ public class InweboService {
 
 	
 
-	public Map<String, String> getCustScriptConfigProperties(String displayName) {
+	public Map<String, String> getCustScriptConfigProperties(String acr) {
 
-		try {
-			oxCustomScript script = new oxCustomScript();
-			script.setDisplayName(displayName);
+		CustomScript script = new CustomScript();
+		script.setDisplayName(acr);
+		script.setBaseDn(ldapService.getCustomScriptsDn());
 
-			List<oxCustomScript> scripts = ldapService.find(oxCustomScript.class, ldapService.getCustomScriptsDn(),
-					null);
-			for (oxCustomScript temp : scripts) {
-				if (temp.getDisplayName().equalsIgnoreCase(displayName))
-					return Utils.scriptConfigPropertiesAsMap(temp);
-			}
+		List<CustomScript> list = ldapService.find(script);
+		script = list.size() > 0 ? list.get(0) : null;
 
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+		if (script != null) {
+			Map<String, String> props = Utils.scriptConfigPropertiesAsMap(script);
+			return props;
 		}
+
 		return null;
 	}
 

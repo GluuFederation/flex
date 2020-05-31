@@ -9,7 +9,7 @@ import org.pf4j.Extension;
  * @author jgomer
  */
 @Extension
-public class InweboMenu //implements NavigationMenu 
+public class InweboMenu implements NavigationMenu 
 {
 
     public String getContentsUrl() {

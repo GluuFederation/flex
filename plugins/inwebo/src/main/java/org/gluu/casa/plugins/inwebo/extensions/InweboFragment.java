@@ -9,7 +9,7 @@ import org.pf4j.Extension;
  * @author jgomer
  */
 @Extension
-public class InweboFragment //implements PreferredMethodFragment 
+public class InweboFragment implements PreferredMethodFragment 
 {
 
     public String getUrl() {
