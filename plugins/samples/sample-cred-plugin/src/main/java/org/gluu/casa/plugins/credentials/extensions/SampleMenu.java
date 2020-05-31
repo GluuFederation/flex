@@ -10,8 +10,7 @@ import org.pf4j.Extension;
  *
  */
 @Extension
-public class SampleMenu
-{
+public class SampleMenu implements NavigationMenu {
 
     public String getContentsUrl() {
         return "menu.zul";
