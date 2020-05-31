@@ -39,7 +39,7 @@ public interface SndFactorAuthenticationUtils {
     
     /**
      * This method should be called after the user has successfully a enrolled a credential. While not mandatory, plugin 
-     * writers are encouraged to invoke this method so keep some internals of the application up-to-date. This is
+     * writers are encouraged to invoke this method to keep some internals of the application up-to-date. This is
      * specially relevant for auto enablement of 2FA to take effect.
      * @param user Object representing the user that the enrollment belongs to. The instance must have been obtained 
      *             from the SessionContext
