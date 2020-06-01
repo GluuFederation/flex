@@ -5,7 +5,7 @@ set -e
 # FUNCTIONS
 # =========
 
-run_entrypoint() {
+move_builtin_jars() {
     # move twilio lib
     if [ ! -f /opt/gluu/jetty/oxauth/custom/libs/twilio.jar ]; then
         mkdir -p /opt/gluu/jetty/oxauth/custom/libs
@@ -18,22 +18,18 @@ run_entrypoint() {
         mv /tmp/jsmpp.jar /opt/gluu/jetty/oxauth/custom/libs/jsmpp.jar
     fi
 
-    if [ ! -f /deploy/touched ]; then
-        python /app/scripts/entrypoint.py
-        touch /deploy/touched
-    fi
 }
 
 # ==========
 # ENTRYPOINT
 # ==========
 
-if [ -f /etc/redhat-release ]; then
-    source scl_source enable python27 && python /app/scripts/wait.py
-    source scl_source enable python27 && run_entrypoint
-else
-    python /app/scripts/wait.py
-    run_entrypoint
+move_builtin_jars
+python3 /app/scripts/wait.py
+
+if [ ! -f /deploy/touched ]; then
+    python3 /app/scripts/entrypoint.py
+    touch /deploy/touched
 fi
 
 # run Casa server
