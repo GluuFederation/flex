@@ -41,6 +41,7 @@ def main():
         deps.append(persistence_type)
 
     deps.append("oxauth")
+    deps.append("oxd")
     wait_for(manager, deps)
 
 

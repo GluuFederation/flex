@@ -38,7 +38,18 @@ class LDAPBackend(object):
             )
             return bool(conn.result["result"] == 0)
 
-    def config_exists(self):
+    # def config_exists(self):
+    #     with self.conn as conn:
+    #         conn.search(
+    #             search_base=self.key,
+    #             search_filter="(objectClass=oxApplicationConfiguration)",
+    #             search_scope=ldap3.BASE,
+    #             attributes=['objectClass'],
+    #             size_limit=1,
+    #         )
+    #         return conn.entries
+
+    def get_config(self):
         with self.conn as conn:
             conn.search(
                 search_base=self.key,
@@ -47,7 +58,12 @@ class LDAPBackend(object):
                 attributes=['objectClass'],
                 size_limit=1,
             )
-            return conn.entries
+            if not conn.entries:
+                return
+            return conn.entries[0]
+
+    def modify_config(self):
+        pass
 
 
 class CouchbaseBackend(object):
@@ -57,7 +73,6 @@ class CouchbaseBackend(object):
         host = os.environ.get("GLUU_COUCHBASE_URL", "localhost")
         user = get_couchbase_user(manager)
         password = get_couchbase_password(manager)
-
         self.client = CouchbaseClient(host, user, password)
 
     def add_config(self, data):
@@ -75,12 +90,22 @@ class CouchbaseBackend(object):
             return req.json()["status"] == "success"
         return False
 
-    def config_exists(self):
+    # def config_exists(self):
+    #     query = "SELECT objectClass FROM {0} USE KEYS '{1}'".format("gluu", self.key)
+    #     req = self.client.exec_query(query)
+    #     if req.ok:
+    #         return bool(req.json()["results"])
+    #     return False
+
+    def get_config(self):
         query = "SELECT objectClass FROM {0} USE KEYS '{1}'".format("gluu", self.key)
         req = self.client.exec_query(query)
-        if req.ok:
-            return bool(req.json()["results"])
-        return False
+        if not req.ok:
+            return
+        return req.json()["results"][0]
+
+    def modify_config(self):
+        pass
 
 
 class CasaConfig(object):
@@ -105,20 +130,20 @@ class CasaConfig(object):
         oxd_url = os.environ.get("GLUU_OXD_SERVER_URL", "localhost:8443")
 
         src = "/app/templates/casa.json"
+
+        _, oxd_host, oxd_port = resolve_oxd_url(oxd_url)
         ctx = {
             "hostname": self.manager.config.get("hostname"),
-            "configFolder": "/etc/gluu/conf"
+            "oxd_hostname": oxd_host,
+            "oxd_port": oxd_port,
         }
 
         with open(src) as fr:
-            data = json.loads(fr.read() % ctx)
-            _, oxd_host, oxd_port = resolve_oxd_url(oxd_url)
-
-            data["oxd_config"]["host"] = oxd_host
-            data["oxd_config"]["port"] = int(oxd_port)
-            return data
+            return json.loads(fr.read() % ctx)
 
     def setup(self):
-        if not self.backend.config_exists():
-            data = self.json_from_template()
+        data = self.json_from_template()
+        config = self.backend.get_config()
+
+        if not config:
             self.backend.add_config(data)

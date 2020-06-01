@@ -7,13 +7,12 @@ from pygluu.containerlib.persistence import render_gluu_properties
 from pygluu.containerlib.persistence import render_hybrid_properties
 from pygluu.containerlib.persistence import render_ldap_properties
 from pygluu.containerlib.persistence import render_salt
-from pygluu.containerlib.persistence import sync_couchbase_cert
 from pygluu.containerlib.persistence import sync_couchbase_truststore
 from pygluu.containerlib.persistence import sync_ldap_truststore
 from pygluu.containerlib.utils import cert_to_truststore
 from pygluu.containerlib.utils import get_server_certificate
 
-from casa_config import CasaConfig
+# from casa_config import CasaConfig
 from oxd import get_oxd_cert
 
 manager = get_manager()
@@ -81,8 +80,6 @@ def main():
             "/app/templates/gluu-couchbase.properties.tmpl",
             "/etc/gluu/conf/gluu-couchbase.properties",
         )
-        # need to resolve whether we're using default or user-defined couchbase cert
-        sync_couchbase_cert(manager)
         sync_couchbase_truststore(manager)
 
     if persistence_type == "hybrid":
@@ -111,8 +108,8 @@ def main():
     manager.secret.to_file("passport_rp_jks_base64", "/etc/certs/passport-rp.jks",
                            decode=True, binary_mode=True)
 
-    config = CasaConfig(manager)
-    config.setup()
+    # config = CasaConfig(manager)
+    # config.setup()
 
 
 if __name__ == "__main__":

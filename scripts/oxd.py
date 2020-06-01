@@ -1,15 +1,15 @@
 import os
-
-import six.moves
+from urllib.parse import urlparse
 
 from pygluu.containerlib.utils import get_server_certificate
 
 
 def resolve_oxd_url(url):
-    result = six.moves.urllib_parse.urlparse(url)
+    result = urlparse(url)
     scheme = result.scheme or "https"
-    host = result.hostname or result.path.split(":")[0]
-    port = result.port or int(result.path.split(":")[-1])
+    host_port = result.netloc or result.path
+    host = host_port.split(":")[0]
+    port = int(host_port.split(":")[-1])
     return scheme, host, port
 
 
