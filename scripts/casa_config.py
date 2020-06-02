@@ -38,18 +38,7 @@ class LDAPBackend(object):
             )
             return bool(conn.result["result"] == 0)
 
-    # def config_exists(self):
-    #     with self.conn as conn:
-    #         conn.search(
-    #             search_base=self.key,
-    #             search_filter="(objectClass=oxApplicationConfiguration)",
-    #             search_scope=ldap3.BASE,
-    #             attributes=['objectClass'],
-    #             size_limit=1,
-    #         )
-    #         return conn.entries
-
-    def get_config(self):
+    def config_exists(self):
         with self.conn as conn:
             conn.search(
                 search_base=self.key,
@@ -58,12 +47,7 @@ class LDAPBackend(object):
                 attributes=['objectClass'],
                 size_limit=1,
             )
-            if not conn.entries:
-                return
-            return conn.entries[0]
-
-    def modify_config(self):
-        pass
+            return bool(conn.entries)
 
 
 class CouchbaseBackend(object):
@@ -90,22 +74,12 @@ class CouchbaseBackend(object):
             return req.json()["status"] == "success"
         return False
 
-    # def config_exists(self):
-    #     query = "SELECT objectClass FROM {0} USE KEYS '{1}'".format("gluu", self.key)
-    #     req = self.client.exec_query(query)
-    #     if req.ok:
-    #         return bool(req.json()["results"])
-    #     return False
-
-    def get_config(self):
+    def config_exists(self):
         query = "SELECT objectClass FROM {0} USE KEYS '{1}'".format("gluu", self.key)
         req = self.client.exec_query(query)
-        if not req.ok:
-            return
-        return req.json()["results"][0]
-
-    def modify_config(self):
-        pass
+        if req.ok:
+            return bool(req.json()["results"])
+        return False
 
 
 class CasaConfig(object):
@@ -142,8 +116,6 @@ class CasaConfig(object):
             return json.loads(fr.read() % ctx)
 
     def setup(self):
-        data = self.json_from_template()
-        config = self.backend.get_config()
-
-        if not config:
+        if not self.backend.config_exists():
+            data = self.json_from_template()
             self.backend.add_config(data)

@@ -12,7 +12,7 @@ from pygluu.containerlib.persistence import sync_ldap_truststore
 from pygluu.containerlib.utils import cert_to_truststore
 from pygluu.containerlib.utils import get_server_certificate
 
-# from casa_config import CasaConfig
+from casa_config import CasaConfig
 from oxd import get_oxd_cert
 
 manager = get_manager()
@@ -108,8 +108,8 @@ def main():
     manager.secret.to_file("passport_rp_jks_base64", "/etc/certs/passport-rp.jks",
                            decode=True, binary_mode=True)
 
-    # config = CasaConfig(manager)
-    # config.setup()
+    config = CasaConfig(manager)
+    config.setup()
 
 
 if __name__ == "__main__":
