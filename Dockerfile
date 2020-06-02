@@ -57,6 +57,16 @@ ENV JSMPP_VERSION 2.3.7
 RUN wget -q https://repo1.maven.org/maven2/org/jsmpp/jsmpp/${JSMPP_VERSION}/jsmpp-${JSMPP_VERSION}.jar -O /tmp/jsmpp.jar
 
 # ======
+# rclone
+# ======
+
+ARG RCLONE_VERSION=v1.51.0
+RUN wget -q https://github.com/rclone/rclone/releases/download/${RCLONE_VERSION}/rclone-${RCLONE_VERSION}-linux-amd64.zip -O /tmp/rclone.zip \
+    && unzip -qq /tmp/rclone.zip -d /tmp \
+    && mv /tmp/rclone-${RCLONE_VERSION}-linux-amd64/rclone /usr/bin/ \
+    && rm -rf /tmp/rclone-${RCLONE_VERSION}-linux-amd64 /tmp/rclone.zip
+
+# ======
 # Python
 # ======
 
@@ -66,7 +76,7 @@ RUN pip3 install -U pip \
     && pip3 install --no-cache-dir -r /tmp/requirements.txt
 
 # =======
-# License
+# Cleanup
 # =======
 
 RUN apk del build-deps \
