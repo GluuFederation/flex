@@ -2,6 +2,8 @@ package org.gluu.casa.misc;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.Level;
 import org.gluu.model.casa.ApplicationConfiguration;
 import org.gluu.persist.PersistenceEntryManager;
 import org.gluu.persist.couchbase.impl.CouchbaseEntryManagerFactory;
@@ -24,7 +26,11 @@ public class ClientReset {
     private static final String CONFIG_FILE = BASE_DIR + File.separator + "gluu.properties";
     private static final Charset utf8 = StandardCharsets.UTF_8;
     private static final PrintStream out = System.out;
-
+    
+	static {
+		StatusLogger.getLogger().setLevel(Level.OFF);
+	}
+	
     public static void main(String ...args) throws Exception {
 
         Properties p;
