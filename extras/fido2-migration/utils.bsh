@@ -1,0 +1,53 @@
+import java.nio.file.*;
+
+appender(fileName) {
+
+    File file;
+    FileWriter fw;
+    
+    init(f) {
+        file = Paths.get(f, new String[0]).toFile();
+        fw = new FileWriter(file); 
+    }
+    append(str) {
+        fw.append(str + "\n");
+    }
+    append() {
+        append("");
+    }
+    flush() {
+    	fw.flush();
+    }
+    close() {
+        fw.close();
+    }
+    
+    init(fileName);
+    return this;
+    
+}
+
+log = appender("log.txt");
+err = appender("rejected.txt");
+
+prnt(str) {
+	log.append(str);
+	log.flush();
+}
+
+failed(id) {
+	err.append(str);
+	err.flush();
+}
+
+format(template, arg) {
+    return String.format(template, new String[]{arg.toString()});
+}
+
+format(template, arg, arg2) {
+    return String.format(template, new String[]{arg.toString(), arg2.toString()});
+}
+
+format(template, arg, arg2, arg3) {
+    return String.format(template, new String[]{arg.toString(), arg2.toString(), arg3.toString()});
+}
