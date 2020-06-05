@@ -4,9 +4,9 @@ import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
 import org.gluu.casa.rest.RSUtils;
-import org.gluu.oxauth.fido2.client.AttestationService;
-import org.gluu.oxauth.fido2.model.entry.Fido2RegistrationEntry;
-import org.gluu.oxauth.fido2.model.entry.Fido2RegistrationStatus;
+import org.gluu.fido2.client.AttestationService;
+import org.gluu.fido2.model.entry.Fido2RegistrationEntry;
+import org.gluu.fido2.model.entry.Fido2RegistrationStatus;
 import org.gluu.search.filter.Filter;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.slf4j.Logger;
@@ -144,6 +144,7 @@ public class Fido2Service extends BaseService {
         Map<String, String> map = new HashMap<>();
         map.put("username", userName);
         map.put("displayName", displayName);
+        map.put("attestation", "direct");
         return attestationService.register(mapper.writeValueAsString(map)).readEntity(String.class);
 
     }

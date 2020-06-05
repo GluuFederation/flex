@@ -54,30 +54,8 @@
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
-            <artifactId>oxauth-client</artifactId>
+            <artifactId>fido2-client</artifactId>
             <version>${ox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.gluu</groupId>
-            <artifactId>oxauth-fido2-server</artifactId>
-            <version>${ox.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.gluu</groupId>
-            <artifactId>oxauth-fido2-client</artifactId>
-            <version>${ox.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
@@ -110,6 +88,12 @@
             <groupId>org.gluu</groupId>
             <artifactId>oxcore-persistence-hybrid</artifactId>
             <version>${ox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.gluu</groupId>
@@ -271,6 +255,13 @@
             <artifactId>quartz</artifactId>
             <version>2.3.2</version>
         </dependency>
+        
+		<!-- Jackson CBOR (needed for script.bsh only) -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-cbor</artifactId>
+			<version>2.10.1</version>
+		</dependency>
 
     </dependencies>
 
@@ -310,7 +301,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Remove beans.xml from oxcore-service, oxcore-cache and oxauth-fido2-server jars.
+            <!-- Remove beans.xml from oxcore-service and oxcore-cache jars.
             It allows disabling jar scanning by Weld. It produces lots of errors as is -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -341,21 +332,6 @@
                         <configuration>
                             <fileset>
                                 <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/oxcore-cache-${ox.version}.jar</directory>
-                                <includes>
-                                    <include>META-INF/beans.xml</include>
-                                </includes>
-                            </fileset>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>remove-beans-file-oxauth-fido2-server</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>remove</goal>
-                        </goals>
-                        <configuration>
-                            <fileset>
-                                <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/oxauth-fido2-server-${ox.version}.jar</directory>
                                 <includes>
                                     <include>META-INF/beans.xml</include>
                                 </includes>
