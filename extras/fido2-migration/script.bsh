@@ -162,7 +162,6 @@ List/*<DeviceRegistration>*/ findAllRegistered(String userInum, String appId) {
 
 	List fidoRegistrations = persistenceEntryManager.findEntries(baseDn, DeviceRegistration.class, resultFilter);
 	fidoRegistrations2 = new ArrayList();
-	networkService = new NetworkService();
 	
 	for (DeviceRegistration dr : fidoRegistrations) {
 		if (dr.getDeviceData() == null && appId.equals(dr.getApplication())) {
@@ -225,6 +224,7 @@ people() {
 
 
 applicationId = getU2fAppId();
+documentDomain = new NetworkService().getHost(applicationId);
 print("Migration in progress...");
 
 for (person : people()) {
@@ -236,7 +236,7 @@ for (person : people()) {
 	if (size > 0) {
 		prnt(format("Found %s devices for %s", size, userName));
 		prepareBranch(userInum);
-		migrateToFido2(existingFidoRegistrations, applicationId, userName, userInum);
+		migrateToFido2(existingFidoRegistrations, documentDomain, userName, userInum);
 	}
 }
 
