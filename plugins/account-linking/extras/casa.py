@@ -8,7 +8,8 @@ from org.gluu.jsf2.service import FacesService
 from org.gluu.oxauth.model.config import ConfigurationFactory
 from org.gluu.oxauth.model.util import Base64Util
 from org.gluu.oxauth.security import Identity
-from org.gluu.oxauth.service import AuthenticationService, EncryptionService, UserService
+from org.gluu.oxauth.service import AuthenticationService
+from org.gluu.oxauth.service.common import EncryptionService, UserService
 from org.gluu.oxauth.service.custom import CustomScriptService
 from org.gluu.oxauth.service.net import HttpService
 from org.gluu.oxauth.util import ServerUtil
