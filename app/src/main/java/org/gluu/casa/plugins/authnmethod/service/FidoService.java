@@ -82,19 +82,24 @@ public class FidoService extends BaseService {
 
     private List<DeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
 
-        String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));        
-        Filter statusFilter = Filter.createEqualityFilter("oxStatus", DeviceRegistrationStatus.ACTIVE.getValue());
-        statusFilter = active ? statusFilter : Filter.createNOTFilter(statusFilter);
-
+        String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));
         logger.trace("Finding {}active U2F devices for user={}", active ? "" : "in", userId);
+                        
+        Filter statusFilter = Filter.createEqualityFilter("oxStatus", DeviceRegistrationStatus.ACTIVE.getValue());
+        
+        //This filters allows to account old enrollments that don't have personInum set (they are LDAP-based)
+        Filter personInumFilter = Filter.createORFilter(
+				Filter.createNOTFilter(Filter.createPresenceFilter("personInum")),				
+                //Next subfilter is needed for CB queries to work properly, introduced in 4.1
+                //See https://github.com/GluuFederation/oxAuth/commit/ccc972c2bb5f242f0a29511b422e75b692dc6cef
+				Filter.createEqualityFilter("personInum", userId));
+        
         //Starting with 4.1 in CB the ou=fido branch does not exist
         //See https://github.com/GluuFederation/oxAuth/commit/7e5606e0ef51dfbea3a17ff3a2516f9e97f9b35a
         Filter filter = Filter.createANDFilter(
-                activeFilter,
+                active ? statusFilter : Filter.createNOTFilter(statusFilter),
                 Filter.createEqualityFilter("oxApplication", appId),
-                //Next one is needed for CB queries to work properly, introduced in 4.1
-                //See https://github.com/GluuFederation/oxAuth/commit/ccc972c2bb5f242f0a29511b422e75b692dc6cef
-                Filter.createEqualityFilter("personInum", userId));
+                personInumFilter);
 
         try {
             return persistenceService.find(DeviceRegistration.class, parentDn, filter);
