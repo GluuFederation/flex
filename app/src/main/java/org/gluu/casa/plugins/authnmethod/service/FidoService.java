@@ -82,13 +82,19 @@ public class FidoService extends BaseService {
 
     private List<DeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
 
-        String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));
-        String state = active ? DeviceRegistrationStatus.ACTIVE.getValue() : DeviceRegistrationStatus.COMPROMISED.getValue();
-        logger.trace("Finding U2F devices with state={} for user={}", state, userId);
-        //Starting with 4.1 in CB the ou=fido branch does not exist (https://github.com/GluuFederation/oxAuth/commit/7e5606e0ef51dfbea3a17ff3a2516f9e97f9b35a)
+        String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));        
+        Filter statusFilter = Filter.createEqualityFilter("oxStatus", DeviceRegistrationStatus.ACTIVE.getValue());
+        statusFilter = active ? statusFilter : Filter.createNOTFilter(statusFilter);
+
+        logger.trace("Finding {}active U2F devices for user={}", active ? "" : "in", userId);
+        //Starting with 4.1 in CB the ou=fido branch does not exist
+        //See https://github.com/GluuFederation/oxAuth/commit/7e5606e0ef51dfbea3a17ff3a2516f9e97f9b35a
         Filter filter = Filter.createANDFilter(
-                Filter.createEqualityFilter("oxStatus", state),
-                Filter.createEqualityFilter("oxApplication", appId));
+                activeFilter,
+                Filter.createEqualityFilter("oxApplication", appId),
+                //Next one is needed for CB queries to work properly, introduced in 4.1
+                //See https://github.com/GluuFederation/oxAuth/commit/ccc972c2bb5f242f0a29511b422e75b692dc6cef
+                Filter.createEqualityFilter("personInum", userId));
 
         try {
             return persistenceService.find(DeviceRegistration.class, parentDn, filter);
@@ -145,8 +151,6 @@ public class FidoService extends BaseService {
         }
         return devices;
     }
-
-
 
     /**
      * Chooses one device from a list of devices, such that its creation time is the closest to the timestamp given and
