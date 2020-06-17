@@ -1,7 +1,7 @@
 from org.gluu.jsf2.message import FacesMessages
 from org.gluu.oxauth.security import Identity
-from org.gluu.oxauth.service import AuthenticationService
-from org.gluu.oxauth.service.common import UserService, EncryptionService
+from org.gluu.oxauth.service import AuthenticationService, UserService
+from org.gluu.oxauth.service.common import EncryptionService
 from org.gluu.jsf2.service import FacesService
 from org.gluu.model.custom.script.type.auth import PersonAuthenticationType
 from org.gluu.service.cdi.util import CdiUtil
