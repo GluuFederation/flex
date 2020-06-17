@@ -70,8 +70,7 @@
                     <z:label if="${not sessionContext.browser.mobile and not vm.u2fMayBeSupported}" value="${labels.usr.u2f_unsupported_browser}" />
                     <z:div if="${not sessionContext.browser.mobile and vm.u2fMayBeSupported}">
                         <h:p class="pt2 dark-blue2" unless="${empty vm.u2fSupportMessage}">
-                            <!-- span allows correctly showing the markup in message -->
-                            <span>${vm.u2fSupportMessage}</span>
+                            ${vm.u2fSupportMessage}
                         </h:p>
                         <div class="pb2">
                             <span class="mr2">${labels.usr.u2f_pressready}</span>

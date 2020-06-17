@@ -89,7 +89,7 @@ public class FidoService extends BaseService {
         
         //This filters allows to account old enrollments that don't have personInum set (they are LDAP-based)
         Filter personInumFilter = Filter.createORFilter(
-				Filter.createNOTFilter(Filter.createPresenceFilter("personInum")),				
+				Filter.createNOTFilter(Filter.createPresenceFilter("personInum")),
                 //Next subfilter is needed for CB queries to work properly, introduced in 4.1
                 //See https://github.com/GluuFederation/oxAuth/commit/ccc972c2bb5f242f0a29511b422e75b692dc6cef
 				Filter.createEqualityFilter("personInum", userId));

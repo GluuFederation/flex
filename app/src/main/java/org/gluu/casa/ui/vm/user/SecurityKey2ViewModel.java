@@ -45,6 +45,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
 
     private SecurityKey newDevice;
     private List<SecurityKey> devices;
+    private String fido2SupportMessage;
 
     private String editingId;
     private boolean uiAwaiting;
@@ -58,6 +59,10 @@ public class SecurityKey2ViewModel extends UserViewModel {
 
     public List<SecurityKey> getDevices() {
         return devices;
+    }
+    
+    public String getFido2SupportMessage() {
+    	return fido2SupportMessage;
     }
 
     public String getEditingId() {
@@ -294,7 +299,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
             logger.error(e.getMessage(), e);
         }
         if (!probablySupported) {
-            UIUtils.showMessageUI(false, Labels.getLabel("usr.fido2_unsupported_browser"));
+        	fido2SupportMessage = Labels.getLabel("usr.fido2_unsupported_browser");
         }
 
     }

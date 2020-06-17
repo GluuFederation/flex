@@ -277,7 +277,7 @@ public class SecurityKeyViewModel extends UserViewModel {
             u2fMayBeSupported = (name.contains("chrome") && browserVer >= 70) || (name.contains("opera") && browserVer >= 57)
                     || (name.contains("safari") && browserVer > 10) || (name.contains("firefox") && browserVer >= 71);
 
-            if ((u2fMayBeSupported) && (name.contains("safari"))) {
+            if (u2fMayBeSupported && name.contains("safari")) {
                 u2fSupportMessage = Labels.getLabel("usr.u2f_unsupported_safari");
             }
         } catch (Exception e) {
