@@ -24,10 +24,10 @@
         <weld.version>3.1.2.Final</weld.version>
         <pf4j.version>3.2.0</pf4j.version>
         <casa.version>4.2.0-SNAPSHOT</casa.version>
-        <log4j.version>2.11.2</log4j.version>
         <ox.version>4.2.0-SNAPSHOT</ox.version>
+        <log4j.version>2.11.2</log4j.version>
         <jackson.version>2.10.1</jackson.version>
-        <zk.version>9.0.0</zk.version>
+        <zk.version>9.0.0.1</zk.version>
         <ldapsdk.version>4.0.14</ldapsdk.version>
         <resteasy.version>3.9.3.Final</resteasy.version>
         <mimemagic.version>0.1.5</mimemagic.version>
