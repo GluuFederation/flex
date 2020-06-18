@@ -206,7 +206,6 @@ public class OxdService {
 
             cmdParams.setScope(config.getScopes());
             cmdParams.setResponseTypes(Collections.singletonList("code"));
-            cmdParams.setTrustedClient(true);
 
             RegisterSiteResponse setup = restResponse(cmdParams, "register-site", null, RegisterSiteResponse.class);
             computedSettings = new OxdClientSettings(clientName, setup.getOxdId(), setup.getClientId(), setup.getClientSecret());
