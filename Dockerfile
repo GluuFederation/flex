@@ -17,10 +17,10 @@ RUN apk update \
 # Jetty
 # =====
 
-ENV JETTY_VERSION=9.4.24.v20191120 \
-    JETTY_HOME=/opt/jetty \
-    JETTY_BASE=/opt/gluu/jetty \
-    JETTY_USER_HOME_LIB=/home/jetty/lib
+ARG JETTY_VERSION=9.4.26.v20200117
+ARG JETTY_HOME=/opt/jetty
+ARG JETTY_BASE=/opt/gluu/jetty
+ARG JETTY_USER_HOME_LIB=/home/jetty/lib
 
 # Install jetty
 RUN wget -q https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz -O /tmp/jetty.tar.gz \
@@ -36,8 +36,8 @@ EXPOSE 8080
 # Casa
 # ====
 
-ENV GLUU_VERSION=4.2.0-SNAPSHOT \
-    GLUU_BUILD_DATE="2020-06-01 12:41"
+ARG GLUU_VERSION=4.2.0-SNAPSHOT
+ARG GLUU_BUILD_DATE="2020-06-18 13:58"
 
 # Install Casa
 RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war -O /tmp/casa.war \
@@ -50,10 +50,10 @@ RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_
 # Custom libs
 # ===========
 
-ENV TWILIO_VERSION 7.17.0
+ARG TWILIO_VERSION=7.17.0
 RUN wget -q https://repo1.maven.org/maven2/com/twilio/sdk/twilio/${TWILIO_VERSION}/twilio-${TWILIO_VERSION}.jar -O /tmp/twilio.jar
 
-ENV JSMPP_VERSION 2.3.7
+ARG JSMPP_VERSION=2.3.7
 RUN wget -q https://repo1.maven.org/maven2/org/jsmpp/jsmpp/${JSMPP_VERSION}/jsmpp-${JSMPP_VERSION}.jar -O /tmp/jsmpp.jar
 
 # ======
