@@ -116,10 +116,10 @@ public class StrongAuthViewModel {
         } else {
             enforcementPolicies.remove(policy);
             //Revert the numbers, this helps prevent entering negative numbers, then deselecting an option, and then saving
-            if (LOCATION_UNKNOWN.toString().equals(policy) || CUSTOM.toString().equals(policy)) {
+            if (settings.getTrustedDevicesSettings() != null && (LOCATION_UNKNOWN.toString().equals(policy) || CUSTOM.toString().equals(policy))) {
                 deviceExpiration = settings.getTrustedDevicesSettings().getDeviceExpirationDays();
             }
-            if (DEVICE_UNKNOWN.toString().equals(policy) || CUSTOM.toString().equals(policy)) {
+            if (settings.getTrustedDevicesSettings() != null && (DEVICE_UNKNOWN.toString().equals(policy) || CUSTOM.toString().equals(policy))) {
                 locationExpiration = settings.getTrustedDevicesSettings().getLocationExpirationDays();
             }
         }
