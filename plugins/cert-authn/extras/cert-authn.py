@@ -25,7 +25,7 @@ class PersonAuthentication(PersonAuthenticationType):
     def __init__(self, currentTimeMillis):
         self.currentTimeMillis = currentTimeMillis
 
-    def init(self, configurationAttributes):
+    def init(self, customScript, configurationAttributes):
         print "Cert. Initialization"
         return True
 
@@ -34,8 +34,11 @@ class PersonAuthentication(PersonAuthenticationType):
         return True
 
     def getApiVersion(self):
-        return 1
+        return 11
 
+    def getAuthenticationMethodClaims(self, requestParameters):
+        return None
+        
     def isValidAuthenticationMethod(self, usageType, configurationAttributes):
         return True
 
@@ -137,6 +140,13 @@ class PersonAuthentication(PersonAuthenticationType):
 
     def logout(self, configurationAttributes, requestParameters):
         return True
+        
+    def getNextStep(self, configurationAttributes, requestParameters, step):
+        return -1
+
+    def getLogoutExternalUrl(self, configurationAttributes, requestParameters):
+        print "Get external logout URL call"
+        return None
 
     def hasEnrollments(self, configurationAttributes, user):
 
