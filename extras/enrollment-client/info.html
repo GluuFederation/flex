@@ -9,7 +9,7 @@
 
 		function get2FAUserData() {
 			var endpoint = endpoints_root + "/../2fa/user-info"
-			var userid = $("#get2FAUserData_userid")
+			var userid = $("#get2FAUserData_userid").val()
 
 			getToken(tokenURL, clientId, clientSecret)
 				.then(t => genericGET(endpoint + "/" + userid, [{name : "Authorization", value : t}]))
