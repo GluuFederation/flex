@@ -39,7 +39,9 @@
                         <configuration>
                             <artifactSet>
                                     <includes>
+<!--
                                         <include>org.gluu:oxtrust-scim</include>
+-->
                                         <include>org.gluu:oxauth-common</include>
                                     </includes>
                             </artifactSet>
