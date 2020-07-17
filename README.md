@@ -4,7 +4,7 @@ Docker assets for Casa
 
 ## Versions
 
-- Stable: N/A
+- Stable: `gluufederation/casa:4.2.0_01`
 - Unstable: `gluufederation/casa:4.2.0_dev`
 
 Refer to [Changelog](./CHANGES.md) for details on new features, bug fixes, or older releases.
