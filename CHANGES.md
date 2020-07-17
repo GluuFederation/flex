@@ -1,4 +1,4 @@
-hangelog
+# Changelog
 
 Here you can see an overview of changes between each release.
 
