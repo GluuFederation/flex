@@ -147,7 +147,8 @@ ENV GLUU_MAX_RAM_PERCENTAGE=75.0 \
     GLUU_WAIT_MAX_TIME=300 \
     GLUU_WAIT_SLEEP_DURATION=10 \
     GLUU_OXD_SERVER_URL=https://localhost:8443 \
-    GLUU_OXAUTH_BACKEND=localhost:8081
+    GLUU_OXAUTH_BACKEND=localhost:8081 \
+    GLUU_JAVA_OPTIONS=""
 
 # ==========
 # misc stuff

@@ -44,4 +44,5 @@ exec java \
     -Dserver.base=/opt/gluu/jetty/casa \
     -Dlog.base=/opt/gluu/jetty/casa \
     -Dpython.home=/opt/jython \
+    ${GLUU_JAVA_OPTIONS} \
     -jar /opt/jetty/start.jar
