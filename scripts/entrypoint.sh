@@ -26,12 +26,13 @@ move_builtin_jars() {
 
 move_builtin_jars
 python3 /app/scripts/wait.py
-python3 /app/scripts/jca_sync.py &
 
 if [ ! -f /deploy/touched ]; then
     python3 /app/scripts/entrypoint.py
     touch /deploy/touched
 fi
+
+python3 /app/scripts/jca_sync.py &
 
 # run Casa server
 cd /opt/gluu/jetty/casa

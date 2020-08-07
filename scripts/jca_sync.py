@@ -20,6 +20,16 @@ def sync_from_webdav(url, username, password):
     logger.info(f"Sync files with remote directory {url}{ROOT_DIR}{SYNC_DIR}")
     rclone.copy_from(SYNC_DIR, SYNC_DIR)
 
+    files = (
+        "/etc/certs/otp_configuration.json",
+        "/etc/certs/super_gluu_creds.json",
+    )
+
+    for remote in files:
+        local = os.path.dirname(remote)
+        logger.info(f"Sync file {url}{ROOT_DIR}{remote} to {local}")
+        rclone.copy_from(remote, local)
+
 
 def get_sync_interval():
     default = 5 * 60  # 5 minutes
