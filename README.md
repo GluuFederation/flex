@@ -55,3 +55,6 @@ The following environment variables are supported by the container:
 - `GLUU_OXAUTH_BACKEND`: The oxAuth backend address, default is localhost:8081 (used in `wait_for.py` script)
 - `GLUU_OXD_SERVER_URL`: URL to oxd server (default to `https://localhost:8443`).
 - `GLUU_JAVA_OPTIONS`: Java options passed to entrypoint, i.e. `-Xmx1024m` (default to empty-string).
+- `GLUU_DOCUMENT_STORE_TYPE`: Document store type (one of `LOCAL` or `JCA`; default to `LOCAL`).
+- `GLUU_JCA_URL`: URL to remote repository (default to `http://localhost:8080`).
+- `GLUU_JCA_SYNC_INTERVAL`: Interval between files sync (default to `300` seconds).
