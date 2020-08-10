@@ -151,7 +151,10 @@ ENV GLUU_MAX_RAM_PERCENTAGE=75.0 \
     GLUU_WAIT_SLEEP_DURATION=10 \
     GLUU_OXD_SERVER_URL=https://localhost:8443 \
     GLUU_OXAUTH_BACKEND=localhost:8081 \
-    GLUU_JAVA_OPTIONS=""
+    GLUU_JAVA_OPTIONS="" \
+    GLUU_DOCUMENT_STORE_TYPE=LOCAL \
+    GLUU_JACKRABBIT_URL=http://localhost:8080 \
+    GLUU_JACKRABBIT_ADMIN_ID_FILE=/etc/gluu/conf/jackrabbit_admin_id
 
 # ==========
 # misc stuff
