@@ -154,7 +154,8 @@ ENV GLUU_MAX_RAM_PERCENTAGE=75.0 \
     GLUU_JAVA_OPTIONS="" \
     GLUU_DOCUMENT_STORE_TYPE=LOCAL \
     GLUU_JACKRABBIT_URL=http://localhost:8080 \
-    GLUU_JACKRABBIT_ADMIN_ID_FILE=/etc/gluu/conf/jackrabbit_admin_id
+    GLUU_JACKRABBIT_ADMIN_ID=admin \
+    GLUU_JACKRABBIT_ADMIN_PASSWORD_FILE=/etc/gluu/conf/jackrabbit_admin_password
 
 # ==========
 # misc stuff

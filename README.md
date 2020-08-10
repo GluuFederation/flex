@@ -60,4 +60,5 @@ The following environment variables are supported by the container:
 - `GLUU_JACKRABBIT_URL`: URL to remote repository (default to `http://localhost:8080`).
 - `GLUU_JCA_SYNC_INTERVAL`: __DEPRECATED__ in favor of `GLUU_JACKRABBIT_SYNC_INTERVAL`.
 - `GLUU_JACKRABBIT_SYNC_INTERVAL`: Interval between files sync (default to `300` seconds).
-- `GLUU_JACKRABBIT_ADMIN_ID_FILE`: Absolute path to file contains ID for admin user (default to `/etc/gluu/conf/jackrabbit_admin_id`).
+- `GLUU_JACKRABBIT_ADMIN_ID`: Admin username (default to `admin`).
+- `GLUU_JACKRABBIT_ADMIN_PASSWORD_FILE`: Absolute path to file contains password for admin user (default to `/etc/gluu/conf/jackrabbit_admin_password`).
