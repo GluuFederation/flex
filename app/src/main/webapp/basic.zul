@@ -4,7 +4,7 @@
     <h:head self="@insert(title)">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <link rel="icon" href="${zkService.contextPath}${assetsService.faviconUrl}" />
-        <script src="${zkService.contextPath}/scripts/jquery-3.4.1.min.js" />
+        <script src="${zkService.contextPath}/scripts/jquery-3.5.1.min.js" />
         <script src="${zkService.contextPath}/scripts/popper-1.16.min.js" />
         <!-- insert ZK javascripts -->
         <h:zkhead/>
