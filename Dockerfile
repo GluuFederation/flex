@@ -13,6 +13,16 @@ RUN apk update \
     && apk add --no-cache py3-pip openssl tini \
     && apk add --no-cache --virtual build-deps git wget
 
+# ======
+# rclone
+# ======
+
+ARG RCLONE_VERSION=v1.51.0
+RUN wget -q https://github.com/rclone/rclone/releases/download/${RCLONE_VERSION}/rclone-${RCLONE_VERSION}-linux-amd64.zip -O /tmp/rclone.zip \
+    && unzip -qq /tmp/rclone.zip -d /tmp \
+    && mv /tmp/rclone-${RCLONE_VERSION}-linux-amd64/rclone /usr/bin/ \
+    && rm -rf /tmp/rclone-${RCLONE_VERSION}-linux-amd64 /tmp/rclone.zip
+
 # =====
 # Jetty
 # =====
@@ -37,7 +47,7 @@ EXPOSE 8080
 # ====
 
 ARG GLUU_VERSION=4.2.1-SNAPSHOT
-ARG GLUU_BUILD_DATE="2020-08-07 16:09"
+ARG GLUU_BUILD_DATE="2020-08-11 19:50"
 
 # Install Casa
 RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war -O /tmp/casa.war \
@@ -57,16 +67,6 @@ RUN wget -q https://repo1.maven.org/maven2/com/twilio/sdk/twilio/${TWILIO_VERSIO
 
 ARG JSMPP_VERSION=2.3.7
 RUN wget -q https://repo1.maven.org/maven2/org/jsmpp/jsmpp/${JSMPP_VERSION}/jsmpp-${JSMPP_VERSION}.jar -O /usr/share/java/jsmpp.jar
-
-# ======
-# rclone
-# ======
-
-ARG RCLONE_VERSION=v1.51.0
-RUN wget -q https://github.com/rclone/rclone/releases/download/${RCLONE_VERSION}/rclone-${RCLONE_VERSION}-linux-amd64.zip -O /tmp/rclone.zip \
-    && unzip -qq /tmp/rclone.zip -d /tmp \
-    && mv /tmp/rclone-${RCLONE_VERSION}-linux-amd64/rclone /usr/bin/ \
-    && rm -rf /tmp/rclone-${RCLONE_VERSION}-linux-amd64 /tmp/rclone.zip
 
 # ======
 # Python
