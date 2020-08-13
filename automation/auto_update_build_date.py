@@ -52,7 +52,7 @@ distributions_managed = {
         "url": "https://ox.gluu.org/maven/org/gluu/super-gluu-radius-server/{}",
         # There is another package super-gluu-radius-server-{}-distribution.zip
         # but the version is the same so we can use one
-        "source_packages": "super-gluu-radius-server-{}.jar"
+        "source_package": "super-gluu-radius-server-{}.jar"
     },
     "fido2-server": {
         "url": "https://ox.gluu.org/maven/org/gluu/fido2-server/{}",
@@ -67,7 +67,7 @@ def find_date(text):
         result = str(result).replace(":00", "")
         return result
     except ParserError:
-        pass
+        return None
 
 
 def parse_source(package_name, version):
@@ -75,15 +75,19 @@ def parse_source(package_name, version):
     package = distributions_managed[package_name]["source_package"].format(version)
     page = requests.get(url)
     tree = html.fromstring(page.content)
-    table_rows = tree.xpath('//tr')
+    a = '//a[@href="{}"] | //td'.format(package)
+    table_rows = tree.xpath(a)
+    temp_list = []
     for table_row in table_rows:
         table_row_text = table_row.text_content()
-        stripped_table_row_list = table_row_text.split()
-        if package in table_row_text:
-            for item in stripped_table_row_list:
-                timestamp_string = find_date(item)
-                if timestamp_string:
-                    return timestamp_string
+        if table_row_text in temp_list:
+            i = table_rows.index(table_row)
+            text = table_rows[i + 1].text_content().strip()
+            if find_date(text):
+                return text
+            return table_rows[i + 2].text_content().strip()
+        if package_name[:20] in table_row_text:
+            temp_list.append(table_row_text.strip())
     return None
 
 
