@@ -95,10 +95,10 @@ def find_current_gluu_package_version_and_build_date(dockerfile):
     gluu_packages = ["oxtrust-server", "oxauth-client", "opendj-server-legacy",
                      "oxauth-server", "casa", "oxd-server", "scim-server", "oxshibbolethIdp",
                      "oxShibbolethStatic", "super-gluu-radius-server", "fido2-server", "passport"]
-    wrends_version_search_string = "ARG WRENDS_VERSION="
-    wrends_build_date_search_string = "ARG WRENDS_BUILD_DATE="
-    gluu_version_search_string = "ARG GLUU_VERSION="
-    gluu_build_date_search_string = "ARG GLUU_BUILD_DATE="
+    wrends_version_search_string = "ENV WRENDS_VERSION="
+    wrends_build_date_search_string = "ENV WRENDS_BUILD_DATE="
+    gluu_version_search_string = "ENV GLUU_VERSION="
+    gluu_build_date_search_string = "ENV GLUU_BUILD_DATE="
     gluu_package = ""
     gluu_version = ""
     gluu_build_date = ""
