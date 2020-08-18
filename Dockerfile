@@ -47,7 +47,7 @@ EXPOSE 8080
 # ====
 
 ARG GLUU_VERSION=4.2.1-SNAPSHOT
-ARG GLUU_BUILD_DATE="2020-08-13 14:43"
+ARG GLUU_BUILD_DATE="2020-08-14 11:06"
 
 # Install Casa
 RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war -O /tmp/casa.war \
