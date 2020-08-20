@@ -62,3 +62,4 @@ The following environment variables are supported by the container:
 - `GLUU_JACKRABBIT_SYNC_INTERVAL`: Interval between files sync (default to `300` seconds).
 - `GLUU_JACKRABBIT_ADMIN_ID`: Admin username (default to `admin`).
 - `GLUU_JACKRABBIT_ADMIN_PASSWORD_FILE`: Absolute path to file contains password for admin user (default to `/etc/gluu/conf/jackrabbit_admin_password`).
+- `GLUU_SSL_CERT_FROM_SECRETS`: Determine whether to get SSL cert from secrets backend (default to `false`). Note that the flag will take effect only if there's no mounted `/etc/certs/gluu_https.crt` file.
