@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.gluu.casa.plugins</groupId>
+	<artifactId>${plugin.id}</artifactId>
+	<version>${plugin.version}</version>
+	<packaging>jar</packaging>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<plugin.id>bioid-plugin</plugin.id>
+		<plugin.version>4.1</plugin.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>gluu</id>
+			<name>Gluu repository</name>
+			<url>http://ox.gluu.org/maven</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifestEntries>
+							<Plugin-Id>${plugin.id}</Plugin-Id>
+							<Plugin-Version>${plugin.version}</Plugin-Version>
+							<Plugin-Provider>Gluu Inc.</Plugin-Provider>
+							<Plugin-Class>org.gluu.casa.plugins.bioid.BioidPlugin</Plugin-Class>
+							<Plugin-Description>
+								This is a bioid plugin used for enrolling a 2fa credential
+							</Plugin-Description>
+							<Plugin-License>Available under the MIT License. See http://opensource.org/licenses/MIT for full text</Plugin-License>
+							<Logger-Name>org.gluu.casa.plugins</Logger-Name>
+						</manifestEntries>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.gluu</groupId>
+			<artifactId>casa-shared</artifactId>
+			<version>5.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+</project>
