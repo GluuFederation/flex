@@ -9,8 +9,8 @@ import org.pf4j.Extension;
  * @author madhumita
  *
  */
-@Extension
-public class BioidMenu implements NavigationMenu {
+//@Extension
+public class BioidMenu /*implements NavigationMenu*/ {
 
     public String getContentsUrl() {
         return "menu.zul";

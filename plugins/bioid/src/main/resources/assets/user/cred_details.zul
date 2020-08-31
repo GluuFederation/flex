@@ -39,21 +39,25 @@
     							<p class="ml3 mb0">
 									${labels.bioid_face_periocular_registered}
                                     <br />
+                                   
                                     
                                 </p>
                             </div>
                             <div class="pt2">
-                                <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert();initBioID();"  onClick="@command('show')"
+                                <h:button  class="${css.editButton} mb2 mr2" w:onClick="initBioID();"  onClick="@command('show')"
                                           data-original-title="${labels.general.edit}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-pencil-alt" />
                                 </h:button>
-                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@command('delete', device=each)"
+                               
+                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@command('delete')"
                                           data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-trash-alt" />
                                 </h:button>
                             </div>
-
-                        </div>
+						</div>
+						<z:div sclass="f7 ml3 mb0">
+						${labels.bioid_edit_reason}
+						</z:div>
                     </zk:template>
                 </z:div>
                 <zk:zk if="${(vm.devices.size() eq 0) }">
@@ -243,7 +247,6 @@
         <z:script src="/pl/bioid-plugin/js/jquery-3.5.1.min.js"  />
     	<z:script src="/pl/bioid-plugin/js/getUserMedia.min.js" />
     	<z:script src="/pl/bioid-plugin/js/bws.capture.js" />
-    	
     	<z:script src="/pl/bioid-plugin/js/uui.js" />
     </z:div>
     

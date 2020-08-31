@@ -288,14 +288,15 @@ function onStart() {
         } else {
             // done: redirect to caller ...
             let url = returnURL ; /*+ '?access_token=' + token;*/
-            /*if (error !== undefined) {
+            if (error !== undefined) {
                 url = url + '&error=' + error;
                 // show the error on UI
+                $('#uuierror').html(error);
             }
             else
             {
             	 window.location.replace(url);
-            }*/
+            }
             /*url = url + '&state=' + state + '&skipintro=' + skipIntro;*/
             
            

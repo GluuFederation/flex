@@ -250,11 +250,14 @@ public class BioIDService {
 					persistenceService.getPersonDn(userId));
 			if (person != null) {
 				String json = person.getBioMetricDevices();
-				json = Utils.isEmpty(json) ? "[]" : mapper.readTree(json).get("bioid").toString();
-				BioIDCredential device = mapper.readValue(json, new TypeReference<BioIDCredential>() {
-				});
-				devices.add(device);
-				logger.trace("getBioIDDevices. User '{}' has {}", userId, device.getBcid());
+				if(!Utils.isEmpty(json))
+				{
+					json = Utils.isEmpty(json) ? "[]" : mapper.readTree(json).get("bioid").toString();
+					BioIDCredential device = mapper.readValue(json, new TypeReference<BioIDCredential>() {
+					});
+					devices.add(device);
+					logger.trace("getBioIDDevices. User '{}' has {}", userId, device.getBcid());	
+				}
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -290,16 +293,9 @@ public class BioIDService {
 	}
 
 	public boolean removeFromPersistence(String bcid, String trait, String userId) throws JsonProcessingException {
-		// add an entry to persistence
-		/*
-		 * { "oxBiometricDevices": { "bioid": [ { "bcid": "bws.1231312.123131",
-		 * "addedOn": 1580847151410 } ] } }
-		 */
-		BioIDCredential cred = null;
-		String json = mapper.writeValueAsString(Collections.singletonMap("bioid", cred));
-
+		
 		PersonBiometric person = persistenceService.get(PersonBiometric.class, persistenceService.getPersonDn(userId));
-		person.setBioMetricDevices(json);
+		person.setBioMetricDevices(null);
 
 		return persistenceService.modify(person);
 

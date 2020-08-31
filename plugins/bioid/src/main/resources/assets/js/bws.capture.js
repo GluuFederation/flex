@@ -415,9 +415,10 @@
                 if (data.Success) {
                     console.log('task succeeded');
                     stop();
-                    doneCallback();
                     // invoke VM so that the enrollment is persisted 
                     notifyServerOfSuccess();
+                    doneCallback();
+                    
                     
                 } else {
                     console.log('task failed', data.Error);
@@ -442,8 +443,17 @@
         function notifyServerOfSuccess()
         {
         	 var widget = zk.$('$readyButton');
-        	 alert("widget"+widget);
-        	 zAu.send(new zk.Event(widget, "onData", "success", {toServer:true}));
+        	 if(widget == null)
+        	 {
+        		 // edit button
+        		 widget = zk.$('$editButton');
+        		 zAu.send(new zk.Event(widget, "onEdit", "success", {toServer:true}));
+        	 }
+        	 else
+        	 {   //add button
+        		 zAu.send(new zk.Event(widget, "onData", "success", {toServer:true}));
+        	 }
+        	
         	 console.log("notified server so that the enrollment can be persisted");
         }
 
