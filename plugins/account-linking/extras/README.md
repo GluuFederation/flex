@@ -29,8 +29,8 @@ Press the update button at the bottom of the page.
 
 The folder of this README contains files needed to customize the authentication flow:
 
-- `casa.xhtml`: Place this file in `/opt/gluu/jetty/oxauth/custom/pages`.
-- `Casa.py`: Replace the contents of Casa custom script with this file. Backup original contents first somewhere.
+- `login.xhtml`: Place this file in `/opt/gluu/jetty/oxauth/custom/pages/casa`.
+- `casa.py`: Replace the contents of Casa custom script with this file. Backup original contents first somewhere.
 
 ## Check passport config
 
