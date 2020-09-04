@@ -325,7 +325,12 @@ class PersonAuthentication(PersonAuthenticationType):
         finally:
             http_service_response.closeConnection()
             
-            
     def hasEnrollments(self, configurationAttributes, user):
-		return True
+        values = user.getAttributeValues("oxBiometricDevices")
+        if values != None:
+            return True
+        else:
+            return False
+                
+    
          
