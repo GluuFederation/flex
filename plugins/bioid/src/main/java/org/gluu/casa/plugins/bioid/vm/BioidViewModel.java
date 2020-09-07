@@ -143,7 +143,7 @@ public class BioidViewModel {
 			// identification and livenessdetection
 			Clients.response(new AuInvoke("initPage", accessToken, trait,
 					BioIDService.TASK_ENROLL.equals(task) ? "enrollment" : "verification", apiUrl,
-					Executions.getCurrent().getContextPath() + "/user.zul"));
+					Executions.getCurrent().getContextPath() + "/pl/bioid-plugin/user/cred_details.zul"));
 			Clients.scrollBy(0, 700);
 
 		} catch (Exception e) {
