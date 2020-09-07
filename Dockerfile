@@ -47,7 +47,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=4.2.1-SNAPSHOT
-ENV GLUU_BUILD_DATE="2020-09-02 14:14"
+ENV GLUU_BUILD_DATE="2020-09-07 10:09"
 
 # Install Casa
 RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war -O /tmp/casa.war \
