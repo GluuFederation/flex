@@ -423,7 +423,7 @@ a .button-back {
     -webkit-transform: scaleX(-1);
 }
 
-.modal {
+.modalB {
     display: none;
     position: absolute;
     top: 50%;
@@ -436,7 +436,7 @@ a .button-back {
     opacity: 0.8;
 }
 
-.modal-footer {
+.modalB-footer {
     margin-top: 2rem;
 }
 

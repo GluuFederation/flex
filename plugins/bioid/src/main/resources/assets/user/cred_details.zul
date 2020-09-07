@@ -173,9 +173,9 @@
 					            </div>
 					            <div class="row">
 					                <div class="col center">
-					                    <div id="uuistatus" class="modal">
+					                    <div id="uuistatus" class="modalB">
 					                        <div id="uuimessage"></div>
-					                        <div class="modal-footer">
+					                        <div class="modalB-footer">
 					                            <button id="uuiok" class="button button-ok">OK</button>
 					                        </div>
 					                    </div>
