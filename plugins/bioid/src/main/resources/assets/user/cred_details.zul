@@ -39,27 +39,29 @@
     							<p class="ml3 mb0">
 									${labels.bioid_face_periocular_registered}
                                     <br />
-                                   
-                                    
                                 </p>
                             </div>
                             <div class="pt2">
-                                <h:button  class="${css.editButton} mb2 mr2" w:onClick="initBioID();"  onClick="@command('show')"
-                                          data-original-title="${labels.general.edit}" data-toggle="tooltip" data-placement="top">
-                                    <i class="fas fa-pencil-alt" />
-                                </h:button>
-                               
                                 <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@command('delete')"
                                           data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-trash-alt" />
                                 </h:button>
                             </div>
+                           
 						</div>
-						<z:div sclass="f7 ml3 mb0">
-						${labels.bioid_edit_reason}
-						</z:div>
                     </zk:template>
                 </z:div>
+                <zk:zk if="${(vm.devices.size() gt 0) }">
+                <z:div sclass="pl3-ns pb2">
+						 	<p class="ml3 mb0">
+						 	 	${labels.bioid_edit_reason}
+						 	</p>
+						 	<div class="mb2">
+	                        	<z:button id="enrollAgainButton" label="${labels.bioid_enroll_again}" sclass="${css.primaryButton} mr2" disabled="false"
+	                                  w:onClick="initBioID();" onClick="@command('show')" />
+                            </div>
+                    </z:div>
+                </zk:zk>
                 <zk:zk if="${(vm.devices.size() eq 0) }">
                  <!-- add device -->
                 <div class="${css.panel} bg-near-white">
@@ -142,15 +144,7 @@
 					                    </div>
 					                </div>
 					            </div>
-					            <div class="row mt-3 mb-3">
-					                <div class="col">
-					                    <div class="center">
-					                        <label class="checkbox">
-					                            <input type="checkbox" class="intro-checkbox" id="introskip" value="yes"><span data-res="introductionDontShowAgain">GOT IT! Don't show the instruction again</span></input>
-					                        </label>
-					                    </div>
-					                </div>
-					            </div>
+					            
 					            <div class="row center m-3">
 					                <div class="col mb-5">
 					                    <button onclick="showIntroduction(false)" class="button button-accept" data-res="buttonReadyToStart">I'm ready to start</button>

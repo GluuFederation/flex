@@ -446,13 +446,9 @@
         	 if(widget == null)
         	 {
         		 // edit button
-        		 widget = zk.$('$editButton');
-        		 zAu.send(new zk.Event(widget, "onEdit", "success", {toServer:true}));
+        		 widget = zk.$('$enrollAgainButton');
         	 }
-        	 else
-        	 {   //add button
-        		 zAu.send(new zk.Event(widget, "onData", "success", {toServer:true}));
-        	 }
+       		 zAu.send(new zk.Event(widget, "onData", "success", {toServer:true}));
         	
         	 console.log("notified server so that the enrollment can be persisted");
         }

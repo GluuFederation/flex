@@ -111,16 +111,8 @@ public class BioidViewModel {
 					task = BioIDService.TASK_ENROLL;
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// values for task for the UI API are - enrollment , verification,
-			// identification and livenessdetection
-			/*
-			 * Clients.response(new AuInvoke("initPage", accessToken, trait,
-			 * BioIDService.TASK_ENROLL.equals(task) ? "enrollment" : "verification",
-			 * apiUrl, Executions.getCurrent().getContextPath())); Clients.scrollBy(0, 10);
-			 */
 
 		} catch (Exception e) {
 			UIUtils.showMessageUI(false);
@@ -140,19 +132,9 @@ public class BioidViewModel {
 					+ BioIDService.getInstance().getScriptPropertyValue("PARTITION") + "."
 					+ sessionContext.getLoggedUser().getUserName().hashCode();
 			try {
-				/*
-				 * if (BioIDService.getInstance().isEnrolled(bcid, BioIDService.TRAIT_FACE) &&
-				 * BioIDService.getInstance().isEnrolled(bcid, BioIDService.TRAIT_PERIOCULAR)) {
-				 * accessToken = BioIDService.getInstance().getAccessToken(bcid,
-				 * BioIDService.TASK_VERIFY);
-				 * 
-				 * task = BioIDService.TASK_VERIFY; } else {
-				 */
+
 				accessToken = BioIDService.getInstance().getAccessToken(bcid, BioIDService.TASK_ENROLL);
 				task = BioIDService.TASK_ENROLL;
-				/*
-				 * }
-				 */
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -161,8 +143,8 @@ public class BioidViewModel {
 			// identification and livenessdetection
 			Clients.response(new AuInvoke("initPage", accessToken, trait,
 					BioIDService.TASK_ENROLL.equals(task) ? "enrollment" : "verification", apiUrl,
-					Executions.getCurrent().getContextPath()));
-			Clients.scrollBy(0, 10);
+					Executions.getCurrent().getContextPath() + "/user.zul"));
+			Clients.scrollBy(0, 700);
 
 		} catch (Exception e) {
 			UIUtils.showMessageUI(false);
@@ -222,7 +204,7 @@ public class BioidViewModel {
 						if (success == false) {
 							UIUtils.showMessageUI(false);
 						} else {
-							
+
 							UIUtils.showMessageUI(true);
 							Executions.sendRedirect(null);
 						}
@@ -232,11 +214,7 @@ public class BioidViewModel {
 
 	}
 
-	@Listen("onEdit=#editButton")
-	public void onEdit(Event event) throws Exception {
-		logger.trace(" onEdit invoked");
-		persistEnrollment();
-	}
+	
 
 	private boolean persistEnrollment() throws Exception {
 		logger.debug("persistEnrollment onData=#readyButton");
@@ -249,7 +227,7 @@ public class BioidViewModel {
 		return success;
 	}
 
-	@Listen("onData=#readyButton")
+	@Listen("onData=#readyButton,#enrollAgainButton")
 	public void onData(Event event) throws Exception {
 		logger.trace(" onData invoked");
 		persistEnrollment();
@@ -257,6 +235,7 @@ public class BioidViewModel {
 
 	@AfterCompose
 	public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
+		logger.debug("afterCompose invoked");
 		Selectors.wireEventListeners(view, this);
 	}
 }
