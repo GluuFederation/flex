@@ -69,7 +69,7 @@
 
     .instruction {
         margin-top: 30px;
-        font-size: 1.6rem;
+        font-size: 1.4rem;
         height: 50px; 
     }
 
@@ -156,7 +156,7 @@
     }
 
     .instruction {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
         margin-top: 30px;
         height: 80px; 
     }
@@ -428,7 +428,7 @@ a .button-back {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-20%, -200%);
     font-size: 1.3rem;
     background-color: #FFFFFF;
     color: #BE0000;
