@@ -99,20 +99,12 @@ function initPage(accessToken,trait,task,apiUrl,returnUrl)
 	returnURL = returnUrl;
 }
 
-function initBioID()
+function initBioID(mode)
 {
-	
 	initialize();
-	
 	$('#uuiinstruction').attr('data-res', 'UserInstruction-CloseUp');
-
-    if (skipIntro ) {
-        showIntroduction(false);
-    }
-    else {
-        showIntroduction(true);
-    }
-    console.log("Init BioID completed successfully")
+    showIntroduction(true);
+    console.log("Init BioID completed successfully");
 }
 
 function showIntroduction(show) {
@@ -123,13 +115,6 @@ function showIntroduction(show) {
         $('#uuiintroduction').hide();
         $('#uuiwepapp').show();
         initCapture();
-
-        let checked = $('#introskip').prop("checked");
-        if (checked) {
-            skipIntro = true;
-            // set cookie (1 year) to skip the introduction for the next time
-            // document.cookie = "BioIDSkipIntro=true;max-age=31536000;path=/";
-        }
     }
 }
 
@@ -753,3 +738,37 @@ function hideHead() {
 function prepareAlert() {
     alertRef = $('#feedback-bioid');
 }
+
+/**
+* Scrolls the container to the target position minus the offset
+*
+* @param target    - the destination to scroll to, can be a jQuery object
+*                    jQuery selector, or numeric position
+* @param offset    - the offset in pixels from the target position, e.g.
+*                    pass -80 to scroll to 80 pixels above the target
+* @param speed     - the scroll speed in milliseconds, or one of the
+*                    strings "fast" or "slow". default: 500
+* @param container - a jQuery object or selector for the container to
+*                    be scrolled. default: "html, body"
+*/
+jQuery.scrollTo = function (target, offset, speed, container) {
+
+    if (isNaN(target)) {
+
+        if (!(target instanceof jQuery))
+            target = $(target);
+
+        target = parseInt(target.offset().top);
+    }
+
+    container = container || "html, body";
+    if (!(container instanceof jQuery))
+        container = $(container);
+
+    speed = speed || 500;
+    offset = offset || 0;
+
+    container.animate({
+        scrollTop: target + offset
+    }, speed);
+};

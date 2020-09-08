@@ -39,9 +39,17 @@ public class BioidViewModel {
 	private String apiUrl;
 	private String task;
 	private String trait;
-
+	private boolean uiBioidShown;
 	public String getAccessToken() {
 		return accessToken;
+	}
+
+	public boolean isUiBioidShown() {
+		return uiBioidShown;
+	}
+
+	public void setUiBioidShown(boolean uiBioidShown) {
+		this.uiBioidShown = uiBioidShown;
 	}
 
 	public void setAccessToken(String accessToken) {
@@ -84,6 +92,8 @@ public class BioidViewModel {
 		return devices;
 	}
 
+
+
 	/**
 	 * Initialization method for this ViewModel.
 	 */
@@ -92,37 +102,13 @@ public class BioidViewModel {
 		logger.debug("init invoked");
 		sessionContext = Utils.managedBean(ISessionContext.class);
 		devices = BioIDService.getInstance().getBioIDDevices(sessionContext.getLoggedUser().getId());
-		try {
-			sessionContext = Utils.managedBean(ISessionContext.class);
-			apiUrl = BioIDService.getInstance().getScriptPropertyValue("ENDPOINT");
-			trait = BioIDService.TRAIT_FACE_PERIOCULAR;
-
-			String bcid = BioIDService.getInstance().getScriptPropertyValue("STORAGE") + "."
-					+ BioIDService.getInstance().getScriptPropertyValue("PARTITION") + "."
-					+ sessionContext.getLoggedUser().getUserName().hashCode();
-			try {
-				if (BioIDService.getInstance().isEnrolled(bcid, BioIDService.TRAIT_FACE)
-						&& BioIDService.getInstance().isEnrolled(bcid, BioIDService.TRAIT_PERIOCULAR)) {
-					accessToken = BioIDService.getInstance().getAccessToken(bcid, BioIDService.TASK_VERIFY);
-
-					task = BioIDService.TASK_VERIFY;
-				} else {
-					accessToken = BioIDService.getInstance().getAccessToken(bcid, BioIDService.TASK_ENROLL);
-					task = BioIDService.TASK_ENROLL;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		} catch (Exception e) {
-			UIUtils.showMessageUI(false);
-			logger.error(e.getMessage(), e);
-		}
 	}
-
+	
+	@NotifyChange("uiBioidShown")
 	@Command
 	public void show(String mode) {
 		logger.debug("showBioID");
+		uiBioidShown = true;
 		try {
 			sessionContext = Utils.managedBean(ISessionContext.class);
 			apiUrl = BioIDService.getInstance().getScriptPropertyValue("ENDPOINT");
@@ -168,7 +154,6 @@ public class BioidViewModel {
 		return new Pair<>(Labels.getLabel("bioid_del_title"), text.toString());
 
 	}
-
 	@Command
 	public void delete() {
 		logger.debug("delete invoked");
@@ -206,15 +191,13 @@ public class BioidViewModel {
 						} else {
 
 							UIUtils.showMessageUI(true);
+                            BindUtils.postNotifyChange(null, null, BioidViewModel.this, "devices");
 							Executions.sendRedirect(null);
 						}
 
 					}
 				});
-
 	}
-
-	
 
 	private boolean persistEnrollment() throws Exception {
 		logger.debug("persistEnrollment onData=#readyButton");

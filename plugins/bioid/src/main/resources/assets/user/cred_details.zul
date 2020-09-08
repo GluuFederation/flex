@@ -30,9 +30,9 @@
 				
                  <!-- device list -->
 				 
-                <z:div children="@load(vm.devices)">
+                <z:div children="@load(vm.devices)" >
                     <zk:template name="children">
-                        <div class="${css.panel} flex justify-between">
+                        <div class="${css.panel} flex justify-between" >
                             <div class="flex items-start">
                                 <img  src="${zkService.contextPath}/pl/bioid-plugin/images/face.png" />
                             	
@@ -52,13 +52,13 @@
                     </zk:template>
                 </z:div>
                 <zk:zk if="${(vm.devices.size() gt 0) }">
-                <z:div sclass="pl3-ns pb2">
+                <z:div sclass="pl3-ns pb2" >
 						 	<p class="ml3 mb0">
 						 	 	${labels.bioid_edit_reason}
 						 	</p>
 						 	<div class="mb2">
-	                        	<z:button id="enrollAgainButton" label="${labels.bioid_enroll_again}" sclass="${css.primaryButton} mr2" disabled="false"
-	                                  w:onClick="initBioID();" onClick="@command('show')" />
+	                        	<z:button id="enrollAgainButton" label="${labels.bioid_enroll_again}" sclass="${css.primaryButton} mr2" visible="@load(not vm.uiBioidShown)"
+	                                  w:onClick="initBioID('edit');" onClick="@command('show')" />
                             </div>
                     </z:div>
                 </zk:zk>
@@ -77,8 +77,8 @@
                     	</p>
 	                    <div class="mb2">
 	                        <!-- do not change id of this button, see uui.js -->
-	                        <z:button id="readyButton" label="${labels.general.ready}" sclass="${css.primaryButton} mr2" disabled="false"
-	                                  w:onClick="initBioID();" onClick="@command('show')" />
+	                        <z:button id="readyButton" label="${labels.general.ready}" sclass="${css.primaryButton} mr2" visible="@load(not vm.uiBioidShown)"
+	                                  w:onClick="initBioID('add');" onClick="@command('show')" />
 	                    </div>
                     </z:div>
                     <div class="alert alert-success dn" id="feedback-device" role="alert" />
