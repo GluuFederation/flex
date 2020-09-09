@@ -8,7 +8,7 @@
 
     <!-- session timeout redirect -->
     <session-config>
-        <max-requests-per-session>8</max-requests-per-session>
+        <max-requests-per-session>16</max-requests-per-session>
         <timeout-uri>/session-expired.zul</timeout-uri>
     </session-config>
     <session-config>
