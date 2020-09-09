@@ -99,7 +99,7 @@ function initPage(accessToken,trait,task,apiUrl,returnUrl)
 	returnURL = returnUrl;
 }
 
-function initBioID(mode)
+function initBioID()
 {
 	initialize();
 	$('#uuiinstruction').attr('data-res', 'UserInstruction-CloseUp');

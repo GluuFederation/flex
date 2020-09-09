@@ -210,12 +210,20 @@ public class BioidViewModel {
 		return success;
 	}
 
-	@Listen("onData=#readyButton,#enrollAgainButton")
-	public void onData(Event event) throws Exception {
-		logger.trace(" onData invoked");
+	@Listen("onData=#readyButton")
+	public void persistOnAdd(Event event) throws Exception {
+		logger.trace(" onData add invoked");
 		persistEnrollment();
+		UIUtils.showMessageUI(true);
 	}
 
+	@Listen("onData=#enrollAgainButton")
+	public void persistOnEdit(Event event) throws Exception {
+		logger.trace(" onData enroll invoked");
+		persistEnrollment();
+		UIUtils.showMessageUI(true);
+	}
+	
 	@AfterCompose
 	public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
 		logger.debug("afterCompose invoked");

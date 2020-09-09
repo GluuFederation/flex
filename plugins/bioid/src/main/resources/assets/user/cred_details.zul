@@ -58,7 +58,7 @@
 						 	</p>
 						 	<div class="mb2">
 	                        	<z:button id="enrollAgainButton" label="${labels.bioid_enroll_again}" sclass="${css.primaryButton} mr2" visible="@load(not vm.uiBioidShown)"
-	                                  w:onClick="initBioID('edit');" onClick="@command('show')" />
+	                                  w:onClick="initBioID();" onClick="@command('show')" />
                             </div>
                     </z:div>
                 </zk:zk>
@@ -78,7 +78,7 @@
 	                    <div class="mb2">
 	                        <!-- do not change id of this button, see uui.js -->
 	                        <z:button id="readyButton" label="${labels.general.ready}" sclass="${css.primaryButton} mr2" visible="@load(not vm.uiBioidShown)"
-	                                  w:onClick="initBioID('add');" onClick="@command('show')" />
+	                                  w:onClick="initBioID();" onClick="@command('show')" />
 	                    </div>
                     </z:div>
                     <div class="alert alert-success dn" id="feedback-device" role="alert" />
@@ -243,7 +243,4 @@
     	<z:script src="/pl/bioid-plugin/js/bws.capture.js" />
     	<z:script src="/pl/bioid-plugin/js/uui.js" />
     </z:div>
-    
-   
-			    
 </zk:zk>

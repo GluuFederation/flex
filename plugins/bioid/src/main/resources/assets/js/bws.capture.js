@@ -448,10 +448,13 @@
         		 // edit button
         		 widget = zk.$('$enrollAgainButton');
         	 }
+        	 if(!(zAu && zAu.send)) {alert ("zAu not initialized"); return;}
        		 zAu.send(new zk.Event(widget, "onData", "success", {toServer:true}));
         	
         	 console.log("notified server so that the enrollment can be persisted");
         }
+        
+       
 
         /*
 		 * ------------------------ Set challenge response tag
