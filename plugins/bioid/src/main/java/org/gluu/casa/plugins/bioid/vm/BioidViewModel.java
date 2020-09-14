@@ -2,11 +2,16 @@ package org.gluu.casa.plugins.bioid.vm;
 
 import java.util.List;
 
+import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.credential.BasicCredential;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.bioid.BioIDService;
+import org.gluu.casa.plugins.bioid.BioidPlugin;
 import org.gluu.casa.plugins.bioid.model.BioIDCredential;
+import org.gluu.casa.plugins.cert.CertAuthenticationExtension;
+import org.gluu.casa.plugins.credentials.extensions.BioidExtension;
 import org.gluu.casa.service.ISessionContext;
+import org.gluu.casa.service.SndFactorAuthenticationUtils;
 import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +45,9 @@ public class BioidViewModel {
 	private String task;
 	private String trait;
 	private boolean uiBioidShown;
+	private SndFactorAuthenticationUtils sndFactorUtils;
+	private User user;
+
 	public String getAccessToken() {
 		return accessToken;
 	}
@@ -92,8 +100,6 @@ public class BioidViewModel {
 		return devices;
 	}
 
-
-
 	/**
 	 * Initialization method for this ViewModel.
 	 */
@@ -101,9 +107,11 @@ public class BioidViewModel {
 	public void init() {
 		logger.debug("init invoked");
 		sessionContext = Utils.managedBean(ISessionContext.class);
+		user = sessionContext.getLoggedUser();
+		sndFactorUtils = Utils.managedBean(SndFactorAuthenticationUtils.class);
 		devices = BioIDService.getInstance().getBioIDDevices(sessionContext.getLoggedUser().getId());
 	}
-	
+
 	@NotifyChange("uiBioidShown")
 	@Command
 	public void show(String mode) {
@@ -154,10 +162,13 @@ public class BioidViewModel {
 		return new Pair<>(Labels.getLabel("bioid_del_title"), text.toString());
 
 	}
+
 	@Command
 	public void delete() {
 		logger.debug("delete invoked");
-		Pair<String, String> delMessages = getDeleteMessages(Labels.getLabel("face_periocular_traits"), null);
+		String resetMessages = sndFactorUtils.removalConflict(BioIDService.ACR, 1, user).getY();
+		boolean reset = resetMessages != null;
+		Pair<String, String> delMessages = getDeleteMessages(resetMessages);
 		Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO,
 				true ? Messagebox.EXCLAMATION : Messagebox.QUESTION, event -> {
 					if (Messagebox.ON_YES.equals(event.getName())) {
@@ -176,7 +187,9 @@ public class BioidViewModel {
 								if (success) {
 									BioIDService.getInstance().removeFromPersistence(bcid,
 											BioIDService.TRAIT_FACE_PERIOCULAR, sessionContext.getLoggedUser().getId());
+									sndFactorUtils.turn2faOff(user);
 								}
+
 							} catch (Exception e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -191,7 +204,7 @@ public class BioidViewModel {
 						} else {
 
 							UIUtils.showMessageUI(true);
-                            BindUtils.postNotifyChange(null, null, BioidViewModel.this, "devices");
+							BindUtils.postNotifyChange(null, null, BioidViewModel.this, "devices");
 							Executions.sendRedirect(null);
 						}
 
@@ -213,8 +226,14 @@ public class BioidViewModel {
 	@Listen("onData=#readyButton")
 	public void persistOnAdd(Event event) throws Exception {
 		logger.trace(" onData add invoked");
-		persistEnrollment();
-		UIUtils.showMessageUI(true);
+
+		boolean success = persistEnrollment();
+		if (success) {
+			Utils.managedBean(SndFactorAuthenticationUtils.class).notifyEnrollment(user, BioIDService.ACR);
+			UIUtils.showMessageUI(true);
+		} else {
+			UIUtils.showMessageUI(false);
+		}
 	}
 
 	@Listen("onData=#enrollAgainButton")
@@ -223,7 +242,7 @@ public class BioidViewModel {
 		persistEnrollment();
 		UIUtils.showMessageUI(true);
 	}
-	
+
 	@AfterCompose
 	public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
 		logger.debug("afterCompose invoked");
