@@ -5,7 +5,7 @@ import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
 import org.gluu.casa.rest.RSUtils;
 import org.gluu.fido2.client.AttestationService;
-import org.gluu.fido2.model.entry.Fido2RegistrationEntry;
+import org.gluu.casa.core.model.Fido2RegistrationEntry;
 import org.gluu.fido2.model.entry.Fido2RegistrationStatus;
 import org.gluu.search.filter.Filter;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -82,7 +82,7 @@ public class Fido2Service extends BaseService {
         List<SecurityKey> devices = new ArrayList<>();
         try {
             List<Fido2RegistrationEntry> list = persistenceService.find(Fido2RegistrationEntry.class,
-                    String.format("ou=%s,%s", FIDO2_OU, persistenceService.getPersonDn(userId)), filter);
+            	String.format("ou=%s,%s", FIDO2_OU, persistenceService.getPersonDn(userId)), filter);
 
             for (Fido2RegistrationEntry entry : list) {
                 SecurityKey sk = new SecurityKey();
