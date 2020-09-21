@@ -14,7 +14,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<plugin.id>bioid-plugin</plugin.id>
-		<plugin.version>4.1</plugin.version>
+		<plugin.version>5.0.0-SNAPSHOT</plugin.version>
+        <ox.version>5.0.0-SNAPSHOT</ox.version>
 	</properties>
 
 	<repositories>
