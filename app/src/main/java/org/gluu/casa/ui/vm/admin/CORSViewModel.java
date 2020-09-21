@@ -41,6 +41,7 @@ public class CORSViewModel extends MainViewModel {
     @Command
     public void dropOrigin(@BindingParam("origin") String orig) {
         origins.remove(orig);
+        getSettings().setCorsDomains(origins);
         updateMainSettings();
     }
 
@@ -51,6 +52,8 @@ public class CORSViewModel extends MainViewModel {
         if (Utils.isValidUrl(origin)) {
             if (!origins.contains(origin.toLowerCase())) {
                 origins.add(origin.toLowerCase());
+                
+                getSettings().setCorsDomains(origins);
                 if (updateMainSettings()) {
                     origin = "";
                 }
