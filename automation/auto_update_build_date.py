@@ -5,7 +5,7 @@ from dateutil.parser import parse, ParserError
 
 distributions_managed = {
     "opendj-server-legacy": {
-        "url": "https://ox.gluu.org/maven/org/forgerock/opendj/opendj-server-legacy/{}",
+        "url": "https://ox.gluu.org/maven/org/gluufederation/opendj/opendj-server-legacy/{}",
         "source_package": "opendj-server-legacy-{}.zip"
     },
     "passport": {
@@ -43,10 +43,6 @@ distributions_managed = {
     "oxShibbolethStatic": {
         "url": "https://ox.gluu.org/maven/org/gluu/oxShibbolethStatic/{}",
         "source_package": "oxShibbolethStatic-{}.jar"
-    },
-    "super-gluu-radius-server": {
-        "url": "https://ox.gluu.org/maven/org/gluu/super-gluu-radius-server/{}",
-        "source_package": "super-gluu-radius-server-{}.jar"
     },
     "super-gluu-radius-server": {
         "url": "https://ox.gluu.org/maven/org/gluu/super-gluu-radius-server/{}",
