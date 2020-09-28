@@ -46,6 +46,7 @@ EXPOSE 8080
 # Casa
 # ====
 
+# @TODO: change this as soon as 4.2.2-SNAPSHOT is available
 ENV GLUU_VERSION=4.2.1.Final
 ENV GLUU_BUILD_DATE="2020-09-24 08:34"
 
