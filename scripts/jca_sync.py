@@ -1,3 +1,4 @@
+import contextlib
 import logging.config
 import os
 import time
@@ -20,15 +21,36 @@ def sync_from_webdav(url, username, password):
     logger.info(f"Sync files with remote directory {url}{ROOT_DIR}{SYNC_DIR}")
     rclone.copy_from(SYNC_DIR, SYNC_DIR)
 
+    files = (
+        "/etc/certs/otp_configuration.json",
+        "/etc/certs/super_gluu_creds.json",
+    )
+
+    for remote in files:
+        local = os.path.dirname(remote)
+        logger.info(f"Sync file {url}{ROOT_DIR}{remote} to {local}")
+        rclone.copy_from(remote, local)
+
 
 def get_sync_interval():
     default = 5 * 60  # 5 minutes
 
+    if "GLUU_JCA_SYNC_INTERVAL" in os.environ:
+        env_name = "GLUU_JCA_SYNC_INTERVAL"
+    else:
+        env_name = "GLUU_JACKRABBIT_SYNC_INTERVAL"
+
     try:
-        interval = int(os.environ.get("GLUU_JCA_SYNC_INTERVAL", default))
+        interval = int(os.environ.get(env_name, default))
     except ValueError:
         interval = default
     return interval
+
+
+def get_jackrabbit_url():
+    if "GLUU_JCA_URL" in os.environ:
+        return os.environ["GLUU_JCA_URL"]
+    return os.environ.get("GLUU_JACKRABBIT_URL", "http://localhost:8080")
 
 
 def main():
@@ -37,14 +59,19 @@ def main():
         logger.warning(f"Using {store_type} document store; sync is disabled ...")
         return
 
-    url = os.environ.get("GLUU_JCA_URL", "http://localhost:8080")
-    username = os.environ.get("GLUU_JCA_USERNAME", "admin")
-    password = "admin"
+    url = get_jackrabbit_url()
 
-    password_file = os.environ.get("GLUU_JCA_PASSWORD_FILE", "/etc/gluu/conf/jca_password")
-    if os.path.isfile(password_file):
+    username = os.environ.get("GLUU_JACKRABBIT_ADMIN_ID", "admin")
+    password = ""
+
+    password_file = os.environ.get(
+        "GLUU_JACKRABBIT_ADMIN_PASSWORD_FILE",
+        "/etc/gluu/conf/jackrabbit_admin_password",
+    )
+    with contextlib.suppress(FileNotFoundError):
         with open(password_file) as f:
             password = f.read().strip()
+    password = password or username
 
     sync_interval = get_sync_interval()
     try:

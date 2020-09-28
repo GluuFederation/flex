@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine
 
 # symlink JVM
 RUN mkdir -p /usr/lib/jvm/default-jvm /usr/java/latest \
@@ -12,6 +12,16 @@ RUN mkdir -p /usr/lib/jvm/default-jvm /usr/java/latest \
 RUN apk update \
     && apk add --no-cache py3-pip openssl tini \
     && apk add --no-cache --virtual build-deps git wget
+
+# ======
+# rclone
+# ======
+
+ARG RCLONE_VERSION=v1.51.0
+RUN wget -q https://github.com/rclone/rclone/releases/download/${RCLONE_VERSION}/rclone-${RCLONE_VERSION}-linux-amd64.zip -O /tmp/rclone.zip \
+    && unzip -qq /tmp/rclone.zip -d /tmp \
+    && mv /tmp/rclone-${RCLONE_VERSION}-linux-amd64/rclone /usr/bin/ \
+    && rm -rf /tmp/rclone-${RCLONE_VERSION}-linux-amd64 /tmp/rclone.zip
 
 # =====
 # Jetty
@@ -36,8 +46,8 @@ EXPOSE 8080
 # Casa
 # ====
 
-ARG GLUU_VERSION=4.2.0.Final
-ARG GLUU_BUILD_DATE="2020-07-13 19:49"
+ENV GLUU_VERSION=4.2.1.Final
+ENV GLUU_BUILD_DATE="2020-09-24 08:34"
 
 # Install Casa
 RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war -O /tmp/casa.war \
@@ -50,30 +60,23 @@ RUN wget -q https://ox.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_
 # Custom libs
 # ===========
 
+RUN mkdir -p /usr/share/java
+
 ARG TWILIO_VERSION=7.17.0
-RUN wget -q https://repo1.maven.org/maven2/com/twilio/sdk/twilio/${TWILIO_VERSION}/twilio-${TWILIO_VERSION}.jar -O /tmp/twilio.jar
+RUN wget -q https://repo1.maven.org/maven2/com/twilio/sdk/twilio/${TWILIO_VERSION}/twilio-${TWILIO_VERSION}.jar -O /usr/share/java/twilio.jar
 
 ARG JSMPP_VERSION=2.3.7
-RUN wget -q https://repo1.maven.org/maven2/org/jsmpp/jsmpp/${JSMPP_VERSION}/jsmpp-${JSMPP_VERSION}.jar -O /tmp/jsmpp.jar
-
-# ======
-# rclone
-# ======
-
-ARG RCLONE_VERSION=v1.51.0
-RUN wget -q https://github.com/rclone/rclone/releases/download/${RCLONE_VERSION}/rclone-${RCLONE_VERSION}-linux-amd64.zip -O /tmp/rclone.zip \
-    && unzip -qq /tmp/rclone.zip -d /tmp \
-    && mv /tmp/rclone-${RCLONE_VERSION}-linux-amd64/rclone /usr/bin/ \
-    && rm -rf /tmp/rclone-${RCLONE_VERSION}-linux-amd64 /tmp/rclone.zip
+RUN wget -q https://repo1.maven.org/maven2/org/jsmpp/jsmpp/${JSMPP_VERSION}/jsmpp-${JSMPP_VERSION}.jar -O /usr/share/java/jsmpp.jar
 
 # ======
 # Python
 # ======
 
 RUN apk add --no-cache py3-cryptography
-COPY requirements.txt /tmp/requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip3 install -U pip \
-    && pip3 install --no-cache-dir -r /tmp/requirements.txt
+    && pip3 install --no-cache-dir -r /app/requirements.txt \
+    && rm -rf /src/pygluu-containerlib/.git
 
 # =======
 # Cleanup
@@ -147,7 +150,13 @@ ENV GLUU_MAX_RAM_PERCENTAGE=75.0 \
     GLUU_WAIT_MAX_TIME=300 \
     GLUU_WAIT_SLEEP_DURATION=10 \
     GLUU_OXD_SERVER_URL=https://localhost:8443 \
-    GLUU_OXAUTH_BACKEND=localhost:8081
+    GLUU_OXAUTH_BACKEND=localhost:8081 \
+    GLUU_JAVA_OPTIONS="" \
+    GLUU_DOCUMENT_STORE_TYPE=LOCAL \
+    GLUU_JACKRABBIT_URL=http://localhost:8080 \
+    GLUU_JACKRABBIT_ADMIN_ID=admin \
+    GLUU_JACKRABBIT_ADMIN_PASSWORD_FILE=/etc/gluu/conf/jackrabbit_admin_password \
+    GLUU_SSL_CERT_FROM_SECRETS=false
 
 # ==========
 # misc stuff
@@ -156,8 +165,8 @@ ENV GLUU_MAX_RAM_PERCENTAGE=75.0 \
 LABEL name="Casa" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
-    version="4.2.0" \
-    release="02" \
+    version="4.2.2" \
+    release="dev" \
     summary="Gluu Casa" \
     description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 

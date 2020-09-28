@@ -1,12 +1,11 @@
 import logging
 import logging.config
 import os
-import sys
 
 from pygluu.containerlib import get_manager
 from pygluu.containerlib import wait_for
-from pygluu.containerlib import PERSISTENCE_LDAP_MAPPINGS
-from pygluu.containerlib import PERSISTENCE_TYPES
+from pygluu.containerlib.validators import validate_persistence_type
+from pygluu.containerlib.validators import validate_persistence_ldap_mapping
 
 from settings import LOGGING_CONFIG
 
@@ -16,21 +15,10 @@ logger = logging.getLogger("wait")
 
 def main():
     persistence_type = os.environ.get("GLUU_PERSISTENCE_TYPE", "ldap")
+    validate_persistence_type(persistence_type)
+
     ldap_mapping = os.environ.get("GLUU_PERSISTENCE_LDAP_MAPPING", "default")
-
-    if persistence_type not in PERSISTENCE_TYPES:
-        logger.error(
-            "Unsupported GLUU_PERSISTENCE_TYPE value; "
-            "please choose one of {}".format(", ".join(PERSISTENCE_TYPES))
-        )
-        sys.exit(1)
-
-    if persistence_type == "hybrid" and ldap_mapping not in PERSISTENCE_LDAP_MAPPINGS:
-        logger.error(
-            "Unsupported GLUU_PERSISTENCE_LDAP_MAPPING value; "
-            "please choose one of {}".format(", ".join(PERSISTENCE_LDAP_MAPPINGS))
-        )
-        sys.exit(1)
+    validate_persistence_ldap_mapping(persistence_type, ldap_mapping)
 
     manager = get_manager()
     deps = ["config", "secret"]
