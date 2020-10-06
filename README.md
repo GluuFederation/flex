@@ -1,1 +1,1 @@
-# janssen-admin-ui
+# admin-ui
