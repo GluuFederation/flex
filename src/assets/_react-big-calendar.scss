@@ -1,0 +1,182 @@
+/* React Big Calendar Adjustments */
+
+// Base RBC styles
+@import "../../node_modules/react-big-calendar/lib/css/react-big-calendar.css";
+
+.rbc-calendar {
+  // Toolbar
+  .rbc-toolbar {
+    margin-bottom: $rbc-toolbar-margin-bottom;
+
+    button {
+      background: $rbc-toolbar-button-background;
+      box-shadow: $rbc-toolbar-button-box-shadow;
+      border-color: $rbc-toolbar-button-border-color;
+      padding: $rbc-toolbar-button-padding;
+      height: $rbc-toolbar-button-height;
+      font-size: $rbc-toolbar-button-font-size;
+      transition: $rbc-toolbar-button-transition;
+
+      &:focus {
+        outline: $rbc-toolbar-button-focus-outline;
+      }
+
+      &:hover {
+        border-color: $rbc-toolbar-button-hover-border-color;
+        background-color: $rbc-toolbar-button-hover-background-color;
+        cursor: $rbc-toolbar-button-hover-cursor;
+        box-shadow: $rbc-toolbar-button-hover-box-shadow;
+      }
+
+      &.rbc-active {
+        border-color: $rbc-toolbar-button-active-border-color;
+        background: $rbc-toolbar-button-active-background;
+        color: $rbc-toolbar-button-active-color;
+      }
+    }
+  }
+
+  // Toolbar Label
+  .rbc-toolbar-label {
+    text-transform: $rbc-toolbar-label-text-transform;
+    font-size: $rbc-toolbar-label-font-size;
+    font-weight: $rbc-toolbar-label-font-weight;
+    letter-spacing: $rbc-toolbar-label-letter-spacing;
+    color: $rbc-toolbar-label-color;
+  }
+
+  // Month View
+  .rbc-month-view .rbc-header {
+    padding: $rbc-month-view-header-padding;
+  }
+
+  // Date Cell
+  .rbc-date-cell {
+    padding: $rbc-date-cell-padding;
+  }
+
+  // Event
+  .rbc-event {
+    background: $rbc-event-background;
+    padding: $rbc-event-padding;
+    border-radius: $rbc-event-border-radius;
+
+    .rbc-event-content {
+      font-size: $rbc-event-content-font-size;
+      margin-left: $rbc-event-content-margin-left;
+    }
+  }
+
+  // Day slot event
+  .rbc-day-slot .rbc-event {
+    border-color: $rbc-day-slot-border-color;
+    padding: $rbc-day-slot-event-padding;
+  }
+
+  .rbc-day-slot .rbc-time-slot {
+    border-color: $rbc-day-slot-time-slot-border-color;
+  }
+
+  // Table borders color
+  .rbc-month-row + .rbc-month-row,
+  .rbc-day-bg + .rbc-day-bg,
+  .rbc-header,
+  .rbc-month-view,
+  .rbc-time-header-content,
+  .rbc-time-content > * + * > *,
+  .rbc-timeslot-group,
+  .rbc-time-content,
+  .rbc-time-view,
+  .rbc-agenda-view table.rbc-agenda-table,
+  .rbc-agenda-view table.rbc-agenda-table tbody > tr > td + td {
+    border-color: $rbc-border-color !important;
+  }
+
+  // Time Indicator
+  .rbc-current-time-indicator {
+    height: $rbc-time-indicator-height;
+    background-color: $rbc-time-indicator-background-color;
+
+    &:after {
+      content: $rbc-time-indicator-after-content;
+      width: $rbc-time-indicator-after-width;
+      height: $rbc-time-indicator-after-height;
+      position: $rbc-time-indicator-after-position;
+      right: $rbc-time-indicator-after-right;
+      background-color: $rbc-time-indicator-after-background-color;
+      border-radius: $rbc-time-indicator-after-border-radius;
+      top: $rbc-time-indicator-after-top;
+      margin-top: $rbc-time-indicator-after-margin-top;
+    }
+  }
+
+  // Today
+  .rbc-time-column.rbc-today {
+    background: $rbc-time-column-today-background;
+
+    .rbc-timeslot-group,
+    .rbc-time-slot {
+      border-color: $rbc-timeslot-border-color !important;
+    }
+  }
+
+  .rbc-today {
+    background: $rbc-today-background;
+  }
+
+  //  Month Row
+  .rbc-month-row {
+    min-height: $rbc-today-month-row-min-height;
+  }
+
+  // Day passed
+  .rbc-off-range-bg {
+    background-color: $rbc-today-off-date-range-background-color;
+  }
+
+  .rbc-label {
+    font-size: $rbc-label-font-size;
+  }
+
+  .rbc-time-content {
+    border-width: $rbc-time-content-border-width;
+  }
+
+  // Time Slot Group
+  .rbc-timeslot-group {
+    &:last-child {
+      border: $rbc-time-slot-group-last-child-border;
+      .rbc-time-slot:last-child {
+        border: $rbc-time-slot-group-time-slot-last-child-border;
+      }
+    }
+
+    .rbc-time-slot:first-child {
+      border-top: $rbc-time-slot-group-time-slot-first-child-border-top;
+    }
+  }
+
+  // Time View
+  .rbc-time-view {
+    .rbc-header {
+      min-height: $rbc-time-view-header-min-height;
+
+      a {
+        padding: $rbc-time-view-header-link-padding;
+        display: $rbc-time-view-header-link-display;
+      }
+    }
+  }
+
+  // Responsive
+  @include media-breakpoint-down(md) {
+    .rbc-toolbar {
+      display: $rbc-toolbar-md-display;
+      flex-flow: $rbc-toolbar-md-flex-flow;
+    }
+
+    .rbc-toolbar-label {
+      margin: $rbc-toolbar-label-md-margin;
+    }
+  }
+}
