@@ -201,7 +201,7 @@ public class OxdService {
             cmdParams.setPostLogoutRedirectUris(Collections.singletonList(config.getPostLogoutUri()));
             cmdParams.setAcrValues(config.getAcrValues());
             cmdParams.setClientName(clientName);
-            cmdParams.setClientFrontchannelLogoutUris(config.getFrontLogoutUri());
+            cmdParams.setClientFrontchannelLogoutUri(config.getFrontLogoutUri());
             cmdParams.setGrantTypes(Collections.singletonList("client_credentials"));
 
             cmdParams.setScope(config.getScopes());
