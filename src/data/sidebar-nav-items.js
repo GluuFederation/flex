@@ -15,19 +15,13 @@ export default function() {
       title: "sidemenu.identities",
       items: [
         {
-          title: "sidemenu.groups",
-          to: "/groups",
-          htmlBefore: '<i class="material-icons">people</i>',
-          htmlAfter: ""
-        },
-        {
-          title: "sidemenu.users",
-          to: "/users",
-          htmlBefore: '<i class="material-icons">supervised_user_circle</i>',
-          htmlAfter: ""
-        },
-        {
           title: "sidemenu.attributes",
+          to: "/attributes",
+          htmlBefore: '<i class="material-icons">gavel</i>',
+          htmlAfter: ""
+        },
+        {
+          title: "CUSTOM SCRIPTS",
           to: "/attributes",
           htmlBefore: '<i class="material-icons">gavel</i>',
           htmlAfter: ""
@@ -57,25 +51,6 @@ export default function() {
           ]
         },
         {
-          title: "sidemenu.saml",
-          htmlBefore: '<i class="material-icons">all_inclusive</i>',
-          open: false,
-          items: [
-            {
-              title: "sidemenu.trusts",
-              to: "/saml_trusts"
-            },
-            {
-              title: "sidemenu.acrs",
-              to: "/saml_acrs"
-            },
-            {
-              title: "sidemenu.namedId",
-              to: "/saml_namedid"
-            }
-          ]
-        },
-        {
           title: "sidemenu.uma",
           htmlBefore: '<i class="material-icons">polymer</i>',
           open: false,
@@ -89,161 +64,74 @@ export default function() {
               to: "/uma_ressources"
             }
           ]
-        },
-        {
-          title: "sidemenu.passport",
-          htmlBefore: '<i class="material-icons">credit_card</i>',
-          open: false,
-          items: [
-            {
-              title: "sidemenu.providers",
-              to: "/passport_providers"
-            },
-            {
-              title: "sidemenu.basic_config",
-              to: "/passport_config"
-            },
-            {
-              title: "sidemenu.idp_initiated",
-              to: "/passport_idpflow"
-            }
-          ]
         }
       ]
     },
     {
-      title: "sidemenu.extra",
+      title: "CONFIGURATION",
       items: [
         {
-          title: "sidemenu.server_status",
-          to: "/server_status",
-          htmlBefore: '<i class="material-icons">settings_input_hdmi</i>',
-          htmlAfter: ""
-        },
-        {
-          title: "sidemenu.view_logs",
-          to: "/logs",
-          htmlBefore: '<i class="material-icons">attach_file</i>',
-          htmlAfter: ""
-        },
-        {
-          title: "sidemenu.certificates",
-          to: "/certificates",
-          htmlBefore: '<i class="material-icons">new_releases</i>',
-          htmlAfter: ""
-        }
-      ]
-    },
-    {
-      title: "Configuration",
-      items: [
-        {
-          title: "Organization",
-          htmlBefore: '<i class="material-icons">account_balance</i>',
-          open: false,
-          items: [
-            {
-              title: "System",
-              to: "/file-manager-list"
-            },
-            {
-              title: "Smtp",
-              to: "/file-manager-cards"
-            },
-            {
-              title: "Settings",
-              to: "/file-manager-cards"
-            },
-            {
-              title: "Extra libraries",
-              to: "/file-manager-cards"
-            }
-          ]
-        },
-        {
-          title: "Authentication",
+          title: "BASIC",
           htmlBefore: '<i class="material-icons">vpn_key</i>',
           open: false,
           items: [
             {
-              title: "Default",
+              title: "ACRS",
+              to: "/user-profile-lite"
+            },
+            {
+              title: "SMTP",
               to: "/user-profile"
             },
             {
-              title: "SCIM",
+              title: "LOGGING",
+              to: "/user-profile-lite"
+            },
+            {
+              title: "FIDO2",
               to: "/user-profile-lite"
             }
           ]
         },
         {
-          title: "Registration",
+          title: "ADVANCED",
           htmlBefore: '<i class="material-icons">how_to_reg</i>',
           open: false,
           items: [
             {
-              title: "Default",
+              title: "LDAP",
               to: "/user-profile"
             },
             {
-              title: "SCIM",
-              to: "/user-profile-lite"
-            }
-          ]
-        },
-        {
-          title: "oxTrust Json",
-          htmlBefore: '<i class="material-icons">control_camera</i>',
-          open: false,
-          items: [
-            {
-              title: "Default",
+              title: "COUCHBASE",
               to: "/user-profile"
             },
             {
-              title: "SCIM",
+              title: "CACHE",
               to: "/user-profile-lite"
             },
             {
-              title: "Recaptcha",
-              to: "/edit-user-profile"
+              title: "JWK",
+              to: "/user-profile-lite"
             },
             {
-              title: "API",
-              to: "/login"
-            }
-          ]
-        },
-        {
-          title: "oxAuth Json",
-          htmlBefore: '<i class="material-icons">view_module</i>',
-          open: false,
-          items: [
-            {
-              title: "Basic",
-              to: "/file-manager-list"
-            },
-            {
-              title: "Fido2",
-              to: "/file-manager-list"
-            },
-            {
-              title: "Files - Cards View",
-              to: "/file-manager-cards"
+              title: "CONFIG",
+              to: "/user-profile-lite"
             }
           ]
         }
       ]
     },
     {
-      title: "Settingts",
+      title: "SETTINGS",
       items: [
         {
-          title: "Close Menu",
+          title: "CLOSE MENU",
           htmlBefore: '<i class="material-icons">fast_rewind</i>',
           to: "/icon"
         },
         {
-          title: "Logout",
+          title: "LOGOUT",
           htmlBefore: '<i class="material-icons">logout</i>',
           to: "/"
         }
