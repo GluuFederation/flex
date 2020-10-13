@@ -5,6 +5,14 @@ export default function() {
       htmlBefore: '<i class="material-icons">&#xE2C7;</i>',
       items: [
         {
+          title: "Users",
+          to: "/users"
+        },
+        {
+          title: "Groups",
+          to: "/groups"
+        },
+        {
           title: "Attributes",
           to: "/attributes"
         }
