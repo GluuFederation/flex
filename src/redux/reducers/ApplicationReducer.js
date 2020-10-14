@@ -8,7 +8,6 @@ const appState = {
 const ApplicationReducer = (state = appState, action) => {
   switch (action.type) {
     case CHANGE_LANGUAGE:
-        console.log("====================");
         console.log("============"+JSON.stringify(action.lang));
       return { ...state, lang: action.lang };
     default:

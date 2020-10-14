@@ -18,7 +18,7 @@ import {
   Badge
 } from "shards-react";
 import PageTitle from "../../components/common/PageTitle";
-import getGroupsData from "../../data/scopes-data";
+import getGroupsData from "../../data/scopes-datas";
 import { useTranslation } from "react-i18next";
 const OpenIdScopeListPage = () => {
   const { t } = useTranslation();

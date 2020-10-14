@@ -1,4 +1,4 @@
-import { combineReducers } from "redux";
+import { combineReducers } from "@reduxjs/toolkit";
 import UserReducer from "./UserReducer";
 import GroupReducer from "./GroupReducer";
 import ApplicationReducer from "./ApplicationReducer";

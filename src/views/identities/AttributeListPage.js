@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { store } from "../../redux/store/store";
+import actions from "../../redux/reducers/AttributeReducer";
 import { useHistory } from "react-router-dom";
+import AttributeService from "../../service/AttributeService";
 import ReactTable from "react-table";
 import {
   Container,
@@ -183,10 +185,18 @@ const AttributeListPage = ({ attributes, pageSizeOptions = [10] }) => {
     </Container>
   );
 };
-function mapStateToProps(state) {
-  return {
-    attributes: state.attributes.data,
-    pageSizeOptions: state.application.pageSizeOptions
-  };
-}
-export default connect(mapStateToProps)(AttributeListPage);
+const mapStateToProps = state => ({
+  attributes: state.attributes.data,
+  loading: state.attributes.isLoading,
+  pageSizeOptions: state.application.pageSizeOptions
+});
+
+const mapDispatchToProps = dispatch => ({
+    attributeService: new AttributeService(
+    dispatch,
+    actions,
+    "https://jsonplaceholder.typicode.com/users"
+  )
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AttributeListPage);
