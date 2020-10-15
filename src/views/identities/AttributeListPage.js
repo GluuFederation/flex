@@ -32,8 +32,9 @@ const AttributeListPage = ({ pageSizeOptions = [10] }) => {
   useEffect(() => {
     axios.get(`https://jsonplaceholder.typicode.com/users`).then(res => {
       const data = res.data;
+      console.log(JSON.stringify(data));
       //setData({ data });
-      dispatch(list(data));
+      //dispatch(list(data));
     });
   }, []);
   const tableColumns = [
