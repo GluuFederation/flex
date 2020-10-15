@@ -4,8 +4,8 @@ import { Container, Row, Col } from "shards-react";
 
 import PageTitle from "../components/common/PageTitle";
 import SmallStats from "../components/common/SmallStats";
-import UsersOverview from "../components/blog/UsersOverview";
-import UsersByDevice from "../components/blog/UsersByDevice";
+import UsersOverview from "../components/stats/UsersOverview";
+import UsersByDevice from "../components/stats/UsersByDevice";
 
 const HomePage = ({ smallStats }) => (
   <Container fluid className="main-content-container px-4">
