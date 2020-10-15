@@ -2,7 +2,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import UserReducer from "./UserReducer";
 import GroupReducer from "./GroupReducer";
 import ApplicationReducer from "./ApplicationReducer";
-import AttributeReducer from "./AttributeReducer";
+import AttributeReducer from "../slices/attributesSlice";
 import PassportReducer from "./PassportReducer";
 import ClientReducer from "./ClientReducer";
 

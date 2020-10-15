@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { connect, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { store } from "../../redux/store/store";
-import actions from "../../redux/reducers/AttributeReducer";
+import axios from "axios";
+import { list } from "../../redux/slices/attributesSlice";
 import { useHistory } from "react-router-dom";
-import AttributeService from "../../service/AttributeService";
 import ReactTable from "react-table";
 import {
   Container,
@@ -23,12 +22,20 @@ import {
   Badge
 } from "shards-react";
 import PageTitle from "../../components/common/PageTitle";
-import { deleteAttributeAction } from "../../redux/actions/UiActions";
 
-const AttributeListPage = ({ attributes, pageSizeOptions = [10] }) => {
+const AttributeListPage = ({ pageSizeOptions = [10] }) => {
+  const dispatch = useDispatch();
   let history = useHistory();
   const { t } = useTranslation();
   const [pageSize, setPageSize] = useState(pageSizeOptions[0]);
+  const [attributes, setData] = useState([]);
+  useEffect(() => {
+    axios.get(`https://jsonplaceholder.typicode.com/users`).then(res => {
+      const data = res.data;
+      //setData({ data });
+      dispatch(list(data));
+    });
+  }, []);
   const tableColumns = [
     {
       Header: "#",
@@ -112,9 +119,7 @@ const AttributeListPage = ({ attributes, pageSizeOptions = [10] }) => {
   function handleItemEdit(row) {
     alert(`Editing attribute "${row.original.id}"!`);
   }
-  function handleItemDelete(row) {
-    store.dispatch(deleteAttributeAction(row.original));
-  }
+  function handleItemDelete(row) {}
   function handleItemViewDetails(row) {
     alert(`Viewing details for "${row.original.id}"!`);
   }
@@ -191,12 +196,4 @@ const mapStateToProps = state => ({
   pageSizeOptions: state.application.pageSizeOptions
 });
 
-const mapDispatchToProps = dispatch => ({
-    attributeService: new AttributeService(
-    dispatch,
-    actions,
-    "https://jsonplaceholder.typicode.com/users"
-  )
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(AttributeListPage);
+export default connect(mapStateToProps)(AttributeListPage);

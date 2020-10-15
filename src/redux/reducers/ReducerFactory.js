@@ -30,4 +30,4 @@ class ReducerFactory {
   };
 }
 
-export default ReducerFactory
+export default ReducerFactory;
