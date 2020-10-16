@@ -150,7 +150,14 @@ public class Fido2Service extends BaseService {
     }
 
     public boolean verifyRegistration(String tokenResponse) throws Exception {
-        return Response.Status.OK.getStatusCode() == attestationService.verify(tokenResponse).getStatus();
+    	
+    	Response response = attestationService.verify(tokenResponse);
+    	try {
+    		return Response.Status.OK.getStatusCode() == response.getStatus();
+		} finally {
+			response.close();
+        }
+        
     }
 
     public SecurityKey getLatestSecurityKey(String userId, long time) {
