@@ -33,6 +33,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
+import org.zkoss.util.resource.Labels;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -146,7 +147,7 @@ public class OxdService {
                                         oxdConfig.getFrontLogoutUri()).anyMatch(Utils::isEmpty);
 
             if (oxdConfig.getPort() <= 0 || missing) {
-                logger.error("The following must be present in configuration file: host, port, redirect URI, post logout URI, and front channel logout URI");
+                logger.error("The following must be present in the configuration: host, port, redirect URI, post logout URI, and front channel logout URI");
             } else {
                 oxdConfig.setOpHost(persistenceService.getIssuerUrl());
                 oxdConfig.setAcrValues(Collections.singletonList(DEFAULT_ACR));
@@ -175,7 +176,49 @@ public class OxdService {
 
     }
 
-    public void setSettings(OxdSettings cfg, boolean triggerRegistration) throws Exception {
+    public String updateSettings(OxdSettings newConfig) {
+
+    	OxdSettings lastWorkingConfig = (OxdSettings) Utils.cloneObject(config);
+        String msg = null;
+        
+        //Triger a new registration only if host/port changed, otherwise call update site operation
+        if (lastWorkingConfig.getHost().equalsIgnoreCase(newConfig.getHost()) && lastWorkingConfig.getPort() == newConfig.getPort()) {
+
+            try {
+                //When logout url is changed and one logs off the first time, oxauth will give error
+                msg = updateSite(newConfig.getPostLogoutUri(), newConfig.getScopes());
+            } catch (Exception e) {
+                msg = e.getMessage();
+                logger.error(msg, e);
+            }
+        } else {
+
+            try {
+                //A new registration is made when pointing to a different oxd installation because the current oxd-id won't exist there
+                setSettings(newConfig, true);
+
+                //remove unneeded client
+                removeSite(lastWorkingConfig.getClient().getOxdId());
+            } catch (Exception e) {
+                msg = e.getMessage();
+                try {
+                    logger.warn("Reverting to previous working OXD settings");
+                    //Revert to last working settings
+                    setSettings(lastWorkingConfig, false);
+                } catch (Exception e1) {
+                    msg += "\n" + Labels.getLabel("admin.error_reverting");
+                    logger.error(e1.getMessage(), e1);
+                }
+            }
+        }
+        if (msg == null) {
+            settings.setOxdSettings(newConfig);
+        }
+        return msg;
+
+    }
+
+    private void setSettings(OxdSettings cfg, boolean triggerRegistration) throws Exception {
 
         this.config = cfg;
         if (triggerRegistration) {
@@ -188,7 +231,7 @@ public class OxdService {
 
         OxdClientSettings computedSettings;
         String clientName;
-        logger.info("Setting oxd configs (host: {}, port: {},  post logout: {})",
+        logger.info("Setting oxd configs (host: {}, port: {}, post logout: {})",
                 config.getHost(), config.getPort(),  config.getPostLogoutUri());
 
         try {
@@ -291,7 +334,7 @@ public class OxdService {
 
     }
 
-    public boolean updateSite(String postLogoutUri, List<String> newScopes) throws Exception {
+    public String updateSite(String postLogoutUri, List<String> newScopes) throws Exception {
         //This method updates the OIDC client directly (does not use oxd). Less tinkering
 
         OIDCClient client = new OIDCClient();
@@ -308,11 +351,14 @@ public class OxdService {
         client.setScopes(scopeService.getDNsFromIds(newScopes));
 
         logger.info("Updating client with new scopes {} and post logout URI {}", newScopes, postLogoutUri);
-        boolean ret = persistenceService.modify(client);
-        if (ret) {
+        String ret = null;
+        
+        if (persistenceService.modify(client)) {
             //Update global state of this bean
             config.setScopes(newScopes);
             config.setPostLogoutUri(client.getPostLogoutURI());
+        } else {
+        	ret = Labels.getLabel("adm.oxd_site_update_failure");
         }
         return ret;
 

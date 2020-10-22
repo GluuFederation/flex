@@ -23,7 +23,7 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class SyncSettingsTimer extends JobListenerSupport {
 
-    private static final int SCAN_INTERVAL = 90;    //sync config settings every 90sec
+    public static final int SCAN_INTERVAL_SECONDS = 90;    //sync config settings every 90sec
 
     @Inject
     private Logger logger;
@@ -51,7 +51,7 @@ public class SyncSettingsTimer extends JobListenerSupport {
         try {
             timerService.addListener(this, jobName);
             //Start in 90 seconds and repeat indefinitely
-            timerService.schedule(jobName,  gap, -1, SCAN_INTERVAL);
+            timerService.schedule(jobName,  gap, -1, SCAN_INTERVAL_SECONDS);
         } catch (Exception e) {
             logger.warn("Automatic synchronization of config settings won't be available");
             logger.error(e.getMessage(), e);

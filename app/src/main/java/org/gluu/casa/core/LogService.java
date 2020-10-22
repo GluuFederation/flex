@@ -17,7 +17,9 @@ import javax.inject.Named;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.jar.JarInputStream;
 
@@ -30,6 +32,8 @@ import java.util.jar.JarInputStream;
 @ApplicationScoped
 public class LogService {
 
+	public static final List<String> SLF4J_LEVELS = Arrays.asList("ERROR", "WARN", "INFO", "DEBUG", "TRACE");
+	
     @Inject
     private Logger logger;
 

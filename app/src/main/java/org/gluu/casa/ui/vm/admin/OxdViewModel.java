@@ -120,10 +120,10 @@ public class OxdViewModel extends MainViewModel {
 
     private void processUpdate() {
 
-        OxdSettings lastWorkingConfig = getSettings().getOxdSettings();
-        String msg = updateOxdSettings(lastWorkingConfig);
+        //updateSettings call already modifies mainSettings instance (see parent class)
+        String msg = oxdService.updateSettings(oxdSettings);
         if (msg == null) {
-            getSettings().setOxdSettings(oxdSettings);
+        	//Persist changes
             updateMainSettings();
         } else {
             reloadConfig();
@@ -171,45 +171,6 @@ public class OxdViewModel extends MainViewModel {
     public void addScopes() {
         uiEditingScopes = false;
         oxdSettings.getScopes().addAll(selectedScopes);
-    }
-
-    private String updateOxdSettings(OxdSettings lastWorkingConfig) {
-
-        String msg = null;
-        //Triger a new registration only if host/port changed, otherwise call update site operation
-        if (lastWorkingConfig.getHost().equalsIgnoreCase(oxdSettings.getHost()) && lastWorkingConfig.getPort() == oxdSettings.getPort()) {
-
-            try {
-                //When logout url is changed and one logs off the first time, oxauth will give error
-                if (!oxdService.updateSite(oxdSettings.getPostLogoutUri(), oxdSettings.getScopes())) {
-                    msg = Labels.getLabel("adm.oxd_site_update_failure");
-                }
-            } catch (Exception e) {
-                msg = e.getMessage();
-                logger.error(msg, e);
-            }
-        } else {
-
-            try {
-                //A new registration is made when pointing to a different oxd installation because the current oxd-id won't exist there
-                oxdService.setSettings(oxdSettings, true);
-
-                //remove unneeded client
-                oxdService.removeSite(lastWorkingConfig.getClient().getOxdId());
-            } catch (Exception e) {
-                msg = e.getMessage();
-                try {
-                    logger.warn("Reverting to previous working OXD settings");
-                    //Revert to last working settings
-                    oxdService.setSettings(lastWorkingConfig, false);
-                } catch (Exception e1) {
-                    msg += "\n" + Labels.getLabel("admin.error_reverting");
-                    logger.error(e1.getMessage(), e1);
-                }
-            }
-        }
-        return msg;
-
     }
 
     private void computeSelectableScopes() {
