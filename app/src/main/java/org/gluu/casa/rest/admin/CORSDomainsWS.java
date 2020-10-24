@@ -81,7 +81,7 @@ public class CORSDomainsWS extends BaseWS {
     					domainSet.add(dom);
     				}
     			} catch (Exception e) {
-    				logger.error(e.getMessage());
+    				logger.error("Error: " + e.getMessage());
     			}
     		}
     		logger.trace("Resulting domains set: {}", domainSet);

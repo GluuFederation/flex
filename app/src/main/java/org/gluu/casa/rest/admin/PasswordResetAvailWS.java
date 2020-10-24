@@ -39,7 +39,7 @@ public class PasswordResetAvailWS extends BaseWS {
         
         logger.trace("PasswordResetAvailWS available operation called");
     	try {
-    		json = isPwdResetAvailable() ? "false" : "true";
+    		json = isPwdResetAvailable() ? "true" : "false";
         	httpStatus = OK;
         } catch (Exception e) {
         	json = jsonString(e.getMessage());
@@ -117,7 +117,7 @@ public class PasswordResetAvailWS extends BaseWS {
     }
     
     private boolean isPwdResetAvailable() {
-    	return persistenceService.isBackendLdapEnabled();
+    	return !persistenceService.isBackendLdapEnabled();
     }
     
 }

@@ -1,5 +1,6 @@
 package org.gluu.casa.rest.admin;
 
+import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.extension.AuthnMethod;
@@ -27,26 +28,36 @@ import static javax.ws.rs.core.Response.Status.OK;
 public class AuthnMethodsWS extends BaseWS {
     
     @Inject
+    private ConfigurationHandler confHandler;
+    
+    @Inject
     private ExtensionsManager extManager;
     
     @Inject
     private Logger logger;
     
     @GET
+    @Path("available")
     @Produces(MediaType.APPLICATION_JSON)
     //@ProtectedApi
-    public Response list() {
+    public Response available() {
     	
         Response.Status httpStatus;
         String json = null;
         
-        logger.trace("AuthnMethodsWS list operation called");
-    	try {    	
+        logger.trace("AuthnMethodsWS available operation called");
+    	try {
     		Set<String> pluginIds = extManager.authnMethodPluginImplementers().stream()
     			.map(PluginDescriptor::getPluginId).collect(Collectors.toSet());
-			Set<String> uniqueAcrs = extManager.getAuthnMethodExts(pluginIds)
-					.stream().map(AuthnMethod::getAcr).collect(Collectors.toSet());
+    		pluginIds.add(null);	//Account for system extensions too
 			
+			Set<String> uniqueAcrs = confHandler.retrieveAcrs();
+			logger.debug("Server-enabled ACRs: {}", uniqueAcrs);
+			
+			uniqueAcrs.retainAll(extManager.getAuthnMethodExts(pluginIds)
+					.stream().map(AuthnMethod::getAcr).collect(Collectors.toSet()));
+			
+			logger.debug("ACRs correlated with plugins or internal extensions: {}", uniqueAcrs);
 			json = Utils.jsonFromObject(uniqueAcrs);
 			httpStatus = OK;
         } catch (Exception e) {
@@ -58,11 +69,33 @@ public class AuthnMethodsWS extends BaseWS {
         
     }
     
+    @GET
+    @Path("enabled")
+    @Produces(MediaType.APPLICATION_JSON)
+    //@ProtectedApi
+    public Response enabled() {
+    	
+        Response.Status httpStatus;
+        String json = null;
+        
+        logger.trace("AuthnMethodsWS enabled methods operation called");
+    	try {
+    		json = Utils.jsonFromObject(mainSettings.getAcrPluginMap().keySet());
+			httpStatus = OK;
+        } catch (Exception e) {
+    		logger.error(e.getMessage(), e);
+        	json = jsonString(e.getMessage());
+        	httpStatus = INTERNAL_SERVER_ERROR;
+        }
+		return Response.status(httpStatus).entity(json).build();
+		
+    }
+    
     @POST
     @Path("disable")
     @Produces(MediaType.APPLICATION_JSON)
     //@ProtectedApi
-    public Response disable(@QueryParam("acr") String acr) {
+    public Response disable(@FormParam("acr") String acr) {
     	
         Response.Status httpStatus;
         Map<String, String> map = null;
@@ -77,7 +110,7 @@ public class AuthnMethodsWS extends BaseWS {
 			exists = map.containsKey(acr);
 			value = map.get(acr);
     	
-			logger.trace("ACR '{}' does%s exist in current acr-plugin mapping of Casa configuration", acr, exists ? "": " not");
+			logger.trace("ACR '{}' {}found in current acr-plugin mapping of Casa configuration", acr, exists ? "": "not ");
     		if (exists) {
     			map.remove(acr);
     			
@@ -107,7 +140,7 @@ public class AuthnMethodsWS extends BaseWS {
     @Path("assign-plugin")
     @Produces(MediaType.APPLICATION_JSON)
     //@ProtectedApi
-    public Response assign(@QueryParam("acr") String acr, @QueryParam("plugin") String pluginId) {
+    public Response assign(@FormParam("acr") String acr, @FormParam("plugin") String pluginId) {
     	
         Response.Status httpStatus;
         Map<String, String> map = null;
@@ -124,7 +157,8 @@ public class AuthnMethodsWS extends BaseWS {
 				exists = map.containsKey(acr);
 				value = map.get(acr);
 				
-				logger.trace("ACR '{}' does%s exist in current acr-plugin mapping of Casa configuration", acr, exists ? "": " not");				
+				logger.trace("ACR '{}' {}found in current acr-plugin mapping of Casa configuration", acr, exists ? "": "not ");
+				logger.trace("Associating ACR '{}' with {}", acr, pluginId);
 				map.put(acr, pluginId);
 				
     			logger.trace("Persisting update in acr/plugin configuration mapping");

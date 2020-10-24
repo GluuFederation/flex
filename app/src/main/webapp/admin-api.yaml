@@ -25,7 +25,27 @@ produces:
 
 paths:
 
-  /authn-methods:
+  /authn-methods/available:
+    get:
+      description: Returns the authentication methods that can be used in Casa whether enabled or not.
+        Note that for any method to be reported here, there has to be an enabled custom script in the
+        underlying Gluu installation and a plugin implementing its enrollment logic (unless it is a 
+        method supported out-of-the-box, where no plugin is required)   
+
+      responses:
+        200:
+          description: Successful operation. A JSON array is returned. Every method is
+            identified by an acr String
+          schema:
+            type: array
+            items:
+              type: string
+        500:
+          description: There was a failure executing the operation. Error description in response body
+          schema:
+            type: string
+
+  /authn-methods/enabled:
     get:
       description: Returns the authentication methods currently enabled for Casa
 
@@ -49,7 +69,7 @@ paths:
       parameters:
         -
           name: acr
-          in: query
+          in: formData
           description: Identifier of the authentication method to disable
           required: true
           type: string
@@ -73,13 +93,13 @@ paths:
       parameters:
         -
           name: acr
-          in: query
+          in: formData
           description: Identifier of the authentication method
           required: true
           type: string
         -
           name: plugin
-          in: query
+          in: formData
           description: Identifier of the plugin to assign. If this param is missing or empty, the default
             implementation is assigned (if existing) 
           required: false
@@ -99,6 +119,14 @@ paths:
             type: string
 
   /log-level:
+    get:
+      description: Returns the current logging level (Any of ERROR, WARN, INFO, DEBUG, or TRACE)
+
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: string
     post:
       description: Sets the logging level in use by the application
       
@@ -322,11 +350,9 @@ definitions:
       - client_details      
     properties:
       settings:
-        schema:
-          $ref: '#/definitions/OxdSettings'
+        $ref: '#/definitions/OxdSettings'
       client_details:
-        schema:
-          $ref: '#/definitions/ClientSettings'
+        $ref: '#/definitions/ClientSettings'
   OxdSettings:
     type: object
     required:
@@ -346,32 +372,30 @@ definitions:
       port:
         type: string
       acrValues:
-        schema:
-          type: array
-          items:
-            type: string
+        type: array
+        items:
+          type: string
       scopes:
-        schema:
-          type: array
-          items:
-            type: string
+        type: array
+        items:
+          type: string
       frontchannel_logout_uri:
         type: string
       post_logout_uri:
         type: string
       authz_redirect_uri:
         type: string
-    ClientSettings:
-      type: object
-      properties:
-        oxdId:
-          type: string
-        clientId:
-          type: string
-        clientSecret:
-          type: string
-        clientName:
-          type: string
+  ClientSettings:
+    type: object
+    properties:
+      oxdId:
+        type: string
+      clientId:
+        type: string
+      clientSecret:
+        type: string
+      clientName:
+        type: string
 
 securityDefinitions:
   casa_auth:

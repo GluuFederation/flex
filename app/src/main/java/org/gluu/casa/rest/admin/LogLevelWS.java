@@ -24,10 +24,17 @@ public class LogLevelWS extends BaseWS {
     @Inject
     private LogService logService;
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    //@ProtectedApi
+    public Response get() {    	
+		return Response.status(OK).entity(jsonString(mainSettings.getLogLevel())).build();
+    }
+    
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     //@ProtectedApi
-    public Response set(@QueryParam("level") String newLevel) {
+    public Response set(@FormParam("level") String newLevel) {
     	
         Response.Status httpStatus;
         String json = null;

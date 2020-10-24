@@ -88,8 +88,8 @@ public class PluginsWS extends BaseWS {
     	
     	try {
 			List<PluginDescriptor> descriptors = extManager.authnMethodPluginImplementers().stream()
-					.map(this::simplerDescriptor)
 					.filter(desc -> extManager.pluginImplementsAuthnMethod(acr, desc.getPluginId()))
+					.map(this::simplerDescriptor)
 					.collect(Collectors.toList());
 
 			logger.trace("{} plugins found", descriptors.size());
@@ -121,12 +121,13 @@ public class PluginsWS extends BaseWS {
     			.findFirst().map(PluginWrapper::getPluginPath).orElse(null);
     		
     		if (path == null) {
+    			logger.info("Plugin '{}' not known", id);
     			httpStatus = NOT_FOUND;
     		} else {
     			Files.delete(path);
     			String info = String.format("Removal of plugin '%s' has been scheduled. Operation can take " +
-    				"up to %s seconds to take effect. You can issue a query to endpoint %s to determine " +
-    				"its availability.", id, PLUGINWS_ROOT_URL, SyncSettingsTimer.SCAN_INTERVAL_SECONDS); 
+    				"up to %s seconds to take effect. Later, you can issue a query to endpoint %s to determine " +
+    				"its availability.", id, SyncSettingsTimer.SCAN_INTERVAL_SECONDS, PLUGINWS_ROOT_URL); 
     			logger.info(info);
     			json = Integer.toString(SyncSettingsTimer.SCAN_INTERVAL_SECONDS);
     			httpStatus = ACCEPTED;
