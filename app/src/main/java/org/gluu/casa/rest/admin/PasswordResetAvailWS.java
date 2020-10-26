@@ -16,7 +16,7 @@ import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
-@Path("/pwd-reset")
+@Path("/config/pwd-reset")
 public class PasswordResetAvailWS extends BaseWS {
 
     @Inject
@@ -42,7 +42,8 @@ public class PasswordResetAvailWS extends BaseWS {
     		json = isPwdResetAvailable() ? "true" : "false";
         	httpStatus = OK;
         } catch (Exception e) {
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+        	logger.error(json, e);        	
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();  	
@@ -63,7 +64,8 @@ public class PasswordResetAvailWS extends BaseWS {
     		json = (isPwdResetAvailable() && mainSettings.isEnablePassReset()) ? "true" : "false";
         	httpStatus = OK;
         } catch (Exception e) {
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+        	logger.error(json, e);        	
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();  	
@@ -72,6 +74,7 @@ public class PasswordResetAvailWS extends BaseWS {
 
     @POST
     @Path("turn-on")
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response enable() {
         logger.trace("PasswordResetAvailWS enable operation called");
@@ -80,6 +83,7 @@ public class PasswordResetAvailWS extends BaseWS {
     
     @POST
     @Path("turn-off")
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response disable() {
         logger.trace("PasswordResetAvailWS disable operation called");
@@ -102,14 +106,15 @@ public class PasswordResetAvailWS extends BaseWS {
 				httpStatus = OK;
 			} else {
 				httpStatus = BAD_REQUEST;
-				json = jsonString("Password reset is not available. Your server may be using an external " +
-					"LDAP for identities synchronization"); 
+				json = "Password reset is not available. Your server may be using an external " +
+					"LDAP for identities synchronization"; 
 			}
         } catch (Exception e) {
+        	json = e.getMessage();
+        	logger.error(json, e);
+        	
         	//Restore previous value
         	mainSettings.setEnablePassReset(value);
-        	
-        	json = jsonString(e.getMessage());
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();  

@@ -19,7 +19,7 @@ import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
-@Path("/oxd")
+@Path("/config/oxd")
 public class OxdConfWS extends BaseWS {
 	
 	@Inject
@@ -49,8 +49,8 @@ public class OxdConfWS extends BaseWS {
 			json = Utils.jsonFromObject(map);
         	httpStatus = OK;
     	} catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
     	}
     	
@@ -79,14 +79,13 @@ public class OxdConfWS extends BaseWS {
 				json = Utils.jsonFromObject(mainSettings.getOxdSettings().getClient());
 				httpStatus = OK;
     		} else {
-				json = jsonString(json);
 				httpStatus = INTERNAL_SERVER_ERROR;
     		}
     	} catch (Exception e) {
-    		mainSettings.setOxdSettings(value);
-    		logger.error(e.getMessage(), e);
+        	json = e.getMessage();
+    		logger.error(json, e);
     		
-        	json = jsonString(e.getMessage());
+    		mainSettings.setOxdSettings(value);
         	httpStatus = INTERNAL_SERVER_ERROR;
     	}
     	

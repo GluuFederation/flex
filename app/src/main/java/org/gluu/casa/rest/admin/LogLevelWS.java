@@ -15,7 +15,7 @@ import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
-@Path("/log-level")
+@Path("/config/log-level")
 public class LogLevelWS extends BaseWS {
     
     @Inject
@@ -25,14 +25,14 @@ public class LogLevelWS extends BaseWS {
     private LogService logService;
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response get() {    	
-		return Response.status(OK).entity(jsonString(mainSettings.getLogLevel())).build();
+		return Response.status(OK).entity(mainSettings.getLogLevel()).build();
     }
     
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response set(@FormParam("level") String newLevel) {
     	
@@ -56,17 +56,16 @@ public class LogLevelWS extends BaseWS {
 					httpStatus = BAD_REQUEST;
 					json = String.format("Log level '%s' not recognized", newLevel);
 					logger.warn(json);
-					json = jsonString(json);
 				}
 			} else {				
 				httpStatus = OK;
 			}
     		
-    	} catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-    		mainSettings.setLogLevel(value);
+    	} catch (Exception e) {    		
+        	json = e.getMessage();
+    		logger.error(json, e);
     		
-        	json = jsonString(e.getMessage());
+    		mainSettings.setLogLevel(value);
         	httpStatus = INTERNAL_SERVER_ERROR;
     	}
     	

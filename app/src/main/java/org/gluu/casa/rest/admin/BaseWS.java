@@ -1,7 +1,5 @@
 package org.gluu.casa.rest.admin;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.PersistenceService;
@@ -20,10 +18,5 @@ class BaseWS {
 	
     @Inject
     PersistenceService persistenceService;
-    
-    //This will output the input as valid JSON string, see RFC 7159 section 7 
-    String jsonString(String str) {
-    	return "\"" + StringEscapeUtils.escapeJson(str) + "\"";
-    }
     
 }

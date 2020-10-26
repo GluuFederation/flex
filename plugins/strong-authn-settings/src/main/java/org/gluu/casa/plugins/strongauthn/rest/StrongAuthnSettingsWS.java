@@ -8,8 +8,6 @@ import org.gluu.casa.plugins.strongauthn.conf.TrustedDevicesSettings;
 import org.gluu.casa.plugins.strongauthn.service.StrongAuthSettingsService;
 import org.gluu.casa.service.settings.IPluginSettingsHandler;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +29,6 @@ import static javax.ws.rs.core.Response.Status.OK;
 public class StrongAuthnSettingsWS {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-    
     private static StrongAuthSettingsService service = StrongAuthSettingsService.instance();
     private IPluginSettingsHandler<Configuration> settingsHandler = service.getSettingsHandler();
     
@@ -48,8 +45,8 @@ public class StrongAuthnSettingsWS {
     		json = Utils.jsonFromObject(settingsHandler.getSettings());
     		httpStatus = OK;
         } catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();
@@ -59,7 +56,7 @@ public class StrongAuthnSettingsWS {
     @POST
     @Path("basic")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response setBasicConfig(Basic2FASettings settings) {
     	
@@ -75,18 +72,15 @@ public class StrongAuthnSettingsWS {
     			json = "Empty payload";
     			logger.warn(json);
     			
-    			json = jsonString(json);
     		} else {
     			if (settings.getMinCreds() < 1) {
 					json = "Minimum number of credentials expected to be greater than zero";
 					logger.warn(json);
 					
-					json = jsonString(json);
     			} else if (!settings.isAutoEnable() && !settings.isAllowSelfEnableDisable()) {
     				json = "Cannot prevent users to turn 2FA on/off when there is no 2FA auto-enablement";
 					logger.warn(json);
 					
-					json = jsonString(json);
     			} else {
     				cfg.setBasic2FASettings(settings);
     				settingsHandler.setSettings(cfg);
@@ -99,8 +93,8 @@ public class StrongAuthnSettingsWS {
         	cfg.setBasic2FASettings(value);
         	settingsHandler.setSettings(cfg);
         	
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();
@@ -110,7 +104,7 @@ public class StrongAuthnSettingsWS {
     @POST
     @Path("enforcement-policies")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response setEnforcementPolicies(List<EnforcementPolicy> policies) {
     	
@@ -127,7 +121,6 @@ public class StrongAuthnSettingsWS {
     			json = "Empty payload";
     			logger.warn(json);
     			
-    			json = jsonString(json);
     		} else if (policies.size() == 1 || (policies.size() == 2 && policies.contains(EnforcementPolicy.LOCATION_UNKNOWN)
     			&& policies.contains(EnforcementPolicy.DEVICE_UNKNOWN))) {
     		
@@ -139,15 +132,14 @@ public class StrongAuthnSettingsWS {
     			json = String.format("Unacceptable combination of policies %s", policies);
     			logger.warn(json);
     			
-				json = jsonString(json);
     		}
         } catch (Exception e) {
         	//Revert state of in-memory copy 
         	cfg.setEnforcement2FA(value);
         	settingsHandler.setSettings(cfg);
         	
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();
@@ -157,7 +149,7 @@ public class StrongAuthnSettingsWS {
     @POST
     @Path("trusted-devices")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response setTrustedDevices(TrustedDevicesSettings settings) {
     	
@@ -174,7 +166,6 @@ public class StrongAuthnSettingsWS {
     			json = "Empty payload";
     			logger.warn(json);
     			
-    			json = jsonString(json);
     		} else {
 				int lexp = Optional.ofNullable(settings.getLocationExpirationDays()).orElse(0);
 				int dexp = Optional.ofNullable(settings.getDeviceExpirationDays()).orElse(0);
@@ -188,8 +179,6 @@ public class StrongAuthnSettingsWS {
 				} else {
 					json = "One or more of the provided expiration values are invalid";
 					logger.warn(json);
-					
-					json = jsonString(json);
 				}
     		}
         } catch (Exception e) {
@@ -197,17 +186,12 @@ public class StrongAuthnSettingsWS {
         	cfg.setTrustedDevicesSettings(value);
         	settingsHandler.setSettings(cfg);
         	
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();
         
-    }
-    
-    //This will output the input as valid JSON string, see RFC 7159 section 7 
-    String jsonString(String str) {
-    	return "\"" + StringEscapeUtils.escapeJson(str) + "\"";
     }
     
 }

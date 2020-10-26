@@ -24,7 +24,7 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
-@Path("/authn-methods")
+@Path("/config/authn-methods")
 public class AuthnMethodsWS extends BaseWS {
     
     @Inject
@@ -61,8 +61,8 @@ public class AuthnMethodsWS extends BaseWS {
 			json = Utils.jsonFromObject(uniqueAcrs);
 			httpStatus = OK;
         } catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();
@@ -83,8 +83,8 @@ public class AuthnMethodsWS extends BaseWS {
     		json = Utils.jsonFromObject(mainSettings.getAcrPluginMap().keySet());
 			httpStatus = OK;
         } catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();
@@ -93,7 +93,7 @@ public class AuthnMethodsWS extends BaseWS {
     
     @POST
     @Path("disable")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response disable(@FormParam("acr") String acr) {
     	
@@ -122,13 +122,13 @@ public class AuthnMethodsWS extends BaseWS {
     		}
     		
     	} catch (Exception e) {
-    		logger.error(e.getMessage(), e);
+        	json = e.getMessage();
+    		logger.error(json, e);
     			
     		if (map != null && Boolean.TRUE.equals(exists)) {
     			//restore map in case of error
     			map.put(acr, value);
     		}
-        	json = jsonString(e.getMessage());
         	httpStatus = INTERNAL_SERVER_ERROR;
     	}
     	
@@ -138,7 +138,7 @@ public class AuthnMethodsWS extends BaseWS {
     
     @POST
     @Path("assign-plugin")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response assign(@FormParam("acr") String acr, @FormParam("plugin") String pluginId) {
     	
@@ -169,11 +169,11 @@ public class AuthnMethodsWS extends BaseWS {
 				json = String.format("Inconsistency. Check the script for ACR '%s' is enabled and that plugin '%s' implements such Authentication Mechanism"
 					, acr, pluginId);
 				logger.warn(json);
-				json = jsonString(json);
 			}
 			    		
     	} catch (Exception e) {
-    		logger.error(e.getMessage(), e);
+        	json = e.getMessage();
+    		logger.error(json, e);
     		
     		if (map != null && exists != null) {
     			//restore map in case of error
@@ -183,7 +183,6 @@ public class AuthnMethodsWS extends BaseWS {
     				map.remove(acr);
     			}
     		}
-        	json = jsonString(e.getMessage());
         	httpStatus = INTERNAL_SERVER_ERROR;
     	}
     	

@@ -33,7 +33,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 @Path(PluginsWS.PLUGINWS_ROOT_URL)
 public class PluginsWS extends BaseWS {
     
-	public static final String PLUGINWS_ROOT_URL = "/plugins";
+	public static final String PLUGINWS_ROOT_URL = "/config/plugins";
 	
     @Inject
     private Logger logger;
@@ -67,11 +67,10 @@ public class PluginsWS extends BaseWS {
     		httpStatus = OK;
     		
     	} catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
     	}
-    	
 		return Response.status(httpStatus).entity(json).build();
     	
     }
@@ -97,8 +96,8 @@ public class PluginsWS extends BaseWS {
     		httpStatus = OK;
     		
     	} catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
     	}
     	
@@ -134,8 +133,8 @@ public class PluginsWS extends BaseWS {
     		}
     		
     	} catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);
         	httpStatus = INTERNAL_SERVER_ERROR;
     	}
     	

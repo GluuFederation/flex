@@ -25,7 +25,7 @@ import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
-@Path("/cors")
+@Path("/config/cors")
 public class CORSDomainsWS extends BaseWS {
 	
     @Inject
@@ -51,8 +51,8 @@ public class CORSDomainsWS extends BaseWS {
 			json = Utils.jsonFromObject(mainSettings.getCorsDomains());
 			httpStatus = OK;
         } catch (Exception e) {
-    		logger.error(e.getMessage(), e);
-        	json = jsonString(e.getMessage());
+        	json = e.getMessage();
+    		logger.error(json, e);    		
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
 		return Response.status(httpStatus).entity(json).build();
@@ -61,7 +61,7 @@ public class CORSDomainsWS extends BaseWS {
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     //@ProtectedApi
     public Response replace(String body) {
     	
@@ -92,8 +92,10 @@ public class CORSDomainsWS extends BaseWS {
 			httpStatus = OK;
     		
         } catch (Exception e) {
+        	json = e.getMessage();
+        	logger.error(json, e);
+        	
         	mainSettings.setCorsDomains(values);
-        	json = jsonString(e.getMessage());
         	httpStatus = INTERNAL_SERVER_ERROR;
         }
         

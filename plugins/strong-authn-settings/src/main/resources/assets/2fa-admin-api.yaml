@@ -21,12 +21,14 @@ schemes:
 consumes:
   - application/json
 produces:
-  - application/json
+  - text/plain
 
 paths:
   /config:
     get:
       description: Returns the current 2FA configuration
+      produces:
+        - application/json
 
       responses:
         200:
@@ -120,11 +122,14 @@ definitions:
     type: object
     properties:
       autoEnable:
-        type: string
+        type: boolean
+        default: false
       allowSelfEnableDisable:
-        type: string
+        type: boolean
+        default: true
       min_creds:
         type: integer
+        default: 2
 
   EnforcementPolicy: &ENFORCEMENTPOLICY
     type: string

@@ -12,7 +12,7 @@ info:
 #Demo server host
 host: test-casa.gluu.org
 
-basePath: /casa/rest
+basePath: /casa/rest/config
 schemes:
  - https
 
@@ -22,7 +22,7 @@ schemes:
 consumes:
   - application/json
 produces:
-  - application/json
+  - text/plain
 
 paths:
 
@@ -31,7 +31,9 @@ paths:
       description: Returns the authentication methods that can be used in Casa whether enabled or not.
         Note that for any method to be reported here, there has to be an enabled custom script in the
         underlying Gluu installation and a plugin implementing its enrollment logic (unless it is a 
-        method supported out-of-the-box, where no plugin is required)   
+        method supported out-of-the-box, where no plugin is required)
+      produces:
+        - application/json 
 
       responses:
         200:
@@ -49,6 +51,8 @@ paths:
   /authn-methods/enabled:
     get:
       description: Returns the authentication methods currently enabled for Casa
+      produces:
+        - application/json
 
       responses:
         200:
@@ -66,6 +70,8 @@ paths:
   /authn-methods/disable:
     post:
       description: Disables a specific authentication method
+      consumes:
+        - application/x-www-form-urlencoded
       
       parameters:
         -
@@ -90,6 +96,8 @@ paths:
       description: Assigns the responsible plugin for a given authentication method (in terms of enrollment).
         Responsibility can also be delegated to an internal (default) plugin implementation if available for
         the method in question
+      consumes:
+        - application/x-www-form-urlencoded
       
       parameters:
         -
@@ -130,11 +138,13 @@ paths:
             type: string
     post:
       description: Sets the logging level in use by the application
+      consumes:
+        - application/x-www-form-urlencoded
       
       parameters:
         -
           name: level
-          in: query
+          in: formData
           description: Any of ERROR, WARN, INFO, DEBUG, or TRACE
           required: true
           type: string
@@ -153,17 +163,32 @@ paths:
 
   /cors:
     get:
-      description: Returns the CORS domains registered (so Casa REST services can be 
-        consumed from the browser)
+      description: Returns the CORS domains registered (so Casa REST services can be consumed
+        from the browser)
+      produces:
+        - application/json
 
       responses:
         200:
           description: Successful operation. A JSON array of strings is returned
         500:
           description: There was a failure executing the operation. Error description in response body
+          
     put:
       description: Replaces the current registered CORS domains with the list passed in the body
         of the request (as a JSON array of strings)
+      consumes:
+        - application/json
+      
+      parameters:
+        -
+          name: cors
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
 
       responses:
         200:
@@ -190,6 +215,8 @@ paths:
   /pwd-reset/enabled:
     get:
       description: Returns if password reset feature is enabled
+      produces:
+        - application/json
 
       responses:
         200:
@@ -237,6 +264,8 @@ paths:
   /plugins:
     get:
       description: Returns data about the currently deployed plugins
+      produces:
+        - application/json
 
       responses:
         200:
@@ -254,6 +283,8 @@ paths:
     get:
       description: Returns data about the currently deployed plugins that implement enrollment
         logic for a particular authentication method
+      produces:
+        - application/json
         
       parameters:
         -
@@ -277,7 +308,9 @@ paths:
 
   /plugins/schedule-removal/{id}:
     post:
-      description: Provokes the internal plugin checker timer to remove this plugin upon its next run 
+      description: Provokes the internal plugin checker timer to remove this plugin upon its next run
+      produces:
+        - application/json
         
       parameters:
         -
@@ -304,7 +337,9 @@ paths:
   /oxd:
     get:
       description: Returns configuration details about the underlying OXD server and the registered OIDC 
-        client registered employed for authentication purposes 
+        client registered employed for authentication purposes
+      produces:
+        - application/json
 
       responses:
         200:
@@ -314,10 +349,22 @@ paths:
         500:
           description: There was a failure executing the operation. Error description in response body
           schema:
-            type: string            
+            type: string
+            
     put:
       description: Replaces the current OXD configuration with the one passed in the payload. This will
-        provoke the oxd server referenced in the payload to re-register or update the OIDC client used 
+        provoke the oxd server referenced in the payload to re-register or update the OIDC client used
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        -
+          name: settings
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OxdSettings'
 
       responses:
         200:
