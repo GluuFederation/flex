@@ -1,4 +1,4 @@
-package org.gluu.casa.rest.admin;
+package org.gluu.casa.rest.config;
 
 import org.gluu.casa.core.PasswordStatusService;
 import org.gluu.casa.core.PersistenceService;

@@ -1,4 +1,4 @@
-package org.gluu.casa.plugins.authnmethod.rs.status;
+package org.gluu.casa.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.*;
-import static org.gluu.casa.plugins.authnmethod.rs.status.SecondFactorUserData.StatusCode.*;
+import static org.gluu.casa.rest.SecondFactorUserData.StatusCode.*;
 
 /**
  * @author jgomer

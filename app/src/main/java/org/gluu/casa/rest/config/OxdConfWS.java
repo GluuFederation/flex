@@ -1,4 +1,4 @@
-package org.gluu.casa.rest.admin;
+package org.gluu.casa.rest.config;
 
 import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;

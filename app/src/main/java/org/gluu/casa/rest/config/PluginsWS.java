@@ -1,4 +1,4 @@
-package org.gluu.casa.rest.admin;
+package org.gluu.casa.rest.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

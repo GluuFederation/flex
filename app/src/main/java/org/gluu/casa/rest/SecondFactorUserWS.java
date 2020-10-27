@@ -1,4 +1,4 @@
-package org.gluu.casa.plugins.authnmethod.rs;
+package org.gluu.casa.rest;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -12,7 +12,6 @@ import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.plugins.authnmethod.rs.status.SecondFactorUserData;
 import org.gluu.casa.rest.ProtectedApi;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
@@ -21,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.gluu.casa.plugins.authnmethod.rs.status.SecondFactorUserData.StatusCode.*;
+import static org.gluu.casa.rest.SecondFactorUserData.StatusCode.*;
 import static javax.ws.rs.core.Response.Status.*;
 
 @ApplicationScoped
