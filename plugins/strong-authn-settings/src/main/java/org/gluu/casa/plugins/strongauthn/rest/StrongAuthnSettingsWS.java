@@ -6,6 +6,7 @@ import org.gluu.casa.plugins.strongauthn.conf.Configuration;
 import org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy;
 import org.gluu.casa.plugins.strongauthn.conf.TrustedDevicesSettings;
 import org.gluu.casa.plugins.strongauthn.service.StrongAuthSettingsService;
+import org.gluu.casa.rest.ProtectedApi;
 import org.gluu.casa.service.settings.IPluginSettingsHandler;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 @Path("/config")
+@ProtectedApi( scopes = "casa.config" )
 public class StrongAuthnSettingsWS {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -34,7 +36,6 @@ public class StrongAuthnSettingsWS {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    //@ProtectedApi
     public Response retrieve() {
     	
         Response.Status httpStatus;
@@ -57,7 +58,6 @@ public class StrongAuthnSettingsWS {
     @Path("basic")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response setBasicConfig(Basic2FASettings settings) {
     	
         Response.Status httpStatus;
@@ -105,7 +105,6 @@ public class StrongAuthnSettingsWS {
     @Path("enforcement-policies")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response setEnforcementPolicies(List<EnforcementPolicy> policies) {
     	
         Response.Status httpStatus;
@@ -150,7 +149,6 @@ public class StrongAuthnSettingsWS {
     @Path("trusted-devices")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response setTrustedDevices(TrustedDevicesSettings settings) {
     	
         Response.Status httpStatus;
