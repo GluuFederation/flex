@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotate a JAX-RS resource method with this annotation to make the endpoint protected. Clients hitting your endpoint
- * must pass a valid OAuth bearer token in the request header to have access. Example:
+ * must pass a valid OAuth bearer token (with proper scopes) in the request header to have access. Example:
  * <pre>
  *
  * import javax.ws.rs.GET;
@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
  *
  *    {@literal @}GET
  *    {@literal @}Path("/books")
- *    {@literal @}ProtectedApi
+ *    {@literal @}ProtectedApi(scopes = {"read"})
  *    public String getBooks() {
  *        return ...
  *    }
@@ -27,9 +27,13 @@ import java.lang.annotation.Target;
  * }
  * </pre>
  *
+ * If all methods of your class are protected using the same scopes, apply the annotation at the class level instead
+ *
  * @author jgomer
  */
 @NameBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface ProtectedApi {}
+public @interface ProtectedApi {
+	String[] scopes() default {};
+}
