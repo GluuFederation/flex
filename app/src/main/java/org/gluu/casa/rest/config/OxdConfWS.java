@@ -4,6 +4,7 @@ import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;
 import org.gluu.casa.core.OxdService;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.rest.ProtectedApi;
 import org.slf4j.Logger;
 
 import java.util.LinkedHashMap;
@@ -20,6 +21,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 @Path("/config/oxd")
+@ProtectedApi( scopes = "casa.config" )
 public class OxdConfWS extends BaseWS {
 	
 	@Inject
@@ -30,7 +32,6 @@ public class OxdConfWS extends BaseWS {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    //@ProtectedApi
     public Response retrieve() {
     	
         Response.Status httpStatus;
@@ -61,7 +62,6 @@ public class OxdConfWS extends BaseWS {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    //@ProtectedApi
     public Response replace(OxdSettings oxdSettings) {
     	
         Response.Status httpStatus;

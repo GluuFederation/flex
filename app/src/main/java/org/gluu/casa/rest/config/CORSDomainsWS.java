@@ -26,6 +26,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 @Path("/config/cors")
+@ProtectedApi( scopes = "casa.config" )
 public class CORSDomainsWS extends BaseWS {
 	
     @Inject
@@ -40,7 +41,6 @@ public class CORSDomainsWS extends BaseWS {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    //@ProtectedApi
     public Response list() {
     	
         Response.Status httpStatus;
@@ -62,7 +62,6 @@ public class CORSDomainsWS extends BaseWS {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response replace(String body) {
     	
         Response.Status httpStatus;

@@ -1,6 +1,7 @@
 package org.gluu.casa.rest.config;
 
 import org.gluu.casa.core.LogService;
+import org.gluu.casa.rest.ProtectedApi;
 
 import org.slf4j.Logger;
 
@@ -16,6 +17,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 @Path("/config/log-level")
+@ProtectedApi( scopes = "casa.config" )
 public class LogLevelWS extends BaseWS {
     
     @Inject
@@ -26,14 +28,12 @@ public class LogLevelWS extends BaseWS {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response get() {    	
 		return Response.status(OK).entity(mainSettings.getLogLevel()).build();
     }
     
     @POST
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response set(@FormParam("level") String newLevel) {
     	
         Response.Status httpStatus;

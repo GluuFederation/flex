@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.timer.SyncSettingsTimer;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.rest.ProtectedApi;
+
 import org.pf4j.DefaultPluginDescriptor;
 import org.pf4j.PluginDescriptor;
 import org.pf4j.PluginWrapper;
@@ -31,6 +33,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 @Path(PluginsWS.PLUGINWS_ROOT_URL)
+@ProtectedApi( scopes = "casa.config" )
 public class PluginsWS extends BaseWS {
     
 	public static final String PLUGINWS_ROOT_URL = "/config/plugins";
@@ -51,7 +54,6 @@ public class PluginsWS extends BaseWS {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    //@ProtectedApi
     public Response list() {
     	
         Response.Status httpStatus;
@@ -78,7 +80,6 @@ public class PluginsWS extends BaseWS {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("authn-method-impl/{acr}")
-    //@ProtectedApi
     public Response authnMethodImplementers(@PathParam("acr") String acr) {
     	
         Response.Status httpStatus;
@@ -108,7 +109,6 @@ public class PluginsWS extends BaseWS {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("schedule-removal/{id}")
-    //@ProtectedApi
     public Response scheduleRemoval(@PathParam("id") String id) {
     	
         Response.Status httpStatus;

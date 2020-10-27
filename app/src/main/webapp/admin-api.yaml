@@ -13,11 +13,12 @@ info:
 host: test-casa.gluu.org
 
 basePath: /casa/rest/config
+
 schemes:
  - https
 
-#security:
-#  - casa_auth: []
+security:
+  - config_auth: [casa.config]
   
 consumes:
   - application/json
@@ -446,8 +447,10 @@ definitions:
         type: string
 
 securityDefinitions:
-  casa_auth:
+  config_auth:
     type: oauth2
     description: An OAuth2 bearer token in the header must be passed
     flow: application
     tokenUrl: https://test-casa.gluu.org/oxauth/restv1/token
+    scopes: 
+      casa.config: Grants access to this API

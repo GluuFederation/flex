@@ -17,6 +17,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 @Path("/config/pwd-reset")
+@ProtectedApi( scopes = "casa.config" )
 public class PasswordResetAvailWS extends BaseWS {
 
     @Inject
@@ -31,7 +32,6 @@ public class PasswordResetAvailWS extends BaseWS {
     @GET
     @Path("available")
     @Produces(MediaType.APPLICATION_JSON)
-    //@ProtectedApi
     public Response available() {
     	
         Response.Status httpStatus;
@@ -53,7 +53,6 @@ public class PasswordResetAvailWS extends BaseWS {
     @GET
     @Path("enabled")
     @Produces(MediaType.APPLICATION_JSON)
-    //@ProtectedApi
     public Response isEnabled() {
     	
         Response.Status httpStatus;
@@ -75,7 +74,6 @@ public class PasswordResetAvailWS extends BaseWS {
     @POST
     @Path("turn-on")
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response enable() {
         logger.trace("PasswordResetAvailWS enable operation called");
     	return turnOnOff(true);
@@ -84,7 +82,6 @@ public class PasswordResetAvailWS extends BaseWS {
     @POST
     @Path("turn-off")
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response disable() {
         logger.trace("PasswordResetAvailWS disable operation called");
     	return turnOnOff(false);

@@ -25,6 +25,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 @Path("/config/authn-methods")
+@ProtectedApi( scopes = "casa.config" )
 public class AuthnMethodsWS extends BaseWS {
     
     @Inject
@@ -39,7 +40,6 @@ public class AuthnMethodsWS extends BaseWS {
     @GET
     @Path("available")
     @Produces(MediaType.APPLICATION_JSON)
-    //@ProtectedApi
     public Response available() {
     	
         Response.Status httpStatus;
@@ -72,7 +72,6 @@ public class AuthnMethodsWS extends BaseWS {
     @GET
     @Path("enabled")
     @Produces(MediaType.APPLICATION_JSON)
-    //@ProtectedApi
     public Response enabled() {
     	
         Response.Status httpStatus;
@@ -94,7 +93,6 @@ public class AuthnMethodsWS extends BaseWS {
     @POST
     @Path("disable")
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response disable(@FormParam("acr") String acr) {
     	
         Response.Status httpStatus;
@@ -139,7 +137,6 @@ public class AuthnMethodsWS extends BaseWS {
     @POST
     @Path("assign-plugin")
     @Produces(MediaType.TEXT_PLAIN)
-    //@ProtectedApi
     public Response assign(@FormParam("acr") String acr, @FormParam("plugin") String pluginId) {
     	
         Response.Status httpStatus;
