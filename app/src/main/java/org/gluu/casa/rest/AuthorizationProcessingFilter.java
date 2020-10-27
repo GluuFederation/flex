@@ -75,12 +75,18 @@ public class AuthorizationProcessingFilter implements ContainerRequestFilter {
                 token = token.replaceFirst("Bearer\\s+", "");
                 logger.debug("Validating token {}", token);
                 
-                IntrospectionResponse response = introspectionService.introspectToken("Bearer " + token, token);
+                IntrospectionResponse response = null;
+                try {
+                	response = introspectionService.introspectToken("Bearer " + token, token);
+                } catch (Exception e) {
+                	logger.error(e.getMessage());
+                }
                 List<String> tokenScopes = Optional.ofNullable(response).map(IntrospectionResponse::getScope).orElse(null);
 
                 if (tokenScopes == null || !response.isActive() || !tokenScopes.containsAll(computeExpectedScopes(resourceInfo))) {
-                    logger.error("Invalid token. Token scopes are {}", tokenScopes);
-                    failureResponse = Response.status(Status.UNAUTHORIZED).entity("Invalid token");
+                	String msg = "Invalid token or insufficient scopes";
+                    logger.error("{}. Token scopes: {}", msg, tokenScopes);
+                    failureResponse = Response.status(Status.UNAUTHORIZED).entity(msg);
                 }
             }
         }
