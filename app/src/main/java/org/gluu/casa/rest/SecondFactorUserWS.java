@@ -24,6 +24,7 @@ import static org.gluu.casa.rest.SecondFactorUserData.StatusCode.*;
 import static javax.ws.rs.core.Response.Status.*;
 
 @ApplicationScoped
+@ProtectedApi( scopes = "casa.2fa" )
 @Path("/2fa")
 public class SecondFactorUserWS {
 
@@ -39,7 +40,6 @@ public class SecondFactorUserWS {
     @GET
     @Path("user-info/{userid}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response get2FAUserData(@PathParam("userid") String userId) {
 
         SecondFactorUserData result = new SecondFactorUserData();
@@ -66,14 +66,12 @@ public class SecondFactorUserWS {
 
     @POST
     @Path("turn-on")
-    @ProtectedApi
     public Response switch2FAOn(String userId) {
     	return switch2FA(userId, true);
     }
 
     @POST
     @Path("turn-off")
-    @ProtectedApi
     public Response switch2FAOff(String userId) {
     	return switch2FA(userId, false);    	
     }

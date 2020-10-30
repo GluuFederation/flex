@@ -27,6 +27,7 @@ import static org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus.SUCCES
 /**
  * @author jgomer
  */
+@ProtectedApi( scopes = "casa.enroll" )
 public class MobilePhoneEnrollingWS {
 
     private static final String SEPARATOR = ",";
@@ -47,7 +48,6 @@ public class MobilePhoneEnrollingWS {
     @GET
     @Path("send-code")
     @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response sendCode(@QueryParam("number") String number,
                              @QueryParam("userid") String userId) {
 
@@ -90,7 +90,6 @@ public class MobilePhoneEnrollingWS {
     @GET
     @Path("validate-code")
     @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response validateCode(@QueryParam("code") String code,
                                  @QueryParam("userid") String userId) {
 
@@ -110,7 +109,6 @@ public class MobilePhoneEnrollingWS {
     @GET
     @Path("creds/{userid}/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response getEnrollments() {
         return Response.status(Response.Status.NOT_IMPLEMENTED).build();
     }
@@ -118,7 +116,6 @@ public class MobilePhoneEnrollingWS {
     @POST
     @Path("creds/{userid}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response finishEnrollment(NamedCredential credential,
                                      @PathParam("userid") String userId) {
 
