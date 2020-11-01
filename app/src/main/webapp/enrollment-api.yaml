@@ -877,6 +877,8 @@ paths:
         200:
           description: |
             A json containing an object useful to be passed to `webauthn.createCredential` javascript method.
+          schema:
+            type: object
         400:
           description: A parameter is missing or inconsistent
           schema:
