@@ -9,7 +9,7 @@ info:
     url: https://gluu.org/docs/casa/#license
 
 #Demo server host
-host: dc.gluu.org
+host: test-casa.gluu.org
 
 basePath: /casa/rest
 schemes:
@@ -38,7 +38,7 @@ paths:
         by sending and OTP via SMS (backend technology: Twilio service)
 
       security:
-        - casa_auth: []
+        - casa_auth: [casa.enroll]
 
       parameters:
         -
@@ -51,12 +51,6 @@ paths:
           name: userid
           in: query
           description: Identifier (inum) of the user attempting the enrollment
-          required: true
-          type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
           required: true
           type: string
 
@@ -72,7 +66,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MISSING_PARAMS
+                description: Possible value for code&#58; MISSING_PARAMS
         500:
           description: There was a failure executing the operation
           schema:
@@ -82,11 +76,12 @@ paths:
             properties:
               code:
                 type: string
-                example: FAILURE|NUMBER_ALREADY_ENROLLED|UNKNOWN_USER_ID
+                description: Possible values for code&#58;
+                  FAILURE, NUMBER_ALREADY_ENROLLED, UNKNOWN_USER_ID
               cause:
                 type: string
-                description: Cause of the failure (when code = FAILURE)
-                example: UNDELIVERED|DELIVERY_FAILED|APP_SETUP_ERROR|SMS_SERVICE_ERROR
+                description: Cause of the failure (when code = FAILURE). Possible values for cause&#58;
+                  UNDELIVERED, DELIVERY_FAILED, APP_SETUP_ERROR, SMS_SERVICE_ERROR
 
   /enrollment/twilio_sms/validate-code:
     get:
@@ -94,6 +89,9 @@ paths:
         - otp
       description: |
         Checks validity of code received by user in SMS
+
+      security:
+        - casa_auth: [casa.enroll]
 
       parameters:
         -
@@ -110,12 +108,6 @@ paths:
           description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
-          required: true
-          type: string
 
       responses:
         200:
@@ -129,7 +121,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MISSING_PARAMS
+                description: Possible value for code&#58; MISSING_PARAMS
         500:
           description: Codes don't match or the validation couldn't be carried out
           schema:
@@ -139,7 +131,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_MATCH_OR_EXPIRED
+                description: Possible value for code&#58; NO_MATCH_OR_EXPIRED
 
   /enrollment/twilio_sms/creds/{userid}:
     post:
@@ -151,6 +143,9 @@ paths:
         in credential parameter. This is supposed to be called **after** a
         successful `validate-code` operation result
 
+      security:
+        - casa_auth: [casa.enroll]
+
       parameters:
         -
           name: credential
@@ -165,12 +160,6 @@ paths:
           name: userid
           in: path
           description: Identifier (inum) of the user attempting the enrollment
-          required: true
-          type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
           required: true
           type: string
 
@@ -188,7 +177,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MISSING_PARAMS
+                description: Possible value for code&#58; MISSING_PARAMS
         500:
           description: The provided key code is not recognized or there was a failure when saving the credential
           schema:
@@ -198,7 +187,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_MATCH_OR_EXPIRED|FAILED
+                description: Possible values for code&#58; NO_MATCH_OR_EXPIRED, FAILED
 
   /enrollment/smpp/send-code:
     get:
@@ -210,7 +199,7 @@ paths:
         by sending and OTP via SMS (backend technology: SMPP)
 
       security:
-        - casa_auth: []
+        - casa_auth: [casa.enroll]
 
       parameters:
         -
@@ -223,12 +212,6 @@ paths:
           name: userid
           in: query
           description: Identifier (inum) of the user attempting the enrollment
-          required: true
-          type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
           required: true
           type: string
 
@@ -244,7 +227,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MISSING_PARAMS
+                description: Possible value for code&#58; MISSING_PARAMS
         500:
           description: There was a failure executing the operation
           schema:
@@ -254,11 +237,12 @@ paths:
             properties:
               code:
                 type: string
-                example: FAILURE|NUMBER_ALREADY_ENROLLED|UNKNOWN_USER_ID
+                description: Possible values for code&#58;
+                  FAILURE, NUMBER_ALREADY_ENROLLED, UNKNOWN_USER_ID
               cause:
                 type: string
-                description: Cause of the failure (when code = FAILURE)
-                example: UNDELIVERED|DELIVERY_FAILED|APP_SETUP_ERROR|SMS_SERVICE_ERROR
+                description: Cause of the failure (when code = FAILURE). Possible values for cause&#58;
+                  UNDELIVERED, DELIVERY_FAILED, APP_SETUP_ERROR, SMS_SERVICE_ERROR
 
   /enrollment/smpp/validate-code:
     get:
@@ -266,6 +250,9 @@ paths:
         - otp
       description: |
         Checks validity of code received by user in SMS
+
+      security:
+        - casa_auth: [casa.enroll]
 
       parameters:
         -
@@ -282,12 +269,6 @@ paths:
           description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
-          required: true
-          type: string
 
       responses:
         200:
@@ -301,7 +282,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MISSING_PARAMS
+                description: Possible value for code&#58; MISSING_PARAMS
         500:
           description: Codes don't match or the validation couldn't be carried out
           schema:
@@ -311,7 +292,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_MATCH_OR_EXPIRED
+                description: Possible value for code&#58; NO_MATCH_OR_EXPIRED
 
   /enrollment/smpp/creds/{userid}:
     post:
@@ -322,6 +303,9 @@ paths:
         is passed in path parameter. Details of the credential are associated
         in credential parameter. This is supposed to be called **after** a
         successful `validate-code` operation result
+
+      security:
+        - casa_auth: [casa.enroll]
 
       parameters:
         -
@@ -339,12 +323,6 @@ paths:
           description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
-          required: true
-          type: string
 
       responses:
         201:
@@ -360,7 +338,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MISSING_PARAMS
+                description: Possible value for code&#58; MISSING_PARAMS
         500:
           description: The provided key code is not recognized or there was a failure when saving the credential
           schema:
@@ -370,7 +348,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_MATCH_OR_EXPIRED|FAILED
+                description: Possible values for code&#58; NO_MATCH_OR_EXPIRED, FAILED
 
   /enrollment/otp/qr-request:
     get:
@@ -381,7 +359,8 @@ paths:
         Generates a secret key URI suitable for displaying a QR code in the browser
 
       security:
-        - casa_auth: []
+        - casa_auth: [casa.enroll]
+
       parameters:
         -
           name: displayName
@@ -394,18 +373,12 @@ paths:
         -
           name: mode
           in: query
-          description: The OTP mode, HOTP (event based) or TOTP (time based)
+          description: The OTP mode, hotp (event based) or totp (time based)
           required: true
           type: string
           enum:
-          - totp
-          - hotp
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
-          required: true
-          type: string
+            - totp
+            - hotp
 
       responses:
         200:
@@ -431,7 +404,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_DISPLAY_NAME|INVALID_MODE
+                description: Possible values for code&#58; NO_DISPLAY_NAME, INVALID_MODE
 
   /enrollment/otp/validate-code:
     get:
@@ -443,7 +416,8 @@ paths:
         previously obtained by a call to `qr-request`
 
       security:
-        - casa_auth: []
+        - casa_auth: [casa.enroll]
+
       parameters:
         -
           name: code
@@ -468,12 +442,6 @@ paths:
           enum:
           - totp
           - hotp
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
-          required: true
-          type: string
 
       responses:
         200:
@@ -487,7 +455,7 @@ paths:
             properties:
               code:
                 type: string
-                example:
+                description: Possible values for code&#58; MATCH, NO_MATCH
         400:
           description: A parameter is missing or inconsistent
           schema:
@@ -497,7 +465,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MATCH|NO_MATCH
+                description: Possible values for code&#58; INVALID_MODE, MISSING_PARAMS
         500:
           description: An unexpected error occured
           schema:
@@ -507,7 +475,7 @@ paths:
             properties:
               code:
                 type: string
-                example: FAILURE
+                description: Possible value for code&#58; FAILURE
 
   /enrollment/otp/creds/{userid}:
     post:
@@ -517,6 +485,9 @@ paths:
         Saves a new (soft) OTP credential for the user whose ID is passed in path parameter.
         Details of the credential are associated in credential parameter. This is
         supposed to be called **after** a successful `validate-code` operation with MATCH result
+
+      security:
+        - casa_auth: [casa.enroll]
 
       parameters:
         -
@@ -534,12 +505,6 @@ paths:
           description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
-          required: true
-          type: string
 
       responses:
         201:
@@ -555,7 +520,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MISSING_PARAMS
+                description: Possible value for code&#58; MISSING_PARAMS
         500:
           description: The provided key/userid is not recognized or there was a failure when saving the credential
           schema:
@@ -565,7 +530,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_MATCH_OR_EXPIRED|FAILED
+                description: Possible values for code&#58; NO_MATCH_OR_EXPIRED, FAILED
 
   /enrollment/super_gluu/qr-request:
     get:
@@ -576,7 +541,8 @@ paths:
         Generates a QR request for enrolling a supergluu device
 
       security:
-        - casa_auth: []
+        - casa_auth: [casa.enroll]
+
       parameters:
         -
           name: remoteIP
@@ -588,12 +554,6 @@ paths:
           name: userid
           in: query
           description: Identifier (inum) of the user attempting the enrollment
-          required: true
-          type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
           required: true
           type: string
 
@@ -621,7 +581,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_USER_ID
+                description: Possible value for code&#58; NO_USER_ID
         404:
           description: The user passed does not exist
           schema:
@@ -631,7 +591,7 @@ paths:
             properties:
               code:
                 type: string
-                example: UNKNOWN_USER_ID
+                description: Possible value for code&#58; UNKNOWN_USER_ID
 
   /enrollment/super_gluu/status:
     get:
@@ -643,17 +603,14 @@ paths:
         Repeated calls to this method for the same key must be separated by a
         lag of at least 5 seconds
 
+      security:
+        - casa_auth: [casa.enroll]
+
       parameters:
         -
           name: key
           in: query
           description: A value obtained by a previous call to `qr-request`
-          required: true
-          type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
           required: true
           type: string
 
@@ -672,7 +629,7 @@ paths:
             properties:
               code:
                 type: string
-                example: PENDING
+                description: Possible value for code&#58; PENDING
         500:
           description: The enrollment was not successful. It also accounts for
             the case when a user attempted to enroll a device he already enrolled
@@ -684,7 +641,7 @@ paths:
             properties:
               code:
                 type: string
-                example: DUPLICATED|FAILED
+                description: Possible values for code&#58; DUPLICATED, FAILED
 
   /enrollment/super_gluu/creds/{userid}:
     post:
@@ -695,6 +652,9 @@ paths:
         associated user ID is passed in path parameter. Details of the credential
         are passed in credential parameter. This is supposed to be called **after**
         a call to `status` having received the data of the credential
+
+      security:
+        - casa_auth: [casa.enroll]
 
       parameters:
         -
@@ -712,12 +672,6 @@ paths:
           description: Identifier (inum) of the user owning the device
           required: true
           type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
-          required: true
-          type: string
 
       responses:
         200:
@@ -731,7 +685,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MISSING_PARAMS
+                description: Possible value for code&#58; MISSING_PARAMS
         500:
           description: The provided key in credential parameter is not
             recognized as a recent enrollment or the update failed
@@ -742,7 +696,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_MATCH_OR_EXPIRED|FAILED
+                description: Possible values for code&#58; NO_MATCH_OR_EXPIRED, FAILED
 
 #  /enrollment/u2f/registration-message:
 #    get:
@@ -759,12 +713,6 @@ paths:
 #          name: userid
 #          in: query
 #          description: Identifier (inum) of the user attempting the enrollment
-#          required: true
-#          type: string
-#        -
-#          name: Authorization
-#          description: Contains a bearer token
-#          in: header
 #          required: true
 #          type: string
 #
@@ -825,12 +773,6 @@ paths:
 #          description: Identifier (inum) of the user owning the device
 #          required: true
 #          type: string
-#        -
-#          name: Authorization
-#          description: Contains a bearer token
-#          in: header
-#          required: true
-#          type: string
 #
 #      responses:
 #        201:
@@ -886,12 +828,6 @@ paths:
 #          description: Identifier (inum) of the user owning the device
 #          required: true
 #          type: string
-#        -
-#          name: Authorization
-#          description: Contains a bearer token
-#          in: header
-#          required: true
-#          type: string
 #
 #      responses:
 #        200:
@@ -927,18 +863,13 @@ paths:
         Gets an attestation message to be used in the browser
 
       security:
-        - casa_auth: []
+        - casa_auth: [casa.enroll]
+
       parameters:
         -
           name: userid
           in: query
           description: Identifier (inum) of the user attempting the enrollment
-          required: true
-          type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
           required: true
           type: string
 
@@ -955,7 +886,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_USER_ID
+                description: Possible value for code&#58; NO_USER_ID
         404:
           description: The user passed does not exist
           schema:
@@ -965,7 +896,7 @@ paths:
             properties:
               code:
                 type: string
-                example: UNKNOWN_USER_ID
+                description: Possible value for code&#58; UNKNOWN_USER_ID
         500:
           description: An unexpected error occurred when processing the request
           schema:
@@ -975,7 +906,7 @@ paths:
             properties:
               code:
                 type: string
-                example: FAILED
+                description: Possible value for code&#58; FAILED
 
   /enrollment/fido2/registration/{userid}:
     post:
@@ -984,6 +915,9 @@ paths:
       description: |
         Sends back to server the result obtained after the call to `webauthn.createCredential` was
         made. This occurs after the user touches the security key button
+
+      security:
+        - casa_auth: [casa.enroll]
 
       parameters:
         -
@@ -996,12 +930,6 @@ paths:
           name: userid
           in: path
           description: Identifier (inum) of the user owning the device
-          required: true
-          type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
           required: true
           type: string
 
@@ -1021,7 +949,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_MATCH_OR_EXPIRED|UNKNOWN_USER_ID
+                description: Possible values for code&#58; NO_MATCH_OR_EXPIRED, UNKNOWN_USER_ID
         500:
           description: The operation of enrollment failed
           schema:
@@ -1031,7 +959,7 @@ paths:
             properties:
               code:
                 type: string
-                example: FAILED
+                description: Possible value for code&#58; FAILED
 
   /enrollment/fido2/creds/{userid}:
     post:
@@ -1042,6 +970,9 @@ paths:
         associated user ID is passed in path parameter. Details of the credential
         are passed in credential parameter. This is supposed to be called **after**
         a call to `registration/{userid}` having received the data of the credential
+
+      security:
+        - casa_auth: [casa.enroll]
 
       parameters:
         -
@@ -1058,12 +989,6 @@ paths:
           description: Identifier (inum) of the user owning the device
           required: true
           type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
-          required: true
-          type: string
 
       responses:
         200:
@@ -1077,7 +1002,7 @@ paths:
             properties:
               code:
                 type: string
-                example: MISSING_PARAMS
+                description: Possible value for code&#58; MISSING_PARAMS
         500:
           description: The provided key in credential parameter is not
             recognized as a recent enrollment or the update failed
@@ -1088,7 +1013,7 @@ paths:
             properties:
               code:
                 type: string
-                example: NO_MATCH_OR_EXPIRED|FAILED
+                description: Possible values for code&#58; NO_MATCH_OR_EXPIRED, FAILED
 
   /2fa/user-info/{userid}:
     get:
@@ -1097,7 +1022,7 @@ paths:
         Retrieves general info about credentials enrolled for a specific user
 
       security:
-        - casa_auth: []
+        - casa_auth: [casa.2fa]
 
       parameters:
         -
@@ -1106,17 +1031,12 @@ paths:
           description: Identifier (inum) of the user to query
           required: true
           type: string
-        -
-          name: Authorization
-          description: Contains a bearer token
-          in: header
-          required: true
-          type: string
 
       responses:
         200:
           description: |
-            Successful response that contains if the given user has currently 2FA enabled and a list of authentication methods IDs for which the user has enrolled one or more credentials
+            Successful response that contains if the given user has currently 2FA enabled and a list of 
+            authentication methods IDs for which the user has enrolled one or more credentials
           schema:
             type: object
             required:
@@ -1126,8 +1046,8 @@ paths:
              - total_creds
             properties:
               code:
-                type: string
-                example: SUCCESS
+                $ref: '#/definitions/SecondFactorCode'
+                description: Possible value for code&#58; SUCCESS
               turned_on:
                 type: boolean
                 example: true
@@ -1147,8 +1067,8 @@ paths:
              - code
             properties:
               code:
-                type: string
-                example: UNKNOWN_USER_ID
+                $ref: '#/definitions/SecondFactorCode'
+                description: Possible value for code&#58; UNKNOWN_USER_ID
         500:
           description: There was a failure executing the operation
           schema:
@@ -1157,14 +1077,17 @@ paths:
              - code
             properties:
               code:
-                type: string
-                example: FAILURE
+                $ref: '#/definitions/SecondFactorCode'
+                description: Possible value for code&#58; FAILURE
 
   /2fa/turn-on:
     post:
       description: |
         Enables 2FA for the user whose identifier (inum) is passed in the body 
         of the payload
+
+      security:
+        - casa_auth: [casa.2fa]
 
       responses:
         200:
@@ -1179,6 +1102,9 @@ paths:
       description: |
         Disables (turns off) 2FA for the user whose identifier (inum) is passed in the body 
         of the payload
+
+      security:
+        - casa_auth: [casa.2fa]
 
       responses:
         200:
@@ -1299,10 +1225,18 @@ definitions:
             os_version:
               type: string
               example: 11.2.4
-
+    
+  SecondFactorCode: &SECONDFACTORCODE
+    type: string
+    description: Describes the general outcome of operations under /2fa/user-info path
+    enum: &SECONDFACTORCODE [UNKNOWN_USER_ID,SUCCESS,FAILED]
+    
 securityDefinitions:
   casa_auth:
     type: oauth2
     description: An OAuth2 bearer token in the header must be passed
     flow: application
-    tokenUrl: https://dc.gluu.org/oxauth/restv1/token
+    tokenUrl: https://test-casa.gluu.org/oxauth/restv1/token
+    scopes:
+      casa.enroll: Grants access to enrollment-related endpoints
+      casa.2fa: Grants access to 2FA-related endpoints
