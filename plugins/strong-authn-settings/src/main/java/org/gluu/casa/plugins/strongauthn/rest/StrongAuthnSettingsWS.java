@@ -12,8 +12,6 @@ import org.gluu.casa.service.settings.IPluginSettingsHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -25,7 +23,6 @@ import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
-@ApplicationScoped
 @Path("/config")
 @ProtectedApi( scopes = "casa.config" )
 public class StrongAuthnSettingsWS {

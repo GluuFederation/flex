@@ -34,7 +34,7 @@ public class ScopeService {
     }
 
     public List<Scope> getNonUMAScopes() {
-    	
+
     	List<Filter> filters = Stream.of(ScopeType.values()).filter(st -> !st.equals(ScopeType.UMA))
     							.map(ScopeType::getValue).map(value -> Filter.createEqualityFilter(SCOPE_TYPE_ATTR, value))
     							.collect(Collectors.toList());

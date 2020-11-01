@@ -171,7 +171,11 @@ paths:
 
       responses:
         200:
-          description: Successful operation. A JSON array of strings is returned
+          description: Successful operation.
+          schema:
+            type: array
+            items:
+              type: string
         500:
           description: There was a failure executing the operation. Error description in response body
           
@@ -202,6 +206,8 @@ paths:
   /pwd-reset/available:
     get:
       description: Returns if password reset feature is available in this installation
+      produces:
+        - application/json
 
       responses:
         200:
