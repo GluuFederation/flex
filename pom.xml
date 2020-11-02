@@ -64,6 +64,7 @@
         <module>plugins/custom-branding</module>
         <module>plugins/strong-authn-settings</module>
         <module>plugins/cert-authn</module>
+        <module>config-client</module>
     </modules>
 
     <dependencyManagement>
