@@ -40,7 +40,7 @@ export const DefaultNavbar = () => (
                     <i className="fa fa-angle-right"></i>
                 </span>
                 <span className="navbar-text">
-                    Page Link
+                    Current Item
                 </span>
             </NavItem>
         </Nav>

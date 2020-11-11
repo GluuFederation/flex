@@ -27,7 +27,7 @@ const NavbarMessages = props => (
       <IconWithBadge
         badge={
           <Badge pill color="secondary">
-            6
+            1
           </Badge>
         }
       >
@@ -53,7 +53,7 @@ const NavbarMessages = props => (
       </ExtendedDropdown.Section>
       <ExtendedDropdown.Section list>
         <ListGroup>
-          {_.times(3, index => (
+          {_.times(1, index => (
             <ListGroupItem
               tag={ExtendedDropdown.Link}
               to="/apps/email-details"
