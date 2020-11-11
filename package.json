@@ -1,7 +1,7 @@
 {
-  "name": "airframe-dashboard",
+  "name": "jans-admin-ui",
   "version": "0.1.0",
-  "description": "Seed project for flexible light React/Bootstrap 4 dashboards.",
+  "description": " UI to administer the jans-sever features",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -58,6 +58,7 @@
     "faker": "^4.1.0",
     "font-awesome": "^4.7.0",
     "holderjs": "^2.9.6",
+    "isomorphic-fetch": "^3.0.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
