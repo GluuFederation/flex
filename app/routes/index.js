@@ -3,11 +3,7 @@ import { Route, Switch, Redirect } from "react-router";
 
 // ----------- Pages Imports ---------------
 import Analytics from "./Dashboards/Analytics";
-import ProjectsDashboard from "./Dashboards/Projects";
 import Reports from "./Dashboards/Reports";
-
-import Widgets from "./Widgets";
-
 import Cards from "./Cards/Cards";
 import CardsHeaders from "./Cards/CardsHeaders";
 
@@ -96,9 +92,8 @@ import Icons from "./Icons";
 
 // ----------- Layout Imports ---------------
 import { DefaultNavbar } from "./../layout/components/DefaultNavbar";
+import { NavbarExample } from "../routes/components/Navbars/NavbarExample";
 import { DefaultSidebar } from "./../layout/components/DefaultSidebar";
-
-import { SidebarANavbar } from "./../layout/components/SidebarANavbar";
 import { SidebarASidebar } from "./../layout/components/SidebarASidebar";
 
 //------ Route Definitions --------
@@ -106,18 +101,13 @@ import { SidebarASidebar } from "./../layout/components/SidebarASidebar";
 export const RoutedContent = () => {
   return (
     <Switch>
-      <Redirect from="/" to="/home/projects" exact />
+      <Redirect from="/" to="/home/analytics" exact />
 
       <Route path="/home/analytics" exact component={Analytics} />
-      <Route path="/home/projects" exact component={ProjectsDashboard} />
       <Route path="/home/reports" exact component={Reports} />
-
-      <Route path="/widgets" exact component={Widgets} />
-
       {/*    Cards Routes     */}
       <Route path="/cards/cards" exact component={Cards} />
       <Route path="/cards/cardsheaders" exact component={CardsHeaders} />
-
       {/*    Layouts     */}
       <Route path="/layouts/navbar" component={NavbarOnly} />
       <Route path="/layouts/sidebar" component={SidebarDefault} />
@@ -127,7 +117,6 @@ export const RoutedContent = () => {
         component={SidebarWithNavbar}
       />
       <Route path="/layouts/dnd-layout" component={DragAndDropLayout} />
-
       {/*    Interface Routes   */}
       <Route component={Accordions} path="/interface/accordions" />
       <Route component={Alerts} path="/interface/alerts" />
@@ -227,15 +216,9 @@ export const RoutedContent = () => {
 //------ Custom Layout Parts --------
 export const RoutedNavbars = () => (
   <Switch>
-    {/* Other Navbars: */}
-    <Route component={SidebarANavbar} path="/layouts/sidebar-a" />
-    <Route component={NavbarOnly.Navbar} path="/layouts/navbar" />
-    <Route
-      component={SidebarWithNavbar.Navbar}
-      path="/layouts/sidebar-with-navbar"
-    />
     {/* Default Navbar: */}
     <Route component={DefaultNavbar} />
+    <Route component={NavbarExample} />
   </Switch>
 );
 

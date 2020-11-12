@@ -1,15 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { Navbar, Nav, NavItem, SidebarTrigger } from "./../../components";
+import { Navbar, Nav, NavItem, SidebarTrigger,NavbarThemeProvider } from "./../../components";
 
 import { NavbarActivityFeed } from "./NavbarActivityFeed";
 import { NavbarMessages } from "./NavbarMessages";
 import { NavbarUser } from "./NavbarUser";
 import { LogoThemed } from "./../../routes/components/LogoThemed/LogoThemed";
 
-export const DefaultNavbar = () => (
-  <Navbar light expand="xs" fluid>
+export const DefaultNavbar = (themeStyle, themeColor) => (
+  <NavbarThemeProvider style={ themeStyle } color={ themeColor } className="shadow-sm">
+  <Navbar expand="lg" themed>
     <Nav navbar>
       <NavItem className="mr-3">
         <SidebarTrigger />
@@ -43,4 +44,5 @@ export const DefaultNavbar = () => (
       <NavbarUser className="ml-2" />
     </Nav>
   </Navbar>
+  </NavbarThemeProvider>
 );
