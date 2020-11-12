@@ -28,49 +28,49 @@ public class LogLevelWS extends BaseWS {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public Response get() {    	
-		return Response.status(OK).entity(mainSettings.getLogLevel()).build();
+    public Response get() {
+        return Response.status(OK).entity(mainSettings.getLogLevel()).build();
     }
     
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     public Response set(@FormParam("level") String newLevel) {
-    	
+
         Response.Status httpStatus;
         String json = null;
-    	String value = mainSettings.getLogLevel();    	
+        String value = mainSettings.getLogLevel();
         logger.trace("LogLevelWS set operation called");
         
         try {
-        	if (!value.equals(newLevel)) {
-				if (LogService.SLF4J_LEVELS.contains(newLevel)) {
-			
-					logService.updateLoggingLevel(newLevel);
-					mainSettings.setLogLevel(newLevel);
-					
-					logger.trace("Persisting update in configuration");
-					confHandler.saveSettings();
-					httpStatus = OK;
-					
-				} else {
-					httpStatus = BAD_REQUEST;
-					json = String.format("Log level '%s' not recognized", newLevel);
-					logger.warn(json);
-				}
-			} else {				
-				httpStatus = OK;
-			}
-    		
-    	} catch (Exception e) {    		
-        	json = e.getMessage();
-    		logger.error(json, e);
-    		
-    		mainSettings.setLogLevel(value);
-        	httpStatus = INTERNAL_SERVER_ERROR;
-    	}
-    	
-		return Response.status(httpStatus).entity(json).build();
-		
+            if (!value.equals(newLevel)) {
+                if (LogService.SLF4J_LEVELS.contains(newLevel)) {
+
+                    logService.updateLoggingLevel(newLevel);
+                    mainSettings.setLogLevel(newLevel);
+                    
+                    logger.trace("Persisting update in configuration");
+                    confHandler.saveSettings();
+                    httpStatus = OK;
+                    
+                } else {
+                    httpStatus = BAD_REQUEST;
+                    json = String.format("Log level '%s' not recognized", newLevel);
+                    logger.warn(json);
+                }
+            } else {
+                httpStatus = OK;
+            }
+
+        } catch (Exception e) {
+            json = e.getMessage();
+            logger.error(json, e);
+            
+            mainSettings.setLogLevel(value);
+            httpStatus = INTERNAL_SERVER_ERROR;
+        }
+        
+        return Response.status(httpStatus).entity(json).build();
+        
     }
     
 }

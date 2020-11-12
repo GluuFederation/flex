@@ -9,13 +9,13 @@ import javax.inject.Inject;
 
 @ApplicationScoped
 class BaseWS {
-	
+
     @Inject
     MainSettings mainSettings;
-	
+
     @Inject
     ConfigurationHandler confHandler;
-	
+
     @Inject
     PersistenceService persistenceService;
     

@@ -33,20 +33,20 @@ public class PasswordResetAvailWS extends BaseWS {
     @Path("available")
     @Produces(MediaType.APPLICATION_JSON)
     public Response available() {
-    	
+
         Response.Status httpStatus;
         String json;
         
         logger.trace("PasswordResetAvailWS available operation called");
-    	try {
-    		json = isPwdResetAvailable() ? "true" : "false";
-        	httpStatus = OK;
+        try {
+            json = isPwdResetAvailable() ? "true" : "false";
+            httpStatus = OK;
         } catch (Exception e) {
-        	json = e.getMessage();
-        	logger.error(json, e);        	
-        	httpStatus = INTERNAL_SERVER_ERROR;
+            json = e.getMessage();
+            logger.error(json, e);
+            httpStatus = INTERNAL_SERVER_ERROR;
         }
-		return Response.status(httpStatus).entity(json).build();  	
+        return Response.status(httpStatus).entity(json).build();
         
     }
     
@@ -54,21 +54,21 @@ public class PasswordResetAvailWS extends BaseWS {
     @Path("enabled")
     @Produces(MediaType.APPLICATION_JSON)
     public Response isEnabled() {
-    	
+
         Response.Status httpStatus;
         String json;
         
         logger.trace("PasswordResetAvailWS isEnabled operation called");
-    	try {
-    		json = (isPwdResetAvailable() && mainSettings.isEnablePassReset()) ? "true" : "false";
-        	httpStatus = OK;
+        try {
+            json = (isPwdResetAvailable() && mainSettings.isEnablePassReset()) ? "true" : "false";
+            httpStatus = OK;
         } catch (Exception e) {
-        	json = e.getMessage();
-        	logger.error(json, e);        	
-        	httpStatus = INTERNAL_SERVER_ERROR;
+            json = e.getMessage();
+            logger.error(json, e);
+            httpStatus = INTERNAL_SERVER_ERROR;
         }
-		return Response.status(httpStatus).entity(json).build();  	
-		
+        return Response.status(httpStatus).entity(json).build();
+
     }
 
     @POST
@@ -76,7 +76,7 @@ public class PasswordResetAvailWS extends BaseWS {
     @Produces(MediaType.TEXT_PLAIN)
     public Response enable() {
         logger.trace("PasswordResetAvailWS enable operation called");
-    	return turnOnOff(true);
+        return turnOnOff(true);
     }
     
     @POST
@@ -84,42 +84,42 @@ public class PasswordResetAvailWS extends BaseWS {
     @Produces(MediaType.TEXT_PLAIN)
     public Response disable() {
         logger.trace("PasswordResetAvailWS disable operation called");
-    	return turnOnOff(false);
+        return turnOnOff(false);
     }
 
     private Response turnOnOff(boolean flag) {
-    	
+
         Response.Status httpStatus;
         String json = null;
         boolean value = mainSettings.isEnablePassReset();
         
         try {
-			if (isPwdResetAvailable()) {
-				if (value != flag) {
-					mainSettings.setEnablePassReset(flag);
-					logger.trace("Persisting configuration change");
-					confHandler.saveSettings();
-				}
-				httpStatus = OK;
-			} else {
-				httpStatus = BAD_REQUEST;
-				json = "Password reset is not available. Your server may be using an external " +
-					"LDAP for identities synchronization"; 
-			}
+            if (isPwdResetAvailable()) {
+                if (value != flag) {
+                    mainSettings.setEnablePassReset(flag);
+                    logger.trace("Persisting configuration change");
+                    confHandler.saveSettings();
+                }
+                httpStatus = OK;
+            } else {
+                httpStatus = BAD_REQUEST;
+                json = "Password reset is not available. Your server may be using an external " +
+                    "LDAP for identities synchronization"; 
+            }
         } catch (Exception e) {
-        	json = e.getMessage();
-        	logger.error(json, e);
-        	
-        	//Restore previous value
-        	mainSettings.setEnablePassReset(value);
-        	httpStatus = INTERNAL_SERVER_ERROR;
+            json = e.getMessage();
+            logger.error(json, e);
+            
+            //Restore previous value
+            mainSettings.setEnablePassReset(value);
+            httpStatus = INTERNAL_SERVER_ERROR;
         }
-		return Response.status(httpStatus).entity(json).build();  
+        return Response.status(httpStatus).entity(json).build();  
 
     }
     
     private boolean isPwdResetAvailable() {
-    	return !persistenceService.isBackendLdapEnabled();
+        return !persistenceService.isBackendLdapEnabled();
     }
     
 }

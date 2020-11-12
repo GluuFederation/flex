@@ -28,7 +28,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 @Path("/config/cors")
 @ProtectedApi( scopes = "casa.config" )
 public class CORSDomainsWS extends BaseWS {
-	
+
     @Inject
     private Logger logger;
     
@@ -42,63 +42,63 @@ public class CORSDomainsWS extends BaseWS {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response list() {
-    	
+
         Response.Status httpStatus;
         String json = null;
         
         logger.trace("CORSDomainsWS list operation called");
-    	try {       		
-			json = Utils.jsonFromObject(mainSettings.getCorsDomains());
-			httpStatus = OK;
+        try {
+            json = Utils.jsonFromObject(mainSettings.getCorsDomains());
+            httpStatus = OK;
         } catch (Exception e) {
-        	json = e.getMessage();
-    		logger.error(json, e);    		
-        	httpStatus = INTERNAL_SERVER_ERROR;
+            json = e.getMessage();
+            logger.error(json, e);
+            httpStatus = INTERNAL_SERVER_ERROR;
         }
-		return Response.status(httpStatus).entity(json).build();
-		
+        return Response.status(httpStatus).entity(json).build();
+        
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response replace(String body) {
-    	
+
         Response.Status httpStatus;
         String json = null;
         List<String> values = mainSettings.getCorsDomains();
         
         logger.trace("CORSDomainsWS replace operation called");
-    	try {
-    		List<String> domains = mapper.readValue(body, new TypeReference<List<String>>(){});
-    		Set<String> domainSet = new TreeSet();
-    		
-    		for (String dom : domains) {
-    			try {
-    				URL url = new URL(dom);
-    				if (url.getProtocol().equals("http") || url.getProtocol().equals("https")) {
-    					domainSet.add(dom);
-    				}
-    			} catch (Exception e) {
-    				logger.error("Error: " + e.getMessage());
-    			}
-    		}
-    		logger.trace("Resulting domains set: {}", domainSet);
-    		
-    		mainSettings.setCorsDomains(new ArrayList(domainSet));
-			logger.trace("Persisting CORS domains in configuration");
-			confHandler.saveSettings();
-			httpStatus = OK;
-    		
+        try {
+            List<String> domains = mapper.readValue(body, new TypeReference<List<String>>(){});
+            Set<String> domainSet = new TreeSet();
+            
+            for (String dom : domains) {
+                try {
+                    URL url = new URL(dom);
+                    if (url.getProtocol().equals("http") || url.getProtocol().equals("https")) {
+                        domainSet.add(dom);
+                    }
+                } catch (Exception e) {
+                    logger.error("Error: " + e.getMessage());
+                }
+            }
+            logger.trace("Resulting domains set: {}", domainSet);
+            
+            mainSettings.setCorsDomains(new ArrayList(domainSet));
+            logger.trace("Persisting CORS domains in configuration");
+            confHandler.saveSettings();
+            httpStatus = OK;
+            
         } catch (Exception e) {
-        	json = e.getMessage();
-        	logger.error(json, e);
-        	
-        	mainSettings.setCorsDomains(values);
-        	httpStatus = INTERNAL_SERVER_ERROR;
+            json = e.getMessage();
+            logger.error(json, e);
+            
+            mainSettings.setCorsDomains(values);
+            httpStatus = INTERNAL_SERVER_ERROR;
         }
         
-		return Response.status(httpStatus).entity(json).build();
+        return Response.status(httpStatus).entity(json).build();
     }
     
 }
