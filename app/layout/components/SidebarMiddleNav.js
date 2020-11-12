@@ -5,9 +5,8 @@ import { SidebarMenu } from "./../../components";
 export const SidebarMiddleNav = () => (
   <SidebarMenu>
     <SidebarMenu.Item icon={<i className="fa fa-fw fa-home"></i>} title="Home">
-      <SidebarMenu.Item title="Analytics" to="/dashboards/analytics" exact />
-      <SidebarMenu.Item title="Projects" to="/dashboards/projects" exact />
-      <SidebarMenu.Item title="Reports" to="/dashboards/reports" exact />
+      <SidebarMenu.Item title="Analytics" to="/home/analytics" exact />
+      <SidebarMenu.Item title="Reports" to="/home/reports" exact />
     </SidebarMenu.Item>
     {/* -------- Cards ---------*/}
     <SidebarMenu.Item
