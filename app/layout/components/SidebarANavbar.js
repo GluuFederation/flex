@@ -20,7 +20,7 @@ export const SidebarANavbar = () => (
             </NavItem>
             <NavItem className="navbar-brand h5 mb-0 d-lg-none">
                 <Link to="/">
-                    react.bs4
+                    react.bs4 gasmyr
                 </Link>
             </NavItem>
         </Nav>
