@@ -420,16 +420,10 @@ definitions:
       - post_logout_uri
       - authz_redirect_uri
     properties:
-      opHost:
-        type: string
       host:
         type: string
       port:
         type: string
-      acrValues:
-        type: array
-        items:
-          type: string
       scopes:
         type: array
         items:
