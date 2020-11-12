@@ -92,7 +92,7 @@ import Icons from "./Icons";
 
 // ----------- Layout Imports ---------------
 import { DefaultNavbar } from "./../layout/components/DefaultNavbar";
-import { NavbarExample } from "../routes/components/Navbars/NavbarExample";
+import { GluuNavBar } from "../routes/components/Navbars/GluuNavBar";
 import { DefaultSidebar } from "./../layout/components/DefaultSidebar";
 import { SidebarASidebar } from "./../layout/components/SidebarASidebar";
 
@@ -217,8 +217,8 @@ export const RoutedContent = () => {
 export const RoutedNavbars = () => (
   <Switch>
     {/* Default Navbar: */}
-    <Route component={DefaultNavbar} />
-    <Route component={NavbarExample} />
+    
+    <Route component={() => <GluuNavBar themeStyle="color" themeColor="primary" navStyle="accent" />} />
   </Switch>
 );
 
