@@ -1,6 +1,5 @@
 package org.gluu.casa.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.misc.Utils;
 import org.gluu.oxauth.client.service.ClientFactory;
@@ -9,7 +8,6 @@ import org.gluu.oxauth.model.common.IntrospectionResponse;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -119,9 +117,7 @@ public class AuthorizationProcessingFilter implements ContainerRequestFilter {
     private void init() {
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            String introspectionEndpoint = mapper.readTree(new URL(persistenceService.getOIDCEndpoint())).get("introspection_endpoint").asText();            
-            introspectionService = ClientFactory.instance().createIntrospectionService(introspectionEndpoint);
+            introspectionService = ClientFactory.instance().createIntrospectionService(persistenceService.getIntrospectionEndpoint());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

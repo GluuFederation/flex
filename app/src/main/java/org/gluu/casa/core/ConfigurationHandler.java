@@ -1,9 +1,8 @@
 package org.gluu.casa.core;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.model.ApplicationConfiguration;
+import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.misc.AppStateEnum;
 import org.gluu.casa.timer.*;
 import org.gluu.oxauth.model.util.SecurityProviderUtility;
@@ -16,8 +15,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author jgomer
@@ -69,8 +68,6 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     private String acrQuartzJobName;
 
-    private ObjectMapper mapper;
-
     private AppStateEnum appState;
 
     private boolean acrsRetrieved;
@@ -79,7 +76,6 @@ public class ConfigurationHandler extends JobListenerSupport {
     private void inited() {
         setAppState(AppStateEnum.LOADING);
         logger.info("ConfigurationHandler inited");
-        mapper = new ObjectMapper();
         acrQuartzJobName = getClass().getSimpleName() + "_acr";
         SecurityProviderUtility.installBCProvider();
     }
@@ -200,55 +196,21 @@ public class ConfigurationHandler extends JobListenerSupport {
         return appState;
     }
 
+    private List<CustomScript> getEnabledScripts() {
+        CustomScript sample = new CustomScript();
+        sample.setEnabled(true);
+        return persistenceService.find(sample);        
+    }
+    
     public Map<String, Integer> getAcrLevelMapping() {
-
-        Map<String, Integer> map = new HashMap<>();
-        try {
-            String oidcEndpointURL = persistenceService.getOIDCEndpoint();
-            JsonNode levels = mapper.readTree(new URL(oidcEndpointURL)).get("auth_level_mapping");
-            Iterator<Map.Entry<String, JsonNode>> it = levels.fields();
-
-            while (it.hasNext()) {
-                Map.Entry<String, JsonNode> entry = it.next();
-                try {
-                    Integer levl = Integer.parseInt(entry.getKey());
-                    Iterator<JsonNode> arrayIt = entry.getValue().elements();
-                    while (arrayIt.hasNext()) {
-                        map.put(arrayIt.next().asText(), levl);
-                    }
-                } catch (Exception e) {
-                    logger.error("Error parsing level for {}: {}", entry.getKey(), e.getMessage());
-                }
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        return map;
-
+    	Map<String, Integer> map = getEnabledScripts().stream()
+    	    .collect(Collectors.toMap(CustomScript::getDisplayName, CustomScript::getLevel));
+    	logger.debug("ACR/Level mapping is: {}", map);
+    	return map;
     }
 
-    /**
-     * Performs a GET to the OIDC metadata URL and extracts the ACR values supported by the server
-     * @return A Set of String values or null if a networking or parsing error occurs
-     */
     public Set<String> retrieveAcrs() {
-
-        try {
-            String oidcEndpointURL = persistenceService.getOIDCEndpoint();
-            //too noisy log statement
-            //logger.trace("Obtaining \"acr_values_supported\" from server {}", oidcEndpointURL);
-            JsonNode values = mapper.readTree(new URL(oidcEndpointURL)).get("acr_values_supported");
-
-            //Add server's supported acr values
-            Set<String> serverAcrs = new HashSet<>();
-            values.forEach(node -> serverAcrs.add(node.asText()));
-            return serverAcrs;
-
-        } catch (Exception e) {
-            logger.error("Could not retrieve the list of acrs supported by this server: {}", e.getMessage());
-            return null;
-        }
-
+        return getEnabledScripts().stream().map(CustomScript::getDisplayName).collect(Collectors.toSet());
     }
 
     private void setAppState(AppStateEnum state) {
