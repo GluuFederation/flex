@@ -14,7 +14,7 @@ module.exports = {
     devtool: 'inline-source-map',
     mode: 'production',
     entry: {
-        app: ['react-hot-loader/patch', path.join(config.srcDir, 'index.js')]
+        app: [path.join(config.srcDir, 'index.js')]
     },
     output: {
         filename: '[name].bundle.js',
