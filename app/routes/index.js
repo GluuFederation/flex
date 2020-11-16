@@ -91,7 +91,6 @@ import Timeline from "./Pages/Timeline";
 import Icons from "./Icons";
 
 // ----------- Layout Imports ---------------
-import { DefaultNavbar } from "./../layout/components/DefaultNavbar";
 import { GluuNavBar } from "../routes/components/Navbars/GluuNavBar";
 import { DefaultSidebar } from "./../layout/components/DefaultSidebar";
 import { SidebarASidebar } from "./../layout/components/SidebarASidebar";
