@@ -6,13 +6,11 @@
     "plugins": [
         "@babel/plugin-proposal-class-properties",
         "@babel/plugin-syntax-dynamic-import",
-        "universal-import",
-        "react-hot-loader/babel"
+        "universal-import"
     ],
     "env": {
         "development": {
             "plugins": [
-                "react-hot-loader/babel"
             ]
         }
     }
