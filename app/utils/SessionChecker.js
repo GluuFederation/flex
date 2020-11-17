@@ -1,11 +1,15 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router";
+
+// -----Third party dependencies -----
+import queryString from 'query-string';
 
 // ------------ Custom Resources -----
 import { uuidv4 } from './Util';
 
 // ------------ Redux ----------------
 import { connect } from "react-redux";
-import { getOAuth2Config } from "../redux/actions";
+import { getOAuth2Config, getOAuth2AccessToken } from "../redux/actions";
 
 class SessionChecker extends Component {
 
@@ -43,31 +47,41 @@ class SessionChecker extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const accessToken = localStorage.getItem("gluu.access.token");
-    if (!accessToken) {
-      const showContent = !!props.config;
-      if (showContent) {
-        const authzUrl = SessionChecker.buildAuthzUrl(props.config);
-        if (authzUrl) {
-          console.log('Url to process authz: ', authzUrl);
-  
-          window.location.href = authzUrl;
-          return null;
+    if (!props.loading) {
+      const accessToken = localStorage.getItem("gluu.access.token");
+      if (!accessToken) {
+        const params = queryString.parse(props.location.search);
+        
+        let showContent = false;
+        if (params.code && params.scope && params.state) {
+          props.getOAuth2AccessToken(params.code);
+        } else {
+          showContent = !!props.config;
+          if (showContent) {
+            const authzUrl = SessionChecker.buildAuthzUrl(props.config);
+            if (authzUrl) {
+              console.log('Url to process authz: ', authzUrl);
+              
+              window.location.href = authzUrl;
+              return null;
+            }
+          } else {
+            props.getOAuth2Config();
+          }
         }
+        return { showContent }
       } else {
-        this.props.getOAuth2Config();
+        return { showContent: true };
       }
-      return { showContent }
-    } else {
-      return { showContent: true };
     }
+    return null;
   }
 
   componentDidMount() {
-    
   }
 
   render() {
+
     const { showContent } = this.state
     return (
       <React.Fragment>
@@ -86,6 +100,7 @@ const mapStateToProps = ({ authReducer }) => {
   return { loading, config };
 };
 
-export default connect(mapStateToProps, {
+export default withRouter(connect(mapStateToProps, {
   getOAuth2Config,
-})(SessionChecker);
+  getOAuth2AccessToken,
+})(SessionChecker));
