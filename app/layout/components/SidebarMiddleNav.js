@@ -1,50 +1,67 @@
 import React from "react";
 
-import { SidebarMenu } from "./../../components";
+import { SidebarMenu, Divider } from "./../../components";
 
 export const SidebarMiddleNav = () => (
   <SidebarMenu>
+    {/* -------- Home ---------*/}
     <SidebarMenu.Item icon={<i className="fa fa-fw fa-home"></i>} title="Home">
       <SidebarMenu.Item title="Analytics" to="/home/analytics" exact />
       <SidebarMenu.Item title="Reports" to="/home/reports" exact />
     </SidebarMenu.Item>
-    {/* -------- Cards ---------*/}
+    {/* -------- Attributes ---------*/}
     <SidebarMenu.Item
-      icon={<i className="fa fa-fw fa-clone"></i>}
+      icon={<i className="fa fa-fw fa-briefcase"></i>}
       title="Attributes"
     >
-      <SidebarMenu.Item title="Cards" to="/cards/cards" exact />
-      <SidebarMenu.Item title="Cards Headers" to="/cards/cardsheaders" exact />
+      <SidebarMenu.Item title="List" to="/cards/cards" exact />
+      <SidebarMenu.Item title="Add new" to="/cards/cardsheaders" exact />
     </SidebarMenu.Item>
-    {/* -------- Layouts ---------*/}
+    {/* -------- OIDC ---------*/}
     <SidebarMenu.Item
-      icon={<i className="fa fa-fw fa-columns"></i>}
+      icon={<i className="fa fa-fw fa-cubes"></i>}
       title="Clients"
     >
-      <SidebarMenu.Item title="Navbar" to="/layouts/navbar" exact />
-      <SidebarMenu.Item title="Sidebar" to="/layouts/sidebar" exact />
-      <SidebarMenu.Item title="Sidebar A" to="/layouts/sidebar-a" exact />
+      <SidebarMenu.Item title="List" to="/layouts/navbar" exact />
+      <SidebarMenu.Item title="Add new client" to="/layouts/sidebar" exact />
+      <SidebarMenu.Item title="Sectors" to="/layouts/sidebar" exact />
+      <SidebarMenu.Item title="Add new sector" to="/layouts/sidebar" exact />
     </SidebarMenu.Item>
-    {/* -------- Interface ---------*/}
+    {/* -------- Scopes ---------*/}
     <SidebarMenu.Item
-      icon={<i className="fa fa-fw fa-toggle-on"></i>}
+      icon={<i className="fa fa-fw fa-sitemap"></i>}
       title="Scopes"
     >
-      <SidebarMenu.Item title="Breadcrumbs" to="/interface/breadcrumbs" />
-      <SidebarMenu.Item title="Navbars" to="/interface/navbars" />
-      <SidebarMenu.Item title="Notifications" to="/interface/notifications" />
-      <SidebarMenu.Item title="Crop Image" to="/interface/crop-image" />
+      <SidebarMenu.Item title="Uma Scopes" to="/interface/breadcrumbs" />
+      <SidebarMenu.Item title="New Uma Scope" to="/interface/navbars" />
+      <SidebarMenu.Item title="OpenId Scopes" to="/interface/notifications" />
+      <SidebarMenu.Item title="New OIDC Scope" to="/interface/crop-image" />
     </SidebarMenu.Item>
-    {/* -------- Forms ---------*/}
+    {/* -------- Custom scripts ---------*/}
     <SidebarMenu.Item
-      icon={<i className="fa fa-fw fa-check-square-o"></i>}
+      icon={<i className="fa fa-fw fa-puzzle-piece"></i>}
+      title="Custom Scripts"
+    >
+      <SidebarMenu.Item title="all" to="/layouts/navbar" exact />
+      <SidebarMenu.Item title="active" to="/layouts/sidebar" exact />
+      <SidebarMenu.Item title="inactive" to="/layouts/sidebar" exact />
+      <SidebarMenu.Item title="Add new script" to="/layouts/sidebar" exact />
+    </SidebarMenu.Item>
+    {/* -------- Scopes ---------*/}
+    {/* -------- Configuration ---------*/}
+    <Divider />
+    <SidebarMenu.Item
+      icon={<i className="fa fa-fw fa-gears"></i>}
       title="Configuration"
     >
-      <SidebarMenu.Item title="Forms" to="/forms/forms" />
-      <SidebarMenu.Item title="Forms Layouts" to="/forms/forms-layouts" />
-      <SidebarMenu.Item title="Input Groups" to="/forms/input-groups" />
-      <SidebarMenu.Item title="Wizard" to="/forms/wizard" />
-      <SidebarMenu.Item title="Text Mask" to="/forms/text-mask" />
+      <SidebarMenu.Item title="Smtp" to="/forms/forms" />
+      <SidebarMenu.Item title="Fido2" to="/forms/forms-layouts" />
+      <SidebarMenu.Item title="Ldap" to="/forms/input-groups" />
+      <SidebarMenu.Item title="Couchbase" to="/forms/input-groups" />
+      <SidebarMenu.Item title="Cache" to="/forms/wizard" />
+      <SidebarMenu.Item title="Acrs" to="/forms/text-mask" />
+      <SidebarMenu.Item title="Logging" to="/forms/text-mask" />
+      <SidebarMenu.Item title="Jwks" to="/forms/text-mask" />
     </SidebarMenu.Item>
   </SidebarMenu>
 );
