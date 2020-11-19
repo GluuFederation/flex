@@ -81,7 +81,6 @@ class SessionChecker extends Component {
   }
 
   render() {
-
     const { showContent } = this.state
     return (
       <React.Fragment>
