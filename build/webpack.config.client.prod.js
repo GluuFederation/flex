@@ -50,7 +50,11 @@ module.exports = {
         })
     ],
     optimization: {
-        minimizer: [new TerserPlugin()]
+        minimizer: [new TerserPlugin()],
+        splitChunks: {
+            minSize: 10000,
+            maxSize: 250000,
+        }
     },
     module: {
         rules: [
