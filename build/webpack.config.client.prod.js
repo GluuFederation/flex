@@ -51,10 +51,10 @@ module.exports = {
     ],
     optimization: {
         minimizer: [new TerserPlugin()],
+        runtimeChunk: 'single',
         splitChunks: {
-            minSize: 10000,
-            maxSize: 250000,
-        }
+            chunks: 'all'
+        },
     },
     module: {
         rules: [
