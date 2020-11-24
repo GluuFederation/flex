@@ -23,6 +23,7 @@ export const DefaultSidebar = () => (
         </Link>
       </Sidebar.Section>
       <Divider />
+      <Divider />
     </Sidebar.HideSlim>
     {/* END SIDEBAR: Only for Desktop */}
 
