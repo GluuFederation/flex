@@ -53,6 +53,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
     "@owczar/dashboard-style--airframe": "^0.1.13",
+    "@reduxjs/toolkit": "^1.4.0",
     "ag-grid-community": "^21.0.1",
     "ag-grid-react": "^21.0.1",
     "axios": "^0.21.0",
