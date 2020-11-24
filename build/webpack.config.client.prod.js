@@ -7,6 +7,7 @@ var TerserPlugin = require('terser-webpack-plugin');
 var CircularDependencyPlugin = require('circular-dependency-plugin');
 
 var config = require('./../config');
+require('dotenv').config({ path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env' });
 
 var BASE_PATH = process.env.BASE_PATH || '/';
 
@@ -45,6 +46,7 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production'),
             'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
+            'process.env.API_BASE_URL': JSON.stringify(process.env.API_BASE_URL),
         })
     ],
     optimization: {

@@ -1,6 +1,5 @@
 var program = require('commander');
 var rimraf = require('rimraf');
-var fs = require('fs');
 var mkdirp = require('mkdirp');
 
 var config = require('./../config');
