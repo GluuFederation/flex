@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 
 import {
     Accordion,
@@ -51,7 +51,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -62,7 +62,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -73,7 +73,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -97,7 +97,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -108,7 +108,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -119,7 +119,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -148,7 +148,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -160,7 +160,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -172,7 +172,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -198,7 +198,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -210,7 +210,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -222,7 +222,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -250,7 +250,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -265,7 +265,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -280,7 +280,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -325,7 +325,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -336,7 +336,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -347,7 +347,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -371,7 +371,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -382,7 +382,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -393,7 +393,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -419,7 +419,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -430,7 +430,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>
@@ -441,7 +441,7 @@ const Accordions = () => (
                             </Accordion.Header>
                             <Accordion.Body>
                                 <CardText>
-                                    { faker.lorem.paragraph() }
+                                    { 'faker.lorem.paragraph()' }
                                 </CardText>
                             </Accordion.Body>
                         </Accordion>

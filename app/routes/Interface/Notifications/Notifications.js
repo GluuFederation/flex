@@ -1,6 +1,6 @@
 import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import faker from 'faker/locale/en_US';
+
 import _ from 'lodash';
 
 import {

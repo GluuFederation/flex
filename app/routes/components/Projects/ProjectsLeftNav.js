@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 
 import { 
     InputGroup,
@@ -112,10 +112,10 @@ const ProjectsLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0">
-                                    { faker.name.firstName() } { faker.name.lastName() }
+                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                 </div>
                                 <span className="small">
-                                    { faker.address.state() }, { faker.address.stateAbbr() }
+                                    { 'faker.address.state()' }, { 'faker.address.stateAbbr()' }
                                 </span>
                             </Media>
                         </Media>
@@ -133,10 +133,10 @@ const ProjectsLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0">
-                                    { faker.name.firstName() } { faker.name.lastName() }
+                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                 </div>
                                 <span className="small">
-                                    { faker.address.state() }, { faker.address.stateAbbr() }
+                                    { 'faker.address.state()' }, { 'faker.address.stateAbbr()' }
                                 </span>
                             </Media>
                         </Media>
@@ -154,10 +154,10 @@ const ProjectsLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0">
-                                    { faker.name.firstName() } { faker.name.lastName() }
+                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                 </div>
                                 <span className="small">
-                                    { faker.address.state() }, { faker.address.stateAbbr() }
+                                    { 'faker.address.state()' }, { 'faker.address.stateAbbr()' }
                                 </span>
                             </Media>
                         </Media>

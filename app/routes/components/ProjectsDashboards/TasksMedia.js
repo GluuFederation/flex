@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
@@ -17,11 +17,11 @@ const TasksMedia = (props) => (
             <Media body>
                 <div className="mt-0 mb-2">
                     <Link to="/apps/tasks/tasks-details" className="text-decoration-none">
-                        { faker.hacker.phrase() }
+                        { 'faker.hacker.phrase()' }
                     </Link>
                 </div>
                 <div className="mb-0">
-                    { faker.date.past().toString() }
+                    { 'faker.date.past().toString()' }
                 </div>
             </Media>
             <Media right className="ml-3">

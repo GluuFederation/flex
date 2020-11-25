@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import faker from 'faker/locale/en_US';
+
 import {  
     Media, 
     Avatar,
@@ -36,10 +36,10 @@ const TrTableTrafficChannels = () => (
                         { randomArray(channel) }
                     </td>
                     <td className="text-inverse align-middle">
-                        { faker.finance.amount() }
+                        { 'faker.finance.amount()' }
                     </td>
                     <td className="align-middle">
-                        { faker.finance.amount() }
+                        { 'faker.finance.amount()' }
                     </td>
                     <td className="align-middle text-right">
                         { randomArray(change) } <i className="fa fa-caret-down text-danger ml-1"></i>

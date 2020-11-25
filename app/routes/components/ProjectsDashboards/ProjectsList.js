@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 import PropTypes from 'prop-types';
 
 import { 
@@ -12,7 +12,7 @@ const ProjectsList = (props) => (
         <div className="d-flex flex-column">
             <div className="mb-3 d-flex justify-content-between">
                 <span className="mb-0 text-inverse">
-                     { props.title || faker.commerce.productName() }
+                     { props.title || 'faker.commerce.productName()' }
                 </span>
                 <Badge color={ `${ props.badgeColor }` } pill className="align-self-center">
                     { props.badgeTitle }

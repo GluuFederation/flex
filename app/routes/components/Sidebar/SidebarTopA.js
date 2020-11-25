@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 import { Link } from 'react-router-dom';
 
 import { 
@@ -43,12 +43,12 @@ const SidebarTopA = () => (
                 
                 <UncontrolledButtonDropdown>
                     <DropdownToggle color="link" className="pl-0 pb-0 btn-profile sidebar__link">
-                        { faker.name.firstName() } { faker.name.lastName() }
+                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                         <i className="fa fa-angle-down ml-2"></i>
                     </DropdownToggle>
                     <DropdownMenu persist>
                     <DropdownItem header>
-                        { faker.name.firstName() } { faker.name.lastName() }
+                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                     </DropdownItem>
                     <DropdownItem divider />
                     <DropdownItem tag={ Link } to="/apps/profile-details">

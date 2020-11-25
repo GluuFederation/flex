@@ -1,5 +1,4 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
 
@@ -54,12 +53,12 @@ const TrTableProjectsList = () => (
                     <td className="align-middle">
                         <div>
                             <Link to="/apps/tasks/list" className="text-decoration-none">
-                                { faker.company.catchPhrase() }
+                                { 'faker.company.catchPhrase()' }
                             </Link>
                         </div>
                         <span>
-                            Last Edited by: { faker.name.firstName() } { faker.name.lastName() } <br />
-                            { faker.date.weekday() }, 12 { faker.date.month() }, 2018
+                            Last Edited by: { 'faker.name.firstName()' } { 'faker.name.lastName()' } <br />
+                            { 'faker.date.weekday()' }, 12 { 'faker.date.month()' }, 2018
                         </span>
                     </td>
                     <td className="align-middle">

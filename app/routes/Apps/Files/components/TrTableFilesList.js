@@ -1,5 +1,4 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
 
 import { 
     Badge,
@@ -35,16 +34,16 @@ const TrTableFilesList = () => (
                     </Media>
                     <Media body>
                         <div className="text-inverse">
-                            { faker.commerce.department() }   
+                            { 'faker.commerce.department()' }   
                         </div>
                         <span>
-                            { faker.finance.amount() } Mb
+                            { 'faker.finance.amount()' } Mb
                         </span>
                     </Media>
                 </Media>
             </td>
             <td className="align-middle">
-                { faker.date.weekday() }, 12 { faker.date.month() }, 2018<br />
+                { 'faker.date.weekday()' }, 12 { 'faker.date.month()' }, 2018<br />
                 12:23 PM
             </td>
             <td className="align-middle">
@@ -67,13 +66,13 @@ const TrTableFilesList = () => (
             </td>
             <td className="align-middle">
                 <Badge color={ randomArray(badges) } pill className="mr-1">
-                    { faker.commerce.department() }   
+                    { 'faker.commerce.department()' }   
                 </Badge>
                 <Badge color={ randomArray(badges) } pill className="mr-1">
-                    { faker.commerce.department() }   
+                    { 'faker.commerce.department()' }   
                 </Badge>
                 <Badge color={ randomArray(badges) } pill className="mr-1">
-                    { faker.commerce.department() }   
+                    { 'faker.commerce.department()' }   
                 </Badge>
             </td>
             <td className="align-middle text-right">

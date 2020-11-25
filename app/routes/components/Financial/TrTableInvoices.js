@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import faker from 'faker/locale/en_US';
+
 import {  
     Media, 
     Avatar,
@@ -15,11 +15,11 @@ const TrTableInvoices = () => (
             _.times(6, (index) => (
                 <tr key={ index }>
                     <td className="align-middle">
-                        <span className="text-inverse">{ faker.company.companyName() }</span><br />
-                        { faker.company.bsBuzz() }
+                        <span className="text-inverse">{ 'faker.company.companyName()' }</span><br />
+                        { 'faker.company.bsBuzz()' }
                     </td>
                     <td className="align-middle">
-                        ${ faker.commerce.price() }
+                        ${ 'faker.commerce.price()' }
                     </td>
                     <td className="align-middle text-nowrap">
                         25-May-2018
@@ -47,20 +47,20 @@ const TrTableInvoices = () => (
                             <Media body>
                                 <span className="d-flex mb-1">
                                     <span className="mt-0 d-flex h6 mb-0">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                 </span>
                                 <p className="mb-0">
-                                    { faker.name.jobTitle() }
+                                    { 'faker.name.jobTitle()' }
                                 </p>
                             </Media>
                         </Media>
                     </td>
                     <td className="align-middle">
                         <a href="#" className="text-decoration-none">
-                            { faker.internet.exampleEmail() }
+                            { 'faker.internet.exampleEmail()' }
                         </a><br />
-                        { faker.phone.phoneNumber() }
+                        { 'faker.phone.phoneNumber()' }
                     </td>
                     <td className="text-right align-middle text-nowrap">
                         <a href="#" className="text-decoration-none">View <i className="fa fa-angle-right"></i></a>

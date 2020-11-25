@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 
 import {
     Container,
@@ -308,7 +308,7 @@ const Images = () => (
                         <CardTitle className="h6">Default Title</CardTitle>
                         <CardText>
                             <span className="text-muted mr-2 ">#2.01</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -328,7 +328,7 @@ const Images = () => (
                     <CardBody>
                         <CardText>
                             <span className="text-muted mr-2">#2.03</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -349,7 +349,7 @@ const Images = () => (
                         </CardTitle>
                         <CardText>
                             <span className="text-muted mr-2 ">#2.02</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -369,7 +369,7 @@ const Images = () => (
                         </CardTitle>
                         <CardText>
                             <span className="text-muted mr-2 ">#2.03</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -407,7 +407,7 @@ const Images = () => (
                     <CardBody>
                         <CardText>
                             <span className="text-muted mr-2 ">#3.01</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -427,7 +427,7 @@ const Images = () => (
                     <CardBody>
                         <CardText>
                             <span className="text-muted mr-2 ">#3.04</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -448,7 +448,7 @@ const Images = () => (
                     <CardBody>
                         <CardText>
                             <span className="text-muted mr-2 ">#3.02</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -467,7 +467,7 @@ const Images = () => (
                     <CardBody>
                         <CardText>
                             <span className="text-muted mr-2 ">#3.03</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -489,7 +489,7 @@ const Images = () => (
                     <CardBody>
                         <CardText>
                             <span className="text-muted mr-2 ">#3.05</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -509,7 +509,7 @@ const Images = () => (
                     <CardBody>
                         <CardText>
                             <span className="text-muted mr-2 ">#3.06</span>
-                            { faker.lorem.sentences() }
+                            { 'faker.name.firstName()' }
                         </CardText>
                     </CardBody>
                 </Card>
@@ -541,11 +541,11 @@ const Images = () => (
                     </HolderProvider.Icon>
                     <CardBody>
                         <CardTitle className="h6">
-                            { faker.lorem.sentence() }
+                            { 'faker.lorem.sentence()' }
                         </CardTitle>
                         <CardText>
                             <span className="text-muted mr-2 ">#4.01</span>
-                            { faker.lorem.paragraph() }
+                            { 'faker.lorem.paragraph()' }
                         </CardText>
                     </CardBody>
                     <CardFooter className="d-flex">
@@ -569,11 +569,11 @@ const Images = () => (
                     </HolderProvider.Icon>
                     <CardBody>
                         <CardTitle className="h6">
-                            { faker.lorem.sentence() }
+                            { 'faker.lorem.sentence()' }
                         </CardTitle>
                         <CardText>
                             <span className="text-muted mr-2 ">#4.04</span>
-                            { faker.lorem.paragraph() }
+                            { 'faker.lorem.paragraph()' }
                         </CardText>
                     </CardBody>
                     <CardFooter className="d-flex">
@@ -597,11 +597,11 @@ const Images = () => (
                     </HolderProvider.Icon>
                     <CardBody>
                         <CardTitle className="h6">
-                            { faker.lorem.sentence() }
+                            { 'faker.lorem.sentence()' }
                         </CardTitle>
                         <CardText>
                             <span className="text-muted mr-2 ">#4.02</span>
-                            { faker.lorem.paragraph() }
+                            { 'faker.lorem.paragraph()' }
                         </CardText>
                     </CardBody>
                     <CardFooter className="d-flex">
@@ -622,11 +622,11 @@ const Images = () => (
                     </HolderProvider.Icon>
                     <CardBody>
                         <CardTitle className="h6">
-                            { faker.lorem.sentence() }
+                            { 'faker.lorem.sentence()' }
                         </CardTitle>
                         <CardText>
                             <span className="text-muted mr-2 ">#4.05</span>
-                            { faker.lorem.paragraph() }
+                            { 'faker.lorem.paragraph()' }
                         </CardText>
                     </CardBody>
                     <CardFooter className="d-flex">
@@ -651,7 +651,7 @@ const Images = () => (
                             </Media>
                             <Media body>
                                 <span className="mt-0 d-flex h6 mb-0">
-                                    { faker.name.firstName() } { faker.name.lastName() }
+                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                 </span>
                                 <p className="mb-0">
                                     2 Days Ago
@@ -674,11 +674,11 @@ const Images = () => (
                     </HolderProvider.Icon>
                     <CardBody>
                         <CardTitle className="h6">
-                            { faker.lorem.sentence() }
+                            { 'faker.lorem.sentence()' }
                         </CardTitle>
                         <CardText>
                             <span className="text-muted mr-2 ">#4.03</span>
-                            { faker.lorem.paragraph() }
+                            { 'faker.lorem.paragraph()' }
                         </CardText>
                     </CardBody>
                     <CardFooter className="d-flex">
@@ -700,11 +700,11 @@ const Images = () => (
                     </HolderProvider.Icon>
                     <CardBody>
                         <CardTitle className="h6">
-                            { faker.lorem.sentence() }
+                            { 'faker.lorem.sentence()' }
                         </CardTitle>
                         <CardText>
                             <span className="text-muted mr-2">#4.06</span>
-                            { faker.lorem.paragraph() }
+                            { 'faker.lorem.paragraph()' }
                         </CardText>
                     </CardBody>
                     <CardFooter className="d-flex">
@@ -801,14 +801,14 @@ const Images = () => (
                             </p>
                             <h6 className="mb-2">
                                 <a href="#">
-                                    <span>{ faker.commerce.productName() }</span>
+                                    <span>{ 'faker.commerce.productName()' }</span>
                                     <span className="text-muted ml-2">
                                         #5.01
                                     </span>
                                 </a>
                             </h6>
                             <p className="card-text text-dark">
-                                { faker.lorem.sentence() }
+                                { 'faker.lorem.sentence()' }
                             </p>
                         </span>
                         <div className="d-flex">
@@ -844,14 +844,14 @@ const Images = () => (
                         <span>
                             <h6 className="mb-2">
                                 <a href="#">
-                                    <span>{ faker.commerce.productName() }</span>
+                                    <span>{ 'faker.commerce.productName()' }</span>
                                     <span className="text-muted ml-2">
                                         #5.02
                                     </span>
                                 </a>
                             </h6>
                             <p className="card-text mb-3">
-                                { faker.lorem.sentence() }
+                                { 'faker.lorem.sentence()' }
                             </p>
                         </span>
                     </CardImgOverlay>

@@ -1,5 +1,4 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
 import PropTypes from 'prop-types';
 
 import { 
@@ -114,19 +113,19 @@ const TrTableUsersList = (props) => {
                         </Media>
                         <Media body>
                             <a className="mt-0 d-flex text-decoration-none" href="#">
-                                { faker.name.firstName() } { faker.name.lastName() }
+                                { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                             </a>
                             <span>
-                                { faker.name.jobTitle() }
+                                { 'faker.name.jobTitle()' }
                             </span>
                         </Media>
                     </Media>
                 </td>
                 <td className="align-middle">
-                     { faker.internet.email() }   
+                     { 'faker.internet.email()' }   
                 </td>
                 <td className="align-middle">
-                     { faker.phone.phoneNumberFormat() }   
+                     { 'faker.phone.phoneNumberFormat()' }   
                 </td>
                 <td className="align-middle text-right">
                     <UncontrolledButtonDropdown>

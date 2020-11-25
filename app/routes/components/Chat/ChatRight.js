@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import faker from 'faker/locale/en_US';
+
 
 import { 
     Card,
@@ -25,12 +25,12 @@ const ChatRight = (props) => (
             <Media body>
                 <Card body className={ `mb-2 ${ props.cardClassName }` }>
                     <p className="mb-0">
-                        { faker.lorem.paragraph() }
+                        { 'faker.lorem.paragraph()' }
                     </p>                                                   
                 </Card>
                 <div className="mb-2 text-right">
                     <span className="text-inverse mr-2">
-                        { faker.name.firstName() } { faker.name.firstName() }
+                        { 'faker.name.firstName()' } { 'faker.name.firstName()' }
                     </span>
                     <span className="small">
                         13-Jun-2015, 08:13

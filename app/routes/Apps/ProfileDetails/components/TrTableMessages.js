@@ -1,5 +1,4 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
 import { Link } from 'react-router-dom';
 
 import { 
@@ -50,24 +49,24 @@ const TrTableMessages = () => (
                     </Media>
                     <Media body>
                         <div className="mt-0 d-flex text-inverse">
-                            { faker.name.firstName() } { faker.name.lastName() }
+                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                         </div>
                         <span>
-                            { faker.address.state() }
+                            { 'faker.address.state()' }
                         </span>
                     </Media>
                 </Media>
             </td>
             <td className="align-middle">
                 <Link to="/apps/email-details">
-                    { faker.company.catchPhrase() }
+                    { 'faker.company.catchPhrase()' }
                 </Link>
                 <br />
                 <div>
-                    { faker.lorem.sentence() }
+                    { 'faker.lorem.sentence()' }
                 </div>
                 <Badge color={ randomArray(tag) } pill className="mr-1">
-                    { faker.commerce.department() }   
+                    { 'faker.commerce.department()' }   
                 </Badge>
             </td>
             <td className="align-middle text-right">

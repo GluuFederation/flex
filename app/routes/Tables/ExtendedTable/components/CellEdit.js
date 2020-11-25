@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
-import faker from 'faker/locale/en_US';
+
 
 import { randomArray } from './../../../../utilities';
 
@@ -66,8 +66,8 @@ const columns = [
 const data = _.times(5, (index) => ({
     id: index,
     available: !Math.round(Math.random()) ? 'Y' : 'N',
-    name: faker.commerce.productName(),
-    description: faker.lorem.paragraph(),
+    name: 'faker.commerce.productName()',
+    description: 'faker.lorem.paragraph()',
     price: Math.round(2000 + Math.random() * 500),
     region: randomArray(_.map(regions, 'value'))
 }))

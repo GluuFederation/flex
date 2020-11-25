@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 import { NavLink as RouterNavLink } from 'react-router-dom';
 
 import { 
@@ -73,30 +73,30 @@ const SearchResultsLeftNav = () => (
             <NavItem>
                 <NavLink href="#" className="d-flex">
                     <span>
-                        { faker.commerce.department() }
+                        { 'faker.commerce.department()' }
                     </span>
                     <span className="small ml-auto align-self-center text-body">
-                        ({ faker.finance.mask() })
+                        ({ 'faker.finance.mask()' })
                     </span>
                 </NavLink>
             </NavItem>
             <NavItem>
                 <NavLink href="#" className="d-flex">
                     <span>
-                        { faker.commerce.department() }
+                        { 'faker.commerce.department()' }
                     </span>
                     <span className="small ml-auto align-self-center text-body">
-                        ({ faker.finance.mask() })
+                        ({ 'faker.finance.mask()' })
                     </span>
                 </NavLink>
             </NavItem>
             <NavItem>
                 <NavLink href="#" className="d-flex">
                     <span>
-                        { faker.commerce.department() }
+                        { 'faker.commerce.department()' }
                     </span>
                     <span className="small ml-auto align-self-center text-body">
-                        ({ faker.finance.mask() })
+                        ({ 'faker.finance.mask()' })
                     </span>
                 </NavLink>
             </NavItem>
@@ -115,25 +115,25 @@ const SearchResultsLeftNav = () => (
             <NavItem className="d-flex px-2 mb-2">
                 <CustomInput type="radio" id="radio1" name="rating" label="Clothing" inline defaultChecked />
                 <span className="small ml-auto align-self-center">
-                    ({ faker.finance.mask() })
+                    ({ 'faker.finance.mask()' })
                 </span>
             </NavItem>
             <NavItem className="d-flex px-2 mb-2">
                 <CustomInput type="radio" id="radio2" name="rating" label="Baby" inline />
                 <span className="small ml-auto align-self-center">
-                    ({ faker.finance.mask() })
+                    ({ 'faker.finance.mask()' })
                 </span>
             </NavItem>
             <NavItem className="d-flex px-2 mb-2">
                 <CustomInput type="radio" id="radio3" name="rating" label="Jewelery" inline />
                 <span className="small ml-auto align-self-center">
-                    ({ faker.finance.mask() })
+                    ({ 'faker.finance.mask()' })
                 </span>
             </NavItem>
             <NavItem className="d-flex px-2 mb-2">
                 <CustomInput type="radio" id="radio4" name="rating" label="Games" inline />
                 <span className="small ml-auto align-self-center">
-                    ({ faker.finance.mask() })
+                    ({ 'faker.finance.mask()' })
                 </span>
             </NavItem>
         </Nav>
@@ -151,25 +151,25 @@ const SearchResultsLeftNav = () => (
             <NavItem className="d-flex px-2 mb-2">
                 <CustomInput type="checkbox" id="checkbox1" label="Garden" inline defaultChecked />
                 <span className="small ml-auto align-self-center">
-                    ({ faker.finance.mask() })
+                    ({ 'faker.finance.mask()' })
                 </span>
             </NavItem>
             <NavItem className="d-flex px-2 mb-2">
                 <CustomInput type="checkbox" id="checkbox2" label="Beauty" inline />
                 <span className="small ml-auto align-self-center">
-                    ({ faker.finance.mask() })
+                    ({ 'faker.finance.mask()' })
                 </span>
             </NavItem>
             <NavItem className="d-flex px-2 mb-2">
                 <CustomInput type="checkbox" id="checkbox3" label="Clothing" inline />
                 <span className="small ml-auto align-self-center">
-                    ({ faker.finance.mask() })
+                    ({ 'faker.finance.mask()' })
                 </span>
             </NavItem>
             <NavItem className="d-flex px-2 mb-2">
                 <CustomInput type="checkbox" id="checkbox4" label="Games" inline />
                 <span className="small ml-auto align-self-center">
-                    ({ faker.finance.mask() })
+                    ({ 'faker.finance.mask()' })
                 </span>
             </NavItem>
         </Nav>

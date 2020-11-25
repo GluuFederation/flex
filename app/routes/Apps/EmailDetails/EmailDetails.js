@@ -1,5 +1,4 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
 import { Link } from 'react-router-dom';
 
 import { 
@@ -121,10 +120,10 @@ const EmailDetails = () => (
                                         </Media>
                                         <Media body>
                                             <a className="mt-0 text-decoration-none d-flex" href="#">
-                                                { faker.name.firstName() } { faker.name.lastName() }
+                                                { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                             </a>
                                             <samp className="small">
-                                                { faker.internet.email() }
+                                                { 'faker.internet.email()' }
                                             </samp>
                                         </Media>
                                     </Media>
@@ -143,10 +142,10 @@ const EmailDetails = () => (
                                     </Badge>
                                 </div>
                                 <p className="lead">
-                                    { faker.lorem.sentences() }
+                                    { 'faker.lorem.sentences()' }
                                 </p>
                                 <p>
-                                    { faker.lorem.paragraphs() }
+                                    { 'faker.lorem.paragraphs()' }
                                 </p>
                             </div>
                             { /* END Message */}

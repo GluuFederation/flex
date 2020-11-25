@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import faker from 'faker/locale/en_US';
+
 import _ from 'lodash';
 import {
     Container,
@@ -340,7 +340,7 @@ export class Analytics extends React.Component {
                                                 Organic Search
                                             </td>
                                             <td className="align-middle">
-                                                { faker.finance.amount() }
+                                                { 'faker.finance.amount()' }
                                             </td>
                                             <td className="align-middle">
                                                 <span data-faker="[[finance.amount]]">949.00</span>
@@ -358,7 +358,7 @@ export class Analytics extends React.Component {
                                                 Direct
                                             </td>
                                             <td className="align-middle">
-                                                { faker.finance.amount() }
+                                                { 'faker.finance.amount()' }
                                             </td>
                                             <td className="align-middle">
                                                 <span data-faker="[[finance.amount]]">157.11</span>
@@ -376,7 +376,7 @@ export class Analytics extends React.Component {
                                                 Social Media
                                             </td>
                                             <td className="align-middle">
-                                                { faker.finance.amount() }
+                                                { 'faker.finance.amount()' }
                                             </td>
                                             <td className="align-middle">
                                                 <span data-faker="[[finance.amount]]">949.00</span>
@@ -470,7 +470,7 @@ export class Analytics extends React.Component {
                                             23.34%
                                         </div>
                                         <div>
-                                            vs { faker.finance .amount() } (prev.)
+                                            vs { 'faker.finance.amount()' } (prev.)
                                         </div>
                                     </div>
                                 </CardBody>
@@ -570,7 +570,7 @@ export class Analytics extends React.Component {
                                         </h2>
                                         <div className="mb-1 text-success">
                                             <i className="fa mr-1 fa-caret-up"></i>
-                                            23.34% <span> vs { faker.finance .amount() } <i>(prev.)</i>
+                                            23.34% <span> vs { 'faker.finance.amount()' } <i>(prev.)</i>
                                             </span>
                                         </div>
                                     </div>

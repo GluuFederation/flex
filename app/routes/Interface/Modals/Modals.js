@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 
 import {
     Container,
@@ -66,7 +66,7 @@ export const Modals = () => (
                                 </span>
                             </ModalHeader>
                             <ModalBody>
-                                { faker.lorem.paragraph() }
+                                { 'faker.lorem.paragraph()' }
                             </ModalBody>
                             <ModalFooter>
                                 <UncontrolledModal.Close color="link" className="text-primary">
@@ -106,7 +106,7 @@ export const Modals = () => (
                                 </span>
                             </ModalHeader>
                             <ModalBody>
-                                { faker.lorem.paragraph() }
+                                { 'faker.lorem.paragraph()' }
                             </ModalBody>
                             <ModalFooter>
                                 <UncontrolledModal.Close color="link" className="text-primary">
@@ -167,7 +167,7 @@ export const Modals = () => (
                             </span>
                         </ModalHeader>
                         <ModalBody>
-                            { faker.lorem.paragraph() }
+                            { 'faker.lorem.paragraph()' }
                         </ModalBody>
                         <ModalFooter>
                             <UncontrolledModal.Close color="link" className="text-primary" size="sm">
@@ -203,7 +203,7 @@ export const Modals = () => (
                             </span>
                         </ModalHeader>
                         <ModalBody>
-                            { faker.lorem.paragraph() }
+                            { 'faker.lorem.paragraph()' }
                         </ModalBody>
                         <ModalFooter>
                             <UncontrolledModal.Close color="link" className="text-primary"> 
@@ -239,7 +239,7 @@ export const Modals = () => (
                             </span>
                         </ModalHeader>
                         <ModalBody>
-                            { faker.lorem.paragraph() }
+                            { 'faker.lorem.paragraph()' }
                         </ModalBody>
                         <ModalFooter>
                             <UncontrolledModal.Close color="link" className="text-primary" size="lg"> 
@@ -302,7 +302,7 @@ export const Modals = () => (
                                 </span>
                             </ModalHeader>
                             <ModalBody>
-                                { faker.lorem.paragraph() }
+                                { 'faker.lorem.paragraph()' }
                             </ModalBody>
                             <ModalFooter>
                                 <UncontrolledModal.Close color="link">
@@ -344,7 +344,7 @@ export const Modals = () => (
                                 </span>
                             </ModalHeader>
                             <ModalBody>
-                                { faker.lorem.paragraph() }
+                                { 'faker.lorem.paragraph()' }
                             </ModalBody>
                             <ModalFooter>
                                 <UncontrolledModal.Close color="link" className="text-danger">
@@ -386,7 +386,7 @@ export const Modals = () => (
                                 </span>
                             </ModalHeader>
                             <ModalBody>
-                                { faker.lorem.paragraph() }
+                                { 'faker.lorem.paragraph()' }
                             </ModalBody>
                             <ModalFooter>
                                 <UncontrolledModal.Close color="link" className="text-info">
@@ -428,7 +428,7 @@ export const Modals = () => (
                                 </span>
                             </ModalHeader>
                             <ModalBody>
-                                { faker.lorem.paragraph() }
+                                { 'faker.lorem.paragraph()' }
                             </ModalBody>
                             <ModalFooter>
                                 <UncontrolledModal.Close color="link" className="text-warning">
@@ -470,7 +470,7 @@ export const Modals = () => (
                                 </span>
                             </ModalHeader>
                             <ModalBody>
-                                { faker.lorem.paragraph() }
+                                { 'faker.lorem.paragraph()' }
                             </ModalBody>
                             <ModalFooter>
                                 <UncontrolledModal.Close color="link" className="text-success">
@@ -512,7 +512,7 @@ export const Modals = () => (
                                 </span>
                             </ModalHeader>
                             <ModalBody>
-                                { faker.lorem.paragraph() }
+                                { 'faker.lorem.paragraph()' }
                             </ModalBody>
                             <ModalFooter>
                                 <UncontrolledModal.Close color="link" className="text-dark">

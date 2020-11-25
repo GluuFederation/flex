@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import faker from 'faker/locale/en_US';
 import { 
     Media, 
     Button 
@@ -17,15 +16,15 @@ const Attachment = (props) => (
             <Media body className="d-flex flex-column flex-md-row">
                 <div>
                     <div className="text-inverse text-truncate">
-                        { faker.system.fileName() }
+                        { 'faker.system.fileName()' }
                     </div>
                     <span>
                         by <span>
-                            { faker.name.firstName() } { faker.name.firstName() }
+                            { 'faker.name.firstName()' } { 'faker.name.firstName()' }
                         </span> 
                         <span className="text-muted"> · </span> 
                         <span>
-                            { faker.finance.amount() } Kb
+                            { 'faker.finance.amount()' } Kb
                         </span>
                     </span>
                 </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import uid from 'uuid/v4';
 import _ from 'lodash';
-import faker from 'faker/locale/en_US';
+
 import {
     DragDropContext,
     Droppable,
@@ -29,8 +29,8 @@ const allSkills = ['JavaScript', 'Photoshop', 'Management', 'Bootstrap',
 
 const generateUser = () => ({
     id: uid(),
-    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    title: faker.name.jobType(),
+    name: `${'faker.name.firstName()'} ${'faker.name.lastName()'}`,
+    title: 'faker.name.jobType()',
     avatarUrl: randomAvatar(),
     status: randomArray(['success', 'warning', 'danger']),
     skills: _.uniq(_.times(_.random(2, 5), () => randomArray(allSkills))),

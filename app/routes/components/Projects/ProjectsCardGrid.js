@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 import { Link } from 'react-router-dom';
 
 import { 
@@ -52,12 +52,12 @@ const ProjectsCardGrid = () => (
                             <i className="fa fa-fw fa-star-o"></i>
                         </a>
                         <Link to="/apps/tasks/grid" className="text-decoration-none">
-                            { faker.company.catchPhrase() }
+                            { 'faker.company.catchPhrase()' }
                         </Link>
                     </div>
                     <div className="mb-3">
-                        Last Edited by: { faker.name.firstName() } { faker.name.lastName() } <br />
-                        { faker.date.weekday() }, 12 { faker.date.month() }, 2018
+                        Last Edited by: { 'faker.name.firstName()' } { 'faker.name.lastName()' } <br />
+                        { 'faker.date.weekday()' }, 12 { 'faker.date.month()' }, 2018
                     </div>
                     <div className="mb-3">
                         <Progress value={ randomArray(taskCompleted) } style={{height: "5px"}} className="mb-2" />

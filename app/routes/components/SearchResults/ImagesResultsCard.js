@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 
 import { 
     Card,
@@ -35,11 +35,11 @@ const ImagesResultsCard = () => (
                 <div className="d-flex mb-3">
                     <span>
                         <a className="h6 text-decoration-none" href="#">
-                            { faker.commerce.productName() }
+                            { 'faker.commerce.productName()' }
                         </a>
                         <br />
                         <a href="#" className="text-success">
-                            { faker.internet.url() }
+                            { 'faker.internet.url()' }
                         </a>
                     </span>
                     <a href="#" className="ml-auto">
@@ -67,10 +67,10 @@ const ImagesResultsCard = () => (
                     </Media>
                     <Media body>
                         <div className="mt-0 d-flex text-inverse">
-                            { faker.name.firstName() } { faker.name.lastName() }
+                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                         </div>
                         <span>
-                            { faker.address.state() }, { faker.address.stateAbbr() }
+                            { 'faker.address.state()' }, { 'faker.address.stateAbbr()' }
                         </span>
                     </Media>
                 </Media>
