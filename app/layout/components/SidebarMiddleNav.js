@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import items from "../../menu/items";
 
-import { SidebarMenu, Divider, DropdownItem } from "./../../components";
+import { SidebarMenu, Divider } from "./../../components";
 
 export const SidebarMiddleNav = () => (
   <SidebarMenu>
@@ -49,6 +49,14 @@ export const SidebarMiddleNav = () => (
       <SidebarMenu.Item title="Add new script" to="/layouts/sidebar" exact />
     </SidebarMenu.Item>
     {/* -------- Scopes ---------*/}
+    {/* -------- Plugins ---------*/}
+    {items.map((item, key) => (
+      <SidebarMenu.Item
+        key={key}
+        
+        title={item.title}
+      ></SidebarMenu.Item>
+    ))}
     {/* -------- Configuration ---------*/}
     <Divider />
     <Divider />

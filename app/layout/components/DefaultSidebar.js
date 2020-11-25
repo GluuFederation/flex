@@ -9,7 +9,7 @@ export const DefaultSidebar = () => (
   <Sidebar>
     {/* START SIDEBAR-OVERLAY: Close (x) */}
     <Sidebar.Close>
-      <SidebarTrigger tag={"a"} href="javascript:;">
+      <SidebarTrigger tag={"a"} href="#">
         <i className="fa fa-times-circle fa-fw"></i>
       </SidebarTrigger>
     </Sidebar.Close>

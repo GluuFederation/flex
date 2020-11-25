@@ -9,10 +9,6 @@ import {
 } from "../../../components";
 
 const LanguageMenu = props => {
-  const { t, i18n } = useTranslation();
-  function handleClick(lang) {
-    i18n.changeLanguage(lang);
-  }
   return (
     <UncontrolledDropdown nav inNavbar {...props}>
       <DropdownToggle nav>
@@ -27,10 +23,10 @@ const LanguageMenu = props => {
             <ListGroupItem tag={ExtendedDropdown.Link} key="fr" action>
               fr
             </ListGroupItem>
-            <ListGroupItem tag={ExtendedDropdown.Link} key="fr" action>
+            <ListGroupItem tag={ExtendedDropdown.Link} key="en" action>
               en
             </ListGroupItem>
-            <ListGroupItem tag={ExtendedDropdown.Link} key="fr" action>
+            <ListGroupItem tag={ExtendedDropdown.Link} key="es" action>
               es
             </ListGroupItem>
           </ListGroup>
