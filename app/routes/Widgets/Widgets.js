@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import faker from 'faker/locale/en_US';
+
 
 import {
     Container,
@@ -675,7 +675,7 @@ export const Widgets = () => (
                                 23.34%
                             </div>
                             <div>
-                                vs { faker.finance .amount() } (prev.)
+                                vs { 'faker.finance.amount()' } (prev.)
                             </div>
                         </div>
                     </CardBody>
@@ -747,7 +747,7 @@ export const Widgets = () => (
                             </h2>
                             <div className="mb-1 text-success">
                                 <i className="fa mr-1 fa-caret-up"></i>
-                                23.34% <span> vs { faker.finance .amount() } (prev.)
+                                23.34% <span> vs { 'faker.finance.amount()' } (prev.)
                                 </span>
                             </div>
                         </div>

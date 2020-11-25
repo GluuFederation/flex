@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import BootstrapTable from 'react-bootstrap-table-next';
-import faker from 'faker/locale/en_US';
+
 
 import classes from './LargeTable.scss';
 import { Card, CardHeader } from './../../../../components';
@@ -21,7 +21,7 @@ const columns = [
 
 const data = _.times(500, (index) => ({
     id: index,
-    name: faker.commerce.productName(),
+    name: 'faker.commerce.productName()',
     price: Math.round(2000 + Math.random() * 500)
 }));
 

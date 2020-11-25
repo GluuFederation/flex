@@ -1,6 +1,6 @@
 import React from 'react';
 import uid from 'uuid/v4';
-import faker from 'faker/locale/en_US';
+
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import _ from 'lodash';
 
@@ -24,7 +24,7 @@ export class DraggableProjects extends React.Component {
             projects: [
                 {
                     id: uid(),
-                    title: faker.commerce.productName(),
+                    title: 'faker.commerce.productName()',
                     badgeColor: "success",
                     badgeTitle: "Active",
                     progressValue: "76",
@@ -33,7 +33,7 @@ export class DraggableProjects extends React.Component {
                     daysDueValue: "6"
                 }, {
                     id: uid(),
-                    title: faker.commerce.productName(),
+                    title: 'faker.commerce.productName()',
                     badgeColor: "danger",
                     badgeTitle: "Suspended",
                     progressValue: "23",
@@ -42,7 +42,7 @@ export class DraggableProjects extends React.Component {
                     daysDueValue: "15"
                 }, {
                     id: uid(),
-                    title: faker.commerce.productName(),
+                    title: 'faker.commerce.productName()',
                     badgeColor: "secondary",
                     badgeTitle: "Archived",
                     progressValue: "4",
@@ -51,7 +51,7 @@ export class DraggableProjects extends React.Component {
                     daysDueValue: "7"
                 }, {
                     id: uid(),
-                    title: faker.commerce.productName(),
+                    title: 'faker.commerce.productName()',
                     badgeColor: "warning",
                     badgeTitle: "Paused",
                     progressValue: "63",

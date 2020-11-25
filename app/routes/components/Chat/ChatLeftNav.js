@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 
 import { 
     Nav,
@@ -63,10 +63,10 @@ const ChatLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0 d-flex">
-                                    { faker.name.firstName() } { faker.name.lastName() }
+                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                 </div>
                                 <span className="small">
-                                    { faker.address.country() }
+                                    { 'faker.address.country()' }
                                 </span>
                             </Media>
                         </Media>
@@ -95,10 +95,10 @@ const ChatLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0 d-flex">
-                                    { faker.name.firstName() } { faker.name.lastName() }
+                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                 </div>
                                 <span className="small">
-                                    { faker.address.country() }
+                                    { 'faker.address.country()' }
                                 </span>
                             </Media>
                         </Media>
@@ -127,10 +127,10 @@ const ChatLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0 d-flex">
-                                    { faker.name.firstName() } { faker.name.lastName() }
+                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                 </div>
                                 <span className="small">
-                                    { faker.address.country() }
+                                    { 'faker.address.country()' }
                                 </span>
                             </Media>
                         </Media>
@@ -164,7 +164,7 @@ const ChatLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0">
-                                    { faker.hacker.phrase() }
+                                    { 'faker.hacker.phrase()' }
                                 </div>
                                 <span className="small">
                                     24-Aug-2012, 12:12
@@ -184,7 +184,7 @@ const ChatLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0">
-                                    { faker.hacker.phrase() }
+                                    { 'faker.hacker.phrase()' }
                                 </div>
                                 <span className="small">
                                     24-Aug-2012, 12:12
@@ -204,7 +204,7 @@ const ChatLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0">
-                                    { faker.hacker.phrase() }
+                                    { 'faker.hacker.phrase()' }
                                 </div>
                                 <span className="small">
                                     24-Aug-2012, 12:12
@@ -224,7 +224,7 @@ const ChatLeftNav = () => (
                             </Media>
                             <Media body>
                                 <div className="mt-0">
-                                    { faker.hacker.phrase() }
+                                    { 'faker.hacker.phrase()' }
                                 </div>
                                 <span className="small">
                                     24-Aug-2012, 12:12

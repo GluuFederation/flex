@@ -1,5 +1,4 @@
 import React from "react";
-import faker from "faker/locale/en_US";
 import _ from "lodash";
 import PropTypes from "prop-types";
 
@@ -62,7 +61,7 @@ const NavbarMessages = props => (
             >
               <Media>
                 <Media left>
-                  <Avatar.Image src={faker.image.avatar()} className="mr-4" />
+                  <Avatar.Image src={'faker.image.avatar()'} className="mr-4" />
                 </Media>
                 <Media body>
                   <span className="d-flex justify-content-start">
@@ -70,13 +69,13 @@ const NavbarMessages = props => (
                       className={`fa fa-circle small ${messagesColors[index]} mr-2 d-flex align-items-center`}
                     />
                     <span className="h6 pb-0 mb-0 d-flex align-items-center">
-                      {faker.name.firstName()} {faker.name.lastName()}
+                      {'faker.name.firstName()'} {'faker.name.lastName()'}
                     </span>
 
                     <span className="ml-1 small">(23)</span>
                     <span className="ml-auto small">Now</span>
                   </span>
-                  <p className="mt-2 mb-1">{faker.lorem.sentences()}</p>
+                  <p className="mt-2 mb-1">{'faker.lorem.sentences()'}</p>
                 </Media>
               </Media>
             </ListGroupItem>

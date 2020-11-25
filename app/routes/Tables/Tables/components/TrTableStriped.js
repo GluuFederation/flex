@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 import _ from 'lodash';
 
 /*eslint-disable */
@@ -31,11 +31,11 @@ const TrTableStriped = () => (
                     </td>
                     <td className="align-middle">
                         <span className="text-inverse">
-                            { faker.commerce.productName() }
+                            { 'faker.commerce.productName()' }
                         </span>
                     </td>
                     <td className="align-middle">
-                        { faker.date.weekday() }, 12 { faker.date.month() }, 2018
+                        { 'faker.date.weekday()' }, 12 { 'faker.date.month()' }, 2018
                     </td>
                     { lastMonth[index%2] }
                 </tr>

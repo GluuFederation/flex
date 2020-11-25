@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 
 import { 
     Card,
@@ -78,13 +78,13 @@ const UsersResultsCard = () => (
                         </span>
                     </div>
                     <Badge pill color={ randomArray(badgesColors) } className="mr-1">
-                        { faker.commerce.department() }
+                        { 'faker.commerce.department()' }
                     </Badge>
                     <Badge pill color={ randomArray(badgesColors) } className="mr-1">
-                        { faker.commerce.department() }
+                        { 'faker.commerce.department()' }
                     </Badge>
                     <Badge pill color={ randomArray(badgesColors) }>
-                        { faker.commerce.department() }
+                        { 'faker.commerce.department()' }
                     </Badge>
                 </div>
                 <div className="text-center mb-4">
@@ -94,7 +94,7 @@ const UsersResultsCard = () => (
                         </span>
                     </div>
                     <p className="mb-0">
-                        { faker.lorem.paragraph() }
+                        { 'faker.lorem.paragraph()' }
                     </p>
                 </div>                
             </CardBody>

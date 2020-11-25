@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 import { Link } from 'react-router-dom';
 import {
     Container,
@@ -45,7 +45,7 @@ const ProjectsDashboard = () => (
                     className="mb-4 mb-lg-5"
                 />
                 <p>
-                    { faker.lorem.paragraph() }
+                    { 'faker.lorem.paragraph()' }
                 </p>
             </Col>
             <Col lg={ 3 }>

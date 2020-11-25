@@ -1,7 +1,7 @@
 import React from 'react';
 import v4 from 'uuid/v4';
 import _ from 'lodash';
-import faker from 'faker/locale/en_US';
+
 
 import {
     Container,
@@ -194,7 +194,7 @@ export class DragAndDropLayout extends React.Component {
 
     _generateTexts = (layouts) =>
         _.mapValues(layouts, () => ({
-            title: faker.commerce.productName(),
-            desc: faker.lorem.paragraph()
+            title: 'faker.commerce.productName()',
+            desc: 'faker.lorem.paragraph()'
         }))
 }

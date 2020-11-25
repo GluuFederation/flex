@@ -1,5 +1,4 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
 import { Link } from 'react-router-dom';
 
 import { 
@@ -95,13 +94,13 @@ const ProfileDetails = () => (
                             </div>
                             <div className="text-left mb-4">
                                 <Badge pill color="secondary" className="mr-1">
-                                    { faker.commerce.department() }
+                                    { 'faker.commerce.department()' }
                                 </Badge>
                                 <Badge pill color="secondary" className="mr-1">
-                                    { faker.commerce.department() }
+                                    { 'faker.commerce.department()' }
                                 </Badge>
                                 <Badge pill color="secondary" className="mr-1">
-                                    { faker.commerce.department() }
+                                    { 'faker.commerce.department()' }
                                 </Badge>
                             </div>
                             <div className="mt-4 mb-2">

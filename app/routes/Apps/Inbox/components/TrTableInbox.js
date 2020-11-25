@@ -1,5 +1,4 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
@@ -79,23 +78,23 @@ const TrTableInbox = (props) => (
                     </Media>
                     <Media body>
                         <a className="mt-0 text-decoration-none d-flex" href="#">
-                            { faker.name.firstName() } { faker.name.lastName() }
+                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                         </a>
                         <span>
-                            { faker.address.state() }
+                            { 'faker.address.state()' }
                         </span>
                     </Media>
                 </Media>
             </td>
             <td className="align-middle">
                 <Link to="/apps/email-details" className="text-decoration-none">
-                    { faker.company.catchPhrase() }
+                    { 'faker.company.catchPhrase()' }
                 </Link>
                 <br />
-                { faker.lorem.sentence() }
+                { 'faker.lorem.sentence()' }
                 <br />
                 <Badge pill color={ randomArray(tag) }>
-                    { faker.commerce.department() }
+                    { 'faker.commerce.department()' }
                 </Badge> <i className="fa fa-paperclip ml-2"></i>
             </td>
             <td className="align-middle text-right">

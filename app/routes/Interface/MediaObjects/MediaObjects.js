@@ -1,5 +1,5 @@
 import React from 'react';
-import faker from 'faker/locale/en_US';
+
 
 import { 
     Checkable,
@@ -81,10 +81,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -109,10 +109,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -137,10 +137,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -176,11 +176,11 @@ const MediaObjects = () => (
                                 <Media body>
                                     <span className="mt-0 h6 mb-1">
                                         <a href="javascript:;">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </a>
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -206,11 +206,11 @@ const MediaObjects = () => (
                                 <Media body>
                                     <span className="mt-0 h6 mb-1">
                                         <a href="javascript:;">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </a>
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -236,11 +236,11 @@ const MediaObjects = () => (
                                 <Media body>
                                     <span className="mt-0 h6 mb-1">
                                         <a href="javascript:;">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </a>
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -275,10 +275,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right middle>
@@ -306,10 +306,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right middle>
@@ -337,10 +337,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right middle>
@@ -378,10 +378,10 @@ const MediaObjects = () => (
                                 </Checkable.Trigger>
                                 <Checkable.Trigger tag={ Media } body>
                                     <span className="mt-0 h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Checkable.Trigger>
                                 <Media right top>
@@ -409,10 +409,10 @@ const MediaObjects = () => (
                                 </Checkable.Trigger>
                                 <Checkable.Trigger tag={ Media } body>
                                     <span className="mt-0 h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Checkable.Trigger>
                                 <Media right top>
@@ -440,10 +440,10 @@ const MediaObjects = () => (
                                 </Checkable.Trigger>
                                 <Checkable.Trigger tag={ Media } body>
                                     <span className="mt-0 h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Checkable.Trigger>
                                 <Media right top>
@@ -481,10 +481,10 @@ const MediaObjects = () => (
                                 </Checkable.Trigger>
                                 <Checkable.Trigger tag={ Media } body>
                                     <span className="mt-0 h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Checkable.Trigger>
                                 <Checkable.Trigger tag={ Media } right top>
@@ -512,10 +512,10 @@ const MediaObjects = () => (
                                 </Checkable.Trigger>
                                 <Checkable.Trigger tag={ Media } body>
                                     <span className="mt-0 h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Checkable.Trigger>
                                 <Media right top>
@@ -543,10 +543,10 @@ const MediaObjects = () => (
                                 </Checkable.Trigger>
                                 <Checkable.Trigger tag={ Media } body>
                                     <span className="mt-0 h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Checkable.Trigger>
                                 <Media right top>
@@ -575,7 +575,7 @@ const MediaObjects = () => (
                                         Success
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -591,7 +591,7 @@ const MediaObjects = () => (
                                         Danger
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -607,7 +607,7 @@ const MediaObjects = () => (
                                         Warning
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -627,10 +627,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -640,10 +640,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -653,10 +653,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -673,10 +673,10 @@ const MediaObjects = () => (
                             <Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right top>
@@ -701,10 +701,10 @@ const MediaObjects = () => (
                             <Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right top>
@@ -729,10 +729,10 @@ const MediaObjects = () => (
                             <Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right top>
@@ -771,10 +771,10 @@ const MediaObjects = () => (
                             <Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1 text-success">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right top>
@@ -799,10 +799,10 @@ const MediaObjects = () => (
                             <Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1 text-danger">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right top>
@@ -827,10 +827,10 @@ const MediaObjects = () => (
                             <Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1 text-warning">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right top>
@@ -865,10 +865,10 @@ const MediaObjects = () => (
                             <Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p className="text-muted">
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right top>
@@ -893,10 +893,10 @@ const MediaObjects = () => (
                             <Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p className="text-muted">
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right top>
@@ -921,10 +921,10 @@ const MediaObjects = () => (
                             <Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p className="text-muted">
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media right top>
@@ -977,10 +977,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media left top>
@@ -1008,10 +1008,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media left top>
@@ -1039,10 +1039,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media left top>
@@ -1080,10 +1080,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media left top className="ml-2">
@@ -1111,10 +1111,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media left top className="ml-2">
@@ -1142,10 +1142,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media left top className="ml-2">
@@ -1183,10 +1183,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media left top className="ml-2">
@@ -1216,10 +1216,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media left top className="ml-2">
@@ -1249,10 +1249,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                                 <Media left top className="ml-2">
@@ -1280,7 +1280,7 @@ const MediaObjects = () => (
                                         Document PDF
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1293,7 +1293,7 @@ const MediaObjects = () => (
                                         Document Word
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1306,7 +1306,7 @@ const MediaObjects = () => (
                                         Document Excell
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1326,10 +1326,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1339,10 +1339,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1352,10 +1352,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1416,14 +1416,14 @@ const MediaObjects = () => (
                                 <Media body>
                                     <span className="d-flex mb-1">
                                         <span className="mt-0 d-flex h6 mb-0">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </span>
                                         <span className="small align-self-center">
                                             <span className="mx-2">•</span>Now
                                         </span>
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1449,14 +1449,14 @@ const MediaObjects = () => (
                                 <Media body>
                                     <span className="d-flex mb-1">
                                         <span className="mt-0 d-flex h6 mb-0">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </span>
                                         <span className="small align-self-center">
                                             <span className="mx-2">•</span>Yesterday
                                         </span>
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1482,14 +1482,14 @@ const MediaObjects = () => (
                                 <Media body>
                                     <span className="d-flex mb-1">
                                         <span className="mt-0 d-flex h6 mb-0">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </span>
                                         <span className="small align-self-center">
                                             <span className="mx-2">•</span>12:23 PM
                                         </span>
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1525,14 +1525,14 @@ const MediaObjects = () => (
                                 <Media body>
                                     <span className="d-flex mb-1">
                                         <span className="mt-0 d-flex h6 mb-0">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </span>
                                         <span className="small align-self-center ml-auto">
                                             Now
                                         </span>
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1558,14 +1558,14 @@ const MediaObjects = () => (
                                 <Media body>
                                     <span className="d-flex mb-1">
                                         <span className="mt-0 d-flex h6 mb-0">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </span>
                                         <span className="small align-self-center ml-auto">
                                             Yesterday
                                         </span>
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1591,14 +1591,14 @@ const MediaObjects = () => (
                                 <Media body>
                                     <span className="d-flex mb-1">
                                         <span className="mt-0 d-flex h6 mb-0">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </span>
                                         <span className="small align-self-center ml-auto">
                                             12:23 PM
                                         </span>
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1634,14 +1634,14 @@ const MediaObjects = () => (
                                 <Media body>
                                     <div className="mb-1">
                                         <div className="mt-0 d-flex h6 mb-0">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </div>
                                         <span className="small">
-                                           { faker.name.title() }
+                                           { 'faker.name.title()' }
                                         </span>
                                     </div>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1667,14 +1667,14 @@ const MediaObjects = () => (
                                 <Media body>
                                     <div className="mb-1">
                                         <div className="mt-0 d-flex h6 mb-0">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </div>
                                         <span className="small">
-                                           { faker.name.title() }
+                                           { 'faker.name.title()' }
                                         </span>
                                     </div>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1700,14 +1700,14 @@ const MediaObjects = () => (
                                 <Media body>
                                     <div className="mb-1">
                                         <div className="mt-0 d-flex h6 mb-0">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </div>
                                         <span className="small">
-                                           { faker.name.title() }
+                                           { 'faker.name.title()' }
                                         </span>
                                     </div>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                 </Media>
                             </Media>
@@ -1746,12 +1746,12 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }<br />
+                                        { 'faker.lorem.sentence()' }<br />
                                         <a href="javascript:;" className="small text-success">
-                                            { faker.internet.url() }
+                                            { 'faker.internet.url()' }
                                         </a>
                                     </p>
                                 </Media>
@@ -1777,12 +1777,12 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }<br />
+                                        { 'faker.lorem.sentence()' }<br />
                                         <a href="javascript:;" className="small text-success">
-                                            { faker.internet.url() }
+                                            { 'faker.internet.url()' }
                                         </a>
                                     </p>
                                 </Media>
@@ -1808,12 +1808,12 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }<br />
+                                        { 'faker.lorem.sentence()' }<br />
                                         <a href="javascript:;" className="small text-success">
-                                            { faker.internet.url() }
+                                            { 'faker.internet.url()' }
                                         </a>
                                     </p>
                                 </Media>
@@ -1849,10 +1849,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                     <ButtonGroup size="sm" className="mb-3">
                                         <Button outline color="secondary">
@@ -1888,10 +1888,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                     <ButtonGroup size="sm" className="mb-3">
                                         <Button outline color="secondary">
@@ -1927,10 +1927,10 @@ const MediaObjects = () => (
                                 </Media>
                                 <Media body>
                                     <span className="mt-0 d-flex h6 mb-1">
-                                        { faker.name.firstName() } { faker.name.lastName() }
+                                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                     </span>
                                     <p>
-                                        { faker.lorem.sentence() }
+                                        { 'faker.lorem.sentence()' }
                                     </p>
                                     <ButtonGroup size="sm" className="mb-3">
                                         <Button outline color="secondary">
@@ -2004,10 +2004,10 @@ const MediaObjects = () => (
                                     </Media>
                                     <Media body>
                                         <span className="mt-0 d-flex h6 mb-1">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </span>
                                         <p className="mb-0">
-                                            { faker.lorem.sentence() }
+                                            { 'faker.lorem.sentence()' }
                                         </p>
                                     </Media>
                                 </Media>
@@ -2034,10 +2034,10 @@ const MediaObjects = () => (
                                     </Media>
                                     <Media body>
                                         <span className="mt-0 d-flex h6 mb-1">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </span>
                                         <p className="mb-0">
-                                            { faker.lorem.sentence() }
+                                            { 'faker.lorem.sentence()' }
                                         </p>
                                     </Media>
                                 </Media>
@@ -2064,10 +2064,10 @@ const MediaObjects = () => (
                                     </Media>
                                     <Media body>
                                         <span className="mt-0 d-flex h6 mb-1">
-                                            { faker.name.firstName() } { faker.name.lastName() }
+                                            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                         </span>
                                         <p className="mb-0">
-                                            { faker.lorem.sentence() }
+                                            { 'faker.lorem.sentence()' }
                                         </p>
                                     </Media>
                                 </Media>
@@ -2110,10 +2110,10 @@ const MediaObjects = () => (
                                             </Media>
                                             <Media body>
                                                 <span className="mt-0 d-flex h6 mb-1">
-                                                    { faker.name.firstName() } { faker.name.lastName() }
+                                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                                 </span>
                                                 <p className="mb-0">
-                                                    { faker.lorem.sentence() }
+                                                    { 'faker.lorem.sentence()' }
                                                 </p>
                                             </Media>
                                         </Media>
@@ -2142,10 +2142,10 @@ const MediaObjects = () => (
                                             </Media>
                                             <Media body>
                                                 <span className="mt-0 d-flex h6 mb-1">
-                                                    { faker.name.firstName() } { faker.name.lastName() }
+                                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                                 </span>
                                                 <p className="mb-0">
-                                                    { faker.lorem.sentence() }
+                                                    { 'faker.lorem.sentence()' }
                                                 </p>
                                             </Media>
                                         </Media>
@@ -2174,10 +2174,10 @@ const MediaObjects = () => (
                                             </Media>
                                             <Media body>
                                                 <span className="mt-0 d-flex h6 mb-1">
-                                                    { faker.name.firstName() } { faker.name.lastName() }
+                                                    { 'faker.name.firstName()' } { 'faker.name.lastName()' }
                                                 </span>
                                                 <p className="mb-0">
-                                                    { faker.lorem.sentence() }
+                                                    { 'faker.lorem.sentence()' }
                                                 </p>
                                             </Media>
                                         </Media>
