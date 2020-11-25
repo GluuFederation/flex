@@ -1,6 +1,7 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-import { SidebarMenu, Divider } from "./../../components";
+import { SidebarMenu, Divider, DropdownItem } from "./../../components";
 
 export const SidebarMiddleNav = () => (
   <SidebarMenu>
@@ -50,6 +51,7 @@ export const SidebarMiddleNav = () => (
     {/* -------- Scopes ---------*/}
     {/* -------- Configuration ---------*/}
     <Divider />
+    <Divider />
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-gears"></i>}
       title="Configuration"
@@ -63,5 +65,16 @@ export const SidebarMiddleNav = () => (
       <SidebarMenu.Item title="Logging" to="/forms/text-mask" />
       <SidebarMenu.Item title="Jwks" to="/forms/text-mask" />
     </SidebarMenu.Item>
+    <Divider />
+    <SidebarMenu.Item
+      icon={<i className="fa fa-fw fa-wrench"></i>}
+      title="Settings"
+      to="/apps/settings-edit"
+    />
+    <SidebarMenu.Item
+      icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
+      title="Sign out"
+      to="/pages/login"
+    />
   </SidebarMenu>
 );
