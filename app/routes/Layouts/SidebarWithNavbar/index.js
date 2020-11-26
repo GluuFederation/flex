@@ -1,9 +1,9 @@
 import { SidebarWithNavbar } from './SidebarWithNavbar';
 import {
-    SidebarWithNavbarNavbar
+  SidebarWithNavbarNavbar
 } from './../../../layout/components/SidebarWithNavbarNavbar';
 import {
-    DefaultSidebar
+  DefaultSidebar
 } from './../../../layout/components/DefaultSidebar';
 
 SidebarWithNavbar.Navbar = SidebarWithNavbarNavbar;

@@ -3,7 +3,7 @@ import React from 'react';
 import _ from 'lodash';
 
 import { 
-    Badge
+  Badge
 } from './../../../../components';
 
 /*eslint-disable */
@@ -50,34 +50,34 @@ const statusColor = [
 /*eslint-enable */
 
 const TrTableContextual = () => (
-    <React.Fragment>
-        {
-            _.times(12, (index) => (
-                <tr className={ trColor[index%12] } key={ index }>
-                    <td className="align-middle">
-                        #{ 'faker.finance.mask()' }
-                    </td>
-                    <td className="align-middle">
-                        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
-                    </td>
-                    <td className="align-middle">
-                        { 'faker.date.weekday()' }, 12 { 'faker.date.month()' }, 2018
-                    </td>
-                    <td className="align-middle">
-                         $ { 'faker.finance.amount()' }
-                    </td>
-                    <td className="align-middle">
-                        <Badge color={ statusColor[index%12] }>
-                            { 'faker.finance.accountName()' }
-                        </Badge>
-                    </td>
-                    <td className="align-middle text-right">
-                        { 'faker.address.country()' }
-                    </td>
-                </tr>
-            ))
-        }
-    </React.Fragment>
-)
+  <React.Fragment>
+    {
+      _.times(12, (index) => (
+        <tr className={ trColor[index%12] } key={ index }>
+          <td className="align-middle">
+            #{ 'faker.finance.mask()' }
+          </td>
+          <td className="align-middle">
+            { 'faker.name.firstName()' } { 'faker.name.lastName()' }
+          </td>
+          <td className="align-middle">
+            { 'faker.date.weekday()' }, 12 { 'faker.date.month()' }, 2018
+          </td>
+          <td className="align-middle">
+            $ { 'faker.finance.amount()' }
+          </td>
+          <td className="align-middle">
+            <Badge color={ statusColor[index%12] }>
+              { 'faker.finance.accountName()' }
+            </Badge>
+          </td>
+          <td className="align-middle text-right">
+            { 'faker.address.country()' }
+          </td>
+        </tr>
+      ))
+    }
+  </React.Fragment>
+);
 
 export { TrTableContextual };

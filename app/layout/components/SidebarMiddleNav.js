@@ -1,7 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
-import { SidebarMenu, Divider, DropdownItem } from "./../../components";
+import { SidebarMenu, Divider } from "./../../components";
 
 export const SidebarMiddleNav = () => (
   <SidebarMenu>

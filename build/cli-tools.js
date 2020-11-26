@@ -1,8 +1,8 @@
-var program = require('commander');
-var rimraf = require('rimraf');
-var mkdirp = require('mkdirp');
+const program = require('commander');
+const rimraf = require('rimraf');
+const mkdirp = require('mkdirp');
 
-var config = require('./../config');
+const config = require('./../config');
 
 function dirParamToPath(dirParam) {
     switch(dirParam) {
@@ -14,9 +14,9 @@ function dirParamToPath(dirParam) {
     return null;
 }
 
-var commands = {
+const commands = {
     clear: function(value) {
-        var targetPath = dirParamToPath(value);
+        const targetPath = dirParamToPath(value);
 
         if(targetPath) {
             rimraf.sync(targetPath);
@@ -26,7 +26,7 @@ var commands = {
     },
 
     create: function(value) {
-        var targetPath = dirParamToPath(value);
+        const targetPath = dirParamToPath(value);
 
         if(targetPath) {
             mkdirp.sync(targetPath);
@@ -34,16 +34,15 @@ var commands = {
             console.info('Created target directory: %s', targetPath);
         }
     }
-}
+};
 
 program
     .option('-c, --clear [serve/dist]')
     .option('-cr, --create [serve/dist]')
     .parse(process.argv);
 
-for (var commandName in commands) {
+for (const commandName in commands) {
     if (commands.hasOwnProperty(commandName) && program[commandName]) {
         commands[commandName](program[commandName]);
     }
 }
-

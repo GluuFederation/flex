@@ -4,7 +4,7 @@ import styleConfig from './config';
 
 export class Tooltip extends RCTooltip {
     static defaultProps = {
-        ...RCTooltip.defaultProps,
-        ...styleConfig.tooltip
+      ...RCTooltip.defaultProps,
+      ...styleConfig.tooltip
     }
 }

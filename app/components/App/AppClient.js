@@ -11,7 +11,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 const basePath = process.env.BASE_PATH || "/";
 
 const AppClient = () => {
-  const { store, persistor } = configureStore()
+  const { store, persistor } = configureStore();
 
   return (
     <Provider store={store}>

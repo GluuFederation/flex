@@ -15,7 +15,7 @@ import {
 
 import { NavbarActivityFeed } from "../../../layout/components/NavbarActivityFeed";
 import { NavbarMessages } from "../../../layout/components/NavbarMessages";
-import {LanguageMenu}  from "./LanguageMenu";
+import { LanguageMenu } from "./LanguageMenu";
 import { DropdownProfile } from "../Dropdowns/DropdownProfile";
 
 import { randomAvatar } from "../../../utilities";

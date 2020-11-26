@@ -4,13 +4,13 @@ import { TabContent } from 'reactstrap';
 import { Consumer } from './context';
 
 const UncontrolledTabsTabContent = (props) => (
-    <Consumer>
+  <Consumer>
     {
-        (value) => (
-            <TabContent { ...props } activeTab={ value.activeTabId } />
-        )
+      (value) => (
+        <TabContent { ...props } activeTab={ value.activeTabId } />
+      )
     }
-    </Consumer>
+  </Consumer>
 );
 
 export { UncontrolledTabsTabContent };

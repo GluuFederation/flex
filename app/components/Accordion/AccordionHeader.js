@@ -8,26 +8,26 @@ import { Consumer } from './context';
 import classes from './AccordionHeader.scss';
 
 export const AccordionHeader = (props) => (
-    <Consumer>
+  <Consumer>
     {
-        ({ onToggle }) => (
-            <CardHeader
-                className={
-                    classNames(
-                        props.className,
-                        classes.header
-                    )
-                }
-                onClick={ onToggle}
-            >
-                { props.children }
-            </CardHeader>
-        )   
+      ({ onToggle }) => (
+        <CardHeader
+          className={
+            classNames(
+              props.className,
+              classes.header
+            )
+          }
+          onClick={ onToggle}
+        >
+          { props.children }
+        </CardHeader>
+      )   
     }
-    </Consumer>
+  </Consumer>
 );
 AccordionHeader.propTypes = {
-    children: PropTypes.node,
-    onClick: PropTypes.func,
-    className: PropTypes.string
+  children: PropTypes.node,
+  onClick: PropTypes.func,
+  className: PropTypes.string
 };

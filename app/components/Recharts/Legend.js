@@ -4,7 +4,7 @@ import styleConfig from './config';
 
 export class Legend extends RCLegend {
     static defaultProps = {
-        ...RCLegend.defaultProps,
-        ...styleConfig.legend
+      ...RCLegend.defaultProps,
+      ...styleConfig.legend
     }
 }

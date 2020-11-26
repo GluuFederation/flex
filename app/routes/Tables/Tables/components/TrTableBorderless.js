@@ -3,8 +3,8 @@ import React from 'react';
 import _ from 'lodash';
 
 import { 
-    Badge,
-    UncontrolledTooltip,
+  Badge,
+  UncontrolledTooltip,
 } from './../../../../components';
 
 /*eslint-disable */
@@ -64,29 +64,29 @@ const status = [
 /*eslint-enable */
 
 const TrTableBorderless = () => (
-    <React.Fragment>
-        {
-            _.times(5, (index) => (
-                <tr key={ index }>
-                    { status[index%2] }
-                    <td className="align-middle">
-                        <samp>{ 'faker.random.number()' }</samp>
-                    </td>
-                    <td className="align-middle">
-                        { 'faker.date.weekday()' }, 12 { 'faker.date.month()' }, 2018
-                    </td>
-                    <td className="align-middle text-inverse">
-                        $ { 'faker.finance.amount()' }
-                    </td>
-                    <td className="align-middle">
-                        { payment[index%5] }
-                    </td>
-                    { paymentMethod[index%2] }
-                    { receipt[index%2] }
-                </tr>
-            ))
-        }
-    </React.Fragment>
-)
+  <React.Fragment>
+    {
+      _.times(5, (index) => (
+        <tr key={ index }>
+          { status[index%2] }
+          <td className="align-middle">
+            <samp>{ 'faker.random.number()' }</samp>
+          </td>
+          <td className="align-middle">
+            { 'faker.date.weekday()' }, 12 { 'faker.date.month()' }, 2018
+          </td>
+          <td className="align-middle text-inverse">
+            $ { 'faker.finance.amount()' }
+          </td>
+          <td className="align-middle">
+            { payment[index%5] }
+          </td>
+          { paymentMethod[index%2] }
+          { receipt[index%2] }
+        </tr>
+      ))
+    }
+  </React.Fragment>
+);
 
 export { TrTableBorderless };

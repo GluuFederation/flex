@@ -8,9 +8,9 @@ Grid.Row = Row;
 Grid.Ready = Ready;
 
 export const applyColumn = (columnId, layouts) => ({
-    ...layouts[columnId],
-    i: columnId,
-    key: columnId
+  ...layouts[columnId],
+  i: columnId,
+  key: columnId
 });
 
 export default Grid;

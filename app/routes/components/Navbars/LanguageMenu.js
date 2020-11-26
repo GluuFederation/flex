@@ -9,7 +9,7 @@ import {
 } from "../../../components";
 
 const LanguageMenu = props => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   function handleClick(lang) {
     i18n.changeLanguage(lang);
   }
