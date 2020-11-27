@@ -31,7 +31,6 @@ import {
   TinyArcChart
 } from "./components/TinyArcChart";
 
-
 /*eslint-disable */
 const progressCompletion = [
     "25",

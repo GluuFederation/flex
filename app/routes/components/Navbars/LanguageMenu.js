@@ -1,38 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  UncontrolledDropdown,
   DropdownToggle,
-  ListGroupItem,
-  ListGroup,
-  ExtendedDropdown
+  DropdownMenu,
+  DropdownItem,
+  ButtonDropdown
 } from "../../../components";
 
 const LanguageMenu = props => {
+  const [isOpen, setOpen] = useState(false);
+  const [lang, setLang] = useState("en");
+  const { t, i18n } = useTranslation();
+  const toggle = () => setOpen(!isOpen);
+  function changeLanguage(code) {
+    i18n.changeLanguage(code);
+    setLang(code);
+  }
   return (
-    <UncontrolledDropdown nav inNavbar {...props}>
-      <DropdownToggle nav>
-        <i className="fa fa-envelope-o fa-flag" />
+    <ButtonDropdown isOpen={isOpen} toggle={toggle}>
+      <DropdownToggle caret color="primary">
+        {lang}
       </DropdownToggle>
-      <ExtendedDropdown right>
-        <ExtendedDropdown.Section className="d-flex justify-content-between align-items-center">
-          <h6 className="mb-0">Languages</h6>
-        </ExtendedDropdown.Section>
-        <ExtendedDropdown.Section list>
-          <ListGroup>
-            <ListGroupItem tag={ExtendedDropdown.Link} key="fr" action>
-              fr
-            </ListGroupItem>
-            <ListGroupItem tag={ExtendedDropdown.Link} key="en" action>
-              en
-            </ListGroupItem>
-            <ListGroupItem tag={ExtendedDropdown.Link} key="es" action>
-              es
-            </ListGroupItem>
-          </ListGroup>
-        </ExtendedDropdown.Section>
-      </ExtendedDropdown>
-    </UncontrolledDropdown>
+      <DropdownMenu>
+        <DropdownItem onClick={() => changeLanguage("fr")}>
+          {t("language:french")}
+        </DropdownItem>
+        <DropdownItem onClick={() => changeLanguage("en")}>
+          {t("language:english")}
+        </DropdownItem>
+        <DropdownItem onClick={() => changeLanguage("de")}>
+          {t("language:german")}
+        </DropdownItem>
+      </DropdownMenu>
+    </ButtonDropdown>
   );
 };
 export { LanguageMenu };

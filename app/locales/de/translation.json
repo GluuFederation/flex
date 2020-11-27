@@ -1,32 +1,33 @@
 {
   "users": {
-    "title": "LISTE DES UTILISATEURS"
+    "title": "USERS"
   },
   "groups": {
-    "title": "LISTE DES GROUPES"
+    "title": "GROUPS"
   },
   "attributes": {
-    "title": "LISTE DES ATTRIBUTS"
+    "title": "ATTRIBUTES"
   },
   "button": {
-    "add": "Ajouter",
-    "edit": "Editer",
-    "delete": "Supprimer",
-    "remove": "Enlever",
-    "save": "Enregistrer",
-    "cancel": "Annuler",
-    "list": "Lister",
-    "import": "Importer",
-    "export": "Exporter",
-    "download": "Télécharger",
-    "show": "Afficher",
-    "rows": "lignes"
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "remove": "Remove",
+    "save": "Save",
+    "cancel": "Cancel",
+    "list": "List",
+    "import": "Import",
+    "export": "Export",
+    "download": "Download",
+    "show": "Show",
+    "rows": "rows",
+    "changeButton": "Change Password"
   },
   "sidemenu": {
     "dashboard": "DASHBOARD",
-    "home": "ACCEUIL",
-    "users": "UTILISATEURS",
-    "groups": "GROUPES",
+    "home": "HOME",
+    "users": "USERS",
+    "groups": "GROUPS",
     "identities": "IDENTITIES",
     "attributes": "ATTRIBUTES",
     "openid_connect": "OPENID CONNECT",
@@ -47,7 +48,7 @@
     "server_status": "Server Status",
     "view_logs": "View Logs",
     "certificates": "Certificates",
-    "logout": "Deconnexion"
+    "logout": "Logout"
   },
   "user": {
     "displayName": "Display Name",
@@ -61,11 +62,14 @@
     "actions": "Actions"
   },
   "form": {
-    "userAddFormTitle": "AJOUT D'UN UTILISATEUR"
+    "userAddFormTitle": "USER ADD FORM"
   },
   "language": {
-    "french": "Français",
-    "english": "Anglais",
+    "french": "Franch",
+    "english": "English",
     "german": "German"
   }
+
+
+
 }

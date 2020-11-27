@@ -21,7 +21,7 @@
     "download": "Download",
     "show": "Show",
     "rows": "rows",
-    "changeButton":"Change Password"
+    "changeButton": "Change Password"
   },
   "sidemenu": {
     "dashboard": "DASHBOARD",
@@ -37,7 +37,7 @@
     "saml": "SAML",
     "trusts": "Trusts Relationships",
     "acrs": "Saml Acrs",
-    "namedId":"Configure NamedId",
+    "namedId": "Configure NamedId",
     "uma": "UMA",
     "passport": "PASSPORT",
     "resources": "Resources",
@@ -63,5 +63,13 @@
   },
   "form": {
     "userAddFormTitle": "USER ADD FORM"
+  },
+  "language": {
+    "french": "French",
+    "english": "English",
+    "german": "German"
   }
+
+
+
 }
