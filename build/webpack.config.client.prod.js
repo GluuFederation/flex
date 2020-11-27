@@ -1,15 +1,15 @@
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractCssChunks = require("extract-css-chunks-webpack-plugin");
-var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-var TerserPlugin = require('terser-webpack-plugin');
-var CircularDependencyPlugin = require('circular-dependency-plugin');
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractCssChunks = require("extract-css-chunks-webpack-plugin");
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
-var config = require('./../config');
+const config = require('./../config');
 require('dotenv').config({ path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env' });
 
-var BASE_PATH = process.env.BASE_PATH || '/';
+const BASE_PATH = process.env.BASE_PATH || '/';
 
 module.exports = {
     devtool: 'inline-source-map',
@@ -152,4 +152,4 @@ module.exports = {
         host: '0.0.0.0',
         port: 4100
     }
-}
+};

@@ -4,14 +4,14 @@ import classNames from 'classnames';
 import { DropdownMenu } from 'reactstrap';
 
 export const ExtendedDropdown = ({ className, ...otherProps }) => {
-    const classes = classNames(
-        className,
-        'extended-dropdown'
-    );
-    return (
-        <DropdownMenu className={ classes } { ...otherProps } />
-    );
-}
+  const classes = classNames(
+    className,
+    'extended-dropdown'
+  );
+  return (
+    <DropdownMenu className={ classes } { ...otherProps } />
+  );
+};
 ExtendedDropdown.propTypes = {
-    className: PropTypes.string,
+  className: PropTypes.string,
 };

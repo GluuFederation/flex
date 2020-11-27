@@ -6,19 +6,19 @@ import { Collapse, CardBody } from 'reactstrap';
 import { Consumer } from './context';
 
 export const AccordionBody = (props) => (
-    <Consumer>
+  <Consumer>
     {
-        ({ isOpen }) => (
-            <Collapse isOpen={ isOpen }>
-                <CardBody className={ classNames(props.className, 'pt-0') }>
-                    { props.children }
-                </CardBody>
-            </Collapse>
-        )
+      ({ isOpen }) => (
+        <Collapse isOpen={ isOpen }>
+          <CardBody className={ classNames(props.className, 'pt-0') }>
+            { props.children }
+          </CardBody>
+        </Collapse>
+      )
     }
-    </Consumer>
+  </Consumer>
 );
 AccordionBody.propTypes = {
-    children: PropTypes.node,
-    className: PropTypes.string
+  children: PropTypes.node,
+  className: PropTypes.string
 };

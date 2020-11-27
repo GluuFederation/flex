@@ -7,22 +7,21 @@ import { NavLink } from 'reactstrap';
 import { Consumer } from './context';
 
 const UncontrolledTabsNavLink = (props) => (
-    <Consumer>
+  <Consumer>
     {
-        (value) => (
-            <NavLink
-                { ..._.omit(props, ['tabId']) }
-                onClick={ () => { value.setActiveTabId(props.tabId) } }
-                className={ classNames({ active: props.tabId === value.activeTabId }) }
-                href="javascript:;"
-            />
-        )
+      (value) => (
+        <NavLink
+          { ..._.omit(props, ['tabId']) }
+          onClick={ () => { value.setActiveTabId(props.tabId); } }
+          className={ classNames({ active: props.tabId === value.activeTabId }) }
+          href="javascript:;"
+        />
+      )
     }
-    </Consumer>
+  </Consumer>
 );
 UncontrolledTabsNavLink.propTypes = {
-    tabId: PropTypes.string.isRequired
+  tabId: PropTypes.string.isRequired
 };
 
 export { UncontrolledTabsNavLink };
-

@@ -9,8 +9,8 @@ Avatar.Font = AvatarFont;
 Avatar.Image = AvatarImage;
 
 const AvatarAddOn = {
-    Icon: AvatarAddonIcon,
-    Badge: AvatarAddonBadge
+  Icon: AvatarAddonIcon,
+  Badge: AvatarAddonBadge
 };
 
 export default Avatar;

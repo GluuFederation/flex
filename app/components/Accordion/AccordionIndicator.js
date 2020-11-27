@@ -5,23 +5,23 @@ import classNames from 'classnames';
 import { Consumer } from './context';
 
 export const AccordionIndicator = (props) => (
-    <Consumer>
+  <Consumer>
     {
-        ({ isOpen }) => isOpen ?
-            React.cloneElement(props.open, {
-                className: classNames(props.className, props.open.props.className)
-            }) : React.cloneElement(props.closed, {
-                className: classNames(props.className, props.closed.props.className)
-            })
+      ({ isOpen }) => isOpen ?
+        React.cloneElement(props.open, {
+          className: classNames(props.className, props.open.props.className)
+        }) : React.cloneElement(props.closed, {
+          className: classNames(props.className, props.closed.props.className)
+        })
     }
-    </Consumer>
+  </Consumer>
 );
 AccordionIndicator.propTypes = {
-    open: PropTypes.node,
-    closed: PropTypes.node,
-    className: PropTypes.string
-}
+  open: PropTypes.node,
+  closed: PropTypes.node,
+  className: PropTypes.string
+};
 AccordionIndicator.defaultProps = {
-    open: <i className="fa fa-fw fa-minus"></i>,
-    closed: <i className="fa fa-fw fa-plus"></i>
-}
+  open: <i className="fa fa-fw fa-minus"></i>,
+  closed: <i className="fa fa-fw fa-plus"></i>
+};

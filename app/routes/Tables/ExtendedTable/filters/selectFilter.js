@@ -8,83 +8,83 @@ import { CustomInput } from './../../../../components';
 
 class SelectFilter extends React.Component {
     static propTypes = {
-        column: PropTypes.object.isRequired,
-        onFilter: PropTypes.func.isRequired,
-        options: PropTypes.array.isRequired,
-        placeholder: PropTypes.string,
-        getFilter: PropTypes.func,
-        onClick: PropTypes.func
+      column: PropTypes.object.isRequired,
+      onFilter: PropTypes.func.isRequired,
+      options: PropTypes.array.isRequired,
+      placeholder: PropTypes.string,
+      getFilter: PropTypes.func,
+      onClick: PropTypes.func
     }
 
     constructor() {
-        super();
+      super();
 
-        this.state = {
-            value: ''
-        }
-        this.inputId = uid();
-        this.handleClick = this.handleClick.bind(this);
+      this.state = {
+        value: ''
+      };
+      this.inputId = uid();
+      this.handleClick = this.handleClick.bind(this);
     }
 
     componentDidMount() {
-        if (_.isFunction(this.props.getFilter)) {
-            this.props.getFilter((value) => {
-                this.setState({ value });
-            });
-        }
+      if (_.isFunction(this.props.getFilter)) {
+        this.props.getFilter((value) => {
+          this.setState({ value });
+        });
+      }
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.value !== this.state.value) {
-            this.props.onFilter(this.state.value);
-        }
+      if (prevState.value !== this.state.value) {
+        this.props.onFilter(this.state.value);
+      }
     }
 
     handleClick(e) {
-        e.stopPropagation();
+      e.stopPropagation();
 
-        if (this.props.onClick) {
-            this.props.onClick(e);
-        }
+      if (this.props.onClick) {
+        this.props.onClick(e);
+      }
     }
 
     render() {
-        const { placeholder, options } = this.props;
-        return (
-            <CustomInput
-                type="select"
-                bsSize="sm"
-                onChange={(e) => { this.setState({ value: e.target.value }) }}
-                onClick={ this.handleClick }
-                value={ this.state.value }
-                className="d-block bg-white"
-                id={this.inputId}
-            >
-                <option value="">{ placeholder }</option>
+      const { placeholder, options } = this.props;
+      return (
+        <CustomInput
+          type="select"
+          bsSize="sm"
+          onChange={(e) => { this.setState({ value: e.target.value }); }}
+          onClick={ this.handleClick }
+          value={ this.state.value }
+          className="d-block bg-white"
+          id={this.inputId}
+        >
+          <option value="">{ placeholder }</option>
 
-                {
-                    _.map(options, ({ value, label }, index) => (
-                        <option value={value} key={ index }>{ label }</option>
-                    ))
-                }
-            </CustomInput>
-        )
+          {
+            _.map(options, ({ value, label }, index) => (
+              <option value={value} key={ index }>{ label }</option>
+            ))
+          }
+        </CustomInput>
+      );
     }
 }
 
 export const buildCustomSelectFilter = ({ placeholder, options, getFilter, ...other } = {}) => ({
-    filter: customFilter(other),
-    filterRenderer: function TextFilterWrap(onFilter, column) {
-        return (
-            <SelectFilter
-                {...{
-                    onFilter,
-                    column,
-                    placeholder,
-                    options,
-                    getFilter
-                }}
-            />
-        )
-    }
+  filter: customFilter(other),
+  filterRenderer: function TextFilterWrap(onFilter, column) {
+    return (
+      <SelectFilter
+        {...{
+          onFilter,
+          column,
+          placeholder,
+          options,
+          getFilter
+        }}
+      />
+    );
+  }
 });

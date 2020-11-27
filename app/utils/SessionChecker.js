@@ -13,20 +13,21 @@ import { getOAuth2Config, getOAuth2AccessToken } from "../redux/actions";
 
 class SessionChecker extends Component {
   state = {
-    showContent: false
+    showContent: false,
   };
 
   // Methods
 
-  static buildAuthzUrl = config => {
+  static buildAuthzUrl = (config) => {
     const {
       authzBaseUrl,
       clientId,
       scope,
       redirectUrl,
       responseType,
-      acrValues
+      acrValues,
     } = config;
+
     const state = uuidv4();
     const nonce = uuidv4();
 
@@ -35,7 +36,6 @@ class SessionChecker extends Component {
       !clientId ||
       !scope ||
       !redirectUrl ||
-      !responseType ||
       !responseType ||
       !acrValues ||
       !state ||
@@ -55,7 +55,7 @@ class SessionChecker extends Component {
     super();
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props) {
     if (!props.loading) {
       const accessToken = localStorage.getItem("gluu.access.token");
       if (!accessToken) {
@@ -78,9 +78,13 @@ class SessionChecker extends Component {
             props.getOAuth2Config();
           }
         }
-        return { showContent };
+        return {
+          showContent,
+        };
       } else {
-        return { showContent: true };
+        return {
+          showContent: true,
+        };
       }
     }
     return null;
@@ -93,7 +97,7 @@ class SessionChecker extends Component {
     return (
       <React.Fragment>
         {showContent && this.props.children}
-        {!showContent && <h3>Redirecting...</h3>}
+        {!showContent && <h3>Redirecting... </h3>}
       </React.Fragment>
     );
   }
@@ -104,12 +108,15 @@ class SessionChecker extends Component {
 const mapStateToProps = ({ authReducer }) => {
   const loading = authReducer.loading;
   const config = authReducer.config;
-  return { loading, config };
+  return {
+    loading,
+    config,
+  };
 };
 
 export default withRouter(
   connect(mapStateToProps, {
     getOAuth2Config,
-    getOAuth2AccessToken
+    getOAuth2AccessToken,
   })(SessionChecker)
 );

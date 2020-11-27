@@ -5,25 +5,25 @@ import MediaQuery from 'react-responsive';
 import { withPageConfig } from './../Layout/withPageConfig';
 
 const DefaultOnly = (props) => (
-    <React.Fragment>
+  <React.Fragment>
     {
-        props.pageConfig.sidebarSlim && props.pageConfig.sidebarCollapsed ? (
-            <MediaQuery maxWidth={ 991.8 }>
-                { props.children }
-            </MediaQuery>
-        ) : (
-            props.children
-        )
+      props.pageConfig.sidebarSlim && props.pageConfig.sidebarCollapsed ? (
+        <MediaQuery maxWidth={ 991.8 }>
+          { props.children }
+        </MediaQuery>
+      ) : (
+        props.children
+      )
     }
-    </React.Fragment>
+  </React.Fragment>
 );
 DefaultOnly.propTypes = {
-    children: PropTypes.node.isRequired,
-    pageConfig: PropTypes.object
+  children: PropTypes.node.isRequired,
+  pageConfig: PropTypes.object
 };
 
 const ExtendedDefaultOnly = withPageConfig(DefaultOnly);
 
 export {
-    ExtendedDefaultOnly as DefaultOnly
+  ExtendedDefaultOnly as DefaultOnly
 };

@@ -5,47 +5,47 @@ import { Provider } from './ThemeContext';
 
 export class ThemeProvider extends React.Component {
     static propTypes = {
-        children: PropTypes.node,
-        initialStyle: PropTypes.string,
-        initialColor: PropTypes.string,
+      children: PropTypes.node,
+      initialStyle: PropTypes.string,
+      initialColor: PropTypes.string,
     };
 
     constructor(props) {
-        super(props);
+      super(props);
 
-        this.state = {
-            style: 'light',
-            color: 'primary',
-        };
+      this.state = {
+        style: 'light',
+        color: 'primary',
+      };
     }
 
     componentDidMount() {
-        const { initialStyle, initialColor } = this.props;
+      const { initialStyle, initialColor } = this.props;
 
-        if (initialStyle) {
-            this.setState({ style: initialStyle });
-        }
-        if (initialColor) {
-            this.setState({ color: initialColor });
-        }
+      if (initialStyle) {
+        this.setState({ style: initialStyle });
+      }
+      if (initialColor) {
+        this.setState({ color: initialColor });
+      }
     }
 
     onChangeTheme(themeState) {
-        this.setState(themeState);
+      this.setState(themeState);
     }
     
     render() {
-        const { children } = this.props;
+      const { children } = this.props;
         
-        return (
-            <Provider
-                value={{
-                    ...this.state,
-                    onChangeTheme: this.onChangeTheme.bind(this)
-                }}
-            >
-                { children }
-            </Provider>
-        );
+      return (
+        <Provider
+          value={{
+            ...this.state,
+            onChangeTheme: this.onChangeTheme.bind(this)
+          }}
+        >
+          { children }
+        </Provider>
+      );
     }
 }

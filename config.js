@@ -1,8 +1,8 @@
-var path = require("path");
+const path = require("path");
 
-var root = path.join(__dirname);
+const root = path.join(__dirname);
 
-var config = {
+const config = {
   rootDir: root,
   // Targets ========================================================
   serveDir: path.join(root, ".serve"),

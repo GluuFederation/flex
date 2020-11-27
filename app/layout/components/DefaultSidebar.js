@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Sidebar, SidebarTrigger, Divider } from "./../../components";
 import { SidebarMiddleNav } from "./SidebarMiddleNav";
-//import { SidebarTopA } from "../../routes/components/Sidebar/SidebarTopA";
 import { LogoThemed } from "../../routes/components/LogoThemed/LogoThemed";
 
 export const DefaultSidebar = () => (

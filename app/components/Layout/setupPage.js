@@ -1,30 +1,30 @@
 import React from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { withPageConfig } from './withPageConfig'
+import { withPageConfig } from './withPageConfig';
 
 export const setupPage = (startupConfig) => 
-    (Component) => {
-        class PageSetupWrap extends React.Component {
+  (Component) => {
+    class PageSetupWrap extends React.Component {
             static propTypes = {
-                pageConfig: PropTypes.object
+              pageConfig: PropTypes.object
             }
             componentDidMount() {
-                this.prevConfig = _.pick(this.props.pageConfig,
-                    ['pageTitle', 'pageDescription', 'pageKeywords']);
-                this.props.pageConfig.changeMeta(startupConfig);
+              this.prevConfig = _.pick(this.props.pageConfig,
+                ['pageTitle', 'pageDescription', 'pageKeywords']);
+              this.props.pageConfig.changeMeta(startupConfig);
             }
 
             componentWillUnmount() {
-                this.props.pageConfig.changeMeta(this.prevConfig);
+              this.props.pageConfig.changeMeta(this.prevConfig);
             }
 
             render() {
-                return (
-                    <Component { ...this.props } />
-                )
+              return (
+                <Component { ...this.props } />
+              );
             }
-        }
+    }
 
-        return withPageConfig(PageSetupWrap);
-    };
+    return withPageConfig(PageSetupWrap);
+  };

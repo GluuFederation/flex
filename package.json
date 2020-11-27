@@ -10,7 +10,8 @@
     "build:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack --config ./build/webpack.config.client.prod.js",
     "build:jenkins": "NODE_ENV=jenkins node ./build/cli-tools.js --clear dist --create dist && NODE_ENV=jenkins webpack --config ./build/webpack.config.client.prod.js",
     "start:dev": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.dev.js",
-    "start:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.prod.js"
+    "start:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.prod.js",
+    "lint": "eslint app/ --ext .js,jsx --fix"
   },
   "author": "gluu inc.",
   "license": "Apache",
@@ -28,7 +29,7 @@
     "circular-dependency-plugin": "^5.0.2",
     "commander": "^2.20.0",
     "css-loader": "^3.1.0",
-    "eslint": "^6.1.0",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-import": "^2.17.3",
@@ -105,5 +106,19 @@
     "uuid": "^3.3.2",
     "webpack-cli": "^3.1.0",
     "webpack-flush-chunks": "^2.0.3"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:react/recommended",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
   }
 }
