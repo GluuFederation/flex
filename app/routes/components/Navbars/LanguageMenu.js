@@ -7,7 +7,7 @@ import {
   ButtonDropdown
 } from "../../../components";
 
-const LanguageMenu = props => {
+const LanguageMenu = () => {
   const [isOpen, setOpen] = useState(false);
   const [lang, setLang] = useState("en");
   const { t, i18n } = useTranslation();
