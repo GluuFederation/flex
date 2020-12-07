@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+//import { useTranslation } from "react-i18next";
 import {
   DropdownToggle,
   DropdownMenu,
@@ -10,10 +10,10 @@ import {
 const LanguageMenu = () => {
   const [isOpen, setOpen] = useState(false);
   const [lang, setLang] = useState("en");
-  const { t, i18n } = useTranslation();
+  // const { t, i18n } = useTranslation();
   const toggle = () => setOpen(!isOpen);
   function changeLanguage(code) {
-    i18n.changeLanguage(code);
+    //i18n.changeLanguage(code);
     setLang(code);
   }
   return (
@@ -23,10 +23,10 @@ const LanguageMenu = () => {
       </DropdownToggle>
       <DropdownMenu>
         <DropdownItem onClick={() => changeLanguage("fr")}>
-          {t("french")}
+          {"french"}
         </DropdownItem>
         <DropdownItem onClick={() => changeLanguage("en")}>
-          {t("english")}
+          {"english"}
         </DropdownItem>
       </DropdownMenu>
     </ButtonDropdown>
