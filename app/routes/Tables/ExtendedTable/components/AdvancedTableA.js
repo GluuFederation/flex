@@ -117,7 +117,7 @@ export class AdvancedTableA extends React.Component {
         <React.Fragment>
           <span className="text-nowrap">{ column.text }</span>
           <a
-            href="javascript:;"
+            href="#;"
             className="d-block small text-decoration-none text-nowrap"
             onClick={ this.handleResetFilters.bind(this) }
           >

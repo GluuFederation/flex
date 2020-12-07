@@ -21,7 +21,7 @@ ExtendedDropdownSection.propTypes = {
   children: PropTypes.node,
   list: PropTypes.bool,
   className: PropTypes.string,
-  tag: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
+  tag: PropTypes.oneOfType([PropTypes.string, PropTypes.any, PropTypes.func])
 };
 ExtendedDropdownSection.defaultProps = {
   tag: "div"

@@ -35,7 +35,7 @@ const CardColor = (props) => (
         </dd>
         <dt className="col-sm-4">More</dt>
         <dd className="col-sm-8 text-inverse">
-          <InfoPopover colorId={ props.color } href="javascript:;">
+          <InfoPopover colorId={ props.color } href="#">
             Details 
             <i className="fa fa-angle-up ml-1"></i>
           </InfoPopover>

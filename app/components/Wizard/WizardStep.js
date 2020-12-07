@@ -10,7 +10,7 @@ export const WizardStep = props => {
   }, 'wizard-step', props.className);
 
   return (
-    <a href="javascript:;" className={stepClass} onClick={() => !props.disabled && props.onClick()}>
+    <a href="#" className={stepClass} onClick={() => !props.disabled && props.onClick()}>
       <div className='wizard-step__icon'>
         { !props.complete ? props.icon : props.successIcon }
       </div>

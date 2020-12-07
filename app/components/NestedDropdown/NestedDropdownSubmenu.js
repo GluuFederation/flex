@@ -28,7 +28,7 @@ class NestedDropdownSubmenu extends React.Component {
     return (
       <Tag className={ itemClass }>
         <a
-          href="javascript:;"
+          href="#"
           className={ linkClass }
           onClick={ () => { onOpen(this.id); } }
         >
