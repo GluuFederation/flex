@@ -7,7 +7,7 @@ import {
   ButtonDropdown
 } from "../../../components";
 
-const LanguageMenu = props => {
+const LanguageMenu = () => {
   const [isOpen, setOpen] = useState(false);
   const [lang, setLang] = useState("en");
   const { t, i18n } = useTranslation();
@@ -23,13 +23,10 @@ const LanguageMenu = props => {
       </DropdownToggle>
       <DropdownMenu>
         <DropdownItem onClick={() => changeLanguage("fr")}>
-          {t("language:french")}
+          {t("french")}
         </DropdownItem>
         <DropdownItem onClick={() => changeLanguage("en")}>
-          {t("language:english")}
-        </DropdownItem>
-        <DropdownItem onClick={() => changeLanguage("de")}>
-          {t("language:german")}
+          {t("english")}
         </DropdownItem>
       </DropdownMenu>
     </ButtonDropdown>

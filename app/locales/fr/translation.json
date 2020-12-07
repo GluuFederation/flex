@@ -63,9 +63,6 @@
   "form": {
     "userAddFormTitle": "AJOUT D'UN UTILISATEUR"
   },
-  "language": {
-    "french": "Français",
-    "english": "Anglais",
-    "german": "German"
-  }
+  "french": "Français",
+  "english": "Anglais"
 }

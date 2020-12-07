@@ -64,11 +64,8 @@
   "form": {
     "userAddFormTitle": "USER ADD FORM"
   },
-  "language": {
-    "french": "French",
-    "english": "English",
-    "german": "German"
-  }
+  "french": "French",
+  "english": "English"
 
 
 

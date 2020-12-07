@@ -4,9 +4,7 @@ const allAvatars = (ctx => {
 })(require.context('./images/avatars', true, /.*/));
 
 export function randomArray(arr) {
-  const index = Math.round(Math.random() * (arr.length - 1));
-
-  return arr[index];
+  return arr[1];
 }
 
 export function randomAvatar() {
