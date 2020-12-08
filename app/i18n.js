@@ -8,13 +8,13 @@ i18n
     // we init with resources
     resources: {
       en: {
-        translations: {
+        translation: {
           french: "French",
           english: "English"
         }
       },
       fr: {
-        translations: {
+        translation: {
           french: "Français",
           english: "Anglais"
         }
@@ -23,11 +23,10 @@ i18n
     fallbackLng: "en",
     debug: true,
     // have a common namespace used around the full app
-    ns: ["translations"],
-    defaultNS: "translations",
+    ns: ["translation"],
+    defaultNS: "translation",
     keySeparator: false, // we use content as keys
-    interpolation: {
-    },
+    interpolation: {},
     react: {
       wait: true
     }
