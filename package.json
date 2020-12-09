@@ -11,7 +11,8 @@
     "build:jenkins": "NODE_ENV=jenkins node ./build/cli-tools.js --clear dist --create dist && NODE_ENV=jenkins webpack --config ./build/webpack.config.client.prod.js",
     "start:dev": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.dev.js",
     "start:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.prod.js",
-    "lint": "eslint app/ --ext .js,jsx --fix"
+    "lint": "eslint app/ --ext .js,jsx --fix",
+    "api": "rm -rf gen/api && openapi-generator-cli generate -i https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/docs/jans-config-api-swagger.yaml --generator-name javascript -o gen/api && cd gen/api && npm install && npm run build"
   },
   "author": "gluu inc.",
   "license": "Apache",
@@ -22,6 +23,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
+    "@openapitools/openapi-generator-cli": "^2.1.7",
     "autoprefixer": "^9.6.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.6",
