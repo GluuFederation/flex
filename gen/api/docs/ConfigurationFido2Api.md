@@ -4,8 +4,8 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getPropertiesFido2**](ConfigurationFido2Api.md#getPropertiesFido2) | **GET** /api/v1/fido2/config | Gets Jans Authorization Server Fido2 configuration properties.
-[**putPropertiesFido2**](ConfigurationFido2Api.md#putPropertiesFido2) | **PUT** /api/v1/fido2/config | Updates Fido2 configuration properties.
+[**getPropertiesFido2**](ConfigurationFido2Api.md#getPropertiesFido2) | **GET** /jans-config-api/api/v1/fido2/config | Gets Jans Authorization Server Fido2 configuration properties.
+[**putPropertiesFido2**](ConfigurationFido2Api.md#putPropertiesFido2) | **PUT** /jans-config-api/api/v1/fido2/config | Updates Fido2 configuration properties.
 
 
 

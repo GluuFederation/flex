@@ -4,12 +4,12 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteAttributesByInum**](AttributeApi.md#deleteAttributesByInum) | **DELETE** /api/v1/attributes/{inum} | Deletes an attribute based on inum.
-[**getAttributes**](AttributeApi.md#getAttributes) | **GET** /api/v1/attributes | Gets a list of Gluu attributes.
-[**getAttributesByInum**](AttributeApi.md#getAttributesByInum) | **GET** /api/v1/attributes/{inum} | Gets an attribute based on inum.
-[**patchAttributesByInum**](AttributeApi.md#patchAttributesByInum) | **PATCH** /api/v1/attributes/{inum} | Partially modify a GluuAttribute.
-[**postAttributes**](AttributeApi.md#postAttributes) | **POST** /api/v1/attributes | Adds a new attribute.
-[**putAttributes**](AttributeApi.md#putAttributes) | **PUT** /api/v1/attributes | Updates an existing attribute.
+[**deleteAttributesByInum**](AttributeApi.md#deleteAttributesByInum) | **DELETE** /jans-config-api/api/v1/attributes/{inum} | Deletes an attribute based on inum.
+[**getAttributes**](AttributeApi.md#getAttributes) | **GET** /jans-config-api/api/v1/attributes | Gets a list of Gluu attributes.
+[**getAttributesByInum**](AttributeApi.md#getAttributesByInum) | **GET** /jans-config-api/api/v1/attributes/{inum} | Gets an attribute based on inum.
+[**patchAttributesByInum**](AttributeApi.md#patchAttributesByInum) | **PATCH** /jans-config-api/api/v1/attributes/{inum} | Partially modify a GluuAttribute.
+[**postAttributes**](AttributeApi.md#postAttributes) | **POST** /jans-config-api/api/v1/attributes | Adds a new attribute.
+[**putAttributes**](AttributeApi.md#putAttributes) | **PUT** /jans-config-api/api/v1/attributes | Updates an existing attribute.
 
 
 
@@ -243,7 +243,7 @@ let dataType = "dataType_example"; // String | Data Type of attribute.
 let status = "status_example"; // String | Distinguished Name
 let opts = {
   'description': "description_example", // String | User friendly descriptive detail of attribute.
-  'oxMultiValuedAttribute': true, // Boolean | Boolean value indicating if the attribute is multi-value
+  'jansMultivaluedAttr': true, // Boolean | Boolean value indicating if the attribute is multi-value
   'lifetime': "lifetime_example", // String | 
   'sourceAttribute': "sourceAttribute_example", // String | 
   'salt': "salt_example", // String | 
@@ -252,12 +252,12 @@ let opts = {
   'editType': "editType_example", // [String] | GluuUserRole
   'viewType': "viewType_example", // [String] | GluuUserRole
   'usageType': "usageType_example", // [String] | GluuAttributeUsageType
-  'oxAuthClaimName': "oxAuthClaimName_example", // String | 
+  'jansAttrName': "jansAttrName_example", // String | 
   'seeAlso': "seeAlso_example", // String | 
   'saml1Uri': "saml1Uri_example", // String | 
   'saml2Uri': "saml2Uri_example", // String | 
   'urn': "urn_example", // String | 
-  'oxSCIMCustomAttribute': true, // Boolean | Boolean value indicating if the attribute is a SCIM custom attribute
+  'jansSCIMCustomAttr': true, // Boolean | Boolean value indicating if the attribute is a SCIM custom attribute
   'custom': true, // Boolean | Boolean value indicating if the attribute is a custom attribute
   'requred': true, // Boolean | Boolean value indicating is a mandatory attribute
   'attributeValidation': new JansConfigApi.GluuAttributeAttributeValidation(), // GluuAttributeAttributeValidation | 
@@ -282,7 +282,7 @@ Name | Type | Description  | Notes
  **dataType** | **String**| Data Type of attribute. | 
  **status** | **String**| Distinguished Name | 
  **description** | **String**| User friendly descriptive detail of attribute. | [optional] 
- **oxMultiValuedAttribute** | **Boolean**| Boolean value indicating if the attribute is multi-value | [optional] 
+ **jansMultivaluedAttr** | **Boolean**| Boolean value indicating if the attribute is multi-value | [optional] 
  **lifetime** | **String**|  | [optional] 
  **sourceAttribute** | **String**|  | [optional] 
  **salt** | **String**|  | [optional] 
@@ -291,12 +291,12 @@ Name | Type | Description  | Notes
  **editType** | [**[String]**](String.md)| GluuUserRole | [optional] 
  **viewType** | [**[String]**](String.md)| GluuUserRole | [optional] 
  **usageType** | [**[String]**](String.md)| GluuAttributeUsageType | [optional] 
- **oxAuthClaimName** | **String**|  | [optional] 
+ **jansAttrName** | **String**|  | [optional] 
  **seeAlso** | **String**|  | [optional] 
  **saml1Uri** | **String**|  | [optional] 
  **saml2Uri** | **String**|  | [optional] 
  **urn** | **String**|  | [optional] 
- **oxSCIMCustomAttribute** | **Boolean**| Boolean value indicating if the attribute is a SCIM custom attribute | [optional] 
+ **jansSCIMCustomAttr** | **Boolean**| Boolean value indicating if the attribute is a SCIM custom attribute | [optional] 
  **custom** | **Boolean**| Boolean value indicating if the attribute is a custom attribute | [optional] 
  **requred** | **Boolean**| Boolean value indicating is a mandatory attribute | [optional] 
  **attributeValidation** | [**GluuAttributeAttributeValidation**](GluuAttributeAttributeValidation.md)|  | [optional] 

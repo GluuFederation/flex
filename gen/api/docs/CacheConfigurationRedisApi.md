@@ -4,8 +4,8 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getConfigCacheRedis**](CacheConfigurationRedisApi.md#getConfigCacheRedis) | **GET** /api/v1/config/cache/redis | Returns Redis cache configuration.
-[**putConfigCacheRedis**](CacheConfigurationRedisApi.md#putConfigCacheRedis) | **PUT** /api/v1/config/cache/redis | Updates Redis cache configuration.
+[**getConfigCacheRedis**](CacheConfigurationRedisApi.md#getConfigCacheRedis) | **GET** /jans-config-api/api/v1/config/cache/redis | Returns Redis cache configuration.
+[**putConfigCacheRedis**](CacheConfigurationRedisApi.md#putConfigCacheRedis) | **PUT** /jans-config-api/api/v1/config/cache/redis | Updates Redis cache configuration.
 
 
 

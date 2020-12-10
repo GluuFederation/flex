@@ -4,12 +4,12 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteOauthScopesById**](OAuthScopesApi.md#deleteOauthScopesById) | **DELETE** /api/v1/scopes/{inum} | Delete Scope.
-[**getOauthScopes**](OAuthScopesApi.md#getOauthScopes) | **GET** /api/v1/scopes | Gets list of Scopes.
-[**getOauthScopesByInum**](OAuthScopesApi.md#getOauthScopesByInum) | **GET** /api/v1/scopes/{inum} | Get Scope by Inum
-[**patchOauthScopesById**](OAuthScopesApi.md#patchOauthScopesById) | **PATCH** /api/v1/scopes/{inum} | Update modified attributes of existing Scope by Inum.
-[**postOauthScopes**](OAuthScopesApi.md#postOauthScopes) | **POST** /api/v1/scopes | Create Scope.
-[**putOauthScopes**](OAuthScopesApi.md#putOauthScopes) | **PUT** /api/v1/scopes | Updates existing Scope.
+[**deleteOauthScopesById**](OAuthScopesApi.md#deleteOauthScopesById) | **DELETE** /jans-config-api/api/v1/scopes/{inum} | Delete Scope.
+[**getOauthScopes**](OAuthScopesApi.md#getOauthScopes) | **GET** /jans-config-api/api/v1/scopes | Gets list of Scopes.
+[**getOauthScopesByInum**](OAuthScopesApi.md#getOauthScopesByInum) | **GET** /jans-config-api/api/v1/scopes/{inum} | Get Scope by Inum
+[**patchOauthScopesById**](OAuthScopesApi.md#patchOauthScopesById) | **PATCH** /jans-config-api/api/v1/scopes/{inum} | Update modified attributes of existing Scope by Inum.
+[**postOauthScopes**](OAuthScopesApi.md#postOauthScopes) | **POST** /jans-config-api/api/v1/scopes | Create Scope.
+[**putOauthScopes**](OAuthScopesApi.md#putOauthScopes) | **PUT** /jans-config-api/api/v1/scopes | Updates existing Scope.
 
 
 

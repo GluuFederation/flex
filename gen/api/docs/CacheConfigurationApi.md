@@ -4,8 +4,8 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getConfigCache**](CacheConfigurationApi.md#getConfigCache) | **GET** /api/v1/config/cache | Returns cache configuration.
-[**patchConfigCache**](CacheConfigurationApi.md#patchConfigCache) | **PATCH** /api/v1/config/cache | Partially modifies cache configuration.
+[**getConfigCache**](CacheConfigurationApi.md#getConfigCache) | **GET** /jans-config-api/api/v1/config/cache | Returns cache configuration.
+[**patchConfigCache**](CacheConfigurationApi.md#patchConfigCache) | **PATCH** /jans-config-api/api/v1/config/cache | Partially modifies cache configuration.
 
 
 

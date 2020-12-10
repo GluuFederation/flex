@@ -4,8 +4,8 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getConfigLogging**](ConfigurationLoggingApi.md#getConfigLogging) | **GET** /api/v1/logging | Returns Jans Authorization Server logging settings.
-[**putConfigLogging**](ConfigurationLoggingApi.md#putConfigLogging) | **PUT** /api/v1/logging | Updates Jans Authorization Server logging settings.
+[**getConfigLogging**](ConfigurationLoggingApi.md#getConfigLogging) | **GET** /jans-config-api/api/v1/logging | Returns Jans Authorization Server logging settings.
+[**putConfigLogging**](ConfigurationLoggingApi.md#putConfigLogging) | **PUT** /jans-config-api/api/v1/logging | Updates Jans Authorization Server logging settings.
 
 
 

@@ -4,12 +4,12 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteOauthOpenidSectorsById**](OAuthOpenIDConnectSectorIdentifiersApi.md#deleteOauthOpenidSectorsById) | **DELETE** /api/v1/openid/sectoridentifiers/{inum} | Delete OpenID Connect Sector.
-[**getOauthOpenidSectors**](OAuthOpenIDConnectSectorIdentifiersApi.md#getOauthOpenidSectors) | **GET** /api/v1/openid/sectoridentifiers | Gets list of OpenID Connect Sectors.
-[**getOauthOpenidSectorsById**](OAuthOpenIDConnectSectorIdentifiersApi.md#getOauthOpenidSectorsById) | **GET** /api/v1/openid/sectoridentifiers/{inum} | Get OpenID Connect Sector by Inum.
-[**patchOauthOpenidSectorsById**](OAuthOpenIDConnectSectorIdentifiersApi.md#patchOauthOpenidSectorsById) | **PATCH** /api/v1/openid/sectoridentifiers/{inum} | Partially update OpenId Connect Sector by Inum.
-[**postOauthOpenidSectors**](OAuthOpenIDConnectSectorIdentifiersApi.md#postOauthOpenidSectors) | **POST** /api/v1/openid/sectoridentifiers | Create new OpenID Connect Sector.
-[**putOauthOpenidSectors**](OAuthOpenIDConnectSectorIdentifiersApi.md#putOauthOpenidSectors) | **PUT** /api/v1/openid/sectoridentifiers | Update OpenId Connect Sector.
+[**deleteOauthOpenidSectorsById**](OAuthOpenIDConnectSectorIdentifiersApi.md#deleteOauthOpenidSectorsById) | **DELETE** /jans-config-api/api/v1/openid/sectoridentifiers/{inum} | Delete OpenID Connect Sector.
+[**getOauthOpenidSectors**](OAuthOpenIDConnectSectorIdentifiersApi.md#getOauthOpenidSectors) | **GET** /jans-config-api/api/v1/openid/sectoridentifiers | Gets list of OpenID Connect Sectors.
+[**getOauthOpenidSectorsById**](OAuthOpenIDConnectSectorIdentifiersApi.md#getOauthOpenidSectorsById) | **GET** /jans-config-api/api/v1/openid/sectoridentifiers/{inum} | Get OpenID Connect Sector by Inum.
+[**patchOauthOpenidSectorsById**](OAuthOpenIDConnectSectorIdentifiersApi.md#patchOauthOpenidSectorsById) | **PATCH** /jans-config-api/api/v1/openid/sectoridentifiers/{inum} | Partially update OpenId Connect Sector by Inum.
+[**postOauthOpenidSectors**](OAuthOpenIDConnectSectorIdentifiersApi.md#postOauthOpenidSectors) | **POST** /jans-config-api/api/v1/openid/sectoridentifiers | Create new OpenID Connect Sector.
+[**putOauthOpenidSectors**](OAuthOpenIDConnectSectorIdentifiersApi.md#putOauthOpenidSectors) | **PUT** /jans-config-api/api/v1/openid/sectoridentifiers | Update OpenId Connect Sector.
 
 
 

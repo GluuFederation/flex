@@ -4,9 +4,9 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getConfigJwks**](ConfigurationJWKJSONWebKeyJWKApi.md#getConfigJwks) | **GET** /api/v1/config/jwks | Gets list of JSON Web Key (JWK) used by server.
-[**patchConfigJwks**](ConfigurationJWKJSONWebKeyJWKApi.md#patchConfigJwks) | **PATCH** /api/v1/config/jwks | Patch JWKS
-[**putConfigJwks**](ConfigurationJWKJSONWebKeyJWKApi.md#putConfigJwks) | **PUT** /api/v1/config/jwks | Puts/replaces JWKS
+[**getConfigJwks**](ConfigurationJWKJSONWebKeyJWKApi.md#getConfigJwks) | **GET** /jans-config-api/api/v1/config/jwks | Gets list of JSON Web Key (JWK) used by server.
+[**patchConfigJwks**](ConfigurationJWKJSONWebKeyJWKApi.md#patchConfigJwks) | **PATCH** /jans-config-api/api/v1/config/jwks | Patch JWKS
+[**putConfigJwks**](ConfigurationJWKJSONWebKeyJWKApi.md#putConfigJwks) | **PUT** /jans-config-api/api/v1/config/jwks | Puts/replaces JWKS
 
 
 

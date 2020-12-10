@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **description** | **String** | User friendly descriptive detail of attribute. | [optional] 
 **dataType** | **String** | Data Type of attribute. | 
 **status** | **String** | Distinguished Name | 
-**oxMultiValuedAttribute** | **Boolean** | Boolean value indicating if the attribute is multi-value | [optional] 
+**jansMultivaluedAttr** | **Boolean** | Boolean value indicating if the attribute is multi-value | [optional] 
 **lifetime** | **String** |  | [optional] 
 **sourceAttribute** | **String** |  | [optional] 
 **salt** | **String** |  | [optional] 
@@ -18,12 +18,12 @@ Name | Type | Description | Notes
 **editType** | **[String]** | GluuUserRole | [optional] 
 **viewType** | **[String]** | GluuUserRole | [optional] 
 **usageType** | **[String]** | GluuAttributeUsageType | [optional] 
-**oxAuthClaimName** | **String** |  | [optional] 
+**jansAttrName** | **String** |  | [optional] 
 **seeAlso** | **String** |  | [optional] 
 **saml1Uri** | **String** |  | [optional] 
 **saml2Uri** | **String** |  | [optional] 
 **urn** | **String** |  | [optional] 
-**oxSCIMCustomAttribute** | **Boolean** | Boolean value indicating if the attribute is a SCIM custom attribute | [optional] 
+**jansSCIMCustomAttr** | **Boolean** | Boolean value indicating if the attribute is a SCIM custom attribute | [optional] 
 **custom** | **Boolean** | Boolean value indicating if the attribute is a custom attribute | [optional] 
 **requred** | **Boolean** | Boolean value indicating is a mandatory attribute | [optional] 
 **attributeValidation** | [**GluuAttributeAttributeValidation**](GluuAttributeAttributeValidation.md) |  | [optional] 

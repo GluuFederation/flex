@@ -125,7 +125,7 @@ Name | Type | Description | Notes
 **updateUserLastLogonTime** | **Boolean** | Boolean value to specify if application should update oxLastLogonTime attribute on user authentication. | [optional] [default to false]
 **updateClientAccessTime** | **Boolean** | Boolean value to specify if application should update oxLastAccessTime/oxLastLogonTime attributes on client authentication. | [optional] [default to false]
 **enableClientGrantTypeUpdate** | **Boolean** | Boolean value to specify if client can update Grant Type values. | [optional] [default to false]
-**loggingLevel** | **String** | Logging level for oxAuth logger. | [optional] 
+**loggingLevel** | **String** | Logging level for jans-auth logger. | [optional] 
 **corsConfigurationFilters** | [**[AppConfigurationCorsConfigurationFilters]**](AppConfigurationCorsConfigurationFilters.md) | CORS Configuration filters. | [optional] 
 **logClientIdOnClientAuthentication** | **Boolean** | Boolean value to specify if application should log the Client ID on client authentication. | [optional] 
 **logClientNameOnClientAuthentication** | **Boolean** | Boolean value to specify if application should log the Client Name on client authentication. | [optional] 

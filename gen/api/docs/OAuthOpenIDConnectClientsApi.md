@@ -4,12 +4,12 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteOauthOpenidClientsByInum**](OAuthOpenIDConnectClientsApi.md#deleteOauthOpenidClientsByInum) | **DELETE** /api/v1/openid/clients/{inum} | Delete OpenId Connect client.
-[**getOauthOpenidClients**](OAuthOpenIDConnectClientsApi.md#getOauthOpenidClients) | **GET** /api/v1/openid/clients | Gets list of OpenID Connect clients
-[**getOauthOpenidClientsByInum**](OAuthOpenIDConnectClientsApi.md#getOauthOpenidClientsByInum) | **GET** /api/v1/openid/clients/{inum} | Get OpenId Connect Client by Inum
-[**patchOauthOpenidClientsByInum**](OAuthOpenIDConnectClientsApi.md#patchOauthOpenidClientsByInum) | **PATCH** /api/v1/openid/clients/{inum} | Update modified properties of OpenId Connect client by Inum.
-[**postOauthOpenidClients**](OAuthOpenIDConnectClientsApi.md#postOauthOpenidClients) | **POST** /api/v1/openid/clients | Create new OpenId connect client
-[**putOauthOpenidClients**](OAuthOpenIDConnectClientsApi.md#putOauthOpenidClients) | **PUT** /api/v1/openid/clients | Update OpenId Connect client.
+[**deleteOauthOpenidClientsByInum**](OAuthOpenIDConnectClientsApi.md#deleteOauthOpenidClientsByInum) | **DELETE** /jans-config-api/api/v1/openid/clients/{inum} | Delete OpenId Connect client.
+[**getOauthOpenidClients**](OAuthOpenIDConnectClientsApi.md#getOauthOpenidClients) | **GET** /jans-config-api/api/v1/openid/clients | Gets list of OpenID Connect clients
+[**getOauthOpenidClientsByInum**](OAuthOpenIDConnectClientsApi.md#getOauthOpenidClientsByInum) | **GET** /jans-config-api/api/v1/openid/clients/{inum} | Get OpenId Connect Client by Inum
+[**patchOauthOpenidClientsByInum**](OAuthOpenIDConnectClientsApi.md#patchOauthOpenidClientsByInum) | **PATCH** /jans-config-api/api/v1/openid/clients/{inum} | Update modified properties of OpenId Connect client by Inum.
+[**postOauthOpenidClients**](OAuthOpenIDConnectClientsApi.md#postOauthOpenidClients) | **POST** /jans-config-api/api/v1/openid/clients | Create new OpenId connect client
+[**putOauthOpenidClients**](OAuthOpenIDConnectClientsApi.md#putOauthOpenidClients) | **PUT** /jans-config-api/api/v1/openid/clients | Update OpenId Connect client.
 
 
 

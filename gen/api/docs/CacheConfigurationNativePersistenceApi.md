@@ -4,8 +4,8 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getConfigCacheNativePersistence**](CacheConfigurationNativePersistenceApi.md#getConfigCacheNativePersistence) | **GET** /api/v1/config/cache/native-persistence | Returns native persistence cache configuration.
-[**putConfigCacheNativePersistence**](CacheConfigurationNativePersistenceApi.md#putConfigCacheNativePersistence) | **PUT** /api/v1/config/cache/native-persistence | Updates native persistence cache configuration.
+[**getConfigCacheNativePersistence**](CacheConfigurationNativePersistenceApi.md#getConfigCacheNativePersistence) | **GET** /jans-config-api/api/v1/config/cache/native-persistence | Returns native persistence cache configuration.
+[**putConfigCacheNativePersistence**](CacheConfigurationNativePersistenceApi.md#putConfigCacheNativePersistence) | **PUT** /jans-config-api/api/v1/config/cache/native-persistence | Updates native persistence cache configuration.
 
 
 

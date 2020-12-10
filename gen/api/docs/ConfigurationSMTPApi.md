@@ -4,11 +4,11 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteConfigSmtp**](ConfigurationSMTPApi.md#deleteConfigSmtp) | **DELETE** /api/v1/config/smtp | Deletes SMTP server configuration.
-[**getConfigSmtp**](ConfigurationSMTPApi.md#getConfigSmtp) | **GET** /api/v1/config/smtp | Returns SMTP server configuration.
-[**postConfigSmtp**](ConfigurationSMTPApi.md#postConfigSmtp) | **POST** /api/v1/config/smtp | Adds SMTP server configuration.
-[**putConfigSmtp**](ConfigurationSMTPApi.md#putConfigSmtp) | **PUT** /api/v1/config/smtp | Updates SMTP server configuration.
-[**testConfigSmtp**](ConfigurationSMTPApi.md#testConfigSmtp) | **GET** /api/v1/config/smtp/status | Test SMTP server configuration.
+[**deleteConfigSmtp**](ConfigurationSMTPApi.md#deleteConfigSmtp) | **DELETE** /jans-config-api/api/v1/config/smtp | Deletes SMTP server configuration.
+[**getConfigSmtp**](ConfigurationSMTPApi.md#getConfigSmtp) | **GET** /jans-config-api/api/v1/config/smtp | Returns SMTP server configuration.
+[**postConfigSmtp**](ConfigurationSMTPApi.md#postConfigSmtp) | **POST** /jans-config-api/api/v1/config/smtp | Adds SMTP server configuration.
+[**putConfigSmtp**](ConfigurationSMTPApi.md#putConfigSmtp) | **PUT** /jans-config-api/api/v1/config/smtp | Updates SMTP server configuration.
+[**testConfigSmtp**](ConfigurationSMTPApi.md#testConfigSmtp) | **GET** /jans-config-api/api/v1/config/smtp/test | Test SMTP server configuration.
 
 
 

@@ -4,8 +4,8 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getConfigCacheInMemory**](CacheConfigurationInMemoryApi.md#getConfigCacheInMemory) | **GET** /api/v1/config/cache/in-memory | Returns in-Memory cache configuration.
-[**putConfigCacheInMemory**](CacheConfigurationInMemoryApi.md#putConfigCacheInMemory) | **PUT** /api/v1/config/cache/in-memory | Updates in-Memory cache configuration.
+[**getConfigCacheInMemory**](CacheConfigurationInMemoryApi.md#getConfigCacheInMemory) | **GET** /jans-config-api/api/v1/config/cache/in-memory | Returns in-Memory cache configuration.
+[**putConfigCacheInMemory**](CacheConfigurationInMemoryApi.md#putConfigCacheInMemory) | **PUT** /jans-config-api/api/v1/config/cache/in-memory | Updates in-Memory cache configuration.
 
 
 

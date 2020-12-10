@@ -1,4 +1,4 @@
-# JansConfigApi.ApiV1OpenidClientsClientAttributes
+# JansConfigApi.JansConfigApiApiV1OpenidClientsClientAttributes
 
 ## Properties
 

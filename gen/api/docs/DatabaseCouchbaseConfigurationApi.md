@@ -4,13 +4,13 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteConfigDatabaseCouchbaseByName**](DatabaseCouchbaseConfigurationApi.md#deleteConfigDatabaseCouchbaseByName) | **DELETE** /api/v1/config/database/couchbase/{name} | Deletes a Couchbase configurations by name.
-[**getConfigDatabaseCouchbase**](DatabaseCouchbaseConfigurationApi.md#getConfigDatabaseCouchbase) | **GET** /api/v1/config/database/couchbase | Gets list of existing Couchbase configurations.
-[**getConfigDatabaseCouchbaseByName**](DatabaseCouchbaseConfigurationApi.md#getConfigDatabaseCouchbaseByName) | **GET** /api/v1/config/database/couchbase/{name} | Gets a Couchbase configurations by name.
-[**patchConfigDatabaseCouchbaseByName**](DatabaseCouchbaseConfigurationApi.md#patchConfigDatabaseCouchbaseByName) | **PATCH** /api/v1/config/database/couchbase/{name} | Partially modify an Couchbase configuration.
-[**postConfigDatabaseCouchbase**](DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbase) | **POST** /api/v1/config/database/couchbase | Adds a new Couchbase configuration.
-[**postConfigDatabaseCouchbaseTest**](DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbaseTest) | **POST** /api/v1/config/database/couchbase/test | Tests a Couchbase configurations by name.
-[**putConfigDatabaseCouchbase**](DatabaseCouchbaseConfigurationApi.md#putConfigDatabaseCouchbase) | **PUT** /api/v1/config/database/couchbase | Updates Couchbase configuration.
+[**deleteConfigDatabaseCouchbaseByName**](DatabaseCouchbaseConfigurationApi.md#deleteConfigDatabaseCouchbaseByName) | **DELETE** /jans-config-api/api/v1/config/database/couchbase/{name} | Deletes a Couchbase configurations by name.
+[**getConfigDatabaseCouchbase**](DatabaseCouchbaseConfigurationApi.md#getConfigDatabaseCouchbase) | **GET** /jans-config-api/api/v1/config/database/couchbase | Gets list of existing Couchbase configurations.
+[**getConfigDatabaseCouchbaseByName**](DatabaseCouchbaseConfigurationApi.md#getConfigDatabaseCouchbaseByName) | **GET** /jans-config-api/api/v1/config/database/couchbase/{name} | Gets a Couchbase configurations by name.
+[**patchConfigDatabaseCouchbaseByName**](DatabaseCouchbaseConfigurationApi.md#patchConfigDatabaseCouchbaseByName) | **PATCH** /jans-config-api/api/v1/config/database/couchbase/{name} | Partially modify an Couchbase configuration.
+[**postConfigDatabaseCouchbase**](DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbase) | **POST** /jans-config-api/api/v1/config/database/couchbase | Adds a new Couchbase configuration.
+[**postConfigDatabaseCouchbaseTest**](DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbaseTest) | **POST** /jans-config-api/api/v1/config/database/couchbase/test | Tests a Couchbase configurations by name.
+[**putConfigDatabaseCouchbase**](DatabaseCouchbaseConfigurationApi.md#putConfigDatabaseCouchbase) | **PUT** /jans-config-api/api/v1/config/database/couchbase | Updates Couchbase configuration.
 
 
 

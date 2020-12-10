@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **authorizationPolicies** | **[String]** | Policies associated with all scopes. | [optional] 
 **defaultScope** | **Boolean** | Boolean value to specify default scope. | [optional] 
 **scopeType** | **String** | The scopes type associated with Access Tokens determine what resources will. | [optional] 
-**oxAuthClaims** | **[String]** | Claim attributes associated with the scope. | [optional] 
+**jansClaim** | **[String]** | Claim attributes associated with the scope. | [optional] 
 **umaType** | **Boolean** |  | [optional] 
 **umaAuthorizationPolicies** | **[String]** |  | [optional] 
 **attributes** | [**ScopeAttributes**](ScopeAttributes.md) |  | [optional] 

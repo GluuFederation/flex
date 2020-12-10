@@ -4,8 +4,8 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getConfigCacheMemcached**](CacheConfigurationMemcachedApi.md#getConfigCacheMemcached) | **GET** /api/v1/config/cache/memcached | Returns Memcached cache configuration.
-[**putConfigCacheMemcached**](CacheConfigurationMemcachedApi.md#putConfigCacheMemcached) | **PUT** /api/v1/config/cache/memcached | Updates Memcached cache configuration.
+[**getConfigCacheMemcached**](CacheConfigurationMemcachedApi.md#getConfigCacheMemcached) | **GET** /jans-config-api/api/v1/config/cache/memcached | Returns Memcached cache configuration.
+[**putConfigCacheMemcached**](CacheConfigurationMemcachedApi.md#putConfigCacheMemcached) | **PUT** /jans-config-api/api/v1/config/cache/memcached | Updates Memcached cache configuration.
 
 
 

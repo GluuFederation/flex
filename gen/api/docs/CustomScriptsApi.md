@@ -4,12 +4,12 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteConfigScriptsByInum**](CustomScriptsApi.md#deleteConfigScriptsByInum) | **DELETE** /api/v1/config/scripts/{inum} | Deletes a custom script.
-[**getConfigScripts**](CustomScriptsApi.md#getConfigScripts) | **GET** /api/v1/config/scripts/type/ | Gets a list of custom scripts.
-[**getConfigScriptsByInum**](CustomScriptsApi.md#getConfigScriptsByInum) | **GET** /api/v1/config/scripts/inum/{inum} | Gets a script by Inum.
-[**getConfigScriptsByType**](CustomScriptsApi.md#getConfigScriptsByType) | **GET** /api/v1/config/scripts/type/{type} | Gets list of scripts by type.
-[**postConfigScripts**](CustomScriptsApi.md#postConfigScripts) | **POST** /api/v1/config/scripts/type/ | Adds a new custom script.
-[**putConfigScripts**](CustomScriptsApi.md#putConfigScripts) | **PUT** /api/v1/config/scripts/type/ | Updates a custom script.
+[**deleteConfigScriptsByInum**](CustomScriptsApi.md#deleteConfigScriptsByInum) | **DELETE** /jans-config-api/api/v1/config/scripts/{inum} | Deletes a custom script.
+[**getConfigScripts**](CustomScriptsApi.md#getConfigScripts) | **GET** /jans-config-api/api/v1/config/scripts | Gets a list of custom scripts.
+[**getConfigScriptsByInum**](CustomScriptsApi.md#getConfigScriptsByInum) | **GET** /jans-config-api/api/v1/config/scripts/inum/{inum} | Gets a script by Inum.
+[**getConfigScriptsByType**](CustomScriptsApi.md#getConfigScriptsByType) | **GET** /jans-config-api/api/v1/config/scripts/type/{type} | Gets list of scripts by type.
+[**postConfigScripts**](CustomScriptsApi.md#postConfigScripts) | **POST** /jans-config-api/api/v1/config/scripts | Adds a new custom script.
+[**putConfigScripts**](CustomScriptsApi.md#putConfigScripts) | **PUT** /jans-config-api/api/v1/config/scripts | Updates a custom script.
 
 
 

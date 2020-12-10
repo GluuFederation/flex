@@ -4,13 +4,13 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#deleteConfigDatabaseLdapByName) | **DELETE** /api/v1/config/database/ldap/{name} | Deletes an LDAP configuration.
-[**getConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#getConfigDatabaseLdap) | **GET** /api/v1/config/database/ldap | Gets list of existing LDAP configurations.
-[**getConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#getConfigDatabaseLdapByName) | **GET** /api/v1/config/database/ldap/{name} | Gets an LDAP configuration by name.
-[**patchConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#patchConfigDatabaseLdapByName) | **PATCH** /api/v1/config/database/ldap/{name} | Partially modify an LDAP configuration.
-[**postConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdap) | **POST** /api/v1/config/database/ldap | Adds a new LDAP configuration.
-[**postConfigDatabaseLdapTest**](DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdapTest) | **POST** /api/v1/config/database/ldap/test | Tests a LDAP configurations by name.
-[**putConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#putConfigDatabaseLdap) | **PUT** /api/v1/config/database/ldap | Updates LDAP configuration.
+[**deleteConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#deleteConfigDatabaseLdapByName) | **DELETE** /jans-config-api/api/v1/config/database/ldap/{name} | Deletes an LDAP configuration.
+[**getConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#getConfigDatabaseLdap) | **GET** /jans-config-api/api/v1/config/database/ldap | Gets list of existing LDAP configurations.
+[**getConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#getConfigDatabaseLdapByName) | **GET** /jans-config-api/api/v1/config/database/ldap/{name} | Gets an LDAP configuration by name.
+[**patchConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#patchConfigDatabaseLdapByName) | **PATCH** /jans-config-api/api/v1/config/database/ldap/{name} | Partially modify an LDAP configuration.
+[**postConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdap) | **POST** /jans-config-api/api/v1/config/database/ldap | Adds a new LDAP configuration.
+[**postConfigDatabaseLdapTest**](DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdapTest) | **POST** /jans-config-api/api/v1/config/database/ldap/test | Tests a LDAP configurations by name.
+[**putConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#putConfigDatabaseLdap) | **PUT** /jans-config-api/api/v1/config/database/ldap | Updates LDAP configuration.
 
 
 

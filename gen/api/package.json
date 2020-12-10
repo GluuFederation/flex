@@ -1,6 +1,6 @@
 {
   "name": "jans_config_api",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "jans_config_api___Authorization_services",
   "license": "License",
   "main": "dist/index.js",

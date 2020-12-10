@@ -4,12 +4,12 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteOauthUmaResourcesById**](OAuthUMAResourcesApi.md#deleteOauthUmaResourcesById) | **DELETE** /api/v1/uma/resources/{id} | Deletes an UMA resource.
-[**getOauthUmaResources**](OAuthUMAResourcesApi.md#getOauthUmaResources) | **GET** /api/v1/uma/resources | Gets list of UMA resources.
-[**getOauthUmaResourcesById**](OAuthUMAResourcesApi.md#getOauthUmaResourcesById) | **GET** /api/v1/uma/resources/{id} | Gets an UMA resource by ID.
-[**patchOauthUmaResourcesById**](OAuthUMAResourcesApi.md#patchOauthUmaResourcesById) | **PATCH** /api/v1/uma/resources/{id} | Partially updates an UMA resource by Inum.
-[**postOauthUmaResources**](OAuthUMAResourcesApi.md#postOauthUmaResources) | **POST** /api/v1/uma/resources | Creates an UMA resource.
-[**putOauthUmaResources**](OAuthUMAResourcesApi.md#putOauthUmaResources) | **PUT** /api/v1/uma/resources | Updates an UMA resource.
+[**deleteOauthUmaResourcesById**](OAuthUMAResourcesApi.md#deleteOauthUmaResourcesById) | **DELETE** /jans-config-api/api/v1/uma/resources/{id} | Deletes an UMA resource.
+[**getOauthUmaResources**](OAuthUMAResourcesApi.md#getOauthUmaResources) | **GET** /jans-config-api/api/v1/uma/resources | Gets list of UMA resources.
+[**getOauthUmaResourcesById**](OAuthUMAResourcesApi.md#getOauthUmaResourcesById) | **GET** /jans-config-api/api/v1/uma/resources/{id} | Gets an UMA resource by ID.
+[**patchOauthUmaResourcesById**](OAuthUMAResourcesApi.md#patchOauthUmaResourcesById) | **PATCH** /jans-config-api/api/v1/uma/resources/{id} | Partially updates an UMA resource by Inum.
+[**postOauthUmaResources**](OAuthUMAResourcesApi.md#postOauthUmaResources) | **POST** /jans-config-api/api/v1/uma/resources | Creates an UMA resource.
+[**putOauthUmaResources**](OAuthUMAResourcesApi.md#putOauthUmaResources) | **PUT** /jans-config-api/api/v1/uma/resources | Updates an UMA resource.
 
 
 

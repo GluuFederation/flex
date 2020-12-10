@@ -1,27 +1,27 @@
 /**
  * Auth Sagas
  */
-import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
+import { all, call, fork, put, takeEvery } from "redux-saga/effects";
 
-import {
-  GET_OAUTH2_CONFIG,
-  GET_OAUTH2_ACCESS_TOKEN,
-} from '../actions/types';
+import { GET_OAUTH2_CONFIG, GET_OAUTH2_ACCESS_TOKEN } from "../actions/types";
 
 import {
   getOAuth2ConfigResponse,
-  getOAuth2AccessTokenResponse,
-} from '../actions';
-
-import api from '../api';
+  getOAuth2AccessTokenResponse
+} from "../actions";
+import axios from "../api/axios";
 
 // Get OAuth2 Configuration
 
 const getOAuth2ConfigRequest = async () => {
-  return await api.get('/oauth2/config')
-    .then((response) => (response.data))
+  return await axios
+    .get("/oauth2/config")
+    .then(response => response.data)
     .catch(error => {
-      console.error('Problems getting OAuth2 configuration in order to process authz code flow.', error);
+      console.error(
+        "Problems getting OAuth2 configuration in order to process authz code flow.",
+        error
+      );
       return error;
     });
 };
@@ -34,7 +34,7 @@ function* getOAuth2ConfigProcessor() {
       return;
     }
   } catch (error) {
-    console.log('Problems getting OAuth2 configuration.', error);
+    console.log("Problems getting OAuth2 configuration.", error);
   }
   yield put(getOAuth2ConfigResponse());
 }
@@ -45,13 +45,17 @@ export function* getOAuth2Config() {
 
 // Get OAuth2 Access Token
 
-const getOAuth2AccessTokenRequest = async (code) => {
-  return await api.get('/oauth2/access-token', {
-    params: { code }
-  })
-    .then((response) => (response.data))
+const getOAuth2AccessTokenRequest = async code => {
+  return await axios
+    .get("/oauth2/access-token", {
+      params: { code }
+    })
+    .then(response => response.data)
     .catch(error => {
-      console.error('Problems getting OAuth2 access token in order to process authz code flow.', error);
+      console.error(
+        "Problems getting OAuth2 access token in order to process authz code flow.",
+        error
+      );
       return error;
     });
 };
@@ -64,7 +68,7 @@ function* getOAuth2AccessTokenProcessor({ payload }) {
       return;
     }
   } catch (error) {
-    console.log('Problems getting OAuth2 Access Token.', error);
+    console.log("Problems getting OAuth2 Access Token.", error);
   }
   yield put(getOAuth2AccessTokenResponse());
 }
@@ -77,8 +81,5 @@ export function* getOAuth2AccessToken() {
  * Auth Root Saga
  */
 export default function* rootSaga() {
-  yield all([
-    fork(getOAuth2Config),
-    fork(getOAuth2AccessToken),
-  ]);
+  yield all([fork(getOAuth2Config), fork(getOAuth2AccessToken)]);
 }

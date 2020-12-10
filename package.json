@@ -12,7 +12,7 @@
     "start:dev": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.dev.js",
     "start:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.prod.js",
     "lint": "eslint app/ --ext .js,jsx --fix",
-    "api": "rm -rf gen/api && openapi-generator-cli generate -i https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/docs/jans-config-api-swagger.yaml --generator-name javascript -o gen/api && cd gen/api && npm install && npm run build"
+    "api": "rm -rf gen/api && openapi-generator-cli generate -i https://raw.githubusercontent.com/JanssenProject/jans-config-api/configapi-uma-protect/docs/jans-config-api-swagger.yaml --generator-name javascript -o gen/api && cd gen/api && npm install && npm run build"
   },
   "author": "gluu inc.",
   "license": "Apache",
@@ -106,7 +106,8 @@
     "text-mask-addons": "^3.8.0",
     "uuid": "^3.3.2",
     "webpack-cli": "^3.1.0",
-    "webpack-flush-chunks": "^2.0.3"
+    "webpack-flush-chunks": "^2.0.3",
+    "jans_config_api": "file:gen/api"
   },
   "eslintConfig": {
     "root": true,

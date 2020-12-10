@@ -4,8 +4,8 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getProperties**](ConfigurationPropertiesApi.md#getProperties) | **GET** /api/v1/config/oxauth | Gets all Jans authorization server configuration properties.
-[**patchProperties**](ConfigurationPropertiesApi.md#patchProperties) | **PATCH** /api/v1/config/oxauth | Partially modifies Jans authorization server Application configuration properties.
+[**getProperties**](ConfigurationPropertiesApi.md#getProperties) | **GET** /jans-config-api/api/v1/jans-auth-server/config | Gets all Jans authorization server configuration properties.
+[**patchProperties**](ConfigurationPropertiesApi.md#patchProperties) | **PATCH** /jans-config-api/api/v1/jans-auth-server/config | Partially modifies Jans authorization server Application configuration properties.
 
 
 

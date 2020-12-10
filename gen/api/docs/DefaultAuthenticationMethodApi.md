@@ -4,8 +4,8 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getAcrs**](DefaultAuthenticationMethodApi.md#getAcrs) | **GET** /api/v1/acrs | Gets default authentication method.
-[**putAcrs**](DefaultAuthenticationMethodApi.md#putAcrs) | **PUT** /api/v1/acrs | Updates default authentication method.
+[**getAcrs**](DefaultAuthenticationMethodApi.md#getAcrs) | **GET** /jans-config-api/api/v1/acrs | Gets default authentication method.
+[**putAcrs**](DefaultAuthenticationMethodApi.md#putAcrs) | **PUT** /jans-config-api/api/v1/acrs | Updates default authentication method.
 
 
 

@@ -1,16 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 
-import AppLayout from "./../../layout/default";
-import { RoutedContent } from "./../../routes";
-import SessionChecker from "./../../utils/SessionChecker";
+import AppLayout from "../../layout/default";
+import { RoutedContent } from "../../routes";
+import SessionChecker from "../../utils/SessionChecker";
 import { Provider } from "react-redux";
 import { configureStore } from "../../redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 
 const basePath = process.env.BASE_PATH || "/";
 
-const AppClient = () => {
+const AppMain = () => {
   const { store, persistor } = configureStore();
 
   return (
@@ -28,4 +28,4 @@ const AppClient = () => {
   );
 };
 
-export default AppClient;
+export default AppMain;

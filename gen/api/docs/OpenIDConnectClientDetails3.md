@@ -62,7 +62,7 @@ Name | Type | Description | Notes
 **disabled** | **Boolean** | Specifies whether client is disabled. | [optional] 
 **jansId** | **String** | Attribute Scope Id. | [optional] 
 **deletable** | **Boolean** | Specifies whether client is deletable. | [optional] 
-**clientAttributes** | [**ApiV1OpenidClientsClientAttributes**](ApiV1OpenidClientsClientAttributes.md) |  | [optional] 
+**clientAttributes** | [**JansConfigApiApiV1OpenidClientsClientAttributes**](JansConfigApiApiV1OpenidClientsClientAttributes.md) |  | [optional] 
 **backchannelAuthenticationRequestSigningAlg** | **String** | The JWS algorithm alg value that the Client will use for signing authentication request, as described in Section 7.1.1. of OAuth 2.0 [RFC6749]. When omitted, the Client will not send signed authentication requests. | [optional] 
 **backchannelTokenDeliveryMode** | **String** | specifies how backchannel token will be delivered. | [optional] 
 **backchannelClientNotificationEndpoint** | **String** | Client Initiated Backchannel Authentication (CIBA) enables a Client to initiate the authentication of an end-user by means of out-of-band mechanisms. Upon receipt of the notification, the Client makes a request to the token endpoint to obtain the tokens. | [optional] 
