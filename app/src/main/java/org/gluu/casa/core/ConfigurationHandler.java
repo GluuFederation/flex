@@ -198,6 +198,7 @@ public class ConfigurationHandler extends JobListenerSupport {
 
     private List<CustomScript> getEnabledScripts() {
         CustomScript sample = new CustomScript();
+        sample.setBaseDn(persistenceService.getCustomScriptsDn());
         sample.setEnabled(true);
         return persistenceService.find(sample);        
     }
