@@ -23,7 +23,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "@openapitools/openapi-generator-cli": "^2.1.7",
+    "@openapitools/openapi-generator-cli": "^2.1.10",
     "autoprefixer": "^9.6.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.6",

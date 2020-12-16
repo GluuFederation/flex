@@ -271,8 +271,8 @@ Class | Method | HTTP request | Description
 - **Scopes**: 
   - https://jans.io/oauth/jans-auth-server/config/properties.readonly: View Auth Server properties related information
   - https://jans.io/oauth/jans-auth-server/config/properties.write: View and manage Auth Server properties related information
-  - https://jans.io/oauth/jans-auth-server/config/fido2.readonly: View FIDO2 related information
-  - https://jans.io/oauth/jans-auth-server/config/fido2.write: View and manage FIDO2 related information
+  - https://jans.io/oauth/config/fido2.readonly: View FIDO2 related information
+  - https://jans.io/oauth/config/fido2.write: View and manage FIDO2 related information
   - https://jans.io/oauth/config/attributes.readonly: View attribute related information
   - https://jans.io/oauth/config/attributes.write: View and manage attribute related information
   - https://jans.io/oauth/config/acrs.readonly: View ACRS related information
@@ -295,9 +295,6 @@ Class | Method | HTTP request | Description
   - https://jans.io/oauth/config/openid/clients.write: View and manage clients related information
   - https://jans.io/oauth/config/openid/sectoridentifiers.readonly: View sector related information
   - https://jans.io/oauth/config/openid/sectoridentifiers.write: View and manage sector related information
-  - https://jans.io/oauth/scopes/config-api-read: Grants read access
-  - https://jans.io/oauth/scopes/config-api-write: Grants write access
-  - https://jans.io/oauth/scopes/config-api-all: Grants all access
   - https://jans.io/oauth/config/scopes.readonly: View scope related information
   - https://jans.io/oauth/config/scopes.write: View and manage scope related information
   - https://jans.io/oauth/config/uma/resources.readonly: View UMA Resource related information
