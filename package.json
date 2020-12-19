@@ -12,7 +12,7 @@
     "start:dev": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.dev.js",
     "start:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.prod.js",
     "lint": "eslint app/ --ext .js,jsx --fix",
-    "api": "rm -rf gen/api && openapi-generator-cli generate -i https://raw.githubusercontent.com/JanssenProject/jans-config-api/configapi-uma-protect/docs/jans-config-api-swagger.yaml --generator-name javascript -o gen/api && cd gen/api && npm install && npm run build"
+    "api": "rm -rf jans_config_api && openapi-generator-cli generate -i https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/docs/jans-config-api-swagger.yaml -g javascript -o jans_config_api && cd jans_config_api && npm install && npm run build"
   },
   "author": "gluu inc.",
   "license": "Apache",
@@ -23,7 +23,6 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "@openapitools/openapi-generator-cli": "^2.1.10",
     "autoprefixer": "^9.6.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.6",
@@ -107,7 +106,7 @@
     "uuid": "^3.3.2",
     "webpack-cli": "^3.1.0",
     "webpack-flush-chunks": "^2.0.3",
-    "jans_config_api": "file:gen/api"
+    "jans_config_api": "file:jans_config_api"
   },
   "eslintConfig": {
     "root": true,
