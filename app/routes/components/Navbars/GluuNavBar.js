@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -19,8 +19,32 @@ import { LanguageMenu } from "./LanguageMenu";
 import { DropdownProfile } from "../Dropdowns/DropdownProfile";
 
 import { randomAvatar } from "../../../utilities";
+const JansConfigApi = require("jans_config_api");
+const defaultClient = JansConfigApi.ApiClient.instance;
+defaultClient.timeout = 80000;
+const jansauth = defaultClient.authentications["jans-auth"];
+jansauth.accessToken = "f1e08391-47be-4c51-9ce3-1013b1badad7";
+defaultClient.basePath = "https://gluu.gasmyr.com".replace(/\/+$/, "");
+
+defaultClient.defaultHeaders = "{'Access-Control-Allow-Origin', '*'}";
 
 const GluuNavBar = ({ themeColor, themeStyle }) => {
+  useEffect(() => {
+    const api = new JansConfigApi.OAuthScopesApi();
+    const inum = "43F1"; // {String} scope ID.
+    const callback = function(error, data, res) {
+      if (error) {
+        console.error("====================================++");
+        console.error(error);
+        console.error(JSON.stringify(error));
+      } else {
+        console.info("=======data ===>" + JSON.stringify(data));
+        console.info("=======response" + JSON.stringify(res));
+        console.log("API called successfully.");
+      }
+    };
+    api.getOauthScopesByInum(inum, callback);
+  });
   return (
     <NavbarThemeProvider
       style={themeStyle}
