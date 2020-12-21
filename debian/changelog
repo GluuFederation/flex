@@ -1,5 +1,0 @@
-gluu-casa (%VERSION%) %DIST%; urgency=low
-
-  * New version %VERSION%
-
--- Davit Nikoghosyan <davit@gluu.org> Thu, 21 Dec 2017 11:00:27 -0500
