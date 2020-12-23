@@ -3,11 +3,16 @@
  */
 import { all, call, fork, put, takeEvery } from "redux-saga/effects";
 
-import { GET_OAUTH2_CONFIG, GET_OAUTH2_ACCESS_TOKEN } from "../actions/types";
+import {
+  GET_OAUTH2_CONFIG,
+  GET_OAUTH2_ACCESS_TOKEN,
+  GET_API_ACCESS_TOKEN
+} from "../actions/types";
 
 import {
   getOAuth2ConfigResponse,
-  getOAuth2AccessTokenResponse
+  getOAuth2AccessTokenResponse,
+  getAPIAccessTokenResponse
 } from "../actions";
 import axios from "../api/axios";
 
@@ -60,6 +65,21 @@ const getOAuth2AccessTokenRequest = async code => {
     });
 };
 
+// Get API Access Token
+
+const getAPiAccessTokenRequest = async () => {
+  return await axios
+    .get("/oauth2/access-token")
+    .then(response => response.data)
+    .catch(error => {
+      console.error(
+        "Problems getting OAuth2 access token in order to process authz code flow.",
+        error
+      );
+      return error;
+    });
+};
+
 function* getOAuth2AccessTokenProcessor({ payload }) {
   try {
     const response = yield call(getOAuth2AccessTokenRequest, payload.code);
@@ -75,6 +95,22 @@ function* getOAuth2AccessTokenProcessor({ payload }) {
 
 export function* getOAuth2AccessToken() {
   yield takeEvery(GET_OAUTH2_ACCESS_TOKEN, getOAuth2AccessTokenProcessor);
+}
+function* getAPIAccessTokenProcessor({ payload }) {
+  try {
+    const response = yield call(getAPiAccessTokenRequest, payload.code);
+    if (response) {
+      yield put(getAPIAccessTokenResponse(response));
+      return;
+    }
+  } catch (error) {
+    console.log("Problems getting API Access Token.", error);
+  }
+  yield put(getAPIAccessTokenResponse());
+}
+
+export function* getAPIAccessToken() {
+  yield takeEvery(GET_API_ACCESS_TOKEN, getAPIAccessTokenProcessor);
 }
 
 /**
