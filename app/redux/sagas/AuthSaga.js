@@ -15,6 +15,7 @@ import {
   getAPIAccessTokenResponse
 } from "../actions";
 import axios from "../api/axios";
+import axios_api from "../api/axios-api";
 
 // Get OAuth2 Configuration
 
@@ -68,12 +69,12 @@ const getOAuth2AccessTokenRequest = async code => {
 // Get API Access Token
 
 const getAPiAccessTokenRequest = async () => {
-  return await axios
-    .get("/oauth2/access-token")
+  return await axios_api
+    .get("/jans-auth/restv1/token")
     .then(response => response.data)
     .catch(error => {
       console.error(
-        "Problems getting OAuth2 access token in order to process authz code flow.",
+        "Problems getting API access token in order to process authz code flow.",
         error
       );
       return error;

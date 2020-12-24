@@ -29,9 +29,8 @@ export const getOAuth2AccessTokenResponse = accessToken => ({
   payload: { accessToken }
 });
 
-export const getAPIAccessToken = code => ({
-  type: GET_API_ACCESS_TOKEN,
-  payload: { code }
+export const getAPIAccessToken = () => ({
+  type: GET_API_ACCESS_TOKEN
 });
 
 export const getAPIAccessTokenResponse = accessToken => ({
