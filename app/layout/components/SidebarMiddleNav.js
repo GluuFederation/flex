@@ -15,18 +15,16 @@ export const SidebarMiddleNav = () => (
       icon={<i className="fa fa-fw fa-briefcase"></i>}
       title="Attributes"
     >
-      <SidebarMenu.Item title="List" to="/cards/cards" exact />
-      <SidebarMenu.Item title="Add new" to="/cards/cardsheaders" exact />
+      <SidebarMenu.Item title="List" to="/attributes" exact />
+      <SidebarMenu.Item title="Add new" to="/attribute/new" exact />
     </SidebarMenu.Item>
     {/* -------- OIDC ---------*/}
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-cubes"></i>}
       title="Clients"
     >
-      <SidebarMenu.Item title="List" to="/layouts/navbar" exact />
-      <SidebarMenu.Item title="Add new client" to="/layouts/sidebar" exact />
-      <SidebarMenu.Item title="Sectors" to="/layouts/sidebar" exact />
-      <SidebarMenu.Item title="Add new sector" to="/layouts/sidebar" exact />
+      <SidebarMenu.Item title="List" to="/clients" exact />
+      <SidebarMenu.Item title="Add new client" to="/clients/new" exact />
     </SidebarMenu.Item>
     {/* -------- Scopes ---------*/}
     <SidebarMenu.Item
@@ -51,11 +49,7 @@ export const SidebarMiddleNav = () => (
     {/* -------- Scopes ---------*/}
     {/* -------- Plugins ---------*/}
     {items.map((item, key) => (
-      <SidebarMenu.Item
-        key={key}
-        
-        title={item.title}
-      ></SidebarMenu.Item>
+      <SidebarMenu.Item key={key} title={item.title}></SidebarMenu.Item>
     ))}
     {/* -------- Configuration ---------*/}
     <Divider />

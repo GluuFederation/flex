@@ -11,6 +11,10 @@ import SidebarA from "./Layouts/SidebarA";
 import DragAndDropLayout from "./Layouts/DragAndDropLayout";
 import SidebarWithNavbar from "./Layouts/SidebarWithNavbar";
 
+import AttributeListPage from "./Apps/Attibutes/AttributeListPage";
+import AttributeAddPage from "./Apps/Attibutes/AttributeAddPage";
+import AttributeEditPage from "./Apps/Attibutes/AttributeEditPage";
+
 import Clients from "./Apps/Clients";
 import ProfileDetails from "./Apps/ProfileDetails";
 import ProfileEdit from "./Apps/ProfileEdit";
@@ -50,6 +54,10 @@ export const RoutedContent = () => {
       <Route path="/layouts/dnd-layout" component={DragAndDropLayout} />
 
       {/*    Apps Routes     */}
+
+      <Route component={AttributeListPage} path="/attributes" />
+      <Route component={AttributeAddPage} path="/attribute/new" />
+      <Route component={AttributeEditPage} path="/attribute/edit" />
 
       <Route component={Clients} path="/apps/clients" />
       <Route component={ProfileDetails} path="/apps/profile-details" />
