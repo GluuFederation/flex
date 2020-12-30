@@ -121,7 +121,7 @@ export const RoutedContent = () => {
       <Route component={ Alerts } path="/interface/alerts" />
       <Route component={ Avatars } path="/interface/avatars" />
       <Route component={ BadgesLabels } path="/interface/badges-and-labels" />
-      <Route component={ Breadcrumbs } path="/interface/breadcrumbs" />
+      <Route component={ Breadcrumbs } path="/interface/Breadcrumbs" />
       <Route component={ Buttons } path="/interface/buttons" />
       <Route component={ Colors } path="/interface/colors" />
       <Route component={ Dropdowns } path="/interface/dropdowns" />

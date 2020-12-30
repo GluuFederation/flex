@@ -153,7 +153,7 @@ Class | Method | HTTP request | Description
 *JansConfigApi.ConfigurationSMTPApi* | [**getConfigSmtp**](docs/ConfigurationSMTPApi.md#getConfigSmtp) | **GET** /jans-config-api/api/v1/config/smtp | Returns SMTP server configuration.
 *JansConfigApi.ConfigurationSMTPApi* | [**postConfigSmtp**](docs/ConfigurationSMTPApi.md#postConfigSmtp) | **POST** /jans-config-api/api/v1/config/smtp | Adds SMTP server configuration.
 *JansConfigApi.ConfigurationSMTPApi* | [**putConfigSmtp**](docs/ConfigurationSMTPApi.md#putConfigSmtp) | **PUT** /jans-config-api/api/v1/config/smtp | Updates SMTP server configuration.
-*JansConfigApi.ConfigurationSMTPApi* | [**testConfigSmtp**](docs/ConfigurationSMTPApi.md#testConfigSmtp) | **GET** /jans-config-api/api/v1/config/smtp/test | Test SMTP server configuration.
+*JansConfigApi.ConfigurationSMTPApi* | [**testConfigSmtp**](docs/ConfigurationSMTPApi.md#testConfigSmtp) | **POST** /jans-config-api/api/v1/config/smtp/test | Test SMTP server configuration.
 *JansConfigApi.CustomScriptsApi* | [**deleteConfigScriptsByInum**](docs/CustomScriptsApi.md#deleteConfigScriptsByInum) | **DELETE** /jans-config-api/api/v1/config/scripts/{inum} | Deletes a custom script.
 *JansConfigApi.CustomScriptsApi* | [**getConfigScripts**](docs/CustomScriptsApi.md#getConfigScripts) | **GET** /jans-config-api/api/v1/config/scripts | Gets a list of custom scripts.
 *JansConfigApi.CustomScriptsApi* | [**getConfigScriptsByInum**](docs/CustomScriptsApi.md#getConfigScriptsByInum) | **GET** /jans-config-api/api/v1/config/scripts/inum/{inum} | Gets a script by Inum.
@@ -165,14 +165,14 @@ Class | Method | HTTP request | Description
 *JansConfigApi.DatabaseCouchbaseConfigurationApi* | [**getConfigDatabaseCouchbaseByName**](docs/DatabaseCouchbaseConfigurationApi.md#getConfigDatabaseCouchbaseByName) | **GET** /jans-config-api/api/v1/config/database/couchbase/{name} | Gets a Couchbase configurations by name.
 *JansConfigApi.DatabaseCouchbaseConfigurationApi* | [**patchConfigDatabaseCouchbaseByName**](docs/DatabaseCouchbaseConfigurationApi.md#patchConfigDatabaseCouchbaseByName) | **PATCH** /jans-config-api/api/v1/config/database/couchbase/{name} | Partially modify an Couchbase configuration.
 *JansConfigApi.DatabaseCouchbaseConfigurationApi* | [**postConfigDatabaseCouchbase**](docs/DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbase) | **POST** /jans-config-api/api/v1/config/database/couchbase | Adds a new Couchbase configuration.
-*JansConfigApi.DatabaseCouchbaseConfigurationApi* | [**postConfigDatabaseCouchbaseTest**](docs/DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbaseTest) | **POST** /jans-config-api/api/v1/config/database/couchbase/test | Tests a Couchbase configurations by name.
+*JansConfigApi.DatabaseCouchbaseConfigurationApi* | [**postConfigDatabaseCouchbaseTest**](docs/DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbaseTest) | **POST** /jans-config-api/api/v1/config/database/couchbase/test | Tests a Couchbase configuration.
 *JansConfigApi.DatabaseCouchbaseConfigurationApi* | [**putConfigDatabaseCouchbase**](docs/DatabaseCouchbaseConfigurationApi.md#putConfigDatabaseCouchbase) | **PUT** /jans-config-api/api/v1/config/database/couchbase | Updates Couchbase configuration.
 *JansConfigApi.DatabaseLDAPConfigurationApi* | [**deleteConfigDatabaseLdapByName**](docs/DatabaseLDAPConfigurationApi.md#deleteConfigDatabaseLdapByName) | **DELETE** /jans-config-api/api/v1/config/database/ldap/{name} | Deletes an LDAP configuration.
 *JansConfigApi.DatabaseLDAPConfigurationApi* | [**getConfigDatabaseLdap**](docs/DatabaseLDAPConfigurationApi.md#getConfigDatabaseLdap) | **GET** /jans-config-api/api/v1/config/database/ldap | Gets list of existing LDAP configurations.
 *JansConfigApi.DatabaseLDAPConfigurationApi* | [**getConfigDatabaseLdapByName**](docs/DatabaseLDAPConfigurationApi.md#getConfigDatabaseLdapByName) | **GET** /jans-config-api/api/v1/config/database/ldap/{name} | Gets an LDAP configuration by name.
 *JansConfigApi.DatabaseLDAPConfigurationApi* | [**patchConfigDatabaseLdapByName**](docs/DatabaseLDAPConfigurationApi.md#patchConfigDatabaseLdapByName) | **PATCH** /jans-config-api/api/v1/config/database/ldap/{name} | Partially modify an LDAP configuration.
 *JansConfigApi.DatabaseLDAPConfigurationApi* | [**postConfigDatabaseLdap**](docs/DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdap) | **POST** /jans-config-api/api/v1/config/database/ldap | Adds a new LDAP configuration.
-*JansConfigApi.DatabaseLDAPConfigurationApi* | [**postConfigDatabaseLdapTest**](docs/DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdapTest) | **POST** /jans-config-api/api/v1/config/database/ldap/test | Tests a LDAP configurations by name.
+*JansConfigApi.DatabaseLDAPConfigurationApi* | [**postConfigDatabaseLdapTest**](docs/DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdapTest) | **POST** /jans-config-api/api/v1/config/database/ldap/test | Tests an LDAP configuration.
 *JansConfigApi.DatabaseLDAPConfigurationApi* | [**putConfigDatabaseLdap**](docs/DatabaseLDAPConfigurationApi.md#putConfigDatabaseLdap) | **PUT** /jans-config-api/api/v1/config/database/ldap | Updates LDAP configuration.
 *JansConfigApi.DefaultAuthenticationMethodApi* | [**getAcrs**](docs/DefaultAuthenticationMethodApi.md#getAcrs) | **GET** /jans-config-api/api/v1/acrs | Gets default authentication method.
 *JansConfigApi.DefaultAuthenticationMethodApi* | [**putAcrs**](docs/DefaultAuthenticationMethodApi.md#putAcrs) | **PUT** /jans-config-api/api/v1/acrs | Updates default authentication method.
@@ -211,7 +211,7 @@ Class | Method | HTTP request | Description
  - [JansConfigApi.AppConfigurationClientAuthenticationFilters](docs/AppConfigurationClientAuthenticationFilters.md)
  - [JansConfigApi.AppConfigurationCorsConfigurationFilters](docs/AppConfigurationCorsConfigurationFilters.md)
  - [JansConfigApi.AuthenticationMethod](docs/AuthenticationMethod.md)
- - [JansConfigApi.AuthenticationMethod1](docs/AuthenticationMethod1.md)
+ - [JansConfigApi.CacheConfiguration](docs/CacheConfiguration.md)
  - [JansConfigApi.Client](docs/Client.md)
  - [JansConfigApi.ClientAttributes](docs/ClientAttributes.md)
  - [JansConfigApi.CouchbaseConfiguration](docs/CouchbaseConfiguration.md)
@@ -221,37 +221,26 @@ Class | Method | HTTP request | Description
  - [JansConfigApi.CustomScriptModuleProperties](docs/CustomScriptModuleProperties.md)
  - [JansConfigApi.CustomScriptScriptError](docs/CustomScriptScriptError.md)
  - [JansConfigApi.ErrorResponse](docs/ErrorResponse.md)
+ - [JansConfigApi.Fido2Configuration](docs/Fido2Configuration.md)
  - [JansConfigApi.GluuAttribute](docs/GluuAttribute.md)
  - [JansConfigApi.GluuAttributeAttributeValidation](docs/GluuAttributeAttributeValidation.md)
- - [JansConfigApi.InlineObject](docs/InlineObject.md)
- - [JansConfigApi.InlineObject1](docs/InlineObject1.md)
- - [JansConfigApi.InlineObject2](docs/InlineObject2.md)
- - [JansConfigApi.InlineObject3](docs/InlineObject3.md)
- - [JansConfigApi.InlineObject4](docs/InlineObject4.md)
- - [JansConfigApi.InlineObject5](docs/InlineObject5.md)
- - [JansConfigApi.InlineObject6](docs/InlineObject6.md)
- - [JansConfigApi.InlineObject7](docs/InlineObject7.md)
+ - [JansConfigApi.InMemoryConfiguration](docs/InMemoryConfiguration.md)
  - [JansConfigApi.InlineResponse200](docs/InlineResponse200.md)
- - [JansConfigApi.InlineResponse2001](docs/InlineResponse2001.md)
- - [JansConfigApi.InlineResponse2001InMemoryConfiguration](docs/InlineResponse2001InMemoryConfiguration.md)
- - [JansConfigApi.InlineResponse2001MemcachedConfiguration](docs/InlineResponse2001MemcachedConfiguration.md)
- - [JansConfigApi.InlineResponse2001NativePersistenceConfiguration](docs/InlineResponse2001NativePersistenceConfiguration.md)
- - [JansConfigApi.InlineResponse2001RedisConfiguration](docs/InlineResponse2001RedisConfiguration.md)
- - [JansConfigApi.InlineResponse2002](docs/InlineResponse2002.md)
- - [JansConfigApi.InlineResponse2002NativePersistenceConfiguration](docs/InlineResponse2002NativePersistenceConfiguration.md)
- - [JansConfigApi.InlineResponse2003](docs/InlineResponse2003.md)
- - [JansConfigApi.InlineResponse2004](docs/InlineResponse2004.md)
- - [JansConfigApi.InlineResponse2005](docs/InlineResponse2005.md)
- - [JansConfigApi.InlineResponse2006](docs/InlineResponse2006.md)
+ - [JansConfigApi.JansFido2DynConfiguration](docs/JansFido2DynConfiguration.md)
  - [JansConfigApi.JsonWebKey](docs/JsonWebKey.md)
  - [JansConfigApi.LdapConfiguration](docs/LdapConfiguration.md)
- - [JansConfigApi.NewlyAddedOpenIDConnectSectorIdentifier](docs/NewlyAddedOpenIDConnectSectorIdentifier.md)
+ - [JansConfigApi.LoggingConfiguration](docs/LoggingConfiguration.md)
+ - [JansConfigApi.MemcachedConfiguration](docs/MemcachedConfiguration.md)
+ - [JansConfigApi.NativePersistenceConfiguration](docs/NativePersistenceConfiguration.md)
  - [JansConfigApi.PatchRequest](docs/PatchRequest.md)
+ - [JansConfigApi.RedisConfiguration](docs/RedisConfiguration.md)
+ - [JansConfigApi.RequestedParties](docs/RequestedParties.md)
  - [JansConfigApi.Scope](docs/Scope.md)
  - [JansConfigApi.ScopeAttributes](docs/ScopeAttributes.md)
+ - [JansConfigApi.SectorIdentifier](docs/SectorIdentifier.md)
+ - [JansConfigApi.SmtpConfiguration](docs/SmtpConfiguration.md)
  - [JansConfigApi.UmaResource](docs/UmaResource.md)
  - [JansConfigApi.WebKeysConfiguration](docs/WebKeysConfiguration.md)
- - [JansConfigApi.WebKeysConfiguration1](docs/WebKeysConfiguration1.md)
 
 
 ## Documentation for Authorization
@@ -266,33 +255,33 @@ Class | Method | HTTP request | Description
 - **Authorization URL**: 
 - **Scopes**: 
   - https://jans.io/oauth/jans-auth-server/config/properties.readonly: View Auth Server properties related information
-  - https://jans.io/oauth/jans-auth-server/config/properties.write: View and manage Auth Server properties related information
+  - https://jans.io/oauth/jans-auth-server/config/properties.write: Manage Auth Server properties related information
   - https://jans.io/oauth/config/fido2.readonly: View FIDO2 related information
-  - https://jans.io/oauth/config/fido2.write: View and manage FIDO2 related information
+  - https://jans.io/oauth/config/fido2.write: Manage FIDO2 related information
   - https://jans.io/oauth/config/attributes.readonly: View attribute related information
-  - https://jans.io/oauth/config/attributes.write: View and manage attribute related information
+  - https://jans.io/oauth/config/attributes.write: Manage attribute related information
   - https://jans.io/oauth/config/acrs.readonly: View ACRS related information
-  - https://jans.io/oauth/config/acrs.write: View and manage ACRS related information
+  - https://jans.io/oauth/config/acrs.write: Manage ACRS related information
   - https://jans.io/oauth/config/database/ldap.readonly: View LDAP database related information
-  - https://jans.io/oauth/config/database/ldap.write: View and manage LDAP database related information
+  - https://jans.io/oauth/config/database/ldap.write: Manage LDAP database related information
   - https://jans.io/oauth/config/database/couchbase.readonly: View Couchbase database information
-  - https://jans.io/oauth/config/database/couchbase.write: View and manage Couchbase database related information
+  - https://jans.io/oauth/config/database/couchbase.write: Manage Couchbase database related information
   - https://jans.io/oauth/config/scripts.readonly: View cache scripts information
-  - https://jans.io/oauth/config/scripts.write: View and manage scripts related information
+  - https://jans.io/oauth/config/scripts.write: Manage scripts related information
   - https://jans.io/oauth/config/cache.readonly: View cache related information
-  - https://jans.io/oauth/config/cache.write: View and manage cache related information
+  - https://jans.io/oauth/config/cache.write: Manage cache related information
   - https://jans.io/oauth/config/smtp.readonly: View SMTP related information
-  - https://jans.io/oauth/config/smtp.write: View and manage SMTP related information
+  - https://jans.io/oauth/config/smtp.write: Manage SMTP related information
   - https://jans.io/oauth/config/logging.readonly: View logging related information
-  - https://jans.io/oauth/config/logging.write: View and manage logging related information
+  - https://jans.io/oauth/config/logging.write: Manage logging related information
   - https://jans.io/oauth/config/jwks.readonly: View JWKS related information
-  - https://jans.io/oauth/config/jwks.write: View and manage JWKS related information
+  - https://jans.io/oauth/config/jwks.write: Manage JWKS related information
   - https://jans.io/oauth/config/openid/clients.readonly: View clients related information
-  - https://jans.io/oauth/config/openid/clients.write: View and manage clients related information
+  - https://jans.io/oauth/config/openid/clients.write: Manage clients related information
   - https://jans.io/oauth/config/openid/sectoridentifiers.readonly: View sector related information
-  - https://jans.io/oauth/config/openid/sectoridentifiers.write: View and manage sector related information
+  - https://jans.io/oauth/config/openid/sectoridentifiers.write: Manage sector related information
   - https://jans.io/oauth/config/scopes.readonly: View scope related information
-  - https://jans.io/oauth/config/scopes.write: View and manage scope related information
+  - https://jans.io/oauth/config/scopes.write: Manage scope related information
   - https://jans.io/oauth/config/uma/resources.readonly: View UMA Resource related information
-  - https://jans.io/oauth/config/uma/resources.write: View and manage UMA Resource related information
+  - https://jans.io/oauth/config/uma/resources.write: Manage UMA Resource related information
 

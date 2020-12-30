@@ -8,7 +8,7 @@ Method | HTTP request | Description
 [**getConfigSmtp**](ConfigurationSMTPApi.md#getConfigSmtp) | **GET** /jans-config-api/api/v1/config/smtp | Returns SMTP server configuration.
 [**postConfigSmtp**](ConfigurationSMTPApi.md#postConfigSmtp) | **POST** /jans-config-api/api/v1/config/smtp | Adds SMTP server configuration.
 [**putConfigSmtp**](ConfigurationSMTPApi.md#putConfigSmtp) | **PUT** /jans-config-api/api/v1/config/smtp | Updates SMTP server configuration.
-[**testConfigSmtp**](ConfigurationSMTPApi.md#testConfigSmtp) | **GET** /jans-config-api/api/v1/config/smtp/test | Test SMTP server configuration.
+[**testConfigSmtp**](ConfigurationSMTPApi.md#testConfigSmtp) | **POST** /jans-config-api/api/v1/config/smtp/test | Test SMTP server configuration.
 
 
 
@@ -59,7 +59,7 @@ null (empty response body)
 
 ## getConfigSmtp
 
-> InlineResponse2003 getConfigSmtp()
+> SmtpConfiguration getConfigSmtp()
 
 Returns SMTP server configuration.
 
@@ -90,7 +90,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**SmtpConfiguration**](SmtpConfiguration.md)
 
 ### Authorization
 
@@ -104,7 +104,7 @@ This endpoint does not need any parameter.
 
 ## postConfigSmtp
 
-> InlineResponse2003 postConfigSmtp(opts)
+> SmtpConfiguration postConfigSmtp(opts)
 
 Adds SMTP server configuration.
 
@@ -121,7 +121,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.ConfigurationSMTPApi();
 let opts = {
-  'inlineObject5': new JansConfigApi.InlineObject5() // InlineObject5 | 
+  'smtpConfiguration': new JansConfigApi.SmtpConfiguration() // SmtpConfiguration | 
 };
 apiInstance.postConfigSmtp(opts, (error, data, response) => {
   if (error) {
@@ -137,11 +137,11 @@ apiInstance.postConfigSmtp(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineObject5** | [**InlineObject5**](InlineObject5.md)|  | [optional] 
+ **smtpConfiguration** | [**SmtpConfiguration**](SmtpConfiguration.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**SmtpConfiguration**](SmtpConfiguration.md)
 
 ### Authorization
 
@@ -155,7 +155,7 @@ Name | Type | Description  | Notes
 
 ## putConfigSmtp
 
-> InlineResponse2003 putConfigSmtp(opts)
+> SmtpConfiguration putConfigSmtp(opts)
 
 Updates SMTP server configuration.
 
@@ -172,7 +172,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.ConfigurationSMTPApi();
 let opts = {
-  'inlineObject4': new JansConfigApi.InlineObject4() // InlineObject4 | 
+  'smtpConfiguration': new JansConfigApi.SmtpConfiguration() // SmtpConfiguration | 
 };
 apiInstance.putConfigSmtp(opts, (error, data, response) => {
   if (error) {
@@ -188,11 +188,11 @@ apiInstance.putConfigSmtp(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineObject4** | [**InlineObject4**](InlineObject4.md)|  | [optional] 
+ **smtpConfiguration** | [**SmtpConfiguration**](SmtpConfiguration.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**SmtpConfiguration**](SmtpConfiguration.md)
 
 ### Authorization
 
@@ -206,7 +206,7 @@ Name | Type | Description  | Notes
 
 ## testConfigSmtp
 
-> InlineResponse2004 testConfigSmtp()
+> InlineResponse200 testConfigSmtp()
 
 Test SMTP server configuration.
 
@@ -237,7 +237,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InlineResponse2004**](InlineResponse2004.md)
+[**InlineResponse200**](InlineResponse200.md)
 
 ### Authorization
 

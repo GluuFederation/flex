@@ -4,12 +4,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**configId** | **String** | Unique identifier | 
-**userName** | **String** | Couchbase server user. | 
-**userPassword** | **String** | Encoded Couchbase server user password. | 
-**servers** | **[String]** | Couchbase server host and port. | 
-**defaultBucket** | **String** | Main bucket that application should use if other mapping rules were not applied. | 
-**buckets** | **[String]** | List of buckets defining mapping rules. | 
+**configId** | **String** | Unique identifier | [optional] 
+**userName** | **String** | Couchbase server user. | [optional] 
+**userPassword** | **String** | Encoded Couchbase server user password. | [optional] 
+**servers** | **[String]** | Couchbase server host and port. | [optional] 
+**defaultBucket** | **String** | Main bucket that application should use if other mapping rules were not applied. | [optional] 
+**buckets** | **[String]** | List of buckets defining mapping rules. | [optional] 
 **passwordEncryptionMethod** | **String** |  | [optional] 
 **operationTracingEnabled** | **Boolean** |  | [optional] [default to false]
 **mutationTokensEnabled** | **Boolean** | If mutation tokens are enabled, they can be used for advanced durability requirements, as well as optimized RYOW consistency. | [optional] [default to false]
@@ -19,8 +19,8 @@ Name | Type | Description | Notes
 **sslTrustStoreFile** | **String** | The path to the trust store file to use. It contains the trusted certificates. | [optional] 
 **sslTrustStorePin** | **String** | The PIN to use to access the contents of the trust store. | [optional] 
 **sslTrustStoreFormat** | **String** | The format to use for the trust store. | [optional] 
-**binaryAttributes** | **[String]** |  | [optional] 
-**certificateAttributes** | **[String]** |  | [optional] 
+**binaryAttributes** | **[String]** | List of binary attributes. | [optional] 
+**certificateAttributes** | **[String]** | List of certificate attributes. | [optional] 
 
 
 

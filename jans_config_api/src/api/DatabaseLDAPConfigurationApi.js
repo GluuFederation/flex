@@ -171,7 +171,7 @@ export default class DatabaseLDAPConfigurationApi {
      * Partially modify an LDAP configuration.
      * @param {String} name Name of LDAP configuration.
      * @param {Object} opts Optional parameters
-     * @param {module:model/PatchRequest} opts.patchRequest 
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
      * @param {module:api/DatabaseLDAPConfigurationApi~patchConfigDatabaseLdapByNameCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/LdapConfiguration}
      */
@@ -194,7 +194,7 @@ export default class DatabaseLDAPConfigurationApi {
       };
 
       let authNames = ['jans-auth'];
-      let contentTypes = ['application/json'];
+      let contentTypes = ['application/json-patch+json'];
       let accepts = ['application/json'];
       let returnType = LdapConfiguration;
       return this.apiClient.callApi(
@@ -255,8 +255,8 @@ export default class DatabaseLDAPConfigurationApi {
      */
 
     /**
-     * Tests a LDAP configurations by name.
-     * Tests a LDAP configurations by name.
+     * Tests an LDAP configuration.
+     * Tests an LDAP configuration.
      * @param {module:model/LdapConfiguration} ldapConfiguration 
      * @param {module:api/DatabaseLDAPConfigurationApi~postConfigDatabaseLdapTestCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link Boolean}

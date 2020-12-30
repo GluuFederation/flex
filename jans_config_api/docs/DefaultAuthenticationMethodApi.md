@@ -73,7 +73,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.DefaultAuthenticationMethodApi();
 let opts = {
-  'authenticationMethod1': new JansConfigApi.AuthenticationMethod1() // AuthenticationMethod1 | 
+  'authenticationMethod': new JansConfigApi.AuthenticationMethod() // AuthenticationMethod | 
 };
 apiInstance.putAcrs(opts, (error, data, response) => {
   if (error) {
@@ -89,7 +89,7 @@ apiInstance.putAcrs(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authenticationMethod1** | [**AuthenticationMethod1**](AuthenticationMethod1.md)|  | [optional] 
+ **authenticationMethod** | [**AuthenticationMethod**](AuthenticationMethod.md)|  | [optional] 
 
 ### Return type
 

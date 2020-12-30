@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 ## getConfigLogging
 
-> [InlineResponse2005] getConfigLogging()
+> LoggingConfiguration getConfigLogging()
 
 Returns Jans Authorization Server logging settings.
 
@@ -42,7 +42,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**[InlineResponse2005]**](InlineResponse2005.md)
+[**LoggingConfiguration**](LoggingConfiguration.md)
 
 ### Authorization
 
@@ -73,7 +73,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.ConfigurationLoggingApi();
 let opts = {
-  'inlineResponse2005': [new JansConfigApi.InlineResponse2005()] // [InlineResponse2005] | 
+  'loggingConfiguration': new JansConfigApi.LoggingConfiguration() // LoggingConfiguration | 
 };
 apiInstance.putConfigLogging(opts, (error, data, response) => {
   if (error) {
@@ -89,7 +89,7 @@ apiInstance.putConfigLogging(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineResponse2005** | [**[InlineResponse2005]**](InlineResponse2005.md)|  | [optional] 
+ **loggingConfiguration** | [**LoggingConfiguration**](LoggingConfiguration.md)|  | [optional] 
 
 ### Return type
 

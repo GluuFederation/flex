@@ -14,10 +14,8 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
-import InlineObject4 from '../model/InlineObject4';
-import InlineObject5 from '../model/InlineObject5';
-import InlineResponse2003 from '../model/InlineResponse2003';
-import InlineResponse2004 from '../model/InlineResponse2004';
+import InlineResponse200 from '../model/InlineResponse200';
+import SmtpConfiguration from '../model/SmtpConfiguration';
 
 /**
 * ConfigurationSMTP service.
@@ -78,7 +76,7 @@ export default class ConfigurationSMTPApi {
      * Callback function to receive the result of the getConfigSmtp operation.
      * @callback module:api/ConfigurationSMTPApi~getConfigSmtpCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2003} data The data returned by the service call.
+     * @param {module:model/SmtpConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -86,7 +84,7 @@ export default class ConfigurationSMTPApi {
      * Returns SMTP server configuration.
      * Returns SMTP server configuration.
      * @param {module:api/ConfigurationSMTPApi~getConfigSmtpCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2003}
+     * data is of type: {@link module:model/SmtpConfiguration}
      */
     getConfigSmtp(callback) {
       let postBody = null;
@@ -103,7 +101,7 @@ export default class ConfigurationSMTPApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2003;
+      let returnType = SmtpConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/smtp', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -115,7 +113,7 @@ export default class ConfigurationSMTPApi {
      * Callback function to receive the result of the postConfigSmtp operation.
      * @callback module:api/ConfigurationSMTPApi~postConfigSmtpCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2003} data The data returned by the service call.
+     * @param {module:model/SmtpConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -123,13 +121,13 @@ export default class ConfigurationSMTPApi {
      * Adds SMTP server configuration.
      * Adds SMTP server configuration.
      * @param {Object} opts Optional parameters
-     * @param {module:model/InlineObject5} opts.inlineObject5 
+     * @param {module:model/SmtpConfiguration} opts.smtpConfiguration 
      * @param {module:api/ConfigurationSMTPApi~postConfigSmtpCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2003}
+     * data is of type: {@link module:model/SmtpConfiguration}
      */
     postConfigSmtp(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineObject5'];
+      let postBody = opts['smtpConfiguration'];
 
       let pathParams = {
       };
@@ -143,7 +141,7 @@ export default class ConfigurationSMTPApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2003;
+      let returnType = SmtpConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/smtp', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -155,7 +153,7 @@ export default class ConfigurationSMTPApi {
      * Callback function to receive the result of the putConfigSmtp operation.
      * @callback module:api/ConfigurationSMTPApi~putConfigSmtpCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2003} data The data returned by the service call.
+     * @param {module:model/SmtpConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -163,13 +161,13 @@ export default class ConfigurationSMTPApi {
      * Updates SMTP server configuration.
      * Updates SMTP server configuration.
      * @param {Object} opts Optional parameters
-     * @param {module:model/InlineObject4} opts.inlineObject4 
+     * @param {module:model/SmtpConfiguration} opts.smtpConfiguration 
      * @param {module:api/ConfigurationSMTPApi~putConfigSmtpCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2003}
+     * data is of type: {@link module:model/SmtpConfiguration}
      */
     putConfigSmtp(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineObject4'];
+      let postBody = opts['smtpConfiguration'];
 
       let pathParams = {
       };
@@ -183,7 +181,7 @@ export default class ConfigurationSMTPApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2003;
+      let returnType = SmtpConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/smtp', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -195,7 +193,7 @@ export default class ConfigurationSMTPApi {
      * Callback function to receive the result of the testConfigSmtp operation.
      * @callback module:api/ConfigurationSMTPApi~testConfigSmtpCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2004} data The data returned by the service call.
+     * @param {module:model/InlineResponse200} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -203,7 +201,7 @@ export default class ConfigurationSMTPApi {
      * Test SMTP server configuration.
      * Test SMTP server configuration.
      * @param {module:api/ConfigurationSMTPApi~testConfigSmtpCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2004}
+     * data is of type: {@link module:model/InlineResponse200}
      */
     testConfigSmtp(callback) {
       let postBody = null;
@@ -220,9 +218,9 @@ export default class ConfigurationSMTPApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2004;
+      let returnType = InlineResponse200;
       return this.apiClient.callApi(
-        '/jans-config-api/api/v1/config/smtp/test', 'GET',
+        '/jans-config-api/api/v1/config/smtp/test', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 ## getConfigCacheMemcached
 
-> InlineResponse2001MemcachedConfiguration getConfigCacheMemcached()
+> MemcachedConfiguration getConfigCacheMemcached()
 
 Returns Memcached cache configuration.
 
@@ -42,7 +42,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InlineResponse2001MemcachedConfiguration**](InlineResponse2001MemcachedConfiguration.md)
+[**MemcachedConfiguration**](MemcachedConfiguration.md)
 
 ### Authorization
 
@@ -56,7 +56,7 @@ This endpoint does not need any parameter.
 
 ## putConfigCacheMemcached
 
-> InlineResponse2001MemcachedConfiguration putConfigCacheMemcached(opts)
+> MemcachedConfiguration putConfigCacheMemcached(opts)
 
 Updates Memcached cache configuration.
 
@@ -73,7 +73,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.CacheConfigurationMemcachedApi();
 let opts = {
-  'inlineObject': new JansConfigApi.InlineObject() // InlineObject | 
+  'memcachedConfiguration': new JansConfigApi.MemcachedConfiguration() // MemcachedConfiguration | 
 };
 apiInstance.putConfigCacheMemcached(opts, (error, data, response) => {
   if (error) {
@@ -89,11 +89,11 @@ apiInstance.putConfigCacheMemcached(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineObject** | [**InlineObject**](InlineObject.md)|  | [optional] 
+ **memcachedConfiguration** | [**MemcachedConfiguration**](MemcachedConfiguration.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2001MemcachedConfiguration**](InlineResponse2001MemcachedConfiguration.md)
+[**MemcachedConfiguration**](MemcachedConfiguration.md)
 
 ### Authorization
 

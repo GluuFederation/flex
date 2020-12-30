@@ -21,17 +21,12 @@ import ApiClient from '../ApiClient';
 class JsonWebKey {
     /**
      * Constructs a new <code>JsonWebKey</code>.
+     * JsonWebKey
      * @alias module:model/JsonWebKey
-     * @param kid {String} 
-     * @param kty {String} 
-     * @param use {String} 
-     * @param alg {String} 
-     * @param exp {Number} 
-     * @param x5c {Array.<String>} 
      */
-    constructor(kid, kty, use, alg, exp, x5c) { 
+    constructor() { 
         
-        JsonWebKey.initialize(this, kid, kty, use, alg, exp, x5c);
+        JsonWebKey.initialize(this);
     }
 
     /**
@@ -39,13 +34,7 @@ class JsonWebKey {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, kid, kty, use, alg, exp, x5c) { 
-        obj['kid'] = kid;
-        obj['kty'] = kty;
-        obj['use'] = use;
-        obj['alg'] = alg;
-        obj['exp'] = exp;
-        obj['x5c'] = x5c;
+    static initialize(obj) { 
     }
 
     /**
@@ -100,56 +89,67 @@ class JsonWebKey {
 }
 
 /**
+ * The unique identifier for the key.
  * @member {String} kid
  */
 JsonWebKey.prototype['kid'] = undefined;
 
 /**
+ * The family of cryptographic algorithms used with the key.
  * @member {String} kty
  */
 JsonWebKey.prototype['kty'] = undefined;
 
 /**
+ * How the key was meant to be used; sig represents the signature.
  * @member {String} use
  */
 JsonWebKey.prototype['use'] = undefined;
 
 /**
+ * The specific cryptographic algorithm used with the key.
  * @member {String} alg
  */
 JsonWebKey.prototype['alg'] = undefined;
 
 /**
+ * The crv member identifies the cryptographic curve used with the key. Values defined by this specification are P-256, P-384 and P-521. Additional crv values MAY be used, provided they are understood by implementations using that Elliptic Curve key. The crv value is case sensitive.
  * @member {String} crv
  */
 JsonWebKey.prototype['crv'] = undefined;
 
 /**
+ * Contains the token expiration timestamp
  * @member {Number} exp
  */
 JsonWebKey.prototype['exp'] = undefined;
 
 /**
+ * The x.509 certificate chain. The first entry in the array is the certificate to use for token verification; the other certificates can be used to verify this first certificate.
  * @member {Array.<String>} x5c
  */
 JsonWebKey.prototype['x5c'] = undefined;
 
 /**
+ * The modulus for the RSA public key.
  * @member {String} n
  */
 JsonWebKey.prototype['n'] = undefined;
 
 /**
+ * The exponent for the RSA public key.
  * @member {String} e
  */
 JsonWebKey.prototype['e'] = undefined;
 
 /**
+ * The x member contains the x coordinate for the elliptic curve point. It is represented as the base64url encoding of the coordinate's big endian representation.
  * @member {String} x
  */
 JsonWebKey.prototype['x'] = undefined;
 
 /**
+ * The y member contains the y coordinate for the elliptic curve point. It is represented as the base64url encoding of the coordinate's big endian representation.
  * @member {String} y
  */
 JsonWebKey.prototype['y'] = undefined;

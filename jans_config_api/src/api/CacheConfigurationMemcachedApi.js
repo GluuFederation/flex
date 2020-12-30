@@ -14,8 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
-import InlineObject from '../model/InlineObject';
-import InlineResponse2001MemcachedConfiguration from '../model/InlineResponse2001MemcachedConfiguration';
+import MemcachedConfiguration from '../model/MemcachedConfiguration';
 
 /**
 * CacheConfigurationMemcached service.
@@ -40,7 +39,7 @@ export default class CacheConfigurationMemcachedApi {
      * Callback function to receive the result of the getConfigCacheMemcached operation.
      * @callback module:api/CacheConfigurationMemcachedApi~getConfigCacheMemcachedCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2001MemcachedConfiguration} data The data returned by the service call.
+     * @param {module:model/MemcachedConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -48,7 +47,7 @@ export default class CacheConfigurationMemcachedApi {
      * Returns Memcached cache configuration.
      * Returns Memcached cache configuration.
      * @param {module:api/CacheConfigurationMemcachedApi~getConfigCacheMemcachedCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2001MemcachedConfiguration}
+     * data is of type: {@link module:model/MemcachedConfiguration}
      */
     getConfigCacheMemcached(callback) {
       let postBody = null;
@@ -65,7 +64,7 @@ export default class CacheConfigurationMemcachedApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2001MemcachedConfiguration;
+      let returnType = MemcachedConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/memcached', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -77,7 +76,7 @@ export default class CacheConfigurationMemcachedApi {
      * Callback function to receive the result of the putConfigCacheMemcached operation.
      * @callback module:api/CacheConfigurationMemcachedApi~putConfigCacheMemcachedCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2001MemcachedConfiguration} data The data returned by the service call.
+     * @param {module:model/MemcachedConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -85,13 +84,13 @@ export default class CacheConfigurationMemcachedApi {
      * Updates Memcached cache configuration.
      * Updates Memcached cache configuration.
      * @param {Object} opts Optional parameters
-     * @param {module:model/InlineObject} opts.inlineObject 
+     * @param {module:model/MemcachedConfiguration} opts.memcachedConfiguration 
      * @param {module:api/CacheConfigurationMemcachedApi~putConfigCacheMemcachedCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2001MemcachedConfiguration}
+     * data is of type: {@link module:model/MemcachedConfiguration}
      */
     putConfigCacheMemcached(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineObject'];
+      let postBody = opts['memcachedConfiguration'];
 
       let pathParams = {
       };
@@ -105,7 +104,7 @@ export default class CacheConfigurationMemcachedApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2001MemcachedConfiguration;
+      let returnType = MemcachedConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/memcached', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

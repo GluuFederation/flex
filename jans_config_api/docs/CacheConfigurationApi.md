@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 ## getConfigCache
 
-> InlineResponse2001 getConfigCache()
+> CacheConfiguration getConfigCache()
 
 Returns cache configuration.
 
@@ -42,7 +42,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InlineResponse2001**](InlineResponse2001.md)
+[**CacheConfiguration**](CacheConfiguration.md)
 
 ### Authorization
 
@@ -56,7 +56,7 @@ This endpoint does not need any parameter.
 
 ## patchConfigCache
 
-> InlineResponse2002 patchConfigCache(opts)
+> CacheConfiguration patchConfigCache(opts)
 
 Partially modifies cache configuration.
 
@@ -73,7 +73,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.CacheConfigurationApi();
 let opts = {
-  'patchRequest': new JansConfigApi.PatchRequest() // PatchRequest | 
+  'patchRequest': [new JansConfigApi.PatchRequest()] // [PatchRequest] | 
 };
 apiInstance.patchConfigCache(opts, (error, data, response) => {
   if (error) {
@@ -89,11 +89,11 @@ apiInstance.patchConfigCache(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **patchRequest** | [**PatchRequest**](PatchRequest.md)|  | [optional] 
+ **patchRequest** | [**[PatchRequest]**](PatchRequest.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2002**](InlineResponse2002.md)
+[**CacheConfiguration**](CacheConfiguration.md)
 
 ### Authorization
 
@@ -101,6 +101,6 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
+- **Content-Type**: application/json-patch+json
 - **Accept**: application/json
 

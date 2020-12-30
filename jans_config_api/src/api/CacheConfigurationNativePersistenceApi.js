@@ -14,8 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
-import InlineObject3 from '../model/InlineObject3';
-import InlineResponse2001NativePersistenceConfiguration from '../model/InlineResponse2001NativePersistenceConfiguration';
+import NativePersistenceConfiguration from '../model/NativePersistenceConfiguration';
 
 /**
 * CacheConfigurationNativePersistence service.
@@ -40,7 +39,7 @@ export default class CacheConfigurationNativePersistenceApi {
      * Callback function to receive the result of the getConfigCacheNativePersistence operation.
      * @callback module:api/CacheConfigurationNativePersistenceApi~getConfigCacheNativePersistenceCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2001NativePersistenceConfiguration} data The data returned by the service call.
+     * @param {module:model/NativePersistenceConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -48,7 +47,7 @@ export default class CacheConfigurationNativePersistenceApi {
      * Returns native persistence cache configuration.
      * Returns native persistence cache configuration.
      * @param {module:api/CacheConfigurationNativePersistenceApi~getConfigCacheNativePersistenceCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2001NativePersistenceConfiguration}
+     * data is of type: {@link module:model/NativePersistenceConfiguration}
      */
     getConfigCacheNativePersistence(callback) {
       let postBody = null;
@@ -65,7 +64,7 @@ export default class CacheConfigurationNativePersistenceApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2001NativePersistenceConfiguration;
+      let returnType = NativePersistenceConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/native-persistence', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -77,7 +76,7 @@ export default class CacheConfigurationNativePersistenceApi {
      * Callback function to receive the result of the putConfigCacheNativePersistence operation.
      * @callback module:api/CacheConfigurationNativePersistenceApi~putConfigCacheNativePersistenceCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2001NativePersistenceConfiguration} data The data returned by the service call.
+     * @param {module:model/NativePersistenceConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -85,13 +84,13 @@ export default class CacheConfigurationNativePersistenceApi {
      * Updates native persistence cache configuration.
      * Updates native persistence cache configuration.
      * @param {Object} opts Optional parameters
-     * @param {module:model/InlineObject3} opts.inlineObject3 
+     * @param {module:model/NativePersistenceConfiguration} opts.nativePersistenceConfiguration 
      * @param {module:api/CacheConfigurationNativePersistenceApi~putConfigCacheNativePersistenceCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2001NativePersistenceConfiguration}
+     * data is of type: {@link module:model/NativePersistenceConfiguration}
      */
     putConfigCacheNativePersistence(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineObject3'];
+      let postBody = opts['nativePersistenceConfiguration'];
 
       let pathParams = {
       };
@@ -105,7 +104,7 @@ export default class CacheConfigurationNativePersistenceApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2001NativePersistenceConfiguration;
+      let returnType = NativePersistenceConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/native-persistence', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

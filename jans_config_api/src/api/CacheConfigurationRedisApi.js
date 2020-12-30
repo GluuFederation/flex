@@ -14,8 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
-import InlineObject1 from '../model/InlineObject1';
-import InlineResponse2001RedisConfiguration from '../model/InlineResponse2001RedisConfiguration';
+import RedisConfiguration from '../model/RedisConfiguration';
 
 /**
 * CacheConfigurationRedis service.
@@ -40,7 +39,7 @@ export default class CacheConfigurationRedisApi {
      * Callback function to receive the result of the getConfigCacheRedis operation.
      * @callback module:api/CacheConfigurationRedisApi~getConfigCacheRedisCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2001RedisConfiguration} data The data returned by the service call.
+     * @param {module:model/RedisConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -48,7 +47,7 @@ export default class CacheConfigurationRedisApi {
      * Returns Redis cache configuration.
      * Returns Redis cache configuration.
      * @param {module:api/CacheConfigurationRedisApi~getConfigCacheRedisCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2001RedisConfiguration}
+     * data is of type: {@link module:model/RedisConfiguration}
      */
     getConfigCacheRedis(callback) {
       let postBody = null;
@@ -65,7 +64,7 @@ export default class CacheConfigurationRedisApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2001RedisConfiguration;
+      let returnType = RedisConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/redis', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -77,7 +76,7 @@ export default class CacheConfigurationRedisApi {
      * Callback function to receive the result of the putConfigCacheRedis operation.
      * @callback module:api/CacheConfigurationRedisApi~putConfigCacheRedisCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2001RedisConfiguration} data The data returned by the service call.
+     * @param {module:model/RedisConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -85,13 +84,13 @@ export default class CacheConfigurationRedisApi {
      * Updates Redis cache configuration.
      * Updates Redis cache configuration.
      * @param {Object} opts Optional parameters
-     * @param {module:model/InlineObject1} opts.inlineObject1 
+     * @param {module:model/RedisConfiguration} opts.redisConfiguration 
      * @param {module:api/CacheConfigurationRedisApi~putConfigCacheRedisCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2001RedisConfiguration}
+     * data is of type: {@link module:model/RedisConfiguration}
      */
     putConfigCacheRedis(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineObject1'];
+      let postBody = opts['redisConfiguration'];
 
       let pathParams = {
       };
@@ -105,7 +104,7 @@ export default class CacheConfigurationRedisApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2001RedisConfiguration;
+      let returnType = RedisConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/redis', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

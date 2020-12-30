@@ -60,12 +60,6 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property oxtrustAcr (base name: "oxtrustAcr")', function() {
-      // uncomment below and update the code to test the property oxtrustAcr
-      //var instane = new JansConfigApi.AuthenticationMethod();
-      //expect(instance).to.be();
-    });
-
   });
 
 }));

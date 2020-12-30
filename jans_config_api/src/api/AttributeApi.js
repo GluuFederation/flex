@@ -15,7 +15,6 @@
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
 import GluuAttribute from '../model/GluuAttribute';
-import GluuAttributeAttributeValidation from '../model/GluuAttributeAttributeValidation';
 import PatchRequest from '../model/PatchRequest';
 
 /**
@@ -180,7 +179,7 @@ export default class AttributeApi {
      * Partially modify a GluuAttribute.
      * @param {String} inum Attribute ID.
      * @param {Object} opts Optional parameters
-     * @param {module:model/PatchRequest} opts.patchRequest 
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
      * @param {module:api/AttributeApi~patchAttributesByInumCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/GluuAttribute}
      */
@@ -203,7 +202,7 @@ export default class AttributeApi {
       };
 
       let authNames = ['jans-auth'];
-      let contentTypes = ['application/json'];
+      let contentTypes = ['application/json-patch+json'];
       let accepts = ['application/json'];
       let returnType = GluuAttribute;
       return this.apiClient.callApi(
@@ -224,52 +223,15 @@ export default class AttributeApi {
     /**
      * Adds a new attribute.
      * Adds a new attribute.
-     * @param {String} name Name of the attribute.
-     * @param {Array.<String>} displayName 
-     * @param {module:model/String} dataType Data Type of attribute.
-     * @param {String} status Distinguished Name
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.description User friendly descriptive detail of attribute.
-     * @param {Boolean} opts.jansMultivaluedAttr Boolean value indicating if the attribute is multi-value
-     * @param {String} opts.lifetime 
-     * @param {String} opts.sourceAttribute 
-     * @param {String} opts.salt 
-     * @param {String} opts.nameIdType 
-     * @param {String} opts.origin 
-     * @param {Array.<String>} opts.editType GluuUserRole
-     * @param {Array.<String>} opts.viewType GluuUserRole
-     * @param {Array.<String>} opts.usageType GluuAttributeUsageType
-     * @param {String} opts.jansAttrName 
-     * @param {String} opts.seeAlso 
-     * @param {String} opts.saml1Uri 
-     * @param {String} opts.saml2Uri 
-     * @param {String} opts.urn 
-     * @param {Boolean} opts.jansSCIMCustomAttr Boolean value indicating if the attribute is a SCIM custom attribute
-     * @param {Boolean} opts.custom Boolean value indicating if the attribute is a custom attribute
-     * @param {Boolean} opts.requred Boolean value indicating is a mandatory attribute
-     * @param {module:model/GluuAttributeAttributeValidation} opts.attributeValidation 
-     * @param {String} opts.gluuTooltip 
+     * @param {module:model/GluuAttribute} gluuAttribute 
      * @param {module:api/AttributeApi~postAttributesCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/GluuAttribute}
      */
-    postAttributes(name, displayName, dataType, status, opts, callback) {
-      opts = opts || {};
-      let postBody = null;
-      // verify the required parameter 'name' is set
-      if (name === undefined || name === null) {
-        throw new Error("Missing the required parameter 'name' when calling postAttributes");
-      }
-      // verify the required parameter 'displayName' is set
-      if (displayName === undefined || displayName === null) {
-        throw new Error("Missing the required parameter 'displayName' when calling postAttributes");
-      }
-      // verify the required parameter 'dataType' is set
-      if (dataType === undefined || dataType === null) {
-        throw new Error("Missing the required parameter 'dataType' when calling postAttributes");
-      }
-      // verify the required parameter 'status' is set
-      if (status === undefined || status === null) {
-        throw new Error("Missing the required parameter 'status' when calling postAttributes");
+    postAttributes(gluuAttribute, callback) {
+      let postBody = gluuAttribute;
+      // verify the required parameter 'gluuAttribute' is set
+      if (gluuAttribute === undefined || gluuAttribute === null) {
+        throw new Error("Missing the required parameter 'gluuAttribute' when calling postAttributes");
       }
 
       let pathParams = {
@@ -279,34 +241,10 @@ export default class AttributeApi {
       let headerParams = {
       };
       let formParams = {
-        'name': name,
-        'displayName': this.apiClient.buildCollectionParam(displayName, 'csv'),
-        'description': opts['description'],
-        'dataType': dataType,
-        'status': status,
-        'jansMultivaluedAttr': opts['jansMultivaluedAttr'],
-        'lifetime': opts['lifetime'],
-        'sourceAttribute': opts['sourceAttribute'],
-        'salt': opts['salt'],
-        'nameIdType': opts['nameIdType'],
-        'origin': opts['origin'],
-        'editType': this.apiClient.buildCollectionParam(opts['editType'], 'csv'),
-        'viewType': this.apiClient.buildCollectionParam(opts['viewType'], 'csv'),
-        'usageType': this.apiClient.buildCollectionParam(opts['usageType'], 'csv'),
-        'jansAttrName': opts['jansAttrName'],
-        'seeAlso': opts['seeAlso'],
-        'saml1Uri': opts['saml1Uri'],
-        'saml2Uri': opts['saml2Uri'],
-        'urn': opts['urn'],
-        'jansSCIMCustomAttr': opts['jansSCIMCustomAttr'],
-        'custom': opts['custom'],
-        'requred': opts['requred'],
-        'attributeValidation': opts['attributeValidation'],
-        'gluuTooltip': opts['gluuTooltip']
       };
 
       let authNames = ['jans-auth'];
-      let contentTypes = ['application/x-www-form-urlencoded'];
+      let contentTypes = ['application/json'];
       let accepts = ['application/json'];
       let returnType = GluuAttribute;
       return this.apiClient.callApi(
@@ -320,7 +258,7 @@ export default class AttributeApi {
      * Callback function to receive the result of the putAttributes operation.
      * @callback module:api/AttributeApi~putAttributesCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/GluuAttribute>} data The data returned by the service call.
+     * @param {module:model/GluuAttribute} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -329,7 +267,7 @@ export default class AttributeApi {
      * Updates an existing attribute.
      * @param {module:model/GluuAttribute} gluuAttribute 
      * @param {module:api/AttributeApi~putAttributesCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/GluuAttribute>}
+     * data is of type: {@link module:model/GluuAttribute}
      */
     putAttributes(gluuAttribute, callback) {
       let postBody = gluuAttribute;
@@ -350,7 +288,7 @@ export default class AttributeApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = [GluuAttribute];
+      let returnType = GluuAttribute;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/attributes', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

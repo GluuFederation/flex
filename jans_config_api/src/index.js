@@ -20,7 +20,7 @@ import AppConfigurationCibaEndUserNotificationConfig from './model/AppConfigurat
 import AppConfigurationClientAuthenticationFilters from './model/AppConfigurationClientAuthenticationFilters';
 import AppConfigurationCorsConfigurationFilters from './model/AppConfigurationCorsConfigurationFilters';
 import AuthenticationMethod from './model/AuthenticationMethod';
-import AuthenticationMethod1 from './model/AuthenticationMethod1';
+import CacheConfiguration from './model/CacheConfiguration';
 import Client from './model/Client';
 import ClientAttributes from './model/ClientAttributes';
 import CouchbaseConfiguration from './model/CouchbaseConfiguration';
@@ -30,37 +30,26 @@ import CustomScriptConfigurationProperties from './model/CustomScriptConfigurati
 import CustomScriptModuleProperties from './model/CustomScriptModuleProperties';
 import CustomScriptScriptError from './model/CustomScriptScriptError';
 import ErrorResponse from './model/ErrorResponse';
+import Fido2Configuration from './model/Fido2Configuration';
 import GluuAttribute from './model/GluuAttribute';
 import GluuAttributeAttributeValidation from './model/GluuAttributeAttributeValidation';
-import InlineObject from './model/InlineObject';
-import InlineObject1 from './model/InlineObject1';
-import InlineObject2 from './model/InlineObject2';
-import InlineObject3 from './model/InlineObject3';
-import InlineObject4 from './model/InlineObject4';
-import InlineObject5 from './model/InlineObject5';
-import InlineObject6 from './model/InlineObject6';
-import InlineObject7 from './model/InlineObject7';
+import InMemoryConfiguration from './model/InMemoryConfiguration';
 import InlineResponse200 from './model/InlineResponse200';
-import InlineResponse2001 from './model/InlineResponse2001';
-import InlineResponse2001InMemoryConfiguration from './model/InlineResponse2001InMemoryConfiguration';
-import InlineResponse2001MemcachedConfiguration from './model/InlineResponse2001MemcachedConfiguration';
-import InlineResponse2001NativePersistenceConfiguration from './model/InlineResponse2001NativePersistenceConfiguration';
-import InlineResponse2001RedisConfiguration from './model/InlineResponse2001RedisConfiguration';
-import InlineResponse2002 from './model/InlineResponse2002';
-import InlineResponse2002NativePersistenceConfiguration from './model/InlineResponse2002NativePersistenceConfiguration';
-import InlineResponse2003 from './model/InlineResponse2003';
-import InlineResponse2004 from './model/InlineResponse2004';
-import InlineResponse2005 from './model/InlineResponse2005';
-import InlineResponse2006 from './model/InlineResponse2006';
+import JansFido2DynConfiguration from './model/JansFido2DynConfiguration';
 import JsonWebKey from './model/JsonWebKey';
 import LdapConfiguration from './model/LdapConfiguration';
-import NewlyAddedOpenIDConnectSectorIdentifier from './model/NewlyAddedOpenIDConnectSectorIdentifier';
+import LoggingConfiguration from './model/LoggingConfiguration';
+import MemcachedConfiguration from './model/MemcachedConfiguration';
+import NativePersistenceConfiguration from './model/NativePersistenceConfiguration';
 import PatchRequest from './model/PatchRequest';
+import RedisConfiguration from './model/RedisConfiguration';
+import RequestedParties from './model/RequestedParties';
 import Scope from './model/Scope';
 import ScopeAttributes from './model/ScopeAttributes';
+import SectorIdentifier from './model/SectorIdentifier';
+import SmtpConfiguration from './model/SmtpConfiguration';
 import UmaResource from './model/UmaResource';
 import WebKeysConfiguration from './model/WebKeysConfiguration';
-import WebKeysConfiguration1 from './model/WebKeysConfiguration1';
 import AttributeApi from './api/AttributeApi';
 import CacheConfigurationApi from './api/CacheConfigurationApi';
 import CacheConfigurationInMemoryApi from './api/CacheConfigurationInMemoryApi';
@@ -163,10 +152,10 @@ export {
     AuthenticationMethod,
 
     /**
-     * The AuthenticationMethod1 model constructor.
-     * @property {module:model/AuthenticationMethod1}
+     * The CacheConfiguration model constructor.
+     * @property {module:model/CacheConfiguration}
      */
-    AuthenticationMethod1,
+    CacheConfiguration,
 
     /**
      * The Client model constructor.
@@ -223,6 +212,12 @@ export {
     ErrorResponse,
 
     /**
+     * The Fido2Configuration model constructor.
+     * @property {module:model/Fido2Configuration}
+     */
+    Fido2Configuration,
+
+    /**
      * The GluuAttribute model constructor.
      * @property {module:model/GluuAttribute}
      */
@@ -235,52 +230,10 @@ export {
     GluuAttributeAttributeValidation,
 
     /**
-     * The InlineObject model constructor.
-     * @property {module:model/InlineObject}
+     * The InMemoryConfiguration model constructor.
+     * @property {module:model/InMemoryConfiguration}
      */
-    InlineObject,
-
-    /**
-     * The InlineObject1 model constructor.
-     * @property {module:model/InlineObject1}
-     */
-    InlineObject1,
-
-    /**
-     * The InlineObject2 model constructor.
-     * @property {module:model/InlineObject2}
-     */
-    InlineObject2,
-
-    /**
-     * The InlineObject3 model constructor.
-     * @property {module:model/InlineObject3}
-     */
-    InlineObject3,
-
-    /**
-     * The InlineObject4 model constructor.
-     * @property {module:model/InlineObject4}
-     */
-    InlineObject4,
-
-    /**
-     * The InlineObject5 model constructor.
-     * @property {module:model/InlineObject5}
-     */
-    InlineObject5,
-
-    /**
-     * The InlineObject6 model constructor.
-     * @property {module:model/InlineObject6}
-     */
-    InlineObject6,
-
-    /**
-     * The InlineObject7 model constructor.
-     * @property {module:model/InlineObject7}
-     */
-    InlineObject7,
+    InMemoryConfiguration,
 
     /**
      * The InlineResponse200 model constructor.
@@ -289,70 +242,10 @@ export {
     InlineResponse200,
 
     /**
-     * The InlineResponse2001 model constructor.
-     * @property {module:model/InlineResponse2001}
+     * The JansFido2DynConfiguration model constructor.
+     * @property {module:model/JansFido2DynConfiguration}
      */
-    InlineResponse2001,
-
-    /**
-     * The InlineResponse2001InMemoryConfiguration model constructor.
-     * @property {module:model/InlineResponse2001InMemoryConfiguration}
-     */
-    InlineResponse2001InMemoryConfiguration,
-
-    /**
-     * The InlineResponse2001MemcachedConfiguration model constructor.
-     * @property {module:model/InlineResponse2001MemcachedConfiguration}
-     */
-    InlineResponse2001MemcachedConfiguration,
-
-    /**
-     * The InlineResponse2001NativePersistenceConfiguration model constructor.
-     * @property {module:model/InlineResponse2001NativePersistenceConfiguration}
-     */
-    InlineResponse2001NativePersistenceConfiguration,
-
-    /**
-     * The InlineResponse2001RedisConfiguration model constructor.
-     * @property {module:model/InlineResponse2001RedisConfiguration}
-     */
-    InlineResponse2001RedisConfiguration,
-
-    /**
-     * The InlineResponse2002 model constructor.
-     * @property {module:model/InlineResponse2002}
-     */
-    InlineResponse2002,
-
-    /**
-     * The InlineResponse2002NativePersistenceConfiguration model constructor.
-     * @property {module:model/InlineResponse2002NativePersistenceConfiguration}
-     */
-    InlineResponse2002NativePersistenceConfiguration,
-
-    /**
-     * The InlineResponse2003 model constructor.
-     * @property {module:model/InlineResponse2003}
-     */
-    InlineResponse2003,
-
-    /**
-     * The InlineResponse2004 model constructor.
-     * @property {module:model/InlineResponse2004}
-     */
-    InlineResponse2004,
-
-    /**
-     * The InlineResponse2005 model constructor.
-     * @property {module:model/InlineResponse2005}
-     */
-    InlineResponse2005,
-
-    /**
-     * The InlineResponse2006 model constructor.
-     * @property {module:model/InlineResponse2006}
-     */
-    InlineResponse2006,
+    JansFido2DynConfiguration,
 
     /**
      * The JsonWebKey model constructor.
@@ -367,16 +260,40 @@ export {
     LdapConfiguration,
 
     /**
-     * The NewlyAddedOpenIDConnectSectorIdentifier model constructor.
-     * @property {module:model/NewlyAddedOpenIDConnectSectorIdentifier}
+     * The LoggingConfiguration model constructor.
+     * @property {module:model/LoggingConfiguration}
      */
-    NewlyAddedOpenIDConnectSectorIdentifier,
+    LoggingConfiguration,
+
+    /**
+     * The MemcachedConfiguration model constructor.
+     * @property {module:model/MemcachedConfiguration}
+     */
+    MemcachedConfiguration,
+
+    /**
+     * The NativePersistenceConfiguration model constructor.
+     * @property {module:model/NativePersistenceConfiguration}
+     */
+    NativePersistenceConfiguration,
 
     /**
      * The PatchRequest model constructor.
      * @property {module:model/PatchRequest}
      */
     PatchRequest,
+
+    /**
+     * The RedisConfiguration model constructor.
+     * @property {module:model/RedisConfiguration}
+     */
+    RedisConfiguration,
+
+    /**
+     * The RequestedParties model constructor.
+     * @property {module:model/RequestedParties}
+     */
+    RequestedParties,
 
     /**
      * The Scope model constructor.
@@ -391,6 +308,18 @@ export {
     ScopeAttributes,
 
     /**
+     * The SectorIdentifier model constructor.
+     * @property {module:model/SectorIdentifier}
+     */
+    SectorIdentifier,
+
+    /**
+     * The SmtpConfiguration model constructor.
+     * @property {module:model/SmtpConfiguration}
+     */
+    SmtpConfiguration,
+
+    /**
      * The UmaResource model constructor.
      * @property {module:model/UmaResource}
      */
@@ -401,12 +330,6 @@ export {
      * @property {module:model/WebKeysConfiguration}
      */
     WebKeysConfiguration,
-
-    /**
-     * The WebKeysConfiguration1 model constructor.
-     * @property {module:model/WebKeysConfiguration1}
-     */
-    WebKeysConfiguration1,
 
     /**
     * The AttributeApi service constructor.

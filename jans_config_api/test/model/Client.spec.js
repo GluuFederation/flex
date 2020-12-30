@@ -54,13 +54,19 @@
       //expect(instance).to.be.a(JansConfigApi.Client);
     });
 
+    it('should have the property dn (base name: "dn")', function() {
+      // uncomment below and update the code to test the property dn
+      //var instane = new JansConfigApi.Client();
+      //expect(instance).to.be();
+    });
+
     it('should have the property inum (base name: "inum")', function() {
       // uncomment below and update the code to test the property inum
       //var instane = new JansConfigApi.Client();
       //expect(instance).to.be();
     });
 
-    it('should have the property clientSecret (base name: "client_secret")', function() {
+    it('should have the property clientSecret (base name: "clientSecret")', function() {
       // uncomment below and update the code to test the property clientSecret
       //var instane = new JansConfigApi.Client();
       //expect(instance).to.be();
@@ -96,7 +102,7 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property redirectUris (base name: "redirect_uris")', function() {
+    it('should have the property redirectUris (base name: "redirectUris")', function() {
       // uncomment below and update the code to test the property redirectUris
       //var instane = new JansConfigApi.Client();
       //expect(instance).to.be();

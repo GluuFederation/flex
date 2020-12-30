@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 ## getConfigCacheRedis
 
-> InlineResponse2001RedisConfiguration getConfigCacheRedis()
+> RedisConfiguration getConfigCacheRedis()
 
 Returns Redis cache configuration.
 
@@ -42,7 +42,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InlineResponse2001RedisConfiguration**](InlineResponse2001RedisConfiguration.md)
+[**RedisConfiguration**](RedisConfiguration.md)
 
 ### Authorization
 
@@ -56,7 +56,7 @@ This endpoint does not need any parameter.
 
 ## putConfigCacheRedis
 
-> InlineResponse2001RedisConfiguration putConfigCacheRedis(opts)
+> RedisConfiguration putConfigCacheRedis(opts)
 
 Updates Redis cache configuration.
 
@@ -73,7 +73,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.CacheConfigurationRedisApi();
 let opts = {
-  'inlineObject1': new JansConfigApi.InlineObject1() // InlineObject1 | 
+  'redisConfiguration': new JansConfigApi.RedisConfiguration() // RedisConfiguration | 
 };
 apiInstance.putConfigCacheRedis(opts, (error, data, response) => {
   if (error) {
@@ -89,11 +89,11 @@ apiInstance.putConfigCacheRedis(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineObject1** | [**InlineObject1**](InlineObject1.md)|  | [optional] 
+ **redisConfiguration** | [**RedisConfiguration**](RedisConfiguration.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2001RedisConfiguration**](InlineResponse2001RedisConfiguration.md)
+[**RedisConfiguration**](RedisConfiguration.md)
 
 ### Authorization
 

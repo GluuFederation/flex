@@ -64,7 +64,7 @@ null (empty response body)
 
 ## getOauthOpenidSectors
 
-> [InlineResponse2006] getOauthOpenidSectors()
+> [SectorIdentifier] getOauthOpenidSectors()
 
 Gets list of OpenID Connect Sectors.
 
@@ -95,7 +95,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**[InlineResponse2006]**](InlineResponse2006.md)
+[**[SectorIdentifier]**](SectorIdentifier.md)
 
 ### Authorization
 
@@ -109,7 +109,7 @@ This endpoint does not need any parameter.
 
 ## getOauthOpenidSectorsById
 
-> InlineResponse2006 getOauthOpenidSectorsById(inum)
+> SectorIdentifier getOauthOpenidSectorsById(inum)
 
 Get OpenID Connect Sector by Inum.
 
@@ -144,7 +144,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2006**](InlineResponse2006.md)
+[**SectorIdentifier**](SectorIdentifier.md)
 
 ### Authorization
 
@@ -158,7 +158,7 @@ Name | Type | Description  | Notes
 
 ## patchOauthOpenidSectorsById
 
-> InlineResponse2006 patchOauthOpenidSectorsById(inum, opts)
+> SectorIdentifier patchOauthOpenidSectorsById(inum, opts)
 
 Partially update OpenId Connect Sector by Inum.
 
@@ -176,7 +176,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 let apiInstance = new JansConfigApi.OAuthOpenIDConnectSectorIdentifiersApi();
 let inum = "inum_example"; // String | Scope ID.
 let opts = {
-  'patchRequest': new JansConfigApi.PatchRequest() // PatchRequest | 
+  'patchRequest': [new JansConfigApi.PatchRequest()] // [PatchRequest] | 
 };
 apiInstance.patchOauthOpenidSectorsById(inum, opts, (error, data, response) => {
   if (error) {
@@ -193,11 +193,11 @@ apiInstance.patchOauthOpenidSectorsById(inum, opts, (error, data, response) => {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **inum** | **String**| Scope ID. | 
- **patchRequest** | [**PatchRequest**](PatchRequest.md)|  | [optional] 
+ **patchRequest** | [**[PatchRequest]**](PatchRequest.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2006**](InlineResponse2006.md)
+[**SectorIdentifier**](SectorIdentifier.md)
 
 ### Authorization
 
@@ -205,13 +205,13 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
+- **Content-Type**: application/json-patch+json
 - **Accept**: application/json
 
 
 ## postOauthOpenidSectors
 
-> NewlyAddedOpenIDConnectSectorIdentifier postOauthOpenidSectors(opts)
+> SectorIdentifier postOauthOpenidSectors(opts)
 
 Create new OpenID Connect Sector.
 
@@ -228,7 +228,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.OAuthOpenIDConnectSectorIdentifiersApi();
 let opts = {
-  'inlineObject7': new JansConfigApi.InlineObject7() // InlineObject7 | 
+  'sectorIdentifier': new JansConfigApi.SectorIdentifier() // SectorIdentifier | 
 };
 apiInstance.postOauthOpenidSectors(opts, (error, data, response) => {
   if (error) {
@@ -244,11 +244,11 @@ apiInstance.postOauthOpenidSectors(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineObject7** | [**InlineObject7**](InlineObject7.md)|  | [optional] 
+ **sectorIdentifier** | [**SectorIdentifier**](SectorIdentifier.md)|  | [optional] 
 
 ### Return type
 
-[**NewlyAddedOpenIDConnectSectorIdentifier**](NewlyAddedOpenIDConnectSectorIdentifier.md)
+[**SectorIdentifier**](SectorIdentifier.md)
 
 ### Authorization
 
@@ -262,7 +262,7 @@ Name | Type | Description  | Notes
 
 ## putOauthOpenidSectors
 
-> NewlyAddedOpenIDConnectSectorIdentifier putOauthOpenidSectors(opts)
+> SectorIdentifier putOauthOpenidSectors(opts)
 
 Update OpenId Connect Sector.
 
@@ -279,7 +279,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.OAuthOpenIDConnectSectorIdentifiersApi();
 let opts = {
-  'inlineObject6': new JansConfigApi.InlineObject6() // InlineObject6 | 
+  'sectorIdentifier': new JansConfigApi.SectorIdentifier() // SectorIdentifier | 
 };
 apiInstance.putOauthOpenidSectors(opts, (error, data, response) => {
   if (error) {
@@ -295,11 +295,11 @@ apiInstance.putOauthOpenidSectors(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineObject6** | [**InlineObject6**](InlineObject6.md)|  | [optional] 
+ **sectorIdentifier** | [**SectorIdentifier**](SectorIdentifier.md)|  | [optional] 
 
 ### Return type
 
-[**NewlyAddedOpenIDConnectSectorIdentifier**](NewlyAddedOpenIDConnectSectorIdentifier.md)
+[**SectorIdentifier**](SectorIdentifier.md)
 
 ### Authorization
 

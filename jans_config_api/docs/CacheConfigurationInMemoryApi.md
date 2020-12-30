@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 ## getConfigCacheInMemory
 
-> InlineResponse2001InMemoryConfiguration getConfigCacheInMemory()
+> InMemoryConfiguration getConfigCacheInMemory()
 
 Returns in-Memory cache configuration.
 
@@ -42,7 +42,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InlineResponse2001InMemoryConfiguration**](InlineResponse2001InMemoryConfiguration.md)
+[**InMemoryConfiguration**](InMemoryConfiguration.md)
 
 ### Authorization
 
@@ -56,7 +56,7 @@ This endpoint does not need any parameter.
 
 ## putConfigCacheInMemory
 
-> InlineResponse2001InMemoryConfiguration putConfigCacheInMemory(opts)
+> InMemoryConfiguration putConfigCacheInMemory(opts)
 
 Updates in-Memory cache configuration.
 
@@ -73,7 +73,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.CacheConfigurationInMemoryApi();
 let opts = {
-  'inlineObject2': new JansConfigApi.InlineObject2() // InlineObject2 | 
+  'inMemoryConfiguration': new JansConfigApi.InMemoryConfiguration() // InMemoryConfiguration | 
 };
 apiInstance.putConfigCacheInMemory(opts, (error, data, response) => {
   if (error) {
@@ -89,11 +89,11 @@ apiInstance.putConfigCacheInMemory(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineObject2** | [**InlineObject2**](InlineObject2.md)|  | [optional] 
+ **inMemoryConfiguration** | [**InMemoryConfiguration**](InMemoryConfiguration.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2001InMemoryConfiguration**](InlineResponse2001InMemoryConfiguration.md)
+[**InMemoryConfiguration**](InMemoryConfiguration.md)
 
 ### Authorization
 

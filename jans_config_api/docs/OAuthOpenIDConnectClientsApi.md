@@ -117,7 +117,7 @@ Name | Type | Description  | Notes
 
 ## getOauthOpenidClientsByInum
 
-> [Client] getOauthOpenidClientsByInum(inum)
+> Client getOauthOpenidClientsByInum(inum)
 
 Get OpenId Connect Client by Inum
 
@@ -152,7 +152,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**[Client]**](Client.md)
+[**Client**](Client.md)
 
 ### Authorization
 
@@ -166,7 +166,7 @@ Name | Type | Description  | Notes
 
 ## patchOauthOpenidClientsByInum
 
-> [Client] patchOauthOpenidClientsByInum(inum, opts)
+> Client patchOauthOpenidClientsByInum(inum, opts)
 
 Update modified properties of OpenId Connect client by Inum.
 
@@ -184,7 +184,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 let apiInstance = new JansConfigApi.OAuthOpenIDConnectClientsApi();
 let inum = "inum_example"; // String | Client identifier
 let opts = {
-  'patchRequest': new JansConfigApi.PatchRequest() // PatchRequest | 
+  'patchRequest': [new JansConfigApi.PatchRequest()] // [PatchRequest] | 
 };
 apiInstance.patchOauthOpenidClientsByInum(inum, opts, (error, data, response) => {
   if (error) {
@@ -201,11 +201,11 @@ apiInstance.patchOauthOpenidClientsByInum(inum, opts, (error, data, response) =>
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **inum** | **String**| Client identifier | 
- **patchRequest** | [**PatchRequest**](PatchRequest.md)|  | [optional] 
+ **patchRequest** | [**[PatchRequest]**](PatchRequest.md)|  | [optional] 
 
 ### Return type
 
-[**[Client]**](Client.md)
+[**Client**](Client.md)
 
 ### Authorization
 
@@ -213,13 +213,13 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
+- **Content-Type**: application/json-patch+json
 - **Accept**: application/json
 
 
 ## postOauthOpenidClients
 
-> [Client] postOauthOpenidClients(opts)
+> Client postOauthOpenidClients(opts)
 
 Create new OpenId connect client
 
@@ -236,7 +236,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.OAuthOpenIDConnectClientsApi();
 let opts = {
-  'client': [new JansConfigApi.Client()] // [Client] | 
+  'client': new JansConfigApi.Client() // Client | 
 };
 apiInstance.postOauthOpenidClients(opts, (error, data, response) => {
   if (error) {
@@ -252,11 +252,11 @@ apiInstance.postOauthOpenidClients(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **client** | [**[Client]**](Client.md)|  | [optional] 
+ **client** | [**Client**](Client.md)|  | [optional] 
 
 ### Return type
 
-[**[Client]**](Client.md)
+[**Client**](Client.md)
 
 ### Authorization
 
@@ -270,7 +270,7 @@ Name | Type | Description  | Notes
 
 ## putOauthOpenidClients
 
-> [Client] putOauthOpenidClients(opts)
+> Client putOauthOpenidClients(opts)
 
 Update OpenId Connect client.
 
@@ -287,7 +287,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.OAuthOpenIDConnectClientsApi();
 let opts = {
-  'client': [new JansConfigApi.Client()] // [Client] | 
+  'client': new JansConfigApi.Client() // Client | 
 };
 apiInstance.putOauthOpenidClients(opts, (error, data, response) => {
   if (error) {
@@ -303,11 +303,11 @@ apiInstance.putOauthOpenidClients(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **client** | [**[Client]**](Client.md)|  | [optional] 
+ **client** | [**Client**](Client.md)|  | [optional] 
 
 ### Return type
 
-[**[Client]**](Client.md)
+[**Client**](Client.md)
 
 ### Authorization
 

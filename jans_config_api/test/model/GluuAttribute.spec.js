@@ -54,6 +54,24 @@
       //expect(instance).to.be.a(JansConfigApi.GluuAttribute);
     });
 
+    it('should have the property dn (base name: "dn")', function() {
+      // uncomment below and update the code to test the property dn
+      //var instane = new JansConfigApi.GluuAttribute();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property inum (base name: "inum")', function() {
+      // uncomment below and update the code to test the property inum
+      //var instane = new JansConfigApi.GluuAttribute();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property selected (base name: "selected")', function() {
+      // uncomment below and update the code to test the property selected
+      //var instane = new JansConfigApi.GluuAttribute();
+      //expect(instance).to.be();
+    });
+
     it('should have the property name (base name: "name")', function() {
       // uncomment below and update the code to test the property name
       //var instane = new JansConfigApi.GluuAttribute();
@@ -80,12 +98,6 @@
 
     it('should have the property status (base name: "status")', function() {
       // uncomment below and update the code to test the property status
-      //var instane = new JansConfigApi.GluuAttribute();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property jansMultivaluedAttr (base name: "jansMultivaluedAttr")', function() {
-      // uncomment below and update the code to test the property jansMultivaluedAttr
       //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
@@ -138,8 +150,8 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property jansAttrName (base name: "jansAttrName")', function() {
-      // uncomment below and update the code to test the property jansAttrName
+    it('should have the property claimName (base name: "claimName")', function() {
+      // uncomment below and update the code to test the property claimName
       //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
@@ -168,8 +180,14 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property jansSCIMCustomAttr (base name: "jansSCIMCustomAttr")', function() {
-      // uncomment below and update the code to test the property jansSCIMCustomAttr
+    it('should have the property scimCustomAttr (base name: "scimCustomAttr")', function() {
+      // uncomment below and update the code to test the property scimCustomAttr
+      //var instane = new JansConfigApi.GluuAttribute();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property oxMultiValuedAttribute (base name: "oxMultiValuedAttribute")', function() {
+      // uncomment below and update the code to test the property oxMultiValuedAttribute
       //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
@@ -192,8 +210,8 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property gluuTooltip (base name: "gluuTooltip")', function() {
-      // uncomment below and update the code to test the property gluuTooltip
+    it('should have the property tooltip (base name: "tooltip")', function() {
+      // uncomment below and update the code to test the property tooltip
       //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });

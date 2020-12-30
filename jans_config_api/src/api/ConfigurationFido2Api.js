@@ -14,7 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
-import InlineResponse200 from '../model/InlineResponse200';
+import JansFido2DynConfiguration from '../model/JansFido2DynConfiguration';
 
 /**
 * ConfigurationFido2 service.
@@ -39,7 +39,7 @@ export default class ConfigurationFido2Api {
      * Callback function to receive the result of the getPropertiesFido2 operation.
      * @callback module:api/ConfigurationFido2Api~getPropertiesFido2Callback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/InlineResponse200>} data The data returned by the service call.
+     * @param {module:model/JansFido2DynConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -47,7 +47,7 @@ export default class ConfigurationFido2Api {
      * Gets Jans Authorization Server Fido2 configuration properties.
      * Gets Jans Authorization Server Fido2 configuration properties.
      * @param {module:api/ConfigurationFido2Api~getPropertiesFido2Callback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/InlineResponse200>}
+     * data is of type: {@link module:model/JansFido2DynConfiguration}
      */
     getPropertiesFido2(callback) {
       let postBody = null;
@@ -64,7 +64,7 @@ export default class ConfigurationFido2Api {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = [InlineResponse200];
+      let returnType = JansFido2DynConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/fido2/config', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -76,7 +76,7 @@ export default class ConfigurationFido2Api {
      * Callback function to receive the result of the putPropertiesFido2 operation.
      * @callback module:api/ConfigurationFido2Api~putPropertiesFido2Callback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/JansFido2DynConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -84,12 +84,13 @@ export default class ConfigurationFido2Api {
      * Updates Fido2 configuration properties.
      * Updates Fido2 configuration properties.
      * @param {Object} opts Optional parameters
-     * @param {Array.<module:model/InlineResponse200>} opts.inlineResponse200 
+     * @param {module:model/JansFido2DynConfiguration} opts.jansFido2DynConfiguration 
      * @param {module:api/ConfigurationFido2Api~putPropertiesFido2Callback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/JansFido2DynConfiguration}
      */
     putPropertiesFido2(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineResponse200'];
+      let postBody = opts['jansFido2DynConfiguration'];
 
       let pathParams = {
       };
@@ -103,7 +104,7 @@ export default class ConfigurationFido2Api {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = null;
+      let returnType = JansFido2DynConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/fido2/config', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

@@ -14,11 +14,8 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
-import InlineObject6 from '../model/InlineObject6';
-import InlineObject7 from '../model/InlineObject7';
-import InlineResponse2006 from '../model/InlineResponse2006';
-import NewlyAddedOpenIDConnectSectorIdentifier from '../model/NewlyAddedOpenIDConnectSectorIdentifier';
 import PatchRequest from '../model/PatchRequest';
+import SectorIdentifier from '../model/SectorIdentifier';
 
 /**
 * OAuthOpenIDConnectSectorIdentifiers service.
@@ -85,7 +82,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Callback function to receive the result of the getOauthOpenidSectors operation.
      * @callback module:api/OAuthOpenIDConnectSectorIdentifiersApi~getOauthOpenidSectorsCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/InlineResponse2006>} data The data returned by the service call.
+     * @param {Array.<module:model/SectorIdentifier>} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -93,7 +90,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Gets list of OpenID Connect Sectors.
      * Gets list of OpenID Connect Sectors.
      * @param {module:api/OAuthOpenIDConnectSectorIdentifiersApi~getOauthOpenidSectorsCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/InlineResponse2006>}
+     * data is of type: {@link Array.<module:model/SectorIdentifier>}
      */
     getOauthOpenidSectors(callback) {
       let postBody = null;
@@ -110,7 +107,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = [InlineResponse2006];
+      let returnType = [SectorIdentifier];
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/openid/sectoridentifiers', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -122,7 +119,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Callback function to receive the result of the getOauthOpenidSectorsById operation.
      * @callback module:api/OAuthOpenIDConnectSectorIdentifiersApi~getOauthOpenidSectorsByIdCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2006} data The data returned by the service call.
+     * @param {module:model/SectorIdentifier} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -131,7 +128,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Get OpenID Connect Sector by Inum.
      * @param {String} inum Scope ID.
      * @param {module:api/OAuthOpenIDConnectSectorIdentifiersApi~getOauthOpenidSectorsByIdCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2006}
+     * data is of type: {@link module:model/SectorIdentifier}
      */
     getOauthOpenidSectorsById(inum, callback) {
       let postBody = null;
@@ -153,7 +150,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2006;
+      let returnType = SectorIdentifier;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/openid/sectoridentifiers/{inum}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -165,7 +162,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Callback function to receive the result of the patchOauthOpenidSectorsById operation.
      * @callback module:api/OAuthOpenIDConnectSectorIdentifiersApi~patchOauthOpenidSectorsByIdCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2006} data The data returned by the service call.
+     * @param {module:model/SectorIdentifier} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -174,9 +171,9 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Partially update OpenId Connect Sector by Inum.
      * @param {String} inum Scope ID.
      * @param {Object} opts Optional parameters
-     * @param {module:model/PatchRequest} opts.patchRequest 
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
      * @param {module:api/OAuthOpenIDConnectSectorIdentifiersApi~patchOauthOpenidSectorsByIdCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2006}
+     * data is of type: {@link module:model/SectorIdentifier}
      */
     patchOauthOpenidSectorsById(inum, opts, callback) {
       opts = opts || {};
@@ -197,9 +194,9 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
       };
 
       let authNames = ['jans-auth'];
-      let contentTypes = ['application/json'];
+      let contentTypes = ['application/json-patch+json'];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2006;
+      let returnType = SectorIdentifier;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/openid/sectoridentifiers/{inum}', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -211,7 +208,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Callback function to receive the result of the postOauthOpenidSectors operation.
      * @callback module:api/OAuthOpenIDConnectSectorIdentifiersApi~postOauthOpenidSectorsCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/NewlyAddedOpenIDConnectSectorIdentifier} data The data returned by the service call.
+     * @param {module:model/SectorIdentifier} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -219,13 +216,13 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Create new OpenID Connect Sector.
      * Create new OpenID Connect Sector.
      * @param {Object} opts Optional parameters
-     * @param {module:model/InlineObject7} opts.inlineObject7 
+     * @param {module:model/SectorIdentifier} opts.sectorIdentifier 
      * @param {module:api/OAuthOpenIDConnectSectorIdentifiersApi~postOauthOpenidSectorsCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/NewlyAddedOpenIDConnectSectorIdentifier}
+     * data is of type: {@link module:model/SectorIdentifier}
      */
     postOauthOpenidSectors(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineObject7'];
+      let postBody = opts['sectorIdentifier'];
 
       let pathParams = {
       };
@@ -239,7 +236,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = NewlyAddedOpenIDConnectSectorIdentifier;
+      let returnType = SectorIdentifier;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/openid/sectoridentifiers', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -251,7 +248,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Callback function to receive the result of the putOauthOpenidSectors operation.
      * @callback module:api/OAuthOpenIDConnectSectorIdentifiersApi~putOauthOpenidSectorsCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/NewlyAddedOpenIDConnectSectorIdentifier} data The data returned by the service call.
+     * @param {module:model/SectorIdentifier} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -259,13 +256,13 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
      * Update OpenId Connect Sector.
      * Update OpenId Connect Sector.
      * @param {Object} opts Optional parameters
-     * @param {module:model/InlineObject6} opts.inlineObject6 
+     * @param {module:model/SectorIdentifier} opts.sectorIdentifier 
      * @param {module:api/OAuthOpenIDConnectSectorIdentifiersApi~putOauthOpenidSectorsCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/NewlyAddedOpenIDConnectSectorIdentifier}
+     * data is of type: {@link module:model/SectorIdentifier}
      */
     putOauthOpenidSectors(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineObject6'];
+      let postBody = opts['sectorIdentifier'];
 
       let pathParams = {
       };
@@ -279,7 +276,7 @@ export default class OAuthOpenIDConnectSectorIdentifiersApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = NewlyAddedOpenIDConnectSectorIdentifier;
+      let returnType = SectorIdentifier;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/openid/sectoridentifiers', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

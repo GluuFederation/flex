@@ -1,43 +1,38 @@
-import defaultAxios from "axios";
-export const baseUrl =
-  "https://gluu.gasmyr.com/jans-config-api/api/v1" || "http://localhost:8080";
+const JansConfigApi = require("jans_config_api");
+const defaultClient = JansConfigApi.ApiClient.instance;
+defaultClient.timeout = 50000;
+const jansauth = defaultClient.authentications["jans-auth"];
+defaultClient.basePath = "https://gluu.gasmyr.com".replace(/\/+$/, "");
+defaultClient.defaultHeaders = "{'Access-Control-Allow-Origin', '*'}";
+jansauth.accessToken = getApiAccessToken();
 
-const axios = defaultAxios.create({
-  baseURL: baseUrl,
-  timeout: 50000,
-  headers: { "Content-Type": "application/json" }
-});
-
-export const getApiToken = async () => {
-  return localStorage.getItem("gluu.api.token", "token5555555");
+const callback = function(error, data, res) {
+  if (error) {
+    return error;
+  } else {
+    return data;
+  }
 };
+const api = new JansConfigApi.OAuthScopesApi();
+
+function getApiAccessToken() {
+  return (
+    localStorage.getItem("gluu.api.token") ||
+    "f1e08391-47be-4c51-9ce3-1013b1badad7"
+  );
+}
 
 // Get All scopes
 export const getAllScopes = async () => {
-  try {
-    const todos = await axios.get("/scopes?limit=1000");
-    return todos.data;
-  } catch (err) {
-    return console.error(err);
-  }
+  api.getOauthScopes({}, callback);
 };
 
 // Get scope by inum
 export const getScope = async inum => {
-  try {
-    const todo = await axios.get("/scopes/" + inum);
-    return todo.data;
-  } catch (err) {
-    return console.error(err);
-  }
+  api.getOauthScopesByInum(inum, callback);
 };
 
 // Delete existed scope
 export const deleteScope = async inum => {
-  try {
-    await axios.delete("/scopes/" + inum);
-    return inum;
-  } catch (err) {
-    return console.error(err);
-  }
+  api.deleteOauthScopesById(inum, callback);
 };

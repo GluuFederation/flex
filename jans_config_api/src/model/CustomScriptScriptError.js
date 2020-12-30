@@ -21,6 +21,7 @@ import ApiClient from '../ApiClient';
 class CustomScriptScriptError {
     /**
      * Constructs a new <code>CustomScriptScriptError</code>.
+     * Possible errors assosiated with the script.
      * @alias module:model/CustomScriptScriptError
      */
     constructor() { 

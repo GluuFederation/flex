@@ -9,7 +9,7 @@ Method | HTTP request | Description
 [**getConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#getConfigDatabaseLdapByName) | **GET** /jans-config-api/api/v1/config/database/ldap/{name} | Gets an LDAP configuration by name.
 [**patchConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#patchConfigDatabaseLdapByName) | **PATCH** /jans-config-api/api/v1/config/database/ldap/{name} | Partially modify an LDAP configuration.
 [**postConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdap) | **POST** /jans-config-api/api/v1/config/database/ldap | Adds a new LDAP configuration.
-[**postConfigDatabaseLdapTest**](DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdapTest) | **POST** /jans-config-api/api/v1/config/database/ldap/test | Tests a LDAP configurations by name.
+[**postConfigDatabaseLdapTest**](DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdapTest) | **POST** /jans-config-api/api/v1/config/database/ldap/test | Tests an LDAP configuration.
 [**putConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#putConfigDatabaseLdap) | **PUT** /jans-config-api/api/v1/config/database/ldap | Updates LDAP configuration.
 
 
@@ -177,7 +177,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 let apiInstance = new JansConfigApi.DatabaseLDAPConfigurationApi();
 let name = "name_example"; // String | Name of LDAP configuration.
 let opts = {
-  'patchRequest': new JansConfigApi.PatchRequest() // PatchRequest | 
+  'patchRequest': [new JansConfigApi.PatchRequest()] // [PatchRequest] | 
 };
 apiInstance.patchConfigDatabaseLdapByName(name, opts, (error, data, response) => {
   if (error) {
@@ -194,7 +194,7 @@ apiInstance.patchConfigDatabaseLdapByName(name, opts, (error, data, response) =>
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **name** | **String**| Name of LDAP configuration. | 
- **patchRequest** | [**PatchRequest**](PatchRequest.md)|  | [optional] 
+ **patchRequest** | [**[PatchRequest]**](PatchRequest.md)|  | [optional] 
 
 ### Return type
 
@@ -206,7 +206,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
+- **Content-Type**: application/json-patch+json
 - **Accept**: application/json
 
 
@@ -263,9 +263,9 @@ Name | Type | Description  | Notes
 
 > Boolean postConfigDatabaseLdapTest(ldapConfiguration)
 
-Tests a LDAP configurations by name.
+Tests an LDAP configuration.
 
-Tests a LDAP configurations by name.
+Tests an LDAP configuration.
 
 ### Example
 

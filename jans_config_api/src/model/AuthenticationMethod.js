@@ -21,7 +21,7 @@ import ApiClient from '../ApiClient';
 class AuthenticationMethod {
     /**
      * Constructs a new <code>AuthenticationMethod</code>.
-     * Default authentication method.
+     * Authentication Method Configuration
      * @alias module:model/AuthenticationMethod
      */
     constructor() { 
@@ -51,9 +51,6 @@ class AuthenticationMethod {
             if (data.hasOwnProperty('defaultAcr')) {
                 obj['defaultAcr'] = ApiClient.convertToType(data['defaultAcr'], 'String');
             }
-            if (data.hasOwnProperty('oxtrustAcr')) {
-                obj['oxtrustAcr'] = ApiClient.convertToType(data['oxtrustAcr'], 'String');
-            }
         }
         return obj;
     }
@@ -62,14 +59,10 @@ class AuthenticationMethod {
 }
 
 /**
+ * This field controls the default authentication mechanism that is presented to users from all applications that leverage Janssen Server for authentication.
  * @member {String} defaultAcr
  */
 AuthenticationMethod.prototype['defaultAcr'] = undefined;
-
-/**
- * @member {String} oxtrustAcr
- */
-AuthenticationMethod.prototype['oxtrustAcr'] = undefined;
 
 
 

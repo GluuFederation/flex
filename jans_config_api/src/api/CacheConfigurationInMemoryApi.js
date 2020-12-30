@@ -14,8 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
-import InlineObject2 from '../model/InlineObject2';
-import InlineResponse2001InMemoryConfiguration from '../model/InlineResponse2001InMemoryConfiguration';
+import InMemoryConfiguration from '../model/InMemoryConfiguration';
 
 /**
 * CacheConfigurationInMemory service.
@@ -40,7 +39,7 @@ export default class CacheConfigurationInMemoryApi {
      * Callback function to receive the result of the getConfigCacheInMemory operation.
      * @callback module:api/CacheConfigurationInMemoryApi~getConfigCacheInMemoryCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2001InMemoryConfiguration} data The data returned by the service call.
+     * @param {module:model/InMemoryConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -48,7 +47,7 @@ export default class CacheConfigurationInMemoryApi {
      * Returns in-Memory cache configuration.
      * Returns in-Memory cache configuration.
      * @param {module:api/CacheConfigurationInMemoryApi~getConfigCacheInMemoryCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2001InMemoryConfiguration}
+     * data is of type: {@link module:model/InMemoryConfiguration}
      */
     getConfigCacheInMemory(callback) {
       let postBody = null;
@@ -65,7 +64,7 @@ export default class CacheConfigurationInMemoryApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2001InMemoryConfiguration;
+      let returnType = InMemoryConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/in-memory', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -77,7 +76,7 @@ export default class CacheConfigurationInMemoryApi {
      * Callback function to receive the result of the putConfigCacheInMemory operation.
      * @callback module:api/CacheConfigurationInMemoryApi~putConfigCacheInMemoryCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2001InMemoryConfiguration} data The data returned by the service call.
+     * @param {module:model/InMemoryConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -85,13 +84,13 @@ export default class CacheConfigurationInMemoryApi {
      * Updates in-Memory cache configuration.
      * Updates in-Memory cache configuration.
      * @param {Object} opts Optional parameters
-     * @param {module:model/InlineObject2} opts.inlineObject2 
+     * @param {module:model/InMemoryConfiguration} opts.inMemoryConfiguration 
      * @param {module:api/CacheConfigurationInMemoryApi~putConfigCacheInMemoryCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2001InMemoryConfiguration}
+     * data is of type: {@link module:model/InMemoryConfiguration}
      */
     putConfigCacheInMemory(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineObject2'];
+      let postBody = opts['inMemoryConfiguration'];
 
       let pathParams = {
       };
@@ -105,7 +104,7 @@ export default class CacheConfigurationInMemoryApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2001InMemoryConfiguration;
+      let returnType = InMemoryConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/in-memory', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

@@ -16,7 +16,6 @@ import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
 import PatchRequest from '../model/PatchRequest';
 import WebKeysConfiguration from '../model/WebKeysConfiguration';
-import WebKeysConfiguration1 from '../model/WebKeysConfiguration1';
 
 /**
 * ConfigurationJWKJSONWebKeyJWK service.
@@ -78,7 +77,7 @@ export default class ConfigurationJWKJSONWebKeyJWKApi {
      * Callback function to receive the result of the patchConfigJwks operation.
      * @callback module:api/ConfigurationJWKJSONWebKeyJWKApi~patchConfigJwksCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/WebKeysConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -86,8 +85,9 @@ export default class ConfigurationJWKJSONWebKeyJWKApi {
      * Patch JWKS
      * Patch JSON Web Keys (JWKS).
      * @param {Object} opts Optional parameters
-     * @param {module:model/PatchRequest} opts.patchRequest 
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
      * @param {module:api/ConfigurationJWKJSONWebKeyJWKApi~patchConfigJwksCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/WebKeysConfiguration}
      */
     patchConfigJwks(opts, callback) {
       opts = opts || {};
@@ -105,7 +105,7 @@ export default class ConfigurationJWKJSONWebKeyJWKApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json-patch+json'];
       let accepts = ['application/json'];
-      let returnType = null;
+      let returnType = WebKeysConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/jwks', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -117,7 +117,7 @@ export default class ConfigurationJWKJSONWebKeyJWKApi {
      * Callback function to receive the result of the putConfigJwks operation.
      * @callback module:api/ConfigurationJWKJSONWebKeyJWKApi~putConfigJwksCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/WebKeysConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -125,12 +125,13 @@ export default class ConfigurationJWKJSONWebKeyJWKApi {
      * Puts/replaces JWKS
      * Puts/replaces JSON Web Keys (JWKS).
      * @param {Object} opts Optional parameters
-     * @param {module:model/WebKeysConfiguration1} opts.webKeysConfiguration1 
+     * @param {module:model/WebKeysConfiguration} opts.webKeysConfiguration 
      * @param {module:api/ConfigurationJWKJSONWebKeyJWKApi~putConfigJwksCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/WebKeysConfiguration}
      */
     putConfigJwks(opts, callback) {
       opts = opts || {};
-      let postBody = opts['webKeysConfiguration1'];
+      let postBody = opts['webKeysConfiguration'];
 
       let pathParams = {
       };
@@ -144,7 +145,7 @@ export default class ConfigurationJWKJSONWebKeyJWKApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = null;
+      let returnType = WebKeysConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/jwks', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

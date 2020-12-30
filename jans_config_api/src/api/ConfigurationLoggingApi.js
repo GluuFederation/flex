@@ -14,7 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
-import InlineResponse2005 from '../model/InlineResponse2005';
+import LoggingConfiguration from '../model/LoggingConfiguration';
 
 /**
 * ConfigurationLogging service.
@@ -39,7 +39,7 @@ export default class ConfigurationLoggingApi {
      * Callback function to receive the result of the getConfigLogging operation.
      * @callback module:api/ConfigurationLoggingApi~getConfigLoggingCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/InlineResponse2005>} data The data returned by the service call.
+     * @param {module:model/LoggingConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -47,7 +47,7 @@ export default class ConfigurationLoggingApi {
      * Returns Jans Authorization Server logging settings.
      * Returns Jans Authorization Server logging settings.
      * @param {module:api/ConfigurationLoggingApi~getConfigLoggingCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/InlineResponse2005>}
+     * data is of type: {@link module:model/LoggingConfiguration}
      */
     getConfigLogging(callback) {
       let postBody = null;
@@ -64,7 +64,7 @@ export default class ConfigurationLoggingApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = [InlineResponse2005];
+      let returnType = LoggingConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/logging', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -84,12 +84,12 @@ export default class ConfigurationLoggingApi {
      * Updates Jans Authorization Server logging settings.
      * Updates Jans Authorization Server logging settings.
      * @param {Object} opts Optional parameters
-     * @param {Array.<module:model/InlineResponse2005>} opts.inlineResponse2005 
+     * @param {module:model/LoggingConfiguration} opts.loggingConfiguration 
      * @param {module:api/ConfigurationLoggingApi~putConfigLoggingCallback} callback The callback function, accepting three arguments: error, data, response
      */
     putConfigLogging(opts, callback) {
       opts = opts || {};
-      let postBody = opts['inlineResponse2005'];
+      let postBody = opts['loggingConfiguration'];
 
       let pathParams = {
       };

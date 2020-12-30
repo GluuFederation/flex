@@ -22,16 +22,10 @@ class CouchbaseConfiguration {
     /**
      * Constructs a new <code>CouchbaseConfiguration</code>.
      * @alias module:model/CouchbaseConfiguration
-     * @param configId {String} Unique identifier
-     * @param userName {String} Couchbase server user.
-     * @param userPassword {String} Encoded Couchbase server user password.
-     * @param servers {Array.<String>} Couchbase server host and port.
-     * @param defaultBucket {String} Main bucket that application should use if other mapping rules were not applied.
-     * @param buckets {Array.<String>} List of buckets defining mapping rules.
      */
-    constructor(configId, userName, userPassword, servers, defaultBucket, buckets) { 
+    constructor() { 
         
-        CouchbaseConfiguration.initialize(this, configId, userName, userPassword, servers, defaultBucket, buckets);
+        CouchbaseConfiguration.initialize(this);
     }
 
     /**
@@ -39,13 +33,7 @@ class CouchbaseConfiguration {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, configId, userName, userPassword, servers, defaultBucket, buckets) { 
-        obj['configId'] = configId;
-        obj['userName'] = userName;
-        obj['userPassword'] = userPassword;
-        obj['servers'] = servers;
-        obj['defaultBucket'] = defaultBucket;
-        obj['buckets'] = buckets;
+    static initialize(obj) { 
     }
 
     /**
@@ -206,11 +194,13 @@ CouchbaseConfiguration.prototype['sslTrustStorePin'] = undefined;
 CouchbaseConfiguration.prototype['sslTrustStoreFormat'] = undefined;
 
 /**
+ * List of binary attributes.
  * @member {Array.<String>} binaryAttributes
  */
 CouchbaseConfiguration.prototype['binaryAttributes'] = undefined;
 
 /**
+ * List of certificate attributes.
  * @member {Array.<String>} certificateAttributes
  */
 CouchbaseConfiguration.prototype['certificateAttributes'] = undefined;

@@ -5,68 +5,68 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **dn** | **String** |  | [optional] 
-**inum** | **String** |  | [optional] 
-**name** | **String** | Name should contain only letters, digits and underscores. | 
-**aliases** | **[String]** |  | [optional] 
-**description** | **String** |  | [optional] 
+**inum** | **String** | XRI i-number. Identifier to uniquely identify the script. | [optional] 
+**name** | **String** | Name should contain only letters, digits and underscores. | [optional] 
+**aliases** | **[String]** | List of possible alias for the script. | [optional] 
+**description** | **String** | Details describing the script. | [optional] 
 **script** | **String** | Actual script. | [optional] 
-**scriptType** | **String** |  | [optional] 
-**programmingLanguage** | **String** | Specifies programming language of the custom script. | [optional] 
-**moduleProperties** | [**[CustomScriptModuleProperties]**](CustomScriptModuleProperties.md) |  | [optional] 
-**configurationProperties** | [**[CustomScriptConfigurationProperties]**](CustomScriptConfigurationProperties.md) |  | [optional] 
-**level** | **Number** |  | [optional] 
-**revision** | **Number** |  | [optional] 
-**enabled** | **Boolean** |  | [optional] 
+**scriptType** | **String** | Type of script. | [optional] 
+**programmingLanguage** | **String** | Programming language of the custom script. | [optional] 
+**moduleProperties** | [**[CustomScriptModuleProperties]**](CustomScriptModuleProperties.md) | Module-level properties applicable to the script. | [optional] 
+**configurationProperties** | [**[CustomScriptConfigurationProperties]**](CustomScriptConfigurationProperties.md) | Configuration properties applicable to the script. | [optional] 
+**level** | **Number** | Script level. | [optional] 
+**revision** | **Number** | Update revision number of the script. | [optional] 
+**enabled** | **Boolean** | boolean value indicating if script enabled. | [optional] 
 **scriptError** | [**CustomScriptScriptError**](CustomScriptScriptError.md) |  | [optional] 
-**modified** | **Boolean** |  | [optional] 
-**internal** | **Boolean** |  | [optional] 
+**modified** | **Boolean** | boolean value indicating if the script is modified. | [optional] 
+**internal** | **Boolean** | boolean value indicating if the script is interanl. | [optional] 
 
 
 
 ## Enum: ScriptTypeEnum
 
 
-* `person_authentication` (value: `"person_authentication"`)
+* `PERSON_AUTHENTICATION` (value: `"PERSON_AUTHENTICATION"`)
 
-* `introspection` (value: `"introspection"`)
+* `INTROSPECTION` (value: `"INTROSPECTION"`)
 
-* `resource_owner_password_credentials` (value: `"resource_owner_password_credentials"`)
+* `RESOURCE_OWNER_PASSWORD_CREDENTIALS` (value: `"RESOURCE_OWNER_PASSWORD_CREDENTIALS"`)
 
-* `application_session` (value: `"application_session"`)
+* `APPLICATION_SESSION` (value: `"APPLICATION_SESSION"`)
 
-* `cache_refresh` (value: `"cache_refresh"`)
+* `CACHE_REFRESH` (value: `"CACHE_REFRESH"`)
 
-* `update_user` (value: `"update_user"`)
+* `UPDATE_USER` (value: `"UPDATE_USER"`)
 
-* `user_registration` (value: `"user_registration"`)
+* `USER_REGISTRATION` (value: `"USER_REGISTRATION"`)
 
-* `client_registration` (value: `"client_registration"`)
+* `CLIENT_REGISTRATION` (value: `"CLIENT_REGISTRATION"`)
 
-* `id_generator` (value: `"id_generator"`)
+* `ID_GENERATOR` (value: `"ID_GENERATOR"`)
 
-* `uma_rpt_policy` (value: `"uma_rpt_policy"`)
+* `UMA_RPT_POLICY` (value: `"UMA_RPT_POLICY"`)
 
-* `uma_rpt_claims` (value: `"uma_rpt_claims"`)
+* `UMA_RPT_CLAIMS` (value: `"UMA_RPT_CLAIMS"`)
 
-* `uma_claims_gathering` (value: `"uma_claims_gathering"`)
+* `UMA_CLAIMS_GATHERING` (value: `"UMA_CLAIMS_GATHERING"`)
 
-* `consent_gathering` (value: `"consent_gathering"`)
+* `CONSENT_GATHERING` (value: `"CONSENT_GATHERING"`)
 
-* `dynamic_scope` (value: `"dynamic_scope"`)
+* `DYNAMIC_SCOPE` (value: `"DYNAMIC_SCOPE"`)
 
-* `spontaneous_scope` (value: `"spontaneous_scope"`)
+* `SPONTANEOUS_SCOPE` (value: `"SPONTANEOUS_SCOPE"`)
 
-* `end_session` (value: `"end_session"`)
+* `END_SESSION` (value: `"END_SESSION"`)
 
-* `post_authn` (value: `"post_authn"`)
+* `POST_AUTHN` (value: `"POST_AUTHN"`)
 
-* `scim` (value: `"scim"`)
+* `SCIM` (value: `"SCIM"`)
 
-* `ciba_end_user_notification` (value: `"ciba_end_user_notification"`)
+* `CIBA_END_USER_NOTIFICATION` (value: `"CIBA_END_USER_NOTIFICATION"`)
 
-* `persistence_extension` (value: `"persistence_extension"`)
+* `PERSISTENCE_EXTENSION` (value: `"PERSISTENCE_EXTENSION"`)
 
-* `idp` (value: `"idp"`)
+* `IDP` (value: `"IDP"`)
 
 
 
@@ -75,9 +75,9 @@ Name | Type | Description | Notes
 ## Enum: ProgrammingLanguageEnum
 
 
-* `python` (value: `"python"`)
+* `PYTHON` (value: `"PYTHON"`)
 
-* `javascript` (value: `"javascript"`)
+* `JAVASCRIPT` (value: `"JAVASCRIPT"`)
 
 
 

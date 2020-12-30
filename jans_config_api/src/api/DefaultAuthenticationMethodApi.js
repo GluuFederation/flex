@@ -14,7 +14,6 @@
 
 import ApiClient from "../ApiClient";
 import AuthenticationMethod from '../model/AuthenticationMethod';
-import AuthenticationMethod1 from '../model/AuthenticationMethod1';
 import ErrorResponse from '../model/ErrorResponse';
 
 /**
@@ -85,12 +84,12 @@ export default class DefaultAuthenticationMethodApi {
      * Updates default authentication method.
      * Updates default authentication method.
      * @param {Object} opts Optional parameters
-     * @param {module:model/AuthenticationMethod1} opts.authenticationMethod1 
+     * @param {module:model/AuthenticationMethod} opts.authenticationMethod 
      * @param {module:api/DefaultAuthenticationMethodApi~putAcrsCallback} callback The callback function, accepting three arguments: error, data, response
      */
     putAcrs(opts, callback) {
       opts = opts || {};
-      let postBody = opts['authenticationMethod1'];
+      let postBody = opts['authenticationMethod'];
 
       let pathParams = {
       };

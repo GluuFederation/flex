@@ -24,14 +24,10 @@ class GluuAttribute {
      * Constructs a new <code>GluuAttribute</code>.
      * Attribute.
      * @alias module:model/GluuAttribute
-     * @param name {String} Name of the attribute.
-     * @param displayName {Array.<String>} 
-     * @param dataType {module:model/GluuAttribute.DataTypeEnum} Data Type of attribute.
-     * @param status {String} Distinguished Name
      */
-    constructor(name, displayName, dataType, status) { 
+    constructor() { 
         
-        GluuAttribute.initialize(this, name, displayName, dataType, status);
+        GluuAttribute.initialize(this);
     }
 
     /**
@@ -39,11 +35,7 @@ class GluuAttribute {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, name, displayName, dataType, status) { 
-        obj['name'] = name;
-        obj['displayName'] = displayName;
-        obj['dataType'] = dataType;
-        obj['status'] = status;
+    static initialize(obj) { 
     }
 
     /**
@@ -57,11 +49,20 @@ class GluuAttribute {
         if (data) {
             obj = obj || new GluuAttribute();
 
+            if (data.hasOwnProperty('dn')) {
+                obj['dn'] = ApiClient.convertToType(data['dn'], 'String');
+            }
+            if (data.hasOwnProperty('inum')) {
+                obj['inum'] = ApiClient.convertToType(data['inum'], 'String');
+            }
+            if (data.hasOwnProperty('selected')) {
+                obj['selected'] = ApiClient.convertToType(data['selected'], 'Boolean');
+            }
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
             if (data.hasOwnProperty('displayName')) {
-                obj['displayName'] = ApiClient.convertToType(data['displayName'], ['String']);
+                obj['displayName'] = ApiClient.convertToType(data['displayName'], 'String');
             }
             if (data.hasOwnProperty('description')) {
                 obj['description'] = ApiClient.convertToType(data['description'], 'String');
@@ -71,9 +72,6 @@ class GluuAttribute {
             }
             if (data.hasOwnProperty('status')) {
                 obj['status'] = ApiClient.convertToType(data['status'], 'String');
-            }
-            if (data.hasOwnProperty('jansMultivaluedAttr')) {
-                obj['jansMultivaluedAttr'] = ApiClient.convertToType(data['jansMultivaluedAttr'], 'Boolean');
             }
             if (data.hasOwnProperty('lifetime')) {
                 obj['lifetime'] = ApiClient.convertToType(data['lifetime'], 'String');
@@ -99,8 +97,8 @@ class GluuAttribute {
             if (data.hasOwnProperty('usageType')) {
                 obj['usageType'] = ApiClient.convertToType(data['usageType'], ['String']);
             }
-            if (data.hasOwnProperty('jansAttrName')) {
-                obj['jansAttrName'] = ApiClient.convertToType(data['jansAttrName'], 'String');
+            if (data.hasOwnProperty('claimName')) {
+                obj['claimName'] = ApiClient.convertToType(data['claimName'], 'String');
             }
             if (data.hasOwnProperty('seeAlso')) {
                 obj['seeAlso'] = ApiClient.convertToType(data['seeAlso'], 'String');
@@ -114,8 +112,11 @@ class GluuAttribute {
             if (data.hasOwnProperty('urn')) {
                 obj['urn'] = ApiClient.convertToType(data['urn'], 'String');
             }
-            if (data.hasOwnProperty('jansSCIMCustomAttr')) {
-                obj['jansSCIMCustomAttr'] = ApiClient.convertToType(data['jansSCIMCustomAttr'], 'Boolean');
+            if (data.hasOwnProperty('scimCustomAttr')) {
+                obj['scimCustomAttr'] = ApiClient.convertToType(data['scimCustomAttr'], 'Boolean');
+            }
+            if (data.hasOwnProperty('oxMultiValuedAttribute')) {
+                obj['oxMultiValuedAttribute'] = ApiClient.convertToType(data['oxMultiValuedAttribute'], 'Boolean');
             }
             if (data.hasOwnProperty('custom')) {
                 obj['custom'] = ApiClient.convertToType(data['custom'], 'Boolean');
@@ -126,8 +127,8 @@ class GluuAttribute {
             if (data.hasOwnProperty('attributeValidation')) {
                 obj['attributeValidation'] = GluuAttributeAttributeValidation.constructFromObject(data['attributeValidation']);
             }
-            if (data.hasOwnProperty('gluuTooltip')) {
-                obj['gluuTooltip'] = ApiClient.convertToType(data['gluuTooltip'], 'String');
+            if (data.hasOwnProperty('tooltip')) {
+                obj['tooltip'] = ApiClient.convertToType(data['tooltip'], 'String');
             }
         }
         return obj;
@@ -137,13 +138,30 @@ class GluuAttribute {
 }
 
 /**
+ * @member {String} dn
+ */
+GluuAttribute.prototype['dn'] = undefined;
+
+/**
+ * XRI i-number. Identifier to uniquely identify the attribute.
+ * @member {String} inum
+ */
+GluuAttribute.prototype['inum'] = undefined;
+
+/**
+ * Boolean value to indicate if the atrribute is selected.
+ * @member {Boolean} selected
+ */
+GluuAttribute.prototype['selected'] = undefined;
+
+/**
  * Name of the attribute.
  * @member {String} name
  */
 GluuAttribute.prototype['name'] = undefined;
 
 /**
- * @member {Array.<String>} displayName
+ * @member {String} displayName
  */
 GluuAttribute.prototype['displayName'] = undefined;
 
@@ -164,12 +182,6 @@ GluuAttribute.prototype['dataType'] = undefined;
  * @member {String} status
  */
 GluuAttribute.prototype['status'] = undefined;
-
-/**
- * Boolean value indicating if the attribute is multi-value
- * @member {Boolean} jansMultivaluedAttr
- */
-GluuAttribute.prototype['jansMultivaluedAttr'] = undefined;
 
 /**
  * @member {String} lifetime
@@ -198,13 +210,13 @@ GluuAttribute.prototype['origin'] = undefined;
 
 /**
  * GluuUserRole
- * @member {Array.<String>} editType
+ * @member {Array.<module:model/GluuAttribute.EditTypeEnum>} editType
  */
 GluuAttribute.prototype['editType'] = undefined;
 
 /**
  * GluuUserRole
- * @member {Array.<String>} viewType
+ * @member {Array.<module:model/GluuAttribute.ViewTypeEnum>} viewType
  */
 GluuAttribute.prototype['viewType'] = undefined;
 
@@ -215,9 +227,9 @@ GluuAttribute.prototype['viewType'] = undefined;
 GluuAttribute.prototype['usageType'] = undefined;
 
 /**
- * @member {String} jansAttrName
+ * @member {String} claimName
  */
-GluuAttribute.prototype['jansAttrName'] = undefined;
+GluuAttribute.prototype['claimName'] = undefined;
 
 /**
  * @member {String} seeAlso
@@ -241,9 +253,15 @@ GluuAttribute.prototype['urn'] = undefined;
 
 /**
  * Boolean value indicating if the attribute is a SCIM custom attribute
- * @member {Boolean} jansSCIMCustomAttr
+ * @member {Boolean} scimCustomAttr
  */
-GluuAttribute.prototype['jansSCIMCustomAttr'] = undefined;
+GluuAttribute.prototype['scimCustomAttr'] = undefined;
+
+/**
+ * Boolean value indicating if the attribute can hold multiple value.
+ * @member {Boolean} oxMultiValuedAttribute
+ */
+GluuAttribute.prototype['oxMultiValuedAttribute'] = undefined;
 
 /**
  * Boolean value indicating if the attribute is a custom attribute
@@ -263,9 +281,9 @@ GluuAttribute.prototype['requred'] = undefined;
 GluuAttribute.prototype['attributeValidation'] = undefined;
 
 /**
- * @member {String} gluuTooltip
+ * @member {String} tooltip
  */
-GluuAttribute.prototype['gluuTooltip'] = undefined;
+GluuAttribute.prototype['tooltip'] = undefined;
 
 
 
@@ -303,10 +321,94 @@ GluuAttribute['DataTypeEnum'] = {
     "BINARY": "BINARY",
 
     /**
+     * value: "CERTIFICATE"
+     * @const
+     */
+    "CERTIFICATE": "CERTIFICATE",
+
+    /**
      * value: "DATE"
      * @const
      */
     "DATE": "DATE"
+};
+
+
+/**
+ * Allowed values for the <code>editType</code> property.
+ * @enum {String}
+ * @readonly
+ */
+GluuAttribute['EditTypeEnum'] = {
+
+    /**
+     * value: "ADMIN"
+     * @const
+     */
+    "ADMIN": "ADMIN",
+
+    /**
+     * value: "OWNER"
+     * @const
+     */
+    "OWNER": "OWNER",
+
+    /**
+     * value: "MANAGER"
+     * @const
+     */
+    "MANAGER": "MANAGER",
+
+    /**
+     * value: "USER"
+     * @const
+     */
+    "USER": "USER",
+
+    /**
+     * value: "WHITEPAGES"
+     * @const
+     */
+    "WHITEPAGES": "WHITEPAGES"
+};
+
+
+/**
+ * Allowed values for the <code>viewType</code> property.
+ * @enum {String}
+ * @readonly
+ */
+GluuAttribute['ViewTypeEnum'] = {
+
+    /**
+     * value: "ADMIN"
+     * @const
+     */
+    "ADMIN": "ADMIN",
+
+    /**
+     * value: "OWNER"
+     * @const
+     */
+    "OWNER": "OWNER",
+
+    /**
+     * value: "MANAGER"
+     * @const
+     */
+    "MANAGER": "MANAGER",
+
+    /**
+     * value: "USER"
+     * @const
+     */
+    "USER": "USER",
+
+    /**
+     * value: "WHITEPAGES"
+     * @const
+     */
+    "WHITEPAGES": "WHITEPAGES"
 };
 
 

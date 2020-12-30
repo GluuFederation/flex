@@ -107,7 +107,7 @@ Scope.prototype['dn'] = undefined;
 Scope.prototype['id'] = undefined;
 
 /**
- * Unique id identifying the attribute
+ * Unique id identifying the .
  * @member {String} inum
  */
 Scope.prototype['inum'] = undefined;

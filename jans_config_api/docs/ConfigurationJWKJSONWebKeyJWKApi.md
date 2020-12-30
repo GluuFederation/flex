@@ -57,7 +57,7 @@ This endpoint does not need any parameter.
 
 ## patchConfigJwks
 
-> patchConfigJwks(opts)
+> WebKeysConfiguration patchConfigJwks(opts)
 
 Patch JWKS
 
@@ -74,13 +74,13 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.ConfigurationJWKJSONWebKeyJWKApi();
 let opts = {
-  'patchRequest': new JansConfigApi.PatchRequest() // PatchRequest | 
+  'patchRequest': [new JansConfigApi.PatchRequest()] // [PatchRequest] | 
 };
 apiInstance.patchConfigJwks(opts, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 });
 ```
@@ -90,11 +90,11 @@ apiInstance.patchConfigJwks(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **patchRequest** | [**PatchRequest**](PatchRequest.md)|  | [optional] 
+ **patchRequest** | [**[PatchRequest]**](PatchRequest.md)|  | [optional] 
 
 ### Return type
 
-null (empty response body)
+[**WebKeysConfiguration**](WebKeysConfiguration.md)
 
 ### Authorization
 
@@ -108,7 +108,7 @@ null (empty response body)
 
 ## putConfigJwks
 
-> putConfigJwks(opts)
+> WebKeysConfiguration putConfigJwks(opts)
 
 Puts/replaces JWKS
 
@@ -125,13 +125,13 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.ConfigurationJWKJSONWebKeyJWKApi();
 let opts = {
-  'webKeysConfiguration1': new JansConfigApi.WebKeysConfiguration1() // WebKeysConfiguration1 | 
+  'webKeysConfiguration': new JansConfigApi.WebKeysConfiguration() // WebKeysConfiguration | 
 };
 apiInstance.putConfigJwks(opts, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 });
 ```
@@ -141,11 +141,11 @@ apiInstance.putConfigJwks(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **webKeysConfiguration1** | [**WebKeysConfiguration1**](WebKeysConfiguration1.md)|  | [optional] 
+ **webKeysConfiguration** | [**WebKeysConfiguration**](WebKeysConfiguration.md)|  | [optional] 
 
 ### Return type
 
-null (empty response body)
+[**WebKeysConfiguration**](WebKeysConfiguration.md)
 
 ### Authorization
 

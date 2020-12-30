@@ -54,56 +54,14 @@
       //expect(instance).to.be.a(JansConfigApi.InlineResponse200);
     });
 
-    it('should have the property authenticatorCertsFolder (base name: "authenticatorCertsFolder")', function() {
-      // uncomment below and update the code to test the property authenticatorCertsFolder
+    it('should have the property service (base name: "service")', function() {
+      // uncomment below and update the code to test the property service
       //var instane = new JansConfigApi.InlineResponse200();
       //expect(instance).to.be();
     });
 
-    it('should have the property mdsAccessToken (base name: "mdsAccessToken")', function() {
-      // uncomment below and update the code to test the property mdsAccessToken
-      //var instane = new JansConfigApi.InlineResponse200();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property mdsCertsFolder (base name: "mdsCertsFolder")', function() {
-      // uncomment below and update the code to test the property mdsCertsFolder
-      //var instane = new JansConfigApi.InlineResponse200();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property mdsTocsFolder (base name: "mdsTocsFolder")', function() {
-      // uncomment below and update the code to test the property mdsTocsFolder
-      //var instane = new JansConfigApi.InlineResponse200();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property userAutoEnrollment (base name: "userAutoEnrollment")', function() {
-      // uncomment below and update the code to test the property userAutoEnrollment
-      //var instane = new JansConfigApi.InlineResponse200();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property unfinishedRequestExpiration (base name: "unfinishedRequestExpiration")', function() {
-      // uncomment below and update the code to test the property unfinishedRequestExpiration
-      //var instane = new JansConfigApi.InlineResponse200();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property authenticationHistoryExpiration (base name: "authenticationHistoryExpiration")', function() {
-      // uncomment below and update the code to test the property authenticationHistoryExpiration
-      //var instane = new JansConfigApi.InlineResponse200();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property serverMetadataFolder (base name: "serverMetadataFolder")', function() {
-      // uncomment below and update the code to test the property serverMetadataFolder
-      //var instane = new JansConfigApi.InlineResponse200();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property disableFido2 (base name: "disableFido2")', function() {
-      // uncomment below and update the code to test the property disableFido2
+    it('should have the property status (base name: "status")', function() {
+      // uncomment below and update the code to test the property status
       //var instane = new JansConfigApi.InlineResponse200();
       //expect(instance).to.be();
     });

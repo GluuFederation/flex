@@ -125,7 +125,7 @@ export default class OAuthOpenIDConnectClientsApi {
      * Callback function to receive the result of the getOauthOpenidClientsByInum operation.
      * @callback module:api/OAuthOpenIDConnectClientsApi~getOauthOpenidClientsByInumCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/Client>} data The data returned by the service call.
+     * @param {module:model/Client} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -134,7 +134,7 @@ export default class OAuthOpenIDConnectClientsApi {
      * Get OpenId Connect Client by Inum.
      * @param {String} inum Client identifier
      * @param {module:api/OAuthOpenIDConnectClientsApi~getOauthOpenidClientsByInumCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/Client>}
+     * data is of type: {@link module:model/Client}
      */
     getOauthOpenidClientsByInum(inum, callback) {
       let postBody = null;
@@ -156,7 +156,7 @@ export default class OAuthOpenIDConnectClientsApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = [Client];
+      let returnType = Client;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/openid/clients/{inum}', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -168,7 +168,7 @@ export default class OAuthOpenIDConnectClientsApi {
      * Callback function to receive the result of the patchOauthOpenidClientsByInum operation.
      * @callback module:api/OAuthOpenIDConnectClientsApi~patchOauthOpenidClientsByInumCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/Client>} data The data returned by the service call.
+     * @param {module:model/Client} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -177,9 +177,9 @@ export default class OAuthOpenIDConnectClientsApi {
      * Update modified properties of OpenId Connect client by Inum.
      * @param {String} inum Client identifier
      * @param {Object} opts Optional parameters
-     * @param {module:model/PatchRequest} opts.patchRequest 
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
      * @param {module:api/OAuthOpenIDConnectClientsApi~patchOauthOpenidClientsByInumCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/Client>}
+     * data is of type: {@link module:model/Client}
      */
     patchOauthOpenidClientsByInum(inum, opts, callback) {
       opts = opts || {};
@@ -200,9 +200,9 @@ export default class OAuthOpenIDConnectClientsApi {
       };
 
       let authNames = ['jans-auth'];
-      let contentTypes = ['application/json'];
+      let contentTypes = ['application/json-patch+json'];
       let accepts = ['application/json'];
-      let returnType = [Client];
+      let returnType = Client;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/openid/clients/{inum}', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -214,7 +214,7 @@ export default class OAuthOpenIDConnectClientsApi {
      * Callback function to receive the result of the postOauthOpenidClients operation.
      * @callback module:api/OAuthOpenIDConnectClientsApi~postOauthOpenidClientsCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/Client>} data The data returned by the service call.
+     * @param {module:model/Client} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -222,9 +222,9 @@ export default class OAuthOpenIDConnectClientsApi {
      * Create new OpenId connect client
      * Create new OpenId connect client
      * @param {Object} opts Optional parameters
-     * @param {Array.<module:model/Client>} opts.client 
+     * @param {module:model/Client} opts.client 
      * @param {module:api/OAuthOpenIDConnectClientsApi~postOauthOpenidClientsCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/Client>}
+     * data is of type: {@link module:model/Client}
      */
     postOauthOpenidClients(opts, callback) {
       opts = opts || {};
@@ -242,7 +242,7 @@ export default class OAuthOpenIDConnectClientsApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = [Client];
+      let returnType = Client;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/openid/clients', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -254,7 +254,7 @@ export default class OAuthOpenIDConnectClientsApi {
      * Callback function to receive the result of the putOauthOpenidClients operation.
      * @callback module:api/OAuthOpenIDConnectClientsApi~putOauthOpenidClientsCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/Client>} data The data returned by the service call.
+     * @param {module:model/Client} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -262,9 +262,9 @@ export default class OAuthOpenIDConnectClientsApi {
      * Update OpenId Connect client.
      * Update OpenId Connect client.
      * @param {Object} opts Optional parameters
-     * @param {Array.<module:model/Client>} opts.client 
+     * @param {module:model/Client} opts.client 
      * @param {module:api/OAuthOpenIDConnectClientsApi~putOauthOpenidClientsCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/Client>}
+     * data is of type: {@link module:model/Client}
      */
     putOauthOpenidClients(opts, callback) {
       opts = opts || {};
@@ -282,7 +282,7 @@ export default class OAuthOpenIDConnectClientsApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = [Client];
+      let returnType = Client;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/openid/clients', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

@@ -4,17 +4,18 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**configId** | **String** | Unique identifier - Name | 
-**bindDN** | **String** | User Distingusihed Name for binding. | 
-**maxConnections** | **Number** | Total number of simultaneous connections allowed. | [default to 2]
-**primaryKey** | **String** | Used to search and bind operations in configured LDAP server. | 
-**localPrimaryKey** | **String** | Used to search local user entry in Gluu Server’s internal LDAP directory. | 
-**servers** | **[String]** | List of LDAP authentication servers. | 
-**baseDNs** | **[String]** | list of LDAP base Distingusihed Name | 
-**useSSL** | **Boolean** |  | 
-**bindPassword** | **String** | User password for binding. | [optional] 
+**configId** | **String** | Unique identifier - Name | [optional] 
+**bindDN** | **String** | This contains the username to connect to the backend server. You need to use full DN here. As for example, cn&#x3D;jans,dc&#x3D;company,dc&#x3D;org. | [optional] 
+**bindPassword** | **String** | Ldap password for binding. | [optional] 
+**servers** | **[String]** | List of LDAP authentication servers. | [optional] 
+**maxConnections** | **Number** | This value defines the maximum number of connections that are allowed to read the backend Active Directory/LDAP server. | [optional] [default to 2]
+**useSSL** | **Boolean** | Enable SSL communication between Jans Server and LDAP server. | [optional] 
+**baseDNs** | **[String]** | List contains the location of the Active Directory/LDAP tree from where the Gluu Server shall read the user information. | [optional] 
+**primaryKey** | **String** | Used to search and bind operations in configured LDAP server. | [optional] 
+**localPrimaryKey** | **String** | Used to search local user entry in Gluu Server’s internal LDAP directory. | [optional] 
 **useAnonymousBind** | **Boolean** | Boolean value used to indicate if the LDAP Server will allow anonymous bind request. | [optional] 
-**enabled** | **Boolean** |  | [optional] 
-**version** | **Number** |  | [optional] 
+**enabled** | **Boolean** | Boolean value used to indicate if the LDAP Server is enabled. Do not use this unless the server administrator has entered all the required values. | [optional] 
+**version** | **Number** | LDAP server version. | [optional] 
+**level** | **Number** | A string that indicates the level. | [optional] 
 
 

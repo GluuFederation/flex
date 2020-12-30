@@ -13,9 +13,8 @@
 
 
 import ApiClient from "../ApiClient";
+import CacheConfiguration from '../model/CacheConfiguration';
 import ErrorResponse from '../model/ErrorResponse';
-import InlineResponse2001 from '../model/InlineResponse2001';
-import InlineResponse2002 from '../model/InlineResponse2002';
 import PatchRequest from '../model/PatchRequest';
 
 /**
@@ -41,7 +40,7 @@ export default class CacheConfigurationApi {
      * Callback function to receive the result of the getConfigCache operation.
      * @callback module:api/CacheConfigurationApi~getConfigCacheCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2001} data The data returned by the service call.
+     * @param {module:model/CacheConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -49,7 +48,7 @@ export default class CacheConfigurationApi {
      * Returns cache configuration.
      * Returns cache configuration.
      * @param {module:api/CacheConfigurationApi~getConfigCacheCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2001}
+     * data is of type: {@link module:model/CacheConfiguration}
      */
     getConfigCache(callback) {
       let postBody = null;
@@ -66,7 +65,7 @@ export default class CacheConfigurationApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2001;
+      let returnType = CacheConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -78,7 +77,7 @@ export default class CacheConfigurationApi {
      * Callback function to receive the result of the patchConfigCache operation.
      * @callback module:api/CacheConfigurationApi~patchConfigCacheCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/InlineResponse2002} data The data returned by the service call.
+     * @param {module:model/CacheConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -86,9 +85,9 @@ export default class CacheConfigurationApi {
      * Partially modifies cache configuration.
      * Partially modifies cache configuration.
      * @param {Object} opts Optional parameters
-     * @param {module:model/PatchRequest} opts.patchRequest 
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
      * @param {module:api/CacheConfigurationApi~patchConfigCacheCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/InlineResponse2002}
+     * data is of type: {@link module:model/CacheConfiguration}
      */
     patchConfigCache(opts, callback) {
       opts = opts || {};
@@ -104,9 +103,9 @@ export default class CacheConfigurationApi {
       };
 
       let authNames = ['jans-auth'];
-      let contentTypes = ['application/json'];
+      let contentTypes = ['application/json-patch+json'];
       let accepts = ['application/json'];
-      let returnType = InlineResponse2002;
+      let returnType = CacheConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,

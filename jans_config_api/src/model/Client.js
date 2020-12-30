@@ -14,7 +14,6 @@
 import ApiClient from '../ApiClient';
 import ClientAttributes from './ClientAttributes';
 import CustomAttribute from './CustomAttribute';
-import JsonWebKey from './JsonWebKey';
 
 /**
  * The Client model module.
@@ -26,10 +25,19 @@ class Client {
      * Constructs a new <code>Client</code>.
      * Client.
      * @alias module:model/Client
+     * @param responseTypes {Array.<module:model/Client.ResponseTypesEnum>} A list of the OAuth 2.0 response_type values that the Client is declaring that it will restrict itself to using. If omitted, the default is that the Client will use only the code Response Type. Allowed values are code, token, id_token.
+     * @param grantTypes {Array.<module:model/Client.GrantTypesEnum>} A list of the OAuth 2.0 Grant Types that the Client is declaring that it will restrict itself to using.
+     * @param applicationType {module:model/Client.ApplicationTypeEnum} Kind of the application. The default, if omitted, is web. The defined values are native or web. Web Clients using the OAuth Implicit Grant Type must only register URLs using the HTTPS scheme as redirect_uris, they must not use localhost as the hostname. Native Clients must only register redirect_uris using custom URI schemes or URLs using the http scheme with localhost as the hostname.
+     * @param subjectType {module:model/Client.SubjectTypeEnum} Subject type requested for the Client ID. Valid types include pairwise and public.
+     * @param idTokenSignedResponseAlg {module:model/Client.IdTokenSignedResponseAlgEnum} JWS alg algorithm (JWA) required for signing the ID Token issued to this Client.
+     * @param tokenEndpointAuthMethod {module:model/Client.TokenEndpointAuthMethodEnum} Requested Client Authentication method for the Token Endpoint.
+     * @param scopes {Array.<String>} Provide list of scopes granted to the client.
+     * @param customObjectClasses {Array.<String>} 
+     * @param accessTokenSigningAlg {module:model/Client.AccessTokenSigningAlgEnum} Specifies signing algorithm that has to be used during JWT signing. If it's not specified, then the default OP signing algorithm will be used.
      */
-    constructor() { 
+    constructor(responseTypes, grantTypes, applicationType, subjectType, idTokenSignedResponseAlg, tokenEndpointAuthMethod, scopes, customObjectClasses, accessTokenSigningAlg) { 
         
-        Client.initialize(this);
+        Client.initialize(this, responseTypes, grantTypes, applicationType, subjectType, idTokenSignedResponseAlg, tokenEndpointAuthMethod, scopes, customObjectClasses, accessTokenSigningAlg);
     }
 
     /**
@@ -37,7 +45,16 @@ class Client {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, responseTypes, grantTypes, applicationType, subjectType, idTokenSignedResponseAlg, tokenEndpointAuthMethod, scopes, customObjectClasses, accessTokenSigningAlg) { 
+        obj['responseTypes'] = responseTypes;
+        obj['grantTypes'] = grantTypes;
+        obj['applicationType'] = applicationType;
+        obj['subjectType'] = subjectType;
+        obj['idTokenSignedResponseAlg'] = idTokenSignedResponseAlg;
+        obj['tokenEndpointAuthMethod'] = tokenEndpointAuthMethod;
+        obj['scopes'] = scopes;
+        obj['customObjectClasses'] = customObjectClasses;
+        obj['accessTokenSigningAlg'] = accessTokenSigningAlg;
     }
 
     /**
@@ -51,11 +68,14 @@ class Client {
         if (data) {
             obj = obj || new Client();
 
+            if (data.hasOwnProperty('dn')) {
+                obj['dn'] = ApiClient.convertToType(data['dn'], 'String');
+            }
             if (data.hasOwnProperty('inum')) {
                 obj['inum'] = ApiClient.convertToType(data['inum'], 'String');
             }
-            if (data.hasOwnProperty('client_secret')) {
-                obj['client_secret'] = ApiClient.convertToType(data['client_secret'], 'String');
+            if (data.hasOwnProperty('clientSecret')) {
+                obj['clientSecret'] = ApiClient.convertToType(data['clientSecret'], 'String');
             }
             if (data.hasOwnProperty('frontChannelLogoutUri')) {
                 obj['frontChannelLogoutUri'] = ApiClient.convertToType(data['frontChannelLogoutUri'], 'String');
@@ -72,8 +92,8 @@ class Client {
             if (data.hasOwnProperty('clientSecretExpiresAt')) {
                 obj['clientSecretExpiresAt'] = ApiClient.convertToType(data['clientSecretExpiresAt'], 'Date');
             }
-            if (data.hasOwnProperty('redirect_uris')) {
-                obj['redirect_uris'] = ApiClient.convertToType(data['redirect_uris'], ['String']);
+            if (data.hasOwnProperty('redirectUris')) {
+                obj['redirectUris'] = ApiClient.convertToType(data['redirectUris'], ['String']);
             }
             if (data.hasOwnProperty('claimRedirectUris')) {
                 obj['claimRedirectUris'] = ApiClient.convertToType(data['claimRedirectUris'], ['String']);
@@ -112,7 +132,7 @@ class Client {
                 obj['jwksUri'] = ApiClient.convertToType(data['jwksUri'], 'String');
             }
             if (data.hasOwnProperty('jwks')) {
-                obj['jwks'] = ApiClient.convertToType(data['jwks'], [JsonWebKey]);
+                obj['jwks'] = ApiClient.convertToType(data['jwks'], 'String');
             }
             if (data.hasOwnProperty('sectorIdentifierUri')) {
                 obj['sectorIdentifierUri'] = ApiClient.convertToType(data['sectorIdentifierUri'], 'String');
@@ -229,7 +249,7 @@ class Client {
                 obj['softwareStatement'] = ApiClient.convertToType(data['softwareStatement'], 'String');
             }
             if (data.hasOwnProperty('attributes')) {
-                obj['attributes'] = ApiClient.convertToType(data['attributes'], [ClientAttributes]);
+                obj['attributes'] = ClientAttributes.constructFromObject(data['attributes']);
             }
             if (data.hasOwnProperty('backchannelTokenDeliveryMode')) {
                 obj['backchannelTokenDeliveryMode'] = ApiClient.convertToType(data['backchannelTokenDeliveryMode'], 'String');
@@ -260,6 +280,11 @@ class Client {
 }
 
 /**
+ * @member {String} dn
+ */
+Client.prototype['dn'] = undefined;
+
+/**
  * XRI i-number. Client Identifier to uniquely identify the client.
  * @member {String} inum
  */
@@ -267,9 +292,9 @@ Client.prototype['inum'] = undefined;
 
 /**
  * The client secret.  The client MAY omit the parameter if the client secret is an empty string.
- * @member {String} client_secret
+ * @member {String} clientSecret
  */
-Client.prototype['client_secret'] = undefined;
+Client.prototype['clientSecret'] = undefined;
 
 /**
  * @member {String} frontChannelLogoutUri
@@ -298,9 +323,9 @@ Client.prototype['clientSecretExpiresAt'] = undefined;
 
 /**
  * Redirection URI values used by the Client. One of these registered Redirection URI values must exactly match the redirect_uri parameter value used in each Authorization Request
- * @member {Array.<String>} redirect_uris
+ * @member {Array.<String>} redirectUris
  */
-Client.prototype['redirect_uris'] = undefined;
+Client.prototype['redirectUris'] = undefined;
 
 /**
  * Array of The Claims Redirect URIs to which the client wishes the authorization server to direct the requesting party's user agent after completing its interaction.
@@ -376,7 +401,7 @@ Client.prototype['jwksUri'] = undefined;
 
 /**
  * List of JSON Web Key (JWK) - A JSON object that represents a cryptographic key. The members of the object represent properties of the key, including its value.
- * @member {Array.<module:model/JsonWebKey>} jwks
+ * @member {String} jwks
  */
 Client.prototype['jwks'] = undefined;
 
@@ -607,7 +632,7 @@ Client.prototype['softwareVersion'] = undefined;
 Client.prototype['softwareStatement'] = undefined;
 
 /**
- * @member {Array.<module:model/ClientAttributes>} attributes
+ * @member {module:model/ClientAttributes} attributes
  */
 Client.prototype['attributes'] = undefined;
 
@@ -665,22 +690,22 @@ Client.prototype['jansId'] = undefined;
 Client['ResponseTypesEnum'] = {
 
     /**
-     * value: "CODE"
+     * value: "code"
      * @const
      */
-    "CODE": "CODE",
+    "code": "code",
 
     /**
-     * value: "TOKEN"
+     * value: "token"
      * @const
      */
-    "TOKEN": "TOKEN",
+    "token": "token",
 
     /**
-     * value: "ID_TOKEN"
+     * value: "id_token"
      * @const
      */
-    "ID_TOKEN": "ID_TOKEN"
+    "id_token": "id_token"
 };
 
 
@@ -692,52 +717,52 @@ Client['ResponseTypesEnum'] = {
 Client['GrantTypesEnum'] = {
 
     /**
-     * value: "AUTHORIZATION_CODE"
+     * value: "authorization_code"
      * @const
      */
-    "AUTHORIZATION_CODE": "AUTHORIZATION_CODE",
+    "authorization_code": "authorization_code",
 
     /**
-     * value: "IMPLICIT"
+     * value: "implicit"
      * @const
      */
-    "IMPLICIT": "IMPLICIT",
+    "implicit": "implicit",
 
     /**
-     * value: "RESOURCE_OWNER_PASSWORD_CREDENTIALS"
+     * value: "password"
      * @const
      */
-    "RESOURCE_OWNER_PASSWORD_CREDENTIALS": "RESOURCE_OWNER_PASSWORD_CREDENTIALS",
+    "password": "password",
 
     /**
-     * value: "CLIENT_CREDENTIALS"
+     * value: "client_credentials"
      * @const
      */
-    "CLIENT_CREDENTIALS": "CLIENT_CREDENTIALS",
+    "client_credentials": "client_credentials",
 
     /**
-     * value: "REFRESH_TOKEN"
+     * value: "refresh_token"
      * @const
      */
-    "REFRESH_TOKEN": "REFRESH_TOKEN",
+    "refresh_token": "refresh_token",
 
     /**
-     * value: "OXAUTH_UMA_TICKET"
+     * value: "urn:ietf:params:oauth:grant-type:uma-ticket"
      * @const
      */
-    "OXAUTH_UMA_TICKET": "OXAUTH_UMA_TICKET",
+    "urn:ietf:params:oauth:grant-type:uma-ticket": "urn:ietf:params:oauth:grant-type:uma-ticket",
 
     /**
-     * value: "CIBA"
+     * value: "urn:openid:params:grant-type:ciba"
      * @const
      */
-    "CIBA": "CIBA",
+    "urn:openid:params:grant-type:ciba": "urn:openid:params:grant-type:ciba",
 
     /**
-     * value: "DEVICE_CODE"
+     * value: "urn:ietf:params:oauth:grant-type:device_code"
      * @const
      */
-    "DEVICE_CODE": "DEVICE_CODE"
+    "urn:ietf:params:oauth:grant-type:device_code": "urn:ietf:params:oauth:grant-type:device_code"
 };
 
 
@@ -749,16 +774,16 @@ Client['GrantTypesEnum'] = {
 Client['ApplicationTypeEnum'] = {
 
     /**
-     * value: "Web"
+     * value: "web"
      * @const
      */
-    "Web": "Web",
+    "web": "web",
 
     /**
-     * value: "Native"
+     * value: "native"
      * @const
      */
-    "Native": "Native"
+    "native": "native"
 };
 
 
@@ -770,16 +795,16 @@ Client['ApplicationTypeEnum'] = {
 Client['SubjectTypeEnum'] = {
 
     /**
-     * value: "PAIRWISE"
+     * value: "pairwise"
      * @const
      */
-    "PAIRWISE": "PAIRWISE",
+    "pairwise": "pairwise",
 
     /**
-     * value: "PUBLIC"
+     * value: "public"
      * @const
      */
-    "PUBLIC": "PUBLIC"
+    "public": "public"
 };
 
 
@@ -791,10 +816,76 @@ Client['SubjectTypeEnum'] = {
 Client['IdTokenSignedResponseAlgEnum'] = {
 
     /**
-     * value: "HS256 - HS384 - HS512 - RS256 - RS384 - RS512 - ES256 - ES384 - ES512 - PS256 - PS384 - PS512"
+     * value: "HS256"
      * @const
      */
-    "HS256 - HS384 - HS512 - RS256 - RS384 - RS512 - ES256 - ES384 - ES512 - PS256 - PS384 - PS512": "HS256 - HS384 - HS512 - RS256 - RS384 - RS512 - ES256 - ES384 - ES512 - PS256 - PS384 - PS512"
+    "HS256": "HS256",
+
+    /**
+     * value: "HS384"
+     * @const
+     */
+    "HS384": "HS384",
+
+    /**
+     * value: "HS512"
+     * @const
+     */
+    "HS512": "HS512",
+
+    /**
+     * value: "RS256"
+     * @const
+     */
+    "RS256": "RS256",
+
+    /**
+     * value: "RS384"
+     * @const
+     */
+    "RS384": "RS384",
+
+    /**
+     * value: "RS512"
+     * @const
+     */
+    "RS512": "RS512",
+
+    /**
+     * value: "ES256"
+     * @const
+     */
+    "ES256": "ES256",
+
+    /**
+     * value: "ES384"
+     * @const
+     */
+    "ES384": "ES384",
+
+    /**
+     * value: "ES512"
+     * @const
+     */
+    "ES512": "ES512",
+
+    /**
+     * value: "PS256"
+     * @const
+     */
+    "PS256": "PS256",
+
+    /**
+     * value: "PS384"
+     * @const
+     */
+    "PS384": "PS384",
+
+    /**
+     * value: "PS512"
+     * @const
+     */
+    "PS512": "PS512"
 };
 
 

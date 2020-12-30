@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 ## getPropertiesFido2
 
-> [InlineResponse200] getPropertiesFido2()
+> JansFido2DynConfiguration getPropertiesFido2()
 
 Gets Jans Authorization Server Fido2 configuration properties.
 
@@ -42,7 +42,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**[InlineResponse200]**](InlineResponse200.md)
+[**JansFido2DynConfiguration**](JansFido2DynConfiguration.md)
 
 ### Authorization
 
@@ -56,7 +56,7 @@ This endpoint does not need any parameter.
 
 ## putPropertiesFido2
 
-> putPropertiesFido2(opts)
+> JansFido2DynConfiguration putPropertiesFido2(opts)
 
 Updates Fido2 configuration properties.
 
@@ -73,13 +73,13 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.ConfigurationFido2Api();
 let opts = {
-  'inlineResponse200': [new JansConfigApi.InlineResponse200()] // [InlineResponse200] | 
+  'jansFido2DynConfiguration': new JansConfigApi.JansFido2DynConfiguration() // JansFido2DynConfiguration | 
 };
 apiInstance.putPropertiesFido2(opts, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 });
 ```
@@ -89,11 +89,11 @@ apiInstance.putPropertiesFido2(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineResponse200** | [**[InlineResponse200]**](InlineResponse200.md)|  | [optional] 
+ **jansFido2DynConfiguration** | [**JansFido2DynConfiguration**](JansFido2DynConfiguration.md)|  | [optional] 
 
 ### Return type
 
-null (empty response body)
+[**JansFido2DynConfiguration**](JansFido2DynConfiguration.md)
 
 ### Authorization
 

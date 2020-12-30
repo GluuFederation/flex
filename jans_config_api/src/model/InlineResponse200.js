@@ -21,7 +21,7 @@ import ApiClient from '../ApiClient';
 class InlineResponse200 {
     /**
      * Constructs a new <code>InlineResponse200</code>.
-     * Fido2 configuration properties.
+     * SMTP configuration test status.
      * @alias module:model/InlineResponse200
      */
     constructor() { 
@@ -48,32 +48,11 @@ class InlineResponse200 {
         if (data) {
             obj = obj || new InlineResponse200();
 
-            if (data.hasOwnProperty('authenticatorCertsFolder')) {
-                obj['authenticatorCertsFolder'] = ApiClient.convertToType(data['authenticatorCertsFolder'], 'String');
+            if (data.hasOwnProperty('service')) {
+                obj['service'] = ApiClient.convertToType(data['service'], 'String');
             }
-            if (data.hasOwnProperty('mdsAccessToken')) {
-                obj['mdsAccessToken'] = ApiClient.convertToType(data['mdsAccessToken'], 'String');
-            }
-            if (data.hasOwnProperty('mdsCertsFolder')) {
-                obj['mdsCertsFolder'] = ApiClient.convertToType(data['mdsCertsFolder'], 'String');
-            }
-            if (data.hasOwnProperty('mdsTocsFolder')) {
-                obj['mdsTocsFolder'] = ApiClient.convertToType(data['mdsTocsFolder'], 'String');
-            }
-            if (data.hasOwnProperty('userAutoEnrollment')) {
-                obj['userAutoEnrollment'] = ApiClient.convertToType(data['userAutoEnrollment'], 'Boolean');
-            }
-            if (data.hasOwnProperty('unfinishedRequestExpiration')) {
-                obj['unfinishedRequestExpiration'] = ApiClient.convertToType(data['unfinishedRequestExpiration'], 'Number');
-            }
-            if (data.hasOwnProperty('authenticationHistoryExpiration')) {
-                obj['authenticationHistoryExpiration'] = ApiClient.convertToType(data['authenticationHistoryExpiration'], 'Number');
-            }
-            if (data.hasOwnProperty('serverMetadataFolder')) {
-                obj['serverMetadataFolder'] = ApiClient.convertToType(data['serverMetadataFolder'], 'String');
-            }
-            if (data.hasOwnProperty('disableFido2')) {
-                obj['disableFido2'] = ApiClient.convertToType(data['disableFido2'], 'Boolean');
+            if (data.hasOwnProperty('status')) {
+                obj['status'] = ApiClient.convertToType(data['status'], 'String');
             }
         }
         return obj;
@@ -83,61 +62,40 @@ class InlineResponse200 {
 }
 
 /**
- * Authenticators certificates fodler.
- * @member {String} authenticatorCertsFolder
+ * Service name.
+ * @member {String} service
  */
-InlineResponse200.prototype['authenticatorCertsFolder'] = undefined;
+InlineResponse200.prototype['service'] = undefined;
 
 /**
- * MDS Access token.
- * @member {String} mdsAccessToken
+ * Status of SMTP server connection test.
+ * @member {module:model/InlineResponse200.StatusEnum} status
  */
-InlineResponse200.prototype['mdsAccessToken'] = undefined;
+InlineResponse200.prototype['status'] = undefined;
+
+
+
+
 
 /**
- * MDS TOC root certificates folder.
- * @member {String} mdsCertsFolder
+ * Allowed values for the <code>status</code> property.
+ * @enum {String}
+ * @readonly
  */
-InlineResponse200.prototype['mdsCertsFolder'] = undefined;
+InlineResponse200['StatusEnum'] = {
 
-/**
- * MDS TOC files folder.
- * @member {String} mdsTocsFolder
- */
-InlineResponse200.prototype['mdsTocsFolder'] = undefined;
+    /**
+     * value: "OKAY"
+     * @const
+     */
+    "OKAY": "OKAY",
 
-/**
- * Allow to enroll users on enrollment/authentication requests.
- * @member {Boolean} userAutoEnrollment
- */
-InlineResponse200.prototype['userAutoEnrollment'] = undefined;
-
-/**
- * Expiration time in seconds for pending enrollment/authentication requests
- * @member {Number} unfinishedRequestExpiration
- */
-InlineResponse200.prototype['unfinishedRequestExpiration'] = undefined;
-
-/**
- * Expiration time in seconds for approved authentication requests.
- * @member {Number} authenticationHistoryExpiration
- */
-InlineResponse200.prototype['authenticationHistoryExpiration'] = undefined;
-
-/**
- * Authenticators metadata in json format.
- * @member {String} serverMetadataFolder
- */
-InlineResponse200.prototype['serverMetadataFolder'] = undefined;
-
-/**
- * Enable/Disable Fido2 endpoints.
- * @member {Boolean} disableFido2
- */
-InlineResponse200.prototype['disableFido2'] = undefined;
-
-
-
+    /**
+     * value: "FAILED"
+     * @const
+     */
+    "FAILED": "FAILED"
+};
 
 
 

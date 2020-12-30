@@ -54,9 +54,6 @@ class WebKeysConfiguration {
             if (data.hasOwnProperty('keys')) {
                 obj['keys'] = ApiClient.convertToType(data['keys'], [JsonWebKey]);
             }
-            if (data.hasOwnProperty('jwksAlgorithmsSupported')) {
-                obj['jwksAlgorithmsSupported'] = ApiClient.convertToType(data['jwksAlgorithmsSupported'], ['String']);
-            }
         }
         return obj;
     }
@@ -69,12 +66,6 @@ class WebKeysConfiguration {
  * @member {Array.<module:model/JsonWebKey>} keys
  */
 WebKeysConfiguration.prototype['keys'] = undefined;
-
-/**
- * A list of algorithms that will be used in JWKS endpoint.
- * @member {Array.<String>} jwksAlgorithmsSupported
- */
-WebKeysConfiguration.prototype['jwksAlgorithmsSupported'] = undefined;
 
 
 

@@ -213,7 +213,7 @@ Name | Type | Description  | Notes
 
 ## postConfigScripts
 
-> CustomScript postConfigScripts()
+> CustomScript postConfigScripts(opts)
 
 Adds a new custom script.
 
@@ -229,7 +229,10 @@ let jans-auth = defaultClient.authentications['jans-auth'];
 jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.CustomScriptsApi();
-apiInstance.postConfigScripts((error, data, response) => {
+let opts = {
+  'customScript': new JansConfigApi.CustomScript() // CustomScript | 
+};
+apiInstance.postConfigScripts(opts, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
@@ -240,7 +243,10 @@ apiInstance.postConfigScripts((error, data, response) => {
 
 ### Parameters
 
-This endpoint does not need any parameter.
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **customScript** | [**CustomScript**](CustomScript.md)|  | [optional] 
 
 ### Return type
 
@@ -252,13 +258,13 @@ This endpoint does not need any parameter.
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 
 ## putConfigScripts
 
-> putConfigScripts(opts)
+> CustomScript putConfigScripts(opts)
 
 Updates a custom script.
 
@@ -275,13 +281,13 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.CustomScriptsApi();
 let opts = {
-  'customScript': [new JansConfigApi.CustomScript()] // [CustomScript] | 
+  'customScript': new JansConfigApi.CustomScript() // CustomScript | 
 };
 apiInstance.putConfigScripts(opts, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 });
 ```
@@ -291,11 +297,11 @@ apiInstance.putConfigScripts(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **customScript** | [**[CustomScript]**](CustomScript.md)|  | [optional] 
+ **customScript** | [**CustomScript**](CustomScript.md)|  | [optional] 
 
 ### Return type
 
-null (empty response body)
+[**CustomScript**](CustomScript.md)
 
 ### Authorization
 

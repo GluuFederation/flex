@@ -22,18 +22,10 @@ class LdapConfiguration {
     /**
      * Constructs a new <code>LdapConfiguration</code>.
      * @alias module:model/LdapConfiguration
-     * @param configId {String} Unique identifier - Name
-     * @param bindDN {String} User Distingusihed Name for binding.
-     * @param maxConnections {Number} Total number of simultaneous connections allowed.
-     * @param primaryKey {String} Used to search and bind operations in configured LDAP server.
-     * @param localPrimaryKey {String} Used to search local user entry in Gluu Server’s internal LDAP directory.
-     * @param servers {Array.<String>} List of LDAP authentication servers.
-     * @param baseDNs {Array.<String>} list of LDAP base Distingusihed Name
-     * @param useSSL {Boolean} 
      */
-    constructor(configId, bindDN, maxConnections, primaryKey, localPrimaryKey, servers, baseDNs, useSSL) { 
+    constructor() { 
         
-        LdapConfiguration.initialize(this, configId, bindDN, maxConnections, primaryKey, localPrimaryKey, servers, baseDNs, useSSL);
+        LdapConfiguration.initialize(this);
     }
 
     /**
@@ -41,15 +33,7 @@ class LdapConfiguration {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, configId, bindDN, maxConnections, primaryKey, localPrimaryKey, servers, baseDNs, useSSL) { 
-        obj['configId'] = configId;
-        obj['bindDN'] = bindDN;
-        obj['maxConnections'] = maxConnections;
-        obj['primaryKey'] = primaryKey;
-        obj['localPrimaryKey'] = localPrimaryKey;
-        obj['servers'] = servers;
-        obj['baseDNs'] = baseDNs;
-        obj['useSSL'] = useSSL;
+    static initialize(obj) { 
     }
 
     /**
@@ -69,26 +53,26 @@ class LdapConfiguration {
             if (data.hasOwnProperty('bindDN')) {
                 obj['bindDN'] = ApiClient.convertToType(data['bindDN'], 'String');
             }
+            if (data.hasOwnProperty('bindPassword')) {
+                obj['bindPassword'] = ApiClient.convertToType(data['bindPassword'], 'String');
+            }
+            if (data.hasOwnProperty('servers')) {
+                obj['servers'] = ApiClient.convertToType(data['servers'], ['String']);
+            }
             if (data.hasOwnProperty('maxConnections')) {
                 obj['maxConnections'] = ApiClient.convertToType(data['maxConnections'], 'Number');
+            }
+            if (data.hasOwnProperty('useSSL')) {
+                obj['useSSL'] = ApiClient.convertToType(data['useSSL'], 'Boolean');
+            }
+            if (data.hasOwnProperty('baseDNs')) {
+                obj['baseDNs'] = ApiClient.convertToType(data['baseDNs'], ['String']);
             }
             if (data.hasOwnProperty('primaryKey')) {
                 obj['primaryKey'] = ApiClient.convertToType(data['primaryKey'], 'String');
             }
             if (data.hasOwnProperty('localPrimaryKey')) {
                 obj['localPrimaryKey'] = ApiClient.convertToType(data['localPrimaryKey'], 'String');
-            }
-            if (data.hasOwnProperty('servers')) {
-                obj['servers'] = ApiClient.convertToType(data['servers'], ['String']);
-            }
-            if (data.hasOwnProperty('baseDNs')) {
-                obj['baseDNs'] = ApiClient.convertToType(data['baseDNs'], ['String']);
-            }
-            if (data.hasOwnProperty('useSSL')) {
-                obj['useSSL'] = ApiClient.convertToType(data['useSSL'], 'Boolean');
-            }
-            if (data.hasOwnProperty('bindPassword')) {
-                obj['bindPassword'] = ApiClient.convertToType(data['bindPassword'], 'String');
             }
             if (data.hasOwnProperty('useAnonymousBind')) {
                 obj['useAnonymousBind'] = ApiClient.convertToType(data['useAnonymousBind'], 'Boolean');
@@ -98,6 +82,9 @@ class LdapConfiguration {
             }
             if (data.hasOwnProperty('version')) {
                 obj['version'] = ApiClient.convertToType(data['version'], 'Number');
+            }
+            if (data.hasOwnProperty('level')) {
+                obj['level'] = ApiClient.convertToType(data['level'], 'Number');
             }
         }
         return obj;
@@ -113,17 +100,41 @@ class LdapConfiguration {
 LdapConfiguration.prototype['configId'] = undefined;
 
 /**
- * User Distingusihed Name for binding.
+ * This contains the username to connect to the backend server. You need to use full DN here. As for example, cn=jans,dc=company,dc=org.
  * @member {String} bindDN
  */
 LdapConfiguration.prototype['bindDN'] = undefined;
 
 /**
- * Total number of simultaneous connections allowed.
+ * Ldap password for binding.
+ * @member {String} bindPassword
+ */
+LdapConfiguration.prototype['bindPassword'] = undefined;
+
+/**
+ * List of LDAP authentication servers.
+ * @member {Array.<String>} servers
+ */
+LdapConfiguration.prototype['servers'] = undefined;
+
+/**
+ * This value defines the maximum number of connections that are allowed to read the backend Active Directory/LDAP server.
  * @member {Number} maxConnections
  * @default 2
  */
 LdapConfiguration.prototype['maxConnections'] = 2;
+
+/**
+ * Enable SSL communication between Jans Server and LDAP server.
+ * @member {Boolean} useSSL
+ */
+LdapConfiguration.prototype['useSSL'] = undefined;
+
+/**
+ * List contains the location of the Active Directory/LDAP tree from where the Gluu Server shall read the user information.
+ * @member {Array.<String>} baseDNs
+ */
+LdapConfiguration.prototype['baseDNs'] = undefined;
 
 /**
  * Used to search and bind operations in configured LDAP server.
@@ -138,43 +149,28 @@ LdapConfiguration.prototype['primaryKey'] = undefined;
 LdapConfiguration.prototype['localPrimaryKey'] = undefined;
 
 /**
- * List of LDAP authentication servers.
- * @member {Array.<String>} servers
- */
-LdapConfiguration.prototype['servers'] = undefined;
-
-/**
- * list of LDAP base Distingusihed Name
- * @member {Array.<String>} baseDNs
- */
-LdapConfiguration.prototype['baseDNs'] = undefined;
-
-/**
- * @member {Boolean} useSSL
- */
-LdapConfiguration.prototype['useSSL'] = undefined;
-
-/**
- * User password for binding.
- * @member {String} bindPassword
- */
-LdapConfiguration.prototype['bindPassword'] = undefined;
-
-/**
  * Boolean value used to indicate if the LDAP Server will allow anonymous bind request.
  * @member {Boolean} useAnonymousBind
  */
 LdapConfiguration.prototype['useAnonymousBind'] = undefined;
 
 /**
+ * Boolean value used to indicate if the LDAP Server is enabled. Do not use this unless the server administrator has entered all the required values.
  * @member {Boolean} enabled
  */
 LdapConfiguration.prototype['enabled'] = undefined;
 
 /**
+ * LDAP server version.
  * @member {Number} version
  */
 LdapConfiguration.prototype['version'] = undefined;
+
+/**
+ * A string that indicates the level.
+ * @member {Number} level
+ */
+LdapConfiguration.prototype['level'] = undefined;
 
 
 

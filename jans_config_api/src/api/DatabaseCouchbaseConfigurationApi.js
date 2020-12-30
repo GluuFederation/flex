@@ -171,7 +171,7 @@ export default class DatabaseCouchbaseConfigurationApi {
      * Partially modify an Couchbase configuration.
      * @param {String} name Name of Couchbase configuration.
      * @param {Object} opts Optional parameters
-     * @param {module:model/PatchRequest} opts.patchRequest 
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
      * @param {module:api/DatabaseCouchbaseConfigurationApi~patchConfigDatabaseCouchbaseByNameCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/CouchbaseConfiguration}
      */
@@ -194,7 +194,7 @@ export default class DatabaseCouchbaseConfigurationApi {
       };
 
       let authNames = ['jans-auth'];
-      let contentTypes = ['application/json'];
+      let contentTypes = ['application/json-patch+json'];
       let accepts = ['application/json'];
       let returnType = CouchbaseConfiguration;
       return this.apiClient.callApi(
@@ -255,8 +255,8 @@ export default class DatabaseCouchbaseConfigurationApi {
      */
 
     /**
-     * Tests a Couchbase configurations by name.
-     * Tests a Couchbase configurations by name.
+     * Tests a Couchbase configuration.
+     * Tests a Couchbase configuration.
      * @param {module:model/CouchbaseConfiguration} couchbaseConfiguration 
      * @param {module:api/DatabaseCouchbaseConfigurationApi~postConfigDatabaseCouchbaseTestCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link Boolean}

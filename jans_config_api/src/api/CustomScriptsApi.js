@@ -217,11 +217,14 @@ export default class CustomScriptsApi {
     /**
      * Adds a new custom script.
      * Adds a new custom script.
+     * @param {Object} opts Optional parameters
+     * @param {module:model/CustomScript} opts.customScript 
      * @param {module:api/CustomScriptsApi~postConfigScriptsCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/CustomScript}
      */
-    postConfigScripts(callback) {
-      let postBody = null;
+    postConfigScripts(opts, callback) {
+      opts = opts || {};
+      let postBody = opts['customScript'];
 
       let pathParams = {
       };
@@ -233,7 +236,7 @@ export default class CustomScriptsApi {
       };
 
       let authNames = ['jans-auth'];
-      let contentTypes = [];
+      let contentTypes = ['application/json'];
       let accepts = ['application/json'];
       let returnType = CustomScript;
       return this.apiClient.callApi(
@@ -247,7 +250,7 @@ export default class CustomScriptsApi {
      * Callback function to receive the result of the putConfigScripts operation.
      * @callback module:api/CustomScriptsApi~putConfigScriptsCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/CustomScript} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -255,8 +258,9 @@ export default class CustomScriptsApi {
      * Updates a custom script.
      * Updates a custom script.
      * @param {Object} opts Optional parameters
-     * @param {Array.<module:model/CustomScript>} opts.customScript 
+     * @param {module:model/CustomScript} opts.customScript 
      * @param {module:api/CustomScriptsApi~putConfigScriptsCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/CustomScript}
      */
     putConfigScripts(opts, callback) {
       opts = opts || {};
@@ -274,7 +278,7 @@ export default class CustomScriptsApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = null;
+      let returnType = CustomScript;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/scripts', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

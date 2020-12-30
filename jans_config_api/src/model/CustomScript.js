@@ -24,12 +24,12 @@ import CustomScriptScriptError from './CustomScriptScriptError';
 class CustomScript {
     /**
      * Constructs a new <code>CustomScript</code>.
+     * Script
      * @alias module:model/CustomScript
-     * @param name {String} Name should contain only letters, digits and underscores.
      */
-    constructor(name) { 
+    constructor() { 
         
-        CustomScript.initialize(this, name);
+        CustomScript.initialize(this);
     }
 
     /**
@@ -37,8 +37,7 @@ class CustomScript {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, name) { 
-        obj['name'] = name;
+    static initialize(obj) { 
     }
 
     /**
@@ -113,6 +112,7 @@ class CustomScript {
 CustomScript.prototype['dn'] = undefined;
 
 /**
+ * XRI i-number. Identifier to uniquely identify the script.
  * @member {String} inum
  */
 CustomScript.prototype['inum'] = undefined;
@@ -124,11 +124,13 @@ CustomScript.prototype['inum'] = undefined;
 CustomScript.prototype['name'] = undefined;
 
 /**
+ * List of possible alias for the script.
  * @member {Array.<String>} aliases
  */
 CustomScript.prototype['aliases'] = undefined;
 
 /**
+ * Details describing the script.
  * @member {String} description
  */
 CustomScript.prototype['description'] = undefined;
@@ -140,37 +142,43 @@ CustomScript.prototype['description'] = undefined;
 CustomScript.prototype['script'] = undefined;
 
 /**
+ * Type of script.
  * @member {module:model/CustomScript.ScriptTypeEnum} scriptType
  */
 CustomScript.prototype['scriptType'] = undefined;
 
 /**
- * Specifies programming language of the custom script.
+ * Programming language of the custom script.
  * @member {module:model/CustomScript.ProgrammingLanguageEnum} programmingLanguage
  */
 CustomScript.prototype['programmingLanguage'] = undefined;
 
 /**
+ * Module-level properties applicable to the script.
  * @member {Array.<module:model/CustomScriptModuleProperties>} moduleProperties
  */
 CustomScript.prototype['moduleProperties'] = undefined;
 
 /**
+ * Configuration properties applicable to the script.
  * @member {Array.<module:model/CustomScriptConfigurationProperties>} configurationProperties
  */
 CustomScript.prototype['configurationProperties'] = undefined;
 
 /**
+ * Script level.
  * @member {Number} level
  */
 CustomScript.prototype['level'] = undefined;
 
 /**
+ * Update revision number of the script.
  * @member {Number} revision
  */
 CustomScript.prototype['revision'] = undefined;
 
 /**
+ * boolean value indicating if script enabled.
  * @member {Boolean} enabled
  */
 CustomScript.prototype['enabled'] = undefined;
@@ -181,11 +189,13 @@ CustomScript.prototype['enabled'] = undefined;
 CustomScript.prototype['scriptError'] = undefined;
 
 /**
+ * boolean value indicating if the script is modified.
  * @member {Boolean} modified
  */
 CustomScript.prototype['modified'] = undefined;
 
 /**
+ * boolean value indicating if the script is interanl.
  * @member {Boolean} internal
  */
 CustomScript.prototype['internal'] = undefined;
@@ -202,130 +212,130 @@ CustomScript.prototype['internal'] = undefined;
 CustomScript['ScriptTypeEnum'] = {
 
     /**
-     * value: "person_authentication"
+     * value: "PERSON_AUTHENTICATION"
      * @const
      */
-    "person_authentication": "person_authentication",
+    "PERSON_AUTHENTICATION": "PERSON_AUTHENTICATION",
 
     /**
-     * value: "introspection"
+     * value: "INTROSPECTION"
      * @const
      */
-    "introspection": "introspection",
+    "INTROSPECTION": "INTROSPECTION",
 
     /**
-     * value: "resource_owner_password_credentials"
+     * value: "RESOURCE_OWNER_PASSWORD_CREDENTIALS"
      * @const
      */
-    "resource_owner_password_credentials": "resource_owner_password_credentials",
+    "RESOURCE_OWNER_PASSWORD_CREDENTIALS": "RESOURCE_OWNER_PASSWORD_CREDENTIALS",
 
     /**
-     * value: "application_session"
+     * value: "APPLICATION_SESSION"
      * @const
      */
-    "application_session": "application_session",
+    "APPLICATION_SESSION": "APPLICATION_SESSION",
 
     /**
-     * value: "cache_refresh"
+     * value: "CACHE_REFRESH"
      * @const
      */
-    "cache_refresh": "cache_refresh",
+    "CACHE_REFRESH": "CACHE_REFRESH",
 
     /**
-     * value: "update_user"
+     * value: "UPDATE_USER"
      * @const
      */
-    "update_user": "update_user",
+    "UPDATE_USER": "UPDATE_USER",
 
     /**
-     * value: "user_registration"
+     * value: "USER_REGISTRATION"
      * @const
      */
-    "user_registration": "user_registration",
+    "USER_REGISTRATION": "USER_REGISTRATION",
 
     /**
-     * value: "client_registration"
+     * value: "CLIENT_REGISTRATION"
      * @const
      */
-    "client_registration": "client_registration",
+    "CLIENT_REGISTRATION": "CLIENT_REGISTRATION",
 
     /**
-     * value: "id_generator"
+     * value: "ID_GENERATOR"
      * @const
      */
-    "id_generator": "id_generator",
+    "ID_GENERATOR": "ID_GENERATOR",
 
     /**
-     * value: "uma_rpt_policy"
+     * value: "UMA_RPT_POLICY"
      * @const
      */
-    "uma_rpt_policy": "uma_rpt_policy",
+    "UMA_RPT_POLICY": "UMA_RPT_POLICY",
 
     /**
-     * value: "uma_rpt_claims"
+     * value: "UMA_RPT_CLAIMS"
      * @const
      */
-    "uma_rpt_claims": "uma_rpt_claims",
+    "UMA_RPT_CLAIMS": "UMA_RPT_CLAIMS",
 
     /**
-     * value: "uma_claims_gathering"
+     * value: "UMA_CLAIMS_GATHERING"
      * @const
      */
-    "uma_claims_gathering": "uma_claims_gathering",
+    "UMA_CLAIMS_GATHERING": "UMA_CLAIMS_GATHERING",
 
     /**
-     * value: "consent_gathering"
+     * value: "CONSENT_GATHERING"
      * @const
      */
-    "consent_gathering": "consent_gathering",
+    "CONSENT_GATHERING": "CONSENT_GATHERING",
 
     /**
-     * value: "dynamic_scope"
+     * value: "DYNAMIC_SCOPE"
      * @const
      */
-    "dynamic_scope": "dynamic_scope",
+    "DYNAMIC_SCOPE": "DYNAMIC_SCOPE",
 
     /**
-     * value: "spontaneous_scope"
+     * value: "SPONTANEOUS_SCOPE"
      * @const
      */
-    "spontaneous_scope": "spontaneous_scope",
+    "SPONTANEOUS_SCOPE": "SPONTANEOUS_SCOPE",
 
     /**
-     * value: "end_session"
+     * value: "END_SESSION"
      * @const
      */
-    "end_session": "end_session",
+    "END_SESSION": "END_SESSION",
 
     /**
-     * value: "post_authn"
+     * value: "POST_AUTHN"
      * @const
      */
-    "post_authn": "post_authn",
+    "POST_AUTHN": "POST_AUTHN",
 
     /**
-     * value: "scim"
+     * value: "SCIM"
      * @const
      */
-    "scim": "scim",
+    "SCIM": "SCIM",
 
     /**
-     * value: "ciba_end_user_notification"
+     * value: "CIBA_END_USER_NOTIFICATION"
      * @const
      */
-    "ciba_end_user_notification": "ciba_end_user_notification",
+    "CIBA_END_USER_NOTIFICATION": "CIBA_END_USER_NOTIFICATION",
 
     /**
-     * value: "persistence_extension"
+     * value: "PERSISTENCE_EXTENSION"
      * @const
      */
-    "persistence_extension": "persistence_extension",
+    "PERSISTENCE_EXTENSION": "PERSISTENCE_EXTENSION",
 
     /**
-     * value: "idp"
+     * value: "IDP"
      * @const
      */
-    "idp": "idp"
+    "IDP": "IDP"
 };
 
 
@@ -337,16 +347,16 @@ CustomScript['ScriptTypeEnum'] = {
 CustomScript['ProgrammingLanguageEnum'] = {
 
     /**
-     * value: "python"
+     * value: "PYTHON"
      * @const
      */
-    "python": "python",
+    "PYTHON": "PYTHON",
 
     /**
-     * value: "javascript"
+     * value: "JAVASCRIPT"
      * @const
      */
-    "javascript": "javascript"
+    "JAVASCRIPT": "JAVASCRIPT"
 };
 
 

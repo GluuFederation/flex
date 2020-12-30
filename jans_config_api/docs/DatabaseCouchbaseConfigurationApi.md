@@ -9,7 +9,7 @@ Method | HTTP request | Description
 [**getConfigDatabaseCouchbaseByName**](DatabaseCouchbaseConfigurationApi.md#getConfigDatabaseCouchbaseByName) | **GET** /jans-config-api/api/v1/config/database/couchbase/{name} | Gets a Couchbase configurations by name.
 [**patchConfigDatabaseCouchbaseByName**](DatabaseCouchbaseConfigurationApi.md#patchConfigDatabaseCouchbaseByName) | **PATCH** /jans-config-api/api/v1/config/database/couchbase/{name} | Partially modify an Couchbase configuration.
 [**postConfigDatabaseCouchbase**](DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbase) | **POST** /jans-config-api/api/v1/config/database/couchbase | Adds a new Couchbase configuration.
-[**postConfigDatabaseCouchbaseTest**](DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbaseTest) | **POST** /jans-config-api/api/v1/config/database/couchbase/test | Tests a Couchbase configurations by name.
+[**postConfigDatabaseCouchbaseTest**](DatabaseCouchbaseConfigurationApi.md#postConfigDatabaseCouchbaseTest) | **POST** /jans-config-api/api/v1/config/database/couchbase/test | Tests a Couchbase configuration.
 [**putConfigDatabaseCouchbase**](DatabaseCouchbaseConfigurationApi.md#putConfigDatabaseCouchbase) | **PUT** /jans-config-api/api/v1/config/database/couchbase | Updates Couchbase configuration.
 
 
@@ -177,7 +177,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 let apiInstance = new JansConfigApi.DatabaseCouchbaseConfigurationApi();
 let name = "name_example"; // String | Name of Couchbase configuration.
 let opts = {
-  'patchRequest': new JansConfigApi.PatchRequest() // PatchRequest | 
+  'patchRequest': [new JansConfigApi.PatchRequest()] // [PatchRequest] | 
 };
 apiInstance.patchConfigDatabaseCouchbaseByName(name, opts, (error, data, response) => {
   if (error) {
@@ -194,7 +194,7 @@ apiInstance.patchConfigDatabaseCouchbaseByName(name, opts, (error, data, respons
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **name** | **String**| Name of Couchbase configuration. | 
- **patchRequest** | [**PatchRequest**](PatchRequest.md)|  | [optional] 
+ **patchRequest** | [**[PatchRequest]**](PatchRequest.md)|  | [optional] 
 
 ### Return type
 
@@ -206,7 +206,7 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
+- **Content-Type**: application/json-patch+json
 - **Accept**: application/json
 
 
@@ -263,9 +263,9 @@ Name | Type | Description  | Notes
 
 > Boolean postConfigDatabaseCouchbaseTest(couchbaseConfiguration)
 
-Tests a Couchbase configurations by name.
+Tests a Couchbase configuration.
 
-Tests a Couchbase configurations by name.
+Tests a Couchbase configuration.
 
 ### Example
 

@@ -66,8 +66,32 @@
       //expect(instance).to.be();
     });
 
+    it('should have the property bindPassword (base name: "bindPassword")', function() {
+      // uncomment below and update the code to test the property bindPassword
+      //var instane = new JansConfigApi.LdapConfiguration();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property servers (base name: "servers")', function() {
+      // uncomment below and update the code to test the property servers
+      //var instane = new JansConfigApi.LdapConfiguration();
+      //expect(instance).to.be();
+    });
+
     it('should have the property maxConnections (base name: "maxConnections")', function() {
       // uncomment below and update the code to test the property maxConnections
+      //var instane = new JansConfigApi.LdapConfiguration();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property useSSL (base name: "useSSL")', function() {
+      // uncomment below and update the code to test the property useSSL
+      //var instane = new JansConfigApi.LdapConfiguration();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property baseDNs (base name: "baseDNs")', function() {
+      // uncomment below and update the code to test the property baseDNs
       //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
@@ -80,30 +104,6 @@
 
     it('should have the property localPrimaryKey (base name: "localPrimaryKey")', function() {
       // uncomment below and update the code to test the property localPrimaryKey
-      //var instane = new JansConfigApi.LdapConfiguration();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property servers (base name: "servers")', function() {
-      // uncomment below and update the code to test the property servers
-      //var instane = new JansConfigApi.LdapConfiguration();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property baseDNs (base name: "baseDNs")', function() {
-      // uncomment below and update the code to test the property baseDNs
-      //var instane = new JansConfigApi.LdapConfiguration();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property useSSL (base name: "useSSL")', function() {
-      // uncomment below and update the code to test the property useSSL
-      //var instane = new JansConfigApi.LdapConfiguration();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property bindPassword (base name: "bindPassword")', function() {
-      // uncomment below and update the code to test the property bindPassword
       //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
@@ -122,6 +122,12 @@
 
     it('should have the property version (base name: "version")', function() {
       // uncomment below and update the code to test the property version
+      //var instane = new JansConfigApi.LdapConfiguration();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property level (base name: "level")', function() {
+      // uncomment below and update the code to test the property level
       //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });

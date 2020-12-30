@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 ## getConfigCacheNativePersistence
 
-> InlineResponse2001NativePersistenceConfiguration getConfigCacheNativePersistence()
+> NativePersistenceConfiguration getConfigCacheNativePersistence()
 
 Returns native persistence cache configuration.
 
@@ -42,7 +42,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InlineResponse2001NativePersistenceConfiguration**](InlineResponse2001NativePersistenceConfiguration.md)
+[**NativePersistenceConfiguration**](NativePersistenceConfiguration.md)
 
 ### Authorization
 
@@ -56,7 +56,7 @@ This endpoint does not need any parameter.
 
 ## putConfigCacheNativePersistence
 
-> InlineResponse2001NativePersistenceConfiguration putConfigCacheNativePersistence(opts)
+> NativePersistenceConfiguration putConfigCacheNativePersistence(opts)
 
 Updates native persistence cache configuration.
 
@@ -73,7 +73,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.CacheConfigurationNativePersistenceApi();
 let opts = {
-  'inlineObject3': new JansConfigApi.InlineObject3() // InlineObject3 | 
+  'nativePersistenceConfiguration': new JansConfigApi.NativePersistenceConfiguration() // NativePersistenceConfiguration | 
 };
 apiInstance.putConfigCacheNativePersistence(opts, (error, data, response) => {
   if (error) {
@@ -89,11 +89,11 @@ apiInstance.putConfigCacheNativePersistence(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inlineObject3** | [**InlineObject3**](InlineObject3.md)|  | [optional] 
+ **nativePersistenceConfiguration** | [**NativePersistenceConfiguration**](NativePersistenceConfiguration.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2001NativePersistenceConfiguration**](InlineResponse2001NativePersistenceConfiguration.md)
+[**NativePersistenceConfiguration**](NativePersistenceConfiguration.md)
 
 ### Authorization
 

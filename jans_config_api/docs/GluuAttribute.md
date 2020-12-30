@@ -4,12 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**name** | **String** | Name of the attribute. | 
-**displayName** | **[String]** |  | 
+**dn** | **String** |  | [optional] 
+**inum** | **String** | XRI i-number. Identifier to uniquely identify the attribute. | [optional] 
+**selected** | **Boolean** | Boolean value to indicate if the atrribute is selected. | [optional] 
+**name** | **String** | Name of the attribute. | [optional] 
+**displayName** | **String** |  | [optional] 
 **description** | **String** | User friendly descriptive detail of attribute. | [optional] 
-**dataType** | **String** | Data Type of attribute. | 
-**status** | **String** | Distinguished Name | 
-**jansMultivaluedAttr** | **Boolean** | Boolean value indicating if the attribute is multi-value | [optional] 
+**dataType** | **String** | Data Type of attribute. | [optional] 
+**status** | **String** | Distinguished Name | [optional] 
 **lifetime** | **String** |  | [optional] 
 **sourceAttribute** | **String** |  | [optional] 
 **salt** | **String** |  | [optional] 
@@ -18,16 +20,17 @@ Name | Type | Description | Notes
 **editType** | **[String]** | GluuUserRole | [optional] 
 **viewType** | **[String]** | GluuUserRole | [optional] 
 **usageType** | **[String]** | GluuAttributeUsageType | [optional] 
-**jansAttrName** | **String** |  | [optional] 
+**claimName** | **String** |  | [optional] 
 **seeAlso** | **String** |  | [optional] 
 **saml1Uri** | **String** |  | [optional] 
 **saml2Uri** | **String** |  | [optional] 
 **urn** | **String** |  | [optional] 
-**jansSCIMCustomAttr** | **Boolean** | Boolean value indicating if the attribute is a SCIM custom attribute | [optional] 
+**scimCustomAttr** | **Boolean** | Boolean value indicating if the attribute is a SCIM custom attribute | [optional] 
+**oxMultiValuedAttribute** | **Boolean** | Boolean value indicating if the attribute can hold multiple value. | [optional] 
 **custom** | **Boolean** | Boolean value indicating if the attribute is a custom attribute | [optional] 
 **requred** | **Boolean** | Boolean value indicating is a mandatory attribute | [optional] 
 **attributeValidation** | [**GluuAttributeAttributeValidation**](GluuAttributeAttributeValidation.md) |  | [optional] 
-**gluuTooltip** | **String** |  | [optional] 
+**tooltip** | **String** |  | [optional] 
 
 
 
@@ -42,7 +45,43 @@ Name | Type | Description | Notes
 
 * `BINARY` (value: `"BINARY"`)
 
+* `CERTIFICATE` (value: `"CERTIFICATE"`)
+
 * `DATE` (value: `"DATE"`)
+
+
+
+
+
+## Enum: [EditTypeEnum]
+
+
+* `ADMIN` (value: `"ADMIN"`)
+
+* `OWNER` (value: `"OWNER"`)
+
+* `MANAGER` (value: `"MANAGER"`)
+
+* `USER` (value: `"USER"`)
+
+* `WHITEPAGES` (value: `"WHITEPAGES"`)
+
+
+
+
+
+## Enum: [ViewTypeEnum]
+
+
+* `ADMIN` (value: `"ADMIN"`)
+
+* `OWNER` (value: `"OWNER"`)
+
+* `MANAGER` (value: `"MANAGER"`)
+
+* `USER` (value: `"USER"`)
+
+* `WHITEPAGES` (value: `"WHITEPAGES"`)
 
 
 
