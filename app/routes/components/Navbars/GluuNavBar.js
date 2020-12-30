@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -16,16 +16,10 @@ import {
 import { NavbarActivityFeed } from "../../../layout/components/NavbarActivityFeed";
 import { NavbarMessages } from "../../../layout/components/NavbarMessages";
 import { LanguageMenu } from "./LanguageMenu";
-import { getScope } from "../../../redux/api/scope-api";
 import { DropdownProfile } from "../Dropdowns/DropdownProfile";
 
 import { randomAvatar } from "../../../utilities";
 const GluuNavBar = ({ themeColor, themeStyle }) => {
-  useEffect(() => {
-    const inum = "43F1";
-    const result = getScope(inum);
-    console.log("=========================== " + result);
-  });
   return (
     <NavbarThemeProvider
       style={themeStyle}
