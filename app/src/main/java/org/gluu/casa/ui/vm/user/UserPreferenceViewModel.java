@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.*;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +19,6 @@ import java.util.stream.Collectors;
  * for setting the user's preferred authentication method when second factor authentication is enabled
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class UserPreferenceViewModel extends UserViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

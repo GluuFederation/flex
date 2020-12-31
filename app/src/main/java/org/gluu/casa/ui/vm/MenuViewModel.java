@@ -7,16 +7,13 @@ import org.gluu.casa.ui.MenuService;
 import org.gluu.casa.ui.vm.user.UserMainViewModel;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 import java.util.List;
 
 /**
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class MenuViewModel extends UserMainViewModel {
 
     @WireVariable

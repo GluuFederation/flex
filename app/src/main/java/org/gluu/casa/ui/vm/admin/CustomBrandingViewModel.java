@@ -14,15 +14,12 @@ import org.zkoss.image.Image;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 /**
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class CustomBrandingViewModel extends MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

@@ -12,9 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 import java.util.List;
@@ -22,7 +20,6 @@ import java.util.List;
 /**
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

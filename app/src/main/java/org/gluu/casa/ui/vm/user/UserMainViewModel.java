@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,6 @@ import java.util.stream.Collectors;
  * 
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class UserMainViewModel extends UserViewModel {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());

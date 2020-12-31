@@ -20,10 +20,8 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
@@ -36,7 +34,6 @@ import java.util.Optional;
  * This is the ViewModel of page otp-detail.zul. It controls the CRUD of HOTP/TOTP devices
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class OTPViewModel extends UserViewModel {
 
     private static final int QR_SCAN_TIMEOUT = 60;

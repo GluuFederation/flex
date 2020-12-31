@@ -7,14 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 /**
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class PassResetViewModel extends MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

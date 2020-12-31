@@ -13,10 +13,8 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Checkbox;
 
 import java.util.Comparator;
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 /**
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class PreferenceResetViewModel extends MainViewModel {
 
     private static final int MINLEN_SEARCH_PATTERN = 3;

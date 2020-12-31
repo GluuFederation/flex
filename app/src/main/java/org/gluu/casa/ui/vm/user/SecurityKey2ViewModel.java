@@ -21,10 +21,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 import java.util.List;
@@ -33,7 +31,6 @@ import java.util.Optional;
 /**
  * This is the ViewModel of page fido2-detail.zul. It controls the CRUD of security keys
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class SecurityKey2ViewModel extends UserViewModel {
 
     private static final int REGISTRATION_TIMEOUT = 8000;

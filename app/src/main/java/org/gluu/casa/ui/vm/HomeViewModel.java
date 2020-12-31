@@ -12,10 +12,8 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 import java.time.ZoneOffset;
 import java.util.Optional;
@@ -24,7 +22,6 @@ import java.util.Optional;
  * This class is employed to store in session some user settings.
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class HomeViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

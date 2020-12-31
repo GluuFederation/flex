@@ -12,14 +12,11 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 /**
  * Created by jgomer on 2018-07-09.
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class PassResetViewModel extends UserViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

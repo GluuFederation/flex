@@ -19,10 +19,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 import java.util.List;
@@ -31,7 +29,6 @@ import java.util.List;
  * Created by jgomer on 2017-09-06.
  * This is the ViewModel of page super-detail.zul. It controls the CRUD of supergluu devices
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class SuperGluuViewModel extends UserViewModel {
 
     private static final int QR_SCAN_TIMEOUT = 60;

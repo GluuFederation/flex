@@ -13,9 +13,7 @@ import org.zkoss.bind.annotation.*;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 import java.net.URL;
@@ -26,7 +24,6 @@ import java.util.stream.Stream;
 /**
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class OxdViewModel extends MainViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

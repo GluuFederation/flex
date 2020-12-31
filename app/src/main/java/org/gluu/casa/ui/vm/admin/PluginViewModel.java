@@ -19,9 +19,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 import org.zkoss.zul.Messagebox;
 
 import java.io.ByteArrayInputStream;
@@ -38,7 +36,6 @@ import java.util.stream.Stream;
 /**
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class PluginViewModel extends MainViewModel {
 
     private static final Class<AuthnMethod> AUTHN_METHOD = AuthnMethod.class;

@@ -13,16 +13,13 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
 
 import java.util.List;
 
 /**
  * @author jgomer
  */
-@VariableResolver(DelegatingVariableResolver.class)
 public class HeaderViewModel {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
