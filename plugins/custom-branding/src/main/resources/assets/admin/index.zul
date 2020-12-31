@@ -42,7 +42,7 @@
                         <div class="pl4-ns pt2">
                             <z:image src="@load(vm.logo.first)" sclass="bg-light-gray ba b--black b--dashed" />
                             <z:button class="${css.linkButton} f7 ml3" label="${labels.branding.quick_change}"
-                                      upload="true,maxsize=150,multiple=false" onUpload="@command('logoUploaded', evt = event)"
+                                      upload="true,maxsize=150,multiple=false" onUpload="@command('logoUploaded', media = event.media)"
                                       ca:data-original-title="${labels.branding.quick_logo_hint}" ca:data-toggle="tooltip" ca:data-placement="bottom" />
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                         <div class="pl4-ns pt2">
                             <z:image src="@load(vm.favicon.first)" sclass="bg-light-gray ba b--black b--dashed" />
                             <z:button class="f7 pa0 bw0 br0 blue hover-dark-blue underline-hover bg-transparent btn ml3" label="${labels.branding.quick_change}"
-                                      upload="true,maxsize=50,multiple=false" onUpload="@command('faviconUploaded', evt = event)"
+                                      upload="true,maxsize=50,multiple=false" onUpload="@command('faviconUploaded', media = event.media)"
                                       ca:data-original-title="${labels.branding.quick_favicon_hint}" ca:data-toggle="tooltip" ca:data-placement="bottom" />
                         </div>
                     </div>

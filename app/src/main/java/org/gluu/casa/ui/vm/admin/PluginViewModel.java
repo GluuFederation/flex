@@ -16,8 +16,8 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Messagebox;
 
@@ -78,11 +78,11 @@ public class PluginViewModel extends MainViewModel {
     }
 
     @NotifyChange({"pluginToShow"})
-    public void uploaded(@BindingParam("uplEvent") UploadEvent evt) {
+    public void uploaded(@BindingParam("media") Media media) {
 
         try {
             pluginToShow = null;
-            byte[] blob = evt.getMedia().getByteData();
+            byte[] blob = media.getByteData();
             logger.debug("Size of blob received: {} bytes", blob.length);
 
             try (JarInputStream jis = new JarInputStream(new ByteArrayInputStream(blob), false)) {
@@ -102,7 +102,7 @@ public class PluginViewModel extends MainViewModel {
                                 logger.warn("Your plugin may not work properly");
                             }
                             //Copy the jar to plugins dir
-                            Files.write(Paths.get(extManager.getPluginsRoot().toString(), evt.getMedia().getName()), blob, StandardOpenOption.CREATE_NEW);
+                            Files.write(Paths.get(extManager.getPluginsRoot().toString(), media.getName()), blob, StandardOpenOption.CREATE_NEW);
                             logger.info("Plugin jar file copied to app plugins directory");
                             Messagebox.show(Labels.getLabel("adm.plugins_deploy_pending"));
                         } catch (Exception e) {

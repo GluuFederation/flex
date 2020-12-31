@@ -12,7 +12,6 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.image.Image;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zul.Messagebox;
 
@@ -75,13 +74,13 @@ public class CustomBrandingViewModel extends MainViewModel {
     }
 
     @NotifyChange("logo")
-    public void logoUploaded(@BindingParam("evt") UploadEvent evt) {
-        processUpload(logo, evt.getMedia());
+    public void logoUploaded(@BindingParam("media") Media media) {
+        processUpload(logo, media);
     }
 
     @NotifyChange("favicon")
-    public void faviconUploaded(@BindingParam("evt") UploadEvent evt) {
-        processUpload(favicon, evt.getMedia());
+    public void faviconUploaded(@BindingParam("media") Media media) {
+        processUpload(favicon, media);
     }
 
     private String randomSuffix() {

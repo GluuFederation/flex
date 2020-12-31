@@ -11,7 +11,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
@@ -100,19 +99,14 @@ public class PreferenceResetViewModel extends MainViewModel {
     }
 
     //This simulates a click on a checkbox (although the click is coming from one made upon a row)
-    public void rowClicked(@BindingParam("evt") Event event, @BindingParam("val") PersonSearchMatch user) {
+    public void rowClicked(@BindingParam("cbox") Checkbox box, @BindingParam("val") PersonSearchMatch user) {
 
-        try {
-            Checkbox box = (Checkbox) event.getTarget().getFellow(user.getId());
-            if (!box.isDisabled()) {
-                //Simulate check on the checkbox
-                box.setChecked(!box.isChecked());
-                //Sync the user paired to this checkbox
-                user.setChecked(box.isChecked());
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+		if (!box.isDisabled()) {
+			//Simulate check on the checkbox
+			box.setChecked(!box.isChecked());
+			//Sync the user paired to this checkbox
+			user.setChecked(box.isChecked());
+		}
 
     }
 

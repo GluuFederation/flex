@@ -13,7 +13,6 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.image.Image;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Messagebox;
 
 import java.nio.file.Files;
@@ -95,15 +94,15 @@ public class CustomBrandingViewModel {
     }
 
     @NotifyChange("logo")
-    public void logoUploaded(@BindingParam("evt") UploadEvent evt) {
+    public void logoUploaded(@BindingParam("media") Media media) {
         logger.trace("Logo file has been uploaded");
-        processUpload(logo, evt.getMedia());
+        processUpload(logo, media);
     }
 
     @NotifyChange("favicon")
-    public void faviconUploaded(@BindingParam("evt") UploadEvent evt) {
+    public void faviconUploaded(@BindingParam("media") Media media) {
         logger.trace("Favicon file has been uploaded");
-        processUpload(favicon, evt.getMedia());
+        processUpload(favicon, media);
     }
 
     public void save() {

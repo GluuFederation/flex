@@ -54,7 +54,7 @@
                         <image src="${zkService.contextPath}${assetsService.prefix}/images/throbber-white.gif" id="throbber" class="dn mr2" />
                         <z:button label="${labels.adm.plugins_upload}" sclass="${css.linkButton} f7-cust"
                                   upload="zk.progressMonitor,maxsize=50240,multiple=false,accept=application/java-archive"
-                                  onUpload="@command('uploaded', uplEvent=event)" w:onClick="prepareAlert(); removeFocus(this)"
+                                  onUpload="@command('uploaded', media=event.media)" w:onClick="prepareAlert(); removeFocus(this)"
                                   ca:data-original-title="${labels.adm.plugins_upload_hint}" ca:data-toggle="tooltip" ca:data-placement="top" />
                     </h:div>
 
