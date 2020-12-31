@@ -67,7 +67,7 @@ public class CertAuthenticationSummaryViewModel {
                                 }
                                 certificates.remove(certificate);
 
-                                BindUtils.postNotifyChange(null, null, CertAuthenticationSummaryViewModel.this, "certificates");
+                                BindUtils.postNotifyChange(CertAuthenticationSummaryViewModel.this, "certificates");
                             }
                             UIUtils.showMessageUI(success);
                         } catch (Exception e) {

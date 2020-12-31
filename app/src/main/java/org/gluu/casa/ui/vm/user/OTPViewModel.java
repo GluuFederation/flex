@@ -183,7 +183,7 @@ public class OTPViewModel extends UserViewModel {
         if (uiQRShown) {
             //Restore UI because user did not scan code
             uiQRShown = false;
-            BindUtils.postNotifyChange(null, null, this, "uiQRShown");
+            BindUtils.postNotifyChange(this, "uiQRShown");
         }
     }
 
@@ -383,7 +383,7 @@ public class OTPViewModel extends UserViewModel {
                                     userService.turn2faOff(user);
                                 }
                                 //trigger refresh (this method is asynchronous...)
-                                BindUtils.postNotifyChange(null, null, OTPViewModel.this, "devices");
+                                BindUtils.postNotifyChange(OTPViewModel.this, "devices");
                             } else {
                                 devices.add(device);
                             }

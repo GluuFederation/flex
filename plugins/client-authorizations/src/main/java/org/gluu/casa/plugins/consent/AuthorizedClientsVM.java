@@ -75,7 +75,7 @@ public class AuthorizedClientsVM {
                             UIUtils.showMessageUI(false, Labels.getLabel("general.error.detailed", new String[]{detail}));
                         }
                         //trigger refresh (this method is asynchronous...)
-                        BindUtils.postNotifyChange(null, null, AuthorizedClientsVM.this, "clients");
+                        BindUtils.postNotifyChange(AuthorizedClientsVM.this, "clients");
                     }
                 });
 
@@ -99,7 +99,7 @@ public class AuthorizedClientsVM {
                             UIUtils.showMessageUI(false, Labels.getLabel("clients.authorized.remove_error", new String[]{clientName}));
                         }
                         //trigger refresh (this method is asynchronous...)
-                        BindUtils.postNotifyChange(null, null, AuthorizedClientsVM.this, "clients");
+                        BindUtils.postNotifyChange(AuthorizedClientsVM.this, "clients");
                     }
                 });
 

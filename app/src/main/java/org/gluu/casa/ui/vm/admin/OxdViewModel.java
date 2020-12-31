@@ -102,7 +102,7 @@ public class OxdViewModel extends MainViewModel {
                             } else {
                                 reloadConfig();
                             }
-                            BindUtils.postNotifyChange(null, null, OxdViewModel.this, "oxdSettings");
+                            BindUtils.postNotifyChange(OxdViewModel.this, "oxdSettings");
                         }
                 );
             } else {

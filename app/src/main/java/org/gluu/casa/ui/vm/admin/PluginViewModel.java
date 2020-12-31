@@ -146,7 +146,7 @@ public class PluginViewModel extends MainViewModel {
                                 Messagebox.show(Labels.getLabel("adm.plugins_removal_failed"));
                             }
                             pluginToShow = null;
-                            BindUtils.postNotifyChange(null, null, PluginViewModel.this, "pluginToShow");
+                            BindUtils.postNotifyChange(PluginViewModel.this, "pluginToShow");
                         }
                     }
             );

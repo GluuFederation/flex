@@ -82,7 +82,7 @@ public class PassResetViewModel extends UserViewModel {
         } else {
             strength = -1;
         }
-        BindUtils.postNotifyChange(null, null, this, "strength");
+        BindUtils.postNotifyChange(this, "strength");
     }
 
     @NotifyChange("*")

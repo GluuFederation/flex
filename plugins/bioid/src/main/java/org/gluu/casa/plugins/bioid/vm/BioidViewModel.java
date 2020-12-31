@@ -204,7 +204,7 @@ public class BioidViewModel {
 						} else {
 
 							UIUtils.showMessageUI(true);
-							BindUtils.postNotifyChange(null, null, BioidViewModel.this, "devices");
+							BindUtils.postNotifyChange(BioidViewModel.this, "devices");
 							Executions.sendRedirect(null);
 						}
 

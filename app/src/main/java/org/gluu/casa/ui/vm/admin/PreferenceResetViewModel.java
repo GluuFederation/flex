@@ -70,7 +70,7 @@ public class PreferenceResetViewModel extends MainViewModel {
                         }).sorted(Comparator.comparing(PersonSearchMatch::getUserName)).collect(Collectors.toList());
 
                 //triggers update of interface
-                BindUtils.postNotifyChange(null, null, this, "users");
+                BindUtils.postNotifyChange(this, "users");
             }
         }
 

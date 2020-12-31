@@ -143,7 +143,7 @@ public class InweboVM {
 							{
 								devices.remove(device);
 								// trigger refresh (this method is asynchronous...)
-								BindUtils.postNotifyChange(null, null, InweboVM.this, "devices");
+								BindUtils.postNotifyChange(InweboVM.this, "devices");
 								UIUtils.showMessageUI(true);
 							}
 							
@@ -180,10 +180,7 @@ public class InweboVM {
 			activationCode = InweboService.getInstance().getActivationCode(longCode);
 			uiQRShown = true;
 			activationURL = InweboService.getInstance().buildURLForActivation(activationCode);
-			BindUtils.postNotifyChange(null, null, this, "uiQRShown");
-			BindUtils.postNotifyChange(null, null, this, "longCode");
-			BindUtils.postNotifyChange(null, null, this, "activationCode");
-			BindUtils.postNotifyChange(null, null, this, "activationURL");
+			BindUtils.postNotifyChange(this, "uiQRShown", "longCode", "activationCode", "activationURL");
 			
 			// Passing screen width as max allowed size for QR code allows showing QRs even
 			// in small mobile devices
@@ -334,7 +331,7 @@ public class InweboVM {
 	                	//devices.remove(i);
 	                	//devices.add( dev);
 	                	// trigger for refresh
-						BindUtils.postNotifyChange(null, null, InweboVM.this, "devices");
+						BindUtils.postNotifyChange(InweboVM.this, "devices");
 						UIUtils.showMessageUI(true);
 	                }
 	            } catch (Exception e) {

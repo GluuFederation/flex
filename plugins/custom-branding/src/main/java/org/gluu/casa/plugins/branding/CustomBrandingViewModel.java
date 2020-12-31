@@ -130,7 +130,7 @@ public class CustomBrandingViewModel {
                                         useExternalAssets();
                                     } else {
                                         changeBranding(previouslySelected.toString());
-                                        BindUtils.postNotifyChange(null, null, CustomBrandingViewModel.this, "brandingOption");
+                                        BindUtils.postNotifyChange(CustomBrandingViewModel.this, "brandingOption");
                                     }
                                 }
                         );

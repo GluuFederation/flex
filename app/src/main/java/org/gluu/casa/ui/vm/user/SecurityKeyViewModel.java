@@ -103,7 +103,7 @@ public class SecurityKeyViewModel extends UserViewModel {
     public void triggerU2fRegisterRequest() {
         try {
             uiAwaiting = true;
-            BindUtils.postNotifyChange(null, null, this, "uiAwaiting");
+            BindUtils.postNotifyChange(this, "uiAwaiting");
             String jsonRequest = u2fService.generateJsonRegisterMessage(user.getUserName(), userService.generateRandEnrollmentCode(user.getId()));
 
             //Notify browser to exec proper function
@@ -130,7 +130,7 @@ public class SecurityKeyViewModel extends UserViewModel {
 
             if (newDevice != null) {
                 uiEnrolled = true;
-                BindUtils.postNotifyChange(null, null, this, "uiEnrolled");
+                BindUtils.postNotifyChange(this, "uiEnrolled");
             } else {
                 UIUtils.showMessageUI(false);
                 logger.error(Labels.getLabel("app.finish_registration_error"));
@@ -140,7 +140,7 @@ public class SecurityKeyViewModel extends UserViewModel {
         }
 
         uiAwaiting = false;
-        BindUtils.postNotifyChange(null, null, this, "uiAwaiting");
+        BindUtils.postNotifyChange(this, "uiAwaiting");
         userService.cleanRandEnrollmentCode(user.getId());
 
     }
@@ -248,7 +248,7 @@ public class SecurityKeyViewModel extends UserViewModel {
                                     userService.turn2faOff(user);
                                 }
                                 //trigger refresh (this method is asynchronous...)
-                                BindUtils.postNotifyChange(null, null, SecurityKeyViewModel.this, "devices");
+                                BindUtils.postNotifyChange(SecurityKeyViewModel.this, "devices");
                             } else {
                                 devices.add(device);
                             }

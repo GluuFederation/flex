@@ -81,7 +81,7 @@ public class AccountLinkingViewModel {
                             //Linking in social network was successful
                             if (slService.link(userId, provider, summary.getUid())) {
                                 parseLinkedAccounts();
-                                BindUtils.postNotifyChange(null, null, AccountLinkingViewModel.this, "providers");
+                                BindUtils.postNotifyChange(AccountLinkingViewModel.this, "providers");
                             }
                         }
                     });
@@ -138,7 +138,7 @@ public class AccountLinkingViewModel {
                             if (slService.delete(userId, provider)) {
                                 parseLinkedAccounts();
                                 UIUtils.showMessageUI(true, Labels.getLabel("sociallogin.removed_link", new String[]{provider.getDisplayName()}));
-                                BindUtils.postNotifyChange(null, null, AccountLinkingViewModel.this, "providers");
+                                BindUtils.postNotifyChange(AccountLinkingViewModel.this, "providers");
                             } else {
                                 UIUtils.showMessageUI(false);
                             }

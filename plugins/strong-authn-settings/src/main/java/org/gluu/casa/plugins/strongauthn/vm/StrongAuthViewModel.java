@@ -179,8 +179,7 @@ public class StrongAuthViewModel {
                         processUpdate(newval);
                     } else {  //Revert to last known working (or accepted)
                         reloadConfig();
-                        BindUtils.postNotifyChange(null, null, StrongAuthViewModel.this, "minCreds2FA");
-                        BindUtils.postNotifyChange(null, null, StrongAuthViewModel.this, "enforcementPolicies");
+                        BindUtils.postNotifyChange(StrongAuthViewModel.this, "minCreds2FA", "enforcementPolicies");
                     }
                 }
         );

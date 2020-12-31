@@ -91,7 +91,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
     public void triggerAttestationRequest() {
         try {
             uiAwaiting = true;
-            BindUtils.postNotifyChange(null, null, this, "uiAwaiting");
+            BindUtils.postNotifyChange(this, "uiAwaiting");
 
             String uid = user.getUserName();
             String jsonRequest = fido2Service.doRegister(uid, Optional.ofNullable(user.getGivenName()).orElse(uid));
@@ -116,7 +116,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
 
                 if (newDevice != null) {
                     uiEnrolled = true;
-                    BindUtils.postNotifyChange(null, null, this, "uiEnrolled");
+                    BindUtils.postNotifyChange(this, "uiEnrolled");
                 } else {
                     errMessage = Labels.getLabel("general.error.general");
                 }
@@ -129,7 +129,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
         }
 
         uiAwaiting = false;
-        BindUtils.postNotifyChange(null, null, this, "uiAwaiting");
+        BindUtils.postNotifyChange(this, "uiAwaiting");
         if (errMessage != null) {
             UIUtils.showMessageUI(false, errMessage);
         }
@@ -155,7 +155,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
             message = Labels.getLabel("general.error.detailed", new String[]{msg});
         }
         uiAwaiting = false;
-        BindUtils.postNotifyChange(null, null, this, "uiAwaiting");
+        BindUtils.postNotifyChange(this, "uiAwaiting");
         UIUtils.showMessageUI(false, message);
 
     }
@@ -263,7 +263,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
                                     userService.turn2faOff(user);
                                 }
                                 //trigger refresh (this method is asynchronous...)
-                                BindUtils.postNotifyChange(null, null, SecurityKey2ViewModel.this, "devices");
+                                BindUtils.postNotifyChange(SecurityKey2ViewModel.this, "devices");
                             } else{
                                 devices.add(device);
                             }

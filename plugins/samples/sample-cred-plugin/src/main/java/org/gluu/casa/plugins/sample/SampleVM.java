@@ -104,7 +104,7 @@ public class SampleVM {
 							} else {
 								devices.remove(device);
 								// trigger refresh (this method is asynchronous...)
-								BindUtils.postNotifyChange(null, null, SampleVM.this, "devices");
+								BindUtils.postNotifyChange(SampleVM.this, "devices");
 								UIUtils.showMessageUI(true);
 							}
 
@@ -156,7 +156,7 @@ public class SampleVM {
 					// devices.remove(i);
 					// devices.add( dev);
 					// trigger for refresh
-					BindUtils.postNotifyChange(null, null, SampleVM.this, "devices");
+					BindUtils.postNotifyChange(SampleVM.this, "devices");
 					UIUtils.showMessageUI(true);
 				}
 			} catch (Exception e) {
@@ -181,7 +181,7 @@ public class SampleVM {
 			//TODO: compute the logic for the contents of the QR code
 			activationCode = "1234";
 			uiQRShown = true;
-			BindUtils.postNotifyChange(null, null, this, "uiQRShown");
+			BindUtils.postNotifyChange(this, "uiQRShown");
 
 			// Passing screen width as max allowed size for QR code allows showing QRs even
 			// in small mobile devices

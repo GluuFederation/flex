@@ -221,7 +221,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
                                     userService.turn2faOff(user);
                                 }
                                 //trigger refresh (this method is asynchronous...)
-                                BindUtils.postNotifyChange(null, null, VerifiedPhoneViewModel.this, "phones");
+                                BindUtils.postNotifyChange(VerifiedPhoneViewModel.this, "phones");
                             } else {
                                 phones.add(phone);
                             }

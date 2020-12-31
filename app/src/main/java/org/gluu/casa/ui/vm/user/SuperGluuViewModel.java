@@ -91,7 +91,7 @@ public class SuperGluuViewModel extends UserViewModel {
 
             if (request != null) {
                 uiQRShown = true;
-                BindUtils.postNotifyChange(null, null, this, "uiQRShown");
+                BindUtils.postNotifyChange(this, "uiQRShown");
 
                 //Passing screen width as max allowed size for QR code allows showing QRs even in small mobile devices
                 JavaScriptValue jvalue = new JavaScriptValue(sgConfig.getFormattedQROptions(getScreenWidth()));
@@ -115,7 +115,7 @@ public class SuperGluuViewModel extends UserViewModel {
     private void stopPolling(){
         Clients.response(new AuInvoke("stopPolling"));
         uiQRShown = false;
-        BindUtils.postNotifyChange(null, null, this, "uiQRShown");
+        BindUtils.postNotifyChange(this, "uiQRShown");
         userService.cleanRandEnrollmentCode(user.getId());
     }
 
@@ -139,7 +139,7 @@ public class SuperGluuViewModel extends UserViewModel {
                             //it has not previously been enrolled by the same user
                             uiEnrolled = sgService.isDeviceUnique(newDevice, user.getId());
                             if (uiEnrolled) {
-                                BindUtils.postNotifyChange(null, null, this, "uiEnrolled");
+                                BindUtils.postNotifyChange(this, "uiEnrolled");
                             } else {
                                 //drop duplicated device from LDAP
                                 sgService.removeDevice(newDevice);
@@ -255,7 +255,7 @@ public class SuperGluuViewModel extends UserViewModel {
                                     userService.turn2faOff(user);
                                 }
                                 //trigger refresh (this method is asynchronous...)
-                                BindUtils.postNotifyChange(null, null, SuperGluuViewModel.this, "devices");
+                                BindUtils.postNotifyChange(SuperGluuViewModel.this, "devices");
                             } else {
                                 devices.add(device);
                             }
