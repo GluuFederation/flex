@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -57,7 +56,6 @@ public class AuthorizedClientsVM {
         return client.getContacts().stream().collect(Collectors.joining(", "));
     }
 
-    @Command
     public void revokeAll() {
 
         Messagebox.show(Labels.getLabel("clients.authorized.remove_hint_all"), null, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
@@ -81,7 +79,6 @@ public class AuthorizedClientsVM {
 
     }
 
-    @Command
     public void revoke(@BindingParam("clientId") String clientId, @BindingParam("clientName") String clientName) {
 
         Messagebox.show(Labels.getLabel("clients.authorized.remove_hint"), null, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,

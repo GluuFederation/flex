@@ -5,7 +5,6 @@ import org.gluu.casa.core.PasswordStatusService;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 
@@ -43,7 +42,6 @@ public class PassResetViewModel extends MainViewModel {
         passResetEnabled = !passResetImpossible && getSettings().isEnablePassReset();
     }
 
-    @Command
     public void change() {
         getSettings().setEnablePassReset(passResetEnabled);
         updateMainSettings();

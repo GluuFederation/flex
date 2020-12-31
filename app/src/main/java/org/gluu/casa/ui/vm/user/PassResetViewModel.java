@@ -86,7 +86,6 @@ public class PassResetViewModel extends UserViewModel {
     }
 
     @NotifyChange("*")
-    @Command
     public void resetPass() {
 
         if (pst.passwordMatch(user.getUserName(), currentPassword)) {
@@ -114,7 +113,6 @@ public class PassResetViewModel extends UserViewModel {
     }
 
     @NotifyChange("*")
-    @Command
     public void setPass() {
 
         if ((newPasswordConfirm != null && newPasswordConfirm.equals(newPassword))) {
@@ -136,7 +134,6 @@ public class PassResetViewModel extends UserViewModel {
     }
 
     @NotifyChange("*")
-    @Command
     public void cancel() {
         resetPassSettings();
     }

@@ -4,7 +4,6 @@ import org.gluu.casa.core.LogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -41,7 +40,6 @@ public class LogLevelViewModel extends MainViewModel {
     }
 
     @NotifyChange({"selectedLogLevel"})
-    @Command
     public void change(@BindingParam("level") String newLevel) {
 
         //here it is assumed that changing log level is always a successful operation

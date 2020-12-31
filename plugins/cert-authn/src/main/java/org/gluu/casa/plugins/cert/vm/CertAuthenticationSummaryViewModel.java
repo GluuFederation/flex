@@ -12,7 +12,6 @@ import org.gluu.casa.service.SndFactorAuthenticationUtils;
 import org.gluu.casa.ui.UIUtils;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
@@ -48,7 +47,6 @@ public class CertAuthenticationSummaryViewModel {
         certificates = certService.getUserCerts(user.getId());
     }
 
-    @Command
     public void delete(@BindingParam("cert") Certificate certificate) {
 
         String resetMessages = sndFactorUtils.removalConflict(CertAuthenticationExtension.ACR, certificates.size(), user).getY();

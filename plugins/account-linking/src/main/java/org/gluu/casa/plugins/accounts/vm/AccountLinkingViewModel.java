@@ -100,7 +100,6 @@ public class AccountLinkingViewModel {
     }
 
     @NotifyChange("providers")
-    @Command
     public void disable(@BindingParam("provider") Provider provider) {
 
         if (linkedTotal > 1 || slService.hasPassword(userId)) {
@@ -116,7 +115,6 @@ public class AccountLinkingViewModel {
     }
 
     @NotifyChange("providers")
-    @Command
     public void enable(@BindingParam("provider") Provider provider) {
 
         boolean succ = slService.enableLink(userId, provider);
@@ -127,7 +125,6 @@ public class AccountLinkingViewModel {
 
     }
 
-    @Command
     public void remove(@BindingParam("provider") Provider provider) {
 
         if (linkedTotal > 1 || slService.hasPassword(userId)) {

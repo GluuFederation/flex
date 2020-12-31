@@ -47,7 +47,6 @@ public class FooterViewModel {
 
     }
 
-    @Command
     public void localeChanged(@BindingParam("locale") Locale locale) {
         selectedLocale = locale;
         WebUtils.getServletRequest().getSession().setAttribute(Attributes.PREFERRED_LOCALE, selectedLocale);

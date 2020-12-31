@@ -6,7 +6,7 @@ import org.gluu.casa.extension.PreferredMethodFragment;
 import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.*;
+import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -74,7 +74,6 @@ public class UserPreferenceViewModel extends UserViewModel {
 
     }
 
-    @Command
     public void change() {
         boolean outcome = mfaEnabled ? userService.turn2faOn(user) : userService.turn2faOff(user);
         UIUtils.showMessageUI(outcome);

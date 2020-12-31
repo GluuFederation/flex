@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.image.Image;
@@ -80,7 +79,6 @@ public class CustomBrandingViewModel {
     }
 
     @NotifyChange({"brandingOption", "logo", "favicon", "snippetHandler", "uiOverrideButtonColors"})
-    @Command
     public void changeBranding(@BindingParam("val") String option) {
 
         logger.info("Branding option changed to {}", option);
@@ -97,20 +95,17 @@ public class CustomBrandingViewModel {
     }
 
     @NotifyChange("logo")
-    @Command
     public void logoUploaded(@BindingParam("evt") UploadEvent evt) {
         logger.trace("Logo file has been uploaded");
         processUpload(logo, evt.getMedia());
     }
 
     @NotifyChange("favicon")
-    @Command
     public void faviconUploaded(@BindingParam("evt") UploadEvent evt) {
         logger.trace("Favicon file has been uploaded");
         processUpload(favicon, evt.getMedia());
     }
 
-    @Command
     public void save() {
 
         try {
@@ -161,7 +156,6 @@ public class CustomBrandingViewModel {
     }
 
     @NotifyChange({"snippetHandler", "uiOverrideButtonColors"})
-    @Command
     public void buttonColorChanging(@BindingParam("override") boolean override) throws Exception {
         uiOverrideButtonColors = override;
         if (override) {

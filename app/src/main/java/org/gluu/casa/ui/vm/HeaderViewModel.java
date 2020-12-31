@@ -9,7 +9,6 @@ import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.ui.MenuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.zk.ui.Executions;
@@ -47,7 +46,6 @@ public class HeaderViewModel {
         contextMenuItems = menuService.getMenusOfType(MenuType.AUXILIARY);
     }
 
-    @Command
     public void logoutFromAuthzServer() {
 
         try {

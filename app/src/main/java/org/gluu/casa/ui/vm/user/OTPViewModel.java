@@ -142,7 +142,6 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange("*")
-    @Command
     public void chooseType(@BindingParam("type") String type, @BindingParam("component") HtmlBasedComponent comp) {
         cancel();
         tokenType = type;
@@ -150,7 +149,6 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange({"uiQRShown", "uiCorrectCode"})
-    @Command
     public void showQR(@BindingParam("component") HtmlBasedComponent comp) {
 
         uiQRShown = true;
@@ -188,7 +186,6 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange("*")
-    @Command
     public void cancel() {
 
         if (uiQRShown) {
@@ -206,13 +203,11 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange({"hardTokenType"})
-    @Command
     public void changeHardType(@BindingParam("time") boolean timeBased) {
         hardTokenType = timeBased ? OTPType.TOTP : OTPType.HOTP;
     }
 
     @NotifyChange({"uiTokenPressing"})
-    @Command
     public void changeTokenPressing(@BindingParam("component") HtmlBasedComponent comp) {
 
         //Generate the binary key based on user input
@@ -227,7 +222,6 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange("uiCorrectCode")
-    @Command
     public void validateCode() {
 
         String uid = null;
@@ -264,7 +258,6 @@ public class OTPViewModel extends UserViewModel {
 
     }
 
-    @Command
     @NotifyChange("*")
     public void add() {
 
@@ -281,7 +274,6 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange({"newDevice", "editingId"})
-    @Command
     public void prepareForUpdate(@BindingParam("device") OTPDevice dev) {
         //This will make the modal window to become visible
         editingId = dev.getId();
@@ -290,14 +282,12 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange({"editingId", "newDevice"})
-    @Command
     public void cancelUpdate() {
         newDevice.setNickName(null);
         editingId = 0;
     }
 
     @NotifyChange({"devices", "editingId", "newDevice"})
-    @Command
     public void update() {
 
         String nick = newDevice.getNickName();
@@ -363,7 +353,6 @@ public class OTPViewModel extends UserViewModel {
         }
     }
 
-    @Command
     public void delete(@BindingParam("device") OTPDevice device) {
 
         String resetMessages = resetPreferenceMessage(OTPExtension.ACR, devices.size());

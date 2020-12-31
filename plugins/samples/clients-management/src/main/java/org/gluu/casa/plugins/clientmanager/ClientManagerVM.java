@@ -8,7 +8,6 @@ import org.gluu.casa.service.IPersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
@@ -71,13 +70,11 @@ public class ClientManagerVM {
     }
 
     @NotifyChange("addingTo")
-    @Command
     public void prepareForAdd(@BindingParam("clt") Client client) {
         addingTo = client;
     }
 
     @NotifyChange({"addingTo", "searchMessage"})
-    @Command
     public void cancelAdd() {
         addingTo = null;
         searchPattern = null;
@@ -87,7 +84,6 @@ public class ClientManagerVM {
     @NotifyChange({"people", "clients"})
     //clients member field does not change per se (but its owners), so we put it in the annotation to refresh
     //the form appropriately when removing someone
-    @Command
     public void remove(@BindingParam("clt") Client client, @BindingParam("person") String personDN) {
 
         logger.info("Removing person {} from client '{}'", personDN, client.getDisplayName());
@@ -99,7 +95,6 @@ public class ClientManagerVM {
     }
 
     @NotifyChange("*")
-    @Command
     public void search() {
 
         if (Utils.isNotEmpty(searchPattern)) {

@@ -9,7 +9,6 @@ import org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus;
 import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
@@ -83,7 +82,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange("uiSmsDelivered")
-    @Command
     public void sendCode(@BindingParam("comp") HtmlBasedComponent toFocus){
 
         //Note similar logic exists at REST service MobilePhoneEnrollingWS
@@ -118,7 +116,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange({ "uiCodesMatch", "uiSmsDelivered" })
-    @Command
     public void checkCode(@BindingParam("comp") HtmlBasedComponent toFocus) {
         uiCodesMatch = Utils.isNotEmpty(code) && Utils.isNotEmpty(realCode) && realCode.equals(code.trim());
         if (uiCodesMatch) {
@@ -132,7 +129,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange({"uiCodesMatch", "code", "phones", "newPhone"})
-    @Command
     public void add() {
 
         if (Utils.isNotEmpty(newPhone.getNickName())) {
@@ -151,7 +147,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange({"uiCodesMatch", "code", "newPhone", "uiSmsDelivered"})
-    @Command
     public void cancel() {
         uiCodesMatch = false;
         realCode = null;
@@ -161,7 +156,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange({"newPhone", "editingNumber"})
-    @Command
     public void cancelUpdate(@BindingParam("event") Event event){
         newPhone.setNickName(null);
         editingNumber = null;
@@ -171,7 +165,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange({"newPhone", "editingNumber"})
-    @Command
     public void prepareForUpdate(@BindingParam("phone") VerifiedMobile phone) {
         //This will make the modal window to become visible
         editingNumber = phone.getNumber();
@@ -180,7 +173,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange({"newPhone", "phones", "editingNumber"})
-    @Command
     public void update() {
 
         String nick = newPhone.getNickName();
@@ -201,7 +193,6 @@ public class VerifiedPhoneViewModel extends UserViewModel {
 
     }
 
-    @Command
     public void delete(@BindingParam("phone") VerifiedMobile phone) {
 
         String resetMessages = resetPreferenceMessage(ACR, phones.size());

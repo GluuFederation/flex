@@ -11,7 +11,6 @@ import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
@@ -80,7 +79,6 @@ public class PolicyViewModel {
     }
 
     @NotifyChange("enforcementPolicies")
-    @Command
     public void checkPolicy(@BindingParam("target") Checkbox box) {
 
         String policy = box.getId();
@@ -96,7 +94,6 @@ public class PolicyViewModel {
 
     }
 
-    @Command
     public void updatePolicy() {
 
         logger.trace("Updating user's policies");
@@ -110,14 +107,12 @@ public class PolicyViewModel {
     }
 
     @NotifyChange("trustedDevices")
-    @Command
     public void deleteDevice(@BindingParam("idx") int index) {
         logger.trace("Deleting user device");
         UIUtils.showMessageUI(sass.deleteTrustedDevice(user.getId(), trustedDevices, index));
     }
 
     @NotifyChange("enforcementPolicies")
-    @Command
     public void cancel() {
         enforcementPolicies = new HashSet<>(enforcementPoliciesCopy);
     }

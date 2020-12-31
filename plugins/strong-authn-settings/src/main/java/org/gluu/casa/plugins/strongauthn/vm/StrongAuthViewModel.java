@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
@@ -96,7 +95,6 @@ public class StrongAuthViewModel {
     }
 
     @NotifyChange({"autoEnable", "hideSwitch"})
-    @Command
     public void checkAutoEnable(@BindingParam("val") boolean checked) {
     	autoEnable = checked;
     	if (!checked) {
@@ -105,7 +103,6 @@ public class StrongAuthViewModel {
     }
     
     @NotifyChange({"enforcementPolicies", "deviceExpiration", "locationExpiration"})
-    @Command
     public void checkPolicy(@BindingParam("cbox") Checkbox box) {
 
         String policy = box.getId();
@@ -132,7 +129,6 @@ public class StrongAuthViewModel {
 
     }
 
-    @Command
     public void change2FASettings(@BindingParam("val") Integer val) {
 
         val += BOUNDS_MINCREDS_2FA.getX();

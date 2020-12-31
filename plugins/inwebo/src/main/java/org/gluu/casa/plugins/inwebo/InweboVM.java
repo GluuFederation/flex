@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
@@ -123,7 +122,6 @@ public class InweboVM {
 		newDevice = new InweboCredential(null, 0);
 	}
 
-	@Command
 	public void delete(@BindingParam("device") InweboCredential device) {
 		
 		Pair<String, String> delMessages = getDeleteMessages(device.getNickName(), null);
@@ -171,7 +169,6 @@ public class InweboVM {
 
 	}
 
-	@Command
 	public void showQR() {
 
 		try {
@@ -197,7 +194,6 @@ public class InweboVM {
 
 	}
 
-	@Command
 	public void sendEmail() {
 		
 		InweboService.getInstance().sendEmailForLinkActivation(sessionContext.getLoggedUser().getUserName());
@@ -261,7 +257,6 @@ public class InweboVM {
 		newDevice = new InweboCredential(null, 0);
 	}
 
-	@Command
 	@NotifyChange({ "uiQRShown", "uiEnrolled", "newDevice", "devices" })
 	public void add() {
 
@@ -279,7 +274,6 @@ public class InweboVM {
 	}
 
 	@NotifyChange("*")
-	@Command
 	public void cancel() {
 
 		if (uiQRShown) {
@@ -290,7 +284,6 @@ public class InweboVM {
 	}
 	
 	 @NotifyChange({"newDevice", "editingId"})
-	    @Command
 	    public void prepareForUpdate(@BindingParam("device") InweboCredential dev) {
 	        //This will make the modal window to become visible
 	        editingId = String.valueOf(dev.getCredentialId());
@@ -300,14 +293,12 @@ public class InweboVM {
 	    }
 
 	    @NotifyChange({"editingId", "newDevice"})
-	    @Command
 	    public void cancelUpdate() {
 	        newDevice.setCredentialId(0);
 	        editingId = null;
 	    }
 
 	    @NotifyChange({"devices", "editingId", "newDevice"})
-	    @Command
 	    public void update() {
 
 	    	String newName = newDevice.getCredentialName();

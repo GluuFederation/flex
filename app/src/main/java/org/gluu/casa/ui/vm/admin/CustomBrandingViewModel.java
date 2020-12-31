@@ -7,7 +7,6 @@ import org.gluu.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.image.Image;
@@ -45,7 +44,6 @@ public class CustomBrandingViewModel extends MainViewModel {
         favicon = new Pair<>(assetsService.getFaviconUrl() + randomSuffix(), null);
     }
 
-    @Command
     public void save() {
         try {
             if (favicon.getSecond() != null) {
@@ -63,7 +61,6 @@ public class CustomBrandingViewModel extends MainViewModel {
     }
 
     @NotifyChange("*")
-    @Command
     public void revert() {
 
         try {
@@ -78,13 +75,11 @@ public class CustomBrandingViewModel extends MainViewModel {
     }
 
     @NotifyChange("logo")
-    @Command
     public void logoUploaded(@BindingParam("evt") UploadEvent evt) {
         processUpload(logo, evt.getMedia());
     }
 
     @NotifyChange("favicon")
-    @Command
     public void faviconUploaded(@BindingParam("evt") UploadEvent evt) {
         processUpload(favicon, evt.getMedia());
     }

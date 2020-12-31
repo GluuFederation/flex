@@ -5,7 +5,6 @@ import org.gluu.casa.service.IPersistenceService;
 import org.gluu.casa.service.ISessionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 
@@ -69,7 +68,6 @@ public class HelloWorldVM {
      * <code>organizationName</code>.
      */
     @NotifyChange("organizationName")
-    @Command
     public void loadOrgName() {
         logger.debug("You typed {}", message);
         organizationName = persistenceService.getOrganization().getDisplayName();

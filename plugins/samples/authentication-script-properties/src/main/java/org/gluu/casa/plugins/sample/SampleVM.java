@@ -6,7 +6,6 @@ import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 

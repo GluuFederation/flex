@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
@@ -51,7 +50,6 @@ public class PreferenceResetViewModel extends MainViewModel {
     @Init
     public void init() { }
 
-    @Command
     public void search() {
 
         if (Utils.isNotEmpty(searchPattern)) {
@@ -77,7 +75,6 @@ public class PreferenceResetViewModel extends MainViewModel {
     }
 
     @NotifyChange({"users"})
-    @Command
     public void doReset() {
 
         //Pick those that haven't been reset before and that are checked in the grid currently
@@ -102,7 +99,6 @@ public class PreferenceResetViewModel extends MainViewModel {
 
     }
 
-    @Command
     //This simulates a click on a checkbox (although the click is coming from one made upon a row)
     public void rowClicked(@BindingParam("evt") Event event, @BindingParam("val") PersonSearchMatch user) {
 
@@ -121,7 +117,6 @@ public class PreferenceResetViewModel extends MainViewModel {
     }
 
     @NotifyChange({"users", "searchPattern"})
-    @Command
     public void cancelReset() {
         //Provoke the grid to disappear, and cleaning the search textbox
         users = null;

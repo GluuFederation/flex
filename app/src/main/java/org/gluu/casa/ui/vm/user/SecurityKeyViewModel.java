@@ -99,7 +99,6 @@ public class SecurityKeyViewModel extends UserViewModel {
         Selectors.wireEventListeners(view, this);
     }
 
-    @Command
     public void triggerU2fRegisterRequest() {
         try {
             uiAwaiting = true;
@@ -146,7 +145,6 @@ public class SecurityKeyViewModel extends UserViewModel {
     }
 
     @NotifyChange({"uiEnrolled", "newDevice", "devices"})
-    @Command
     public void add() {
 
         if (Utils.isNotEmpty(newDevice.getNickName())) {
@@ -165,7 +163,6 @@ public class SecurityKeyViewModel extends UserViewModel {
     }
 
     @NotifyChange({"uiEnrolled", "newDevice"})
-    @Command
     public void cancel() {
 
         boolean success;
@@ -188,7 +185,6 @@ public class SecurityKeyViewModel extends UserViewModel {
     }
 
     @NotifyChange({"editingId", "newDevice"})
-    @Command
     public void prepareForUpdate(@BindingParam("device") SecurityKey dev) {
         //This will make the modal window to become visible
         editingId = dev.getId();
@@ -197,7 +193,6 @@ public class SecurityKeyViewModel extends UserViewModel {
     }
 
     @NotifyChange({"editingId", "newDevice"})
-    @Command
     public void cancelUpdate(@BindingParam("event") Event event) {
         newDevice.setNickName(null);
         editingId = null;
@@ -207,7 +202,6 @@ public class SecurityKeyViewModel extends UserViewModel {
     }
 
     @NotifyChange({"devices", "editingId", "newDevice"})
-    @Command
     public void update() {
 
         String nick = newDevice.getNickName();
@@ -228,7 +222,6 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     }
 
-    @Command
     public void delete(@BindingParam("device") SecurityKey device) {
 
         String resetMessages = resetPreferenceMessage(SecurityKeyExtension.ACR, devices.size());

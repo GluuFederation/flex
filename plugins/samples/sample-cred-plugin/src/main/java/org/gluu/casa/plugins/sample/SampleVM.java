@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.json.JavaScriptValue;
@@ -88,7 +87,6 @@ public class SampleVM {
 
 	}
 
-	@Command
 	public void delete(@BindingParam("device") BasicCredential device) {
 		Pair<String, String> delMessages = getDeleteMessages(device.getNickName(), null);
 
@@ -132,7 +130,6 @@ public class SampleVM {
 	}
 
 	@NotifyChange({ "devices", "editingId", "newDevice" })
-	@Command
 	public void update() {
 
 		String newName = newDevice.getNickName();
@@ -168,12 +165,10 @@ public class SampleVM {
 	}
 
 	@NotifyChange({ "editingId", "newDevice" })
-	@Command
 	public void cancelUpdate() {
 		editingId = null;
 	}
 
-	@Command
 	public void showQR() {
 
 		try {
@@ -218,7 +213,6 @@ public class SampleVM {
 	}
 	
 	@NotifyChange({"newDevice", "editingId"})
-    @Command
     public void prepareForUpdate(@BindingParam("device") BasicCredential dev) {
         //This will make the modal window to become visible
         editingId = String.valueOf(dev.getNickName());

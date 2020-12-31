@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
@@ -74,13 +73,11 @@ public class PluginViewModel extends MainViewModel {
     }
 
     @NotifyChange({"pluginToShow"})
-    @Command
     public void showPlugin(@BindingParam("id") String pluginId) {
         pluginToShow = pluginList.stream().filter(pl -> pl.getDescriptor().getPluginId().equals(pluginId)).findAny().orElse(null);
     }
 
     @NotifyChange({"pluginToShow"})
-    @Command
     public void uploaded(@BindingParam("uplEvent") UploadEvent evt) {
 
         try {
@@ -127,7 +124,6 @@ public class PluginViewModel extends MainViewModel {
         }
     }
 
-    @Command
     public void deletePlugin(@BindingParam("id") String pluginId, @BindingParam("provider") String provider) {
 
         if (getSettings().getAcrPluginMap().values().contains(pluginId)) {
@@ -154,9 +150,7 @@ public class PluginViewModel extends MainViewModel {
 
     }
 
-
     @NotifyChange({"pluginToShow"})
-    @Command
     public void hidePluginDetails() {
         pluginToShow = null;
     }
