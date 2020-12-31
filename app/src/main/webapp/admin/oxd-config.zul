@@ -108,7 +108,7 @@
                 <z:div children="@load(vm.selectableScopes)">
                     <zk:template name="children">
                         <li class="list-group-item hover-bg-light-gray gray hover-dark-gray pv1">
-                            <z:checkbox label="@load(each)" onCheck="@command('scopedChecked', target=event.target, scope=each)" />
+                            <z:checkbox label="@load(each)" onCheck="@command('scopeChecked', checked=event.target.checked, scope=each)" />
                         </li>
                     </zk:template>
                 </z:div>

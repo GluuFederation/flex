@@ -16,7 +16,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.annotation.VariableResolver;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zkplus.cdi.DelegatingVariableResolver;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Messagebox;
 
 import java.net.URL;
@@ -155,8 +154,8 @@ public class OxdViewModel extends MainViewModel {
     }
 
     @Command
-    public void scopedChecked(@BindingParam("target") Checkbox box, @BindingParam("scope") String scope) {
-        if (box.isChecked()) {
+    public void scopeChecked(@BindingParam("checked") boolean checked, @BindingParam("scope") String scope) {
+        if (checked) {
             selectedScopes.add(scope);
         } else {
             selectedScopes.remove(scope);
