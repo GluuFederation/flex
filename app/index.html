@@ -23,6 +23,10 @@
     <% for (var css in config.files.css) { %>
     <link href="<%= config.files.css[css] %>" rel="preload" as="style" />
     <link href="<%= config.files.css[css] %>" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
     <% } %> <% if (config.options.chunks) { %> <%= config.options.chunks.css %>
     <% } %>
 
