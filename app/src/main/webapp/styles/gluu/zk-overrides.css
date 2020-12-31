@@ -92,6 +92,8 @@
     zoom: 1;
     cursor: default;
     border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
 }
 
 .z-window-header-move {
@@ -114,6 +116,8 @@
 }
 
 .z-window-close {
+    background-color: transparent;
+    border: none;
 }
 
 .z-icon-times {
