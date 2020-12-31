@@ -15,7 +15,6 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Messagebox;
 
 import java.util.ArrayList;
@@ -103,12 +102,10 @@ public class StrongAuthViewModel {
     }
     
     @NotifyChange({"enforcementPolicies", "deviceExpiration", "locationExpiration"})
-    public void checkPolicy(@BindingParam("cbox") Checkbox box) {
+    public void checkPolicy(@BindingParam("checked") boolean checked, @BindingParam("policy") String policy) {
 
-        String policy = box.getId();
-
-        logger.trace("Policy '{}' {}", policy, box.isChecked() ? "checked" : "unchecked");
-        if (box.isChecked()) {
+        logger.trace("Policy '{}' {}", policy, checked ? "checked" : "unchecked");
+        if (checked) {
             enforcementPolicies.add(policy);
         } else {
             enforcementPolicies.remove(policy);

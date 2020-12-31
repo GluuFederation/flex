@@ -14,7 +14,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
-import org.zkoss.zul.Checkbox;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -79,10 +78,9 @@ public class PolicyViewModel {
     }
 
     @NotifyChange("enforcementPolicies")
-    public void checkPolicy(@BindingParam("target") Checkbox box) {
+    public void checkPolicy(@BindingParam("checked") boolean checked, @BindingParam("policy") String policy) {
 
-        String policy = box.getId();
-        if (box.isChecked()) {
+        if (checked) {
             enforcementPolicies.add(policy);
         } else {
             enforcementPolicies.remove(policy);
