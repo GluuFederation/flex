@@ -36,7 +36,7 @@
                     <div class="pt2">
                         <span class="f7 mr1">${labels.adm.cors_enter}</span>
                         <z:textbox sclass="${css.textInput} w5 mr2" placeholder="${labels.adm.cors_origin_placeholder}"
-                                   value="@bind(vm.origin)" />
+                                   value="@bind(vm.origin)" onOK="@('addOrigin')" focus="true" />
                         <z:button label="${c:toLowerCase(labels.general.add)}" sclass="${css.primaryButton} lh-tight"
                                   w:onClick="alertRef = $('#feedback-cors')" onClick="@('addOrigin')" />
                     </div>
