@@ -4,7 +4,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.usr.password_set.title}</h:title>
 
-    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.PassResetViewModel')" self="@define(maincontent)">
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.ui.vm.user.PassResetViewModel')" self="@define(maincontent)">
 
         <z:include src="/back-home.zul" />
 

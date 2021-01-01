@@ -4,7 +4,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.policy.page_title}</h:title>
 
-    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.plugins.strongauthn.vm.PolicyViewModel')"
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.plugins.strongauthn.vm.PolicyViewModel')"
            self="@define(maincontent)">
 
         <zk:zk if="${vm.uiHasPreferredMethod and vm.uiAllowedToSetPolicy}">

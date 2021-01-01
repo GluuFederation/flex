@@ -10,7 +10,7 @@
 		${zkService.appName} - ${labels.bioid_title}
 	</h:title>
 
-<z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.plugins.bioid.vm.BioidViewModel')"
+<z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.plugins.bioid.vm.BioidViewModel')"
            self="@define(maincontent)">
 		<z:include src="/back-home.zul" />
 		<div class="ph4 mb2">

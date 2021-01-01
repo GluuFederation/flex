@@ -5,7 +5,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.adm.cors_title}</h:title>
 
-    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.admin.CORSViewModel')"
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.ui.vm.admin.CORSViewModel')"
            self="@define(maincontent)">
 
         <z:include src="/back-home.zul" />

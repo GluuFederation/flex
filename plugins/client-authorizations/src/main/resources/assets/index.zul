@@ -4,7 +4,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.clients.authorized.menu_label}</h:title>
 
-    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.plugins.consent.AuthorizedClientsVM')"
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.plugins.consent.AuthorizedClientsVM')"
            self="@define(maincontent)">
 
         <z:include src="/back-home.zul"/>

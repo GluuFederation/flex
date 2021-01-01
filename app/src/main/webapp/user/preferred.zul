@@ -1,7 +1,7 @@
 <z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns="native"
       if="${sessionContext.user ne null}">
 
-    <z:div viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserPreferenceViewModel')">
+    <z:div viewModel="@('org.gluu.casa.ui.vm.user.UserPreferenceViewModel')">
         <section class="${css.section}">
             <div class="${css.panel} pb2">
                 <h2 class="f4 dark-blue2">${labels.usr.mfa_title}</h2>

@@ -25,7 +25,7 @@
 
         <!-- drop-down menu -->
         <nav class="ph3">
-            <z:div class="dropdown" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.HeaderViewModel')">
+            <z:div class="dropdown" viewModel="@('org.gluu.casa.ui.vm.HeaderViewModel')">
                 <a href="javascript:;" class="dropdown-toggle gray hover-dark-gray" role="button" id="dropdownMenu"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span class="pr1">

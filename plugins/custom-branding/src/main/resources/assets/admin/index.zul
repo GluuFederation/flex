@@ -5,7 +5,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.adm.title}</h:title>
 
-    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@id('vm') @init('org.gluu.casa.plugins.branding.CustomBrandingViewModel')"
+    <z:div if="${empty pageScope.error and sessionContext.user.admin}" viewModel="@('org.gluu.casa.plugins.branding.CustomBrandingViewModel')"
            self="@define(maincontent)">
 
         <z:include src="/back-home.zul"/>

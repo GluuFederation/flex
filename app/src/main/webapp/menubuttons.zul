@@ -2,7 +2,7 @@
 
     <aside class="dn di-ns w-14r br b--light-gray shadow-4 bg-blank cust-menu-rule">
         <h:ul id="menu" class="list pl0"
-              if="${sessionContext.user ne null}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.MenuViewModel')">
+              if="${sessionContext.user ne null}" viewModel="@('org.gluu.casa.ui.vm.MenuViewModel')">
 
             <z:div visible="@load(not empty vm.authnMethods and vm.pst.password2faRequisite)">
                 <li>

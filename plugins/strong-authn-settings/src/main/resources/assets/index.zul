@@ -1,6 +1,6 @@
 <z:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns="native" if="${sessionContext.user ne null}">
 
-    <z:div viewModel="@id('vm') @init('org.gluu.casa.plugins.strongauthn.vm.FragmentViewModel')">
+    <z:div viewModel="@('org.gluu.casa.plugins.strongauthn.vm.FragmentViewModel')">
 
         <z:div class="tc" visible="@load(vm.customPolicy)">
             <span class="i db pb1">${labels.policy.default_text}</span>

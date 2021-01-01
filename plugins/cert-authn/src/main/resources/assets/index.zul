@@ -2,7 +2,7 @@
 <?page language="xhtml"?>
 <?init class="org.zkoss.zk.ui.util.Composition" template="/basic.zul"?>
 <z:div xmlns:z="http://www.zkoss.org/2005/zul" xmlns:zk="zk" self="@define(content)"
-       viewModel="@id('vm') @init('org.gluu.casa.plugins.cert.vm.CertAuthenticationViewModel')">
+       viewModel="@('org.gluu.casa.plugins.cert.vm.CertAuthenticationViewModel')">
 
     <z:div class="f6 flex justify-center mv4" unless="${empty vm.userId}">
         <div class="w-90 w-75-ns ba bw1 br2 b--light-gray flex flex-column items-center bg-blank">

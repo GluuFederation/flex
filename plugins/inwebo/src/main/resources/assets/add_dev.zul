@@ -11,7 +11,7 @@
 	</h:title>
 
 	<z:div
-		viewModel="@id('vm') @init('org.gluu.casa.plugins.inwebo.InweboPublicVM')">
+		viewModel="@('org.gluu.casa.plugins.inwebo.InweboPublicVM')">
 
 
 	</z:div>

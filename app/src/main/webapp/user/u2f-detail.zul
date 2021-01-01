@@ -4,7 +4,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.usr.u2f_title}</h:title>
 
-    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.SecurityKeyViewModel')"
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.ui.vm.user.SecurityKeyViewModel')"
            self="@define(maincontent)">
 
         <z:include src="/back-home.zul" />

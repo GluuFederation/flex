@@ -4,7 +4,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.usr.title}</h:title>
 
-    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.UserMainViewModel')"
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.ui.vm.user.UserMainViewModel')"
            self="@define(maincontent)">
         
         <div class="${css.contentHeading}">

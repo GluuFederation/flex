@@ -1,7 +1,7 @@
 <?page language="xhtml"?>
 <?init class="org.zkoss.zk.ui.util.Composition" template="/basic.zul"?>
 <z:div xmlns:z="http://www.zkoss.org/2005/zul" self="@define(content)"
-       viewModel="@id('vm') @init('org.gluu.casa.plugins.accounts.vm.PostAccountLinkingViewModel')">
+       viewModel="@('org.gluu.casa.plugins.accounts.vm.PostAccountLinkingViewModel')">
 
     <div class="f7-cust flex justify-center mv4">
         <div class="w-90 w-75-ns ba bw1 br2 b--light-gray flex flex-column items-center bg-blank">

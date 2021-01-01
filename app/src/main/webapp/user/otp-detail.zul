@@ -5,7 +5,7 @@
 
     <h:title self="@define(title)">${zkService.appName} - ${labels.usr.otp_title}</h:title>
 
-    <z:div if="${empty pageScope.error}" viewModel="@id('vm') @init('org.gluu.casa.ui.vm.user.OTPViewModel')"
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.ui.vm.user.OTPViewModel')"
            self="@define(maincontent)">
 
         <z:include src="/back-home.zul" />

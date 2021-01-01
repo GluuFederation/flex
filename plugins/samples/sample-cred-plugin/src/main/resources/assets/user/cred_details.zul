@@ -10,7 +10,7 @@
 	</h:title>
 
 	<z:div if="${empty pageScope.error}"
-		viewModel="@id('vm') @init('org.gluu.casa.plugins.sample.SampleVM')"
+		viewModel="@('org.gluu.casa.plugins.sample.SampleVM')"
 		self="@define(maincontent)">
 
 		<z:include src="/back-home.zul" />
