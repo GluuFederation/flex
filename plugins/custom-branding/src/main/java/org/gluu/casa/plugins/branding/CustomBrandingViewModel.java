@@ -7,7 +7,6 @@ import org.gluu.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.image.Image;
@@ -78,7 +77,7 @@ public class CustomBrandingViewModel {
     }
 
     @NotifyChange({"brandingOption", "logo", "favicon", "snippetHandler", "uiOverrideButtonColors"})
-    public void changeBranding(@BindingParam("val") String option) {
+    public void changeBranding(String option) {
 
         logger.info("Branding option changed to {}", option);
         previouslySelected = brandingOption;
@@ -94,13 +93,13 @@ public class CustomBrandingViewModel {
     }
 
     @NotifyChange("logo")
-    public void logoUploaded(@BindingParam("media") Media media) {
+    public void logoUploaded(Media media) {
         logger.trace("Logo file has been uploaded");
         processUpload(logo, media);
     }
 
     @NotifyChange("favicon")
-    public void faviconUploaded(@BindingParam("media") Media media) {
+    public void faviconUploaded(Media media) {
         logger.trace("Favicon file has been uploaded");
         processUpload(favicon, media);
     }
@@ -155,7 +154,7 @@ public class CustomBrandingViewModel {
     }
 
     @NotifyChange({"snippetHandler", "uiOverrideButtonColors"})
-    public void buttonColorChanging(@BindingParam("override") boolean override) throws Exception {
+    public void buttonColorChanging(boolean override) throws Exception {
         uiOverrideButtonColors = override;
         if (override) {
             snippetHandler.assignMissingButtonColors();

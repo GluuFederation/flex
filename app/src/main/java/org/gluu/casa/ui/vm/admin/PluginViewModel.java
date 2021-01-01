@@ -13,7 +13,6 @@ import org.pf4j.PluginWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
@@ -73,12 +72,12 @@ public class PluginViewModel extends MainViewModel {
     }
 
     @NotifyChange({"pluginToShow"})
-    public void showPlugin(@BindingParam("id") String pluginId) {
+    public void showPlugin(String pluginId) {
         pluginToShow = pluginList.stream().filter(pl -> pl.getDescriptor().getPluginId().equals(pluginId)).findAny().orElse(null);
     }
 
     @NotifyChange({"pluginToShow"})
-    public void uploaded(@BindingParam("media") Media media) {
+    public void uploaded(Media media) {
 
         try {
             pluginToShow = null;
@@ -124,7 +123,7 @@ public class PluginViewModel extends MainViewModel {
         }
     }
 
-    public void deletePlugin(@BindingParam("id") String pluginId, @BindingParam("provider") String provider) {
+    public void deletePlugin(String pluginId, String provider) {
 
         if (getSettings().getAcrPluginMap().values().contains(pluginId)) {
             Messagebox.show(Labels.getLabel("adm.plugin_plugin_bound_method"), null, Messagebox.OK, Messagebox.EXCLAMATION);

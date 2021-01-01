@@ -134,7 +134,7 @@ public class OxdViewModel extends MainViewModel {
     }
 
     @NotifyChange("oxdSettings")
-    public void dropScope(@BindingParam("id") String scope) {
+    public void dropScope(String scope) {
         oxdSettings.getScopes().remove(scope);
         logger.debug("New scope list is {}", oxdSettings.getScopes());
     }
@@ -146,7 +146,7 @@ public class OxdViewModel extends MainViewModel {
         selectedScopes = new HashSet<>();
     }
 
-    public void scopeChecked(@BindingParam("checked") boolean checked, @BindingParam("scope") String scope) {
+    public void scopeChecked(boolean checked, String scope) {
         if (checked) {
             selectedScopes.add(scope);
         } else {
@@ -155,7 +155,7 @@ public class OxdViewModel extends MainViewModel {
     }
 
     @NotifyChange("uiEditingScopes")
-    public void cancelAddScopes(@BindingParam("event") Event event) {
+    public void cancelAddScopes(Event event) {
         uiEditingScopes = false;
         if (event != null && event.getName().equals(Events.ON_CLOSE)) {
             event.stopPropagation();

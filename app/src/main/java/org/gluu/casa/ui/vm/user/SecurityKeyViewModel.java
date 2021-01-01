@@ -185,7 +185,7 @@ public class SecurityKeyViewModel extends UserViewModel {
     }
 
     @NotifyChange({"editingId", "newDevice"})
-    public void prepareForUpdate(@BindingParam("device") SecurityKey dev) {
+    public void prepareForUpdate(SecurityKey dev) {
         //This will make the modal window to become visible
         editingId = dev.getId();
         newDevice = new SecurityKey();
@@ -193,7 +193,7 @@ public class SecurityKeyViewModel extends UserViewModel {
     }
 
     @NotifyChange({"editingId", "newDevice"})
-    public void cancelUpdate(@BindingParam("event") Event event) {
+    public void cancelUpdate(Event event) {
         newDevice.setNickName(null);
         editingId = null;
         if (event != null && event.getName().equals(Events.ON_CLOSE)) {
@@ -222,7 +222,7 @@ public class SecurityKeyViewModel extends UserViewModel {
 
     }
 
-    public void delete(@BindingParam("device") SecurityKey device) {
+    public void delete(SecurityKey device) {
 
         String resetMessages = resetPreferenceMessage(SecurityKeyExtension.ACR, devices.size());
         boolean reset = resetMessages != null;

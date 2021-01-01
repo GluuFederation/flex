@@ -10,7 +10,6 @@ import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.json.JavaScriptValue;
@@ -87,7 +86,7 @@ public class SampleVM {
 
 	}
 
-	public void delete(@BindingParam("device") BasicCredential device) {
+	public void delete(BasicCredential device) {
 		Pair<String, String> delMessages = getDeleteMessages(device.getNickName(), null);
 
 		Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO,
@@ -213,7 +212,7 @@ public class SampleVM {
 	}
 	
 	@NotifyChange({"newDevice", "editingId"})
-    public void prepareForUpdate(@BindingParam("device") BasicCredential dev) {
+    public void prepareForUpdate(BasicCredential dev) {
         //This will make the modal window to become visible
         editingId = String.valueOf(dev.getNickName());
         newDevice = new BasicCredential(dev.getNickName(),0);

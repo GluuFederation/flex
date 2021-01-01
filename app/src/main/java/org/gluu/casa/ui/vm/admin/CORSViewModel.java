@@ -4,7 +4,6 @@ import org.gluu.casa.misc.Utils;
 import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
@@ -37,7 +36,7 @@ public class CORSViewModel extends MainViewModel {
     }
 
     @NotifyChange("origins")
-    public void dropOrigin(@BindingParam("origin") String orig) {
+    public void dropOrigin(String orig) {
         origins.remove(orig);
         getSettings().setCorsDomains(origins);
         updateMainSettings();

@@ -195,7 +195,7 @@ public class SuperGluuViewModel extends UserViewModel {
     }
 
     @NotifyChange({"editingId", "newDevice"})
-    public void prepareForUpdate(@BindingParam("device") SuperGluuDevice dev) {
+    public void prepareForUpdate(SuperGluuDevice dev) {
         //This will make the modal window to become visible
         editingId = dev.getId();
         newDevice = new SuperGluuDevice();
@@ -229,7 +229,7 @@ public class SuperGluuViewModel extends UserViewModel {
         editingId = null;
     }
 
-    public void delete(@BindingParam("device") SuperGluuDevice device){
+    public void delete(SuperGluuDevice device){
 
         String resetMessages = resetPreferenceMessage(SuperGluuExtension.ACR, devices.size());
         boolean reset = resetMessages != null;

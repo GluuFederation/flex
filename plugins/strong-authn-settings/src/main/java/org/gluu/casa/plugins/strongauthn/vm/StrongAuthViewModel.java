@@ -10,7 +10,6 @@ import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
@@ -94,7 +93,7 @@ public class StrongAuthViewModel {
     }
 
     @NotifyChange({"autoEnable", "hideSwitch"})
-    public void checkAutoEnable(@BindingParam("val") boolean checked) {
+    public void checkAutoEnable(boolean checked) {
     	autoEnable = checked;
     	if (!checked) {
     		hideSwitch = false;
@@ -102,7 +101,7 @@ public class StrongAuthViewModel {
     }
     
     @NotifyChange({"enforcementPolicies", "deviceExpiration", "locationExpiration"})
-    public void checkPolicy(@BindingParam("checked") boolean checked, @BindingParam("policy") String policy) {
+    public void checkPolicy(boolean checked, String policy) {
 
         logger.trace("Policy '{}' {}", policy, checked ? "checked" : "unchecked");
         if (checked) {
@@ -126,7 +125,7 @@ public class StrongAuthViewModel {
 
     }
 
-    public void change2FASettings(@BindingParam("val") Integer val) {
+    public void change2FASettings(Integer val) {
 
         val += BOUNDS_MINCREDS_2FA.getX();
 

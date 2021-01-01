@@ -100,7 +100,7 @@ public class AccountLinkingViewModel {
     }
 
     @NotifyChange("providers")
-    public void disable(@BindingParam("provider") Provider provider) {
+    public void disable(Provider provider) {
 
         if (linkedTotal > 1 || slService.hasPassword(userId)) {
             boolean succ = slService.unlink(userId, provider);
@@ -115,7 +115,7 @@ public class AccountLinkingViewModel {
     }
 
     @NotifyChange("providers")
-    public void enable(@BindingParam("provider") Provider provider) {
+    public void enable(Provider provider) {
 
         boolean succ = slService.enableLink(userId, provider);
         if (succ) {
@@ -125,7 +125,7 @@ public class AccountLinkingViewModel {
 
     }
 
-    public void remove(@BindingParam("provider") Provider provider) {
+    public void remove(Provider provider) {
 
         if (linkedTotal > 1 || slService.hasPassword(userId)) {
             Messagebox.show(Labels.getLabel("sociallogin.remove_hint"), null, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,

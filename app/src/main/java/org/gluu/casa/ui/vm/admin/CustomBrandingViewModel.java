@@ -6,7 +6,6 @@ import org.gluu.casa.misc.Utils;
 import org.gluu.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.image.Image;
@@ -74,12 +73,12 @@ public class CustomBrandingViewModel extends MainViewModel {
     }
 
     @NotifyChange("logo")
-    public void logoUploaded(@BindingParam("media") Media media) {
+    public void logoUploaded(Media media) {
         processUpload(logo, media);
     }
 
     @NotifyChange("favicon")
-    public void faviconUploaded(@BindingParam("media") Media media) {
+    public void faviconUploaded(Media media) {
         processUpload(favicon, media);
     }
 

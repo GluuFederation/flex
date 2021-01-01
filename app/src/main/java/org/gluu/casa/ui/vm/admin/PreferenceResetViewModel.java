@@ -7,7 +7,6 @@ import org.gluu.casa.ui.model.PersonSearchMatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
@@ -99,7 +98,7 @@ public class PreferenceResetViewModel extends MainViewModel {
     }
 
     //This simulates a click on a checkbox (although the click is coming from one made upon a row)
-    public void rowClicked(@BindingParam("cbox") Checkbox box, @BindingParam("val") PersonSearchMatch user) {
+    public void rowClicked(Checkbox box, PersonSearchMatch user) {
 
 		if (!box.isDisabled()) {
 			//Simulate check on the checkbox

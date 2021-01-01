@@ -10,7 +10,6 @@ import org.gluu.casa.service.ISessionContext;
 import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
@@ -78,7 +77,7 @@ public class PolicyViewModel {
     }
 
     @NotifyChange("enforcementPolicies")
-    public void checkPolicy(@BindingParam("checked") boolean checked, @BindingParam("policy") String policy) {
+    public void checkPolicy(boolean checked, String policy) {
 
         if (checked) {
             enforcementPolicies.add(policy);
@@ -105,7 +104,7 @@ public class PolicyViewModel {
     }
 
     @NotifyChange("trustedDevices")
-    public void deleteDevice(@BindingParam("idx") int index) {
+    public void deleteDevice(int index) {
         logger.trace("Deleting user device");
         UIUtils.showMessageUI(sass.deleteTrustedDevice(user.getId(), trustedDevices, index));
     }

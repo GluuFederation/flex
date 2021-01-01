@@ -142,14 +142,14 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange("*")
-    public void chooseType(@BindingParam("type") String type, @BindingParam("component") HtmlBasedComponent comp) {
+    public void chooseType(String type, HtmlBasedComponent comp) {
         cancel();
         tokenType = type;
         focus(comp);
     }
 
     @NotifyChange({"uiQRShown", "uiCorrectCode"})
-    public void showQR(@BindingParam("component") HtmlBasedComponent comp) {
+    public void showQR(HtmlBasedComponent comp) {
 
         uiQRShown = true;
         uiCorrectCode = false;
@@ -203,12 +203,12 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange({"hardTokenType"})
-    public void changeHardType(@BindingParam("time") boolean timeBased) {
+    public void changeHardType(boolean timeBased) {
         hardTokenType = timeBased ? OTPType.TOTP : OTPType.HOTP;
     }
 
     @NotifyChange({"uiTokenPressing"})
-    public void changeTokenPressing(@BindingParam("component") HtmlBasedComponent comp) {
+    public void changeTokenPressing(HtmlBasedComponent comp) {
 
         //Generate the binary key based on user input
         secretKey = getSecretKeyFrom(secretKeyString);
@@ -274,7 +274,7 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange({"newDevice", "editingId"})
-    public void prepareForUpdate(@BindingParam("device") OTPDevice dev) {
+    public void prepareForUpdate(OTPDevice dev) {
         //This will make the modal window to become visible
         editingId = dev.getId();
         newDevice = new OTPDevice();
@@ -353,7 +353,7 @@ public class OTPViewModel extends UserViewModel {
         }
     }
 
-    public void delete(@BindingParam("device") OTPDevice device) {
+    public void delete(OTPDevice device) {
 
         String resetMessages = resetPreferenceMessage(OTPExtension.ACR, devices.size());
         boolean reset = resetMessages != null;

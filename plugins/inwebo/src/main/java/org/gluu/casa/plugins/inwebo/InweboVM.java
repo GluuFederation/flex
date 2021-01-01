@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.Init;
@@ -122,7 +121,7 @@ public class InweboVM {
 		newDevice = new InweboCredential(null, 0);
 	}
 
-	public void delete(@BindingParam("device") InweboCredential device) {
+	public void delete(InweboCredential device) {
 		
 		Pair<String, String> delMessages = getDeleteMessages(device.getNickName(), null);
 
@@ -284,7 +283,7 @@ public class InweboVM {
 	}
 	
 	 @NotifyChange({"newDevice", "editingId"})
-	    public void prepareForUpdate(@BindingParam("device") InweboCredential dev) {
+	    public void prepareForUpdate(InweboCredential dev) {
 	        //This will make the modal window to become visible
 	        editingId = String.valueOf(dev.getCredentialId());
 	        newDevice = new InweboCredential(dev.getNickName(),0);

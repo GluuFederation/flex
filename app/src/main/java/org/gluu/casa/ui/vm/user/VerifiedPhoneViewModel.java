@@ -8,7 +8,6 @@ import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus;
 import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.Pair;
@@ -82,7 +81,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange("uiSmsDelivered")
-    public void sendCode(@BindingParam("comp") HtmlBasedComponent toFocus){
+    public void sendCode(HtmlBasedComponent toFocus){
 
         //Note similar logic exists at REST service MobilePhoneEnrollingWS
         String numb = newPhone.getNumber();
@@ -116,7 +115,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange({ "uiCodesMatch", "uiSmsDelivered" })
-    public void checkCode(@BindingParam("comp") HtmlBasedComponent toFocus) {
+    public void checkCode(HtmlBasedComponent toFocus) {
         uiCodesMatch = Utils.isNotEmpty(code) && Utils.isNotEmpty(realCode) && realCode.equals(code.trim());
         if (uiCodesMatch) {
             if (toFocus != null) {
@@ -156,7 +155,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange({"newPhone", "editingNumber"})
-    public void cancelUpdate(@BindingParam("event") Event event){
+    public void cancelUpdate(Event event){
         newPhone.setNickName(null);
         editingNumber = null;
         if (event != null && event.getName().equals(Events.ON_CLOSE)) {
@@ -165,7 +164,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
     }
 
     @NotifyChange({"newPhone", "editingNumber"})
-    public void prepareForUpdate(@BindingParam("phone") VerifiedMobile phone) {
+    public void prepareForUpdate(VerifiedMobile phone) {
         //This will make the modal window to become visible
         editingNumber = phone.getNumber();
         newPhone = new VerifiedMobile("");
@@ -193,7 +192,7 @@ public class VerifiedPhoneViewModel extends UserViewModel {
 
     }
 
-    public void delete(@BindingParam("phone") VerifiedMobile phone) {
+    public void delete(VerifiedMobile phone) {
 
         String resetMessages = resetPreferenceMessage(ACR, phones.size());
         boolean reset = resetMessages != null;

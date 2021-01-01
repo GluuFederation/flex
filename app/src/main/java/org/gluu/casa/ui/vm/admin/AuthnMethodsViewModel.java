@@ -10,7 +10,6 @@ import org.pf4j.DefaultPluginDescriptor;
 import org.pf4j.PluginDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
@@ -90,7 +89,7 @@ public class AuthnMethodsViewModel extends MainViewModel {
 
     }
 
-    public void selectionChanged(@BindingParam("acr") String acr, @BindingParam("index") int index) {
+    public void selectionChanged(String acr, int index) {
         //Finds the right entry in methods and update selectedPlugin member
         AuthnMethodStatus authnMethodStatus = methods.stream().filter(ams -> ams.getAcr().equals(acr)).findAny().get();
         Pair<String, String> pair = authnMethodStatus.getPlugins().get(index);

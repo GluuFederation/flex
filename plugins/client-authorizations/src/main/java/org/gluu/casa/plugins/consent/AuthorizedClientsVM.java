@@ -10,7 +10,6 @@ import org.gluu.casa.ui.UIUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
@@ -79,7 +78,7 @@ public class AuthorizedClientsVM {
 
     }
 
-    public void revoke(@BindingParam("clientId") String clientId, @BindingParam("clientName") String clientName) {
+    public void revoke(String clientId, String clientName) {
 
         Messagebox.show(Labels.getLabel("clients.authorized.remove_hint"), null, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION,
                 event -> {
