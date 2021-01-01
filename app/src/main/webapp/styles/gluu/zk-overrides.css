@@ -7,14 +7,15 @@
     white-space: nowrap;
     top: 0;
     left: 0;
-    z-index: 31000
+    z-index: 31000;
 }
 
 .z-loading-indicator{
     color: rgba(0,0,0,0.57);
     white-space: nowrap;
     padding: 16px;
-    text-align: center
+    text-align: center;
+    font-size: .75rem; /* f7 */
 }
 
 .z-loading-icon{
@@ -26,7 +27,7 @@
     vertical-align: top;
     position: relative;
     left: 50%;
-    margin-left: -36px
+    margin-left: -36px;
 }
 
 .z-temp,
