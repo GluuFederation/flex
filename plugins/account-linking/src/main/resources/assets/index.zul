@@ -58,10 +58,10 @@
                                                 <z:div visible="@load(vm.accounts.get(each) ne null)">
                                                     <z:div visible="@load(not vm.accounts.get(each).getX())">
                                                         <z:button label="${labels.sociallogin.buttons.enable}"
-                                                                  sclass="${css.secondaryButton} lh-tight mt1 mr2" onClick="@command('enable', provider=each)" />
+                                                                  sclass="${css.secondaryButton} lh-tight mt1 mr2" onClick="@('enable', each)" />
                                                     </z:div>
                                                     <z:button label="${labels.sociallogin.buttons.remove}"
-                                                              sclass="${css.secondaryButton} lh-tight mt1" onClick="@command('remove', provider=each)" />
+                                                              sclass="${css.secondaryButton} lh-tight mt1" onClick="@('remove', each)" />
                                                 </z:div>
                                             </td>
                                         </tr>

@@ -30,11 +30,11 @@
                                 </p>
                             </div>
                             <div class="pl2 pt2">
-                                <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert()" onClick="@command('prepareForUpdate', phone=each)"
+                                <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert()" onClick="@('prepareForUpdate', each)"
                                           data-original-title="${labels.general.edit}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-pencil-alt" />
                                 </h:button>
-                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@command('delete', phone=each)"
+                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@('delete', each)"
                                           data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-trash-alt" />
                                 </h:button>
@@ -57,7 +57,7 @@
                                    onChange="javascript:updatePhoneValue()" ca:type="tel" />
                         </div>
                         <div class="pt1">
-                            <z:button label="${labels.usr.mobile_send}" sclass="${css.primaryButton}" onClick="@command('sendCode', comp = sentCode)"
+                            <z:button label="${labels.usr.mobile_send}" sclass="${css.primaryButton}" onClick="@('sendCode', sentCode)"
                                       id="sendButton" w:onClick="tempDisable('sendButton', 7000, 'sentCode');  alertRef = $('#feedback-phone')" />
                         </div>
                     </z:div>
@@ -70,19 +70,19 @@
                         <div class="pb3 flex flex-wrap">
                             <div class="relative w4 mt3 pr3">
                                 <z:textbox id="sentCode" sclass="focused-text w-100 pb1" value="@bind(vm.code)" ca:required="required"
-                                         onOK="@command('checkCode')"/>
+                                         onOK="@('checkCode')"/>
                                 <label class="focused-label">${labels.usr.mobile_code}</label>
                             </div>
                             <div class="pt2">
-                                <z:button sclass="${css.primaryButton} mr2" label="${labels.general.validate}" onClick="@command('checkCode', comp = ninick)" />
+                                <z:button sclass="${css.primaryButton} mr2" label="${labels.general.validate}" onClick="@('checkCode', ninick)" />
                                 <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}"
-                                          w:onClick="resetPhoneValue()" onClick="@command('cancel')" />
+                                          w:onClick="resetPhoneValue()" onClick="@('cancel')" />
                             </div>
                         </div>
 
                         <div>
                             ${labels.usr.mobile_sms_not_received}
-                            <z:a w:onClick="resetPhoneValue()" onClick="@command('cancel')" label="${labels.usr.mobile_sms_retry}" />
+                            <z:a w:onClick="resetPhoneValue()" onClick="@('cancel')" label="${labels.usr.mobile_sms_retry}" />
                         </div>
 
                     </z:div>
@@ -91,13 +91,13 @@
                     <z:div sclass="flex flex-wrap pt2" visible="@load(vm.uiCodesMatch)">
                         <div class="relative w5 mt3 pr3">
                             <z:textbox id="ninick" sclass="focused-text w-100 pb1" ca:required="required"
-                                       value="@bind(vm.newPhone.nickName)" onOK="@command('add')" />
+                                       value="@bind(vm.newPhone.nickName)" onOK="@('add')" />
                             <label class="focused-label">${labels.usr.enter_nick}</label>
                         </div>
                         <div class="pt2">
-                            <z:button sclass="${css.primaryButton} mr3" label="${labels.general.add}" onClick="@command('add')" />
+                            <z:button sclass="${css.primaryButton} mr3" label="${labels.general.add}" onClick="@('add')" />
                             <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}"
-                                      w:onClick="resetPhoneValue()" onClick="@command('cancel')" />
+                                      w:onClick="resetPhoneValue()" onClick="@('cancel')" />
                         </div>
                     </z:div>
                 </div>
@@ -105,18 +105,18 @@
         </div>
 
         <z:window title="${labels.usr.mobile_edit}" border="normal" mode="modal" visible="@load(not empty vm.editingNumber)"
-                  closable="true" onClose="@command('cancelUpdate', event=event)" sclass="${css.modalWindow}">
+                  closable="true" onClose="@('cancelUpdate', event)" sclass="${css.modalWindow}">
 
             <div sclass="pt1 mb3">
                 <span class="db f7-cust gray">${labels.general.new_nick}</span>
                 <div class="pa1">
-                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.newPhone.nickName)" onOK="@command('update')"/>
+                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.newPhone.nickName)" onOK="@('update')"/>
                 </div>
             </div>
             <div class="w-100 flex justify-center">
                 <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
-                          w:onClick="prepareAlert()" onClick="@command('update')" />
-                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancelUpdate', event=event)" />
+                          w:onClick="prepareAlert()" onClick="@('update')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@('cancelUpdate', event)" />
             </div>
 
         </z:window>

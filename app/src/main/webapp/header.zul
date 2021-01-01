@@ -64,7 +64,7 @@
                     <div class="dropdown-divider" />
 
                     <li class="pv1 pl2 pr3 bg-white-70">
-                        <z:span onClick="@command('logoutFromAuthzServer')">
+                        <z:span onClick="@('logoutFromAuthzServer')">
                             <a class="link hover-green gray db" href="javascript:;">
                                 <i class="fas fa-sign-out-alt" />&amp;nbsp; ${labels.general.logout}
                             </a>

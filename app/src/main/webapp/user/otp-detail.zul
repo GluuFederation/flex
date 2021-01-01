@@ -42,11 +42,11 @@
                                 </p>
                             </div>
                             <div class="pt2">
-                                <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert()" onClick="@command('prepareForUpdate', device=each)"
+                                <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert()" onClick="@('prepareForUpdate', each)"
                                           data-original-title="${labels.general.edit}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-pencil-alt" />
                                 </h:button>
-                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@command('delete', device=each)"
+                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@('delete', each)"
                                           data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-trash-alt" />
                                 </h:button>
@@ -64,12 +64,12 @@
                     <z:div sclass="@load(empty vm.tokenType ? '' : 'flex flex-wrap')">
                         <div class="mb2">
                             <z:radio label="${labels.usr.otp_soft}" radiogroup="style" sclass="db dark-blue2 mr4" checked="@load(vm.tokenType eq 'SOFT')"
-                                     w:onClick="alertRef = $('#feedback-otp')" onCheck="@command('chooseType', type='SOFT')"/>
+                                     w:onClick="alertRef = $('#feedback-otp')" onCheck="@('chooseType', 'SOFT')"/>
                             <z:div class="f7 pl3-ns gray" visible="@load(empty vm.tokenType)">${labels.usr.otp_soft_text}</z:div>
                         </div>
                         <div class="mb2">
                             <z:radio label="${labels.usr.otp_hard}" radiogroup="style" sclass="db dark-blue2" checked="@load(vm.tokenType eq 'HARD')"
-                                     w:onClick="alertRef = $('#feedback-otp')" onCheck="@command('chooseType', type='HARD', component=tokenKey)" />
+                                     w:onClick="alertRef = $('#feedback-otp')" onCheck="@('chooseType', 'HARD', tokenKey)" />
                             <z:div class="f7 pl3-ns gray" visible="@load(empty vm.tokenType)">${labels.usr.otp_hard_text}</z:div>
                         </div>
                     </z:div>
@@ -78,7 +78,7 @@
                         <p>${labels.usr.otp_gauth_install_ready}</p>
                         <div class="mb2">
                             <z:button id="readyButton" label="${labels.general.ready}" sclass="${css.primaryButton} mr2"
-                                    w:onClick="initialize('throbber')" onClick="@command('showQR', component=code)" disabled="@load(vm.uiQRShown)"/>
+                                    w:onClick="initialize('throbber')" onClick="@('showQR', code)" disabled="@load(vm.uiQRShown)"/>
                             <z:image id="throbber" src="${assetsService.prefix}/images/throbber.gif" visible="false" />
                         </div>
                         <p class="dark-blue2">${labels.usr.otp_gauth_download}</p>
@@ -86,7 +86,7 @@
                         <z:div sclass="ph3-ns flex flex-column items-center" visible="@load(vm.uiQRShown)">
                             <div>
                                 <span class="mr2">${labels.usr.otp_app_scan}</span>
-                                <z:button label="${labels.general.cancel}" sclass="${css.secondaryButton} lh-tight" onClick="@command('cancel')" />
+                                <z:button label="${labels.general.cancel}" sclass="${css.secondaryButton} lh-tight" onClick="@('cancel')" />
                             </div>
 
                             <div align="center" class="mb3"> <!-- these 2 must be grouped inside a div -->
@@ -106,14 +106,14 @@
                             <p class="f7 dark-blue2 mb0">${labels.usr.otp_hotp_totp}</p>
                             <div class="flex flex-wrap justify-center mb3">
                                 <z:radio label="${labels.usr.otp_totp}" checked="@load(vm.hardTokenType ne null and vm.hardTokenType.toString() eq 'TOTP')"
-                                         onCheck="@command('changeHardType', time=true)" radiogroup="groupie" sclass="mr3" />
+                                         onCheck="@('changeHardType', true)" radiogroup="groupie" sclass="mr3" />
                                 <z:radio label="${labels.usr.otp_hotp}" checked="@load(vm.hardTokenType ne null and vm.hardTokenType.toString() eq 'HOTP')"
-                                         onCheck="@command('changeHardType', time=false)" radiogroup="groupie" sclass="ml2" />
+                                         onCheck="@('changeHardType', false)" radiogroup="groupie" sclass="ml2" />
                             </div>
                             <div class="flex flex-wrap justify-center mb3">
-                                <z:button label="${labels.general.continue_}" sclass="${css.primaryButton} mr3" onClick="@command('changeTokenPressing', component=code)"
+                                <z:button label="${labels.general.continue_}" sclass="${css.primaryButton} mr3" onClick="@('changeTokenPressing', code)"
                                           disabled="@load(vm.hardTokenType eq null or empty vm.secretKeyString)"/>
-                                <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton}" onClick="@command('cancel')" />
+                                <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton}" onClick="@('cancel')" />
                             </div>
                         </div>
                     </z:div>
@@ -122,8 +122,8 @@
                         <z:label class="mb2 db" value="@load(c:l(vm.tokenType eq 'HARD' ? 'usr.otp_enter_code_hard' : 'usr.otp_enter_code_soft'))" />
                         <div class="flex flex-wrap items-center">
                             <z:textbox placeholder="@load(c:l2('usr.otp_enter_code_short',c:split(c:string(vm.digitLength),',')))"
-                                       sclass="${css.textInput} w4 mr2" value="@bind(vm.code)" id="code" onOK="@command('validateCode')" />
-                            <z:button label="${labels.general.validate}" sclass="${css.primaryButton} mr2" onClick="@command('validateCode')" />
+                                       sclass="${css.textInput} w4 mr2" value="@bind(vm.code)" id="code" onOK="@('validateCode')" />
+                            <z:button label="${labels.general.validate}" sclass="${css.primaryButton} mr2" onClick="@('validateCode')" />
                             <h:i class="fas fa-check f3" visible="@load(vm.uiCorrectCode)"/>
                         </div>
                     </z:div>
@@ -132,13 +132,13 @@
 
                     <z:div sclass="pl3-ns pt2 flex flex-wrap" visible="@load(vm.uiCorrectCode)">
                         <div class="relative w5 mt3 pr3">
-                            <z:textbox sclass="focused-text w-100 pb1" onOK="@command('add')" value="@bind(vm.newDevice.nickName)" ca:required="required" />
+                            <z:textbox sclass="focused-text w-100 pb1" onOK="@('add')" value="@bind(vm.newDevice.nickName)" ca:required="required" />
                             <label class="focused-label">${labels.usr.enter_nick}</label>
                         </div>
 
                         <div class="pt2">
-                            <z:button label="${labels.general.add}" sclass="${css.primaryButton} mr2" onClick="@command('add')"/>
-                            <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton}" onClick="@command('cancel')"/>
+                            <z:button label="${labels.general.add}" sclass="${css.primaryButton} mr2" onClick="@('add')"/>
+                            <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton}" onClick="@('cancel')"/>
                         </div>
                     </z:div>
                 </div>
@@ -147,18 +147,18 @@
         </div>
 
         <z:window title="${labels.usr.gauth_edit}" border="normal" mode="modal" visible="@load(vm.editingId)"
-                  closable="true" onClose="@command('cancelUpdate', event=event)" sclass="${css.modalWindow}">
+                  closable="true" onClose="@('cancelUpdate', event)" sclass="${css.modalWindow}">
 
             <div sclass="pt1 mb3">
                 <span class="db f7-cust gray">${labels.general.new_nick}</span>
                 <div class="pa1">
-                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.newDevice.nickName)" onOK="@command('update')"/>
+                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.newDevice.nickName)" onOK="@('update')"/>
                 </div>
             </div>
             <div class="w-100 flex justify-center">
                 <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
-                          w:onClick="prepareAlert()" onClick="@command('update')" />
-                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancelUpdate', event=event)" />
+                          w:onClick="prepareAlert()" onClick="@('update')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@('cancelUpdate', event)" />
             </div>
 
         </z:window>

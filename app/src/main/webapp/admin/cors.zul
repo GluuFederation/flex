@@ -25,7 +25,7 @@
                                 <z:label value="@load(each)" sclass="dark-gray dib mr1-ns w5" />
 
                                 <h:button class="${css.deleteButton} mb2" w:onClick="alertRef = $('#feedback-cors')"
-                                          onClick="@command('dropOrigin', origin=each)"
+                                          onClick="@('dropOrigin', each)"
                                           data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-trash-alt" />
                                 </h:button>
@@ -38,7 +38,7 @@
                         <z:textbox sclass="${css.textInput} w5 mr2" placeholder="${labels.adm.cors_origin_placeholder}"
                                    value="@bind(vm.origin)" />
                         <z:button label="${c:toLowerCase(labels.general.add)}" sclass="${css.primaryButton} lh-tight"
-                                  w:onClick="alertRef = $('#feedback-cors')" onClick="@command('addOrigin')" />
+                                  w:onClick="alertRef = $('#feedback-cors')" onClick="@('addOrigin')" />
                     </div>
                 </div>
             </section>

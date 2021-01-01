@@ -18,7 +18,7 @@
                         c:l('clients.authorized.panel_text_noapps') : c:l2('clients.authorized.panel_text', c:split(c:string(vm.clients.size()),',')))" />
 
                         <z:button visible="@load(vm.clients.size() gt 1)" label="${labels.clients.authorized.revoke_all}" class="${css.primaryButton} mh3"
-                                  w:onClick="alertRef = $('#feedback-consent')" onClick="@command('revokeAll')"/>
+                                  w:onClick="alertRef = $('#feedback-consent')" onClick="@('revokeAll')"/>
                     </div>
 
                     <div class="alert alert-success dn" id="feedback-consent" role="alert" />
@@ -38,7 +38,7 @@
                                     </h:a>
                                 </div>
                                 <z:button class="${css.tertiaryButton}" label="${labels.clients.authorized.revoke}" w:onClick="alertRef = $('#feedback-consent')"
-                                          onClick="@command('revoke', clientId=each.key.inum, clientName=each.key.displayName)"/>
+                                          onClick="@('revoke', each.key.inum, each.key.displayName)"/>
                             </div>
                             <h:div id="@load(c:cat('C', each.key.alternativeID))" class="${forEachStatus.index eq 0 ? 'show ' : ''} collapse"
                                    data-parent="#accordion">

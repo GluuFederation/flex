@@ -20,20 +20,20 @@
                         <div class="f7 dark-blue2 pb2">
 
                             <z:checkbox label="${labels.policy.EVERY_LOGIN}" id="EVERY_LOGIN" sclass="db"
-                                        checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', checked=self.checked, policy=self.id)" />
+                                        checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@('checkPolicy', self.checked, self.id)" />
 
                             <z:checkbox label="${labels.policy.LOCATION_UNKNOWN}" id="LOCATION_UNKNOWN" sclass="db"
                                         disabled="@load(vm.enforcementPolicies.contains('EVERY_LOGIN'))"
-                                        checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', checked=self.checked, policy=self.id)" />
+                                        checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@('checkPolicy', self.checked, self.id)" />
 
                             <z:checkbox label="${labels.policy.DEVICE_UNKNOWN}" id="DEVICE_UNKNOWN" sclass="db"
                                         disabled="@load(vm.enforcementPolicies.contains('EVERY_LOGIN'))"
-                                        checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@command('checkPolicy', checked=self.checked, policy=self.id)" />
+                                        checked="@load(vm.enforcementPolicies.contains(self.id))" onCheck="@('checkPolicy', self.checked, self.id)" />
                         </div>
                         <div class="pb3">
                             <z:button label="${labels.general.save}" sclass="${css.primaryButton} mr3" disabled="@load(empty vm.enforcementPolicies)"
-                                      w:onClick="alertRef = $('#feedback-policy')" onClick="@command('updatePolicy')" />
-                            <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton}" onClick="@command('cancel')"/>
+                                      w:onClick="alertRef = $('#feedback-policy')" onClick="@('updatePolicy')" />
+                            <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton}" onClick="@('cancel')"/>
                         </div>
 
                         <div class="alert alert-success dn" id="feedback-policy" role="alert" />
@@ -66,7 +66,7 @@
                                                 </td>
                                                 <td width="w2">
                                                     <h:button class="${css.deleteButton} mb2"
-                                                              w:onClick="deleteClicked(this)" onClick="@command('deleteDevice', idx = forEachStatus.index)"
+                                                              w:onClick="deleteClicked(this)" onClick="@('deleteDevice', forEachStatus.index)"
                                                               data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
                                                         <i class="fas fa-trash-alt" />
                                                     </h:button>

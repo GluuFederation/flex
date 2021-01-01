@@ -14,10 +14,10 @@
                     <div class="mb2">
                         <label>
                             ${labels.hello.user_message} ${sessionContext.user.userName}
-                            <z:textbox class="${css.textInput} ml2" value="@bind(vm.message)" onOK="@command('loadOrgName')" />
+                            <z:textbox class="${css.textInput} ml2" value="@bind(vm.message)" onOK="@('loadOrgName')" />
                         </label>
                     </div>
-                    <z:button label="${labels.hello.button_label}" class="${css.primaryButton}" onClick="@command('loadOrgName')" />
+                    <z:button label="${labels.hello.button_label}" class="${css.primaryButton}" onClick="@('loadOrgName')" />
                 </div>
 
                 <z:div class="${css.panel} w-100 tc" visible="@load(not empty vm.organizationName)">

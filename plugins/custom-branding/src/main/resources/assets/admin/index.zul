@@ -21,16 +21,16 @@
                     <z:radiogroup id="groupie" />
 
                     <z:radio label="${labels.branding.use_default}" selected="@load(vm.brandingOption eq 'NONE')" sclass="db pb1" radiogroup="groupie"
-                             onCheck="@command('changeBranding', val='NONE')" w:onCheck="alertRef = $('#feedback-branding')" onClick="@command('save')" />
+                             onCheck="@('changeBranding', 'NONE')" w:onCheck="alertRef = $('#feedback-branding')" onClick="@('save')" />
                     <z:radio label="${labels.branding.use_custom}" selected="@load(vm.brandingOption eq 'EXTERNAL_PATH')" sclass="db pb1"
-                             onCheck="@command('changeBranding', val='EXTERNAL_PATH')" radiogroup="groupie" onClick="@command('save')" />
+                             onCheck="@('changeBranding', 'EXTERNAL_PATH')" radiogroup="groupie" onClick="@('save')" />
 
                     <z:div visible="@load(vm.brandingOption eq 'EXTERNAL_PATH')" sclass="pl4-ns i dark-gray pb1">
                         <!-- using span allows injecting markup -->
                         <span>${labels.branding.learn}</span>
                     </z:div>
                     <z:radio label="${labels.branding.use_quick}" selected="@load(vm.brandingOption eq 'EXTRA_CSS')" sclass="db pb2"
-                             onCheck="@command('changeBranding', val='EXTRA_CSS')" radiogroup="groupie" />
+                             onCheck="@('changeBranding', 'EXTRA_CSS')" radiogroup="groupie" />
 
                     <div class="alert alert-success dn" id="feedback-branding" role="alert" />
                 </div>
@@ -42,7 +42,7 @@
                         <div class="pl4-ns pt2">
                             <z:image src="@load(vm.logo.first)" sclass="bg-light-gray ba b--black b--dashed" />
                             <z:button class="${css.linkButton} f7 ml3" label="${labels.branding.quick_change}"
-                                      upload="true,maxsize=150,multiple=false" onUpload="@command('logoUploaded', media = event.media)"
+                                      upload="true,maxsize=150,multiple=false" onUpload="@('logoUploaded', event.media)"
                                       ca:data-original-title="${labels.branding.quick_logo_hint}" ca:data-toggle="tooltip" ca:data-placement="bottom" />
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                         <div class="pl4-ns pt2">
                             <z:image src="@load(vm.favicon.first)" sclass="bg-light-gray ba b--black b--dashed" />
                             <z:button class="f7 pa0 bw0 br0 blue hover-dark-blue underline-hover bg-transparent btn ml3" label="${labels.branding.quick_change}"
-                                      upload="true,maxsize=50,multiple=false" onUpload="@command('faviconUploaded', media = event.media)"
+                                      upload="true,maxsize=50,multiple=false" onUpload="@('faviconUploaded', event.media)"
                                       ca:data-original-title="${labels.branding.quick_favicon_hint}" ca:data-toggle="tooltip" ca:data-placement="bottom" />
                         </div>
                     </div>
@@ -69,9 +69,9 @@
                         <div class="pl4-ns pt2">
                             <z:radiogroup id="groupie2" />
                             <z:radio label="${labels.branding.quick_button_default}" selected="@load(not vm.uiOverrideButtonColors)" sclass="db pb1"
-                                     onCheck="@command('buttonColorChanging', override=false)" radiogroup="groupie2" />
+                                     onCheck="@('buttonColorChanging', false)" radiogroup="groupie2" />
                             <z:radio label="${labels.branding.quick_button_override}" selected="@load(vm.uiOverrideButtonColors)" sclass="db"
-                                     onCheck="@command('buttonColorChanging', override=true)" radiogroup="groupie2" />
+                                     onCheck="@('buttonColorChanging', true)" radiogroup="groupie2" />
 
                             <z:div sclass="flex flex-wrap" visible="@load(vm.uiOverrideButtonColors)">
                                 <div class="mt2 mh2 flex items-center">
@@ -94,7 +94,7 @@
                         </div>
                     </div>
                     <z:button label="${labels.branding.quick_save}" sclass="${css.primaryButton} ph2"
-                              w:onClick="alertRef = $('#feedback-branding')" onClick="@command('save')" />
+                              w:onClick="alertRef = $('#feedback-branding')" onClick="@('save')" />
                 </z:div>
             </section>
         </div>

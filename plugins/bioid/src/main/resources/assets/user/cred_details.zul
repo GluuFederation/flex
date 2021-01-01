@@ -42,7 +42,7 @@
                                 </p>
                             </div>
                             <div class="pt2">
-                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@command('delete')"
+                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@('delete')"
                                           data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-trash-alt" />
                                 </h:button>
@@ -58,7 +58,7 @@
 						 	</p>
 						 	<div class="mb2">
 	                        	<z:button id="enrollAgainButton" label="${labels.bioid_enroll_again}" sclass="${css.primaryButton} mr2" visible="@load(not vm.uiBioidShown)"
-	                                  w:onClick="initBioID();" onClick="@command('show')" />
+	                                  w:onClick="initBioID();" onClick="@('show')" />
                             </div>
                     </z:div>
                 </zk:zk>
@@ -78,7 +78,7 @@
 	                    <div class="mb2">
 	                        <!-- do not change id of this button, see uui.js -->
 	                        <z:button id="readyButton" label="${labels.general.ready}" sclass="${css.primaryButton} mr2" visible="@load(not vm.uiBioidShown)"
-	                                  w:onClick="initBioID();" onClick="@command('show')" />
+	                                  w:onClick="initBioID();" onClick="@('show')" />
 	                    </div>
                     </z:div>
                     <div class="alert alert-success dn" id="feedback-device" role="alert" />

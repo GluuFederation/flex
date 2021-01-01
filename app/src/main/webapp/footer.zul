@@ -9,7 +9,7 @@
                 <span class="pr1">${labels.general.language}</span>
 
                 <z:listbox mold="select" model="@load(vm.locales)" sclass="gray" style="min-width:6rem"
-                    onSelect="@command('localeChanged', locale = self.selectedItem.value)"
+                    onSelect="@('localeChanged', self.selectedItem.value)"
                     selectedItem="@load(vm.selectedLocale)">
                     <z:template name="model">
                         <z:listitem value="${each}" label="${each.getDisplayName(each)}" />

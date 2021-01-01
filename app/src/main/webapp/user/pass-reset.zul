@@ -39,9 +39,9 @@
                     </div>
                     <div class="mt4">
                         <z:button sclass="${css.primaryButton} mr3" label="${labels.usr.passreset_change}" disabled="@load(empty vm.currentPassword or empty vm.newPassword)"
-                                  w:onClick="alertRef = $('#feedback-pass-reset')" onClick="@command('resetPass')" />
+                                  w:onClick="alertRef = $('#feedback-pass-reset')" onClick="@('resetPass')" />
                         <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}"
-                                  w:onClick="alertRef = $('#feedback-pass-reset')" onClick="@command('cancel')" />
+                                  w:onClick="alertRef = $('#feedback-pass-reset')" onClick="@('cancel')" />
                     </div>
 
                     <div class="mt4">

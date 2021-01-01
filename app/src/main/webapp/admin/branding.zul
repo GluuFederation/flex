@@ -19,7 +19,7 @@
                         <div class="pl4-ns pt2">
                             <z:image src="@load(vm.logo.first)" sclass="bg-light-gray ba b--black b--dashed" />
                             <z:button class="${css.linkButton} f7 ml3" label="${labels.adm.branding_change}"
-                                      upload="true,maxsize=100,multiple=false" onUpload="@command('logoUploaded', media = event.media)" w:onClick="removeTooltip(this)"
+                                      upload="true,maxsize=100,multiple=false" onUpload="@('logoUploaded', event.media)" w:onClick="removeTooltip(this)"
                                       ca:data-original-title="${labels.adm.branding_logo_hint}" ca:data-toggle="tooltip" ca:data-placement="right" />
                         </div>
                     </div>
@@ -28,7 +28,7 @@
                         <div class="pl4-ns pt2">
                             <z:image src="@load(vm.favicon.first)" sclass="bg-light-gray ba b--black b--dashed" />
                             <z:button class="f7 pa0 bw0 br0 blue hover-dark-blue underline-hover bg-transparent btn ml3" label="${labels.adm.branding_change}"
-                                      upload="true,maxsize=25,multiple=false" onUpload="@command('faviconUploaded', media = event.media)" w:onClick="removeTooltip(this)"
+                                      upload="true,maxsize=25,multiple=false" onUpload="@('faviconUploaded', event.media)" w:onClick="removeTooltip(this)"
                                       ca:data-original-title="${labels.adm.branding_favicon_hint}" ca:data-toggle="tooltip" ca:data-placement="right" />
                         </div>
                     </div>
@@ -37,9 +37,9 @@
 
                     <div class="pt2">
                         <z:button label="${labels.general.save}" sclass="${css.primaryButton} mr2"
-                                  w:onClick="alertRef = $('#feedback-branding')" onClick="@command('save')" />
+                                  w:onClick="alertRef = $('#feedback-branding')" onClick="@('save')" />
                         <z:button label="${labels.adm.branding_revert}" sclass="${css.tertiaryButton}"
-                                  w:onClick="alertRef = $('#feedback-branding')" onClick="@command('revert')" />
+                                  w:onClick="alertRef = $('#feedback-branding')" onClick="@('revert')" />
                     </div>
                 </div>
 

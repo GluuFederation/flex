@@ -63,7 +63,7 @@
                             </div>
                             <div class="pl2 pt2">
                                 <h:button class="${css.deleteButton} mb2" w:onClick="alertRef = $('#feedback-cert-edit')"
-                                          onClick="@command('delete', cert=each)"
+                                          onClick="@('delete', each)"
                                           data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
                                     <i class="fas fa-trash-alt" />
                                 </h:button>

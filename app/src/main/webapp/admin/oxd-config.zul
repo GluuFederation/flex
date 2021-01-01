@@ -48,7 +48,7 @@
                                         <z:label value="@load(each)" sclass="dib mr1-ns w4" />
 
                                         <h:button class="${css.deleteButton} mb2" w:onClick="alertRef = $('#feedback-oxd')"
-                                                  onClick="@command('dropScope', id=each)"
+                                                  onClick="@('dropScope', each)"
                                                   data-original-title="${labels.general.delete}" data-toggle="tooltip"
                                                   data-placement="top" disabled="@load(vm.requiredScopes.contains(each))">
                                             <i class="fas fa-trash-alt" />
@@ -57,15 +57,15 @@
                                 </zk:template>
                             </z:div>
                             <z:button label="${labels.adm.oxd_scopes_add}" sclass="${css.secondaryButton} lh-tight mv2 ml3-ns"
-                                      onClick="@command('preAddScopes')" />
+                                      onClick="@('preAddScopes')" />
                         </div>
                     </div>
                     <div class="pt2 pb2 flex flex-wrap">
                         <label class="mr2 w4" />
                         <z:button label="${labels.general.save}" sclass="${css.primaryButton} mr3"
-                                  w:onClick="alertRef = $('#feedback-oxd')" onClick="@command('saveOxdSettings')" />
+                                  w:onClick="alertRef = $('#feedback-oxd')" onClick="@('saveOxdSettings')" />
                         <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}"
-                                  w:onClick="alertRef = $('#feedback-oxd')" onClick="@command('cancel')" />
+                                  w:onClick="alertRef = $('#feedback-oxd')" onClick="@('cancel')" />
                     </div>
                     <div class="mt2">
                         <div class="alert alert-success dn" id="feedback-oxd" role="alert" />
@@ -102,21 +102,21 @@
         </div>
 
         <z:window title="${labels.adm.oxd_scopes_select}" border="normal" mode="modal" visible="@load(vm.uiEditingScopes)"
-                  closable="true" onClose="@command('cancelAddScopes', event=event)" sclass="${css.modalWindow}">
+                  closable="true" onClose="@('cancelAddScopes', event)" sclass="${css.modalWindow}">
 
             <ul class="list-group f7-cust pt1 mb3">
                 <z:div children="@load(vm.selectableScopes)">
                     <zk:template name="children">
                         <li class="list-group-item hover-bg-light-gray gray hover-dark-gray pv1">
-                            <z:checkbox label="@load(each)" onCheck="@command('scopeChecked', checked=self.checked, scope=each)" />
+                            <z:checkbox label="@load(each)" onCheck="@('scopeChecked', self.checked, each)" />
                         </li>
                     </zk:template>
                 </z:div>
             </ul>
             <div class="w-100 flex justify-center">
                 <z:button sclass="${css.primaryButton} mr3" label="${labels.general.add}"
-                          w:onClick="alertRef = $('#feedback-oxd')" onClick="@command('addScopes')" />
-                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancelAddScopes', event=event)" />
+                          w:onClick="alertRef = $('#feedback-oxd')" onClick="@('addScopes')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@('cancelAddScopes', event)" />
             </div>
         </z:window>
 

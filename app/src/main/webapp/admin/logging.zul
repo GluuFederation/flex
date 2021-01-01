@@ -22,7 +22,7 @@
                     <z:div children="@load(vm.logLevels)" sclass="flex justify-around flex-wrap">
                         <zk:template name="children">
                             <z:radio label="${each}" selected="${each eq vm.selectedLogLevel}" radiogroup="methods" sclass="ph3"
-                                     w:onCheck="alertRef = $('#feedback-log-level')" onCheck="@command('change', level=each)"/>
+                                     w:onCheck="alertRef = $('#feedback-log-level')" onCheck="@('change', each)"/>
                         </zk:template>
                     </z:div>
 

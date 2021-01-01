@@ -46,7 +46,7 @@
                                         <td><z:label value="${each.acr}" /></td>
                                         <td><z:label value="${each.name}" /></td>
                                         <td>
-                                            <z:listbox mold="select" onSelect="@command('selectionChanged', acr=each.acr, index = self.selectedIndex)"
+                                            <z:listbox mold="select" onSelect="@('selectionChanged', each.acr, self.selectedIndex)"
                                                        sclass="gray" style="min-width:6rem">
                                                 <z:listitem forEach="${each.plugins}" label="${each.y}" selected="${forEachStatus.previous.each.selectedPlugin eq each.x}" />
                                             </z:listbox>
@@ -62,7 +62,7 @@
                     </div>
                     <div class="tc">
                         <z:button disabled="@load(empty vm.methods)" label="${labels.general.save}" sclass="${css.primaryButton}"
-                                  w:onClick="alertRef = $('#feedback-methods')" onClick="@command('save')" />
+                                  w:onClick="alertRef = $('#feedback-methods')" onClick="@('save')" />
                     </div>
                 </z:div>
             </section>

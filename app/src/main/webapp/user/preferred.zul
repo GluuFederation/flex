@@ -12,7 +12,7 @@
 					<div class="flex justify-center">
 						<z:checkbox mold="switch" label="@load(c:toUpperCase(c:l(vm.mfaEnabled ? 'general.on' : 'general.off')))"
 									disabled="${vm.uiNotEnoughCredsFor2FA}" checked="@bind(vm.mfaEnabled)"
-									w:onClick="alertRef = $('#feedback-preferred')" onCheck="@command('change')" />
+									w:onClick="alertRef = $('#feedback-preferred')" onCheck="@('change')" />
 					</div>                
                 </zk:zk>
                 

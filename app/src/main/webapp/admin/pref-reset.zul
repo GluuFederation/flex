@@ -21,9 +21,9 @@
                     <div class="pb2 flex flex-wrap items-center">
                         <z:textbox sclass="${css.textInput} w4 w5-ns mr2" placeholder="${labels.adm.resets_textbox_placeholder}"
                                    value="@bind(vm.searchPattern)" focus="true" id="pattern"
-                                   w:onChange="alertRef = $('#feedback-pref-reset')" onOK="@command('search')" />
+                                   w:onChange="alertRef = $('#feedback-pref-reset')" onOK="@('search')" />
                         <z:button label="${labels.general.search}" sclass="${css.primaryButton}"
-                                  w:onClick="alertRef = $('#feedback-pref-reset')" onClick="@command('search')" />
+                                  w:onClick="alertRef = $('#feedback-pref-reset')" onClick="@('search')" />
                         <z:label sclass="f7 dark-blue2 ml3" visible="@load((vm.users ne null) and (empty vm.users))" value="${labels.adm.resets_nomatches}" />
                     </div>
                     <div class="mt2">
@@ -46,7 +46,7 @@
                             <h:tbody children="@load(vm.users)" sclass="f7">
                                 <zk:template name="children">
                                     <h:tr sclass="pointer" style="@load(each.alreadyReset ? 'cursor:not-allowed' : '')"
-                                          onClick="@command('rowClicked', cbox=self.getFellow(each.id), val=each)">
+                                          onClick="@('rowClicked', self.getFellow(each.id), each)">
                                         <td><z:checkbox id="@load(each.id)" disabled="@load(each.alreadyReset)" checked="@bind(each.checked)" /></td>
                                         <td><z:label value="@load(each.userName)" /></td>
                                         <td class="dn dtc-ns"><z:label unless="${sessionContext.browser.mobile}" value="@load(each.givenName)" /></td>
@@ -57,8 +57,8 @@
                         </table>
 
                         <div class="pt3">
-                            <z:button label="${labels.adm.resets_reset}" sclass="${css.primaryButton} mr3" onClick="@command('doReset')" />
-                            <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton} ph4" onClick="@command('cancelReset')"/>
+                            <z:button label="${labels.adm.resets_reset}" sclass="${css.primaryButton} mr3" onClick="@('doReset')" />
+                            <z:button label="${labels.general.cancel}" sclass="${css.tertiaryButton} ph4" onClick="@('cancelReset')"/>
                         </div>
                     </z:div>
                 </z:div>

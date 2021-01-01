@@ -32,7 +32,7 @@
                         </thead>
                         <h:tbody children="@load(vm.pluginList)" sclass="f7">
                             <zk:template name="children">
-                                <h:tr sclass="pointer" onClick="@command('showPlugin', id=each.descriptor.pluginId)">
+                                <h:tr sclass="pointer" onClick="@('showPlugin', each.descriptor.pluginId)">
                                     <td><z:label value="@load(c:cat3(each.descriptor.pluginId, ' ', each.descriptor.version))" /></td>
                                     <td class="dn dtc-ns">
                                         <z:div children="@load(each.extensions)">
@@ -43,7 +43,7 @@
                                     </td>
                                     <td>
                                         <z:button label="${labels.adm.plugins_dodelete}" sclass="${css.secondaryButton} lh-tight"
-                                                  w:onClick="prepareAlert()" onClick="@command('deletePlugin', id=each.descriptor.pluginId, provider=each.descriptor.provider)" />
+                                                  w:onClick="prepareAlert()" onClick="@('deletePlugin', each.descriptor.pluginId, each.descriptor.provider)" />
                                     </td>
                                 </h:tr>
                             </zk:template>
@@ -54,7 +54,7 @@
                         <image src="${zkService.contextPath}${assetsService.prefix}/images/throbber-white.gif" id="throbber" class="dn mr2" />
                         <z:button label="${labels.adm.plugins_upload}" sclass="${css.linkButton} f7-cust"
                                   upload="zk.progressMonitor,maxsize=50240,multiple=false,accept=application/java-archive"
-                                  onUpload="@command('uploaded', media=event.media)" w:onClick="prepareAlert(); removeFocus(this)"
+                                  onUpload="@('uploaded', event.media)" w:onClick="prepareAlert(); removeFocus(this)"
                                   ca:data-original-title="${labels.adm.plugins_upload_hint}" ca:data-toggle="tooltip" ca:data-placement="top" />
                     </h:div>
 
@@ -65,7 +65,7 @@
 
                 <z:div sclass="${css.panel}" visible="@load(vm.pluginToShow ne null)">
                     <z:div sclass="tr">
-                        <z:button label="${labels.general.hide}" sclass="${css.secondaryButton} lh-tight mv2" onClick="@command('hidePluginDetails')" />
+                        <z:button label="${labels.general.hide}" sclass="${css.secondaryButton} lh-tight mv2" onClick="@('hidePluginDetails')" />
                     </z:div>
                     <div class="card pa3-ns">
                         <div class="card-body">

@@ -43,7 +43,7 @@
                                             <z:label value="@load(vm.people.get(each))" />
                                             -
                                             <!-- To have access to the outer each (ie. a Client), we use forEachStatus.previous.each -->
-                                            <z:a onClick="@command('remove', clt=client, person=each)">
+                                            <z:a onClick="@('remove', client, each)">
                                                 ${labels.clientsM.remove}
                                             </z:a>
                                         </li>
@@ -51,7 +51,7 @@
                                 </h:ul>
 
                                 <z:button label="${labels.clientsM.add}" sclass="${css.secondaryButton}"
-                                          onClick="@command('prepareForAdd', clt=client)" />
+                                          onClick="@('prepareForAdd', client)" />
 
                             </div>
                         </h:div>
@@ -64,18 +64,18 @@
 
         <!-- this is a modal window used when "add users" button is pressed -->
         <z:window title="${labels.clientsM.search}" border="normal" mode="modal" visible="@load(vm.addingTo ne null)"
-                  closable="true" onClose="@command('cancelAdd')" sclass="${css.modalWindow}">
+                  closable="true" onClose="@('cancelAdd')" sclass="${css.modalWindow}">
 
             <div sclass="pt1 mb3 mw6">
                 <span class="db f7-cust gray">${labels.clientsM.search_detail}</span>
                 <div class="pa1">
-                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.searchPattern)" onOK="@command('search')"/>
+                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.searchPattern)" onOK="@('search')"/>
                 </div>
                 <z:label sclass="red f7" value="@load(vm.searchMessage)" />
             </div>
             <div class="w-100 flex justify-center">
-                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.search}" onClick="@command('search')" />
-                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@command('cancelAdd')" />
+                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.search}" onClick="@('search')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@('cancelAdd')" />
             </div>
 
         </z:window>
