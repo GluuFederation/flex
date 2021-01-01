@@ -46,7 +46,7 @@
                             <h:tbody children="@load(vm.users)" sclass="f7">
                                 <zk:template name="children">
                                     <h:tr sclass="pointer" style="@load(each.alreadyReset ? 'cursor:not-allowed' : '')"
-                                          onClick="@command('rowClicked', cbox=event.target.getFellow(each.id), val=each)">
+                                          onClick="@command('rowClicked', cbox=self.getFellow(each.id), val=each)">
                                         <td><z:checkbox id="@load(each.id)" disabled="@load(each.alreadyReset)" checked="@bind(each.checked)" /></td>
                                         <td><z:label value="@load(each.userName)" /></td>
                                         <td class="dn dtc-ns"><z:label unless="${sessionContext.browser.mobile}" value="@load(each.givenName)" /></td>
