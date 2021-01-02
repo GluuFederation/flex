@@ -1,18 +1,17 @@
 import React from "react";
 
-import {
-  Container,
-} from "./../../../components";
-import { HeaderMain } from "../../components/HeaderMain";
+import { Container, CardBody, Card } from "./../../../components";
+import AttributeForm from "./AttributeForm";
 
-export default function AttributeEditPage() {
+export default function AttributeEditPage(props) {
   return (
     <React.Fragment>
       <Container>
-        <HeaderMain title="Attributes/Edit" className="mb-5 mt-4" />
-        {/* START Content */}
-
-        {/* END Content */}
+        <Card className="mb-3">
+          <CardBody>
+            <AttributeForm data={props.match.params.gid.substring(1, 100)} />
+          </CardBody>
+        </Card>
       </Container>
     </React.Fragment>
   );

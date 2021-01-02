@@ -57,7 +57,7 @@ export const RoutedContent = () => {
 
       <Route component={AttributeListPage} path="/attributes" />
       <Route component={AttributeAddPage} path="/attribute/new" />
-      <Route component={AttributeEditPage} path="/attribute/edit" />
+      <Route component={AttributeEditPage} path="/attribute/edit:gid" />
 
       <Route component={Clients} path="/apps/clients" />
       <Route component={ProfileDetails} path="/apps/profile-details" />

@@ -12,7 +12,7 @@ const AttributeDetailPage = ({ row }) => {
   return (
     <React.Fragment>
       {/* START Content */}
-      <Container style={{ backgroundColor: "#F5F5F5"}}>
+      <Container style={{ backgroundColor: "#F5F5F5" }}>
         <Row>
           <Col sm={6}>
             <FormGroup row>

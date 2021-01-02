@@ -1,15 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import MaterialTable from "material-table";
 import { attributes } from "../Attibutes/attributes";
 import AttributeDetailPage from "../Attibutes/AttributeDetailPage";
+import { useHistory } from "react-router-dom";
 import { Badge } from "reactstrap";
+import GluuDialog from "../Gluu/GluuDialog";
 const AttributeListPage = () => {
+  const history = useHistory();
+  const [item, setItem] = useState(attributes[0]);
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
   function getBadgeTheme(status) {
     if (status === "ACTIVE") {
       return "primary";
     } else {
       return "warning";
     }
+  }
+  function handleGoToAttributeAddPage() {
+    return history.push("/attribute/new");
+  }
+  function handleGoToAttributeEditPage(row) {
+    return history.push(`/attribute/edit:` + row.inum);
+  }
+  function handleAttribueDelete(row) {
+    setItem(row);
+    toggle();
+  }
+  function onDeletionConfirmed() {
+    // perform delete request
+    toggle();
   }
   return (
     <React.Fragment>
@@ -32,27 +52,34 @@ const AttributeListPage = () => {
           }
         ]}
         data={attributes}
+        isLoading={false}
         title="Attributes"
         actions={[
+          rowData => ({
+            icon: "edit",
+            iconProps: {
+              color: "primary",
+              id: "editAttribute" + rowData.inum
+            },
+            tooltip: "Edit Attribute",
+            onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
+            disabled: false
+          }),
           {
             icon: "add",
             tooltip: "Add Attribute",
-            isFreeAction: true,
-            onClick: event => alert("You want to add a new attribute")
-          },
-          {
-            icon: "edit",
             iconProps: { color: "primary" },
-            tooltip: "Edit Attribute",
-            onClick: (event, rowData) =>
-              alert("You Want to edit " + rowData.inum)
+            isFreeAction: true,
+            onClick: () => handleGoToAttributeAddPage()
           },
           rowData => ({
             icon: "delete",
-            iconProps: { color: "secondary" },
+            iconProps: {
+              color: "secondary",
+              id: "deleteAttribute" + rowData.inum
+            },
             tooltip: "Delete Attribute",
-            onClick: (event, rowData) =>
-              confirm("You want to delete " + rowData.inum),
+            onClick: (event, rowData) => handleAttribueDelete(rowData),
             disabled: false
           })
         ]}
@@ -62,6 +89,8 @@ const AttributeListPage = () => {
           headerStyle: {
             backgroundColor: "#01579b",
             color: "#FFF",
+            padding: "2px",
+            textTransform: "uppercase",
             fontSize: "18px"
           },
           actionsColumnIndex: -1
@@ -71,6 +100,12 @@ const AttributeListPage = () => {
         }}
       />
       {/* END Content */}
+      <GluuDialog
+        row={item}
+        handler={toggle}
+        modal={modal}
+        onAccept={onDeletionConfirmed}
+      />
     </React.Fragment>
   );
 };
