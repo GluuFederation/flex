@@ -63,6 +63,7 @@
     "bootstrap": "^4.5.3",
     "dotenv": "^8.2.0",
     "font-awesome": "^4.7.0",
+    "formik": "^2.2.6",
     "holderjs": "^2.9.6",
     "i18next": "^19.8.4",
     "i18next-browser-languagedetector": "^6.0.1",

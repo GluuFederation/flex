@@ -17,15 +17,9 @@ const GluuDialog = ({ row, handler, modal, onAccept }) => {
             style={{ color: "red" }}
             className="fa fa-2x fa-warning fa-fw modal-icon mb-3"
           ></i>
-          Deletion confirmation for {row.inum}-{row.name}
+          Deletion confirmation for attribute {row.inum}
         </ModalHeader>
-        <ModalBody>
-          <Label sm={12}>
-            The following item will be removed from the datastore. This actiion
-            is not reversible!
-          </Label>
-          Do you really want to delete this item?
-        </ModalBody>
+        <ModalBody>Do you really want to delete this item?</ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={onAccept}>
             Yes

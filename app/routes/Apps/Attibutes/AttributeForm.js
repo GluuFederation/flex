@@ -1,4 +1,5 @@
 import React from "react";
+import { useFormik } from "formik";
 import {
   Col,
   InputGroup,
@@ -8,9 +9,16 @@ import {
   Label,
   Input
 } from "./../../../components";
+import GluuFooter from "../Gluu/GluuFooter";
 function AttributeForm({ data }) {
+  const formik = useFormik({
+    initialValues: { name: "", description: "" },
+    onSubmit: values => {
+      alert(JSON.stringify(values, null, 2));
+    }
+  });
   return (
-    <Form>
+    <Form onSubmit={formik.handleSubmit}>
       {/* START Input */}
       {data && (
         <FormGroup row>
@@ -18,15 +26,14 @@ function AttributeForm({ data }) {
             Inum
           </Label>
           <Col sm={9}>
-            <InputGroup>
-              <Input
-                style={{ backgroundColor: "#F5F5F5" }}
-                placeholder="Enter the attribute name"
-                id="name"
-                disabled
-                value={data}
-              />
-            </InputGroup>
+            <Input
+              style={{ backgroundColor: "#F5F5F5" }}
+              placeholder="Enter the attribute inum"
+              id="inum"
+              name="inum"
+              disabled
+              value={data}
+            />
           </Col>
         </FormGroup>
       )}
@@ -35,9 +42,12 @@ function AttributeForm({ data }) {
           Name
         </Label>
         <Col sm={9}>
-          <InputGroup>
-            <Input placeholder="Enter the attribute name" id="name" required />
-          </InputGroup>
+          <Input
+            placeholder="Enter the attribute name"
+            id="name"
+            name="name"
+            onChange={formik.handleChange}
+          />
         </Col>
       </FormGroup>
       <FormGroup row>
@@ -142,6 +152,7 @@ function AttributeForm({ data }) {
         </Col>
       </FormGroup>
       <FormGroup row></FormGroup>
+      <GluuFooter />
     </Form>
   );
 }
