@@ -5,7 +5,9 @@ function GluuFooter() {
     <FormGroup row>
       <Col sm={8}></Col>
       <Col sm={1}>
-        <Button color="primary" type="submit">Save</Button>
+        <Button color="primary" type="submit">
+          Save
+        </Button>
       </Col>
       <Col sm={1}>
         <Button color="secondary" type="reset">
