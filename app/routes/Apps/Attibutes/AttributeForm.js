@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
+import * as Yup from "yup";
 import {
   Col,
   InputGroup,
@@ -11,8 +12,26 @@ import {
 } from "./../../../components";
 import GluuFooter from "../Gluu/GluuFooter";
 function AttributeForm({ data }) {
+  const [init, setInit] = useState(false);
+  function toogle() {
+    if (!init) {
+      setInit(true);
+    }
+  }
   const formik = useFormik({
-    initialValues: { name: "", description: "" },
+    initialValues: { name: "", displayName: "", description: "" },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .min(2, "Mininum 2 characters")
+        .required("Required!"),
+      displayName: Yup.string()
+        .min(2, "Mininum 2 characters")
+        .required("Required!"),
+      description: Yup.string(),
+      status: Yup.string()
+        .min(1, "This value is required")
+        .required("Required!")
+    }),
     onSubmit: values => {
       alert(JSON.stringify(values, null, 2));
     }
@@ -45,7 +64,9 @@ function AttributeForm({ data }) {
           <Input
             placeholder="Enter the attribute name"
             id="name"
+            valid={!formik.errors.name && !formik.touched.name && init}
             name="name"
+            onKeyUp={toogle}
             onChange={formik.handleChange}
           />
         </Col>
@@ -58,7 +79,13 @@ function AttributeForm({ data }) {
           <InputGroup>
             <Input
               placeholder="Enter the attribute display name"
+              valid={
+                !formik.errors.displayName &&
+                !formik.touched.displayName &&
+                init
+              }
               id="displayName"
+              onChange={formik.handleChange}
             />
           </InputGroup>
         </Col>
@@ -72,6 +99,7 @@ function AttributeForm({ data }) {
             <Input
               placeholder="Enter the attribute description"
               id="description"
+              onChange={formik.handleChange}
             />
           </InputGroup>
         </Col>
@@ -82,7 +110,12 @@ function AttributeForm({ data }) {
         </Label>
         <Col sm={9}>
           <InputGroup>
-            <CustomInput type="select" id="status" name="status">
+            <CustomInput
+              type="select"
+              id="status"
+              name="status"
+              onChange={formik.handleChange}
+            >
               <option value="">Choose...</option>
               <option>ACTIVE</option>
               <option>INACTIVE</option>
@@ -96,7 +129,12 @@ function AttributeForm({ data }) {
         </Label>
         <Col sm={9}>
           <InputGroup>
-            <CustomInput type="select" id="type" name="type">
+            <CustomInput
+              type="select"
+              id="type"
+              name="type"
+              onChange={formik.handleChange}
+            >
               <option value="">Choose...</option>
               <option>TEXT</option>
               <option>NUMERIC</option>
@@ -113,7 +151,13 @@ function AttributeForm({ data }) {
           Edit Type
         </Label>
         <Col sm={9}>
-          <Input type="select" name="editType" id="editType" multiple>
+          <Input
+            type="select"
+            name="editType"
+            id="editType"
+            multiple
+            onChange={formik.handleChange}
+          >
             <option>Admin</option>
             <option>User</option>
           </Input>
@@ -124,7 +168,13 @@ function AttributeForm({ data }) {
           View Type
         </Label>
         <Col sm={9}>
-          <Input type="select" name="viewType" id="viewType" multiple>
+          <Input
+            type="select"
+            name="viewType"
+            id="viewType"
+            multiple
+            onChange={formik.handleChange}
+          >
             <option>Admin</option>
             <option>User</option>
           </Input>
@@ -135,7 +185,13 @@ function AttributeForm({ data }) {
           Usage Type
         </Label>
         <Col sm={9}>
-          <Input type="select" name="usageType" id="usageType" multiple>
+          <Input
+            type="select"
+            name="usageType"
+            id="usageType"
+            multiple
+            onChange={formik.handleChange}
+          >
             <option>Not Defined</option>
             <option>OpenID</option>
           </Input>
@@ -147,7 +203,7 @@ function AttributeForm({ data }) {
         </Label>
         <Col sm={9}>
           <InputGroup>
-            <Input name="text" id="regex" />
+            <Input name="regex" id="regex" onChange={formik.handleChange} />
           </InputGroup>
         </Col>
       </FormGroup>
