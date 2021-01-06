@@ -5,7 +5,8 @@ import {
   Row,
   Col,
   FormGroup,
-  Label
+  Label,
+  Accordion
 } from "./../../../components";
 function ClientDetailPage({ row }) {
   return (
@@ -108,15 +109,22 @@ function ClientDetailPage({ row }) {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={4}>Scopes:</Label>
-              <Label sm={8}>
-                {row.scopes &&
-                  row.scopes.map((item, key) => (
-                    <Badge key={key} color="primary">
-                      {item}
-                    </Badge>
-                  ))}
-              </Label>
+              <Accordion className="mb-2">
+                <Accordion.Header className="h6">
+                  Scopes
+                  <Accordion.Indicator className="ml-auto" />
+                </Accordion.Header>
+                <Accordion.Body>
+                  <Label sm={8}>
+                    {row.scopes &&
+                      row.scopes.map((item, key) => (
+                        <Badge key={key} color="primary">
+                          {item}
+                        </Badge>
+                      ))}
+                  </Label>
+                </Accordion.Body>
+              </Accordion>
             </FormGroup>
           </Col>
           <Col sm={6}>
@@ -157,6 +165,33 @@ function ClientDetailPage({ row }) {
                       {item}
                     </Badge>
                   ))}
+              </Label>
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={6}>
+            <FormGroup row>
+              <Label sm={4}>Logout Redirect Uris: </Label>
+              <Label sm={8}>
+                {row.postLogoutRedirectUris &&
+                  row.postLogoutRedirectUris.map((item, key) => (
+                    <Badge key={key} color="primary">
+                      {item}
+                    </Badge>
+                  ))}
+              </Label>
+            </FormGroup>
+          </Col>
+          <Col sm={6}>
+            <FormGroup row>
+              <Label sm={6}>
+                Authentication method for the Token Endpoint:
+              </Label>
+              <Label sm={6}>
+                {row.authenticationMethod && (
+                  <Badge color="primary">{row.authenticationMethod}</Badge>
+                )}
               </Label>
             </FormGroup>
           </Col>
