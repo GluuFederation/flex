@@ -17,6 +17,14 @@ const ClientListPage = () => {
       return "warning";
     }
   }
+
+  function getTrustedTheme(status) {
+    if (status) {
+      return "success";
+    } else {
+      return "info";
+    }
+  }
   function getClientStatus(status) {
     if (!status) {
       return "Enabled";
@@ -43,10 +51,9 @@ const ClientListPage = () => {
       {/* START Content */}
       <MaterialTable
         columns={[
-          { title: "Inum", field: "inum" },
           { title: "Client Name", field: "clientName" },
-          { title: "Display Name", field: "displayName" },
-          { title: "Application Type Type", field: "applicationType" },
+          { title: "App Type", field: "applicationType" },
+          { title: "Subject Type", field: "subjectType" },
           {
             title: "Status",
             field: "disabled",
@@ -54,6 +61,16 @@ const ClientListPage = () => {
             render: rowData => (
               <Badge color={getBadgeTheme(rowData.disabled)}>
                 {getClientStatus(rowData.disabled)}
+              </Badge>
+            )
+          },
+          {
+            title: "Trusted",
+            field: "trustedClient",
+            type: "boolean",
+            render: rowData => (
+              <Badge color={getTrustedTheme(rowData.trustedClient)}>
+                {rowData.trustedClient ? "Yes" : "No"}
               </Badge>
             )
           }
