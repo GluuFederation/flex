@@ -101,8 +101,7 @@ export const attributes = [
     saml1Uri: "urn:mace:dir:attribute-def:displayName",
     saml2Uri: "urn:oid:2.16.840.1.113730.3.1.241",
     urn: "urn:mace:dir:attribute-def:displayName",
-    oxMultiValuedAttribute: false,
-  
+    oxMultiValuedAttribute: false
   },
   {
     dn: "inum=CAE3,ou=attributes,o=jans",

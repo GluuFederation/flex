@@ -11,6 +11,7 @@ import {
   Input
 } from "./../../../components";
 import GluuFooter from "../Gluu/GluuFooter";
+import GluuLabel from "../Gluu/GluuLabel";
 function AttributeForm({ data }) {
   const [init, setInit] = useState(false);
   function toogle() {
@@ -29,7 +30,7 @@ function AttributeForm({ data }) {
         .required("Required!"),
       description: Yup.string(),
       status: Yup.string()
-        .min(1, "This value is required")
+        .min(3, "This value is required")
         .required("Required!")
     }),
     onSubmit: values => {
@@ -57,9 +58,7 @@ function AttributeForm({ data }) {
         </FormGroup>
       )}
       <FormGroup row>
-        <Label for="name" sm={3}>
-          Name
-        </Label>
+        <GluuLabel label="Name" required />
         <Col sm={9}>
           <Input
             placeholder="Enter the attribute name"
@@ -72,9 +71,7 @@ function AttributeForm({ data }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="displayName" sm={3}>
-          Display Name
-        </Label>
+        <GluuLabel label="Display Name" required />
         <Col sm={9}>
           <InputGroup>
             <Input
@@ -91,9 +88,7 @@ function AttributeForm({ data }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="description" sm={3}>
-          Description
-        </Label>
+        <GluuLabel label="Description" />
         <Col sm={9}>
           <InputGroup>
             <Input
@@ -105,9 +100,7 @@ function AttributeForm({ data }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="status" sm={3}>
-          Status
-        </Label>
+        <GluuLabel label="Status" />
         <Col sm={9}>
           <InputGroup>
             <CustomInput
@@ -124,15 +117,13 @@ function AttributeForm({ data }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="type" sm={3}>
-          Data Type
-        </Label>
+        <GluuLabel label="Data Type" />
         <Col sm={9}>
           <InputGroup>
             <CustomInput
               type="select"
-              id="type"
-              name="type"
+              id="dataType"
+              name="dataType"
               onChange={formik.handleChange}
             >
               <option value="">Choose...</option>
@@ -147,9 +138,7 @@ function AttributeForm({ data }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="editType" sm={3}>
-          Edit Type
-        </Label>
+        <GluuLabel label="Edit Type" />
         <Col sm={9}>
           <Input
             type="select"
@@ -164,9 +153,7 @@ function AttributeForm({ data }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="viewType" sm={3}>
-          View Type
-        </Label>
+        <GluuLabel label="View Type" />
         <Col sm={9}>
           <Input
             type="select"
@@ -181,9 +168,7 @@ function AttributeForm({ data }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="usageType" sm={3}>
-          Usage Type
-        </Label>
+        <GluuLabel label="Usage Type" />
         <Col sm={9}>
           <Input
             type="select"
@@ -198,15 +183,54 @@ function AttributeForm({ data }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="regex" sm={3}>
-          Regular expression
-        </Label>
+        <GluuLabel label="oxAuth claim name" />
         <Col sm={9}>
-          <InputGroup>
-            <Input name="regex" id="regex" onChange={formik.handleChange} />
-          </InputGroup>
+          <Input
+            name="claimName"
+            id="claimName"
+            onChange={formik.handleChange}
+          />
         </Col>
       </FormGroup>
+      <FormGroup row>
+        <GluuLabel label="Multivalued" size={3} />
+        <Col sm={1}>
+          <Input
+            id="oxMultiValuedAttribute"
+            name="oxMultiValuedAttribute"
+            onChange={formik.handleChange}
+            type="checkbox"
+            defaultChecked
+          />
+        </Col>
+        <GluuLabel label="Include in SCIM extension" size={3} />
+        <Col sm={1}>
+          <Input
+            id="oxMultiValuedAttribute"
+            name="oxMultiValuedAttribute"
+            onChange={formik.handleChange}
+            type="checkbox"
+            defaultChecked
+          />
+        </Col>
+        <GluuLabel label="Multivalued" size={3} />
+        <Col sm={1}>
+          <Input
+            id="oxMultiValuedAttribute"
+            onChange={formik.handleChange}
+            name="oxMultiValuedAttribute"
+            type="checkbox"
+            defaultChecked
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <GluuLabel label="Regular expression" />
+        <Col sm={9}>
+          <Input name="regex" id="regex" onChange={formik.handleChange} />
+        </Col>
+      </FormGroup>
+
       <FormGroup row></FormGroup>
       <GluuFooter />
     </Form>

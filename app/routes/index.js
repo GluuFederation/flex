@@ -15,9 +15,9 @@ import AttributeListPage from "./Apps/Attibutes/AttributeListPage";
 import AttributeAddPage from "./Apps/Attibutes/AttributeAddPage";
 import AttributeEditPage from "./Apps/Attibutes/AttributeEditPage";
 
-import Clients from "./Apps/Clients";
-import ProfileDetails from "./Apps/ProfileDetails";
-import ProfileEdit from "./Apps/ProfileEdit";
+import ClientListPage from "./Apps/Clients/ClientListPage";
+import ClientAddPage from "./Apps/Clients/ClientAddPage";
+import ClientEditPage from "./Apps/Clients/ClientEditPage";
 
 import ComingSoon from "./Pages/ComingSoon";
 import Confirmation from "./Pages/Confirmation";
@@ -59,9 +59,9 @@ export const RoutedContent = () => {
       <Route component={AttributeAddPage} path="/attribute/new" />
       <Route component={AttributeEditPage} path="/attribute/edit:gid" />
 
-      <Route component={Clients} path="/apps/clients" />
-      <Route component={ProfileDetails} path="/apps/profile-details" />
-      <Route component={ProfileEdit} path="/apps/profile-edit" />
+      <Route component={ClientListPage} path="/clients" />
+      <Route component={ClientAddPage} path="/client/new" />
+      <Route component={ClientEditPage} path="/client/edit:gid" />
 
       {/*    Pages Routes    */}
       <Route component={ComingSoon} path="/pages/coming-soon" />

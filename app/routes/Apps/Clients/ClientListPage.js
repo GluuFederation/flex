@@ -1,29 +1,36 @@
 import React, { useState } from "react";
 import MaterialTable from "material-table";
-import { attributes } from "../Attibutes/attributes";
-import AttributeDetailPage from "../Attibutes/AttributeDetailPage";
 import { useHistory } from "react-router-dom";
 import { Badge } from "reactstrap";
+import { clients } from "../Clients/clients";
 import GluuDialog from "../Gluu/GluuDialog";
-const AttributeListPage = () => {
+import ClientDetailPage from "../Clients/ClientDetailPage";
+const ClientListPage = () => {
   const history = useHistory();
-  const [item, setItem] = useState(attributes[0]);
+  const [item, setItem] = useState(clients[0]);
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
   function getBadgeTheme(status) {
-    if (status === "ACTIVE") {
+    if (!status) {
       return "primary";
     } else {
       return "warning";
     }
   }
-  function handleGoToAttributeAddPage() {
-    return history.push("/attribute/new");
+  function getClientStatus(status) {
+    if (!status) {
+      return "Enabled";
+    } else {
+      return "Disabled";
+    }
   }
-  function handleGoToAttributeEditPage(row) {
-    return history.push(`/attribute/edit:` + row.inum);
+  function handleGoToClientAddPage() {
+    return history.push("/client/new");
   }
-  function handleAttribueDelete(row) {
+  function handleGoToClientEditPage(row) {
+    return history.push(`/client/edit:` + row.inum);
+  }
+  function handleClientDelete(row) {
     setItem(row);
     toggle();
   }
@@ -37,50 +44,52 @@ const AttributeListPage = () => {
       <MaterialTable
         columns={[
           { title: "Inum", field: "inum" },
-          { title: "Name", field: "name" },
+          { title: "Client Name", field: "clientName" },
           { title: "Display Name", field: "displayName" },
-          { title: "Data Type", field: "dataType" },
+          { title: "Application Type Type", field: "applicationType" },
           {
             title: "Status",
-            field: "status",
+            field: "disabled",
             type: "boolean",
             render: rowData => (
-              <Badge color={getBadgeTheme(rowData.status)}>
-                {rowData.status}
+              <Badge color={getBadgeTheme(rowData.disabled)}>
+                {getClientStatus(rowData.disabled)}
               </Badge>
             )
           }
         ]}
-        data={attributes}
+        data={clients}
         isLoading={false}
-        title="Attributes"
+        title="OpenId Connect Clients"
         actions={[
           rowData => ({
             icon: "edit",
             iconProps: {
               color: "primary",
-              id: "editAttribute" + rowData.inum
+              id: "editClient" + rowData.inum
             },
-            tooltip: "Edit Attribute",
-            onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
+            tooltip: "Edit Client",
+            onClick: (event, rowData) => handleGoToClientEditPage(rowData),
             disabled: false
           }),
           {
             icon: "add",
-            tooltip: "Add Attribute",
+            tooltip: "Add Client",
             iconProps: { color: "primary" },
             isFreeAction: true,
-            onClick: () => handleGoToAttributeAddPage()
+            onClick: () => handleGoToClientAddPage()
           },
           rowData => ({
             icon: "delete",
             iconProps: {
               color: "secondary",
-              id: "deleteAttribute" + rowData.inum
+              id: "deleteClient" + rowData.inum
             },
-            tooltip: "Delete Attribute",
-            onClick: (event, rowData) => handleAttribueDelete(rowData),
-            disabled: false
+            tooltip: rowData.deletable
+              ? "Delete Client"
+              : "This Client can't be detele",
+            onClick: (event, rowData) => handleClientDelete(rowData),
+            disabled: !rowData.deletable
           })
         ]}
         options={{
@@ -96,7 +105,7 @@ const AttributeListPage = () => {
           actionsColumnIndex: -1
         }}
         detailPanel={rowData => {
-          return <AttributeDetailPage row={rowData} />;
+          return <ClientDetailPage row={rowData} />;
         }}
       />
       {/* END Content */}
@@ -104,10 +113,11 @@ const AttributeListPage = () => {
         row={item}
         handler={toggle}
         modal={modal}
-        subject="attribute"
+        subject="openid connect client"
         onAccept={onDeletionConfirmed}
       />
     </React.Fragment>
   );
 };
-export default AttributeListPage;
+
+export default ClientListPage;
