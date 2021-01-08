@@ -24,7 +24,7 @@ export const SidebarMiddleNav = () => (
       title="Clients"
     >
       <SidebarMenu.Item title="List" to="/clients" exact />
-      <SidebarMenu.Item title="Add new client" to="/clients/new" exact />
+      <SidebarMenu.Item title="Add new client" to="/client/new" exact />
     </SidebarMenu.Item>
     {/* -------- Scopes ---------*/}
     <SidebarMenu.Item
