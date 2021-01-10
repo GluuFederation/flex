@@ -60,7 +60,6 @@ class SessionChecker extends Component {
       const accessToken = localStorage.getItem("gluu.access.token");
       if (!accessToken) {
         const params = queryString.parse(props.location.search);
-
         let showContent = false;
         if (params.code && params.scope && params.state) {
           props.getOAuth2AccessToken(params.code);

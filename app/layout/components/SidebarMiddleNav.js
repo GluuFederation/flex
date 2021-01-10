@@ -15,24 +15,24 @@ export const SidebarMiddleNav = () => (
       icon={<i className="fa fa-fw fa-briefcase"></i>}
       title="Attributes"
     >
-      <SidebarMenu.Item title="List" to="/attributes" exact />
-      <SidebarMenu.Item title="Add new" to="/attribute/new" exact />
+      <SidebarMenu.Item title="All Attributes" to="/attributes" exact />
+      <SidebarMenu.Item title="New Attribute" to="/attribute/new" exact />
     </SidebarMenu.Item>
     {/* -------- OIDC ---------*/}
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-cubes"></i>}
       title="Clients"
     >
-      <SidebarMenu.Item title="List" to="/clients" exact />
-      <SidebarMenu.Item title="Add new client" to="/client/new" exact />
+      <SidebarMenu.Item title="All Clients" to="/clients" exact />
+      <SidebarMenu.Item title="New Client" to="/client/new" exact />
     </SidebarMenu.Item>
     {/* -------- Scopes ---------*/}
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-sitemap"></i>}
-      title="Scopes"
+      title="All Scopes"
     >
-      <SidebarMenu.Item title="Uma Scopes" to="/interface/breadcrumbs" />
-      <SidebarMenu.Item title="New Uma Scope" to="/interface/navbars" />
+      <SidebarMenu.Item title="Uma Scopes" to="/scopes" />
+      <SidebarMenu.Item title="New Uma Scope" to="/scope/new" />
       <SidebarMenu.Item title="OpenId Scopes" to="/interface/notifications" />
       <SidebarMenu.Item title="New OIDC Scope" to="/interface/crop-image" />
     </SidebarMenu.Item>

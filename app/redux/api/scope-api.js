@@ -4,6 +4,12 @@ defaultClient.timeout = 50000;
 const jansauth = defaultClient.authentications["jans-auth"];
 defaultClient.basePath = "https://gluu.gasmyr.com".replace(/\/+$/, "");
 defaultClient.defaultHeaders = "{'Access-Control-Allow-Origin', '*'}";
+function getApiAccessToken() {
+  return (
+    localStorage.getItem("gluu.api.token") ||
+    "f1e08391-47be-4c51-9ce3-1013b1badad7"
+  );
+}
 jansauth.accessToken = getApiAccessToken();
 
 const callback = function(error, data, res) {
@@ -14,13 +20,6 @@ const callback = function(error, data, res) {
   }
 };
 const api = new JansConfigApi.OAuthScopesApi();
-
-function getApiAccessToken() {
-  return (
-    localStorage.getItem("gluu.api.token") ||
-    "f1e08391-47be-4c51-9ce3-1013b1badad7"
-  );
-}
 
 // Get All scopes
 export const getAllScopes = async () => {

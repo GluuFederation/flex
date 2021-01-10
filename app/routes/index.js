@@ -33,6 +33,9 @@ import Timeline from "./Pages/Timeline";
 import { GluuNavBar } from "../routes/components/Navbars/GluuNavBar";
 import { DefaultSidebar } from "./../layout/components/DefaultSidebar";
 import { SidebarASidebar } from "./../layout/components/SidebarASidebar";
+import ScopeListPage from "./Apps/Scopes/ScopeListPage";
+import ScopeAddPage from "./Apps/Scopes/ScopeAddPage";
+import ScopeEditPage from "./Apps/Scopes/ScopeEditPage";
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -62,6 +65,10 @@ export const RoutedContent = () => {
       <Route component={ClientListPage} path="/clients" />
       <Route component={ClientAddPage} path="/client/new" />
       <Route component={ClientEditPage} path="/client/edit:gid" />
+
+      <Route component={ScopeListPage} path="/scopes" />
+      <Route component={ScopeAddPage} path="/scope/new" />
+      <Route component={ScopeEditPage} path="/scope/edit:gid" />
 
       {/*    Pages Routes    */}
       <Route component={ComingSoon} path="/pages/coming-soon" />

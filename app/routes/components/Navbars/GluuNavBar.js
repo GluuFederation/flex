@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-
 import {
   Avatar,
   AvatarAddOn,
@@ -12,14 +11,14 @@ import {
   SidebarTrigger,
   UncontrolledDropdown
 } from "../../../components";
-
 import { NavbarActivityFeed } from "../../../layout/components/NavbarActivityFeed";
 import { NavbarMessages } from "../../../layout/components/NavbarMessages";
 import { LanguageMenu } from "./LanguageMenu";
 import { DropdownProfile } from "../Dropdowns/DropdownProfile";
-
 import { randomAvatar } from "../../../utilities";
 const GluuNavBar = ({ themeColor, themeStyle }) => {
+  useEffect(() => {});
+
   return (
     <NavbarThemeProvider
       style={themeStyle}

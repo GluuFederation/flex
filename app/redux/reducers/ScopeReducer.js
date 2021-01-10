@@ -1,12 +1,14 @@
 import {
   GET_SCOPE_BY_INUM,
-  GET_SCOPE_BY_INUM_RESPONSE
+  GET_SCOPE_BY_INUM_RESPONSE,
+  GET_SCOPES,
+  GET_SCOPES_RESPONSE
 } from "../actions/types";
 
 const INIT_STATE = {
   scopes: [],
   currentScope: null,
-  loading: false
+  loading: true
 };
 
 export default (state = INIT_STATE, action) => {
@@ -19,6 +21,15 @@ export default (state = INIT_STATE, action) => {
 
     case GET_SCOPE_BY_INUM_RESPONSE:
       return { ...state, currentScope: action.payload.data, loading: false };
+
+    case GET_SCOPES:
+      console.log("**********************************yes");
+      return {
+        ...state,
+        loading: true
+      };
+    case GET_SCOPES_RESPONSE:
+      return { ...state, scopes: action.payload.data, loading: false };
     default:
       return {
         ...state

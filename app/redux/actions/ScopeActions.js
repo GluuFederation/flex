@@ -12,9 +12,9 @@ export const deleteScope = inum => ({
   payload: { inum }
 });
 
-export const deleteScopeResponse = data => ({
-  type: DELETE_SCOPE_RESPONSE,
-  payload: { data }
+export const getScope = inum => ({
+  type: GET_SCOPE_BY_INUM,
+  payload: { inum }
 });
 
 export const getScopes = () => ({
@@ -26,9 +26,9 @@ export const getScopesResponse = data => ({
   payload: { data }
 });
 
-export const getScope = inum => ({
-  type: GET_SCOPE_BY_INUM,
-  payload: { inum }
+export const deleteScopeResponse = data => ({
+  type: DELETE_SCOPE_RESPONSE,
+  payload: { data }
 });
 
 export const getScopeResponse = data => ({
