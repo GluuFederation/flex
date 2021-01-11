@@ -6,8 +6,28 @@ import {
 } from "../actions/types";
 
 const INIT_STATE = {
-  scopes: [],
-  currentScope: null,
+  scopes: [
+    {
+      dn: "inum=F0C4,ou=scopes,o=jans",
+      inum: "F0C4",
+      id: "openid",
+      description: "Authenticate using OpenID Connect.",
+      scopeType: "openid",
+      defaultScope: true,
+      attributes: { showInConfigurationEndpoint: true },
+      umaType: false
+    }
+  ],
+  currentScope: {
+    dn: "inum=F0C4,ou=scopes,o=jans",
+    inum: "F0C4",
+    id: "openid",
+    description: "Authenticate using OpenID Connect.",
+    scopeType: "openid",
+    defaultScope: true,
+    attributes: { showInConfigurationEndpoint: true },
+    umaType: false
+  },
   loading: true
 };
 

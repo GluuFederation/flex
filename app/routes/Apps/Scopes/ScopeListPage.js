@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
 import { useHistory } from "react-router-dom";
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 //import { scopes } from "../Scopes/scopes";
 import GluuDialog from "../Gluu/GluuDialog";
 import ClientDetailPage from "../Scopes/ScopeDetailPage";
 import { getScopes, deleteScope } from "../../../redux/actions/ScopeActions";
 
-function ScopeListPage({ scopes, loading }) {
-  //const scopes = useSelector(state => state.scopeReducer.scopes);
-  //const loading = useSelector(state => state.scopeReducer.loading);
-  console.log("===========================1 " + scopes);
-  console.log("===========================2 " + loading);
-  const dispatch = useDispatch();
+function ScopeListPage({ scopes, loading, dispatch }) {
+  useEffect(() => {
+    //dispatch(getScopes);
+  });
   const history = useHistory();
   const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);
@@ -42,7 +40,7 @@ function ScopeListPage({ scopes, loading }) {
           { title: "Type", field: "scopeType" }
         ]}
         data={scopes}
-        isLoading={false}
+        isLoading={!loading}
         title="OpenId Connect scopes && Uma scopes"
         actions={[
           rowData => ({
@@ -102,12 +100,17 @@ function ScopeListPage({ scopes, loading }) {
     </React.Fragment>
   );
 }
-const mapStateToProps = state => ({
-  scopes: state.scopeReducer.scopes,
-  loading: state.scopeReducer.loading
-});
 
-const mapDispatchToProps = dispatch => ({
-  getScopes: () => dispatch(getScopes)
-});
-export default connect(mapStateToProps, mapDispatchToProps)(ScopeListPage);
+const mapStateToProps = state => {
+  return {
+    scopes: state.scopeReducer.scopes,
+    loading: state.scopeReducer.loading
+  };
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getData: () => dispatch(getScopes())
+  };
+}
+export default connect(mapStateToProps)(ScopeListPage);
