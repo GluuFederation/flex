@@ -58,6 +58,16 @@
         done();
       });
     });
+    describe('patchConfigCacheMemcached', function() {
+      it('should call patchConfigCacheMemcached successfully', function(done) {
+        //uncomment below and update the code to test patchConfigCacheMemcached
+        //instance.patchConfigCacheMemcached(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
     describe('putConfigCacheMemcached', function() {
       it('should call putConfigCacheMemcached successfully', function(done) {
         //uncomment below and update the code to test putConfigCacheMemcached

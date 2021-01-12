@@ -12,11 +12,10 @@
  */
 
 import ApiClient from '../ApiClient';
-import AppConfigurationAuthenticationFilters from './AppConfigurationAuthenticationFilters';
-import AppConfigurationAuthenticationProtectionConfiguration from './AppConfigurationAuthenticationProtectionConfiguration';
-import AppConfigurationCibaEndUserNotificationConfig from './AppConfigurationCibaEndUserNotificationConfig';
-import AppConfigurationClientAuthenticationFilters from './AppConfigurationClientAuthenticationFilters';
-import AppConfigurationCorsConfigurationFilters from './AppConfigurationCorsConfigurationFilters';
+import AuthenticationFilters from './AuthenticationFilters';
+import AuthenticationProtectionConfiguration from './AuthenticationProtectionConfiguration';
+import CIBAEndUserNotificationConfig from './CIBAEndUserNotificationConfig';
+import CorsConfigurationFilter from './CorsConfigurationFilter';
 
 /**
  * The AppConfiguration model module.
@@ -53,9 +52,6 @@ class AppConfiguration {
         if (data) {
             obj = obj || new AppConfiguration();
 
-            if (data.hasOwnProperty('sessionAsJwt')) {
-                obj['sessionAsJwt'] = ApiClient.convertToType(data['sessionAsJwt'], 'Boolean');
-            }
             if (data.hasOwnProperty('issuer')) {
                 obj['issuer'] = ApiClient.convertToType(data['issuer'], 'String');
             }
@@ -101,29 +97,47 @@ class AppConfiguration {
             if (data.hasOwnProperty('introspectionEndpoint')) {
                 obj['introspectionEndpoint'] = ApiClient.convertToType(data['introspectionEndpoint'], 'String');
             }
-            if (data.hasOwnProperty('introspectionAccessTokenMustHaveUmaProtectionScope')) {
-                obj['introspectionAccessTokenMustHaveUmaProtectionScope'] = ApiClient.convertToType(data['introspectionAccessTokenMustHaveUmaProtectionScope'], 'Boolean');
+            if (data.hasOwnProperty('deviceAuthzEndpoint')) {
+                obj['deviceAuthzEndpoint'] = ApiClient.convertToType(data['deviceAuthzEndpoint'], 'String');
+            }
+            if (data.hasOwnProperty('sessionAsJwt')) {
+                obj['sessionAsJwt'] = ApiClient.convertToType(data['sessionAsJwt'], 'Boolean');
+            }
+            if (data.hasOwnProperty('sectorIdentifierCacheLifetimeInMinutes')) {
+                obj['sectorIdentifierCacheLifetimeInMinutes'] = ApiClient.convertToType(data['sectorIdentifierCacheLifetimeInMinutes'], 'Number');
             }
             if (data.hasOwnProperty('umaConfigurationEndpoint')) {
                 obj['umaConfigurationEndpoint'] = ApiClient.convertToType(data['umaConfigurationEndpoint'], 'String');
             }
-            if (data.hasOwnProperty('sectorIdentifierEndpoint')) {
-                obj['sectorIdentifierEndpoint'] = ApiClient.convertToType(data['sectorIdentifierEndpoint'], 'String');
+            if (data.hasOwnProperty('umaRptAsJwt')) {
+                obj['umaRptAsJwt'] = ApiClient.convertToType(data['umaRptAsJwt'], 'Boolean');
             }
-            if (data.hasOwnProperty('oxElevenGenerateKeyEndpoint')) {
-                obj['oxElevenGenerateKeyEndpoint'] = ApiClient.convertToType(data['oxElevenGenerateKeyEndpoint'], 'String');
+            if (data.hasOwnProperty('umaRptLifetime')) {
+                obj['umaRptLifetime'] = ApiClient.convertToType(data['umaRptLifetime'], 'Number');
             }
-            if (data.hasOwnProperty('oxElevenSignEndpoint')) {
-                obj['oxElevenSignEndpoint'] = ApiClient.convertToType(data['oxElevenSignEndpoint'], 'String');
+            if (data.hasOwnProperty('umaTicketLifetime')) {
+                obj['umaTicketLifetime'] = ApiClient.convertToType(data['umaTicketLifetime'], 'Number');
             }
-            if (data.hasOwnProperty('oxElevenVerifySignatureEndpoint')) {
-                obj['oxElevenVerifySignatureEndpoint'] = ApiClient.convertToType(data['oxElevenVerifySignatureEndpoint'], 'String');
+            if (data.hasOwnProperty('umaPctLifetime')) {
+                obj['umaPctLifetime'] = ApiClient.convertToType(data['umaPctLifetime'], 'Number');
             }
-            if (data.hasOwnProperty('oxElevenDeleteKeyEndpoint')) {
-                obj['oxElevenDeleteKeyEndpoint'] = ApiClient.convertToType(data['oxElevenDeleteKeyEndpoint'], 'String');
+            if (data.hasOwnProperty('umaResourceLifetime')) {
+                obj['umaResourceLifetime'] = ApiClient.convertToType(data['umaResourceLifetime'], 'Number');
             }
-            if (data.hasOwnProperty('oxElevenJwksEndpoint')) {
-                obj['oxElevenJwksEndpoint'] = ApiClient.convertToType(data['oxElevenJwksEndpoint'], 'String');
+            if (data.hasOwnProperty('umaAddScopesAutomatically')) {
+                obj['umaAddScopesAutomatically'] = ApiClient.convertToType(data['umaAddScopesAutomatically'], 'Boolean');
+            }
+            if (data.hasOwnProperty('umaValidateClaimToken')) {
+                obj['umaValidateClaimToken'] = ApiClient.convertToType(data['umaValidateClaimToken'], 'Boolean');
+            }
+            if (data.hasOwnProperty('umaGrantAccessIfNoPolicies')) {
+                obj['umaGrantAccessIfNoPolicies'] = ApiClient.convertToType(data['umaGrantAccessIfNoPolicies'], 'Boolean');
+            }
+            if (data.hasOwnProperty('umaRestrictResourceToAssociatedClient')) {
+                obj['umaRestrictResourceToAssociatedClient'] = ApiClient.convertToType(data['umaRestrictResourceToAssociatedClient'], 'Boolean');
+            }
+            if (data.hasOwnProperty('spontaneousScopeLifetime')) {
+                obj['spontaneousScopeLifetime'] = ApiClient.convertToType(data['spontaneousScopeLifetime'], 'Number');
             }
             if (data.hasOwnProperty('openidSubAttribute')) {
                 obj['openidSubAttribute'] = ApiClient.convertToType(data['openidSubAttribute'], 'String');
@@ -136,9 +150,6 @@ class AppConfiguration {
             }
             if (data.hasOwnProperty('grantTypesSupported')) {
                 obj['grantTypesSupported'] = ApiClient.convertToType(data['grantTypesSupported'], ['String']);
-            }
-            if (data.hasOwnProperty('dynamicGrantTypeDefault')) {
-                obj['dynamicGrantTypeDefault'] = ApiClient.convertToType(data['dynamicGrantTypeDefault'], ['String']);
             }
             if (data.hasOwnProperty('subjectTypesSupported')) {
                 obj['subjectTypesSupported'] = ApiClient.convertToType(data['subjectTypesSupported'], ['String']);
@@ -188,6 +199,9 @@ class AppConfiguration {
             if (data.hasOwnProperty('claimTypesSupported')) {
                 obj['claimTypesSupported'] = ApiClient.convertToType(data['claimTypesSupported'], ['String']);
             }
+            if (data.hasOwnProperty('jwksAlgorithmsSupported')) {
+                obj['jwksAlgorithmsSupported'] = ApiClient.convertToType(data['jwksAlgorithmsSupported'], ['String']);
+            }
             if (data.hasOwnProperty('serviceDocumentation')) {
                 obj['serviceDocumentation'] = ApiClient.convertToType(data['serviceDocumentation'], ['String']);
             }
@@ -200,12 +214,6 @@ class AppConfiguration {
             if (data.hasOwnProperty('uiLocalesSupported')) {
                 obj['uiLocalesSupported'] = ApiClient.convertToType(data['uiLocalesSupported'], ['String']);
             }
-            if (data.hasOwnProperty('persistIdTokenInLdap')) {
-                obj['persistIdTokenInLdap'] = ApiClient.convertToType(data['persistIdTokenInLdap'], 'Boolean');
-            }
-            if (data.hasOwnProperty('persistRefreshTokenInLdap')) {
-                obj['persistRefreshTokenInLdap'] = ApiClient.convertToType(data['persistRefreshTokenInLdap'], 'Boolean');
-            }
             if (data.hasOwnProperty('claimsParameterSupported')) {
                 obj['claimsParameterSupported'] = ApiClient.convertToType(data['claimsParameterSupported'], 'Boolean');
             }
@@ -214,6 +222,9 @@ class AppConfiguration {
             }
             if (data.hasOwnProperty('requestUriParameterSupported')) {
                 obj['requestUriParameterSupported'] = ApiClient.convertToType(data['requestUriParameterSupported'], 'Boolean');
+            }
+            if (data.hasOwnProperty('requestUriHashVerificationEnabled')) {
+                obj['requestUriHashVerificationEnabled'] = ApiClient.convertToType(data['requestUriHashVerificationEnabled'], 'Boolean');
             }
             if (data.hasOwnProperty('requireRequestUriRegistration')) {
                 obj['requireRequestUriRegistration'] = ApiClient.convertToType(data['requireRequestUriRegistration'], 'Boolean');
@@ -233,47 +244,20 @@ class AppConfiguration {
             if (data.hasOwnProperty('idTokenLifetime')) {
                 obj['idTokenLifetime'] = ApiClient.convertToType(data['idTokenLifetime'], 'Number');
             }
+            if (data.hasOwnProperty('idTokenFilterClaimsBasedOnAccessToken')) {
+                obj['idTokenFilterClaimsBasedOnAccessToken'] = ApiClient.convertToType(data['idTokenFilterClaimsBasedOnAccessToken'], 'Boolean');
+            }
             if (data.hasOwnProperty('accessTokenLifetime')) {
                 obj['accessTokenLifetime'] = ApiClient.convertToType(data['accessTokenLifetime'], 'Number');
-            }
-            if (data.hasOwnProperty('umaRptLifetime')) {
-                obj['umaRptLifetime'] = ApiClient.convertToType(data['umaRptLifetime'], 'Number');
-            }
-            if (data.hasOwnProperty('umaTicketLifetime')) {
-                obj['umaTicketLifetime'] = ApiClient.convertToType(data['umaTicketLifetime'], 'Number');
-            }
-            if (data.hasOwnProperty('umaPctLifetime')) {
-                obj['umaPctLifetime'] = ApiClient.convertToType(data['umaPctLifetime'], 'Number');
-            }
-            if (data.hasOwnProperty('umaResourceLifetime')) {
-                obj['umaResourceLifetime'] = ApiClient.convertToType(data['umaResourceLifetime'], 'Number');
-            }
-            if (data.hasOwnProperty('umaAddScopesAutomatically')) {
-                obj['umaAddScopesAutomatically'] = ApiClient.convertToType(data['umaAddScopesAutomatically'], 'Boolean');
-            }
-            if (data.hasOwnProperty('umaValidateClaimToken')) {
-                obj['umaValidateClaimToken'] = ApiClient.convertToType(data['umaValidateClaimToken'], 'Boolean');
-            }
-            if (data.hasOwnProperty('umaGrantAccessIfNoPolicies')) {
-                obj['umaGrantAccessIfNoPolicies'] = ApiClient.convertToType(data['umaGrantAccessIfNoPolicies'], 'Boolean');
-            }
-            if (data.hasOwnProperty('umaRestrictResourceToAssociatedClient')) {
-                obj['umaRestrictResourceToAssociatedClient'] = ApiClient.convertToType(data['umaRestrictResourceToAssociatedClient'], 'Boolean');
-            }
-            if (data.hasOwnProperty('umaKeepClientDuringResourceSetRegistration')) {
-                obj['umaKeepClientDuringResourceSetRegistration'] = ApiClient.convertToType(data['umaKeepClientDuringResourceSetRegistration'], 'Boolean');
-            }
-            if (data.hasOwnProperty('umaRptAsJwt')) {
-                obj['umaRptAsJwt'] = ApiClient.convertToType(data['umaRptAsJwt'], 'Boolean');
             }
             if (data.hasOwnProperty('cleanServiceInterval')) {
                 obj['cleanServiceInterval'] = ApiClient.convertToType(data['cleanServiceInterval'], 'Number');
             }
-            if (data.hasOwnProperty('cleanServiceBaseDns')) {
-                obj['cleanServiceBaseDns'] = ApiClient.convertToType(data['cleanServiceBaseDns'], ['String']);
-            }
             if (data.hasOwnProperty('cleanServiceBatchChunkSize')) {
                 obj['cleanServiceBatchChunkSize'] = ApiClient.convertToType(data['cleanServiceBatchChunkSize'], 'Number');
+            }
+            if (data.hasOwnProperty('cleanServiceBaseDns')) {
+                obj['cleanServiceBaseDns'] = ApiClient.convertToType(data['cleanServiceBaseDns'], ['String']);
             }
             if (data.hasOwnProperty('keyRegenerationEnabled')) {
                 obj['keyRegenerationEnabled'] = ApiClient.convertToType(data['keyRegenerationEnabled'], 'Boolean');
@@ -287,8 +271,8 @@ class AppConfiguration {
             if (data.hasOwnProperty('oxOpenIdConnectVersion')) {
                 obj['oxOpenIdConnectVersion'] = ApiClient.convertToType(data['oxOpenIdConnectVersion'], 'String');
             }
-            if (data.hasOwnProperty('jansId')) {
-                obj['jansId'] = ApiClient.convertToType(data['jansId'], 'String');
+            if (data.hasOwnProperty('oxId')) {
+                obj['oxId'] = ApiClient.convertToType(data['oxId'], 'String');
             }
             if (data.hasOwnProperty('dynamicRegistrationEnabled')) {
                 obj['dynamicRegistrationEnabled'] = ApiClient.convertToType(data['dynamicRegistrationEnabled'], 'Boolean');
@@ -302,8 +286,17 @@ class AppConfiguration {
             if (data.hasOwnProperty('trustedClientEnabled')) {
                 obj['trustedClientEnabled'] = ApiClient.convertToType(data['trustedClientEnabled'], 'Boolean');
             }
+            if (data.hasOwnProperty('skipAuthorizationForOpenIdScopeAndPairwiseId')) {
+                obj['skipAuthorizationForOpenIdScopeAndPairwiseId'] = ApiClient.convertToType(data['skipAuthorizationForOpenIdScopeAndPairwiseId'], 'Boolean');
+            }
             if (data.hasOwnProperty('dynamicRegistrationScopesParamEnabled')) {
                 obj['dynamicRegistrationScopesParamEnabled'] = ApiClient.convertToType(data['dynamicRegistrationScopesParamEnabled'], 'Boolean');
+            }
+            if (data.hasOwnProperty('dynamicRegistrationPasswordGrantTypeEnabled')) {
+                obj['dynamicRegistrationPasswordGrantTypeEnabled'] = ApiClient.convertToType(data['dynamicRegistrationPasswordGrantTypeEnabled'], 'Boolean');
+            }
+            if (data.hasOwnProperty('dynamicRegistrationAllowedPasswordGrantScopes')) {
+                obj['dynamicRegistrationAllowedPasswordGrantScopes'] = ApiClient.convertToType(data['dynamicRegistrationAllowedPasswordGrantScopes'], ['String']);
             }
             if (data.hasOwnProperty('dynamicRegistrationCustomObjectClass')) {
                 obj['dynamicRegistrationCustomObjectClass'] = ApiClient.convertToType(data['dynamicRegistrationCustomObjectClass'], 'String');
@@ -311,17 +304,53 @@ class AppConfiguration {
             if (data.hasOwnProperty('personCustomObjectClassList')) {
                 obj['personCustomObjectClassList'] = ApiClient.convertToType(data['personCustomObjectClassList'], ['String']);
             }
+            if (data.hasOwnProperty('persistIdTokenInLdap')) {
+                obj['persistIdTokenInLdap'] = ApiClient.convertToType(data['persistIdTokenInLdap'], 'Boolean');
+            }
+            if (data.hasOwnProperty('persistRefreshTokenInLdap')) {
+                obj['persistRefreshTokenInLdap'] = ApiClient.convertToType(data['persistRefreshTokenInLdap'], 'Boolean');
+            }
+            if (data.hasOwnProperty('allowPostLogoutRedirectWithoutValidation')) {
+                obj['allowPostLogoutRedirectWithoutValidation'] = ApiClient.convertToType(data['allowPostLogoutRedirectWithoutValidation'], 'Boolean');
+            }
+            if (data.hasOwnProperty('invalidateSessionCookiesAfterAuthorizationFlow')) {
+                obj['invalidateSessionCookiesAfterAuthorizationFlow'] = ApiClient.convertToType(data['invalidateSessionCookiesAfterAuthorizationFlow'], 'Boolean');
+            }
+            if (data.hasOwnProperty('returnClientSecretOnRead')) {
+                obj['returnClientSecretOnRead'] = ApiClient.convertToType(data['returnClientSecretOnRead'], 'Boolean');
+            }
+            if (data.hasOwnProperty('rejectJwtWithNoneAlg')) {
+                obj['rejectJwtWithNoneAlg'] = ApiClient.convertToType(data['rejectJwtWithNoneAlg'], 'Boolean');
+            }
+            if (data.hasOwnProperty('expirationNotificatorEnabled')) {
+                obj['expirationNotificatorEnabled'] = ApiClient.convertToType(data['expirationNotificatorEnabled'], 'Boolean');
+            }
+            if (data.hasOwnProperty('useNestedJwtDuringEncryption')) {
+                obj['useNestedJwtDuringEncryption'] = ApiClient.convertToType(data['useNestedJwtDuringEncryption'], 'Boolean');
+            }
+            if (data.hasOwnProperty('expirationNotificatorMapSizeLimit')) {
+                obj['expirationNotificatorMapSizeLimit'] = ApiClient.convertToType(data['expirationNotificatorMapSizeLimit'], 'Number');
+            }
+            if (data.hasOwnProperty('expirationNotificatorIntervalInSeconds')) {
+                obj['expirationNotificatorIntervalInSeconds'] = ApiClient.convertToType(data['expirationNotificatorIntervalInSeconds'], 'Number');
+            }
             if (data.hasOwnProperty('authenticationFiltersEnabled')) {
                 obj['authenticationFiltersEnabled'] = ApiClient.convertToType(data['authenticationFiltersEnabled'], 'Boolean');
             }
             if (data.hasOwnProperty('clientAuthenticationFiltersEnabled')) {
                 obj['clientAuthenticationFiltersEnabled'] = ApiClient.convertToType(data['clientAuthenticationFiltersEnabled'], 'Boolean');
             }
+            if (data.hasOwnProperty('clientRegDefaultToCodeFlowWithRefresh')) {
+                obj['clientRegDefaultToCodeFlowWithRefresh'] = ApiClient.convertToType(data['clientRegDefaultToCodeFlowWithRefresh'], 'Boolean');
+            }
             if (data.hasOwnProperty('authenticationFilters')) {
-                obj['authenticationFilters'] = ApiClient.convertToType(data['authenticationFilters'], [AppConfigurationAuthenticationFilters]);
+                obj['authenticationFilters'] = ApiClient.convertToType(data['authenticationFilters'], [AuthenticationFilters]);
             }
             if (data.hasOwnProperty('clientAuthenticationFilters')) {
-                obj['clientAuthenticationFilters'] = ApiClient.convertToType(data['clientAuthenticationFilters'], [AppConfigurationClientAuthenticationFilters]);
+                obj['clientAuthenticationFilters'] = ApiClient.convertToType(data['clientAuthenticationFilters'], [AuthenticationFilters]);
+            }
+            if (data.hasOwnProperty('corsConfigurationFilters')) {
+                obj['corsConfigurationFilters'] = ApiClient.convertToType(data['corsConfigurationFilters'], [CorsConfigurationFilter]);
             }
             if (data.hasOwnProperty('sessionIdUnusedLifetime')) {
                 obj['sessionIdUnusedLifetime'] = ApiClient.convertToType(data['sessionIdUnusedLifetime'], 'Number');
@@ -329,17 +358,35 @@ class AppConfiguration {
             if (data.hasOwnProperty('sessionIdUnauthenticatedUnusedLifetime')) {
                 obj['sessionIdUnauthenticatedUnusedLifetime'] = ApiClient.convertToType(data['sessionIdUnauthenticatedUnusedLifetime'], 'Number');
             }
-            if (data.hasOwnProperty('sessionIdLifetime')) {
-                obj['sessionIdLifetime'] = ApiClient.convertToType(data['sessionIdLifetime'], 'Number');
-            }
             if (data.hasOwnProperty('sessionIdEnabled')) {
                 obj['sessionIdEnabled'] = ApiClient.convertToType(data['sessionIdEnabled'], 'Boolean');
             }
             if (data.hasOwnProperty('sessionIdPersistOnPromptNone')) {
                 obj['sessionIdPersistOnPromptNone'] = ApiClient.convertToType(data['sessionIdPersistOnPromptNone'], 'Boolean');
             }
+            if (data.hasOwnProperty('sessionIdRequestParameterEnabled')) {
+                obj['sessionIdRequestParameterEnabled'] = ApiClient.convertToType(data['sessionIdRequestParameterEnabled'], 'Boolean');
+            }
+            if (data.hasOwnProperty('changeSessionIdOnAuthentication')) {
+                obj['changeSessionIdOnAuthentication'] = ApiClient.convertToType(data['changeSessionIdOnAuthentication'], 'Boolean');
+            }
+            if (data.hasOwnProperty('sessionIdPersistInCache')) {
+                obj['sessionIdPersistInCache'] = ApiClient.convertToType(data['sessionIdPersistInCache'], 'Boolean');
+            }
+            if (data.hasOwnProperty('sessionIdLifetime')) {
+                obj['sessionIdLifetime'] = ApiClient.convertToType(data['sessionIdLifetime'], 'Number');
+            }
+            if (data.hasOwnProperty('serverSessionIdLifetime')) {
+                obj['serverSessionIdLifetime'] = ApiClient.convertToType(data['serverSessionIdLifetime'], 'Number');
+            }
             if (data.hasOwnProperty('configurationUpdateInterval')) {
                 obj['configurationUpdateInterval'] = ApiClient.convertToType(data['configurationUpdateInterval'], 'Number');
+            }
+            if (data.hasOwnProperty('enableClientGrantTypeUpdate')) {
+                obj['enableClientGrantTypeUpdate'] = ApiClient.convertToType(data['enableClientGrantTypeUpdate'], 'Boolean');
+            }
+            if (data.hasOwnProperty('dynamicGrantTypeDefault')) {
+                obj['dynamicGrantTypeDefault'] = ApiClient.convertToType(data['dynamicGrantTypeDefault'], ['String']);
             }
             if (data.hasOwnProperty('cssLocation')) {
                 obj['cssLocation'] = ApiClient.convertToType(data['cssLocation'], 'String');
@@ -383,8 +430,44 @@ class AppConfiguration {
             if (data.hasOwnProperty('keyStoreSecret')) {
                 obj['keyStoreSecret'] = ApiClient.convertToType(data['keyStoreSecret'], 'String');
             }
+            if (data.hasOwnProperty('keySelectionStrategy')) {
+                obj['keySelectionStrategy'] = ApiClient.convertToType(data['keySelectionStrategy'], 'String');
+            }
+            if (data.hasOwnProperty('oxElevenTestModeToken')) {
+                obj['oxElevenTestModeToken'] = ApiClient.convertToType(data['oxElevenTestModeToken'], 'String');
+            }
+            if (data.hasOwnProperty('oxElevenGenerateKeyEndpoint')) {
+                obj['oxElevenGenerateKeyEndpoint'] = ApiClient.convertToType(data['oxElevenGenerateKeyEndpoint'], 'String');
+            }
+            if (data.hasOwnProperty('oxElevenSignEndpoint')) {
+                obj['oxElevenSignEndpoint'] = ApiClient.convertToType(data['oxElevenSignEndpoint'], 'String');
+            }
+            if (data.hasOwnProperty('oxElevenVerifySignatureEndpoint')) {
+                obj['oxElevenVerifySignatureEndpoint'] = ApiClient.convertToType(data['oxElevenVerifySignatureEndpoint'], 'String');
+            }
+            if (data.hasOwnProperty('oxElevenDeleteKeyEndpoint')) {
+                obj['oxElevenDeleteKeyEndpoint'] = ApiClient.convertToType(data['oxElevenDeleteKeyEndpoint'], 'String');
+            }
+            if (data.hasOwnProperty('introspectionAccessTokenMustHaveUmaProtectionScope')) {
+                obj['introspectionAccessTokenMustHaveUmaProtectionScope'] = ApiClient.convertToType(data['introspectionAccessTokenMustHaveUmaProtectionScope'], 'Boolean');
+            }
             if (data.hasOwnProperty('endSessionWithAccessToken')) {
                 obj['endSessionWithAccessToken'] = ApiClient.convertToType(data['endSessionWithAccessToken'], 'Boolean');
+            }
+            if (data.hasOwnProperty('cookieDomain')) {
+                obj['cookieDomain'] = ApiClient.convertToType(data['cookieDomain'], 'String');
+            }
+            if (data.hasOwnProperty('enabledOAuthAuditLogging')) {
+                obj['enabledOAuthAuditLogging'] = ApiClient.convertToType(data['enabledOAuthAuditLogging'], 'Boolean');
+            }
+            if (data.hasOwnProperty('jmsBrokerURISet')) {
+                obj['jmsBrokerURISet'] = ApiClient.convertToType(data['jmsBrokerURISet'], ['String']);
+            }
+            if (data.hasOwnProperty('jmsUserName')) {
+                obj['jmsUserName'] = ApiClient.convertToType(data['jmsUserName'], 'String');
+            }
+            if (data.hasOwnProperty('jmsPassword')) {
+                obj['jmsPassword'] = ApiClient.convertToType(data['jmsPassword'], 'String');
             }
             if (data.hasOwnProperty('clientWhiteList')) {
                 obj['clientWhiteList'] = ApiClient.convertToType(data['clientWhiteList'], ['String']);
@@ -401,11 +484,11 @@ class AppConfiguration {
             if (data.hasOwnProperty('frontChannelLogoutSessionSupported')) {
                 obj['frontChannelLogoutSessionSupported'] = ApiClient.convertToType(data['frontChannelLogoutSessionSupported'], 'Boolean');
             }
-            if (data.hasOwnProperty('useCacheForAllImplicitFlowObjects')) {
-                obj['useCacheForAllImplicitFlowObjects'] = ApiClient.convertToType(data['useCacheForAllImplicitFlowObjects'], 'Boolean');
+            if (data.hasOwnProperty('loggingLevel')) {
+                obj['loggingLevel'] = ApiClient.convertToType(data['loggingLevel'], 'String');
             }
-            if (data.hasOwnProperty('invalidateSessionCookiesAfterAuthorizationFlow')) {
-                obj['invalidateSessionCookiesAfterAuthorizationFlow'] = ApiClient.convertToType(data['invalidateSessionCookiesAfterAuthorizationFlow'], 'Boolean');
+            if (data.hasOwnProperty('loggingLayout')) {
+                obj['loggingLayout'] = ApiClient.convertToType(data['loggingLayout'], 'String');
             }
             if (data.hasOwnProperty('updateUserLastLogonTime')) {
                 obj['updateUserLastLogonTime'] = ApiClient.convertToType(data['updateUserLastLogonTime'], 'Boolean');
@@ -413,20 +496,14 @@ class AppConfiguration {
             if (data.hasOwnProperty('updateClientAccessTime')) {
                 obj['updateClientAccessTime'] = ApiClient.convertToType(data['updateClientAccessTime'], 'Boolean');
             }
-            if (data.hasOwnProperty('enableClientGrantTypeUpdate')) {
-                obj['enableClientGrantTypeUpdate'] = ApiClient.convertToType(data['enableClientGrantTypeUpdate'], 'Boolean');
-            }
-            if (data.hasOwnProperty('loggingLevel')) {
-                obj['loggingLevel'] = ApiClient.convertToType(data['loggingLevel'], 'String');
-            }
-            if (data.hasOwnProperty('corsConfigurationFilters')) {
-                obj['corsConfigurationFilters'] = ApiClient.convertToType(data['corsConfigurationFilters'], [AppConfigurationCorsConfigurationFilters]);
-            }
             if (data.hasOwnProperty('logClientIdOnClientAuthentication')) {
                 obj['logClientIdOnClientAuthentication'] = ApiClient.convertToType(data['logClientIdOnClientAuthentication'], 'Boolean');
             }
             if (data.hasOwnProperty('logClientNameOnClientAuthentication')) {
                 obj['logClientNameOnClientAuthentication'] = ApiClient.convertToType(data['logClientNameOnClientAuthentication'], 'Boolean');
+            }
+            if (data.hasOwnProperty('disableJdkLogger')) {
+                obj['disableJdkLogger'] = ApiClient.convertToType(data['disableJdkLogger'], 'Boolean');
             }
             if (data.hasOwnProperty('authorizationRequestCustomAllowedParameters')) {
                 obj['authorizationRequestCustomAllowedParameters'] = ApiClient.convertToType(data['authorizationRequestCustomAllowedParameters'], ['String']);
@@ -437,92 +514,11 @@ class AppConfiguration {
             if (data.hasOwnProperty('openidScopeBackwardCompatibility')) {
                 obj['openidScopeBackwardCompatibility'] = ApiClient.convertToType(data['openidScopeBackwardCompatibility'], 'Boolean');
             }
-            if (data.hasOwnProperty('skipAuthorizationForOpenIdScopeAndPairwiseId')) {
-                obj['skipAuthorizationForOpenIdScopeAndPairwiseId'] = ApiClient.convertToType(data['skipAuthorizationForOpenIdScopeAndPairwiseId'], 'Boolean');
-            }
-            if (data.hasOwnProperty('allowPostLogoutRedirectWithoutValidation')) {
-                obj['allowPostLogoutRedirectWithoutValidation'] = ApiClient.convertToType(data['allowPostLogoutRedirectWithoutValidation'], 'Boolean');
-            }
-            if (data.hasOwnProperty('httpLoggingEnabled')) {
-                obj['httpLoggingEnabled'] = ApiClient.convertToType(data['httpLoggingEnabled'], 'Boolean');
-            }
-            if (data.hasOwnProperty('httpLoggingExludePaths')) {
-                obj['httpLoggingExludePaths'] = ApiClient.convertToType(data['httpLoggingExludePaths'], ['String']);
-            }
-            if (data.hasOwnProperty('externalLoggerConfiguration')) {
-                obj['externalLoggerConfiguration'] = ApiClient.convertToType(data['externalLoggerConfiguration'], 'String');
-            }
             if (data.hasOwnProperty('disableU2fEndpoint')) {
                 obj['disableU2fEndpoint'] = ApiClient.convertToType(data['disableU2fEndpoint'], 'Boolean');
             }
-            if (data.hasOwnProperty('disableJdkLogger')) {
-                obj['disableJdkLogger'] = ApiClient.convertToType(data['disableJdkLogger'], 'Boolean');
-            }
-            if (data.hasOwnProperty('jmsUserName')) {
-                obj['jmsUserName'] = ApiClient.convertToType(data['jmsUserName'], 'String');
-            }
-            if (data.hasOwnProperty('jmsPassword')) {
-                obj['jmsPassword'] = ApiClient.convertToType(data['jmsPassword'], 'String');
-            }
-            if (data.hasOwnProperty('jmsBrokerURISet')) {
-                obj['jmsBrokerURISet'] = ApiClient.convertToType(data['jmsBrokerURISet'], ['String']);
-            }
-            if (data.hasOwnProperty('oxElevenTestModeToken')) {
-                obj['oxElevenTestModeToken'] = ApiClient.convertToType(data['oxElevenTestModeToken'], 'String');
-            }
-            if (data.hasOwnProperty('enabledOAuthAuditLogging')) {
-                obj['enabledOAuthAuditLogging'] = ApiClient.convertToType(data['enabledOAuthAuditLogging'], 'Boolean');
-            }
-            if (data.hasOwnProperty('authenticationProtectionConfiguration')) {
-                obj['authenticationProtectionConfiguration'] = AppConfigurationAuthenticationProtectionConfiguration.constructFromObject(data['authenticationProtectionConfiguration']);
-            }
-            if (data.hasOwnProperty('errorHandlingMethod')) {
-                obj['errorHandlingMethod'] = ApiClient.convertToType(data['errorHandlingMethod'], 'String');
-            }
             if (data.hasOwnProperty('useLocalCache')) {
                 obj['useLocalCache'] = ApiClient.convertToType(data['useLocalCache'], 'Boolean');
-            }
-            if (data.hasOwnProperty('spontaneousScopeLifetime')) {
-                obj['spontaneousScopeLifetime'] = ApiClient.convertToType(data['spontaneousScopeLifetime'], 'Number');
-            }
-            if (data.hasOwnProperty('jwksAlgorithmsSupported')) {
-                obj['jwksAlgorithmsSupported'] = ApiClient.convertToType(data['jwksAlgorithmsSupported'], ['String']);
-            }
-            if (data.hasOwnProperty('dynamicRegistrationPasswordGrantTypeEnabled')) {
-                obj['dynamicRegistrationPasswordGrantTypeEnabled'] = ApiClient.convertToType(data['dynamicRegistrationPasswordGrantTypeEnabled'], 'Boolean');
-            }
-            if (data.hasOwnProperty('returnClientSecretOnRead')) {
-                obj['returnClientSecretOnRead'] = ApiClient.convertToType(data['returnClientSecretOnRead'], 'Boolean');
-            }
-            if (data.hasOwnProperty('rejectJwtWithNoneAlg')) {
-                obj['rejectJwtWithNoneAlg'] = ApiClient.convertToType(data['rejectJwtWithNoneAlg'], 'Boolean');
-            }
-            if (data.hasOwnProperty('expirationNotificatorEnabled')) {
-                obj['expirationNotificatorEnabled'] = ApiClient.convertToType(data['expirationNotificatorEnabled'], 'Boolean');
-            }
-            if (data.hasOwnProperty('expirationNotificatorMapSizeLimit')) {
-                obj['expirationNotificatorMapSizeLimit'] = ApiClient.convertToType(data['expirationNotificatorMapSizeLimit'], 'Number');
-            }
-            if (data.hasOwnProperty('expirationNotificatorIntervalInSeconds')) {
-                obj['expirationNotificatorIntervalInSeconds'] = ApiClient.convertToType(data['expirationNotificatorIntervalInSeconds'], 'Number');
-            }
-            if (data.hasOwnProperty('clientRegDefaultToCodeFlowWithRefresh')) {
-                obj['clientRegDefaultToCodeFlowWithRefresh'] = ApiClient.convertToType(data['clientRegDefaultToCodeFlowWithRefresh'], 'Boolean');
-            }
-            if (data.hasOwnProperty('sessionIdRequestParameterEnabled')) {
-                obj['sessionIdRequestParameterEnabled'] = ApiClient.convertToType(data['sessionIdRequestParameterEnabled'], 'Boolean');
-            }
-            if (data.hasOwnProperty('changeSessionIdOnAuthentication')) {
-                obj['changeSessionIdOnAuthentication'] = ApiClient.convertToType(data['changeSessionIdOnAuthentication'], 'Boolean');
-            }
-            if (data.hasOwnProperty('serverSessionIdLifetime')) {
-                obj['serverSessionIdLifetime'] = ApiClient.convertToType(data['serverSessionIdLifetime'], 'Number');
-            }
-            if (data.hasOwnProperty('cookieDomain')) {
-                obj['cookieDomain'] = ApiClient.convertToType(data['cookieDomain'], 'String');
-            }
-            if (data.hasOwnProperty('loggingLayout')) {
-                obj['loggingLayout'] = ApiClient.convertToType(data['loggingLayout'], 'String');
             }
             if (data.hasOwnProperty('fapiCompatibility')) {
                 obj['fapiCompatibility'] = ApiClient.convertToType(data['fapiCompatibility'], 'Boolean');
@@ -539,14 +535,44 @@ class AppConfiguration {
             if (data.hasOwnProperty('removeRefreshTokensForClientOnLogout')) {
                 obj['removeRefreshTokensForClientOnLogout'] = ApiClient.convertToType(data['removeRefreshTokensForClientOnLogout'], 'Boolean');
             }
+            if (data.hasOwnProperty('skipRefreshTokenDuringRefreshing')) {
+                obj['skipRefreshTokenDuringRefreshing'] = ApiClient.convertToType(data['skipRefreshTokenDuringRefreshing'], 'Boolean');
+            }
+            if (data.hasOwnProperty('refreshTokenExtendLifetimeOnRotation')) {
+                obj['refreshTokenExtendLifetimeOnRotation'] = ApiClient.convertToType(data['refreshTokenExtendLifetimeOnRotation'], 'Boolean');
+            }
             if (data.hasOwnProperty('consentGatheringScriptBackwardCompatibility')) {
                 obj['consentGatheringScriptBackwardCompatibility'] = ApiClient.convertToType(data['consentGatheringScriptBackwardCompatibility'], 'Boolean');
             }
             if (data.hasOwnProperty('introspectionScriptBackwardCompatibility')) {
                 obj['introspectionScriptBackwardCompatibility'] = ApiClient.convertToType(data['introspectionScriptBackwardCompatibility'], 'Boolean');
             }
+            if (data.hasOwnProperty('introspectionResponseScopesBackwardCompatibility')) {
+                obj['introspectionResponseScopesBackwardCompatibility'] = ApiClient.convertToType(data['introspectionResponseScopesBackwardCompatibility'], 'Boolean');
+            }
+            if (data.hasOwnProperty('softwareStatementValidationType')) {
+                obj['softwareStatementValidationType'] = ApiClient.convertToType(data['softwareStatementValidationType'], 'String');
+            }
+            if (data.hasOwnProperty('softwareStatementValidationClaimName')) {
+                obj['softwareStatementValidationClaimName'] = ApiClient.convertToType(data['softwareStatementValidationClaimName'], 'String');
+            }
+            if (data.hasOwnProperty('authenticationProtectionConfiguration')) {
+                obj['authenticationProtectionConfiguration'] = AuthenticationProtectionConfiguration.constructFromObject(data['authenticationProtectionConfiguration']);
+            }
+            if (data.hasOwnProperty('errorHandlingMethod')) {
+                obj['errorHandlingMethod'] = ApiClient.convertToType(data['errorHandlingMethod'], 'String');
+            }
             if (data.hasOwnProperty('keepAuthenticatorAttributesOnAcrChange')) {
                 obj['keepAuthenticatorAttributesOnAcrChange'] = ApiClient.convertToType(data['keepAuthenticatorAttributesOnAcrChange'], 'Boolean');
+            }
+            if (data.hasOwnProperty('deviceAuthzRequestExpiresIn')) {
+                obj['deviceAuthzRequestExpiresIn'] = ApiClient.convertToType(data['deviceAuthzRequestExpiresIn'], 'Number');
+            }
+            if (data.hasOwnProperty('deviceAuthzTokenPollInterval')) {
+                obj['deviceAuthzTokenPollInterval'] = ApiClient.convertToType(data['deviceAuthzTokenPollInterval'], 'Number');
+            }
+            if (data.hasOwnProperty('deviceAuthzResponseTypeToProcessAuthz')) {
+                obj['deviceAuthzResponseTypeToProcessAuthz'] = ApiClient.convertToType(data['deviceAuthzResponseTypeToProcessAuthz'], 'String');
             }
             if (data.hasOwnProperty('backchannelClientId')) {
                 obj['backchannelClientId'] = ApiClient.convertToType(data['backchannelClientId'], 'String');
@@ -582,7 +608,7 @@ class AppConfiguration {
                 obj['backchannelLoginHintClaims'] = ApiClient.convertToType(data['backchannelLoginHintClaims'], ['String']);
             }
             if (data.hasOwnProperty('cibaEndUserNotificationConfig')) {
-                obj['cibaEndUserNotificationConfig'] = AppConfigurationCibaEndUserNotificationConfig.constructFromObject(data['cibaEndUserNotificationConfig']);
+                obj['cibaEndUserNotificationConfig'] = CIBAEndUserNotificationConfig.constructFromObject(data['cibaEndUserNotificationConfig']);
             }
             if (data.hasOwnProperty('backchannelRequestsProcessorJobIntervalSec')) {
                 obj['backchannelRequestsProcessorJobIntervalSec'] = ApiClient.convertToType(data['backchannelRequestsProcessorJobIntervalSec'], 'Number');
@@ -596,18 +622,27 @@ class AppConfiguration {
             if (data.hasOwnProperty('cibaMaxExpirationTimeAllowedSec')) {
                 obj['cibaMaxExpirationTimeAllowedSec'] = ApiClient.convertToType(data['cibaMaxExpirationTimeAllowedSec'], 'Number');
             }
+            if (data.hasOwnProperty('cibaEnabled')) {
+                obj['cibaEnabled'] = ApiClient.convertToType(data['cibaEnabled'], 'Boolean');
+            }
+            if (data.hasOwnProperty('discoveryCacheLifetimeInMinutes')) {
+                obj['discoveryCacheLifetimeInMinutes'] = ApiClient.convertToType(data['discoveryCacheLifetimeInMinutes'], 'Number');
+            }
+            if (data.hasOwnProperty('httpLoggingEnabled')) {
+                obj['httpLoggingEnabled'] = ApiClient.convertToType(data['httpLoggingEnabled'], 'Boolean');
+            }
+            if (data.hasOwnProperty('httpLoggingExludePaths')) {
+                obj['httpLoggingExludePaths'] = ApiClient.convertToType(data['httpLoggingExludePaths'], ['String']);
+            }
+            if (data.hasOwnProperty('externalLoggerConfiguration')) {
+                obj['externalLoggerConfiguration'] = ApiClient.convertToType(data['externalLoggerConfiguration'], 'String');
+            }
         }
         return obj;
     }
 
 
 }
-
-/**
- * Boolean value true saves session data as a JWT.
- * @member {Boolean} sessionAsJwt
- */
-AppConfiguration.prototype['sessionAsJwt'] = undefined;
 
 /**
  * URL using the https scheme that OP asserts as Issuer identifier.
@@ -664,7 +699,7 @@ AppConfiguration.prototype['checkSessionIFrame'] = undefined;
 AppConfiguration.prototype['endSessionEndpoint'] = undefined;
 
 /**
- * URL of the OP's JSON Web Key Set (JWK) document. This contains the signing key(s) the RP uses to validate signatures from the OP.
+ * URL of the OP\\'s JSON Web Key Set (JWK) document. This contains the signing key(s) the RP uses to validate signatures from the OP.
  * @member {String} jwksUri
  */
 AppConfiguration.prototype['jwksUri'] = undefined;
@@ -700,11 +735,22 @@ AppConfiguration.prototype['idGenerationEndpoint'] = undefined;
 AppConfiguration.prototype['introspectionEndpoint'] = undefined;
 
 /**
- * Reject introspection requests if access_token in Authorization header does not have uma_protection scope.
- * @member {Boolean} introspectionAccessTokenMustHaveUmaProtectionScope
- * @default false
+ * URL for the Device Authorization.
+ * @member {String} deviceAuthzEndpoint
  */
-AppConfiguration.prototype['introspectionAccessTokenMustHaveUmaProtectionScope'] = false;
+AppConfiguration.prototype['deviceAuthzEndpoint'] = undefined;
+
+/**
+ * Boolean value true saves session data as a JWT.
+ * @member {Boolean} sessionAsJwt
+ */
+AppConfiguration.prototype['sessionAsJwt'] = undefined;
+
+/**
+ * Sector Identifier cache lifetime in minutes.
+ * @member {Number} sectorIdentifierCacheLifetimeInMinutes
+ */
+AppConfiguration.prototype['sectorIdentifierCacheLifetimeInMinutes'] = undefined;
 
 /**
  * URL for the UMA Configuration Endpoint.
@@ -713,40 +759,64 @@ AppConfiguration.prototype['introspectionAccessTokenMustHaveUmaProtectionScope']
 AppConfiguration.prototype['umaConfigurationEndpoint'] = undefined;
 
 /**
- * URL for the Sector Identifier Endpoint.
- * @member {String} sectorIdentifierEndpoint
+ * Issue RPT as JWT or as random string.
+ * @member {Boolean} umaRptAsJwt
  */
-AppConfiguration.prototype['sectorIdentifierEndpoint'] = undefined;
+AppConfiguration.prototype['umaRptAsJwt'] = undefined;
 
 /**
- * URL for the oxEleven Generate Key Endpoint.
- * @member {String} oxElevenGenerateKeyEndpoint
+ * UMA RPT lifetime.
+ * @member {Number} umaRptLifetime
  */
-AppConfiguration.prototype['oxElevenGenerateKeyEndpoint'] = undefined;
+AppConfiguration.prototype['umaRptLifetime'] = undefined;
 
 /**
- * URL for the oxEleven Sign Endpoint.
- * @member {String} oxElevenSignEndpoint
+ * UMA ticket lifetime.
+ * @member {Number} umaTicketLifetime
  */
-AppConfiguration.prototype['oxElevenSignEndpoint'] = undefined;
+AppConfiguration.prototype['umaTicketLifetime'] = undefined;
 
 /**
- * URL for the oxEleven Verify Signature Endpoint.
- * @member {String} oxElevenVerifySignatureEndpoint
+ * UMA PCT lifetime.
+ * @member {Number} umaPctLifetime
  */
-AppConfiguration.prototype['oxElevenVerifySignatureEndpoint'] = undefined;
+AppConfiguration.prototype['umaPctLifetime'] = undefined;
 
 /**
- * URL for the oxEleven Delete Key Endpoint.
- * @member {String} oxElevenDeleteKeyEndpoint
+ * UMA PCT lifetime.
+ * @member {Number} umaResourceLifetime
  */
-AppConfiguration.prototype['oxElevenDeleteKeyEndpoint'] = undefined;
+AppConfiguration.prototype['umaResourceLifetime'] = undefined;
 
 /**
- * URL for the oxEleven JWKS Endpoint.
- * @member {String} oxElevenJwksEndpoint
+ * Add UMA scopes automatically if it is not registered yet.
+ * @member {Boolean} umaAddScopesAutomatically
  */
-AppConfiguration.prototype['oxElevenJwksEndpoint'] = undefined;
+AppConfiguration.prototype['umaAddScopesAutomatically'] = undefined;
+
+/**
+ * Validate claim_token as id_token assuming it is issued by local idp.
+ * @member {Boolean} umaValidateClaimToken
+ */
+AppConfiguration.prototype['umaValidateClaimToken'] = undefined;
+
+/**
+ * Specifies whether to grant access to resources if there are no any policies associated with scopes.
+ * @member {Boolean} umaGrantAccessIfNoPolicies
+ */
+AppConfiguration.prototype['umaGrantAccessIfNoPolicies'] = undefined;
+
+/**
+ * Restrict access to resource by associated client.
+ * @member {Boolean} umaRestrictResourceToAssociatedClient
+ */
+AppConfiguration.prototype['umaRestrictResourceToAssociatedClient'] = undefined;
+
+/**
+ * The lifetime of spontaneous scope in seconds.
+ * @member {Number} spontaneousScopeLifetime
+ */
+AppConfiguration.prototype['spontaneousScopeLifetime'] = undefined;
 
 /**
  * Specifies which LDAP attribute is used for the subject identifier claim.
@@ -771,12 +841,6 @@ AppConfiguration.prototype['responseModesSupported'] = undefined;
  * @member {Array.<String>} grantTypesSupported
  */
 AppConfiguration.prototype['grantTypesSupported'] = undefined;
-
-/**
- * list of the OAuth 2.0 Grant Type values that it's possible to set via client registration API..
- * @member {Array.<String>} dynamicGrantTypeDefault
- */
-AppConfiguration.prototype['dynamicGrantTypeDefault'] = undefined;
 
 /**
  * A list of the Subject Identifier types that this OP supports. Valid types include pairwise and public.
@@ -875,6 +939,12 @@ AppConfiguration.prototype['displayValuesSupported'] = undefined;
 AppConfiguration.prototype['claimTypesSupported'] = undefined;
 
 /**
+ * A list of algorithms that will be used in JWKS endpoint.
+ * @member {Array.<String>} jwksAlgorithmsSupported
+ */
+AppConfiguration.prototype['jwksAlgorithmsSupported'] = undefined;
+
+/**
  * URL of a page containing human-readable information that developers might want or need to know when using the OpenID Provider.
  * @member {Array.<String>} serviceDocumentation
  */
@@ -899,49 +969,37 @@ AppConfiguration.prototype['idTokenTokenBindingCnfValuesSupported'] = undefined;
 AppConfiguration.prototype['uiLocalesSupported'] = undefined;
 
 /**
- * Specifies whether to persist id_token into LDAP (otherwise saves into cache).
- * @member {Boolean} persistIdTokenInLdap
- * @default false
- */
-AppConfiguration.prototype['persistIdTokenInLdap'] = false;
-
-/**
- * Specifies whether to persist refresh_token into LDAP (otherwise saves into cache).
- * @member {Boolean} persistRefreshTokenInLdap
- * @default true
- */
-AppConfiguration.prototype['persistRefreshTokenInLdap'] = true;
-
-/**
  * Specifies whether the OP supports use of the claim’s parameter.
  * @member {Boolean} claimsParameterSupported
- * @default false
  */
-AppConfiguration.prototype['claimsParameterSupported'] = false;
+AppConfiguration.prototype['claimsParameterSupported'] = undefined;
 
 /**
  * Boolean value specifying whether the OP supports use of the request parameter.
  * @member {Boolean} requestParameterSupported
- * @default false
  */
-AppConfiguration.prototype['requestParameterSupported'] = false;
+AppConfiguration.prototype['requestParameterSupported'] = undefined;
 
 /**
  * Boolean value specifying whether the OP supports use of the request_uri parameter.
  * @member {Boolean} requestUriParameterSupported
- * @default false
  */
-AppConfiguration.prototype['requestUriParameterSupported'] = false;
+AppConfiguration.prototype['requestUriParameterSupported'] = undefined;
+
+/**
+ * Boolean value specifying whether the OP supports use of the request_uri hash verification.
+ * @member {Boolean} requestUriHashVerificationEnabled
+ */
+AppConfiguration.prototype['requestUriHashVerificationEnabled'] = undefined;
 
 /**
  * Boolean value specifying whether the OP requires any request_uri values used to be pre-registered using the request_uris registration parameter.
  * @member {Boolean} requireRequestUriRegistration
- * @default false
  */
-AppConfiguration.prototype['requireRequestUriRegistration'] = false;
+AppConfiguration.prototype['requireRequestUriRegistration'] = undefined;
 
 /**
- * URL that the OpenID Provider provides to the person registering the Client to read about the OP's requirements on how the Relying Party can use the data provided by the OP.
+ * URL that the OpenID Provider provides to the person registering the Client to read about the OP\\'s requirements on how the Relying Party can use the data provided by the OP.
  * @member {String} opPolicyUri
  */
 AppConfiguration.prototype['opPolicyUri'] = undefined;
@@ -971,76 +1029,16 @@ AppConfiguration.prototype['refreshTokenLifetime'] = undefined;
 AppConfiguration.prototype['idTokenLifetime'] = undefined;
 
 /**
+ * Boolean value specifying whether idToken filters claims based on accessToken.
+ * @member {Boolean} idTokenFilterClaimsBasedOnAccessToken
+ */
+AppConfiguration.prototype['idTokenFilterClaimsBasedOnAccessToken'] = undefined;
+
+/**
  * The lifetime of the short-lived Access Token.
  * @member {Number} accessTokenLifetime
  */
 AppConfiguration.prototype['accessTokenLifetime'] = undefined;
-
-/**
- * UMA RPT lifetime.
- * @member {Number} umaRptLifetime
- */
-AppConfiguration.prototype['umaRptLifetime'] = undefined;
-
-/**
- * UMA ticket lifetime.
- * @member {Number} umaTicketLifetime
- */
-AppConfiguration.prototype['umaTicketLifetime'] = undefined;
-
-/**
- * UMA PCT lifetime.
- * @member {Number} umaPctLifetime
- */
-AppConfiguration.prototype['umaPctLifetime'] = undefined;
-
-/**
- * UMA PCT lifetime.
- * @member {Number} umaResourceLifetime
- */
-AppConfiguration.prototype['umaResourceLifetime'] = undefined;
-
-/**
- * Add UMA scopes automatically if it is not registered yet.
- * @member {Boolean} umaAddScopesAutomatically
- * @default false
- */
-AppConfiguration.prototype['umaAddScopesAutomatically'] = false;
-
-/**
- * Validate claim_token as id_token assuming it is issued by local idp.
- * @member {Boolean} umaValidateClaimToken
- * @default false
- */
-AppConfiguration.prototype['umaValidateClaimToken'] = false;
-
-/**
- * Specifies whether to grant access to resources if there are no any policies associated with scopes.
- * @member {Boolean} umaGrantAccessIfNoPolicies
- * @default false
- */
-AppConfiguration.prototype['umaGrantAccessIfNoPolicies'] = false;
-
-/**
- * Restrict access to resource by associated client.
- * @member {Boolean} umaRestrictResourceToAssociatedClient
- * @default false
- */
-AppConfiguration.prototype['umaRestrictResourceToAssociatedClient'] = false;
-
-/**
- * Save client information during resource registration.
- * @member {Boolean} umaKeepClientDuringResourceSetRegistration
- * @default false
- */
-AppConfiguration.prototype['umaKeepClientDuringResourceSetRegistration'] = false;
-
-/**
- * Issue RPT as JWT or as random string.
- * @member {Boolean} umaRptAsJwt
- * @default false
- */
-AppConfiguration.prototype['umaRptAsJwt'] = false;
 
 /**
  * Time interval for the Clean Service in seconds.
@@ -1049,23 +1047,22 @@ AppConfiguration.prototype['umaRptAsJwt'] = false;
 AppConfiguration.prototype['cleanServiceInterval'] = undefined;
 
 /**
- * List of additional base dns under which AS will look up for expired entities.
- * @member {Array.<String>} cleanServiceBaseDns
- */
-AppConfiguration.prototype['cleanServiceBaseDns'] = undefined;
-
-/**
  * Each clean up iteration fetches chunk of expired data per base dn and removes it from storage.
  * @member {Number} cleanServiceBatchChunkSize
  */
 AppConfiguration.prototype['cleanServiceBatchChunkSize'] = undefined;
 
 /**
+ * List of additional base dns under which AS will look up for expired entities.
+ * @member {Array.<String>} cleanServiceBaseDns
+ */
+AppConfiguration.prototype['cleanServiceBaseDns'] = undefined;
+
+/**
  * Boolean value specifying whether to regenerate keys.
  * @member {Boolean} keyRegenerationEnabled
- * @default false
  */
-AppConfiguration.prototype['keyRegenerationEnabled'] = false;
+AppConfiguration.prototype['keyRegenerationEnabled'] = undefined;
 
 /**
  * The interval for key regeneration in hours.
@@ -1087,44 +1084,57 @@ AppConfiguration.prototype['oxOpenIdConnectVersion'] = undefined;
 
 /**
  * URL for the Inum generator Service.
- * @member {String} jansId
+ * @member {String} oxId
  */
-AppConfiguration.prototype['jansId'] = undefined;
+AppConfiguration.prototype['oxId'] = undefined;
 
 /**
  * Boolean value specifying whether to enable Dynamic Registration.
  * @member {Boolean} dynamicRegistrationEnabled
- * @default false
  */
-AppConfiguration.prototype['dynamicRegistrationEnabled'] = false;
+AppConfiguration.prototype['dynamicRegistrationEnabled'] = undefined;
 
 /**
  * Expiration time in seconds for clients created with dynamic registration, -1 means never expire.
  * @member {Number} dynamicRegistrationExpirationTime
- * @default -1
  */
-AppConfiguration.prototype['dynamicRegistrationExpirationTime'] = -1;
+AppConfiguration.prototype['dynamicRegistrationExpirationTime'] = undefined;
 
 /**
  * Boolean value specifying whether to persist client authorizations.
  * @member {Boolean} dynamicRegistrationPersistClientAuthorizations
- * @default false
  */
-AppConfiguration.prototype['dynamicRegistrationPersistClientAuthorizations'] = false;
+AppConfiguration.prototype['dynamicRegistrationPersistClientAuthorizations'] = undefined;
 
 /**
  * Boolean value specifying whether a client is trusted and no authorization is required.
  * @member {Boolean} trustedClientEnabled
- * @default false
  */
-AppConfiguration.prototype['trustedClientEnabled'] = false;
+AppConfiguration.prototype['trustedClientEnabled'] = undefined;
+
+/**
+ * If a client has only openid scope and pairwise id, person should not have to authorize.
+ * @member {Boolean} skipAuthorizationForOpenIdScopeAndPairwiseId
+ */
+AppConfiguration.prototype['skipAuthorizationForOpenIdScopeAndPairwiseId'] = undefined;
 
 /**
  * Boolean value specifying whether to enable scopes parameter in dynamic registration.
  * @member {Boolean} dynamicRegistrationScopesParamEnabled
- * @default false
  */
-AppConfiguration.prototype['dynamicRegistrationScopesParamEnabled'] = false;
+AppConfiguration.prototype['dynamicRegistrationScopesParamEnabled'] = undefined;
+
+/**
+ * Boolean value specifying whether to enable Password Grant Type during Dynamic Registration.
+ * @member {Boolean} dynamicRegistrationPasswordGrantTypeEnabled
+ */
+AppConfiguration.prototype['dynamicRegistrationPasswordGrantTypeEnabled'] = undefined;
+
+/**
+ * List of grant scopes for dynamic registration.
+ * @member {Array.<String>} dynamicRegistrationAllowedPasswordGrantScopes
+ */
+AppConfiguration.prototype['dynamicRegistrationAllowedPasswordGrantScopes'] = undefined;
 
 /**
  * LDAP custom object class for dynamic registration.
@@ -1139,30 +1149,100 @@ AppConfiguration.prototype['dynamicRegistrationCustomObjectClass'] = undefined;
 AppConfiguration.prototype['personCustomObjectClassList'] = undefined;
 
 /**
+ * Specifies whether to persist id_token into LDAP (otherwise saves into cache).
+ * @member {Boolean} persistIdTokenInLdap
+ */
+AppConfiguration.prototype['persistIdTokenInLdap'] = undefined;
+
+/**
+ * Specifies whether to persist refresh_token into LDAP (otherwise saves into cache).
+ * @member {Boolean} persistRefreshTokenInLdap
+ */
+AppConfiguration.prototype['persistRefreshTokenInLdap'] = undefined;
+
+/**
+ * Allows post logout redirect without validation for End Session Endpoint.
+ * @member {Boolean} allowPostLogoutRedirectWithoutValidation
+ */
+AppConfiguration.prototype['allowPostLogoutRedirectWithoutValidation'] = undefined;
+
+/**
+ * Boolean value to specify whether to invalidate `session_id` and `consent_session_id` cookies right after successful or unsuccessful authorization.
+ * @member {Boolean} invalidateSessionCookiesAfterAuthorizationFlow
+ */
+AppConfiguration.prototype['invalidateSessionCookiesAfterAuthorizationFlow'] = undefined;
+
+/**
+ * Boolean value specifying whether a client_secret is returned on client GET or PUT. False value means not to return secret.
+ * @member {Boolean} returnClientSecretOnRead
+ */
+AppConfiguration.prototype['returnClientSecretOnRead'] = undefined;
+
+/**
+ * Boolean value specifying whether reject JWT requested or validated with algorithm None.
+ * @member {Boolean} rejectJwtWithNoneAlg
+ */
+AppConfiguration.prototype['rejectJwtWithNoneAlg'] = undefined;
+
+/**
+ * Boolean value specifying whether expiration notificator is enabled (used to identify expiration for persistence that support TTL, like Couchbase).
+ * @member {Boolean} expirationNotificatorEnabled
+ */
+AppConfiguration.prototype['expirationNotificatorEnabled'] = undefined;
+
+/**
+ * Boolean value specifying whether to use nested Jwt during encryption.
+ * @member {Boolean} useNestedJwtDuringEncryption
+ */
+AppConfiguration.prototype['useNestedJwtDuringEncryption'] = undefined;
+
+/**
+ * The expiration notificator maximum size limit.
+ * @member {Number} expirationNotificatorMapSizeLimit
+ */
+AppConfiguration.prototype['expirationNotificatorMapSizeLimit'] = undefined;
+
+/**
+ * The expiration notificator interval in seconds.
+ * @member {Number} expirationNotificatorIntervalInSeconds
+ */
+AppConfiguration.prototype['expirationNotificatorIntervalInSeconds'] = undefined;
+
+/**
  * Boolean value specifying whether to enable user authentication filters.
  * @member {Boolean} authenticationFiltersEnabled
- * @default false
  */
-AppConfiguration.prototype['authenticationFiltersEnabled'] = false;
+AppConfiguration.prototype['authenticationFiltersEnabled'] = undefined;
 
 /**
  * Boolean value specifying whether to enable client authentication filters.
  * @member {Boolean} clientAuthenticationFiltersEnabled
- * @default false
  */
-AppConfiguration.prototype['clientAuthenticationFiltersEnabled'] = false;
+AppConfiguration.prototype['clientAuthenticationFiltersEnabled'] = undefined;
 
 /**
- * User authentication filters.
- * @member {Array.<module:model/AppConfigurationAuthenticationFilters>} authenticationFilters
+ * Boolean value specifying whether to add Authorization Code Flow with Refresh grant during client registration.
+ * @member {Boolean} clientRegDefaultToCodeFlowWithRefresh
+ */
+AppConfiguration.prototype['clientRegDefaultToCodeFlowWithRefresh'] = undefined;
+
+/**
+ * List of authentication filters.
+ * @member {Array.<module:model/AuthenticationFilters>} authenticationFilters
  */
 AppConfiguration.prototype['authenticationFilters'] = undefined;
 
 /**
- * Client authentication filters.
- * @member {Array.<module:model/AppConfigurationClientAuthenticationFilters>} clientAuthenticationFilters
+ * List of client authentication filters.
+ * @member {Array.<module:model/AuthenticationFilters>} clientAuthenticationFilters
  */
 AppConfiguration.prototype['clientAuthenticationFilters'] = undefined;
+
+/**
+ * CORS Configuration filters.
+ * @member {Array.<module:model/CorsConfigurationFilter>} corsConfigurationFilters
+ */
+AppConfiguration.prototype['corsConfigurationFilters'] = undefined;
 
 /**
  * The lifetime for unused session states.
@@ -1173,36 +1253,68 @@ AppConfiguration.prototype['sessionIdUnusedLifetime'] = undefined;
 /**
  * The lifetime for unused unauthenticated session states.
  * @member {Number} sessionIdUnauthenticatedUnusedLifetime
- * @default 120
  */
-AppConfiguration.prototype['sessionIdUnauthenticatedUnusedLifetime'] = 120;
-
-/**
- * The lifetime of session id in seconds. If 0 or -1 then expiration is not set. `session_id` cookie expires when browser session ends.
- * @member {Number} sessionIdLifetime
- * @default 86400
- */
-AppConfiguration.prototype['sessionIdLifetime'] = 86400;
+AppConfiguration.prototype['sessionIdUnauthenticatedUnusedLifetime'] = undefined;
 
 /**
  * Boolean value specifying whether to enable authentication by session_id.
  * @member {Boolean} sessionIdEnabled
- * @default false
  */
-AppConfiguration.prototype['sessionIdEnabled'] = false;
+AppConfiguration.prototype['sessionIdEnabled'] = undefined;
 
 /**
  * Boolean value specifying whether to persist session ID on prompt none.
  * @member {Boolean} sessionIdPersistOnPromptNone
- * @default false
  */
-AppConfiguration.prototype['sessionIdPersistOnPromptNone'] = false;
+AppConfiguration.prototype['sessionIdPersistOnPromptNone'] = undefined;
+
+/**
+ * Boolean value specifying whether to enable session_id HTTP request parameter.
+ * @member {Boolean} sessionIdRequestParameterEnabled
+ */
+AppConfiguration.prototype['sessionIdRequestParameterEnabled'] = undefined;
+
+/**
+ * Boolean value specifying whether to change session_id on authentication.
+ * @member {Boolean} changeSessionIdOnAuthentication
+ */
+AppConfiguration.prototype['changeSessionIdOnAuthentication'] = undefined;
+
+/**
+ * Boolean value specifying whether to persist session_id in cache.
+ * @member {Boolean} sessionIdPersistInCache
+ */
+AppConfiguration.prototype['sessionIdPersistInCache'] = undefined;
+
+/**
+ * The lifetime of session id in seconds. If 0 or -1 then expiration is not set. `session_id` cookie expires when browser session ends.
+ * @member {Number} sessionIdLifetime
+ */
+AppConfiguration.prototype['sessionIdLifetime'] = undefined;
+
+/**
+ * The sessionId lifetime in seconds for sessionId. By default same as sessionIdLifetime.
+ * @member {Number} serverSessionIdLifetime
+ */
+AppConfiguration.prototype['serverSessionIdLifetime'] = undefined;
 
 /**
  * The interval for configuration update in seconds.
  * @member {Number} configurationUpdateInterval
  */
 AppConfiguration.prototype['configurationUpdateInterval'] = undefined;
+
+/**
+ * Boolean value to specify if client can update Grant Type values.
+ * @member {Boolean} enableClientGrantTypeUpdate
+ */
+AppConfiguration.prototype['enableClientGrantTypeUpdate'] = undefined;
+
+/**
+ * list of the OAuth 2.0 Grant Type values that it\\'s possible to set via client registration API..
+ * @member {Array.<String>} dynamicGrantTypeDefault
+ */
+AppConfiguration.prototype['dynamicGrantTypeDefault'] = undefined;
 
 /**
  * The location for CSS files.
@@ -1237,9 +1349,8 @@ AppConfiguration.prototype['metricReporterKeepDataDays'] = undefined;
 /**
  * Boolean value specifying whether to enable Metric Reporter.
  * @member {Boolean} metricReporterEnabled
- * @default true
  */
-AppConfiguration.prototype['metricReporterEnabled'] = true;
+AppConfiguration.prototype['metricReporterEnabled'] = undefined;
 
 /**
  * The pairwise ID type.
@@ -1262,13 +1373,12 @@ AppConfiguration.prototype['pairwiseCalculationSalt'] = undefined;
 /**
  * Share Subject ID between clients with same Sector ID.
  * @member {Boolean} shareSubjectIdBetweenClientsWithSameSectorId
- * @default false
  */
-AppConfiguration.prototype['shareSubjectIdBetweenClientsWithSameSectorId'] = false;
+AppConfiguration.prototype['shareSubjectIdBetweenClientsWithSameSectorId'] = undefined;
 
 /**
  * Web Key Storage Type.
- * @member {String} webKeysStorage
+ * @member {module:model/AppConfiguration.WebKeysStorageEnum} webKeysStorage
  */
 AppConfiguration.prototype['webKeysStorage'] = undefined;
 
@@ -1291,10 +1401,82 @@ AppConfiguration.prototype['keyStoreFile'] = undefined;
 AppConfiguration.prototype['keyStoreSecret'] = undefined;
 
 /**
+ * Key Selection Strategy.
+ * @member {module:model/AppConfiguration.KeySelectionStrategyEnum} keySelectionStrategy
+ */
+AppConfiguration.prototype['keySelectionStrategy'] = undefined;
+
+/**
+ * oxEleven Test Mode Token.
+ * @member {String} oxElevenTestModeToken
+ */
+AppConfiguration.prototype['oxElevenTestModeToken'] = undefined;
+
+/**
+ * URL for the oxEleven Generate Key Endpoint.
+ * @member {String} oxElevenGenerateKeyEndpoint
+ */
+AppConfiguration.prototype['oxElevenGenerateKeyEndpoint'] = undefined;
+
+/**
+ * URL for the oxEleven Sign Endpoint.
+ * @member {String} oxElevenSignEndpoint
+ */
+AppConfiguration.prototype['oxElevenSignEndpoint'] = undefined;
+
+/**
+ * URL for the oxEleven Verify Signature Endpoint.
+ * @member {String} oxElevenVerifySignatureEndpoint
+ */
+AppConfiguration.prototype['oxElevenVerifySignatureEndpoint'] = undefined;
+
+/**
+ * URL for the oxEleven Delete Key Endpoint.
+ * @member {String} oxElevenDeleteKeyEndpoint
+ */
+AppConfiguration.prototype['oxElevenDeleteKeyEndpoint'] = undefined;
+
+/**
+ * Reject introspection requests if access_token in Authorization header does not have uma_protection scope.
+ * @member {Boolean} introspectionAccessTokenMustHaveUmaProtectionScope
+ */
+AppConfiguration.prototype['introspectionAccessTokenMustHaveUmaProtectionScope'] = undefined;
+
+/**
  * Accept access token to call end_session endpoint.
  * @member {Boolean} endSessionWithAccessToken
  */
 AppConfiguration.prototype['endSessionWithAccessToken'] = undefined;
+
+/**
+ * Sets cookie domain for all cookies created by OP.
+ * @member {String} cookieDomain
+ */
+AppConfiguration.prototype['cookieDomain'] = undefined;
+
+/**
+ * enabled OAuth Audit Logging.
+ * @member {Boolean} enabledOAuthAuditLogging
+ */
+AppConfiguration.prototype['enabledOAuthAuditLogging'] = undefined;
+
+/**
+ * JMS Broker URI Set.
+ * @member {Array.<String>} jmsBrokerURISet
+ */
+AppConfiguration.prototype['jmsBrokerURISet'] = undefined;
+
+/**
+ * JMS UserName.
+ * @member {String} jmsUserName
+ */
+AppConfiguration.prototype['jmsUserName'] = undefined;
+
+/**
+ * JMS Password.
+ * @member {String} jmsPassword
+ */
+AppConfiguration.prototype['jmsPassword'] = undefined;
 
 /**
  * White List for Client Redirection URIs.
@@ -1327,51 +1509,28 @@ AppConfiguration.prototype['customHeadersWithAuthorizationResponse'] = undefined
 AppConfiguration.prototype['frontChannelLogoutSessionSupported'] = undefined;
 
 /**
- * Boolean value to specify whether to persist all objects into cache during Implicit Flow.
- * @member {Boolean} useCacheForAllImplicitFlowObjects
- * @default false
- */
-AppConfiguration.prototype['useCacheForAllImplicitFlowObjects'] = false;
-
-/**
- * Boolean value to specify whether to invalidate `session_id` and `consent_session_id` cookies right after successful or unsuccessful authorization.
- * @member {Boolean} invalidateSessionCookiesAfterAuthorizationFlow
- * @default false
- */
-AppConfiguration.prototype['invalidateSessionCookiesAfterAuthorizationFlow'] = false;
-
-/**
- * Boolean value to specify if application should update oxLastLogonTime attribute on user authentication.
- * @member {Boolean} updateUserLastLogonTime
- * @default false
- */
-AppConfiguration.prototype['updateUserLastLogonTime'] = false;
-
-/**
- * Boolean value to specify if application should update oxLastAccessTime/oxLastLogonTime attributes on client authentication.
- * @member {Boolean} updateClientAccessTime
- * @default false
- */
-AppConfiguration.prototype['updateClientAccessTime'] = false;
-
-/**
- * Boolean value to specify if client can update Grant Type values.
- * @member {Boolean} enableClientGrantTypeUpdate
- * @default false
- */
-AppConfiguration.prototype['enableClientGrantTypeUpdate'] = false;
-
-/**
  * Logging level for jans-auth logger.
  * @member {module:model/AppConfiguration.LoggingLevelEnum} loggingLevel
  */
 AppConfiguration.prototype['loggingLevel'] = undefined;
 
 /**
- * CORS Configuration filters.
- * @member {Array.<module:model/AppConfigurationCorsConfigurationFilters>} corsConfigurationFilters
+ * Logging layout used for Jans Authorization Server loggers. - text - json
+ * @member {String} loggingLayout
  */
-AppConfiguration.prototype['corsConfigurationFilters'] = undefined;
+AppConfiguration.prototype['loggingLayout'] = undefined;
+
+/**
+ * Boolean value to specify if application should update oxLastLogonTime attribute on user authentication.
+ * @member {Boolean} updateUserLastLogonTime
+ */
+AppConfiguration.prototype['updateUserLastLogonTime'] = undefined;
+
+/**
+ * Boolean value to specify if application should update oxLastAccessTime/oxLastLogonTime attributes on client authentication.
+ * @member {Boolean} updateClientAccessTime
+ */
+AppConfiguration.prototype['updateClientAccessTime'] = undefined;
 
 /**
  * Boolean value to specify if application should log the Client ID on client authentication.
@@ -1384,6 +1543,12 @@ AppConfiguration.prototype['logClientIdOnClientAuthentication'] = undefined;
  * @member {Boolean} logClientNameOnClientAuthentication
  */
 AppConfiguration.prototype['logClientNameOnClientAuthentication'] = undefined;
+
+/**
+ * Boolean value specifying whether to enable JDK Loggers.
+ * @member {Boolean} disableJdkLogger
+ */
+AppConfiguration.prototype['disableJdkLogger'] = undefined;
 
 /**
  * Authorization Request Custom Allowed Parameters.
@@ -1400,253 +1565,127 @@ AppConfiguration.prototype['legacyDynamicRegistrationScopeParam'] = undefined;
 /**
  * Set to false to only allow token endpoint request for openid scope with grant type equals to authorization_code, restrict access to userinfo to scope openid and only return id_token if scope contains openid.
  * @member {Boolean} openidScopeBackwardCompatibility
- * @default false
  */
-AppConfiguration.prototype['openidScopeBackwardCompatibility'] = false;
-
-/**
- * If a client has only openid scope and pairwise id, person should not have to authorize.
- * @member {Boolean} skipAuthorizationForOpenIdScopeAndPairwiseId
- * @default false
- */
-AppConfiguration.prototype['skipAuthorizationForOpenIdScopeAndPairwiseId'] = false;
-
-/**
- * Allows post logout redirect without validation for End Session Endpoint.
- * @member {Boolean} allowPostLogoutRedirectWithoutValidation
- * @default false
- */
-AppConfiguration.prototype['allowPostLogoutRedirectWithoutValidation'] = false;
-
-/**
- * Enable/Disable request/response logging filter.
- * @member {Boolean} httpLoggingEnabled
- * @default false
- */
-AppConfiguration.prototype['httpLoggingEnabled'] = false;
-
-/**
- * List of base URI for which request/response logging filter should not record activity.
- * @member {Array.<String>} httpLoggingExludePaths
- */
-AppConfiguration.prototype['httpLoggingExludePaths'] = undefined;
-
-/**
- * Path to external log4j2 logging configuration.
- * @member {String} externalLoggerConfiguration
- */
-AppConfiguration.prototype['externalLoggerConfiguration'] = undefined;
+AppConfiguration.prototype['openidScopeBackwardCompatibility'] = undefined;
 
 /**
  * Enable/Disable U2F endpoints.
  * @member {Boolean} disableU2fEndpoint
- * @default false
  */
-AppConfiguration.prototype['disableU2fEndpoint'] = false;
+AppConfiguration.prototype['disableU2fEndpoint'] = undefined;
 
 /**
- * Boolean value specifying whether to enable JDK Loggers.
- * @member {Boolean} disableJdkLogger
- * @default true
+ * Boolean value specifying whether to enable local in-memory cache.
+ * @member {Boolean} useLocalCache
  */
-AppConfiguration.prototype['disableJdkLogger'] = true;
+AppConfiguration.prototype['useLocalCache'] = undefined;
 
 /**
- * JMS UserName.
- * @member {String} jmsUserName
+ * Boolean value specifying whether turn on FAPI compatibility mode. If true AS behaves in more strict mode.
+ * @member {Boolean} fapiCompatibility
  */
-AppConfiguration.prototype['jmsUserName'] = undefined;
+AppConfiguration.prototype['fapiCompatibility'] = undefined;
 
 /**
- * JMS Password.
- * @member {String} jmsPassword
+ * Boolean value specifying whether force id_token_hint parameter presence.
+ * @member {Boolean} forceIdTokenHintPrecense
  */
-AppConfiguration.prototype['jmsPassword'] = undefined;
+AppConfiguration.prototype['forceIdTokenHintPrecense'] = undefined;
 
 /**
- * JMS Broker URI Set.
- * @member {Array.<String>} jmsBrokerURISet
+ * Boolean value specifying whether force offline_access scope to enable refresh_token grant type.
+ * @member {Boolean} forceOfflineAccessScopeToEnableRefreshToken
  */
-AppConfiguration.prototype['jmsBrokerURISet'] = undefined;
+AppConfiguration.prototype['forceOfflineAccessScopeToEnableRefreshToken'] = undefined;
 
 /**
- * oxEleven Test Mode Token.
- * @member {String} oxElevenTestModeToken
+ * Boolean value specifying whether to return detailed reason of the error from AS..
+ * @member {Boolean} errorReasonEnabled
  */
-AppConfiguration.prototype['oxElevenTestModeToken'] = undefined;
+AppConfiguration.prototype['errorReasonEnabled'] = undefined;
 
 /**
- * enabled OAuth Audit Logging.
- * @member {Boolean} enabledOAuthAuditLogging
+ * Boolean value specifying whether to remove refresh tokens on logout.
+ * @member {Boolean} removeRefreshTokensForClientOnLogout
  */
-AppConfiguration.prototype['enabledOAuthAuditLogging'] = undefined;
+AppConfiguration.prototype['removeRefreshTokensForClientOnLogout'] = undefined;
 
 /**
- * @member {module:model/AppConfigurationAuthenticationProtectionConfiguration} authenticationProtectionConfiguration
+ * Boolean value specifying whether to skip refreshing tokens on refreshing.
+ * @member {Boolean} skipRefreshTokenDuringRefreshing
+ */
+AppConfiguration.prototype['skipRefreshTokenDuringRefreshing'] = undefined;
+
+/**
+ * Boolean value specifying whether to extend refresh tokens on rotation.
+ * @member {Boolean} refreshTokenExtendLifetimeOnRotation
+ */
+AppConfiguration.prototype['refreshTokenExtendLifetimeOnRotation'] = undefined;
+
+/**
+ * Boolean value specifying whether turn on Consent Gathering Script backward compatibility mode. If true AS will pick up script with higher level globally. If false AS will pick up script based on client configuration.
+ * @member {Boolean} consentGatheringScriptBackwardCompatibility
+ */
+AppConfiguration.prototype['consentGatheringScriptBackwardCompatibility'] = undefined;
+
+/**
+ * Boolean value specifying whether switch off client\\'s introspection scripts (true value) and run all scripts that exists on server.
+ * @member {Boolean} introspectionScriptBackwardCompatibility
+ */
+AppConfiguration.prototype['introspectionScriptBackwardCompatibility'] = undefined;
+
+/**
+ * Boolean value specifying introspection response backward compatibility mode.
+ * @member {Boolean} introspectionResponseScopesBackwardCompatibility
+ */
+AppConfiguration.prototype['introspectionResponseScopesBackwardCompatibility'] = undefined;
+
+/**
+ * Validation type used for software statement.
+ * @member {module:model/AppConfiguration.SoftwareStatementValidationTypeEnum} softwareStatementValidationType
+ */
+AppConfiguration.prototype['softwareStatementValidationType'] = undefined;
+
+/**
+ * Validation claim name for software statement.
+ * @member {String} softwareStatementValidationClaimName
+ */
+AppConfiguration.prototype['softwareStatementValidationClaimName'] = undefined;
+
+/**
+ * @member {module:model/AuthenticationProtectionConfiguration} authenticationProtectionConfiguration
  */
 AppConfiguration.prototype['authenticationProtectionConfiguration'] = undefined;
 
 /**
  * A list of possible error handling methods.
- * @member {String} errorHandlingMethod
+ * @member {module:model/AppConfiguration.ErrorHandlingMethodEnum} errorHandlingMethod
  */
 AppConfiguration.prototype['errorHandlingMethod'] = undefined;
 
 /**
- * Boolean value specifying whether to enable local in-memory cache for attributes, scopes, clients and organization configuration.
- * @member {Boolean} useLocalCache
- * @default false
- */
-AppConfiguration.prototype['useLocalCache'] = false;
-
-/**
- * The lifetime of spontaneous scope in seconds.
- * @member {Number} spontaneousScopeLifetime
- */
-AppConfiguration.prototype['spontaneousScopeLifetime'] = undefined;
-
-/**
- * A list of algorithms that will be used in JWKS endpoint.
- * @member {Array.<String>} jwksAlgorithmsSupported
- */
-AppConfiguration.prototype['jwksAlgorithmsSupported'] = undefined;
-
-/**
- * Boolean value specifying whether to enable Password Grant Type during Dynamic Registration.
- * @member {Boolean} dynamicRegistrationPasswordGrantTypeEnabled
- * @default false
- */
-AppConfiguration.prototype['dynamicRegistrationPasswordGrantTypeEnabled'] = false;
-
-/**
- * Boolean value specifying whether a client_secret is returned on client GET or PUT. Set to false by default which means to not return secret.
- * @member {Boolean} returnClientSecretOnRead
- * @default false
- */
-AppConfiguration.prototype['returnClientSecretOnRead'] = false;
-
-/**
- * Boolean value specifying whether reject JWT requested or validated with algorithm None. Default value is true.
- * @member {Boolean} rejectJwtWithNoneAlg
- * @default true
- */
-AppConfiguration.prototype['rejectJwtWithNoneAlg'] = true;
-
-/**
- * Boolean value specifying whether expiration notificator is enabled (used to identify expiration for persistence that support TTL, like Couchbase).
- * @member {Boolean} expirationNotificatorEnabled
- * @default true
- */
-AppConfiguration.prototype['expirationNotificatorEnabled'] = true;
-
-/**
- * The expiration notificator maximum size limit.
- * @member {Number} expirationNotificatorMapSizeLimit
- * @default 100000
- */
-AppConfiguration.prototype['expirationNotificatorMapSizeLimit'] = 100000;
-
-/**
- * The expiration notificator interval in seconds.
- * @member {Number} expirationNotificatorIntervalInSeconds
- * @default 600
- */
-AppConfiguration.prototype['expirationNotificatorIntervalInSeconds'] = 600;
-
-/**
- * Boolean value specifying whether to add Authorization Code Flow with Refresh grant during client registration.
- * @member {Boolean} clientRegDefaultToCodeFlowWithRefresh
- */
-AppConfiguration.prototype['clientRegDefaultToCodeFlowWithRefresh'] = undefined;
-
-/**
- * Boolean value specifying whether to enable session_id HTTP request parameter.
- * @member {Boolean} sessionIdRequestParameterEnabled
- * @default false
- */
-AppConfiguration.prototype['sessionIdRequestParameterEnabled'] = false;
-
-/**
- * Boolean value specifying whether to enable session_id HTTP request parameter.
- * @member {Boolean} changeSessionIdOnAuthentication
- * @default true
- */
-AppConfiguration.prototype['changeSessionIdOnAuthentication'] = true;
-
-/**
- * The sessionId lifetime in seconds for sessionId.
- * @member {Number} serverSessionIdLifetime
- * @default 86400
- */
-AppConfiguration.prototype['serverSessionIdLifetime'] = 86400;
-
-/**
- * Sets cookie domain for all cookies created by OP.
- * @member {String} cookieDomain
- */
-AppConfiguration.prototype['cookieDomain'] = undefined;
-
-/**
- * Logging layout used for Jans Authorization Server loggers.
- * @member {module:model/AppConfiguration.LoggingLayoutEnum} loggingLayout
- */
-AppConfiguration.prototype['loggingLayout'] = undefined;
-
-/**
- * Boolean value specifying whether turn on FAPI compatibility mode. If true AS behaves in more strict mode.
- * @member {Boolean} fapiCompatibility
- * @default false
- */
-AppConfiguration.prototype['fapiCompatibility'] = false;
-
-/**
- * Boolean value specifying whether force id_token_hint parameter presence (false by default).
- * @member {Boolean} forceIdTokenHintPrecense
- * @default false
- */
-AppConfiguration.prototype['forceIdTokenHintPrecense'] = false;
-
-/**
- * Boolean value specifying whether force offline_access scope to enable refresh_token grant type. Default value is true.
- * @member {Boolean} forceOfflineAccessScopeToEnableRefreshToken
- * @default true
- */
-AppConfiguration.prototype['forceOfflineAccessScopeToEnableRefreshToken'] = true;
-
-/**
- * Boolean value specifying whether to return detailed reason of the error from AS. Default value is false.
- * @member {Boolean} errorReasonEnabled
- * @default false
- */
-AppConfiguration.prototype['errorReasonEnabled'] = false;
-
-/**
- * Boolean value specifying whether to remove refresh tokens on logout. Default value is true.
- * @member {Boolean} removeRefreshTokensForClientOnLogout
- * @default true
- */
-AppConfiguration.prototype['removeRefreshTokensForClientOnLogout'] = true;
-
-/**
- * Boolean value specifying whether turn on Consent Gathering Script backward compatibility mode. If true AS will pick up script with higher level globally. If false (default) AS will pick up script based on client configuration.
- * @member {Boolean} consentGatheringScriptBackwardCompatibility
- * @default false
- */
-AppConfiguration.prototype['consentGatheringScriptBackwardCompatibility'] = false;
-
-/**
- * Boolean value specifying whether switch off client's introspection scripts (true value) and run all scripts that exists on server. Default value is false.
- * @member {Boolean} introspectionScriptBackwardCompatibility
- * @default false
- */
-AppConfiguration.prototype['introspectionScriptBackwardCompatibility'] = false;
-
-/**
  * Boolean value specifying whether to keep authenticator attributes on ACR change.
  * @member {Boolean} keepAuthenticatorAttributesOnAcrChange
- * @default false
  */
-AppConfiguration.prototype['keepAuthenticatorAttributesOnAcrChange'] = false;
+AppConfiguration.prototype['keepAuthenticatorAttributesOnAcrChange'] = undefined;
+
+/**
+ * Expiration time given for device authorization requests.
+ * @member {Number} deviceAuthzRequestExpiresIn
+ */
+AppConfiguration.prototype['deviceAuthzRequestExpiresIn'] = undefined;
+
+/**
+ * Default interval returned to the client to process device token requests.
+ * @member {Number} deviceAuthzTokenPollInterval
+ */
+AppConfiguration.prototype['deviceAuthzTokenPollInterval'] = undefined;
+
+/**
+ * Response type used to process device authz requests.
+ * @member {String} deviceAuthzResponseTypeToProcessAuthz
+ */
+AppConfiguration.prototype['deviceAuthzResponseTypeToProcessAuthz'] = undefined;
 
 /**
  * Backchannel Client Id.
@@ -1674,13 +1713,13 @@ AppConfiguration.prototype['backchannelDeviceRegistrationEndpoint'] = undefined;
 
 /**
  * Backchannel Token Delivery Modes Supported.
- * @member {Array.<String>} backchannelTokenDeliveryModesSupported
+ * @member {Array.<module:model/AppConfiguration.BackchannelTokenDeliveryModesSupportedEnum>} backchannelTokenDeliveryModesSupported
  */
 AppConfiguration.prototype['backchannelTokenDeliveryModesSupported'] = undefined;
 
 /**
  * Backchannel Authentication Request Signing Alg Values Supported.
- * @member {Array.<String>} backchannelAuthenticationRequestSigningAlgValuesSupported
+ * @member {Array.<module:model/AppConfiguration.BackchannelAuthenticationRequestSigningAlgValuesSupportedEnum>} backchannelAuthenticationRequestSigningAlgValuesSupported
  */
 AppConfiguration.prototype['backchannelAuthenticationRequestSigningAlgValuesSupported'] = undefined;
 
@@ -1715,7 +1754,7 @@ AppConfiguration.prototype['backchannelAuthenticationResponseInterval'] = undefi
 AppConfiguration.prototype['backchannelLoginHintClaims'] = undefined;
 
 /**
- * @member {module:model/AppConfigurationCibaEndUserNotificationConfig} cibaEndUserNotificationConfig
+ * @member {module:model/CIBAEndUserNotificationConfig} cibaEndUserNotificationConfig
  */
 AppConfiguration.prototype['cibaEndUserNotificationConfig'] = undefined;
 
@@ -1743,8 +1782,86 @@ AppConfiguration.prototype['cibaGrantLifeExtraTimeSec'] = undefined;
  */
 AppConfiguration.prototype['cibaMaxExpirationTimeAllowedSec'] = undefined;
 
+/**
+ * Boolean value specifying whether turn on CIBA. If true AS will process CIBA requests.
+ * @member {Boolean} cibaEnabled
+ */
+AppConfiguration.prototype['cibaEnabled'] = undefined;
+
+/**
+ * Lifetime of discovery cache.
+ * @member {Number} discoveryCacheLifetimeInMinutes
+ */
+AppConfiguration.prototype['discoveryCacheLifetimeInMinutes'] = undefined;
+
+/**
+ * Enable/Disable request/response logging filter.
+ * @member {Boolean} httpLoggingEnabled
+ */
+AppConfiguration.prototype['httpLoggingEnabled'] = undefined;
+
+/**
+ * List of base URI for which request/response logging filter should not record activity.
+ * @member {Array.<String>} httpLoggingExludePaths
+ */
+AppConfiguration.prototype['httpLoggingExludePaths'] = undefined;
+
+/**
+ * Path to external log4j2 logging configuration.
+ * @member {String} externalLoggerConfiguration
+ */
+AppConfiguration.prototype['externalLoggerConfiguration'] = undefined;
 
 
+
+
+
+/**
+ * Allowed values for the <code>webKeysStorage</code> property.
+ * @enum {String}
+ * @readonly
+ */
+AppConfiguration['WebKeysStorageEnum'] = {
+
+    /**
+     * value: "keystore"
+     * @const
+     */
+    "keystore": "keystore",
+
+    /**
+     * value: "pkcs11"
+     * @const
+     */
+    "pkcs11": "pkcs11"
+};
+
+
+/**
+ * Allowed values for the <code>keySelectionStrategy</code> property.
+ * @enum {String}
+ * @readonly
+ */
+AppConfiguration['KeySelectionStrategyEnum'] = {
+
+    /**
+     * value: "OLDER"
+     * @const
+     */
+    "OLDER": "OLDER",
+
+    /**
+     * value: "NEWER"
+     * @const
+     */
+    "NEWER": "NEWER",
+
+    /**
+     * value: "FIRST"
+     * @const
+     */
+    "FIRST": "FIRST"
+};
 
 
 /**
@@ -1791,31 +1908,142 @@ AppConfiguration['LoggingLevelEnum'] = {
     "FATAL": "FATAL",
 
     /**
-     * value: "OFF"
+     * value: "false"
      * @const
      */
-    "OFF": "OFF"
+    "false": "false"
 };
 
 
 /**
- * Allowed values for the <code>loggingLayout</code> property.
+ * Allowed values for the <code>softwareStatementValidationType</code> property.
  * @enum {String}
  * @readonly
  */
-AppConfiguration['LoggingLayoutEnum'] = {
+AppConfiguration['SoftwareStatementValidationTypeEnum'] = {
 
     /**
-     * value: "text"
+     * value: "none"
      * @const
      */
-    "text": "text",
+    "none": "none",
 
     /**
-     * value: "json"
+     * value: "jwks"
      * @const
      */
-    "json": "json"
+    "jwks": "jwks",
+
+    /**
+     * value: "jwks_uri"
+     * @const
+     */
+    "jwks_uri": "jwks_uri",
+
+    /**
+     * value: "script"
+     * @const
+     */
+    "script": "script"
+};
+
+
+/**
+ * Allowed values for the <code>errorHandlingMethod</code> property.
+ * @enum {String}
+ * @readonly
+ */
+AppConfiguration['ErrorHandlingMethodEnum'] = {
+
+    /**
+     * value: "internal"
+     * @const
+     */
+    "internal": "internal",
+
+    /**
+     * value: "remote"
+     * @const
+     */
+    "remote": "remote"
+};
+
+
+/**
+ * Allowed values for the <code>backchannelTokenDeliveryModesSupported</code> property.
+ * @enum {String}
+ * @readonly
+ */
+AppConfiguration['BackchannelTokenDeliveryModesSupportedEnum'] = {
+
+    /**
+     * value: "poll"
+     * @const
+     */
+    "poll": "poll",
+
+    /**
+     * value: "ping"
+     * @const
+     */
+    "ping": "ping",
+
+    /**
+     * value: "push"
+     * @const
+     */
+    "push": "push"
+};
+
+
+/**
+ * Allowed values for the <code>backchannelAuthenticationRequestSigningAlgValuesSupported</code> property.
+ * @enum {String}
+ * @readonly
+ */
+AppConfiguration['BackchannelAuthenticationRequestSigningAlgValuesSupportedEnum'] = {
+
+    /**
+     * value: "RS512"
+     * @const
+     */
+    "RS512": "RS512",
+
+    /**
+     * value: "ES256"
+     * @const
+     */
+    "ES256": "ES256",
+
+    /**
+     * value: "ES384"
+     * @const
+     */
+    "ES384": "ES384",
+
+    /**
+     * value: "ES512"
+     * @const
+     */
+    "ES512": "ES512",
+
+    /**
+     * value: "PS256"
+     * @const
+     */
+    "PS256": "PS256",
+
+    /**
+     * value: "PS384"
+     * @const
+     */
+    "PS384": "PS384",
+
+    /**
+     * value: "PS512"
+     * @const
+     */
+    "PS512": "PS512"
 };
 
 

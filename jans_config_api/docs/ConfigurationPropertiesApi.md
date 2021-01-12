@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 ## getProperties
 
-> [AppConfiguration] getProperties()
+> AppConfiguration getProperties()
 
 Gets all Jans authorization server configuration properties.
 
@@ -42,7 +42,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**[AppConfiguration]**](AppConfiguration.md)
+[**AppConfiguration**](AppConfiguration.md)
 
 ### Authorization
 
@@ -56,7 +56,7 @@ This endpoint does not need any parameter.
 
 ## patchProperties
 
-> [AppConfiguration] patchProperties(opts)
+> AppConfiguration patchProperties(opts)
 
 Partially modifies Jans authorization server Application configuration properties.
 
@@ -73,7 +73,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.ConfigurationPropertiesApi();
 let opts = {
-  'patchRequest': new JansConfigApi.PatchRequest() // PatchRequest | 
+  'patchRequest': [new JansConfigApi.PatchRequest()] // [PatchRequest] | 
 };
 apiInstance.patchProperties(opts, (error, data, response) => {
   if (error) {
@@ -89,11 +89,11 @@ apiInstance.patchProperties(opts, (error, data, response) => {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **patchRequest** | [**PatchRequest**](PatchRequest.md)|  | [optional] 
+ **patchRequest** | [**[PatchRequest]**](PatchRequest.md)|  | [optional] 
 
 ### Return type
 
-[**[AppConfiguration]**](AppConfiguration.md)
+[**AppConfiguration**](AppConfiguration.md)
 
 ### Authorization
 
@@ -101,6 +101,6 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
+- **Content-Type**: application/json-patch+json
 - **Accept**: application/json
 

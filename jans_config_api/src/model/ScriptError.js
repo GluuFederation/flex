@@ -14,19 +14,19 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The CustomScriptScriptError model module.
- * @module model/CustomScriptScriptError
+ * The ScriptError model module.
+ * @module model/ScriptError
  * @version 1.0.0
  */
-class CustomScriptScriptError {
+class ScriptError {
     /**
-     * Constructs a new <code>CustomScriptScriptError</code>.
+     * Constructs a new <code>ScriptError</code>.
      * Possible errors assosiated with the script.
-     * @alias module:model/CustomScriptScriptError
+     * @alias module:model/ScriptError
      */
     constructor() { 
         
-        CustomScriptScriptError.initialize(this);
+        ScriptError.initialize(this);
     }
 
     /**
@@ -38,15 +38,15 @@ class CustomScriptScriptError {
     }
 
     /**
-     * Constructs a <code>CustomScriptScriptError</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>ScriptError</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/CustomScriptScriptError} obj Optional instance to populate.
-     * @return {module:model/CustomScriptScriptError} The populated <code>CustomScriptScriptError</code> instance.
+     * @param {module:model/ScriptError} obj Optional instance to populate.
+     * @return {module:model/ScriptError} The populated <code>ScriptError</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new CustomScriptScriptError();
+            obj = obj || new ScriptError();
 
             if (data.hasOwnProperty('raisedAt')) {
                 obj['raisedAt'] = ApiClient.convertToType(data['raisedAt'], 'Date');
@@ -64,17 +64,17 @@ class CustomScriptScriptError {
 /**
  * @member {Date} raisedAt
  */
-CustomScriptScriptError.prototype['raisedAt'] = undefined;
+ScriptError.prototype['raisedAt'] = undefined;
 
 /**
  * @member {String} stackTrace
  */
-CustomScriptScriptError.prototype['stackTrace'] = undefined;
+ScriptError.prototype['stackTrace'] = undefined;
 
 
 
 
 
 
-export default CustomScriptScriptError;
+export default ScriptError;
 

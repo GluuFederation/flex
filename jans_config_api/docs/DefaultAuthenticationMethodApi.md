@@ -56,7 +56,7 @@ This endpoint does not need any parameter.
 
 ## putAcrs
 
-> putAcrs(opts)
+> AuthenticationMethod putAcrs(opts)
 
 Updates default authentication method.
 
@@ -79,7 +79,7 @@ apiInstance.putAcrs(opts, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 });
 ```
@@ -93,7 +93,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-null (empty response body)
+[**AuthenticationMethod**](AuthenticationMethod.md)
 
 ### Authorization
 

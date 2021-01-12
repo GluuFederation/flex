@@ -4,7 +4,7 @@ All URIs are relative to *https://jans.io*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**deleteOauthScopesById**](OAuthScopesApi.md#deleteOauthScopesById) | **DELETE** /jans-config-api/api/v1/scopes/{inum} | Delete Scope.
+[**deleteOauthScopesByInum**](OAuthScopesApi.md#deleteOauthScopesByInum) | **DELETE** /jans-config-api/api/v1/scopes/{inum} | Delete Scope.
 [**getOauthScopes**](OAuthScopesApi.md#getOauthScopes) | **GET** /jans-config-api/api/v1/scopes | Gets list of Scopes.
 [**getOauthScopesByInum**](OAuthScopesApi.md#getOauthScopesByInum) | **GET** /jans-config-api/api/v1/scopes/{inum} | Get Scope by Inum
 [**patchOauthScopesById**](OAuthScopesApi.md#patchOauthScopesById) | **PATCH** /jans-config-api/api/v1/scopes/{inum} | Update modified attributes of existing Scope by Inum.
@@ -13,9 +13,9 @@ Method | HTTP request | Description
 
 
 
-## deleteOauthScopesById
+## deleteOauthScopesByInum
 
-> deleteOauthScopesById(inum)
+> deleteOauthScopesByInum(inum)
 
 Delete Scope.
 
@@ -32,7 +32,7 @@ jans-auth.accessToken = 'YOUR ACCESS TOKEN';
 
 let apiInstance = new JansConfigApi.OAuthScopesApi();
 let inum = "inum_example"; // String | 
-apiInstance.deleteOauthScopesById(inum, (error, data, response) => {
+apiInstance.deleteOauthScopesByInum(inum, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {

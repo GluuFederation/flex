@@ -14,18 +14,19 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The AppConfigurationClientAuthenticationFilters model module.
- * @module model/AppConfigurationClientAuthenticationFilters
+ * The AuthenticationFilters model module.
+ * @module model/AuthenticationFilters
  * @version 1.0.0
  */
-class AppConfigurationClientAuthenticationFilters {
+class AuthenticationFilters {
     /**
-     * Constructs a new <code>AppConfigurationClientAuthenticationFilters</code>.
-     * @alias module:model/AppConfigurationClientAuthenticationFilters
+     * Constructs a new <code>AuthenticationFilters</code>.
+     * Represents the authentication filter.
+     * @alias module:model/AuthenticationFilters
      */
     constructor() { 
         
-        AppConfigurationClientAuthenticationFilters.initialize(this);
+        AuthenticationFilters.initialize(this);
     }
 
     /**
@@ -37,15 +38,15 @@ class AppConfigurationClientAuthenticationFilters {
     }
 
     /**
-     * Constructs a <code>AppConfigurationClientAuthenticationFilters</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>AuthenticationFilters</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/AppConfigurationClientAuthenticationFilters} obj Optional instance to populate.
-     * @return {module:model/AppConfigurationClientAuthenticationFilters} The populated <code>AppConfigurationClientAuthenticationFilters</code> instance.
+     * @param {module:model/AuthenticationFilters} obj Optional instance to populate.
+     * @return {module:model/AuthenticationFilters} The populated <code>AuthenticationFilters</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new AppConfigurationClientAuthenticationFilters();
+            obj = obj || new AuthenticationFilters();
 
             if (data.hasOwnProperty('filter')) {
                 obj['filter'] = ApiClient.convertToType(data['filter'], 'String');
@@ -67,30 +68,33 @@ class AppConfigurationClientAuthenticationFilters {
 }
 
 /**
+ * Filter to be used.
  * @member {String} filter
  */
-AppConfigurationClientAuthenticationFilters.prototype['filter'] = undefined;
+AuthenticationFilters.prototype['filter'] = undefined;
 
 /**
+ * Filter bind.
  * @member {Boolean} bind
- * @default false
  */
-AppConfigurationClientAuthenticationFilters.prototype['bind'] = false;
+AuthenticationFilters.prototype['bind'] = undefined;
 
 /**
+ * Filter bind password attribute.
  * @member {String} bind-password-attribute
  */
-AppConfigurationClientAuthenticationFilters.prototype['bind-password-attribute'] = undefined;
+AuthenticationFilters.prototype['bind-password-attribute'] = undefined;
 
 /**
+ * Bind filter base distinguished name.
  * @member {String} base-dn
  */
-AppConfigurationClientAuthenticationFilters.prototype['base-dn'] = undefined;
+AuthenticationFilters.prototype['base-dn'] = undefined;
 
 
 
 
 
 
-export default AppConfigurationClientAuthenticationFilters;
+export default AuthenticationFilters;
 

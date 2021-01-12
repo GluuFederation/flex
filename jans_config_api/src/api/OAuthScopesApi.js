@@ -37,8 +37,8 @@ export default class OAuthScopesApi {
 
 
     /**
-     * Callback function to receive the result of the deleteOauthScopesById operation.
-     * @callback module:api/OAuthScopesApi~deleteOauthScopesByIdCallback
+     * Callback function to receive the result of the deleteOauthScopesByInum operation.
+     * @callback module:api/OAuthScopesApi~deleteOauthScopesByInumCallback
      * @param {String} error Error message, if any.
      * @param data This operation does not return a value.
      * @param {String} response The complete HTTP response.
@@ -48,13 +48,13 @@ export default class OAuthScopesApi {
      * Delete Scope.
      * Delete Scope.
      * @param {String} inum 
-     * @param {module:api/OAuthScopesApi~deleteOauthScopesByIdCallback} callback The callback function, accepting three arguments: error, data, response
+     * @param {module:api/OAuthScopesApi~deleteOauthScopesByInumCallback} callback The callback function, accepting three arguments: error, data, response
      */
-    deleteOauthScopesById(inum, callback) {
+    deleteOauthScopesByInum(inum, callback) {
       let postBody = null;
       // verify the required parameter 'inum' is set
       if (inum === undefined || inum === null) {
-        throw new Error("Missing the required parameter 'inum' when calling deleteOauthScopesById");
+        throw new Error("Missing the required parameter 'inum' when calling deleteOauthScopesByInum");
       }
 
       let pathParams = {

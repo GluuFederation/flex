@@ -142,24 +142,25 @@ CouchbaseConfiguration.prototype['defaultBucket'] = undefined;
 CouchbaseConfiguration.prototype['buckets'] = undefined;
 
 /**
+ * A list of the password encryption algorithms.
  * @member {module:model/CouchbaseConfiguration.PasswordEncryptionMethodEnum} passwordEncryptionMethod
  */
 CouchbaseConfiguration.prototype['passwordEncryptionMethod'] = undefined;
 
 /**
+ * Boolean value True if tracing is enabled on the environment.
  * @member {Boolean} operationTracingEnabled
- * @default false
  */
-CouchbaseConfiguration.prototype['operationTracingEnabled'] = false;
+CouchbaseConfiguration.prototype['operationTracingEnabled'] = undefined;
 
 /**
  * If mutation tokens are enabled, they can be used for advanced durability requirements, as well as optimized RYOW consistency.
  * @member {Boolean} mutationTokensEnabled
- * @default false
  */
-CouchbaseConfiguration.prototype['mutationTokensEnabled'] = false;
+CouchbaseConfiguration.prototype['mutationTokensEnabled'] = undefined;
 
 /**
+ * The default timeout for connection timeout.
  * @member {Number} connectTimeout
  */
 CouchbaseConfiguration.prototype['connectTimeout'] = undefined;
@@ -171,6 +172,7 @@ CouchbaseConfiguration.prototype['connectTimeout'] = undefined;
 CouchbaseConfiguration.prototype['computationPoolSize'] = undefined;
 
 /**
+ * Identifies if SSL should be enabled.
  * @member {Boolean} useSSL
  */
 CouchbaseConfiguration.prototype['useSSL'] = undefined;

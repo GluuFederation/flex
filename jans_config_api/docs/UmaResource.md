@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **inum** | **String** | XRI i-number. Client Identifier to uniquely identify the UMAResource. | [optional] 
 **id** | **String** | Resource id. | [optional] 
 **name** | **String** | A human-readable name of the scope. | [optional] 
-**iconUrl** | **String** | A URL for a graphic icon representing the resource. | [optional] 
+**iconUri** | **String** | A URL for a graphic icon representing the resource. | [optional] 
 **scopes** | **[String]** | Applicable resource scopes. | [optional] 
 **scopeExpression** | **String** | Resource scope expression. | [optional] 
 **clients** | **[String]** | List of client assosiated with the resource. | [optional] 

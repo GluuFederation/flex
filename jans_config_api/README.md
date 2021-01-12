@@ -133,12 +133,16 @@ Class | Method | HTTP request | Description
 *JansConfigApi.CacheConfigurationApi* | [**getConfigCache**](docs/CacheConfigurationApi.md#getConfigCache) | **GET** /jans-config-api/api/v1/config/cache | Returns cache configuration.
 *JansConfigApi.CacheConfigurationApi* | [**patchConfigCache**](docs/CacheConfigurationApi.md#patchConfigCache) | **PATCH** /jans-config-api/api/v1/config/cache | Partially modifies cache configuration.
 *JansConfigApi.CacheConfigurationInMemoryApi* | [**getConfigCacheInMemory**](docs/CacheConfigurationInMemoryApi.md#getConfigCacheInMemory) | **GET** /jans-config-api/api/v1/config/cache/in-memory | Returns in-Memory cache configuration.
+*JansConfigApi.CacheConfigurationInMemoryApi* | [**patchConfigCacheInMemory**](docs/CacheConfigurationInMemoryApi.md#patchConfigCacheInMemory) | **PATCH** /jans-config-api/api/v1/config/cache/in-memory | Partially modifies In-Memory cache configuration.
 *JansConfigApi.CacheConfigurationInMemoryApi* | [**putConfigCacheInMemory**](docs/CacheConfigurationInMemoryApi.md#putConfigCacheInMemory) | **PUT** /jans-config-api/api/v1/config/cache/in-memory | Updates in-Memory cache configuration.
 *JansConfigApi.CacheConfigurationMemcachedApi* | [**getConfigCacheMemcached**](docs/CacheConfigurationMemcachedApi.md#getConfigCacheMemcached) | **GET** /jans-config-api/api/v1/config/cache/memcached | Returns Memcached cache configuration.
+*JansConfigApi.CacheConfigurationMemcachedApi* | [**patchConfigCacheMemcached**](docs/CacheConfigurationMemcachedApi.md#patchConfigCacheMemcached) | **PATCH** /jans-config-api/api/v1/config/cache/memcached | Partially modifies Memcached cache configuration.
 *JansConfigApi.CacheConfigurationMemcachedApi* | [**putConfigCacheMemcached**](docs/CacheConfigurationMemcachedApi.md#putConfigCacheMemcached) | **PUT** /jans-config-api/api/v1/config/cache/memcached | Updates Memcached cache configuration.
 *JansConfigApi.CacheConfigurationNativePersistenceApi* | [**getConfigCacheNativePersistence**](docs/CacheConfigurationNativePersistenceApi.md#getConfigCacheNativePersistence) | **GET** /jans-config-api/api/v1/config/cache/native-persistence | Returns native persistence cache configuration.
+*JansConfigApi.CacheConfigurationNativePersistenceApi* | [**patchConfigCacheNativePersistence**](docs/CacheConfigurationNativePersistenceApi.md#patchConfigCacheNativePersistence) | **PATCH** /jans-config-api/api/v1/config/cache/native-persistence | Partially modifies Native Persistence cache configuration.
 *JansConfigApi.CacheConfigurationNativePersistenceApi* | [**putConfigCacheNativePersistence**](docs/CacheConfigurationNativePersistenceApi.md#putConfigCacheNativePersistence) | **PUT** /jans-config-api/api/v1/config/cache/native-persistence | Updates native persistence cache configuration.
 *JansConfigApi.CacheConfigurationRedisApi* | [**getConfigCacheRedis**](docs/CacheConfigurationRedisApi.md#getConfigCacheRedis) | **GET** /jans-config-api/api/v1/config/cache/redis | Returns Redis cache configuration.
+*JansConfigApi.CacheConfigurationRedisApi* | [**patchConfigCacheRedis**](docs/CacheConfigurationRedisApi.md#patchConfigCacheRedis) | **PATCH** /jans-config-api/api/v1/config/cache/redis | Partially modifies Redis cache configuration.
 *JansConfigApi.CacheConfigurationRedisApi* | [**putConfigCacheRedis**](docs/CacheConfigurationRedisApi.md#putConfigCacheRedis) | **PUT** /jans-config-api/api/v1/config/cache/redis | Updates Redis cache configuration.
 *JansConfigApi.ConfigurationFido2Api* | [**getPropertiesFido2**](docs/ConfigurationFido2Api.md#getPropertiesFido2) | **GET** /jans-config-api/api/v1/fido2/config | Gets Jans Authorization Server Fido2 configuration properties.
 *JansConfigApi.ConfigurationFido2Api* | [**putPropertiesFido2**](docs/ConfigurationFido2Api.md#putPropertiesFido2) | **PUT** /jans-config-api/api/v1/fido2/config | Updates Fido2 configuration properties.
@@ -188,7 +192,7 @@ Class | Method | HTTP request | Description
 *JansConfigApi.OAuthOpenIDConnectSectorIdentifiersApi* | [**patchOauthOpenidSectorsById**](docs/OAuthOpenIDConnectSectorIdentifiersApi.md#patchOauthOpenidSectorsById) | **PATCH** /jans-config-api/api/v1/openid/sectoridentifiers/{inum} | Partially update OpenId Connect Sector by Inum.
 *JansConfigApi.OAuthOpenIDConnectSectorIdentifiersApi* | [**postOauthOpenidSectors**](docs/OAuthOpenIDConnectSectorIdentifiersApi.md#postOauthOpenidSectors) | **POST** /jans-config-api/api/v1/openid/sectoridentifiers | Create new OpenID Connect Sector.
 *JansConfigApi.OAuthOpenIDConnectSectorIdentifiersApi* | [**putOauthOpenidSectors**](docs/OAuthOpenIDConnectSectorIdentifiersApi.md#putOauthOpenidSectors) | **PUT** /jans-config-api/api/v1/openid/sectoridentifiers | Update OpenId Connect Sector.
-*JansConfigApi.OAuthScopesApi* | [**deleteOauthScopesById**](docs/OAuthScopesApi.md#deleteOauthScopesById) | **DELETE** /jans-config-api/api/v1/scopes/{inum} | Delete Scope.
+*JansConfigApi.OAuthScopesApi* | [**deleteOauthScopesByInum**](docs/OAuthScopesApi.md#deleteOauthScopesByInum) | **DELETE** /jans-config-api/api/v1/scopes/{inum} | Delete Scope.
 *JansConfigApi.OAuthScopesApi* | [**getOauthScopes**](docs/OAuthScopesApi.md#getOauthScopes) | **GET** /jans-config-api/api/v1/scopes | Gets list of Scopes.
 *JansConfigApi.OAuthScopesApi* | [**getOauthScopesByInum**](docs/OAuthScopesApi.md#getOauthScopesByInum) | **GET** /jans-config-api/api/v1/scopes/{inum} | Get Scope by Inum
 *JansConfigApi.OAuthScopesApi* | [**patchOauthScopesById**](docs/OAuthScopesApi.md#patchOauthScopesById) | **PATCH** /jans-config-api/api/v1/scopes/{inum} | Update modified attributes of existing Scope by Inum.
@@ -205,21 +209,17 @@ Class | Method | HTTP request | Description
 ## Documentation for Models
 
  - [JansConfigApi.AppConfiguration](docs/AppConfiguration.md)
- - [JansConfigApi.AppConfigurationAuthenticationFilters](docs/AppConfigurationAuthenticationFilters.md)
- - [JansConfigApi.AppConfigurationAuthenticationProtectionConfiguration](docs/AppConfigurationAuthenticationProtectionConfiguration.md)
- - [JansConfigApi.AppConfigurationCibaEndUserNotificationConfig](docs/AppConfigurationCibaEndUserNotificationConfig.md)
- - [JansConfigApi.AppConfigurationClientAuthenticationFilters](docs/AppConfigurationClientAuthenticationFilters.md)
- - [JansConfigApi.AppConfigurationCorsConfigurationFilters](docs/AppConfigurationCorsConfigurationFilters.md)
+ - [JansConfigApi.AuthenticationFilters](docs/AuthenticationFilters.md)
  - [JansConfigApi.AuthenticationMethod](docs/AuthenticationMethod.md)
+ - [JansConfigApi.AuthenticationProtectionConfiguration](docs/AuthenticationProtectionConfiguration.md)
+ - [JansConfigApi.CIBAEndUserNotificationConfig](docs/CIBAEndUserNotificationConfig.md)
  - [JansConfigApi.CacheConfiguration](docs/CacheConfiguration.md)
  - [JansConfigApi.Client](docs/Client.md)
  - [JansConfigApi.ClientAttributes](docs/ClientAttributes.md)
+ - [JansConfigApi.CorsConfigurationFilter](docs/CorsConfigurationFilter.md)
  - [JansConfigApi.CouchbaseConfiguration](docs/CouchbaseConfiguration.md)
  - [JansConfigApi.CustomAttribute](docs/CustomAttribute.md)
  - [JansConfigApi.CustomScript](docs/CustomScript.md)
- - [JansConfigApi.CustomScriptConfigurationProperties](docs/CustomScriptConfigurationProperties.md)
- - [JansConfigApi.CustomScriptModuleProperties](docs/CustomScriptModuleProperties.md)
- - [JansConfigApi.CustomScriptScriptError](docs/CustomScriptScriptError.md)
  - [JansConfigApi.ErrorResponse](docs/ErrorResponse.md)
  - [JansConfigApi.Fido2Configuration](docs/Fido2Configuration.md)
  - [JansConfigApi.GluuAttribute](docs/GluuAttribute.md)
@@ -237,7 +237,10 @@ Class | Method | HTTP request | Description
  - [JansConfigApi.RequestedParties](docs/RequestedParties.md)
  - [JansConfigApi.Scope](docs/Scope.md)
  - [JansConfigApi.ScopeAttributes](docs/ScopeAttributes.md)
+ - [JansConfigApi.ScriptError](docs/ScriptError.md)
  - [JansConfigApi.SectorIdentifier](docs/SectorIdentifier.md)
+ - [JansConfigApi.SimpleCustomProperty](docs/SimpleCustomProperty.md)
+ - [JansConfigApi.SimpleExtendedCustomProperty](docs/SimpleExtendedCustomProperty.md)
  - [JansConfigApi.SmtpConfiguration](docs/SmtpConfiguration.md)
  - [JansConfigApi.UmaResource](docs/UmaResource.md)
  - [JansConfigApi.WebKeysConfiguration](docs/WebKeysConfiguration.md)

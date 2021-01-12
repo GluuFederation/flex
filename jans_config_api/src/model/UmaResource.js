@@ -60,8 +60,8 @@ class UmaResource {
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
-            if (data.hasOwnProperty('iconUrl')) {
-                obj['iconUrl'] = ApiClient.convertToType(data['iconUrl'], 'String');
+            if (data.hasOwnProperty('iconUri')) {
+                obj['iconUri'] = ApiClient.convertToType(data['iconUri'], 'String');
             }
             if (data.hasOwnProperty('scopes')) {
                 obj['scopes'] = ApiClient.convertToType(data['scopes'], ['String']);
@@ -128,9 +128,9 @@ UmaResource.prototype['name'] = undefined;
 
 /**
  * A URL for a graphic icon representing the resource.
- * @member {String} iconUrl
+ * @member {String} iconUri
  */
-UmaResource.prototype['iconUrl'] = undefined;
+UmaResource.prototype['iconUri'] = undefined;
 
 /**
  * Applicable resource scopes.

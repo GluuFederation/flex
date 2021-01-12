@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new JansConfigApi.CustomScriptScriptError();
+    instance = new JansConfigApi.ScriptError();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,22 +47,22 @@
       object[property] = value;
   }
 
-  describe('CustomScriptScriptError', function() {
-    it('should create an instance of CustomScriptScriptError', function() {
-      // uncomment below and update the code to test CustomScriptScriptError
-      //var instane = new JansConfigApi.CustomScriptScriptError();
-      //expect(instance).to.be.a(JansConfigApi.CustomScriptScriptError);
+  describe('ScriptError', function() {
+    it('should create an instance of ScriptError', function() {
+      // uncomment below and update the code to test ScriptError
+      //var instane = new JansConfigApi.ScriptError();
+      //expect(instance).to.be.a(JansConfigApi.ScriptError);
     });
 
     it('should have the property raisedAt (base name: "raisedAt")', function() {
       // uncomment below and update the code to test the property raisedAt
-      //var instane = new JansConfigApi.CustomScriptScriptError();
+      //var instane = new JansConfigApi.ScriptError();
       //expect(instance).to.be();
     });
 
     it('should have the property stackTrace (base name: "stackTrace")', function() {
       // uncomment below and update the code to test the property stackTrace
-      //var instane = new JansConfigApi.CustomScriptScriptError();
+      //var instane = new JansConfigApi.ScriptError();
       //expect(instance).to.be();
     });
 

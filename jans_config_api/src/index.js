@@ -14,21 +14,17 @@
 
 import ApiClient from './ApiClient';
 import AppConfiguration from './model/AppConfiguration';
-import AppConfigurationAuthenticationFilters from './model/AppConfigurationAuthenticationFilters';
-import AppConfigurationAuthenticationProtectionConfiguration from './model/AppConfigurationAuthenticationProtectionConfiguration';
-import AppConfigurationCibaEndUserNotificationConfig from './model/AppConfigurationCibaEndUserNotificationConfig';
-import AppConfigurationClientAuthenticationFilters from './model/AppConfigurationClientAuthenticationFilters';
-import AppConfigurationCorsConfigurationFilters from './model/AppConfigurationCorsConfigurationFilters';
+import AuthenticationFilters from './model/AuthenticationFilters';
 import AuthenticationMethod from './model/AuthenticationMethod';
+import AuthenticationProtectionConfiguration from './model/AuthenticationProtectionConfiguration';
+import CIBAEndUserNotificationConfig from './model/CIBAEndUserNotificationConfig';
 import CacheConfiguration from './model/CacheConfiguration';
 import Client from './model/Client';
 import ClientAttributes from './model/ClientAttributes';
+import CorsConfigurationFilter from './model/CorsConfigurationFilter';
 import CouchbaseConfiguration from './model/CouchbaseConfiguration';
 import CustomAttribute from './model/CustomAttribute';
 import CustomScript from './model/CustomScript';
-import CustomScriptConfigurationProperties from './model/CustomScriptConfigurationProperties';
-import CustomScriptModuleProperties from './model/CustomScriptModuleProperties';
-import CustomScriptScriptError from './model/CustomScriptScriptError';
 import ErrorResponse from './model/ErrorResponse';
 import Fido2Configuration from './model/Fido2Configuration';
 import GluuAttribute from './model/GluuAttribute';
@@ -46,7 +42,10 @@ import RedisConfiguration from './model/RedisConfiguration';
 import RequestedParties from './model/RequestedParties';
 import Scope from './model/Scope';
 import ScopeAttributes from './model/ScopeAttributes';
+import ScriptError from './model/ScriptError';
 import SectorIdentifier from './model/SectorIdentifier';
+import SimpleCustomProperty from './model/SimpleCustomProperty';
+import SimpleExtendedCustomProperty from './model/SimpleExtendedCustomProperty';
 import SmtpConfiguration from './model/SmtpConfiguration';
 import UmaResource from './model/UmaResource';
 import WebKeysConfiguration from './model/WebKeysConfiguration';
@@ -116,40 +115,28 @@ export {
     AppConfiguration,
 
     /**
-     * The AppConfigurationAuthenticationFilters model constructor.
-     * @property {module:model/AppConfigurationAuthenticationFilters}
+     * The AuthenticationFilters model constructor.
+     * @property {module:model/AuthenticationFilters}
      */
-    AppConfigurationAuthenticationFilters,
-
-    /**
-     * The AppConfigurationAuthenticationProtectionConfiguration model constructor.
-     * @property {module:model/AppConfigurationAuthenticationProtectionConfiguration}
-     */
-    AppConfigurationAuthenticationProtectionConfiguration,
-
-    /**
-     * The AppConfigurationCibaEndUserNotificationConfig model constructor.
-     * @property {module:model/AppConfigurationCibaEndUserNotificationConfig}
-     */
-    AppConfigurationCibaEndUserNotificationConfig,
-
-    /**
-     * The AppConfigurationClientAuthenticationFilters model constructor.
-     * @property {module:model/AppConfigurationClientAuthenticationFilters}
-     */
-    AppConfigurationClientAuthenticationFilters,
-
-    /**
-     * The AppConfigurationCorsConfigurationFilters model constructor.
-     * @property {module:model/AppConfigurationCorsConfigurationFilters}
-     */
-    AppConfigurationCorsConfigurationFilters,
+    AuthenticationFilters,
 
     /**
      * The AuthenticationMethod model constructor.
      * @property {module:model/AuthenticationMethod}
      */
     AuthenticationMethod,
+
+    /**
+     * The AuthenticationProtectionConfiguration model constructor.
+     * @property {module:model/AuthenticationProtectionConfiguration}
+     */
+    AuthenticationProtectionConfiguration,
+
+    /**
+     * The CIBAEndUserNotificationConfig model constructor.
+     * @property {module:model/CIBAEndUserNotificationConfig}
+     */
+    CIBAEndUserNotificationConfig,
 
     /**
      * The CacheConfiguration model constructor.
@@ -170,6 +157,12 @@ export {
     ClientAttributes,
 
     /**
+     * The CorsConfigurationFilter model constructor.
+     * @property {module:model/CorsConfigurationFilter}
+     */
+    CorsConfigurationFilter,
+
+    /**
      * The CouchbaseConfiguration model constructor.
      * @property {module:model/CouchbaseConfiguration}
      */
@@ -186,24 +179,6 @@ export {
      * @property {module:model/CustomScript}
      */
     CustomScript,
-
-    /**
-     * The CustomScriptConfigurationProperties model constructor.
-     * @property {module:model/CustomScriptConfigurationProperties}
-     */
-    CustomScriptConfigurationProperties,
-
-    /**
-     * The CustomScriptModuleProperties model constructor.
-     * @property {module:model/CustomScriptModuleProperties}
-     */
-    CustomScriptModuleProperties,
-
-    /**
-     * The CustomScriptScriptError model constructor.
-     * @property {module:model/CustomScriptScriptError}
-     */
-    CustomScriptScriptError,
 
     /**
      * The ErrorResponse model constructor.
@@ -308,10 +283,28 @@ export {
     ScopeAttributes,
 
     /**
+     * The ScriptError model constructor.
+     * @property {module:model/ScriptError}
+     */
+    ScriptError,
+
+    /**
      * The SectorIdentifier model constructor.
      * @property {module:model/SectorIdentifier}
      */
     SectorIdentifier,
+
+    /**
+     * The SimpleCustomProperty model constructor.
+     * @property {module:model/SimpleCustomProperty}
+     */
+    SimpleCustomProperty,
+
+    /**
+     * The SimpleExtendedCustomProperty model constructor.
+     * @property {module:model/SimpleExtendedCustomProperty}
+     */
+    SimpleExtendedCustomProperty,
 
     /**
      * The SmtpConfiguration model constructor.

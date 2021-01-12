@@ -78,8 +78,8 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property iconUrl (base name: "iconUrl")', function() {
-      // uncomment below and update the code to test the property iconUrl
+    it('should have the property iconUri (base name: "iconUri")', function() {
+      // uncomment below and update the code to test the property iconUri
       //var instane = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });

@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new JansConfigApi.CustomScriptModuleProperties();
+    instance = new JansConfigApi.AuthenticationFilters();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,28 +47,34 @@
       object[property] = value;
   }
 
-  describe('CustomScriptModuleProperties', function() {
-    it('should create an instance of CustomScriptModuleProperties', function() {
-      // uncomment below and update the code to test CustomScriptModuleProperties
-      //var instane = new JansConfigApi.CustomScriptModuleProperties();
-      //expect(instance).to.be.a(JansConfigApi.CustomScriptModuleProperties);
+  describe('AuthenticationFilters', function() {
+    it('should create an instance of AuthenticationFilters', function() {
+      // uncomment below and update the code to test AuthenticationFilters
+      //var instane = new JansConfigApi.AuthenticationFilters();
+      //expect(instance).to.be.a(JansConfigApi.AuthenticationFilters);
     });
 
-    it('should have the property value1 (base name: "value1")', function() {
-      // uncomment below and update the code to test the property value1
-      //var instane = new JansConfigApi.CustomScriptModuleProperties();
+    it('should have the property filter (base name: "filter")', function() {
+      // uncomment below and update the code to test the property filter
+      //var instane = new JansConfigApi.AuthenticationFilters();
       //expect(instance).to.be();
     });
 
-    it('should have the property value2 (base name: "value2")', function() {
-      // uncomment below and update the code to test the property value2
-      //var instane = new JansConfigApi.CustomScriptModuleProperties();
+    it('should have the property bind (base name: "bind")', function() {
+      // uncomment below and update the code to test the property bind
+      //var instane = new JansConfigApi.AuthenticationFilters();
       //expect(instance).to.be();
     });
 
-    it('should have the property description (base name: "description")', function() {
-      // uncomment below and update the code to test the property description
-      //var instane = new JansConfigApi.CustomScriptModuleProperties();
+    it('should have the property bindPasswordAttribute (base name: "bind-password-attribute")', function() {
+      // uncomment below and update the code to test the property bindPasswordAttribute
+      //var instane = new JansConfigApi.AuthenticationFilters();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property baseDn (base name: "base-dn")', function() {
+      // uncomment below and update the code to test the property baseDn
+      //var instane = new JansConfigApi.AuthenticationFilters();
       //expect(instance).to.be();
     });
 

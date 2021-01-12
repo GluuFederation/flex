@@ -24,10 +24,15 @@ class GluuAttribute {
      * Constructs a new <code>GluuAttribute</code>.
      * Attribute.
      * @alias module:model/GluuAttribute
+     * @param name {String} Name of the attribute.
+     * @param displayName {String} 
+     * @param description {String} User friendly descriptive detail of attribute.
+     * @param dataType {module:model/GluuAttribute.DataTypeEnum} Data Type of attribute.
+     * @param viewType {Array.<module:model/GluuAttribute.ViewTypeEnum>} GluuUserRole
      */
-    constructor() { 
+    constructor(name, displayName, description, dataType, viewType) { 
         
-        GluuAttribute.initialize(this);
+        GluuAttribute.initialize(this, name, displayName, description, dataType, viewType);
     }
 
     /**
@@ -35,7 +40,12 @@ class GluuAttribute {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, name, displayName, description, dataType, viewType) { 
+        obj['name'] = name;
+        obj['displayName'] = displayName;
+        obj['description'] = description;
+        obj['dataType'] = dataType;
+        obj['viewType'] = viewType;
     }
 
     /**
@@ -178,8 +188,8 @@ GluuAttribute.prototype['description'] = undefined;
 GluuAttribute.prototype['dataType'] = undefined;
 
 /**
- * Distinguished Name
- * @member {String} status
+ * Attrubute status
+ * @member {module:model/GluuAttribute.StatusEnum} status
  */
 GluuAttribute.prototype['status'] = undefined;
 
@@ -330,7 +340,46 @@ GluuAttribute['DataTypeEnum'] = {
      * value: "DATE"
      * @const
      */
-    "DATE": "DATE"
+    "DATE": "DATE",
+
+    /**
+     * value: "JSON"
+     * @const
+     */
+    "JSON": "JSON"
+};
+
+
+/**
+ * Allowed values for the <code>status</code> property.
+ * @enum {String}
+ * @readonly
+ */
+GluuAttribute['StatusEnum'] = {
+
+    /**
+     * value: "ACTIVE"
+     * @const
+     */
+    "ACTIVE": "ACTIVE",
+
+    /**
+     * value: "INACTIVE"
+     * @const
+     */
+    "INACTIVE": "INACTIVE",
+
+    /**
+     * value: "EXPIRED"
+     * @const
+     */
+    "EXPIRED": "EXPIRED",
+
+    /**
+     * value: "REGISTER"
+     * @const
+     */
+    "REGISTER": "REGISTER"
 };
 
 

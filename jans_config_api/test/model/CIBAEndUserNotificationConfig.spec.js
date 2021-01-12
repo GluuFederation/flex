@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+    instance = new JansConfigApi.CIBAEndUserNotificationConfig();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,70 +47,70 @@
       object[property] = value;
   }
 
-  describe('AppConfigurationCibaEndUserNotificationConfig', function() {
-    it('should create an instance of AppConfigurationCibaEndUserNotificationConfig', function() {
-      // uncomment below and update the code to test AppConfigurationCibaEndUserNotificationConfig
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
-      //expect(instance).to.be.a(JansConfigApi.AppConfigurationCibaEndUserNotificationConfig);
+  describe('CIBAEndUserNotificationConfig', function() {
+    it('should create an instance of CIBAEndUserNotificationConfig', function() {
+      // uncomment below and update the code to test CIBAEndUserNotificationConfig
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
+      //expect(instance).to.be.a(JansConfigApi.CIBAEndUserNotificationConfig);
     });
 
     it('should have the property apiKey (base name: "apiKey")', function() {
       // uncomment below and update the code to test the property apiKey
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 
     it('should have the property authDomain (base name: "authDomain")', function() {
       // uncomment below and update the code to test the property authDomain
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 
     it('should have the property databaseURL (base name: "databaseURL")', function() {
       // uncomment below and update the code to test the property databaseURL
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 
     it('should have the property projectId (base name: "projectId")', function() {
       // uncomment below and update the code to test the property projectId
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 
     it('should have the property storageBucket (base name: "storageBucket")', function() {
       // uncomment below and update the code to test the property storageBucket
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 
     it('should have the property messagingSenderId (base name: "messagingSenderId")', function() {
       // uncomment below and update the code to test the property messagingSenderId
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 
     it('should have the property appId (base name: "appId")', function() {
       // uncomment below and update the code to test the property appId
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 
     it('should have the property notificationUrl (base name: "notificationUrl")', function() {
       // uncomment below and update the code to test the property notificationUrl
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 
     it('should have the property notificationKey (base name: "notificationKey")', function() {
       // uncomment below and update the code to test the property notificationKey
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 
     it('should have the property publicVapidKey (base name: "publicVapidKey")', function() {
       // uncomment below and update the code to test the property publicVapidKey
-      //var instane = new JansConfigApi.AppConfigurationCibaEndUserNotificationConfig();
+      //var instane = new JansConfigApi.CIBAEndUserNotificationConfig();
       //expect(instance).to.be();
     });
 

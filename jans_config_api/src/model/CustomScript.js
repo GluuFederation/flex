@@ -12,9 +12,9 @@
  */
 
 import ApiClient from '../ApiClient';
-import CustomScriptConfigurationProperties from './CustomScriptConfigurationProperties';
-import CustomScriptModuleProperties from './CustomScriptModuleProperties';
-import CustomScriptScriptError from './CustomScriptScriptError';
+import ScriptError from './ScriptError';
+import SimpleCustomProperty from './SimpleCustomProperty';
+import SimpleExtendedCustomProperty from './SimpleExtendedCustomProperty';
 
 /**
  * The CustomScript model module.
@@ -76,10 +76,10 @@ class CustomScript {
                 obj['programmingLanguage'] = ApiClient.convertToType(data['programmingLanguage'], 'String');
             }
             if (data.hasOwnProperty('moduleProperties')) {
-                obj['moduleProperties'] = ApiClient.convertToType(data['moduleProperties'], [CustomScriptModuleProperties]);
+                obj['moduleProperties'] = ApiClient.convertToType(data['moduleProperties'], [SimpleCustomProperty]);
             }
             if (data.hasOwnProperty('configurationProperties')) {
-                obj['configurationProperties'] = ApiClient.convertToType(data['configurationProperties'], [CustomScriptConfigurationProperties]);
+                obj['configurationProperties'] = ApiClient.convertToType(data['configurationProperties'], [SimpleExtendedCustomProperty]);
             }
             if (data.hasOwnProperty('level')) {
                 obj['level'] = ApiClient.convertToType(data['level'], 'Number');
@@ -91,7 +91,7 @@ class CustomScript {
                 obj['enabled'] = ApiClient.convertToType(data['enabled'], 'Boolean');
             }
             if (data.hasOwnProperty('scriptError')) {
-                obj['scriptError'] = CustomScriptScriptError.constructFromObject(data['scriptError']);
+                obj['scriptError'] = ScriptError.constructFromObject(data['scriptError']);
             }
             if (data.hasOwnProperty('modified')) {
                 obj['modified'] = ApiClient.convertToType(data['modified'], 'Boolean');
@@ -155,13 +155,13 @@ CustomScript.prototype['programmingLanguage'] = undefined;
 
 /**
  * Module-level properties applicable to the script.
- * @member {Array.<module:model/CustomScriptModuleProperties>} moduleProperties
+ * @member {Array.<module:model/SimpleCustomProperty>} moduleProperties
  */
 CustomScript.prototype['moduleProperties'] = undefined;
 
 /**
  * Configuration properties applicable to the script.
- * @member {Array.<module:model/CustomScriptConfigurationProperties>} configurationProperties
+ * @member {Array.<module:model/SimpleExtendedCustomProperty>} configurationProperties
  */
 CustomScript.prototype['configurationProperties'] = undefined;
 
@@ -184,7 +184,7 @@ CustomScript.prototype['revision'] = undefined;
 CustomScript.prototype['enabled'] = undefined;
 
 /**
- * @member {module:model/CustomScriptScriptError} scriptError
+ * @member {module:model/ScriptError} scriptError
  */
 CustomScript.prototype['scriptError'] = undefined;
 

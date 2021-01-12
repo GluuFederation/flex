@@ -60,12 +60,6 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property id (base name: "id")', function() {
-      // uncomment below and update the code to test the property id
-      //var instane = new JansConfigApi.Scope();
-      //expect(instance).to.be();
-    });
-
     it('should have the property inum (base name: "inum")', function() {
       // uncomment below and update the code to test the property inum
       //var instane = new JansConfigApi.Scope();
@@ -78,8 +72,8 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property description (base name: "description")', function() {
-      // uncomment below and update the code to test the property description
+    it('should have the property id (base name: "id")', function() {
+      // uncomment below and update the code to test the property id
       //var instane = new JansConfigApi.Scope();
       //expect(instance).to.be();
     });
@@ -90,14 +84,8 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property authorizationPolicies (base name: "authorizationPolicies")', function() {
-      // uncomment below and update the code to test the property authorizationPolicies
-      //var instane = new JansConfigApi.Scope();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property defaultScope (base name: "defaultScope")', function() {
-      // uncomment below and update the code to test the property defaultScope
+    it('should have the property description (base name: "description")', function() {
+      // uncomment below and update the code to test the property description
       //var instane = new JansConfigApi.Scope();
       //expect(instance).to.be();
     });
@@ -108,14 +96,26 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property jansClaim (base name: "jansClaim")', function() {
-      // uncomment below and update the code to test the property jansClaim
+    it('should have the property claims (base name: "claims")', function() {
+      // uncomment below and update the code to test the property claims
       //var instane = new JansConfigApi.Scope();
       //expect(instance).to.be();
     });
 
-    it('should have the property umaType (base name: "umaType")', function() {
-      // uncomment below and update the code to test the property umaType
+    it('should have the property defaultScope (base name: "defaultScope")', function() {
+      // uncomment below and update the code to test the property defaultScope
+      //var instane = new JansConfigApi.Scope();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property groupClaims (base name: "groupClaims")', function() {
+      // uncomment below and update the code to test the property groupClaims
+      //var instane = new JansConfigApi.Scope();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property dynamicScopeScripts (base name: "dynamicScopeScripts")', function() {
+      // uncomment below and update the code to test the property dynamicScopeScripts
       //var instane = new JansConfigApi.Scope();
       //expect(instance).to.be();
     });
@@ -128,6 +128,24 @@
 
     it('should have the property attributes (base name: "attributes")', function() {
       // uncomment below and update the code to test the property attributes
+      //var instane = new JansConfigApi.Scope();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property umaType (base name: "umaType")', function() {
+      // uncomment below and update the code to test the property umaType
+      //var instane = new JansConfigApi.Scope();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property deletable (base name: "deletable")', function() {
+      // uncomment below and update the code to test the property deletable
+      //var instane = new JansConfigApi.Scope();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property expirationDate (base name: "expirationDate")', function() {
+      // uncomment below and update the code to test the property expirationDate
       //var instane = new JansConfigApi.Scope();
       //expect(instance).to.be();
     });

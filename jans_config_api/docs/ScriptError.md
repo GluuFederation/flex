@@ -1,4 +1,4 @@
-# JansConfigApi.CustomScriptScriptError
+# JansConfigApi.ScriptError
 
 ## Properties
 

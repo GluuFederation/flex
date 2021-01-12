@@ -76,7 +76,7 @@ export default class ConfigurationLoggingApi {
      * Callback function to receive the result of the putConfigLogging operation.
      * @callback module:api/ConfigurationLoggingApi~putConfigLoggingCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/LoggingConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -86,6 +86,7 @@ export default class ConfigurationLoggingApi {
      * @param {Object} opts Optional parameters
      * @param {module:model/LoggingConfiguration} opts.loggingConfiguration 
      * @param {module:api/ConfigurationLoggingApi~putConfigLoggingCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/LoggingConfiguration}
      */
     putConfigLogging(opts, callback) {
       opts = opts || {};
@@ -103,7 +104,7 @@ export default class ConfigurationLoggingApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = null;
+      let returnType = LoggingConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/logging', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

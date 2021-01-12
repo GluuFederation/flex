@@ -52,41 +52,50 @@ class Scope {
             if (data.hasOwnProperty('dn')) {
                 obj['dn'] = ApiClient.convertToType(data['dn'], 'String');
             }
-            if (data.hasOwnProperty('id')) {
-                obj['id'] = ApiClient.convertToType(data['id'], 'String');
-            }
             if (data.hasOwnProperty('inum')) {
                 obj['inum'] = ApiClient.convertToType(data['inum'], 'String');
             }
             if (data.hasOwnProperty('displayName')) {
                 obj['displayName'] = ApiClient.convertToType(data['displayName'], 'String');
             }
-            if (data.hasOwnProperty('description')) {
-                obj['description'] = ApiClient.convertToType(data['description'], 'String');
+            if (data.hasOwnProperty('id')) {
+                obj['id'] = ApiClient.convertToType(data['id'], 'String');
             }
             if (data.hasOwnProperty('iconUrl')) {
                 obj['iconUrl'] = ApiClient.convertToType(data['iconUrl'], 'String');
             }
-            if (data.hasOwnProperty('authorizationPolicies')) {
-                obj['authorizationPolicies'] = ApiClient.convertToType(data['authorizationPolicies'], ['String']);
-            }
-            if (data.hasOwnProperty('defaultScope')) {
-                obj['defaultScope'] = ApiClient.convertToType(data['defaultScope'], 'Boolean');
+            if (data.hasOwnProperty('description')) {
+                obj['description'] = ApiClient.convertToType(data['description'], 'String');
             }
             if (data.hasOwnProperty('scopeType')) {
                 obj['scopeType'] = ApiClient.convertToType(data['scopeType'], 'String');
             }
-            if (data.hasOwnProperty('jansClaim')) {
-                obj['jansClaim'] = ApiClient.convertToType(data['jansClaim'], ['String']);
+            if (data.hasOwnProperty('claims')) {
+                obj['claims'] = ApiClient.convertToType(data['claims'], ['String']);
             }
-            if (data.hasOwnProperty('umaType')) {
-                obj['umaType'] = ApiClient.convertToType(data['umaType'], 'Boolean');
+            if (data.hasOwnProperty('defaultScope')) {
+                obj['defaultScope'] = ApiClient.convertToType(data['defaultScope'], 'Boolean');
+            }
+            if (data.hasOwnProperty('groupClaims')) {
+                obj['groupClaims'] = ApiClient.convertToType(data['groupClaims'], 'Boolean');
+            }
+            if (data.hasOwnProperty('dynamicScopeScripts')) {
+                obj['dynamicScopeScripts'] = ApiClient.convertToType(data['dynamicScopeScripts'], ['String']);
             }
             if (data.hasOwnProperty('umaAuthorizationPolicies')) {
                 obj['umaAuthorizationPolicies'] = ApiClient.convertToType(data['umaAuthorizationPolicies'], ['String']);
             }
             if (data.hasOwnProperty('attributes')) {
                 obj['attributes'] = ScopeAttributes.constructFromObject(data['attributes']);
+            }
+            if (data.hasOwnProperty('umaType')) {
+                obj['umaType'] = ApiClient.convertToType(data['umaType'], 'Boolean');
+            }
+            if (data.hasOwnProperty('deletable')) {
+                obj['deletable'] = ApiClient.convertToType(data['deletable'], 'Boolean');
+            }
+            if (data.hasOwnProperty('expirationDate')) {
+                obj['expirationDate'] = ApiClient.convertToType(data['expirationDate'], 'Date');
             }
         }
         return obj;
@@ -101,12 +110,6 @@ class Scope {
 Scope.prototype['dn'] = undefined;
 
 /**
- * The base64url encoded id.
- * @member {String} id
- */
-Scope.prototype['id'] = undefined;
-
-/**
  * Unique id identifying the .
  * @member {String} inum
  */
@@ -119,10 +122,10 @@ Scope.prototype['inum'] = undefined;
 Scope.prototype['displayName'] = undefined;
 
 /**
- * A human-readable string describing the scope.
- * @member {String} description
+ * The base64url encoded id.
+ * @member {String} id
  */
-Scope.prototype['description'] = undefined;
+Scope.prototype['id'] = undefined;
 
 /**
  * A URL for a graphic icon representing the scope. The referenced icon MAY be used by the authorization server in any user interface it presents to the resource owner.
@@ -131,16 +134,10 @@ Scope.prototype['description'] = undefined;
 Scope.prototype['iconUrl'] = undefined;
 
 /**
- * Policies associated with all scopes.
- * @member {Array.<String>} authorizationPolicies
+ * A human-readable string describing the scope.
+ * @member {String} description
  */
-Scope.prototype['authorizationPolicies'] = undefined;
-
-/**
- * Boolean value to specify default scope.
- * @member {Boolean} defaultScope
- */
-Scope.prototype['defaultScope'] = undefined;
+Scope.prototype['description'] = undefined;
 
 /**
  * The scopes type associated with Access Tokens determine what resources will.
@@ -150,16 +147,30 @@ Scope.prototype['scopeType'] = undefined;
 
 /**
  * Claim attributes associated with the scope.
- * @member {Array.<String>} jansClaim
+ * @member {Array.<String>} claims
  */
-Scope.prototype['jansClaim'] = undefined;
+Scope.prototype['claims'] = undefined;
 
 /**
- * @member {Boolean} umaType
+ * Boolean value to specify default scope.
+ * @member {Boolean} defaultScope
  */
-Scope.prototype['umaType'] = undefined;
+Scope.prototype['defaultScope'] = undefined;
 
 /**
+ * Specifies if the scope is group claims.
+ * @member {Boolean} groupClaims
+ */
+Scope.prototype['groupClaims'] = undefined;
+
+/**
+ * Dynamic Scope Scripts associated with the scope.
+ * @member {Array.<String>} dynamicScopeScripts
+ */
+Scope.prototype['dynamicScopeScripts'] = undefined;
+
+/**
+ * Policies associated with scopes.
  * @member {Array.<String>} umaAuthorizationPolicies
  */
 Scope.prototype['umaAuthorizationPolicies'] = undefined;
@@ -168,6 +179,24 @@ Scope.prototype['umaAuthorizationPolicies'] = undefined;
  * @member {module:model/ScopeAttributes} attributes
  */
 Scope.prototype['attributes'] = undefined;
+
+/**
+ * Specifies if the scope is of type UMA.
+ * @member {Boolean} umaType
+ */
+Scope.prototype['umaType'] = undefined;
+
+/**
+ * Specifies if the scope can be deleted.
+ * @member {Boolean} deletable
+ */
+Scope.prototype['deletable'] = undefined;
+
+/**
+ * Expiry date of the Scope.
+ * @member {Date} expirationDate
+ */
+Scope.prototype['expirationDate'] = undefined;
 
 
 
@@ -181,22 +210,34 @@ Scope.prototype['attributes'] = undefined;
 Scope['ScopeTypeEnum'] = {
 
     /**
-     * value: "OpenID"
+     * value: "openid"
      * @const
      */
-    "OpenID": "OpenID",
+    "openid": "openid",
 
     /**
-     * value: "Dynamic"
+     * value: "dynamic"
      * @const
      */
-    "Dynamic": "Dynamic",
+    "dynamic": "dynamic",
 
     /**
-     * value: "OAuth"
+     * value: "uma"
      * @const
      */
-    "OAuth": "OAuth"
+    "uma": "uma",
+
+    /**
+     * value: "spontaneous"
+     * @const
+     */
+    "spontaneous": "spontaneous",
+
+    /**
+     * value: "oauth"
+     * @const
+     */
+    "oauth": "oauth"
 };
 
 

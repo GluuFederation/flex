@@ -14,19 +14,19 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The AppConfigurationAuthenticationProtectionConfiguration model module.
- * @module model/AppConfigurationAuthenticationProtectionConfiguration
+ * The AuthenticationProtectionConfiguration model module.
+ * @module model/AuthenticationProtectionConfiguration
  * @version 1.0.0
  */
-class AppConfigurationAuthenticationProtectionConfiguration {
+class AuthenticationProtectionConfiguration {
     /**
-     * Constructs a new <code>AppConfigurationAuthenticationProtectionConfiguration</code>.
+     * Constructs a new <code>AuthenticationProtectionConfiguration</code>.
      * Authentication Brute Force Protection Configuration.
-     * @alias module:model/AppConfigurationAuthenticationProtectionConfiguration
+     * @alias module:model/AuthenticationProtectionConfiguration
      */
     constructor() { 
         
-        AppConfigurationAuthenticationProtectionConfiguration.initialize(this);
+        AuthenticationProtectionConfiguration.initialize(this);
     }
 
     /**
@@ -38,15 +38,15 @@ class AppConfigurationAuthenticationProtectionConfiguration {
     }
 
     /**
-     * Constructs a <code>AppConfigurationAuthenticationProtectionConfiguration</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>AuthenticationProtectionConfiguration</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/AppConfigurationAuthenticationProtectionConfiguration} obj Optional instance to populate.
-     * @return {module:model/AppConfigurationAuthenticationProtectionConfiguration} The populated <code>AppConfigurationAuthenticationProtectionConfiguration</code> instance.
+     * @param {module:model/AuthenticationProtectionConfiguration} obj Optional instance to populate.
+     * @return {module:model/AuthenticationProtectionConfiguration} The populated <code>AuthenticationProtectionConfiguration</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new AppConfigurationAuthenticationProtectionConfiguration();
+            obj = obj || new AuthenticationProtectionConfiguration();
 
             if (data.hasOwnProperty('attemptExpiration')) {
                 obj['attemptExpiration'] = ApiClient.convertToType(data['attemptExpiration'], 'Number');
@@ -68,29 +68,33 @@ class AppConfigurationAuthenticationProtectionConfiguration {
 }
 
 /**
+ * How long store in cache information about particular login attempt. It's needed to count login attempts withing specified period of time.
  * @member {Number} attemptExpiration
  */
-AppConfigurationAuthenticationProtectionConfiguration.prototype['attemptExpiration'] = undefined;
+AuthenticationProtectionConfiguration.prototype['attemptExpiration'] = undefined;
 
 /**
+ * How many attempts application allow without delay.
  * @member {Number} maximumAllowedAttemptsWithoutDelay
  */
-AppConfigurationAuthenticationProtectionConfiguration.prototype['maximumAllowedAttemptsWithoutDelay'] = undefined;
+AuthenticationProtectionConfiguration.prototype['maximumAllowedAttemptsWithoutDelay'] = undefined;
 
 /**
+ * Delay time in seconds after reaching maximumAllowedAttemptsWithoutDelay limit.
  * @member {Number} delayTime
  */
-AppConfigurationAuthenticationProtectionConfiguration.prototype['delayTime'] = undefined;
+AuthenticationProtectionConfiguration.prototype['delayTime'] = undefined;
 
 /**
+ * Enable or disable service, This functionality can be enabled dynamically.
  * @member {Boolean} bruteForceProtectionEnabled
  */
-AppConfigurationAuthenticationProtectionConfiguration.prototype['bruteForceProtectionEnabled'] = undefined;
+AuthenticationProtectionConfiguration.prototype['bruteForceProtectionEnabled'] = undefined;
 
 
 
 
 
 
-export default AppConfigurationAuthenticationProtectionConfiguration;
+export default AuthenticationProtectionConfiguration;
 

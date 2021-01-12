@@ -7,18 +7,18 @@ Name | Type | Description | Notes
 **dn** | **String** |  | [optional] 
 **inum** | **String** | XRI i-number. Identifier to uniquely identify the attribute. | [optional] 
 **selected** | **Boolean** | Boolean value to indicate if the atrribute is selected. | [optional] 
-**name** | **String** | Name of the attribute. | [optional] 
-**displayName** | **String** |  | [optional] 
-**description** | **String** | User friendly descriptive detail of attribute. | [optional] 
-**dataType** | **String** | Data Type of attribute. | [optional] 
-**status** | **String** | Distinguished Name | [optional] 
+**name** | **String** | Name of the attribute. | 
+**displayName** | **String** |  | 
+**description** | **String** | User friendly descriptive detail of attribute. | 
+**dataType** | **String** | Data Type of attribute. | 
+**status** | **String** | Attrubute status | [optional] 
 **lifetime** | **String** |  | [optional] 
 **sourceAttribute** | **String** |  | [optional] 
 **salt** | **String** |  | [optional] 
 **nameIdType** | **String** |  | [optional] 
 **origin** | **String** |  | [optional] 
 **editType** | **[String]** | GluuUserRole | [optional] 
-**viewType** | **[String]** | GluuUserRole | [optional] 
+**viewType** | **[String]** | GluuUserRole | 
 **usageType** | **[String]** | GluuAttributeUsageType | [optional] 
 **claimName** | **String** |  | [optional] 
 **seeAlso** | **String** |  | [optional] 
@@ -48,6 +48,23 @@ Name | Type | Description | Notes
 * `CERTIFICATE` (value: `"CERTIFICATE"`)
 
 * `DATE` (value: `"DATE"`)
+
+* `JSON` (value: `"JSON"`)
+
+
+
+
+
+## Enum: StatusEnum
+
+
+* `ACTIVE` (value: `"ACTIVE"`)
+
+* `INACTIVE` (value: `"INACTIVE"`)
+
+* `EXPIRED` (value: `"EXPIRED"`)
+
+* `REGISTER` (value: `"REGISTER"`)
 
 
 

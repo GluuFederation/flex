@@ -76,7 +76,7 @@ export default class DefaultAuthenticationMethodApi {
      * Callback function to receive the result of the putAcrs operation.
      * @callback module:api/DefaultAuthenticationMethodApi~putAcrsCallback
      * @param {String} error Error message, if any.
-     * @param data This operation does not return a value.
+     * @param {module:model/AuthenticationMethod} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -86,6 +86,7 @@ export default class DefaultAuthenticationMethodApi {
      * @param {Object} opts Optional parameters
      * @param {module:model/AuthenticationMethod} opts.authenticationMethod 
      * @param {module:api/DefaultAuthenticationMethodApi~putAcrsCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/AuthenticationMethod}
      */
     putAcrs(opts, callback) {
       opts = opts || {};
@@ -103,7 +104,7 @@ export default class DefaultAuthenticationMethodApi {
       let authNames = ['jans-auth'];
       let contentTypes = ['application/json'];
       let accepts = ['application/json'];
-      let returnType = null;
+      let returnType = AuthenticationMethod;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/acrs', 'PUT',
         pathParams, queryParams, headerParams, formParams, postBody,

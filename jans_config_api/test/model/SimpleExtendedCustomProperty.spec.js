@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new JansConfigApi.AppConfigurationAuthenticationFilters();
+    instance = new JansConfigApi.SimpleExtendedCustomProperty();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,34 +47,34 @@
       object[property] = value;
   }
 
-  describe('AppConfigurationAuthenticationFilters', function() {
-    it('should create an instance of AppConfigurationAuthenticationFilters', function() {
-      // uncomment below and update the code to test AppConfigurationAuthenticationFilters
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationFilters();
-      //expect(instance).to.be.a(JansConfigApi.AppConfigurationAuthenticationFilters);
+  describe('SimpleExtendedCustomProperty', function() {
+    it('should create an instance of SimpleExtendedCustomProperty', function() {
+      // uncomment below and update the code to test SimpleExtendedCustomProperty
+      //var instane = new JansConfigApi.SimpleExtendedCustomProperty();
+      //expect(instance).to.be.a(JansConfigApi.SimpleExtendedCustomProperty);
     });
 
-    it('should have the property filter (base name: "filter")', function() {
-      // uncomment below and update the code to test the property filter
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationFilters();
+    it('should have the property value1 (base name: "value1")', function() {
+      // uncomment below and update the code to test the property value1
+      //var instane = new JansConfigApi.SimpleExtendedCustomProperty();
       //expect(instance).to.be();
     });
 
-    it('should have the property bind (base name: "bind")', function() {
-      // uncomment below and update the code to test the property bind
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationFilters();
+    it('should have the property value2 (base name: "value2")', function() {
+      // uncomment below and update the code to test the property value2
+      //var instane = new JansConfigApi.SimpleExtendedCustomProperty();
       //expect(instance).to.be();
     });
 
-    it('should have the property bindPasswordAttribute (base name: "bind-password-attribute")', function() {
-      // uncomment below and update the code to test the property bindPasswordAttribute
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationFilters();
+    it('should have the property description (base name: "description")', function() {
+      // uncomment below and update the code to test the property description
+      //var instane = new JansConfigApi.SimpleExtendedCustomProperty();
       //expect(instance).to.be();
     });
 
-    it('should have the property baseDn (base name: "base-dn")', function() {
-      // uncomment below and update the code to test the property baseDn
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationFilters();
+    it('should have the property hide (base name: "hide")', function() {
+      // uncomment below and update the code to test the property hide
+      //var instane = new JansConfigApi.SimpleExtendedCustomProperty();
       //expect(instance).to.be();
     });
 

@@ -58,6 +58,16 @@
         done();
       });
     });
+    describe('patchConfigCacheRedis', function() {
+      it('should call patchConfigCacheRedis successfully', function(done) {
+        //uncomment below and update the code to test patchConfigCacheRedis
+        //instance.patchConfigCacheRedis(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
     describe('putConfigCacheRedis', function() {
       it('should call putConfigCacheRedis successfully', function(done) {
         //uncomment below and update the code to test putConfigCacheRedis

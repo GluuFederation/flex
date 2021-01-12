@@ -25,19 +25,14 @@ class Client {
      * Constructs a new <code>Client</code>.
      * Client.
      * @alias module:model/Client
-     * @param responseTypes {Array.<module:model/Client.ResponseTypesEnum>} A list of the OAuth 2.0 response_type values that the Client is declaring that it will restrict itself to using. If omitted, the default is that the Client will use only the code Response Type. Allowed values are code, token, id_token.
      * @param grantTypes {Array.<module:model/Client.GrantTypesEnum>} A list of the OAuth 2.0 Grant Types that the Client is declaring that it will restrict itself to using.
      * @param applicationType {module:model/Client.ApplicationTypeEnum} Kind of the application. The default, if omitted, is web. The defined values are native or web. Web Clients using the OAuth Implicit Grant Type must only register URLs using the HTTPS scheme as redirect_uris, they must not use localhost as the hostname. Native Clients must only register redirect_uris using custom URI schemes or URLs using the http scheme with localhost as the hostname.
-     * @param subjectType {module:model/Client.SubjectTypeEnum} Subject type requested for the Client ID. Valid types include pairwise and public.
-     * @param idTokenSignedResponseAlg {module:model/Client.IdTokenSignedResponseAlgEnum} JWS alg algorithm (JWA) required for signing the ID Token issued to this Client.
+     * @param clientName {String} A human-readable name of the client.
      * @param tokenEndpointAuthMethod {module:model/Client.TokenEndpointAuthMethodEnum} Requested Client Authentication method for the Token Endpoint.
-     * @param scopes {Array.<String>} Provide list of scopes granted to the client.
-     * @param customObjectClasses {Array.<String>} 
-     * @param accessTokenSigningAlg {module:model/Client.AccessTokenSigningAlgEnum} Specifies signing algorithm that has to be used during JWT signing. If it's not specified, then the default OP signing algorithm will be used.
      */
-    constructor(responseTypes, grantTypes, applicationType, subjectType, idTokenSignedResponseAlg, tokenEndpointAuthMethod, scopes, customObjectClasses, accessTokenSigningAlg) { 
+    constructor(grantTypes, applicationType, clientName, tokenEndpointAuthMethod) { 
         
-        Client.initialize(this, responseTypes, grantTypes, applicationType, subjectType, idTokenSignedResponseAlg, tokenEndpointAuthMethod, scopes, customObjectClasses, accessTokenSigningAlg);
+        Client.initialize(this, grantTypes, applicationType, clientName, tokenEndpointAuthMethod);
     }
 
     /**
@@ -45,16 +40,11 @@ class Client {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, responseTypes, grantTypes, applicationType, subjectType, idTokenSignedResponseAlg, tokenEndpointAuthMethod, scopes, customObjectClasses, accessTokenSigningAlg) { 
-        obj['responseTypes'] = responseTypes;
+    static initialize(obj, grantTypes, applicationType, clientName, tokenEndpointAuthMethod) { 
         obj['grantTypes'] = grantTypes;
         obj['applicationType'] = applicationType;
-        obj['subjectType'] = subjectType;
-        obj['idTokenSignedResponseAlg'] = idTokenSignedResponseAlg;
+        obj['clientName'] = clientName;
         obj['tokenEndpointAuthMethod'] = tokenEndpointAuthMethod;
-        obj['scopes'] = scopes;
-        obj['customObjectClasses'] = customObjectClasses;
-        obj['accessTokenSigningAlg'] = accessTokenSigningAlg;
     }
 
     /**
@@ -263,8 +253,8 @@ class Client {
             if (data.hasOwnProperty('backchannelUserCodeParameter')) {
                 obj['backchannelUserCodeParameter'] = ApiClient.convertToType(data['backchannelUserCodeParameter'], 'Boolean');
             }
-            if (data.hasOwnProperty('exp')) {
-                obj['exp'] = ApiClient.convertToType(data['exp'], 'Date');
+            if (data.hasOwnProperty('expirationDate')) {
+                obj['expirationDate'] = ApiClient.convertToType(data['expirationDate'], 'Date');
             }
             if (data.hasOwnProperty('deletable')) {
                 obj['deletable'] = ApiClient.convertToType(data['deletable'], 'Boolean');
@@ -662,9 +652,9 @@ Client.prototype['backchannelUserCodeParameter'] = undefined;
 
 /**
  * Integer timestamp, measured in the number of seconds since January 1 1970 UTC, indicating when this permission will expire.
- * @member {Date} exp
+ * @member {Date} expirationDate
  */
-Client.prototype['exp'] = undefined;
+Client.prototype['expirationDate'] = undefined;
 
 /**
  * Specifies whether client is deletable.

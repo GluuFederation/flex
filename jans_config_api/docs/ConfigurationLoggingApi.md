@@ -56,7 +56,7 @@ This endpoint does not need any parameter.
 
 ## putConfigLogging
 
-> putConfigLogging(opts)
+> LoggingConfiguration putConfigLogging(opts)
 
 Updates Jans Authorization Server logging settings.
 
@@ -79,7 +79,7 @@ apiInstance.putConfigLogging(opts, (error, data, response) => {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 });
 ```
@@ -93,7 +93,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-null (empty response body)
+[**LoggingConfiguration**](LoggingConfiguration.md)
 
 ### Authorization
 

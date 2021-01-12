@@ -1,4 +1,4 @@
-# JansConfigApi.CustomScriptConfigurationProperties
+# JansConfigApi.SimpleExtendedCustomProperty
 
 ## Properties
 

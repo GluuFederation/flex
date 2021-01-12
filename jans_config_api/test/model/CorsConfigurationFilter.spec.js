@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+    instance = new JansConfigApi.CorsConfigurationFilter();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,70 +47,70 @@
       object[property] = value;
   }
 
-  describe('AppConfigurationCorsConfigurationFilters', function() {
-    it('should create an instance of AppConfigurationCorsConfigurationFilters', function() {
-      // uncomment below and update the code to test AppConfigurationCorsConfigurationFilters
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
-      //expect(instance).to.be.a(JansConfigApi.AppConfigurationCorsConfigurationFilters);
+  describe('CorsConfigurationFilter', function() {
+    it('should create an instance of CorsConfigurationFilter', function() {
+      // uncomment below and update the code to test CorsConfigurationFilter
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
+      //expect(instance).to.be.a(JansConfigApi.CorsConfigurationFilter);
     });
 
     it('should have the property filterName (base name: "filterName")', function() {
       // uncomment below and update the code to test the property filterName
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 
     it('should have the property corsEnabled (base name: "corsEnabled")', function() {
       // uncomment below and update the code to test the property corsEnabled
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 
     it('should have the property corsAllowedOrigins (base name: "corsAllowedOrigins")', function() {
       // uncomment below and update the code to test the property corsAllowedOrigins
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 
     it('should have the property corsAllowedMethods (base name: "corsAllowedMethods")', function() {
       // uncomment below and update the code to test the property corsAllowedMethods
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 
     it('should have the property corsAllowedHeaders (base name: "corsAllowedHeaders")', function() {
       // uncomment below and update the code to test the property corsAllowedHeaders
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 
     it('should have the property corsExposedHeaders (base name: "corsExposedHeaders")', function() {
       // uncomment below and update the code to test the property corsExposedHeaders
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 
     it('should have the property corsSupportCredentials (base name: "corsSupportCredentials")', function() {
       // uncomment below and update the code to test the property corsSupportCredentials
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 
     it('should have the property corsLoggingEnabled (base name: "corsLoggingEnabled")', function() {
       // uncomment below and update the code to test the property corsLoggingEnabled
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 
     it('should have the property corsPreflightMaxAge (base name: "corsPreflightMaxAge")', function() {
       // uncomment below and update the code to test the property corsPreflightMaxAge
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 
     it('should have the property corsRequestDecorate (base name: "corsRequestDecorate")', function() {
       // uncomment below and update the code to test the property corsRequestDecorate
-      //var instane = new JansConfigApi.AppConfigurationCorsConfigurationFilters();
+      //var instane = new JansConfigApi.CorsConfigurationFilter();
       //expect(instance).to.be();
     });
 

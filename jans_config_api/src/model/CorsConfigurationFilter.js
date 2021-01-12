@@ -14,18 +14,19 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The AppConfigurationCorsConfigurationFilters model module.
- * @module model/AppConfigurationCorsConfigurationFilters
+ * The CorsConfigurationFilter model module.
+ * @module model/CorsConfigurationFilter
  * @version 1.0.0
  */
-class AppConfigurationCorsConfigurationFilters {
+class CorsConfigurationFilter {
     /**
-     * Constructs a new <code>AppConfigurationCorsConfigurationFilters</code>.
-     * @alias module:model/AppConfigurationCorsConfigurationFilters
+     * Constructs a new <code>CorsConfigurationFilter</code>.
+     * CORS Configuration Filter.
+     * @alias module:model/CorsConfigurationFilter
      */
     constructor() { 
         
-        AppConfigurationCorsConfigurationFilters.initialize(this);
+        CorsConfigurationFilter.initialize(this);
     }
 
     /**
@@ -37,15 +38,15 @@ class AppConfigurationCorsConfigurationFilters {
     }
 
     /**
-     * Constructs a <code>AppConfigurationCorsConfigurationFilters</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>CorsConfigurationFilter</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/AppConfigurationCorsConfigurationFilters} obj Optional instance to populate.
-     * @return {module:model/AppConfigurationCorsConfigurationFilters} The populated <code>AppConfigurationCorsConfigurationFilters</code> instance.
+     * @param {module:model/CorsConfigurationFilter} obj Optional instance to populate.
+     * @return {module:model/CorsConfigurationFilter} The populated <code>CorsConfigurationFilter</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new AppConfigurationCorsConfigurationFilters();
+            obj = obj || new CorsConfigurationFilter();
 
             if (data.hasOwnProperty('filterName')) {
                 obj['filterName'] = ApiClient.convertToType(data['filterName'], 'String');
@@ -85,67 +86,69 @@ class AppConfigurationCorsConfigurationFilters {
 }
 
 /**
+ * Filter name.
  * @member {String} filterName
  */
-AppConfigurationCorsConfigurationFilters.prototype['filterName'] = undefined;
+CorsConfigurationFilter.prototype['filterName'] = undefined;
 
 /**
+ * Boolean value indicating if the filter is enabled.
  * @member {Boolean} corsEnabled
- * @default true
  */
-AppConfigurationCorsConfigurationFilters.prototype['corsEnabled'] = true;
+CorsConfigurationFilter.prototype['corsEnabled'] = undefined;
 
 /**
+ * A list of origins that are allowed to access the resource. A * can be specified to enable access to resource from any origin. Otherwise, a whitelist of comma separated origins can be provided.
  * @member {String} corsAllowedOrigins
- * @default '\*'
  */
-AppConfigurationCorsConfigurationFilters.prototype['corsAllowedOrigins'] = '\*';
+CorsConfigurationFilter.prototype['corsAllowedOrigins'] = undefined;
 
 /**
+ * A comma separated list of HTTP methods that can be used to access the resource, using cross-origin requests. These are the methods which will also be included as part of Access-Control-Allow-Methods header in pre-flight response.
  * @member {String} corsAllowedMethods
- * @default 'GET, POST, HEAD, OPTIONS'
  */
-AppConfigurationCorsConfigurationFilters.prototype['corsAllowedMethods'] = 'GET, POST, HEAD, OPTIONS';
+CorsConfigurationFilter.prototype['corsAllowedMethods'] = undefined;
 
 /**
+ * The names of the supported author request headers.
  * @member {String} corsAllowedHeaders
- * @default 'Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers'
  */
-AppConfigurationCorsConfigurationFilters.prototype['corsAllowedHeaders'] = 'Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers';
+CorsConfigurationFilter.prototype['corsAllowedHeaders'] = undefined;
 
 /**
+ * A comma separated list of request headers that can be used when making an actual request. These headers will also be returned as part of Access-Control-Allow-Headers header in a pre-flight response.
  * @member {String} corsExposedHeaders
  */
-AppConfigurationCorsConfigurationFilters.prototype['corsExposedHeaders'] = undefined;
+CorsConfigurationFilter.prototype['corsExposedHeaders'] = undefined;
 
 /**
+ * A flag that indicates whether the resource supports user credentials. This flag is exposed as part of Access-Control-Allow-Credentials header in a pre-flight response. It helps browser determine whether or not an actual request can be made using credentials.
  * @member {Boolean} corsSupportCredentials
- * @default true
  */
-AppConfigurationCorsConfigurationFilters.prototype['corsSupportCredentials'] = true;
+CorsConfigurationFilter.prototype['corsSupportCredentials'] = undefined;
 
 /**
+ * Value to enable logging, Setting the value to False will disable logging.
  * @member {Boolean} corsLoggingEnabled
- * @default false
  */
-AppConfigurationCorsConfigurationFilters.prototype['corsLoggingEnabled'] = false;
+CorsConfigurationFilter.prototype['corsLoggingEnabled'] = undefined;
 
 /**
+ * The duration in seconds the browser is allowed to cache the result of the pre-flight request.
  * @member {Number} corsPreflightMaxAge
- * @default 1800
  */
-AppConfigurationCorsConfigurationFilters.prototype['corsPreflightMaxAge'] = 1800;
+CorsConfigurationFilter.prototype['corsPreflightMaxAge'] = undefined;
 
 /**
+ * A flag to control if CORS specific attributes should be added to the HttpServletRequest object.
  * @member {Boolean} corsRequestDecorate
- * @default true
  */
-AppConfigurationCorsConfigurationFilters.prototype['corsRequestDecorate'] = true;
+CorsConfigurationFilter.prototype['corsRequestDecorate'] = undefined;
 
 
 
 
 
 
-export default AppConfigurationCorsConfigurationFilters;
+export default CorsConfigurationFilter;
 

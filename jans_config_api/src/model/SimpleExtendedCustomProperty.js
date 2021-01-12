@@ -14,18 +14,19 @@
 import ApiClient from '../ApiClient';
 
 /**
- * The CustomScriptModuleProperties model module.
- * @module model/CustomScriptModuleProperties
+ * The SimpleExtendedCustomProperty model module.
+ * @module model/SimpleExtendedCustomProperty
  * @version 1.0.0
  */
-class CustomScriptModuleProperties {
+class SimpleExtendedCustomProperty {
     /**
-     * Constructs a new <code>CustomScriptModuleProperties</code>.
-     * @alias module:model/CustomScriptModuleProperties
+     * Constructs a new <code>SimpleExtendedCustomProperty</code>.
+     * Simple Extended Property.
+     * @alias module:model/SimpleExtendedCustomProperty
      */
     constructor() { 
         
-        CustomScriptModuleProperties.initialize(this);
+        SimpleExtendedCustomProperty.initialize(this);
     }
 
     /**
@@ -37,15 +38,15 @@ class CustomScriptModuleProperties {
     }
 
     /**
-     * Constructs a <code>CustomScriptModuleProperties</code> from a plain JavaScript object, optionally creating a new instance.
+     * Constructs a <code>SimpleExtendedCustomProperty</code> from a plain JavaScript object, optionally creating a new instance.
      * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
      * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/CustomScriptModuleProperties} obj Optional instance to populate.
-     * @return {module:model/CustomScriptModuleProperties} The populated <code>CustomScriptModuleProperties</code> instance.
+     * @param {module:model/SimpleExtendedCustomProperty} obj Optional instance to populate.
+     * @return {module:model/SimpleExtendedCustomProperty} The populated <code>SimpleExtendedCustomProperty</code> instance.
      */
     static constructFromObject(data, obj) {
         if (data) {
-            obj = obj || new CustomScriptModuleProperties();
+            obj = obj || new SimpleExtendedCustomProperty();
 
             if (data.hasOwnProperty('value1')) {
                 obj['value1'] = ApiClient.convertToType(data['value1'], 'String');
@@ -55,6 +56,9 @@ class CustomScriptModuleProperties {
             }
             if (data.hasOwnProperty('description')) {
                 obj['description'] = ApiClient.convertToType(data['description'], 'String');
+            }
+            if (data.hasOwnProperty('hide')) {
+                obj['hide'] = ApiClient.convertToType(data['hide'], 'Boolean');
             }
         }
         return obj;
@@ -66,22 +70,27 @@ class CustomScriptModuleProperties {
 /**
  * @member {String} value1
  */
-CustomScriptModuleProperties.prototype['value1'] = undefined;
+SimpleExtendedCustomProperty.prototype['value1'] = undefined;
 
 /**
  * @member {String} value2
  */
-CustomScriptModuleProperties.prototype['value2'] = undefined;
+SimpleExtendedCustomProperty.prototype['value2'] = undefined;
 
 /**
  * @member {String} description
  */
-CustomScriptModuleProperties.prototype['description'] = undefined;
+SimpleExtendedCustomProperty.prototype['description'] = undefined;
+
+/**
+ * @member {Boolean} hide
+ */
+SimpleExtendedCustomProperty.prototype['hide'] = undefined;
 
 
 
 
 
 
-export default CustomScriptModuleProperties;
+export default SimpleExtendedCustomProperty;
 

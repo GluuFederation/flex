@@ -15,6 +15,7 @@
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
 import InMemoryConfiguration from '../model/InMemoryConfiguration';
+import PatchRequest from '../model/PatchRequest';
 
 /**
 * CacheConfigurationInMemory service.
@@ -67,6 +68,46 @@ export default class CacheConfigurationInMemoryApi {
       let returnType = InMemoryConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/in-memory', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the patchConfigCacheInMemory operation.
+     * @callback module:api/CacheConfigurationInMemoryApi~patchConfigCacheInMemoryCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/InMemoryConfiguration} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Partially modifies In-Memory cache configuration.
+     * Partially modifies In-Memory cache configuration.
+     * @param {Object} opts Optional parameters
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
+     * @param {module:api/CacheConfigurationInMemoryApi~patchConfigCacheInMemoryCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/InMemoryConfiguration}
+     */
+    patchConfigCacheInMemory(opts, callback) {
+      opts = opts || {};
+      let postBody = opts['patchRequest'];
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['jans-auth'];
+      let contentTypes = ['application/json-patch+json'];
+      let accepts = ['application/json'];
+      let returnType = InMemoryConfiguration;
+      return this.apiClient.callApi(
+        '/jans-config-api/api/v1/config/cache/in-memory', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

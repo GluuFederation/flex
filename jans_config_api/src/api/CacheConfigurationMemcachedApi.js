@@ -15,6 +15,7 @@
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
 import MemcachedConfiguration from '../model/MemcachedConfiguration';
+import PatchRequest from '../model/PatchRequest';
 
 /**
 * CacheConfigurationMemcached service.
@@ -67,6 +68,46 @@ export default class CacheConfigurationMemcachedApi {
       let returnType = MemcachedConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/memcached', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the patchConfigCacheMemcached operation.
+     * @callback module:api/CacheConfigurationMemcachedApi~patchConfigCacheMemcachedCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/MemcachedConfiguration} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Partially modifies Memcached cache configuration.
+     * Partially modifies Memcached cache configuration.
+     * @param {Object} opts Optional parameters
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
+     * @param {module:api/CacheConfigurationMemcachedApi~patchConfigCacheMemcachedCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/MemcachedConfiguration}
+     */
+    patchConfigCacheMemcached(opts, callback) {
+      opts = opts || {};
+      let postBody = opts['patchRequest'];
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['jans-auth'];
+      let contentTypes = ['application/json-patch+json'];
+      let accepts = ['application/json'];
+      let returnType = MemcachedConfiguration;
+      return this.apiClient.callApi(
+        '/jans-config-api/api/v1/config/cache/memcached', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

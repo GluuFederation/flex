@@ -58,6 +58,16 @@
         done();
       });
     });
+    describe('patchConfigCacheNativePersistence', function() {
+      it('should call patchConfigCacheNativePersistence successfully', function(done) {
+        //uncomment below and update the code to test patchConfigCacheNativePersistence
+        //instance.patchConfigCacheNativePersistence(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
     describe('putConfigCacheNativePersistence', function() {
       it('should call putConfigCacheNativePersistence successfully', function(done) {
         //uncomment below and update the code to test putConfigCacheNativePersistence

@@ -444,8 +444,8 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property exp (base name: "exp")', function() {
-      // uncomment below and update the code to test the property exp
+    it('should have the property expirationDate (base name: "expirationDate")', function() {
+      // uncomment below and update the code to test the property expirationDate
       //var instane = new JansConfigApi.Client();
       //expect(instance).to.be();
     });

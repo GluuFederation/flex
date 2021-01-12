@@ -58,6 +58,16 @@
         done();
       });
     });
+    describe('patchConfigCacheInMemory', function() {
+      it('should call patchConfigCacheInMemory successfully', function(done) {
+        //uncomment below and update the code to test patchConfigCacheInMemory
+        //instance.patchConfigCacheInMemory(function(error) {
+        //  if (error) throw error;
+        //expect().to.be();
+        //});
+        done();
+      });
+    });
     describe('putConfigCacheInMemory', function() {
       it('should call putConfigCacheInMemory successfully', function(done) {
         //uncomment below and update the code to test putConfigCacheInMemory

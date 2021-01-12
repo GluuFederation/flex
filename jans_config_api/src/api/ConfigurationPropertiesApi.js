@@ -40,7 +40,7 @@ export default class ConfigurationPropertiesApi {
      * Callback function to receive the result of the getProperties operation.
      * @callback module:api/ConfigurationPropertiesApi~getPropertiesCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/AppConfiguration>} data The data returned by the service call.
+     * @param {module:model/AppConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -48,7 +48,7 @@ export default class ConfigurationPropertiesApi {
      * Gets all Jans authorization server configuration properties.
      * Gets all Jans authorization server configuration properties.
      * @param {module:api/ConfigurationPropertiesApi~getPropertiesCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/AppConfiguration>}
+     * data is of type: {@link module:model/AppConfiguration}
      */
     getProperties(callback) {
       let postBody = null;
@@ -65,7 +65,7 @@ export default class ConfigurationPropertiesApi {
       let authNames = ['jans-auth'];
       let contentTypes = [];
       let accepts = ['application/json'];
-      let returnType = [AppConfiguration];
+      let returnType = AppConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/jans-auth-server/config', 'GET',
         pathParams, queryParams, headerParams, formParams, postBody,
@@ -77,7 +77,7 @@ export default class ConfigurationPropertiesApi {
      * Callback function to receive the result of the patchProperties operation.
      * @callback module:api/ConfigurationPropertiesApi~patchPropertiesCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/AppConfiguration>} data The data returned by the service call.
+     * @param {module:model/AppConfiguration} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -85,9 +85,9 @@ export default class ConfigurationPropertiesApi {
      * Partially modifies Jans authorization server Application configuration properties.
      * Partially modifies Jans authorization server AppConfiguration properties.
      * @param {Object} opts Optional parameters
-     * @param {module:model/PatchRequest} opts.patchRequest 
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
      * @param {module:api/ConfigurationPropertiesApi~patchPropertiesCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/AppConfiguration>}
+     * data is of type: {@link module:model/AppConfiguration}
      */
     patchProperties(opts, callback) {
       opts = opts || {};
@@ -103,9 +103,9 @@ export default class ConfigurationPropertiesApi {
       };
 
       let authNames = ['jans-auth'];
-      let contentTypes = ['application/json'];
+      let contentTypes = ['application/json-patch+json'];
       let accepts = ['application/json'];
-      let returnType = [AppConfiguration];
+      let returnType = AppConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/jans-auth-server/config', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,

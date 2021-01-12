@@ -48,10 +48,10 @@
   }
 
   describe('OAuthScopesApi', function() {
-    describe('deleteOauthScopesById', function() {
-      it('should call deleteOauthScopesById successfully', function(done) {
-        //uncomment below and update the code to test deleteOauthScopesById
-        //instance.deleteOauthScopesById(function(error) {
+    describe('deleteOauthScopesByInum', function() {
+      it('should call deleteOauthScopesByInum successfully', function(done) {
+        //uncomment below and update the code to test deleteOauthScopesByInum
+        //instance.deleteOauthScopesByInum(function(error) {
         //  if (error) throw error;
         //expect().to.be();
         //});

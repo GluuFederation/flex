@@ -14,6 +14,7 @@
 
 import ApiClient from "../ApiClient";
 import ErrorResponse from '../model/ErrorResponse';
+import PatchRequest from '../model/PatchRequest';
 import RedisConfiguration from '../model/RedisConfiguration';
 
 /**
@@ -67,6 +68,46 @@ export default class CacheConfigurationRedisApi {
       let returnType = RedisConfiguration;
       return this.apiClient.callApi(
         '/jans-config-api/api/v1/config/cache/redis', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null, callback
+      );
+    }
+
+    /**
+     * Callback function to receive the result of the patchConfigCacheRedis operation.
+     * @callback module:api/CacheConfigurationRedisApi~patchConfigCacheRedisCallback
+     * @param {String} error Error message, if any.
+     * @param {module:model/RedisConfiguration} data The data returned by the service call.
+     * @param {String} response The complete HTTP response.
+     */
+
+    /**
+     * Partially modifies Redis cache configuration.
+     * Partially modifies Redis cache configuration.
+     * @param {Object} opts Optional parameters
+     * @param {Array.<module:model/PatchRequest>} opts.patchRequest 
+     * @param {module:api/CacheConfigurationRedisApi~patchConfigCacheRedisCallback} callback The callback function, accepting three arguments: error, data, response
+     * data is of type: {@link module:model/RedisConfiguration}
+     */
+    patchConfigCacheRedis(opts, callback) {
+      opts = opts || {};
+      let postBody = opts['patchRequest'];
+
+      let pathParams = {
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['jans-auth'];
+      let contentTypes = ['application/json-patch+json'];
+      let accepts = ['application/json'];
+      let returnType = RedisConfiguration;
+      return this.apiClient.callApi(
+        '/jans-config-api/api/v1/config/cache/redis', 'PATCH',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null, callback
       );

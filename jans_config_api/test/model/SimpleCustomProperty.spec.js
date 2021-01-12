@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new JansConfigApi.CustomScriptConfigurationProperties();
+    instance = new JansConfigApi.SimpleCustomProperty();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,34 +47,28 @@
       object[property] = value;
   }
 
-  describe('CustomScriptConfigurationProperties', function() {
-    it('should create an instance of CustomScriptConfigurationProperties', function() {
-      // uncomment below and update the code to test CustomScriptConfigurationProperties
-      //var instane = new JansConfigApi.CustomScriptConfigurationProperties();
-      //expect(instance).to.be.a(JansConfigApi.CustomScriptConfigurationProperties);
+  describe('SimpleCustomProperty', function() {
+    it('should create an instance of SimpleCustomProperty', function() {
+      // uncomment below and update the code to test SimpleCustomProperty
+      //var instane = new JansConfigApi.SimpleCustomProperty();
+      //expect(instance).to.be.a(JansConfigApi.SimpleCustomProperty);
     });
 
     it('should have the property value1 (base name: "value1")', function() {
       // uncomment below and update the code to test the property value1
-      //var instane = new JansConfigApi.CustomScriptConfigurationProperties();
+      //var instane = new JansConfigApi.SimpleCustomProperty();
       //expect(instance).to.be();
     });
 
     it('should have the property value2 (base name: "value2")', function() {
       // uncomment below and update the code to test the property value2
-      //var instane = new JansConfigApi.CustomScriptConfigurationProperties();
+      //var instane = new JansConfigApi.SimpleCustomProperty();
       //expect(instance).to.be();
     });
 
     it('should have the property description (base name: "description")', function() {
       // uncomment below and update the code to test the property description
-      //var instane = new JansConfigApi.CustomScriptConfigurationProperties();
-      //expect(instance).to.be();
-    });
-
-    it('should have the property hide (base name: "hide")', function() {
-      // uncomment below and update the code to test the property hide
-      //var instane = new JansConfigApi.CustomScriptConfigurationProperties();
+      //var instane = new JansConfigApi.SimpleCustomProperty();
       //expect(instance).to.be();
     });
 

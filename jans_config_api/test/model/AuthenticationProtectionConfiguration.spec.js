@@ -28,7 +28,7 @@
   var instance;
 
   beforeEach(function() {
-    instance = new JansConfigApi.AppConfigurationAuthenticationProtectionConfiguration();
+    instance = new JansConfigApi.AuthenticationProtectionConfiguration();
   });
 
   var getProperty = function(object, getter, property) {
@@ -47,34 +47,34 @@
       object[property] = value;
   }
 
-  describe('AppConfigurationAuthenticationProtectionConfiguration', function() {
-    it('should create an instance of AppConfigurationAuthenticationProtectionConfiguration', function() {
-      // uncomment below and update the code to test AppConfigurationAuthenticationProtectionConfiguration
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationProtectionConfiguration();
-      //expect(instance).to.be.a(JansConfigApi.AppConfigurationAuthenticationProtectionConfiguration);
+  describe('AuthenticationProtectionConfiguration', function() {
+    it('should create an instance of AuthenticationProtectionConfiguration', function() {
+      // uncomment below and update the code to test AuthenticationProtectionConfiguration
+      //var instane = new JansConfigApi.AuthenticationProtectionConfiguration();
+      //expect(instance).to.be.a(JansConfigApi.AuthenticationProtectionConfiguration);
     });
 
     it('should have the property attemptExpiration (base name: "attemptExpiration")', function() {
       // uncomment below and update the code to test the property attemptExpiration
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationProtectionConfiguration();
+      //var instane = new JansConfigApi.AuthenticationProtectionConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property maximumAllowedAttemptsWithoutDelay (base name: "maximumAllowedAttemptsWithoutDelay")', function() {
       // uncomment below and update the code to test the property maximumAllowedAttemptsWithoutDelay
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationProtectionConfiguration();
+      //var instane = new JansConfigApi.AuthenticationProtectionConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property delayTime (base name: "delayTime")', function() {
       // uncomment below and update the code to test the property delayTime
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationProtectionConfiguration();
+      //var instane = new JansConfigApi.AuthenticationProtectionConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property bruteForceProtectionEnabled (base name: "bruteForceProtectionEnabled")', function() {
       // uncomment below and update the code to test the property bruteForceProtectionEnabled
-      //var instane = new JansConfigApi.AppConfigurationAuthenticationProtectionConfiguration();
+      //var instane = new JansConfigApi.AuthenticationProtectionConfiguration();
       //expect(instance).to.be();
     });
 
