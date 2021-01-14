@@ -51,6 +51,19 @@ function ScopeDetailPage({ row }) {
             />
           </Col>
         </Row>
+        <Row>
+          <Col sm={6}>Attributes:</Col>
+          <Col sm={6}>
+            {Object.keys(row.attributes).map((key, i) => (
+              <GluuFormDetailRow
+                key={key}
+                label={key}
+                isBadge={row.attributes[key]}
+                value={String(row.attributes[key])}
+              />
+            ))}
+          </Col>
+        </Row>
         {/* END Content */}
       </Container>
     </React.Fragment>
