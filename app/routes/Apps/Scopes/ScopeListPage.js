@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import MaterialTable from "material-table";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
+import { Badge } from "reactstrap";
 import GluuDialog from "../Gluu/GluuDialog";
 import ClientDetailPage from "../Scopes/ScopeDetailPage";
 import { getScopes, deleteScope } from "../../../redux/actions/ScopeActions";
@@ -36,7 +37,16 @@ function ScopeListPage({ scopes, loading, currentScope, dispatch }) {
         columns={[
           { title: "Inum", field: "inum" },
           { title: "ID", field: "id" },
-          { title: "Type", field: "scopeType" }
+          { title: "Type", field: "scopeType" },
+          {
+            title: "IS Default",
+            field: "defaultScope",
+            render: rowData => (
+              <Badge color={rowData.defaultScope ? "primary" : "info"}>
+                {rowData.defaultScope ? "Yes" : "No"}
+              </Badge>
+            )
+          }
         ]}
         data={scopes}
         isLoading={false}

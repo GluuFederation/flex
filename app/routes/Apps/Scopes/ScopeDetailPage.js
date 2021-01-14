@@ -1,15 +1,8 @@
 import React from "react";
-import {
-  Container,
-  Badge,
-  Row,
-  Col,
-  FormGroup,
-  Label
-} from "./../../../components";
+import { Container, Row, Col } from "./../../../components";
 import GluuFormDetailRow from "../Gluu/GluuFormDetailRow";
 function ScopeDetailPage({ row }) {
-  function getUmaTypeTheme(status) {
+  function getBadgeTheme(status) {
     if (status) {
       return "primary";
     } else {
@@ -36,30 +29,26 @@ function ScopeDetailPage({ row }) {
             <GluuFormDetailRow
               label="Scope Type"
               value={row.scopeType}
-              isBagde
+              isBadge
             />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6}>Uma Type:</Label>
-              <Label sm={6}>
-                <Badge color={getUmaTypeTheme(row.umaType)}>
-                  {row.umaType ? "Yes" : "No"}
-                </Badge>
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow
+              label="Uma Type"
+              isBadge
+              badgeColor={getBadgeTheme(row.umaType)}
+              value={row.umaType ? "Yes" : "No"}
+            />
           </Col>
           <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6}>Default Scope:</Label>
-              <Label sm={6}>
-                <Badge color={getUmaTypeTheme(row.defaultScope)}>
-                  {row.defaultScope ? "Yes" : "No"}
-                </Badge>
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow
+              label="Default Scope"
+              isBadge
+              badgeColor={getBadgeTheme(row.defaultScope)}
+              value={row.defaultScope ? "Yes" : "No"}
+            />
           </Col>
         </Row>
         {/* END Content */}
