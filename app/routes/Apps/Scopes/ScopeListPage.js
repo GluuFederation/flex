@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MaterialTable from "material-table";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-//import { scopes } from "../Scopes/scopes";
 import GluuDialog from "../Gluu/GluuDialog";
 import ClientDetailPage from "../Scopes/ScopeDetailPage";
 import { getScopes, deleteScope } from "../../../redux/actions/ScopeActions";
 
-function ScopeListPage({ scopes, loading, dispatch }) {
-  useEffect(() => {
-    //dispatch(getScopes);
-  });
+function ScopeListPage({ scopes, loading, currentScope, dispatch }) {
+  console.log("--------------" + JSON.stringify(currentScope));
+  console.log("--------------" + JSON.stringify(scopes));
+  console.log("--------------" + loading);
   const history = useHistory();
   const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);
@@ -40,7 +39,7 @@ function ScopeListPage({ scopes, loading, dispatch }) {
           { title: "Type", field: "scopeType" }
         ]}
         data={scopes}
-        isLoading={!loading}
+        isLoading={false}
         title="OpenId Connect scopes && Uma scopes"
         actions={[
           rowData => ({
@@ -70,7 +69,7 @@ function ScopeListPage({ scopes, loading, dispatch }) {
               ? "Delete Scope"
               : "This Scope can't be detele",
             onClick: (event, rowData) => handleScopeDelete(rowData),
-            disabled: rowData.defaultScope
+            disabled: !rowData.defaultScope
           })
         ]}
         options={{
@@ -94,7 +93,7 @@ function ScopeListPage({ scopes, loading, dispatch }) {
         row={item}
         handler={toggle}
         modal={modal}
-        subject="openid connect client"
+        subject="scope"
         onAccept={onDeletionConfirmed}
       />
     </React.Fragment>
@@ -103,14 +102,9 @@ function ScopeListPage({ scopes, loading, dispatch }) {
 
 const mapStateToProps = state => {
   return {
-    scopes: state.scopeReducer.scopes,
+    scopes: state.scopeReducer.items,
+    currentScope: state.scopeReducer.item,
     loading: state.scopeReducer.loading
   };
 };
-
-function mapDispatchToProps(dispatch) {
-  return {
-    getData: () => dispatch(getScopes())
-  };
-}
 export default connect(mapStateToProps)(ScopeListPage);

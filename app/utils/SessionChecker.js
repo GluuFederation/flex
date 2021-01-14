@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ViewRedirect from "./ViewRedirect";
 import { withRouter } from "react-router";
 
 // -----Third party dependencies -----
@@ -13,19 +14,19 @@ import { getOAuth2Config, getOAuth2AccessToken } from "../redux/actions";
 
 class SessionChecker extends Component {
   state = {
-    showContent: false,
+    showContent: false
   };
 
   // Methods
 
-  static buildAuthzUrl = (config) => {
+  static buildAuthzUrl = config => {
     const {
       authzBaseUrl,
       clientId,
       scope,
       redirectUrl,
       responseType,
-      acrValues,
+      acrValues
     } = config;
 
     const state = uuidv4();
@@ -78,11 +79,11 @@ class SessionChecker extends Component {
           }
         }
         return {
-          showContent,
+          showContent
         };
       } else {
         return {
-          showContent: true,
+          showContent: true
         };
       }
     }
@@ -96,7 +97,7 @@ class SessionChecker extends Component {
     return (
       <React.Fragment>
         {showContent && this.props.children}
-        {!showContent && <h3>Redirecting... </h3>}
+        {!showContent && <ViewRedirect />}
       </React.Fragment>
     );
   }
@@ -109,13 +110,13 @@ const mapStateToProps = ({ authReducer }) => {
   const config = authReducer.config;
   return {
     loading,
-    config,
+    config
   };
 };
 
 export default withRouter(
   connect(mapStateToProps, {
     getOAuth2Config,
-    getOAuth2AccessToken,
+    getOAuth2AccessToken
   })(SessionChecker)
 );

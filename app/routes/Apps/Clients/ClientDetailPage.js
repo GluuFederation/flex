@@ -8,6 +8,7 @@ import {
   Label,
   Accordion
 } from "./../../../components";
+import GluuFormDetailRow from "../Gluu/GluuFormDetailRow";
 function ClientDetailPage({ row }) {
   return (
     <React.Fragment>
@@ -15,68 +16,38 @@ function ClientDetailPage({ row }) {
       <Container style={{ backgroundColor: "#F5F5F5" }}>
         <Row>
           <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={3}>
-                Client ID:
-              </Label>
-              <Label for="input" sm={9}>
-                {row.inum}
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow label="Client Id" value={row.inum} />
           </Col>
           <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={6}>
-                Client Secret:
-              </Label>
-              <Label for="input" sm={6}>
-                {row.clientSecret ? row.clientSecret : "-"}
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow
+              label="Client Secret"
+              value={row.clientSecret ? row.clientSecret : "-"}
+            />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={6}>
-                Name:
-              </Label>
-              <Label for="input" sm={6}>
-                {row.displayName ? row.displayName : "-"}
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow
+              label="Name"
+              value={row.displayName ? row.displayName : "-"}
+            />
           </Col>
           <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={3}>
-                Description:
-              </Label>
-              <Label for="input" sm={9}>
-                {row.description}
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow label="Description" value={row.description} />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={6}>
-                Subject Type:
-              </Label>
-              <Label for="input" sm={6}>
-                {row.subjectType ? row.subjectType : "-"}
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow
+              label="Subject Type"
+              value={row.subjectType ? row.subjectType : "-"}
+            />
           </Col>
           <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={6}>
-                Application Type:
-              </Label>
-              <Label for="input" sm={6}>
-                {row.applicationType}
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow
+              label="Application Type"
+              value={row.applicationType}
+            />
           </Col>
         </Row>
         <Row>

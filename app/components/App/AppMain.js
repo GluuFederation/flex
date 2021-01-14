@@ -12,7 +12,7 @@ const basePath = process.env.BASE_PATH || "/";
 
 const AppMain = () => {
   const { store, persistor } = configureStore();
-  store.dispatch(getScopes());
+  //store.dispatch(getScopes());
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

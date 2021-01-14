@@ -29,22 +29,18 @@ export const SidebarMiddleNav = () => (
     {/* -------- Scopes ---------*/}
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-sitemap"></i>}
-      title="All Scopes"
+      title="Scopes"
     >
-      <SidebarMenu.Item title="Uma Scopes" to="/scopes" />
-      <SidebarMenu.Item title="New Uma Scope" to="/scope/new" />
-      <SidebarMenu.Item title="OpenId Scopes" to="/interface/notifications" />
-      <SidebarMenu.Item title="New OIDC Scope" to="/interface/crop-image" />
+      <SidebarMenu.Item title="All Scopes" to="/scopes" />
+      <SidebarMenu.Item title="New Scope" to="/scope/new" />
     </SidebarMenu.Item>
     {/* -------- Custom scripts ---------*/}
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-puzzle-piece"></i>}
       title="Custom Scripts"
     >
-      <SidebarMenu.Item title="all" to="/layouts/navbar" exact />
-      <SidebarMenu.Item title="active" to="/layouts/sidebar" exact />
-      <SidebarMenu.Item title="inactive" to="/layouts/sidebar" exact />
-      <SidebarMenu.Item title="Add new script" to="/layouts/sidebar" exact />
+      <SidebarMenu.Item title="All Scripts" to="/scripts" exact />
+      <SidebarMenu.Item title="New Script" to="/script/new" exact />
     </SidebarMenu.Item>
     {/* -------- Scopes ---------*/}
     {/* -------- Plugins ---------*/}

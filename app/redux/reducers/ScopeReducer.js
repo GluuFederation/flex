@@ -6,7 +6,7 @@ import {
 } from "../actions/types";
 
 const INIT_STATE = {
-  scopes: [
+  items: [
     {
       dn: "inum=F0C4,ou=scopes,o=jans",
       inum: "F0C4",
@@ -18,7 +18,7 @@ const INIT_STATE = {
       umaType: false
     }
   ],
-  currentScope: {
+  item: {
     dn: "inum=F0C4,ou=scopes,o=jans",
     inum: "F0C4",
     id: "openid",
@@ -43,7 +43,6 @@ export default (state = INIT_STATE, action) => {
       return { ...state, currentScope: action.payload.data, loading: false };
 
     case GET_SCOPES:
-      console.log("**********************************yes");
       return {
         ...state,
         loading: true
