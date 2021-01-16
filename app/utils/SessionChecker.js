@@ -45,9 +45,9 @@ class SessionChecker extends Component {
       console.warn("Parameters to process authz code flow are missing.");
       return;
     }
-
-    return `${authzBaseUrl}?scope=${scope}&acr_values=${acrValues}&response_type=${responseType}
-    &redirect_uri=${redirectUrl}&client_id=${clientId}&state=${state}&nonce=${nonce}`;
+    const url = `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}
+     &redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`;
+    return url;
   };
 
   // Life Cycle
@@ -70,7 +70,6 @@ class SessionChecker extends Component {
             const authzUrl = SessionChecker.buildAuthzUrl(props.config);
             if (authzUrl) {
               console.log("Url to process authz: ", authzUrl);
-
               window.location.href = authzUrl;
               return null;
             }
@@ -89,9 +88,7 @@ class SessionChecker extends Component {
     }
     return null;
   }
-
   componentDidMount() {}
-
   render() {
     const { showContent } = this.state;
     return (
