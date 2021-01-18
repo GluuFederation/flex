@@ -15,6 +15,7 @@ import {
   getScopesResponse
 } from "../actions/ScopeActions";
 import { GET_SCOPES, GET_SCOPE_BY_INUM } from "../actions/types";
+
 export function* getScopeByInum() {
   const data = yield call(getScope);
   yield put(deleteScopeResponse(data));
@@ -23,7 +24,13 @@ export function* getScopeByInum() {
 export function* getScopes() {
   try {
     const data = yield call(getAllScopes);
+    console.log(
+      "=======================received from backend " + JSON.stringify(data)
+    );
     yield put(getScopesResponse(data));
+    console.log(
+      "=======================put in the store " + JSON.stringify(data)
+    );
   } catch (e) {
     console.log("-------------------" + e);
   }

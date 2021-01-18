@@ -8,9 +8,9 @@ import ClientDetailPage from "../Scopes/ScopeDetailPage";
 import { getScopes, deleteScope } from "../../../redux/actions/ScopeActions";
 
 function ScopeListPage({ scopes, loading, currentScope, dispatch }) {
-  console.log("--------------" + JSON.stringify(currentScope));
-  console.log("--------------" + JSON.stringify(scopes));
-  console.log("--------------" + loading);
+  //console.log("--------------" + JSON.stringify(currentScope));
+  //console.log("--------------" + JSON.stringify(scopes));
+  //console.log("--------------" + loading);
   const history = useHistory();
   const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);

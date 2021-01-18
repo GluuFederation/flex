@@ -15,7 +15,6 @@ import {
   getAPIAccessTokenResponse
 } from "../actions";
 import axios from "../api/axios";
-import axios_api from "../api/axios-api";
 
 // Get OAuth2 Configuration
 
@@ -69,7 +68,7 @@ const getOAuth2AccessTokenRequest = async code => {
 // Get API Access Token
 
 const getAPiAccessTokenRequest = async () => {
-  return await axios_api
+  return await axios
     .get("/jans-auth/restv1/token")
     .then(response => response.data)
     .catch(error => {
