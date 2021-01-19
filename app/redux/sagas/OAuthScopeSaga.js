@@ -27,8 +27,11 @@ export function* getScopeByInum() {
 }
 
 export function* getScopes() {
+  console.log("===============================call");
   try {
     const data = yield call(getAllScopes);
+    console.log("===============================data" + data);
+
     yield put(getScopesResponse(data));
   } catch (e) {
     yield put(setApiError(e));

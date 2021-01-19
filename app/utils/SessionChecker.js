@@ -61,16 +61,25 @@ class SessionChecker extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    if (!props.loading) {
+    if (!props.showContent) {
+      console.log("===============1");
       const accessToken = localStorage.getItem("gluu.access.token");
+      localStorage.removeItem("gluu.api.token");
+      
+      console.log("===============1-1" + accessToken);
       if (!accessToken) {
+        console.log("===============1-2");
         const params = queryString.parse(props.location.search);
         let showContent = false;
         if (params.code && params.scope && params.state) {
+          console.log("===============1-2-1");
           props.getOAuth2AccessToken(params.code);
         } else {
+          console.log("===============1-3");
           showContent = !!props.config;
+          console.log("===============1-4" + showContent);
           if (showContent) {
+            console.log("===============1-4-1");
             const authzUrl = SessionChecker.buildAuthzUrl(props.config);
             if (authzUrl) {
               console.log("Url to process authz: ", authzUrl);
@@ -78,21 +87,28 @@ class SessionChecker extends Component {
               return null;
             }
           } else {
+            console.log("===============1-5");
             props.getOAuth2Config();
           }
         }
         return {
-          showContent
+          showContent: false
         };
       } else {
+        const apiToken = localStorage.getItem("gluu.api.token");
+        if (!apiToken) {
+          console.log("***************************Api access token");
+          props.getAPIAccessToken();
+        }
         return {
           showContent: true
         };
       }
+    } else {
+      console.log("===============2");
+      return { showContent: true };
     }
-    return null;
   }
-  componentDidMount() {}
   render() {
     const { showContent } = this.state;
     return (
@@ -107,10 +123,14 @@ class SessionChecker extends Component {
 // Redux
 
 const mapStateToProps = ({ authReducer }) => {
-  const loading = authReducer.loading;
+  const isAuthenticated = authReducer.isAuthenticated;
+  const hasApiToken = authReducer.hasApiToken;
+  const hasUserToken = authReducer.hasUserToken;
   const config = authReducer.config;
   return {
-    loading,
+    isAuthenticated,
+    hasApiToken,
+    hasUserToken,
     config
   };
 };

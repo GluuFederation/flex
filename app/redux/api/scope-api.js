@@ -14,7 +14,7 @@ defaultClient.defaultHeaders = headers;
 function getApiAccessToken() {
   return (
     localStorage.getItem("gluu.api.token") ||
-    "eca3e0b8-d78b-4634-b519-a863d86e5185"
+    "1993a367-6ac2-4760-982e-b51dd96608d9"
   );
 }
 jansauth.accessToken = getApiAccessToken();

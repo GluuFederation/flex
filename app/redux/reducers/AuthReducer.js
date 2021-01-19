@@ -14,7 +14,7 @@ import {
  * initial auth user
  */
 const INIT_STATE = {
-  loading: false
+  isAuthenticated: false
 };
 
 export default (state = INIT_STATE, action) => {
@@ -22,24 +22,22 @@ export default (state = INIT_STATE, action) => {
     case GET_OAUTH2_CONFIG:
       return {
         ...state,
-        loading: true
+        isAuthenticated: false
       };
     case GET_OAUTH2_CONFIG_RESPONSE:
       return {
         ...state,
-        loading: false,
+        isAuthenticated: false,
         config: action.payload.config
       };
 
     case GET_OAUTH2_ACCESS_TOKEN:
       return {
-        ...state,
-        loading: true
+        ...state
       };
     case GET_API_ACCESS_TOKEN:
       return {
-        ...state,
-        loading: true
+        ...state
       };
     case GET_OAUTH2_ACCESS_TOKEN_RESPONSE:
       if (action.payload.accessToken) {
@@ -47,15 +45,14 @@ export default (state = INIT_STATE, action) => {
       }
       return {
         ...state,
-        loading: false
+        isAuthenticated: true
       };
     case GET_API_ACCESS_TOKEN_RESPONSE:
-      if (action.payload.access_token) {
-        localStorage.setItem("gluu.api.token", action.payload.access_token);
+      if (action.payload.accessToken) {
+        localStorage.setItem("gluu.api.token", action.payload.accessToken);
       }
       return {
-        ...state,
-        loading: false
+        ...state
       };
     default:
       return {

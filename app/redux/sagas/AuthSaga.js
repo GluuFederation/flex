@@ -85,7 +85,7 @@ const getOAuth2AccessTokenRequest = async code => {
 
 const getAPiAccessTokenRequest = async () => {
   return await axios
-    .get("/oauth2/api-protection-token", { data: { scope: defaultScopes } })
+    .post("/oauth2/api-protection-token", { scope: defaultScopes })
     .then(response => response.data)
     .catch(error => {
       console.error(
