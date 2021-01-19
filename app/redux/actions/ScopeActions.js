@@ -4,7 +4,8 @@ import {
   DELETE_SCOPE,
   DELETE_SCOPE_RESPONSE,
   GET_SCOPE_BY_INUM,
-  GET_SCOPE_BY_INUM_RESPONSE
+  GET_SCOPE_BY_INUM_RESPONSE,
+  SET_API_ERROR
 } from "./types";
 
 export const deleteScope = inum => ({
@@ -24,6 +25,11 @@ export const getScopes = () => ({
 export const getScopesResponse = data => ({
   type: GET_SCOPES_RESPONSE,
   payload: { data }
+});
+
+export const setApiError = error => ({
+  type: SET_API_ERROR,
+  payload: { error }
 });
 
 export const deleteScopeResponse = data => ({

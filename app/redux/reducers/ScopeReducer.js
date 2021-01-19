@@ -48,7 +48,7 @@ export default (state = INIT_STATE, action) => {
         loading: true
       };
     case GET_SCOPES_RESPONSE:
-      return { ...state, scopes: action.payload.data, loading: false };
+      return { ...state, items: action.payload.data, loading: false };
     default:
       return {
         ...state

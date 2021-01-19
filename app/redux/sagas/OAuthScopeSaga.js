@@ -12,27 +12,26 @@ import {
 import { getScope, getAllScopes } from "../api/scope-api";
 import {
   deleteScopeResponse,
-  getScopesResponse
+  getScopesResponse,
+  setApiError
 } from "../actions/ScopeActions";
 import { GET_SCOPES, GET_SCOPE_BY_INUM } from "../actions/types";
 
 export function* getScopeByInum() {
-  const data = yield call(getScope);
-  yield put(deleteScopeResponse(data));
+  try {
+    const data = yield call(getScope);
+    yield put(deleteScopeResponse(data));
+  } catch (e) {
+    yield put(setApiError(e));
+  }
 }
 
 export function* getScopes() {
   try {
     const data = yield call(getAllScopes);
-    console.log(
-      "=======================received from backend " + JSON.stringify(data)
-    );
     yield put(getScopesResponse(data));
-    console.log(
-      "=======================put in the store " + JSON.stringify(data)
-    );
   } catch (e) {
-    console.log("-------------------" + e);
+    yield put(setApiError(e));
   }
 }
 

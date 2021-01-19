@@ -2,13 +2,11 @@
  * Auth Sagas
  */
 import { all, call, fork, put, takeEvery } from "redux-saga/effects";
-
 import {
   GET_OAUTH2_CONFIG,
   GET_OAUTH2_ACCESS_TOKEN,
   GET_API_ACCESS_TOKEN
 } from "../actions/types";
-
 import {
   getOAuth2ConfigResponse,
   getOAuth2AccessTokenResponse,
@@ -16,6 +14,24 @@ import {
 } from "../actions";
 import axios from "../api/axios";
 
+const defaultScopes = [
+  "https://jans.io/oauth/config/attributes.readonly",
+  "https://jans.io/oauth/config/attributes.write",
+  "https://jans.io/oauth/config/acrs.readonly",
+  "https://jans.io/oauth/config/acrs.write",
+  "https://jans.io/oauth/config/scripts.write",
+  "https://jans.io/oauth/config/scripts.readonly",
+  "https://jans.io/oauth/config/smtp.readonly",
+  "https://jans.io/oauth/config/smtp.write",
+  "https://jans.io/oauth/config/logging.readonly",
+  "https://jans.io/oauth/config/logging.write",
+  "https://jans.io/oauth/config/openid/clients.readonly",
+  "https://jans.io/oauth/config/openid/clients.write",
+  "https://jans.io/oauth/config/uma/resources.readonly",
+  "https://jans.io/oauth/config/uma/resources.write",
+  "https://jans.io/oauth/config/scopes.readonly",
+  "https://jans.io/oauth/config/scopes.write"
+];
 // Get OAuth2 Configuration
 
 const getOAuth2ConfigRequest = async () => {
@@ -69,11 +85,11 @@ const getOAuth2AccessTokenRequest = async code => {
 
 const getAPiAccessTokenRequest = async () => {
   return await axios
-    .get("/jans-auth/restv1/token")
+    .get("/oauth2/api-protection-token", { data: { scope: defaultScopes } })
     .then(response => response.data)
     .catch(error => {
       console.error(
-        "Problems getting API access token in order to process authz code flow.",
+        "Problems getting API access token in order to process api calls.",
         error
       );
       return error;
@@ -96,9 +112,9 @@ function* getOAuth2AccessTokenProcessor({ payload }) {
 export function* getOAuth2AccessToken() {
   yield takeEvery(GET_OAUTH2_ACCESS_TOKEN, getOAuth2AccessTokenProcessor);
 }
-function* getAPIAccessTokenProcessor({ payload }) {
+function* getAPIAccessTokenProcessor() {
   try {
-    const response = yield call(getAPiAccessTokenRequest, payload.code);
+    const response = yield call(getAPiAccessTokenRequest);
     if (response) {
       yield put(getAPIAccessTokenResponse(response));
       return;
@@ -117,5 +133,9 @@ export function* getAPIAccessToken() {
  * Auth Root Saga
  */
 export default function* rootSaga() {
-  yield all([fork(getOAuth2Config), fork(getOAuth2AccessToken)]);
+  yield all([
+    fork(getOAuth2Config),
+    fork(getOAuth2AccessToken),
+    fork(getAPIAccessToken)
+  ]);
 }

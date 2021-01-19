@@ -10,7 +10,11 @@ import { uuidv4 } from "./Util";
 
 // ------------ Redux ----------------
 import { connect } from "react-redux";
-import { getOAuth2Config, getOAuth2AccessToken } from "../redux/actions";
+import {
+  getOAuth2Config,
+  getOAuth2AccessToken,
+  getAPIAccessToken
+} from "../redux/actions";
 
 class SessionChecker extends Component {
   state = {
@@ -28,10 +32,8 @@ class SessionChecker extends Component {
       responseType,
       acrValues
     } = config;
-
     const state = uuidv4();
     const nonce = uuidv4();
-
     if (
       !authzBaseUrl ||
       !clientId ||
@@ -47,6 +49,8 @@ class SessionChecker extends Component {
     }
     const url = `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}
      &redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`;
+    localStorage.setItem("flow.state", state);
+    localStorage.setItem("flow.nonce", nonce);
     return url;
   };
 
@@ -114,6 +118,7 @@ const mapStateToProps = ({ authReducer }) => {
 export default withRouter(
   connect(mapStateToProps, {
     getOAuth2Config,
-    getOAuth2AccessToken
+    getOAuth2AccessToken,
+    getAPIAccessToken
   })(SessionChecker)
 );
