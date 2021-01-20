@@ -23,14 +23,11 @@ const api = new JansConfigApi.OAuthScopesApi();
 
 // Get All scopes
 export const getAllScopes = () => {
-  console.log("===================call done");
   return new Promise((resolve, reject) => {
     api.getOauthScopes({}, (error, data) => {
       if (error) {
-        console.log("===================error" + error);
         reject(error);
       } else {
-        console.log("===================data");
         resolve(data);
       }
     });
