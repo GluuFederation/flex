@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
@@ -7,10 +7,13 @@ import GluuDialog from "../Gluu/GluuDialog";
 import ClientDetailPage from "../Scopes/ScopeDetailPage";
 import { getScopes, deleteScope } from "../../../redux/actions/ScopeActions";
 
-function ScopeListPage({ scopes, loading, currentScope, dispatch }) {
-  //console.log("--------------" + JSON.stringify(currentScope));
-  //console.log("--------------" + JSON.stringify(scopes));
-  //console.log("--------------" + loading);
+function ScopeListPage({ scopes, loading, hasApiError, dispatch }) {
+  if (scopes.length == 0 && !hasApiError) {
+    dispatch(getScopes());
+  }
+  useEffect(() => {
+    dispatch(getScopes());
+  }, []);
   const history = useHistory();
   const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);
@@ -113,8 +116,14 @@ function ScopeListPage({ scopes, loading, currentScope, dispatch }) {
 const mapStateToProps = state => {
   return {
     scopes: state.scopeReducer.items,
-    currentScope: state.scopeReducer.item,
-    loading: state.scopeReducer.loading
+    loading: state.scopeReducer.loading,
+    hasApiError: state.scopeReducer.hasApiError
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchScopes: () => dispatch(getScopes)
   };
 };
 export default connect(mapStateToProps)(ScopeListPage);

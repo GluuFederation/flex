@@ -27,13 +27,15 @@ export function* getScopeByInum() {
 }
 
 export function* getScopes() {
-  console.log("===============================call");
+  console.log(
+    "===call to get Scopes with api access token " +
+      localStorage.getItem("gluu.api.token")
+  );
   try {
     const data = yield call(getAllScopes);
-    console.log("===============================data" + data);
-
     yield put(getScopesResponse(data));
   } catch (e) {
+    console.log("===============================error" + e);
     yield put(setApiError(e));
   }
 }

@@ -7,12 +7,10 @@ import SessionChecker from "../../utils/SessionChecker";
 import { Provider } from "react-redux";
 import { configureStore } from "../../redux/store";
 import { PersistGate } from "redux-persist/integration/react";
-import { getScopes } from "../../redux/actions/ScopeActions";
 const basePath = process.env.BASE_PATH || "/";
 
 const AppMain = () => {
   const { store, persistor } = configureStore();
-  store.dispatch(getScopes());
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

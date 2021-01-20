@@ -12,21 +12,25 @@ const headers = {
 };
 defaultClient.defaultHeaders = headers;
 function getApiAccessToken() {
-  return (
-    localStorage.getItem("gluu.api.token") ||
-    "1993a367-6ac2-4760-982e-b51dd96608d9"
+  console.log(
+    "==============Fetching the api token from store " +
+      localStorage.getItem("gluu.api.token")
   );
+  return localStorage.getItem("gluu.api.token");
 }
 jansauth.accessToken = getApiAccessToken();
 const api = new JansConfigApi.OAuthScopesApi();
 
 // Get All scopes
 export const getAllScopes = () => {
+  console.log("===================call done");
   return new Promise((resolve, reject) => {
     api.getOauthScopes({}, (error, data) => {
       if (error) {
+        console.log("===================error" + error);
         reject(error);
       } else {
+        console.log("===================data");
         resolve(data);
       }
     });

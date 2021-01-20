@@ -64,9 +64,8 @@ class SessionChecker extends Component {
     if (!props.showContent) {
       console.log("===============1");
       const accessToken = localStorage.getItem("gluu.access.token");
-      localStorage.removeItem("gluu.api.token");
-      
-      console.log("===============1-1" + accessToken);
+      //localStorage.removeItem("gluu.access.token");
+      console.log("===============1-1" + JSON.stringify(accessToken));
       if (!accessToken) {
         console.log("===============1-2");
         const params = queryString.parse(props.location.search);
@@ -96,8 +95,8 @@ class SessionChecker extends Component {
         };
       } else {
         const apiToken = localStorage.getItem("gluu.api.token");
+        console.log("===============api " + apiToken);
         if (!apiToken) {
-          console.log("***************************Api access token");
           props.getAPIAccessToken();
         }
         return {

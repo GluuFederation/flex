@@ -100,13 +100,12 @@ function* getOAuth2AccessTokenProcessor({ payload }) {
   try {
     const response = yield call(getOAuth2AccessTokenRequest, payload.code);
     if (response) {
-      yield put(getOAuth2AccessTokenResponse(response));
+      yield put(getOAuth2AccessTokenResponse(response.access_token));
       return;
     }
   } catch (error) {
     console.log("Problems getting OAuth2 Access Token.", error);
   }
-  yield put(getOAuth2AccessTokenResponse());
 }
 
 export function* getOAuth2AccessToken() {
@@ -114,9 +113,13 @@ export function* getOAuth2AccessToken() {
 }
 function* getAPIAccessTokenProcessor() {
   try {
+    console.log("*****Request api token ");
     const response = yield call(getAPiAccessTokenRequest);
+    console.log(
+      "*****API token response " + JSON.stringify(response.access_token)
+    );
     if (response) {
-      yield put(getAPIAccessTokenResponse(response));
+      yield put(getAPIAccessTokenResponse(response.access_token));
       return;
     }
   } catch (error) {
