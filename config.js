@@ -18,7 +18,7 @@ const config = {
   srcHtmlLayout: path.join(root, "app", "index.html"),
 
   // Site Config ====================================================
-  siteTitle: "Jans-admin-ui",
+  siteTitle: "AdminUI",
   siteDescription: "Jans-server admin Ui",
   siteCannonicalUrl: "http://localhost:4100",
   siteKeywords: "jans-server oauth jans gluu",

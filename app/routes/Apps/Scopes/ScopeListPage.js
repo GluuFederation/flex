@@ -8,9 +8,6 @@ import ClientDetailPage from "../Scopes/ScopeDetailPage";
 import { getScopes, deleteScope } from "../../../redux/actions/ScopeActions";
 
 function ScopeListPage({ scopes, loading, hasApiError, dispatch }) {
-  if (scopes.length == 0 && !hasApiError) {
-    dispatch(getScopes());
-  }
   useEffect(() => {
     dispatch(getScopes());
   }, []);
