@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
-import { attributes } from "../Attibutes/attributes";
-import AttributeDetailPage from "../Attibutes/AttributeDetailPage";
 import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
 import { Badge } from "reactstrap";
 import GluuDialog from "../Gluu/GluuDialog";
-const AttributeListPage = () => {
+import AttributeDetailPage from "../Attibutes/AttributeDetailPage";
+import { getAttributes } from "../../../redux/actions/AttributeActions";
+
+function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
+  if (attributes.length == 0 && !hasApiError) {
+    dispatch(getAttributes());
+  }
+  useEffect(() => {
+    dispatch(getAttributes());
+  }, []);
+  
   const history = useHistory();
-  const [item, setItem] = useState(attributes[0]);
+  const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
+  
   function getBadgeTheme(status) {
     if (status === "ACTIVE") {
       return "primary";
@@ -109,5 +119,19 @@ const AttributeListPage = () => {
       />
     </React.Fragment>
   );
+}
+
+const mapStateToProps = state => {
+  return {
+	attributes: state.attributeReducer.items,
+    loading: state.attributeReducer.loading,
+    hasApiError: state.attributeReducer.hasApiError
+  };
 };
-export default AttributeListPage;
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchAttributes: () => dispatch(getAttributes)
+  };
+};
+export default connect(mapStateToProps)(AttributeListPage);
