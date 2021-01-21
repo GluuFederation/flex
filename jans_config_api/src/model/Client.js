@@ -25,14 +25,15 @@ class Client {
      * Constructs a new <code>Client</code>.
      * Client.
      * @alias module:model/Client
-     * @param grantTypes {Array.<module:model/Client.GrantTypesEnum>} A list of the OAuth 2.0 Grant Types that the Client is declaring that it will restrict itself to using.
+     * @param frontChannelLogoutSessionRequired {Boolean} 
      * @param applicationType {module:model/Client.ApplicationTypeEnum} Kind of the application. The default, if omitted, is web. The defined values are native or web. Web Clients using the OAuth Implicit Grant Type must only register URLs using the HTTPS scheme as redirect_uris, they must not use localhost as the hostname. Native Clients must only register redirect_uris using custom URI schemes or URLs using the http scheme with localhost as the hostname.
      * @param clientName {String} A human-readable name of the client.
-     * @param tokenEndpointAuthMethod {module:model/Client.TokenEndpointAuthMethodEnum} Requested Client Authentication method for the Token Endpoint.
+     * @param subjectType {module:model/Client.SubjectTypeEnum} Subject type requested for the Client ID. Valid types include pairwise and public.
+     * @param includeClaimsInIdToken {Boolean} If true then claims are included in token id, default value is false.
      */
-    constructor(grantTypes, applicationType, clientName, tokenEndpointAuthMethod) { 
+    constructor(frontChannelLogoutSessionRequired, applicationType, clientName, subjectType, includeClaimsInIdToken) { 
         
-        Client.initialize(this, grantTypes, applicationType, clientName, tokenEndpointAuthMethod);
+        Client.initialize(this, frontChannelLogoutSessionRequired, applicationType, clientName, subjectType, includeClaimsInIdToken);
     }
 
     /**
@@ -40,11 +41,12 @@ class Client {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, grantTypes, applicationType, clientName, tokenEndpointAuthMethod) { 
-        obj['grantTypes'] = grantTypes;
+    static initialize(obj, frontChannelLogoutSessionRequired, applicationType, clientName, subjectType, includeClaimsInIdToken) { 
+        obj['frontChannelLogoutSessionRequired'] = frontChannelLogoutSessionRequired;
         obj['applicationType'] = applicationType;
         obj['clientName'] = clientName;
-        obj['tokenEndpointAuthMethod'] = tokenEndpointAuthMethod;
+        obj['subjectType'] = subjectType;
+        obj['includeClaimsInIdToken'] = includeClaimsInIdToken;
     }
 
     /**
@@ -524,8 +526,9 @@ Client.prototype['claims'] = undefined;
 /**
  * Attribute which corresponds to the \"Pre-Authorization\" property. Default value is false.
  * @member {Boolean} trustedClient
+ * @default false
  */
-Client.prototype['trustedClient'] = undefined;
+Client.prototype['trustedClient'] = false;
 
 /**
  * Integer timestamp, measured in the number of seconds since January 1 1970 UTC, indicating last access time.
@@ -548,8 +551,9 @@ Client.prototype['persistClientAuthorizations'] = undefined;
 /**
  * If true then claims are included in token id, default value is false.
  * @member {Boolean} includeClaimsInIdToken
+ * @default false
  */
-Client.prototype['includeClaimsInIdToken'] = undefined;
+Client.prototype['includeClaimsInIdToken'] = false;
 
 /**
  * Specifies the Client-specific refresh token expiration.
@@ -594,8 +598,9 @@ Client.prototype['accessTokenSigningAlg'] = undefined;
 /**
  * Specifies whether client is disabled.
  * @member {Boolean} disabled
+ * @default false
  */
-Client.prototype['disabled'] = undefined;
+Client.prototype['disabled'] = false;
 
 /**
  * Specifies authorized JavaScript origins.
@@ -659,8 +664,9 @@ Client.prototype['expirationDate'] = undefined;
 /**
  * Specifies whether client is deletable.
  * @member {Boolean} deletable
+ * @default false
  */
-Client.prototype['deletable'] = undefined;
+Client.prototype['deletable'] = false;
 
 /**
  * Attribute Scope Id.

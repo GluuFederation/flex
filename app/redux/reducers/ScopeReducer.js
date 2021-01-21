@@ -44,7 +44,12 @@ export default (state = INIT_STATE, action) => {
     case SET_API_ERROR:
       return { ...state, loading: false, hasApiError: true };
     case RESET:
-      return { ...state, items: INIT_STATE.items, loading: INIT_STATE.loading };
+      return {
+        ...state,
+        items: INIT_STATE.items,
+        loading: INIT_STATE.loading,
+        hasApiError: INIT_STATE.hasApiError
+      };
     default:
       return {
         ...state

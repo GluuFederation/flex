@@ -23,10 +23,11 @@ class SectorIdentifier {
      * Constructs a new <code>SectorIdentifier</code>.
      * Sector Identifier Details.
      * @alias module:model/SectorIdentifier
+     * @param id {String} XRI i-number. Sector Identifier to uniquely identify the sector.
      */
-    constructor() { 
+    constructor(id) { 
         
-        SectorIdentifier.initialize(this);
+        SectorIdentifier.initialize(this, id);
     }
 
     /**
@@ -34,7 +35,8 @@ class SectorIdentifier {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, id) { 
+        obj['id'] = id;
     }
 
     /**

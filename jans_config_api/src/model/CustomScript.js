@@ -26,10 +26,17 @@ class CustomScript {
      * Constructs a new <code>CustomScript</code>.
      * Script
      * @alias module:model/CustomScript
+     * @param name {String} Custom script name. Should contain only letters, digits and underscores.
+     * @param script {String} Actual script.
+     * @param scriptType {module:model/CustomScript.ScriptTypeEnum} Type of script.
+     * @param programmingLanguage {module:model/CustomScript.ProgrammingLanguageEnum} Programming language of the custom script.
+     * @param moduleProperties {Array.<module:model/SimpleCustomProperty>} Module-level properties applicable to the script.
+     * @param configurationProperties {Array.<module:model/SimpleExtendedCustomProperty>} Configuration properties applicable to the script.
+     * @param level {Number} Script level.
      */
-    constructor() { 
+    constructor(name, script, scriptType, programmingLanguage, moduleProperties, configurationProperties, level) { 
         
-        CustomScript.initialize(this);
+        CustomScript.initialize(this, name, script, scriptType, programmingLanguage, moduleProperties, configurationProperties, level);
     }
 
     /**
@@ -37,7 +44,14 @@ class CustomScript {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, name, script, scriptType, programmingLanguage, moduleProperties, configurationProperties, level) { 
+        obj['name'] = name;
+        obj['script'] = script;
+        obj['scriptType'] = scriptType;
+        obj['programmingLanguage'] = programmingLanguage;
+        obj['moduleProperties'] = moduleProperties;
+        obj['configurationProperties'] = configurationProperties;
+        obj['level'] = level;
     }
 
     /**
@@ -118,13 +132,13 @@ CustomScript.prototype['dn'] = undefined;
 CustomScript.prototype['inum'] = undefined;
 
 /**
- * Name should contain only letters, digits and underscores.
+ * Custom script name. Should contain only letters, digits and underscores.
  * @member {String} name
  */
 CustomScript.prototype['name'] = undefined;
 
 /**
- * List of possible alias for the script.
+ * List of possible aliases for the custom script.
  * @member {Array.<String>} aliases
  */
 CustomScript.prototype['aliases'] = undefined;
@@ -174,14 +188,16 @@ CustomScript.prototype['level'] = undefined;
 /**
  * Update revision number of the script.
  * @member {Number} revision
+ * @default 0
  */
-CustomScript.prototype['revision'] = undefined;
+CustomScript.prototype['revision'] = 0;
 
 /**
  * boolean value indicating if script enabled.
  * @member {Boolean} enabled
+ * @default false
  */
-CustomScript.prototype['enabled'] = undefined;
+CustomScript.prototype['enabled'] = false;
 
 /**
  * @member {module:model/ScriptError} scriptError
@@ -191,14 +207,16 @@ CustomScript.prototype['scriptError'] = undefined;
 /**
  * boolean value indicating if the script is modified.
  * @member {Boolean} modified
+ * @default false
  */
-CustomScript.prototype['modified'] = undefined;
+CustomScript.prototype['modified'] = false;
 
 /**
- * boolean value indicating if the script is interanl.
+ * boolean value indicating if the script is internal.
  * @member {Boolean} internal
+ * @default false
  */
-CustomScript.prototype['internal'] = undefined;
+CustomScript.prototype['internal'] = false;
 
 
 

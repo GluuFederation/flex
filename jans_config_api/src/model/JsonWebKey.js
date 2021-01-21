@@ -23,10 +23,15 @@ class JsonWebKey {
      * Constructs a new <code>JsonWebKey</code>.
      * JsonWebKey
      * @alias module:model/JsonWebKey
+     * @param kid {String} The unique identifier for the key.
+     * @param kty {String} The family of cryptographic algorithms used with the key.
+     * @param use {String} How the key was meant to be used; sig represents the signature.
+     * @param alg {String} The specific cryptographic algorithm used with the key.
+     * @param exp {Number} Contains the token expiration timestamp
      */
-    constructor() { 
+    constructor(kid, kty, use, alg, exp) { 
         
-        JsonWebKey.initialize(this);
+        JsonWebKey.initialize(this, kid, kty, use, alg, exp);
     }
 
     /**
@@ -34,7 +39,12 @@ class JsonWebKey {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, kid, kty, use, alg, exp) { 
+        obj['kid'] = kid;
+        obj['kty'] = kty;
+        obj['use'] = use;
+        obj['alg'] = alg;
+        obj['exp'] = exp;
     }
 
     /**

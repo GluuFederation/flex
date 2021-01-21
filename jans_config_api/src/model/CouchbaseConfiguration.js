@@ -22,10 +22,20 @@ class CouchbaseConfiguration {
     /**
      * Constructs a new <code>CouchbaseConfiguration</code>.
      * @alias module:model/CouchbaseConfiguration
+     * @param configId {String} Unique identifier
+     * @param userName {String} Couchbase server user.
+     * @param userPassword {String} Encoded Couchbase server user password.
+     * @param servers {Array.<String>} Couchbase server host and port.
+     * @param defaultBucket {String} Main bucket that application should use if other mapping rules were not applied.
+     * @param buckets {Array.<String>} List of buckets defining mapping rules.
+     * @param passwordEncryptionMethod {module:model/CouchbaseConfiguration.PasswordEncryptionMethodEnum} A list of the password encryption algorithms.
+     * @param sslTrustStoreFile {String} The path to the trust store file to use. It contains the trusted certificates.
+     * @param sslTrustStorePin {String} The PIN to use to access the contents of the trust store.
+     * @param sslTrustStoreFormat {String} The format to use for the trust store.
      */
-    constructor() { 
+    constructor(configId, userName, userPassword, servers, defaultBucket, buckets, passwordEncryptionMethod, sslTrustStoreFile, sslTrustStorePin, sslTrustStoreFormat) { 
         
-        CouchbaseConfiguration.initialize(this);
+        CouchbaseConfiguration.initialize(this, configId, userName, userPassword, servers, defaultBucket, buckets, passwordEncryptionMethod, sslTrustStoreFile, sslTrustStorePin, sslTrustStoreFormat);
     }
 
     /**
@@ -33,7 +43,17 @@ class CouchbaseConfiguration {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, configId, userName, userPassword, servers, defaultBucket, buckets, passwordEncryptionMethod, sslTrustStoreFile, sslTrustStorePin, sslTrustStoreFormat) { 
+        obj['configId'] = configId;
+        obj['userName'] = userName;
+        obj['userPassword'] = userPassword;
+        obj['servers'] = servers;
+        obj['defaultBucket'] = defaultBucket;
+        obj['buckets'] = buckets;
+        obj['passwordEncryptionMethod'] = passwordEncryptionMethod;
+        obj['sslTrustStoreFile'] = sslTrustStoreFile;
+        obj['sslTrustStorePin'] = sslTrustStorePin;
+        obj['sslTrustStoreFormat'] = sslTrustStoreFormat;
     }
 
     /**
@@ -150,8 +170,9 @@ CouchbaseConfiguration.prototype['passwordEncryptionMethod'] = undefined;
 /**
  * Boolean value True if tracing is enabled on the environment.
  * @member {Boolean} operationTracingEnabled
+ * @default false
  */
-CouchbaseConfiguration.prototype['operationTracingEnabled'] = undefined;
+CouchbaseConfiguration.prototype['operationTracingEnabled'] = false;
 
 /**
  * If mutation tokens are enabled, they can be used for advanced durability requirements, as well as optimized RYOW consistency.
@@ -174,8 +195,9 @@ CouchbaseConfiguration.prototype['computationPoolSize'] = undefined;
 /**
  * Identifies if SSL should be enabled.
  * @member {Boolean} useSSL
+ * @default true
  */
-CouchbaseConfiguration.prototype['useSSL'] = undefined;
+CouchbaseConfiguration.prototype['useSSL'] = true;
 
 /**
  * The path to the trust store file to use. It contains the trusted certificates.

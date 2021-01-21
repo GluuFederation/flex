@@ -23,10 +23,14 @@ class UmaResource {
      * Constructs a new <code>UmaResource</code>.
      * UMAResource
      * @alias module:model/UmaResource
+     * @param dn {String} 
+     * @param inum {String} XRI i-number. Client Identifier to uniquely identify the UMAResource.
+     * @param id {String} Resource id.
+     * @param type {String} Resource type.
      */
-    constructor() { 
+    constructor(dn, inum, id, type) { 
         
-        UmaResource.initialize(this);
+        UmaResource.initialize(this, dn, inum, id, type);
     }
 
     /**
@@ -34,7 +38,11 @@ class UmaResource {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, dn, inum, id, type) { 
+        obj['dn'] = dn;
+        obj['inum'] = inum;
+        obj['id'] = id;
+        obj['type'] = type;
     }
 
     /**
@@ -195,8 +203,9 @@ UmaResource.prototype['expirationDate'] = undefined;
 /**
  * Specifies whether client is deletable.
  * @member {Boolean} deletable
+ * @default false
  */
-UmaResource.prototype['deletable'] = undefined;
+UmaResource.prototype['deletable'] = false;
 
 
 

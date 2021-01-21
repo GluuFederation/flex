@@ -4,21 +4,21 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**configId** | **String** | Unique identifier | [optional] 
-**userName** | **String** | Couchbase server user. | [optional] 
-**userPassword** | **String** | Encoded Couchbase server user password. | [optional] 
-**servers** | **[String]** | Couchbase server host and port. | [optional] 
-**defaultBucket** | **String** | Main bucket that application should use if other mapping rules were not applied. | [optional] 
-**buckets** | **[String]** | List of buckets defining mapping rules. | [optional] 
-**passwordEncryptionMethod** | **String** | A list of the password encryption algorithms. | [optional] 
-**operationTracingEnabled** | **Boolean** | Boolean value True if tracing is enabled on the environment. | [optional] 
+**configId** | **String** | Unique identifier | 
+**userName** | **String** | Couchbase server user. | 
+**userPassword** | **String** | Encoded Couchbase server user password. | 
+**servers** | **[String]** | Couchbase server host and port. | 
+**defaultBucket** | **String** | Main bucket that application should use if other mapping rules were not applied. | 
+**buckets** | **[String]** | List of buckets defining mapping rules. | 
+**passwordEncryptionMethod** | **String** | A list of the password encryption algorithms. | 
+**operationTracingEnabled** | **Boolean** | Boolean value True if tracing is enabled on the environment. | [optional] [default to false]
 **mutationTokensEnabled** | **Boolean** | If mutation tokens are enabled, they can be used for advanced durability requirements, as well as optimized RYOW consistency. | [optional] 
 **connectTimeout** | **Number** | The default timeout for connection timeout. | [optional] 
 **computationPoolSize** | **Number** | Sets the pool size (number of threads to use) for all non-blocking operations, default value is the number of CPUs. | [optional] 
-**useSSL** | **Boolean** | Identifies if SSL should be enabled. | [optional] 
-**sslTrustStoreFile** | **String** | The path to the trust store file to use. It contains the trusted certificates. | [optional] 
-**sslTrustStorePin** | **String** | The PIN to use to access the contents of the trust store. | [optional] 
-**sslTrustStoreFormat** | **String** | The format to use for the trust store. | [optional] 
+**useSSL** | **Boolean** | Identifies if SSL should be enabled. | [optional] [default to true]
+**sslTrustStoreFile** | **String** | The path to the trust store file to use. It contains the trusted certificates. | 
+**sslTrustStorePin** | **String** | The PIN to use to access the contents of the trust store. | 
+**sslTrustStoreFormat** | **String** | The format to use for the trust store. | 
 **binaryAttributes** | **[String]** | List of binary attributes. | [optional] 
 **certificateAttributes** | **[String]** | List of certificate attributes. | [optional] 
 

@@ -24,10 +24,13 @@ class Scope {
      * Constructs a new <code>Scope</code>.
      * Auth Scope.
      * @alias module:model/Scope
+     * @param displayName {String} A human-readable name of the scope.
+     * @param scopeType {module:model/Scope.ScopeTypeEnum} The scopes type associated with Access Tokens determine what resources will.
+     * @param expirationDate {Date} Expiry date of the Scope.
      */
-    constructor() { 
+    constructor(displayName, scopeType, expirationDate) { 
         
-        Scope.initialize(this);
+        Scope.initialize(this, displayName, scopeType, expirationDate);
     }
 
     /**
@@ -35,7 +38,10 @@ class Scope {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, displayName, scopeType, expirationDate) { 
+        obj['displayName'] = displayName;
+        obj['scopeType'] = scopeType;
+        obj['expirationDate'] = expirationDate;
     }
 
     /**
@@ -183,14 +189,16 @@ Scope.prototype['attributes'] = undefined;
 /**
  * Specifies if the scope is of type UMA.
  * @member {Boolean} umaType
+ * @default false
  */
-Scope.prototype['umaType'] = undefined;
+Scope.prototype['umaType'] = false;
 
 /**
  * Specifies if the scope can be deleted.
  * @member {Boolean} deletable
+ * @default false
  */
-Scope.prototype['deletable'] = undefined;
+Scope.prototype['deletable'] = false;
 
 /**
  * Expiry date of the Scope.

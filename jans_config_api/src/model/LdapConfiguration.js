@@ -22,10 +22,17 @@ class LdapConfiguration {
     /**
      * Constructs a new <code>LdapConfiguration</code>.
      * @alias module:model/LdapConfiguration
+     * @param configId {String} Unique identifier - Name
+     * @param bindDN {String} This contains the username to connect to the backend server. You need to use full DN here. As for example, cn=jans,dc=company,dc=org.
+     * @param bindPassword {String} Ldap password for binding.
+     * @param servers {Array.<String>} List of LDAP authentication servers.
+     * @param useSSL {Boolean} Enable SSL communication between Jans Server and LDAP server.
+     * @param baseDNs {Array.<String>} List contains the location of the Active Directory/LDAP tree from where the Gluu Server shall read the user information.
+     * @param primaryKey {String} Used to search and bind operations in configured LDAP server.
      */
-    constructor() { 
+    constructor(configId, bindDN, bindPassword, servers, useSSL, baseDNs, primaryKey) { 
         
-        LdapConfiguration.initialize(this);
+        LdapConfiguration.initialize(this, configId, bindDN, bindPassword, servers, useSSL, baseDNs, primaryKey);
     }
 
     /**
@@ -33,7 +40,14 @@ class LdapConfiguration {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj) { 
+    static initialize(obj, configId, bindDN, bindPassword, servers, useSSL, baseDNs, primaryKey) { 
+        obj['configId'] = configId;
+        obj['bindDN'] = bindDN;
+        obj['bindPassword'] = bindPassword;
+        obj['servers'] = servers;
+        obj['useSSL'] = useSSL;
+        obj['baseDNs'] = baseDNs;
+        obj['primaryKey'] = primaryKey;
     }
 
     /**
@@ -151,14 +165,16 @@ LdapConfiguration.prototype['localPrimaryKey'] = undefined;
 /**
  * Boolean value used to indicate if the LDAP Server will allow anonymous bind request.
  * @member {Boolean} useAnonymousBind
+ * @default false
  */
-LdapConfiguration.prototype['useAnonymousBind'] = undefined;
+LdapConfiguration.prototype['useAnonymousBind'] = false;
 
 /**
  * Boolean value used to indicate if the LDAP Server is enabled. Do not use this unless the server administrator has entered all the required values.
  * @member {Boolean} enabled
+ * @default false
  */
-LdapConfiguration.prototype['enabled'] = undefined;
+LdapConfiguration.prototype['enabled'] = false;
 
 /**
  * LDAP server version.
