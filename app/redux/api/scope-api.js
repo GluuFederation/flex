@@ -1,7 +1,6 @@
 import { getDefaultClient } from "./base";
 const JansConfigApi = require("jans_config_api");
-const defaultClient = getDefaultClient(JansConfigApi);
-const api = new JansConfigApi.OAuthScopesApi(defaultClient);
+const api = new JansConfigApi.OAuthScopesApi(getDefaultClient(JansConfigApi));
 
 // Get All scopes
 export const getAllScopes = () => {

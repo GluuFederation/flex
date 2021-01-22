@@ -1,7 +1,6 @@
 import { getDefaultClient } from "./base";
 const JansConfigApi = require("jans_config_api");
-const defaultClient = getDefaultClient(JansConfigApi);
-const api = new JansConfigApi.AttributeApi(defaultClient);
+const api = new JansConfigApi.AttributeApi(getDefaultClient(JansConfigApi));
 
 // Get all attributes
 export const getAllAttributes = () => {
@@ -10,11 +9,6 @@ export const getAllAttributes = () => {
       if (error) {
         reject(error);
       } else {
-        console.log(
-          "********** getAllAttributes() data = " +
-            data +
-            " **********========================== "
-        );
         resolve(data);
       }
     });
