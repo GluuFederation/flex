@@ -11,13 +11,12 @@ function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
   useEffect(() => {
     dispatch(getAttributes());
   }, []);
-  
+
   const history = useHistory();
   const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
-  
-  
+
   function getBadgeTheme(status) {
     if (status === "ACTIVE") {
       return "primary";
@@ -119,7 +118,6 @@ function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
   );
 }
 
-
 const mapStateToProps = state => {
   return {
     attributes: state.attributeReducer.items,
@@ -134,4 +132,3 @@ const mapDispatchToProps = dispatch => {
   };
 };
 export default connect(mapStateToProps)(AttributeListPage);
-
