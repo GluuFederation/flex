@@ -1,7 +1,7 @@
 import React from "react";
-import { Container } from "./../components";
+import { Container, Label } from "./../components";
 
-function ViewRedirect() {
+function ViewRedirect(config) {
   return (
     <React.Fragment>
       <Container>
@@ -24,6 +24,12 @@ function ViewRedirect() {
             src={require("../images/gif/npe-redirecting.gif")}
             alt="loading..."
           />
+          {!config && (
+            <Label sm={12}>
+              An error occurs while fetching the user authentication server
+              configuration! Make sure the Backend Ui is up and running.
+            </Label>
+          )}
         </div>
       </Container>
     </React.Fragment>
