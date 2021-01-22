@@ -10,7 +10,7 @@
   <!--<![endif]-->
   <head>
     <meta charset="utf-8" />
-    <title><%= config.options.title%></title>
+    <title>AdminUI</title>
 
     <% if (config.files.favicon) { %>
     <link rel="shortcut icon" href="<%= config.files.favicon%>" />
@@ -88,7 +88,7 @@
     <div class="initial-loader-wrap">
       <div class="initial-loader">
         <div class="initial-loader__row">
-          <img src="images/logos/logo.png" />
+          <img src="static/logo.png" width="150px" height="90px" />
           <svg
             version="1.1"
             id="loader-circle"
@@ -115,7 +115,7 @@
           </svg>
         </div>
         <div class="initial-loader__row">
-          Jans-admin Ui is loading...
+          AdminUI is loading...
         </div>
       </div>
     </div>
@@ -124,7 +124,6 @@
       (function() {
         var bodyElement = document.querySelector("body");
         bodyElement.classList.add("loading");
-
         document.addEventListener("readystatechange", function() {
           if (document.readyState === "complete") {
             var bodyElement = document.querySelector("body");
