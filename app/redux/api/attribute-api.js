@@ -11,6 +11,7 @@ const headers = {
   "Access-Control-Allow-Credentials": true
 };
 defaultClient.defaultHeaders = headers;
+
 function getApiAccessToken() {
   console.log(
     "==============Fetching the api token from store " +
@@ -19,6 +20,7 @@ function getApiAccessToken() {
   return localStorage.getItem("gluu.api.token");
 }
 jansauth.accessToken = getApiAccessToken();
+console.log(" ===== attribute-api.js::::jansauth.accessToken = "+jansauth.accessToken+" ===== ");
 
 const api = new JansConfigApi.AttributeApi();
 

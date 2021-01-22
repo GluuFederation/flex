@@ -8,9 +8,6 @@ import AttributeDetailPage from "../Attibutes/AttributeDetailPage";
 import { getAttributes } from "../../../redux/actions/AttributeActions";
 
 function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
-  if (attributes.length == 0 && !hasApiError) {
-    dispatch(getAttributes());
-  }
   useEffect(() => {
     dispatch(getAttributes());
   }, []);
@@ -19,6 +16,7 @@ function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
   const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
+  
   
   function getBadgeTheme(status) {
     if (status === "ACTIVE") {
@@ -121,9 +119,10 @@ function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
   );
 }
 
+
 const mapStateToProps = state => {
   return {
-	attributes: state.attributeReducer.items,
+    attributes: state.attributeReducer.items,
     loading: state.attributeReducer.loading,
     hasApiError: state.attributeReducer.hasApiError
   };
@@ -135,3 +134,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 export default connect(mapStateToProps)(AttributeListPage);
+
