@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
 import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
 import { Badge } from "reactstrap";
-import { clients } from "../Clients/clients";
 import GluuDialog from "../Gluu/GluuDialog";
 import ClientDetailPage from "../Clients/ClientDetailPage";
-const ClientListPage = () => {
+import { getOpenidClients } from "../../../redux/actions/OpenidClientActions";
+
+
+function ClientListPage({ clients, loading, hasApiError, dispatch }) {
+  useEffect(() => {
+    dispatch(getOpenidClients());
+  }, []);
+  
   const history = useHistory();
-  const [item, setItem] = useState(clients[0]);
+  const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
+  
   function getBadgeTheme(status) {
     if (!status) {
       return "primary";
@@ -135,6 +143,19 @@ const ClientListPage = () => {
       />
     </React.Fragment>
   );
+}
+
+const mapStateToProps = state => {
+  return {
+    clients: state.openidClientReducer.items,
+    loading: state.openidClientReducer.loading,
+    hasApiError: state.openidClientReducer.hasApiError
+  };
 };
 
-export default ClientListPage;
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchOpenidClients: () => dispatch(getOpenidClients)
+  };
+};
+export default connect(mapStateToProps)(ClientListPage);
