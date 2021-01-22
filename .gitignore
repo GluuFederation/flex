@@ -7,7 +7,9 @@ jans_config_api
 package-lock.json
 yarn.lock
 
+
 # other
 .DS_Store
+.project
 
 .env.production
