@@ -7,7 +7,8 @@ import { all } from "redux-saga/effects";
 import authSagas from "./AuthSaga";
 import scopesSagas from "./OAuthScopeSaga";
 import attributeSaga from "./AttributeSaga";
+import openidClientSaga from "./OpenidClientSaga";
 
 export default function* rootSaga() {
-  yield all([authSagas(), scopesSagas(), attributeSaga()]);
+  yield all([authSagas(), scopesSagas(), openidClientSaga()]);
 }
