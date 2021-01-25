@@ -24,7 +24,7 @@ function ViewRedirect({ config }) {
             src={require("../images/gif/npe-redirecting.gif")}
             alt="loading..."
           />
-          {!config.hasOwnProperty("clientId") && (
+          {!config.clientId && (
             <Alert color="danger">
               <Media>
                 <Media left middle className="mr-3">
