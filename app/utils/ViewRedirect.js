@@ -1,14 +1,7 @@
 import React, { useEffect } from "react";
-import { Container, Label, Alert, Media } from "./../components";
+import { Container, Alert, Media } from "./../components";
 
-function ViewRedirect(props) {
-  //console.log("-------- " + JSON.stringify(props.config));
-  useEffect(() => {
-    const interval = setInterval(() => {
-      props.getOAuth2Config();
-    }, 30 * 1000);
-    return () => clearInterval(interval);
-  }, []);
+function ViewRedirect({ config }) {
   return (
     <React.Fragment>
       <Container>
@@ -31,7 +24,7 @@ function ViewRedirect(props) {
             src={require("../images/gif/npe-redirecting.gif")}
             alt="loading..."
           />
-          {!props.config.hasOwnProperty("clientId") && (
+          {!config.hasOwnProperty("clientId") && (
             <Alert color="danger">
               <Media>
                 <Media left middle className="mr-3">

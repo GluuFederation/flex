@@ -97,12 +97,12 @@ class SessionChecker extends Component {
       return { showContent: true };
     }
   }
-  render(props) {
+  render() {
     const { showContent } = this.state;
     return (
       <React.Fragment>
         {showContent && this.props.children}
-        {!showContent && <ViewRedirect config={this.props} />}
+        {!showContent && <ViewRedirect config={this.props.config} />}
       </React.Fragment>
     );
   }
