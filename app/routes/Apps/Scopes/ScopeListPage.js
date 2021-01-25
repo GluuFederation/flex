@@ -117,10 +117,4 @@ const mapStateToProps = state => {
     hasApiError: state.scopeReducer.hasApiError
   };
 };
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchScopes: () => dispatch(getScopes)
-  };
-};
 export default connect(mapStateToProps)(ScopeListPage);

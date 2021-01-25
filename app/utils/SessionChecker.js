@@ -102,7 +102,7 @@ class SessionChecker extends Component {
     return (
       <React.Fragment>
         {showContent && this.props.children}
-        {!showContent && <ViewRedirect config={this.props}/>}
+        {!showContent && <ViewRedirect config={this.props} />}
       </React.Fragment>
     );
   }
@@ -112,13 +112,9 @@ class SessionChecker extends Component {
 
 const mapStateToProps = ({ authReducer }) => {
   const isAuthenticated = authReducer.isAuthenticated;
-  const hasApiToken = authReducer.hasApiToken;
-  const hasUserToken = authReducer.hasUserToken;
   const config = authReducer.config;
   return {
     isAuthenticated,
-    hasApiToken,
-    hasUserToken,
     config
   };
 };

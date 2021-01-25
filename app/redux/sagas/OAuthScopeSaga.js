@@ -31,7 +31,6 @@ export function* getScopes() {
     const data = yield call(getAllScopes);
     yield put(getScopesResponse(data));
   } catch (e) {
-    console.log("===============================error" + e);
     yield put(setApiError(e));
   }
 }

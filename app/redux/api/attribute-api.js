@@ -14,3 +14,16 @@ export const getAllAttributes = () => {
     });
   });
 };
+
+export const addNewAttribute = data => {
+  console.log("============posting new attribute");
+  return new Promise((resolve, reject) => {
+    api.postAttributes(data, (error, data) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};

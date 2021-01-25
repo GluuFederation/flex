@@ -7,7 +7,7 @@ import GluuDialog from "../Gluu/GluuDialog";
 import AttributeDetailPage from "../Attibutes/AttributeDetailPage";
 import { getAttributes } from "../../../redux/actions/AttributeActions";
 
-function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
+function AttributeListPage({ attributes, dispatch }) {
   useEffect(() => {
     dispatch(getAttributes());
   }, []);
@@ -123,12 +123,6 @@ const mapStateToProps = state => {
     attributes: state.attributeReducer.items,
     loading: state.attributeReducer.loading,
     hasApiError: state.attributeReducer.hasApiError
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchAttributes: () => dispatch(getAttributes)
   };
 };
 export default connect(mapStateToProps)(AttributeListPage);

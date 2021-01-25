@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Container, Label, Alert, Media } from "./../components";
 
 function ViewRedirect(props) {
-  console.log("-------- " + JSON.stringify(props.config));
+  //console.log("-------- " + JSON.stringify(props.config));
   useEffect(() => {
     const interval = setInterval(() => {
       props.getOAuth2Config();

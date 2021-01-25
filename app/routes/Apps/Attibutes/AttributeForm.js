@@ -12,7 +12,7 @@ import {
 } from "./../../../components";
 import GluuFooter from "../Gluu/GluuFooter";
 import GluuLabel from "../Gluu/GluuLabel";
-function AttributeForm({ data }) {
+function AttributeForm({ data, handleSubmit }) {
   const [init, setInit] = useState(false);
   function toogle() {
     if (!init) {
@@ -34,7 +34,8 @@ function AttributeForm({ data }) {
         .required("Required!")
     }),
     onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
+      //alert(JSON.stringify(values, null, 2));
+      handleSubmit(JSON.stringify(values, null, 2));
     }
   });
   return (
@@ -203,26 +204,6 @@ function AttributeForm({ data }) {
             defaultChecked
           />
         </Col>
-        <GluuLabel label="Include in SCIM extension" size={3} />
-        <Col sm={1}>
-          <Input
-            id="oxMultiValuedAttribute"
-            name="oxMultiValuedAttribute"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked
-          />
-        </Col>
-        <GluuLabel label="Multivalued" size={3} />
-        <Col sm={1}>
-          <Input
-            id="oxMultiValuedAttribute"
-            onChange={formik.handleChange}
-            name="oxMultiValuedAttribute"
-            type="checkbox"
-            defaultChecked
-          />
-        </Col>
       </FormGroup>
       <FormGroup row>
         <GluuLabel label="Regular expression" />
@@ -230,7 +211,6 @@ function AttributeForm({ data }) {
           <Input name="regex" id="regex" onChange={formik.handleChange} />
         </Col>
       </FormGroup>
-
       <FormGroup row></FormGroup>
       <GluuFooter />
     </Form>
