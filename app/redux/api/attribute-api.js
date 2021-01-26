@@ -4,6 +4,7 @@ const api = new JansConfigApi.AttributeApi(getDefaultClient(JansConfigApi));
 
 // Get all attributes
 export const getAllAttributes = () => {
+  console.log("============fetch attribute");
   return new Promise((resolve, reject) => {
     api.getAttributes({}, (error, data) => {
       if (error) {

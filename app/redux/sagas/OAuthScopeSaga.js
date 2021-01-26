@@ -9,7 +9,7 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { getScope, getAllScopes, deleteScope } from "../api/scope-api";
+import { getScope, getAllScopes } from "../api/scope-api";
 import {
   deleteScopeResponse,
   getScopesResponse,

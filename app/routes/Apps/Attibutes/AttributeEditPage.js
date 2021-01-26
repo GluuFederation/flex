@@ -1,18 +1,30 @@
 import React from "react";
-
+import { connect } from "react-redux";
 import { Container, CardBody, Card } from "./../../../components";
 import AttributeForm from "./AttributeForm";
+import { editAttribute } from "../../../redux/actions/AttributeActions";
 
-export default function AttributeEditPage(props) {
+function AttributeEditPage({ item, dispatch }) {
+  function handleSubmit(data) {
+    if (data) {
+      dispatch(editAttribute(data));
+    }
+  }
   return (
     <React.Fragment>
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <AttributeForm data={props.match.params.gid.substring(1, 100)} />
+            <AttributeForm item={item} />
           </CardBody>
         </Card>
       </Container>
     </React.Fragment>
   );
 }
+const mapStateToProps = state => {
+  return {
+    item: state.attributeReducer.item
+  };
+};
+export default connect(mapStateToProps)(AttributeEditPage);

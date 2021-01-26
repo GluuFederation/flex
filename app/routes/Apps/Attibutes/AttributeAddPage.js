@@ -15,7 +15,7 @@ function AttributeAddPage({ dispatch }) {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <AttributeForm handleSubmit={handleSubmit} />
+            <AttributeForm item="{}" handleSubmit={handleSubmit} />
           </CardBody>
         </Card>
       </Container>

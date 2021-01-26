@@ -10,5 +10,5 @@ import attributeSaga from "./AttributeSaga";
 import openidClientSaga from "./OpenidClientSaga";
 
 export default function* rootSaga() {
-  yield all([authSagas(), scopesSagas(), openidClientSaga()]);
+  yield all([authSagas(), scopesSagas(), openidClientSaga(), attributeSaga()]);
 }

@@ -12,7 +12,7 @@ import {
 } from "./../../../components";
 import GluuFooter from "../Gluu/GluuFooter";
 import GluuLabel from "../Gluu/GluuLabel";
-function AttributeForm({ data, handleSubmit }) {
+function AttributeForm({ item, handleSubmit }) {
   const [init, setInit] = useState(false);
   function toogle() {
     if (!init) {
@@ -20,7 +20,12 @@ function AttributeForm({ data, handleSubmit }) {
     }
   }
   const formik = useFormik({
-    initialValues: { name: "", displayName: "", description: "" },
+    initialValues: {
+      name: item.name,
+      displayName: item.displayName,
+      description: item.displayName,
+      status: item.status
+    },
     validationSchema: Yup.object({
       name: Yup.string()
         .min(2, "Mininum 2 characters")
@@ -34,14 +39,13 @@ function AttributeForm({ data, handleSubmit }) {
         .required("Required!")
     }),
     onSubmit: values => {
-      //alert(JSON.stringify(values, null, 2));
       handleSubmit(JSON.stringify(values, null, 2));
     }
   });
   return (
     <Form onSubmit={formik.handleSubmit}>
       {/* START Input */}
-      {data && (
+      {item.inum && (
         <FormGroup row>
           <Label for="name" sm={3}>
             Inum
@@ -53,7 +57,7 @@ function AttributeForm({ data, handleSubmit }) {
               id="inum"
               name="inum"
               disabled
-              value={data}
+              value={item.inum}
             />
           </Col>
         </FormGroup>
@@ -66,6 +70,7 @@ function AttributeForm({ data, handleSubmit }) {
             id="name"
             valid={!formik.errors.name && !formik.touched.name && init}
             name="name"
+            defaultValue={item.name}
             onKeyUp={toogle}
             onChange={formik.handleChange}
           />
@@ -83,6 +88,7 @@ function AttributeForm({ data, handleSubmit }) {
                 init
               }
               id="displayName"
+              defaultValue={item.displayName}
               onChange={formik.handleChange}
             />
           </InputGroup>
@@ -95,6 +101,7 @@ function AttributeForm({ data, handleSubmit }) {
             <Input
               placeholder="Enter the attribute description"
               id="description"
+              defaultValue={item.description}
               onChange={formik.handleChange}
             />
           </InputGroup>
@@ -108,6 +115,7 @@ function AttributeForm({ data, handleSubmit }) {
               type="select"
               id="status"
               name="status"
+              defaultValue={item.status}
               onChange={formik.handleChange}
             >
               <option value="">Choose...</option>
@@ -125,10 +133,12 @@ function AttributeForm({ data, handleSubmit }) {
               type="select"
               id="dataType"
               name="dataType"
+              defaultValue={item.dataType}
               onChange={formik.handleChange}
             >
               <option value="">Choose...</option>
               <option>TEXT</option>
+              <option>STRING</option>
               <option>NUMERIC</option>
               <option>BINARY</option>
               <option>CERTIFICATE</option>
@@ -145,11 +155,12 @@ function AttributeForm({ data, handleSubmit }) {
             type="select"
             name="editType"
             id="editType"
+            defaultValue={item.editType}
             multiple
             onChange={formik.handleChange}
           >
-            <option>Admin</option>
-            <option>User</option>
+            <option>ADMIN</option>
+            <option>USER</option>
           </Input>
         </Col>
       </FormGroup>
@@ -160,11 +171,12 @@ function AttributeForm({ data, handleSubmit }) {
             type="select"
             name="viewType"
             id="viewType"
+            defaultValue={item.viewType}
             multiple
             onChange={formik.handleChange}
           >
-            <option>Admin</option>
-            <option>User</option>
+            <option>ADMIN</option>
+            <option>USER</option>
           </Input>
         </Col>
       </FormGroup>
@@ -175,6 +187,7 @@ function AttributeForm({ data, handleSubmit }) {
             type="select"
             name="usageType"
             id="usageType"
+            defaultValue={item.usageType}
             multiple
             onChange={formik.handleChange}
           >
@@ -189,6 +202,7 @@ function AttributeForm({ data, handleSubmit }) {
           <Input
             name="claimName"
             id="claimName"
+            defaultValue={item.claimName}
             onChange={formik.handleChange}
           />
         </Col>
@@ -201,14 +215,19 @@ function AttributeForm({ data, handleSubmit }) {
             name="oxMultiValuedAttribute"
             onChange={formik.handleChange}
             type="checkbox"
-            defaultChecked
+            defaultChecked={item.oxMultiValuedAttribute}
           />
         </Col>
       </FormGroup>
       <FormGroup row>
         <GluuLabel label="Regular expression" />
         <Col sm={9}>
-          <Input name="regex" id="regex" onChange={formik.handleChange} />
+          <Input
+            name="regex"
+            id="regex"
+            defaultValue={item.regex}
+            onChange={formik.handleChange}
+          />
         </Col>
       </FormGroup>
       <FormGroup row></FormGroup>

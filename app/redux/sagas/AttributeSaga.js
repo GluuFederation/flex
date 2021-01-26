@@ -1,7 +1,7 @@
 /**
  * Attribute Sagas
  */
-import { call, all, put, fork, takeEvery } from "redux-saga/effects";
+import { call, all, put, fork, takeLatest } from "redux-saga/effects";
 import { getAllAttributes, addNewAttribute } from "../api/attribute-api";
 import {
   getAttributesResponse,
@@ -29,11 +29,13 @@ export function* addAttribute({ payload }) {
 }
 
 export function* watchGetAttributes() {
-  yield takeEvery(GET_ATTRIBUTES, getAttributes);
+  console.log("============dispacth received for attributes");
+  yield takeLatest(GET_ATTRIBUTES, getAttributes);
 }
 
 export function* watchAddAttribute() {
-  yield takeEvery(ADD_ATTRIBUTE, addAttribute);
+  console.log("============dispacth received for attribute add");
+  yield takeLatest(ADD_ATTRIBUTE, addAttribute);
 }
 
 export default function* rootSaga() {

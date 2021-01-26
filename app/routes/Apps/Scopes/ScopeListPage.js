@@ -69,6 +69,13 @@ function ScopeListPage({ scopes, loading, hasApiError, dispatch }) {
             isFreeAction: true,
             onClick: () => handleGoToScopeAddPage()
           },
+          {
+            icon: "refresh",
+            tooltip: "Refresh Data",
+            iconProps: { color: "primary" },
+            isFreeAction: true,
+            onClick: (event, rowData) => {}
+          },
           rowData => ({
             icon: "delete",
             iconProps: {

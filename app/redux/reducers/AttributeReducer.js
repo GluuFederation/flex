@@ -4,6 +4,7 @@ import {
   ADD_ATTRIBUTE,
   ADD_ATTRIBUTE_RESPONSE,
   RESET,
+  SET_ITEM,
   SET_API_ERROR,
   DELETE_ATTRIBUTE,
   DELETE_ATTRIBUTE_RESPONSE
@@ -46,6 +47,12 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         loading: true
+      };
+    case SET_ITEM:
+      return {
+        ...state,
+        item: action.payload.item,
+        loading: false
       };
     case DELETE_ATTRIBUTE_RESPONSE:
       return {

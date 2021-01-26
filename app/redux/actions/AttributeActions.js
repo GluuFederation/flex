@@ -3,9 +3,12 @@ import {
   GET_ATTRIBUTES_RESPONSE,
   ADD_ATTRIBUTE,
   ADD_ATTRIBUTE_RESPONSE,
+  EDIT_ATTRIBUTE,
+  EDIT_ATTRIBUTE_RESPONSE,
   DELETE_ATTRIBUTE,
   DELETE_ATTRIBUTE_RESPONSE,
-  SET_API_ERROR
+  SET_API_ERROR,
+  SET_ITEM
 } from "./types";
 
 export const getAttributes = () => ({
@@ -25,6 +28,15 @@ export const addAttributeResponse = data => ({
   payload: { data }
 });
 
+export const editAttribute = data => ({
+  type: EDIT_ATTRIBUTE,
+  payload: { data }
+});
+export const editAttributeResponse = data => ({
+  type: EDIT_ATTRIBUTE_RESPONSE,
+  payload: { data }
+});
+
 export const deleteAttribute = inum => ({
   type: DELETE_ATTRIBUTE,
   payload: { inum }
@@ -38,4 +50,9 @@ export const deleteAttributeResponse = data => ({
 export const setApiError = error => ({
   type: SET_API_ERROR,
   payload: { error }
+});
+
+export const setCurrentItem = item => ({
+  type: SET_ITEM,
+  payload: { item }
 });
