@@ -19,10 +19,8 @@ import { GET_OPENID_CLIENTS } from "../actions/types";
 export function* getOauthOpenidClients() {
   try {
     const data = yield call(getAllOpenidClients);
-    console.log("============== OpenidClientsSaga:::data = " + data+" ==============");
     yield put(getOpenidClientsResponse(data));
   } catch (e) {
-    console.log("===============================error" + e);
     yield put(setApiError(e));
   }
 }

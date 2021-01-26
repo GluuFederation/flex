@@ -7,7 +7,6 @@ function AttributeAddPage({ dispatch }) {
   function handleSubmit(data) {
     if (data) {
       dispatch(addAttribute(data));
-      console.log("==============action dispatched " + data);
     }
   }
   return (
