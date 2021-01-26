@@ -1,8 +1,8 @@
 import {
   GET_OPENID_CLIENTS,
   GET_OPENID_CLIENTS_RESPONSE,
-	RESET,
-	SET_API_ERROR
+  RESET,
+  SET_API_ERROR
 } from "../actions/types";
 
 const INIT_STATE = {
@@ -13,7 +13,6 @@ const INIT_STATE = {
 
 export default (state = INIT_STATE, action) => {
   switch (action.type) {
-     
     case GET_OPENID_CLIENTS:
       return {
         ...state,

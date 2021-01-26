@@ -66,37 +66,37 @@
       //expect(instance).to.be();
     });
 
-    it('should have the property requiresSsl (base name: "requiresSsl")', function() {
+    it('should have the property requiresSsl (base name: "requires-ssl")', function() {
       // uncomment below and update the code to test the property requiresSsl
       //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
-    it('should have the property serverTrust (base name: "serverTrust")', function() {
-      // uncomment below and update the code to test the property serverTrust
+    it('should have the property trustHost (base name: "trust-host")', function() {
+      // uncomment below and update the code to test the property trustHost
       //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
-    it('should have the property fromName (base name: "fromName")', function() {
+    it('should have the property fromName (base name: "from-name")', function() {
       // uncomment below and update the code to test the property fromName
       //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
-    it('should have the property fromEmailAddress (base name: "fromEmailAddress")', function() {
+    it('should have the property fromEmailAddress (base name: "from-email-address")', function() {
       // uncomment below and update the code to test the property fromEmailAddress
       //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
-    it('should have the property requiresAuthentication (base name: "requiresAuthentication")', function() {
+    it('should have the property requiresAuthentication (base name: "requires-authentication")', function() {
       // uncomment below and update the code to test the property requiresAuthentication
       //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
-    it('should have the property userName (base name: "userName")', function() {
+    it('should have the property userName (base name: "user-name")', function() {
       // uncomment below and update the code to test the property userName
       //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();

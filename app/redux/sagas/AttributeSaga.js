@@ -34,7 +34,6 @@ export function* getAttributes() {
 export function* addAttribute({ payload }) {
   try {
     const data = yield call(addNewAttribute, payload.data);
-    console.log("==========data added "+JSON.stringify(data));
     yield put(addAttributeResponse(data));
   } catch (error) {
     yield put(setApiError(error));

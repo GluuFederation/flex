@@ -3,16 +3,18 @@ import {
   GET_ATTRIBUTES_RESPONSE,
   ADD_ATTRIBUTE,
   ADD_ATTRIBUTE_RESPONSE,
+  EDIT_ATTRIBUTE,
+  EDIT_ATTRIBUTE_RESPONSE,
+  DELETE_ATTRIBUTE,
+  DELETE_ATTRIBUTE_RESPONSE,
   RESET,
   SET_ITEM,
-  SET_API_ERROR,
-  DELETE_ATTRIBUTE,
-  DELETE_ATTRIBUTE_RESPONSE
+  SET_API_ERROR
 } from "../actions/types";
 
 const INIT_STATE = {
   items: [],
-  loading: true,
+  loading: false,
   hasApiError: false
 };
 
@@ -39,6 +41,19 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         items: [...state.items, action.payload.data],
+        loading: false,
+        hasApiError: false
+      };
+
+    case EDIT_ATTRIBUTE:
+      return {
+        ...state,
+        loading: true
+      };
+    case EDIT_ATTRIBUTE_RESPONSE:
+      return {
+        ...state,
+        items: [...state.items],
         loading: false,
         hasApiError: false
       };

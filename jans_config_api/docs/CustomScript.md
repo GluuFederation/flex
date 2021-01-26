@@ -8,12 +8,12 @@ Name | Type | Description | Notes
 **inum** | **String** | XRI i-number. Identifier to uniquely identify the script. | [optional] 
 **name** | **String** | Custom script name. Should contain only letters, digits and underscores. | 
 **aliases** | **[String]** | List of possible aliases for the custom script. | [optional] 
-**description** | **String** | Details describing the script. | [optional] 
+**description** | **String** | Details describing the script. | 
 **script** | **String** | Actual script. | 
 **scriptType** | **String** | Type of script. | 
 **programmingLanguage** | **String** | Programming language of the custom script. | 
 **moduleProperties** | [**[SimpleCustomProperty]**](SimpleCustomProperty.md) | Module-level properties applicable to the script. | 
-**configurationProperties** | [**[SimpleExtendedCustomProperty]**](SimpleExtendedCustomProperty.md) | Configuration properties applicable to the script. | 
+**configurationProperties** | [**[SimpleExtendedCustomProperty]**](SimpleExtendedCustomProperty.md) | Configuration properties applicable to the script. | [optional] 
 **level** | **Number** | Script level. | 
 **revision** | **Number** | Update revision number of the script. | [optional] [default to 0]
 **enabled** | **Boolean** | boolean value indicating if script enabled. | [optional] [default to false]
