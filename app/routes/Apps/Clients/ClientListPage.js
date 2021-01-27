@@ -108,7 +108,9 @@ function ClientListPage({ clients, dispatch }) {
             tooltip: "Refresh Data",
             iconProps: { color: "primary" },
             isFreeAction: true,
-            onClick: (event, rowData) => {}
+            onClick: () => {
+              dispatch(getOpenidClients());
+            }
           },
           rowData => ({
             icon: "delete",

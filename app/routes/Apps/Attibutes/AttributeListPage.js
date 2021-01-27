@@ -89,7 +89,9 @@ function AttributeListPage({ attributes, dispatch }) {
             tooltip: "Refresh Data",
             iconProps: { color: "primary" },
             isFreeAction: true,
-            onClick: (event, rowData) => {}
+            onClick: () => {
+              dispatch(getAttributes());
+            }
           },
           rowData => ({
             icon: "delete",

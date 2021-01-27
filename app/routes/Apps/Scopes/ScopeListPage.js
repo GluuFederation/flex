@@ -74,7 +74,9 @@ function ScopeListPage({ scopes, loading, hasApiError, dispatch }) {
             tooltip: "Refresh Data",
             iconProps: { color: "primary" },
             isFreeAction: true,
-            onClick: (event, rowData) => {}
+            onClick: () => {
+              dispatch(getScopes());
+            }
           },
           rowData => ({
             icon: "delete",
@@ -86,7 +88,7 @@ function ScopeListPage({ scopes, loading, hasApiError, dispatch }) {
               ? "Delete Scope"
               : "This Scope can't be detele",
             onClick: (event, rowData) => handleScopeDelete(rowData),
-            disabled: !rowData.defaultScope
+            disabled: rowData.defaultScope
           })
         ]}
         options={{

@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { Container, CardBody, Card } from "./../../../components";
 import AttributeForm from "./AttributeForm";
 import BlockUi from "react-block-ui";
@@ -7,9 +8,11 @@ import BlockUi from "react-block-ui";
 import { editAttribute } from "../../../redux/actions/AttributeActions";
 
 function AttributeEditPage({ item, loading, dispatch }) {
+  const history = useHistory();
   function handleSubmit(data) {
     if (data) {
       dispatch(editAttribute(data));
+      history.push("/attributes");
     }
   }
   return (
