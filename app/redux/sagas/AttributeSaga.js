@@ -2,6 +2,7 @@
  * Attribute Sagas
  */
 import { call, all, put, fork, takeLatest } from "redux-saga/effects";
+import { isFourZeroOneError, hasApiToken } from "../../utils/TokenController";
 import {
   getAllAttributes,
   addNewAttribute,
@@ -15,6 +16,7 @@ import {
   deleteAttributeResponse,
   setApiError
 } from "../actions/AttributeActions";
+import { getAPIAccessToken } from "../actions/AuthActions";
 import {
   GET_ATTRIBUTES,
   ADD_ATTRIBUTE,
@@ -27,6 +29,9 @@ export function* getAttributes() {
     const data = yield call(getAllAttributes);
     yield put(getAttributesResponse(data));
   } catch (e) {
+    if (isFourZeroOneError(e) && !hasApiToken()) {
+      yield put(getAPIAccessToken());
+    }
     yield put(setApiError(e));
   }
 }

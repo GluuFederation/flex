@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ViewRedirect from "./ViewRedirect";
 import { withRouter } from "react-router";
+import { saveState, isValidState } from "./TokenController";
 
 // -----Third party dependencies -----
 import queryString from "query-string";
@@ -49,8 +50,7 @@ class SessionChecker extends Component {
     }
     const url = `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}
      &redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`;
-    localStorage.setItem("flow.state", state);
-    localStorage.setItem("flow.nonce", nonce);
+    saveState(state);
     return url;
   };
 
@@ -67,6 +67,9 @@ class SessionChecker extends Component {
         const params = queryString.parse(props.location.search);
         let showContent = false;
         if (params.code && params.scope && params.state) {
+          if (!isValidState(params.state)) {
+            return null;
+          }
           props.getOAuth2AccessToken(params.code);
         } else {
           showContent = !!props.config;
