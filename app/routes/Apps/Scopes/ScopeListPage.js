@@ -69,6 +69,15 @@ function ScopeListPage({ scopes, loading, hasApiError, dispatch }) {
             isFreeAction: true,
             onClick: () => handleGoToScopeAddPage()
           },
+          {
+            icon: "refresh",
+            tooltip: "Refresh Data",
+            iconProps: { color: "primary" },
+            isFreeAction: true,
+            onClick: () => {
+              dispatch(getScopes());
+            }
+          },
           rowData => ({
             icon: "delete",
             iconProps: {
@@ -79,7 +88,7 @@ function ScopeListPage({ scopes, loading, hasApiError, dispatch }) {
               ? "Delete Scope"
               : "This Scope can't be detele",
             onClick: (event, rowData) => handleScopeDelete(rowData),
-            disabled: !rowData.defaultScope
+            disabled: rowData.defaultScope
           })
         ]}
         options={{
@@ -115,12 +124,6 @@ const mapStateToProps = state => {
     scopes: state.scopeReducer.items,
     loading: state.scopeReducer.loading,
     hasApiError: state.scopeReducer.hasApiError
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchScopes: () => dispatch(getScopes)
   };
 };
 export default connect(mapStateToProps)(ScopeListPage);

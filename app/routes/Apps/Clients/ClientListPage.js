@@ -7,17 +7,16 @@ import GluuDialog from "../Gluu/GluuDialog";
 import ClientDetailPage from "../Clients/ClientDetailPage";
 import { getOpenidClients } from "../../../redux/actions/OpenidClientActions";
 
-
-function ClientListPage({ clients, loading, hasApiError, dispatch }) {
+function ClientListPage({ clients, dispatch }) {
   useEffect(() => {
     dispatch(getOpenidClients());
   }, []);
-  
+
   const history = useHistory();
   const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);
   const toggle = () => setModal(!modal);
-  
+
   function getBadgeTheme(status) {
     if (!status) {
       return "primary";
@@ -104,6 +103,15 @@ function ClientListPage({ clients, loading, hasApiError, dispatch }) {
             isFreeAction: true,
             onClick: () => handleGoToClientAddPage()
           },
+          {
+            icon: "refresh",
+            tooltip: "Refresh Data",
+            iconProps: { color: "primary" },
+            isFreeAction: true,
+            onClick: () => {
+              dispatch(getOpenidClients());
+            }
+          },
           rowData => ({
             icon: "delete",
             iconProps: {
@@ -150,12 +158,6 @@ const mapStateToProps = state => {
     clients: state.openidClientReducer.items,
     loading: state.openidClientReducer.loading,
     hasApiError: state.openidClientReducer.hasApiError
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchOpenidClients: () => dispatch(getOpenidClients)
   };
 };
 export default connect(mapStateToProps)(ClientListPage);

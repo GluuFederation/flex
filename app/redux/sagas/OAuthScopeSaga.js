@@ -9,7 +9,7 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { getScope, getAllScopes, deleteScope } from "../api/scope-api";
+import { getScope, getAllScopes } from "../api/scope-api";
 import {
   deleteScopeResponse,
   getScopesResponse,
@@ -31,7 +31,6 @@ export function* getScopes() {
     const data = yield call(getAllScopes);
     yield put(getScopesResponse(data));
   } catch (e) {
-    console.log("===============================error" + e);
     yield put(setApiError(e));
   }
 }

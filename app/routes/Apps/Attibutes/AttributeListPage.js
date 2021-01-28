@@ -5,9 +5,12 @@ import { connect } from "react-redux";
 import { Badge } from "reactstrap";
 import GluuDialog from "../Gluu/GluuDialog";
 import AttributeDetailPage from "../Attibutes/AttributeDetailPage";
-import { getAttributes } from "../../../redux/actions/AttributeActions";
+import {
+  getAttributes,
+  setCurrentItem
+} from "../../../redux/actions/AttributeActions";
 
-function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
+function AttributeListPage({ attributes, dispatch }) {
   useEffect(() => {
     dispatch(getAttributes());
   }, []);
@@ -28,9 +31,11 @@ function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
     return history.push("/attribute/new");
   }
   function handleGoToAttributeEditPage(row) {
+    dispatch(setCurrentItem(row));
     return history.push(`/attribute/edit:` + row.inum);
   }
   function handleAttribueDelete(row) {
+    dispatch(setCurrentItem(row));
     setItem(row);
     toggle();
   }
@@ -79,6 +84,15 @@ function AttributeListPage({ attributes, loading, hasApiError, dispatch }) {
             isFreeAction: true,
             onClick: () => handleGoToAttributeAddPage()
           },
+          {
+            icon: "refresh",
+            tooltip: "Refresh Data",
+            iconProps: { color: "primary" },
+            isFreeAction: true,
+            onClick: () => {
+              dispatch(getAttributes());
+            }
+          },
           rowData => ({
             icon: "delete",
             iconProps: {
@@ -123,12 +137,6 @@ const mapStateToProps = state => {
     attributes: state.attributeReducer.items,
     loading: state.attributeReducer.loading,
     hasApiError: state.attributeReducer.hasApiError
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchAttributes: () => dispatch(getAttributes)
   };
 };
 export default connect(mapStateToProps)(AttributeListPage);

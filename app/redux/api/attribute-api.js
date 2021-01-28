@@ -14,3 +14,39 @@ export const getAllAttributes = () => {
     });
   });
 };
+
+export const addNewAttribute = data => {
+  return new Promise((resolve, reject) => {
+    api.postAttributes(data, (error, data) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+export const editAnAttribute = data => {
+  return new Promise((resolve, reject) => {
+    api.putAttributes(data, (error, data) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+export const deleteAnAttribute = async inum => {
+  return new Promise((resolve, reject) => {
+    api.deleteAttributesByInum(inum, (error, data) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};

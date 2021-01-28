@@ -1,6 +1,8 @@
 import { getDefaultClient } from "./base";
 const JansConfigApi = require("jans_config_api");
-const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(getDefaultClient(JansConfigApi));
+const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(
+  getDefaultClient(JansConfigApi)
+);
 
 // Get all Openid clients
 export const getAllOpenidClients = () => {
@@ -9,11 +11,8 @@ export const getAllOpenidClients = () => {
       if (error) {
         reject(error);
       } else {
-       	console.log(" ==========================********** OpenidClients API data = "+data+" **********========================== ");
         resolve(data);
       }
     });
   });
 };
-
-

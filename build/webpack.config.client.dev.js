@@ -59,7 +59,7 @@ module.exports = {
       },
       // Modular Styles
       {
-        test: /\.css$/,
+        test: /\.css$/i,
         use: [
           { loader: "style-loader" },
           {
