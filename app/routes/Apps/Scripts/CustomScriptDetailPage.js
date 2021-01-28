@@ -7,127 +7,88 @@ import {
   FormGroup,
   Label
 } from "./../../../components";
+import GluuFormDetailRow from "../Gluu/GluuFormDetailRow";
 
 const CustomScriptDetailPage = ({ row }) => {
+  
+  function getBadgeTheme(status) {
+    if (status) {
+      return "primary";
+    } else {
+      return "info";
+    }
+  }
   return (
-    <React.Fragment>
+      <React.Fragment>
       {/* START Content */}
       <Container style={{ backgroundColor: "#F5F5F5" }}>
         <Row>
           <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={6}>
-                Name:
-              </Label>
-              <Label for="input" sm={6}>
-                {row.name}
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow label="Inum" value={row.inum} />
           </Col>
           <Col sm={6}>
-            <FormGroup row>
-              <Label for="input" sm={6}>
-                Display Name:
-              </Label>
-              <Label for="input" sm={6}>
-                {row.displayName}
-              </Label>
-            </FormGroup>
+            <GluuFormDetailRow label="Name" value={row.name} />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6}>Description:</Label>
-              <Label sm={6}>{row.description}</Label>
-            </FormGroup>
+            <GluuFormDetailRow label="Description" value={row.description} />
           </Col>
           <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6}>Status:</Label>
-              <Label sm={6}>{row.status}</Label>
-            </FormGroup>
+            <GluuFormDetailRow label="LocationType" value={row.locationType} />
           </Col>
         </Row>
         <Row>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>Admin Can Access:</Label>
-              <Label sm={6}>
-                {row.adminCanAccess ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="danger">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>Admin Can View:</Label>
-              <Label sm={6}>
-                {row.adminCanView ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="danger">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>Admin Can Edit:</Label>
-              <Label sm={6}>
-                {row.adminCanEdit ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="danger">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
-          </Col>
+        <Col sm={6}>
+        <GluuFormDetailRow
+        label="Internal"
+        isBadge
+        badgeColor={getBadgeTheme(row.internal)}
+        value={row.internal ? "true" : "false"}
+      />
+        </Col>
+        <Col sm={6}>
+        <GluuFormDetailRow
+        label="Enabled"
+        isBadge
+        badgeColor={getBadgeTheme(row.enabled)}
+        value={row.enabled ? "true" : "false"}
+      />
+        </Col>
+      </Row>
+      
+       <Row>
+        <Col sm={6}>
+        <GluuFormDetailRow label="Script Type" value={row.scriptType} />
+        </Col>
+        <Col sm={6}>
+        <GluuFormDetailRow label="Programming Language" value={row.programmingLanguage} />
+        </Col>
         </Row>
+        
+        
         <Row>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>User Can Access:</Label>
-              <Label sm={6}>
-                {row.userCanAccess ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="danger">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>User Can View:</Label>
-              <Label sm={6}>
-                {row.userCanView ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="danger">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>User Can Edit:</Label>
-              <Label sm={6}>
-                {row.userCanEdit ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="danger">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
-          </Col>
-        </Row>
+        <Col sm={6}>Script:</Col>
+        <Col sm={6}>
+         <GluuFormDetailRow label="Script" value={row.script} />         
+         </Col>
+         </Row>
+         
+         <Row>
+         <Col sm={6}>
+           <GluuFormDetailRow label="Level" value={row.level} />
+         </Col>
+         <Col sm={6}>
+           <GluuFormDetailRow label="revision" value={row.revision} />
+         </Col>
+       </Row>
+       
+       
+
         {/* END Content */}
       </Container>
     </React.Fragment>
+
   );
 };
 export default CustomScriptDetailPage;
