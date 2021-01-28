@@ -54,23 +54,23 @@ class SmtpConfiguration {
             if (data.hasOwnProperty('port')) {
                 obj['port'] = ApiClient.convertToType(data['port'], 'Number');
             }
-            if (data.hasOwnProperty('requiresSsl')) {
-                obj['requiresSsl'] = ApiClient.convertToType(data['requiresSsl'], 'Boolean');
+            if (data.hasOwnProperty('requires-ssl')) {
+                obj['requires-ssl'] = ApiClient.convertToType(data['requires-ssl'], 'Boolean');
             }
-            if (data.hasOwnProperty('serverTrust')) {
-                obj['serverTrust'] = ApiClient.convertToType(data['serverTrust'], 'Boolean');
+            if (data.hasOwnProperty('trust-host')) {
+                obj['trust-host'] = ApiClient.convertToType(data['trust-host'], 'Boolean');
             }
-            if (data.hasOwnProperty('fromName')) {
-                obj['fromName'] = ApiClient.convertToType(data['fromName'], 'String');
+            if (data.hasOwnProperty('from-name')) {
+                obj['from-name'] = ApiClient.convertToType(data['from-name'], 'String');
             }
-            if (data.hasOwnProperty('fromEmailAddress')) {
-                obj['fromEmailAddress'] = ApiClient.convertToType(data['fromEmailAddress'], 'String');
+            if (data.hasOwnProperty('from-email-address')) {
+                obj['from-email-address'] = ApiClient.convertToType(data['from-email-address'], 'String');
             }
-            if (data.hasOwnProperty('requiresAuthentication')) {
-                obj['requiresAuthentication'] = ApiClient.convertToType(data['requiresAuthentication'], 'Boolean');
+            if (data.hasOwnProperty('requires-authentication')) {
+                obj['requires-authentication'] = ApiClient.convertToType(data['requires-authentication'], 'Boolean');
             }
-            if (data.hasOwnProperty('userName')) {
-                obj['userName'] = ApiClient.convertToType(data['userName'], 'String');
+            if (data.hasOwnProperty('user-name')) {
+                obj['user-name'] = ApiClient.convertToType(data['user-name'], 'String');
             }
             if (data.hasOwnProperty('password')) {
                 obj['password'] = ApiClient.convertToType(data['password'], 'String');
@@ -96,39 +96,39 @@ SmtpConfiguration.prototype['port'] = undefined;
 
 /**
  * Boolean value with default value false. If true, SSL will be enabled.
- * @member {Boolean} requiresSsl
+ * @member {Boolean} requires-ssl
  */
-SmtpConfiguration.prototype['requiresSsl'] = undefined;
+SmtpConfiguration.prototype['requires-ssl'] = undefined;
 
 /**
  * Boolean value with default value false.
- * @member {Boolean} serverTrust
+ * @member {Boolean} trust-host
  */
-SmtpConfiguration.prototype['serverTrust'] = undefined;
+SmtpConfiguration.prototype['trust-host'] = undefined;
 
 /**
  * Name of the sender.
- * @member {String} fromName
+ * @member {String} from-name
  */
-SmtpConfiguration.prototype['fromName'] = undefined;
+SmtpConfiguration.prototype['from-name'] = undefined;
 
 /**
  * Email Address of the Sender.
- * @member {String} fromEmailAddress
+ * @member {String} from-email-address
  */
-SmtpConfiguration.prototype['fromEmailAddress'] = undefined;
+SmtpConfiguration.prototype['from-email-address'] = undefined;
 
 /**
  * Boolean value with default value false. It true it will enable sender authentication.
- * @member {Boolean} requiresAuthentication
+ * @member {Boolean} requires-authentication
  */
-SmtpConfiguration.prototype['requiresAuthentication'] = undefined;
+SmtpConfiguration.prototype['requires-authentication'] = undefined;
 
 /**
  * Username of the SMTP.
- * @member {String} userName
+ * @member {String} user-name
  */
-SmtpConfiguration.prototype['userName'] = undefined;
+SmtpConfiguration.prototype['user-name'] = undefined;
 
 /**
  * Password for the SMTP.
