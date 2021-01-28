@@ -29,14 +29,16 @@ import {
   DELETE_CUSTOM_SCRIPT
   } from "../actions/types";
 
-  //get-all
+  //get-all-scripts
 export function* getCustomScripts() {
   try {
     const data = yield call(getAllCustomScript);
     console.log("==============Script Saga:::data = " +data+" ==============");
     yield put(getCustomScriptsResponse(data));
   } catch (e) {
-    console.log("===============================:::error" + e);
+    if (isFourZeroOneError(e) && !hasApiToken()) {
+      yield put(getAPIAccessToken());
+    }
     yield put(setApiError(e));
   }
 }

@@ -76,7 +76,7 @@ export const RoutedContent = () => {
 
       <Route component={CustomScriptListPage} path="/scripts" />
       <Route component={CustomScriptAddPage}  path="/script/new" />
-      <Route component={ClientEditPage} path="/script/edit:gid" />
+      <Route component={CustomScriptEditPage} path="/script/edit:gid" />
         
       {/*    Pages Routes    */}
       <Route component={ComingSoon} path="/pages/coming-soon" />

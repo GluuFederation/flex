@@ -5,12 +5,10 @@ const api = new JansConfigApi.CustomScriptsApi(getDefaultClient(JansConfigApi));
 // Get all custom scripts
 export const getAllCustomScript = () => {
   return new Promise((resolve, reject) => {
-    api.getConfigScripts({}, (error, data) => {
+    api.getConfigScripts( (error, data) => {
       if (error) {
-        console.log(" Custom Script Api ===========error = "+error);
         reject(error);
       } else {
-        console.log(" Custom Script Api ===========data = "+data);
         resolve(data);
       }
     });

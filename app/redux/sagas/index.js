@@ -11,5 +11,5 @@ import openidClientSaga from "./OpenidClientSaga";
 import customScriptSaga from "./CustomScriptSaga";
 
 export default function* rootSaga() {
-  yield all([authSagas(), scopesSagas(), openidClientSaga(), attributeSaga(),customScriptSaga()]);
+  yield all([authSagas(), scopesSagas(), openidClientSaga(), attributeSaga(), customScriptSaga()]);
 }
