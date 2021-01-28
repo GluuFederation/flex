@@ -57,8 +57,8 @@ function CustomScriptListPage({ scripts, dispatch }) {
             field: "enabled",
             type: "boolean",
             render: rowData => (
-              <Badge color={getBadgeTheme(rowData.enabled)}>
-                {rowData.enabled}
+                <Badge color={rowData.enabled ? "primary" : "info"}>
+                {rowData.enabled ? "true" : "false"}
               </Badge>
             )
           }
