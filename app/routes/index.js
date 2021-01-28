@@ -19,6 +19,10 @@ import ClientListPage from "./Apps/Clients/ClientListPage";
 import ClientAddPage from "./Apps/Clients/ClientAddPage";
 import ClientEditPage from "./Apps/Clients/ClientEditPage";
 
+import CustomScriptListPage from "./Apps/Scripts/CustomScriptListPage";
+import CustomScriptAddPage from "./Apps/Scripts/CustomScriptAddPage";
+import CustomScriptEditPage from "./Apps/Scripts/CustomScriptEditPage";
+
 import ComingSoon from "./Pages/ComingSoon";
 import Confirmation from "./Pages/Confirmation";
 import Danger from "./Pages/Danger";
@@ -70,6 +74,10 @@ export const RoutedContent = () => {
       <Route component={ScopeAddPage} path="/scope/new" />
       <Route component={ScopeEditPage} path="/scope/edit:gid" />
 
+      <Route component={CustomScriptListPage} path="/scripts" />
+      <Route component={CustomScriptAddPage}  path="/script/new" />
+      <Route component={ClientEditPage} path="/script/edit:gid" />
+        
       {/*    Pages Routes    */}
       <Route component={ComingSoon} path="/pages/coming-soon" />
       <Route component={Confirmation} path="/pages/confirmation" />
