@@ -60,14 +60,16 @@ const CustomScriptDetailPage = ({ row }) => {
       </Row>
       
        <Row>
-        <Col sm={3}>
+        <Col sm={6}>
         <GluuFormDetailRow label="Script Type" value={row.scriptType} />
         </Col>
-        <Col sm={3}>
+       </Row>
+              
+       <Row>
+        <Col sm={6}>
         <GluuFormDetailRow label="Programming Language" value={row.programmingLanguage} />
         </Col>
-        </Row>
-        
+      </Row>
         
         <Row>
         <Col sm={3}>
@@ -84,20 +86,27 @@ const CustomScriptDetailPage = ({ row }) => {
          </Col>
        </Row>
        
-       <Row>
-       <Col sm={3}>Module Properties:</Col>
-       <Col sm={3}>
+
+       
+      <Row>
+       <Col sm={3}> Module Properties: </Col>
+       <Col sm={2}>
        {Object.keys(row.moduleProperties).map((key, i) => (
-         <GluuFormDetailRow
-           key={key}
-           label={key}
-           isBadge={row.moduleProperties[key]}
-           value={String(row.moduleProperties[key].value1)}
-         />
-       ))}
-     </Col>
+         <GluuFormDetailRow label="value1" value={String(row.moduleProperties[key].value1)} />
+         ))}
+       </Col>
+       <Col sm={2}>
+       {Object.keys(row.moduleProperties).map((key, i) => (
+         <GluuFormDetailRow label="value2" value={String(row.moduleProperties[key].value2)} />
+         ))}
+       </Col>
+       <Col sm={2}>
+       {Object.keys(row.moduleProperties).map((key, i) => (
+         <GluuFormDetailRow label="description" value={String(row.moduleProperties[key].description)} />
+         ))}
+       </Col>
      </Row>
-     
+
 
         {/* END Content */}
       </Container>
