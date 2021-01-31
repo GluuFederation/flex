@@ -14,7 +14,8 @@ import { connect } from "react-redux";
 import {
   getOAuth2Config,
   getOAuth2AccessToken,
-  getAPIAccessToken
+  getAPIAccessToken,
+  getUserInfo
 } from "../redux/actions";
 
 class SessionChecker extends Component {
@@ -68,7 +69,9 @@ class SessionChecker extends Component {
         let showContent = false;
         if (params.code && params.scope && params.state) {
           if (!isValidState(params.state)) {
-            return null;
+            return {
+              showContent: false
+            };
           }
           props.getOAuth2AccessToken(params.code);
         } else {
@@ -126,6 +129,7 @@ export default withRouter(
   connect(mapStateToProps, {
     getOAuth2Config,
     getOAuth2AccessToken,
-    getAPIAccessToken
+    getAPIAccessToken,
+    getUserInfo
   })(SessionChecker)
 );
