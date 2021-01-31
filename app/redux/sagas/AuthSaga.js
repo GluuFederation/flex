@@ -5,12 +5,14 @@ import { all, call, fork, put, takeEvery } from "redux-saga/effects";
 import {
   GET_OAUTH2_CONFIG,
   GET_OAUTH2_ACCESS_TOKEN,
-  GET_API_ACCESS_TOKEN
+  GET_API_ACCESS_TOKEN,
+  USERINFO_REQUEST
 } from "../actions/types";
 import {
   getOAuth2ConfigResponse,
   getOAuth2AccessTokenResponse,
-  getAPIAccessTokenResponse
+  getAPIAccessTokenResponse,
+  getUserInfoResponse
 } from "../actions";
 import axios from "../api/axios";
 
@@ -47,6 +49,16 @@ const getOAuth2ConfigRequest = async () => {
     });
 };
 
+const retrieveUserInfo = async code => {
+  return await axios
+    .get("/oauth2/userinfo")
+    .then(response => response.data)
+    .catch(error => {
+      console.error("Problems getting user info.", error);
+      return error;
+    });
+};
+
 function* getOAuth2ConfigProcessor() {
   try {
     const response = yield call(getOAuth2ConfigRequest);
@@ -58,10 +70,6 @@ function* getOAuth2ConfigProcessor() {
     console.log("Problems getting OAuth2 configuration.", error);
   }
   yield put(getOAuth2ConfigResponse());
-}
-
-export function* getOAuth2Config() {
-  yield takeEvery(GET_OAUTH2_CONFIG, getOAuth2ConfigProcessor);
 }
 
 // Get OAuth2 Access Token
@@ -113,11 +121,7 @@ export function* getOAuth2AccessToken() {
 }
 function* getAPIAccessTokenProcessor() {
   try {
-    console.log("*****Request api token ");
     const response = yield call(getAPiAccessTokenRequest);
-    console.log(
-      "*****API token response " + JSON.stringify(response.access_token)
-    );
     if (response) {
       yield put(getAPIAccessTokenResponse(response.access_token));
       return;
@@ -128,8 +132,28 @@ function* getAPIAccessTokenProcessor() {
   yield put(getAPIAccessTokenResponse());
 }
 
+function* getUserInfoWorker(code) {
+  try {
+    const response = yield call(retrieveUserInfo, code);
+    if (response) {
+      yield put(getUserInfoResponse(response));
+      return;
+    }
+  } catch (error) {
+    console.log("Problems fetching user information ", error);
+  }
+}
+
 export function* getAPIAccessToken() {
   yield takeEvery(GET_API_ACCESS_TOKEN, getAPIAccessTokenProcessor);
+}
+
+export function* userInfoWatcher() {
+  yield takeEvery(USERINFO_REQUEST, getUserInfoWorker);
+}
+
+export function* getOAuth2Config() {
+  yield takeEvery(GET_OAUTH2_CONFIG, getOAuth2ConfigProcessor);
 }
 
 /**
@@ -139,6 +163,7 @@ export default function* rootSaga() {
   yield all([
     fork(getOAuth2Config),
     fork(getOAuth2AccessToken),
-    fork(getAPIAccessToken)
+    fork(getAPIAccessToken),
+    fork(userInfoWatcher)
   ]);
 }

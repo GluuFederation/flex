@@ -12,24 +12,25 @@ function AttributeEditPage({ item, loading, dispatch }) {
   function handleSubmit(data) {
     if (data) {
       dispatch(editAttribute(data));
-      history.push("/attributes");
+      // history.push("/attributes");
     }
   }
   return (
     <React.Fragment>
       <Container>
-        <Card className="mb-3">
-          <CardBody>
-            <BlockUi
-              tag="div"
-              blocking={loading}
-              keepInView={true}
-              message={"Performing the request, please wait!"}
-            >
+        <BlockUi
+          tag="div"
+          blocking={loading}
+          keepInView={true}
+          renderChildren={true}
+          message={"Performing the request, please wait!"}
+        >
+          <Card className="mb-3">
+            <CardBody>
               <AttributeForm item={item} handleSubmit={handleSubmit} />
-            </BlockUi>
-          </CardBody>
-        </Card>
+            </CardBody>
+          </Card>
+        </BlockUi>
       </Container>
     </React.Fragment>
   );

@@ -47,8 +47,12 @@ export function* addAttribute({ payload }) {
 
 export function* editAttribute({ payload }) {
   try {
-    const data = yield call(editAnAttribute, payload.data);
-    yield put(editAttributeResponse(data));
+    setTimeout(function() {
+      console.log("========================++++++");
+    }, 600000);
+
+    //const data = yield call(editAnAttribute, payload.data);
+    //yield put(editAttributeResponse(data));
   } catch (error) {
     yield put(setApiError(error));
   }
