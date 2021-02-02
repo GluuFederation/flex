@@ -7,7 +7,7 @@ import GluuDialog from "../Gluu/GluuDialog";
 import ClientDetailPage from "../Scopes/ScopeDetailPage";
 import { getScopes, deleteScope } from "../../../redux/actions/ScopeActions";
 
-function ScopeListPage({ scopes, loading, hasApiError, dispatch }) {
+function ScopeListPage({ scopes, dispatch }) {
   useEffect(() => {
     dispatch(getScopes());
   }, []);

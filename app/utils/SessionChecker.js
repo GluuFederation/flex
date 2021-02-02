@@ -13,9 +13,8 @@ import { uuidv4 } from "./Util";
 import { connect } from "react-redux";
 import {
   getOAuth2Config,
-  getOAuth2AccessToken,
-  getAPIAccessToken,
-  getUserInfo
+  getUserInfo,
+  getAPIAccessToken
 } from "../redux/actions";
 
 class SessionChecker extends Component {
@@ -56,15 +55,15 @@ class SessionChecker extends Component {
   };
 
   // Life Cycle
-
   constructor() {
     super();
   }
 
   static getDerivedStateFromProps(props) {
     if (!props.showContent) {
-      const accessToken = localStorage.getItem("gluu.access.token");
-      if (!accessToken) {
+      console.log("user info: " + JSON.stringify(props.userinfo));
+      console.log("jwt: " + JSON.stringify(props.jwt));
+      if (!props.userinfo) {
         const params = queryString.parse(props.location.search);
         let showContent = false;
         if (params.code && params.scope && params.state) {
@@ -73,7 +72,7 @@ class SessionChecker extends Component {
               showContent: false
             };
           }
-          props.getOAuth2AccessToken(params.code);
+          props.getUserInfo(params.code);
         } else {
           showContent = !!props.config;
           if (showContent) {
@@ -93,7 +92,7 @@ class SessionChecker extends Component {
       } else {
         const apiToken = localStorage.getItem("gluu.api.token");
         if (!apiToken) {
-          props.getAPIAccessToken();
+          //props.getAPIAccessToken();
         }
         return {
           showContent: true
@@ -117,19 +116,20 @@ class SessionChecker extends Component {
 // Redux
 
 const mapStateToProps = ({ authReducer }) => {
-  const isAuthenticated = authReducer.isAuthenticated;
   const config = authReducer.config;
+  const userinfo = authReducer.userinfo;
+  const jwt = authReducer.userinfo_jwt;
   return {
-    isAuthenticated,
-    config
+    config,
+    userinfo,
+    jwt
   };
 };
 
 export default withRouter(
   connect(mapStateToProps, {
     getOAuth2Config,
-    getOAuth2AccessToken,
-    getAPIAccessToken,
-    getUserInfo
+    getUserInfo,
+    getAPIAccessToken
   })(SessionChecker)
 );

@@ -1,28 +1,22 @@
-import React from 'react';
+import React from "react";
 
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
-import { 
-  DropdownMenu,
-  DropdownItem
-} from './../../../components';
+import { DropdownMenu, DropdownItem } from "./../../../components";
 
-const DropdownProfile = (props) => (
+const DropdownProfile = props => (
   <React.Fragment>
-    <DropdownMenu right={ props.right } >
+    <DropdownMenu right={props.right}>
       <DropdownItem header>
-        { 'faker.name.firstName()' } { 'faker.name.lastName()' }
+        {props.userinfo.user_name}-{props.userinfo.email}
       </DropdownItem>
       <DropdownItem divider />
-      <DropdownItem tag={ Link } to="/apps/profile-details">
+      <DropdownItem tag={Link} to="/apps/profile-details">
         My Profile
       </DropdownItem>
-      <DropdownItem tag={ Link } to="/apps/settings-edit">
-        Settings
-      </DropdownItem>
       <DropdownItem divider />
-      <DropdownItem tag={ Link } to="/pages/login">
+      <DropdownItem tag={Link} to="/pages/logout">
         <i className="fa fa-fw fa-sign-out mr-2"></i>
         Sign Out
       </DropdownItem>

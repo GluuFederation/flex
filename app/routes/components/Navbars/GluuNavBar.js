@@ -14,11 +14,10 @@ import {
 import { NavbarActivityFeed } from "../../../layout/components/NavbarActivityFeed";
 import { NavbarMessages } from "../../../layout/components/NavbarMessages";
 import { LanguageMenu } from "./LanguageMenu";
+import { connect } from "react-redux";
 import { DropdownProfile } from "../Dropdowns/DropdownProfile";
 import { randomAvatar } from "../../../utilities";
-const GluuNavBar = ({ themeColor, themeStyle }) => {
-  useEffect(() => {});
-
+function GluuNavBar({ themeColor, themeStyle, userinfo }) {
   return (
     <NavbarThemeProvider
       style={themeStyle}
@@ -57,14 +56,14 @@ const GluuNavBar = ({ themeColor, themeStyle }) => {
                 ]}
               />
             </DropdownToggle>
-            <DropdownProfile right />
+            <DropdownProfile right userinfo={userinfo} />
           </UncontrolledDropdown>
         </Nav>
         {/* END Navbar: Right Side */}
       </Navbar>
     </NavbarThemeProvider>
   );
-};
+}
 
 GluuNavBar.propTypes = {
   navStyle: PropTypes.oneOf(["pills", "accent", "default"]),
@@ -77,4 +76,10 @@ GluuNavBar.defaultProps = {
   themeColor: "primary"
 };
 
-export { GluuNavBar };
+const mapStateToProps = ({ authReducer }) => {
+  const userinfo = authReducer.userinfo;
+  return {
+    userinfo
+  };
+};
+export default connect(mapStateToProps)(GluuNavBar);

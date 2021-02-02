@@ -72,7 +72,7 @@ export const SidebarMiddleNav = () => (
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
       title="Sign out"
-      to="/pages/login"
+      to="/pages/logout"
     />
   </SidebarMenu>
 );

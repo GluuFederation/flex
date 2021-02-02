@@ -4,64 +4,24 @@
 import { all, call, fork, put, takeEvery } from "redux-saga/effects";
 import {
   GET_OAUTH2_CONFIG,
-  GET_OAUTH2_ACCESS_TOKEN,
   GET_API_ACCESS_TOKEN,
   USERINFO_REQUEST
 } from "../actions/types";
 import {
   getOAuth2ConfigResponse,
-  getOAuth2AccessTokenResponse,
-  getAPIAccessTokenResponse,
-  getUserInfoResponse
+  getUserInfoResponse,
+  getAPIAccessTokenResponse
 } from "../actions";
-import axios from "../api/axios";
 
-const defaultScopes = [
-  "https://jans.io/oauth/config/attributes.readonly",
-  "https://jans.io/oauth/config/attributes.write",
-  "https://jans.io/oauth/config/acrs.readonly",
-  "https://jans.io/oauth/config/acrs.write",
-  "https://jans.io/oauth/config/scripts.write",
-  "https://jans.io/oauth/config/scripts.readonly",
-  "https://jans.io/oauth/config/smtp.readonly",
-  "https://jans.io/oauth/config/smtp.write",
-  "https://jans.io/oauth/config/logging.readonly",
-  "https://jans.io/oauth/config/logging.write",
-  "https://jans.io/oauth/config/openid/clients.readonly",
-  "https://jans.io/oauth/config/openid/clients.write",
-  "https://jans.io/oauth/config/uma/resources.readonly",
-  "https://jans.io/oauth/config/uma/resources.write",
-  "https://jans.io/oauth/config/scopes.readonly",
-  "https://jans.io/oauth/config/scopes.write"
-];
-// Get OAuth2 Configuration
+import {
+  fetchServerConfiguration,
+  fetchUserInformation,
+  fetchApiAccessToken
+} from "../api/backend-api";
 
-const getOAuth2ConfigRequest = async () => {
-  return await axios
-    .get("/oauth2/config")
-    .then(response => response.data)
-    .catch(error => {
-      console.error(
-        "Problems getting OAuth2 configuration in order to process authz code flow.",
-        error
-      );
-      return error;
-    });
-};
-
-const retrieveUserInfo = async code => {
-  return await axios
-    .get("/oauth2/userinfo")
-    .then(response => response.data)
-    .catch(error => {
-      console.error("Problems getting user info.", error);
-      return error;
-    });
-};
-
-function* getOAuth2ConfigProcessor() {
+function* getOAuth2ConfigWorker() {
   try {
-    const response = yield call(getOAuth2ConfigRequest);
+    const response = yield call(fetchServerConfiguration);
     if (response) {
       yield put(getOAuth2ConfigResponse(response));
       return;
@@ -72,56 +32,20 @@ function* getOAuth2ConfigProcessor() {
   yield put(getOAuth2ConfigResponse());
 }
 
-// Get OAuth2 Access Token
-
-const getOAuth2AccessTokenRequest = async code => {
-  return await axios
-    .get("/oauth2/access-token", {
-      params: { code }
-    })
-    .then(response => response.data)
-    .catch(error => {
-      console.error(
-        "Problems getting OAuth2 access token in order to process authz code flow.",
-        error
-      );
-      return error;
-    });
-};
-
-// Get API Access Token
-
-const getAPiAccessTokenRequest = async () => {
-  return await axios
-    .post("/oauth2/api-protection-token", { scope: defaultScopes })
-    .then(response => response.data)
-    .catch(error => {
-      console.error(
-        "Problems getting API access token in order to process api calls.",
-        error
-      );
-      return error;
-    });
-};
-
-function* getOAuth2AccessTokenProcessor({ payload }) {
+function* getUserInformationWorker({ payload }) {
   try {
-    const response = yield call(getOAuth2AccessTokenRequest, payload.code);
+    const response = yield call(fetchUserInformation, payload.code);
     if (response) {
-      yield put(getOAuth2AccessTokenResponse(response.access_token));
+      yield put(getUserInfoResponse(response.claims, response.jwtUserInfo));
       return;
     }
   } catch (error) {
-    console.log("Problems getting OAuth2 Access Token.", error);
+    console.log("Problems getting user information.", error);
   }
 }
-
-export function* getOAuth2AccessToken() {
-  yield takeEvery(GET_OAUTH2_ACCESS_TOKEN, getOAuth2AccessTokenProcessor);
-}
-function* getAPIAccessTokenProcessor() {
+function* getAPIAccessTokenWorker() {
   try {
-    const response = yield call(getAPiAccessTokenRequest);
+    const response = yield call(fetchApiAccessToken);
     if (response) {
       yield put(getAPIAccessTokenResponse(response.access_token));
       return;
@@ -132,28 +56,17 @@ function* getAPIAccessTokenProcessor() {
   yield put(getAPIAccessTokenResponse());
 }
 
-function* getUserInfoWorker(code) {
-  try {
-    const response = yield call(retrieveUserInfo, code);
-    if (response) {
-      yield put(getUserInfoResponse(response));
-      return;
-    }
-  } catch (error) {
-    console.log("Problems fetching user information ", error);
-  }
-}
-
+//watcher sagas
 export function* getAPIAccessToken() {
-  yield takeEvery(GET_API_ACCESS_TOKEN, getAPIAccessTokenProcessor);
+  yield takeEvery(GET_API_ACCESS_TOKEN, getAPIAccessTokenWorker);
 }
 
 export function* userInfoWatcher() {
-  yield takeEvery(USERINFO_REQUEST, getUserInfoWorker);
+  yield takeEvery(USERINFO_REQUEST, getUserInformationWorker);
 }
 
 export function* getOAuth2Config() {
-  yield takeEvery(GET_OAUTH2_CONFIG, getOAuth2ConfigProcessor);
+  yield takeEvery(GET_OAUTH2_CONFIG, getOAuth2ConfigWorker);
 }
 
 /**
@@ -162,8 +75,7 @@ export function* getOAuth2Config() {
 export default function* rootSaga() {
   yield all([
     fork(getOAuth2Config),
-    fork(getOAuth2AccessToken),
-    fork(getAPIAccessToken),
-    fork(userInfoWatcher)
+    fork(userInfoWatcher),
+    fork(getAPIAccessToken)
   ]);
 }
