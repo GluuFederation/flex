@@ -50,9 +50,9 @@ export const fetchUserInformation = async code => {
 };
 
 // Get API Access Token
-export const fetchApiAccessToken = async () => {
+export const fetchApiAccessToken = async jwt => {
   return await axios
-    .post("/oauth2/api-protection-token", { scope: defaultScopes })
+    .get("/oauth2/api-protection-token", { params: { ujwt: jwt } })
     .then(response => response.data)
     .catch(error => {
       console.error(

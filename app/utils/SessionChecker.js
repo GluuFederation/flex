@@ -90,9 +90,8 @@ class SessionChecker extends Component {
           showContent: false
         };
       } else {
-        const apiToken = localStorage.getItem("gluu.api.token");
-        if (!apiToken) {
-          //props.getAPIAccessToken();
+        if (!props.token) {
+          props.getAPIAccessToken(props.token);
         }
         return {
           showContent: true
@@ -119,10 +118,12 @@ const mapStateToProps = ({ authReducer }) => {
   const config = authReducer.config;
   const userinfo = authReducer.userinfo;
   const jwt = authReducer.userinfo_jwt;
+  const token = authReducer.token;
   return {
     config,
     userinfo,
-    jwt
+    jwt,
+    token
   };
 };
 
