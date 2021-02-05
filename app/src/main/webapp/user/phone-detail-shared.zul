@@ -70,7 +70,7 @@
                         <div class="pb3 flex flex-wrap">
                             <div class="relative w4 mt3 pr3">
                                 <z:textbox id="sentCode" sclass="focused-text w-100 pb1" value="@bind(vm.code)" ca:required="required"
-                                         onOK="@('checkCode')"/>
+                                         onOK="@('checkCode', ninick)"/>
                                 <label class="focused-label">${labels.usr.mobile_code}</label>
                             </div>
                             <div class="pt2">

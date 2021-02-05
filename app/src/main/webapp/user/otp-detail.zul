@@ -64,7 +64,7 @@
                     <z:div sclass="@load(empty vm.tokenType ? '' : 'flex flex-wrap')">
                         <div class="mb2">
                             <z:radio label="${labels.usr.otp_soft}" radiogroup="style" sclass="db dark-blue2 mr4" checked="@load(vm.tokenType eq 'SOFT')"
-                                     w:onClick="alertRef = $('#feedback-otp')" onCheck="@('chooseType', 'SOFT')"/>
+                                     w:onClick="alertRef = $('#feedback-otp')" onCheck="@('chooseType', 'SOFT', null)"/>
                             <z:div class="f7 pl3-ns gray" visible="@load(empty vm.tokenType)">${labels.usr.otp_soft_text}</z:div>
                         </div>
                         <div class="mb2">
