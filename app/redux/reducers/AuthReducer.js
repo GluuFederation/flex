@@ -18,7 +18,7 @@ const INIT_STATE = {
   userinfo: null,
   userinfo_jwt: null,
   token: null,
-  userScopes: []
+  permissions: []
 };
 
 export default (state = INIT_STATE, action) => {
@@ -43,6 +43,7 @@ export default (state = INIT_STATE, action) => {
         ...state,
         userinfo: action.payload.uclaims,
         userinfo_jwt: action.payload.ujwt,
+        permissions: action.payload.scopes,
         isAuthenticated: true
       };
     case GET_API_ACCESS_TOKEN:
@@ -52,11 +53,15 @@ export default (state = INIT_STATE, action) => {
 
     case GET_API_ACCESS_TOKEN_RESPONSE:
       if (action.payload.accessToken) {
-        localStorage.setItem("gluu.api.token", action.payload.accessToken);
+        localStorage.setItem(
+          "gluu.api.token",
+          action.payload.accessToken.access_token
+        );
       }
       return {
         ...state,
-        token: action.payload,
+        token: action.payload.accessToken,
+        permissions: action.payload.accessToken.scopes,
         isAuthenticated: true
       };
     default:

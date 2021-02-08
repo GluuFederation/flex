@@ -43,21 +43,22 @@ function* getUserInformationWorker({ payload }) {
     console.log("Problems getting user information.", error);
   }
 }
-function* getAPIAccessTokenWorker(ujwt) {
+function* getAPIAccessTokenWorker({ payload }) {
   try {
-    const response = yield call(fetchApiAccessToken, ujwt);
-    if (response) {
-      yield put(getAPIAccessTokenResponse(response.access_token));
-      return;
+    if (payload.jwt) {
+      const response = yield call(fetchApiAccessToken, payload.jwt);
+      if (response) {
+        yield put(getAPIAccessTokenResponse(response));
+        return;
+      }
     }
   } catch (error) {
     console.log("Problems getting API Access Token.", error);
   }
-  yield put(getAPIAccessTokenResponse());
 }
 
 //watcher sagas
-export function* getAPIAccessToken() {
+export function* getApiTokenWatcher() {
   yield takeEvery(GET_API_ACCESS_TOKEN, getAPIAccessTokenWorker);
 }
 
@@ -65,7 +66,7 @@ export function* userInfoWatcher() {
   yield takeEvery(USERINFO_REQUEST, getUserInformationWorker);
 }
 
-export function* getOAuth2Config() {
+export function* getOAuth2ConfigWatcher() {
   yield takeEvery(GET_OAUTH2_CONFIG, getOAuth2ConfigWorker);
 }
 
@@ -74,8 +75,8 @@ export function* getOAuth2Config() {
  */
 export default function* rootSaga() {
   yield all([
-    fork(getOAuth2Config),
+    fork(getOAuth2ConfigWatcher),
     fork(userInfoWatcher),
-    fork(getAPIAccessToken)
+    fork(getApiTokenWatcher)
   ]);
 }

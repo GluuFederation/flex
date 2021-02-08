@@ -62,9 +62,11 @@ class SessionChecker extends Component {
   static getDerivedStateFromProps(props) {
     if (!props.showContent) {
       //console.log("user info: " + JSON.stringify(props.userinfo));
-      //console.log("jwt: " + JSON.stringify(props.jwt));
-      console.log("token: " + JSON.stringify(props.token));
+      //console.log("cureent jwt: " + JSON.stringify(props.jwt));
 
+      localStorage.setItem("gluu.api.token", props.token.access_token);
+      // console.log("token: " + JSON.stringify(props.token));
+      //console.log("permissions: " + JSON.stringify(props.permissions));
       if (!props.userinfo) {
         const params = queryString.parse(props.location.search);
         let showContent = false;
@@ -93,7 +95,7 @@ class SessionChecker extends Component {
         };
       } else {
         if (!props.token) {
-          props.getAPIAccessToken(props.token);
+          props.getAPIAccessToken(props.jwt);
         }
         return {
           showContent: true
@@ -121,11 +123,13 @@ const mapStateToProps = ({ authReducer }) => {
   const userinfo = authReducer.userinfo;
   const jwt = authReducer.userinfo_jwt;
   const token = authReducer.token;
+  const permissions = authReducer.permissions;
   return {
     config,
     userinfo,
     jwt,
-    token
+    token,
+    permissions
   };
 };
 

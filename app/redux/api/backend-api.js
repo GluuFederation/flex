@@ -1,24 +1,5 @@
 import axios from "../api/axios";
 
-const defaultScopes = [
-  "https://jans.io/oauth/config/attributes.readonly",
-  "https://jans.io/oauth/config/attributes.write",
-  "https://jans.io/oauth/config/acrs.readonly",
-  "https://jans.io/oauth/config/acrs.write",
-  "https://jans.io/oauth/config/scripts.write",
-  "https://jans.io/oauth/config/scripts.readonly",
-  "https://jans.io/oauth/config/smtp.readonly",
-  "https://jans.io/oauth/config/smtp.write",
-  "https://jans.io/oauth/config/logging.readonly",
-  "https://jans.io/oauth/config/logging.write",
-  "https://jans.io/oauth/config/openid/clients.readonly",
-  "https://jans.io/oauth/config/openid/clients.write",
-  "https://jans.io/oauth/config/uma/resources.readonly",
-  "https://jans.io/oauth/config/uma/resources.write",
-  "https://jans.io/oauth/config/scopes.readonly",
-  "https://jans.io/oauth/config/scopes.write"
-];
-
 // Get OAuth2 Configuration
 export const fetchServerConfiguration = async () => {
   return await axios

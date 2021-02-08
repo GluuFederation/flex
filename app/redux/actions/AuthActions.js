@@ -29,9 +29,9 @@ export const getUserInfoResponse = (uclaims, ujwt) => ({
   payload: { uclaims, ujwt }
 });
 
-export const getAPIAccessToken = ujwt => ({
+export const getAPIAccessToken = jwt => ({
   type: GET_API_ACCESS_TOKEN,
-  payload: { ujwt }
+  payload: { jwt }
 });
 
 export const getAPIAccessTokenResponse = accessToken => ({
