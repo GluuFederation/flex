@@ -30,6 +30,7 @@ import Error404 from "./Pages/Error404";
 import ForgotPassword from "./Pages/ForgotPassword";
 import LockScreen from "./Pages/LockScreen";
 import Register from "./Pages/Register";
+import ProfileDetails from './Apps/ProfileDetails';
 import Success from "./Pages/Success";
 import Timeline from "./Pages/Timeline";
 // ----------- Layout Imports ---------------
@@ -80,6 +81,7 @@ export const RoutedContent = () => {
 
       {/*    Pages Routes    */}
       <Route component={ComingSoon} path="/pages/coming-soon" />
+      <Route component={ ProfileDetails } path="/apps/profile-details" />
       <Route component={Confirmation} path="/pages/confirmation" />
       <Route component={Danger} path="/pages/danger" />
       <Route component={Error404} path="/pages/error-404" />
