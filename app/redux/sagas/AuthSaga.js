@@ -46,9 +46,6 @@ function* getUserInformationWorker({ payload }) {
 function* getAPIAccessTokenWorker(ujwt) {
   try {
     const response = yield call(fetchApiAccessToken, ujwt);
-    console.log(
-      "==========================API TOKEN" + JSON.stringify(response)
-    );
     if (response) {
       yield put(getAPIAccessTokenResponse(response.access_token));
       return;

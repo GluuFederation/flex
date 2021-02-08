@@ -52,7 +52,7 @@ export default (state = INIT_STATE, action) => {
 
     case GET_API_ACCESS_TOKEN_RESPONSE:
       if (action.payload.accessToken) {
-        localStorage.setItem("gluu.api.token");
+        localStorage.setItem("gluu.api.token", action.payload.accessToken);
       }
       return {
         ...state,

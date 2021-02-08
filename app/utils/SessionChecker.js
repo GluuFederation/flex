@@ -61,8 +61,10 @@ class SessionChecker extends Component {
 
   static getDerivedStateFromProps(props) {
     if (!props.showContent) {
-      console.log("user info: " + JSON.stringify(props.userinfo));
-      console.log("jwt: " + JSON.stringify(props.jwt));
+      //console.log("user info: " + JSON.stringify(props.userinfo));
+      //console.log("jwt: " + JSON.stringify(props.jwt));
+      console.log("token: " + JSON.stringify(props.token));
+
       if (!props.userinfo) {
         const params = queryString.parse(props.location.search);
         let showContent = false;
