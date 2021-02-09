@@ -1,16 +1,10 @@
 import React from "react";
-import { Container, CardBody, Card } from "./../../../components";
-import ClientForm from "./ClientForm";
+import { Container } from "./../../../components";
+import ClientWizardForm from "./ClientWizardForm";
 function ClientAddPage() {
   return (
     <React.Fragment>
-      <Container>
-        <Card className="mb-3">
-          <CardBody>
-            <ClientForm />
-          </CardBody>
-        </Card>
-      </Container>
+      <ClientWizardForm />
     </React.Fragment>
   );
 }

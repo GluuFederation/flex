@@ -61,12 +61,6 @@ class SessionChecker extends Component {
 
   static getDerivedStateFromProps(props) {
     if (!props.showContent) {
-      //console.log("user info: " + JSON.stringify(props.userinfo));
-      //console.log("cureent jwt: " + JSON.stringify(props.jwt));
-
-      localStorage.setItem("gluu.api.token", props.token.access_token);
-      // console.log("token: " + JSON.stringify(props.token));
-      //console.log("permissions: " + JSON.stringify(props.permissions));
       if (!props.userinfo) {
         const params = queryString.parse(props.location.search);
         let showContent = false;

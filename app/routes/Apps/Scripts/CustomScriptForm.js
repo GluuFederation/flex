@@ -133,7 +133,7 @@ function CustomScriptForm({ item, handleSubmit }) {
           </InputGroup>
         </Col>
       </FormGroup>
-      
+
       <FormGroup row>
         <GluuLabel label="Programming Language" />
         <Col sm={9}>
@@ -152,8 +152,7 @@ function CustomScriptForm({ item, handleSubmit }) {
           </InputGroup>
         </Col>
       </FormGroup>
-      
-     
+
       <FormGroup row>
         <GluuLabel label="Script" />
         <Col sm={9}>
@@ -165,31 +164,31 @@ function CustomScriptForm({ item, handleSubmit }) {
           />
         </Col>
       </FormGroup>
-      
+
       <FormGroup row>
-      <GluuLabel label="Level" />
-      <Col sm={9}>
-        <Input
-          name="level"
-          id="level"
-          defaultValue={item.level}
-          onChange={formik.handleChange}
-        />
-      </Col>
-    </FormGroup>
-    
-    <FormGroup row>
-    <GluuLabel label="Revision" />
-    <Col sm={9}>
-      <Input
-        name="revision"
-        id="revision"
-        defaultValue={item.revision}
-        onChange={formik.handleChange}
-      />
-    </Col>
-  </FormGroup>
-        
+        <GluuLabel label="Level" />
+        <Col sm={9}>
+          <Input
+            name="level"
+            id="level"
+            defaultValue={item.level}
+            onChange={formik.handleChange}
+          />
+        </Col>
+      </FormGroup>
+
+      <FormGroup row>
+        <GluuLabel label="Revision" />
+        <Col sm={9}>
+          <Input
+            name="revision"
+            id="revision"
+            defaultValue={item.revision}
+            onChange={formik.handleChange}
+          />
+        </Col>
+      </FormGroup>
+
       <FormGroup row>
         <GluuLabel label="Enabled" size={3} />
         <Col sm={1}>
