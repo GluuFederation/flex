@@ -15,8 +15,8 @@ basePath: /casa/rest/pl/strong-authn-settings
 schemes:
  - https
 
-#security:
-#  - casa_auth: []
+security:
+  - casa_auth: [casa.config]
   
 consumes:
   - application/json
