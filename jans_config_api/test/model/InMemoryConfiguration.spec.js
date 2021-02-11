@@ -56,7 +56,7 @@
 
     it('should have the property defaultPutExpiration (base name: "defaultPutExpiration")', function() {
       // uncomment below and update the code to test the property defaultPutExpiration
-      //var instane = new JansConfigApi.InMemoryConfiguration();
+      //var instance = new JansConfigApi.InMemoryConfiguration();
       //expect(instance).to.be();
     });
 

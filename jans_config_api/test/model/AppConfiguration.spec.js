@@ -56,1171 +56,1171 @@
 
     it('should have the property issuer (base name: "issuer")', function() {
       // uncomment below and update the code to test the property issuer
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property baseEndpoint (base name: "baseEndpoint")', function() {
       // uncomment below and update the code to test the property baseEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property authorizationEndpoint (base name: "authorizationEndpoint")', function() {
       // uncomment below and update the code to test the property authorizationEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property tokenEndpoint (base name: "tokenEndpoint")', function() {
       // uncomment below and update the code to test the property tokenEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property tokenRevocationEndpoint (base name: "tokenRevocationEndpoint")', function() {
       // uncomment below and update the code to test the property tokenRevocationEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property userInfoEndpoint (base name: "userInfoEndpoint")', function() {
       // uncomment below and update the code to test the property userInfoEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property clientInfoEndpoint (base name: "clientInfoEndpoint")', function() {
       // uncomment below and update the code to test the property clientInfoEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property checkSessionIFrame (base name: "checkSessionIFrame")', function() {
       // uncomment below and update the code to test the property checkSessionIFrame
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property endSessionEndpoint (base name: "endSessionEndpoint")', function() {
       // uncomment below and update the code to test the property endSessionEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property jwksUri (base name: "jwksUri")', function() {
       // uncomment below and update the code to test the property jwksUri
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property registrationEndpoint (base name: "registrationEndpoint")', function() {
       // uncomment below and update the code to test the property registrationEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property openIdDiscoveryEndpoint (base name: "openIdDiscoveryEndpoint")', function() {
       // uncomment below and update the code to test the property openIdDiscoveryEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property openIdConfigurationEndpoint (base name: "openIdConfigurationEndpoint")', function() {
       // uncomment below and update the code to test the property openIdConfigurationEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property idGenerationEndpoint (base name: "idGenerationEndpoint")', function() {
       // uncomment below and update the code to test the property idGenerationEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property introspectionEndpoint (base name: "introspectionEndpoint")', function() {
       // uncomment below and update the code to test the property introspectionEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property deviceAuthzEndpoint (base name: "deviceAuthzEndpoint")', function() {
       // uncomment below and update the code to test the property deviceAuthzEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sessionAsJwt (base name: "sessionAsJwt")', function() {
       // uncomment below and update the code to test the property sessionAsJwt
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sectorIdentifierCacheLifetimeInMinutes (base name: "sectorIdentifierCacheLifetimeInMinutes")', function() {
       // uncomment below and update the code to test the property sectorIdentifierCacheLifetimeInMinutes
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaConfigurationEndpoint (base name: "umaConfigurationEndpoint")', function() {
       // uncomment below and update the code to test the property umaConfigurationEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaRptAsJwt (base name: "umaRptAsJwt")', function() {
       // uncomment below and update the code to test the property umaRptAsJwt
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaRptLifetime (base name: "umaRptLifetime")', function() {
       // uncomment below and update the code to test the property umaRptLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaTicketLifetime (base name: "umaTicketLifetime")', function() {
       // uncomment below and update the code to test the property umaTicketLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaPctLifetime (base name: "umaPctLifetime")', function() {
       // uncomment below and update the code to test the property umaPctLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaResourceLifetime (base name: "umaResourceLifetime")', function() {
       // uncomment below and update the code to test the property umaResourceLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaAddScopesAutomatically (base name: "umaAddScopesAutomatically")', function() {
       // uncomment below and update the code to test the property umaAddScopesAutomatically
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaValidateClaimToken (base name: "umaValidateClaimToken")', function() {
       // uncomment below and update the code to test the property umaValidateClaimToken
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaGrantAccessIfNoPolicies (base name: "umaGrantAccessIfNoPolicies")', function() {
       // uncomment below and update the code to test the property umaGrantAccessIfNoPolicies
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property umaRestrictResourceToAssociatedClient (base name: "umaRestrictResourceToAssociatedClient")', function() {
       // uncomment below and update the code to test the property umaRestrictResourceToAssociatedClient
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property spontaneousScopeLifetime (base name: "spontaneousScopeLifetime")', function() {
       // uncomment below and update the code to test the property spontaneousScopeLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property openidSubAttribute (base name: "openidSubAttribute")', function() {
       // uncomment below and update the code to test the property openidSubAttribute
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property responseTypesSupported (base name: "responseTypesSupported")', function() {
       // uncomment below and update the code to test the property responseTypesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property responseModesSupported (base name: "responseModesSupported")', function() {
       // uncomment below and update the code to test the property responseModesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property grantTypesSupported (base name: "grantTypesSupported")', function() {
       // uncomment below and update the code to test the property grantTypesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property subjectTypesSupported (base name: "subjectTypesSupported")', function() {
       // uncomment below and update the code to test the property subjectTypesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property defaultSubjectType (base name: "defaultSubjectType")', function() {
       // uncomment below and update the code to test the property defaultSubjectType
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property userInfoSigningAlgValuesSupported (base name: "userInfoSigningAlgValuesSupported")', function() {
       // uncomment below and update the code to test the property userInfoSigningAlgValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property userInfoEncryptionAlgValuesSupported (base name: "userInfoEncryptionAlgValuesSupported")', function() {
       // uncomment below and update the code to test the property userInfoEncryptionAlgValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property userInfoEncryptionEncValuesSupported (base name: "userInfoEncryptionEncValuesSupported")', function() {
       // uncomment below and update the code to test the property userInfoEncryptionEncValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property idTokenSigningAlgValuesSupported (base name: "idTokenSigningAlgValuesSupported")', function() {
       // uncomment below and update the code to test the property idTokenSigningAlgValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property idTokenEncryptionAlgValuesSupported (base name: "idTokenEncryptionAlgValuesSupported")', function() {
       // uncomment below and update the code to test the property idTokenEncryptionAlgValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property idTokenEncryptionEncValuesSupported (base name: "idTokenEncryptionEncValuesSupported")', function() {
       // uncomment below and update the code to test the property idTokenEncryptionEncValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property requestObjectSigningAlgValuesSupported (base name: "requestObjectSigningAlgValuesSupported")', function() {
       // uncomment below and update the code to test the property requestObjectSigningAlgValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property requestObjectEncryptionAlgValuesSupported (base name: "requestObjectEncryptionAlgValuesSupported")', function() {
       // uncomment below and update the code to test the property requestObjectEncryptionAlgValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property requestObjectEncryptionEncValuesSupported (base name: "requestObjectEncryptionEncValuesSupported")', function() {
       // uncomment below and update the code to test the property requestObjectEncryptionEncValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property tokenEndpointAuthMethodsSupported (base name: "tokenEndpointAuthMethodsSupported")', function() {
       // uncomment below and update the code to test the property tokenEndpointAuthMethodsSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property tokenEndpointAuthSigningAlgValuesSupported (base name: "tokenEndpointAuthSigningAlgValuesSupported")', function() {
       // uncomment below and update the code to test the property tokenEndpointAuthSigningAlgValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dynamicRegistrationCustomAttributes (base name: "dynamicRegistrationCustomAttributes")', function() {
       // uncomment below and update the code to test the property dynamicRegistrationCustomAttributes
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property displayValuesSupported (base name: "displayValuesSupported")', function() {
       // uncomment below and update the code to test the property displayValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property claimTypesSupported (base name: "claimTypesSupported")', function() {
       // uncomment below and update the code to test the property claimTypesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property jwksAlgorithmsSupported (base name: "jwksAlgorithmsSupported")', function() {
       // uncomment below and update the code to test the property jwksAlgorithmsSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property serviceDocumentation (base name: "serviceDocumentation")', function() {
       // uncomment below and update the code to test the property serviceDocumentation
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property claimsLocalesSupported (base name: "claimsLocalesSupported")', function() {
       // uncomment below and update the code to test the property claimsLocalesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property idTokenTokenBindingCnfValuesSupported (base name: "idTokenTokenBindingCnfValuesSupported")', function() {
       // uncomment below and update the code to test the property idTokenTokenBindingCnfValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property uiLocalesSupported (base name: "uiLocalesSupported")', function() {
       // uncomment below and update the code to test the property uiLocalesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property claimsParameterSupported (base name: "claimsParameterSupported")', function() {
       // uncomment below and update the code to test the property claimsParameterSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property requestParameterSupported (base name: "requestParameterSupported")', function() {
       // uncomment below and update the code to test the property requestParameterSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property requestUriParameterSupported (base name: "requestUriParameterSupported")', function() {
       // uncomment below and update the code to test the property requestUriParameterSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property requestUriHashVerificationEnabled (base name: "requestUriHashVerificationEnabled")', function() {
       // uncomment below and update the code to test the property requestUriHashVerificationEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property requireRequestUriRegistration (base name: "requireRequestUriRegistration")', function() {
       // uncomment below and update the code to test the property requireRequestUriRegistration
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property opPolicyUri (base name: "opPolicyUri")', function() {
       // uncomment below and update the code to test the property opPolicyUri
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property opTosUri (base name: "opTosUri")', function() {
       // uncomment below and update the code to test the property opTosUri
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property authorizationCodeLifetime (base name: "authorizationCodeLifetime")', function() {
       // uncomment below and update the code to test the property authorizationCodeLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property refreshTokenLifetime (base name: "refreshTokenLifetime")', function() {
       // uncomment below and update the code to test the property refreshTokenLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property idTokenLifetime (base name: "idTokenLifetime")', function() {
       // uncomment below and update the code to test the property idTokenLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property idTokenFilterClaimsBasedOnAccessToken (base name: "idTokenFilterClaimsBasedOnAccessToken")', function() {
       // uncomment below and update the code to test the property idTokenFilterClaimsBasedOnAccessToken
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property accessTokenLifetime (base name: "accessTokenLifetime")', function() {
       // uncomment below and update the code to test the property accessTokenLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cleanServiceInterval (base name: "cleanServiceInterval")', function() {
       // uncomment below and update the code to test the property cleanServiceInterval
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cleanServiceBatchChunkSize (base name: "cleanServiceBatchChunkSize")', function() {
       // uncomment below and update the code to test the property cleanServiceBatchChunkSize
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cleanServiceBaseDns (base name: "cleanServiceBaseDns")', function() {
       // uncomment below and update the code to test the property cleanServiceBaseDns
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property keyRegenerationEnabled (base name: "keyRegenerationEnabled")', function() {
       // uncomment below and update the code to test the property keyRegenerationEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property keyRegenerationInterval (base name: "keyRegenerationInterval")', function() {
       // uncomment below and update the code to test the property keyRegenerationInterval
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property defaultSignatureAlgorithm (base name: "defaultSignatureAlgorithm")', function() {
       // uncomment below and update the code to test the property defaultSignatureAlgorithm
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property oxOpenIdConnectVersion (base name: "oxOpenIdConnectVersion")', function() {
       // uncomment below and update the code to test the property oxOpenIdConnectVersion
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property oxId (base name: "oxId")', function() {
       // uncomment below and update the code to test the property oxId
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dynamicRegistrationEnabled (base name: "dynamicRegistrationEnabled")', function() {
       // uncomment below and update the code to test the property dynamicRegistrationEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dynamicRegistrationExpirationTime (base name: "dynamicRegistrationExpirationTime")', function() {
       // uncomment below and update the code to test the property dynamicRegistrationExpirationTime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dynamicRegistrationPersistClientAuthorizations (base name: "dynamicRegistrationPersistClientAuthorizations")', function() {
       // uncomment below and update the code to test the property dynamicRegistrationPersistClientAuthorizations
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property trustedClientEnabled (base name: "trustedClientEnabled")', function() {
       // uncomment below and update the code to test the property trustedClientEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property skipAuthorizationForOpenIdScopeAndPairwiseId (base name: "skipAuthorizationForOpenIdScopeAndPairwiseId")', function() {
       // uncomment below and update the code to test the property skipAuthorizationForOpenIdScopeAndPairwiseId
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dynamicRegistrationScopesParamEnabled (base name: "dynamicRegistrationScopesParamEnabled")', function() {
       // uncomment below and update the code to test the property dynamicRegistrationScopesParamEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dynamicRegistrationPasswordGrantTypeEnabled (base name: "dynamicRegistrationPasswordGrantTypeEnabled")', function() {
       // uncomment below and update the code to test the property dynamicRegistrationPasswordGrantTypeEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dynamicRegistrationAllowedPasswordGrantScopes (base name: "dynamicRegistrationAllowedPasswordGrantScopes")', function() {
       // uncomment below and update the code to test the property dynamicRegistrationAllowedPasswordGrantScopes
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dynamicRegistrationCustomObjectClass (base name: "dynamicRegistrationCustomObjectClass")', function() {
       // uncomment below and update the code to test the property dynamicRegistrationCustomObjectClass
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property personCustomObjectClassList (base name: "personCustomObjectClassList")', function() {
       // uncomment below and update the code to test the property personCustomObjectClassList
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property persistIdTokenInLdap (base name: "persistIdTokenInLdap")', function() {
       // uncomment below and update the code to test the property persistIdTokenInLdap
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property persistRefreshTokenInLdap (base name: "persistRefreshTokenInLdap")', function() {
       // uncomment below and update the code to test the property persistRefreshTokenInLdap
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property allowPostLogoutRedirectWithoutValidation (base name: "allowPostLogoutRedirectWithoutValidation")', function() {
       // uncomment below and update the code to test the property allowPostLogoutRedirectWithoutValidation
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property invalidateSessionCookiesAfterAuthorizationFlow (base name: "invalidateSessionCookiesAfterAuthorizationFlow")', function() {
       // uncomment below and update the code to test the property invalidateSessionCookiesAfterAuthorizationFlow
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property returnClientSecretOnRead (base name: "returnClientSecretOnRead")', function() {
       // uncomment below and update the code to test the property returnClientSecretOnRead
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property rejectJwtWithNoneAlg (base name: "rejectJwtWithNoneAlg")', function() {
       // uncomment below and update the code to test the property rejectJwtWithNoneAlg
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property expirationNotificatorEnabled (base name: "expirationNotificatorEnabled")', function() {
       // uncomment below and update the code to test the property expirationNotificatorEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property useNestedJwtDuringEncryption (base name: "useNestedJwtDuringEncryption")', function() {
       // uncomment below and update the code to test the property useNestedJwtDuringEncryption
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property expirationNotificatorMapSizeLimit (base name: "expirationNotificatorMapSizeLimit")', function() {
       // uncomment below and update the code to test the property expirationNotificatorMapSizeLimit
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property expirationNotificatorIntervalInSeconds (base name: "expirationNotificatorIntervalInSeconds")', function() {
       // uncomment below and update the code to test the property expirationNotificatorIntervalInSeconds
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property authenticationFiltersEnabled (base name: "authenticationFiltersEnabled")', function() {
       // uncomment below and update the code to test the property authenticationFiltersEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property clientAuthenticationFiltersEnabled (base name: "clientAuthenticationFiltersEnabled")', function() {
       // uncomment below and update the code to test the property clientAuthenticationFiltersEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property clientRegDefaultToCodeFlowWithRefresh (base name: "clientRegDefaultToCodeFlowWithRefresh")', function() {
       // uncomment below and update the code to test the property clientRegDefaultToCodeFlowWithRefresh
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property authenticationFilters (base name: "authenticationFilters")', function() {
       // uncomment below and update the code to test the property authenticationFilters
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property clientAuthenticationFilters (base name: "clientAuthenticationFilters")', function() {
       // uncomment below and update the code to test the property clientAuthenticationFilters
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property corsConfigurationFilters (base name: "corsConfigurationFilters")', function() {
       // uncomment below and update the code to test the property corsConfigurationFilters
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sessionIdUnusedLifetime (base name: "sessionIdUnusedLifetime")', function() {
       // uncomment below and update the code to test the property sessionIdUnusedLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sessionIdUnauthenticatedUnusedLifetime (base name: "sessionIdUnauthenticatedUnusedLifetime")', function() {
       // uncomment below and update the code to test the property sessionIdUnauthenticatedUnusedLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sessionIdEnabled (base name: "sessionIdEnabled")', function() {
       // uncomment below and update the code to test the property sessionIdEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sessionIdPersistOnPromptNone (base name: "sessionIdPersistOnPromptNone")', function() {
       // uncomment below and update the code to test the property sessionIdPersistOnPromptNone
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sessionIdRequestParameterEnabled (base name: "sessionIdRequestParameterEnabled")', function() {
       // uncomment below and update the code to test the property sessionIdRequestParameterEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property changeSessionIdOnAuthentication (base name: "changeSessionIdOnAuthentication")', function() {
       // uncomment below and update the code to test the property changeSessionIdOnAuthentication
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sessionIdPersistInCache (base name: "sessionIdPersistInCache")', function() {
       // uncomment below and update the code to test the property sessionIdPersistInCache
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sessionIdLifetime (base name: "sessionIdLifetime")', function() {
       // uncomment below and update the code to test the property sessionIdLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property serverSessionIdLifetime (base name: "serverSessionIdLifetime")', function() {
       // uncomment below and update the code to test the property serverSessionIdLifetime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property configurationUpdateInterval (base name: "configurationUpdateInterval")', function() {
       // uncomment below and update the code to test the property configurationUpdateInterval
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property enableClientGrantTypeUpdate (base name: "enableClientGrantTypeUpdate")', function() {
       // uncomment below and update the code to test the property enableClientGrantTypeUpdate
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dynamicGrantTypeDefault (base name: "dynamicGrantTypeDefault")', function() {
       // uncomment below and update the code to test the property dynamicGrantTypeDefault
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cssLocation (base name: "cssLocation")', function() {
       // uncomment below and update the code to test the property cssLocation
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property jsLocation (base name: "jsLocation")', function() {
       // uncomment below and update the code to test the property jsLocation
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property imgLocation (base name: "imgLocation")', function() {
       // uncomment below and update the code to test the property imgLocation
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property metricReporterInterval (base name: "metricReporterInterval")', function() {
       // uncomment below and update the code to test the property metricReporterInterval
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property metricReporterKeepDataDays (base name: "metricReporterKeepDataDays")', function() {
       // uncomment below and update the code to test the property metricReporterKeepDataDays
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property metricReporterEnabled (base name: "metricReporterEnabled")', function() {
       // uncomment below and update the code to test the property metricReporterEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property pairwiseIdType (base name: "pairwiseIdType")', function() {
       // uncomment below and update the code to test the property pairwiseIdType
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property pairwiseCalculationKey (base name: "pairwiseCalculationKey")', function() {
       // uncomment below and update the code to test the property pairwiseCalculationKey
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property pairwiseCalculationSalt (base name: "pairwiseCalculationSalt")', function() {
       // uncomment below and update the code to test the property pairwiseCalculationSalt
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property shareSubjectIdBetweenClientsWithSameSectorId (base name: "shareSubjectIdBetweenClientsWithSameSectorId")', function() {
       // uncomment below and update the code to test the property shareSubjectIdBetweenClientsWithSameSectorId
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property webKeysStorage (base name: "webKeysStorage")', function() {
       // uncomment below and update the code to test the property webKeysStorage
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property dnName (base name: "dnName")', function() {
       // uncomment below and update the code to test the property dnName
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property keyStoreFile (base name: "keyStoreFile")', function() {
       // uncomment below and update the code to test the property keyStoreFile
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property keyStoreSecret (base name: "keyStoreSecret")', function() {
       // uncomment below and update the code to test the property keyStoreSecret
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property keySelectionStrategy (base name: "keySelectionStrategy")', function() {
       // uncomment below and update the code to test the property keySelectionStrategy
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property oxElevenTestModeToken (base name: "oxElevenTestModeToken")', function() {
       // uncomment below and update the code to test the property oxElevenTestModeToken
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property oxElevenGenerateKeyEndpoint (base name: "oxElevenGenerateKeyEndpoint")', function() {
       // uncomment below and update the code to test the property oxElevenGenerateKeyEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property oxElevenSignEndpoint (base name: "oxElevenSignEndpoint")', function() {
       // uncomment below and update the code to test the property oxElevenSignEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property oxElevenVerifySignatureEndpoint (base name: "oxElevenVerifySignatureEndpoint")', function() {
       // uncomment below and update the code to test the property oxElevenVerifySignatureEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property oxElevenDeleteKeyEndpoint (base name: "oxElevenDeleteKeyEndpoint")', function() {
       // uncomment below and update the code to test the property oxElevenDeleteKeyEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property introspectionAccessTokenMustHaveUmaProtectionScope (base name: "introspectionAccessTokenMustHaveUmaProtectionScope")', function() {
       // uncomment below and update the code to test the property introspectionAccessTokenMustHaveUmaProtectionScope
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property endSessionWithAccessToken (base name: "endSessionWithAccessToken")', function() {
       // uncomment below and update the code to test the property endSessionWithAccessToken
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cookieDomain (base name: "cookieDomain")', function() {
       // uncomment below and update the code to test the property cookieDomain
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property enabledOAuthAuditLogging (base name: "enabledOAuthAuditLogging")', function() {
       // uncomment below and update the code to test the property enabledOAuthAuditLogging
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property jmsBrokerURISet (base name: "jmsBrokerURISet")', function() {
       // uncomment below and update the code to test the property jmsBrokerURISet
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property jmsUserName (base name: "jmsUserName")', function() {
       // uncomment below and update the code to test the property jmsUserName
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property jmsPassword (base name: "jmsPassword")', function() {
       // uncomment below and update the code to test the property jmsPassword
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property clientWhiteList (base name: "clientWhiteList")', function() {
       // uncomment below and update the code to test the property clientWhiteList
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property clientBlackList (base name: "clientBlackList")', function() {
       // uncomment below and update the code to test the property clientBlackList
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property legacyIdTokenClaims (base name: "legacyIdTokenClaims")', function() {
       // uncomment below and update the code to test the property legacyIdTokenClaims
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property customHeadersWithAuthorizationResponse (base name: "customHeadersWithAuthorizationResponse")', function() {
       // uncomment below and update the code to test the property customHeadersWithAuthorizationResponse
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property frontChannelLogoutSessionSupported (base name: "frontChannelLogoutSessionSupported")', function() {
       // uncomment below and update the code to test the property frontChannelLogoutSessionSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property loggingLevel (base name: "loggingLevel")', function() {
       // uncomment below and update the code to test the property loggingLevel
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property loggingLayout (base name: "loggingLayout")', function() {
       // uncomment below and update the code to test the property loggingLayout
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property updateUserLastLogonTime (base name: "updateUserLastLogonTime")', function() {
       // uncomment below and update the code to test the property updateUserLastLogonTime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property updateClientAccessTime (base name: "updateClientAccessTime")', function() {
       // uncomment below and update the code to test the property updateClientAccessTime
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property logClientIdOnClientAuthentication (base name: "logClientIdOnClientAuthentication")', function() {
       // uncomment below and update the code to test the property logClientIdOnClientAuthentication
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property logClientNameOnClientAuthentication (base name: "logClientNameOnClientAuthentication")', function() {
       // uncomment below and update the code to test the property logClientNameOnClientAuthentication
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property disableJdkLogger (base name: "disableJdkLogger")', function() {
       // uncomment below and update the code to test the property disableJdkLogger
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property authorizationRequestCustomAllowedParameters (base name: "authorizationRequestCustomAllowedParameters")', function() {
       // uncomment below and update the code to test the property authorizationRequestCustomAllowedParameters
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property legacyDynamicRegistrationScopeParam (base name: "legacyDynamicRegistrationScopeParam")', function() {
       // uncomment below and update the code to test the property legacyDynamicRegistrationScopeParam
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property openidScopeBackwardCompatibility (base name: "openidScopeBackwardCompatibility")', function() {
       // uncomment below and update the code to test the property openidScopeBackwardCompatibility
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property disableU2fEndpoint (base name: "disableU2fEndpoint")', function() {
       // uncomment below and update the code to test the property disableU2fEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property useLocalCache (base name: "useLocalCache")', function() {
       // uncomment below and update the code to test the property useLocalCache
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property fapiCompatibility (base name: "fapiCompatibility")', function() {
       // uncomment below and update the code to test the property fapiCompatibility
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property forceIdTokenHintPrecense (base name: "forceIdTokenHintPrecense")', function() {
       // uncomment below and update the code to test the property forceIdTokenHintPrecense
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property forceOfflineAccessScopeToEnableRefreshToken (base name: "forceOfflineAccessScopeToEnableRefreshToken")', function() {
       // uncomment below and update the code to test the property forceOfflineAccessScopeToEnableRefreshToken
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property errorReasonEnabled (base name: "errorReasonEnabled")', function() {
       // uncomment below and update the code to test the property errorReasonEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property removeRefreshTokensForClientOnLogout (base name: "removeRefreshTokensForClientOnLogout")', function() {
       // uncomment below and update the code to test the property removeRefreshTokensForClientOnLogout
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property skipRefreshTokenDuringRefreshing (base name: "skipRefreshTokenDuringRefreshing")', function() {
       // uncomment below and update the code to test the property skipRefreshTokenDuringRefreshing
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property refreshTokenExtendLifetimeOnRotation (base name: "refreshTokenExtendLifetimeOnRotation")', function() {
       // uncomment below and update the code to test the property refreshTokenExtendLifetimeOnRotation
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property consentGatheringScriptBackwardCompatibility (base name: "consentGatheringScriptBackwardCompatibility")', function() {
       // uncomment below and update the code to test the property consentGatheringScriptBackwardCompatibility
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property introspectionScriptBackwardCompatibility (base name: "introspectionScriptBackwardCompatibility")', function() {
       // uncomment below and update the code to test the property introspectionScriptBackwardCompatibility
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property introspectionResponseScopesBackwardCompatibility (base name: "introspectionResponseScopesBackwardCompatibility")', function() {
       // uncomment below and update the code to test the property introspectionResponseScopesBackwardCompatibility
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property softwareStatementValidationType (base name: "softwareStatementValidationType")', function() {
       // uncomment below and update the code to test the property softwareStatementValidationType
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property softwareStatementValidationClaimName (base name: "softwareStatementValidationClaimName")', function() {
       // uncomment below and update the code to test the property softwareStatementValidationClaimName
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property authenticationProtectionConfiguration (base name: "authenticationProtectionConfiguration")', function() {
       // uncomment below and update the code to test the property authenticationProtectionConfiguration
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property errorHandlingMethod (base name: "errorHandlingMethod")', function() {
       // uncomment below and update the code to test the property errorHandlingMethod
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property keepAuthenticatorAttributesOnAcrChange (base name: "keepAuthenticatorAttributesOnAcrChange")', function() {
       // uncomment below and update the code to test the property keepAuthenticatorAttributesOnAcrChange
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property deviceAuthzRequestExpiresIn (base name: "deviceAuthzRequestExpiresIn")', function() {
       // uncomment below and update the code to test the property deviceAuthzRequestExpiresIn
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property deviceAuthzTokenPollInterval (base name: "deviceAuthzTokenPollInterval")', function() {
       // uncomment below and update the code to test the property deviceAuthzTokenPollInterval
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property deviceAuthzResponseTypeToProcessAuthz (base name: "deviceAuthzResponseTypeToProcessAuthz")', function() {
       // uncomment below and update the code to test the property deviceAuthzResponseTypeToProcessAuthz
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelClientId (base name: "backchannelClientId")', function() {
       // uncomment below and update the code to test the property backchannelClientId
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelRedirectUri (base name: "backchannelRedirectUri")', function() {
       // uncomment below and update the code to test the property backchannelRedirectUri
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelAuthenticationEndpoint (base name: "backchannelAuthenticationEndpoint")', function() {
       // uncomment below and update the code to test the property backchannelAuthenticationEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelDeviceRegistrationEndpoint (base name: "backchannelDeviceRegistrationEndpoint")', function() {
       // uncomment below and update the code to test the property backchannelDeviceRegistrationEndpoint
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelTokenDeliveryModesSupported (base name: "backchannelTokenDeliveryModesSupported")', function() {
       // uncomment below and update the code to test the property backchannelTokenDeliveryModesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelAuthenticationRequestSigningAlgValuesSupported (base name: "backchannelAuthenticationRequestSigningAlgValuesSupported")', function() {
       // uncomment below and update the code to test the property backchannelAuthenticationRequestSigningAlgValuesSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelUserCodeParameterSupported (base name: "backchannelUserCodeParameterSupported")', function() {
       // uncomment below and update the code to test the property backchannelUserCodeParameterSupported
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelBindingMessagePattern (base name: "backchannelBindingMessagePattern")', function() {
       // uncomment below and update the code to test the property backchannelBindingMessagePattern
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelAuthenticationResponseExpiresIn (base name: "backchannelAuthenticationResponseExpiresIn")', function() {
       // uncomment below and update the code to test the property backchannelAuthenticationResponseExpiresIn
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelAuthenticationResponseInterval (base name: "backchannelAuthenticationResponseInterval")', function() {
       // uncomment below and update the code to test the property backchannelAuthenticationResponseInterval
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelLoginHintClaims (base name: "backchannelLoginHintClaims")', function() {
       // uncomment below and update the code to test the property backchannelLoginHintClaims
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cibaEndUserNotificationConfig (base name: "cibaEndUserNotificationConfig")', function() {
       // uncomment below and update the code to test the property cibaEndUserNotificationConfig
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelRequestsProcessorJobIntervalSec (base name: "backchannelRequestsProcessorJobIntervalSec")', function() {
       // uncomment below and update the code to test the property backchannelRequestsProcessorJobIntervalSec
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelRequestsProcessorJobChunkSize (base name: "backchannelRequestsProcessorJobChunkSize")', function() {
       // uncomment below and update the code to test the property backchannelRequestsProcessorJobChunkSize
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cibaGrantLifeExtraTimeSec (base name: "cibaGrantLifeExtraTimeSec")', function() {
       // uncomment below and update the code to test the property cibaGrantLifeExtraTimeSec
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cibaMaxExpirationTimeAllowedSec (base name: "cibaMaxExpirationTimeAllowedSec")', function() {
       // uncomment below and update the code to test the property cibaMaxExpirationTimeAllowedSec
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cibaEnabled (base name: "cibaEnabled")', function() {
       // uncomment below and update the code to test the property cibaEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property discoveryCacheLifetimeInMinutes (base name: "discoveryCacheLifetimeInMinutes")', function() {
       // uncomment below and update the code to test the property discoveryCacheLifetimeInMinutes
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property httpLoggingEnabled (base name: "httpLoggingEnabled")', function() {
       // uncomment below and update the code to test the property httpLoggingEnabled
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property httpLoggingExludePaths (base name: "httpLoggingExludePaths")', function() {
       // uncomment below and update the code to test the property httpLoggingExludePaths
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property externalLoggerConfiguration (base name: "externalLoggerConfiguration")', function() {
       // uncomment below and update the code to test the property externalLoggerConfiguration
-      //var instane = new JansConfigApi.AppConfiguration();
+      //var instance = new JansConfigApi.AppConfiguration();
       //expect(instance).to.be();
     });
 

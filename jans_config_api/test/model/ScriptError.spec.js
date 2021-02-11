@@ -56,13 +56,13 @@
 
     it('should have the property raisedAt (base name: "raisedAt")', function() {
       // uncomment below and update the code to test the property raisedAt
-      //var instane = new JansConfigApi.ScriptError();
+      //var instance = new JansConfigApi.ScriptError();
       //expect(instance).to.be();
     });
 
     it('should have the property stackTrace (base name: "stackTrace")', function() {
       // uncomment below and update the code to test the property stackTrace
-      //var instane = new JansConfigApi.ScriptError();
+      //var instance = new JansConfigApi.ScriptError();
       //expect(instance).to.be();
     });
 

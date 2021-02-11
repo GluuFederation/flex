@@ -56,19 +56,19 @@
 
     it('should have the property name (base name: "name")', function() {
       // uncomment below and update the code to test the property name
-      //var instane = new JansConfigApi.CustomAttribute();
+      //var instance = new JansConfigApi.CustomAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property multiValued (base name: "multiValued")', function() {
       // uncomment below and update the code to test the property multiValued
-      //var instane = new JansConfigApi.CustomAttribute();
+      //var instance = new JansConfigApi.CustomAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property values (base name: "values")', function() {
       // uncomment below and update the code to test the property values
-      //var instane = new JansConfigApi.CustomAttribute();
+      //var instance = new JansConfigApi.CustomAttribute();
       //expect(instance).to.be();
     });
 

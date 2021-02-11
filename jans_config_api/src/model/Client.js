@@ -46,7 +46,7 @@ class Client {
         obj['applicationType'] = applicationType;
         obj['clientName'] = clientName;
         obj['subjectType'] = subjectType;
-        obj['includeClaimsInIdToken'] = includeClaimsInIdToken;
+        obj['includeClaimsInIdToken'] = includeClaimsInIdToken || false;
     }
 
     /**

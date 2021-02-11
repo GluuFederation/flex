@@ -23,14 +23,13 @@ class UmaResource {
      * Constructs a new <code>UmaResource</code>.
      * UMAResource
      * @alias module:model/UmaResource
-     * @param dn {String} 
-     * @param inum {String} XRI i-number. Client Identifier to uniquely identify the UMAResource.
      * @param id {String} Resource id.
+     * @param iconUri {String} A URL for a graphic icon representing the resource.
      * @param type {String} Resource type.
      */
-    constructor(dn, inum, id, type) { 
+    constructor(id, iconUri, type) { 
         
-        UmaResource.initialize(this, dn, inum, id, type);
+        UmaResource.initialize(this, id, iconUri, type);
     }
 
     /**
@@ -38,10 +37,9 @@ class UmaResource {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, dn, inum, id, type) { 
-        obj['dn'] = dn;
-        obj['inum'] = inum;
+    static initialize(obj, id, iconUri, type) { 
         obj['id'] = id;
+        obj['iconUri'] = iconUri;
         obj['type'] = type;
     }
 

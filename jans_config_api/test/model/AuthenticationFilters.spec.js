@@ -56,25 +56,25 @@
 
     it('should have the property filter (base name: "filter")', function() {
       // uncomment below and update the code to test the property filter
-      //var instane = new JansConfigApi.AuthenticationFilters();
+      //var instance = new JansConfigApi.AuthenticationFilters();
       //expect(instance).to.be();
     });
 
     it('should have the property bind (base name: "bind")', function() {
       // uncomment below and update the code to test the property bind
-      //var instane = new JansConfigApi.AuthenticationFilters();
+      //var instance = new JansConfigApi.AuthenticationFilters();
       //expect(instance).to.be();
     });
 
     it('should have the property bindPasswordAttribute (base name: "bind-password-attribute")', function() {
       // uncomment below and update the code to test the property bindPasswordAttribute
-      //var instane = new JansConfigApi.AuthenticationFilters();
+      //var instance = new JansConfigApi.AuthenticationFilters();
       //expect(instance).to.be();
     });
 
     it('should have the property baseDn (base name: "base-dn")', function() {
       // uncomment below and update the code to test the property baseDn
-      //var instane = new JansConfigApi.AuthenticationFilters();
+      //var instance = new JansConfigApi.AuthenticationFilters();
       //expect(instance).to.be();
     });
 

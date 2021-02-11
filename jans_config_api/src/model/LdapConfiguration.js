@@ -26,13 +26,15 @@ class LdapConfiguration {
      * @param bindDN {String} This contains the username to connect to the backend server. You need to use full DN here. As for example, cn=jans,dc=company,dc=org.
      * @param bindPassword {String} Ldap password for binding.
      * @param servers {Array.<String>} List of LDAP authentication servers.
+     * @param maxConnections {Number} This value defines the maximum number of connections that are allowed to read the backend Active Directory/LDAP server.
      * @param useSSL {Boolean} Enable SSL communication between Jans Server and LDAP server.
      * @param baseDNs {Array.<String>} List contains the location of the Active Directory/LDAP tree from where the Gluu Server shall read the user information.
      * @param primaryKey {String} Used to search and bind operations in configured LDAP server.
+     * @param localPrimaryKey {String} Used to search local user entry in Gluu Server’s internal LDAP directory.
      */
-    constructor(configId, bindDN, bindPassword, servers, useSSL, baseDNs, primaryKey) { 
+    constructor(configId, bindDN, bindPassword, servers, maxConnections, useSSL, baseDNs, primaryKey, localPrimaryKey) { 
         
-        LdapConfiguration.initialize(this, configId, bindDN, bindPassword, servers, useSSL, baseDNs, primaryKey);
+        LdapConfiguration.initialize(this, configId, bindDN, bindPassword, servers, maxConnections, useSSL, baseDNs, primaryKey, localPrimaryKey);
     }
 
     /**
@@ -40,14 +42,16 @@ class LdapConfiguration {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, configId, bindDN, bindPassword, servers, useSSL, baseDNs, primaryKey) { 
+    static initialize(obj, configId, bindDN, bindPassword, servers, maxConnections, useSSL, baseDNs, primaryKey, localPrimaryKey) { 
         obj['configId'] = configId;
         obj['bindDN'] = bindDN;
         obj['bindPassword'] = bindPassword;
         obj['servers'] = servers;
+        obj['maxConnections'] = maxConnections || 2;
         obj['useSSL'] = useSSL;
         obj['baseDNs'] = baseDNs;
         obj['primaryKey'] = primaryKey;
+        obj['localPrimaryKey'] = localPrimaryKey;
     }
 
     /**

@@ -56,67 +56,67 @@
 
     it('should have the property kid (base name: "kid")', function() {
       // uncomment below and update the code to test the property kid
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property kty (base name: "kty")', function() {
       // uncomment below and update the code to test the property kty
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property use (base name: "use")', function() {
       // uncomment below and update the code to test the property use
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property alg (base name: "alg")', function() {
       // uncomment below and update the code to test the property alg
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property crv (base name: "crv")', function() {
       // uncomment below and update the code to test the property crv
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property exp (base name: "exp")', function() {
       // uncomment below and update the code to test the property exp
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property x5c (base name: "x5c")', function() {
       // uncomment below and update the code to test the property x5c
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property n (base name: "n")', function() {
       // uncomment below and update the code to test the property n
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property e (base name: "e")', function() {
       // uncomment below and update the code to test the property e
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property x (base name: "x")', function() {
       // uncomment below and update the code to test the property x
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 
     it('should have the property y (base name: "y")', function() {
       // uncomment below and update the code to test the property y
-      //var instane = new JansConfigApi.JsonWebKey();
+      //var instance = new JansConfigApi.JsonWebKey();
       //expect(instance).to.be();
     });
 

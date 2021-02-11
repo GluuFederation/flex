@@ -56,19 +56,19 @@
 
     it('should have the property errorCode (base name: "error_code")', function() {
       // uncomment below and update the code to test the property errorCode
-      //var instane = new JansConfigApi.ErrorResponse();
+      //var instance = new JansConfigApi.ErrorResponse();
       //expect(instance).to.be();
     });
 
     it('should have the property errorDescription (base name: "error_description")', function() {
       // uncomment below and update the code to test the property errorDescription
-      //var instane = new JansConfigApi.ErrorResponse();
+      //var instance = new JansConfigApi.ErrorResponse();
       //expect(instance).to.be();
     });
 
     it('should have the property details (base name: "details")', function() {
       // uncomment below and update the code to test the property details
-      //var instane = new JansConfigApi.ErrorResponse();
+      //var instance = new JansConfigApi.ErrorResponse();
       //expect(instance).to.be();
     });
 

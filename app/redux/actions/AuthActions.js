@@ -7,34 +7,45 @@ import {
   USERINFO_REQUEST,
   USERINFO_RESPONSE,
   GET_API_ACCESS_TOKEN,
-  GET_API_ACCESS_TOKEN_RESPONSE
-} from "./types";
+  GET_API_ACCESS_TOKEN_RESPONSE,
+  SET_STATE,
+} from './types'
 
 export const getOAuth2Config = () => ({
-  type: GET_OAUTH2_CONFIG
-});
+  type: GET_OAUTH2_CONFIG,
+})
 
-export const getOAuth2ConfigResponse = config => ({
+export const getOAuth2ConfigResponse = (config) => ({
   type: GET_OAUTH2_CONFIG_RESPONSE,
-  payload: { config }
-});
+  payload: { config },
+})
 
-export const getUserInfo = code => ({
+export const setOAuthState = (authState) => ({
+  type: SET_STATE,
+  payload: { authState },
+})
+
+export const setAuthState = (state) => ({
+  type: SET_STATE,
+  payload: { state },
+})
+
+export const getUserInfo = (code) => ({
   type: USERINFO_REQUEST,
-  payload: { code }
-});
+  payload: { code },
+})
 
 export const getUserInfoResponse = (uclaims, ujwt) => ({
   type: USERINFO_RESPONSE,
-  payload: { uclaims, ujwt }
-});
+  payload: { uclaims, ujwt },
+})
 
-export const getAPIAccessToken = jwt => ({
+export const getAPIAccessToken = (jwt) => ({
   type: GET_API_ACCESS_TOKEN,
-  payload: { jwt }
-});
+  payload: { jwt },
+})
 
-export const getAPIAccessTokenResponse = accessToken => ({
+export const getAPIAccessTokenResponse = (accessToken) => ({
   type: GET_API_ACCESS_TOKEN_RESPONSE,
-  payload: { accessToken }
-});
+  payload: { accessToken },
+})

@@ -263,28 +263,37 @@ Class | Method | HTTP request | Description
   - https://jans.io/oauth/config/fido2.write: Manage FIDO2 related information
   - https://jans.io/oauth/config/attributes.readonly: View attribute related information
   - https://jans.io/oauth/config/attributes.write: Manage attribute related information
+  - https://jans.io/oauth/config/attributes.delete: Delete attribute related information
   - https://jans.io/oauth/config/acrs.readonly: View ACRS related information
   - https://jans.io/oauth/config/acrs.write: Manage ACRS related information
   - https://jans.io/oauth/config/database/ldap.readonly: View LDAP database related information
   - https://jans.io/oauth/config/database/ldap.write: Manage LDAP database related information
+  - https://jans.io/oauth/config/database/ldap.delete: Delete LDAP database related information
   - https://jans.io/oauth/config/database/couchbase.readonly: View Couchbase database information
   - https://jans.io/oauth/config/database/couchbase.write: Manage Couchbase database related information
+  - https://jans.io/oauth/config/database/couchbase.delete: Delete Couchbase database related information
   - https://jans.io/oauth/config/scripts.readonly: View cache scripts information
   - https://jans.io/oauth/config/scripts.write: Manage scripts related information
+  - https://jans.io/oauth/config/scripts.delete: Delete scripts related information
   - https://jans.io/oauth/config/cache.readonly: View cache related information
   - https://jans.io/oauth/config/cache.write: Manage cache related information
   - https://jans.io/oauth/config/smtp.readonly: View SMTP related information
   - https://jans.io/oauth/config/smtp.write: Manage SMTP related information
+  - https://jans.io/oauth/config/smtp.delete: Delete SMTP related information
   - https://jans.io/oauth/config/logging.readonly: View logging related information
   - https://jans.io/oauth/config/logging.write: Manage logging related information
   - https://jans.io/oauth/config/jwks.readonly: View JWKS related information
   - https://jans.io/oauth/config/jwks.write: Manage JWKS related information
   - https://jans.io/oauth/config/openid/clients.readonly: View clients related information
   - https://jans.io/oauth/config/openid/clients.write: Manage clients related information
+  - https://jans.io/oauth/config/openid/clients.delete: Delete clients related information
   - https://jans.io/oauth/config/openid/sectoridentifiers.readonly: View sector related information
   - https://jans.io/oauth/config/openid/sectoridentifiers.write: Manage sector related information
+  - https://jans.io/oauth/config/openid/sectoridentifiers.delete: Delete sector related information
   - https://jans.io/oauth/config/scopes.readonly: View scope related information
   - https://jans.io/oauth/config/scopes.write: Manage scope related information
+  - https://jans.io/oauth/config/scopes.delete: Delete scope related information
   - https://jans.io/oauth/config/uma/resources.readonly: View UMA Resource related information
   - https://jans.io/oauth/config/uma/resources.write: Manage UMA Resource related information
+  - https://jans.io/oauth/config/uma/resources.delete: Delete UMA Resource related information
 

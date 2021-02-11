@@ -11,13 +11,13 @@ Name | Type | Description | Notes
 **displayName** | **String** |  | 
 **description** | **String** | User friendly descriptive detail of attribute. | 
 **dataType** | **String** | Data Type of attribute. | 
-**status** | **String** | Attrubute status | [optional] 
+**status** | **String** | Attrubute status | 
 **lifetime** | **String** |  | [optional] 
 **sourceAttribute** | **String** |  | [optional] 
 **salt** | **String** |  | [optional] 
 **nameIdType** | **String** |  | [optional] 
 **origin** | **String** |  | [optional] 
-**editType** | **[String]** | GluuUserRole | [optional] 
+**editType** | **[String]** | GluuUserRole | 
 **viewType** | **[String]** | GluuUserRole | 
 **usageType** | **[String]** | GluuAttributeUsageType | [optional] 
 **claimName** | **String** |  | [optional] 
