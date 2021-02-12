@@ -1,13 +1,12 @@
-import React from "react";
-import items from "../../menu/items";
+import React from 'react'
+import items from '../../menu/items'
 
-import { SidebarMenu, Divider } from "./../../components";
+import { SidebarMenu, Divider } from './../../components'
 
 export const SidebarMiddleNav = () => (
   <SidebarMenu>
     {/* -------- Home ---------*/}
     <SidebarMenu.Item icon={<i className="fa fa-fw fa-home"></i>} title="Home">
-      <SidebarMenu.Item title="Analytics" to="/home/analytics" exact />
       <SidebarMenu.Item title="Reports" to="/home/reports" exact />
     </SidebarMenu.Item>
     {/* -------- Attributes ---------*/}
@@ -47,32 +46,32 @@ export const SidebarMiddleNav = () => (
     {items.map((item, key) => (
       <SidebarMenu.Item key={key} title={item.title}></SidebarMenu.Item>
     ))}
+    <Divider />
+    <Divider />
     {/* -------- Configuration ---------*/}
-    <Divider />
-    <Divider />
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-gears"></i>}
       title="Configuration"
     >
-      <SidebarMenu.Item title="Smtp" to="/forms/forms" />
-      <SidebarMenu.Item title="Fido2" to="/forms/forms-layouts" />
-      <SidebarMenu.Item title="Ldap" to="/forms/input-groups" />
-      <SidebarMenu.Item title="Couchbase" to="/forms/input-groups" />
-      <SidebarMenu.Item title="Cache" to="/forms/wizard" />
-      <SidebarMenu.Item title="Acrs" to="/forms/text-mask" />
-      <SidebarMenu.Item title="Logging" to="/forms/text-mask" />
-      <SidebarMenu.Item title="Jwks" to="/forms/text-mask" />
+      <SidebarMenu.Item title="Smtp" to="/config/smtp" />
+      <SidebarMenu.Item title="Fido2" to="/config/fido" />
+      <SidebarMenu.Item title="Ldap" to="/config/ldap" />
+      <SidebarMenu.Item title="Couchbase" to="/config/couchbase" exact />
+      <SidebarMenu.Item title="Cache" to="/config/cache" exact />
+      <SidebarMenu.Item title="Acrs" to="/config/acrs" exact />
+      <SidebarMenu.Item title="Logging" to="/config/logging" exact />
+      <SidebarMenu.Item title="Jwks" to="/config/jwks" exact />
     </SidebarMenu.Item>
     <Divider />
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-wrench"></i>}
       title="Settings"
-      to="/apps/settings-edit"
+      to="/settings-edit"
     />
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
       title="Sign out"
-      to="/pages/logout"
+      to="/logout"
     />
   </SidebarMenu>
-);
+)

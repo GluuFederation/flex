@@ -62,7 +62,7 @@ class SessionChecker extends Component {
         const params = queryString.parse(props.location.search)
         let showContent = false
         if (params.code && params.scope && params.state) {
-          if (isValidState(params.state)) {
+          if (!isValidState(params.state)) {
             return {
               showContent: false,
             }

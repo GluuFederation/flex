@@ -6,7 +6,6 @@ import {
   all,
   put,
   fork,
-  takeEvery,
   takeLatest
 } from "redux-saga/effects";
 import {
@@ -33,12 +32,8 @@ import {
 export function* getCustomScripts() {
   try {
     const data = yield call(getAllCustomScript);
-    console.log("==============Script Saga:::data = " +data+" ==============");
     yield put(getCustomScriptsResponse(data));
   } catch (e) {
-    if (isFourZeroOneError(e) && !hasApiToken()) {
-      yield put(getAPIAccessToken());
-    }
     yield put(setApiError(e));
   }
 }

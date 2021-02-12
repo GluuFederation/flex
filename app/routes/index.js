@@ -1,46 +1,36 @@
-import React from "react";
-import { Route, Switch, Redirect } from "react-router";
+import React from 'react'
+import { Route, Switch, Redirect } from 'react-router'
 
 // ----------- Pages Imports ---------------
-//import Analytics from "./Dashboards/Analytics";
-import Reports from "./Dashboards/Reports";
+import Reports from './Dashboards/Reports'
 
-import NavbarOnly from "./Layouts/NavbarOnly";
-import SidebarDefault from "./Layouts/SidebarDefault";
-import SidebarA from "./Layouts/SidebarA";
-import DragAndDropLayout from "./Layouts/DragAndDropLayout";
-import SidebarWithNavbar from "./Layouts/SidebarWithNavbar";
+import NavbarOnly from './Layouts/NavbarOnly'
+import SidebarDefault from './Layouts/SidebarDefault'
+import SidebarA from './Layouts/SidebarA'
+import DragAndDropLayout from './Layouts/DragAndDropLayout'
+import SidebarWithNavbar from './Layouts/SidebarWithNavbar'
 
-import AttributeListPage from "./Apps/Attibutes/AttributeListPage";
-import AttributeAddPage from "./Apps/Attibutes/AttributeAddPage";
-import AttributeEditPage from "./Apps/Attibutes/AttributeEditPage";
+import AttributeListPage from './Apps/Attibutes/AttributeListPage'
+import AttributeAddPage from './Apps/Attibutes/AttributeAddPage'
+import AttributeEditPage from './Apps/Attibutes/AttributeEditPage'
 
-import ClientListPage from "./Apps/Clients/ClientListPage";
-import ClientAddPage from "./Apps/Clients/ClientAddPage";
-import ClientEditPage from "./Apps/Clients/ClientEditPage";
+import ClientListPage from './Apps/Clients/ClientListPage'
+import ClientAddPage from './Apps/Clients/ClientAddPage'
+import ClientEditPage from './Apps/Clients/ClientEditPage'
 
-import CustomScriptListPage from "./Apps/Scripts/CustomScriptListPage";
-import CustomScriptAddPage from "./Apps/Scripts/CustomScriptAddPage";
-import CustomScriptEditPage from "./Apps/Scripts/CustomScriptEditPage";
-
-import ComingSoon from "./Pages/ComingSoon";
-import Confirmation from "./Pages/Confirmation";
-import Danger from "./Pages/Danger";
-import Error404 from "./Pages/Error404";
-import ForgotPassword from "./Pages/ForgotPassword";
-import LockScreen from "./Pages/LockScreen";
-import Register from "./Pages/Register";
-import ProfileDetails from './Apps/ProfileDetails';
-import Success from "./Pages/Success";
-import Timeline from "./Pages/Timeline";
+import CustomScriptListPage from './Apps/Scripts/CustomScriptListPage'
+import CustomScriptAddPage from './Apps/Scripts/CustomScriptAddPage'
+import CustomScriptEditPage from './Apps/Scripts/CustomScriptEditPage'
+import ProfileDetails from './Apps/ProfileDetails'
 // ----------- Layout Imports ---------------
-import GluuNavBar from "../routes/components/Navbars/GluuNavBar";
-import { DefaultSidebar } from "./../layout/components/DefaultSidebar";
-import { SidebarASidebar } from "./../layout/components/SidebarASidebar";
-import ScopeListPage from "./Apps/Scopes/ScopeListPage";
-import ScopeAddPage from "./Apps/Scopes/ScopeAddPage";
-import ScopeEditPage from "./Apps/Scopes/ScopeEditPage";
-import ByeBye from "./Pages/ByeBye";
+import GluuNavBar from '../routes/components/Navbars/GluuNavBar'
+import { DefaultSidebar } from './../layout/components/DefaultSidebar'
+import { SidebarASidebar } from './../layout/components/SidebarASidebar'
+import ScopeListPage from './Apps/Scopes/ScopeListPage'
+import ScopeAddPage from './Apps/Scopes/ScopeAddPage'
+import ScopeEditPage from './Apps/Scopes/ScopeEditPage'
+import ByeBye from './Pages/ByeBye'
+import SmtpPage from './Apps/Configuration/SmtpPage'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -79,23 +69,17 @@ export const RoutedContent = () => {
       <Route component={CustomScriptAddPage} path="/script/new" />
       <Route component={CustomScriptEditPage} path="/script/edit:gid" />
 
+      <Route component={SmtpPage} path="/config/smtp" />
+
       {/*    Pages Routes    */}
-      <Route component={ComingSoon} path="/pages/coming-soon" />
-      <Route component={ ProfileDetails } path="/apps/profile-details" />
-      <Route component={Confirmation} path="/pages/confirmation" />
-      <Route component={Danger} path="/pages/danger" />
-      <Route component={Error404} path="/pages/error-404" />
-      <Route component={ForgotPassword} path="/pages/forgot-password" />
-      <Route component={LockScreen} path="/pages/lock-screen" />
-      <Route component={ByeBye} path="/pages/logout" />
-      <Route component={Register} path="/pages/register" />
-      <Route component={Success} path="/pages/success" />
-      <Route component={Timeline} path="/pages/timeline" />
+      <Route component={ProfileDetails} path="/profile" />
+      <Route component={ByeBye} path="/logout" />
+
       {/*    404    */}
-      <Redirect to="/pages/error-404" />
+      <Redirect to="/error-404" />
     </Switch>
-  );
-};
+  )
+}
 
 //------ Custom Layout Parts --------
 export const RoutedNavbars = () => (
@@ -107,7 +91,7 @@ export const RoutedNavbars = () => (
       )}
     />
   </Switch>
-);
+)
 
 export const RoutedSidebars = () => (
   <Switch>
@@ -120,4 +104,4 @@ export const RoutedSidebars = () => (
     {/* Default Sidebar: */}
     <Route component={DefaultSidebar} />
   </Switch>
-);
+)

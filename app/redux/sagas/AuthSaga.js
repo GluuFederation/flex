@@ -11,7 +11,6 @@ import {
   getOAuth2ConfigResponse,
   getUserInfoResponse,
   getAPIAccessTokenResponse,
-  setAuthState,
 } from '../actions'
 
 import {

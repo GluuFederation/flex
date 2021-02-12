@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 function ScopeAddPage() {
-  return <div></div>;
+  return <h6> NOT Implemented yet</h6>
 }
 
-export default ScopeAddPage;
+export default ScopeAddPage
