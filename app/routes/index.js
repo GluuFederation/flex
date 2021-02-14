@@ -21,7 +21,7 @@ import ClientEditPage from './Apps/Clients/ClientEditPage'
 import CustomScriptListPage from './Apps/Scripts/CustomScriptListPage'
 import CustomScriptAddPage from './Apps/Scripts/CustomScriptAddPage'
 import CustomScriptEditPage from './Apps/Scripts/CustomScriptEditPage'
-import ProfileDetails from './Apps/ProfileDetails'
+import ProfilePage from './Apps/ProfileDetails/ProfilePage'
 // ----------- Layout Imports ---------------
 import GluuNavBar from '../routes/components/Navbars/GluuNavBar'
 import { DefaultSidebar } from './../layout/components/DefaultSidebar'
@@ -31,6 +31,9 @@ import ScopeAddPage from './Apps/Scopes/ScopeAddPage'
 import ScopeEditPage from './Apps/Scopes/ScopeEditPage'
 import ByeBye from './Pages/ByeBye'
 import SmtpPage from './Apps/Configuration/SmtpPage'
+import AcrsPage from './Apps/Configuration/AcrsPage'
+import LoggingPage from './Apps/Configuration/LoggingPage'
+import JwksPage from './Apps/Configuration/JwksPage'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -70,9 +73,12 @@ export const RoutedContent = () => {
       <Route component={CustomScriptEditPage} path="/script/edit:gid" />
 
       <Route component={SmtpPage} path="/config/smtp" />
+      <Route component={AcrsPage} path="/config/acrs" />
+      <Route component={LoggingPage} path="/config/logging" />
+      <Route component={JwksPage} path="/config/jwks" />
 
       {/*    Pages Routes    */}
-      <Route component={ProfileDetails} path="/profile" />
+      <Route component={ProfilePage} path="/profile" />
       <Route component={ByeBye} path="/logout" />
 
       {/*    404    */}

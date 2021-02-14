@@ -1,40 +1,23 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 import {
   Container,
   Row,
   Col,
-  CardHeader,
-  DropdownToggle,
-  DropdownItem,
-  DropdownMenu,
-  UncontrolledButtonDropdown,
   Card,
-  ButtonGroup,
-  Button,
   CardBody,
-  CardFooter,
-  CardGroup,
-  Table,
   TabPane,
   Badge,
   Nav,
   NavItem,
-  UncontrolledTabs
-} from "./../../../components";
-import { HeaderMain } from "../../components/HeaderMain";
+  UncontrolledTabs,
+} from './../../../components'
+import { HeaderMain } from '../../components/HeaderMain'
 
-import { Profile } from "../../components/Profile";
-import { ProfileOverviewCard } from "../../components/Profile/ProfileOverviewCard";
-import { DlRowContacts } from "../../components/Profile/DlRowContacts";
-import { DlRowAddress } from "../../components/Profile/DlRowAddress";
-import { ChatLeft } from "../../components/Chat/ChatLeft";
-import { ChatRight } from "../../components/Chat/ChatRight";
-import { ChatCardFooter } from "../../components/Chat/ChatCardFooter";
-import { TrTableMessages } from "./components/TrTableMessages";
-import { TimelineDefault } from "../../components/Timeline/TimelineDefault";
-import { connect } from "react-redux";
+import { Profile } from '../../components/Profile'
+import { TimelineDefault } from '../../components/Timeline/TimelineDefault'
+import { connect } from 'react-redux'
 
 const ProfileDetails = ({ userinfo }) => (
   <React.Fragment>
@@ -116,7 +99,7 @@ const ProfileDetails = ({ userinfo }) => (
                   </div>
                   {userinfo.jansAdminUIRole.map((role, index) => (
                     <Badge
-                      style={{ width: "100px" }}
+                      style={{ width: '100px' }}
                       color="info"
                       className="mr-1"
                       key={index}
@@ -137,13 +120,13 @@ const ProfileDetails = ({ userinfo }) => (
       {/* END Content */}
     </Container>
   </React.Fragment>
-);
+)
 
 const mapStateToProps = ({ authReducer }) => {
-  const userinfo = authReducer.userinfo;
+  const userinfo = authReducer.userinfo
   return {
-    userinfo
-  };
-};
+    userinfo,
+  }
+}
 
-export default connect(mapStateToProps)(ProfileDetails);
+export default connect(mapStateToProps)(ProfileDetails)
