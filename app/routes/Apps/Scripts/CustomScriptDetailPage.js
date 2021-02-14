@@ -83,7 +83,8 @@ const CustomScriptDetailPage = ({ row }) => {
           <Col sm={3}> Module Properties: </Col>
           <Col sm={2}>
             {Object.keys(row.moduleProperties).map((key, i) => (
-              <GluuFormDetailRow key={key}
+              <GluuFormDetailRow
+                key={key}
                 label="value1"
                 value={String(row.moduleProperties[key].value1)}
               />
@@ -91,7 +92,8 @@ const CustomScriptDetailPage = ({ row }) => {
           </Col>
           <Col sm={2}>
             {Object.keys(row.moduleProperties).map((key, i) => (
-              <GluuFormDetailRow key={key}
+              <GluuFormDetailRow
+                key={key}
                 label="value2"
                 value={String(row.moduleProperties[key].value2)}
               />
@@ -99,7 +101,8 @@ const CustomScriptDetailPage = ({ row }) => {
           </Col>
           <Col sm={2}>
             {Object.keys(row.moduleProperties).map((key, i) => (
-              <GluuFormDetailRow key={key}
+              <GluuFormDetailRow
+                key={key}
                 label="description"
                 value={String(row.moduleProperties[key].description)}
               />
