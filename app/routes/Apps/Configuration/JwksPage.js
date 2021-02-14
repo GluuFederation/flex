@@ -6,7 +6,6 @@ import {
   Card,
   CardBody,
 } from './../../../components'
-import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
 import { jwks } from './jwks'
 import JwkItem from './JwkItem'

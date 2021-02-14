@@ -34,6 +34,7 @@ import SmtpPage from './Apps/Configuration/SmtpPage'
 import AcrsPage from './Apps/Configuration/AcrsPage'
 import LoggingPage from './Apps/Configuration/LoggingPage'
 import JwksPage from './Apps/Configuration/JwksPage'
+import Fido2Page from './Apps/Configuration/Fido2Page'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -76,6 +77,7 @@ export const RoutedContent = () => {
       <Route component={AcrsPage} path="/config/acrs" />
       <Route component={LoggingPage} path="/config/logging" />
       <Route component={JwksPage} path="/config/jwks" />
+      <Route component={Fido2Page} path="/config/fido" />
 
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />
