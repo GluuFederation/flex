@@ -35,6 +35,7 @@ import AcrsPage from './Apps/Configuration/AcrsPage'
 import LoggingPage from './Apps/Configuration/LoggingPage'
 import JwksPage from './Apps/Configuration/JwksPage'
 import Fido2Page from './Apps/Configuration/Fido2Page'
+import CachePage from './Apps/Configuration/CachePage'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -78,6 +79,7 @@ export const RoutedContent = () => {
       <Route component={LoggingPage} path="/config/logging" />
       <Route component={JwksPage} path="/config/jwks" />
       <Route component={Fido2Page} path="/config/fido" />
+      <Route component={CachePage} path="/config/cache" />
 
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />
@@ -103,12 +105,6 @@ export const RoutedNavbars = () => (
 
 export const RoutedSidebars = () => (
   <Switch>
-    {/* Other Sidebars: */}
-    <Route component={SidebarASidebar} path="/layouts/sidebar-a" />
-    <Route
-      component={SidebarWithNavbar.Sidebar}
-      path="/layouts/sidebar-with-navbar"
-    />
     {/* Default Sidebar: */}
     <Route component={DefaultSidebar} />
   </Switch>
