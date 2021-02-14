@@ -21,7 +21,7 @@ import ClientEditPage from './Apps/Clients/ClientEditPage'
 import CustomScriptListPage from './Apps/Scripts/CustomScriptListPage'
 import CustomScriptAddPage from './Apps/Scripts/CustomScriptAddPage'
 import CustomScriptEditPage from './Apps/Scripts/CustomScriptEditPage'
-import ProfilePage from './Apps/ProfileDetails/ProfilePage'
+import ProfilePage from './Apps/Profile/ProfilePage'
 // ----------- Layout Imports ---------------
 import GluuNavBar from '../routes/components/Navbars/GluuNavBar'
 import { DefaultSidebar } from './../layout/components/DefaultSidebar'
