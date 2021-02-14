@@ -1,4 +1,4 @@
-const object = {
+export const jwks = {
   keys: [
     {
       kty: 'RSA',
@@ -308,8 +308,6 @@ const object = {
     },
   ],
 }
-
-export const keys = object.keys
 export default {
-    keys,
+  jwks,
 }

@@ -12,7 +12,7 @@ import {
   Nav,
   NavItem,
   UncontrolledTabs,
-} from './../../../components'
+} from '../../../components'
 import { HeaderMain } from '../../components/HeaderMain'
 
 import { Profile } from '../../components/Profile'

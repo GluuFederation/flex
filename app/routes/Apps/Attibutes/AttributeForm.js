@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import React, { useState } from 'react'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import {
   Col,
   InputGroup,
@@ -8,15 +8,15 @@ import {
   Form,
   FormGroup,
   Label,
-  Input
-} from "./../../../components";
-import GluuFooter from "../Gluu/GluuFooter";
-import GluuLabel from "../Gluu/GluuLabel";
+  Input,
+} from './../../../components'
+import GluuFooter from '../Gluu/GluuFooter'
+import GluuLabel from '../Gluu/GluuLabel'
 function AttributeForm({ item, handleSubmit }) {
-  const [init, setInit] = useState(false);
+  const [init, setInit] = useState(false)
   function toogle() {
     if (!init) {
-      setInit(true);
+      setInit(true)
     }
   }
   const formik = useFormik({
@@ -24,25 +24,23 @@ function AttributeForm({ item, handleSubmit }) {
       name: item.name,
       displayName: item.displayName,
       description: item.displayName,
-      status: item.status
+      status: item.status,
     },
     validationSchema: Yup.object({
-      name: Yup.string()
-        .min(2, "Mininum 2 characters")
-        .required("Required!"),
+      name: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
       displayName: Yup.string()
-        .min(2, "Mininum 2 characters")
-        .required("Required!"),
+        .min(2, 'Mininum 2 characters')
+        .required('Required!'),
       description: Yup.string(),
       status: Yup.string()
-        .min(3, "This value is required")
-        .required("Required!")
+        .min(3, 'This value is required')
+        .required('Required!'),
     }),
-    onSubmit: values => {
-      const result = Object.assign(item, values);
-      handleSubmit(JSON.stringify(result));
-    }
-  });
+    onSubmit: (values) => {
+      const result = Object.assign(item, values)
+      handleSubmit(JSON.stringify(result))
+    },
+  })
   return (
     <Form onSubmit={formik.handleSubmit}>
       {/* START Input */}
@@ -53,7 +51,7 @@ function AttributeForm({ item, handleSubmit }) {
           </Label>
           <Col sm={9}>
             <Input
-              style={{ backgroundColor: "#F5F5F5" }}
+              style={{ backgroundColor: '#F5F5F5' }}
               placeholder="Enter the attribute inum"
               id="inum"
               name="inum"
@@ -234,7 +232,7 @@ function AttributeForm({ item, handleSubmit }) {
       <FormGroup row></FormGroup>
       <GluuFooter />
     </Form>
-  );
+  )
 }
 
-export default AttributeForm;
+export default AttributeForm

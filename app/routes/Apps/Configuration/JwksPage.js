@@ -1,16 +1,15 @@
 import React from 'react'
 import {
-  Col,
   Form,
   FormGroup,
   Container,
-  Input,
   Card,
   CardBody,
 } from './../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
-import keys from './jwks'
+import { jwks } from './jwks'
+import JwkItem from './JwkItem'
 function JwksPage() {
   return (
     <React.Fragment>
@@ -18,6 +17,9 @@ function JwksPage() {
         <Card>
           <CardBody>
             <Form>
+              {Array.from(jwks['keys']).map((item, index) => (
+                <JwkItem key={index} item={item} index={index}></JwkItem>
+              ))}
               <FormGroup row></FormGroup>
               <GluuFooter />
             </Form>
