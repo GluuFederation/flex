@@ -36,6 +36,7 @@ import LoggingPage from './Apps/Configuration/LoggingPage'
 import JwksPage from './Apps/Configuration/JwksPage'
 import Fido2Page from './Apps/Configuration/Fido2Page'
 import CachePage from './Apps/Configuration/CachePage'
+import LdapPage from './Apps/Configuration/LdapPage'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -80,6 +81,7 @@ export const RoutedContent = () => {
       <Route component={JwksPage} path="/config/jwks" />
       <Route component={Fido2Page} path="/config/fido" />
       <Route component={CachePage} path="/config/cache" />
+      <Route component={LdapPage} path="/config/ldap" />
 
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />
