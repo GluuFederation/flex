@@ -149,11 +149,12 @@ function Fido2Page() {
                 <Col sm={8}>
                   {fido2.fido2Configuration.requestedParties.map(
                     (item, index) => (
-                      <FormGroup row>
+                      <FormGroup row key={index}>
                         <GluuLabel label="Name" size={2} />
-                        <Col sm={4}>
+                        <Col sm={4} key={index}>
                           <Input
                             id="Name"
+                            key={index}
                             name="name"
                             type="text"
                             defaultValue={item.name}
