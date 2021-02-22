@@ -1,124 +1,124 @@
-import React, { useState, useEffect } from "react";
-import MaterialTable from "material-table";
-import { useHistory } from "react-router-dom";
-import { connect } from "react-redux";
-import { Badge } from "reactstrap";
-import GluuDialog from "../Gluu/GluuDialog";
-import CustomScriptDetailPage from "../Scripts/CustomScriptDetailPage";
+import React, { useState, useEffect } from 'react'
+import MaterialTable from 'material-table'
+import { useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Badge } from 'reactstrap'
+import GluuDialog from '../Gluu/GluuDialog'
+import CustomScriptDetailPage from '../Scripts/CustomScriptDetailPage'
 import {
   getCustomScripts,
-  setCurrentItem
-} from "../../../redux/actions/CustomScriptActions";
-import scripts from "./scripts"
+  setCurrentItem,
+} from '../../../redux/actions/CustomScriptActions'
+import scripts from './scripts'
 
 function CustomScriptListPage({ scriptss, dispatch }) {
   useEffect(() => {
-    dispatch(getCustomScripts());
-  }, []);
+    dispatch(getCustomScripts())
+  }, [])
 
-  const history = useHistory();
-  const [item, setItem] = useState({});
-  const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
+  const history = useHistory()
+  const [item, setItem] = useState({})
+  const [modal, setModal] = useState(false)
+  const toggle = () => setModal(!modal)
 
   function getBadgeTheme(status) {
-    if (status === "ACTIVE") {
-      return "primary";
+    if (status === 'ACTIVE') {
+      return 'primary'
     } else {
-      return "warning";
+      return 'warning'
     }
   }
   function handleGoToCustomScriptAddPage() {
-    return history.push("/script/new");
+    return history.push('/script/new')
   }
   function handleGoToCustomScriptEditPage(row) {
-    dispatch(setCurrentItem(row));
-    return history.push(`/script/edit:` + row.inum);
+    dispatch(setCurrentItem(row))
+    return history.push(`/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
-    dispatch(setCurrentItem(row));
-    setItem(row);
-    toggle();
+    dispatch(setCurrentItem(row))
+    setItem(row)
+    toggle()
   }
   function onDeletionConfirmed() {
     // perform delete request
-    toggle();
+    toggle()
   }
   return (
     <React.Fragment>
       {/* START Content */}
       <MaterialTable
         columns={[
-          { title: "Inum", field: "inum" },
-          { title: "Name", field: "name" },
-          { title: "Script Type", field: "scriptType" },
-          { title: "Programming Language", field: "programmingLanguage" },
+          { title: 'Inum', field: 'inum' },
+          { title: 'Name', field: 'name' },
           {
-            title: "Enabled",
-            field: "enabled",
-            type: "boolean",
-            render: rowData => (
-                <Badge color={rowData.enabled ? "primary" : "info"}>
-                {rowData.enabled ? "true" : "false"}
+            title: 'Enabled',
+            field: 'enabled',
+            type: 'boolean',
+            render: (rowData) => (
+              <Badge color={rowData.enabled ? 'primary' : 'info'}>
+                {rowData.enabled ? 'true' : 'false'}
               </Badge>
-            )
-          }
+            ),
+          },
         ]}
         data={scripts}
         isLoading={false}
         title="CustomScripts"
         actions={[
-          rowData => ({
-            icon: "edit",
+          (rowData) => ({
+            icon: 'edit',
             iconProps: {
-              color: "primary",
-              id: "editCustomScript" + rowData.inum
+              color: 'primary',
+              id: 'editCustomScript' + rowData.inum,
             },
-            tooltip: "Edit Script",
-            onClick: (event, rowData) => handleGoToCustomScriptEditPage(rowData),
-            disabled: false
+            tooltip: 'Edit Script',
+            onClick: (event, rowData) =>
+              handleGoToCustomScriptEditPage(rowData),
+            disabled: false,
           }),
           {
-            icon: "add",
-            tooltip: "Add Script",
-            iconProps: { color: "primary" },
+            icon: 'add',
+            tooltip: 'Add Script',
+            iconProps: { color: 'primary' },
             isFreeAction: true,
-            onClick: () => handleGoToCustomScriptAddPage()
+            onClick: () => handleGoToCustomScriptAddPage(),
           },
           {
-            icon: "refresh",
-            tooltip: "Refresh Data",
-            iconProps: { color: "primary" },
+            icon: 'refresh',
+            tooltip: 'Refresh Data',
+            iconProps: { color: 'primary' },
             isFreeAction: true,
             onClick: () => {
-              dispatch(getCustomScripts());
-            }
-          },
-          rowData => ({
-            icon: "delete",
-            iconProps: {
-              color: "secondary",
-              id: "deleteCustomScript" + rowData.inum
+              dispatch(getCustomScripts())
             },
-            tooltip: "Delete Custom Script",
+          },
+          (rowData) => ({
+            icon: 'delete',
+            iconProps: {
+              color: 'secondary',
+              id: 'deleteCustomScript' + rowData.inum,
+            },
+            tooltip: 'Delete Custom Script',
             onClick: (event, rowData) => handleCustomScriptDelete(rowData),
-            disabled: false
-          })
+            disabled: false,
+          }),
         ]}
         options={{
           search: true,
           selection: false,
+          pageSize: 10,
           headerStyle: {
-            backgroundColor: "#01579b",
-            color: "#FFF",
-            padding: "2px",
-            textTransform: "uppercase",
-            fontSize: "18px"
+            backgroundColor: '#01579b',
+            color: '#FFF',
+            padding: '2px',
+            textTransform: 'uppercase',
+            fontSize: '18px',
           },
-          actionsColumnIndex: -1
+          actionsColumnIndex: -1,
         }}
-        detailPanel={rowData => {
-          return <CustomScriptDetailPage row={rowData} />;
+        detailPanel={(rowData) => {
+          return <CustomScriptDetailPage row={rowData} />
         }}
       />
       {/* END Content */}
@@ -130,14 +130,14 @@ function CustomScriptListPage({ scriptss, dispatch }) {
         onAccept={onDeletionConfirmed}
       />
     </React.Fragment>
-  );
+  )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     scripts: state.customScriptReducer.items,
     loading: state.customScriptReducer.loading,
-    hasApiError: state.customScriptReducer.hasApiError
-  };
-};
-export default connect(mapStateToProps)(CustomScriptListPage);
+    hasApiError: state.customScriptReducer.hasApiError,
+  }
+}
+export default connect(mapStateToProps)(CustomScriptListPage)

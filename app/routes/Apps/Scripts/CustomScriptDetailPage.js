@@ -63,13 +63,6 @@ const CustomScriptDetailPage = ({ row }) => {
             />
           </Col>
         </Row>
-
-        <Row>
-          <Col sm={3}>
-            <GluuFormDetailRow label="Script" value={row.script} />
-          </Col>
-        </Row>
-
         <Row>
           <Col sm={3}>
             <GluuFormDetailRow label="Level" value={row.level} />

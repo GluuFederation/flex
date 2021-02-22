@@ -129,6 +129,7 @@ function ClientListPage({ clientss, dispatch }) {
         options={{
           search: true,
           selection: false,
+          pageSize: 10,
           headerStyle: {
             backgroundColor: '#01579b',
             color: '#FFF',
