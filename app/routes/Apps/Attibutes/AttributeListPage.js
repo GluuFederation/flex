@@ -1,123 +1,124 @@
-import React, { useState, useEffect } from "react";
-import MaterialTable from "material-table";
-import { useHistory } from "react-router-dom";
-import { connect } from "react-redux";
-import { Badge } from "reactstrap";
-import GluuDialog from "../Gluu/GluuDialog";
-import AttributeDetailPage from "../Attibutes/AttributeDetailPage";
+import React, { useState, useEffect } from 'react'
+import MaterialTable from 'material-table'
+import { useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Badge } from 'reactstrap'
+import GluuDialog from '../Gluu/GluuDialog'
+import AttributeDetailPage from '../Attibutes/AttributeDetailPage'
+import attributes from './attributes'
 import {
   getAttributes,
-  setCurrentItem
-} from "../../../redux/actions/AttributeActions";
+  setCurrentItem,
+} from '../../../redux/actions/AttributeActions'
 
-function AttributeListPage({ attributes, dispatch }) {
+function AttributeListPage({ attributess, dispatch }) {
   useEffect(() => {
-    dispatch(getAttributes());
-  }, []);
+    dispatch(getAttributes())
+  }, [])
 
-  const history = useHistory();
-  const [item, setItem] = useState({});
-  const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
+  const history = useHistory()
+  const [item, setItem] = useState({})
+  const [modal, setModal] = useState(false)
+  const toggle = () => setModal(!modal)
 
   function getBadgeTheme(status) {
-    if (status === "ACTIVE") {
-      return "primary";
+    if (status === 'ACTIVE') {
+      return 'primary'
     } else {
-      return "warning";
+      return 'warning'
     }
   }
   function handleGoToAttributeAddPage() {
-    return history.push("/attribute/new");
+    return history.push('/attribute/new')
   }
   function handleGoToAttributeEditPage(row) {
-    dispatch(setCurrentItem(row));
-    return history.push(`/attribute/edit:` + row.inum);
+    dispatch(setCurrentItem(row))
+    return history.push(`/attribute/edit:` + row.inum)
   }
   function handleAttribueDelete(row) {
-    dispatch(setCurrentItem(row));
-    setItem(row);
-    toggle();
+    dispatch(setCurrentItem(row))
+    setItem(row)
+    toggle()
   }
   function onDeletionConfirmed() {
     // perform delete request
-    toggle();
+    toggle()
   }
   return (
     <React.Fragment>
       {/* START Content */}
       <MaterialTable
         columns={[
-          { title: "Inum", field: "inum" },
-          { title: "Name", field: "name" },
-          { title: "Display Name", field: "displayName" },
-          { title: "Data Type", field: "dataType" },
+          { title: 'Inum', field: 'inum' },
+          { title: 'Name', field: 'name' },
+          { title: 'Display Name', field: 'displayName' },
+          { title: 'Data Type', field: 'dataType' },
           {
-            title: "Status",
-            field: "status",
-            type: "boolean",
-            render: rowData => (
+            title: 'Status',
+            field: 'status',
+            type: 'boolean',
+            render: (rowData) => (
               <Badge color={getBadgeTheme(rowData.status)}>
                 {rowData.status}
               </Badge>
-            )
-          }
+            ),
+          },
         ]}
         data={attributes}
         isLoading={false}
         title="Attributes"
         actions={[
-          rowData => ({
-            icon: "edit",
+          (rowData) => ({
+            icon: 'edit',
             iconProps: {
-              color: "primary",
-              id: "editAttribute" + rowData.inum
+              color: 'primary',
+              id: 'editAttribute' + rowData.inum,
             },
-            tooltip: "Edit Attribute",
+            tooltip: 'Edit Attribute',
             onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
-            disabled: false
+            disabled: false,
           }),
           {
-            icon: "add",
-            tooltip: "Add Attribute",
-            iconProps: { color: "primary" },
+            icon: 'add',
+            tooltip: 'Add Attribute',
+            iconProps: { color: 'primary' },
             isFreeAction: true,
-            onClick: () => handleGoToAttributeAddPage()
+            onClick: () => handleGoToAttributeAddPage(),
           },
           {
-            icon: "refresh",
-            tooltip: "Refresh Data",
-            iconProps: { color: "primary" },
+            icon: 'refresh',
+            tooltip: 'Refresh Data',
+            iconProps: { color: 'primary' },
             isFreeAction: true,
             onClick: () => {
-              dispatch(getAttributes());
-            }
-          },
-          rowData => ({
-            icon: "delete",
-            iconProps: {
-              color: "secondary",
-              id: "deleteAttribute" + rowData.inum
+              dispatch(getAttributes())
             },
-            tooltip: "Delete Attribute",
+          },
+          (rowData) => ({
+            icon: 'delete',
+            iconProps: {
+              color: 'secondary',
+              id: 'deleteAttribute' + rowData.inum,
+            },
+            tooltip: 'Delete Attribute',
             onClick: (event, rowData) => handleAttribueDelete(rowData),
-            disabled: false
-          })
+            disabled: false,
+          }),
         ]}
         options={{
           search: true,
           selection: false,
           headerStyle: {
-            backgroundColor: "#01579b",
-            color: "#FFF",
-            padding: "2px",
-            textTransform: "uppercase",
-            fontSize: "18px"
+            backgroundColor: '#01579b',
+            color: '#FFF',
+            padding: '2px',
+            textTransform: 'uppercase',
+            fontSize: '18px',
           },
-          actionsColumnIndex: -1
+          actionsColumnIndex: -1,
         }}
-        detailPanel={rowData => {
-          return <AttributeDetailPage row={rowData} />;
+        detailPanel={(rowData) => {
+          return <AttributeDetailPage row={rowData} />
         }}
       />
       {/* END Content */}
@@ -129,14 +130,14 @@ function AttributeListPage({ attributes, dispatch }) {
         onAccept={onDeletionConfirmed}
       />
     </React.Fragment>
-  );
+  )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     attributes: state.attributeReducer.items,
     loading: state.attributeReducer.loading,
-    hasApiError: state.attributeReducer.hasApiError
-  };
-};
-export default connect(mapStateToProps)(AttributeListPage);
+    hasApiError: state.attributeReducer.hasApiError,
+  }
+}
+export default connect(mapStateToProps)(AttributeListPage)

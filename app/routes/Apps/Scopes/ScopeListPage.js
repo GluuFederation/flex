@@ -6,8 +6,9 @@ import { Badge } from "reactstrap";
 import GluuDialog from "../Gluu/GluuDialog";
 import ClientDetailPage from "../Scopes/ScopeDetailPage";
 import { getScopes, deleteScope } from "../../../redux/actions/ScopeActions";
+import scopes from "./scopes";
 
-function ScopeListPage({ scopes, dispatch }) {
+function ScopeListPage({ scopess, dispatch }) {
   useEffect(() => {
     dispatch(getScopes());
   }, []);
@@ -50,7 +51,7 @@ function ScopeListPage({ scopes, dispatch }) {
         ]}
         data={scopes}
         isLoading={false}
-        title="OpenId Connect scopes && Uma scopes"
+        title=" Scopes"
         actions={[
           rowData => ({
             icon: "edit",
