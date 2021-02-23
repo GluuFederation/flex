@@ -5,13 +5,13 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import AttributeDetailPage from '../Attibutes/AttributeDetailPage'
-import attributes from './attributes'
+//import attributes from './attributes'
 import {
   getAttributes,
   setCurrentItem,
 } from '../../../redux/actions/AttributeActions'
 
-function AttributeListPage({ attributess, dispatch }) {
+function AttributeListPage({ attributes, dispatch }) {
   useEffect(() => {
     dispatch(getAttributes())
   }, [])

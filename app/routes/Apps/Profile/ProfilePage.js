@@ -47,13 +47,16 @@ const ProfileDetails = ({ userinfo }) => (
               </div>
               <div className="text-left mb-4">
                 <Badge pill color="info" className="mr-1">
+                  {userinfo.family_name}
+                </Badge>
+                <Badge pill color="info" className="mr-1">
+                  {userinfo.nickname}
+                </Badge>
+                <Badge pill color="info" className="mr-1">
                   {userinfo.name}
                 </Badge>
                 <Badge pill color="info" className="mr-1">
-                  {userinfo.email}
-                </Badge>
-                <Badge pill color="info" className="mr-1">
-                  {userinfo.user_name}
+                  {userinfo.middle_name}
                 </Badge>
               </div>
             </CardBody>

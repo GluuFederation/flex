@@ -6,9 +6,9 @@ import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import { getOpenidClients } from '../../../redux/actions/OpenidClientActions'
-import clients from './clients'
+//import clients from './clients'
 
-function ClientListPage({ clientss, dispatch }) {
+function ClientListPage({ clients, dispatch }) {
   useEffect(() => {
     dispatch(getOpenidClients())
   }, [])

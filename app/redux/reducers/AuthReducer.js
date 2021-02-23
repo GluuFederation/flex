@@ -57,6 +57,10 @@ export default (state = INIT_STATE, action) => {
           'gluu.api.token',
           action.payload.accessToken.access_token,
         )
+        localStorage.setItem(
+          'gluu.api.token.issuer',
+          action.payload.accessToken.issuer,
+        )
       }
       return {
         ...state,

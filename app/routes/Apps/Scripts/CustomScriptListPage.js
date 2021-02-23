@@ -9,9 +9,9 @@ import {
   getCustomScripts,
   setCurrentItem,
 } from '../../../redux/actions/CustomScriptActions'
-import scripts from './scripts'
+//import scripts from './scripts'
 
-function CustomScriptListPage({ scriptss, dispatch }) {
+function CustomScriptListPage({ scripts, dispatch }) {
   useEffect(() => {
     dispatch(getCustomScripts())
   }, [])

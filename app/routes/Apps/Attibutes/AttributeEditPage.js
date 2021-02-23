@@ -1,17 +1,16 @@
-import React from "react";
-import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Container, CardBody, Card } from "./../../../components";
-import AttributeForm from "./AttributeForm";
-import BlockUi from "react-block-ui";
-//import "react-block-ui/style.css";
-import { editAttribute } from "../../../redux/actions/AttributeActions";
+import React from 'react'
+import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { Container, CardBody, Card } from './../../../components'
+import AttributeForm from './AttributeForm'
+import BlockUi from 'react-block-ui'
+import { editAttribute } from '../../../redux/actions/AttributeActions'
 
 function AttributeEditPage({ item, loading, dispatch }) {
-  const history = useHistory();
+  const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      dispatch(editAttribute(data));
+      dispatch(editAttribute(data))
       // history.push("/attributes");
     }
   }
@@ -23,7 +22,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={"Performing the request, please wait!"}
+          message={'Performing the request, please wait!'}
         >
           <Card className="mb-3">
             <CardBody>
@@ -33,12 +32,12 @@ function AttributeEditPage({ item, loading, dispatch }) {
         </BlockUi>
       </Container>
     </React.Fragment>
-  );
+  )
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     item: state.attributeReducer.item,
-    loading: state.attributeReducer.loading
-  };
-};
-export default connect(mapStateToProps)(AttributeEditPage);
+    loading: state.attributeReducer.loading,
+  }
+}
+export default connect(mapStateToProps)(AttributeEditPage)

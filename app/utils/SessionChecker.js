@@ -57,12 +57,14 @@ class SessionChecker extends Component {
   }
 
   static getDerivedStateFromProps(props) {
+    //console.log('=============================1')
     if (!props.showContent) {
+      //console.log('========2' + JSON.stringify(props.token))
       if (!props.userinfo) {
         const params = queryString.parse(props.location.search)
         let showContent = false
         if (params.code && params.scope && params.state) {
-          if (!isValidState(params.state)) {
+          if (isValidState(params.state)) {
             return {
               showContent: false,
             }
