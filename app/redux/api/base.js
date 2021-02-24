@@ -13,6 +13,7 @@ export const getDefaultClient = (JansConfigApi) => {
   }
   defaultClient.defaultHeaders = headers
   jansauth.accessToken = localStorage.getItem('gluu.api.token')
+  console.log('==== TOKEN: ' + localStorage.getItem('gluu.api.token'))
   console.log('==== ISSUER: ' + localStorage.getItem('gluu.api.token.issuer'))
   return defaultClient
 }
