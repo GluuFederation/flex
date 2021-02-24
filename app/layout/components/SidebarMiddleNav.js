@@ -1,6 +1,4 @@
 import React from 'react'
-import items from '../../menu/items'
-
 import { SidebarMenu, Divider } from './../../components'
 
 export const SidebarMiddleNav = () => (
@@ -43,9 +41,7 @@ export const SidebarMiddleNav = () => (
     </SidebarMenu.Item>
     {/* -------- Scopes ---------*/}
     {/* -------- Plugins ---------*/}
-    {items.map((item, key) => (
-      <SidebarMenu.Item key={key} title={item.title}></SidebarMenu.Item>
-    ))}
+    
     <Divider />
     <Divider />
     {/* -------- Configuration ---------*/}
