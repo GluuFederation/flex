@@ -8,13 +8,16 @@ export const SidebarMiddleNav = () => (
       <SidebarMenu.Item title="Reports" to="/home/reports" exact />
     </SidebarMenu.Item>
     {/* -------- Attributes ---------*/}
+
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-briefcase"></i>}
       title="Attributes"
     >
       <SidebarMenu.Item title="All Attributes" to="/attributes" exact />
+
       <SidebarMenu.Item title="New Attribute" to="/attribute/new" exact />
     </SidebarMenu.Item>
+
     {/* -------- OIDC ---------*/}
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-cubes"></i>}
@@ -41,7 +44,7 @@ export const SidebarMiddleNav = () => (
     </SidebarMenu.Item>
     {/* -------- Scopes ---------*/}
     {/* -------- Plugins ---------*/}
-    
+
     <Divider />
     <Divider />
     {/* -------- Configuration ---------*/}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Sidebar, SidebarTrigger, Divider } from "./../../components";
 import { SidebarMiddleNav } from "./SidebarMiddleNav";
 import { LogoThemed } from "../../routes/components/LogoThemed/LogoThemed";
+import GluuAppSidebar from "../../routes/Apps/Gluu/GluuAppSidebar";
 
 export const DefaultSidebar = () => (
   <Sidebar>
@@ -31,7 +32,8 @@ export const DefaultSidebar = () => (
       {/* <SidebarTopA /> */}
       <Sidebar.Section fluid cover>
         {/* SIDEBAR: Menu */}
-        <SidebarMiddleNav />
+        <GluuAppSidebar />
+        
       </Sidebar.Section>
     </Sidebar.MobileFluid>
     {/* END SIDEBAR: Only for Mobile */}

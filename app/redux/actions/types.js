@@ -53,6 +53,13 @@ export const GET_CUSTOM_SCRIPT_BY_TYPE_RESPONSE =
 export const DELETE_CUSTOM_SCRIPT = 'DELETE_CUSTOM_SCRIPT'
 export const DELETE_CUSTOM_SCRIPT_RESPONSE = 'DELETE_CUSTOM_SCRIPT_RESPONSE'
 
+// Smtp
+export const GET_SMTP = 'GET_SMTP'
+export const SET_SMTP = 'SET_SMTP'
+export const PUT_SMTP = 'PUT_SMTP'
+export const TEST_SMTP = 'TEST_SMTP'
+
+
 export const SET_API_ERROR = 'SET_API_ERROR'
 export const RESET = 'RESET'
 export const SET_ITEM = 'SET_ITEM'
