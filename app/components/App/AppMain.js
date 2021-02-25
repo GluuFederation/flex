@@ -16,7 +16,7 @@ const AppMain = () => {
         <Router basename={basePath}>
           <SessionChecker>
             <AppLayout>
-              <RoutedContent/>
+              <RoutedContent />
             </AppLayout>
           </SessionChecker>
         </Router>
