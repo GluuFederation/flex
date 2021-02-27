@@ -55,7 +55,6 @@ function AttributeListPage({ attributes, scopes, dispatch }) {
       <MaterialTable
         columns={[
           { title: 'Inum', field: 'inum' },
-          { title: 'Name', field: 'name' },
           { title: 'Display Name', field: 'displayName' },
           { title: 'Data Type', field: 'dataType' },
           {

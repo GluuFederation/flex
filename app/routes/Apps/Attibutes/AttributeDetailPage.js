@@ -1,18 +1,18 @@
-import React from "react";
+import React from 'react'
 import {
   Container,
   Badge,
   Row,
   Col,
   FormGroup,
-  Label
-} from "./../../../components";
+  Label,
+} from './../../../components'
 
 const AttributeDetailPage = ({ row }) => {
   return (
     <React.Fragment>
       {/* START Content */}
-      <Container style={{ backgroundColor: "#F5F5F5" }}>
+      <Container style={{ backgroundColor: '#F5F5F5' }}>
         <Row>
           <Col sm={6}>
             <FormGroup row>
@@ -57,7 +57,7 @@ const AttributeDetailPage = ({ row }) => {
                 {row.adminCanAccess ? (
                   <Badge color="primary">Yes</Badge>
                 ) : (
-                  <Badge color="danger">No</Badge>
+                  <Badge color="info">No</Badge>
                 )}
               </Label>
             </FormGroup>
@@ -66,10 +66,10 @@ const AttributeDetailPage = ({ row }) => {
             <FormGroup row>
               <Label sm={6}>Admin Can View:</Label>
               <Label sm={6}>
-                {row.adminCanView ? (
+                {row.viewtype ? (
                   <Badge color="primary">Yes</Badge>
                 ) : (
-                  <Badge color="danger">No</Badge>
+                  <Badge color="info">No</Badge>
                 )}
               </Label>
             </FormGroup>
@@ -81,7 +81,7 @@ const AttributeDetailPage = ({ row }) => {
                 {row.adminCanEdit ? (
                   <Badge color="primary">Yes</Badge>
                 ) : (
-                  <Badge color="danger">No</Badge>
+                  <Badge color="info">No</Badge>
                 )}
               </Label>
             </FormGroup>
@@ -95,7 +95,7 @@ const AttributeDetailPage = ({ row }) => {
                 {row.userCanAccess ? (
                   <Badge color="primary">Yes</Badge>
                 ) : (
-                  <Badge color="danger">No</Badge>
+                  <Badge color="info">No</Badge>
                 )}
               </Label>
             </FormGroup>
@@ -107,7 +107,7 @@ const AttributeDetailPage = ({ row }) => {
                 {row.userCanView ? (
                   <Badge color="primary">Yes</Badge>
                 ) : (
-                  <Badge color="danger">No</Badge>
+                  <Badge color="info">No</Badge>
                 )}
               </Label>
             </FormGroup>
@@ -119,7 +119,7 @@ const AttributeDetailPage = ({ row }) => {
                 {row.userCanEdit ? (
                   <Badge color="primary">Yes</Badge>
                 ) : (
-                  <Badge color="danger">No</Badge>
+                  <Badge color="info">No</Badge>
                 )}
               </Label>
             </FormGroup>
@@ -128,6 +128,6 @@ const AttributeDetailPage = ({ row }) => {
         {/* END Content */}
       </Container>
     </React.Fragment>
-  );
-};
-export default AttributeDetailPage;
+  )
+}
+export default AttributeDetailPage
