@@ -3,7 +3,6 @@ import { SidebarMenu, Divider } from './../../../components'
 import { connect } from 'react-redux'
 import {
   hasPermission,
-  hasAny,
   ATTRIBUTE_READ,
   ATTRIBUTE_WRITE,
   CLIENT_READ,
@@ -20,7 +19,6 @@ import {
   CACHE_READ,
   LDAP_READ,
   COUCHBASE_READ,
-  ATTRIBUTE_DELETE,
 } from '../../../utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
@@ -41,8 +39,12 @@ function GluuAppSidebar({ scopes }) {
           icon={<i className="fa fa-fw fa-briefcase"></i>}
           title="Attributes"
         >
-          <SidebarMenu.Item title="All Attributes" to="/attributes" exact />
-          <SidebarMenu.Item title="New Attribute" to="/attribute/new" exact />
+          {(hasPermission(scopes, ATTRIBUTE_READ) && (
+            <SidebarMenu.Item title="All Attributes" to="/attributes" exact />
+          )) || <li />}
+          {(hasPermission(scopes, ATTRIBUTE_WRITE) && (
+            <SidebarMenu.Item title="New Attribute" to="/attribute/new" exact />
+          )) || <li />}
         </SidebarMenu.Item>
 
         {/* -------- OIDC ---------*/}
@@ -50,24 +52,36 @@ function GluuAppSidebar({ scopes }) {
           icon={<i className="fa fa-fw fa-cubes"></i>}
           title="Clients"
         >
-          <SidebarMenu.Item title="All Clients" to="/clients" exact />
-          <SidebarMenu.Item title="New Client" to="/client/new" exact />
+          {(hasPermission(scopes, CLIENT_READ) && (
+            <SidebarMenu.Item title="All Clients" to="/clients" exact />
+          )) || <li />}
+          {(hasPermission(scopes, CLIENT_WRITE) && (
+            <SidebarMenu.Item title="New Client" to="/client/new" exact />
+          )) || <li />}
         </SidebarMenu.Item>
         {/* -------- Scopes ---------*/}
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-sitemap"></i>}
           title="Scopes"
         >
-          <SidebarMenu.Item title="All Scopes" to="/scopes" />
-          <SidebarMenu.Item title="New Scope" to="/scope/new" />
+          {(hasPermission(scopes, SCOPE_READ) && (
+            <SidebarMenu.Item title="All Scopes" to="/scopes" />
+          )) || <li />}
+          {(hasPermission(scopes, SCOPE_WRITE) && (
+            <SidebarMenu.Item title="New Scope" to="/scope/new" />
+          )) || <li />}
         </SidebarMenu.Item>
         {/* -------- Custom scripts ---------*/}
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-puzzle-piece"></i>}
           title="Custom Scripts"
         >
-          <SidebarMenu.Item title="All Scripts" to="/scripts" exact />
-          <SidebarMenu.Item title="New Script" to="/script/new" exact />
+          {(hasPermission(scopes, SCRIPT_READ) && (
+            <SidebarMenu.Item title="All Scripts" to="/scripts" exact />
+          )) || <li />}
+          {(hasPermission(scopes, SCRIPT_WRITE) && (
+            <SidebarMenu.Item title="New Script" to="/script/new" exact />
+          )) || <li />}
         </SidebarMenu.Item>
         {/* -------- Scopes ---------*/}
         {/* -------- Plugins ---------*/}
@@ -79,14 +93,30 @@ function GluuAppSidebar({ scopes }) {
           icon={<i className="fa fa-fw fa-gears"></i>}
           title="Configuration"
         >
-          <SidebarMenu.Item title="Smtp" to="/config/smtp" />
-          <SidebarMenu.Item title="Fido2" to="/config/fido" />
-          <SidebarMenu.Item title="Ldap" to="/config/ldap" />
-          <SidebarMenu.Item title="Couchbase" to="/config/couchbase" exact />
-          <SidebarMenu.Item title="Cache" to="/config/cache" exact />
-          <SidebarMenu.Item title="Acrs" to="/config/acrs" exact />
-          <SidebarMenu.Item title="Logging" to="/config/logging" exact />
-          <SidebarMenu.Item title="Jwks" to="/config/jwks" exact />
+          {(hasPermission(scopes, SMTP_READ) && (
+            <SidebarMenu.Item title="Smtp" to="/config/smtp" />
+          )) || <li />}
+          {(hasPermission(scopes, FIDO_READ) && (
+            <SidebarMenu.Item title="Fido2" to="/config/fido" />
+          )) || <li />}
+          {(hasPermission(scopes, LDAP_READ) && (
+            <SidebarMenu.Item title="Ldap" to="/config/ldap" />
+          )) || <li />}
+          {(hasPermission(scopes, COUCHBASE_READ) && (
+            <SidebarMenu.Item title="Couchbase" to="/config/couchbase" exact />
+          )) || <li />}
+          {(hasPermission(scopes, CACHE_READ) && (
+            <SidebarMenu.Item title="Cache" to="/config/cache" exact />
+          )) || <li />}
+          {(hasPermission(scopes, ACR_READ) && (
+            <SidebarMenu.Item title="Acrs" to="/config/acrs" exact />
+          )) || <li />}
+          {(hasPermission(scopes, LOGGING_READ) && (
+            <SidebarMenu.Item title="Logging" to="/config/logging" exact />
+          )) || <li />}
+          {(hasPermission(scopes, JWKS_READ) && (
+            <SidebarMenu.Item title="Jwks" to="/config/jwks" exact />
+          )) || <li />}
         </SidebarMenu.Item>
         <Divider />
         <SidebarMenu.Item
