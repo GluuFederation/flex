@@ -70,6 +70,7 @@ export class SidebarMenuItem extends React.Component {
 
   static defaultProps = {
     exact: true,
+    isEmptyNode: false,
   }
 
   constructor(props) {
@@ -121,25 +122,27 @@ export class SidebarMenuItem extends React.Component {
           'sidebar-menu__entry--no-caret': this.props.noCaret,
         })}
       >
-        <SidebarMenuItemLink
-          to={this.props.to || null}
-          href={this.props.href || null}
-          onToggle={this.toggleNode.bind(this)}
-          classBase={classBase}
-        >
-          {this.props.icon &&
-            React.cloneElement(this.props.icon, {
-              className: classNames(
-                this.props.icon.props.className,
-                `${classBase}__entry__icon`,
-              ),
-            })}
-          {typeof this.props.title === 'string' ? (
-            <span>{this.props.title}</span>
-          ) : (
-            this.props.title
-          )}
-        </SidebarMenuItemLink>
+        { !this.props.isEmptyNode &&
+          <SidebarMenuItemLink
+            to={this.props.to || null}
+            href={this.props.href || null}
+            onToggle={this.toggleNode.bind(this)}
+            classBase={classBase}
+          >
+            {this.props.icon &&
+              React.cloneElement(this.props.icon, {
+                className: classNames(
+                  this.props.icon.props.className,
+                  `${classBase}__entry__icon`,
+                ),
+              })}
+            {typeof this.props.title === 'string' ? (
+              <span>{this.props.title}</span>
+            ) : (
+              this.props.title
+            )}
+          </SidebarMenuItemLink>
+        }
         {this.props.children && (
           <ul className="sidebar-submenu">
             {React.Children.map(this.props.children, (child) => (

@@ -41,10 +41,10 @@ function GluuAppSidebar({ scopes }) {
         >
           {(hasPermission(scopes, ATTRIBUTE_READ) && (
             <SidebarMenu.Item title="All Attributes" to="/attributes" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, ATTRIBUTE_WRITE) && (
             <SidebarMenu.Item title="New Attribute" to="/attribute/new" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
         </SidebarMenu.Item>
 
         {/* -------- OIDC ---------*/}
@@ -54,10 +54,10 @@ function GluuAppSidebar({ scopes }) {
         >
           {(hasPermission(scopes, CLIENT_READ) && (
             <SidebarMenu.Item title="All Clients" to="/clients" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, CLIENT_WRITE) && (
             <SidebarMenu.Item title="New Client" to="/client/new" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
         </SidebarMenu.Item>
         {/* -------- Scopes ---------*/}
         <SidebarMenu.Item
@@ -66,10 +66,10 @@ function GluuAppSidebar({ scopes }) {
         >
           {(hasPermission(scopes, SCOPE_READ) && (
             <SidebarMenu.Item title="All Scopes" to="/scopes" />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, SCOPE_WRITE) && (
             <SidebarMenu.Item title="New Scope" to="/scope/new" />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
         </SidebarMenu.Item>
         {/* -------- Custom scripts ---------*/}
         <SidebarMenu.Item
@@ -78,10 +78,10 @@ function GluuAppSidebar({ scopes }) {
         >
           {(hasPermission(scopes, SCRIPT_READ) && (
             <SidebarMenu.Item title="All Scripts" to="/scripts" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, SCRIPT_WRITE) && (
             <SidebarMenu.Item title="New Script" to="/script/new" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
         </SidebarMenu.Item>
         {/* -------- Scopes ---------*/}
         {/* -------- Plugins ---------*/}
@@ -95,28 +95,28 @@ function GluuAppSidebar({ scopes }) {
         >
           {(hasPermission(scopes, SMTP_READ) && (
             <SidebarMenu.Item title="Smtp" to="/config/smtp" />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, FIDO_READ) && (
             <SidebarMenu.Item title="Fido2" to="/config/fido" />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, LDAP_READ) && (
             <SidebarMenu.Item title="Ldap" to="/config/ldap" />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, COUCHBASE_READ) && (
             <SidebarMenu.Item title="Couchbase" to="/config/couchbase" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, CACHE_READ) && (
             <SidebarMenu.Item title="Cache" to="/config/cache" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, ACR_READ) && (
             <SidebarMenu.Item title="Acrs" to="/config/acrs" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, LOGGING_READ) && (
             <SidebarMenu.Item title="Logging" to="/config/logging" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
           {(hasPermission(scopes, JWKS_READ) && (
             <SidebarMenu.Item title="Jwks" to="/config/jwks" exact />
-          )) || <li />}
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
         </SidebarMenu.Item>
         <Divider />
         <SidebarMenu.Item
