@@ -1,7 +1,6 @@
-import React from "react";
-import { FormGroup, Label, Badge } from "../../../components";
+import React from 'react'
+import { FormGroup, Label, Badge } from '../../../components'
 function GluuFormDetailRow({ label, value, isBadge, badgeColor }) {
-  console.log("Color:--------->");
   return (
     <FormGroup row>
       <Label for="input" sm={6}>
@@ -11,10 +10,10 @@ function GluuFormDetailRow({ label, value, isBadge, badgeColor }) {
         {!isBadge ? (
           value
         ) : (
-          <Badge color={badgeColor ? badgeColor : "primary"}>{value}</Badge>
+          <Badge color={badgeColor ? badgeColor : 'primary'}>{value}</Badge>
         )}
       </Label>
     </FormGroup>
-  );
+  )
 }
-export default GluuFormDetailRow;
+export default GluuFormDetailRow
