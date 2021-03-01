@@ -7,7 +7,7 @@ const api = new JansConfigApi.ConfigurationSMTPApi(
 // Get SMTP Config
 export const getSmtpConfig = () => {
   return new Promise((resolve, reject) => {
-    api.getConfigSmtp({}, (error, data) => {
+    api.getConfigSmtp((error, data) => {
       if (error) {
         reject(error)
       } else {
@@ -44,9 +44,9 @@ export const addSmtpConfig = (input) => {
 }
 
 // test SMTP Config
-export const testSmtpConfig = (input) => {
+export const testSmtpConfig = () => {
   return new Promise((resolve, reject) => {
-    api.testConfigSmtp(input, (error, data) => {
+    api.testConfigSmtp({}, (error, data) => {
       if (error) {
         reject(error)
       } else {

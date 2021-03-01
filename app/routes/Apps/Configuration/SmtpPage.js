@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Col,
   Form,
@@ -10,7 +10,13 @@ import {
 } from './../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
-function SmtpPage({ smtp }) {
+import { connect } from 'react-redux'
+import { getSmtpConfig } from '../../../redux/actions/SmtpActions'
+function SmtpPage({ smtp, dispatch }) {
+  console.log('===================' + JSON.stringify(smtp))
+  useEffect(() => {
+    dispatch(getSmtpConfig())
+  }, [])
   const smtpData = {
     valid: false,
     port: 0,
@@ -83,7 +89,7 @@ function SmtpPage({ smtp }) {
                     id="requires_authentication"
                     name="requires_authentication"
                     type="checkbox"
-                    defaultChecked={smtpData.requires_authentication}
+                    defaultChecked={smtp.requires_authentication}
                   />
                 </Col>
                 <GluuLabel label="Required Authentication" size={3} />
@@ -92,7 +98,7 @@ function SmtpPage({ smtp }) {
                     id="requires_ssl"
                     name="requires_ssl"
                     type="checkbox"
-                    defaultChecked={smtpData.requires_ssl}
+                    defaultChecked={smtp.requires_ssl}
                   />
                 </Col>
                 <GluuLabel label="Trusted Host ?" size={3} />
@@ -101,7 +107,7 @@ function SmtpPage({ smtp }) {
                     id="trust_host"
                     name="trust_host"
                     type="checkbox"
-                    defaultChecked={smtpData.trust_host}
+                    defaultChecked={smtp.trust_host}
                   />
                 </Col>
               </FormGroup>
@@ -125,5 +131,11 @@ function SmtpPage({ smtp }) {
     </React.Fragment>
   )
 }
+const mapStateToProps = (state) => {
+  return {
+    smtp: state.smtpReducer.smtp,
+    loading: state.smtpReducer.loading,
+  }
+}
 
-export default SmtpPage
+export default connect(mapStateToProps)(SmtpPage)

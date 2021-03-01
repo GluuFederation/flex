@@ -161,7 +161,6 @@ export const RoutedContent = () => {
 //------ Custom Layout Parts --------
 export const RoutedNavbars = () => (
   <Switch>
-    {/* Default Navbar: */}
     <Route
       component={() => (
         <GluuNavBar themeStyle="color" themeColor="primary" navStyle="accent" />
@@ -172,7 +171,6 @@ export const RoutedNavbars = () => (
 
 export const RoutedSidebars = () => (
   <Switch>
-    {/* Default Sidebar: */}
     <Route component={DefaultSidebar} />
   </Switch>
 )

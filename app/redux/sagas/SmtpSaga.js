@@ -6,12 +6,41 @@ import {
   updateSmtpConfig,
   testSmtpConfig,
 } from '../api/smtp-api'
+import {
+  getSmtpResponse,
+  addSmtpResponse,
+  editSmtpResponse,
+  testSmtpResponse,
+  setApiError,
+} from '../actions/SmtpActions'
 import { GET_SMTP, PUT_SMTP, SET_SMTP, TEST_SMTP } from '../actions/types'
 
 export function* getSmtp() {
   try {
     const data = yield call(getSmtpConfig)
-   // yield put(getSmtpResponse(data))
+    yield put(getSmtpResponse(data))
+  } catch (e) {
+    if (isFourZeroOneError(e) && !hasApiToken()) {
+      yield put(getAPIAccessToken())
+    }
+  }
+}
+
+export function* addSmtp({ payload }) {
+  try {
+    const data = yield call(addSmtpConfig, payload.data)
+    yield put(addSmtpResponse(data))
+  } catch (e) {
+    if (isFourZeroOneError(e) && !hasApiToken()) {
+      yield put(getAPIAccessToken())
+    }
+  }
+}
+
+export function* editSmtp({ payload }) {
+  try {
+    const data = yield call(updateSmtpConfig, payload.data)
+    yield put(editSmtpResponse(data))
   } catch (e) {
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
@@ -22,6 +51,14 @@ export function* getSmtp() {
 export function* watchGetSmtpConfig() {
   yield takeLatest(GET_SMTP, getSmtp)
 }
+
+export function* watchAddSmtpConfig() {
+  yield takeLatest(SET_SMTP, addSmtp)
+}
+
+export function* watchPutSmtpConfig() {
+  yield takeLatest(PUT_SMTP, editSmtp)
+}
 export default function* rootSaga() {
-  yield all([fork(watchGetSmtpConfig)])
+  yield all([fork(watchGetSmtpConfig), fork(watchPutSmtpConfig)])
 }
