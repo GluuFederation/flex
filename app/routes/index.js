@@ -57,6 +57,7 @@ import {
   LDAP_READ,
   COUCHBASE_READ,
 } from '../utils/PermChecker'
+import Gluu404Error from './Apps/Gluu/Gluu404Error'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -149,6 +150,7 @@ export const RoutedContent = () => {
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />
       <Route component={ByeBye} path="/logout" />
+      <Route component={Gluu404Error} path="/error-404" />
 
       {/*    404    */}
       <Redirect to="/error-404" />
