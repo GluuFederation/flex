@@ -11,7 +11,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
   function handleSubmit(data) {
     if (data) {
       dispatch(editAttribute(data))
-      // history.push("/attributes");
+      history.push('/attributes')
     }
   }
   return (
