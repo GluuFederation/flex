@@ -99,5 +99,5 @@ const Reports = () => (
 )
 
 export default setupPage({
-  pageTitle: 'Reports',
+  pageTitle: 'Dashboard',
 })(Reports)

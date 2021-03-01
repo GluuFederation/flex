@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Avatar,
@@ -15,7 +15,7 @@ import { NavbarActivityFeed } from '../../../layout/components/NavbarActivityFee
 import { NavbarMessages } from '../../../layout/components/NavbarMessages'
 import { LanguageMenu } from './LanguageMenu'
 import { connect } from 'react-redux'
-import { DropdownProfile } from '../Dropdowns/DropdownProfile'
+import { DropdownProfile } from '../../../routes/components/Dropdowns/DropdownProfile'
 import { randomAvatar } from '../../../utilities'
 function GluuNavBar({ themeColor, themeStyle, userinfo }) {
   return (
@@ -25,18 +25,15 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
       className="shadow-sm"
     >
       <Navbar expand="lg" themed>
-        {/* END Navbar: Left Side */}
         <Nav>
           <NavItem className="mr-3">
             <SidebarTrigger />
           </NavItem>
         </Nav>
-        {/* START Navbar: Right Side */}
         <Nav className="ml-auto" pills>
           <NavbarMessages />
           <NavbarActivityFeed />
           <LanguageMenu />
-          {/* START Navbar: Dropdown */}
           <UncontrolledDropdown nav inNavbar>
             <DropdownToggle nav>
               <Avatar.Image
@@ -59,7 +56,6 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
             <DropdownProfile right userinfo={userinfo} />
           </UncontrolledDropdown>
         </Nav>
-        {/* END Navbar: Right Side */}
       </Navbar>
     </NavbarThemeProvider>
   )

@@ -24,7 +24,6 @@ import CustomScriptAddPage from './Apps/Scripts/CustomScriptAddPage'
 import CustomScriptEditPage from './Apps/Scripts/CustomScriptEditPage'
 import ProfilePage from './Apps/Profile/ProfilePage'
 // ----------- Layout Imports ---------------
-import GluuNavBar from '../routes/components/Navbars/GluuNavBar'
 import { DefaultSidebar } from './../layout/components/DefaultSidebar'
 import ScopeListPage from './Apps/Scopes/ScopeListPage'
 import ScopeAddPage from './Apps/Scopes/ScopeAddPage'
@@ -58,6 +57,7 @@ import {
   COUCHBASE_READ,
 } from '../utils/PermChecker'
 import Gluu404Error from './Apps/Gluu/Gluu404Error'
+import GluuNavBar from './Apps/Gluu/GluuNavBar'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -65,9 +65,9 @@ export const RoutedContent = () => {
   const scopes = useSelector((state) => state.authReducer.permissions)
   return (
     <Switch>
-      <Redirect from="/" to="/home/reports" exact />
+      <Redirect from="/" to="/home/dashboard" exact />
       {/*<Route path="/home/analytics" exact component={ Analytics } />*/}
-      <Route path="/home/reports" exact component={Reports} />
+      <Route path="/home/dashboard" exact component={Reports} />
 
       {/*    Layouts     */}
       <Route path="/layouts/navbar" component={NavbarOnly} />
