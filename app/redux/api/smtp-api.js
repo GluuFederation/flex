@@ -19,6 +19,7 @@ export const getSmtpConfig = () => {
 
 // update SMTP Config
 export const updateSmtpConfig = (input) => {
+  console.log('***********************' + input)
   return new Promise((resolve, reject) => {
     api.putConfigSmtp(input, (error, data) => {
       if (error) {
@@ -44,9 +45,9 @@ export const addSmtpConfig = (input) => {
 }
 
 // test SMTP Config
-export const testSmtpConfig = () => {
+export const testSmtpConfig = (input) => {
   return new Promise((resolve, reject) => {
-    api.testConfigSmtp({}, (error, data) => {
+    api.testConfigSmtp(input, (error, data) => {
       if (error) {
         reject(error)
       } else {

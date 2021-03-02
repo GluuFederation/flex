@@ -14,7 +14,7 @@ import {
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
 import { connect } from 'react-redux'
-import { getSmtpConfig } from '../../../redux/actions/SmtpActions'
+import { getSmtpConfig, editSmtp } from '../../../redux/actions/SmtpActions'
 function SmtpPage({ smtp, dispatch, loading }) {
   console.log('**********' + JSON.stringify(smtp))
   useEffect(() => {
@@ -47,7 +47,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
               <Formik
                 initialValues={initialValues}
                 onSubmit={(values, { setSubmitting }) => {
-                  alert(JSON.stringify(values, null, 2))
+                  dispatch(editSmtp(JSON.stringify(values, null, 2)))
                 }}
               >
                 {(formik) => (

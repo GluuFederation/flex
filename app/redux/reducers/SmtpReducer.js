@@ -48,7 +48,6 @@ export default (state = INIT_STATE, action) => {
         ...state,
         smtp: action.payload.data,
         loading: false,
-        hasApiError: false,
       }
 
     case PUT_SMTP:
@@ -61,7 +60,6 @@ export default (state = INIT_STATE, action) => {
         ...state,
         smtp: state.smtp,
         loading: false,
-        hasApiError: false,
       }
 
     case TEST_SMTP:
@@ -83,13 +81,12 @@ export default (state = INIT_STATE, action) => {
       }
 
     case SET_API_ERROR:
-      return { ...state, loading: false, hasApiError: true }
+      return { ...state, loading: false}
     case RESET:
       return {
         ...state,
         smtp: INIT_STATE.smtp,
         loading: INIT_STATE.loading,
-        hasApiError: INIT_STATE.hasApiError,
       }
     default:
       return {
