@@ -57,7 +57,8 @@ class SessionChecker extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    //console.log('=============================1')
+    console.log('===========permissios :' + props.permissions)
+    console.log('===========token :' + props.token)
     if (!props.showContent) {
       //console.log('========2' + JSON.stringify(props.token))
       if (!props.userinfo) {

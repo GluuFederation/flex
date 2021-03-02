@@ -1,5 +1,5 @@
-import { call, all, put, fork, takeLatest } from 'redux-saga/effects'
-import { isFourZeroOneError } from '../../utils/TokenController'
+import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
+import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
 import {
   getSmtpConfig,
   addSmtpConfig,
@@ -11,17 +11,18 @@ import {
   addSmtpResponse,
   editSmtpResponse,
   testSmtpResponse,
-  setApiError,
 } from '../actions/SmtpActions'
+import { getAPIAccessToken } from '../actions/AuthActions'
 import { GET_SMTP, PUT_SMTP, SET_SMTP, TEST_SMTP } from '../actions/types'
-
 export function* getSmtp() {
   try {
     const data = yield call(getSmtpConfig)
     yield put(getSmtpResponse(data))
   } catch (e) {
-    if (isFourZeroOneError(e) && !hasApiToken()) {
-      yield put(getAPIAccessToken())
+    yield put(getSmtpResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
     }
   }
 }

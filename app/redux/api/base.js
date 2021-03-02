@@ -1,4 +1,10 @@
+//import store from './../store';
+
+
 export const getDefaultClient = (JansConfigApi) => {
+  //const state = store.getState();
+  //const authToken = state.authReducer.token.access_token;
+  //const ujwt = state.authReducer.userinfo_jwt;
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 50000
   const jansauth = defaultClient.authentications['jans-auth']
@@ -13,7 +19,7 @@ export const getDefaultClient = (JansConfigApi) => {
   }
   defaultClient.defaultHeaders = headers
   jansauth.accessToken = localStorage.getItem('gluu.api.token')
-  console.log('==== TOKEN: ' + localStorage.getItem('gluu.api.token'))
-  console.log('==== ISSUER: ' + localStorage.getItem('gluu.api.token.issuer'))
+  //console.log('==== TOKEN: ' + localStorage.getItem('gluu.api.token'))
+  //console.log('==== ISSUER: ' + localStorage.getItem('gluu.api.token.issuer'))
   return defaultClient
 }

@@ -15,7 +15,6 @@ import {
 const INIT_STATE = {
   smtp: {},
   loading: false,
-  hasApiError: false,
 }
 
 export default (state = INIT_STATE, action) => {
@@ -26,12 +25,19 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case GET_SMTP_RESPONSE:
-      return {
-        ...state,
-        smtp: action.payload.data,
-        loading: false,
-        hasApiError: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          smtp: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
+
     case SET_SMTP:
       return {
         ...state,

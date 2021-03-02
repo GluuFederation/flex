@@ -18,6 +18,7 @@ const INIT_STATE = {
   userinfo: null,
   userinfo_jwt: null,
   token: null,
+  issuer: null,
   permissions: [],
 }
 
