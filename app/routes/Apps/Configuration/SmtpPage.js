@@ -31,7 +31,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
     requires_authentication: smtp.requires_authentication,
     trust_host: smtp.trust_host,
   }
-
+  console.log('**********init' + JSON.stringify(initialValues))
   return (
     <React.Fragment>
       <BlockUi
@@ -47,7 +47,9 @@ function SmtpPage({ smtp, dispatch, loading }) {
               <Formik
                 initialValues={initialValues}
                 onSubmit={(values, { setSubmitting }) => {
-                  dispatch(editSmtp(JSON.stringify(values, null, 2)))
+                  const opts = {}
+                  opts['smtpConfiguration'] = JSON.stringify(values)
+                  dispatch(editSmtp(opts))
                 }}
               >
                 {(formik) => (
@@ -125,7 +127,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           defaultChecked={formik.values.requires_authentication}
                         />
                       </Col>
-                      <GluuLabel label="Required Authentication" size={3} />
+                      <GluuLabel label="Required SSL" size={3} />
                       <Col sm={1}>
                         <Input
                           id="requires_ssl"

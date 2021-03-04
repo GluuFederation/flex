@@ -7,8 +7,6 @@ import {
   PUT_SMTP_RESPONSE,
   TEST_SMTP,
   TEST_SMTP_RESPONSE,
-  SET_API_ERROR,
-  SET_ITEM,
 } from './types'
 
 export const getSmtpConfig = () => ({
@@ -45,14 +43,4 @@ export const testSmtp = () => ({
 export const testSmtpResponse = (data) => ({
   type: TEST_SMTP_RESPONSE,
   payload: { data },
-})
-
-export const setApiError = (error) => ({
-  type: SET_API_ERROR,
-  payload: { error },
-})
-
-export const setCurrentItem = (item) => ({
-  type: SET_ITEM,
-  payload: { item },
 })

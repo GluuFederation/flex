@@ -63,6 +63,12 @@ export const PUT_SMTP_RESPONSE = 'PUT_SMTP_RESPONSE'
 export const TEST_SMTP = 'TEST_SMTP'
 export const TEST_SMTP_RESPONSE = 'TEST_SMTP_RESPONSE'
 
+// fido
+export const GET_FIDO = 'GET_FIDO'
+export const GET_FIDO_RESPONSE = 'GET_FIDO_RESPONSE'
+export const PUT_FIDO = 'PUT_FIDO'
+export const PUT_FIDO_RESPONSE = 'PUT_FIDO_RESPONSE'
+
 
 export const SET_API_ERROR = 'SET_API_ERROR'
 export const RESET = 'RESET'
