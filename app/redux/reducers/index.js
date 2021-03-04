@@ -9,6 +9,7 @@ import openidClientReducer from './OpenidClientReducer'
 import customScriptReducer from './CustomScriptReducer'
 import smtpReducer from './SmtpReducer'
 import fidoReducer from './FidoReducer'
+import loggingReducer from './LoggingReducer'
 
 const reducers = combineReducers({
   authReducer,
@@ -18,6 +19,7 @@ const reducers = combineReducers({
   customScriptReducer,
   smtpReducer,
   fidoReducer,
+  loggingReducer,
 })
 
 export default reducers

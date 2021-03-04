@@ -69,6 +69,11 @@ export const GET_FIDO_RESPONSE = 'GET_FIDO_RESPONSE'
 export const PUT_FIDO = 'PUT_FIDO'
 export const PUT_FIDO_RESPONSE = 'PUT_FIDO_RESPONSE'
 
+// logging
+export const GET_LOGGING = 'GET_LOGGING'
+export const GET_LOGGING_RESPONSE = 'GET_LOGGING_RESPONSE'
+export const PUT_LOGGING = 'PUT_LOGGING'
+export const PUT_LOGGING_RESPONSE = 'PUT_LOGGING_RESPONSE'
 
 export const SET_API_ERROR = 'SET_API_ERROR'
 export const RESET = 'RESET'
