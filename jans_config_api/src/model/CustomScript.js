@@ -27,16 +27,15 @@ class CustomScript {
      * Script
      * @alias module:model/CustomScript
      * @param name {String} Custom script name. Should contain only letters, digits and underscores.
-     * @param description {String} Details describing the script.
      * @param script {String} Actual script.
      * @param scriptType {module:model/CustomScript.ScriptTypeEnum} Type of script.
      * @param programmingLanguage {module:model/CustomScript.ProgrammingLanguageEnum} Programming language of the custom script.
      * @param moduleProperties {Array.<module:model/SimpleCustomProperty>} Module-level properties applicable to the script.
      * @param level {Number} Script level.
      */
-    constructor(name, description, script, scriptType, programmingLanguage, moduleProperties, level) { 
+    constructor(name, script, scriptType, programmingLanguage, moduleProperties, level) { 
         
-        CustomScript.initialize(this, name, description, script, scriptType, programmingLanguage, moduleProperties, level);
+        CustomScript.initialize(this, name, script, scriptType, programmingLanguage, moduleProperties, level);
     }
 
     /**
@@ -44,9 +43,8 @@ class CustomScript {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, name, description, script, scriptType, programmingLanguage, moduleProperties, level) { 
+    static initialize(obj, name, script, scriptType, programmingLanguage, moduleProperties, level) { 
         obj['name'] = name;
-        obj['description'] = description;
         obj['script'] = script;
         obj['scriptType'] = scriptType;
         obj['programmingLanguage'] = programmingLanguage;
@@ -353,7 +351,13 @@ CustomScript['ScriptTypeEnum'] = {
      * value: "IDP"
      * @const
      */
-    "IDP": "IDP"
+    "IDP": "IDP",
+
+    /**
+     * value: "UPDATE_TOKEN"
+     * @const
+     */
+    "UPDATE_TOKEN": "UPDATE_TOKEN"
 };
 
 

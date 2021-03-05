@@ -72,7 +72,7 @@ Name | Type | Description | Notes
 **accessTokenLifetime** | **Number** | The lifetime of the short-lived Access Token. | [optional] 
 **cleanServiceInterval** | **Number** | Time interval for the Clean Service in seconds. | [optional] 
 **cleanServiceBatchChunkSize** | **Number** | Each clean up iteration fetches chunk of expired data per base dn and removes it from storage. | [optional] 
-**cleanServiceBaseDns** | **[String]** | List of additional base dns under which AS will look up for expired entities. | [optional] 
+**cleanServiceBaseDns** | **{String: String}** | Map of additional base dns under which AS will look up for expired entities. | [optional] 
 **keyRegenerationEnabled** | **Boolean** | Boolean value specifying whether to regenerate keys. | [optional] 
 **keyRegenerationInterval** | **Number** | The interval for key regeneration in hours. | [optional] 
 **defaultSignatureAlgorithm** | **[String]** | The default signature algorithm to sign ID Tokens. | [optional] 
@@ -199,6 +199,14 @@ Name | Type | Description | Notes
 **httpLoggingEnabled** | **Boolean** | Enable/Disable request/response logging filter. | [optional] 
 **httpLoggingExludePaths** | **[String]** | List of base URI for which request/response logging filter should not record activity. | [optional] 
 **externalLoggerConfiguration** | **String** | Path to external log4j2 logging configuration. | [optional] 
+**dcrSignatureValidationEnabled** | **Boolean** | Boolean value enables DCR signature validation. Default is false. | [optional] 
+**dcrSignatureValidationSoftwareStatementJwksURIClaim** | **String** | Specifies claim name inside software statement. Value of claim should point to JWKS URI. | [optional] 
+**dcrSignatureValidationSoftwareStatementJwksClaim** | **String** | Specifies claim name inside software statement. Value of claim should point to inlined JWKS. | [optional] 
+**dcrSignatureValidationJwks** | **String** | Specifies JWKS for all DCR&#39;s validations. | [optional] 
+**dcrSignatureValidationJwksUri** | **String** | specifies JWKS URI for all DCR&#39;s validations. | [optional] 
+**statEnabled** | **Boolean** | Boolean value indicating if statistical service is enabled. | [optional] 
+**statTimerIntervalInSeconds** | **Number** | Statistical data capture time interval. | [optional] 
+**statWebServiceIntervalLimitInSeconds** | **Number** | Statistical data capture time interval limit. | [optional] 
 
 
 

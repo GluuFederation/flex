@@ -56,19 +56,19 @@
 
     it('should have the property spontaneousClientId (base name: "spontaneousClientId")', function() {
       // uncomment below and update the code to test the property spontaneousClientId
-      //var instance = new JansConfigApi.ScopeAttributes();
+      //var instane = new JansConfigApi.ScopeAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property spontaneousClientScopes (base name: "spontaneousClientScopes")', function() {
       // uncomment below and update the code to test the property spontaneousClientScopes
-      //var instance = new JansConfigApi.ScopeAttributes();
+      //var instane = new JansConfigApi.ScopeAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property showInConfigurationEndpoint (base name: "showInConfigurationEndpoint")', function() {
       // uncomment below and update the code to test the property showInConfigurationEndpoint
-      //var instance = new JansConfigApi.ScopeAttributes();
+      //var instane = new JansConfigApi.ScopeAttributes();
       //expect(instance).to.be();
     });
 

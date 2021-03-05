@@ -31,6 +31,7 @@ Name | Type | Description | Notes
 **requred** | **Boolean** | Boolean value indicating is a mandatory attribute | [optional] 
 **attributeValidation** | [**GluuAttributeAttributeValidation**](GluuAttributeAttributeValidation.md) |  | [optional] 
 **tooltip** | **String** |  | [optional] 
+**jansHideOnDiscovery** | **Boolean** | Boolean value indicating if the attribute should be shown on that discovery page. | [optional] 
 
 
 

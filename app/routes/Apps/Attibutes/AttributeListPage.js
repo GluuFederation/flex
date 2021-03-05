@@ -19,6 +19,7 @@ import {
 function AttributeListPage({ attributes, scopes, dispatch }) {
   useEffect(() => {
     dispatch(getAttributes())
+    console.log(attributes)
   }, [])
 
   const history = useHistory()

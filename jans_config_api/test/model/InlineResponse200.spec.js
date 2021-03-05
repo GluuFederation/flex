@@ -56,13 +56,13 @@
 
     it('should have the property service (base name: "service")', function() {
       // uncomment below and update the code to test the property service
-      //var instance = new JansConfigApi.InlineResponse200();
+      //var instane = new JansConfigApi.InlineResponse200();
       //expect(instance).to.be();
     });
 
     it('should have the property status (base name: "status")', function() {
       // uncomment below and update the code to test the property status
-      //var instance = new JansConfigApi.InlineResponse200();
+      //var instane = new JansConfigApi.InlineResponse200();
       //expect(instance).to.be();
     });
 

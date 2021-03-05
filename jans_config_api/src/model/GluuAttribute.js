@@ -144,6 +144,9 @@ class GluuAttribute {
             if (data.hasOwnProperty('tooltip')) {
                 obj['tooltip'] = ApiClient.convertToType(data['tooltip'], 'String');
             }
+            if (data.hasOwnProperty('jansHideOnDiscovery')) {
+                obj['jansHideOnDiscovery'] = ApiClient.convertToType(data['jansHideOnDiscovery'], 'Boolean');
+            }
         }
         return obj;
     }
@@ -298,6 +301,12 @@ GluuAttribute.prototype['attributeValidation'] = undefined;
  * @member {String} tooltip
  */
 GluuAttribute.prototype['tooltip'] = undefined;
+
+/**
+ * Boolean value indicating if the attribute should be shown on that discovery page.
+ * @member {Boolean} jansHideOnDiscovery
+ */
+GluuAttribute.prototype['jansHideOnDiscovery'] = undefined;
 
 
 

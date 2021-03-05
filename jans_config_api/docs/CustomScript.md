@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **inum** | **String** | XRI i-number. Identifier to uniquely identify the script. | [optional] 
 **name** | **String** | Custom script name. Should contain only letters, digits and underscores. | 
 **aliases** | **[String]** | List of possible aliases for the custom script. | [optional] 
-**description** | **String** | Details describing the script. | 
+**description** | **String** | Details describing the script. | [optional] 
 **script** | **String** | Actual script. | 
 **scriptType** | **String** | Type of script. | 
 **programmingLanguage** | **String** | Programming language of the custom script. | 
@@ -67,6 +67,8 @@ Name | Type | Description | Notes
 * `PERSISTENCE_EXTENSION` (value: `"PERSISTENCE_EXTENSION"`)
 
 * `IDP` (value: `"IDP"`)
+
+* `UPDATE_TOKEN` (value: `"UPDATE_TOKEN"`)
 
 
 

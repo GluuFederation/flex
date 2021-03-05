@@ -56,85 +56,85 @@
 
     it('should have the property issuer (base name: "issuer")', function() {
       // uncomment below and update the code to test the property issuer
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property baseEndpoint (base name: "baseEndpoint")', function() {
       // uncomment below and update the code to test the property baseEndpoint
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cleanServiceInterval (base name: "cleanServiceInterval")', function() {
       // uncomment below and update the code to test the property cleanServiceInterval
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property cleanServiceBatchChunkSize (base name: "cleanServiceBatchChunkSize")', function() {
       // uncomment below and update the code to test the property cleanServiceBatchChunkSize
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property useLocalCache (base name: "useLocalCache")', function() {
       // uncomment below and update the code to test the property useLocalCache
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property disableJdkLogger (base name: "disableJdkLogger")', function() {
       // uncomment below and update the code to test the property disableJdkLogger
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property loggingLevel (base name: "loggingLevel")', function() {
       // uncomment below and update the code to test the property loggingLevel
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property loggingLayout (base name: "loggingLayout")', function() {
       // uncomment below and update the code to test the property loggingLayout
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property externalLoggerConfiguration (base name: "externalLoggerConfiguration")', function() {
       // uncomment below and update the code to test the property externalLoggerConfiguration
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property metricReporterInterval (base name: "metricReporterInterval")', function() {
       // uncomment below and update the code to test the property metricReporterInterval
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property metricReporterKeepDataDays (base name: "metricReporterKeepDataDays")', function() {
       // uncomment below and update the code to test the property metricReporterKeepDataDays
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property metricReporterEnabled (base name: "metricReporterEnabled")', function() {
       // uncomment below and update the code to test the property metricReporterEnabled
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property personCustomObjectClassList (base name: "personCustomObjectClassList")', function() {
       // uncomment below and update the code to test the property personCustomObjectClassList
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property fido2Configuration (base name: "fido2Configuration")', function() {
       // uncomment below and update the code to test the property fido2Configuration
-      //var instance = new JansConfigApi.JansFido2DynConfiguration();
+      //var instane = new JansConfigApi.JansFido2DynConfiguration();
       //expect(instance).to.be();
     });
 
