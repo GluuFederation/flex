@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import AppLayout from '../../layout/default'
 import { RoutedContent } from '../../routes'
-import SessionChecker from '../../utils/SessionChecker'
+import AppAuthProvider from '../../utils/AppAuthProvider'
 import { Provider } from 'react-redux'
 import { configureStore } from '../../redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
@@ -14,11 +14,11 @@ const AppMain = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <Router basename={basePath}>
-          <SessionChecker>
+          <AppAuthProvider>
             <AppLayout>
               <RoutedContent />
             </AppLayout>
-          </SessionChecker>
+          </AppAuthProvider>
         </Router>
       </PersistGate>
     </Provider>

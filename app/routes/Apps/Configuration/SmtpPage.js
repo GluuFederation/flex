@@ -16,7 +16,7 @@ import GluuFooter from '../Gluu/GluuFooter'
 import { connect } from 'react-redux'
 import { getSmtpConfig, editSmtp } from '../../../redux/actions/SmtpActions'
 function SmtpPage({ smtp, dispatch, loading }) {
-  console.log('**********' + JSON.stringify(smtp))
+  //console.log('**********' + JSON.stringify(smtp))
   useEffect(() => {
     dispatch(getSmtpConfig())
   }, [])
