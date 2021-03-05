@@ -73,7 +73,7 @@ class AppAuthProvider extends Component {
           if (showContent && props.config != -1) {
             const state = uuidv4()
             saveState(state)
-            const authzUrl = SessionChecker.buildAuthzUrl(
+            const authzUrl = AppAuthProvider.buildAuthzUrl(
               props.config,
               state,
               uuidv4(),

@@ -1,0 +1,26 @@
+
+#circle {
+  fill: none;
+  stroke: rgba(16, 74, 231, 0.5);
+  stroke-linecap: round;
+  stroke-width: 4;
+  animation: draw 3s ease-in-out infinite;
+}
+
+@keyframes draw {
+  0% {
+    stroke-dasharray: 20, 282.6;
+  }
+  50% {
+    stroke-dasharray: 200, 282.6;
+  }
+  100% {
+    stroke-dasharray: 20, 282.6;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

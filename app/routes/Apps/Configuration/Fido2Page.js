@@ -218,7 +218,7 @@ function Fido2Page({ fido, dispatch, loading }) {
 }
 const mapStateToProps = (state) => {
   return {
-    fido: state.fidoReducer.fido.fido2Configuration,
+    fido: state.fidoReducer.fido,
     loading: state.fidoReducer.loading,
   }
 }

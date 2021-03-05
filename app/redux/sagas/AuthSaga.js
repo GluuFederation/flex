@@ -47,7 +47,7 @@ function* getAPIAccessTokenWorker({ payload }) {
   try {
     if (payload.jwt) {
       const response = yield call(fetchApiAccessToken, payload.jwt)
-      console.log("###########"+JSON.stringify(response));
+      //console.log("###########"+JSON.stringify(response));
       if (response) {
         yield put(getAPIAccessTokenResponse(response))
         return

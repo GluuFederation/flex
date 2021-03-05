@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
-import * as Yup from 'yup'
 import {
   Col,
   Form,
@@ -16,10 +15,10 @@ import GluuFooter from '../Gluu/GluuFooter'
 import { connect } from 'react-redux'
 import { getSmtpConfig, editSmtp } from '../../../redux/actions/SmtpActions'
 function SmtpPage({ smtp, dispatch, loading }) {
-  //console.log('**********' + JSON.stringify(smtp))
   useEffect(() => {
     dispatch(getSmtpConfig())
   }, [])
+
   const initialValues = {
     host: smtp.host,
     port: smtp.port,
@@ -31,19 +30,19 @@ function SmtpPage({ smtp, dispatch, loading }) {
     requires_authentication: smtp.requires_authentication,
     trust_host: smtp.trust_host,
   }
-  console.log('**********init' + JSON.stringify(initialValues))
+  //console.log('**********init' + JSON.stringify(initialValues))
   return (
     <React.Fragment>
-      <BlockUi
-        tag="div"
-        blocking={loading}
-        keepInView={true}
-        renderChildren={true}
-        message={'Performing the request, please wait!'}
-      >
-        <Container>
-          <Card>
-            <CardBody>
+      <Container>
+        <Card>
+          <CardBody>
+            <BlockUi
+              tag="div"
+              blocking={loading}
+              keepInView={true}
+              renderChildren={true}
+              message={'Performing the request, please wait!'}
+            >
               <Formik
                 initialValues={initialValues}
                 onSubmit={(values, { setSubmitting }) => {
@@ -166,10 +165,10 @@ function SmtpPage({ smtp, dispatch, loading }) {
                   </Form>
                 )}
               </Formik>
-            </CardBody>
-          </Card>
-        </Container>
-      </BlockUi>
+            </BlockUi>
+          </CardBody>
+        </Card>
+      </Container>
     </React.Fragment>
   )
 }

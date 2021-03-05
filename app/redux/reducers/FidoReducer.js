@@ -7,7 +7,7 @@ import {
 } from '../actions/types'
 
 const INIT_STATE = {
-  fido: { fido2Configuration: {} },
+  fido: {},
   loading: false,
 }
 
@@ -19,6 +19,7 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case GET_FIDO_RESPONSE:
+      //console.log('=Fido config: ' + JSON.stringify(action.payload.data))
       if (action.payload.data) {
         return {
           ...state,
@@ -28,6 +29,7 @@ export default (state = INIT_STATE, action) => {
       } else {
         return {
           ...state,
+          fido: INIT_STATE.fido,
           loading: false,
         }
       }

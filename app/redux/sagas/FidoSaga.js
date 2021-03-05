@@ -7,7 +7,8 @@ import { GET_FIDO, PUT_FIDO } from '../actions/types'
 export function* getFido() {
   try {
     const data = yield call(getFidoConfig)
-    yield put(getFidoResponse(data))
+    //console.log("=========fido data "+JSON.stringify(data))
+    yield put(getFidoResponse(data.fido2Configuration))
   } catch (e) {
     yield put(getFidoResponse(null))
     if (isFourZeroOneError(e)) {
