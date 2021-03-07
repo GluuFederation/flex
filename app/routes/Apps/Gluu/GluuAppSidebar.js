@@ -23,6 +23,8 @@ import {
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 function GluuAppSidebar({ scopes }) {
+  const plugins = localStorage.getItem("plugins");
+
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
@@ -85,7 +87,9 @@ function GluuAppSidebar({ scopes }) {
         </SidebarMenu.Item>
         {/* -------- Scopes ---------*/}
         {/* -------- Plugins ---------*/}
-
+        {JSON.parse(plugins).map((item, key) => (
+            <SidebarMenu.Item key={key} title={item.title} to={item.path}></SidebarMenu.Item>
+        ))}
         <Divider />
         <Divider />
         {/* -------- Configuration ---------*/}

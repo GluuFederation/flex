@@ -10,16 +10,20 @@ import customScriptReducer from './CustomScriptReducer'
 import smtpReducer from './SmtpReducer'
 import fidoReducer from './FidoReducer'
 import loggingReducer from './LoggingReducer'
+import pluginMenuReducer from './PluginMenuReducer'
+import pluginReducers from '../../../plugins/redux/reducers'
 
-const reducers = combineReducers({
+const appReducers = {
   authReducer,
   scopeReducer,
   attributeReducer,
   openidClientReducer,
   customScriptReducer,
   smtpReducer,
-  fidoReducer,
-  loggingReducer,
-})
+  pluginMenuReducer,
+};
+
+const allReducers = {...appReducers, pluginReducers};
+const reducers = combineReducers(allReducers)
 
 export default reducers
