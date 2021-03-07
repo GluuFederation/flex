@@ -11,7 +11,7 @@ import smtpReducer from './SmtpReducer'
 import fidoReducer from './FidoReducer'
 import loggingReducer from './LoggingReducer'
 import pluginMenuReducer from './PluginMenuReducer'
-import pluginReducers from '../../../plugins/redux/reducers'
+import {healthCheck} from '../../../plugins/redux/reducers'
 
 const appReducers = {
   authReducer,
@@ -23,7 +23,7 @@ const appReducers = {
   pluginMenuReducer,
 };
 
-const allReducers = {...appReducers, pluginReducers};
+const allReducers = {...appReducers, healthCheck};
 const reducers = combineReducers(allReducers)
 
 export default reducers
