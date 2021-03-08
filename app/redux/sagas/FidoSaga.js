@@ -1,13 +1,16 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
-import { getFidoConfig, updateFidoConfig } from '../api/fido-api'
 import { getFidoResponse, editFidoResponse } from '../actions/FidoActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { GET_FIDO, PUT_FIDO } from '../actions/types'
+import FidoApi from '../api/FidoApi'
+import { getClient } from '../api/base'
+const JansConfigApi = require('jans_config_api')
+
 export function* getFido() {
   try {
-    const data = yield call(getFidoConfig)
-    //console.log("=========fido data "+JSON.stringify(data))
+    const api = yield* newFunction()
+    const data = yield call(api.getFidoConfig)
     yield put(getFidoResponse(data.fido2Configuration))
   } catch (e) {
     yield put(getFidoResponse(null))
@@ -20,13 +23,23 @@ export function* getFido() {
 
 export function* editFido({ payload }) {
   try {
-    const data = yield call(updateFidoConfig, payload.data)
+    const api = yield* newFunction()
+    const data = yield call(api.updateFidoConfig, payload.data)
     yield put(editFidoResponse(data))
   } catch (e) {
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
   }
+}
+
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.ConfigurationFido2Api(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new FidoApi(api)
 }
 
 export function* watchGetFidoConfig() {
