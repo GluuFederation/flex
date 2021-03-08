@@ -66,6 +66,7 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         token: action.payload.accessToken,
+        issuer: action.payload.accessToken.issuer,
         permissions: action.payload.accessToken.scopes,
         isAuthenticated: true,
       }

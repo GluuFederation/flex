@@ -14,6 +14,7 @@ import {
 } from '../actions/SmtpActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { GET_SMTP, PUT_SMTP, SET_SMTP, TEST_SMTP } from '../actions/types'
+
 export function* getSmtp() {
   try {
     const data = yield call(getSmtpConfig)

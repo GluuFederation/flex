@@ -1,7 +1,7 @@
 /**
  * Attribute Sagas
  */
-import { call, all, put, fork, takeLatest } from 'redux-saga/effects'
+import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
 import {
   getAllAttributes,
@@ -23,10 +23,22 @@ import {
   EDIT_ATTRIBUTE,
   DELETE_ATTRIBUTE,
 } from '../actions/types'
+import AttributeApi from '../api/AttributeApi'
+import { getClient } from '../api/base'
+const JansConfigApi = require('jans_config_api')
+const kapi = new JansConfigApi.AttributeApi(
+  getClient(JansConfigApi, 'token', 'issuer'),
+)
 
 export function* getAttributes() {
   try {
-    const data = yield call(getAllAttributes)
+    const token = yield select((state) => state.authReducer.token.access_token)
+    const issuer = yield select((state) => state.authReducer.issuer)
+    const api = new JansConfigApi.AttributeApi(
+      getClient(JansConfigApi, token, issuer),
+    )
+    const attributeApi = new AttributeApi(api)
+    const data = yield call(attributeApi.getAllAttributes)
     yield put(getAttributesResponse(data))
   } catch (e) {
     if (isFourZeroOneError(e) && !hasApiToken()) {

@@ -1,5 +1,7 @@
 import { getDefaultClient } from './base'
 const JansConfigApi = require('jans_config_api')
+
+
 const api = new JansConfigApi.ConfigurationSMTPApi(
   getDefaultClient(JansConfigApi),
 )
