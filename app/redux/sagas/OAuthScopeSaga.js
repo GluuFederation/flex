@@ -36,7 +36,7 @@ export function* getScopes() {
     const data = yield call(scopeApi.getAllScopes)
     yield put(getScopesResponse(data))
   } catch (e) {
-    console.log("============================"+e)
+    console.log('============================' + e)
     yield put(setApiError(e))
   }
 }
