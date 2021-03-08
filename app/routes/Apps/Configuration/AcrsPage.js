@@ -21,7 +21,7 @@ function AcrsPage({ acrs, dispatch, loading }) {
     dispatch(getAcrsConfig())
   }, [])
   const initialValues = {
-    defaultAcr: acrs.defaultAcr
+    defaultAcr: acrs ? acrs.defaultAcr : null
   }
   return (
     <React.Fragment>
