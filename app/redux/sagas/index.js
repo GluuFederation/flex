@@ -10,6 +10,7 @@ import attributeSaga from './AttributeSaga'
 import openidClientSaga from './OpenidClientSaga'
 import customScriptSaga from './CustomScriptSaga'
 import smtpSaga from './SmtpSaga'
+import acrsSaga from './AcrsSaga'
 import fidoSaga from './FidoSaga'
 import loggingSaga from './LoggingSaga'
 
@@ -21,6 +22,7 @@ export default function* rootSaga() {
     attributeSaga(),
     customScriptSaga(),
     smtpSaga(),
+    acrsSaga(),
     fidoSaga(),
     loggingSaga(),
   ])

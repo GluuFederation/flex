@@ -56,25 +56,25 @@
 
     it('should have the property attemptExpiration (base name: "attemptExpiration")', function() {
       // uncomment below and update the code to test the property attemptExpiration
-      //var instance = new JansConfigApi.AuthenticationProtectionConfiguration();
+      //var instane = new JansConfigApi.AuthenticationProtectionConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property maximumAllowedAttemptsWithoutDelay (base name: "maximumAllowedAttemptsWithoutDelay")', function() {
       // uncomment below and update the code to test the property maximumAllowedAttemptsWithoutDelay
-      //var instance = new JansConfigApi.AuthenticationProtectionConfiguration();
+      //var instane = new JansConfigApi.AuthenticationProtectionConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property delayTime (base name: "delayTime")', function() {
       // uncomment below and update the code to test the property delayTime
-      //var instance = new JansConfigApi.AuthenticationProtectionConfiguration();
+      //var instane = new JansConfigApi.AuthenticationProtectionConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property bruteForceProtectionEnabled (base name: "bruteForceProtectionEnabled")', function() {
       // uncomment below and update the code to test the property bruteForceProtectionEnabled
-      //var instance = new JansConfigApi.AuthenticationProtectionConfiguration();
+      //var instane = new JansConfigApi.AuthenticationProtectionConfiguration();
       //expect(instance).to.be();
     });
 

@@ -56,7 +56,7 @@
 
     it('should have the property keys (base name: "keys")', function() {
       // uncomment below and update the code to test the property keys
-      //var instance = new JansConfigApi.WebKeysConfiguration();
+      //var instane = new JansConfigApi.WebKeysConfiguration();
       //expect(instance).to.be();
     });
 

@@ -56,25 +56,25 @@
 
     it('should have the property id (base name: "id")', function() {
       // uncomment below and update the code to test the property id
-      //var instance = new JansConfigApi.SectorIdentifier();
+      //var instane = new JansConfigApi.SectorIdentifier();
       //expect(instance).to.be();
     });
 
     it('should have the property description (base name: "description")', function() {
       // uncomment below and update the code to test the property description
-      //var instance = new JansConfigApi.SectorIdentifier();
+      //var instane = new JansConfigApi.SectorIdentifier();
       //expect(instance).to.be();
     });
 
     it('should have the property redirectUris (base name: "redirectUris")', function() {
       // uncomment below and update the code to test the property redirectUris
-      //var instance = new JansConfigApi.SectorIdentifier();
+      //var instane = new JansConfigApi.SectorIdentifier();
       //expect(instance).to.be();
     });
 
     it('should have the property clientIds (base name: "clientIds")', function() {
       // uncomment below and update the code to test the property clientIds
-      //var instance = new JansConfigApi.SectorIdentifier();
+      //var instane = new JansConfigApi.SectorIdentifier();
       //expect(instance).to.be();
     });
 
