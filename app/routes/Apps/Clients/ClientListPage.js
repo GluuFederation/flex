@@ -6,9 +6,13 @@ import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import { getOpenidClients } from '../../../redux/actions/OpenidClientActions'
-//import clients from './clients'
+import {
+  hasPermission,
+  CLIENT_WRITE,
+  CLIENT_DELETE,
+} from '../../../utils/PermChecker'
 
-function ClientListPage({ clients, dispatch }) {
+function ClientListPage({ clients, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getOpenidClients())
   }, [])
@@ -84,7 +88,7 @@ function ClientListPage({ clients, dispatch }) {
           },
         ]}
         data={clients}
-        isLoading={false}
+        isLoading={loading}
         title="OpenId Connect Clients"
         actions={[
           (rowData) => ({
@@ -159,7 +163,7 @@ const mapStateToProps = (state) => {
   return {
     clients: state.openidClientReducer.items,
     loading: state.openidClientReducer.loading,
-    hasApiError: state.openidClientReducer.hasApiError,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(ClientListPage)

@@ -11,7 +11,7 @@ import {
 } from '../../../redux/actions/CustomScriptActions'
 //import scripts from './scripts'
 
-function CustomScriptListPage({ scripts, dispatch }) {
+function CustomScriptListPage({ scripts, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getCustomScripts())
   }, [])
@@ -63,7 +63,7 @@ function CustomScriptListPage({ scripts, dispatch }) {
           },
         ]}
         data={scripts}
-        isLoading={false}
+        isLoading={loading}
         title="CustomScripts"
         actions={[
           (rowData) => ({
@@ -137,7 +137,7 @@ const mapStateToProps = (state) => {
   return {
     scripts: state.customScriptReducer.items,
     loading: state.customScriptReducer.loading,
-    hasApiError: state.customScriptReducer.hasApiError,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(CustomScriptListPage)

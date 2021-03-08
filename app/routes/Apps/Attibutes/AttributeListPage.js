@@ -10,13 +10,12 @@ import {
   ATTRIBUTE_WRITE,
   ATTRIBUTE_DELETE,
 } from '../../../utils/PermChecker'
-//import attributes from './attributes'
 import {
   getAttributes,
   setCurrentItem,
 } from '../../../redux/actions/AttributeActions'
 
-function AttributeListPage({ attributes, scopes, dispatch }) {
+function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getAttributes())
   }, [])
@@ -69,7 +68,7 @@ function AttributeListPage({ attributes, scopes, dispatch }) {
           },
         ]}
         data={attributes}
-        isLoading={false}
+        isLoading={loading}
         title="Attributes"
         actions={[
           (rowData) => ({
@@ -80,7 +79,7 @@ function AttributeListPage({ attributes, scopes, dispatch }) {
             },
             tooltip: 'Edit Attribute',
             onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
-            disabled: !hasPermission(scopes, ATTRIBUTE_WRITE),
+            disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
           }),
           {
             icon: 'add',
@@ -88,7 +87,7 @@ function AttributeListPage({ attributes, scopes, dispatch }) {
             iconProps: { color: 'primary' },
             isFreeAction: true,
             onClick: () => handleGoToAttributeAddPage(),
-            disabled: !hasPermission(scopes, ATTRIBUTE_WRITE),
+            disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
           },
           {
             icon: 'refresh',
@@ -107,7 +106,7 @@ function AttributeListPage({ attributes, scopes, dispatch }) {
             },
             tooltip: 'Delete Attribute',
             onClick: (event, rowData) => handleAttribueDelete(rowData),
-            disabled: !hasPermission(scopes, ATTRIBUTE_DELETE),
+            disabled: !hasPermission(permissions, ATTRIBUTE_DELETE),
           }),
         ]}
         options={{
@@ -143,8 +142,7 @@ const mapStateToProps = (state) => {
   return {
     attributes: state.attributeReducer.items,
     loading: state.attributeReducer.loading,
-    scopes: state.authReducer.permissions,
-    hasApiError: state.attributeReducer.hasApiError,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(AttributeListPage)
