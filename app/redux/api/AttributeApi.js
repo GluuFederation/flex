@@ -6,7 +6,7 @@ export default class AttributeApi {
   // Get all attributes
   getAllAttributes = () => {
     return new Promise((resolve, reject) => {
-      this.api.getAttributes({}, (error, data) => {
+      this.api.getAttributes({limit:500}, (error, data) => {
         if (error) {
           reject(error)
         } else {
@@ -30,7 +30,7 @@ export default class AttributeApi {
 
   editAnAttribute = (data) => {
     return new Promise((resolve, reject) => {
-      api.putAttributes(data, (error, data) => {
+      this.api.putAttributes(data, (error, data) => {
         if (error) {
           reject(error)
         } else {

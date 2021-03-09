@@ -20,6 +20,58 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     dispatch(getAttributes())
   }, [])
 
+  const myActions = []
+  if (!hasPermission(permissions, ATTRIBUTE_WRITE)) {
+    myActions.push((rowData) => ({
+      icon: 'edit',
+      iconProps: {
+        color: 'primary',
+        id: 'editAttribute' + rowData.inum,
+      },
+      tooltip: 'Edit Attribute',
+      onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
+      disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
+    }))
+  }
+  myActions.push((rowData) => ({
+    icon: 'edit',
+    iconProps: {
+      color: 'primary',
+      id: 'editAttribute' + rowData.inum,
+    },
+    tooltip: 'Edit Attribute',
+    onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
+    disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
+  }))
+  myActions.push({
+    icon: 'add',
+    tooltip: 'Add Attribute',
+    iconProps: { color: 'primary' },
+    isFreeAction: true,
+    onClick: () => handleGoToAttributeAddPage(),
+    disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
+  })
+  myActions.push({
+    icon: 'refresh',
+    tooltip: 'Refresh Data',
+    iconProps: { color: 'primary' },
+    isFreeAction: true,
+    onClick: () => {
+      dispatch(getAttributes())
+    },
+  })
+
+  myActions.push((rowData) => ({
+    icon: 'delete',
+    iconProps: {
+      color: 'secondary',
+      id: 'deleteAttribute' + rowData.inum,
+    },
+    tooltip: 'Delete Attribute',
+    onClick: (event, rowData) => handleAttribueDelete(rowData),
+    disabled: !hasPermission(permissions, ATTRIBUTE_DELETE),
+  }))
+
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
@@ -70,45 +122,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         data={attributes}
         isLoading={loading}
         title="Attributes"
-        actions={[
-          (rowData) => ({
-            icon: 'edit',
-            iconProps: {
-              color: 'primary',
-              id: 'editAttribute' + rowData.inum,
-            },
-            tooltip: 'Edit Attribute',
-            onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
-            disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
-          }),
-          {
-            icon: 'add',
-            tooltip: 'Add Attribute',
-            iconProps: { color: 'primary' },
-            isFreeAction: true,
-            onClick: () => handleGoToAttributeAddPage(),
-            disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
-          },
-          {
-            icon: 'refresh',
-            tooltip: 'Refresh Data',
-            iconProps: { color: 'primary' },
-            isFreeAction: true,
-            onClick: () => {
-              dispatch(getAttributes())
-            },
-          },
-          (rowData) => ({
-            icon: 'delete',
-            iconProps: {
-              color: 'secondary',
-              id: 'deleteAttribute' + rowData.inum,
-            },
-            tooltip: 'Delete Attribute',
-            onClick: (event, rowData) => handleAttribueDelete(rowData),
-            disabled: !hasPermission(permissions, ATTRIBUTE_DELETE),
-          }),
-        ]}
+        actions={myActions}
         options={{
           search: true,
           selection: false,
