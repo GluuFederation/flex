@@ -56,97 +56,97 @@
 
     it('should have the property dn (base name: "dn")', function() {
       // uncomment below and update the code to test the property dn
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property inum (base name: "inum")', function() {
       // uncomment below and update the code to test the property inum
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property id (base name: "id")', function() {
       // uncomment below and update the code to test the property id
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property name (base name: "name")', function() {
       // uncomment below and update the code to test the property name
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property iconUri (base name: "iconUri")', function() {
       // uncomment below and update the code to test the property iconUri
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property scopes (base name: "scopes")', function() {
       // uncomment below and update the code to test the property scopes
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property scopeExpression (base name: "scopeExpression")', function() {
       // uncomment below and update the code to test the property scopeExpression
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property clients (base name: "clients")', function() {
       // uncomment below and update the code to test the property clients
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property resources (base name: "resources")', function() {
       // uncomment below and update the code to test the property resources
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property rev (base name: "rev")', function() {
       // uncomment below and update the code to test the property rev
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property creator (base name: "creator")', function() {
       // uncomment below and update the code to test the property creator
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property description (base name: "description")', function() {
       // uncomment below and update the code to test the property description
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property type (base name: "type")', function() {
       // uncomment below and update the code to test the property type
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property creationDate (base name: "creationDate")', function() {
       // uncomment below and update the code to test the property creationDate
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property expirationDate (base name: "expirationDate")', function() {
       // uncomment below and update the code to test the property expirationDate
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 
     it('should have the property deletable (base name: "deletable")', function() {
       // uncomment below and update the code to test the property deletable
-      //var instane = new JansConfigApi.UmaResource();
+      //var instance = new JansConfigApi.UmaResource();
       //expect(instance).to.be();
     });
 

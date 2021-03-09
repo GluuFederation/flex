@@ -56,31 +56,31 @@
 
     it('should have the property cacheProviderType (base name: "cacheProviderType")', function() {
       // uncomment below and update the code to test the property cacheProviderType
-      //var instane = new JansConfigApi.CacheConfiguration();
+      //var instance = new JansConfigApi.CacheConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property memcachedConfiguration (base name: "memcachedConfiguration")', function() {
       // uncomment below and update the code to test the property memcachedConfiguration
-      //var instane = new JansConfigApi.CacheConfiguration();
+      //var instance = new JansConfigApi.CacheConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property redisConfiguration (base name: "redisConfiguration")', function() {
       // uncomment below and update the code to test the property redisConfiguration
-      //var instane = new JansConfigApi.CacheConfiguration();
+      //var instance = new JansConfigApi.CacheConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property inMemoryConfiguration (base name: "inMemoryConfiguration")', function() {
       // uncomment below and update the code to test the property inMemoryConfiguration
-      //var instane = new JansConfigApi.CacheConfiguration();
+      //var instance = new JansConfigApi.CacheConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property nativePersistenceConfiguration (base name: "nativePersistenceConfiguration")', function() {
       // uncomment below and update the code to test the property nativePersistenceConfiguration
-      //var instane = new JansConfigApi.CacheConfiguration();
+      //var instance = new JansConfigApi.CacheConfiguration();
       //expect(instance).to.be();
     });
 

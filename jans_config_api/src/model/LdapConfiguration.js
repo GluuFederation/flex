@@ -47,7 +47,7 @@ class LdapConfiguration {
         obj['bindDN'] = bindDN;
         obj['bindPassword'] = bindPassword;
         obj['servers'] = servers;
-        obj['maxConnections'] = maxConnections;
+        obj['maxConnections'] = maxConnections || 2;
         obj['useSSL'] = useSSL;
         obj['baseDNs'] = baseDNs;
         obj['primaryKey'] = primaryKey;

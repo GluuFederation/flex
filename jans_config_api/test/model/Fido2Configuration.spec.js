@@ -56,55 +56,55 @@
 
     it('should have the property authenticatorCertsFolder (base name: "authenticatorCertsFolder")', function() {
       // uncomment below and update the code to test the property authenticatorCertsFolder
-      //var instane = new JansConfigApi.Fido2Configuration();
+      //var instance = new JansConfigApi.Fido2Configuration();
       //expect(instance).to.be();
     });
 
     it('should have the property mdsCertsFolder (base name: "mdsCertsFolder")', function() {
       // uncomment below and update the code to test the property mdsCertsFolder
-      //var instane = new JansConfigApi.Fido2Configuration();
+      //var instance = new JansConfigApi.Fido2Configuration();
       //expect(instance).to.be();
     });
 
     it('should have the property mdsTocsFolder (base name: "mdsTocsFolder")', function() {
       // uncomment below and update the code to test the property mdsTocsFolder
-      //var instane = new JansConfigApi.Fido2Configuration();
+      //var instance = new JansConfigApi.Fido2Configuration();
       //expect(instance).to.be();
     });
 
     it('should have the property serverMetadataFolder (base name: "serverMetadataFolder")', function() {
       // uncomment below and update the code to test the property serverMetadataFolder
-      //var instane = new JansConfigApi.Fido2Configuration();
+      //var instance = new JansConfigApi.Fido2Configuration();
       //expect(instance).to.be();
     });
 
     it('should have the property requestedParties (base name: "requestedParties")', function() {
       // uncomment below and update the code to test the property requestedParties
-      //var instane = new JansConfigApi.Fido2Configuration();
+      //var instance = new JansConfigApi.Fido2Configuration();
       //expect(instance).to.be();
     });
 
     it('should have the property userAutoEnrollment (base name: "userAutoEnrollment")', function() {
       // uncomment below and update the code to test the property userAutoEnrollment
-      //var instane = new JansConfigApi.Fido2Configuration();
+      //var instance = new JansConfigApi.Fido2Configuration();
       //expect(instance).to.be();
     });
 
     it('should have the property unfinishedRequestExpiration (base name: "unfinishedRequestExpiration")', function() {
       // uncomment below and update the code to test the property unfinishedRequestExpiration
-      //var instane = new JansConfigApi.Fido2Configuration();
+      //var instance = new JansConfigApi.Fido2Configuration();
       //expect(instance).to.be();
     });
 
     it('should have the property authenticationHistoryExpiration (base name: "authenticationHistoryExpiration")', function() {
       // uncomment below and update the code to test the property authenticationHistoryExpiration
-      //var instane = new JansConfigApi.Fido2Configuration();
+      //var instance = new JansConfigApi.Fido2Configuration();
       //expect(instance).to.be();
     });
 
     it('should have the property requestedCredentialTypes (base name: "requestedCredentialTypes")', function() {
       // uncomment below and update the code to test the property requestedCredentialTypes
-      //var instane = new JansConfigApi.Fido2Configuration();
+      //var instance = new JansConfigApi.Fido2Configuration();
       //expect(instance).to.be();
     });
 

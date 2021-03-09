@@ -56,43 +56,43 @@
 
     it('should have the property loggingLevel (base name: "loggingLevel")', function() {
       // uncomment below and update the code to test the property loggingLevel
-      //var instane = new JansConfigApi.LoggingConfiguration();
+      //var instance = new JansConfigApi.LoggingConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property loggingLayout (base name: "loggingLayout")', function() {
       // uncomment below and update the code to test the property loggingLayout
-      //var instane = new JansConfigApi.LoggingConfiguration();
+      //var instance = new JansConfigApi.LoggingConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property httpLoggingEnabled (base name: "httpLoggingEnabled")', function() {
       // uncomment below and update the code to test the property httpLoggingEnabled
-      //var instane = new JansConfigApi.LoggingConfiguration();
+      //var instance = new JansConfigApi.LoggingConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property disableJdkLogger (base name: "disableJdkLogger")', function() {
       // uncomment below and update the code to test the property disableJdkLogger
-      //var instane = new JansConfigApi.LoggingConfiguration();
+      //var instance = new JansConfigApi.LoggingConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property enabledOAuthAuditLogging (base name: "enabledOAuthAuditLogging")', function() {
       // uncomment below and update the code to test the property enabledOAuthAuditLogging
-      //var instane = new JansConfigApi.LoggingConfiguration();
+      //var instance = new JansConfigApi.LoggingConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property externalLoggerConfiguration (base name: "externalLoggerConfiguration")', function() {
       // uncomment below and update the code to test the property externalLoggerConfiguration
-      //var instane = new JansConfigApi.LoggingConfiguration();
+      //var instance = new JansConfigApi.LoggingConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property httpLoggingExludePaths (base name: "httpLoggingExludePaths")', function() {
       // uncomment below and update the code to test the property httpLoggingExludePaths
-      //var instane = new JansConfigApi.LoggingConfiguration();
+      //var instance = new JansConfigApi.LoggingConfiguration();
       //expect(instance).to.be();
     });
 

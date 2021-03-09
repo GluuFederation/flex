@@ -24,14 +24,12 @@ class Scope {
      * Constructs a new <code>Scope</code>.
      * Auth Scope.
      * @alias module:model/Scope
-     * @param displayName {String} A human-readable name of the scope.
      * @param id {String} The base64url encoded id.
-     * @param description {String} A human-readable string describing the scope.
      * @param scopeType {module:model/Scope.ScopeTypeEnum} The scopes type associated with Access Tokens determine what resources will.
      */
-    constructor(displayName, id, description, scopeType) { 
+    constructor(id, scopeType) { 
         
-        Scope.initialize(this, displayName, id, description, scopeType);
+        Scope.initialize(this, id, scopeType);
     }
 
     /**
@@ -39,10 +37,8 @@ class Scope {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, displayName, id, description, scopeType) { 
-        obj['displayName'] = displayName;
+    static initialize(obj, id, scopeType) { 
         obj['id'] = id;
-        obj['description'] = description;
         obj['scopeType'] = scopeType;
     }
 

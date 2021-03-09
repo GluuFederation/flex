@@ -6,10 +6,10 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **dn** | **String** |  | [optional] 
 **inum** | **String** | Unique id identifying the . | [optional] 
-**displayName** | **String** | A human-readable name of the scope. | 
+**displayName** | **String** | A human-readable name of the scope. | [optional] 
 **id** | **String** | The base64url encoded id. | 
 **iconUrl** | **String** | A URL for a graphic icon representing the scope. The referenced icon MAY be used by the authorization server in any user interface it presents to the resource owner. | [optional] 
-**description** | **String** | A human-readable string describing the scope. | 
+**description** | **String** | A human-readable string describing the scope. | [optional] 
 **scopeType** | **String** | The scopes type associated with Access Tokens determine what resources will. | 
 **claims** | **[String]** | Claim attributes associated with the scope. | [optional] 
 **defaultScope** | **Boolean** | Boolean value to specify default scope. | [optional] 

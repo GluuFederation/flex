@@ -56,19 +56,19 @@
 
     it('should have the property regexp (base name: "regexp")', function() {
       // uncomment below and update the code to test the property regexp
-      //var instane = new JansConfigApi.GluuAttributeAttributeValidation();
+      //var instance = new JansConfigApi.GluuAttributeAttributeValidation();
       //expect(instance).to.be();
     });
 
     it('should have the property minLength (base name: "minLength")', function() {
       // uncomment below and update the code to test the property minLength
-      //var instane = new JansConfigApi.GluuAttributeAttributeValidation();
+      //var instance = new JansConfigApi.GluuAttributeAttributeValidation();
       //expect(instance).to.be();
     });
 
     it('should have the property maxLength (base name: "maxLength")', function() {
       // uncomment below and update the code to test the property maxLength
-      //var instane = new JansConfigApi.GluuAttributeAttributeValidation();
+      //var instance = new JansConfigApi.GluuAttributeAttributeValidation();
       //expect(instance).to.be();
     });
 
