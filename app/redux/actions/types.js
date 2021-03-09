@@ -63,6 +63,12 @@ export const PUT_SMTP_RESPONSE = 'PUT_SMTP_RESPONSE'
 export const TEST_SMTP = 'TEST_SMTP'
 export const TEST_SMTP_RESPONSE = 'TEST_SMTP_RESPONSE'
 
+// Acrs
+export const GET_ACRS = 'GET_ACRS'
+export const GET_ACRS_RESPONSE = 'GET_ACRS_RESPONSE'
+export const PUT_ACRS = 'PUT_ACRS'
+export const PUT_ACRS_RESPONSE = 'PUT_ACRS_RESPONSE'
+
 // fido
 export const GET_FIDO = 'GET_FIDO'
 export const GET_FIDO_RESPONSE = 'GET_FIDO_RESPONSE'

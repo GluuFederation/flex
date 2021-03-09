@@ -56,163 +56,169 @@
 
     it('should have the property dn (base name: "dn")', function() {
       // uncomment below and update the code to test the property dn
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property inum (base name: "inum")', function() {
       // uncomment below and update the code to test the property inum
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property selected (base name: "selected")', function() {
       // uncomment below and update the code to test the property selected
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property name (base name: "name")', function() {
       // uncomment below and update the code to test the property name
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property displayName (base name: "displayName")', function() {
       // uncomment below and update the code to test the property displayName
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property description (base name: "description")', function() {
       // uncomment below and update the code to test the property description
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property dataType (base name: "dataType")', function() {
       // uncomment below and update the code to test the property dataType
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property status (base name: "status")', function() {
       // uncomment below and update the code to test the property status
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property lifetime (base name: "lifetime")', function() {
       // uncomment below and update the code to test the property lifetime
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property sourceAttribute (base name: "sourceAttribute")', function() {
       // uncomment below and update the code to test the property sourceAttribute
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property salt (base name: "salt")', function() {
       // uncomment below and update the code to test the property salt
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property nameIdType (base name: "nameIdType")', function() {
       // uncomment below and update the code to test the property nameIdType
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property origin (base name: "origin")', function() {
       // uncomment below and update the code to test the property origin
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property editType (base name: "editType")', function() {
       // uncomment below and update the code to test the property editType
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property viewType (base name: "viewType")', function() {
       // uncomment below and update the code to test the property viewType
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property usageType (base name: "usageType")', function() {
       // uncomment below and update the code to test the property usageType
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property claimName (base name: "claimName")', function() {
       // uncomment below and update the code to test the property claimName
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property seeAlso (base name: "seeAlso")', function() {
       // uncomment below and update the code to test the property seeAlso
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property saml1Uri (base name: "saml1Uri")', function() {
       // uncomment below and update the code to test the property saml1Uri
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property saml2Uri (base name: "saml2Uri")', function() {
       // uncomment below and update the code to test the property saml2Uri
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property urn (base name: "urn")', function() {
       // uncomment below and update the code to test the property urn
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property scimCustomAttr (base name: "scimCustomAttr")', function() {
       // uncomment below and update the code to test the property scimCustomAttr
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property oxMultiValuedAttribute (base name: "oxMultiValuedAttribute")', function() {
       // uncomment below and update the code to test the property oxMultiValuedAttribute
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property custom (base name: "custom")', function() {
       // uncomment below and update the code to test the property custom
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property requred (base name: "requred")', function() {
       // uncomment below and update the code to test the property requred
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property attributeValidation (base name: "attributeValidation")', function() {
       // uncomment below and update the code to test the property attributeValidation
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 
     it('should have the property tooltip (base name: "tooltip")', function() {
       // uncomment below and update the code to test the property tooltip
-      //var instance = new JansConfigApi.GluuAttribute();
+      //var instane = new JansConfigApi.GluuAttribute();
+      //expect(instance).to.be();
+    });
+
+    it('should have the property jansHideOnDiscovery (base name: "jansHideOnDiscovery")', function() {
+      // uncomment below and update the code to test the property jansHideOnDiscovery
+      //var instane = new JansConfigApi.GluuAttribute();
       //expect(instance).to.be();
     });
 

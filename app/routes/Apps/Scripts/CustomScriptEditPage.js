@@ -1,18 +1,17 @@
-import React from "react";
-import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { Container, CardBody, Card } from "./../../../components";
-import CustomScriptForm from "./CustomScriptForm";
-import BlockUi from "react-block-ui";
-//import "react-block-ui/style.css";
-import { editCustomScript } from "../../../redux/actions/CustomScriptActions";
+import React from 'react'
+import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { Container, CardBody, Card } from './../../../components'
+import CustomScriptForm from './CustomScriptForm'
+import BlockUi from 'react-block-ui'
+import { editCustomScript } from '../../../redux/actions/CustomScriptActions'
 
 function CustomScriptEditPage({ item, loading, dispatch }) {
-  const history = useHistory();
+  const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      dispatch(editCustomScript(data));
-      history.push("/scripts");
+      dispatch(editCustomScript(data))
+      history.push('/scripts')
     }
   }
   return (
@@ -24,7 +23,7 @@ function CustomScriptEditPage({ item, loading, dispatch }) {
               tag="div"
               blocking={loading}
               keepInView={true}
-              message={"Performing the request, please wait!"}
+              message={'Performing the request, please wait!'}
             >
               <CustomScriptForm item={item} handleSubmit={handleSubmit} />
             </BlockUi>
@@ -32,12 +31,13 @@ function CustomScriptEditPage({ item, loading, dispatch }) {
         </Card>
       </Container>
     </React.Fragment>
-  );
+  )
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     item: state.customScriptReducer.item,
-    loading: state.customScriptReducer.loading
-  };
-};
-export default connect(mapStateToProps)(CustomScriptEditPage);
+    loading: state.customScriptReducer.loading,
+    permissions: state.authReducer.permissions,
+  }
+}
+export default connect(mapStateToProps)(CustomScriptEditPage)

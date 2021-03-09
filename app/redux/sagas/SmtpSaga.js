@@ -1,12 +1,6 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
 import {
-  getSmtpConfig,
-  addSmtpConfig,
-  updateSmtpConfig,
-  testSmtpConfig,
-} from '../api/smtp-api'
-import {
   getSmtpResponse,
   addSmtpResponse,
   editSmtpResponse,
@@ -14,9 +8,14 @@ import {
 } from '../actions/SmtpActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { GET_SMTP, PUT_SMTP, SET_SMTP, TEST_SMTP } from '../actions/types'
+import SmtpApi from '../api/SmtpApi'
+import { getClient } from '../api/base'
+const JansConfigApi = require('jans_config_api')
+
 export function* getSmtp() {
   try {
-    const data = yield call(getSmtpConfig)
+    const api = yield* newFunction()
+    const data = yield call(api.getSmtpConfig)
     yield put(getSmtpResponse(data))
   } catch (e) {
     yield put(getSmtpResponse(null))
@@ -29,7 +28,8 @@ export function* getSmtp() {
 
 export function* addSmtp({ payload }) {
   try {
-    const data = yield call(addSmtpConfig, payload.data)
+    const api = yield* newFunction()
+    const data = yield call(api.addSmtpConfig, payload.data)
     yield put(addSmtpResponse(data))
   } catch (e) {
     if (isFourZeroOneError(e) && !hasApiToken()) {
@@ -40,13 +40,23 @@ export function* addSmtp({ payload }) {
 
 export function* editSmtp({ payload }) {
   try {
-    const data = yield call(updateSmtpConfig, payload.data)
+    const api = yield* newFunction()
+    const data = yield call(api.updateSmtpConfig, payload.data)
     yield put(editSmtpResponse(data))
   } catch (e) {
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
   }
+}
+
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.ConfigurationSMTPApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new SmtpApi(api)
 }
 
 export function* watchGetSmtpConfig() {

@@ -1,86 +1,90 @@
 /**
  * Custom Script Sagas
  */
-import {
-  call,
-  all,
-  put,
-  fork,
-  takeLatest
-} from "redux-saga/effects";
-import {
-  getAllCustomScript,
-  addCustomScript,
-  editCustomScript,
-  deleteCustomScript
-  } from "../api/custom-script-api";
+import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
   getCustomScriptsResponse,
   addCustomScriptResponse,
   editCustomScriptResponse,
   deleteCustomScriptResponse,
-  setApiError
-} from "../actions/CustomScriptActions";
-import { 
+  setApiError,
+} from '../actions/CustomScriptActions'
+import {
   GET_CUSTOM_SCRIPT,
   ADD_CUSTOM_SCRIPT,
   EDIT_CUSTOM_SCRIPT,
-  DELETE_CUSTOM_SCRIPT
-  } from "../actions/types";
+  DELETE_CUSTOM_SCRIPT,
+} from '../actions/types'
+import ScriptApi from '../api/ScriptApi'
+import { getClient } from '../api/base'
+const JansConfigApi = require('jans_config_api')
 
-  //get-all-scripts
+//get-all-scripts
 export function* getCustomScripts() {
   try {
-    const data = yield call(getAllCustomScript);
-    yield put(getCustomScriptsResponse(data));
+    const scriptApi = yield* newFunction()
+    const data = yield call(scriptApi.getAllCustomScript)
+    yield put(getCustomScriptsResponse(data))
   } catch (e) {
-    yield put(setApiError(e));
+    yield put(setApiError(e))
   }
 }
 
 //add
 export function* addScript({ payload }) {
   try {
-    const data = yield call(addCustomScript, payload.data);
-    yield put(addCustomScriptResponse(data));
+    const scriptApi = yield* newFunction()
+    const data = yield call(scriptApi.addCustomScript, payload.data)
+    yield put(addCustomScriptResponse(data))
   } catch (error) {
-    yield put(setApiError(error));
+    yield put(setApiError(error))
   }
 }
 
 //edit
 export function* editScript({ payload }) {
   try {
-    const data = yield call(editCustomScript, payload.data);
-    yield put(editCustomScriptResponse(data));
+    const scriptApi = yield* newFunction()
+    const data = yield call(scriptApi.editCustomScript, payload.data)
+    yield put(editCustomScriptResponse(data))
   } catch (error) {
-    yield put(setApiError(error));
+    yield put(setApiError(error))
   }
 }
 
 //delete
 export function* deleteScript({ payload }) {
   try {
-    const data = yield call(deleteCustomScript, payload.data);
-    yield put(deleteCustomScriptResponse(data));
+    const scriptApi = yield* newFunction()
+    const data = yield call(scriptApi.deleteCustomScript, payload.data)
+    yield put(deleteCustomScriptResponse(data))
   } catch (error) {
-    yield put(setApiError(error));
+    yield put(setApiError(error))
   }
 }
 
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.CustomScriptsApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new ScriptApi(api)
+}
+
 export function* watchGetAllCustomScripts() {
-  yield takeLatest(GET_CUSTOM_SCRIPT, getCustomScripts);
+  yield takeLatest(GET_CUSTOM_SCRIPT, getCustomScripts)
 }
 
 export function* watchAddScript() {
-  yield takeLatest(ADD_CUSTOM_SCRIPT, addScript);
+  yield takeLatest(ADD_CUSTOM_SCRIPT, addScript)
 }
 
 export function* watchEditScript() {
-  yield takeLatest(EDIT_CUSTOM_SCRIPT, editScript);
+  yield takeLatest(EDIT_CUSTOM_SCRIPT, editScript)
 }
 export function* watchDeleteScript() {
-  yield takeLatest(DELETE_CUSTOM_SCRIPT, deleteScript);
+  yield takeLatest(DELETE_CUSTOM_SCRIPT, deleteScript)
 }
 
 export default function* rootSaga() {
@@ -88,6 +92,6 @@ export default function* rootSaga() {
     fork(watchGetAllCustomScripts),
     fork(watchAddScript),
     fork(watchEditScript),
-    fork(watchDeleteScript)
-  ]);
+    fork(watchDeleteScript),
+  ])
 }

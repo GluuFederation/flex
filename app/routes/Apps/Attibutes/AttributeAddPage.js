@@ -27,7 +27,7 @@ function AttributeAddPage({ dispatch }) {
 const mapStateToProps = (state) => {
   return {
     loading: state.attributeReducer.loading,
-    hasApiError: state.attributeReducer.hasApiError,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(AttributeAddPage)

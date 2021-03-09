@@ -38,6 +38,7 @@ const mapStateToProps = (state) => {
   return {
     item: state.attributeReducer.item,
     loading: state.attributeReducer.loading,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(AttributeEditPage)

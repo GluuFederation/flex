@@ -56,19 +56,19 @@
 
     it('should have the property defaultPutExpiration (base name: "defaultPutExpiration")', function() {
       // uncomment below and update the code to test the property defaultPutExpiration
-      //var instance = new JansConfigApi.NativePersistenceConfiguration();
+      //var instane = new JansConfigApi.NativePersistenceConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property defaultCleanupBatchSize (base name: "defaultCleanupBatchSize")', function() {
       // uncomment below and update the code to test the property defaultCleanupBatchSize
-      //var instance = new JansConfigApi.NativePersistenceConfiguration();
+      //var instane = new JansConfigApi.NativePersistenceConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property deleteExpiredOnGetRequest (base name: "deleteExpiredOnGetRequest")', function() {
       // uncomment below and update the code to test the property deleteExpiredOnGetRequest
-      //var instance = new JansConfigApi.NativePersistenceConfiguration();
+      //var instane = new JansConfigApi.NativePersistenceConfiguration();
       //expect(instance).to.be();
     });
 

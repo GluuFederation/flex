@@ -1,19 +1,19 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
-import { getFidoResponse, editFidoResponse } from '../actions/FidoActions'
+import { getAcrsResponse, editAcrsResponse } from '../actions/AcrsActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { GET_FIDO, PUT_FIDO } from '../actions/types'
-import FidoApi from '../api/FidoApi'
+import { GET_ACRS, PUT_ACRS } from '../actions/types'
+import AcrApi from '../api/AcrApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
 
-export function* getFido() {
+export function* getAcrs() {
   try {
     const api = yield* newFunction()
-    const data = yield call(api.getFidoConfig)
-    yield put(getFidoResponse(data.fido2Configuration))
+    const data = yield call(api.getAcrsConfig)
+    yield put(getAcrsResponse(data))
   } catch (e) {
-    yield put(getFidoResponse(null))
+    yield put(getAcrsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -21,34 +21,33 @@ export function* getFido() {
   }
 }
 
-export function* editFido({ payload }) {
+export function* editAcrs({ payload }) {
   try {
     const api = yield* newFunction()
-    const data = yield call(api.updateFidoConfig, payload.data)
-    yield put(editFidoResponse(data))
+    const data = yield call(api.updateAcrsConfig, payload.data)
+    yield put(editAcrsResponse(data))
   } catch (e) {
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
   }
 }
-
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.ConfigurationFido2Api(
+  const api = new JansConfigApi.DefaultAuthenticationMethodApi(
     getClient(JansConfigApi, token, issuer),
   )
-  return new FidoApi(api)
+  return new AcrApi(api)
 }
 
-export function* watchGetFidoConfig() {
-  yield takeLatest(GET_FIDO, getFido)
+export function* watchGetAcrsConfig() {
+  yield takeLatest(GET_ACRS, getAcrs)
 }
 
-export function* watchPutFidoConfig() {
-  yield takeLatest(PUT_FIDO, editFido)
+export function* watchPutAcrsConfig() {
+  yield takeLatest(PUT_ACRS, editAcrs)
 }
 export default function* rootSaga() {
-  yield all([fork(watchGetFidoConfig), fork(watchPutFidoConfig)])
+  yield all([fork(watchGetAcrsConfig), fork(watchPutAcrsConfig)])
 }

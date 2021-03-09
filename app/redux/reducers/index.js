@@ -8,6 +8,7 @@ import attributeReducer from './AttributeReducer'
 import openidClientReducer from './OpenidClientReducer'
 import customScriptReducer from './CustomScriptReducer'
 import smtpReducer from './SmtpReducer'
+import acrsReducer from './AcrsReducer'
 import fidoReducer from './FidoReducer'
 import loggingReducer from './LoggingReducer'
 import pluginMenuReducer from './PluginMenuReducer'
@@ -20,6 +21,9 @@ const appReducers = {
   openidClientReducer,
   customScriptReducer,
   smtpReducer,
+  acrsReducer,
+  fidoReducer,
+  loggingReducer,
   pluginMenuReducer,
 };
 

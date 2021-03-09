@@ -15,5 +15,5 @@ yarn.lock
 .npmignore
 .settings/
 .vs
-
+.idea/
 .env.production

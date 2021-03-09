@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Col,
   Form,
@@ -8,36 +8,73 @@ import {
   Card,
   CardBody,
 } from './../../../components'
+import BlockUi from 'react-block-ui'
+import { Formik } from 'formik'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
+import { connect } from 'react-redux'
+import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
 
-function AcrsPage(acrData) {
-  const arc = { defaultAcr: 'simple_password_auth' }
+function AcrsPage({ acrs, permissions, loading, dispatch }) {
+  useEffect(() => {
+    dispatch(getAcrsConfig())
+  }, [])
+  const initialValues = {
+    defaultAcr: acrs ? acrs.defaultAcr : null,
+  }
   return (
     <React.Fragment>
-      <Container>
-        <Card>
-          <CardBody>
-            <Form>
-              <FormGroup row>
-                <GluuLabel label="Default Acr" required />
-                <Col sm={9}>
-                  <Input
-                    placeholder="Enter the name of the script that will be use by default."
-                    id="defaultAcr"
-                    name="defaultAcr"
-                    defaultValue={arc.defaultAcr}
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup row></FormGroup>
-              <GluuFooter />
-            </Form>
-          </CardBody>
-        </Card>
-      </Container>
+      <BlockUi
+        tag="div"
+        blocking={loading}
+        keepInView={true}
+        renderChildren={true}
+        message={'Performing the request, please wait!'}
+      >
+        <Container>
+          <Card>
+            <CardBody>
+              <Formik
+                initialValues={initialValues}
+                onSubmit={(values) => {
+                  const opts = {}
+                  opts['authenticationMethod'] = JSON.stringify(values)
+                  dispatch(editAcrs(opts))
+                }}
+              >
+                {(formik) => (
+                  <Form onSubmit={formik.handleSubmit}>
+                    <FormGroup row>
+                      <GluuLabel label="Default Acr" required />
+                      <Col sm={9}>
+                        <Input
+                          placeholder="Enter the name of the script that will be use by default."
+                          id="defaultAcr"
+                          name="defaultAcr"
+                          onChange={formik.handleChange}
+                          defaultValue={acrs.defaultAcr}
+                        />
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row></FormGroup>
+                    <GluuFooter />
+                  </Form>
+                )}
+              </Formik>
+            </CardBody>
+          </Card>
+        </Container>
+      </BlockUi>
     </React.Fragment>
   )
 }
 
-export default AcrsPage
+const mapStateToProps = (state) => {
+  return {
+    acrs: state.acrsReducer.acrs,
+    permissions: state.authReducer.permissions,
+    loading: state.acrsReducer.loading,
+  }
+}
+
+export default connect(mapStateToProps)(AcrsPage)

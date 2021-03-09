@@ -7,41 +7,55 @@ import {
   put,
   fork,
   takeEvery,
-  takeLatest
-} from "redux-saga/effects";
-import { getScope, getAllScopes } from "../api/scope-api";
+  takeLatest,
+  select,
+} from 'redux-saga/effects'
 import {
   deleteScopeResponse,
   getScopesResponse,
-  setApiError
-} from "../actions/ScopeActions";
-import { GET_SCOPES, GET_SCOPE_BY_INUM } from "../actions/types";
+  setApiError,
+} from '../actions/ScopeActions'
+import { GET_SCOPES, GET_SCOPE_BY_INUM } from '../actions/types'
+import ScopeApi from '../api/ScopeApi'
+import { getClient } from '../api/base'
+const JansConfigApi = require('jans_config_api')
 
 export function* getScopeByInum() {
   try {
-    const data = yield call(getScope);
-    yield put(deleteScopeResponse(data));
+    const scopeApi = yield* newFunction()
+    const data = yield call(scopeApi.getScope)
+    yield put(deleteScopeResponse(data))
   } catch (e) {
-    yield put(setApiError(e));
+    yield put(setApiError(e))
   }
 }
 
 export function* getScopes() {
   try {
-    const data = yield call(getAllScopes);
-    yield put(getScopesResponse(data));
+    const scopeApi = yield* newFunction()
+    const data = yield call(scopeApi.getAllScopes)
+    yield put(getScopesResponse(data))
   } catch (e) {
-    yield put(setApiError(e));
+    console.log('============================' + e)
+    yield put(setApiError(e))
   }
+}
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.OAuthScopesApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new ScopeApi(api)
 }
 
 export function* watchGetScopeByInum() {
-  yield takeEvery(GET_SCOPE_BY_INUM, getScopeByInum);
+  yield takeEvery(GET_SCOPE_BY_INUM, getScopeByInum)
 }
 export function* watchGetScopes() {
-  yield takeLatest(GET_SCOPES, getScopes);
+  yield takeLatest(GET_SCOPES, getScopes)
 }
 
 export default function* rootSaga() {
-  yield all([fork(watchGetScopeByInum), fork(watchGetScopes)]);
+  yield all([fork(watchGetScopeByInum), fork(watchGetScopes)])
 }

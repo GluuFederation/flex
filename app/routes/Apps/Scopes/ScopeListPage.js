@@ -8,7 +8,7 @@ import ClientDetailPage from '../Scopes/ScopeDetailPage'
 import { getScopes, deleteScope } from '../../../redux/actions/ScopeActions'
 //import scopes from './scopes'
 
-function ScopeListPage({ scopes, dispatch }) {
+function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getScopes())
   }, [])
@@ -50,7 +50,7 @@ function ScopeListPage({ scopes, dispatch }) {
           },
         ]}
         data={scopes}
-        isLoading={false}
+        isLoading={loading}
         title=" Scopes"
         actions={[
           (rowData) => ({
@@ -125,7 +125,7 @@ const mapStateToProps = (state) => {
   return {
     scopes: state.scopeReducer.items,
     loading: state.scopeReducer.loading,
-    hasApiError: state.scopeReducer.hasApiError,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(ScopeListPage)

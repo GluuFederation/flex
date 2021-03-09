@@ -14,7 +14,7 @@ import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
 import { connect } from 'react-redux'
 import { getSmtpConfig, editSmtp } from '../../../redux/actions/SmtpActions'
-function SmtpPage({ smtp, dispatch, loading }) {
+function SmtpPage({ smtp, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getSmtpConfig())
   }, [])
@@ -30,22 +30,21 @@ function SmtpPage({ smtp, dispatch, loading }) {
     requires_authentication: smtp.requires_authentication,
     trust_host: smtp.trust_host,
   }
-  //console.log('**********init' + JSON.stringify(initialValues))
   return (
     <React.Fragment>
       <Container>
-        <Card>
-          <CardBody>
-            <BlockUi
-              tag="div"
-              blocking={loading}
-              keepInView={true}
-              renderChildren={true}
-              message={'Performing the request, please wait!'}
-            >
+        <BlockUi
+          tag="div"
+          blocking={loading}
+          keepInView={true}
+          renderChildren={true}
+          message={'Performing the request, please wait!'}
+        >
+          <Card>
+            <CardBody>
               <Formik
                 initialValues={initialValues}
-                onSubmit={(values, { setSubmitting }) => {
+                onSubmit={(values) => {
                   const opts = {}
                   opts['smtpConfiguration'] = JSON.stringify(values)
                   dispatch(editSmtp(opts))
@@ -61,7 +60,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           id="host"
                           name="host"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.host}
+                          defaultValue={smtp.host}
                         />
                       </Col>
                     </FormGroup>
@@ -73,7 +72,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           id="from_name"
                           name="from_name"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.from_name}
+                          defaultValue={smtp.from_name}
                         />
                       </Col>
                     </FormGroup>
@@ -86,7 +85,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           id="from_email_address"
                           name="from_email_address"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.from_email_address}
+                          defaultValue={smtp.from_email_address}
                         />
                       </Col>
                     </FormGroup>
@@ -98,7 +97,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           id="user_name"
                           name="user_name"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.user_name}
+                          defaultValue={smtp.user_name}
                         />
                       </Col>
                     </FormGroup>
@@ -111,7 +110,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           id="password"
                           name="password"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.password}
+                          defaultValue={smtp.password}
                         />
                       </Col>
                     </FormGroup>
@@ -123,7 +122,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           name="requires_authentication"
                           type="checkbox"
                           onChange={formik.handleChange}
-                          defaultChecked={formik.values.requires_authentication}
+                          defaultChecked={smtp.requires_authentication}
                         />
                       </Col>
                       <GluuLabel label="Required SSL" size={3} />
@@ -133,7 +132,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           name="requires_ssl"
                           type="checkbox"
                           onChange={formik.handleChange}
-                          defaultChecked={formik.values.requires_ssl}
+                          defaultChecked={smtp.requires_ssl}
                         />
                       </Col>
                       <GluuLabel label="Trusted Host ?" size={3} />
@@ -143,7 +142,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           name="trust_host"
                           type="checkbox"
                           onChange={formik.handleChange}
-                          defaultChecked={formik.values.trust_host}
+                          defaultChecked={smtp.trust_host}
                         />
                       </Col>
                     </FormGroup>
@@ -156,7 +155,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
                           id="port"
                           name="port"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.port}
+                          defaultValue={smtp.port}
                         />
                       </Col>
                     </FormGroup>
@@ -165,9 +164,9 @@ function SmtpPage({ smtp, dispatch, loading }) {
                   </Form>
                 )}
               </Formik>
-            </BlockUi>
-          </CardBody>
-        </Card>
+            </CardBody>
+          </Card>
+        </BlockUi>
       </Container>
     </React.Fragment>
   )
@@ -175,6 +174,7 @@ function SmtpPage({ smtp, dispatch, loading }) {
 const mapStateToProps = (state) => {
   return {
     smtp: state.smtpReducer.smtp,
+    permissions: state.authReducer.permissions,
     loading: state.smtpReducer.loading,
   }
 }
