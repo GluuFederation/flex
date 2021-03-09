@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import {
   Col,
   Form,
@@ -15,13 +15,12 @@ import GluuFooter from '../Gluu/GluuFooter'
 import { connect } from 'react-redux'
 import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
 
-function AcrsPage({ acrs, dispatch, loading }) {
-  //const arc = { defaultAcr: 'simple_password_auth' }
+function AcrsPage({ acrs, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getAcrsConfig())
   }, [])
   const initialValues = {
-    defaultAcr: acrs ? acrs.defaultAcr : null
+    defaultAcr: acrs ? acrs.defaultAcr : null,
   }
   return (
     <React.Fragment>
@@ -32,12 +31,12 @@ function AcrsPage({ acrs, dispatch, loading }) {
         renderChildren={true}
         message={'Performing the request, please wait!'}
       >
-      <Container>
-        <Card>
-          <CardBody>
-          <Formik
+        <Container>
+          <Card>
+            <CardBody>
+              <Formik
                 initialValues={initialValues}
-                onSubmit={(values, { setSubmitting }) => {
+                onSubmit={(values) => {
                   const opts = {}
                   opts['authenticationMethod'] = JSON.stringify(values)
                   dispatch(editAcrs(opts))
@@ -53,7 +52,7 @@ function AcrsPage({ acrs, dispatch, loading }) {
                           id="defaultAcr"
                           name="defaultAcr"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.defaultAcr}
+                          defaultValue={acrs.defaultAcr}
                         />
                       </Col>
                     </FormGroup>
@@ -62,9 +61,9 @@ function AcrsPage({ acrs, dispatch, loading }) {
                   </Form>
                 )}
               </Formik>
-          </CardBody>
-        </Card>
-      </Container>
+            </CardBody>
+          </Card>
+        </Container>
       </BlockUi>
     </React.Fragment>
   )
@@ -73,6 +72,7 @@ function AcrsPage({ acrs, dispatch, loading }) {
 const mapStateToProps = (state) => {
   return {
     acrs: state.acrsReducer.acrs,
+    permissions: state.authReducer.permissions,
     loading: state.acrsReducer.loading,
   }
 }

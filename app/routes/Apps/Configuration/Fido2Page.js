@@ -20,8 +20,7 @@ import {
   editFidoConfig,
 } from '../../../redux/actions/FidoActions'
 
-function Fido2Page({ fido, dispatch, loading }) {
-  console.log('**********' + JSON.stringify(fido))
+function Fido2Page({ fido, loading, permissions, dispatch }) {
   useEffect(() => {
     dispatch(getFidoConfig())
   }, [])
@@ -51,7 +50,7 @@ function Fido2Page({ fido, dispatch, loading }) {
             <CardBody>
               <Formik
                 initialValues={initialValues}
-                onSubmit={(values, { setSubmitting }) => {
+                onSubmit={(values) => {
                   const opts = {}
                   opts['jansFido2DynConfiguration'] = JSON.stringify(values)
                   dispatch(editFidoConfig(opts))
@@ -220,6 +219,7 @@ const mapStateToProps = (state) => {
   return {
     fido: state.fidoReducer.fido,
     loading: state.fidoReducer.loading,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(Fido2Page)

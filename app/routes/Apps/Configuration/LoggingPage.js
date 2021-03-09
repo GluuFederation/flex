@@ -18,7 +18,6 @@ import {
   editLoggingConfig,
 } from '../../../redux/actions/LoggingActions'
 function LoggingPage({ logging, dispatch, loading }) {
-  console.log('**********' + JSON.stringify(logging))
   useEffect(() => {
     dispatch(getLoggingConfig())
   }, [])
@@ -44,7 +43,7 @@ function LoggingPage({ logging, dispatch, loading }) {
             <CardBody>
               <Formik
                 initialValues={initialValues}
-                onSubmit={(values, { setSubmitting }) => {
+                onSubmit={(values) => {
                   const opts = {}
                   opts['loggingConfiguration'] = JSON.stringify(values)
                   dispatch(editLoggingConfig(opts))
@@ -60,7 +59,7 @@ function LoggingPage({ logging, dispatch, loading }) {
                           id="loggingLevel"
                           name="loggingLevel"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.loggingLevel}
+                          defaultValue={logging.loggingLevel}
                         />
                       </Col>
                     </FormGroup>
@@ -72,7 +71,7 @@ function LoggingPage({ logging, dispatch, loading }) {
                           id="loggingLayout"
                           name="loggingLayout"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.loggingLayout}
+                          defaultValue={logging.loggingLayout}
                         />
                       </Col>
                     </FormGroup>
@@ -84,7 +83,7 @@ function LoggingPage({ logging, dispatch, loading }) {
                           name="httpLoggingEnabled"
                           type="checkbox"
                           onChange={formik.handleChange}
-                          defaultChecked={formik.values.httpLoggingEnabled}
+                          defaultChecked={logging.httpLoggingEnabled}
                         />
                       </Col>
                     </FormGroup>
@@ -96,7 +95,7 @@ function LoggingPage({ logging, dispatch, loading }) {
                           name="disableJdkLogger"
                           type="checkbox"
                           onChange={formik.handleChange}
-                          defaultChecked={formik.values.disableJdkLogger}
+                          defaultChecked={logging.disableJdkLogger}
                         />
                       </Col>
                     </FormGroup>
@@ -108,9 +107,7 @@ function LoggingPage({ logging, dispatch, loading }) {
                           name="enabledOAuthAuditLogging"
                           type="checkbox"
                           onChange={formik.handleChange}
-                          defaultChecked={
-                            formik.values.enabledOAuthAuditLogging
-                          }
+                          defaultChecked={logging.enabledOAuthAuditLogging}
                         />
                       </Col>
                     </FormGroup>
@@ -130,6 +127,7 @@ const mapStateToProps = (state) => {
   return {
     logging: state.loggingReducer.logging,
     loading: state.loggingReducer.loading,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(LoggingPage)

@@ -1,18 +1,16 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
-import {
-  getAcrsConfig,
-  updateAcrsConfig,
-} from '../api/acrs-api'
-import {
-  getAcrsResponse,
-  editAcrsResponse,
-} from '../actions/AcrsActions'
+import { getAcrsResponse, editAcrsResponse } from '../actions/AcrsActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { GET_ACRS, PUT_ACRS } from '../actions/types'
+import AcrApi from '../api/AcrApi'
+import { getClient } from '../api/base'
+const JansConfigApi = require('jans_config_api')
+
 export function* getAcrs() {
   try {
-    const data = yield call(getAcrsConfig)
+    const api = yield* newFunction()
+    const data = yield call(api.getAcrsConfig)
     yield put(getAcrsResponse(data))
   } catch (e) {
     yield put(getAcrsResponse(null))
@@ -25,13 +23,22 @@ export function* getAcrs() {
 
 export function* editAcrs({ payload }) {
   try {
-    const data = yield call(updateAcrsConfig, payload.data)
+    const api = yield* newFunction()
+    const data = yield call(api.updateAcrsConfig, payload.data)
     yield put(editAcrsResponse(data))
   } catch (e) {
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
   }
+}
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.DefaultAuthenticationMethodApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new AcrApi(api)
 }
 
 export function* watchGetAcrsConfig() {
