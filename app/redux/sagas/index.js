@@ -13,17 +13,21 @@ import smtpSaga from './SmtpSaga'
 import acrsSaga from './AcrsSaga'
 import fidoSaga from './FidoSaga'
 import loggingSaga from './LoggingSaga'
+import pluginSaga from './PluginMenuSaga'
+import pluginArr from '../../../plugins/redux/sagas'
 
 export default function* rootSaga() {
-  yield all([
-    authSagas(),
-    scopesSagas(),
-    openidClientSaga(),
-    attributeSaga(),
-    customScriptSaga(),
-    smtpSaga(),
-    acrsSaga(),
-    fidoSaga(),
-    loggingSaga(),
-  ])
+
+  yield all([].concat([
+      authSagas(),
+      scopesSagas(),
+      openidClientSaga(),
+      attributeSaga(),
+      customScriptSaga(),
+      smtpSaga(),
+      pluginSaga(),
+      acrsSaga(),
+      fidoSaga(),
+      loggingSaga(),
+    ], pluginArr))
 }

@@ -58,11 +58,14 @@ import {
 } from '../utils/PermChecker'
 import Gluu404Error from './Apps/Gluu/Gluu404Error'
 import GluuNavBar from './Apps/Gluu/GluuNavBar'
+import { selectPlugin } from "../../plugins/selector";
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
 export const RoutedContent = () => {
   const scopes = useSelector((state) => state.authReducer.permissions)
+  const plugins = localStorage.getItem("plugins");
+
   return (
     <Switch>
       <Redirect from="/" to="/home/dashboard" exact />
@@ -146,6 +149,11 @@ export const RoutedContent = () => {
       {hasPermission(scopes, COUCHBASE_READ) && (
         <Route component={CouchbasePage} path="/config/couchbase" />
       )}
+
+      {/* -------- Plugins ---------*/}
+      {JSON.parse(plugins).map((item, key) => (
+          <Route key={key} component={selectPlugin(item.key)} path={item.path} />
+      ))}
 
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />

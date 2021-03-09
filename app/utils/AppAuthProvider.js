@@ -15,6 +15,7 @@ import {
   getOAuth2Config,
   getUserInfo,
   getAPIAccessToken,
+  getAllPlugins,
 } from '../redux/actions'
 
 class AppAuthProvider extends Component {
@@ -54,6 +55,10 @@ class AppAuthProvider extends Component {
   // Life Cycle
   constructor() {
     super()
+  }
+
+  componentDidMount() {
+    this.props.getAllPlugins();
   }
 
   static getDerivedStateFromProps(props) {
@@ -116,18 +121,20 @@ class AppAuthProvider extends Component {
 
 // Redux
 
-const mapStateToProps = ({ authReducer }) => {
+const mapStateToProps = ({ authReducer, pluginMenuReducer }) => {
   const config = authReducer.config
   const userinfo = authReducer.userinfo
   const jwt = authReducer.userinfo_jwt
   const token = authReducer.token
   const permissions = authReducer.permissions
+  const plugins = pluginMenuReducer.plugins
   return {
     config,
     userinfo,
     jwt,
     token,
     permissions,
+    plugins,
   }
 }
 
@@ -136,5 +143,6 @@ export default withRouter(
     getOAuth2Config,
     getUserInfo,
     getAPIAccessToken,
+    getAllPlugins,
   })(AppAuthProvider),
 )
