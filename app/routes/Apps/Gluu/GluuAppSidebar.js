@@ -109,7 +109,7 @@ function GluuAppSidebar({ scopes }) {
           >
             {availablePlugins.map((item, key) => (
               <SidebarMenu.Item
-                icon={getIcon('fa-search')}
+                icon={getIcon(item.icon)}
                 key={key}
                 title={item.title}
                 to={item.path}
