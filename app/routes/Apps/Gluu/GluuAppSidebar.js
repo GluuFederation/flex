@@ -34,7 +34,6 @@ function GluuAppSidebar({ scopes }) {
     return <i className={fullName}></i>
   }
   const availablePlugins = JSON.parse(plugins)
-  console.log('===============plugins: ' + JSON.stringify(availablePlugins))
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
