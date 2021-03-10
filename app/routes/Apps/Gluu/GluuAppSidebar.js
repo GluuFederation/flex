@@ -22,8 +22,19 @@ import {
 } from '../../../utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
+
 function GluuAppSidebar({ scopes }) {
-  const plugins = localStorage.getItem("plugins");
+  const plugins = localStorage.getItem('plugins')
+
+  function getIcon(name) {
+    let fullName = 'fa fa-fw fa-plug'
+    if (name) {
+      fullName = 'fa fa-fw ' + name
+    }
+    return <i className={fullName}></i>
+  }
+  const availablePlugins = JSON.parse(plugins)
+  console.log('===============plugins: ' + JSON.stringify(availablePlugins))
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -85,11 +96,27 @@ function GluuAppSidebar({ scopes }) {
             <SidebarMenu.Item title="New Script" to="/script/new" exact />
           )) || <SidebarMenu.Item isEmptyNode={true} />}
         </SidebarMenu.Item>
+
         {/* -------- Scopes ---------*/}
+
+        <Divider />
+        <Divider />
         {/* -------- Plugins ---------*/}
-        {JSON.parse(plugins).map((item, key) => (
-            <SidebarMenu.Item key={key} title={item.title} to={item.path}></SidebarMenu.Item>
-        ))}
+        {availablePlugins.length != 0 && (
+          <SidebarMenu.Item
+            icon={<i className="fa fa-fw fa-plug"></i>}
+            title="Plugins"
+          >
+            {availablePlugins.map((item, key) => (
+              <SidebarMenu.Item
+                icon={getIcon('fa-search')}
+                key={key}
+                title={item.title}
+                to={item.path}
+              ></SidebarMenu.Item>
+            ))}
+          </SidebarMenu.Item>
+        )}
         <Divider />
         <Divider />
         {/* -------- Configuration ---------*/}

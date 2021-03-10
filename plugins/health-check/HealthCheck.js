@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getHealthCheck } from '../redux/actions/HealthCheckActions'
-import MaterialTable from 'material-table'  
+import MaterialTable from 'material-table'
 import { Badge } from 'reactstrap'
 
 function HealthCheck({ components, dispatch }) {
-  
   useEffect(() => {
     dispatch(getHealthCheck())
-  }, []);
+  }, [])
 
   function getBadgeTheme(status) {
     if (status) {
@@ -67,7 +66,6 @@ function HealthCheck({ components, dispatch }) {
 }
 
 const mapStateToProps = (state) => {
-  console.log(JSON.stringify(state))
   return {
     components: state.healthCheck.components,
     loading: state.healthCheck.loading,
