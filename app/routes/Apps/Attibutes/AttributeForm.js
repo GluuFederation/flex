@@ -12,6 +12,7 @@ import {
 } from './../../../components'
 import GluuFooter from '../Gluu/GluuFooter'
 import GluuLabel from '../Gluu/GluuLabel'
+
 function AttributeForm({ item, handleSubmit }) {
   const [init, setInit] = useState(false)
   function toogle() {

@@ -13,9 +13,9 @@ export const getOpenidClientsResponse = data => ({
    payload: { data }
 });
 
-export const setApiError = error => ({
-  type: SET_API_ERROR,
-  payload: { error }
+export const setCurrentItem = item => ({
+  type: SET_ITEM,
+  payload: { item }
 });
 
 

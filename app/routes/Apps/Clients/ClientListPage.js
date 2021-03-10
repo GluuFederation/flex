@@ -5,10 +5,14 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
-import { getOpenidClients } from '../../../redux/actions/OpenidClientActions'
+import {
+  getOpenidClients,
+  setCurrentItem,
+} from '../../../redux/actions/OpenidClientActions'
 import {
   hasPermission,
   CLIENT_WRITE,
+  CLIENT_READ,
   CLIENT_DELETE,
 } from '../../../utils/PermChecker'
 
@@ -16,7 +20,53 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getOpenidClients())
   }, [])
-
+  const myActions = []
+  if (hasPermission(permissions, CLIENT_WRITE)) {
+    myActions.push((rowData) => ({
+      icon: 'edit',
+      iconProps: {
+        color: 'primary',
+        id: 'editClient' + rowData.inum,
+      },
+      tooltip: 'Edit Client',
+      onClick: (event, rowData) => handleGoToClientEditPage(rowData),
+      disabled: false,
+    }))
+  }
+  if (hasPermission(permissions, CLIENT_WRITE)) {
+    myActions.push({
+      icon: 'add',
+      tooltip: 'Add Client',
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => handleGoToClientAddPage(),
+    })
+  }
+  if (hasPermission(permissions, CLIENT_READ)) {
+    myActions.push({
+      icon: 'refresh',
+      tooltip: 'Refresh Data',
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => {
+        dispatch(getOpenidClients())
+      },
+    })
+  }
+  if (hasPermission(permissions, CLIENT_DELETE)) {
+    myActions.push((rowData) => ({
+      icon: 'delete',
+      iconProps: {
+        color: 'secondary',
+        id: 'deleteClient' + rowData.inum,
+      },
+      tooltip: rowData.deletable
+        ? 'Delete Client'
+        : "This Client can't be detele",
+      onClick: (event, rowData) => handleClientDelete(rowData),
+      disabled: !rowData.deletable,
+    }))
+  }
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
@@ -48,9 +98,11 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
     return history.push('/client/new')
   }
   function handleGoToClientEditPage(row) {
+    dispatch(setCurrentItem(row))
     return history.push(`/client/edit:` + row.inum)
   }
   function handleClientDelete(row) {
+    dispatch(setCurrentItem(row))
     setItem(row)
     toggle()
   }
@@ -90,46 +142,7 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
         data={clients}
         isLoading={loading}
         title="OpenId Connect Clients"
-        actions={[
-          (rowData) => ({
-            icon: 'edit',
-            iconProps: {
-              color: 'primary',
-              id: 'editClient' + rowData.inum,
-            },
-            tooltip: 'Edit Client',
-            onClick: (event, rowData) => handleGoToClientEditPage(rowData),
-            disabled: false,
-          }),
-          {
-            icon: 'add',
-            tooltip: 'Add Client',
-            iconProps: { color: 'primary' },
-            isFreeAction: true,
-            onClick: () => handleGoToClientAddPage(),
-          },
-          {
-            icon: 'refresh',
-            tooltip: 'Refresh Data',
-            iconProps: { color: 'primary' },
-            isFreeAction: true,
-            onClick: () => {
-              dispatch(getOpenidClients())
-            },
-          },
-          (rowData) => ({
-            icon: 'delete',
-            iconProps: {
-              color: 'secondary',
-              id: 'deleteClient' + rowData.inum,
-            },
-            tooltip: rowData.deletable
-              ? 'Delete Client'
-              : "This Client can't be detele",
-            onClick: (event, rowData) => handleClientDelete(rowData),
-            disabled: !rowData.deletable,
-          }),
-        ]}
+        actions={[]}
         options={{
           search: true,
           selection: false,
