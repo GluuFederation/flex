@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, Container, FormGroup, Label, Input } from '../../../components'
-const ClientBasicPanel = () => {
+const ClientBasicPanel = ({ client, formik }) => {
   return (
     <Container>
       <FormGroup row>
@@ -12,6 +12,8 @@ const ClientBasicPanel = () => {
             placeholder="Enter the client name"
             id="clientName"
             name="clientName"
+            defaultValue={client.displayName}
+            onChange={formik.handleChange}
           />
         </Col>
       </FormGroup>
@@ -24,6 +26,8 @@ const ClientBasicPanel = () => {
             placeholder="Enter the client displayName"
             id="displayName"
             name="displayName"
+            defaultValue={client.displayName}
+            onChange={formik.handleChange}
           />
         </Col>
       </FormGroup>
