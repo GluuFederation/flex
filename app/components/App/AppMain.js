@@ -12,7 +12,7 @@ const AppMain = () => {
   const { store, persistor } = configureStore()
   return (
     <Provider store={store}>
-      {/* <PersistGate loading={null} persistor={persistor}> */}
+      <PersistGate loading={null} persistor={persistor}>
         <Router basename={basePath}>
           <AppAuthProvider>
             <AppLayout>
@@ -20,7 +20,7 @@ const AppMain = () => {
             </AppLayout>
           </AppAuthProvider>
         </Router>
-      {/* </PersistGate> */}
+      </PersistGate>
     </Provider>
   )
 }
