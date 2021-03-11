@@ -99,7 +99,7 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
   }
   function handleGoToClientEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/client/edit:` + row.inum)
+    return history.push(`/client/edit:` + row.inum.substring(0, 4))
   }
   function handleClientDelete(row) {
     dispatch(setCurrentItem(row))
@@ -142,7 +142,7 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
         data={clients}
         isLoading={loading}
         title="OpenId Connect Clients"
-        actions={[]}
+        actions={myActions}
         options={{
           search: true,
           selection: false,

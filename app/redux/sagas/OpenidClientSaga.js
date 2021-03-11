@@ -2,10 +2,7 @@
  * Openid Client Sagas
  */
 import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
-import {
-  getOpenidClientsResponse,
-  setApiError,
-} from '../actions/OpenidClientActions'
+import { getOpenidClientsResponse } from '../actions/OpenidClientActions'
 import { GET_OPENID_CLIENTS } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../api/base'
@@ -17,7 +14,7 @@ export function* getOauthOpenidClients() {
     const data = yield call(openIdApi.getAllOpenidClients)
     yield put(getOpenidClientsResponse(data))
   } catch (e) {
-    yield put(setApiError(e))
+    console.log('Error fetching OIDC clients')
   }
 }
 

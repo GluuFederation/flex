@@ -1,21 +1,19 @@
 import {
   GET_OPENID_CLIENTS,
   GET_OPENID_CLIENTS_RESPONSE,
-  SET_API_ERROR
-} from "./types";
+  SET_CLIENT_ITEM,
+} from './types'
 
 export const getOpenidClients = () => ({
-  type: GET_OPENID_CLIENTS
-});
+  type: GET_OPENID_CLIENTS,
+})
 
-export const getOpenidClientsResponse = data => ({
-   type: GET_OPENID_CLIENTS_RESPONSE,
-   payload: { data }
-});
+export const getOpenidClientsResponse = (data) => ({
+  type: GET_OPENID_CLIENTS_RESPONSE,
+  payload: { data },
+})
 
-export const setCurrentItem = item => ({
-  type: SET_ITEM,
-  payload: { item }
-});
-
-
+export const setCurrentItem = (item) => ({
+  type: SET_CLIENT_ITEM,
+  payload: { item },
+})

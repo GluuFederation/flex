@@ -82,11 +82,13 @@ function ClientWizardForm({ client, permissions }) {
                 {(() => {
                   switch (currentStep) {
                     case sequence[0]:
-                      return <ClientBasic data={client} formik={formik} />
+                      return <ClientBasic client={client} formik={formik} />
                     case sequence[1]:
-                      return <ClientAdvanced data={client} formik={formik} />
+                      return <ClientAdvanced client={client} formik={formik} />
                     case sequence[2]:
-                      return <ClientEncryption data={client} formik={formik} />
+                      return (
+                        <ClientEncryption client={client} formik={formik} />
+                      )
                   }
                 })()}
               </CardBody>
