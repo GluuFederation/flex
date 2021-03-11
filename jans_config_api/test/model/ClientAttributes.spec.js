@@ -56,79 +56,79 @@
 
     it('should have the property tlsClientAuthSubjectDn (base name: "tlsClientAuthSubjectDn")', function() {
       // uncomment below and update the code to test the property tlsClientAuthSubjectDn
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims (base name: "runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims")', function() {
       // uncomment below and update the code to test the property runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property keepClientAuthorizationAfterExpiration (base name: "keepClientAuthorizationAfterExpiration")', function() {
       // uncomment below and update the code to test the property keepClientAuthorizationAfterExpiration
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property allowSpontaneousScopes (base name: "allowSpontaneousScopes")', function() {
       // uncomment below and update the code to test the property allowSpontaneousScopes
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property spontaneousScopes (base name: "spontaneousScopes")', function() {
       // uncomment below and update the code to test the property spontaneousScopes
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property spontaneousScopeScriptDns (base name: "spontaneousScopeScriptDns")', function() {
       // uncomment below and update the code to test the property spontaneousScopeScriptDns
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelLogoutUri (base name: "backchannelLogoutUri")', function() {
       // uncomment below and update the code to test the property backchannelLogoutUri
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property backchannelLogoutSessionRequired (base name: "backchannelLogoutSessionRequired")', function() {
       // uncomment below and update the code to test the property backchannelLogoutSessionRequired
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property additionalAudience (base name: "additionalAudience")', function() {
       // uncomment below and update the code to test the property additionalAudience
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property postAuthnScripts (base name: "postAuthnScripts")', function() {
       // uncomment below and update the code to test the property postAuthnScripts
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property consentGatheringScripts (base name: "consentGatheringScripts")', function() {
       // uncomment below and update the code to test the property consentGatheringScripts
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property introspectionScripts (base name: "introspectionScripts")', function() {
       // uncomment below and update the code to test the property introspectionScripts
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 
     it('should have the property rptClaimsScripts (base name: "rptClaimsScripts")', function() {
       // uncomment below and update the code to test the property rptClaimsScripts
-      //var instance = new JansConfigApi.ClientAttributes();
+      //var instane = new JansConfigApi.ClientAttributes();
       //expect(instance).to.be();
     });
 

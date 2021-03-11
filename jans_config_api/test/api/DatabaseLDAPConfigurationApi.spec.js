@@ -88,16 +88,6 @@
         done();
       });
     });
-    describe('postConfigDatabaseLdap', function() {
-      it('should call postConfigDatabaseLdap successfully', function(done) {
-        //uncomment below and update the code to test postConfigDatabaseLdap
-        //instance.postConfigDatabaseLdap(function(error) {
-        //  if (error) throw error;
-        //expect().to.be();
-        //});
-        done();
-      });
-    });
     describe('postConfigDatabaseLdapTest', function() {
       it('should call postConfigDatabaseLdapTest successfully', function(done) {
         //uncomment below and update the code to test postConfigDatabaseLdapTest

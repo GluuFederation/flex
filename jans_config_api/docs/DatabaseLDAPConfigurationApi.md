@@ -8,7 +8,6 @@ Method | HTTP request | Description
 [**getConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#getConfigDatabaseLdap) | **GET** /jans-config-api/api/v1/config/database/ldap | Gets list of existing LDAP configurations.
 [**getConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#getConfigDatabaseLdapByName) | **GET** /jans-config-api/api/v1/config/database/ldap/{name} | Gets an LDAP configuration by name.
 [**patchConfigDatabaseLdapByName**](DatabaseLDAPConfigurationApi.md#patchConfigDatabaseLdapByName) | **PATCH** /jans-config-api/api/v1/config/database/ldap/{name} | Partially modify an LDAP configuration.
-[**postConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdap) | **POST** /jans-config-api/api/v1/config/database/ldap | Adds a new LDAP configuration.
 [**postConfigDatabaseLdapTest**](DatabaseLDAPConfigurationApi.md#postConfigDatabaseLdapTest) | **POST** /jans-config-api/api/v1/config/database/ldap/test | Tests an LDAP configuration.
 [**putConfigDatabaseLdap**](DatabaseLDAPConfigurationApi.md#putConfigDatabaseLdap) | **PUT** /jans-config-api/api/v1/config/database/ldap | Updates LDAP configuration.
 
@@ -207,55 +206,6 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
 - **Content-Type**: application/json-patch+json
-- **Accept**: application/json
-
-
-## postConfigDatabaseLdap
-
-> LdapConfiguration postConfigDatabaseLdap(ldapConfiguration)
-
-Adds a new LDAP configuration.
-
-Adds a new LDAP configuration.
-
-### Example
-
-```javascript
-import JansConfigApi from 'jans_config_api';
-let defaultClient = JansConfigApi.ApiClient.instance;
-// Configure OAuth2 access token for authorization: jans-auth
-let jans-auth = defaultClient.authentications['jans-auth'];
-jans-auth.accessToken = 'YOUR ACCESS TOKEN';
-
-let apiInstance = new JansConfigApi.DatabaseLDAPConfigurationApi();
-let ldapConfiguration = new JansConfigApi.LdapConfiguration(); // LdapConfiguration | 
-apiInstance.postConfigDatabaseLdap(ldapConfiguration, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
-  }
-});
-```
-
-### Parameters
-
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **ldapConfiguration** | [**LdapConfiguration**](LdapConfiguration.md)|  | 
-
-### Return type
-
-[**LdapConfiguration**](LdapConfiguration.md)
-
-### Authorization
-
-[jans-auth](../README.md#jans-auth)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
 - **Accept**: application/json
 
 

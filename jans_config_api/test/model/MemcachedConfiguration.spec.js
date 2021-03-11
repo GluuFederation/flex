@@ -56,31 +56,31 @@
 
     it('should have the property servers (base name: "servers")', function() {
       // uncomment below and update the code to test the property servers
-      //var instance = new JansConfigApi.MemcachedConfiguration();
+      //var instane = new JansConfigApi.MemcachedConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property maxOperationQueueLength (base name: "maxOperationQueueLength")', function() {
       // uncomment below and update the code to test the property maxOperationQueueLength
-      //var instance = new JansConfigApi.MemcachedConfiguration();
+      //var instane = new JansConfigApi.MemcachedConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property bufferSize (base name: "bufferSize")', function() {
       // uncomment below and update the code to test the property bufferSize
-      //var instance = new JansConfigApi.MemcachedConfiguration();
+      //var instane = new JansConfigApi.MemcachedConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property defaultPutExpiration (base name: "defaultPutExpiration")', function() {
       // uncomment below and update the code to test the property defaultPutExpiration
-      //var instance = new JansConfigApi.MemcachedConfiguration();
+      //var instane = new JansConfigApi.MemcachedConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property connectionFactoryType (base name: "connectionFactoryType")', function() {
       // uncomment below and update the code to test the property connectionFactoryType
-      //var instance = new JansConfigApi.MemcachedConfiguration();
+      //var instane = new JansConfigApi.MemcachedConfiguration();
       //expect(instance).to.be();
     });
 
