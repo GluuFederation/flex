@@ -9,7 +9,7 @@ import {
 } from './../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 
-function CouchbaseItem({ couchbase, index }) {
+function CouchbaseItem({ couchbase, index, formik }) {
   return (
     <Card
       style={{
@@ -25,6 +25,7 @@ function CouchbaseItem({ couchbase, index }) {
               id="configId"
               name="configId"
               defaultValue={couchbase.configId}
+              onChange={formik.handleChange}
               disabled
             />
           </Col>
@@ -47,6 +48,7 @@ function CouchbaseItem({ couchbase, index }) {
               name="connectTimeout"
               type="number"
               defaultValue={couchbase.connectTimeout}
+              onChange={formik.handleChange}
             />
           </Col>
           <GluuLabel label="Computation Pool Size" size={2} />
@@ -56,6 +58,7 @@ function CouchbaseItem({ couchbase, index }) {
               name="computationPoolSize"
               type="number"
               defaultValue={couchbase.computationPoolSize}
+              onChange={formik.handleChange}
             />
           </Col>
           <GluuLabel label="Use SSL" size={3} />
@@ -65,6 +68,7 @@ function CouchbaseItem({ couchbase, index }) {
               name="useSSL"
               type="checkbox"
               defaultChecked={couchbase.useSSL}
+              onChange={formik.handleChange}
             />
           </Col>
         </FormGroup>
