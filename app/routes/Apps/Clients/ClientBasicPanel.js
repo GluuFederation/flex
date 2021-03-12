@@ -80,10 +80,10 @@ const ClientBasicPanel = ({ client, formik }) => {
         <GluuLabel label="Logo URI" />
         <Col sm={9}>
           <Input
-            placeholder="Enter the client displayName"
-            id="description"
-            name="description"
-            defaultValue={client.description}
+            placeholder="Enter the logo uri"
+            id="logoURI"
+            name="logoURI"
+            defaultValue={client.logoUri}
             onChange={formik.handleChange}
           />
         </Col>
@@ -93,9 +93,9 @@ const ClientBasicPanel = ({ client, formik }) => {
         <Col sm={9}>
           <Input
             placeholder="Enter the policy uri"
-            id="description"
-            name="description"
-            defaultValue={client.description}
+            id="policyURI"
+            name="policyURI"
+            defaultValue={client.policyURI}
             onChange={formik.handleChange}
           />
         </Col>
@@ -105,9 +105,9 @@ const ClientBasicPanel = ({ client, formik }) => {
         <Col sm={9}>
           <Input
             placeholder="Enter the sector uri"
-            id="description"
-            name="description"
-            defaultValue={client.description}
+            id="sectorIdentifierURI"
+            name="sectorIdentifierURI"
+            defaultValue={client.sectorIdentifierURI}
             onChange={formik.handleChange}
           />
         </Col>

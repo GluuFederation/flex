@@ -38,8 +38,12 @@ function ClientWizardForm({ client, permissions }) {
 
   const initialValues = {
     inum: client.inum,
+    clientSecret: client.secret,
     clientName: client.clientName,
     displayName: client.displayName,
+    description: client.description,
+    applicationType: client.applicationType,
+    subjectType: client.subjectType,
   }
 
   return (
@@ -47,7 +51,7 @@ function ClientWizardForm({ client, permissions }) {
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          confirm(values)
+          confirm(JSON.stringify(values))
         }}
       >
         {(formik) => (
