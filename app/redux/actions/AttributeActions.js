@@ -8,51 +8,51 @@ import {
   DELETE_ATTRIBUTE,
   DELETE_ATTRIBUTE_RESPONSE,
   SET_API_ERROR,
-  SET_ITEM
-} from "./types";
+  SET_ATTRIBUTE_ITEM,
+} from './types'
 
 export const getAttributes = () => ({
-  type: GET_ATTRIBUTES
-});
+  type: GET_ATTRIBUTES,
+})
 
-export const getAttributesResponse = data => ({
+export const getAttributesResponse = (data) => ({
   type: GET_ATTRIBUTES_RESPONSE,
-  payload: { data }
-});
-export const addAttribute = data => ({
+  payload: { data },
+})
+export const addAttribute = (data) => ({
   type: ADD_ATTRIBUTE,
-  payload: { data }
-});
-export const addAttributeResponse = data => ({
+  payload: { data },
+})
+export const addAttributeResponse = (data) => ({
   type: ADD_ATTRIBUTE_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const editAttribute = data => ({
+export const editAttribute = (data) => ({
   type: EDIT_ATTRIBUTE,
-  payload: { data }
-});
-export const editAttributeResponse = data => ({
+  payload: { data },
+})
+export const editAttributeResponse = (data) => ({
   type: EDIT_ATTRIBUTE_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const deleteAttribute = inum => ({
+export const deleteAttribute = (inum) => ({
   type: DELETE_ATTRIBUTE,
-  payload: { inum }
-});
+  payload: { inum },
+})
 
-export const deleteAttributeResponse = data => ({
+export const deleteAttributeResponse = (data) => ({
   type: DELETE_ATTRIBUTE_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const setApiError = error => ({
+export const setApiError = (error) => ({
   type: SET_API_ERROR,
-  payload: { error }
-});
+  payload: { error },
+})
 
-export const setCurrentItem = item => ({
-  type: SET_ITEM,
-  payload: { item }
-});
+export const setCurrentItem = (item) => ({
+  type: SET_ATTRIBUTE_ITEM,
+  payload: { item },
+})

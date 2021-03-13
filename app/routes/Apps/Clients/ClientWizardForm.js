@@ -38,8 +38,39 @@ function ClientWizardForm({ client, permissions }) {
 
   const initialValues = {
     inum: client.inum,
+    clientSecret: client.secret,
     clientName: client.clientName,
     displayName: client.displayName,
+    description: client.description,
+    applicationType: client.applicationType,
+    subjectType: client.subjectType,
+    registrationAccessToken: client.registrationAccessToken,
+    clientIdIssuedAt: client.clientIdIssuedAt,
+    idTokenSignedResponseAlg: client.idTokenSignedResponseAlg,
+    tokenEndpointAuthMethod: client.tokenEndpointAuthMethod,
+    accessTokenSigningAlg: client.accessTokenSigningAlg,
+    authenticationMethod: client.authenticationMethod,
+
+    redirectUris: client.redirectUris,
+    responseTypes: client.responseTypes,
+    grantTypes: client.grantTypes,
+    contacts: client.contacts,
+    defaultAcrValues: client.defaultAcrValues,
+    postLogoutRedirectUris: client.postLogoutRedirectUris,
+    scopes: client.scopes,
+    customAttributes: client.customAttributes,
+    customObjectClasses: client.customObjectClasses,
+
+    deletable: client.deletable,
+    frontChannelLogoutSessionRequired: client.frontChannelLogoutSessionRequired,
+    requireAuthTime: client.requireAuthTime,
+    trustedClient: client.trustedClient,
+    persistClientAuthorizations: client.persistClientAuthorizations,
+    includeClaimsInIdToken: client.includeClaimsInIdToken,
+    rptAsJwt: client.rptAsJwt,
+    accessTokenAsJwt: client.accessTokenAsJwt,
+    disabled: client.disabled,
+    tokenBindingSupported: client.tokenBindingSupported,
   }
 
   return (
@@ -47,7 +78,7 @@ function ClientWizardForm({ client, permissions }) {
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          confirm(values)
+          confirm(JSON.stringify(values))
         }}
       >
         {(formik) => (
@@ -82,11 +113,13 @@ function ClientWizardForm({ client, permissions }) {
                 {(() => {
                   switch (currentStep) {
                     case sequence[0]:
-                      return <ClientBasic data={client} formik={formik} />
+                      return <ClientBasic client={client} formik={formik} />
                     case sequence[1]:
-                      return <ClientAdvanced data={client} formik={formik} />
+                      return <ClientAdvanced client={client} formik={formik} />
                     case sequence[2]:
-                      return <ClientEncryption data={client} formik={formik} />
+                      return (
+                        <ClientEncryption client={client} formik={formik} />
+                      )
                   }
                 })()}
               </CardBody>

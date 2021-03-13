@@ -1,21 +1,11 @@
 import React from 'react'
-import { Container, CardBody, Card } from './../../../components'
 import ClientWizardForm from './ClientWizardForm'
 import { connect } from 'react-redux'
-import BlockUi from 'react-block-ui'
 
-function ClientEditPage({ item, loading }) {
+function ClientEditPage({ item, loading, permissions }) {
   return (
     <React.Fragment>
-      <BlockUi
-        tag="div"
-        blocking={loading}
-        keepInView={true}
-        renderChildren={true}
-        message={'Performing the request, please wait!'}
-      >
-        <ClientWizardForm client={item} />
-      </BlockUi>
+      <ClientWizardForm client={item} permissions={permissions} />
     </React.Fragment>
   )
 }
