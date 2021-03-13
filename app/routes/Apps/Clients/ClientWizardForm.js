@@ -44,6 +44,33 @@ function ClientWizardForm({ client, permissions }) {
     description: client.description,
     applicationType: client.applicationType,
     subjectType: client.subjectType,
+    registrationAccessToken: client.registrationAccessToken,
+    clientIdIssuedAt: client.clientIdIssuedAt,
+    idTokenSignedResponseAlg: client.idTokenSignedResponseAlg,
+    tokenEndpointAuthMethod: client.tokenEndpointAuthMethod,
+    accessTokenSigningAlg: client.accessTokenSigningAlg,
+    authenticationMethod: client.authenticationMethod,
+
+    redirectUris: client.redirectUris,
+    responseTypes: client.responseTypes,
+    grantTypes: client.grantTypes,
+    contacts: client.contacts,
+    defaultAcrValues: client.defaultAcrValues,
+    postLogoutRedirectUris: client.postLogoutRedirectUris,
+    scopes: client.scopes,
+    customAttributes: client.customAttributes,
+    customObjectClasses: client.customObjectClasses,
+
+    deletable: client.deletable,
+    frontChannelLogoutSessionRequired: client.frontChannelLogoutSessionRequired,
+    requireAuthTime: client.requireAuthTime,
+    trustedClient: client.trustedClient,
+    persistClientAuthorizations: client.persistClientAuthorizations,
+    includeClaimsInIdToken: client.includeClaimsInIdToken,
+    rptAsJwt: client.rptAsJwt,
+    accessTokenAsJwt: client.accessTokenAsJwt,
+    disabled: client.disabled,
+    tokenBindingSupported: client.tokenBindingSupported,
   }
 
   return (

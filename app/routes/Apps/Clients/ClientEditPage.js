@@ -1,8 +1,6 @@
 import React from 'react'
-import { Container, CardBody, Card } from './../../../components'
 import ClientWizardForm from './ClientWizardForm'
 import { connect } from 'react-redux'
-import BlockUi from 'react-block-ui'
 
 function ClientEditPage({ item, loading, permissions }) {
   return (
