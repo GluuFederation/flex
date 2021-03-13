@@ -16,6 +16,7 @@ import loggingSaga from './LoggingSaga'
 import pluginSaga from './PluginMenuSaga'
 import pluginArr from '../../../plugins/redux/sagas'
 import ldapSaga from './LdapSaga'
+import couchBaseSaga from './CouchbaseSaga'
 
 export default function* rootSaga() {
 
@@ -31,5 +32,6 @@ export default function* rootSaga() {
       fidoSaga(),
       loggingSaga(),
       ldapSaga(),
+      couchBaseSaga(),
     ], pluginArr))
 }
