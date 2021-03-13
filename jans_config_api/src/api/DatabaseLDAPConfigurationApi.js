@@ -205,48 +205,6 @@ export default class DatabaseLDAPConfigurationApi {
     }
 
     /**
-     * Callback function to receive the result of the postConfigDatabaseLdap operation.
-     * @callback module:api/DatabaseLDAPConfigurationApi~postConfigDatabaseLdapCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/LdapConfiguration} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
-
-    /**
-     * Adds a new LDAP configuration.
-     * Adds a new LDAP configuration.
-     * @param {module:model/LdapConfiguration} ldapConfiguration 
-     * @param {module:api/DatabaseLDAPConfigurationApi~postConfigDatabaseLdapCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/LdapConfiguration}
-     */
-    postConfigDatabaseLdap(ldapConfiguration, callback) {
-      let postBody = ldapConfiguration;
-      // verify the required parameter 'ldapConfiguration' is set
-      if (ldapConfiguration === undefined || ldapConfiguration === null) {
-        throw new Error("Missing the required parameter 'ldapConfiguration' when calling postConfigDatabaseLdap");
-      }
-
-      let pathParams = {
-      };
-      let queryParams = {
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
-
-      let authNames = ['jans-auth'];
-      let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
-      let returnType = LdapConfiguration;
-      return this.apiClient.callApi(
-        '/jans-config-api/api/v1/config/database/ldap', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
-      );
-    }
-
-    /**
      * Callback function to receive the result of the postConfigDatabaseLdapTest operation.
      * @callback module:api/DatabaseLDAPConfigurationApi~postConfigDatabaseLdapTestCallback
      * @param {String} error Error message, if any.

@@ -56,13 +56,13 @@
 
     it('should have the property name (base name: "name")', function() {
       // uncomment below and update the code to test the property name
-      //var instance = new JansConfigApi.RequestedParties();
+      //var instane = new JansConfigApi.RequestedParties();
       //expect(instance).to.be();
     });
 
     it('should have the property domains (base name: "domains")', function() {
       // uncomment below and update the code to test the property domains
-      //var instance = new JansConfigApi.RequestedParties();
+      //var instane = new JansConfigApi.RequestedParties();
       //expect(instance).to.be();
     });
 

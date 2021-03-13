@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **op** | **String** | The operation to be performed | 
 **path** | **String** | A JSON-Pointer | 
-**value** | **Object** | The value to be used within the operations. | [optional] 
+**value** | [**Object**](.md) | The value to be used within the operations. | [optional] 
 
 
 

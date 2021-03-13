@@ -56,79 +56,79 @@
 
     it('should have the property configId (base name: "configId")', function() {
       // uncomment below and update the code to test the property configId
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property bindDN (base name: "bindDN")', function() {
       // uncomment below and update the code to test the property bindDN
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property bindPassword (base name: "bindPassword")', function() {
       // uncomment below and update the code to test the property bindPassword
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property servers (base name: "servers")', function() {
       // uncomment below and update the code to test the property servers
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property maxConnections (base name: "maxConnections")', function() {
       // uncomment below and update the code to test the property maxConnections
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property useSSL (base name: "useSSL")', function() {
       // uncomment below and update the code to test the property useSSL
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property baseDNs (base name: "baseDNs")', function() {
       // uncomment below and update the code to test the property baseDNs
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property primaryKey (base name: "primaryKey")', function() {
       // uncomment below and update the code to test the property primaryKey
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property localPrimaryKey (base name: "localPrimaryKey")', function() {
       // uncomment below and update the code to test the property localPrimaryKey
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property useAnonymousBind (base name: "useAnonymousBind")', function() {
       // uncomment below and update the code to test the property useAnonymousBind
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property enabled (base name: "enabled")', function() {
       // uncomment below and update the code to test the property enabled
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property version (base name: "version")', function() {
       // uncomment below and update the code to test the property version
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property level (base name: "level")', function() {
       // uncomment below and update the code to test the property level
-      //var instance = new JansConfigApi.LdapConfiguration();
+      //var instane = new JansConfigApi.LdapConfiguration();
       //expect(instance).to.be();
     });
 

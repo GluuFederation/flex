@@ -56,19 +56,19 @@
 
     it('should have the property op (base name: "op")', function() {
       // uncomment below and update the code to test the property op
-      //var instance = new JansConfigApi.PatchRequest();
+      //var instane = new JansConfigApi.PatchRequest();
       //expect(instance).to.be();
     });
 
     it('should have the property path (base name: "path")', function() {
       // uncomment below and update the code to test the property path
-      //var instance = new JansConfigApi.PatchRequest();
+      //var instane = new JansConfigApi.PatchRequest();
       //expect(instance).to.be();
     });
 
     it('should have the property value (base name: "value")', function() {
       // uncomment below and update the code to test the property value
-      //var instance = new JansConfigApi.PatchRequest();
+      //var instane = new JansConfigApi.PatchRequest();
       //expect(instance).to.be();
     });
 

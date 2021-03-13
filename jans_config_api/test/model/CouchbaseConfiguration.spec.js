@@ -56,103 +56,103 @@
 
     it('should have the property configId (base name: "configId")', function() {
       // uncomment below and update the code to test the property configId
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property userName (base name: "userName")', function() {
       // uncomment below and update the code to test the property userName
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property userPassword (base name: "userPassword")', function() {
       // uncomment below and update the code to test the property userPassword
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property servers (base name: "servers")', function() {
       // uncomment below and update the code to test the property servers
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property defaultBucket (base name: "defaultBucket")', function() {
       // uncomment below and update the code to test the property defaultBucket
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property buckets (base name: "buckets")', function() {
       // uncomment below and update the code to test the property buckets
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property passwordEncryptionMethod (base name: "passwordEncryptionMethod")', function() {
       // uncomment below and update the code to test the property passwordEncryptionMethod
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property operationTracingEnabled (base name: "operationTracingEnabled")', function() {
       // uncomment below and update the code to test the property operationTracingEnabled
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property mutationTokensEnabled (base name: "mutationTokensEnabled")', function() {
       // uncomment below and update the code to test the property mutationTokensEnabled
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property connectTimeout (base name: "connectTimeout")', function() {
       // uncomment below and update the code to test the property connectTimeout
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property computationPoolSize (base name: "computationPoolSize")', function() {
       // uncomment below and update the code to test the property computationPoolSize
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property useSSL (base name: "useSSL")', function() {
       // uncomment below and update the code to test the property useSSL
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sslTrustStoreFile (base name: "sslTrustStoreFile")', function() {
       // uncomment below and update the code to test the property sslTrustStoreFile
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sslTrustStorePin (base name: "sslTrustStorePin")', function() {
       // uncomment below and update the code to test the property sslTrustStorePin
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property sslTrustStoreFormat (base name: "sslTrustStoreFormat")', function() {
       // uncomment below and update the code to test the property sslTrustStoreFormat
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property binaryAttributes (base name: "binaryAttributes")', function() {
       // uncomment below and update the code to test the property binaryAttributes
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property certificateAttributes (base name: "certificateAttributes")', function() {
       // uncomment below and update the code to test the property certificateAttributes
-      //var instance = new JansConfigApi.CouchbaseConfiguration();
+      //var instane = new JansConfigApi.CouchbaseConfiguration();
       //expect(instance).to.be();
     });
 
