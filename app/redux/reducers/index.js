@@ -13,6 +13,8 @@ import fidoReducer from './FidoReducer'
 import loggingReducer from './LoggingReducer'
 import pluginMenuReducer from './PluginMenuReducer'
 import {healthCheck} from '../../../plugins/redux/reducers'
+import ldapReducer from './LdapReducer'
+import couchBaseReducer from './CouchbaseReducer'
 
 const appReducers = {
   authReducer,
@@ -25,6 +27,8 @@ const appReducers = {
   fidoReducer,
   loggingReducer,
   pluginMenuReducer,
+  ldapReducer,
+  couchBaseReducer,
 };
 
 const allReducers = {...appReducers, healthCheck};

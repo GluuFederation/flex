@@ -56,7 +56,7 @@
 
     it('should have the property defaultAcr (base name: "defaultAcr")', function() {
       // uncomment below and update the code to test the property defaultAcr
-      //var instance = new JansConfigApi.AuthenticationMethod();
+      //var instane = new JansConfigApi.AuthenticationMethod();
       //expect(instance).to.be();
     });
 

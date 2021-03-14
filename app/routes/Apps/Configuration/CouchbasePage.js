@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import BlockUi from 'react-block-ui'
+import { Formik } from 'formik'
 import CouchbaseItem from './CouchbaseItem'
 import {
   Form,
@@ -8,37 +10,82 @@ import {
   CardBody,
 } from './../../../components'
 import GluuFooter from '../Gluu/GluuFooter'
-function CouchbasePage(couchbasesData) {
-  const couchbases = [
-    {
-      configId: 'auth_ldap_server',
-      servers: ['localhost:1636'],
-      connectTimeout: 0,
-      computationPoolSize: 0,
-      useSSL: true,
-    },
-  ]
+import { connect } from 'react-redux'
+import { getCouchBaseConfig, editCouchBase } from '../../../redux/actions/CouchbaseActions'
+
+
+
+function CouchbasePage({ couch, loading, dispatch }) {
+
+  const [initialValues,setInitialValues]= useState();
+
+  useEffect(() => {
+    dispatch(getCouchBaseConfig())
+    console.log("**couch: ", couch)
+  }, [])
+
+  useEffect(() => {
+    if(couch){
+      setInitialValues({
+        configId: couch[0].configId,
+        servers: couch[0].servers ,
+        connectTimeout: couch[0].connectTimeout,
+        computationPoolSize: couch[0].computationPoolSize,
+        useSSL: couch[0].useSSL,  
+    })
+    }
+  }, [couch])
+
   return (
     <React.Fragment>
       <Container>
-        <Card>
-          <CardBody>
-            <Form>
-              {couchbases.map((couchbase, index) => (
-                <CouchbaseItem
-                  key={index}
-                  couchbase={couchbase}
-                  index={index}
-                ></CouchbaseItem>
-              ))}
-              <FormGroup row></FormGroup>
-              <GluuFooter />
-            </Form>
-          </CardBody>
-        </Card>
+        <BlockUi
+          tag="div"
+          blocking={loading}
+          keepInView={true}
+          renderChildren={true}
+          message={'Performing the request, please wait!'}
+        >
+          <Card>
+            { initialValues && <CardBody>
+              <Formik
+                initialValues={initialValues}
+                onSubmit={(values) => {
+                  dispatch(editCouchBase(JSON.stringify(values)))
+                }}
+              >
+                {
+                  (formik) => (
+                    <Form onSubmit={formik.handleSubmit}>
+                      {Object.keys(couch).length ? couch.map((couchbase, index) => (
+                        <CouchbaseItem
+                          key={index}
+                          couchbase={couchbase}
+                          index={index}
+                          formik={formik}
+                        ></CouchbaseItem>
+                      )) : null }
+                      <FormGroup row></FormGroup>
+                      <GluuFooter />
+                    </Form>
+                  )
+                }
+
+              </Formik>
+            </CardBody>}
+          </Card>
+        </BlockUi>
       </Container>
     </React.Fragment>
   )
 }
 
-export default CouchbasePage
+const mapStateToProps = (state) => {
+  return {
+    couch: state.couchBaseReducer.couchbase,
+    permissions: state.authReducer.permissions,
+    loading: state.couchBaseReducer.loading,
+  }
+}
+
+export default connect(mapStateToProps)(CouchbasePage)

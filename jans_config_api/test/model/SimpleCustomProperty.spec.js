@@ -56,19 +56,19 @@
 
     it('should have the property value1 (base name: "value1")', function() {
       // uncomment below and update the code to test the property value1
-      //var instance = new JansConfigApi.SimpleCustomProperty();
+      //var instane = new JansConfigApi.SimpleCustomProperty();
       //expect(instance).to.be();
     });
 
     it('should have the property value2 (base name: "value2")', function() {
       // uncomment below and update the code to test the property value2
-      //var instance = new JansConfigApi.SimpleCustomProperty();
+      //var instane = new JansConfigApi.SimpleCustomProperty();
       //expect(instance).to.be();
     });
 
     it('should have the property description (base name: "description")', function() {
       // uncomment below and update the code to test the property description
-      //var instance = new JansConfigApi.SimpleCustomProperty();
+      //var instane = new JansConfigApi.SimpleCustomProperty();
       //expect(instance).to.be();
     });
 

@@ -56,55 +56,55 @@
 
     it('should have the property host (base name: "host")', function() {
       // uncomment below and update the code to test the property host
-      //var instance = new JansConfigApi.SmtpConfiguration();
+      //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property port (base name: "port")', function() {
       // uncomment below and update the code to test the property port
-      //var instance = new JansConfigApi.SmtpConfiguration();
+      //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property requiresSsl (base name: "requires_ssl")', function() {
       // uncomment below and update the code to test the property requiresSsl
-      //var instance = new JansConfigApi.SmtpConfiguration();
+      //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property trustHost (base name: "trust_host")', function() {
       // uncomment below and update the code to test the property trustHost
-      //var instance = new JansConfigApi.SmtpConfiguration();
+      //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property fromName (base name: "from_name")', function() {
       // uncomment below and update the code to test the property fromName
-      //var instance = new JansConfigApi.SmtpConfiguration();
+      //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property fromEmailAddress (base name: "from_email_address")', function() {
       // uncomment below and update the code to test the property fromEmailAddress
-      //var instance = new JansConfigApi.SmtpConfiguration();
+      //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property requiresAuthentication (base name: "requires_authentication")', function() {
       // uncomment below and update the code to test the property requiresAuthentication
-      //var instance = new JansConfigApi.SmtpConfiguration();
+      //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property userName (base name: "user_name")', function() {
       // uncomment below and update the code to test the property userName
-      //var instance = new JansConfigApi.SmtpConfiguration();
+      //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
     it('should have the property password (base name: "password")', function() {
       // uncomment below and update the code to test the property password
-      //var instance = new JansConfigApi.SmtpConfiguration();
+      //var instane = new JansConfigApi.SmtpConfiguration();
       //expect(instance).to.be();
     });
 
