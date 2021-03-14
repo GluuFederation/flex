@@ -11,8 +11,16 @@ import {
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
 import ClientEncryption from './ClientEncryptionPanel'
+import ClientAttributes from './ClientAttributesPanel'
+import ClientScript from './ClientScriptPanel'
 import { Formik } from 'formik'
-const sequence = ['Basic', 'Advanced', 'Encryption']
+const sequence = [
+  'Basic',
+  'Advanced',
+  'Encryption && Signing',
+  'Client Attributes',
+  'Custom Scripts',
+]
 
 function ClientWizardForm({ client, permissions }) {
   const [currentStep, setCurrentStep] = useState(sequence[0])
@@ -120,6 +128,12 @@ function ClientWizardForm({ client, permissions }) {
                       return (
                         <ClientEncryption client={client} formik={formik} />
                       )
+                    case sequence[3]:
+                      return (
+                        <ClientAttributes client={client} formik={formik} />
+                      )
+                    case sequence[4]:
+                      return <ClientScript client={client} formik={formik} />
                   }
                 })()}
               </CardBody>

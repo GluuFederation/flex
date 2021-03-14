@@ -1,5 +1,4 @@
 import React from 'react'
-import './gluublockui.css'
 function GluuBlockUI(blocking) {
   if (blocking) {
     return (
