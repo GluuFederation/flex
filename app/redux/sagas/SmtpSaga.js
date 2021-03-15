@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError} from '../../utils/TokenController'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   getSmtpResponse,
   addSmtpResponse,

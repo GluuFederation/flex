@@ -2,13 +2,12 @@
  * Attribute Sagas
  */
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   getAttributesResponse,
   addAttributeResponse,
   editAttributeResponse,
   deleteAttributeResponse,
-  setApiError,
 } from '../actions/AttributeActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import {
@@ -31,6 +30,7 @@ export function* getAttributes() {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    yield put(getAttributesResponse(null))
   }
 }
 
@@ -44,6 +44,7 @@ export function* addAttribute({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    yield put(addAttributeResponse(null))
   }
 }
 
@@ -57,6 +58,7 @@ export function* editAttribute({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    yield put(editAttributeResponse(null))
   }
 }
 
@@ -70,6 +72,7 @@ export function* deleteAttribute({ payload }) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
+    yield put(deleteAttributeResponse(null))
   }
 }
 

@@ -7,9 +7,7 @@ import {
   PUT_SMTP_RESPONSE,
   TEST_SMTP,
   TEST_SMTP_RESPONSE,
-  SET_API_ERROR,
   RESET,
-  SET_ITEM,
 } from '../actions/types'
 
 const INIT_STATE = {
@@ -73,15 +71,6 @@ export default (state = INIT_STATE, action) => {
         ...state,
         smtp: action.payload.data,
       }
-    case SET_ITEM:
-      return {
-        ...state,
-        item: action.payload.item,
-        loading: false,
-      }
-
-    case SET_API_ERROR:
-      return { ...state, loading: false}
     case RESET:
       return {
         ...state,

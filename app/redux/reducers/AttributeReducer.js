@@ -25,21 +25,36 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case GET_ATTRIBUTES_RESPONSE:
-      return {
-        ...state,
-        items: action.payload.data,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
+
     case ADD_ATTRIBUTE:
       return {
         ...state,
         loading: true,
       }
     case ADD_ATTRIBUTE_RESPONSE:
-      return {
-        ...state,
-        items: [...state.items, action.payload.data],
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: [...state.items, action.payload.data],
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
 
     case EDIT_ATTRIBUTE:
@@ -48,10 +63,17 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case EDIT_ATTRIBUTE_RESPONSE:
-      return {
-        ...state,
-        items: [...state.items],
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: [...state.items],
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
 
     case DELETE_ATTRIBUTE:
@@ -59,16 +81,26 @@ export default (state = INIT_STATE, action) => {
         ...state,
         loading: true,
       }
+
+    case DELETE_ATTRIBUTE_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: state.items.filter((i) => i.inum !== action.payload.data),
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
+      }
+
     case SET_ATTRIBUTE_ITEM:
       return {
         ...state,
         item: action.payload.item,
         loading: false,
-      }
-    case DELETE_ATTRIBUTE_RESPONSE:
-      return {
-        ...state,
-        items: state.items.filter((i) => i.inum !== action.payload.data),
       }
     case RESET:
       return {
