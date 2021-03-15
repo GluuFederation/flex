@@ -27,10 +27,10 @@ export function* getAttributes() {
     const data = yield call(attributeApi.getAllAttributes)
     yield put(getAttributesResponse(data))
   } catch (e) {
-    if (isFourZeroOneError(e) && !hasApiToken()) {
-      yield put(getAPIAccessToken())
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
     }
-    yield put(setApiError(e))
   }
 }
 
@@ -39,8 +39,11 @@ export function* addAttribute({ payload }) {
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.addNewAttribute, payload.data)
     yield put(addAttributeResponse(data))
-  } catch (error) {
-    yield put(setApiError(error))
+  } catch (e) {
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 
@@ -49,8 +52,11 @@ export function* editAttribute({ payload }) {
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.editAnAttribute, payload.data)
     yield put(editAttributeResponse(data))
-  } catch (error) {
-    yield put(setApiError(error))
+  } catch (e) {
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 
@@ -59,8 +65,11 @@ export function* deleteAttribute({ payload }) {
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.deleteAnAttribute, payload.data)
     yield put(deleteAttributeResponse(data))
-  } catch (error) {
-    yield put(setApiError(error))
+  } catch (e) {
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 

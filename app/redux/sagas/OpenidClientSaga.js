@@ -6,6 +6,7 @@ import { getOpenidClientsResponse } from '../actions/OpenidClientActions'
 import { GET_OPENID_CLIENTS } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../api/base'
+import { isFourZeroOneError } from '../../utils/TokenController'
 const JansConfigApi = require('jans_config_api')
 
 export function* getOauthOpenidClients() {
@@ -14,7 +15,10 @@ export function* getOauthOpenidClients() {
     const data = yield call(openIdApi.getAllOpenidClients)
     yield put(getOpenidClientsResponse(data))
   } catch (e) {
-    console.log('Error fetching OIDC clients')
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 

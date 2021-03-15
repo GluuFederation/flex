@@ -5,39 +5,33 @@ import {
   DELETE_SCOPE_RESPONSE,
   GET_SCOPE_BY_INUM,
   GET_SCOPE_BY_INUM_RESPONSE,
-  SET_API_ERROR
-} from "./types";
+  SET_API_ERROR,
+} from './types'
 
-export const deleteScope = inum => ({
+export const deleteScope = (inum) => ({
   type: DELETE_SCOPE,
-  payload: { inum }
-});
+  payload: { inum },
+})
 
-export const getScope = inum => ({
+export const getScope = (inum) => ({
   type: GET_SCOPE_BY_INUM,
-  payload: { inum }
-});
+  payload: { inum },
+})
 
 export const getScopes = () => ({
-  type: GET_SCOPES
-});
+  type: GET_SCOPES,
+})
 
-export const getScopesResponse = data => ({
+export const getScopesResponse = (data) => ({
   type: GET_SCOPES_RESPONSE,
-  payload: { data }
-});
-
-export const setApiError = error => ({
-  type: SET_API_ERROR,
-  payload: { error }
-});
-
-export const deleteScopeResponse = data => ({
+  payload: { data },
+})
+export const deleteScopeResponse = (data) => ({
   type: DELETE_SCOPE_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const getScopeResponse = data => ({
+export const getScopeResponse = (data) => ({
   type: GET_SCOPE_BY_INUM_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})

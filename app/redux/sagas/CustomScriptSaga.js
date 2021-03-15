@@ -7,8 +7,8 @@ import {
   addCustomScriptResponse,
   editCustomScriptResponse,
   deleteCustomScriptResponse,
-  setApiError,
 } from '../actions/CustomScriptActions'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   GET_CUSTOM_SCRIPT,
   ADD_CUSTOM_SCRIPT,
@@ -26,7 +26,10 @@ export function* getCustomScripts() {
     const data = yield call(scriptApi.getAllCustomScript)
     yield put(getCustomScriptsResponse(data))
   } catch (e) {
-    yield put(setApiError(e))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 
@@ -36,8 +39,11 @@ export function* addScript({ payload }) {
     const scriptApi = yield* newFunction()
     const data = yield call(scriptApi.addCustomScript, payload.data)
     yield put(addCustomScriptResponse(data))
-  } catch (error) {
-    yield put(setApiError(error))
+  } catch (e) {
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 
@@ -47,8 +53,11 @@ export function* editScript({ payload }) {
     const scriptApi = yield* newFunction()
     const data = yield call(scriptApi.editCustomScript, payload.data)
     yield put(editCustomScriptResponse(data))
-  } catch (error) {
-    yield put(setApiError(error))
+  } catch (e) {
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 
@@ -58,8 +67,11 @@ export function* deleteScript({ payload }) {
     const scriptApi = yield* newFunction()
     const data = yield call(scriptApi.deleteCustomScript, payload.data)
     yield put(deleteCustomScriptResponse(data))
-  } catch (error) {
-    yield put(setApiError(error))
+  } catch (e) {
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
   }
 }
 
