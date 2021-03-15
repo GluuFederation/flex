@@ -11,77 +11,69 @@ import {
   GET_CUSTOM_SCRIPT_BY_TYPE_RESPONSE,
   DELETE_CUSTOM_SCRIPT,
   DELETE_CUSTOM_SCRIPT_RESPONSE,
-  SET_API_ERROR,
-  SET_ITEM
-} from "./types";
+  SET_ITEM,
+} from './types'
 
 export const getCustomScripts = () => ({
-  type: GET_CUSTOM_SCRIPT
-});
+  type: GET_CUSTOM_SCRIPT,
+})
 
-export const getCustomScriptsResponse = data => ({
-   type: GET_CUSTOM_SCRIPT_RESPONSE,
-   payload: { data }
-});
+export const getCustomScriptsResponse = (data) => ({
+  type: GET_CUSTOM_SCRIPT_RESPONSE,
+  payload: { data },
+})
 
-export const addCustomScript = data => ({
+export const addCustomScript = (data) => ({
   type: ADD_CUSTOM_SCRIPT,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const addCustomScriptResponse = data => ({
+export const addCustomScriptResponse = (data) => ({
   type: ADD_CUSTOM_SCRIPT_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const editCustomScript = data => ({
+export const editCustomScript = (data) => ({
   type: EDIT_CUSTOM_SCRIPT,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const editCustomScriptResponse = data => ({
+export const editCustomScriptResponse = (data) => ({
   type: EDIT_CUSTOM_SCRIPT_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const getCustomScriptByInum = inum => ({
+export const getCustomScriptByInum = (inum) => ({
   type: GET_CUSTOM_SCRIPT_BY_INUM,
-  payload: { inum }
-});
+  payload: { inum },
+})
 
-export const getCustomScriptByInumResponse = data => ({
+export const getCustomScriptByInumResponse = (data) => ({
   type: GET_CUSTOM_SCRIPT_BY_INUM_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const getCustomScriptByType = type => ({
+export const getCustomScriptByType = (type) => ({
   type: GET_CUSTOM_SCRIPT_BY_TYPE,
-  payload: { type }
-});
+  payload: { type },
+})
 
-export const getCustomScriptByTypeResponse = data => ({
+export const getCustomScriptByTypeResponse = (data) => ({
   type: GET_CUSTOM_SCRIPT_BY_TYPE_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const deleteCustomScript = inum => ({
+export const deleteCustomScript = (inum) => ({
   type: DELETE_CUSTOM_SCRIPT,
-  payload: { inum }
-});
+  payload: { inum },
+})
 
-export const deleteCustomScriptResponse = data => ({
+export const deleteCustomScriptResponse = (data) => ({
   type: DELETE_CUSTOM_SCRIPT_RESPONSE,
-  payload: { data }
-});
+  payload: { data },
+})
 
-export const setCurrentItem = item => ({
+export const setCurrentItem = (item) => ({
   type: SET_ITEM,
-  payload: { item }
-});
-
-export const setApiError = error => ({
-  type: SET_API_ERROR,
-  payload: { error }
-});
-
-
+  payload: { item },
+})

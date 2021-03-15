@@ -19,11 +19,19 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case GET_OPENID_CLIENTS_RESPONSE:
-      return {
-        ...state,
-        items: action.payload.data,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
+
     case SET_CLIENT_ITEM:
       return {
         ...state,

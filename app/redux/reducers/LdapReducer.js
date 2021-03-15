@@ -41,10 +41,17 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case SET_LDAP_RESPONSE:
-      return {
-        ...state,
-        ldap: action.payload.data,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          ldap: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
 
     case PUT_LDAP:
@@ -53,17 +60,17 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case PUT_LDAP_RESPONSE:
-      return {
-        ...state,
-        ldap: state.ldap,
-        loading: false,
-      }
-
-    case SET_ITEM:
-      return {
-        ...state,
-        ldap: action.payload.ldap,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          ldap: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
     case RESET:
       return {

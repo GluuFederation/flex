@@ -42,10 +42,17 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case SET_SMTP_RESPONSE:
-      return {
-        ...state,
-        smtp: action.payload.data,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          smtp: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
 
     case PUT_SMTP:
@@ -54,10 +61,17 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case PUT_SMTP_RESPONSE:
-      return {
-        ...state,
-        smtp: state.smtp,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          smtp: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
 
     case TEST_SMTP:

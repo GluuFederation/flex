@@ -29,7 +29,6 @@ export default (state = INIT_STATE, action) => {
       } else {
         return {
           ...state,
-          fido: INIT_STATE.fido,
           loading: false,
         }
       }
@@ -39,10 +38,17 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case PUT_FIDO_RESPONSE:
-      return {
-        ...state,
-        fido: state.fido,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          fido: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
 
     case RESET:

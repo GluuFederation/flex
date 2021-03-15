@@ -27,43 +27,78 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case GET_CUSTOM_SCRIPT_RESPONSE:
-      return {
-        ...state,
-        items: action.payload.data,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
+
     case ADD_CUSTOM_SCRIPT:
       return {
         ...state,
         loading: true,
       }
     case ADD_CUSTOM_SCRIPT_RESPONSE:
-      return {
-        ...state,
-        items: [...state.items, action.payload.data],
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: [...state.items, action.payload.data],
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
+
     case EDIT_CUSTOM_SCRIPT:
       return {
         ...state,
         loading: true,
       }
     case EDIT_CUSTOM_SCRIPT_RESPONSE:
-      return {
-        ...state,
-        items: [...state.items],
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: [...state.items],
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
+
     case DELETE_CUSTOM_SCRIPT:
       return {
         ...state,
         loading: true,
       }
     case DELETE_CUSTOM_SCRIPT_RESPONSE:
-      return {
-        ...state,
-        items: state.items.filter((item) => item.inum !== action.payload.data),
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: state.items.filter(
+            (item) => item.inum !== action.payload.data,
+          ),
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
+
     case RESET:
       return {
         ...state,

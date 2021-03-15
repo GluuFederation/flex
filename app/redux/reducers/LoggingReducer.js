@@ -37,10 +37,17 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case PUT_LOGGING_RESPONSE:
-      return {
-        ...state,
-        logging: state.logging,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          logging: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
 
     case RESET:

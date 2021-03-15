@@ -20,10 +20,18 @@ export default (state = INIT_STATE, action) => {
       }
 
     case GET_SCOPE_BY_INUM_RESPONSE:
-      return {
-        ...state,
-        currentScope: action.payload.data,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          currentScope: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          currentScope: action.payload.data,
+          loading: false,
+        }
       }
 
     case GET_SCOPES:
@@ -32,11 +40,19 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case GET_SCOPES_RESPONSE:
-      return {
-        ...state,
-        items: action.payload.data,
-        loading: false,
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
+
     case RESET:
       return {
         ...state,
