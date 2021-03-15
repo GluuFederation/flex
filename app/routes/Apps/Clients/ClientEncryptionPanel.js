@@ -1,5 +1,5 @@
-import React from "react";
-import { Col, Container, FormGroup, Label, Input } from "../../../components";
+import React from 'react'
+import { Col, Container, FormGroup, Label, Input } from '../../../components'
 
 function ClientEncryptionPanel() {
   return (
@@ -29,7 +29,7 @@ function ClientEncryptionPanel() {
         </Col>
       </FormGroup>
     </Container>
-  );
+  )
 }
 
-export default ClientEncryptionPanel;
+export default ClientEncryptionPanel

@@ -1,12 +1,12 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   getCouchBaseResponse,
   addCouchBaseResponse,
   editCouchBaseResponse,
 } from '../actions/CouchbaseActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { GET_COUCHBASE, PUT_COUCHBASE, SET_COUCHBASE, } from '../actions/types'
+import { GET_COUCHBASE, PUT_COUCHBASE, SET_COUCHBASE } from '../actions/types'
 import CouchbaseApi from '../api/CouchbaseApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
@@ -31,8 +31,9 @@ export function* addCouchbase({ payload }) {
     const data = yield call(api.addCouchBaseConfig, payload.data)
     yield put(addCouchBaseResponse(data))
   } catch (e) {
-    if (isFourZeroOneError(e) && !hasApiToken()) {
-      yield put(getAPIAccessToken())
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
     }
   }
 }
@@ -43,8 +44,9 @@ export function* editCouchbase({ payload }) {
     const data = yield call(api.updateCouchBaseConfig, payload.data)
     yield put(editCouchBaseResponse(data))
   } catch (e) {
-    if (isFourZeroOneError(e) && !hasApiToken()) {
-      yield put(getAPIAccessToken())
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
     }
   }
 }

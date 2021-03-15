@@ -7,7 +7,6 @@ import {
   EDIT_ATTRIBUTE_RESPONSE,
   DELETE_ATTRIBUTE,
   DELETE_ATTRIBUTE_RESPONSE,
-  SET_API_ERROR,
   SET_ATTRIBUTE_ITEM,
 } from './types'
 
@@ -45,11 +44,6 @@ export const deleteAttribute = (inum) => ({
 export const deleteAttributeResponse = (data) => ({
   type: DELETE_ATTRIBUTE_RESPONSE,
   payload: { data },
-})
-
-export const setApiError = (error) => ({
-  type: SET_API_ERROR,
-  payload: { error },
 })
 
 export const setCurrentItem = (item) => ({

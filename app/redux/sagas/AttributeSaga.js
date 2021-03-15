@@ -2,13 +2,12 @@
  * Attribute Sagas
  */
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   getAttributesResponse,
   addAttributeResponse,
   editAttributeResponse,
   deleteAttributeResponse,
-  setApiError,
 } from '../actions/AttributeActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import {
@@ -27,10 +26,11 @@ export function* getAttributes() {
     const data = yield call(attributeApi.getAllAttributes)
     yield put(getAttributesResponse(data))
   } catch (e) {
-    if (isFourZeroOneError(e) && !hasApiToken()) {
-      yield put(getAPIAccessToken())
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
     }
-    yield put(setApiError(e))
+    yield put(getAttributesResponse(null))
   }
 }
 
@@ -39,8 +39,12 @@ export function* addAttribute({ payload }) {
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.addNewAttribute, payload.data)
     yield put(addAttributeResponse(data))
-  } catch (error) {
-    yield put(setApiError(error))
+  } catch (e) {
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+    yield put(addAttributeResponse(null))
   }
 }
 
@@ -49,8 +53,12 @@ export function* editAttribute({ payload }) {
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.editAnAttribute, payload.data)
     yield put(editAttributeResponse(data))
-  } catch (error) {
-    yield put(setApiError(error))
+  } catch (e) {
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+    yield put(editAttributeResponse(null))
   }
 }
 
@@ -59,8 +67,12 @@ export function* deleteAttribute({ payload }) {
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.deleteAnAttribute, payload.data)
     yield put(deleteAttributeResponse(data))
-  } catch (error) {
-    yield put(setApiError(error))
+  } catch (e) {
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+    yield put(deleteAttributeResponse(null))
   }
 }
 

@@ -27,8 +27,9 @@ export function* editAcrs({ payload }) {
     const data = yield call(api.updateAcrsConfig, payload.data)
     yield put(editAcrsResponse(data))
   } catch (e) {
-    if (isFourZeroOneError(e) && !hasApiToken()) {
-      yield put(getAPIAccessToken())
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
     }
   }
 }

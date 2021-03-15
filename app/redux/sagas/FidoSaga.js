@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import { getFidoResponse, editFidoResponse } from '../actions/FidoActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { GET_FIDO, PUT_FIDO } from '../actions/types'
@@ -27,8 +27,9 @@ export function* editFido({ payload }) {
     const data = yield call(api.updateFidoConfig, payload.data)
     yield put(editFidoResponse(data))
   } catch (e) {
-    if (isFourZeroOneError(e) && !hasApiToken()) {
-      yield put(getAPIAccessToken())
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
     }
   }
 }

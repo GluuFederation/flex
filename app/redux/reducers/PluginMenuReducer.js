@@ -2,20 +2,20 @@
  * Plugin Reducers
  */
 import {
-	GET_ALL_PLUGIN_MENU,
-	GET_ALL_PLUGIN_MENU_RESPONSE,
-	  RESET,
-	  SET_API_ERROR
+  GET_ALL_PLUGIN_MENU,
+  GET_ALL_PLUGIN_MENU_RESPONSE,
+  RESET,
 } from '../actions/types'
 
 /**
  * initial plugin state
  */
 const INIT_STATE = {
-		plugins: []
+  plugins: [],
 }
 
 export default (state = INIT_STATE, action) => {
+
 	  switch (action.type) {
 	    case GET_ALL_PLUGIN_MENU:
 	      return {
@@ -28,7 +28,6 @@ export default (state = INIT_STATE, action) => {
 	        ...state,
 	        plugins: action.payload.plugins,
 	        loading: false,
-	        hasApiError: false
 	      };
 	    case SET_API_ERROR:
 	      return { ...state, loading: false, hasApiError: true };
@@ -42,6 +41,6 @@ export default (state = INIT_STATE, action) => {
 	    default:
 	      return {
 	        ...state
-	      };
+	      }
 	  }
-	};
+	}
