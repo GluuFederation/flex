@@ -15,6 +15,7 @@ import pluginMenuReducer from './PluginMenuReducer'
 import {healthCheck} from '../../../plugins/redux/reducers'
 import ldapReducer from './LdapReducer'
 import couchBaseReducer from './CouchbaseReducer'
+import {USER_LOGGED_OUT} from '../actions/types'
 
 const appReducers = {
   authReducer,
@@ -34,4 +35,13 @@ const appReducers = {
 const allReducers = {...appReducers, healthCheck};
 const reducers = combineReducers(allReducers)
 
-export default reducers
+const rootReducer = (state, action) => {
+  // when a logout action is dispatched it will reset redux state
+  if (action.type === USER_LOGGED_OUT) {
+    localStorage.clear();
+    state = undefined;
+  }
+  return reducers(state, action);
+};
+
+export default rootReducer;
