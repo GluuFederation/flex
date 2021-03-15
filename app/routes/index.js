@@ -64,7 +64,7 @@ import { selectPlugin } from "../../plugins/selector";
 // eslint-disable-next-line no-unused-vars
 export const RoutedContent = () => {
   const scopes = useSelector((state) => state.authReducer.permissions)
-  const plugins = localStorage.getItem("plugins");
+  const availablePlugins = useSelector((state) => state.pluginMenuReducer.plugins)
 
   return (
     <Switch>
@@ -151,7 +151,7 @@ export const RoutedContent = () => {
       )}
 
       {/* -------- Plugins ---------*/}
-      {JSON.parse(plugins).map((item, key) => (
+      {availablePlugins.map((item, key) => (
           <Route key={key} component={selectPlugin(item.key)} path={item.path} />
       ))}
 

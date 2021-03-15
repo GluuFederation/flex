@@ -11,6 +11,7 @@ function ByeBye({config, dispatch}) {
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`;
       window.location.href = sessionEndpoint;
     }
+    
       dispatch(logoutUser())
     
   }, [])

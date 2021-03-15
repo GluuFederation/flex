@@ -23,8 +23,7 @@ export default (state = INIT_STATE, action) => {
 	        loading: true
 	      };
 	    case GET_ALL_PLUGIN_MENU_RESPONSE:
-		  localStorage.setItem(
-			'plugins', JSON.stringify(action.payload.plugins),)
+		  
 	      return {
 	        ...state,
 	        plugins: action.payload.plugins,
