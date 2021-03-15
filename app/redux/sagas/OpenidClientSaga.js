@@ -15,6 +15,7 @@ export function* getOauthOpenidClients() {
     const data = yield call(openIdApi.getAllOpenidClients)
     yield put(getOpenidClientsResponse(data))
   } catch (e) {
+    yield put(getOpenidClientsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

@@ -26,11 +26,11 @@ export function* getAttributes() {
     const data = yield call(attributeApi.getAllAttributes)
     yield put(getAttributesResponse(data))
   } catch (e) {
+    yield put(getAttributesResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    yield put(getAttributesResponse(null))
   }
 }
 
@@ -40,11 +40,11 @@ export function* addAttribute({ payload }) {
     const data = yield call(attributeApi.addNewAttribute, payload.data)
     yield put(addAttributeResponse(data))
   } catch (e) {
+    yield put(addAttributeResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    yield put(addAttributeResponse(null))
   }
 }
 
@@ -54,11 +54,11 @@ export function* editAttribute({ payload }) {
     const data = yield call(attributeApi.editAnAttribute, payload.data)
     yield put(editAttributeResponse(data))
   } catch (e) {
+    yield put(editAttributeResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    yield put(editAttributeResponse(null))
   }
 }
 
@@ -68,11 +68,11 @@ export function* deleteAttribute({ payload }) {
     const data = yield call(attributeApi.deleteAnAttribute, payload.data)
     yield put(deleteAttributeResponse(data))
   } catch (e) {
+    yield put(deleteAttributeResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
-    yield put(deleteAttributeResponse(null))
   }
 }
 

@@ -30,6 +30,7 @@ export function* editLogging({ payload }) {
     const data = yield call(api.editLoggingConfig, payload.data)
     yield put(editLoggingResponse(data))
   } catch (e) {
+    yield put(editLoggingResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

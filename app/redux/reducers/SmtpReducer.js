@@ -81,10 +81,16 @@ export default (state = INIT_STATE, action) => {
       }
 
     case TEST_SMTP_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          loading: false,
+        }
+      }
       return {
         ...state,
-        smtp: action.payload.data,
       }
+
     case RESET:
       return {
         ...state,

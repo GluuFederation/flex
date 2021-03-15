@@ -26,6 +26,7 @@ export function* getCustomScripts() {
     const data = yield call(scriptApi.getAllCustomScript)
     yield put(getCustomScriptsResponse(data))
   } catch (e) {
+    yield put(getCustomScriptsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -40,6 +41,7 @@ export function* addScript({ payload }) {
     const data = yield call(scriptApi.addCustomScript, payload.data)
     yield put(addCustomScriptResponse(data))
   } catch (e) {
+    yield put(addCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -54,6 +56,7 @@ export function* editScript({ payload }) {
     const data = yield call(scriptApi.editCustomScript, payload.data)
     yield put(editCustomScriptResponse(data))
   } catch (e) {
+    yield put(editCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -68,6 +71,7 @@ export function* deleteScript({ payload }) {
     const data = yield call(scriptApi.deleteCustomScript, payload.data)
     yield put(deleteCustomScriptResponse(data))
   } catch (e) {
+    yield put(deleteCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

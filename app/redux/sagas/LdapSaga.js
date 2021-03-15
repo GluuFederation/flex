@@ -27,6 +27,7 @@ export function* editLdap({ payload }) {
     const data = yield call(api.updateLdapConfig, payload.data)
     yield put(editLdapResponse(data))
   } catch (e) {
+    yield put(editLdapResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

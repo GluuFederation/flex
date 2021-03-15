@@ -31,6 +31,7 @@ export function* addCouchbase({ payload }) {
     const data = yield call(api.addCouchBaseConfig, payload.data)
     yield put(addCouchBaseResponse(data))
   } catch (e) {
+    yield put(addCouchBaseResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -44,6 +45,7 @@ export function* editCouchbase({ payload }) {
     const data = yield call(api.updateCouchBaseConfig, payload.data)
     yield put(editCouchBaseResponse(data))
   } catch (e) {
+    yield put(editCouchBaseResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

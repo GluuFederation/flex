@@ -27,6 +27,7 @@ export function* editFido({ payload }) {
     const data = yield call(api.updateFidoConfig, payload.data)
     yield put(editFidoResponse(data))
   } catch (e) {
+    yield put(editFidoResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

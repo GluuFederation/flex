@@ -24,6 +24,7 @@ export function* getScopeByInum() {
     const data = yield call(scopeApi.getScope)
     yield put(deleteScopeResponse(data))
   } catch (e) {
+    yield put(deleteScopeResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -37,6 +38,7 @@ export function* getScopes() {
     const data = yield call(scopeApi.getAllScopes)
     yield put(getScopesResponse(data))
   } catch (e) {
+    yield put(getScopesResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

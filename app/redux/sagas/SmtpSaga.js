@@ -32,6 +32,7 @@ export function* addSmtp({ payload }) {
     const data = yield call(api.addSmtpConfig, payload.data)
     yield put(addSmtpResponse(data))
   } catch (e) {
+    yield put(addSmtpResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -45,6 +46,7 @@ export function* editSmtp({ payload }) {
     const data = yield call(api.updateSmtpConfig, payload.data)
     yield put(editSmtpResponse(data))
   } catch (e) {
+    yield put(editSmtpResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
