@@ -113,7 +113,21 @@ function ClientWizardForm({ client, permissions }) {
                     icon={<i className="fa fa-credit-card fa-fw"></i>}
                     complete={isComplete(sequence[2])}
                   >
-                    Encryption
+                    Encryption/Signing
+                  </Wizard.Step>
+                  <Wizard.Step
+                    id={setId(3)}
+                    icon={<i className="fa fa-credit-card fa-fw"></i>}
+                    complete={isComplete(sequence[3])}
+                  >
+                    Attributes
+                  </Wizard.Step>
+                  <Wizard.Step
+                    id={setId(4)}
+                    icon={<i className="fa fa-credit-card fa-fw"></i>}
+                    complete={isComplete(sequence[4])}
+                  >
+                    Custom Scripts
                   </Wizard.Step>
                 </Wizard>
               </CardBody>
