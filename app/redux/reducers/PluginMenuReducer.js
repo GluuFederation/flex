@@ -15,32 +15,27 @@ const INIT_STATE = {
 }
 
 export default (state = INIT_STATE, action) => {
-
-	  switch (action.type) {
-	    case GET_ALL_PLUGIN_MENU:
-	      return {
-	        ...state,
-	        loading: true
-	      };
-	    case GET_ALL_PLUGIN_MENU_RESPONSE:
-		  
-	      return {
-	        ...state,
-	        plugins: action.payload.plugins,
-	        loading: false,
-	      };
-	    case SET_API_ERROR:
-	      return { ...state, loading: false, hasApiError: true };
-	    case RESET:
-	      return {
-	        ...state,
-	        items: INIT_STATE.items,
-	        loading: INIT_STATE.loading,
-	        hasApiError: INIT_STATE.hasApiError
-	      };
-	    default:
-	      return {
-	        ...state
-	      }
-	  }
-	}
+  switch (action.type) {
+    case GET_ALL_PLUGIN_MENU:
+      return {
+        ...state,
+        loading: true,
+      }
+    case GET_ALL_PLUGIN_MENU_RESPONSE:
+      return {
+        ...state,
+        plugins: action.payload.plugins,
+        loading: false,
+      }
+    case RESET:
+      return {
+        ...state,
+        items: INIT_STATE.items,
+        loading: INIT_STATE.loading,
+      }
+    default:
+      return {
+        ...state,
+      }
+  }
+}
