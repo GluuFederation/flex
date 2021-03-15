@@ -63,6 +63,9 @@ class AppAuthProvider extends Component {
 
   static getDerivedStateFromProps(props) {
     //console.log('======================:' + JSON.stringify(props.token))
+    if (window.location.href.indexOf("logout") > -1) {
+      return { showContent: true }
+    }
     if (!props.showContent) {
       if (!props.userinfo) {
         const params = queryString.parse(props.location.search)
