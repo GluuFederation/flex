@@ -56,7 +56,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: config.srcDir,
+        include: [config.srcDir, config.pluginsDir],
         exclude: /node_modules/,
         use: "babel-loader"
       },
