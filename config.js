@@ -12,6 +12,7 @@ const config = {
 
   // Source Directory ===============================================
   srcDir: path.join(root, "app"),
+  pluginsDir: path.join(root, "plugins"),
   srcServerDir: path.join(root, "server"),
 
   // HTML Layout ====================================================
