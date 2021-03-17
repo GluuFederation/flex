@@ -38,7 +38,7 @@ module.exports = {
         'generator-star-spacing': 'off',
         "space-in-parens": ["error", "never"],
         "comma-spacing": ["error", { "before": false, "after": true }],
-        "indent": ["error", 2],
+        "indent": ["error", 2, {"ignoredNodes": ["JSXElement"]}],
         "react/jsx-indent": ["error", 2],
         "react/jsx-indent-props": ["error", 2],
         "react/display-name": [ 0, { "ignoreTranspilerName": false } ]
