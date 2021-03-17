@@ -1,5 +1,6 @@
 import React from 'react'
 import { Col, FormGroup, Input } from '../../../components'
+import GluuLabel from './GluuLabel'
 function GluuInputRow({ label, name, type, value, formik }) {
   return (
     <FormGroup row>

@@ -7,6 +7,15 @@ import AcrApi from '../api/AcrApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
 
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.DefaultAuthenticationMethodApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new AcrApi(api)
+}
+
 export function* getAcrs() {
   try {
     const api = yield* newFunction()
@@ -33,14 +42,6 @@ export function* editAcrs({ payload }) {
       yield put(getAPIAccessToken(jwt))
     }
   }
-}
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.DefaultAuthenticationMethodApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new AcrApi(api)
 }
 
 export function* watchGetAcrsConfig() {

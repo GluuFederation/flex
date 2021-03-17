@@ -8,6 +8,7 @@ import {
   editCustomScriptResponse,
   deleteCustomScriptResponse,
 } from '../actions/CustomScriptActions'
+import { getAPIAccessToken } from '../actions/AuthActions'
 import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   GET_CUSTOM_SCRIPT,
@@ -18,6 +19,15 @@ import {
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
+
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.CustomScriptsApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new ScriptApi(api)
+}
 
 //get-all-scripts
 export function* getCustomScripts() {
@@ -77,15 +87,6 @@ export function* deleteScript({ payload }) {
       yield put(getAPIAccessToken(jwt))
     }
   }
-}
-
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CustomScriptsApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new ScriptApi(api)
 }
 
 export function* watchGetAllCustomScripts() {

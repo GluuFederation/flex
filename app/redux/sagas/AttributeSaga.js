@@ -20,6 +20,15 @@ import AttributeApi from '../api/AttributeApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
 
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.AttributeApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new AttributeApi(api)
+}
+
 export function* getAttributes() {
   try {
     const attributeApi = yield* newFunction()
@@ -74,15 +83,6 @@ export function* deleteAttribute({ payload }) {
       yield put(getAPIAccessToken(jwt))
     }
   }
-}
-
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.AttributeApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new AttributeApi(api)
 }
 
 export function* watchGetAttributes() {
