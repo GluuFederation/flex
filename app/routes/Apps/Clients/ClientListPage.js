@@ -20,7 +20,12 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getOpenidClients())
   }, [])
+
   const myActions = []
+  const history = useHistory()
+  const [item, setItem] = useState({})
+  const [modal, setModal] = useState(false)
+  const toggle = () => setModal(!modal)
 
   function handleGoToClientEditPage(row) {
     dispatch(setCurrentItem(row))
@@ -81,10 +86,6 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
       disabled: !rowData.deletable,
     }))
   }
-  const history = useHistory()
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
-  const toggle = () => setModal(!modal)
 
   function getBadgeTheme(status) {
     if (!status) {

@@ -22,6 +22,10 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }, [])
 
   const myActions = []
+  const history = useHistory()
+  const [item, setItem] = useState({})
+  const [modal, setModal] = useState(false)
+  const toggle = () => setModal(!modal)
 
   function handleGoToAttributeEditPage(row) {
     dispatch(setCurrentItem(row))
@@ -78,11 +82,6 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
       disabled: !hasPermission(permissions, ATTRIBUTE_DELETE),
     }))
   }
-
-  const history = useHistory()
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
-  const toggle = () => setModal(!modal)
 
   function getBadgeTheme(status) {
     if (status === 'ACTIVE') {
