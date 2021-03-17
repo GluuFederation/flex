@@ -21,6 +21,20 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
     dispatch(getOpenidClients())
   }, [])
   const myActions = []
+
+  function handleGoToClientEditPage(row) {
+    dispatch(setCurrentItem(row))
+    return history.push(`/client/edit:` + row.inum.substring(0, 4))
+  }
+  function handleGoToClientAddPage() {
+    return history.push('/client/new')
+  }
+  function handleClientDelete(row) {
+    dispatch(setCurrentItem(row))
+    setItem(row)
+    toggle()
+  }
+
   if (hasPermission(permissions, CLIENT_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
@@ -93,18 +107,6 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
     } else {
       return 'Disabled'
     }
-  }
-  function handleGoToClientAddPage() {
-    return history.push('/client/new')
-  }
-  function handleGoToClientEditPage(row) {
-    dispatch(setCurrentItem(row))
-    return history.push(`/client/edit:` + row.inum.substring(0, 4))
-  }
-  function handleClientDelete(row) {
-    dispatch(setCurrentItem(row))
-    setItem(row)
-    toggle()
   }
   function onDeletionConfirmed() {
     // perform delete request

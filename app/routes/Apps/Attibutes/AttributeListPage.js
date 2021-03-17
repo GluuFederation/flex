@@ -22,6 +22,17 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }, [])
 
   const myActions = []
+
+  function handleGoToAttributeEditPage(row) {
+    dispatch(setCurrentItem(row))
+    return history.push(`/attribute/edit:` + row.inum)
+  }
+  function handleAttribueDelete(row) {
+    dispatch(setCurrentItem(row))
+    setItem(row)
+    toggle()
+  }
+
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
@@ -82,15 +93,6 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }
   function handleGoToAttributeAddPage() {
     return history.push('/attribute/new')
-  }
-  function handleGoToAttributeEditPage(row) {
-    dispatch(setCurrentItem(row))
-    return history.push(`/attribute/edit:` + row.inum)
-  }
-  function handleAttribueDelete(row) {
-    dispatch(setCurrentItem(row))
-    setItem(row)
-    toggle()
   }
   function onDeletionConfirmed() {
     // perform delete request

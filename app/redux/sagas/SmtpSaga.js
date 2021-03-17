@@ -12,6 +12,15 @@ import SmtpApi from '../api/SmtpApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
 
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.ConfigurationSMTPApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new SmtpApi(api)
+}
+
 export function* getSmtp() {
   try {
     const api = yield* newFunction()
@@ -52,15 +61,6 @@ export function* editSmtp({ payload }) {
       yield put(getAPIAccessToken(jwt))
     }
   }
-}
-
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.ConfigurationSMTPApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new SmtpApi(api)
 }
 
 export function* watchGetSmtpConfig() {
