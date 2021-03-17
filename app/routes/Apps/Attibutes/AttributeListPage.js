@@ -36,6 +36,9 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     setItem(row)
     toggle()
   }
+  function handleGoToAttributeAddPage() {
+    return history.push('/attribute/new')
+  }
 
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
     myActions.push((rowData) => ({
@@ -89,9 +92,6 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     } else {
       return 'warning'
     }
-  }
-  function handleGoToAttributeAddPage() {
-    return history.push('/attribute/new')
   }
   function onDeletionConfirmed() {
     // perform delete request
