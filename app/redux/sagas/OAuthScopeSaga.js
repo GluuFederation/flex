@@ -10,6 +10,7 @@ import {
   takeLatest,
   select,
 } from 'redux-saga/effects'
+import { getAPIAccessToken } from '../actions/AuthActions'
 import { deleteScopeResponse, getScopesResponse } from '../actions/ScopeActions'
 import { GET_SCOPES, GET_SCOPE_BY_INUM } from '../actions/types'
 import ScopeApi from '../api/ScopeApi'
@@ -17,6 +18,15 @@ import { getClient } from '../api/base'
 import { isFourZeroOneError } from '../../utils/TokenController'
 
 const JansConfigApi = require('jans_config_api')
+
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.OAuthScopesApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new ScopeApi(api)
+}
 
 export function* getScopeByInum() {
   try {
@@ -44,14 +54,6 @@ export function* getScopes() {
       yield put(getAPIAccessToken(jwt))
     }
   }
-}
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.OAuthScopesApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new ScopeApi(api)
 }
 
 export function* watchGetScopeByInum() {

@@ -1,5 +1,6 @@
 import React from 'react'
-import { Col, FormGroup, CustomInput } from '../../../components'
+import GluuLabel from './GluuLabel'
+import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
 function GluuSelectRow({ label, name, value, formik, values }) {
   return (
     <FormGroup row>
@@ -24,8 +25,8 @@ function GluuSelectRow({ label, name, value, formik, values }) {
   )
 }
 
-GluuTextAreaRow.defaultProps = {
+GluuSelectRow.defaultProps = {
   values: [],
 }
 
-export default GluuTextAreaRow
+export default GluuSelectRow

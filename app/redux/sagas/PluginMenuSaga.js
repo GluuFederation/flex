@@ -19,7 +19,6 @@ function* getPluginWorker() {
   } catch (error) {
     console.error('Problems getting Plugin details.', error)
   }
-  yield put(getAllPluginsResponse())
 }
 
 //watcher sagas

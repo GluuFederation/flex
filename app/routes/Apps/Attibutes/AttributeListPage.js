@@ -22,6 +22,24 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }, [])
 
   const myActions = []
+  const history = useHistory()
+  const [item, setItem] = useState({})
+  const [modal, setModal] = useState(false)
+  const toggle = () => setModal(!modal)
+
+  function handleGoToAttributeEditPage(row) {
+    dispatch(setCurrentItem(row))
+    return history.push(`/attribute/edit:` + row.inum)
+  }
+  function handleAttribueDelete(row) {
+    dispatch(setCurrentItem(row))
+    setItem(row)
+    toggle()
+  }
+  function handleGoToAttributeAddPage() {
+    return history.push('/attribute/new')
+  }
+
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
@@ -68,29 +86,12 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     }))
   }
 
-  const history = useHistory()
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
-  const toggle = () => setModal(!modal)
-
   function getBadgeTheme(status) {
     if (status === 'ACTIVE') {
       return 'primary'
     } else {
       return 'warning'
     }
-  }
-  function handleGoToAttributeAddPage() {
-    return history.push('/attribute/new')
-  }
-  function handleGoToAttributeEditPage(row) {
-    dispatch(setCurrentItem(row))
-    return history.push(`/attribute/edit:` + row.inum)
-  }
-  function handleAttribueDelete(row) {
-    dispatch(setCurrentItem(row))
-    setItem(row)
-    toggle()
   }
   function onDeletionConfirmed() {
     // perform delete request
