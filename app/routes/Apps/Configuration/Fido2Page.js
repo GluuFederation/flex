@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   hasPermission,
   FIDO_READ,
@@ -24,13 +24,27 @@ import {
   getFidoConfig,
   editFidoConfig,
 } from '../../../redux/actions/FidoActions'
+import { FormatLineSpacing } from '@material-ui/icons'
 
 function Fido2Page({ fido, loading, permissions, dispatch }) {
-  // console.log('================' + JSON.stringify(fido))
+  const [blocking, setBlocking] = useState(loading)
   useEffect(() => {
     dispatch(getFidoConfig())
   }, [])
   const initialValues = {
+    issuer: fido.issuer,
+    baseEndpoint: fido.baseEndpoint,
+    cleanServiceInterval: fido.cleanServiceInterval,
+    cleanServiceBatchChunkSize: fido.cleanServiceBatchChunkSize,
+    useLocalCache: fido.useLocalCache,
+    disableJdkLogger: fido.disableJdkLogger,
+    loggingLevel: fido.loggingLevel,
+    loggingLayout: fido.loggingLayout,
+    externalLoggerConfiguration: fido.externalLoggerConfiguration,
+    metricReporterInterval: fido.metricReporterInterval,
+    metricReporterKeepDataDays: fido.metricReporterKeepDataDays,
+    metricReporterEnabled: fido.metricReporterEnabled,
+    personCustomObjectClassList: fido.personCustomObjectClassList,
     authenticatorCertsFolder: fido.fido2Configuration.authenticatorCertsFolder,
     mdsCertsFolder: fido.fido2Configuration.mdsCertsFolder,
     mdsTocsFolder: fido.fido2Configuration.mdsTocsFolder,
@@ -48,7 +62,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
     <React.Fragment>
       <BlockUi
         tag="div"
-        blocking={loading}
+        blocking={blocking}
         keepInView={true}
         renderChildren={true}
         message={'Performing the request, please wait!'}
@@ -60,7 +74,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                 initialValues={initialValues}
                 onSubmit={(values) => {
                   const opts = {}
-                  opts['jansFido2DynConfiguration'] = JSON.stringify(values)
+                  opts['jansFido2DynConfiguration'] = values
                   dispatch(editFidoConfig(opts))
                 }}
               >
