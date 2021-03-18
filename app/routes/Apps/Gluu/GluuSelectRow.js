@@ -1,11 +1,11 @@
 import React from 'react'
 import GluuLabel from './GluuLabel'
 import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
-function GluuSelectRow({ label, name, value, formik, values }) {
+function GluuSelectRow({ label, name, value, formik, values, lsize, rsize }) {
   return (
     <FormGroup row>
-      <GluuLabel label={label} />
-      <Col sm={9}>
+      <GluuLabel label={label} size={lsize} />
+      <Col sm={rsize}>
         <InputGroup>
           <CustomInput
             type="select"
@@ -27,6 +27,8 @@ function GluuSelectRow({ label, name, value, formik, values }) {
 
 GluuSelectRow.defaultProps = {
   values: [],
+  lsize: 3,
+  rsize: 9,
 }
 
 export default GluuSelectRow

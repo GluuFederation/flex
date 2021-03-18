@@ -1,15 +1,10 @@
 import React, { useEffect } from 'react'
-import {
-  Col,
-  Form,
-  FormGroup,
-  Container,
-  Input,
-  Card,
-  CardBody,
-} from './../../../components'
-import GluuLabel from '../Gluu/GluuLabel'
+import { Form, Container, Card, CardBody } from './../../../components'
 import GluuFooter from '../Gluu/GluuFooter'
+import GluuSelectRow from '../Gluu/GluuSelectRow'
+import GluuInputRow from '../Gluu/GluuInputRow'
+import GluuCheckBoxRow from '../Gluu/GluuCheckBoxRow'
+import GluuEmptyRow from '../Gluu/GluuEmptyRow'
 import { connect } from 'react-redux'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
@@ -17,7 +12,13 @@ import {
   getLoggingConfig,
   editLoggingConfig,
 } from '../../../redux/actions/LoggingActions'
-function LoggingPage({ logging, dispatch, loading }) {
+import {
+  hasPermission,
+  LOGGING_READ,
+  LOGGING_WRITE,
+} from '../../../utils/PermChecker'
+
+function LoggingPage({ logging, dispatch, permissions, loading }) {
   useEffect(() => {
     dispatch(getLoggingConfig())
   }, [])
@@ -29,6 +30,7 @@ function LoggingPage({ logging, dispatch, loading }) {
     disableJdkLogger: logging.disableJdkLogger,
     enabledOAuthAuditLogging: logging.enabledOAuthAuditLogging,
   }
+  const levels = ['TRACE', 'DEBUG', 'INFO', 'ERROR']
   return (
     <React.Fragment>
       <BlockUi
@@ -51,68 +53,52 @@ function LoggingPage({ logging, dispatch, loading }) {
               >
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
-                    <FormGroup row>
-                      <GluuLabel label="Logging level" required size={4} />
-                      <Col sm={8}>
-                        <Input
-                          placeholder="Enter logging level."
-                          id="loggingLevel"
-                          name="loggingLevel"
-                          onChange={formik.handleChange}
-                          defaultValue={logging.loggingLevel}
-                        />
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <GluuLabel label="Logging layout" required size={4} />
-                      <Col sm={8}>
-                        <Input
-                          placeholder="Enter logging layout."
-                          id="loggingLayout"
-                          name="loggingLayout"
-                          onChange={formik.handleChange}
-                          defaultValue={logging.loggingLayout}
-                        />
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <GluuLabel label="Enable HTTP Logging ?" size={5} />
-                      <Col sm={2}>
-                        <Input
-                          id="httpLoggingEnabled"
-                          name="httpLoggingEnabled"
-                          type="checkbox"
-                          onChange={formik.handleChange}
-                          defaultChecked={logging.httpLoggingEnabled}
-                        />
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <GluuLabel label="Disable JSK Logger?" size={5} />
-                      <Col sm={2}>
-                        <Input
-                          id="disableJdkLogger"
-                          name="disableJdkLogger"
-                          type="checkbox"
-                          onChange={formik.handleChange}
-                          defaultChecked={logging.disableJdkLogger}
-                        />
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <GluuLabel label="Enable Oauth Audit Logging?" size={5} />
-                      <Col sm={2}>
-                        <Input
-                          id="enabledOAuthAuditLogging"
-                          name="enabledOAuthAuditLogging"
-                          type="checkbox"
-                          onChange={formik.handleChange}
-                          defaultChecked={logging.enabledOAuthAuditLogging}
-                        />
-                      </Col>
-                    </FormGroup>
-                    <FormGroup row></FormGroup>
-                    <GluuFooter />
+                    <GluuSelectRow
+                      label="Logging level"
+                      name="loggingLevel"
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      value={logging.loggingLevel}
+                      values={levels}
+                    ></GluuSelectRow>
+                    <GluuInputRow
+                      label="Logging layout"
+                      name="loggingLayout"
+                      formik={formik}
+                      lsize={4}
+                      rsize={8}
+                      required
+                      value={logging.loggingLayout}
+                    ></GluuInputRow>
+                    <GluuCheckBoxRow
+                      label="Enable HTTP Logging"
+                      name="httpLoggingEnabled"
+                      formik={formik}
+                      lsize={5}
+                      rsize={7}
+                      value={logging.httpLoggingEnabled}
+                    ></GluuCheckBoxRow>
+                    <GluuCheckBoxRow
+                      label="Disable JSK Logger?"
+                      name="disableJdkLogger"
+                      formik={formik}
+                      lsize={5}
+                      rsize={7}
+                      value={logging.disableJdkLogger}
+                    ></GluuCheckBoxRow>
+                    <GluuCheckBoxRow
+                      label="Enable Oauth Audit Logging?"
+                      name="enabledOAuthAuditLogging"
+                      formik={formik}
+                      lsize={5}
+                      rsize={7}
+                      value={logging.enabledOAuthAuditLogging}
+                    ></GluuCheckBoxRow>
+                    <GluuEmptyRow />
+                    {hasPermission(permissions, LOGGING_WRITE) && (
+                      <GluuFooter />
+                    )}
                   </Form>
                 )}
               </Formik>
