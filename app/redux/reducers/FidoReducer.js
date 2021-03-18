@@ -7,7 +7,7 @@ import {
 } from '../actions/types'
 
 const INIT_STATE = {
-  fido: {},
+  fido: { fido2Configuration: {} },
   loading: false,
 }
 

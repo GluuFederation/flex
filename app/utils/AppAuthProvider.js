@@ -62,7 +62,9 @@ class AppAuthProvider extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    //console.log('======================:' + JSON.stringify(props.token))
+    console.log('======================C:' + JSON.stringify(props.config))
+    console.log('======================U:' + JSON.stringify(props.userinfo))
+    console.log('======================T:' + JSON.stringify(props.token))
     if (window.location.href.indexOf("logout") > -1) {
       return { showContent: true }
     }
@@ -76,7 +78,9 @@ class AppAuthProvider extends Component {
           //     showContent: false,
           //   }
           // }
+          console.log('======================code:' + params.code)
           props.getUserInfo(params.code)
+          
         } else {
           showContent = !!props.config
           if (showContent && props.config != -1) {
@@ -101,7 +105,7 @@ class AppAuthProvider extends Component {
         }
       } else {
         if (!props.token) {
-          props.getAPIAccessToken(props.jwt)
+         // props.getAPIAccessToken(props.jwt)
         }
         return {
           showContent: true,

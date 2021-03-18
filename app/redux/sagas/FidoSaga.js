@@ -20,7 +20,7 @@ export function* getFido() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getFidoConfig)
-    yield put(getFidoResponse(data.fido2Configuration))
+    yield put(getFidoResponse(data))
   } catch (e) {
     yield put(getFidoResponse(null))
     if (isFourZeroOneError(e)) {

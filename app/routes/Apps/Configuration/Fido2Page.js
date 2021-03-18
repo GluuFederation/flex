@@ -25,15 +25,17 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
     dispatch(getFidoConfig())
   }, [])
   const initialValues = {
-    authenticatorCertsFolder: fido.authenticatorCertsFolder,
-    mdsCertsFolder: fido.mdsCertsFolder,
-    mdsTocsFolder: fido.mdsTocsFolder,
-    serverMetadataFolder: fido.serverMetadataFolder,
-    requestedCredentialTypes: fido.requestedCredentialTypes,
-    requestedParties: fido.requestedParties,
-    userAutoEnrollment: fido.userAutoEnrollment,
-    unfinishedRequestExpiration: fido.unfinishedRequestExpiration,
-    authenticationHistoryExpiration: fido.authenticationHistoryExpiration,
+    authenticatorCertsFolder: fido.fido2Configuration.authenticatorCertsFolder,
+    mdsCertsFolder: fido.fido2Configuration.mdsCertsFolder,
+    mdsTocsFolder: fido.fido2Configuration.mdsTocsFolder,
+    serverMetadataFolder: fido.fido2Configuration.serverMetadataFolder,
+    requestedCredentialTypes: fido.fido2Configuration.requestedCredentialTypes,
+    requestedParties: fido.fido2Configuration.requestedParties,
+    userAutoEnrollment: fido.fido2Configuration.userAutoEnrollment,
+    unfinishedRequestExpiration:
+      fido.fido2Configuration.unfinishedRequestExpiration,
+    authenticationHistoryExpiration:
+      fido.fido2Configuration.authenticationHistoryExpiration,
   }
 
   return (
@@ -69,7 +71,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           id="authenticatorCertsFolder"
                           name="authenticatorCertsFolder"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.authenticatorCertsFolder}
+                          defaultValue={formik.values.fido2Configuration.authenticatorCertsFolder}
                         />
                       </Col>
                     </FormGroup>
@@ -80,7 +82,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           id="mdsCertsFolder"
                           name="mdsCertsFolder"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.mdsCertsFolder}
+                          defaultValue={formik.values.fido2Configuration.mdsCertsFolder}
                         />
                       </Col>
                     </FormGroup>
@@ -91,7 +93,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           id="mdsTocsFolder"
                           name="mdsTocsFolder"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.mdsTocsFolder}
+                          defaultValue={formik.values.fido2Configuration.mdsTocsFolder}
                         />
                       </Col>
                     </FormGroup>
@@ -106,7 +108,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           id="serverMetadataFolder"
                           name="serverMetadataFolder"
                           onChange={formik.handleChange}
-                          defaultValue={formik.values.serverMetadataFolder}
+                          defaultValue={formik.values.fido2Configuration.serverMetadataFolder}
                         />
                       </Col>
                     </FormGroup>
@@ -118,7 +120,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           name="userAutoEnrollment"
                           onChange={formik.handleChange}
                           type="checkbox"
-                          defaultChecked={formik.values.userAutoEnrollment}
+                          defaultChecked={formik.values.fido2Configuration.userAutoEnrollment}
                         />
                       </Col>
                       <GluuLabel
@@ -131,7 +133,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           name="unfinishedRequestExpiration"
                           type="number"
                           onChange={formik.handleChange}
-                          defaultValue={fido.unfinishedRequestExpiration}
+                          defaultValue={fido.fido2Configuration.unfinishedRequestExpiration}
                         />
                       </Col>
                       <GluuLabel
@@ -158,7 +160,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           size={4}
                         />
                         <Col sm={8}>
-                          {formik.values.requestedCredentialTypes.map(
+                          {formik.values.fido2Configuration.requestedCredentialTypes.map(
                             (item, index) => (
                               <Badge key={index} color="primary">
                                 {item}
@@ -169,7 +171,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                       </FormGroup>
                     )}
                     <Divider></Divider>
-                    {fido.requestedParties && (
+                    {fido.fido2Configuration.requestedParties && (
                       <FormGroup row>
                         <GluuLabel
                           label="Requested Parties"
@@ -177,7 +179,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           size={4}
                         />
                         <Col sm={8}>
-                          {formik.values.requestedParties.map((item, index) => (
+                          {formik.values.fido2Configuration.requestedParties.map((item, index) => (
                             <FormGroup row key={index}>
                               <GluuLabel label="Name" size={2} />
                               <Col sm={4} key={index}>
