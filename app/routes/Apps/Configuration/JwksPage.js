@@ -44,7 +44,7 @@ const mapStateToProps = (state) => {
 
   return {
     jwks: state.jwksReducer.jwks,
-    loading: state.attributeReducer.loading,
+    loading: state.jwksReducer.loading,
   }
 }
 export default connect(mapStateToProps)(JwksPage)
