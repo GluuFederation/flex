@@ -7,10 +7,11 @@ import {
 import {
   getJwks,
 } from '../../../redux/actions/JwksActions'
+import BlockUi from 'react-block-ui'
 import GluuLabel from '../Gluu/GluuLabel'
 import { connect } from 'react-redux'
 import JwkItem from './JwkItem'
-function JwksPage({jwks, loading, dispatch}) {
+function JwksPage({ jwks, loading, dispatch }) {
   useEffect(() => {
     dispatch(getJwks())
   }, [])
@@ -18,16 +19,22 @@ function JwksPage({jwks, loading, dispatch}) {
   return (
     <React.Fragment>
       <Container>
-      <GluuLabel label="JSON Web Keys" size={3} />
-        <Card>
-          <CardBody>
-            
-              {Array.from(jwks['keys']).map((item, index) => (
+        <BlockUi
+          tag="div"
+          blocking={loading}
+          keepInView={true}
+          renderChildren={true}
+          message={'Performing the request, please wait!'}>
+          <GluuLabel label="JSON Web Keys" size={3} />
+          <Card>
+            <CardBody>
+              {Object.keys(jwks).length ? Array.from(jwks['keys']).map((item, index) => (
                 <JwkItem key={index} item={item} index={index}></JwkItem>
-              ))}
-              
-          </CardBody>
-        </Card>
+              )) : ''}
+
+            </CardBody>
+          </Card>
+        </BlockUi>
       </Container>
     </React.Fragment>
   )
