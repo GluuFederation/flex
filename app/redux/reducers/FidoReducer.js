@@ -19,7 +19,6 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case GET_FIDO_RESPONSE:
-      //console.log('=Fido config: ' + JSON.stringify(action.payload.data))
       if (action.payload.data) {
         return {
           ...state,
