@@ -16,6 +16,7 @@ import {healthCheck} from '../../../plugins/redux/reducers'
 import ldapReducer from './LdapReducer'
 import couchBaseReducer from './CouchbaseReducer'
 import {USER_LOGGED_OUT} from '../actions/types'
+import jwksReducer from './JwksReducer'
 
 const appReducers = {
   authReducer,
@@ -30,6 +31,7 @@ const appReducers = {
   pluginMenuReducer,
   ldapReducer,
   couchBaseReducer,
+  jwksReducer,
 };
 
 const allReducers = {...appReducers, healthCheck};
