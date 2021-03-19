@@ -111,3 +111,7 @@ export const PUT_COUCHBASE_RESPONSE = 'PUT_COUCHBASE_RESPONSE'
 
 // User Logout
 export const USER_LOGGED_OUT = 'USER_LOGGED_OUT'
+
+//Jwks
+export const GET_JWKS = 'GET_JWKS'
+export const GET_JWKS_RESPONSE = 'GET_JWKS_RESPONSE'
