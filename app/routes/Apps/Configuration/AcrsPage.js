@@ -14,13 +14,15 @@ import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
 import { connect } from 'react-redux'
 import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
+import { hasPermission, ACR_READ, ACR_WRITE } from '../../../utils/PermChecker'
 
 function AcrsPage({ acrs, permissions, loading, dispatch }) {
+  console.log('=============initial ' + JSON.stringify(loading))
   useEffect(() => {
     dispatch(getAcrsConfig())
   }, [])
   const initialValues = {
-    defaultAcr: acrs ? acrs.defaultAcr : null,
+    defaultAcr: acrs.defaultAcr,
   }
   return (
     <React.Fragment>
@@ -48,7 +50,6 @@ function AcrsPage({ acrs, permissions, loading, dispatch }) {
                       <GluuLabel label="Default Acr" required />
                       <Col sm={9}>
                         <Input
-                          placeholder="Enter the name of the script that will be use by default."
                           id="defaultAcr"
                           name="defaultAcr"
                           onChange={formik.handleChange}
@@ -57,7 +58,7 @@ function AcrsPage({ acrs, permissions, loading, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row></FormGroup>
-                    <GluuFooter />
+                    {hasPermission(permissions, ACR_WRITE) && <GluuFooter />}
                   </Form>
                 )}
               </Formik>
@@ -71,9 +72,9 @@ function AcrsPage({ acrs, permissions, loading, dispatch }) {
 
 const mapStateToProps = (state) => {
   return {
-    acrs: state.acrsReducer.acrs,
+    acrs: state.acrReducer.acrs,
     permissions: state.authReducer.permissions,
-    loading: state.acrsReducer.loading,
+    loading: state.acrReducer.loading,
   }
 }
 

@@ -6,8 +6,8 @@ import {
 } from '../actions/types'
 
 const INIT_STATE = {
-  acr: {},
-  loading: false,
+  acrs: {},
+  loading: true,
 }
 
 export default (state = INIT_STATE, action) => {
@@ -40,7 +40,7 @@ export default (state = INIT_STATE, action) => {
       if (action.payload.data) {
         return {
           ...state,
-          acrs: state.acrs,
+          acrs: action.payload.data,
           loading: false,
         }
       } else {

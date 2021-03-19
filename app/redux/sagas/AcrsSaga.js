@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import { getAcrsResponse, editAcrsResponse } from '../actions/AcrsActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { GET_ACRS, PUT_ACRS } from '../actions/types'
@@ -16,7 +16,7 @@ function* newFunction() {
   return new AcrApi(api)
 }
 
-export function* getAcrs() {
+export function* getCurrentAcrs() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getAcrsConfig)
@@ -45,7 +45,7 @@ export function* editAcrs({ payload }) {
 }
 
 export function* watchGetAcrsConfig() {
-  yield takeLatest(GET_ACRS, getAcrs)
+  yield takeLatest(GET_ACRS, getCurrentAcrs)
 }
 
 export function* watchPutAcrsConfig() {

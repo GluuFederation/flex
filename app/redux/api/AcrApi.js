@@ -18,7 +18,6 @@ export default class AcrApi {
 
   // update Acrs Config
   updateAcrsConfig = (input) => {
-    console.log('***********************' + input)
     return new Promise((resolve, reject) => {
       this.api.putAcrs(input, (error, data) => {
         if (error) {
