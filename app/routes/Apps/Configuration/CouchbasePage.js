@@ -17,22 +17,21 @@ import { getCouchBaseConfig, editCouchBase } from '../../../redux/actions/Couchb
 
 function CouchbasePage({ couch, loading, dispatch }) {
 
-  const [initialValues,setInitialValues]= useState();
+  const [initialValues, setInitialValues] = useState({});
 
   useEffect(() => {
     dispatch(getCouchBaseConfig())
-    console.log("**couch: ", couch)
   }, [])
 
   useEffect(() => {
-    if(couch){
+    if (couch.length) {
       setInitialValues({
         configId: couch[0].configId,
-        servers: couch[0].servers ,
+        servers: couch[0].servers,
         connectTimeout: couch[0].connectTimeout,
         computationPoolSize: couch[0].computationPoolSize,
-        useSSL: couch[0].useSSL,  
-    })
+        useSSL: couch[0].useSSL,
+      })
     }
   }, [couch])
 
@@ -46,16 +45,17 @@ function CouchbasePage({ couch, loading, dispatch }) {
           renderChildren={true}
           message={'Performing the request, please wait!'}
         >
+
           <Card>
-            { initialValues && <CardBody>
+            {Object.keys(initialValues).length && <CardBody>
               <Formik
                 initialValues={initialValues}
                 onSubmit={(values) => {
                   dispatch(editCouchBase(JSON.stringify(values)))
                 }}
-              >
-                {
-                  (formik) => (
+                enableReinitialize
+                render={formik => {
+                  return (
                     <Form onSubmit={formik.handleSubmit}>
                       {Object.keys(couch).length ? couch.map((couchbase, index) => (
                         <CouchbaseItem
@@ -64,13 +64,13 @@ function CouchbasePage({ couch, loading, dispatch }) {
                           index={index}
                           formik={formik}
                         ></CouchbaseItem>
-                      )) : null }
+                      )) : null}
                       <FormGroup row></FormGroup>
                       <GluuFooter />
                     </Form>
                   )
-                }
-
+                }}
+              >
               </Formik>
             </CardBody>}
           </Card>
