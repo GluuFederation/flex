@@ -1,21 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import BlockUi from 'react-block-ui'
-import { Formik } from 'formik'
-import { Form, Container, Card, CardBody } from './../../../components'
+import React, { useEffect, useState } from 'react';
+import BlockUi from 'react-block-ui';
+import { Formik } from 'formik';
+import {
+  Form,
+  Container,
+  Card,
+  CardBody,
+
+} from './../../../components'
 import GluuFooter from '../Gluu/GluuFooter'
 import LdapItem from './LdapItem'
 import { connect } from 'react-redux'
 import { getLdapConfig, editLdap } from '../../../redux/actions/LdapActions'
 
 function LdapPage({ ldap, loading, dispatch }) {
-  const [initialValues, setInitialValues] = useState()
+
+  const [initialValues, setInitialValues] = useState({})
 
   useEffect(() => {
     dispatch(getLdapConfig())
   }, [])
 
   useEffect(() => {
-    if (ldap) {
+    if (ldap.length) {
       setInitialValues({
         configId: ldap[0].configId,
         bindDN: ldap[0].bindDN,
@@ -44,34 +51,29 @@ function LdapPage({ ldap, loading, dispatch }) {
           renderChildren={true}
           message={'Performing the request, please wait!'}
         >
-          <Card>
-            {initialValues && (
-              <CardBody>
-                <Formik
-                  initialValues={initialValues}
-                  onSubmit={(values) => {
-                    dispatch(editLdap(JSON.stringify(values)))
-                  }}
-                >
-                  {(formik) => (
-                    <Form onSubmit={formik.handleSubmit}>
-                      {ldap.length
-                        ? ldap.map((ldap, index) => (
-                            <LdapItem
-                              key={index}
-                              ldap={ldap}
-                              formik={formik}
-                              index={index}
-                            ></LdapItem>
-                          ))
-                        : null}
-                      <GluuFooter />
-                    </Form>
-                  )}
-                </Formik>
-              </CardBody>
-            )}
-          </Card>
+          {
+            Object.keys(initialValues).length && ldap.length ?
+              <Card>
+                <CardBody>
+                  <Formik
+                    initialValues={initialValues}
+                    onSubmit={(values) => {
+                      dispatch(editLdap(JSON.stringify(values)))
+                    }}
+                  >
+                    {(formik) => (
+                      <Form onSubmit={formik.handleSubmit}>
+                        { ldap.map((dap, index) => (
+                          <LdapItem key={index} ldap={dap} formik={formik} index={index}></LdapItem>
+                        ))}
+                        <GluuFooter />
+                      </Form>
+                    )}
+                  </Formik>
+
+                </CardBody>
+              </Card> : null
+          }
         </BlockUi>
       </Container>
     </React.Fragment>

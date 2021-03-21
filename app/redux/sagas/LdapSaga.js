@@ -7,15 +7,6 @@ import LdapApi from '../api/LdapApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
 
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new LdapApi(api)
-}
-
 export function* getLdap() {
   try {
     const api = yield* newFunction()
@@ -36,12 +27,20 @@ export function* editLdap({ payload }) {
     const data = yield call(api.updateLdapConfig, payload.data)
     yield put(editLdapResponse(data))
   } catch (e) {
-    yield put(editLdapResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
   }
+}
+
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new LdapApi(api)
 }
 
 export function* watchGetLdapConfig() {

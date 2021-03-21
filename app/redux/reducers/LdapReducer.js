@@ -10,7 +10,7 @@ import {
 } from '../actions/types'
 
 const INIT_STATE = {
-  ldap: {},
+  ldap: [],
   loading: false,
 }
 
