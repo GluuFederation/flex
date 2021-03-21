@@ -15,6 +15,7 @@ import pluginMenuReducer from './PluginMenuReducer'
 import {healthCheck} from '../../../plugins/redux/reducers'
 import ldapReducer from './LdapReducer'
 import couchBaseReducer from './CouchbaseReducer'
+import cacheReducer from './CacheReducer'
 import {USER_LOGGED_OUT} from '../actions/types'
 import jwksReducer from './JwksReducer'
 
@@ -31,6 +32,7 @@ const appReducers = {
   pluginMenuReducer,
   ldapReducer,
   couchBaseReducer,
+  cacheReducer,
   jwksReducer,
 };
 
