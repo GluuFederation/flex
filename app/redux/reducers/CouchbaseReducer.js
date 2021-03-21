@@ -9,7 +9,7 @@ import {
 } from '../actions/types'
 
 const INIT_STATE = {
-  couchbase: {},
+  couchbase: [],
   loading: false,
 }
 
@@ -62,7 +62,7 @@ export default (state = INIT_STATE, action) => {
       if (action.payload.data) {
         return {
           ...state,
-          couchbase: state.couchbase,
+          couchbase: action.payload.data,
           loading: false,
         }
       } else {
