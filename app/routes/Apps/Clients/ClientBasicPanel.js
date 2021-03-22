@@ -8,9 +8,21 @@ import {
   CustomInput,
 } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
+import GluuTypeAhead from '../Gluu/GluuTypeAhead'
 
 const ClientBasicPanel = ({ client, formik }) => {
-  console.log('==== client' + JSON.stringify(client))
+  const grantTypes = [
+    'authorization_code',
+    'implicit',
+    'refresh_token',
+    'client_credentials',
+    'password',
+    'urn:ietf:params:oauth:grant-type:uma-ticket',
+  ]
+  const responseTypes = ['code', 'token', 'id_token']
+  const postLogoutRedirectUris = []
+  const redirectUris = []
+
   return (
     <Container>
       {client.inum && (
@@ -92,9 +104,9 @@ const ClientBasicPanel = ({ client, formik }) => {
         <Col sm={9}>
           <Input
             placeholder="Enter the policy uri"
-            id="policyURI"
-            name="policyURI"
-            defaultValue={client.policyURI}
+            id="policyUri"
+            name="policyUri"
+            defaultValue={client.policyUri}
             onChange={formik.handleChange}
           />
         </Col>
@@ -145,6 +157,39 @@ const ClientBasicPanel = ({ client, formik }) => {
           </InputGroup>
         </Col>
       </FormGroup>
+
+      <GluuTypeAhead
+        id="grantTypes"
+        label="Grant Types"
+        formik={formik}
+        value={client.grantTypes}
+        options={grantTypes}
+      ></GluuTypeAhead>
+
+      <GluuTypeAhead
+        id="responseTypes"
+        label="Responses Types"
+        formik={formik}
+        value={client.responseTypes}
+        options={responseTypes}
+      ></GluuTypeAhead>
+
+      <GluuTypeAhead
+        id="postLogoutRedirectUris"
+        label="Post Logout RedirectUris"
+        formik={formik}
+        value={client.postLogoutRedirectUris}
+        options={postLogoutRedirectUris}
+      ></GluuTypeAhead>
+
+      <GluuTypeAhead
+        id="redirectUris"
+        label="Redirect Uris"
+        formik={formik}
+        value={client.redirectUris}
+        options={redirectUris}
+      ></GluuTypeAhead>
+
       <FormGroup row>
         <GluuLabel label="Persist Client Authorizations" size={3} />
         <Col sm={1}>

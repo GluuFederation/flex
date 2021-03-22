@@ -33,7 +33,7 @@ function ClientDetailPage({ row }) {
             />
           </Col>
           <Col sm={6}>
-            <GluuFormDetailRow label="Description" value={row.description} />
+            <GluuFormDetailRow label="Description"  value={row.description ? row.description : "-"} />
           </Col>
         </Row>
         <Row>

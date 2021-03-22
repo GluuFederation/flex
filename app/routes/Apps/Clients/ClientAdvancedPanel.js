@@ -1,30 +1,45 @@
-import React from "react";
-import { Col, Container, FormGroup, Label, Input } from "../../../components";
-function ClientAdvancedPanel() {
+import React from 'react'
+import { Col, Container, FormGroup, Label, Input } from '../../../components'
+import GluuLabel from '../Gluu/GluuLabel'
+
+function ClientAdvancedPanel({ client, formik }) {
+  const redirectUris = []
   return (
     <Container>
       <FormGroup row>
-        <Label for="name" sm={3}>
-          Client Type
-        </Label>
-        <Col sm={9}>
-          <Input placeholder="Enter the client type" id="type" name="type" />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <Label for="name" sm={3}>
-          Description
-        </Label>
-        <Col sm={9}>
+        <GluuLabel label="Access Token as JWT" size={3} />
+        <Col sm={1}>
           <Input
-            placeholder="Enter the client description"
-            id="description"
-            name="description"
+            id="accessTokenAsJwt"
+            name="accessTokenAsJwt"
+            onChange={formik.handleChange}
+            type="checkbox"
+            defaultChecked={client.accessTokenAsJwt}
+          />
+        </Col>
+        <GluuLabel label="Require AuthTime" size={3} />
+        <Col sm={1}>
+          <Input
+            id="requireAuthTime"
+            name="requireAuthTime"
+            onChange={formik.handleChange}
+            type="checkbox"
+            defaultChecked={client.requireAuthTime}
+          />
+        </Col>
+        <GluuLabel label="Rpt As Jwt" size={3} />
+        <Col sm={1}>
+          <Input
+            id="rptAsJwt"
+            name="rptAsJwt"
+            onChange={formik.handleChange}
+            type="checkbox"
+            defaultChecked={client.rptAsJwt}
           />
         </Col>
       </FormGroup>
     </Container>
-  );
+  )
 }
 
-export default ClientAdvancedPanel;
+export default ClientAdvancedPanel

@@ -34,7 +34,6 @@ export function* editFido({ payload }) {
   try {
     const api = yield* newFunction()
     const data = yield call(api.updateFidoConfig, payload.data)
-    console.log('=========== data receive' + JSON.stringify(data))
     yield put(editFidoResponse(data))
   } catch (e) {
     yield put(editFidoResponse(null))
