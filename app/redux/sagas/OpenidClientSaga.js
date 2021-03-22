@@ -2,7 +2,12 @@
  * Openid Client Sagas
  */
 import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
-import { getOpenidClientsResponse } from '../actions/OpenidClientActions'
+import {
+  getOpenidClientsResponse,
+  addClientResponse,
+  editClientResponse,
+  deleteClientResponse,
+} from '../actions/OpenidClientActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { GET_OPENID_CLIENTS } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
@@ -33,10 +38,68 @@ export function* getOauthOpenidClients() {
   }
 }
 
+export function* addNewClient({ payload }) {
+  try {
+    const api = yield* newFunction()
+    const data = yield call(api.addNewClient, payload.data)
+    yield put(addClientResponse(data))
+  } catch (e) {
+    yield put(addClientResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
+export function* editAClient({ payload }) {
+  try {
+    const api = yield* newFunction()
+    const data = yield call(api.editAClient, payload.data)
+    yield put(editClientResponse(data))
+  } catch (e) {
+    yield put(editClientResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
+export function* deleteAClient({ payload }) {
+  try {
+    const api = yield* newFunction()
+    const data = yield call(api.deleteAClient, payload.data)
+    yield put(deleteClientResponse(data))
+  } catch (e) {
+    yield put(deleteClientResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
 export function* watchGetOpenidClients() {
   yield takeLatest(GET_OPENID_CLIENTS, getOauthOpenidClients)
 }
 
+export function* watchAddClient() {
+  yield takeLatest(ADD_CLIENT, addNewClient)
+}
+
+export function* watchEditClient() {
+  yield takeLatest(EDIT_CLIENT, editAClient)
+}
+export function* watchDeleteClient() {
+  yield takeLatest(DELETE_CLIENT, deleteAClient)
+}
+
 export default function* rootSaga() {
-  yield all([fork(watchGetOpenidClients)])
+  yield all([
+    fork(watchGetOpenidClients),
+    fork(watchAddClient),
+    fork(watchEditClient),
+    fork(watchDeleteClient),
+  ])
 }

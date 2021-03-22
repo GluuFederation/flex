@@ -14,4 +14,40 @@ export default class OIDCApi {
       })
     })
   }
+
+  addNewClient = (data) => {
+    return new Promise((resolve, reject) => {
+      this.api.postOauthOpenidClients(data, (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+  }
+
+  editAClient = (data) => {
+    return new Promise((resolve, reject) => {
+      this.api.putOauthOpenidClients(data, (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+  }
+
+  deleteAClient = async (inum) => {
+    return new Promise((resolve, reject) => {
+      this.api.deleteOauthOpenidClientsByInum(inum, (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+  }
 }
