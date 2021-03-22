@@ -1,12 +1,22 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
-
-function ClientAddPage() {
+import { addClient } from '../../../redux/actions/OpenidClientActions'
+function ClientAddPage({ permissions }) {
+  function handleSubmit(data) {
+    if (data) {
+      dispatch(addClient(data))
+      history.push('/clients')
+    }
+  }
   const item = {}
   return (
     <React.Fragment>
-      <ClientWizardForm client={item} />
+      <ClientWizardForm
+        client={item}
+        permissions={permissions}
+        handleSubmit={handleSubmit}
+      />
     </React.Fragment>
   )
 }

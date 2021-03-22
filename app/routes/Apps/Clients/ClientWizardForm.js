@@ -22,7 +22,7 @@ const sequence = [
   'Custom Scripts',
 ]
 
-function ClientWizardForm({ client, permissions }) {
+function ClientWizardForm({ client, permissions, handleSubmit }) {
   const [currentStep, setCurrentStep] = useState(sequence[0])
 
   function changeStep(stepId) {
@@ -86,7 +86,7 @@ function ClientWizardForm({ client, permissions }) {
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          confirm(JSON.stringify(values))
+          handleSubmit(JSON.stringify(values))
         }}
       >
         {(formik) => (

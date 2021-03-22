@@ -1,6 +1,12 @@
 import {
   GET_OPENID_CLIENTS,
   GET_OPENID_CLIENTS_RESPONSE,
+  ADD_CLIENT,
+  ADD_CLIENT_RESPONSE,
+  EDIT_CLIENT,
+  EDIT_CLIENT_RESPONSE,
+  DELETE_CLIENT,
+  DELETE_CLIENT_RESPONSE,
   RESET,
   SET_CLIENT_ITEM,
 } from '../actions/types'
@@ -23,6 +29,64 @@ export default (state = INIT_STATE, action) => {
         return {
           ...state,
           items: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
+      }
+
+    case ADD_CLIENT:
+      return {
+        ...state,
+        loading: true,
+      }
+    case ADD_CLIENT_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: [...state.items, action.payload.data],
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
+      }
+
+    case EDIT_CLIENT:
+      return {
+        ...state,
+        loading: true,
+      }
+    case EDIT_CLIENT_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: [...state.items],
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
+      }
+
+    case DELETE_CLIENT:
+      return {
+        ...state,
+        loading: true,
+      }
+
+    case DELETE_CLIENT_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: state.items.filter((i) => i.inum !== action.payload.data),
           loading: false,
         }
       } else {

@@ -159,7 +159,7 @@ const ClientBasicPanel = ({ client, formik }) => {
       </FormGroup>
 
       <GluuTypeAhead
-        id="grantTypes"
+        name="grantTypes"
         label="Grant Types"
         formik={formik}
         value={client.grantTypes}
@@ -167,7 +167,7 @@ const ClientBasicPanel = ({ client, formik }) => {
       ></GluuTypeAhead>
 
       <GluuTypeAhead
-        id="responseTypes"
+        name="responseTypes"
         label="Responses Types"
         formik={formik}
         value={client.responseTypes}
@@ -175,7 +175,7 @@ const ClientBasicPanel = ({ client, formik }) => {
       ></GluuTypeAhead>
 
       <GluuTypeAhead
-        id="postLogoutRedirectUris"
+        name="postLogoutRedirectUris"
         label="Post Logout RedirectUris"
         formik={formik}
         value={client.postLogoutRedirectUris}
@@ -183,7 +183,7 @@ const ClientBasicPanel = ({ client, formik }) => {
       ></GluuTypeAhead>
 
       <GluuTypeAhead
-        id="redirectUris"
+        name="redirectUris"
         label="Redirect Uris"
         formik={formik}
         value={client.redirectUris}

@@ -6,16 +6,21 @@ import GluuLabel from '../Gluu/GluuLabel'
 function GluuTypeAhead({ label, name, value, options, formik }) {
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={4}/>
-      <Typeahead
-        emptyLabel=""
-        labelKey={name}
-        id={name}
-        multiple={true}
-        defaultSelected={value}
-        options={options}
-        onChange={formik.handleChange}
-      />
+      <GluuLabel label={label} size={4} />
+      <Col sm={8}>
+        <Typeahead
+          emptyLabel=""
+          labelKey={name}
+          onChange={(selected) => {
+            formik.setFieldValue(name, selected)
+          }}
+          id={name}
+          name={name}
+          multiple={true}
+          defaultSelected={value}
+          options={options}
+        />
+      </Col>
     </FormGroup>
   )
 }
