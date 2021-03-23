@@ -6,7 +6,7 @@ import CustomScriptForm from './CustomScriptForm'
 import BlockUi from 'react-block-ui'
 import { editCustomScript } from '../../../redux/actions/CustomScriptActions'
 
-function CustomScriptEditPage({ item, loading, dispatch }) {
+function CustomScriptEditPage({ item, scripts, loading, dispatch }) {
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
@@ -25,7 +25,7 @@ function CustomScriptEditPage({ item, loading, dispatch }) {
               keepInView={true}
               message={'Performing the request, please wait!'}
             >
-              <CustomScriptForm item={item} handleSubmit={handleSubmit} />
+              <CustomScriptForm item={item} scripts={scripts} handleSubmit={handleSubmit} />
             </BlockUi>
           </CardBody>
         </Card>
@@ -36,6 +36,7 @@ function CustomScriptEditPage({ item, loading, dispatch }) {
 const mapStateToProps = (state) => {
   return {
     item: state.customScriptReducer.item,
+    scripts: state.customScriptReducer.items,
     loading: state.customScriptReducer.loading,
     permissions: state.authReducer.permissions,
   }

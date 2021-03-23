@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import CustomScriptDetailPage from '../Scripts/CustomScriptDetailPage'
+import { Container } from './../../../components'
+import ScrollableTabsButtonAuto from './CustomScriptListTab'
 import {
   getCustomScripts,
   setCurrentItem,
@@ -46,89 +48,9 @@ function CustomScriptListPage({ scripts, permissions, loading, dispatch }) {
   }
   return (
     <React.Fragment>
-      {/* START Content */}
-      <MaterialTable
-        columns={[
-          { title: 'Inum', field: 'inum' },
-          { title: 'Name', field: 'name' },
-          {
-            title: 'Enabled',
-            field: 'enabled',
-            type: 'boolean',
-            render: (rowData) => (
-              <Badge color={rowData.enabled ? 'primary' : 'info'}>
-                {rowData.enabled ? 'true' : 'false'}
-              </Badge>
-            ),
-          },
-        ]}
-        data={scripts}
-        isLoading={loading}
-        title="CustomScripts"
-        actions={[
-          (rowData) => ({
-            icon: 'edit',
-            iconProps: {
-              color: 'primary',
-              id: 'editCustomScript' + rowData.inum,
-            },
-            tooltip: 'Edit Script',
-            onClick: (event, rowData) =>
-              handleGoToCustomScriptEditPage(rowData),
-            disabled: false,
-          }),
-          {
-            icon: 'add',
-            tooltip: 'Add Script',
-            iconProps: { color: 'primary' },
-            isFreeAction: true,
-            onClick: () => handleGoToCustomScriptAddPage(),
-          },
-          {
-            icon: 'refresh',
-            tooltip: 'Refresh Data',
-            iconProps: { color: 'primary' },
-            isFreeAction: true,
-            onClick: () => {
-              dispatch(getCustomScripts())
-            },
-          },
-          (rowData) => ({
-            icon: 'delete',
-            iconProps: {
-              color: 'secondary',
-              id: 'deleteCustomScript' + rowData.inum,
-            },
-            tooltip: 'Delete Custom Script',
-            onClick: (event, rowData) => handleCustomScriptDelete(rowData),
-            disabled: false,
-          }),
-        ]}
-        options={{
-          search: true,
-          selection: false,
-          pageSize: 10,
-          headerStyle: {
-            backgroundColor: '#1EB7FF', //#1EB7FF 01579b
-            color: '#FFF',
-            padding: '2px',
-            textTransform: 'uppercase',
-            fontSize: '18px',
-          },
-          actionsColumnIndex: -1,
-        }}
-        detailPanel={(rowData) => {
-          return <CustomScriptDetailPage row={rowData} />
-        }}
-      />
-      {/* END Content */}
-      <GluuDialog
-        row={item}
-        handler={toggle}
-        modal={modal}
-        subject="script"
-        onAccept={onDeletionConfirmed}
-      />
+      <Container>
+        <ScrollableTabsButtonAuto scripts={scripts} loading={loading} />
+      </Container>
     </React.Fragment>
   )
 }

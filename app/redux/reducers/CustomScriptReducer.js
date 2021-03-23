@@ -9,6 +9,7 @@ import {
   GET_CUSTOM_SCRIPT_BY_INUM_RESPONSE,
   GET_CUSTOM_SCRIPT_BY_TYPE,
   GET_CUSTOM_SCRIPT_BY_TYPE_RESPONSE,
+  SET_SCRIPT_ITEM,
   DELETE_CUSTOM_SCRIPT,
   DELETE_CUSTOM_SCRIPT_RESPONSE,
   RESET,
@@ -98,7 +99,12 @@ export default (state = INIT_STATE, action) => {
           loading: false,
         }
       }
-
+    case SET_SCRIPT_ITEM:
+      return {
+        ...state,
+        item: action.payload.item,
+        loading: false,
+      }
     case RESET:
       return {
         ...state,

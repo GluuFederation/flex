@@ -4,9 +4,10 @@ import { useHistory } from 'react-router-dom'
 import { Container, CardBody, Card } from './../../../components'
 import CustomScriptForm from './CustomScriptForm'
 import { addCustomScript } from '../../../redux/actions/CustomScriptActions'
-function CustomScriptAddPage({ dispatch }) {
+function CustomScriptAddPage({ scripts, dispatch }) {
   const history = useHistory()
   function handleSubmit(data) {
+    alert(data)
     if (data) {
       dispatch(addCustomScript(data))
       history.push('/scripts')
@@ -17,7 +18,7 @@ function CustomScriptAddPage({ dispatch }) {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <CustomScriptForm item={new Object()} handleSubmit={handleSubmit} />
+            <CustomScriptForm item={new Object()} scripts={scripts} handleSubmit={handleSubmit} />
           </CardBody>
         </Card>
       </Container>
@@ -26,6 +27,7 @@ function CustomScriptAddPage({ dispatch }) {
 }
 const mapStateToProps = (state) => {
   return {
+    scripts: state.customScriptReducer.items,
     loading: state.customScriptReducer.loading,
     permissions: state.authReducer.permissions,
   }

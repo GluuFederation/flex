@@ -8,7 +8,6 @@ import {
 } from './../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 function JwkItem({ item, index }) {
-    console.log("==key" +index)
   return (
     <Card
       style={{

@@ -11,7 +11,7 @@ import {
   GET_CUSTOM_SCRIPT_BY_TYPE_RESPONSE,
   DELETE_CUSTOM_SCRIPT,
   DELETE_CUSTOM_SCRIPT_RESPONSE,
-  SET_ITEM,
+  SET_SCRIPT_ITEM,
 } from './types'
 
 export const getCustomScripts = () => ({
@@ -74,6 +74,6 @@ export const deleteCustomScriptResponse = (data) => ({
 })
 
 export const setCurrentItem = (item) => ({
-  type: SET_ITEM,
+  type: SET_SCRIPT_ITEM,
   payload: { item },
 })
