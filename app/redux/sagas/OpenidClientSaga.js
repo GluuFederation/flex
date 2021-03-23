@@ -9,7 +9,7 @@ import {
   deleteClientResponse,
 } from '../actions/OpenidClientActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { GET_OPENID_CLIENTS } from '../actions/types'
+import { GET_OPENID_CLIENTS, ADD_CLIENT, EDIT_CLIENT, DELETE_CLIENT } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../api/base'
 import { isFourZeroOneError } from '../../utils/TokenController'
