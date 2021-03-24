@@ -68,6 +68,7 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
     postLogoutRedirectUris: client.postLogoutRedirectUris,
     scopes: client.scopes,
     customAttributes: client.customAttributes,
+    attributes: client.attributes,
     customObjectClasses: client.customObjectClasses,
 
     deletable: client.deletable,

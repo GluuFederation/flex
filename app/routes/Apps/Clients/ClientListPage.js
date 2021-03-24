@@ -8,6 +8,7 @@ import ClientDetailPage from '../Clients/ClientDetailPage'
 import {
   getOpenidClients,
   setCurrentItem,
+  deleteClient,
 } from '../../../redux/actions/OpenidClientActions'
 import {
   hasPermission,
@@ -15,7 +16,6 @@ import {
   CLIENT_READ,
   CLIENT_DELETE,
 } from '../../../utils/PermChecker'
-
 function ClientListPage({ clients, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getOpenidClients())
@@ -37,6 +37,12 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
   function handleClientDelete(row) {
     dispatch(setCurrentItem(row))
     setItem(row)
+    toggle()
+  }
+
+  function onDeletionConfirmed() {
+    dispatch(deleteClient(item.inum))
+    history.push('/clients')
     toggle()
   }
 
@@ -83,7 +89,7 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
         ? 'Delete Client'
         : "This Client can't be detele",
       onClick: (event, rowData) => handleClientDelete(rowData),
-      disabled: !rowData.deletable,
+      disabled: false,
     }))
   }
 
@@ -108,10 +114,6 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
     } else {
       return 'Disabled'
     }
-  }
-  function onDeletionConfirmed() {
-    // perform delete request
-    toggle()
   }
   return (
     <React.Fragment>

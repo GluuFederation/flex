@@ -47,7 +47,7 @@ export function* addNewClient({ payload }) {
   try {
     const postBody = {}
     postBody['client'] = JSON.parse(payload.data)
-    console.log('======Adding' + JSON.stringify(postBody))
+    //console.log('======Adding' + JSON.stringify(postBody))
     const api = yield* newFunction()
     const data = yield call(api.addNewClient, postBody)
     yield put(addClientResponse(data))
@@ -79,8 +79,8 @@ export function* editAClient({ payload }) {
 export function* deleteAClient({ payload }) {
   try {
     const api = yield* newFunction()
-    const data = yield call(api.deleteAClient, payload.data)
-    yield put(deleteClientResponse(data))
+    const data = yield call(api.deleteAClient, payload.inum)
+    yield put(deleteClientResponse(payload.inum))
   } catch (e) {
     yield put(deleteClientResponse(null))
     if (isFourZeroOneError(e)) {

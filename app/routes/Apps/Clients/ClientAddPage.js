@@ -11,11 +11,34 @@ function ClientAddPage({ permissions, dispatch }) {
       history.push('/clients')
     }
   }
-  const item = {}
+  const client = {
+    frontChannelLogoutSessionRequired: false,
+    includeClaimsInIdToken: false,
+    redirectUris: [],
+    claimRedirectUris: [],
+    responseTypes: [],
+    grantTypes: [],
+    requireAuthTime: false,
+    postLogoutRedirectUris: [],
+    scopes: [],
+    trustedClient: true,
+    persistClientAuthorizations: false,
+    customAttributes: [],
+    customObjectClasses: [],
+    rptAsJwt: false,
+    accessTokenAsJwt: false,
+    disabled: false,
+    attributes: {
+      runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
+      keepClientAuthorizationAfterExpiration: false,
+      allowSpontaneousScopes: false,
+      backchannelLogoutSessionRequired: false,
+    },
+  }
   return (
     <React.Fragment>
       <ClientWizardForm
-        client={item}
+        client={client}
         permissions={permissions}
         handleSubmit={handleSubmit}
       />
