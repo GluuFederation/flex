@@ -46,6 +46,7 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
 
   const initialValues = {
     inum: client.inum,
+    dn: client.dn,
     clientSecret: client.secret,
     clientName: client.clientName,
     displayName: client.displayName,
@@ -67,6 +68,7 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
     postLogoutRedirectUris: client.postLogoutRedirectUris,
     scopes: client.scopes,
     customAttributes: client.customAttributes,
+    attributes: client.attributes,
     customObjectClasses: client.customObjectClasses,
 
     deletable: client.deletable,

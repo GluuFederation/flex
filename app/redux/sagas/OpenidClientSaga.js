@@ -9,7 +9,12 @@ import {
   deleteClientResponse,
 } from '../actions/OpenidClientActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { GET_OPENID_CLIENTS, ADD_CLIENT, EDIT_CLIENT, DELETE_CLIENT } from '../actions/types'
+import {
+  GET_OPENID_CLIENTS,
+  ADD_CLIENT,
+  EDIT_CLIENT,
+  DELETE_CLIENT,
+} from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../api/base'
 import { isFourZeroOneError } from '../../utils/TokenController'
@@ -40,8 +45,11 @@ export function* getOauthOpenidClients() {
 
 export function* addNewClient({ payload }) {
   try {
+    const postBody = {}
+    postBody['client'] = JSON.parse(payload.data)
+    //console.log('======Adding' + JSON.stringify(postBody))
     const api = yield* newFunction()
-    const data = yield call(api.addNewClient, payload.data)
+    const data = yield call(api.addNewClient, postBody)
     yield put(addClientResponse(data))
   } catch (e) {
     yield put(addClientResponse(null))
@@ -54,8 +62,10 @@ export function* addNewClient({ payload }) {
 
 export function* editAClient({ payload }) {
   try {
+    const postBody = {}
+    postBody['client'] = JSON.parse(payload.data)
     const api = yield* newFunction()
-    const data = yield call(api.editAClient, payload.data)
+    const data = yield call(api.editAClient, postBody)
     yield put(editClientResponse(data))
   } catch (e) {
     yield put(editClientResponse(null))
@@ -69,8 +79,8 @@ export function* editAClient({ payload }) {
 export function* deleteAClient({ payload }) {
   try {
     const api = yield* newFunction()
-    const data = yield call(api.deleteAClient, payload.data)
-    yield put(deleteClientResponse(data))
+    const data = yield call(api.deleteAClient, payload.inum)
+    yield put(deleteClientResponse(payload.inum))
   } catch (e) {
     yield put(deleteClientResponse(null))
     if (isFourZeroOneError(e)) {

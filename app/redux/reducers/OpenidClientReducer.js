@@ -86,7 +86,7 @@ export default (state = INIT_STATE, action) => {
       if (action.payload.data) {
         return {
           ...state,
-          items: state.items.filter((i) => i.inum !== action.payload.data),
+          items: state.items.filter((i) => i.inum !== action.payload),
           loading: false,
         }
       } else {
