@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
+import { useHistory } from 'react-router-dom'
 import { addClient } from '../../../redux/actions/OpenidClientActions'
-function ClientAddPage({ permissions }) {
+function ClientAddPage({ permissions, dispatch }) {
+  const history = useHistory()
   function handleSubmit(data) {
     if (data) {
       dispatch(addClient(data))

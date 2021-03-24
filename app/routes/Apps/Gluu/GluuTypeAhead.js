@@ -4,6 +4,7 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 
 function GluuTypeAhead({ label, name, value, options, formik }) {
+ // console.log("========name: "+name+ " and value: "+value)
   return (
     <FormGroup row>
       <GluuLabel label={label} size={4} />

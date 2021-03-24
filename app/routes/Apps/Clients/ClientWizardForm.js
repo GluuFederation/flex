@@ -46,6 +46,7 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
 
   const initialValues = {
     inum: client.inum,
+    dn: client.dn,
     clientSecret: client.secret,
     clientName: client.clientName,
     displayName: client.displayName,
