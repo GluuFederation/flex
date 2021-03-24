@@ -1,22 +1,30 @@
 import React from 'react'
-import { Container, FormGroup, Label } from '../../../components'
-import GluuLabel from '../Gluu/GluuLabel'
+import { Container, Col, Row, Label } from '../../../components'
+import GluuFormDetailRow from '../Gluu/GluuFormDetailRow'
 
 function ClientAttributesPanel({ client, formik }) {
-  const keys = Object.keys(client.attributes)
-  if (!keys) {
-    return <Container></Container>
-  } else {
+  function readValue(keys, key) {
+    let res = String(keys[key])
+    if (res === 'undefined') {
+      return 'false'
+    }
+    return res
+  }
+  if (client.attributes) {
+    const keys = Object.keys(client.attributes)
     return (
       <Container>
         {keys.map((key, index) => (
-          <FormGroup row key={index}>
-            <GluuLabel label={key} size={8} />
-            <GluuLabel label={String(keys[key])} size={4} />
-          </FormGroup>
+          <Row key={index}>
+            <Col sm={12}>
+              <GluuFormDetailRow label={key} value={readValue(keys, key)} />
+            </Col>
+          </Row>
         ))}
       </Container>
     )
+  } else {
+    return <Container></Container>
   }
 }
 
