@@ -168,6 +168,7 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
       {/* END Content */}
       <GluuDialog
         row={item}
+        name={item.clientName}
         handler={toggle}
         modal={modal}
         subject="openid connect client"
