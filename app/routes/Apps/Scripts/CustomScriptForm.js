@@ -12,7 +12,6 @@ import {
 } from "./../../../components";
 import GluuFooter from "../Gluu/GluuFooter";
 import GluuLabel from "../Gluu/GluuLabel";
-import TextField from '@material-ui/core/TextField';
 import Counter from '../../../components/Widgets/GroupedButtons/Counter'
 function CustomScriptForm({ item, scripts, handleSubmit }) {
   const [init, setInit] = useState(false);
@@ -28,7 +27,9 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       description: item.description,
       scriptType: item.scriptType,
       programmingLanguage: item.programmingLanguage,
-      level: item.level
+      level: item.level,
+      moduleProperties: [{ "value1": "location_type", "value2": "ldap", "description": "" }],
+      script: item.script
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -40,6 +41,10 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         .required("Required!"),
       programmingLanguage: Yup.string()
         .min(3, "This value is required")
+        .required("Required!"),
+      level: Yup.number()
+        .required("Required!"),
+      script: Yup.string()
         .required("Required!")
     }),
     onSubmit: values => {
@@ -51,6 +56,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         }
       }
       values.level = item.level;
+
       const result = Object.assign(item, values);
       const reqBody = { customScript: result };
 
@@ -93,6 +99,9 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
             onKeyUp={toogle}
             onChange={formik.handleChange}
           />
+          {formik.errors.name && formik.touched.name ? (
+            <div style={{ color: 'red' }}>{formik.errors.name}</div>
+          ) : null}
         </Col>
       </FormGroup>
       <FormGroup row>
@@ -115,7 +124,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       </FormGroup>
 
       <FormGroup row>
-        <GluuLabel label="Script Type" />
+        <GluuLabel label="Script Type" required />
         <Col sm={9}>
           <InputGroup>
             <CustomInput
@@ -126,21 +135,23 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               onChange={formik.handleChange}
             >
               <option value="">Choose...</option>
-              {scriptTypes.map((item, index) => (<option key={index}>{item}</option>))}
+              {scriptTypes.map((item, index) => (<option key={index} value={item}>{item}</option>))}
             </CustomInput>
           </InputGroup>
+          {formik.errors.scriptType && formik.touched.scriptType ? (
+            <div style={{ color: 'red' }}>{formik.errors.scriptType}</div>
+          ) : null}
         </Col>
       </FormGroup>
 
       <FormGroup row>
-        <GluuLabel label="Programming Language" />
+        <GluuLabel label="Programming Language" required />
         <Col sm={9}>
           <InputGroup>
             <CustomInput
               type="select"
               id="programmingLanguage"
               name="programmingLanguage"
-              disabled
               defaultValue={item.programmingLanguage}
               onChange={formik.handleChange}
             >
@@ -149,11 +160,14 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               <option>JAVASCRIPT</option>
             </CustomInput>
           </InputGroup>
+          {formik.errors.programmingLanguage && formik.touched.programmingLanguage ? (
+            <div style={{ color: 'red' }}>{formik.errors.programmingLanguage}</div>
+          ) : null}
         </Col>
       </FormGroup>
 
       <FormGroup row>
-        <GluuLabel label="Level" />
+        <GluuLabel label="Level" required />
         <Col sm={9}>
           <Counter counter={item.level} onCounterChange={(level) => onLevelChange(level)} />
           <Input
@@ -161,11 +175,17 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
             id="level"
             defaultValue={item.level}
           />
+          {formik.errors.level && formik.touched.level ? (
+            <div style={{ color: 'red' }}>{formik.errors.level}</div>
+          ) : null}
         </Col>
       </FormGroup>
 
       <FormGroup row>
-        <GluuLabel label="Script" size={3} />
+        <GluuLabel label="Script" size={3} required />
+        {formik.errors.script && formik.touched.script ? (
+            <div style={{ color: 'red' }}>{formik.errors.script}</div>
+          ) : null}
         <Col sm={10}>
           <Input
             placeholder="Script"
@@ -199,8 +219,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
 
       <FormGroup row> <Input
         type="hidden"
-        id="configurationProperties"
-        defaultValue={item.configurationProperties}
+        id="moduleProperties"
+        defaultValue={item.moduleProperties}
       /></FormGroup>
       <GluuFooter />
     </Form>

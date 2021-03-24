@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import MaterialTable from 'material-table'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Badge } from 'reactstrap'
-import GluuDialog from '../Gluu/GluuDialog'
-import CustomScriptDetailPage from '../Scripts/CustomScriptDetailPage'
 import { Container } from './../../../components'
 import ScrollableTabsButtonAuto from './CustomScriptListTab'
 import {
   getCustomScripts,
   setCurrentItem,
+  deleteCustomScript,
 } from '../../../redux/actions/CustomScriptActions'
 //import scripts from './scripts'
 
@@ -38,7 +35,7 @@ function CustomScriptListPage({ scripts, permissions, loading, dispatch }) {
     return history.push(`/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
-    dispatch(setCurrentItem(row))
+    dispatch(deleteCustomScript(row.inum))
     setItem(row)
     toggle()
   }

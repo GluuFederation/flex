@@ -38,6 +38,7 @@ function AttributeForm({ item, handleSubmit }) {
         .required('Required!'),
     }),
     onSubmit: (values) => {
+      alert()
       const result = Object.assign(item, values)
       handleSubmit(JSON.stringify(result))
     },
