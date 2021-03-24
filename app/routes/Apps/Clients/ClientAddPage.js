@@ -3,11 +3,13 @@ import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import { useHistory } from 'react-router-dom'
 import { addClient } from '../../../redux/actions/OpenidClientActions'
-function ClientAddPage({ permissions, dispatch }) {
+function ClientAddPage({ permissions, loading, dispatch }) {
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      dispatch(addClient(data))
+      const postBody = {}
+      postBody['client'] = JSON.parse(data)
+      dispatch(addClient(postBody))
       history.push('/clients')
     }
   }
@@ -37,11 +39,19 @@ function ClientAddPage({ permissions, dispatch }) {
   }
   return (
     <React.Fragment>
-      <ClientWizardForm
-        client={client}
-        permissions={permissions}
-        handleSubmit={handleSubmit}
-      />
+      <BlockUi
+        tag="div"
+        blocking={loading}
+        keepInView={true}
+        renderChildren={true}
+        message={'Performing the request, please wait!'}
+      >
+        <ClientWizardForm
+          client={client}
+          permissions={permissions}
+          handleSubmit={handleSubmit}
+        />
+      </BlockUi>
     </React.Fragment>
   )
 }
@@ -49,6 +59,7 @@ function ClientAddPage({ permissions, dispatch }) {
 const mapStateToProps = (state) => {
   return {
     permissions: state.openidClientReducer.permissions,
+    loading: state.openidClientReducer.loading,
   }
 }
 export default connect(mapStateToProps)(ClientAddPage)

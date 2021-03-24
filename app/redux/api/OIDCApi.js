@@ -15,13 +15,13 @@ export default class OIDCApi {
     })
   }
 
-  addNewClient = (data) => {
+  addNewOpenIdClient = (data) => {
     return new Promise((resolve, reject) => {
-      this.api.postOauthOpenidClients(data, (error, data) => {
+      this.api.postOauthOpenidClients(data, (error, res) => {
         if (error) {
           reject(error)
         } else {
-          resolve(data)
+          resolve(res)
         }
       })
     })
@@ -29,11 +29,11 @@ export default class OIDCApi {
 
   editAClient = (data) => {
     return new Promise((resolve, reject) => {
-      this.api.putOauthOpenidClients(data, (error, data) => {
+      this.api.putOauthOpenidClients(data, (error, res) => {
         if (error) {
           reject(error)
         } else {
-          resolve(data)
+          resolve(res)
         }
       })
     })
