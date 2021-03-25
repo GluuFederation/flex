@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, Button, FormGroup, Divider } from './../../../components'
-function GluuFooter() {
+function GluuFooter({ extraOnClick, extraLabel }) {
   function goBack() {
     window.history.back()
   }
@@ -9,7 +9,13 @@ function GluuFooter() {
       <Divider></Divider>
       <FormGroup row></FormGroup>
       <FormGroup row>
-        <Col sm={0} md={8}></Col>
+        <Col sm={0} md={8}>
+          {extraLabel && extraOnClick && (
+            <Button color="primary" onClick={extraOnClick}>
+              {extraLabel}
+            </Button>
+          )}
+        </Col>
         <Col sm={10} md={1}>
           <Button color="primary" type="submit">
             Save

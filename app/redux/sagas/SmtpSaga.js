@@ -2,12 +2,11 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   getSmtpResponse,
-  addSmtpResponse,
   editSmtpResponse,
   testSmtpResponse,
 } from '../actions/SmtpActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { GET_SMTP, PUT_SMTP, SET_SMTP, TEST_SMTP } from '../actions/types'
+import { GET_SMTP, PUT_SMTP, TEST_SMTP } from '../actions/types'
 import SmtpApi from '../api/SmtpApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
@@ -35,13 +34,13 @@ export function* getSmtp() {
   }
 }
 
-export function* addSmtp({ payload }) {
+export function* testSmtp() {
   try {
     const api = yield* newFunction()
-    const data = yield call(api.addSmtpConfig, payload.data)
-    yield put(addSmtpResponse(data))
+    const data = yield call(api.testSmtpConfig)
+    yield put(testSmtpResponse(data))
   } catch (e) {
-    yield put(addSmtpResponse(null))
+    yield put(testSmtpResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -67,13 +66,17 @@ export function* watchGetSmtpConfig() {
   yield takeLatest(GET_SMTP, getSmtp)
 }
 
-export function* watchAddSmtpConfig() {
-  yield takeLatest(SET_SMTP, addSmtp)
+export function* watchTestSmtpConfig() {
+  yield takeLatest(TEST_SMTP, testSmtp)
 }
 
 export function* watchPutSmtpConfig() {
   yield takeLatest(PUT_SMTP, editSmtp)
 }
 export default function* rootSaga() {
-  yield all([fork(watchGetSmtpConfig), fork(watchPutSmtpConfig)])
+  yield all([
+    fork(watchGetSmtpConfig),
+    fork(watchPutSmtpConfig),
+    fork(watchTestSmtpConfig),
+  ])
 }
