@@ -18,6 +18,7 @@ import {
 } from '../actions/types'
 import AttributeApi from '../api/AttributeApi'
 import { getClient } from '../api/base'
+
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
