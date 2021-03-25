@@ -19,6 +19,7 @@ function AttributeAddPage({ dispatch }) {
     oxMultiValuedAttribute: false,
     custom: false,
     requred: false,
+    attributeValidation: { maxLength: null, regexp: null, minLength: null },
   }
   return (
     <React.Fragment>

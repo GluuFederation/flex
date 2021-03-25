@@ -28,6 +28,7 @@ function AttributeForm({ item, handleSubmit }) {
       status: item.status,
       jansHideOnDiscovery: item.jansHideOnDiscovery,
       oxMultiValuedAttribute: item.oxMultiValuedAttribute,
+      attributeValidation: item.attributeValidation,
       scimCustomAttr: item.scimCustomAttr,
     },
     validationSchema: Yup.object({
@@ -42,6 +43,9 @@ function AttributeForm({ item, handleSubmit }) {
     }),
     onSubmit: (values) => {
       const result = Object.assign(item, values)
+      result['attributeValidation'].maxLength = result.maxLength
+      result['attributeValidation'].minLength = result.minLength
+      result['attributeValidation'].regexp = result.regexp
       handleSubmit(JSON.stringify(result))
     },
   })
@@ -248,7 +252,29 @@ function AttributeForm({ item, handleSubmit }) {
           <Input
             name="regexp"
             id="regexp"
-            defaultValue={item.regexp}
+            defaultValue={item.attributeValidation.regexp}
+            onChange={formik.handleChange}
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <GluuLabel label="Minimum length" />
+        <Col sm={3}>
+          <Input
+            name="minLength"
+            id="minLength"
+            type="number"
+            defaultValue={item.attributeValidation.minLength}
+            onChange={formik.handleChange}
+          />
+        </Col>
+        <GluuLabel label="Maximum length" />
+        <Col sm={3}>
+          <Input
+            name="maxLength"
+            id="maxLength"
+            type="number"
+            defaultValue={item.attributeValidation.maxLength}
             onChange={formik.handleChange}
           />
         </Col>
