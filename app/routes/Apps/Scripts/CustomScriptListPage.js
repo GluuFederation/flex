@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
+import BlockUi from 'react-block-ui'
 import { Container } from './../../../components'
 import ScrollableTabsButtonAuto from './CustomScriptListTab'
 import {
@@ -46,7 +47,14 @@ function CustomScriptListPage({ scripts, permissions, loading, dispatch }) {
   return (
     <React.Fragment>
       <Container>
-        <ScrollableTabsButtonAuto scripts={scripts} loading={loading} />
+        <BlockUi
+          tag="div"
+          blocking={loading}
+          keepInView={true}
+          renderChildren={true}
+          message={'Performing the request, please wait!'}>
+          <ScrollableTabsButtonAuto scripts={scripts} loading={loading} />
+        </BlockUi>
       </Container>
     </React.Fragment>
   )
