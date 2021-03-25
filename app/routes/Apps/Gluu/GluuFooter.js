@@ -1,6 +1,9 @@
 import React from 'react'
 import { Col, Button, FormGroup, Divider } from './../../../components'
 function GluuFooter() {
+  function goBack() {
+    window.history.back()
+  }
   return (
     <div>
       <Divider></Divider>
@@ -13,7 +16,7 @@ function GluuFooter() {
           </Button>
         </Col>
         <Col sm={1}>
-          <Button color="secondary" type="reset">
+          <Button color="secondary" onClick={goBack}>
             Cancel
           </Button>
         </Col>

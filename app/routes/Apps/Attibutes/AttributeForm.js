@@ -246,9 +246,9 @@ function AttributeForm({ item, handleSubmit }) {
         <GluuLabel label="Regular expression" />
         <Col sm={9}>
           <Input
-            name="regExp"
-            id="regExp"
-            defaultValue={item.regExp}
+            name="regexp"
+            id="regexp"
+            defaultValue={item.regexp}
             onChange={formik.handleChange}
           />
         </Col>
