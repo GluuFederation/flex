@@ -8,6 +8,7 @@ import CustomScriptDetailPage from '../Scripts/CustomScriptDetailPage'
 import {
   getCustomScripts,
   setCurrentItem,
+  deleteCustomScript,
 } from '../../../redux/actions/CustomScriptActions'
 //import scripts from './scripts'
 
@@ -33,7 +34,7 @@ function CustomScriptListTable({ selectedScripts, loading, dispatch }) {
     return history.push(`/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
-    dispatch(setCurrentItem(row))
+    dispatch(deleteCustomScript(row.inum))
     setItem(row)
     toggle()
   }

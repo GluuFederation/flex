@@ -7,7 +7,6 @@ import { addCustomScript } from '../../../redux/actions/CustomScriptActions'
 function CustomScriptAddPage({ scripts, dispatch }) {
   const history = useHistory()
   function handleSubmit(data) {
-    alert(data)
     if (data) {
       dispatch(addCustomScript(data))
       history.push('/scripts')

@@ -28,8 +28,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       scriptType: item.scriptType,
       programmingLanguage: item.programmingLanguage,
       level: item.level,
-      moduleProperties: [{ "value1": "location_type", "value2": "ldap", "description": "" }],
-      script: item.script
+      script: item.script,
+      moduleProperties: [{ "value1": "location_type", "value2": "ldap", "description": "" }]
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -42,12 +42,12 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       programmingLanguage: Yup.string()
         .min(3, "This value is required")
         .required("Required!"),
-      level: Yup.number()
-        .required("Required!"),
       script: Yup.string()
         .required("Required!")
     }),
+
     onSubmit: values => {
+      values.level = item.level;
       if (typeof values.enabled == 'object') {
         if (values.enabled.length > 0) {
           values.enabled = true;
@@ -55,7 +55,6 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           values.enabled = false;
         }
       }
-      values.level = item.level;
 
       const result = Object.assign(item, values);
       const reqBody = { customScript: result };
@@ -167,7 +166,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       </FormGroup>
 
       <FormGroup row>
-        <GluuLabel label="Level" required />
+        <GluuLabel label="Level" />
         <Col sm={9}>
           <Counter counter={item.level} onCounterChange={(level) => onLevelChange(level)} />
           <Input
@@ -175,17 +174,14 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
             id="level"
             defaultValue={item.level}
           />
-          {formik.errors.level && formik.touched.level ? (
-            <div style={{ color: 'red' }}>{formik.errors.level}</div>
-          ) : null}
         </Col>
       </FormGroup>
 
       <FormGroup row>
         <GluuLabel label="Script" size={3} required />
         {formik.errors.script && formik.touched.script ? (
-            <div style={{ color: 'red' }}>{formik.errors.script}</div>
-          ) : null}
+          <div style={{ color: 'red' }}>{formik.errors.script}</div>
+        ) : null}
         <Col sm={10}>
           <Input
             placeholder="Script"
