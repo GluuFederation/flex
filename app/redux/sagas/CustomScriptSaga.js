@@ -78,7 +78,7 @@ export function* editScript({ payload }) {
 export function* deleteScript({ payload }) {
   try {
     const scriptApi = yield* newFunction()
-    const data = yield call(scriptApi.deleteCustomScript, payload.data)
+    const data = yield call(scriptApi.deleteCustomScript, payload.inum)
     yield put(deleteCustomScriptResponse(data))
   } catch (e) {
     yield put(deleteCustomScriptResponse(null))
