@@ -15,6 +15,21 @@ import GluuLabel from '../Gluu/GluuLabel'
 
 function AttributeForm({ item, handleSubmit }) {
   const [init, setInit] = useState(false)
+  const [validation, setValidation] = useState(getInitialState(item))
+
+  function handleValidation() {
+    setValidation(!validation)
+  }
+
+  function getInitialState(item) {
+    return (
+      item.attributeValidation &&
+      item.attributeValidation.regexp != null &&
+      item.attributeValidation.minLength != null &&
+      item.attributeValidation.maxLength != null
+    )
+  }
+
   function toogle() {
     if (!init) {
       setInit(true)
@@ -246,39 +261,61 @@ function AttributeForm({ item, handleSubmit }) {
           />
         </Col>
       </FormGroup>
+
       <FormGroup row>
-        <GluuLabel label="Regular expression" />
-        <Col sm={9}>
+        <GluuLabel
+          label="Enable custom validation for this attribute?"
+          size={6}
+        />
+        <Col sm={6}>
           <Input
-            name="regexp"
-            id="regexp"
-            defaultValue={item.attributeValidation.regexp}
-            onChange={formik.handleChange}
+            id="validation"
+            name="validation"
+            onChange={handleValidation}
+            onc
+            type="checkbox"
+            defaultChecked={validation}
           />
         </Col>
       </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="Minimum length" />
-        <Col sm={3}>
-          <Input
-            name="minLength"
-            id="minLength"
-            type="number"
-            defaultValue={item.attributeValidation.minLength}
-            onChange={formik.handleChange}
-          />
-        </Col>
-        <GluuLabel label="Maximum length" />
-        <Col sm={3}>
-          <Input
-            name="maxLength"
-            id="maxLength"
-            type="number"
-            defaultValue={item.attributeValidation.maxLength}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
+
+      {validation && (
+        <FormGroup row>
+          <GluuLabel label="Regular expression" />
+          <Col sm={9}>
+            <Input
+              name="regexp"
+              id="regexp"
+              defaultValue={item.attributeValidation.regexp}
+              onChange={formik.handleChange}
+            />
+          </Col>
+        </FormGroup>
+      )}
+      {validation && (
+        <FormGroup row>
+          <GluuLabel label="Minimum length" />
+          <Col sm={3}>
+            <Input
+              name="minLength"
+              id="minLength"
+              type="number"
+              defaultValue={item.attributeValidation.minLength}
+              onChange={formik.handleChange}
+            />
+          </Col>
+          <GluuLabel label="Maximum length" />
+          <Col sm={3}>
+            <Input
+              name="maxLength"
+              id="maxLength"
+              type="number"
+              defaultValue={item.attributeValidation.maxLength}
+              onChange={formik.handleChange}
+            />
+          </Col>
+        </FormGroup>
+      )}
       <FormGroup row>
         <GluuLabel label="Saml1 Uri" />
         <Col sm={9}>
