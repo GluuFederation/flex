@@ -26,6 +26,8 @@ function AttributeForm({ item, handleSubmit }) {
       displayName: item.displayName,
       description: item.displayName,
       status: item.status,
+      jansHideOnDiscovery: item.jansHideOnDiscovery,
+      oxMultiValuedAttribute: item.oxMultiValuedAttribute,
     },
     validationSchema: Yup.object({
       name: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
@@ -137,8 +139,8 @@ function AttributeForm({ item, handleSubmit }) {
               onChange={formik.handleChange}
             >
               <option value="">Choose...</option>
-              <option>TEXT</option>
               <option>STRING</option>
+              <option>JSON</option>
               <option>NUMERIC</option>
               <option>BINARY</option>
               <option>CERTIFICATE</option>
@@ -192,7 +194,7 @@ function AttributeForm({ item, handleSubmit }) {
             onChange={formik.handleChange}
           >
             <option>Not Defined</option>
-            <option>OpenID</option>
+            <option>OPENID</option>
           </Input>
         </Col>
       </FormGroup>
@@ -208,14 +210,24 @@ function AttributeForm({ item, handleSubmit }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Multivalued" size={3} />
-        <Col sm={1}>
+        <GluuLabel label="Multivalued?" size={3} />
+        <Col sm={3}>
           <Input
             id="oxMultiValuedAttribute"
             name="oxMultiValuedAttribute"
             onChange={formik.handleChange}
             type="checkbox"
             defaultChecked={item.oxMultiValuedAttribute}
+          />
+        </Col>
+        <GluuLabel label="Hide On Discovery?" size={3} />
+        <Col sm={3}>
+          <Input
+            id="jansHideOnDiscovery"
+            name="jansHideOnDiscovery"
+            onChange={formik.handleChange}
+            type="checkbox"
+            defaultChecked={item.jansHideOnDiscovery}
           />
         </Col>
       </FormGroup>
