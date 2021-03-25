@@ -15,6 +15,7 @@ function AttributeAddPage({ dispatch }) {
   const defautAttribute = {
     jansHideOnDiscovery: false,
     selected: false,
+    scimCustomAttr: false,
     oxMultiValuedAttribute: false,
     custom: false,
     requred: false,

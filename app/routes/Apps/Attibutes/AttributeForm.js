@@ -28,6 +28,7 @@ function AttributeForm({ item, handleSubmit }) {
       status: item.status,
       jansHideOnDiscovery: item.jansHideOnDiscovery,
       oxMultiValuedAttribute: item.oxMultiValuedAttribute,
+      scimCustomAttr: item.scimCustomAttr,
     },
     validationSchema: Yup.object({
       name: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
@@ -211,7 +212,7 @@ function AttributeForm({ item, handleSubmit }) {
       </FormGroup>
       <FormGroup row>
         <GluuLabel label="Multivalued?" size={3} />
-        <Col sm={3}>
+        <Col sm={1}>
           <Input
             id="oxMultiValuedAttribute"
             name="oxMultiValuedAttribute"
@@ -221,7 +222,7 @@ function AttributeForm({ item, handleSubmit }) {
           />
         </Col>
         <GluuLabel label="Hide On Discovery?" size={3} />
-        <Col sm={3}>
+        <Col sm={1}>
           <Input
             id="jansHideOnDiscovery"
             name="jansHideOnDiscovery"
@@ -230,14 +231,50 @@ function AttributeForm({ item, handleSubmit }) {
             defaultChecked={item.jansHideOnDiscovery}
           />
         </Col>
+        <GluuLabel label="Include In SCIM Extension?" size={3} />
+        <Col sm={1}>
+          <Input
+            id="scimCustomAttr"
+            name="scimCustomAttr"
+            onChange={formik.handleChange}
+            type="checkbox"
+            defaultChecked={item.scimCustomAttr}
+          />
+        </Col>
       </FormGroup>
       <FormGroup row>
         <GluuLabel label="Regular expression" />
         <Col sm={9}>
           <Input
-            name="regex"
-            id="regex"
-            defaultValue={item.regex}
+            name="regExp"
+            id="regExp"
+            defaultValue={item.regExp}
+            onChange={formik.handleChange}
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <GluuLabel label="Saml1 Uri" />
+        <Col sm={9}>
+          <Input
+            placeholder="Enter the saml1 Uri"
+            id="saml1Uri"
+            name="saml1Uri"
+            defaultValue={item.saml1Uri}
+            onKeyUp={toogle}
+            onChange={formik.handleChange}
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <GluuLabel label="Saml2 Uri" />
+        <Col sm={9}>
+          <Input
+            placeholder="Enter the saml2 Uri"
+            id="saml2Uri"
+            name="saml2Uri"
+            defaultValue={item.saml2Uri}
+            onKeyUp={toogle}
             onChange={formik.handleChange}
           />
         </Col>
