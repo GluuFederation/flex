@@ -28,6 +28,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       scriptType: item.scriptType,
       programmingLanguage: item.programmingLanguage,
       level: item.level,
+      script: item.script,
       moduleProperties: [{ "value1": "location_type", "value2": "ldap", "description": "" }]
     },
     validationSchema: Yup.object({
