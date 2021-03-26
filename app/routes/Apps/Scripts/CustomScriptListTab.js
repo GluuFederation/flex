@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ScrollableTabsButtonAuto({ scripts, loading }) {
+export default function ScrollableTabsButtonAuto({ scripts, loading, removeRowAfterDelete }) {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
     const scriptTypes = [...(new Set(scripts.map(item => item.scriptType)))];
@@ -85,7 +85,7 @@ export default function ScrollableTabsButtonAuto({ scripts, loading }) {
                 const selectedScripts = scripts.filter((script) => (script.scriptType == item))
                 return (
                 <CustomScriptListTab key={index} value={value} index={index}>
-                    <CustomScriptListTable key={index} selectedScripts={selectedScripts} loading={loading} />
+                    <CustomScriptListTable key={index} selectedScripts={selectedScripts} loading={loading} removeRowAfterDelete={removeRowAfterDelete}/>
                 </CustomScriptListTab>
                 )
             }
