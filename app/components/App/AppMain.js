@@ -12,7 +12,7 @@ const AppMain = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <Router basename={basePath}>
-        <AuthenticatedRouteSelector/>
+          <AuthenticatedRouteSelector />
         </Router>
       </PersistGate>
     </Provider>

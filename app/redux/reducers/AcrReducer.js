@@ -7,6 +7,7 @@ import {
 
 const INIT_STATE = {
   acrs: {},
+  scripts: [],
   loading: true,
 }
 
@@ -49,7 +50,6 @@ export default (state = INIT_STATE, action) => {
           loading: false,
         }
       }
-
     default:
       return {
         ...state,

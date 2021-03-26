@@ -16,6 +16,7 @@ import {
   getUserInfo,
   getAPIAccessToken,
   getAllPlugins,
+  getAuthScript,
 } from '../redux/actions'
 
 class AppAuthProvider extends Component {
@@ -58,11 +59,11 @@ class AppAuthProvider extends Component {
   }
 
   componentDidMount() {
-    this.props.getAllPlugins();
+    this.props.getAllPlugins()
   }
 
   static getDerivedStateFromProps(props) {
-    if (window.location.href.indexOf("logout") > -1) {
+    if (window.location.href.indexOf('logout') > -1) {
       return { showContent: true }
     }
     if (!props.showContent) {
@@ -76,7 +77,6 @@ class AppAuthProvider extends Component {
           //   }
           // }
           props.getUserInfo(params.code)
-          
         } else {
           showContent = !!props.config
           if (showContent && props.config != -1) {
@@ -101,7 +101,9 @@ class AppAuthProvider extends Component {
         }
       } else {
         if (!props.token) {
-         props.getAPIAccessToken(props.jwt)
+          props.getAPIAccessToken(props.jwt)
+        } else {
+          props.getAuthScript()
         }
         return {
           showContent: true,
@@ -147,5 +149,6 @@ export default withRouter(
     getUserInfo,
     getAPIAccessToken,
     getAllPlugins,
+    getAuthScript,
   })(AppAuthProvider),
 )

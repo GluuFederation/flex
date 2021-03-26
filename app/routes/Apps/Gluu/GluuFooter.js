@@ -9,19 +9,20 @@ function GluuFooter({ extraOnClick, extraLabel }) {
       <Divider></Divider>
       <FormGroup row></FormGroup>
       <FormGroup row>
-        <Col sm={0} md={8}>
+        <Col sm={0} md={7}>
           {extraLabel && extraOnClick && (
             <Button color="primary" onClick={extraOnClick}>
               {extraLabel}
             </Button>
           )}
         </Col>
-        <Col sm={10} md={1}>
+        <Col sm={2} md={1}>
           <Button color="primary" type="submit">
             Save
           </Button>
         </Col>
-        <Col sm={1}>
+        &nbsp;
+        <Col sm={2} md={1}>
           <Button color="secondary" onClick={goBack}>
             Cancel
           </Button>
