@@ -82,6 +82,8 @@ export const GET_ACRS = 'GET_ACRS'
 export const GET_ACRS_RESPONSE = 'GET_ACRS_RESPONSE'
 export const PUT_ACRS = 'PUT_ACRS'
 export const PUT_ACRS_RESPONSE = 'PUT_ACRS_RESPONSE'
+export const GET_ACR_AUTH_SCRIPT = 'GET_ACR_AUTH_SCRIPT'
+export const GET_ACR_AUTH_SCRIPT_RESPONSE = 'GET_ACR_AUTH_SCRIPT_RESPONSE'
 
 // fido
 export const GET_FIDO = 'GET_FIDO'

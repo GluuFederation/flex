@@ -15,9 +15,14 @@ import GluuFooter from '../Gluu/GluuFooter'
 import { connect } from 'react-redux'
 import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
 import { hasPermission, ACR_READ, ACR_WRITE } from '../../../utils/PermChecker'
+import GluuSelectRow from '../Gluu/GluuSelectRow'
 
-function AcrsPage({ acrs, permissions, loading, dispatch }) {
-  console.log('=============initial ' + JSON.stringify(loading))
+function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
+  const authScripts = scripts
+    .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
+    .filter((item) => item.enabled)
+    .map((item) => item.name)
+  authScripts.push('simple_password_auth')
   useEffect(() => {
     dispatch(getAcrsConfig())
   }, [])
@@ -46,17 +51,16 @@ function AcrsPage({ acrs, permissions, loading, dispatch }) {
               >
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
-                    <FormGroup row>
-                      <GluuLabel label="Default Acr" required />
-                      <Col sm={9}>
-                        <Input
-                          id="defaultAcr"
-                          name="defaultAcr"
-                          onChange={formik.handleChange}
-                          defaultValue={acrs.defaultAcr}
-                        />
-                      </Col>
-                    </FormGroup>
+                    <GluuSelectRow
+                      label="Default Authentication Method(Acr)"
+                      name="defaultAcr"
+                      value={acrs.defaultAcr}
+                      formik={formik}
+                      lsize={6}
+                      rsize={6}
+                      values={authScripts}
+                      required
+                    ></GluuSelectRow>
                     <FormGroup row></FormGroup>
                     {hasPermission(permissions, ACR_WRITE) && <GluuFooter />}
                   </Form>
@@ -74,6 +78,7 @@ const mapStateToProps = (state) => {
   return {
     acrs: state.acrReducer.acrs,
     permissions: state.authReducer.permissions,
+    scripts: state.initReducer.scripts,
     loading: state.acrReducer.loading,
   }
 }

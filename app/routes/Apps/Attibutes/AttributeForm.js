@@ -15,6 +15,21 @@ import GluuLabel from '../Gluu/GluuLabel'
 
 function AttributeForm({ item, handleSubmit }) {
   const [init, setInit] = useState(false)
+  const [validation, setValidation] = useState(getInitialState(item))
+
+  function handleValidation() {
+    setValidation(!validation)
+  }
+
+  function getInitialState(item) {
+    return (
+      item.attributeValidation &&
+      item.attributeValidation.regexp != null &&
+      item.attributeValidation.minLength != null &&
+      item.attributeValidation.maxLength != null
+    )
+  }
+
   function toogle() {
     if (!init) {
       setInit(true)
@@ -26,6 +41,10 @@ function AttributeForm({ item, handleSubmit }) {
       displayName: item.displayName,
       description: item.displayName,
       status: item.status,
+      jansHideOnDiscovery: item.jansHideOnDiscovery,
+      oxMultiValuedAttribute: item.oxMultiValuedAttribute,
+      attributeValidation: item.attributeValidation,
+      scimCustomAttr: item.scimCustomAttr,
     },
     validationSchema: Yup.object({
       name: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
@@ -39,6 +58,9 @@ function AttributeForm({ item, handleSubmit }) {
     }),
     onSubmit: (values) => {
       const result = Object.assign(item, values)
+      result['attributeValidation'].maxLength = result.maxLength
+      result['attributeValidation'].minLength = result.minLength
+      result['attributeValidation'].regexp = result.regexp
       handleSubmit(JSON.stringify(result))
     },
   })
@@ -137,8 +159,8 @@ function AttributeForm({ item, handleSubmit }) {
               onChange={formik.handleChange}
             >
               <option value="">Choose...</option>
-              <option>TEXT</option>
               <option>STRING</option>
+              <option>JSON</option>
               <option>NUMERIC</option>
               <option>BINARY</option>
               <option>CERTIFICATE</option>
@@ -192,7 +214,7 @@ function AttributeForm({ item, handleSubmit }) {
             onChange={formik.handleChange}
           >
             <option>Not Defined</option>
-            <option>OpenID</option>
+            <option>OPENID</option>
           </Input>
         </Col>
       </FormGroup>
@@ -208,7 +230,7 @@ function AttributeForm({ item, handleSubmit }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Multivalued" size={3} />
+        <GluuLabel label="Multivalued?" size={3} />
         <Col sm={1}>
           <Input
             id="oxMultiValuedAttribute"
@@ -218,14 +240,104 @@ function AttributeForm({ item, handleSubmit }) {
             defaultChecked={item.oxMultiValuedAttribute}
           />
         </Col>
+        <GluuLabel label="Hide On Discovery?" size={3} />
+        <Col sm={1}>
+          <Input
+            id="jansHideOnDiscovery"
+            name="jansHideOnDiscovery"
+            onChange={formik.handleChange}
+            type="checkbox"
+            defaultChecked={item.jansHideOnDiscovery}
+          />
+        </Col>
+        <GluuLabel label="Include In SCIM Extension?" size={3} />
+        <Col sm={1}>
+          <Input
+            id="scimCustomAttr"
+            name="scimCustomAttr"
+            onChange={formik.handleChange}
+            type="checkbox"
+            defaultChecked={item.scimCustomAttr}
+          />
+        </Col>
       </FormGroup>
+
       <FormGroup row>
-        <GluuLabel label="Regular expression" />
+        <GluuLabel
+          label="Enable custom validation for this attribute?"
+          size={6}
+        />
+        <Col sm={6}>
+          <Input
+            id="validation"
+            name="validation"
+            onChange={handleValidation}
+            onc
+            type="checkbox"
+            defaultChecked={validation}
+          />
+        </Col>
+      </FormGroup>
+
+      {validation && (
+        <FormGroup row>
+          <GluuLabel label="Regular expression" />
+          <Col sm={9}>
+            <Input
+              name="regexp"
+              id="regexp"
+              defaultValue={item.attributeValidation.regexp}
+              onChange={formik.handleChange}
+            />
+          </Col>
+        </FormGroup>
+      )}
+      {validation && (
+        <FormGroup row>
+          <GluuLabel label="Minimum length" />
+          <Col sm={3}>
+            <Input
+              name="minLength"
+              id="minLength"
+              type="number"
+              defaultValue={item.attributeValidation.minLength}
+              onChange={formik.handleChange}
+            />
+          </Col>
+          <GluuLabel label="Maximum length" />
+          <Col sm={3}>
+            <Input
+              name="maxLength"
+              id="maxLength"
+              type="number"
+              defaultValue={item.attributeValidation.maxLength}
+              onChange={formik.handleChange}
+            />
+          </Col>
+        </FormGroup>
+      )}
+      <FormGroup row>
+        <GluuLabel label="Saml1 Uri" />
         <Col sm={9}>
           <Input
-            name="regex"
-            id="regex"
-            defaultValue={item.regex}
+            placeholder="Enter the saml1 Uri"
+            id="saml1Uri"
+            name="saml1Uri"
+            defaultValue={item.saml1Uri}
+            onKeyUp={toogle}
+            onChange={formik.handleChange}
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <GluuLabel label="Saml2 Uri" />
+        <Col sm={9}>
+          <Input
+            placeholder="Enter the saml2 Uri"
+            id="saml2Uri"
+            name="saml2Uri"
+            defaultValue={item.saml2Uri}
+            onKeyUp={toogle}
             onChange={formik.handleChange}
           />
         </Col>

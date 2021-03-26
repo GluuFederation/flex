@@ -7,6 +7,13 @@ import BlockUi from 'react-block-ui'
 import { editAttribute } from '../../../redux/actions/AttributeActions'
 
 function AttributeEditPage({ item, loading, dispatch }) {
+  if (!item.attributeValidation) {
+    item.attributeValidation = {
+      maxLength: null,
+      regexp: null,
+      minLength: null,
+    }
+  }
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {

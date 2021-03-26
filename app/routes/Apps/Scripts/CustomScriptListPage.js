@@ -18,31 +18,14 @@ function CustomScriptListPage({ scripts, permissions, loading, dispatch }) {
 
   const history = useHistory()
   const [item, setItem] = useState({})
+  //const [scriptArr, setScriptArr] = useState(scripts)
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
 
-  function getBadgeTheme(status) {
-    if (status === 'ACTIVE') {
-      return 'primary'
-    } else {
-      return 'warning'
-    }
-  }
-  function handleGoToCustomScriptAddPage() {
-    return history.push('/script/new')
-  }
-  function handleGoToCustomScriptEditPage(row) {
-    dispatch(setCurrentItem(row))
-    return history.push(`/script/edit:` + row.inum)
-  }
-  function handleCustomScriptDelete(row) {
-    dispatch(deleteCustomScript(row.inum))
-    setItem(row)
-    toggle()
-  }
-  function onDeletionConfirmed() {
-    // perform delete request
-    toggle()
+  async function removeRowAfterDelete(inum) {
+    await dispatch(deleteCustomScript(inum));
+    await dispatch(getCustomScripts())
+
   }
   return (
     <React.Fragment>
@@ -53,7 +36,7 @@ function CustomScriptListPage({ scripts, permissions, loading, dispatch }) {
           keepInView={true}
           renderChildren={true}
           message={'Performing the request, please wait!'}>
-          <ScrollableTabsButtonAuto scripts={scripts} loading={loading} />
+          <ScrollableTabsButtonAuto scripts={scripts} loading={loading} removeRowAfterDelete={removeRowAfterDelete} />
         </BlockUi>
       </Container>
     </React.Fragment>

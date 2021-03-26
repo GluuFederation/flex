@@ -8,11 +8,10 @@ import CustomScriptDetailPage from '../Scripts/CustomScriptDetailPage'
 import {
   getCustomScripts,
   setCurrentItem,
-  deleteCustomScript,
 } from '../../../redux/actions/CustomScriptActions'
 //import scripts from './scripts'
 
-function CustomScriptListTable({ selectedScripts, loading, dispatch }) {
+function CustomScriptListTable({ selectedScripts, loading, dispatch, removeRowAfterDelete }) {
 
   const history = useHistory()
   const [item, setItem] = useState({})
@@ -34,13 +33,14 @@ function CustomScriptListTable({ selectedScripts, loading, dispatch }) {
     return history.push(`/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
-    dispatch(deleteCustomScript(row.inum))
     setItem(row)
     toggle()
   }
   function onDeletionConfirmed() {
     // perform delete request
     toggle()
+    removeRowAfterDelete(item.inum);
+    
   }
   return (
     <React.Fragment>

@@ -12,12 +12,21 @@ function AttributeAddPage({ dispatch }) {
       history.push('/attributes')
     }
   }
+  const defautAttribute = {
+    jansHideOnDiscovery: false,
+    selected: false,
+    scimCustomAttr: false,
+    oxMultiValuedAttribute: false,
+    custom: false,
+    requred: false,
+    attributeValidation: { maxLength: null, regexp: null, minLength: null },
+  }
   return (
     <React.Fragment>
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <AttributeForm item={new Object()} handleSubmit={handleSubmit} />
+            <AttributeForm item={defautAttribute} handleSubmit={handleSubmit} />
           </CardBody>
         </Card>
       </Container>

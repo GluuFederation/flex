@@ -18,22 +18,28 @@ import pluginArr from '../../../plugins/redux/sagas'
 import ldapSaga from './LdapSaga'
 import jwksSaga from './JwksSaga'
 import couchBaseSaga from './CouchbaseSaga'
+import initSaga from './InitSaga'
 
 export default function* rootSaga() {
-
-  yield all([].concat([
-      authSagas(),
-      scopesSagas(),
-      openidClientSaga(),
-      attributeSaga(),
-      customScriptSaga(),
-      smtpSaga(),
-      pluginSaga(),
-      acrsSaga(),
-      fidoSaga(),
-      loggingSaga(),
-      ldapSaga(),
-      couchBaseSaga(),
-      jwksSaga(),
-    ], pluginArr))
+  yield all(
+    [].concat(
+      [
+        authSagas(),
+        scopesSagas(),
+        openidClientSaga(),
+        attributeSaga(),
+        customScriptSaga(),
+        smtpSaga(),
+        pluginSaga(),
+        acrsSaga(),
+        fidoSaga(),
+        loggingSaga(),
+        ldapSaga(),
+        couchBaseSaga(),
+        jwksSaga(),
+        initSaga(),
+      ],
+      pluginArr,
+    ),
+  )
 }

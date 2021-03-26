@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
 import {
@@ -13,19 +13,32 @@ import {
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
 import { connect } from 'react-redux'
-import { getSmtpConfig, editSmtp } from '../../../redux/actions/SmtpActions'
+import {
+  getSmtpConfig,
+  editSmtp,
+  testSmtp,
+} from '../../../redux/actions/SmtpActions'
+import {
+  hasPermission,
+  SMTP_READ,
+  SMTP_WRITE,
+} from '../../../utils/PermChecker'
+
 function SmtpPage({ smtp, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getSmtpConfig())
   }, [])
 
+  function checkSmtpConfig() {
+    dispatch(testSmtp())
+  }
   const initialValues = {
     host: smtp.host,
     port: smtp.port,
     from_name: smtp.from_name,
     from_email_address: smtp.from_email_address,
     user_name: smtp.user_name,
-    password: smtp.password,
+    passord: smtp.password,
     requires_ssl: smtp.requires_ssl,
     requires_authentication: smtp.requires_authentication,
     trust_host: smtp.trust_host,
@@ -46,7 +59,8 @@ function SmtpPage({ smtp, permissions, loading, dispatch }) {
                 initialValues={initialValues}
                 onSubmit={(values) => {
                   const opts = {}
-                  opts['smtpConfiguration'] = JSON.stringify(values)
+                  const smtpData = JSON.stringify(values)
+                  opts['smtpConfiguration'] = JSON.parse(smtpData)
                   dispatch(editSmtp(opts))
                 }}
               >
@@ -160,7 +174,12 @@ function SmtpPage({ smtp, permissions, loading, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row></FormGroup>
-                    <GluuFooter />
+                    {hasPermission(permissions, SMTP_WRITE) && (
+                      <GluuFooter
+                        extraLabel="Test Config"
+                        extraOnClick={checkSmtpConfig}
+                      />
+                    )}
                   </Form>
                 )}
               </Formik>
