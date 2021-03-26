@@ -13,7 +13,6 @@ function ScopeAddPage({  scripts, dispatch }) {
   function handleSubmit(data) {
 	  console.log('ScopeAdd :  handleSubmit() - data = '+data)
     if (data) {
-      //dispatch(addScope({'scope': data}));
        dispatch(addScope(data));
        history.push("/scopes");
     }
@@ -25,7 +24,7 @@ function ScopeAddPage({  scripts, dispatch }) {
 		   groupClaims: false,
 		   dynamicScopeScripts: [],
 		   umaAuthorizationPolicies: [],
-		   attributes: { spontaneousClientId: null, spontaneousClientScopes: [], showInConfigurationEndpoint: 'false' }
+		   attributes: { spontaneousClientId: null, spontaneousClientScopes: [], showInConfigurationEndpoint: 'false' },
 		  }
   
   return (

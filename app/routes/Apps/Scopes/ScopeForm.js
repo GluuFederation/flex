@@ -66,6 +66,8 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 			scopeType: scope.scopeType,
 			defaultScope: scope.defaultScope,
 			groupClaims: scope.groupClaims,
+			attributes: scope.attributes,
+			umaAuthorizationPolicies: scope.umaAuthorizationPolicies,
 		},
 		validationSchema: Yup.object({
 			id: Yup.string()
@@ -77,10 +79,15 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 		}),
 
 		onSubmit: (values) => {
-			// const result = Object.assign(scope, values)
-			// handleSubmit(JSON.stringify(values))
-			const result = JSON.stringify(values)
-			handleSubmit(JSON.parse(result))
+			console.log("onSubmit - values = "+values)
+			//const result = JSON.stringify(values)
+			//handleSubmit(JSON.parse(result))
+			 const result = Object.assign(scope, values)
+			console.log("onSubmit - result = "+result)
+			 result['attributes'].spontaneousClientId = result.spontaneousClientId
+             result['attributes'].spontaneousClientScopes = result.spontaneousClientScopes
+             result['attributes'].showInConfigurationEndpoint = result.showInConfigurationEndpoint
+             handleSubmit(JSON.stringify(result))
 		},
 	});
 
