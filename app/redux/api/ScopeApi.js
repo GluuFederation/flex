@@ -45,7 +45,7 @@ export default class ScopeApi {
 
 //Add Scope Config
   addNewScope = (input) => {
-	  console.log('Scope Api add data ='+input)
+	  console.log('Scope Api add data ='+JSON.stringify(input))
     return new Promise((resolve, reject) => {
       this.api.postOauthScopes(input, (error, data) => {
         if (error) {

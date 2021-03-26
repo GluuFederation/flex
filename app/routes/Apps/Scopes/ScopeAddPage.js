@@ -13,19 +13,12 @@ function ScopeAddPage({ dispatch }) {
 	  console.log('ScopeAdd :  handleSubmit() - data = '+data)
     if (data) {
       //dispatch(addScope({'scope': data}));
-    	dispatch(addScope(data));
-      history.push("/scopes");
+       dispatch(addScope(data));
+       history.push("/scopes");
     }
   }
   
   const scope = {
-		   dn: null,
-		   inum: null,
-		   displayName: null,
-		   id: '',
-		   iconUrl: '',
-		   description: '',
-		   scopeType: '',
 		   claims: [],		   
 		   defaultScope: false,
 		   groupClaims: false,

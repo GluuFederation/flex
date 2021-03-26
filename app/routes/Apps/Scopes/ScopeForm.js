@@ -35,7 +35,9 @@ function ScopeForm({ scope, handleSubmit}) {
 	        	id: scope.id,
 	        	displayName: scope.displayName,
 	        	description: scope.description,
-	        	scopeType: scope.scopeType
+	        	scopeType: scope.scopeType,
+	        	defaultScope: scope.defaultScope,
+	    		groupClaims: scope.groupClaims,
 	        },
 	        validationSchema: Yup.object({
 	          id: Yup.string()
@@ -45,10 +47,13 @@ function ScopeForm({ scope, handleSubmit}) {
 	            .min(2, "Please select scopeType")
 	            .required("Required!") 
 	        }),
-	        onSubmit: values => {
-	          const result = Object.assign(scope, values);
-	          handleSubmit(JSON.stringify(result));
-	        }
+	   
+	        onSubmit: (values) => {
+	            //const result = Object.assign(scope, values)
+	            //handleSubmit(JSON.stringify(values))
+	        	const result = JSON.stringify(values)
+	        	handleSubmit(JSON.parse(result))
+	          },
 	      });
 	    
 	    return (
@@ -155,7 +160,7 @@ function ScopeForm({ scope, handleSubmit}) {
 	    	      </FormGroup>
 	    	      
 
-	    	      <ScopeAttributes scope={scope} formik={formik} />
+	    	     
 	    	      
 	    	      
 	    	      <FormGroup row></FormGroup>

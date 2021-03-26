@@ -33,7 +33,7 @@ export const getScopeResponse = data => ({
 	})
 
 export const addScope = data => ({
-	  type: ADD_SCOPE,
+	  type: ADD_SCOPE,	  
 	  payload: { data },
 	})
 

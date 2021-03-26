@@ -69,10 +69,14 @@ export function* getScopes() {
   }
 }
 
-export function* addScope(payload) {
+export function* addAScope({payload}) {
+		console.log('Scope Sage -  addAScope payload.data ='+JSON.stringify(payload.data))
 	  try {
 	    const scopeApi = yield* newFunction()
-	    const data = yield call(scopeApi.addNewScope)
+	    const opts = {}
+	     opts['scope'] = payload.data
+	    const data = yield call(scopeApi.addNewScope,opts)
+		console.log('Scope Sage -  addScope response ='+JSON.stringify(data))
 	    yield put(addScopeResponse(data))
 	  } catch (e) {
 	    yield put(addScopeResponse(null))
@@ -90,7 +94,7 @@ export function* watchGetScopes() {
   yield takeLatest(GET_SCOPES, getScopes)
 }
 export function* watchAddScope() {
-	  yield takeLatest(ADD_SCOPE, addScope)
+	  yield takeLatest(ADD_SCOPE, addAScope)
 }
 
 export default function* rootSaga() {
