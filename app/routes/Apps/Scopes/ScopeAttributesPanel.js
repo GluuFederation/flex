@@ -3,10 +3,12 @@ import { Container, Col, Row, Label } from '../../../components'
 import GluuFormDetailRow from '../Gluu/GluuFormDetailRow'
 
 function ScopeAttributesPanel({ scope, formik }) {
+	
+	console.log(' ScopeAttributesPanel  - scope = '+scope)
   function readValue(keys, key) {
     let res = String(keys[key])
     if (res === 'undefined') {
-      return 'false'
+      return ''
     }
     return res
   }

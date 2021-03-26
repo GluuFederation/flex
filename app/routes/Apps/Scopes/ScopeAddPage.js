@@ -18,12 +18,32 @@ function ScopeAddPage({ dispatch }) {
     }
   }
   
+  const scope = {
+		   dn: null,
+		   inum: null,
+		   displayName: null,
+		   id: '',
+		   iconUrl: '',
+		   description: '',
+		   scopeType: '',
+		   claims: [],		   
+		   defaultScope: false,
+		   groupClaims: false,
+		   dynamicScopeScripts: [],
+		   umaAuthorizationPolicies: [],
+		    attributes: {
+		    	spontaneousClientId: '',
+		    	spontaneousClientScopes: [],
+		    	showInConfigurationEndpoint: false,
+		    },
+		  }
+  
   return (
     <React.Fragment>
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <ScopeForm item={new Object()} handleSubmit={handleSubmit}
+            <ScopeForm scope={scope} handleSubmit={handleSubmit}
             />
           </CardBody>
         </Card>

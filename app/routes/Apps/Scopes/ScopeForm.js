@@ -155,7 +155,7 @@ function ScopeForm({ scope, handleSubmit}) {
 	    	      </FormGroup>
 	    	      
 
-
+	    	      <ScopeAttributes scope={scope} formik={formik} />
 	    	      
 	    	      
 	    	      <FormGroup row></FormGroup>
