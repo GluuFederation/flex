@@ -24,11 +24,7 @@ function ScopeAddPage({ dispatch }) {
 		   groupClaims: false,
 		   dynamicScopeScripts: [],
 		   umaAuthorizationPolicies: [],
-		    attributes: {
-		    	spontaneousClientId: '',
-		    	spontaneousClientScopes: [],
-		    	showInConfigurationEndpoint: false,
-		    },
+		   attributes: { spontaneousClientId: null, spontaneousClientScopes: [], showInConfigurationEndpoint: 'false' }
 		  }
   
   return (

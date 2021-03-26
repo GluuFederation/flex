@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
+Button,
   Col,
   Container,
   InputGroup,
@@ -13,7 +14,9 @@ import {
   Input
 } from "./../../../components";
 import GluuFooter from "../Gluu/GluuFooter";
+import GluuFormDetailRow from '../Gluu/GluuFormDetailRow'
 import GluuLabel from "../Gluu/GluuLabel";
+import GluuSelectRow from '../Gluu/GluuSelectRow'
 import GluuTypeAhead from '../Gluu/GluuTypeAhead'
 import { getCustomScriptByType } from "../../../redux/actions/CustomScriptActions";
 import ScopeAttributes from './ScopeAttributesPanel'
@@ -21,8 +24,28 @@ import ScopeAttributes from './ScopeAttributesPanel'
 
 function ScopeForm({ scope, handleSubmit}) {
 
-	const [init, setInit] = useState(false)
+  const [init, setInit] = useState(false)
+  const [validation, setValidation] = useState(getInitialState(scope))
+  const showInConfigurationEndpointOptions = ['true', 'false']
+
+  function handleValidation() {
+    setValidation(!validation)
+  }
+	function getInitialState(scope) {
+    return (
+    		scope.scopeType  != null &&
+    		scope.attributeValidation.regexp === 'openid'
+    )
+  }
 	
+	function addClientScopes( newItem){
+		console.log(" Scope Form - addClientScopes  - scope.attributes.spontaneousClientScopes = "+scope.attributes.spontaneousClientScopes+" ,newItem = "+newItem)
+		if(newItem !=null && newItem.trim().length>0 ){
+			scope.attributes.spontaneousClientScopes.push(newItem)
+			
+		}
+		console.log(" Scope Form - addClientScopes  - final scope.attributes.spontaneousClientScopes = "+scope.attributes.spontaneousClientScopes)
+	}
 
 	  function toogle() {
 	    if (!init) {
@@ -159,8 +182,48 @@ function ScopeForm({ scope, handleSubmit}) {
 	    	        </Col>
 	    	      </FormGroup>
 	    	      
-
-	    	     
+	    	      
+	    	      
+	    	      		
+	    	      <FormGroup row>
+	    			<GluuLabel label="spontaneousClientId"/>
+	    			<Col sm={20}>
+	    			<Input
+	    			placeholder="Enter spontaneousClientId"
+	    				id="spontaneousClientId"
+	    					valid={!formik.errors.spontaneousClientId && !formik.touched.spontaneousClientId && init}
+	    			name="spontaneousClientId"
+	    				 defaultValue={scope.attributes.spontaneousClientId}
+	                onChange={formik.handleChange}
+	    			/>
+	    			</Col>
+	    			</FormGroup>
+	    			
+	    	
+	    		    <GluuFormDetailRow label="spontaneousClientScopes" value={scope.attributes.spontaneousClientScopes} />
+	    		    		
+	    			<FormGroup row>
+	    			<GluuLabel label="Add SpontaneousClientScopes"/>
+	    			<Col sm={20}>
+	    			<Input
+	    			placeholder="Enter Spontaneous Client Scope"
+	    			id="clientScopes"
+	    			valid={!formik.errors.clientScopes && !formik.touched.clientScopes && init}
+	    			name="clientScopes"
+	    			/>
+	    				<Button color="secondary" size="5" onClick={addClientScopes}> Add Client Scope </Button>
+	    			</Col>
+	    			</FormGroup>
+	    			
+	    			<GluuSelectRow
+                    label="showInConfigurationEndpoint"
+                    name="showInConfigurationEndpoint"
+                    formik={formik}
+                    lsize={4}
+                    rsize={8}
+	    			defaultValue={scope.attributes.showInConfigurationEndpoint}
+                    values={showInConfigurationEndpointOptions}
+                  ></GluuSelectRow>
 	    	      
 	    	      
 	    	      <FormGroup row></FormGroup>
