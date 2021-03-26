@@ -6,8 +6,9 @@ import ScopeForm from "./ScopeForm";
 import { addScope } from "../../../redux/actions/ScopeActions";
 
 
-function ScopeAddPage({ dispatch }) {
-	
+function ScopeAddPage({  scripts, dispatch }) {
+	console.log(" ScopeAddPage - scripts = "+scripts)
+  
   const history = useHistory();
   function handleSubmit(data) {
 	  console.log('ScopeAdd :  handleSubmit() - data = '+data)
@@ -32,7 +33,7 @@ function ScopeAddPage({ dispatch }) {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <ScopeForm scope={scope} handleSubmit={handleSubmit}
+            <ScopeForm scope={scope} handleSubmit={handleSubmit} scripts={scripts}
             />
           </CardBody>
         </Card>
@@ -43,7 +44,8 @@ function ScopeAddPage({ dispatch }) {
 const mapStateToProps = state => {
   return {
 	loading: state.scopeReducer.loading,
-    hasApiError: state.scopeReducer.hasApiError
+    hasApiError: state.scopeReducer.hasApiError,
+    scripts: state.initReducer.scripts,
   };
 };
 export default connect(mapStateToProps)(ScopeAddPage);
