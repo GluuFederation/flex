@@ -20,9 +20,8 @@ import GluuSelectRow from '../Gluu/GluuSelectRow'
 function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
   const authScripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
-    .filter((item) => !item.enabled)
+    .filter((item) => item.enabled)
     .map((item) => item.name)
-  console.log('=============initial ' + JSON.stringify(authScripts[0]))
   authScripts.push('simple_password_auth')
   useEffect(() => {
     dispatch(getAcrsConfig())
