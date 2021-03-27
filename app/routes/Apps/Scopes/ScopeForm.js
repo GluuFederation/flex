@@ -32,6 +32,7 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 	const [init, setInit] = useState(false)
 	const [validation, setValidation] = useState(getInitialState(scope))
 	const showInConfigurationEndpointOptions = ['true', 'false']
+	const clientScopeList = []
 
 	
 	function handleValidation(e) {
@@ -41,6 +42,10 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 		}
 		else{
 			setValidation(false)
+			MyForm.spontaneousClientId.value = null
+			MyForm.spontaneousClientScopes.value = null
+			MyForm.clientScopes.value = null
+			MyForm.showInConfigurationEndpoint.value = false
 		}
 		console.log(' Scope Form handleValidation()- final validation = '+validation)
 	}
@@ -56,16 +61,31 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 				scope.attributeValidation.regexp === 'openid'
 		)
 	}
-
-	function addClientScopes( newItem){
-		console.log(" Scope Form - addClientScopes  - scope.attributes.spontaneousClientScopes = "+scope.attributes.spontaneousClientScopes+" ,newItem = "+newItem)
-		if(newItem !=null && newItem.trim().length>0 ){
-			scope.attributes.spontaneousClientScopes.push(newItem)
+/*
+	function addClientScopes( e){
+		console.log(" Scope Form - addClientScopes  - scope.attributes.spontaneousClientScopes = "+scope.attributes.spontaneousClientScopes+" ,e = "+e.value)
+		if(e.target.value !=null && e.target.value.trim()=="" && e.target.value.trim().length==0 ){
+			scope.attributes.spontaneousClientScopes.push(e.target.value)
 
 		}
 		console.log(" Scope Form - addClientScopes  - final scope.attributes.spontaneousClientScopes = "+scope.attributes.spontaneousClientScopes)
 	}
+*/
+	
 
+	function addClientScopes( e){
+		console.log(" Scope Form - addClientScopes  - clientScopeList = "+ clientScopeList+" , MyForm.clientScopes.value= "+MyForm.clientScopes.value)
+		if(MyForm.clientScopes.value !=null && MyForm.clientScopes.value.trim()!="" && MyForm.clientScopes.value.trim().length!=0 ){
+			console.log(" Scope Form - addClientScopes  - Inside if ");
+			clientScopeList.push(MyForm.clientScopes.value)
+			MyForm.spontaneousClientScopes.value= clientScopeList
+			MyForm.clientScopes.value = null
+
+		}
+		console.log(" Scope Form - addClientScopes  - final  clientScopeList = "+clientScopeList)
+	}
+
+	
 	function toogle() {
 		if (!init) {
 			setInit(true)
@@ -82,6 +102,8 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 			groupClaims: scope.groupClaims,
 			attributes: scope.attributes,
 			umaAuthorizationPolicies: scope.umaAuthorizationPolicies,
+			clientScopeList: scope.attributes.spontaneousClientScopes,
+			
 		},
 		validationSchema: Yup.object({
 			id: Yup.string()
@@ -106,7 +128,7 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 	});
 
 	return (
-			<Form  onSubmit={formik.handleSubmit}>
+			<Form name="MyForm"  onSubmit={formik.handleSubmit}>
 			{/* START Input */}
 			{scope.inum && (
 					<FormGroup row>
@@ -217,10 +239,11 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 			</Col>
 			</FormGroup>
 
-			  {validation && (
+
+	{validation && (
 			<FormGroup row>
-			<GluuLabel label="spontaneousClientId"/>
-			<Col sm={20}>
+			<GluuLabel label="SpontaneousClientId"/>
+			<Col sm={9}>
 			<Input
 			placeholder="Enter spontaneousClientId"
 			id="spontaneousClientId"
@@ -230,33 +253,38 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 			onChange={formik.handleChange}
 			/>
 			</Col>
+		<GluuSelectRow
+			label="ShowInConfigurationEndpoint"
+				name="showInConfigurationEndpoint"
+					formik={formik}
+			lsize={9}
+			defaultValue={scope.attributes.showInConfigurationEndpoint}
+			values={showInConfigurationEndpointOptions}
+			></GluuSelectRow>
+	
 			
 			
-		
-			<GluuFormDetailRow label="SpontaneousClientScopes" value={scope.attributes.spontaneousClientScopes} > </GluuFormDetailRow>
-
+			<GluuLabel  label="SpontaneousClientScopes" />
+			<Col sm={9}>
+			<Input
+			style={{ backgroundColor: '#F5F5F5' }}
+			id="spontaneousClientScopes"
+				name="spontaneousClientScopes"
+					disabled
+					value={clientScopeList}
+			/>
+			</Col>
 			
 			<GluuLabel label="Add SpontaneousClientScopes"/>
-				<Col sm={20}>
+				<Col sm={9}>
 			<Input
 			placeholder="Enter Spontaneous Client Scope"
-				id="clientScopes"
-					valid={!formik.errors.clientScopes && !formik.touched.clientScopes && init}
+			id="clientScopes"
 			name="clientScopes"
 				/>
 				<Button color="secondary" size="5" onClick={addClientScopes}> Add Client Scope </Button>
 				</Col>
 				
-
-				<GluuSelectRow
-				label="ShowInConfigurationEndpoint"
-					name="showInConfigurationEndpoint"
-						formik={formik}
-				lsize={20}
-				rsize={8}
-				defaultValue={scope.attributes.showInConfigurationEndpoint}
-				values={showInConfigurationEndpointOptions}
-				></GluuSelectRow>
 				</FormGroup>
 			  )}
 
