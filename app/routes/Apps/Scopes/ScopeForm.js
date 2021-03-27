@@ -33,9 +33,23 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 	const [validation, setValidation] = useState(getInitialState(scope))
 	const showInConfigurationEndpointOptions = ['true', 'false']
 
-	function handleValidation() {
-		setValidation(!validation)
+	
+	function handleValidation(e) {
+		console.log(' Scope Form handleValidation()- validation = '+validation+' ,e.target.value ='+e.target.value)
+		if(e.target.value  === 'openid'){
+			setValidation(true)
+		}
+		else{
+			setValidation(false)
+		}
+		console.log(' Scope Form handleValidation()- final validation = '+validation)
 	}
+	/*
+    const handleValidation = (event, newValue) => {
+    	console.log(' Scope Form handleValidation()- newValue ='+newValue)
+       // setValue(newValue);
+    };
+    */
 	function getInitialState(scope) {
 		return (
 				scope.scopeType  != null &&
@@ -92,7 +106,7 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 	});
 
 	return (
-			<Form onSubmit={formik.handleSubmit}>
+			<Form  onSubmit={formik.handleSubmit}>
 			{/* START Input */}
 			{scope.inum && (
 					<FormGroup row>
@@ -188,9 +202,9 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 			<CustomInput
 			type="select"
 			id="scopeType"
-				name="scopeType"
-					defaultValue={scope.programmingLanguage}
-			onChange={formik.handleChange}
+			name="scopeType"
+			defaultValue={scope.programmingLanguage}
+			 onChange={handleValidation}
 			>
 			<option value="">Choose...</option>
 			<option value="openid">OpenID</option>
@@ -203,9 +217,7 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 			</Col>
 			</FormGroup>
 
-
-
-
+			  {validation && (
 			<FormGroup row>
 			<GluuLabel label="spontaneousClientId"/>
 			<Col sm={20}>
@@ -218,12 +230,12 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 			onChange={formik.handleChange}
 			/>
 			</Col>
-			</FormGroup>
+			
+			
+		
+			<GluuFormDetailRow label="SpontaneousClientScopes" value={scope.attributes.spontaneousClientScopes} > </GluuFormDetailRow>
 
-
-			<GluuFormDetailRow label="SpontaneousClientScopes" value={scope.attributes.spontaneousClientScopes} />
-
-			<FormGroup row>
+			
 			<GluuLabel label="Add SpontaneousClientScopes"/>
 				<Col sm={20}>
 			<Input
@@ -234,7 +246,7 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 				/>
 				<Button color="secondary" size="5" onClick={addClientScopes}> Add Client Scope </Button>
 				</Col>
-				</FormGroup>
+				
 
 				<GluuSelectRow
 				label="ShowInConfigurationEndpoint"
@@ -245,7 +257,8 @@ function ScopeForm({ scope, handleSubmit,scripts}) {
 				defaultValue={scope.attributes.showInConfigurationEndpoint}
 				values={showInConfigurationEndpointOptions}
 				></GluuSelectRow>
-
+				</FormGroup>
+			  )}
 
 				<GluuSelectRow
 				label="UmaAuthorizationPolicies"
