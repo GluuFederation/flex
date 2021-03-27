@@ -75,7 +75,7 @@ export function* editAttribute({ payload }) {
 export function* deleteAttribute({ payload }) {
   try {
     const attributeApi = yield* newFunction()
-    const data = yield call(attributeApi.deleteAnAttribute, payload.data)
+    const data = yield call(attributeApi.deleteAnAttribute, payload.inum)
     yield put(deleteAttributeResponse(data))
   } catch (e) {
     yield put(deleteAttributeResponse(null))
