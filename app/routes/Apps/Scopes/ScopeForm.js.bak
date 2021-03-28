@@ -1,20 +1,28 @@
-import React, { useState } from 'react'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
+import React, { useState, useEffect } from 'react'
+import { connect } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import {
-  Col,
-  InputGroup,
-  CustomInput,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-} from './../../../components'
-import GluuFooter from '../Gluu/GluuFooter'
-import GluuLabel from '../Gluu/GluuLabel'
+	Button,
+	Col,
+	Container,
+	InputGroup,
+	CustomInput,
+	Form,
+	FormGroup,
+	Label,
+	Input
+} from "./../../../components";
+import GluuFooter from "../Gluu/GluuFooter";
+import GluuFormDetailRow from '../Gluu/GluuFormDetailRow'
+import GluuLabel from "../Gluu/GluuLabel";
 import GluuSelectRow from '../Gluu/GluuSelectRow'
+import GluuTypeAhead from '../Gluu/GluuTypeAhead'
+import { getCustomScriptByType } from "../../../redux/actions/CustomScriptActions";
+import ScopeAttributes from './ScopeAttributesPanel'
 
-function ScopeForm({ scope, handleSubmit, scripts}) {
+
+function ScopeForm({ scope, handleSubmit,scripts}) {
 
 	const authScripts = scripts
 	.filter((item) => item.scriptType == 'UMA_RPT_POLICY')
@@ -26,14 +34,22 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 	const showInConfigurationEndpointOptions = ['true', 'false']
 
 	function handleValidation() {
-		console.log(" handleValidation validation = "+validation)
 		setValidation(!validation)
 	}
 	function getInitialState(scope) {
 		return (
 				scope.scopeType  != null &&
-				scope.scopeType === 'openid'
+				scope.attributeValidation.regexp === 'openid'
 		)
+	}
+
+	function addClientScopes( newItem){
+		console.log(" Scope Form - addClientScopes  - scope.attributes.spontaneousClientScopes = "+scope.attributes.spontaneousClientScopes+" ,newItem = "+newItem)
+		if(newItem !=null && newItem.trim().length>0 ){
+			scope.attributes.spontaneousClientScopes.push(newItem)
+
+		}
+		console.log(" Scope Form - addClientScopes  - final scope.attributes.spontaneousClientScopes = "+scope.attributes.spontaneousClientScopes)
 	}
 
 	function toogle() {
@@ -51,8 +67,7 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 			defaultScope: scope.defaultScope,
 			groupClaims: scope.groupClaims,
 			attributes: scope.attributes,
-			//umaAuthorizationPolicies: scope.umaAuthorizationPolicies,
-			umaAuthorizationPolicies: ['abc' ,'xyx'],
+			umaAuthorizationPolicies: scope.umaAuthorizationPolicies,
 		},
 		validationSchema: Yup.object({
 			id: Yup.string()
@@ -112,10 +127,10 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 
 			<FormGroup row>
 			<GluuLabel label="displayName"  />
-			<Col sm={9}>
+				<Col sm={9}>
 			<Input
 			placeholder="Enter the displayName"
-		    id="displayName"
+			id="displayName"
 			valid={!formik.errors.displayName && !formik.touched.displayName && init}
 			name="displayName"
 			defaultValue={scope.displayName}
@@ -127,14 +142,18 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 
 			<FormGroup row>
 			<GluuLabel label="Description"  />
-			<Col sm={9}>
+				<Col sm={9}>
 			<Input
 			type="textarea"
-			placeholder="Enter the description"
-			maxLength="4000"
-			id="description"
-			name="description"
-			defaultValue={scope.description}
+				placeholder="Enter the description"
+					maxLength="4000"
+						id="description"
+							/*
+							 * valid={!formik.errors.displayName &&
+							 * !formik.touched.displayName && init}
+							 */
+							name="description"
+								defaultValue={scope.description}
 			onKeyUp={toogle}
 			onChange={formik.handleChange}
 			/>
@@ -146,9 +165,13 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 			<Col sm={9}>
 			<Input
 			placeholder="Enter the IconUrl"
-			id="iconUrl"
-			name="iconUrl"
-			defaultValue={scope.iconUrl}
+				id="iconUrl"
+					/*
+					 * valid={!formik.errors.iconUrl &&
+					 * !formik.touched.iconUrl && init}
+					 */
+					name="iconUrl"
+						defaultValue={scope.iconUrl}
 			onKeyUp={toogle}
 			onChange={formik.handleChange}
 			/>
@@ -162,9 +185,9 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 			<CustomInput
 			type="select"
 			id="scopeType"
-			name="scopeType"
-			defaultValue={scope.scopeType}
-			onChange={handleValidation}
+				name="scopeType"
+					defaultValue={scope.programmingLanguage}
+			onChange={formik.handleChange}
 			>
 			<option value="">Choose...</option>
 			<option value="openid">OpenID</option>
@@ -177,80 +200,66 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 			</Col>
 			</FormGroup>
 
-			{validation && (
 
-					<FormGroup row>
-					
-					<GluuLabel label="SpontaneousClientId"/>
-					<Col sm={9}>
-					<Input
-					placeholder="Enter spontaneousClientId"
-					id="spontaneousClientId"
-					name="spontaneousClientId"
-					defaultValue={scope.attributes.spontaneousClientId}
-					onChange={formik.handleChange}
-					/>
-					</Col>
-					
-					<GluuLabel label="ShowInConfigurationEndpoint" />
-				        <Col sm={9}>
-				          <InputGroup>
-				            <CustomInput
-				              type="select"
-				              id="showInConfigurationEndpoint"
-				              name="showInConfigurationEndpoint"
-				              defaultValue={scope.attributes.showInConfigurationEndpoint}
-				              onChange={formik.handleChange}
-				            >
-				              <option>true</option>
-				              <option>false</option>
-				            </CustomInput>
-				          </InputGroup>
-				        </Col>
-					
 
-					<GluuLabel  label="SpontaneousClientScopes" />
-					<Col sm={9}>
-					<Input
-					style={{ backgroundColor: '#F5F5F5' }}
-					id="spontaneousClientScopes"
-					name="spontaneousClientScopes"			
-					defaultValue={scope.attributes.spontaneousClientScopes}
-		            onChange={formik.handleChange}
-					/>
+
+			<FormGroup row>
+			<GluuLabel label="spontaneousClientId"/>
+			<Col sm={20}>
+			<Input
+			placeholder="Enter spontaneousClientId"
+			id="spontaneousClientId"
+				valid={!formik.errors.spontaneousClientId && !formik.touched.spontaneousClientId && init}
+			name="spontaneousClientId"
+				defaultValue={scope.attributes.spontaneousClientId}
+			onChange={formik.handleChange}
+			/>
+			</Col>
+			</FormGroup>
+
+
+			<GluuFormDetailRow label="SpontaneousClientScopes" value={scope.attributes.spontaneousClientScopes} />
+
+			<FormGroup row>
+			<GluuLabel label="Add SpontaneousClientScopes"/>
+				<Col sm={20}>
+			<Input
+			placeholder="Enter Spontaneous Client Scope"
+				id="clientScopes"
+					valid={!formik.errors.clientScopes && !formik.touched.clientScopes && init}
+			name="clientScopes"
+				/>
+				<Button color="secondary" size="5" onClick={addClientScopes}> Add Client Scope </Button>
 				</Col>
-
-
-
 				</FormGroup>
 
-			  )}
-			
-			
-			 <FormGroup row>
-		        <GluuLabel label="UmaAuthorizationPolicies" />
-		        <Col sm={9}>
-		          <Input
-		            type="select"
-		            name="umaAuthorizationPolicies"
-		            id="umaAuthorizationPolicies"
-		            defaultValue={scope.umaAuthorizationPolicies}
-		            multiple
-		            onChange={formik.handleChange}
-		          >
-		          
-		          {authScripts.map((item, key) => (
-		        	    		 <option>{item}</option>
-		          ))}		 
-		          </Input>
-		        </Col>
-		      </FormGroup>
-		      
-		      <FormGroup row></FormGroup>
-		      <GluuFooter />
-		    </Form>
-		  )
-		}
+				<GluuSelectRow
+				label="ShowInConfigurationEndpoint"
+					name="showInConfigurationEndpoint"
+						formik={formik}
+				lsize={20}
+				rsize={8}
+				defaultValue={scope.attributes.showInConfigurationEndpoint}
+				values={showInConfigurationEndpointOptions}
+				></GluuSelectRow>
 
+
+				<GluuSelectRow
+				label="UmaAuthorizationPolicies"
+				name="umaAuthorizationPolicies"
+					formik={formik}
+				lsize={20}
+				rsize={8}
+				defaultValue={scope.umaAuthorizationPolicies}
+				values={authScripts}
+				multiple={true}
+				></GluuSelectRow>
+
+				<FormGroup row></FormGroup>
+				<GluuFooter />
+				</Form>
+	);
+
+}
 export default ScopeForm;
 
