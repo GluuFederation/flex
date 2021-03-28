@@ -41,7 +41,7 @@ function GluuAppSidebar({ scopes, plugins }) {
           icon={<i className="fa fa-fw fa-home"></i>}
           title="Home"
         >
-          <SidebarMenu.Item title="Reports" to="/home/reports" exact />
+          <SidebarMenu.Item title="Reports" to="/home/dashboard" exact />
         </SidebarMenu.Item>
         {/* -------- Attributes ---------*/}
 
