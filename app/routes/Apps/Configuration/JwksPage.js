@@ -8,6 +8,7 @@ import {
   getJwks,
 } from '../../../redux/actions/JwksActions'
 import BlockUi from 'react-block-ui'
+import GluuFooter from '../Gluu/GluuFooter'
 import GluuLabel from '../Gluu/GluuLabel'
 import { connect } from 'react-redux'
 import JwkItem from './JwkItem'
@@ -34,6 +35,7 @@ function JwksPage({ jwks, loading, dispatch }) {
 
             </CardBody>
           </Card>
+          <GluuFooter hideButtons={{save: true}}/>
         </BlockUi>
       </Container>
     </React.Fragment>

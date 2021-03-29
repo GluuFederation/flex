@@ -24,6 +24,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
             <Input
               id="configId"
               name="configId"
+              disabled
               defaultValue={couchbase.configId}
               onChange={formik.handleChange}
               disabled
@@ -47,6 +48,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               id="connectTimeout"
               name="connectTimeout"
               type="number"
+              disabled
               defaultValue={couchbase.connectTimeout}
               onChange={formik.handleChange}
             />
@@ -57,6 +59,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               id="computationPoolSize"
               name="computationPoolSize"
               type="number"
+              disabled
               defaultValue={couchbase.computationPoolSize}
               onChange={formik.handleChange}
             />
@@ -67,6 +70,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               id="useSSL"
               name="useSSL"
               type="checkbox"
+              disabled
               defaultChecked={couchbase.useSSL}
               onChange={formik.handleChange}
             />
