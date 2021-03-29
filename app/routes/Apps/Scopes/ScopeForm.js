@@ -68,8 +68,14 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 			//handleSubmit(JSON.parse(result))
 			 const result = Object.assign(scope, values)
 			console.log("onSubmit - result = "+result)
+			const spontaneousClientScopesList = []
+			if(result.spontaneousClientScopes !=null && result.spontaneousClientScopes.trim().length>0)
+				{
+				console.log('result.spontaneousClientScopes = '+result.spontaneousClientScopes)
+				spontaneousClientScopesList.push(result.spontaneousClientScopes)
+				}
 			 result['attributes'].spontaneousClientId = result.spontaneousClientId
-             result['attributes'].spontaneousClientScopes = result.spontaneousClientScopes
+             result['attributes'].spontaneousClientScopes = spontaneousClientScopesList
              result['attributes'].showInConfigurationEndpoint = result.showInConfigurationEndpoint
              handleSubmit(JSON.stringify(result))
 		},
