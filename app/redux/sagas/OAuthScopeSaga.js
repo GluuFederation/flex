@@ -87,6 +87,24 @@ export function* addAScope({payload}) {
 	  }
 	}
 
+export function* editAnScope({payload}) {
+	console.log('Scope Sage -  editAnScope payload.data ='+JSON.stringify(payload.data))
+  try {
+    const scopeApi = yield* newFunction()
+    const opts = {}
+     opts['scope'] = payload.data
+    const data = yield call(scopeApi.editAScope,opts)
+	console.log('Scope Sage -  editAnScope response ='+JSON.stringify(data))
+    yield put(editScopeResponse(data))
+  } catch (e) {
+    yield put(editScopeResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
 export function* watchGetScopeByInum() {
   yield takeEvery(GET_SCOPE_BY_INUM, getScopeByInum)
 }
@@ -96,11 +114,15 @@ export function* watchGetScopes() {
 export function* watchAddScope() {
 	  yield takeLatest(ADD_SCOPE, addAScope)
 }
+export function* watchEditScope() {
+	  yield takeLatest(EDIT_SCOPE, editAnScope)
+}
 
 export default function* rootSaga() {
   yield all([
 	  fork(watchGetScopeByInum), 
 	  fork(watchGetScopes),
 	  fork(watchAddScope),
+	  fork(watchEditScope),
 	  ])
 }

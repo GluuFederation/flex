@@ -1,7 +1,57 @@
-import React from "react";
+import React from 'react'
+import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { Container, CardBody, Card } from './../../../components'
+import ScopeForm from "./ScopeForm";
+import BlockUi from 'react-block-ui'
+import { editScope } from '../../../redux/actions/ScopeActions'
 
-function ScopeEditPage() {
-  return <div></div>;
-}
+function ScopeEditPage({ scope, loading, dispatch,scripts}) {
+		  if (!scope.attributes) {
+			  scope.attributes = {
+					  spontaneousClientId: null,
+					  spontaneousClientScopes: [],
+					  showInConfigurationEndpoint: false,
+		    }
+		  }
+		  const history = useHistory()
+		  function handleSubmit(data) {
+			  console.log('ScopeEdit :  handleSubmit() - data = '+data)
+		    if (data) {
+		      dispatch(editScope(data))
+		      history.push('/scopes')
+		    }
+		  }
+		  return (
+		    <React.Fragment>
+		      <Container>
+		        <BlockUi
+		          tag="div"
+		          blocking={loading}
+		          keepInView={true}
+		          renderChildren={true}
+		          message={'Performing the request, please wait!'}
+		        >
+		          <Card className="mb-3">
+		            <CardBody>
+		            <ScopeForm scope={scope} handleSubmit={handleSubmit} scripts={scripts} />
+		            </CardBody>
+		          </Card>
+		        </BlockUi>
+		      </Container>
+		    </React.Fragment>
+		  )
+		}
+		const mapStateToProps = (state) => {
+		  return {
+			scope: state.scopeReducer.item,
+		    loading: state.scopeReducer.loading,
+		    permissions: state.authReducer.permissions,
+		    scripts: state.initReducer.scripts,
+		  }
+		}
 
-export default ScopeEditPage;
+export default connect(mapStateToProps)(ScopeEditPage)
+
+
+

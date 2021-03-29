@@ -5,12 +5,20 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import ClientDetailPage from '../Scopes/ScopeDetailPage'
-import { getScopes, deleteScope } from '../../../redux/actions/ScopeActions'
+import { getScopes, deleteScope, setCurrentItem } from '../../../redux/actions/ScopeActions'
+import {
+	  hasPermission,
+	  SCOPE_READ,
+	  SCOPE_WRITE,
+	  SCOPE_DELETE,
+	} from '../../../utils/PermChecker'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getScopes())
   }, [])
+  
+  const myActions = []
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
@@ -20,16 +28,75 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     return history.push('/scope/new')
   }
   function handleGoToScopeEditPage(row) {
+	  dispatch(setCurrentItem(row))
     return history.push(`/scope/edit:` + row.inum)
   }
+  
   function handleScopeDelete(row) {
-    setItem(row)
-    toggle()
+	  dispatch(setCurrentItem(row))
+	  setItem(row)
+	  toggle()
   }
+  
   function onDeletionConfirmed() {
     dispatch(deleteScope(item))
     toggle()
   }
+  
+  function getBadgeTheme(status) {
+	    if (status === 'ACTIVE') {
+	      return 'primary'
+	    } else {
+	      return 'warning'
+	    }
+	  }
+  
+  if (hasPermission(permissions, SCOPE_WRITE)) {
+	    myActions.push((rowData) => ({
+	      icon: 'edit',
+	      iconProps: {
+	        color: 'primary',
+	        id: 'editScope' + rowData.inum,
+	      },
+	      tooltip: 'Edit Scope',
+	      onClick: (event, rowData) => handleGoToScopeEditPage(rowData),
+	      disabled: !hasPermission(permissions, SCOPE_WRITE),
+	    }))
+	  }
+	  if (hasPermission(permissions, SCOPE_WRITE)) {
+	    myActions.push({
+	      icon: 'add',
+	      tooltip: 'Add Scope',
+	      iconProps: { color: 'primary' },
+	      isFreeAction: true,
+	      onClick: () => handleGoToScopeAddPage(),
+	      disabled: !hasPermission(permissions, SCOPE_WRITE),
+	    })
+	  }
+	  if (hasPermission(permissions, SCOPE_READ)) {
+	    myActions.push({
+	      icon: 'refresh',
+	      tooltip: 'Refresh Data',
+	      iconProps: { color: 'primary' },
+	      isFreeAction: true,
+	      onClick: () => {
+	        dispatch(getScopes())
+	      },
+	    })
+	  }
+	  if (hasPermission(permissions, SCOPE_DELETE)) {
+	    myActions.push((rowData) => ({
+	      icon: 'delete',
+	      iconProps: {
+	        color: 'secondary',
+	        id: 'deleteScope' + rowData.inum,
+	      },
+	      tooltip: 'Delete Scope',
+	      onClick: (event, rowData) => handleScopeDelete(rowData),
+	      disabled: !hasPermission(permissions, SCOPE_DELETE),
+	    }))
+	  }
+	  
   return (
     <React.Fragment>
       {/* START Content */}
@@ -51,57 +118,18 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         data={scopes}
         isLoading={loading}
         title=" Scopes"
-        actions={[
-          (rowData) => ({
-            icon: 'edit',
-            iconProps: {
-              color: 'primary',
-              id: 'editScope' + rowData.inum,
-            },
-            tooltip: 'Edit Scope',
-            onClick: (event, rowData) => handleGoToScopeEditPage(rowData),
-            disabled: false,
-          }),
-          {
-            icon: 'add',
-            tooltip: 'Add Scope',
-            iconProps: { color: 'primary' },
-            isFreeAction: true,
-            onClick: () => handleGoToScopeAddPage(),
-          },
-          {
-            icon: 'refresh',
-            tooltip: 'Refresh Data',
-            iconProps: { color: 'primary' },
-            isFreeAction: true,
-            onClick: () => {
-              dispatch(getScopes())
-            },
-          },
-          (rowData) => ({
-            icon: 'delete',
-            iconProps: {
-              color: 'secondary',
-              id: 'deleteScope' + rowData.inum,
-            },
-            tooltip: rowData.deletable
-              ? 'Delete Scope'
-              : "This Scope can't be detele",
-            onClick: (event, rowData) => handleScopeDelete(rowData),
-            disabled: rowData.defaultScope,
-          }),
-        ]}
+        actions={myActions}
         options={{
-          search: true,
-          selection: false,
-          pageSize: 10,
-          headerStyle: {
-            backgroundColor: '#1EB7FF', //#1EB7FF 01579b
-            color: '#FFF',
-            padding: '2px',
-            textTransform: 'uppercase',
-            fontSize: '18px',
-          },
+        search: true,
+        selection: false,
+        pageSize: 10,
+        headerStyle: {
+        backgroundColor: '#1EB7FF', //#1EB7FF 01579b
+        color: '#FFF',
+        padding: '2px',
+        textTransform: 'uppercase',
+         fontSize: '18px',
+        },
           actionsColumnIndex: -1,
         }}
         detailPanel={(rowData) => {

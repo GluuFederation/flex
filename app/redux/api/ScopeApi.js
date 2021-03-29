@@ -59,12 +59,15 @@ export default class ScopeApi {
     })
   }
   
-  editAScope = (data) => {
+  editAScope = (input) => {
+	  console.log('Scope Api editAScope data ='+JSON.stringify(input))
 	    return new Promise((resolve, reject) => {
-	      this.api.putOauthScopes(data, (error, data) => {
+	      this.api.putOauthScopes(input, (error, data) => {
 	        if (error) {
+	        	console.log('Scope Api editAScope error ='+error)
 	          reject(error)
 	        } else {
+	        	 console.log('Scope Api editAScope response ='+data)
 	          resolve(data)
 	        }
 	      })
