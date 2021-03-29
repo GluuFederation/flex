@@ -105,6 +105,21 @@ export function* editAnScope({payload}) {
   }
 }
 
+export function* deleteAnScope({ payload }) {
+	console.log('Scope Sage -  deleteAnScope payload ='+JSON.stringify(payload))
+	  try {
+	    const scopeApi = yield* newFunction()
+	    const data = yield call(scopeApi.deleteAScope, payload.inum)
+	    yield put(deleteScopeResponse(data))
+	  } catch (e) {
+	    yield put(deleteScopeResponse(null))
+	    if (isFourZeroOneError(e)) {
+	      const jwt = yield select((state) => state.s.userinfo_jwt)
+	      yield put(getAPIAccessToken(jwt))
+	    }
+	  }
+	}
+
 export function* watchGetScopeByInum() {
   yield takeEvery(GET_SCOPE_BY_INUM, getScopeByInum)
 }
@@ -118,11 +133,17 @@ export function* watchEditScope() {
 	  yield takeLatest(EDIT_SCOPE, editAnScope)
 }
 
+export function* watchDeleteScope() {
+	  yield takeLatest(DELETE_SCOPE, deleteAnScope)
+}
+
+
 export default function* rootSaga() {
   yield all([
 	  fork(watchGetScopeByInum), 
 	  fork(watchGetScopes),
 	  fork(watchAddScope),
 	  fork(watchEditScope),
+	  fork(watchDeleteScope),
 	  ])
 }

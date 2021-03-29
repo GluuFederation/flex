@@ -33,14 +33,16 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   }
   
   function handleScopeDelete(row) {
-	  dispatch(setCurrentItem(row))
-	  setItem(row)
-	  toggle()
+	    dispatch(setCurrentItem(row))
+	    setItem(row)
+	    toggle()
   }
   
   function onDeletionConfirmed() {
-    dispatch(deleteScope(item))
-    toggle()
+	  console.log('Scope onDeletionConfirmed - item.inum = '+item.inum)
+	  dispatch(deleteScope(item.inum))
+	  history.push('/scopes')
+	  toggle()
   }
   
   function getBadgeTheme(status) {
@@ -139,6 +141,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
       {/* END Content */}
       <GluuDialog
         row={item}
+        name={item.id}
         handler={toggle}
         modal={modal}
         subject="scope"

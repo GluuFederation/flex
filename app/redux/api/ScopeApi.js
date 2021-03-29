@@ -75,18 +75,19 @@ export default class ScopeApi {
 	  }
 
   // Delete existing scope
-  deleteScope = async (inum) => {
-    return new Promise((resolve, reject) => {
-      this.api.deleteOauthScopesByInum(inum, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
-      })
-    })
-  }
+  deleteAScope = async (inum) => {
+	  console.log('Scope Api deleteAScope inum ='+JSON.stringify(inum))
+	    return new Promise((resolve, reject) => {
+	      this.api.deleteOauthScopesByInum(inum, (error, data) => {
+	        if (error) {
+	        	console.log('Scope Api deleteAScope error ='+error)
+	             reject(error)
+	        } else {
+	        	 console.log('Scope Api deleteAScope response ='+data)
+	        	 resolve(data)
+	        }
+	      })
+	    })
+  	}
+  
 }
-
-
-
