@@ -14,6 +14,7 @@ import {
 import {
   getAttributes,
   setCurrentItem,
+  deleteAttribute,
 } from '../../../redux/actions/AttributeActions'
 
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {
@@ -32,8 +33,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     return history.push(`/attribute/edit:` + row.inum)
   }
   function handleAttribueDelete(row) {
-    dispatch(setCurrentItem(row))
-    setItem(row)
+    setItem(row);
     toggle()
   }
   function handleGoToAttributeAddPage() {
@@ -93,9 +93,11 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
       return 'warning'
     }
   }
-  function onDeletionConfirmed() {
+  async function onDeletionConfirmed() {
     // perform delete request
-    toggle()
+    await toggle()
+    await dispatch(deleteAttribute(item.inum))
+    await dispatch(getAttributes())
   }
   return (
     <React.Fragment>

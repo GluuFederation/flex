@@ -5,25 +5,12 @@ import {
   Row,
   Card,
   CardBody,
-  UncontrolledTooltip,
-  Progress,
-  Table,
-  Nav,
-  NavItem,
-  NavLink,
   CardTitle,
-  ListGroup,
-  ListGroupItem,
-  UncontrolledCollapse,
   Col,
 } from './../../../components'
-import { setupPage } from './../../../components/Layout/setupPage'
+import { connect } from 'react-redux'
 
-/*eslint-disable */
-const progressCompletion = ['25', '50', '75', '97']
-/*eslint-enable */
-
-const Reports = () => (
+const Reports = ({ attributes, clients, scopes, scripts, plugins }) => (
   <Container>
     <Row>
       <Col lg={3}>
@@ -34,10 +21,11 @@ const Reports = () => (
             </CardTitle>
             <div>
               <div className="mb-3">
-                <h2>6</h2>
+                <h2>{clients.length}</h2>
               </div>
               <div>
-                <i className="fa fa-caret-down fa-fw text-success"></i>2
+                <i className="fa fa-caret-down fa-fw text-success"></i>
+                {clients.filter((item) => !item.disabled).length}
               </div>
             </div>
           </CardBody>
@@ -51,10 +39,11 @@ const Reports = () => (
             </CardTitle>
             <div>
               <div className="mb-3">
-                <h2>105</h2>
+                <h2>{attributes.length}</h2>
               </div>
               <div>
-                <i className="fa fa-caret-down fa-fw text-success"></i>55
+                <i className="fa fa-caret-down fa-fw text-success"></i>
+                {attributes.filter((item) => item.status === 'ACTIVE').length}
               </div>
             </div>
           </CardBody>
@@ -68,10 +57,11 @@ const Reports = () => (
             </CardTitle>
             <div>
               <div className="mb-3">
-                <h2>75</h2>
+                <h2>{scopes.length}</h2>
               </div>
               <div>
-                <i className="fa fa-caret-down fa-fw text-success"></i>55
+                <i className="fa fa-caret-down fa-fw text-success"></i>
+                {scopes.filter((item) => item.scopeType === 'oauth').length}
               </div>
             </div>
           </CardBody>
@@ -85,10 +75,11 @@ const Reports = () => (
             </CardTitle>
             <div>
               <div className="mb-3">
-                <h2>89</h2>
+                <h2>{scripts.length}</h2>
               </div>
               <div>
-                <i className="fa fa-caret-down fa-fw text-success"></i>7
+                <i className="fa fa-caret-down fa-fw text-success"></i>
+                {scripts.filter((item) => item.enabled).length}
               </div>
             </div>
           </CardBody>
@@ -97,7 +88,14 @@ const Reports = () => (
     </Row>
   </Container>
 )
+const mapStateToProps = (state) => {
+  return {
+    attributes: state.attributeReducer.items,
+    clients: state.openidClientReducer.items,
+    scopes: state.scopeReducer.items,
+    scripts: state.customScriptReducer.items,
+    plugins: state.pluginMenuReducer.plugins,
+  }
+}
 
-export default setupPage({
-  pageTitle: 'Dashboard',
-})(Reports)
+export default connect(mapStateToProps)(Reports)
