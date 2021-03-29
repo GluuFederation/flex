@@ -70,10 +70,16 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 			console.log("onSubmit - result = "+result)
 			const spontaneousClientScopesList = []
 			if(result.spontaneousClientScopes !=null && result.spontaneousClientScopes.trim().length>0)
-				{
-				console.log('result.spontaneousClientScopes = '+result.spontaneousClientScopes)
-				spontaneousClientScopesList.push(result.spontaneousClientScopes)
-				}
+			{
+				var myArray = result.spontaneousClientScopes.split(',')
+				console.log('myArray.length = '+myArray.length)
+				console.log('myArray.length = '+myArray.length)
+				Object.keys(myArray).forEach((key,index) => {
+						spontaneousClientScopesList.push(myArray[key])
+				})
+				console.log('spontaneousClientScopesList = '+spontaneousClientScopesList)
+			}
+		
 			 result['attributes'].spontaneousClientId = result.spontaneousClientId
              result['attributes'].spontaneousClientScopes = spontaneousClientScopesList
              result['attributes'].showInConfigurationEndpoint = result.showInConfigurationEndpoint
@@ -217,7 +223,7 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 				        </FormGroup>
 
 				        <FormGroup row>
-					<GluuLabel  label="SpontaneousClientScopes" />
+					<GluuLabel  label="SpontaneousClientScopes   - Enter comma sperated scopes" /> 
 					<Col sm={9}>
 					<Input
 					style={{ backgroundColor: '#F5F5F5' }}
