@@ -11,8 +11,21 @@ import {
   select,
 } from 'redux-saga/effects'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { deleteScopeResponse, getScopesResponse } from '../actions/ScopeActions'
-import { GET_SCOPES, GET_SCOPE_BY_INUM } from '../actions/types'
+import {
+	getScopesResponse,
+	getScopeResponse,
+	addScopeResponse,
+	editScopeResponse,
+	deleteScopeResponse,
+    setApiError,
+} from '../actions/ScopeActions'
+import {
+	  GET_SCOPES,
+	  GET_SCOPE_BY_INUM,
+	  ADD_SCOPE,
+	  EDIT_SCOPE,
+	  DELETE_SCOPE,
+	} from "../actions/types";
 import ScopeApi from '../api/ScopeApi'
 import { getClient } from '../api/base'
 import { isFourZeroOneError } from '../../utils/TokenController'
@@ -56,13 +69,38 @@ export function* getScopes() {
   }
 }
 
+export function* addAScope({payload}) {
+		console.log('Scope Sage -  addAScope payload.data ='+JSON.stringify(payload.data))
+	  try {
+	    const scopeApi = yield* newFunction()
+	    const opts = {}
+	     opts['scope'] = payload.data
+	    const data = yield call(scopeApi.addNewScope,opts)
+		console.log('Scope Sage -  addScope response ='+JSON.stringify(data))
+	    yield put(addScopeResponse(data))
+	  } catch (e) {
+	    yield put(addScopeResponse(null))
+	    if (isFourZeroOneError(e)) {
+	      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+	      yield put(getAPIAccessToken(jwt))
+	    }
+	  }
+	}
+
 export function* watchGetScopeByInum() {
   yield takeEvery(GET_SCOPE_BY_INUM, getScopeByInum)
 }
 export function* watchGetScopes() {
   yield takeLatest(GET_SCOPES, getScopes)
 }
+export function* watchAddScope() {
+	  yield takeLatest(ADD_SCOPE, addAScope)
+}
 
 export default function* rootSaga() {
-  yield all([fork(watchGetScopeByInum), fork(watchGetScopes)])
+  yield all([
+	  fork(watchGetScopeByInum), 
+	  fork(watchGetScopes),
+	  fork(watchAddScope),
+	  ])
 }

@@ -1,3 +1,4 @@
+
 export default class ScopeApi {
   constructor(api) {
     this.api = api
@@ -27,12 +28,53 @@ export default class ScopeApi {
         }
       })
     })
+  }  
+  
+  // Get scope by id
+  getScope = async (id) => {
+    return new Promise((resolve, reject) => {
+      this.api.patchOauthScopesById(id, (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(data)
+        }
+      })
+    })
   }
+
+//Add Scope Config
+  addNewScope = (input) => {
+	  console.log('Scope Api add data ='+JSON.stringify(input))
+    return new Promise((resolve, reject) => {
+      this.api.postOauthScopes(input, (error, data) => {
+        if (error) {
+        	console.log('Scope Api add error ='+error)
+          reject(error)
+        } else {
+        	 console.log('Scope Api add response ='+data)
+          resolve(data)
+        }
+      })
+    })
+  }
+  
+  editAScope = (data) => {
+	    return new Promise((resolve, reject) => {
+	      this.api.putOauthScopes(data, (error, data) => {
+	        if (error) {
+	          reject(error)
+	        } else {
+	          resolve(data)
+	        }
+	      })
+	    })
+	  }
 
   // Delete existing scope
   deleteScope = async (inum) => {
     return new Promise((resolve, reject) => {
-      this.api.deleteOauthScopesById(inum, (error, data) => {
+      this.api.deleteOauthScopesByInum(inum, (error, data) => {
         if (error) {
           reject(error)
         } else {
@@ -42,3 +84,6 @@ export default class ScopeApi {
     })
   }
 }
+
+
+
