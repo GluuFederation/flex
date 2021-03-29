@@ -51,8 +51,7 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 			defaultScope: scope.defaultScope,
 			groupClaims: scope.groupClaims,
 			attributes: scope.attributes,
-			//umaAuthorizationPolicies: scope.umaAuthorizationPolicies,
-			umaAuthorizationPolicies: ['abc' ,'xyx'],
+			umaAuthorizationPolicies: scope.umaAuthorizationPolicies,
 		},
 		validationSchema: Yup.object({
 			id: Yup.string()
@@ -164,7 +163,7 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 			id="scopeType"
 			name="scopeType"
 			defaultValue={scope.scopeType}
-			onChange={handleValidation}
+			onChange={formik.handleChange}
 			>
 			<option value="">Choose...</option>
 			<option value="openid">OpenID</option>
@@ -177,7 +176,7 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 			</Col>
 			</FormGroup>
 
-			{validation && (
+
 
 					<FormGroup row>
 					
@@ -191,7 +190,9 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 					onChange={formik.handleChange}
 					/>
 					</Col>
-					
+					</FormGroup>
+
+					<FormGroup row>
 					<GluuLabel label="ShowInConfigurationEndpoint" />
 				        <Col sm={9}>
 				          <InputGroup>
@@ -207,8 +208,9 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 				            </CustomInput>
 				          </InputGroup>
 				        </Col>
-					
+				        </FormGroup>
 
+				        <FormGroup row>
 					<GluuLabel  label="SpontaneousClientScopes" />
 					<Col sm={9}>
 					<Input
@@ -224,7 +226,7 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 
 				</FormGroup>
 
-			  )}
+	
 			
 			
 			 <FormGroup row>
