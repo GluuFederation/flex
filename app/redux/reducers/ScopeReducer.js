@@ -69,7 +69,7 @@ export default (state = INIT_STATE, action) => {
 		if (action.payload.data) {
 			return {
 				...state,
-				items: [...state.items],
+				 items: [...state.items, action.payload.data],
 				loading: false,
 			}
 		} else {

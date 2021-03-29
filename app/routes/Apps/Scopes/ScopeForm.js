@@ -18,7 +18,7 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 
 	const authScripts = scripts
 	.filter((item) => item.scriptType == 'UMA_RPT_POLICY')
-	.map((item) => item.name)
+	.map((item) => item)
 
 
 	const [init, setInit] = useState(false)
@@ -248,7 +248,7 @@ function ScopeForm({ scope, handleSubmit, scripts}) {
 		          >
 		          
 		          {authScripts.map((item, key) => (
-		        	    		 <option>{item}</option>
+		        	    		 <option value={item.dn}>{item.name}</option>
 		          ))}		 
 		          </Input>
 		        </Col>
