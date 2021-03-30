@@ -27,7 +27,7 @@
                     <div class="f7 dark-blue2 pb3 flex justify-center">
                     	<div>
 							<z:checkbox label="${labels.adm.strongauth_autoEnable}" checked="@load(vm.autoEnable)" sclass="db"
-										onCheck="@('checkAutoEnable', self.checked) "/>                        			
+										onCheck="@('checkAutoEnable', self.checked) "/>
 							<z:checkbox label="${labels.adm.strongauth_hideswitch}" checked="@bind(vm.hideSwitch)"  sclass="db"
 										disabled="@load(not vm.autoEnable)" />                        
 							<z:label visible="@load(vm.hideSwitch)" value="${labels.adm.strongauth_hideswitch2}" sclass="ml3" />
@@ -61,6 +61,9 @@
                             <z:intbox sclass="${css.textInput} w3" value="@bind(vm.deviceExpiration)" maxlength="3" />
                         </z:div>
                     </div>
+                    
+					<z:checkbox label="${labels.adm.strongauth_selPreferred}" checked="@bind(vm.selectPreferred)" />
+					
                     <div class="tc pt3">
                         <z:button label="${labels.general.save}" sclass="${css.primaryButton} ph4" disabled="@load(empty vm.enforcementPolicies)"
                                   w:onClick="alertRef = $('#feedback-strongauth')" onClick="@('change2FASettings', mincreds.selectedIndex)" />

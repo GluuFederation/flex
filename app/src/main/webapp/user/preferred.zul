@@ -27,15 +27,45 @@
                 <div class="pv1" /> <!-- avoids vertical margin collapse -->
                 <div class="alert alert-success dn" id="feedback-preferred" role="alert" />
             </div>
-            <z:div sclass="${css.panel}" visible="@load(vm.mfaEnabled and not empty vm.preferredFragments)" children="@load(vm.preferredFragments)">
+
+			<z:div visible="@load(vm.mfaEnabled and not empty vm.availMethods)" sclass="${css.panel}">
+				<z:a label="${labels.usr.method.preferred_short}" sclass="underline dark-blue2"
+					 onClick="@('prepareSelection')" />
+			</z:div>
+            
+            <z:div visible="@load(vm.mfaEnabled and not empty vm.preferredFragments)" children="@load(vm.preferredFragments)">
                 <zk:template name="children">
-                    <z:include src="@load(c:cat3(each.x,'/',each.y))">
+                    <z:include sclass="${css.panel}" src="@load(c:cat3(each.x,'/',each.y))">
                         <zk:attribute name="base">${each.x}</zk:attribute>
                     </z:include>
                 </zk:template>
             </z:div>
         </section>
+        
+        <z:window title="${labels.usr.method.preferred_title}" border="normal" mode="modal" visible="@load(vm.uiPreferredWindowShown)"
+                  closable="true" onClose="@('cancelUpdate', event)" sclass="${css.modalWindow} mw6">
 
+            <z:label sclass="f7-cust gray" value="${labels.usr.method.preferred}" />
+            <z:radiogroup id="methods" />
+            
+            <ul class="list-group f7-cust pv2">
+                <z:div children="@load(vm.availMethods)">
+                    <z:template name="children">
+                        <li class="list-group-item hover-bg-light-gray gray hover-dark-gray pt1">
+                            <z:radio onCheck="@('changePreferred', each.x)" selected="${each.x eq vm.selectedMethod}"
+                                     label="${each.y}" radiogroup="methods" sclass="mr1" />
+                        </li>
+                    </z:template>
+                </z:div>
+            </ul>
+            <div class="tc f7 dark-gray mb3 i lh-solid-ns">${labels.usr.method.preferred_note}</div> 
+            <div class="w-100 flex justify-center">
+                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
+                          w:onClick="alertRef = $('#feedback-preferred')" onClick="@('update')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@('cancelUpdate', event)" />
+            </div>
+        </z:window>
+        
     </z:div>
 
 </z:zk>

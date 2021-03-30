@@ -2,9 +2,11 @@
 
     <z:div viewModel="@('org.gluu.casa.plugins.strongauthn.vm.FragmentViewModel')">
 
-        <z:div class="tc" visible="@load(vm.customPolicy)">
-            <span class="i db pb1">${labels.policy.default_text}</span>
-            <z:button sclass="${css.primaryButton}" label="${labels.policy.go_manage}" href="${base}/policy.zul" />
+        <z:div visible="@load(vm.customPolicy)">            
+            <a class="underline dark-blue2" href="${base}/policy.zul" target="_blank">
+                ${labels.policy.go_manage}
+                <i class="fas fa-external-link-alt" />
+            </a>
         </z:div>
 
         <z:div visible="@load(not vm.customPolicy)">

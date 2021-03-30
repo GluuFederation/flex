@@ -43,6 +43,7 @@ public class StrongAuthViewModel {
     private int deviceExpiration;
     private boolean autoEnable;
     private boolean hideSwitch;
+    private boolean selectPreferred;
 
     public int getLocationExpiration() {
         return locationExpiration;
@@ -71,6 +72,10 @@ public class StrongAuthViewModel {
     public boolean isHideSwitch() {
     	return hideSwitch;
     }
+    
+    public boolean isSelectPreferred() {
+    	return selectPreferred;
+    }
 
     public void setLocationExpiration(int locationExpiration) {
         this.locationExpiration = locationExpiration;
@@ -82,6 +87,10 @@ public class StrongAuthViewModel {
 
     public void setHideSwitch(boolean hideSwitch) {
         this.hideSwitch = hideSwitch;
+    }
+
+    public void setSelectPreferred(boolean selectPreferred) {
+        this.selectPreferred = selectPreferred;
     }
 
     @Init
@@ -149,6 +158,7 @@ public class StrongAuthViewModel {
         minCreds2FA = b2s.getMinCreds();
         autoEnable = b2s.isAutoEnable();
         hideSwitch = !b2s.isAllowSelfEnableDisable();
+        selectPreferred = b2s.isAllowSelectPreferred();
 
         enforcementPolicies = settings.getEnforcement2FA().stream().map(EnforcementPolicy::toString).collect(Collectors.toSet());
         logger.trace("Minimum creds for 2FA: {}", minCreds2FA);
@@ -203,6 +213,7 @@ public class StrongAuthViewModel {
         b2s.setMinCreds(minCreds);
         b2s.setAutoEnable(autoEnable);
         b2s.setAllowSelfEnableDisable(!hideSwitch);
+        b2s.setAllowSelectPreferred(selectPreferred);
 
         updateMainSettings(Labels.getLabel("adm.methods_change_success"));
 

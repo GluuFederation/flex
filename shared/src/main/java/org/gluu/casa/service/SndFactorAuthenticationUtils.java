@@ -11,11 +11,22 @@ public interface SndFactorAuthenticationUtils {
 
     /**
      * Turns second factor authentication on for a user. A call to this method provokes changes in the underlying database.
-     * @param user Object representing the user. It is altered if the operation outcome is true: member preferredMethod is
-     *             set to a non-null value. Formerly, in version 3.1.x, preferredMethod used to be an ACR value.
+     * @param user Object representing the user. If the return value of this method is true, this object's member
+     * preferredMethod is set to a non-null value.
      * @return Whether the operation was successful or not
      */
     boolean turn2faOn(User user);
+
+    /**
+     * Turns second factor authentication on for a user and sets his preferred authentication method. 
+     * A call to this method provokes changes in the underlying database.
+     * @param user Object representing the user. If the return value of this method is true, this object's member
+     * preferredMethod is set to the value of preferredMethod param.
+     * @param preferredMethod Preferred authentication method for the user. When null, the call is equivalent to
+     * turn2faOn(user). This method does not validate if preferredMethod is semantically correct (ie. a valid acr) 
+     * @return Whether the operation was successful or not
+     */
+    boolean turn2faOn(User user, String preferredMethod);
 
     /**
      * Turns second factor authentication off for a user. A call to this method provokes changes in the underlying database.
