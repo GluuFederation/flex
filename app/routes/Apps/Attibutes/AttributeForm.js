@@ -272,7 +272,6 @@ function AttributeForm({ item, handleSubmit }) {
             id="validation"
             name="validation"
             onChange={handleValidation}
-            onc
             type="checkbox"
             defaultChecked={validation}
           />
