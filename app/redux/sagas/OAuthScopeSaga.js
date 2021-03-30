@@ -70,18 +70,49 @@ export function* getScopes() {
 }
 
 export function* addAScope({payload}) {
-		console.log('Scope Sage -  addAScope payload.data ='+JSON.stringify(payload.data))
+		console.log('Scope Saga -  addAScope payload.data ='+JSON.stringify(payload.data))
 	  try {
 	    const scopeApi = yield* newFunction()
-	    const opts = {}
-	     opts['scope'] = payload.data
-	    const data = yield call(scopeApi.addNewScope,opts)
-		console.log('Scope Sage -  addScope response ='+JSON.stringify(data))
+	    const data = yield call(scopeApi.addNewScope,payload.data)
+		console.log('Scope Saga -  addScope response ='+JSON.stringify(data))
 	    yield put(addScopeResponse(data))
 	  } catch (e) {
 	    yield put(addScopeResponse(null))
 	    if (isFourZeroOneError(e)) {
 	      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+	      yield put(getAPIAccessToken(jwt))
+	    }
+	  }
+	}
+
+export function* editAnScope({payload}) {
+	console.log('Scope Saga -  editAnScope payload.data ='+JSON.stringify(payload.data))
+  try {
+    const scopeApi = yield* newFunction()
+    const opts = {}
+     opts['scope'] = payload.data
+    const data = yield call(scopeApi.editAScope,opts)
+	console.log('Scope Saga -  editAnScope response ='+JSON.stringify(data))
+    yield put(editScopeResponse(data))
+  } catch (e) {
+    yield put(editScopeResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
+export function* deleteAnScope({ payload }) {
+	console.log('Scope Saga -  deleteAnScope payload ='+JSON.stringify(payload))
+	  try {
+	    const scopeApi = yield* newFunction()
+	    const data = yield call(scopeApi.deleteAScope, payload.inum)
+	    yield put(deleteScopeResponse(data))
+	  } catch (e) {
+	    yield put(deleteScopeResponse(null))
+	    if (isFourZeroOneError(e)) {
+	      const jwt = yield select((state) => state.s.userinfo_jwt)
 	      yield put(getAPIAccessToken(jwt))
 	    }
 	  }
@@ -96,11 +127,21 @@ export function* watchGetScopes() {
 export function* watchAddScope() {
 	  yield takeLatest(ADD_SCOPE, addAScope)
 }
+export function* watchEditScope() {
+	  yield takeLatest(EDIT_SCOPE, editAnScope)
+}
+
+export function* watchDeleteScope() {
+	  yield takeLatest(DELETE_SCOPE, deleteAnScope)
+}
+
 
 export default function* rootSaga() {
   yield all([
 	  fork(watchGetScopeByInum), 
 	  fork(watchGetScopes),
 	  fork(watchAddScope),
+	  fork(watchEditScope),
+	  fork(watchDeleteScope),
 	  ])
 }

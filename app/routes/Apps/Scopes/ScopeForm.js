@@ -20,10 +20,26 @@ const authScripts = scripts
 	.filter((item) => item.scriptType == 'UMA_RPT_POLICY')
     .map((item) => item)
 
-
 const [init, setInit] = useState(false)
 const [validation, setValidation] = useState(getInitialState(scope))
 const showInConfigurationEndpointOptions = ['true', 'false']
+
+const onScopeTypeChange = (scopeType) => {
+	console.log(' onScopeTypeChange - scopeType = '+scopeType)
+	if(scopeType != undefined && scopeType != 'undefined' && scopeType != 'uma') {
+		console.log(' onScopeTypeChange - formik - umaAuthorizationPolicies (1)= '+formik.getFieldMeta('umaAuthorizationPolicies').value+" , formik.getFieldMeta('defaultScope').value = "+formik.getFieldMeta('defaultScope').value)
+		formik.setFieldValue('umaAuthorizationPolicies',null);
+		console.log(' onScopeTypeChange - formik - umaAuthorizationPolicies(2) = '+formik.getFieldMeta('umaAuthorizationPolicies').value)
+		setValidation(true)		
+	}
+	else{
+		formik.setFieldValue('spontaneousClientId',null);
+		formik.setFieldValue('spontaneousClientScopes',null);
+		formik.setFieldValue('showInConfigurationEndpoint',false);
+		setValidation(false)		
+	}
+	};
+
 
 function handleValidation() {
 	console.log(" handleValidation validation = "+validation)
@@ -35,6 +51,8 @@ function getInitialState(scope) {
 			scope.scopeType === 'openid'
 	)
 }
+
+
 
 function toogle() {
 	if (!init) {
@@ -67,9 +85,7 @@ const formik = useFormik({
 
 onSubmit: (values) => {
 console.log("onSubmit - values = "+values)
-//const result = JSON.stringify(values)
-//handleSubmit(JSON.parse(result))
- const result = Object.assign(scope, values)
+const result = Object.assign(scope, values)
 console.log("onSubmit - result = "+result)
 const spontaneousClientScopesList = []
 if(result.spontaneousClientScopes !=null && result.spontaneousClientScopes.trim().length>0)
@@ -185,7 +201,10 @@ type="select"
 id="scopeType"
 name="scopeType"
 defaultValue={scope.scopeType}
-onChange={formik.handleChange}
+onChange={(e) => {
+	formik.setFieldValue('scopeType', e.target.value);
+	onScopeTypeChange(e.target.value);
+}}
 >
 <option value="">Choose...</option>
 <option value="openid">OpenID</option>
@@ -198,23 +217,24 @@ onChange={formik.handleChange}
 </Col>
 </FormGroup>
 
-  <FormGroup row>
-  <GluuLabel  label="DefaultScope" />
+<FormGroup row>
+<GluuLabel  label="DefaultScope" />
 <Col sm={9}>
-  <Input
-   id="defaultScope"
+<Input
+ id="defaultScope"
 name="defaultScope"
 type="checkbox"
 onChange={formik.handleChange}
 type="checkbox"
-    defaultChecked={scope.defaultScope} 	
+defaultChecked={scope.defaultScope} 	
   />
     </Col>
-  </FormGroup>
+ </FormGroup>
 
-		<FormGroup row>
+ {validation && (
+<FormGroup row>
 		
-		<GluuLabel label="SpontaneousClientId"/>
+<GluuLabel label="SpontaneousClientId"/>
 <Col sm={9}>
 <Input
 placeholder="Enter spontaneousClientId"
@@ -224,9 +244,9 @@ defaultValue={scope.attributes.spontaneousClientId}
 onChange={formik.handleChange}
 />
 </Col>
-</FormGroup>
 
-<FormGroup row>
+
+
 <GluuLabel label="ShowInConfigurationEndpoint" />
 <Col sm={9}>
  <InputGroup>
@@ -242,9 +262,8 @@ onChange={formik.handleChange}
  </CustomInput>
 </InputGroup>
  </Col>
-</FormGroup>
 
- <FormGroup row>
+ 
 <GluuLabel  label="SpontaneousClientScopes   - Enter comma sperated scopes" /> 
 <Col sm={9}>
 <Input
@@ -255,8 +274,12 @@ defaultValue={scope.attributes.spontaneousClientScopes}
 onChange={formik.handleChange}
 />
 </Col>
+
 </FormGroup>
 
+ )}
+ 
+ {!validation && (
  <FormGroup row>
  <GluuLabel label="UmaAuthorizationPolicies" />
 <Col sm={9}>
@@ -267,15 +290,15 @@ id="umaAuthorizationPolicies"
 defaultValue={scope.umaAuthorizationPolicies}
 multiple
 onChange={formik.handleChange}
- >
-		          
+ >	          
 {authScripts.map((item, key) => (
  <option value={item.dn}>{item.name}</option>
  ))}		 
 </Input>
 </Col>
  </FormGroup>
-	      
+)}
+
 <FormGroup row></FormGroup>
 <GluuFooter />
  </Form>

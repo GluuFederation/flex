@@ -13,7 +13,9 @@ function ScopeAddPage({  scripts, dispatch }) {
   function handleSubmit(data) {
 	  console.log('ScopeAdd :  handleSubmit() - data = '+data)
     if (data) {
-       dispatch(addScope(data));
+    	const postBody = {}
+        postBody['scope'] = JSON.parse(data)
+        dispatch(addScope(postBody))
        history.push("/scopes");
     }
   }
