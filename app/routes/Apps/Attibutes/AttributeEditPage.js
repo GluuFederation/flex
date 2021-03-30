@@ -15,7 +15,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
     }
   }
   const history = useHistory()
-  function handleSubmit(data) {
+  function customHandleSubmit(data) {
     if (data) {
       dispatch(editAttribute(data))
       history.push('/attributes')
@@ -33,7 +33,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
         >
           <Card className="mb-3">
             <CardBody>
-              <AttributeForm item={item} handleSubmit={handleSubmit} />
+              <AttributeForm item={item} customHandleSubmit={customHandleSubmit} />
             </CardBody>
           </Card>
         </BlockUi>
