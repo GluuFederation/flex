@@ -6,7 +6,6 @@ import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import ClientDetailPage from '../Scopes/ScopeDetailPage'
 import { getScopes, deleteScope } from '../../../redux/actions/ScopeActions'
-//import scopes from './scopes'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   useEffect(() => {

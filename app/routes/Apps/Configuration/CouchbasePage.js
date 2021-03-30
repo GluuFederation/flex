@@ -66,7 +66,7 @@ function CouchbasePage({ couch, loading, dispatch }) {
                         ></CouchbaseItem>
                       )) : null}
                       <FormGroup row></FormGroup>
-                      <GluuFooter />
+                      <GluuFooter hideButtons={{save: true}}/>
                     </Form>
                   )
                 }}
