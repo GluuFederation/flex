@@ -70,13 +70,11 @@ export function* getScopes() {
 }
 
 export function* addAScope({payload}) {
-		console.log('Scope Sage -  addAScope payload.data ='+JSON.stringify(payload.data))
+		console.log('Scope Saga -  addAScope payload.data ='+JSON.stringify(payload.data))
 	  try {
 	    const scopeApi = yield* newFunction()
-	    const opts = {}
-	     opts['scope'] = payload.data
-	    const data = yield call(scopeApi.addNewScope,opts)
-		console.log('Scope Sage -  addScope response ='+JSON.stringify(data))
+	    const data = yield call(scopeApi.addNewScope,payload.data)
+		console.log('Scope Saga -  addScope response ='+JSON.stringify(data))
 	    yield put(addScopeResponse(data))
 	  } catch (e) {
 	    yield put(addScopeResponse(null))
@@ -88,13 +86,13 @@ export function* addAScope({payload}) {
 	}
 
 export function* editAnScope({payload}) {
-	console.log('Scope Sage -  editAnScope payload.data ='+JSON.stringify(payload.data))
+	console.log('Scope Saga -  editAnScope payload.data ='+JSON.stringify(payload.data))
   try {
     const scopeApi = yield* newFunction()
     const opts = {}
      opts['scope'] = payload.data
     const data = yield call(scopeApi.editAScope,opts)
-	console.log('Scope Sage -  editAnScope response ='+JSON.stringify(data))
+	console.log('Scope Saga -  editAnScope response ='+JSON.stringify(data))
     yield put(editScopeResponse(data))
   } catch (e) {
     yield put(editScopeResponse(null))
@@ -106,7 +104,7 @@ export function* editAnScope({payload}) {
 }
 
 export function* deleteAnScope({ payload }) {
-	console.log('Scope Sage -  deleteAnScope payload ='+JSON.stringify(payload))
+	console.log('Scope Saga -  deleteAnScope payload ='+JSON.stringify(payload))
 	  try {
 	    const scopeApi = yield* newFunction()
 	    const data = yield call(scopeApi.deleteAScope, payload.inum)
