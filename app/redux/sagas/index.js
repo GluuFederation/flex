@@ -18,6 +18,7 @@ import pluginArr from '../../../plugins/redux/sagas'
 import ldapSaga from './LdapSaga'
 import jwksSaga from './JwksSaga'
 import couchBaseSaga from './CouchbaseSaga'
+import cacheSaga from './CacheSaga'
 import initSaga from './InitSaga'
 
 export default function* rootSaga() {
@@ -36,6 +37,7 @@ export default function* rootSaga() {
         loggingSaga(),
         ldapSaga(),
         couchBaseSaga(),
+        cacheSaga(),
         jwksSaga(),
         initSaga(),
       ],
