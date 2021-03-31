@@ -58,7 +58,7 @@
                     </z:template>
                 </z:div>
             </ul>
-            <div class="tc f7 dark-gray mb3 i lh-solid-ns">${labels.usr.method.preferred_note}</div> 
+            <div class="tc f7 dark-gray i lh-solid-ns mb3">${labels.usr.method.preferred_note}</div> 
             <div class="w-100 flex justify-center">
                 <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
                           w:onClick="alertRef = $('#feedback-preferred')" onClick="@('update')" />

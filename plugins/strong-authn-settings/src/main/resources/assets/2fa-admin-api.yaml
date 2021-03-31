@@ -127,6 +127,9 @@ definitions:
       allowSelfEnableDisable:
         type: boolean
         default: true
+      allowSelectPreferred:
+        type: boolean
+        default: true
       min_creds:
         type: integer
         default: 2
