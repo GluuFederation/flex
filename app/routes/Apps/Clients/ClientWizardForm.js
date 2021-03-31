@@ -70,7 +70,6 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
     customAttributes: client.customAttributes,
     attributes: client.attributes,
     customObjectClasses: client.customObjectClasses,
-
     deletable: client.deletable,
     frontChannelLogoutSessionRequired: client.frontChannelLogoutSessionRequired,
     requireAuthTime: client.requireAuthTime,
@@ -81,6 +80,12 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
     accessTokenAsJwt: client.accessTokenAsJwt,
     disabled: client.disabled,
     tokenBindingSupported: client.tokenBindingSupported,
+    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
+      client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims,
+    keepClientAuthorizationAfterExpiration:
+      client.keepClientAuthorizationAfterExpiration,
+    allowSpontaneousScopes: client.allowSpontaneousScopes,
+    backchannelLogoutSessionRequired: client.backchannelLogoutSessionRequired,
   }
 
   return (
@@ -88,6 +93,16 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
+          values[
+            'attributes'
+          ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
+            values.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
+          values['attributes'].keepClientAuthorizationAfterExpiration =
+            values.keepClientAuthorizationAfterExpiration
+          values['attributes'].allowSpontaneousScopes =
+            values.allowSpontaneousScopes
+          values['attributes'].backchannelLogoutSessionRequired =
+            values.backchannelLogoutSessionRequired
           handleSubmit(JSON.stringify(values))
         }}
       >

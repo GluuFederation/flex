@@ -1,7 +1,15 @@
 import React from 'react'
 import GluuLabel from './GluuLabel'
 import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
-function GluuSelectRow({ label, name, value, formik, values, lsize, rsize }) {
+
+function GluuBooleanSelectBox({
+  label,
+  name,
+  value,
+  formik,
+  lsize,
+  rsize,
+}) {
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} />
@@ -14,12 +22,8 @@ function GluuSelectRow({ label, name, value, formik, values, lsize, rsize }) {
             defaultValue={value}
             onChange={formik.handleChange}
           >
-            <option value="">Choose...</option>
-            {values.map((item, key) => (
-              <option value={item} key={key}>
-                {item}
-              </option>
-            ))}
+            <option value="false">false</option>
+            <option value="true">true</option>
           </CustomInput>
         </InputGroup>
       </Col>
@@ -27,10 +31,4 @@ function GluuSelectRow({ label, name, value, formik, values, lsize, rsize }) {
   )
 }
 
-GluuSelectRow.defaultProps = {
-  values: [],
-  lsize: 3,
-  rsize: 9,
-}
-
-export default GluuSelectRow
+export default GluuBooleanSelectBox

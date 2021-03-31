@@ -44,14 +44,18 @@ export function* getOauthOpenidClients() {
 }
 
 export function* addNewClient({ payload }) {
+  console.log('====================Adding new client')
   try {
+    console.log('===================setp one')
     const openIdApi = yield* newFunction()
+    console.log('===================setp two')
     const data = yield call(openIdApi.addNewOpenIdClient, payload.data)
+    console.log('===================setp three')
     yield put(addClientResponse(data))
   } catch (e) {
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      console.log('error ' + e)
+      console.log('======================error ' + e)
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
@@ -88,26 +92,28 @@ export function* deleteAClient({ payload }) {
   }
 }
 
-export function* watchGetOpenidClients() {
+export function* getOpenidClientsWatcher() {
   yield takeLatest(GET_OPENID_CLIENTS, getOauthOpenidClients)
 }
 
-export function* watchAddClient() {
+export function* addClientWatcher() {
+  console.log('====================Adding')
   yield takeLatest(ADD_CLIENT, addNewClient)
 }
 
-export function* watchEditClient() {
+export function* editClientWatcher() {
+  console.log('====================Edit')
   yield takeLatest(EDIT_CLIENT, editAClient)
 }
-export function* watchDeleteClient() {
+export function* deleteClientWatcher() {
   yield takeLatest(DELETE_CLIENT, deleteAClient)
 }
 
 export default function* rootSaga() {
   yield all([
-    fork(watchGetOpenidClients),
-    fork(watchAddClient),
-    fork(watchEditClient),
-    fork(watchDeleteClient),
+    fork(getOpenidClientsWatcher),
+    fork(addClientWatcher),
+    fork(editClientWatcher),
+    fork(deleteClientWatcher),
   ])
 }

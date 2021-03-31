@@ -6,6 +6,14 @@ import { editClient } from '../../../redux/actions/OpenidClientActions'
 import BlockUi from 'react-block-ui'
 
 function ClientEditPage({ item, loading, permissions, dispatch }) {
+  if (!item.attributes) {
+    item.attributes = {
+      runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
+      keepClientAuthorizationAfterExpiration: false,
+      allowSpontaneousScopes: false,
+      backchannelLogoutSessionRequired: false,
+    }
+  }
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {

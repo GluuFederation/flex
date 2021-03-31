@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import { useHistory } from 'react-router-dom'
 import { addClient } from '../../../redux/actions/OpenidClientActions'
+import BlockUi from 'react-block-ui'
 function ClientAddPage({ permissions, loading, dispatch }) {
   const history = useHistory()
   function handleSubmit(data) {

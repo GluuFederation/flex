@@ -1,31 +1,46 @@
 import React from 'react'
 import { Container, Col, Row, Label } from '../../../components'
-import GluuFormDetailRow from '../Gluu/GluuFormDetailRow'
+import GluuBooleanSelectBox from '../Gluu/GluuBooleanSelectBox'
 
 function ClientAttributesPanel({ client, formik }) {
-  function readValue(keys, key) {
-    let res = String(keys[key])
-    if (res === 'undefined') {
-      return 'false'
-    }
-    return res
-  }
-  if (client.attributes) {
-    const keys = Object.keys(client.attributes)
-    return (
-      <Container>
-        {keys.map((key, index) => (
-          <Row key={index}>
-            <Col sm={12}>
-              <GluuFormDetailRow label={key} value={readValue(keys, key)} />
-            </Col>
-          </Row>
-        ))}
-      </Container>
-    )
-  } else {
-    return <Container></Container>
-  }
+  return (
+    <Container>
+      <GluuBooleanSelectBox
+        name="runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims"
+        label="Run Introspection Script Before AccessToken As Jwt Creation And Include Claims"
+        value={
+          client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
+        }
+        formik={formik}
+        lsize={8}
+        rsize={4}
+      />
+      <GluuBooleanSelectBox
+        name="keepClientAuthorizationAfterExpiration"
+        label="Keep Client Authorization After Expiration"
+        value={client.keepClientAuthorizationAfterExpiration}
+        formik={formik}
+        lsize={8}
+        rsize={4}
+      />
+      <GluuBooleanSelectBox
+        name="allowSpontaneousScopes"
+        label="Allow Spontaneous Scopes"
+        value={client.allowSpontaneousScopes}
+        formik={formik}
+        lsize={8}
+        rsize={4}
+      />
+      <GluuBooleanSelectBox
+        name="backchannelLogoutSessionRequired"
+        label="Back Channel Logout Session Required"
+        value={client.backchannelLogoutSessionRequired}
+        formik={formik}
+        lsize={8}
+        rsize={4}
+      />
+    </Container>
+  )
 }
 
 export default ClientAttributesPanel
