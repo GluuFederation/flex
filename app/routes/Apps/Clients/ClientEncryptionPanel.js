@@ -3,6 +3,51 @@ import { Col, Container, FormGroup, Label, Input } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 
 function ClientEncryptionPanel({ client, formik }) {
+  const accessTokenSigningAlg = [
+    'none',
+    'HS256',
+    'HS384',
+    'HS512',
+    'RS256',
+    'RS384',
+    'RS512',
+    'ES256',
+    'ES384',
+    'ES512',
+    'PS256',
+    'PS384',
+    'PS512',
+  ]
+  const idTokenSignedResponseAlg = [
+    'none',
+    'HS256',
+    'HS384',
+    'HS512',
+    'RS256',
+    'RS384',
+    'RS512',
+    'ES256',
+    'ES384',
+    'ES512',
+    'PS256',
+    'PS384',
+    'PS512',
+  ]
+  const idTokenEncryptedResponseAlg = ['RSA1_5', 'RSA-OAEP', 'A128KW', 'A256KW']
+  const idTokenEncryptedResponseEnc = [
+    'A128CBC+HS256',
+    'A256CBC+HS512',
+    'A128GCM',
+    'A256GCM',
+  ]
+  const tokenEndpointAuthMethod = [
+    'client_secret_basic',
+    'client_secret_post',
+    'client_secret_jwt',
+    'private_key_jwt',
+    'none',
+  ]
+
   return (
     <Container>
       <FormGroup row>
@@ -38,7 +83,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>One</option>
+            {accessTokenSigningAlg.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
         <GluuLabel
@@ -54,7 +103,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>TWO</option>
+            {idTokenEncryptedResponseAlg.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
       </FormGroup>
@@ -72,7 +125,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>TWO</option>
+            {idTokenSignedResponseAlg.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
         <GluuLabel
@@ -88,7 +145,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>One</option>
+            {idTokenEncryptedResponseEnc.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
       </FormGroup>
@@ -106,7 +167,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>One</option>
+            {idTokenEncryptedResponseAlg.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
         <GluuLabel
@@ -122,7 +187,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>TWO</option>
+            {idTokenSignedResponseAlg.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
       </FormGroup>
@@ -140,7 +209,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>One</option>
+            {idTokenEncryptedResponseEnc.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
         <GluuLabel
@@ -156,7 +229,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>TWO</option>
+            {tokenEndpointAuthMethod.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
       </FormGroup>
@@ -175,7 +252,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>One</option>
+            {idTokenEncryptedResponseAlg.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
         <GluuLabel
@@ -191,7 +272,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>TWO</option>
+            {idTokenSignedResponseAlg.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
       </FormGroup>
@@ -209,7 +294,11 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            <option>TWO</option>
+            {idTokenEncryptedResponseEnc.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
           </Input>
         </Col>
       </FormGroup>

@@ -31,6 +31,10 @@ function ClientAddPage({ permissions, loading, dispatch }) {
     rptAsJwt: false,
     accessTokenAsJwt: false,
     disabled: false,
+    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
+    keepClientAuthorizationAfterExpiration: false,
+    allowSpontaneousScopes: false,
+    backchannelLogoutSessionRequired: false,
     attributes: {
       runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
       keepClientAuthorizationAfterExpiration: false,

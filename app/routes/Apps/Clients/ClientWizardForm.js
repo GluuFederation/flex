@@ -93,6 +93,7 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
+
           values[
             'attributes'
           ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
@@ -103,7 +104,7 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
             values.allowSpontaneousScopes
           values['attributes'].backchannelLogoutSessionRequired =
             values.backchannelLogoutSessionRequired
-          handleSubmit(JSON.stringify(values))
+          handleSubmit(JSON.parse(JSON.stringify(values)))
         }}
       >
         {(formik) => (
