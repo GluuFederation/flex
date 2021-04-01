@@ -7,7 +7,7 @@ import { all } from 'redux-saga/effects'
 import authSagas from './AuthSaga'
 import scopesSagas from './OAuthScopeSaga'
 import attributeSaga from './AttributeSaga'
-import openidClientSaga from './OpenidClientSaga'
+import oidcSaga from './OIDCSaga'
 import customScriptSaga from './CustomScriptSaga'
 import smtpSaga from './SmtpSaga'
 import acrsSaga from './AcrsSaga'
@@ -26,9 +26,9 @@ export default function* rootSaga() {
       [
         authSagas(),
         scopesSagas(),
-        openidClientSaga(),
         attributeSaga(),
         customScriptSaga(),
+        oidcSaga(),
         smtpSaga(),
         pluginSaga(),
         acrsSaga(),

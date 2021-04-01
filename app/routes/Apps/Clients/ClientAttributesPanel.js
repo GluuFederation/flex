@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Col, Row, Label } from '../../../components'
+import { Container } from '../../../components'
 import GluuBooleanSelectBox from '../Gluu/GluuBooleanSelectBox'
 
 function ClientAttributesPanel({ client, formik }) {
@@ -9,7 +9,7 @@ function ClientAttributesPanel({ client, formik }) {
         name="runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims"
         label="Run Introspection Script Before AccessToken As Jwt Creation And Include Claims"
         value={
-          client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
+          client.attributes.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
         }
         formik={formik}
         lsize={8}
@@ -18,7 +18,7 @@ function ClientAttributesPanel({ client, formik }) {
       <GluuBooleanSelectBox
         name="keepClientAuthorizationAfterExpiration"
         label="Keep Client Authorization After Expiration"
-        value={client.keepClientAuthorizationAfterExpiration}
+        value={client.attributes.keepClientAuthorizationAfterExpiration}
         formik={formik}
         lsize={8}
         rsize={4}
@@ -26,7 +26,7 @@ function ClientAttributesPanel({ client, formik }) {
       <GluuBooleanSelectBox
         name="allowSpontaneousScopes"
         label="Allow Spontaneous Scopes"
-        value={client.allowSpontaneousScopes}
+        value={client.attributes.allowSpontaneousScopes}
         formik={formik}
         lsize={8}
         rsize={4}
@@ -34,7 +34,7 @@ function ClientAttributesPanel({ client, formik }) {
       <GluuBooleanSelectBox
         name="backchannelLogoutSessionRequired"
         label="Back Channel Logout Session Required"
-        value={client.backchannelLogoutSessionRequired}
+        value={client.attributes.backchannelLogoutSessionRequired}
         formik={formik}
         lsize={8}
         rsize={4}

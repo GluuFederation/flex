@@ -13,7 +13,7 @@ import {
 import GluuFooter from '../Gluu/GluuFooter'
 import GluuLabel from '../Gluu/GluuLabel'
 
-function AttributeForm({ item, handleSubmit }) {
+function AttributeForm({ item, customOnSubmit }) {
   const [init, setInit] = useState(false)
   const [validation, setValidation] = useState(getInitialState(item))
 
@@ -72,7 +72,7 @@ function AttributeForm({ item, handleSubmit }) {
         result['attributeValidation'].maxLength = result.maxLength
         result['attributeValidation'].minLength = result.minLength
         result['attributeValidation'].regexp = result.regexp
-        handleSubmit(JSON.stringify(result))
+        customOnSubmit(JSON.stringify(result))
       }}
     >
       {(formik) => (

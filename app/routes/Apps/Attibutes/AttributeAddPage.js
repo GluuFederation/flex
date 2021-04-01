@@ -6,7 +6,7 @@ import AttributeForm from './AttributeForm'
 import { addAttribute } from '../../../redux/actions/AttributeActions'
 function AttributeAddPage({ dispatch }) {
   const history = useHistory()
-  function handleSubmit(data) {
+  function onSubmit(data) {
     if (data) {
       dispatch(addAttribute(data))
       history.push('/attributes')
@@ -26,7 +26,7 @@ function AttributeAddPage({ dispatch }) {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <AttributeForm item={defautAttribute} handleSubmit={handleSubmit} />
+            <AttributeForm item={defautAttribute} customOnSubmit={onSubmit} />
           </CardBody>
         </Card>
       </Container>

@@ -1,7 +1,5 @@
-/**
- * Openid Client Sagas
- */
-import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
+import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   getOpenidClientsResponse,
   addClientResponse,
@@ -17,7 +15,7 @@ import {
 } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../api/base'
-import { isFourZeroOneError } from '../../utils/TokenController'
+
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -46,16 +44,16 @@ export function* getOauthOpenidClients() {
 export function* addNewClient({ payload }) {
   console.log('====================Adding new client')
   try {
-    console.log('===================setp one')
+    console.log('===================step one')
     const openIdApi = yield* newFunction()
-    console.log('===================setp two')
+    console.log('===================step two')
     const data = yield call(openIdApi.addNewOpenIdClient, payload.data)
-    console.log('===================setp three')
+    console.log('===================step three')
     yield put(addClientResponse(data))
   } catch (e) {
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      console.log('======================error ' + e)
+      console.log('====error ' + e)
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
@@ -97,12 +95,10 @@ export function* getOpenidClientsWatcher() {
 }
 
 export function* addClientWatcher() {
-  console.log('====================Adding')
   yield takeLatest(ADD_CLIENT, addNewClient)
 }
 
 export function* editClientWatcher() {
-  console.log('====================Edit')
   yield takeLatest(EDIT_CLIENT, editAClient)
 }
 export function* deleteClientWatcher() {

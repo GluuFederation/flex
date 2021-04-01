@@ -33,7 +33,7 @@ function ClientEditPage({ item, loading, permissions, dispatch }) {
         <ClientWizardForm
           client={item}
           permissions={permissions}
-          handleSubmit={handleSubmit}
+          customOnSubmit={handleSubmit}
         />
       </BlockUi>
     </React.Fragment>
@@ -41,9 +41,9 @@ function ClientEditPage({ item, loading, permissions, dispatch }) {
 }
 const mapStateToProps = (state) => {
   return {
-    item: state.openidClientReducer.item,
-    loading: state.openidClientReducer.loading,
-    permissions: state.openidClientReducer.permissions,
+    item: state.oidcReducer.item,
+    loading: state.oidcReducer.loading,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(ClientEditPage)

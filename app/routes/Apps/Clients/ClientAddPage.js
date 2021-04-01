@@ -9,9 +9,12 @@ function ClientAddPage({ permissions, loading, dispatch }) {
   function handleSubmit(data) {
     if (data) {
       const postBody = {}
-      postBody['client'] = JSON.parse(data)
+      postBody['client'] = data
       dispatch(addClient(postBody))
-      history.push('/clients')
+      setTimeout(
+        function() {
+          history.push('/clients')
+        }, 10000);
     }
   }
   const client = {
@@ -54,7 +57,7 @@ function ClientAddPage({ permissions, loading, dispatch }) {
         <ClientWizardForm
           client={client}
           permissions={permissions}
-          handleSubmit={handleSubmit}
+          customOnSubmit={handleSubmit}
         />
       </BlockUi>
     </React.Fragment>
@@ -63,8 +66,8 @@ function ClientAddPage({ permissions, loading, dispatch }) {
 
 const mapStateToProps = (state) => {
   return {
-    permissions: state.openidClientReducer.permissions,
-    loading: state.openidClientReducer.loading,
+    permissions: state.oidcReducer.permissions,
+    loading: state.oidcReducer.loading,
   }
 }
 export default connect(mapStateToProps)(ClientAddPage)
