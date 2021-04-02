@@ -57,16 +57,21 @@ validationSchema={Yup.object({
 	   })}
 onSubmit={(values) => {
 const result = Object.assign(scope, values)
-	 result['id'] = result.displayName
+	console.log('ID 1 - scope id = '+scope.id+' , result(id) = '+result['id'])
 	const spontaneousClientScopesList = []
 	if(result.spontaneousClientScopes !=null && result.spontaneousClientScopes.trim().length>0)
 	{
 		var myArray = result.spontaneousClientScopes.split(',')
 	    console.log('myArray.length = '+myArray.length)
 	    Object.keys(myArray).forEach((key,index) => {
-	    	spontaneousClientScopesList.push(myArray[key])
+	    spontaneousClientScopesList.push(myArray[key])
 	    })
 	console.log('spontaneousClientScopesList = '+spontaneousClientScopesList)
+	}
+	if(scope.id ==null || scope.id=='undefined')
+	{
+		result['id'] = result.displayName
+		console.log('ID 2 - scope id = '+scope.id+' , result(id) = '+result['id'])
 	}
 	 result['attributes'].spontaneousClientId = result.spontaneousClientId
 	 result['attributes'].spontaneousClientScopes = spontaneousClientScopesList
