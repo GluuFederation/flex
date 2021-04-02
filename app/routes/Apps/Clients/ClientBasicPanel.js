@@ -9,8 +9,11 @@ import {
 } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTypeAhead from '../Gluu/GluuTypeAhead'
+import GluuTypeAheadWithAdd from '../Gluu/GluuTypeAheadWithAdd'
 
 const ClientBasicPanel = ({ client, formik }) => {
+  const uri_id = 'redirect_uri'
+  const post_uri_id = 'post_uri_id'
   const grantTypes = [
     'authorization_code',
     'implicit',
@@ -22,6 +25,17 @@ const ClientBasicPanel = ({ client, formik }) => {
   const responseTypes = ['code', 'token', 'id_token']
   const postLogoutRedirectUris = []
   const redirectUris = []
+
+  function uriValidator(uri) {
+    return (
+      uri.startsWith('https://') ||
+      uri.startsWith('schema://') ||
+      uri.startsWith('appchema://')
+    )
+  }
+  function postUriValidator(uri) {
+    return uri.startsWith('https://')
+  }
 
   return (
     <Container>
@@ -173,22 +187,27 @@ const ClientBasicPanel = ({ client, formik }) => {
         value={client.responseTypes}
         options={responseTypes}
       ></GluuTypeAhead>
-
-      <GluuTypeAhead
+      <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"
         label="Post Logout RedirectUris"
         formik={formik}
+        placeholder="Enter a post redirect uri with pattern https://"
         value={client.postLogoutRedirectUris}
         options={postLogoutRedirectUris}
-      ></GluuTypeAhead>
+        validator={postUriValidator}
+        inputId={post_uri_id}
+      ></GluuTypeAheadWithAdd>
 
-      <GluuTypeAhead
+      <GluuTypeAheadWithAdd
         name="redirectUris"
         label="Redirect Uris"
         formik={formik}
+        placeholder="Enter a redirect uri with pattern https:// or schema://"
         value={client.redirectUris}
         options={redirectUris}
-      ></GluuTypeAhead>
+        validator={uriValidator}
+        inputId={uri_id}
+      ></GluuTypeAheadWithAdd>
 
       <FormGroup row>
         <GluuLabel label="Persist Client Authorizations" size={3} />
