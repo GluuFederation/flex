@@ -34,7 +34,7 @@ function ScopeEditPage({ scope, loading, dispatch,scripts}) {
 		        >
 		          <Card className="mb-3">
 		            <CardBody>
-		            <ScopeForm scope={scope} handleSubmit={handleSubmit} scripts={scripts} />
+		            <ScopeForm scope={scope} handleSubmit={handleSubmit}  />
 		            </CardBody>
 		          </Card>
 		        </BlockUi>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useFormik } from 'formik'
+import { Formik, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import {
   Col,
@@ -12,39 +12,12 @@ import {
 } from './../../../components'
 import GluuFooter from '../Gluu/GluuFooter'
 import GluuLabel from '../Gluu/GluuLabel'
-import GluuSelectRow from '../Gluu/GluuSelectRow'
 
-function ScopeForm({ scope, handleSubmit, scripts}) {
 
-const authScripts = scripts
-	.filter((item) => item.scriptType == 'UMA_RPT_POLICY')
-    .map((item) => item)
-
+function ScopeForm({ scope, handleSubmit}) {
 const [init, setInit] = useState(false)
 const [validation, setValidation] = useState(getInitialState(scope))
-const showInConfigurationEndpointOptions = ['true', 'false']
 
-const onScopeTypeChange = (scopeType) => {
-	console.log(' onScopeTypeChange - scopeType = '+scopeType)
-	if(scopeType != undefined && scopeType != 'undefined' && scopeType != 'uma') {
-		console.log(' onScopeTypeChange - formik - umaAuthorizationPolicies (1)= '+formik.getFieldMeta('umaAuthorizationPolicies').value+" , formik.getFieldMeta('defaultScope').value = "+formik.getFieldMeta('defaultScope').value)
-		formik.setFieldValue('umaAuthorizationPolicies',null);
-		console.log(' onScopeTypeChange - formik - umaAuthorizationPolicies(2) = '+formik.getFieldMeta('umaAuthorizationPolicies').value)
-		setValidation(true)		
-	}
-	else{
-		formik.setFieldValue('spontaneousClientId',null);
-		formik.setFieldValue('spontaneousClientScopes',null);
-		formik.setFieldValue('showInConfigurationEndpoint',false);
-		setValidation(false)		
-	}
-	};
-
-
-function handleValidation() {
-	console.log(" handleValidation validation = "+validation)
-	setValidation(!validation)
-}
 function getInitialState(scope) {
 	return (
 			scope.scopeType  != null &&
@@ -52,7 +25,10 @@ function getInitialState(scope) {
 	)
 }
 
-
+function handleValidation() {
+	console.log(" handleValidation validation = "+validation)
+	setValidation(!validation)
+}
 
 function toogle() {
 	if (!init) {
@@ -60,8 +36,9 @@ function toogle() {
 	}
 }
 
-const formik = useFormik({
-	initialValues: {
+return (
+	    <Formik
+	      initialValues={{
 		id: scope.id,
 		displayName: scope.displayName,
 		description: scope.description,
@@ -69,21 +46,16 @@ const formik = useFormik({
 		defaultScope: scope.defaultScope,
 		groupClaims: scope.groupClaims,
 		attributes: scope.attributes,
-		umaAuthorizationPolicies: scope.umaAuthorizationPolicies,
-	},
-	validationSchema: Yup.object({
-		id: Yup.string()
-		.min(2, "ID 2 characters")
-		.required("Required!"),
-		displayName: Yup.string()
+    }}
+validationSchema={Yup.object({
+   	  displayName: Yup.string()
 		.min(2, "displayName 2 characters")
 		.required("Required!"),
 		scopeType: Yup.string()
 		.min(2, "Please select scopeType")
 		.required("Required!") 
-}),
-
-onSubmit: (values) => {
+	   })}
+onSubmit={(values) => {
 console.log("onSubmit - values = "+values)
 const result = Object.assign(scope, values)
 console.log("onSubmit - result = "+result)
@@ -105,16 +77,17 @@ if(result.scopeType !=null ){
 	}
 	console.log(' 2 - result.scopeType = '+result.scopeType+' , result.umaAuthorizationPolicies = '+result.umaAuthorizationPolicies)
 }
-
+result['id'] = result.displayName
  result['attributes'].spontaneousClientId = result.spontaneousClientId
  result['attributes'].spontaneousClientScopes = spontaneousClientScopesList
  result['attributes'].showInConfigurationEndpoint = result.showInConfigurationEndpoint
-         handleSubmit(JSON.stringify(result))
-	},
-});
+handleSubmit(JSON.stringify(result))
 
-return (
-		<Form onSubmit={formik.handleSubmit}>
+}}
+>
+
+{(formik) => (
+        <Form onSubmit={formik.handleSubmit}>
 		{/* START Input */}
 		{scope.inum && (
 		<FormGroup row>
@@ -133,21 +106,6 @@ return (
 
 
 <FormGroup row>
-<GluuLabel label="Id" required />
-<Col sm={9}>
-<Input
-placeholder="Enter the scope Id"
-id="id"
-valid={!formik.errors.id && !formik.touched.id && init}
-name="id"
-defaultValue={scope.id}
-onKeyUp={toogle}
-onChange={formik.handleChange}
-/>
-</Col>
-</FormGroup>
-
-<FormGroup row>
 <GluuLabel label="displayName"  />
 <Col sm={9}>
 <Input
@@ -160,6 +118,9 @@ onKeyUp={toogle}
 onChange={formik.handleChange}
 />
 </Col>
+<ErrorMessage name="displayName">
+{ msg => <div style={{ color: 'red' }}>{msg}</div> }
+</ErrorMessage>
 </FormGroup>
 
 <FormGroup row>
@@ -201,20 +162,19 @@ type="select"
 id="scopeType"
 name="scopeType"
 defaultValue={scope.scopeType}
-onChange={(e) => {
-	formik.setFieldValue('scopeType', e.target.value);
-	onScopeTypeChange(e.target.value);
-}}
+onChange={formik.handleChange}
 >
 <option value="">Choose...</option>
 <option value="openid">OpenID</option>
 <option value="dynamic">Dynamic</option>
 <option value="spontaneous">Spontaneous</option>
 <option value="oauth">OAuth</option>
-<option value="uma">UMA</option>
 </CustomInput>
 </InputGroup>
 </Col>
+<ErrorMessage name="scopeType">
+{ msg => <div style={{ color: 'red' }}>{msg}</div> }
+</ErrorMessage>
 </FormGroup>
 
 <FormGroup row>
@@ -231,9 +191,8 @@ defaultChecked={scope.defaultScope}
     </Col>
  </FormGroup>
 
- {validation && (
-<FormGroup row>
-		
+
+<FormGroup row>		
 <GluuLabel label="SpontaneousClientId"/>
 <Col sm={9}>
 <Input
@@ -244,9 +203,9 @@ defaultValue={scope.attributes.spontaneousClientId}
 onChange={formik.handleChange}
 />
 </Col>
+</FormGroup>
 
-
-
+<FormGroup row>		
 <GluuLabel label="ShowInConfigurationEndpoint" />
 <Col sm={9}>
  <InputGroup>
@@ -262,8 +221,9 @@ onChange={formik.handleChange}
  </CustomInput>
 </InputGroup>
  </Col>
+ </FormGroup>
 
- 
+ <FormGroup row>		
 <GluuLabel  label="SpontaneousClientScopes   - Enter comma sperated scopes" /> 
 <Col sm={9}>
 <Input
@@ -274,36 +234,16 @@ defaultValue={scope.attributes.spontaneousClientScopes}
 onChange={formik.handleChange}
 />
 </Col>
-
 </FormGroup>
 
- )}
- 
- {!validation && (
- <FormGroup row>
- <GluuLabel label="UmaAuthorizationPolicies" />
-<Col sm={9}>
- <Input
- type="select"
-name="umaAuthorizationPolicies"
-id="umaAuthorizationPolicies"
-defaultValue={scope.umaAuthorizationPolicies}
-multiple
-onChange={formik.handleChange}
- >	          
-{authScripts.map((item, key) => (
- <option value={item.dn}>{item.name}</option>
- ))}		 
-</Input>
-</Col>
- </FormGroup>
-)}
 
 <FormGroup row></FormGroup>
 <GluuFooter />
- </Form>
-		  )
-		}
+</Form>
+)}
+</Formik>
+)
+}
 
 export default ScopeForm;
 
