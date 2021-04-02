@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Col,
   Container,
@@ -10,8 +10,10 @@ import {
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTypeAhead from '../Gluu/GluuTypeAhead'
 import GluuTypeAheadWithAdd from '../Gluu/GluuTypeAheadWithAdd'
+import moment from 'moment'
+import DatePicker from 'react-datepicker'
 
-const ClientBasicPanel = ({ client, formik }) => {
+const ClientBasicPanel = ({ client, scopes, formik }) => {
   const uri_id = 'redirect_uri'
   const post_uri_id = 'post_uri_id'
   const grantTypes = [
@@ -25,6 +27,11 @@ const ClientBasicPanel = ({ client, formik }) => {
   const responseTypes = ['code', 'token', 'id_token']
   const postLogoutRedirectUris = []
   const redirectUris = []
+  const [expirable, setExpirable] = useState(client.exp)
+
+  function handleExpirable() {
+    setExpirable(!expirable)
+  }
 
   function uriValidator(uri) {
     return (
@@ -101,6 +108,30 @@ const ClientBasicPanel = ({ client, formik }) => {
           />
         </Col>
       </FormGroup>
+      <FormGroup row>
+        <GluuLabel label="Expirable client?" size={4} />
+        <Col sm={8}>
+          <Input
+            id="expirable"
+            label="Expirable client?"
+            type="checkbox"
+            onChange={handleExpirable}
+            defaultChecked={expirable}
+          />
+        </Col>
+      </FormGroup>
+      {expirable && (
+        <FormGroup row>
+          <GluuLabel label="Client Expiration Date" size={5} />
+          <Col sm={7}>
+            <DatePicker
+              id="exp"
+              selected={client.exp || moment().toDate()}
+              onChange={formik.onChange}
+            />
+          </Col>
+        </FormGroup>
+      )}
       <FormGroup row>
         <GluuLabel label="Logo URI" />
         <Col sm={9}>
@@ -186,6 +217,13 @@ const ClientBasicPanel = ({ client, formik }) => {
         formik={formik}
         value={client.responseTypes}
         options={responseTypes}
+      ></GluuTypeAhead>
+      <GluuTypeAhead
+        name="oxAuthScopes"
+        label="Scopes"
+        formik={formik}
+        value={client.oxAuthScopes}
+        options={scopes}
       ></GluuTypeAhead>
       <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"

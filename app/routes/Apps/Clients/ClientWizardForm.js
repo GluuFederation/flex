@@ -22,7 +22,7 @@ const sequence = [
   'Custom Scripts',
 ]
 
-function ClientWizardForm({ client, permissions, customOnSubmit }) {
+function ClientWizardForm({ client, scopes, permissions, customOnSubmit }) {
   const [currentStep, setCurrentStep] = useState(sequence[0])
 
   function changeStep(stepId) {
@@ -152,7 +152,13 @@ function ClientWizardForm({ client, permissions, customOnSubmit }) {
                 {(() => {
                   switch (currentStep) {
                     case sequence[0]:
-                      return <ClientBasic client={client} formik={formik} />
+                      return (
+                        <ClientBasic
+                          client={client}
+                          scopes={scopes}
+                          formik={formik}
+                        />
+                      )
                     case sequence[1]:
                       return <ClientAdvanced client={client} formik={formik} />
                     case sequence[2]:

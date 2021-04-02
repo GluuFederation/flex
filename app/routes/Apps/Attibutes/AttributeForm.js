@@ -56,16 +56,11 @@ function AttributeForm({ item, customOnSubmit }) {
         displayName: Yup.string()
           .min(2, 'Mininum 2 characters')
           .required('Required!'),
-        description: Yup.string()
-        .required('Required!'),
-        status: Yup.string()
-          .required('Required!'),
-        dataType: Yup.string()
-          .required('Required!'),
-        editType: Yup.array()
-        .required('Required!'),
-        viewType: Yup.array()
-        .required('Required!')
+        description: Yup.string().required('Required!'),
+        status: Yup.string().required('Required!'),
+        dataType: Yup.string().required('Required!'),
+        editType: Yup.array().required('Required!'),
+        viewType: Yup.array().required('Required!'),
       })}
       onSubmit={(values) => {
         const result = Object.assign(item, values)
@@ -108,7 +103,7 @@ function AttributeForm({ item, customOnSubmit }) {
                 onChange={formik.handleChange}
               />
               <ErrorMessage name="name">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -130,7 +125,7 @@ function AttributeForm({ item, customOnSubmit }) {
                 />
               </InputGroup>
               <ErrorMessage name="displayName">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -147,12 +142,12 @@ function AttributeForm({ item, customOnSubmit }) {
                 />
               </InputGroup>
               <ErrorMessage name="description">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label="Status" required/>
+            <GluuLabel label="Status" required />
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -168,12 +163,12 @@ function AttributeForm({ item, customOnSubmit }) {
                 </CustomInput>
               </InputGroup>
               <ErrorMessage name="status">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label="Data Type" required/>
+            <GluuLabel label="Data Type" required />
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -194,12 +189,12 @@ function AttributeForm({ item, customOnSubmit }) {
                 </CustomInput>
               </InputGroup>
               <ErrorMessage name="dataType">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label="Edit Type" required/>
+            <GluuLabel label="Edit Type" required />
             <Col sm={9}>
               <Input
                 type="select"
@@ -213,7 +208,7 @@ function AttributeForm({ item, customOnSubmit }) {
                 <option>USER</option>
               </Input>
               <ErrorMessage name="editType">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -232,7 +227,7 @@ function AttributeForm({ item, customOnSubmit }) {
                 <option>USER</option>
               </Input>
               <ErrorMessage name="viewType">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>

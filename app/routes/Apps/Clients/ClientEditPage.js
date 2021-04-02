@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { editClient } from '../../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
 
-function ClientEditPage({ item, loading, permissions, dispatch }) {
+function ClientEditPage({ item, scopes, loading, permissions, dispatch }) {
   if (!item.attributes) {
     item.attributes = {
       runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
@@ -32,6 +32,7 @@ function ClientEditPage({ item, loading, permissions, dispatch }) {
       >
         <ClientWizardForm
           client={item}
+          scopes={scopes}
           permissions={permissions}
           customOnSubmit={handleSubmit}
         />
@@ -43,6 +44,7 @@ const mapStateToProps = (state) => {
   return {
     item: state.oidcReducer.item,
     loading: state.oidcReducer.loading,
+    scopes: state.scopeReducer.items,
     permissions: state.authReducer.permissions,
   }
 }
