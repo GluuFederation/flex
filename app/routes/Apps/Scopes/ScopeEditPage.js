@@ -18,8 +18,10 @@ function ScopeEditPage({ scope, loading, dispatch,scripts}) {
 		  function handleSubmit(data) {
 			  console.log('ScopeEdit :  handleSubmit() - data = '+data)
 		    if (data) {
-		      dispatch(editScope(data))
-		      history.push('/scopes')
+		    	const postBody = {}
+		        postBody['scope'] = JSON.parse(data)
+		        dispatch(editScope(postBody))
+		        history.push('/scopes')
 		    }
 		  }
 		  return (

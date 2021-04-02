@@ -56,33 +56,22 @@ validationSchema={Yup.object({
 		.required("Required!") 
 	   })}
 onSubmit={(values) => {
-console.log("onSubmit - values = "+values)
 const result = Object.assign(scope, values)
-console.log("onSubmit - result = "+result)
-const spontaneousClientScopesList = []
-if(result.spontaneousClientScopes !=null && result.spontaneousClientScopes.trim().length>0)
-{
-	var myArray = result.spontaneousClientScopes.split(',')
-    console.log('myArray.length = '+myArray.length)
-    Object.keys(myArray).forEach((key,index) => {
-	spontaneousClientScopesList.push(myArray[key])
-})
-console.log('spontaneousClientScopesList = '+spontaneousClientScopesList)
-}
-console.log('result.scopeType = '+result.scopeType)
-if(result.scopeType !=null ){
-	console.log(' 1 - result.scopeType = '+result.scopeType+' , result.umaAuthorizationPolicies = '+result.umaAuthorizationPolicies)
-	if(result.scopeType != 'uma'){
-		result.umaAuthorizationPolicies = null
+	 result['id'] = result.displayName
+	const spontaneousClientScopesList = []
+	if(result.spontaneousClientScopes !=null && result.spontaneousClientScopes.trim().length>0)
+	{
+		var myArray = result.spontaneousClientScopes.split(',')
+	    console.log('myArray.length = '+myArray.length)
+	    Object.keys(myArray).forEach((key,index) => {
+	    	spontaneousClientScopesList.push(myArray[key])
+	    })
+	console.log('spontaneousClientScopesList = '+spontaneousClientScopesList)
 	}
-	console.log(' 2 - result.scopeType = '+result.scopeType+' , result.umaAuthorizationPolicies = '+result.umaAuthorizationPolicies)
-}
-result['id'] = result.displayName
- result['attributes'].spontaneousClientId = result.spontaneousClientId
- result['attributes'].spontaneousClientScopes = spontaneousClientScopesList
- result['attributes'].showInConfigurationEndpoint = result.showInConfigurationEndpoint
-handleSubmit(JSON.stringify(result))
-
+	 result['attributes'].spontaneousClientId = result.spontaneousClientId
+	 result['attributes'].spontaneousClientScopes = spontaneousClientScopesList
+	 result['attributes'].showInConfigurationEndpoint = result.showInConfigurationEndpoint
+	handleSubmit(JSON.stringify(result))
 }}
 >
 
