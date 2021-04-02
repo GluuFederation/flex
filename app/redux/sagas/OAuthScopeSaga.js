@@ -89,9 +89,7 @@ export function* editAnScope({payload}) {
 	console.log('Scope Saga -  editAnScope payload.data ='+JSON.stringify(payload.data))
   try {
     const scopeApi = yield* newFunction()
-    const opts = {}
-     opts['scope'] = payload.data
-    const data = yield call(scopeApi.editAScope,opts)
+    const data = yield call(scopeApi.editAScope,payload.data)
 	console.log('Scope Saga -  editAnScope response ='+JSON.stringify(data))
     yield put(editScopeResponse(data))
   } catch (e) {

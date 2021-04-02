@@ -18,8 +18,10 @@ function ScopeEditPage({ scope, loading, dispatch,scripts}) {
 		  function handleSubmit(data) {
 			  console.log('ScopeEdit :  handleSubmit() - data = '+data)
 		    if (data) {
-		      dispatch(editScope(data))
-		      history.push('/scopes')
+		    	const postBody = {}
+		        postBody['scope'] = JSON.parse(data)
+		        dispatch(editScope(postBody))
+		        history.push('/scopes')
 		    }
 		  }
 		  return (
@@ -34,7 +36,7 @@ function ScopeEditPage({ scope, loading, dispatch,scripts}) {
 		        >
 		          <Card className="mb-3">
 		            <CardBody>
-		            <ScopeForm scope={scope} handleSubmit={handleSubmit} scripts={scripts} />
+		            <ScopeForm scope={scope} handleSubmit={handleSubmit}  />
 		            </CardBody>
 		          </Card>
 		        </BlockUi>
