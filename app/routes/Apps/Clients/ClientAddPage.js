@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import { useHistory } from 'react-router-dom'
-import { addClient } from '../../../redux/actions/OpenidClientActions'
+import { addNewClientAction } from '../../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
 function ClientAddPage({ permissions, loading, dispatch }) {
   const history = useHistory()
@@ -66,7 +66,7 @@ function ClientAddPage({ permissions, loading, dispatch }) {
 
 const mapStateToProps = (state) => {
   return {
-    permissions: state.oidcReducer.permissions,
+    permissions: state.authReducer.permissions,
     loading: state.oidcReducer.loading,
   }
 }

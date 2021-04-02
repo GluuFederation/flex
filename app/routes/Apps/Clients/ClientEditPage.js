@@ -2,7 +2,7 @@ import React from 'react'
 import ClientWizardForm from './ClientWizardForm'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { editClient } from '../../../redux/actions/OpenidClientActions'
+import { editClient } from '../../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
 
 function ClientEditPage({ item, loading, permissions, dispatch }) {

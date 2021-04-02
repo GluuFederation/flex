@@ -9,7 +9,7 @@ import {
   getOpenidClients,
   setCurrentItem,
   deleteClient,
-} from '../../../redux/actions/OpenidClientActions'
+} from '../../../redux/actions/OIDCActions'
 import {
   hasPermission,
   CLIENT_WRITE,

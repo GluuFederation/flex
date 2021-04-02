@@ -5,11 +5,11 @@ import {
   addClientResponse,
   editClientResponse,
   deleteClientResponse,
-} from '../actions/OpenidClientActions'
+} from '../actions/OIDCActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import {
   GET_OPENID_CLIENTS,
-  ADD_CLIENT,
+  ADD_NEW_CLIENT,
   EDIT_CLIENT,
   DELETE_CLIENT,
 } from '../actions/types'
@@ -42,13 +42,11 @@ export function* getOauthOpenidClients() {
 }
 
 export function* addNewClient({ payload }) {
-  console.log('====================Adding new client')
   try {
-    console.log('===================step one')
-    const openIdApi = yield* newFunction()
-    console.log('===================step two')
-    const data = yield call(openIdApi.addNewOpenIdClient, payload.data)
-    console.log('===================step three')
+    const api = yield* newFunction()
+    console.log('===================Adding')
+    const data = yield call(api.addNewOpenIdClient, payload.data)
+    console.log('===================Adding done')
     yield put(addClientResponse(data))
   } catch (e) {
     yield put(addClientResponse(null))
@@ -79,7 +77,7 @@ export function* editAClient({ payload }) {
 export function* deleteAClient({ payload }) {
   try {
     const api = yield* newFunction()
-    const data = yield call(api.deleteAClient, payload.inum)
+    yield call(api.deleteAClient, payload.inum)
     yield put(deleteClientResponse(payload.inum))
   } catch (e) {
     yield put(deleteClientResponse(null))
@@ -95,10 +93,12 @@ export function* getOpenidClientsWatcher() {
 }
 
 export function* addClientWatcher() {
-  yield takeLatest(ADD_CLIENT, addNewClient)
+  console.log('=================== add Watcher')
+  yield takeLatest(ADD_NEW_CLIENT, addNewClient)
 }
 
 export function* editClientWatcher() {
+  console.log('=================== Edit Watcher')
   yield takeLatest(EDIT_CLIENT, editAClient)
 }
 export function* deleteClientWatcher() {
