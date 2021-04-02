@@ -24,8 +24,6 @@ function ScopeAddPage({  scripts, dispatch }) {
 		   claims: [],		   
 		   defaultScope: false,
 		   groupClaims: false,
-		   dynamicScopeScripts: [],
-		   umaAuthorizationPolicies: [],
 		   attributes: { spontaneousClientId: null, spontaneousClientScopes: [], showInConfigurationEndpoint: 'false' },
 		  }
   
@@ -34,8 +32,7 @@ function ScopeAddPage({  scripts, dispatch }) {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <ScopeForm scope={scope} handleSubmit={handleSubmit} scripts={scripts}
-            />
+            <ScopeForm scope={scope} handleSubmit={handleSubmit}  />
           </CardBody>
         </Card>
       </Container>
