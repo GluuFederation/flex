@@ -4,17 +4,15 @@ import ClientWizardForm from './ClientWizardForm'
 import { useHistory } from 'react-router-dom'
 import { addNewClientAction } from '../../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
-function ClientAddPage({ permissions, scopes, loading, dispatch }) {
+function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
   const history = useHistory()
   scopes = scopes.map((item) => item.id)
   function handleSubmit(data) {
     if (data) {
       const postBody = {}
       postBody['client'] = data
-      dispatch(addClient(postBody))
-      setTimeout(function () {
-        history.push('/clients')
-      }, 10000)
+      dispatch(addNewClientAction(postBody))
+      history.push('/clients')
     }
   }
   const client = {
@@ -57,6 +55,7 @@ function ClientAddPage({ permissions, scopes, loading, dispatch }) {
         <ClientWizardForm
           client={client}
           scopes={scopes}
+          scripts={scripts}
           permissions={permissions}
           customOnSubmit={handleSubmit}
         />
@@ -69,6 +68,7 @@ const mapStateToProps = (state) => {
   return {
     permissions: state.authReducer.permissions,
     scopes: state.scopeReducer.items,
+    scripts: state.initReducer.scripts,
     loading: state.oidcReducer.loading,
   }
 }

@@ -10,7 +10,6 @@ import {
 } from './../../../components'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
-import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
 import { connect } from 'react-redux'
 import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
@@ -20,7 +19,7 @@ import GluuSelectRow from '../Gluu/GluuSelectRow'
 function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
   const authScripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
-    .filter((item) => item.enabled)
+    .filter((item) => !item.enabled)
     .map((item) => item.name)
   authScripts.push('simple_password_auth')
   useEffect(() => {

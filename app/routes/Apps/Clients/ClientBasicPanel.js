@@ -230,7 +230,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         label="Post Logout RedirectUris"
         formik={formik}
         placeholder="Enter a post redirect uri with pattern https://"
-        value={client.postLogoutRedirectUris}
+        value={client.postLogoutRedirectUris || []}
         options={postLogoutRedirectUris}
         validator={postUriValidator}
         inputId={post_uri_id}
@@ -241,7 +241,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         label="Redirect Uris"
         formik={formik}
         placeholder="Enter a redirect uri with pattern https:// or schema://"
-        value={client.redirectUris}
+        value={client.redirectUris || []}
         options={redirectUris}
         validator={uriValidator}
         inputId={uri_id}
