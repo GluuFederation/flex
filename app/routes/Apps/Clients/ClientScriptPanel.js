@@ -9,7 +9,11 @@ import {
 } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 
-function ClientScriptPanel() {
+function ClientScriptPanel({ client, scripts, formik }) {
+  scripts = scripts
+    .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
+    .filter((item) => !item.enabled)
+    .map((item) => item.name)
   return <Container>Client Scripts here</Container>
 }
 

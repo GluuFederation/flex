@@ -15,7 +15,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
   const authorizedOrigins = []
   scripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
-    .filter((item) => !item.enabled)
+    .filter((item) => item.enabled)
     .map((item) => item.name)
   function uriValidator(uri) {
     return (

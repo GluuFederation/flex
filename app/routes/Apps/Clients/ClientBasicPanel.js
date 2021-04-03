@@ -10,7 +10,6 @@ import {
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTypeAhead from '../Gluu/GluuTypeAhead'
 import GluuTypeAheadWithAdd from '../Gluu/GluuTypeAheadWithAdd'
-import moment from 'moment'
 import DatePicker from 'react-datepicker'
 
 const ClientBasicPanel = ({ client, scopes, formik }) => {
@@ -28,6 +27,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
   const postLogoutRedirectUris = []
   const redirectUris = []
   const [expirable, setExpirable] = useState(client.exp)
+  const [expDate, setExpDate] = useState(new Date())
 
   function handleExpirable() {
     setExpirable(!expirable)
@@ -123,11 +123,17 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
       {expirable && (
         <FormGroup row>
           <GluuLabel label="Client Expiration Date" size={5} />
+
           <Col sm={7}>
             <DatePicker
               id="exp"
-              selected={client.exp || moment().toDate()}
-              onChange={formik.onChange}
+              dateFormat="dd/MM/yyyy"
+              selected={expDate}
+              peekNextMonth
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              onChange={(date) => setExpDate(date)}
             />
           </Col>
         </FormGroup>

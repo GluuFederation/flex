@@ -73,6 +73,17 @@ function ClientWizardForm({
     postLogoutRedirectUris: client.postLogoutRedirectUris,
     scopes: client.scopes,
     customAttributes: client.customAttributes,
+
+    tlsClientAuthSubjectDn: client.tlsClientAuthSubjectDn,
+    spontaneousScopes: client.spontaneousScopes,
+    introspectionScripts: client.introspectionScripts,
+    spontaneousScopeScriptDns: client.spontaneousScopeScriptDns,
+    consentGatheringScripts: client.consentGatheringScripts,
+    rptClaimsScripts: client.rptClaimsScripts,
+    backchannelLogoutUri: client.backchannelLogoutUri,
+    postAuthnScripts: client.postAuthnScripts,
+    additionalAudience: client.additionalAudience,
+
     attributes: client.attributes,
     customObjectClasses: client.customObjectClasses,
     deletable: client.deletable,
@@ -181,7 +192,13 @@ function ClientWizardForm({
                         <ClientAttributes client={client} formik={formik} />
                       )
                     case sequence[4]:
-                      return <ClientScript client={client} formik={formik} />
+                      return (
+                        <ClientScript
+                          client={client}
+                          formik={formik}
+                          scripts={scripts}
+                        />
+                      )
                   }
                 })()}
               </CardBody>
