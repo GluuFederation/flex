@@ -18,7 +18,6 @@ export default class LdapApi {
 
   // update Ldap Config
   updateLdapConfig = (input) => {
-    console.log("input: ", input)
     return new Promise((resolve, reject) => {
       this.api.putConfigDatabaseLdap(input, (error, data) => {
         if (error) {
@@ -34,6 +33,19 @@ export default class LdapApi {
   addLdapConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.postConfigDatabaseLdap(input, (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+  }
+
+  // delete Ldap Config
+  deleteLdapConfig = (input) => {
+    return new Promise((resolve, reject) => {
+      this.api.deleteConfigDatabaseLdapByName(input, (error, data) => {
         if (error) {
           reject(error)
         } else {

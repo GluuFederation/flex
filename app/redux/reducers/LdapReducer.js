@@ -2,15 +2,18 @@ import {
   GET_LDAP,
   GET_LDAP_RESPONSE,
   SET_LDAP,
-  SET_LDAP_RESPONSE,
   PUT_LDAP,
   PUT_LDAP_RESPONSE,
   RESET,
-  SET_ITEM,
+  ADD_LDAP,
+  ADD_LDAP_RESPONSE,
+  DELETE_LDAP,
+  DELETE_LDAP_RESPONSE,
 } from '../actions/types'
 
 const INIT_STATE = {
   ldap: [],
+  item: {},
   loading: false,
 }
 
@@ -35,16 +38,17 @@ export default (state = INIT_STATE, action) => {
         }
       }
 
-    case SET_LDAP:
+    case ADD_LDAP:
       return {
         ...state,
         loading: true,
       }
-    case SET_LDAP_RESPONSE:
+
+    case ADD_LDAP_RESPONSE:
       if (action.payload.data) {
         return {
           ...state,
-          ldap: action.payload.data,
+          ldap: [...state.ldap, action.payload.data],
           loading: false,
         }
       } else {
@@ -52,6 +56,13 @@ export default (state = INIT_STATE, action) => {
           ...state,
           loading: false,
         }
+      }
+
+    case SET_LDAP:
+      return {
+        ...state,
+        item: action.payload.item,
+        loading: false,
       }
 
     case PUT_LDAP:
@@ -72,6 +83,26 @@ export default (state = INIT_STATE, action) => {
           loading: false,
         }
       }
+    case DELETE_LDAP:
+      return {
+        ...state,
+        loading: true,
+      }
+
+    case DELETE_LDAP_RESPONSE:
+      if (action.payload.configId) {
+        return {
+          ...state,
+          ldap: state.ldap.filter((i) => i.configId !== action.payload.configId),
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
+      }
+
     case RESET:
       return {
         ...state,
