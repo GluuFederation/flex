@@ -35,7 +35,9 @@ import LoggingPage from './Apps/Configuration/LoggingPage'
 import JwksPage from './Apps/Configuration/JwksPage'
 import Fido2Page from './Apps/Configuration/Fido2Page'
 import CachePage from './Apps/Configuration/CachePage'
-import LdapPage from './Apps/Configuration/LdapPage'
+import LdapListPage from './Apps/Configuration/LdapListPage'
+import LdapAddPage from './Apps/Configuration/LdapAddPage'
+import LdapEditPage from './Apps/Configuration/LdapEditPage'
 import CouchbasePage from './Apps/Configuration/CouchbasePage'
 import {
   hasPermission,
@@ -55,6 +57,7 @@ import {
   CACHE_READ,
   LDAP_READ,
   COUCHBASE_READ,
+  LDAP_WRITE,
 } from '../utils/PermChecker'
 import Gluu404Error from './Apps/Gluu/Gluu404Error'
 import GluuNavBar from './Apps/Gluu/GluuNavBar'
@@ -143,8 +146,14 @@ export const RoutedContent = () => {
       {hasPermission(scopes, CACHE_READ) && (
         <Route component={CachePage} path="/config/cache" />
       )}
+      {hasPermission(scopes, LDAP_WRITE) && (
+        <Route component={LdapEditPage} path="/config/ldap/edit:configId" />
+      )}
+      {hasPermission(scopes, LDAP_WRITE) && (
+        <Route component={LdapAddPage} path="/config/ldap/new" />
+      )}
       {hasPermission(scopes, LDAP_READ) && (
-        <Route component={LdapPage} path="/config/ldap" />
+        <Route component={LdapListPage} path="/config/ldap" />
       )}
       {hasPermission(scopes, COUCHBASE_READ) && (
         <Route component={CouchbasePage} path="/config/couchbase" />
@@ -152,7 +161,7 @@ export const RoutedContent = () => {
 
       {/* -------- Plugins ---------*/}
       {availablePlugins.map((item, key) => (
-          <Route key={key} component={selectPlugin(item.key)} path={item.path} />
+        <Route key={key} component={selectPlugin(item.key)} path={item.path} />
       ))}
 
       {/*    Pages Routes    */}

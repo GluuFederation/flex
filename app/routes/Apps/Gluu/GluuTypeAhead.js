@@ -3,13 +3,14 @@ import { FormGroup,Col } from '../../../components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 
-function GluuTypeAhead({ label, name, value, options, formik }) {
+function GluuTypeAhead({ label, name, value, options, formik, required }) {
  // console.log("========name: "+name+ " and value: "+value)
   return (
     <FormGroup row>
-      <GluuLabel label={label} size={4} />
+      {!!required ? <GluuLabel label={label} size={4} required /> : <GluuLabel label={label} size={4} />}
       <Col sm={8}>
         <Typeahead
+          allowNew
           emptyLabel=""
           labelKey={name}
           onChange={(selected) => {

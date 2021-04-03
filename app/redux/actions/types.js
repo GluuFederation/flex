@@ -111,6 +111,10 @@ export const SET_LDAP = 'SET_LDAP'
 export const SET_LDAP_RESPONSE = 'SET_LDAP_RESPONSE'
 export const PUT_LDAP = 'PUT_LDAP'
 export const PUT_LDAP_RESPONSE = 'PUT_LDAP_RESPONSE'
+export const ADD_LDAP = 'ADD_LDAP';
+export const ADD_LDAP_RESPONSE = 'ADD_LDAP_RESPONSE';
+export const DELETE_LDAP  = 'DELETE_LDAP';
+export const DELETE_LDAP_RESPONSE  = 'DELETE_LDAP_RESPONSE';
 
 // Couchbase
 export const GET_COUCHBASE = 'GET_COUCHBASE'
