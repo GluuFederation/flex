@@ -13,7 +13,7 @@ import {
 import GluuFooter from '../Gluu/GluuFooter'
 import GluuLabel from '../Gluu/GluuLabel'
 
-function AttributeForm({ item, handleSubmit }) {
+function AttributeForm({ item, customOnSubmit }) {
   const [init, setInit] = useState(false)
   const [validation, setValidation] = useState(getInitialState(item))
 
@@ -56,23 +56,18 @@ function AttributeForm({ item, handleSubmit }) {
         displayName: Yup.string()
           .min(2, 'Mininum 2 characters')
           .required('Required!'),
-        description: Yup.string()
-        .required('Required!'),
-        status: Yup.string()
-          .required('Required!'),
-        dataType: Yup.string()
-          .required('Required!'),
-        editType: Yup.array()
-        .required('Required!'),
-        viewType: Yup.array()
-        .required('Required!')
+        description: Yup.string().required('Required!'),
+        status: Yup.string().required('Required!'),
+        dataType: Yup.string().required('Required!'),
+        editType: Yup.array().required('Required!'),
+        viewType: Yup.array().required('Required!'),
       })}
       onSubmit={(values) => {
         const result = Object.assign(item, values)
         result['attributeValidation'].maxLength = result.maxLength
         result['attributeValidation'].minLength = result.minLength
         result['attributeValidation'].regexp = result.regexp
-        handleSubmit(JSON.stringify(result))
+        customOnSubmit(JSON.stringify(result))
       }}
     >
       {(formik) => (
@@ -108,7 +103,7 @@ function AttributeForm({ item, handleSubmit }) {
                 onChange={formik.handleChange}
               />
               <ErrorMessage name="name">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -130,7 +125,7 @@ function AttributeForm({ item, handleSubmit }) {
                 />
               </InputGroup>
               <ErrorMessage name="displayName">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -147,12 +142,12 @@ function AttributeForm({ item, handleSubmit }) {
                 />
               </InputGroup>
               <ErrorMessage name="description">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label="Status" required/>
+            <GluuLabel label="Status" required />
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -168,12 +163,12 @@ function AttributeForm({ item, handleSubmit }) {
                 </CustomInput>
               </InputGroup>
               <ErrorMessage name="status">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label="Data Type" required/>
+            <GluuLabel label="Data Type" required />
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -194,12 +189,12 @@ function AttributeForm({ item, handleSubmit }) {
                 </CustomInput>
               </InputGroup>
               <ErrorMessage name="dataType">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label="Edit Type" required/>
+            <GluuLabel label="Edit Type" required />
             <Col sm={9}>
               <Input
                 type="select"
@@ -213,7 +208,7 @@ function AttributeForm({ item, handleSubmit }) {
                 <option>USER</option>
               </Input>
               <ErrorMessage name="editType">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>
@@ -232,7 +227,7 @@ function AttributeForm({ item, handleSubmit }) {
                 <option>USER</option>
               </Input>
               <ErrorMessage name="viewType">
-              { msg => <div style={{ color: 'red' }}>{msg}</div> }
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
               </ErrorMessage>
             </Col>
           </FormGroup>

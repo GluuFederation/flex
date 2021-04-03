@@ -1,15 +1,40 @@
 import React from 'react'
-import { Col, Container, FormGroup, Label, Input } from '../../../components'
+import { Col, Container, FormGroup, Input } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTypeAhead from '../Gluu/GluuTypeAhead'
+import GluuTypeAheadWithAdd from '../Gluu/GluuTypeAheadWithAdd'
 
-function ClientAdvancedPanel({ client, formik }) {
-  const frontChannelLogoutUris = []
+function ClientAdvancedPanel({ client, scripts, formik }) {
+  const claim_uri_id = 'claim_uri_id'
+  const request_uri_id = 'request_uri_id'
+  const origin_uri_id = 'origin_uri_id'
+  const contact_uri_id = 'contact_uri_id'
   const contacts = []
   const claimRedirectURIs = []
   const requestUris = []
   const authorizedOrigins = []
-  const defaultAcrValues = []
+  scripts = scripts
+    .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
+    .filter((item) => !item.enabled)
+    .map((item) => item.name)
+  function uriValidator(uri) {
+    return (
+      uri.startsWith('https://') ||
+      uri.startsWith('schema://') ||
+      uri.startsWith('appchema://')
+    )
+  }
+  function emailValidator(email) {
+    if (
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        email,
+      )
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
   return (
     <Container>
       <FormGroup row>
@@ -205,40 +230,52 @@ function ClientAdvancedPanel({ client, formik }) {
           />
         </Col>
       </FormGroup>
-      <GluuTypeAhead
+      <GluuTypeAheadWithAdd
         name="contacts"
         label="Contacts"
         formik={formik}
-        value={client.contacts}
+        placeholder="Eg. sample@org.com"
+        value={client.contacts || []}
         options={contacts}
-      ></GluuTypeAhead>
-      <GluuTypeAhead
+        validator={emailValidator}
+        inputId={contact_uri_id}
+      ></GluuTypeAheadWithAdd>
+      <GluuTypeAheadWithAdd
         name="claimRedirectURI"
         label="Claim Redirect URIs"
         formik={formik}
-        value={client.claimRedirectURI}
+        placeholder="Enter a valid claim uri eg https://..."
+        value={client.claimRedirectURI || []}
         options={claimRedirectURIs}
-      ></GluuTypeAhead>
-      <GluuTypeAhead
+        validator={uriValidator}
+        inputId={claim_uri_id}
+      ></GluuTypeAheadWithAdd>
+      <GluuTypeAheadWithAdd
         name="requestUris"
         label="Request Uris"
         formik={formik}
-        value={client.requestUris}
+        placeholder="Enter a valid request uri eg https://..."
+        value={client.requestUris || []}
         options={requestUris}
-      ></GluuTypeAhead>
-      <GluuTypeAhead
+        validator={uriValidator}
+        inputId={request_uri_id}
+      ></GluuTypeAheadWithAdd>
+      <GluuTypeAheadWithAdd
         name="authorizedOrigins"
         label="Authorized Javascript Origins"
         formik={formik}
-        value={client.authorizedOrigins}
+        placeholder="Enter a valid origin uri eg https://..."
+        value={client.authorizedOrigins || []}
         options={authorizedOrigins}
-      ></GluuTypeAhead>
+        validator={uriValidator}
+        inputId={origin_uri_id}
+      ></GluuTypeAheadWithAdd>
       <GluuTypeAhead
         name="defaultAcrValues"
         label="Default Acr Values"
         formik={formik}
         value={client.defaultAcrValues}
-        options={defaultAcrValues}
+        options={scripts}
       ></GluuTypeAhead>
     </Container>
   )

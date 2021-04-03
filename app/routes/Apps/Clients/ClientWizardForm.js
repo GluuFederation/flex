@@ -22,9 +22,14 @@ const sequence = [
   'Custom Scripts',
 ]
 
-function ClientWizardForm({ client, permissions, handleSubmit }) {
+function ClientWizardForm({
+  client,
+  scopes,
+  scripts,
+  permissions,
+  customOnSubmit,
+}) {
   const [currentStep, setCurrentStep] = useState(sequence[0])
-
   function changeStep(stepId) {
     setCurrentStep(stepId)
   }
@@ -93,7 +98,6 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-
           values[
             'attributes'
           ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
@@ -104,7 +108,7 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
             values.allowSpontaneousScopes
           values['attributes'].backchannelLogoutSessionRequired =
             values.backchannelLogoutSessionRequired
-          handleSubmit(JSON.parse(JSON.stringify(values)))
+          customOnSubmit(JSON.parse(JSON.stringify(values)))
         }}
       >
         {(formik) => (
@@ -153,9 +157,21 @@ function ClientWizardForm({ client, permissions, handleSubmit }) {
                 {(() => {
                   switch (currentStep) {
                     case sequence[0]:
-                      return <ClientBasic client={client} formik={formik} />
+                      return (
+                        <ClientBasic
+                          client={client}
+                          scopes={scopes}
+                          formik={formik}
+                        />
+                      )
                     case sequence[1]:
-                      return <ClientAdvanced client={client} formik={formik} />
+                      return (
+                        <ClientAdvanced
+                          client={client}
+                          scripts={scripts}
+                          formik={formik}
+                        />
+                      )
                     case sequence[2]:
                       return (
                         <ClientEncryption client={client} formik={formik} />

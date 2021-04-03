@@ -1,23 +1,21 @@
-/**
- * Openid Client Sagas
- */
-import { call, all, put, fork, select, takeLatest } from 'redux-saga/effects'
+import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   getOpenidClientsResponse,
   addClientResponse,
   editClientResponse,
   deleteClientResponse,
-} from '../actions/OpenidClientActions'
+} from '../actions/OIDCActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import {
   GET_OPENID_CLIENTS,
-  ADD_CLIENT,
+  ADD_NEW_CLIENT,
   EDIT_CLIENT,
   DELETE_CLIENT,
 } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../api/base'
-import { isFourZeroOneError } from '../../utils/TokenController'
+
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -44,18 +42,16 @@ export function* getOauthOpenidClients() {
 }
 
 export function* addNewClient({ payload }) {
-  console.log('====================Adding new client')
   try {
-    console.log('===================setp one')
-    const openIdApi = yield* newFunction()
-    console.log('===================setp two')
-    const data = yield call(openIdApi.addNewOpenIdClient, payload.data)
-    console.log('===================setp three')
+    const api = yield* newFunction()
+    console.log('===================Adding')
+    const data = yield call(api.addNewOpenIdClient, payload.data)
+    console.log('===================Adding done')
     yield put(addClientResponse(data))
   } catch (e) {
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      console.log('======================error ' + e)
+      console.log('====error ' + e)
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
@@ -81,7 +77,7 @@ export function* editAClient({ payload }) {
 export function* deleteAClient({ payload }) {
   try {
     const api = yield* newFunction()
-    const data = yield call(api.deleteAClient, payload.inum)
+    yield call(api.deleteAClient, payload.inum)
     yield put(deleteClientResponse(payload.inum))
   } catch (e) {
     yield put(deleteClientResponse(null))
@@ -97,12 +93,12 @@ export function* getOpenidClientsWatcher() {
 }
 
 export function* addClientWatcher() {
-  console.log('====================Adding')
-  yield takeLatest(ADD_CLIENT, addNewClient)
+  console.log('=================== add Watcher')
+  yield takeLatest(ADD_NEW_CLIENT, addNewClient)
 }
 
 export function* editClientWatcher() {
-  console.log('====================Edit')
+  console.log('=================== Edit Watcher')
   yield takeLatest(EDIT_CLIENT, editAClient)
 }
 export function* deleteClientWatcher() {

@@ -33,7 +33,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
         >
           <Card className="mb-3">
             <CardBody>
-              <AttributeForm item={item} customHandleSubmit={customHandleSubmit} />
+              <AttributeForm item={item} customOnSubmit={customHandleSubmit} />
             </CardBody>
           </Card>
         </BlockUi>

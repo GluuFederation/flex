@@ -2,10 +2,17 @@ import React from 'react'
 import ClientWizardForm from './ClientWizardForm'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { editClient } from '../../../redux/actions/OpenidClientActions'
+import { editClient } from '../../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
 
-function ClientEditPage({ item, loading, permissions, dispatch }) {
+function ClientEditPage({
+  item,
+  scopes,
+  scripts,
+  loading,
+  permissions,
+  dispatch,
+}) {
   if (!item.attributes) {
     item.attributes = {
       runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
@@ -14,6 +21,7 @@ function ClientEditPage({ item, loading, permissions, dispatch }) {
       backchannelLogoutSessionRequired: false,
     }
   }
+  scopes = scopes.map((item) => item.id)
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
@@ -32,8 +40,10 @@ function ClientEditPage({ item, loading, permissions, dispatch }) {
       >
         <ClientWizardForm
           client={item}
+          scopes={scopes}
+          scripts={scripts}
           permissions={permissions}
-          handleSubmit={handleSubmit}
+          customOnSubmit={handleSubmit}
         />
       </BlockUi>
     </React.Fragment>
@@ -41,9 +51,11 @@ function ClientEditPage({ item, loading, permissions, dispatch }) {
 }
 const mapStateToProps = (state) => {
   return {
-    item: state.openidClientReducer.item,
-    loading: state.openidClientReducer.loading,
-    permissions: state.openidClientReducer.permissions,
+    item: state.oidcReducer.item,
+    loading: state.oidcReducer.loading,
+    scopes: state.scopeReducer.items,
+    scripts: state.initReducer.scripts,
+    permissions: state.authReducer.permissions,
   }
 }
 export default connect(mapStateToProps)(ClientEditPage)

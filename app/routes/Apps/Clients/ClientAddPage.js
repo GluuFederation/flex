@@ -2,15 +2,16 @@ import React from 'react'
 import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import { useHistory } from 'react-router-dom'
-import { addClient } from '../../../redux/actions/OpenidClientActions'
+import { addNewClientAction } from '../../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
-function ClientAddPage({ permissions, loading, dispatch }) {
+function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
   const history = useHistory()
+  scopes = scopes.map((item) => item.id)
   function handleSubmit(data) {
     if (data) {
       const postBody = {}
-      postBody['client'] = JSON.parse(data)
-      dispatch(addClient(postBody))
+      postBody['client'] = data
+      dispatch(addNewClientAction(postBody))
       history.push('/clients')
     }
   }
@@ -53,8 +54,10 @@ function ClientAddPage({ permissions, loading, dispatch }) {
       >
         <ClientWizardForm
           client={client}
+          scopes={scopes}
+          scripts={scripts}
           permissions={permissions}
-          handleSubmit={handleSubmit}
+          customOnSubmit={handleSubmit}
         />
       </BlockUi>
     </React.Fragment>
@@ -63,8 +66,10 @@ function ClientAddPage({ permissions, loading, dispatch }) {
 
 const mapStateToProps = (state) => {
   return {
-    permissions: state.openidClientReducer.permissions,
-    loading: state.openidClientReducer.loading,
+    permissions: state.authReducer.permissions,
+    scopes: state.scopeReducer.items,
+    scripts: state.initReducer.scripts,
+    loading: state.oidcReducer.loading,
   }
 }
 export default connect(mapStateToProps)(ClientAddPage)

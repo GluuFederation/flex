@@ -91,7 +91,7 @@ const Reports = ({ attributes, clients, scopes, scripts, plugins }) => (
 const mapStateToProps = (state) => {
   return {
     attributes: state.attributeReducer.items,
-    clients: state.openidClientReducer.items,
+    clients: state.oidcReducer.items,
     scopes: state.scopeReducer.items,
     scripts: state.customScriptReducer.items,
     plugins: state.pluginMenuReducer.plugins,

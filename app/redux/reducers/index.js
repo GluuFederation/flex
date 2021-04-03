@@ -5,7 +5,8 @@ import { combineReducers } from 'redux'
 import authReducer from './AuthReducer'
 import scopeReducer from './ScopeReducer'
 import attributeReducer from './AttributeReducer'
-import openidClientReducer from './OpenidClientReducer'
+//import openidClientReducer from './OpenidClientReducer'
+import oidcReducer from './OIDCReducer'
 import customScriptReducer from './CustomScriptReducer'
 import smtpReducer from './SmtpReducer'
 import acrReducer from './AcrReducer'
@@ -24,7 +25,7 @@ const appReducers = {
   authReducer,
   scopeReducer,
   attributeReducer,
-  openidClientReducer,
+  oidcReducer,
   customScriptReducer,
   smtpReducer,
   acrReducer,

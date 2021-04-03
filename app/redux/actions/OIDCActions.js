@@ -1,7 +1,7 @@
 import {
   GET_OPENID_CLIENTS,
   GET_OPENID_CLIENTS_RESPONSE,
-  ADD_CLIENT,
+  ADD_NEW_CLIENT,
   ADD_CLIENT_RESPONSE,
   EDIT_CLIENT,
   EDIT_CLIENT_RESPONSE,
@@ -19,10 +19,11 @@ export const getOpenidClientsResponse = (data) => ({
   payload: { data },
 })
 
-export const addClient = (data) => ({
-  type: ADD_CLIENT,
+export const addNewClientAction = (data) => ({
+  type: ADD_NEW_CLIENT,
   payload: { data },
 })
+
 export const addClientResponse = (data) => ({
   type: ADD_CLIENT_RESPONSE,
   payload: { data },

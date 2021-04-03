@@ -9,7 +9,7 @@ import {
   getOpenidClients,
   setCurrentItem,
   deleteClient,
-} from '../../../redux/actions/OpenidClientActions'
+} from '../../../redux/actions/OIDCActions'
 import {
   hasPermission,
   CLIENT_WRITE,
@@ -180,8 +180,8 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
 
 const mapStateToProps = (state) => {
   return {
-    clients: state.openidClientReducer.items,
-    loading: state.openidClientReducer.loading,
+    clients: state.oidcReducer.items,
+    loading: state.oidcReducer.loading,
     permissions: state.authReducer.permissions,
   }
 }
