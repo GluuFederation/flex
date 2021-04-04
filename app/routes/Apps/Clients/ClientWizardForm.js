@@ -119,6 +119,20 @@ function ClientWizardForm({
             values.allowSpontaneousScopes
           values['attributes'].backchannelLogoutSessionRequired =
             values.backchannelLogoutSessionRequired
+          values['attributes'].tlsClientAuthSubjectDn =
+            values.tlsClientAuthSubjectDn
+          values['attributes'].spontaneousScopes = values.spontaneousScopes
+          values['attributes'].introspectionScripts =
+            values.introspectionScripts
+          values['attributes'].spontaneousScopeScriptDns =
+            values.spontaneousScopeScriptDns
+          values['attributes'].consentGatheringScripts =
+            values.consentGatheringScripts
+          values['attributes'].rptClaimsScripts = values.rptClaimsScripts
+          values['attributes'].backchannelLogoutUri =
+            values.backchannelLogoutUri
+          values['attributes'].postAuthnScripts = values.postAuthnScripts
+          values['attributes'].additionalAudience = values.additionalAudience
           customOnSubmit(JSON.parse(JSON.stringify(values)))
         }}
       >
@@ -197,6 +211,7 @@ function ClientWizardForm({
                           client={client}
                           formik={formik}
                           scripts={scripts}
+                          scopes={scopes}
                         />
                       )
                   }
