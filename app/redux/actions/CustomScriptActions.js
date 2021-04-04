@@ -68,9 +68,9 @@ export const deleteCustomScript = (inum) => ({
   payload: { inum },
 })
 
-export const deleteCustomScriptResponse = (data) => ({
+export const deleteCustomScriptResponse = (inum) => ({
   type: DELETE_CUSTOM_SCRIPT_RESPONSE,
-  payload: { data },
+  payload: { inum },
 })
 
 export const setCurrentItem = (item) => ({

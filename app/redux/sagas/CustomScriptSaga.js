@@ -79,7 +79,7 @@ export function* deleteScript({ payload }) {
   try {
     const scriptApi = yield* newFunction()
     const data = yield call(scriptApi.deleteCustomScript, payload.inum)
-    yield put(deleteCustomScriptResponse(data))
+    yield put(deleteCustomScriptResponse(payload.inum))
   } catch (e) {
     yield put(deleteCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
