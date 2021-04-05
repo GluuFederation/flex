@@ -13,7 +13,11 @@ function ClientEditPage({
   permissions,
   dispatch,
 }) {
-  if (!item.attributes) {
+  if (
+    !item.attributes ||
+    (Object.keys(item.attributes).length === 0 &&
+      item.attributes.constructor === Object)
+  ) {
     item.attributes = {
       runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
       keepClientAuthorizationAfterExpiration: false,

@@ -1,7 +1,16 @@
 {
   "name": "gluu-admin-ui",
   "version": "0.1.0",
-  "description": " UI to administer the jans-sever features",
+  "description": "UI to administer the jans-sever features",
+  "keywords":["jans-server","janssen","oauth","admin-ui","gluu"],
+  "homepage": "https://github.com/GluuFederation/gluu-admin-ui.git",
+  "bugs": { "url" : "https://github.com/GluuFederation/gluu-admin-ui/issues",
+    "email" : "support@gluu.org"},
+
+  "licenses": [{
+    "type": "Apache-2.0",
+    "url": "https://opensource.org/licenses/apache2.0.php"
+  }],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -44,9 +44,7 @@ export function* getOauthOpenidClients() {
 export function* addNewClient({ payload }) {
   try {
     const api = yield* newFunction()
-    console.log('===================Adding')
     const data = yield call(api.addNewOpenIdClient, payload.data)
-    console.log('===================Adding done')
     yield put(addClientResponse(data))
   } catch (e) {
     yield put(addClientResponse(null))
@@ -61,11 +59,13 @@ export function* addNewClient({ payload }) {
 export function* editAClient({ payload }) {
   try {
     const postBody = {}
-    postBody['client'] = JSON.parse(payload.data)
+    postBody['client'] = payload.data
     const api = yield* newFunction()
+    console.log('================' + JSON.stringify(postBody))
     const data = yield call(api.editAClient, postBody)
     yield put(editClientResponse(data))
   } catch (e) {
+    console.log('================' + e)
     yield put(editClientResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
