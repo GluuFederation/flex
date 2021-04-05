@@ -22,9 +22,8 @@ function CustomScriptListPage({ scripts, permissions, loading, dispatch }) {
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
 
-  async function removeRowAfterDelete(inum) {
-    await dispatch(deleteCustomScript(inum));
-    await dispatch(getCustomScripts())
+  function removeRowAfterDelete(inum) {
+    dispatch(deleteCustomScript(inum));
 
   }
   return (

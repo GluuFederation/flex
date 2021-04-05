@@ -41,9 +41,9 @@ export const deleteAttribute = (inum) => ({
   payload: { inum },
 })
 
-export const deleteAttributeResponse = (data) => ({
+export const deleteAttributeResponse = (inum) => ({
   type: DELETE_ATTRIBUTE_RESPONSE,
-  payload: { data },
+  payload: { inum },
 })
 
 export const setCurrentItem = (item) => ({

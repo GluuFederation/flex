@@ -83,10 +83,10 @@ export default (state = INIT_STATE, action) => {
       }
 
     case DELETE_ATTRIBUTE_RESPONSE:
-      if (action.payload.data) {
+      if (action.payload.inum) {
         return {
           ...state,
-          items: state.items.filter((i) => i.inum !== action.payload.data),
+          items: state.items.filter((i) => i.inum !== action.payload.inum),
           loading: false,
         }
       } else {

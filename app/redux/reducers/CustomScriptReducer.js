@@ -85,11 +85,11 @@ export default (state = INIT_STATE, action) => {
         loading: true,
       }
     case DELETE_CUSTOM_SCRIPT_RESPONSE:
-      if (action.payload.data) {
+      if (action.payload.inum) {
         return {
           ...state,
           items: state.items.filter(
-            (item) => item.inum !== action.payload.data,
+            (item) => item.inum !== action.payload.inum,
           ),
           loading: false,
         }

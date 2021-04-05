@@ -93,11 +93,11 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
       return 'warning'
     }
   }
-  async function onDeletionConfirmed() {
+  function onDeletionConfirmed() {
     // perform delete request
-    await toggle()
-    await dispatch(deleteAttribute(item.inum))
-    await dispatch(getAttributes())
+    dispatch(deleteAttribute(item.inum))
+    history.push('/attributes')
+    toggle()
   }
   return (
     <React.Fragment>
