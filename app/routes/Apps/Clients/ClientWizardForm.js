@@ -17,9 +17,9 @@ import { Formik } from 'formik'
 const sequence = [
   'Basic',
   'Advanced',
-  'Encryption && Signing',
-  'Client Attributes',
-  'Custom Scripts',
+  'EncryptionSigning',
+  'ClientAttributes',
+  'CustomScripts',
 ]
 
 function ClientWizardForm({
@@ -33,6 +33,8 @@ function ClientWizardForm({
   function changeStep(stepId) {
     setCurrentStep(stepId)
   }
+
+  function itemClicked() {}
   function setId(index) {
     return sequence[index]
   }
@@ -261,3 +263,6 @@ function ClientWizardForm({
 }
 
 export default ClientWizardForm
+function newFunction() {
+  return () => {}
+}

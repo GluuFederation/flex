@@ -49,7 +49,7 @@ export function* addNewClient({ payload }) {
   } catch (e) {
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      console.log('====error ' + e)
+      console.log('================= ' + e)
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
@@ -61,11 +61,10 @@ export function* editAClient({ payload }) {
     const postBody = {}
     postBody['client'] = payload.data
     const api = yield* newFunction()
-    console.log('================' + JSON.stringify(postBody))
     const data = yield call(api.editAClient, postBody)
     yield put(editClientResponse(data))
   } catch (e) {
-    console.log('================' + e)
+    console.log('====================' + e)
     yield put(editClientResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
