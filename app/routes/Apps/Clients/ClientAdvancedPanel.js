@@ -1,7 +1,7 @@
 import React from 'react'
 import { Col, Container, FormGroup, Input } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
-import GluuTypeAhead from '../Gluu/GluuTypeAhead'
+import GluuTypeAheadForDn from '../Gluu/GluuTypeAheadForDn'
 import GluuTypeAheadWithAdd from '../Gluu/GluuTypeAheadWithAdd'
 
 function ClientAdvancedPanel({ client, scripts, formik }) {
@@ -16,13 +16,19 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
   scripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
     .filter((item) => item.enabled)
-    .map((item) => item.name)
+    .map((item) => ({ dn: item.dn, name: item.name }))
   function uriValidator(uri) {
     return (
       uri.startsWith('https://') ||
       uri.startsWith('schema://') ||
-      uri.startsWith('appchema://')
+      uri.startsWith('appschema://')
     )
+  }
+  function getMapping(partial, total) {
+    if (!partial) {
+      partial = []
+    }
+    return total.filter((item) => partial.includes(item.dn))
   }
   function emailValidator(email) {
     if (
@@ -270,13 +276,13 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         validator={uriValidator}
         inputId={origin_uri_id}
       ></GluuTypeAheadWithAdd>
-      <GluuTypeAhead
+      <GluuTypeAheadForDn
         name="defaultAcrValues"
         label="Default Acr Values"
         formik={formik}
-        value={client.defaultAcrValues}
+        value={getMapping(client.defaultAcrValues, scripts)}
         options={scripts}
-      ></GluuTypeAhead>
+      ></GluuTypeAheadForDn>
     </Container>
   )
 }

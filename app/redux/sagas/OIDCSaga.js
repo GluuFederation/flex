@@ -61,6 +61,7 @@ export function* editAClient({ payload }) {
     const postBody = {}
     postBody['client'] = payload.data
     const api = yield* newFunction()
+    console.log("==================="+JSON.stringify(postBody))
     const data = yield call(api.editAClient, postBody)
     yield put(editClientResponse(data))
   } catch (e) {

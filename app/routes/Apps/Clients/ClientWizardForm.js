@@ -34,7 +34,6 @@ function ClientWizardForm({
     setCurrentStep(stepId)
   }
 
-  function itemClicked() {}
   function setId(index) {
     return sequence[index]
   }
@@ -74,6 +73,7 @@ function ClientWizardForm({
     defaultAcrValues: client.defaultAcrValues,
     postLogoutRedirectUris: client.postLogoutRedirectUris,
     scopes: client.scopes,
+    oxAuthClaims:client.oxAuthClaims,
     customAttributes: client.customAttributes,
 
     tlsClientAuthSubjectDn: client.tlsClientAuthSubjectDn,

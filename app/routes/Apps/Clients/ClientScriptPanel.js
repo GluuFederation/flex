@@ -1,77 +1,84 @@
 import React from 'react'
 import { Container } from '../../../components'
-import GluuTypeAhead from '../Gluu/GluuTypeAhead'
+import GluuTypeAheadForDn from '../Gluu/GluuTypeAheadForDn'
 
 function ClientScriptPanel({ client, scopes, scripts, formik }) {
   const postScripts = scripts
     .filter((item) => item.scriptType == 'POST_AUTHN')
     .filter((item) => item.enabled)
-    .map((item) => item.name)
+    .map((item) => ({ dn: item.dn, name: item.name }))
 
   const spontaneousScripts = scripts
     .filter((item) => item.scriptType == 'SPONTANEOUS_SCOPE')
     .filter((item) => item.enabled)
-    .map((item) => item.name)
+    .map((item) => ({ dn: item.dn, name: item.name }))
 
   const consentScripts = scripts
     .filter((item) => item.scriptType == 'CONSENT_GATHERING')
     .filter((item) => item.enabled)
-    .map((item) => item.name)
+    .map((item) => ({ dn: item.dn, name: item.name }))
 
   const instrospectionScripts = scripts
     .filter((item) => item.scriptType == 'INTROSPECTION')
     .filter((item) => item.enabled)
-    .map((item) => item.name)
+    .map((item) => ({ dn: item.dn, name: item.name }))
 
   const rptScripts = scripts
     .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
     .filter((item) => item.enabled)
-    .map((item) => item.name)
+    .map((item) => ({ dn: item.dn, name: item.name }))
+
+  function getMapping(partial, total) {
+    if (!partial) {
+      partial = []
+    }
+    return total.filter((item) => partial.includes(item.dn))
+  }
 
   return (
     <Container>
-      <GluuTypeAhead
+      <GluuTypeAheadForDn
         name="postAuthnScripts"
         label="Post Authn Scripts"
         formik={formik}
-        value={client.postAuthnScripts}
+        value={getMapping(client.postAuthnScripts, scripts)}
         options={postScripts}
-      ></GluuTypeAhead>
-      <GluuTypeAhead
+      ></GluuTypeAheadForDn>
+      <GluuTypeAheadForDn
         name="consentGatheringScripts"
         label="Consent Gathering Scripts"
         formik={formik}
-        value={client.consentGatheringScripts}
+        value={getMapping(client.consentGatheringScripts, scripts)}
         options={consentScripts}
-      ></GluuTypeAhead>
-      <GluuTypeAhead
+      ></GluuTypeAheadForDn>
+      <GluuTypeAheadForDn
         name="spontaneousScopeScriptDns"
         label="Spontaneous Scope Script Dns"
         formik={formik}
-        value={client.spontaneousScopeScriptDns}
+        value={getMapping(client.spontaneousScopeScriptDns, scripts)}
         options={spontaneousScripts}
-      ></GluuTypeAhead>
-      <GluuTypeAhead
+      ></GluuTypeAheadForDn>
+      <GluuTypeAheadForDn
         name="introspectionScripts"
         label="Introspection Scripts"
         formik={formik}
-        value={client.introspectionScripts}
+        value={getMapping(client.introspectionScripts, scripts)}
         options={instrospectionScripts}
-      ></GluuTypeAhead>
-      <GluuTypeAhead
+      ></GluuTypeAheadForDn>
+      <GluuTypeAheadForDn
         name="rptScripts"
         label="Rpt Scripts"
         formik={formik}
-        value={client.rptClaimsScripts}
+        value={getMapping(client.rptClaimsScripts, scripts)}
         options={rptScripts}
-      ></GluuTypeAhead>
-      <GluuTypeAhead
+      ></GluuTypeAheadForDn>
+      <GluuTypeAheadForDn
         name="spontaneousScopes"
         label="Spontaneous Scopes"
         formik={formik}
-        value={client.spontaneousScopes}
+        value={getMapping(client.spontaneousScopes, scopes)}
         options={scopes}
-      ></GluuTypeAhead>
+      ></GluuTypeAheadForDn>
     </Container>
   )
 }

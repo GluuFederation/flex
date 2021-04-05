@@ -9,6 +9,7 @@ import {
 } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTypeAhead from '../Gluu/GluuTypeAhead'
+import GluuTypeAheadForDn from '../Gluu/GluuTypeAheadForDn'
 import GluuTypeAheadWithAdd from '../Gluu/GluuTypeAheadWithAdd'
 import DatePicker from 'react-datepicker'
 
@@ -33,11 +34,18 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
     setExpirable(!expirable)
   }
 
+  function getScopeMapping(exitingScopes, scopes) {
+    if (!exitingScopes) {
+      exitingScopes = []
+    }
+    return scopes.filter((item) => exitingScopes.includes(item.dn))
+  }
+
   function uriValidator(uri) {
     return (
       uri.startsWith('https://') ||
       uri.startsWith('schema://') ||
-      uri.startsWith('appchema://')
+      uri.startsWith('appschema://')
     )
   }
   function postUriValidator(uri) {
@@ -224,13 +232,13 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         value={client.responseTypes}
         options={responseTypes}
       ></GluuTypeAhead>
-      <GluuTypeAhead
-        name="oxAuthScopes"
+      <GluuTypeAheadForDn
+        name="scopes"
         label="Scopes"
         formik={formik}
-        value={client.oxAuthScopes}
+        value={getScopeMapping(client.scopes, scopes)}
         options={scopes}
-      ></GluuTypeAhead>
+      ></GluuTypeAheadForDn>
       <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"
         label="Post Logout RedirectUris"

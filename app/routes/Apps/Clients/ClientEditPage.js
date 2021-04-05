@@ -25,7 +25,7 @@ function ClientEditPage({
       backchannelLogoutSessionRequired: false,
     }
   }
-  scopes = scopes.map((item) => item.id)
+  scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {

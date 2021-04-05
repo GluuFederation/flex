@@ -2,8 +2,8 @@ import React from 'react'
 import { FormGroup, Col } from '../../../components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
-import Typography from '@material-ui/core/Typography';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
 const theme = createMuiTheme({
   typography: {
@@ -11,19 +11,17 @@ const theme = createMuiTheme({
       fontSize: 12,
     },
   },
-});
+})
 
-function GluuTypeAhead({ label, name, value, options, formik, required, }) {
+function GluuTypeAheadForDn({ label, name, value, options, formik, required }) {
   return (
     <FormGroup row>
-      {!!required ? <GluuLabel label={label} size={4} required /> : <GluuLabel label={label} size={4} />}
+      <GluuLabel label={label} size={4} required={required} />
       <Col sm={8}>
         <Typeahead
-          allowNew
-          emptyLabel=""
-          labelKey={name}
+          labelKey={(option) => `${option.name}`}
           onChange={(selected) => {
-            formik.setFieldValue(name, selected)
+            formik.setFieldValue(name, selected.map((item) => item.dn))
           }}
           id={name}
           name={name}
@@ -32,11 +30,14 @@ function GluuTypeAhead({ label, name, value, options, formik, required, }) {
           options={options}
         />
         <ThemeProvider theme={theme}>
-          <Typography variant="subtitle1">Enter multiple items by selecting from appeared dropdown after entering each item.</Typography>
+          <Typography variant="subtitle1">
+            Enter multiple items by selecting from appeared dropdown after
+            entering each item.
+          </Typography>
         </ThemeProvider>
       </Col>
     </FormGroup>
   )
 }
 
-export default GluuTypeAhead
+export default GluuTypeAheadForDn

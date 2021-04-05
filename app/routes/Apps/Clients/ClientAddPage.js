@@ -6,7 +6,7 @@ import { addNewClientAction } from '../../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
 function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
   const history = useHistory()
-  scopes = scopes.map((item) => item.id)
+  scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
   function handleSubmit(data) {
     if (data) {
       const postBody = {}
@@ -24,7 +24,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
     grantTypes: [],
     requireAuthTime: false,
     postLogoutRedirectUris: [],
-    scopes: [],
+    oxAuthScopes: [],
     trustedClient: true,
     persistClientAuthorizations: false,
     customAttributes: [],
