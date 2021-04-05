@@ -41,35 +41,35 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         name="postAuthnScripts"
         label="Post Authn Scripts"
         formik={formik}
-        value={getMapping(client.postAuthnScripts, scripts)}
+        value={getMapping(client.postAuthnScripts, postScripts)}
         options={postScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="consentGatheringScripts"
         label="Consent Gathering Scripts"
         formik={formik}
-        value={getMapping(client.consentGatheringScripts, scripts)}
+        value={getMapping(client.consentGatheringScripts, consentScripts)}
         options={consentScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="spontaneousScopeScriptDns"
         label="Spontaneous Scope Script Dns"
         formik={formik}
-        value={getMapping(client.spontaneousScopeScriptDns, scripts)}
+        value={getMapping(client.spontaneousScopeScriptDns, spontaneousScripts)}
         options={spontaneousScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="introspectionScripts"
         label="Introspection Scripts"
         formik={formik}
-        value={getMapping(client.introspectionScripts, scripts)}
+        value={getMapping(client.introspectionScripts, instrospectionScripts)}
         options={instrospectionScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="rptScripts"
         label="Rpt Scripts"
         formik={formik}
-        value={getMapping(client.rptClaimsScripts, scripts)}
+        value={getMapping(client.rptClaimsScripts, rptScripts)}
         options={rptScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
