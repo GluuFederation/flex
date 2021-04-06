@@ -242,7 +242,6 @@ function AttributeForm({ item, customOnSubmit }) {
                 multiple
                 onChange={formik.handleChange}
               >
-                <option>Not Defined</option>
                 <option>OPENID</option>
               </Input>
               <ErrorMessage name="usageType">
