@@ -49,12 +49,18 @@ function ClientWizardForm({
   function isComplete(stepId) {
     return sequence.indexOf(stepId) < sequence.indexOf(currentStep)
   }
+  function buildDescription(description) {
+    return {
+      name: 'description',
+      multiValued: false,
+      values: [description],
+    }
+  }
 
   const initialValues = {
     inum: client.inum,
     dn: client.dn,
     clientSecret: client.secret,
-    clientName: client.clientName,
     displayName: client.displayName,
     description: client.description,
     applicationType: client.applicationType,
@@ -65,15 +71,18 @@ function ClientWizardForm({
     tokenEndpointAuthMethod: client.tokenEndpointAuthMethod,
     accessTokenSigningAlg: client.accessTokenSigningAlg,
     authenticationMethod: client.authenticationMethod,
+    policyUri: client.policyUri,
+    logoURI: client.logoURI,
 
     redirectUris: client.redirectUris,
+    claimRedirectUris: client.claimRedirectUris,
     responseTypes: client.responseTypes,
     grantTypes: client.grantTypes,
     contacts: client.contacts,
     defaultAcrValues: client.defaultAcrValues,
     postLogoutRedirectUris: client.postLogoutRedirectUris,
     scopes: client.scopes,
-    oxAuthClaims:client.oxAuthClaims,
+    oxAuthClaims: client.oxAuthClaims,
     customAttributes: client.customAttributes,
 
     tlsClientAuthSubjectDn: client.tlsClientAuthSubjectDn,
@@ -135,6 +144,12 @@ function ClientWizardForm({
             values.backchannelLogoutUri
           values['attributes'].postAuthnScripts = values.postAuthnScripts
           values['attributes'].additionalAudience = values.additionalAudience
+          if (!values['customAttributes']) {
+            values['customAttributes'] = []
+          }
+          values['customAttributes'].push(
+            buildDescription(values['description']),
+          )
           customOnSubmit(JSON.parse(JSON.stringify(values)))
         }}
       >

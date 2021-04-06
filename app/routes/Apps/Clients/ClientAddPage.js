@@ -28,7 +28,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
     trustedClient: true,
     persistClientAuthorizations: false,
     customAttributes: [],
-    customObjectClasses: [],
+    customObjectClasses: ['top'],
     rptAsJwt: false,
     accessTokenAsJwt: false,
     disabled: false,

@@ -41,42 +41,51 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         name="postAuthnScripts"
         label="Post Authn Scripts"
         formik={formik}
-        value={getMapping(client.postAuthnScripts, postScripts)}
+        value={getMapping(client.attributes.postAuthnScripts, postScripts)}
         options={postScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="consentGatheringScripts"
         label="Consent Gathering Scripts"
         formik={formik}
-        value={getMapping(client.consentGatheringScripts, consentScripts)}
+        value={getMapping(
+          client.attributes.consentGatheringScripts,
+          consentScripts,
+        )}
         options={consentScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="spontaneousScopeScriptDns"
         label="Spontaneous Scope Script Dns"
         formik={formik}
-        value={getMapping(client.spontaneousScopeScriptDns, spontaneousScripts)}
+        value={getMapping(
+          client.attributes.spontaneousScopeScriptDns,
+          spontaneousScripts,
+        )}
         options={spontaneousScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="introspectionScripts"
         label="Introspection Scripts"
         formik={formik}
-        value={getMapping(client.introspectionScripts, instrospectionScripts)}
+        value={getMapping(
+          client.attributes.introspectionScripts,
+          instrospectionScripts,
+        )}
         options={instrospectionScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="rptScripts"
         label="Rpt Scripts"
         formik={formik}
-        value={getMapping(client.rptClaimsScripts, rptScripts)}
+        value={getMapping(client.attributes.rptClaimsScripts, rptScripts)}
         options={rptScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="spontaneousScopes"
         label="Spontaneous Scopes"
         formik={formik}
-        value={getMapping(client.spontaneousScopes, scopes)}
+        value={getMapping(client.attributes.spontaneousScopes, scopes)}
         options={scopes}
       ></GluuTypeAheadForDn>
     </Container>

@@ -34,6 +34,15 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
     setExpirable(!expirable)
   }
 
+  function extractDescription(customAttributes) {
+    var result = customAttributes.filter(
+      (item) => item.name === 'description',
+    )
+    if (result && result.length >= 1) {
+      return result[0].values
+    }
+    return ''
+  }
   function getScopeMapping(exitingScopes, scopes) {
     if (!exitingScopes) {
       exitingScopes = []
@@ -81,25 +90,13 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Client Name" />
-        <Col sm={9}>
-          <Input
-            placeholder="Enter the client name"
-            id="clientName"
-            name="clientName"
-            defaultValue={client.clientName}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
         <GluuLabel label="Display Name" />
         <Col sm={9}>
           <Input
             placeholder="Enter the client displayName"
             id="displayName"
             name="displayName"
-            defaultValue={client.displayName}
+            defaultValue={client.displayName || client.clientName }
             onChange={formik.handleChange}
           />
         </Col>
@@ -111,7 +108,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
             placeholder="Enter the client description"
             id="description"
             name="description"
-            defaultValue={client.description}
+            defaultValue={extractDescription(client.customAttributes || [])}
             onChange={formik.handleChange}
           />
         </Col>

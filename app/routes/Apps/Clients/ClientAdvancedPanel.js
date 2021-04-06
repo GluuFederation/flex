@@ -10,7 +10,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
   const origin_uri_id = 'origin_uri_id'
   const contact_uri_id = 'contact_uri_id'
   const contacts = []
-  const claimRedirectURIs = []
+  const claimRedirectURI = []
   const requestUris = []
   const authorizedOrigins = []
   scripts = scripts
@@ -41,6 +41,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       return false
     }
   }
+  console.log('Here==== ' + JSON.stringify(client.claimRedirectUris))
   return (
     <Container>
       <FormGroup row>
@@ -247,12 +248,12 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         inputId={contact_uri_id}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
-        name="claimRedirectURI"
+        name="claimRedirectURIs"
         label="Claim Redirect URIs"
         formik={formik}
         placeholder="Enter a valid claim uri eg https://..."
-        value={client.claimRedirectURI || []}
-        options={claimRedirectURIs}
+        value={client.claimRedirectUris || []}
+        options={claimRedirectURI}
         validator={uriValidator}
         inputId={claim_uri_id}
       ></GluuTypeAheadWithAdd>
