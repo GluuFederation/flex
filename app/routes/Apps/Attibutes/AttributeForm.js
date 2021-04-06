@@ -46,6 +46,7 @@ function AttributeForm({ item, customOnSubmit }) {
         dataType: item.dataType,
         editType: item.editType,
         viewType: item.viewType,
+        usageType: item.usageType,
         jansHideOnDiscovery: item.jansHideOnDiscovery,
         oxMultiValuedAttribute: item.oxMultiValuedAttribute,
         attributeValidation: item.attributeValidation,
@@ -60,7 +61,7 @@ function AttributeForm({ item, customOnSubmit }) {
         status: Yup.string().required('Required!'),
         dataType: Yup.string().required('Required!'),
         editType: Yup.array().required('Required!'),
-        viewType: Yup.array().required('Required!'),
+        usageType: Yup.array().required('Required!')
       })}
       onSubmit={(values) => {
         const result = Object.assign(item, values)
@@ -215,7 +216,7 @@ function AttributeForm({ item, customOnSubmit }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label="View Type" required />
+            <GluuLabel label="View Type" />
             <Col sm={9}>
               <Input
                 type="select"
@@ -228,13 +229,10 @@ function AttributeForm({ item, customOnSubmit }) {
                 <option>ADMIN</option>
                 <option>USER</option>
               </Input>
-              <ErrorMessage name="viewType">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-              </ErrorMessage>
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label="Usage Type" />
+            <GluuLabel label="Usage Type" required/>
             <Col sm={9}>
               <Input
                 type="select"
@@ -247,6 +245,9 @@ function AttributeForm({ item, customOnSubmit }) {
                 <option>Not Defined</option>
                 <option>OPENID</option>
               </Input>
+              <ErrorMessage name="usageType">
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+              </ErrorMessage>
             </Col>
           </FormGroup>
           <FormGroup row>
