@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Col, Container, FormGroup, Input } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTypeAheadForDn from '../Gluu/GluuTypeAheadForDn'
+import GluuSelectRow from '../Gluu/GluuSelectRow'
 import GluuTypeAheadWithAdd from '../Gluu/GluuTypeAheadWithAdd'
+import Toggle from 'react-toggle'
 
 function ClientAdvancedPanel({ client, scripts, formik }) {
   const claim_uri_id = 'claim_uri_id'
   const request_uri_id = 'request_uri_id'
   const origin_uri_id = 'origin_uri_id'
   const contact_uri_id = 'contact_uri_id'
+  const cibaDeliveryModes = ['poll', 'push', 'ping']
   const contacts = []
   const claimRedirectURI = []
   const requestUris = []
@@ -29,6 +32,15 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       partial = []
     }
     return total.filter((item) => partial.includes(item.dn))
+  }
+  const [softwareSection, setSoftwareSection] = useState(false)
+  const [cibaSection, setCibaSection] = useState(false)
+
+  function handleCibaSection() {
+    setCibaSection(!cibaSection)
+  }
+  function handleSoftwareSection() {
+    setSoftwareSection(!softwareSection)
   }
   function emailValidator(email) {
     if (
@@ -193,38 +205,96 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Software Id" />
-        <Col sm={9}>
-          <Input
-            id="softwareId"
-            name="softwareId"
-            defaultValue={client.softwareId}
-            onChange={formik.handleChange}
+        <GluuLabel label="Show Software related settings ?" size={6} />
+        <Col sm={2}>
+          <Toggle
+            defaultChecked={softwareSection}
+            onChange={handleSoftwareSection}
           />
         </Col>
       </FormGroup>
+      {softwareSection && (
+        <FormGroup row>
+          <GluuLabel label="Software Id" />
+          <Col sm={9}>
+            <Input
+              id="softwareId"
+              name="softwareId"
+              defaultValue={client.softwareId}
+              onChange={formik.handleChange}
+            />
+          </Col>
+        </FormGroup>
+      )}
+      {softwareSection && (
+        <FormGroup row>
+          <GluuLabel label="Software Version" />
+          <Col sm={9}>
+            <Input
+              id="softwareVersion"
+              name="softwareVersion"
+              defaultValue={client.softwareVersion}
+              onChange={formik.handleChange}
+            />
+          </Col>
+        </FormGroup>
+      )}
+      {softwareSection && (
+        <FormGroup row>
+          <GluuLabel label="Software Statement" />
+          <Col sm={9}>
+            <Input
+              id="softwareStatement"
+              type="textarea"
+              name="softwareStatement"
+              defaultValue={client.softwareStatement}
+              onChange={formik.handleChange}
+            />
+          </Col>
+        </FormGroup>
+      )}
       <FormGroup row>
-        <GluuLabel label="Software Version" />
-        <Col sm={9}>
-          <Input
-            id="softwareVersion"
-            name="softwareVersion"
-            defaultValue={client.softwareVersion}
-            onChange={formik.handleChange}
-          />
+        <GluuLabel label="Show CIBA related settings ?" size={6} />
+        <Col sm={6}>
+          <Toggle defaultChecked={cibaSection} onChange={handleCibaSection} />
         </Col>
       </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="Software Statement" />
-        <Col sm={9}>
-          <Input
-            id="softwareStatement"
-            name="softwareStatement"
-            defaultValue={client.softwareStatement}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
+      {cibaSection && (
+        <GluuSelectRow
+          name="backchannelTokenDeliveryMode"
+          lsize={6}
+          rsize={6}
+          label="CIBA Token Delivery Mode"
+          formik={formik}
+          value={client.backchannelTokenDeliveryMode}
+          values={cibaDeliveryModes}
+        ></GluuSelectRow>
+      )}
+      {cibaSection && (
+        <FormGroup row>
+          <GluuLabel label="CIBA Client Notification Endpoint" size={6} />
+          <Col sm={6}>
+            <Input
+              name="backchannelClientNotificationEndpoint"
+              defaultValue={client.backchannelClientNotificationEndpoint}
+              onChange={formik.handleChange}
+            />
+          </Col>
+        </FormGroup>
+      )}
+      {cibaSection && (
+        <FormGroup row>
+          <GluuLabel label="CIBA User Code Parameter?" size={7} />
+          <Col sm={5}>
+            <Input
+              name="backchannelUserCodeParameter"
+              type="checkbox"
+              onChange={formik.handleChange}
+              defaultChecked={client.backchannelUserCodeParameter}
+            />
+          </Col>
+        </FormGroup>
+      )}
       <FormGroup row>
         <GluuLabel label="Front Channel Logout Uri" />
         <Col sm={9}>

@@ -13,7 +13,7 @@ function ClientEditPage({
   permissions,
   dispatch,
 }) {
-  console.log("=================="+JSON.stringify(client))
+  console.log("=================="+JSON.stringify(client.backchannelTokenDeliveryMode))
   if (
     !client.attributes ||
     (Object.keys(client.attributes).length === 0 &&

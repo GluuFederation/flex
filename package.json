@@ -2,15 +2,24 @@
   "name": "gluu-admin-ui",
   "version": "0.1.0",
   "description": "UI to administer the jans-sever features",
-  "keywords":["jans-server","janssen","oauth","admin-ui","gluu"],
+  "keywords": [
+    "jans-server",
+    "janssen",
+    "oauth",
+    "admin-ui",
+    "gluu"
+  ],
   "homepage": "https://github.com/GluuFederation/gluu-admin-ui.git",
-  "bugs": { "url" : "https://github.com/GluuFederation/gluu-admin-ui/issues",
-    "email" : "support@gluu.org"},
-
-  "licenses": [{
-    "type": "Apache-2.0",
-    "url": "https://opensource.org/licenses/apache2.0.php"
-  }],
+  "bugs": {
+    "url": "https://github.com/GluuFederation/gluu-admin-ui/issues",
+    "email": "support@gluu.org"
+  },
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "https://opensource.org/licenses/apache2.0.php"
+    }
+  ],
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -113,7 +122,7 @@
     "react-router-dom": "^5.2.0",
     "react-text-mask": "^5.4.3",
     "react-toastify": "^5.2.1",
-    "react-toggle": "^4.0.2",
+    "react-toggle": "^4.1.2",
     "react-universal-component": "^4.0.0",
     "reactstrap": "^8.7.1",
     "recharts": "^1.6.2",
