@@ -41,7 +41,6 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       return false
     }
   }
-  console.log('Here==== ' + JSON.stringify(client.claimRedirectUris))
   return (
     <Container>
       <FormGroup row>
@@ -150,10 +149,10 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         <GluuLabel label="Refresh Token Lifetime" />
         <Col sm={9}>
           <Input
-            id="oxRefreshTokenLifetime"
+            id="refreshTokenLifetime"
             type="number"
-            name="oxRefreshTokenLifetime"
-            defaultValue={client.oxRefreshTokenLifetime}
+            name="refreshTokenLifetime"
+            defaultValue={client.refreshTokenLifetime}
             onChange={formik.handleChange}
           />
         </Col>

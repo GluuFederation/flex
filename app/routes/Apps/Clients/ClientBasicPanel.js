@@ -27,17 +27,19 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
   const responseTypes = ['code', 'token', 'id_token']
   const postLogoutRedirectUris = []
   const redirectUris = []
-  const [expirable, setExpirable] = useState(client.exp)
-  const [expDate, setExpDate] = useState(new Date())
+  const [expirable, setExpirable] = useState(
+    client.expirationDate ? client.expirationDate : false,
+  )
+  const [expDate, setExpDate] = useState(
+    client.expirationDate ? new Date(client.expirationDate) : new Date(),
+  )
 
   function handleExpirable() {
     setExpirable(!expirable)
   }
 
   function extractDescription(customAttributes) {
-    var result = customAttributes.filter(
-      (item) => item.name === 'description',
-    )
+    var result = customAttributes.filter((item) => item.name === 'description')
     if (result && result.length >= 1) {
       return result[0].values
     }
@@ -96,7 +98,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
             placeholder="Enter the client displayName"
             id="displayName"
             name="displayName"
-            defaultValue={client.displayName || client.clientName }
+            defaultValue={client.displayName || client.clientName}
             onChange={formik.handleChange}
           />
         </Col>
@@ -131,8 +133,11 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
 
           <Col sm={7}>
             <DatePicker
-              id="exp"
-              dateFormat="dd/MM/yyyy"
+              id="expirationDate"
+              name="expirationDate"
+              showTimeSelect
+              dateFormat="yyyy-MM-dd HH:mm:aa"
+              timeFormat="HH:mm:aa"
               selected={expDate}
               peekNextMonth
               showMonthDropdown
@@ -172,9 +177,9 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         <Col sm={9}>
           <Input
             placeholder="Enter the sector uri"
-            id="sectorIdentifierURI"
-            name="sectorIdentifierURI"
-            defaultValue={client.sectorIdentifierURI}
+            id="sectorIdentifierUri"
+            name="sectorIdentifierUri"
+            defaultValue={client.sectorIdentifierUri}
             onChange={formik.handleChange}
           />
         </Col>

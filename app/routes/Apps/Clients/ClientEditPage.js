@@ -6,19 +6,20 @@ import { editClient } from '../../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
 
 function ClientEditPage({
-  item,
+  client,
   scopes,
   scripts,
   loading,
   permissions,
   dispatch,
 }) {
+  console.log("=================="+JSON.stringify(client))
   if (
-    !item.attributes ||
-    (Object.keys(item.attributes).length === 0 &&
-      item.attributes.constructor === Object)
+    !client.attributes ||
+    (Object.keys(client.attributes).length === 0 &&
+      client.attributes.constructor === Object)
   ) {
-    item.attributes = {
+    client.attributes = {
       runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
       keepClientAuthorizationAfterExpiration: false,
       allowSpontaneousScopes: false,
@@ -43,7 +44,7 @@ function ClientEditPage({
         message={'Performing the request, please wait!'}
       >
         <ClientWizardForm
-          client={item}
+          client={client}
           scopes={scopes}
           scripts={scripts}
           permissions={permissions}
@@ -55,7 +56,7 @@ function ClientEditPage({
 }
 const mapStateToProps = (state) => {
   return {
-    item: state.oidcReducer.item,
+    client: state.oidcReducer.item,
     loading: state.oidcReducer.loading,
     scopes: state.scopeReducer.items,
     scripts: state.initReducer.scripts,
