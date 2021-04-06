@@ -134,6 +134,8 @@ function AttributeForm({ item, customOnSubmit }) {
             <Col sm={9}>
               <InputGroup>
                 <Input
+                  type="textarea"
+                  rows="3"
                   placeholder="Enter the attribute description"
                   id="description"
                   name="description"
