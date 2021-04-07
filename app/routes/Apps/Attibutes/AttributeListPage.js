@@ -106,7 +106,6 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         columns={[
           { title: 'Inum', field: 'inum' },
           { title: 'Display Name', field: 'displayName' },
-          { title: 'Data Type', field: 'dataType' },
           {
             title: 'Status',
             field: 'status',
