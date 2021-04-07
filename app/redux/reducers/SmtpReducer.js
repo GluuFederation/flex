@@ -13,6 +13,7 @@ import {
 const INIT_STATE = {
   smtp: {},
   loading: false,
+  testStatus: {},
 }
 
 export default (state = INIT_STATE, action) => {
@@ -82,13 +83,16 @@ export default (state = INIT_STATE, action) => {
 
     case TEST_SMTP_RESPONSE:
       if (action.payload.data) {
+    	  console.log('Smtp Reducer action.payload.data = '+action.payload.data)
         return {
           ...state,
+          testStatus: action.payload.data,
           loading: false,
         }
       }
       return {
         ...state,
+        ... testStatus,
         loading: false,
       }
 

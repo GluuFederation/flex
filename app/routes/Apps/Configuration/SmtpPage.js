@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
 import {
+Badge,
   Col,
   Form,
   FormGroup,
@@ -24,7 +25,10 @@ import {
   SMTP_WRITE,
 } from '../../../utils/PermChecker'
 
-function SmtpPage({ smtp, permissions, loading, dispatch }) {
+function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
+   console.log('SmtpPage smtp = '+smtp+'\n\n')
+   console.log('SmtpPage testStatus = '+testStatus+'\n\n')
+      
   useEffect(() => {
     dispatch(getSmtpConfig())
   }, [])
@@ -66,6 +70,20 @@ function SmtpPage({ smtp, permissions, loading, dispatch }) {
               >
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
+                  
+                 
+                  {testStatus => (
+                		  <FormGroup row>
+                          <GluuLabel label="Smtp Test Status" size={4} />
+                          <Col sm={8} >
+                          <Badge color="primary"> 
+                          {testStatus.service} {testStatus.status}
+                          </Badge>
+                          </Col>
+                          </FormGroup>
+                        )}
+               
+                
                     <FormGroup row>
                       <GluuLabel label="Host Name" required />
                       <Col sm={9}>
@@ -193,6 +211,7 @@ function SmtpPage({ smtp, permissions, loading, dispatch }) {
 const mapStateToProps = (state) => {
   return {
     smtp: state.smtpReducer.smtp,
+    testStatus: state.smtpReducer.testStatus,
     permissions: state.authReducer.permissions,
     loading: state.smtpReducer.loading,
   }
