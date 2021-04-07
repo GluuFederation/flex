@@ -56,7 +56,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
     <React.Fragment>
       <BlockUi
         tag="div"
-        blocking={loading}
+      
         keepInView={true}
         renderChildren={true}
         message={'Performing the request, please wait!'}
