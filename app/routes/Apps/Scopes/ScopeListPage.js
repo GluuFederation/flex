@@ -104,8 +104,9 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
       {/* START Content */}
       <MaterialTable
         columns={[
-          { title: 'Inum', field: 'inum' },
-          { title: 'ID', field: 'id' },
+          { title: 'iNum', field: 'inum' },
+          { title: 'Display Name', field: 'displayName' },
+          { title: 'Description', field: 'description' },
           { title: 'Type', field: 'scopeType' },
           {
             title: 'IS Default',
@@ -135,7 +136,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
           actionsColumnIndex: -1,
         }}
         detailPanel={(rowData) => {
-          return <ClientDetailPage row={rowData} />
+          return <ScopeDetailPage row={rowData} />
         }}
       />
       {/* END Content */}

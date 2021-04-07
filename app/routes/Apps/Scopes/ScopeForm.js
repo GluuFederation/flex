@@ -100,7 +100,7 @@ const result = Object.assign(scope, values)
 
 
 <FormGroup row>
-<GluuLabel label="displayName"  />
+<GluuLabel label="DisplayName"  required />
 <Col sm={9}>
 <Input
 placeholder="Enter the displayName"
@@ -134,20 +134,6 @@ onChange={formik.handleChange}
 </FormGroup>
 
 <FormGroup row>
-<GluuLabel label="IconUrl"  />
-<Col sm={9}>
-<Input
-placeholder="Enter the IconUrl"
-id="iconUrl"
-name="iconUrl"
-defaultValue={scope.iconUrl}
-onKeyUp={toogle}
-onChange={formik.handleChange}
-/>
-</Col>
-</FormGroup>
-
-<FormGroup row>
 <GluuLabel label="Scope Type" required />
 <Col sm={9}>
 <InputGroup>
@@ -172,7 +158,7 @@ onChange={formik.handleChange}
 </FormGroup>
 
 <FormGroup row>
-<GluuLabel  label="DefaultScope" />
+<GluuLabel  label="Default Scope"  size={3} / >
 <Col sm={9}>
 <Input
  id="defaultScope"
@@ -181,9 +167,9 @@ type="checkbox"
 onChange={formik.handleChange}
 type="checkbox"
 defaultChecked={scope.defaultScope} 	
-  />
-    </Col>
- </FormGroup>
+/>
+</Col>
+</FormGroup>
 
 
 <FormGroup row>		
