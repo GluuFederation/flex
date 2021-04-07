@@ -8,11 +8,13 @@ import {
   Form,
   FormGroup,
   Container,
+  CustomInput,
   Card,
   Divider,
   Badge,
   Col,
   Input,
+  InputGroup,
   CardBody,
 } from './../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
@@ -58,9 +60,14 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
               <Formik
                 initialValues={initialValues}
                 onSubmit={(values) => {
+                	console.log('********************** Fido Page values = '+values)
+                	const result = Object.assign(fido, values)
+                	console.log('********************** Fido Page result = '+result)
                   const opts = {}
                   var dataString = JSON.stringify(values)
+                  console.log('********************** Fido Page dataString = '+dataString)
                   var subObject = JSON.parse(dataString)
+                  console.log('********************** Fido Page subObject = '+subObject)
                   fido.fido2Configuration = subObject
                   opts['jansFido2DynConfiguration'] = fido
                   dispatch(editFidoConfig(opts))
@@ -86,6 +93,17 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
+                    <GluuLabel label="Mds Access Token"  size={4} />
+                    <Col sm={8}>
+                      <Input
+                        id="mdsAccessToken"
+                        name="mdsAccessToken"
+                        onChange={formik.handleChange}
+                        defaultValue={fido.fido2Configuration.mdsAccessToken}
+                      />
+                    </Col>
+                  </FormGroup>
+                    <FormGroup row>
                       <GluuLabel label="Mds Certs Folder" required size={4} />
                       <Col sm={8}>
                         <Input
@@ -97,7 +115,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label="Mds to Toc Folder" required size={4} />
+                      <GluuLabel label="Mds Toc Folder" required size={4} />
                       <Col sm={8}>
                         <Input
                           id="mdsTocsFolder"
@@ -107,6 +125,40 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                         />
                       </Col>
                     </FormGroup>
+                    <FormGroup row>		
+                    <GluuLabel label="Check U2f Attestations"  size={3} />
+                    <Col sm={3}>
+                     <InputGroup>
+                    <CustomInput
+                      type="select"
+                      id="checkU2fAttestations"
+                      name="checkU2fAttestations"
+                      defaultValue={fido.fido2Configuration.checkU2fAttestationss}
+                      onChange={formik.handleChange}
+                     >
+                     <option value="true">true</option>
+                     <option value="false">false</option>
+                     </CustomInput>
+                    </InputGroup>
+                     </Col>
+                     
+                     <GluuLabel label="User Auto Enrollment"  size={3} />
+                     <Col sm={3}>
+                      <InputGroup>
+                     <CustomInput
+                       type="select"
+                       id="userAutoEnrollment"
+                       name="userAutoEnrollment"
+                       defaultValue={fido.fido2Configuration.userAutoEnrollment}
+                       onChange={formik.handleChange}
+                      >
+                      <option value="true">true</option>
+                      <option value="false">false</option>
+                      </CustomInput>
+                     </InputGroup>
+                      </Col>
+                      </FormGroup>
+                    
                     <FormGroup row>
                       <GluuLabel
                         label="Server Metadata Folder"
@@ -169,24 +221,40 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                         />
                       </Col>
                     </FormGroup>
-                    {fido.fido2Configuration.requestedCredentialTypes && (
-                      <FormGroup row>
-                        <GluuLabel
-                          label="Requested Credential Types"
-                          required
-                          size={4}
-                        />
-                        <Col sm={8}>
-                          {fido.fido2Configuration.requestedCredentialTypes.map(
-                            (item, index) => (
-                              <Badge key={index} color="primary">
-                                {item}
-                              </Badge>
-                            ),
-                          )}
-                        </Col>
-                      </FormGroup>
-                    )}
+                    
+                    <FormGroup row>
+                    <GluuLabel label="Requested Credential Types" required  size={4} />
+                    <Col sm={8}>
+                    <InputGroup>
+                    <CustomInput
+                    type="select"
+                   multiple
+                    id="requestedCredentialTypes"
+                    name="requestedCredentialTypes"
+                    defaultValue={fido.fido2Configuration.requestedCredentialTypes}
+                    onChange={formik.handleChange}
+                    >
+                    <option value="ES256">ES256</option>
+                    <option value="ES384">ES384</option>
+                    <option value="ES512">ES512</option>
+                    <option value="ED256">ED256</option>
+                    <option value="ED512">ED512</option>
+                    <option value="ECDH_ES_HKDF_256">ECDH_ES_HKDF_256</option>
+                    <option value="RS256">RS256</option>
+                    <option value="RS384">RS384</option>
+                    <option value="RS512">RS512</option>
+                    <option value="RS65535">RS65535</option>
+                    <option value="PS256">PS256</option>
+                    <option value="PS384">PS384</option>
+                    <option value="PS512">PS512</option>
+                    <option value="RS1">RS1</option>
+                    </CustomInput>
+                    </InputGroup>
+                    </Col>
+                    </FormGroup>
+
+                      
+
                     <Divider></Divider>
                     {fido.fido2Configuration.requestedParties && (
                       <FormGroup row>

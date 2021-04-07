@@ -32,8 +32,10 @@ export function* getFido() {
 
 export function* editFido({ payload }) {
   try {
+	  console.log('*********************** Fido2 Saga  payload.data ='+JSON.stringify(payload.data))
     const api = yield* newFunction()
     const data = yield call(api.updateFidoConfig, payload.data)
+	  console.log('Fido2 Saga -  response ='+JSON.stringify(data))
     yield put(editFidoResponse(data))
   } catch (e) {
     yield put(editFidoResponse(null))
