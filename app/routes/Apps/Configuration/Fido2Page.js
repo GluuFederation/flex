@@ -19,6 +19,7 @@ import {
 } from './../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
+import GluuTypeAhead from '../Gluu/GluuTypeAhead'
 import { connect } from 'react-redux'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
@@ -43,6 +44,12 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
       fido.fido2Configuration.unfinishedRequestExpiration,
     authenticationHistoryExpiration:
       fido.fido2Configuration.authenticationHistoryExpiration,
+  }
+  
+  function toogle() {
+      if (!init) {
+          setInit(true)
+      }
   }
 
   return (
@@ -75,6 +82,226 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
               >
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
+                  <FormGroup row>
+                  <GluuLabel
+                    label="Issuer"
+                    required
+                    size={4}
+                  />
+                  <Col sm={8}>
+                    <Input
+                      id="issuer"
+                      name="issuer"
+                      onChange={formik.handleChange}
+                      defaultValue={
+                        fido.issuer
+                      }
+                    />
+                  </Col>
+                </FormGroup>
+                <FormGroup row>
+                <GluuLabel
+                  label="Base URL of the Endpoints"
+                  required
+                  size={4}
+                />
+                <Col sm={8}>
+                  <Input
+                    id="baseEndpoint"
+                    name="baseEndpoint"
+                    onChange={formik.handleChange}
+                    defaultValue={
+                      fido.baseEndpoint
+                    }
+                  />
+                </Col>
+              </FormGroup>
+              
+              <FormGroup row>
+              <GluuLabel label="Use Local Cache?" size={2} />
+              <Col sm={2}>
+                <Input
+                  id="useLocalCache"
+                  name="useLocalCache"
+                  onChange={formik.handleChange}
+                  type="checkbox"
+                  defaultChecked={
+                    fido.useLocalCache
+                  }
+                />
+              </Col>
+              <GluuLabel
+                label="Clean Service Interval"
+                size={2}
+              />
+              <Col sm={2}>
+                <Input
+                  id="cleanServiceInterval"
+                  name="cleanServiceInterval"
+                  type="number"
+                  onChange={formik.handleChange}
+                  defaultValue={
+                    fido.cleanServiceInterval
+                  }
+                />
+              </Col>
+              <GluuLabel
+                label="Clean Service Batch Chunk Size"
+                size={2}
+              />
+              <Col sm={2}>
+                <Input
+                  id="cleanServiceBatchChunkSize"
+                  name="cleanServiceBatchChunkSize"
+                  type="number"
+                  onChange={formik.handleChange}
+                  defaultValue={
+                    fido.cleanServiceBatchChunkSize
+                  }
+                />
+              </Col>                        
+            </FormGroup>
+            
+            <FormGroup row>
+            <GluuLabel label="Disable Jdk Logger?" size={2} />
+            <Col sm={2}>
+              <Input
+                id="disableJdkLogger"
+                name="disableJdkLogger"
+                onChange={formik.handleChange}
+                type="checkbox"
+                defaultChecked={
+                  fido.disableJdkLogger
+                }
+              />
+            </Col>
+            <GluuLabel
+              label="loggingLevel"
+              size={2}
+            />
+            <Col sm={2}>
+            <InputGroup>
+            <CustomInput
+            type="select"
+           multiple
+            id="loggingLevel"
+            name="loggingLevel"
+            defaultValue={fido.loggingLevel}
+            onChange={formik.handleChange}
+            >
+            <option value="TRACE">TRACE</option>
+            <option value="DEBUG">DEBUG</option>
+            <option value="INFO">INFO</option>
+            <option value="WARN">WARN</option>
+            <option value="ERROR">ERROR</option>
+            <option value="FATAL">FATAL</option>
+            <option value="OFF">OFF</option>
+                }
+              />
+                </CustomInput>
+                </InputGroup>
+                </Col>
+                
+            <GluuLabel
+              label="loggingLayout"
+              size={2}
+            />
+            <Col sm={2}>
+            <InputGroup>
+            <CustomInput
+            type="select"
+           multiple
+            id="loggingLayout"
+            name="loggingLayout"
+            defaultValue={fido.loggingLayout}
+            onChange={formik.handleChange}
+            >
+            <option value="text">text</option>
+            <option value="json">json</option>
+                }
+              />
+                </CustomInput>
+                </InputGroup>
+            </Col>                        
+          </FormGroup>
+		          <FormGroup row>
+		          <GluuLabel
+		            label="External Logger Configuration"
+		            size={4}
+		          />
+		          <Col sm={8}>
+		            <Input
+		              id="externalLoggerConfiguration"
+		              name="externalLoggerConfiguration"
+		              onChange={formik.handleChange}
+		              defaultValue={
+		                fido.externalLoggerConfiguration
+		              }
+		            />
+		          </Col>
+		        </FormGroup>
+		        <FormGroup row>
+                <GluuLabel label="Metric Reporter Enabled?" size={2} />
+                <Col sm={2}>
+                  <Input
+                    id="metricReporterEnabled"
+                    name="metricReporterEnabled"
+                    onChange={formik.handleChange}
+                    type="checkbox"
+                    defaultChecked={
+                      fido.metricReporterEnabled
+                    }
+                  />
+                </Col>
+                <GluuLabel
+                  label="Metric Reporter Interval"
+                  size={2}
+                />
+                <Col sm={2}>
+                  <Input
+                    id="metricReporterInterval"
+                    name="metricReporterInterval"
+                    type="number"
+                    onChange={formik.handleChange}
+                    defaultValue={
+                      fido.metricReporterInterval
+                    }
+                  />
+                </Col>
+                <GluuLabel
+                  label="Metric Reporter Keep Data In Days"
+                  size={2}
+                />
+                <Col sm={2}>
+                  <Input
+                    id="metricReporterKeepDataDays"
+                    name="metricReporterKeepDataDays"
+                    type="number"
+                    onChange={formik.handleChange}
+                    defaultValue={
+                      fido.metricReporterKeepDataDays
+                    }
+                  />
+                </Col> 
+                  <FormGroup row>
+                  <Col sm={9}>
+                      <GluuTypeAhead
+                          name="personCustomObjectClassList"
+                          label="LDAP custom object class list for dynamic person enrollment"
+                          formik={formik}
+                          options={[]}
+                          required={true}
+                          onKeyUp={toogle}
+                          value={fido.personCustomObjectClassList}
+                      ></GluuTypeAhead>
+                     
+                  </Col>
+              </FormGroup>
+                  
+
+                  
+                  
+              </FormGroup>
                     <FormGroup row>
                       <GluuLabel
                         label="Authenticator Certs Folder"
@@ -219,7 +446,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                               .authenticationHistoryExpiration
                           }
                         />
-                      </Col>
+                      </Col>                        
                     </FormGroup>
                     
                     <FormGroup row>
