@@ -13,6 +13,7 @@ function CacheRedis({ config }) {
     <Card>
       <CardBody>
         <FormGroup row>
+        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>redisConfiguration:</Col>
           <GluuLabel label="Redis Provider Type" size={4} />
           <Col sm={8}>
             <Input

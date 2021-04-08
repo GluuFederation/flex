@@ -133,6 +133,7 @@ function CachePage({ cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisD
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
                     <FormGroup row>
+                      <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>Cache Configuration</Col>
                       <GluuLabel label="Cache Provider Type" size={4} />
                       <Col sm={8}>
                         <Input
@@ -144,16 +145,16 @@ function CachePage({ cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisD
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <CacheRedis config={cacheRedisData} formik={formik} />
-                    </FormGroup>
-                    <FormGroup row>
-                      <CacheNative config={cacheNativeData} formik={formik} />
-                    </FormGroup>
-                    <FormGroup row>
                       <CacheMemcached config={cacheMemData} formik={formik} />
                     </FormGroup>
                     <FormGroup row>
                       <CacheInMemory config={cacheMemoryData} formik={formik} />
+                    </FormGroup>
+                    <FormGroup row>
+                      <CacheRedis config={cacheRedisData} formik={formik} />
+                    </FormGroup>
+                    <FormGroup row>
+                      <CacheNative config={cacheNativeData} formik={formik} />
                     </FormGroup>
                     <FormGroup row></FormGroup>
                     <GluuFooter />

@@ -13,6 +13,7 @@ function CacheNative({ config }) {
     <Card>
       <CardBody>
         <FormGroup row>
+        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>nativePersistenceConfiguration:</Col>
           <GluuLabel label="Default Put Expiration" size={2} />
           <Col sm={2}>
             <Input

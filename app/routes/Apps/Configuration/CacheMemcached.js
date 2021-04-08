@@ -13,6 +13,7 @@ function CacheMemcached({ config }) {
     <Card>
       <CardBody>
         <FormGroup row>
+        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>memcachedConfiguration:</Col>
           <GluuLabel label="Servers" size={2} />
           <Col sm={6}>
             <Badge color="primary">{config.servers}</Badge>
