@@ -8,7 +8,7 @@ import {
   CardBody,
 } from './../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
-function CacheNative({ config }) {
+function CacheNative({ config, formik }) {
   return (
     <Card>
       <CardBody>
@@ -17,10 +17,11 @@ function CacheNative({ config }) {
           <GluuLabel label="Default Put Expiration" size={2} />
           <Col sm={2}>
             <Input
-              id="defaultPutExpiration"
-              name="defaultPutExpiration"
+              id="nativeDefaultPutExpiration"
+              name="nativeDefaultPutExpiration"
               type="number"
               defaultValue={config.defaultPutExpiration}
+              onChange={formik.handleChange}
             />
           </Col>
           <GluuLabel label="Default Cleanup Batch Size" size={2} />
@@ -30,6 +31,7 @@ function CacheNative({ config }) {
               name="defaultCleanupBatchSize"
               type="number"
               defaultValue={config.defaultCleanupBatchSize}
+              onChange={formik.handleChange}
             />
           </Col>
           <GluuLabel label="Delete Expired OnGetRequest" size={2} />
@@ -39,6 +41,7 @@ function CacheNative({ config }) {
               name="deleteExpiredOnGetRequest"
               id="deleteExpiredOnGetRequest"
               defaultChecked={config.deleteExpiredOnGetRequest}
+              onChange={formik.handleChange}
             />
           </Col>
         </FormGroup>

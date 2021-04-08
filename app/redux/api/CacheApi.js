@@ -76,8 +76,9 @@ export default class CacheApi {
     // update Cache Config
   
     updateCacheConfig = (input) => {
+      console.log(input)
       return new Promise((resolve, reject) => {
-        this.api.putConfigCache(input, (error, data) => {
+        this.api.patchConfigCache(input, (error, data) => {
           if (error) {
             reject(error)
           } else {

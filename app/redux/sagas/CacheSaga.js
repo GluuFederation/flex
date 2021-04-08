@@ -25,8 +25,7 @@ const JansConfigApi = require('jans_config_api')
 export function* getCache() {
   try {
     const api = yield* newFunctionForCacheConfig()
-    const data = yield call(api.getCacheConfig)
-    console.log("real data: ", data);
+    const data = yield call(api.getConfigCache)
     yield put(getCacheResponse(data))
   } catch (e) {
     yield put(getCacheResponse(null))

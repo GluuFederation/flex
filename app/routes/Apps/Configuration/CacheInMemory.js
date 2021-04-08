@@ -8,7 +8,7 @@ import {
   CardBody,
 } from './../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
-function CacheInMemory({ config }) {
+function CacheInMemory({ config, formik }) {
   return (
     <Card>
       <CardBody>
@@ -17,10 +17,11 @@ function CacheInMemory({ config }) {
           <GluuLabel label="Default Put Expiration" size={6} />
           <Col sm={6}>
             <Input
-              id="defaultPutExpiration"
-              name="defaultPutExpiration"
+              id="memoryDefaultPutExpiration"
+              name="memoryDefaultPutExpiration"
               type="number"
               defaultValue={config.defaultPutExpiration}
+              onChange={formik.handleChange}
             />
           </Col>
         </FormGroup>
