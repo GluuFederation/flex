@@ -14,6 +14,7 @@ import { getAPIAccessToken } from '../actions/AuthActions'
 import {
 	getScopesResponse,
 	getScopeResponse,
+	getScopeByPatternResponse,
 	addScopeResponse,
 	editScopeResponse,
 	deleteScopeResponse,
@@ -25,6 +26,7 @@ import {
 	  ADD_SCOPE,
 	  EDIT_SCOPE,
 	  DELETE_SCOPE,
+	  GET_SCOPE_BY_PATTERN,
 	} from "../actions/types";
 import ScopeApi from '../api/ScopeApi'
 import { getClient } from '../api/base'
@@ -68,6 +70,23 @@ export function* getScopes() {
     }
   }
 }
+
+export function* getScopeBasedOnOpts({payload}) {
+	console.log('Scope Saga -  getScopeBasedOnOpts payload.data ='+payload)
+  try {
+    const scopeApi = yield* newFunction()
+    const data = yield call(scopeApi.getScopeByOpts,payload.data)
+	console.log('Scope Saga -  getScopeBasedOnOpts response ='+JSON.stringify(data))
+    yield put(getScopeByPatternResponse(data))
+  } catch (e) {
+    yield put(getScopeByPatternResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
 
 export function* addAScope({payload}) {
 		console.log('Scope Saga -  addAScope payload.data ='+JSON.stringify(payload.data))
@@ -122,13 +141,15 @@ export function* watchGetScopeByInum() {
 export function* watchGetScopes() {
   yield takeLatest(GET_SCOPES, getScopes)
 }
+export function* watchGetScopeByOpts() {
+	  yield takeLatest(GET_SCOPE_BY_PATTERN, getScopeBasedOnOpts)
+	}
 export function* watchAddScope() {
 	  yield takeLatest(ADD_SCOPE, addAScope)
 }
 export function* watchEditScope() {
 	  yield takeLatest(EDIT_SCOPE, editAnScope)
 }
-
 export function* watchDeleteScope() {
 	  yield takeLatest(DELETE_SCOPE, deleteAnScope)
 }
@@ -138,6 +159,7 @@ export default function* rootSaga() {
   yield all([
 	  fork(watchGetScopeByInum), 
 	  fork(watchGetScopes),
+	  fork(watchGetScopeByOpts),
 	  fork(watchAddScope),
 	  fork(watchEditScope),
 	  fork(watchDeleteScope),

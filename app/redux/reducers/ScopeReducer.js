@@ -10,7 +10,9 @@ import {
 	DELETE_SCOPE,
 	DELETE_SCOPE_RESPONSE,
 	RESET,
-	SET_ITEM
+	SET_ITEM,
+	GET_SCOPE_BY_PATTERN,
+	GET_SCOPE_BY_PATTERN_RESPONSE
 } from "../actions/types";
 
 const INIT_STATE = {
@@ -60,6 +62,25 @@ export default (state = INIT_STATE, action) => {
 			}
 		}
 
+	case GET_SCOPE_BY_PATTERN:
+		return {
+		...state,
+		loading: true,
+	}
+	case GET_SCOPE_BY_PATTERN_RESPONSE:
+		if (action.payload.data) {
+			return {
+				...state,
+				item: action.payload.data,
+				loading: false,
+			}
+		} else {
+			return {
+				...state,
+				loading: false,
+			}
+		}
+		
 	case ADD_SCOPE:
 		return {
 		...state,

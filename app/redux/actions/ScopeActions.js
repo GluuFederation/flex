@@ -10,6 +10,8 @@ import {
   GET_SCOPE_BY_INUM,
   GET_SCOPE_BY_INUM_RESPONSE,
   SET_ITEM,
+  GET_SCOPE_BY_PATTERN,
+  GET_SCOPE_BY_PATTERN_RESPONSE,
 } from "./types"
 
 
@@ -32,6 +34,16 @@ export const getScopeResponse = data => ({
 	  payload: { data },
 	})
 
+export const getScopeByPattern = opts => ({
+  type: GET_SCOPE_BY_PATTERN,
+  payload: { opts },
+})
+
+export const getScopeByPatternResponse = data => ({
+	  type: GET_SCOPE_BY_PATTERN_RESPONSE,
+	  payload: { data },
+	})
+	
 export const addScope = data => ({
 	  type: ADD_SCOPE,	  
 	  payload: { data },
