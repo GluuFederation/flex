@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
-import ClientDetailPage from '../Scopes/ScopeDetailPage'
+import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { getScopes, deleteScope, setCurrentItem } from '../../../redux/actions/ScopeActions'
 import {
 	  hasPermission,

@@ -25,23 +25,18 @@ function ScopeDetailPage({ row }) {
           <Col sm={6}>
             <GluuFormDetailRow label="Description" value={row.description} />
           </Col>
-          <Col sm={6}>
-            <GluuFormDetailRow
-              label="Scope Type"
-              value={row.scopeType}
-              isBadge
-            />
+            <Col sm={6}>
+            <GluuFormDetailRow label="Display Name" value={row.displayName} />
           </Col>
         </Row>
         <Row>
-          <Col sm={6}>
-            <GluuFormDetailRow
-              label="Uma Type"
-              isBadge
-              badgeColor={getBadgeTheme(row.umaType)}
-              value={row.umaType ? 'Yes' : 'No'}
-            />
-          </Col>
+	        <Col sm={6}>
+	        <GluuFormDetailRow
+	          label="Scope Type"
+	          value={row.scopeType}
+	          isBadge
+	        />
+      </Col>
           <Col sm={6}>
             <GluuFormDetailRow
               label="Default Scope"
