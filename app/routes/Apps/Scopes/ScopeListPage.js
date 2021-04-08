@@ -7,7 +7,6 @@ import GluuDialog from '../Gluu/GluuDialog'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { getScopes, deleteScope, setCurrentItem } from '../../../redux/actions/ScopeActions'
 import GluuAdvancedSearch from '../Gluu/GluuAdvancedSearch'
-import ClientDetailPage from '../Scopes/ScopeDetailPage'
 import {
 	  hasPermission,
 	  SCOPE_READ,
@@ -82,9 +81,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
       tooltip: 'Advanced search options',
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => {
-        //dispatch(getScopes())
-      },
+      onClick: () => {},
     })
   }
   if (hasPermission(permissions, SCOPE_READ)) {
