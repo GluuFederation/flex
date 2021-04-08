@@ -9,6 +9,8 @@ import {
   Col,
   Input,
   CardBody,
+  InputGroup,
+  CustomInput,
 } from './../../../components'
 import GluuFooter from '../Gluu/GluuFooter'
 import GluuLabel from '../Gluu/GluuLabel'
@@ -136,12 +138,20 @@ function CachePage({ cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisD
                       <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>Cache Configuration</Col>
                       <GluuLabel label="Cache Provider Type" size={4} />
                       <Col sm={8}>
-                        <Input
-                          id="cacheProviderType"
-                          name="cacheProviderType"
-                          defaultValue={INITIAL_VALUES.cacheProviderType}
-                          onChange={formik.handleChange}
-                        />
+                        <InputGroup>
+                          <CustomInput
+                            type="select"
+                            id="cacheProviderType"
+                            name="cacheProviderType"
+                            defaultValue={INITIAL_VALUES.cacheProviderType}
+                            onChange={formik.handleChange}
+                          >
+                            <option>IN_MEMORY</option>
+                            <option>MEMCACHED</option>
+                            <option>REDIS</option>
+                            <option>NATIVE_PERSISTENCE</option>
+                          </CustomInput>
+                        </InputGroup>
                       </Col>
                     </FormGroup>
                     <FormGroup row>
