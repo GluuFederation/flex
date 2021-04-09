@@ -90,7 +90,36 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                 enableReinitialize
                 onSubmit={(values) => {
                   const cache= {
-                    "cacheProviderType": values.cacheProviderType
+                    "cacheProviderType": values.cacheProviderType,
+                    // "inMemoryConfiguration": {
+                    //   "defaultPutExpiration": values.memoryDefaultPutExpiration
+                    // },
+                    // "memcachedConfiguration": {
+                    //   "servers": values.memCacheServers,
+                    //   "maxOperationQueueLength": values.maxOperationQueueLength,
+                    //   "bufferSize": values.bufferSize,
+                    //   "defaultPutExpiration": values.memDefaultPutExpiration,
+                    //   "connectionFactoryType": values.connectionFactoryType,
+                    // },
+                    // "nativePersistenceConfiguration":{
+                    //   "defaultPutExpiration": values.nativeDefaultPutExpiration,
+                    //   "defaultCleanupBatchSize": values.defaultCleanupBatchSize,
+                    //   "deleteExpiredOnGetRequest": values.deleteExpiredOnGetRequest,
+                    // },
+                    // "redisConfiguration":{
+                    //   "redisProviderType": values.redisProviderType,
+                    //   "servers": values.servers,
+                    //   "password": values.password,
+                    //   "sentinelMasterGroupName": values.sentinelMasterGroupName,
+                    //   "sslTrustStoreFilePath": values.sslTrustStoreFilePath,
+                    //   "defaultPutExpiration": values.redisDefaultPutExpiration,
+                    //   "useSSL": values.useSSL,
+                    //   "maxIdleConnections": values.maxIdleConnections,
+                    //   "maxTotalConnections": values.maxTotalConnections,
+                    //   "connectionTimeout": values.connectionTimeout,
+                    //   "soTimeout": values.soTimeout,
+                    //   "maxRetryAttempts": values.maxRetryAttempts,
+                    // }
                   }
                   const nativeCache = {
                     "defaultPutExpiration": values.nativeDefaultPutExpiration,
@@ -140,7 +169,7 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                   dispatch(editMemCache(opts4))
 
                   const opts5 = {}
-                  opts5['cachedConfiguration'] = JSON.stringify(cache)
+                  opts5['patchRequest'] = JSON.stringify(cache)
                   dispatch(editCache(opts5))
                 }}
               >
@@ -150,20 +179,24 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                       <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>Cache Configuration</Col>
                       <GluuLabel label="Cache Provider Type" size={4} />
                       <Col sm={8}>
-                        <InputGroup>
-                          <CustomInput
-                            type="select"
-                            id="cacheProviderType"
-                            name="cacheProviderType"
-                            defaultValue={cacheData.cacheProviderType}
-                            onChange={formik.handleChange}
-                          >
-                            <option>IN_MEMORY</option>
-                            <option>MEMCACHED</option>
-                            <option>REDIS</option>
-                            <option>NATIVE_PERSISTENCE</option>
-                          </CustomInput>
-                        </InputGroup>
+                        {
+                          cacheData.cacheProviderType && (
+                            <InputGroup>
+                              <CustomInput
+                                type="select"
+                                id="cacheProviderType"
+                                name="cacheProviderType"
+                                defaultValue={cacheData.cacheProviderType}
+                                onChange={formik.handleChange}
+                              >
+                                <option>IN_MEMORY</option>
+                                <option>MEMCACHED</option>
+                                <option>REDIS</option>
+                                <option>NATIVE_PERSISTENCE</option>
+                              </CustomInput>
+                            </InputGroup>
+                          )
+                        }
                       </Col>
                     </FormGroup>
                     <FormGroup row>
