@@ -9,12 +9,15 @@ import {
   ADD_LDAP_RESPONSE,
   DELETE_LDAP,
   DELETE_LDAP_RESPONSE,
+  TEST_LDAP,
+  TEST_LDAP_RESPONSE,
 } from '../actions/types'
 
 const INIT_STATE = {
   ldap: [],
   item: {},
   loading: false,
+  testStatus: false,
 }
 
 export default (state = INIT_STATE, action) => {
@@ -102,6 +105,19 @@ export default (state = INIT_STATE, action) => {
           loading: false,
         }
       }
+
+    case TEST_LDAP:
+      return {
+        ...state,
+        loading: true,
+      }
+
+    case TEST_LDAP_RESPONSE:
+        return {
+          ...state,
+          testStatus: !!action.payload.data,
+          loading: false,
+        }
 
     case RESET:
       return {

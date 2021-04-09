@@ -8,14 +8,18 @@ import {
     Label,
 } from './../../../components'
 
-const LdapDetailPage = ({ row }) => {
-
+const LdapDetailPage = ({ row, testLdapConnection }) => {
+    
     function getBadgeTheme(status) {
         if (status) {
             return 'primary'
         } else {
             return 'warning'
         }
+    }
+
+    function checkLdapConnection() {
+        testLdapConnection(row);
     }
 
     return (
@@ -109,6 +113,11 @@ const LdapDetailPage = ({ row }) => {
                             <Label sm={6}>Use Anonymous Bind:</Label>
                             <Label sm={6}>{row.useAnonymousBind}</Label>
                         </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm={4}>
+                    <button onClick={checkLdapConnection} type="button" className="btn btn-primary text-center">Test Connection</button>
                     </Col>
                 </Row>
                 {/* END Content */}

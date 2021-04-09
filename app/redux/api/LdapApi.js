@@ -55,4 +55,19 @@ export default class LdapApi {
     })
   }
 
+  // test LDAP Config
+  testLdapConfig = (input) => {
+    console.log('Ldap Api testLdapConfig  ')
+    return new Promise((resolve, reject) => {
+      this.api.postConfigDatabaseLdapTest(input, (error, data, response) => {
+        if (error) {
+          reject(error)
+        } else {
+          console.log('Ldap Api testLdapConfig  data =' + JSON.stringify(data))
+          resolve(data)
+        }
+      })
+    })
+  }
+
 }

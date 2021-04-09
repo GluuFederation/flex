@@ -6,6 +6,7 @@ import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import LdapDetailPage from './LdapDetailPage'
 import { Button } from './../../../components'
+import GluuAlert from '../Gluu/GluuAlert'
 import {
   hasPermission,
   LDAP_READ,
@@ -16,9 +17,10 @@ import {
   getLdapConfig,
   setCurrentItem,
   deleteLdap,
+  testLdap,
 } from '../../../redux/actions/LdapActions'
 
-function LdapListPage({ ldapConfigurations, permissions, loading, dispatch }) {
+function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, testStatus }) {
   useEffect(() => {
     dispatch(getLdapConfig())
   }, [])
@@ -27,13 +29,14 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch }) {
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
+  const [alertObj, setAlertObj] = useState({ severity: '', message: '', show: false })
   const toggle = () => setModal(!modal)
 
   function handleGoToLdapEditPage(row) {
     dispatch(setCurrentItem(row))
     return history.push(`/config/ldap/edit:` + row.configId)
   }
-  
+
   function handleLdapDelete(row) {
     setItem(row);
     toggle()
@@ -92,6 +95,25 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch }) {
     history.push('/config/ldap')
     toggle()
   }
+  function testLdapConnect(row) {
+
+    const testPromise = new Promise(function (resolve, reject) {
+      setAlertObj({ ...alertObj, show: false })
+      resolve();
+    });
+
+    testPromise
+      .then(() => {
+        dispatch(testLdap(row))
+      })
+      .then(() => {
+        if (testStatus) {
+          setAlertObj({ ...alertObj, severity: 'success', message: 'LDAP Connection successful!', show: true })
+        } else {
+          setAlertObj({ ...alertObj, severity: 'error', message: 'LDAP Connection Failed!', show: true })
+        }
+      })
+  }
   return (
     <React.Fragment>
       {/* START Content */}
@@ -109,7 +131,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch }) {
             type: 'boolean',
             render: (rowData) => (
               <Badge color={getBadgeTheme(rowData.enabled)}>
-                {rowData.enabled ? "Enable": "Disable"}
+                {rowData.enabled ? "Enable" : "Disable"}
               </Badge>
             ),
           },
@@ -132,9 +154,10 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch }) {
           actionsColumnIndex: -1,
         }}
         detailPanel={(rowData) => {
-          return <LdapDetailPage row={rowData} />
+          return <LdapDetailPage row={rowData} testLdapConnection={testLdapConnect} />
         }}
       />
+      <GluuAlert severity={alertObj.severity} message={alertObj.message} show={alertObj.show} />
       {/* END Content */}
       <GluuDialog
         row={item}
@@ -152,6 +175,7 @@ const mapStateToProps = (state) => {
     ldapConfigurations: state.ldapReducer.ldap,
     loading: state.ldapReducer.loading,
     permissions: state.authReducer.permissions,
+    testStatus: state.ldapReducer.testStatus,
   }
 }
 export default connect(mapStateToProps)(LdapListPage)
