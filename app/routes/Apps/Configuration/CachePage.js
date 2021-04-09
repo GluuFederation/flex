@@ -91,11 +91,9 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                 onSubmit={(values) => {
                   const cache= [
                     {
-                      op: "replace",
-                      path: "/jans-config-api/api/v1/config/cache",
-                      value: {
-                        "cacheProviderType": values.cacheProviderType
-                      }
+                      "op": "replace",
+                      "path": "/cacheProviderType",
+                      "value": values.cacheProviderType
                     }
                   ]
                   const nativeCache = {
