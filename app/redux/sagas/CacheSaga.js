@@ -151,7 +151,7 @@ export function* getRedisCache() {
 
 export function* addCache({ payload }) {
   try {
-    const api = yield* newFunction()
+    const api = yield* newFunctionForCacheConfig()
     const data = yield call(api.addCacheConfig, payload.data)
     yield put(addCacheResponse(data))
   } catch (e) {
