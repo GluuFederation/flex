@@ -123,7 +123,9 @@ class GluuNameValueProperty extends React.Component {
       emptyLabel=""
       labelKey={this.state.name2}
 	  placeholder={this.state.placeholder2}
-     onChange={this.handleChange.bind(this, index)}
+    onChange={(selected) => {
+    	{this.handleChange2.bind(this, index,selected)
+      }}}
       id={this.state.name2}
       name={this.state.name2}
       multiple={true}
@@ -152,9 +154,13 @@ class GluuNameValueProperty extends React.Component {
      this.setState({ dataArr });
      console.log('Inside handleChange- dataArr 2 -'+ JSON.stringify(dataArr));
      console.log('*** Inside handleChange-  this.state.name = '+this.state.name);
-     this.state.formik.setFieldValue("fido2RequestedParties",dataArr);
+     this.state.formik.setFieldValue("requestedParties",dataArr);
     // console.log('Inside handleChange-  this.state.formik.fido2RequestedParties.value = '+  this.state.formik.fido2RequestedParties.value);
   }
+    
+    handleChange2(i, e, s) {
+  	  console.log('Inside handleChange- Entry -  i '+i+' , e = '+e+' , s ='+s );
+    }
   
   removeClick(i){
      let dataArr = [...this.state.dataArr];

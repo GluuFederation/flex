@@ -36,7 +36,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
   
   //console.log('**** Fido Page - fido = '+JSON.stringify(fido))
   const requested_parties = 'requested_parties'
-  const requestedParties = []	
+  const requestedPartiesList = []	
   
   function requestedPartiesValidator(name) {
 	    return trues
@@ -494,7 +494,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
 
                       <GluuNameValueProperty 
                       formik={formik} 
-                      name="fido2RequestedParties"
+                      name="requestedParties"
                       label1="Name" 
                       name1 ="name"
                       placeholder1 ="Enter requested party name"
@@ -503,48 +503,13 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                       placeholder2 ="Enter requested party domains"
                       value={fido.fido2Configuration.requestedParties || []}
                       inputId={requested_parties}
-                      options = {requestedParties}
+                      options = {requestedPartiesList}
                       validator={requestedPartiesValidator}
                       >
                       </GluuNameValueProperty>
 
                     <Divider></Divider>
-                    {fido.fido2Configuration.requestedParties && (
-                      <FormGroup row>
-                        <GluuLabel
-                          label="Requested Parties"
-                          required
-                          size={4}
-                        />
-                        <Col sm={8}>
-                          {fido.fido2Configuration.requestedParties.map(
-                            (item, index) => (
-                              <FormGroup row key={index}>
-                                <GluuLabel label="Name" size={2} />
-                                <Col sm={4} key={index}>
-                                  <Input
-                                    id="Name"
-                                    key={index}
-                                    name="name"
-                                    type="text"
-                                    onChange={formik.handleChange}
-                                    defaultValue={item.name}
-                                  />
-                                </Col>
-                                <GluuLabel label="Domains" size={3} />
-                                <Col sm={3}>
-                                  {item.domains.map((domain, key) => (
-                                    <Badge key={key} color="primary">
-                                      {domain}
-                                    </Badge>
-                                  ))}
-                                </Col>
-                              </FormGroup>
-                            ),
-                          )}
-                        </Col>
-                      </FormGroup>
-                    )}
+                   
                     <FormGroup row></FormGroup>
                     {hasPermission(permissions, FIDO_WRITE) && <GluuFooter />}
                   </Form>
