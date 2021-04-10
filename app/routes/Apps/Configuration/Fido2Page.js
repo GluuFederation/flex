@@ -27,11 +27,21 @@ import {
   getFidoConfig,
   editFidoConfig,
 } from '../../../redux/actions/FidoActions'
+import GluuNameValueProperty from '../Gluu/GluuNameValueProperty'
 
 function Fido2Page({ fido, loading, permissions, dispatch }) {
   useEffect(() => {
     dispatch(getFidoConfig())
   }, [])
+  
+  //console.log('**** Fido Page - fido = '+JSON.stringify(fido))
+  const requested_parties = 'requested_parties'
+  const requestedParties = []	
+  
+  function requestedPartiesValidator(name) {
+	    return trues
+	  }
+  
   const initialValues = {
     authenticatorCertsFolder: fido.fido2Configuration.authenticatorCertsFolder,
     mdsCertsFolder: fido.fido2Configuration.mdsCertsFolder,
@@ -41,7 +51,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
     requestedParties: fido.fido2Configuration.requestedParties,
     userAutoEnrollment: fido.fido2Configuration.userAutoEnrollment,
     unfinishedRequestExpiration:
-      fido.fido2Configuration.unfinishedRequestExpiration,
+    fido.fido2Configuration.unfinishedRequestExpiration,
     authenticationHistoryExpiration:
       fido.fido2Configuration.authenticationHistoryExpiration,
   }
@@ -51,6 +61,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
           setInit(true)
       }
   }
+  
 
   return (
     <React.Fragment>
@@ -480,7 +491,22 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                     </Col>
                     </FormGroup>
 
-                      
+
+                      <GluuNameValueProperty 
+                      formik={formik} 
+                      name="fido2RequestedParties"
+                      label1="Name" 
+                      name1 ="name"
+                      placeholder1 ="Enter requested party name"
+                      label2="Domains" 
+                      name2 ="domains"
+                      placeholder2 ="Enter requested party domains"
+                      value={fido.fido2Configuration.requestedParties || []}
+                      inputId={requested_parties}
+                      options = {requestedParties}
+                      validator={requestedPartiesValidator}
+                      >
+                      </GluuNameValueProperty>
 
                     <Divider></Divider>
                     {fido.fido2Configuration.requestedParties && (
