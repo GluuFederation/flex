@@ -169,7 +169,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                             <option value="WARN">WARN</option>
                             <option value="ERROR">ERROR</option>
                             <option value="FATAL">FATAL</option>
-                            <option value="OFF">OFF</option>} />
+                            <option value="OFF">OFF</option>
                           </CustomInput>
                         </InputGroup>
                       </Col>
@@ -186,7 +186,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                             onChange={formik.handleChange}
                           >
                             <option value="text">text</option>
-                            <option value="json">json</option>} />
+                            <option value="json">json</option>
                           </CustomInput>
                         </InputGroup>
                       </Col>

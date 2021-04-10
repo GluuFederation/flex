@@ -7,7 +7,6 @@ import {
   CustomInput,
   Form,
   FormGroup,
-  Label,
   Input,
 } from './../../../components'
 import GluuFooter from '../Gluu/GluuFooter'
@@ -172,7 +171,6 @@ function ScopeForm({ scope, handleSubmit }) {
                 name="defaultScope"
                 type="checkbox"
                 onChange={formik.handleChange}
-                type="checkbox"
                 defaultChecked={scope.defaultScope}
               />
             </Col>
