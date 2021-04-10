@@ -1,8 +1,9 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
+import { isFourZeroOneError } from '../../utils/TokenController'
 import {
   getLdapResponse,
   editLdapResponse,
+  addLdapResponse,
   deleteLdapResponse,
   testLdapResponse,
 } from '../actions/LdapActions'
@@ -17,6 +18,15 @@ import {
 import LdapApi from '../api/LdapApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
+
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new LdapApi(api)
+}
 
 export function* getLdap() {
   try {
@@ -85,15 +95,6 @@ export function* testLdap({ payload }) {
       yield put(getAPIAccessToken(jwt))
     }
   }
-}
-
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new LdapApi(api)
 }
 
 export function* watchGetLdapConfig() {

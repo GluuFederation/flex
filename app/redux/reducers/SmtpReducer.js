@@ -92,7 +92,6 @@ export default (state = INIT_STATE, action) => {
       }
       return {
         ...state,
-        ...testStatus,
         loading: false,
       }
 

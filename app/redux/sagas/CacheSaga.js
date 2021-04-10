@@ -31,6 +31,15 @@ import CacheApi from '../api/CacheApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
 
+function* newFunctionForRedisCache() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.CacheConfigurationRedisApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new CacheApi(api)
+}
+
 function* newFunctionForCacheConfig() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -62,15 +71,6 @@ function* newFunctionForNativeCache() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.CacheConfigurationNativePersistenceApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new CacheApi(api)
-}
-
-function* newFunctionForRedisCache() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CacheConfigurationRedisApi(
     getClient(JansConfigApi, token, issuer),
   )
   return new CacheApi(api)
