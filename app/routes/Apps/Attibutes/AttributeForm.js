@@ -15,12 +15,6 @@ import GluuLabel from '../Gluu/GluuLabel'
 
 function AttributeForm({ item, customOnSubmit }) {
   const [init, setInit] = useState(false)
-  const [validation, setValidation] = useState(getInitialState(item))
-
-  function handleValidation() {
-    setValidation(!validation)
-  }
-
   function getInitialState(item) {
     return (
       item.attributeValidation &&
@@ -29,7 +23,10 @@ function AttributeForm({ item, customOnSubmit }) {
       item.attributeValidation.maxLength != null
     )
   }
-
+  const [validation, setValidation] = useState(getInitialState(item))
+  function handleValidation() {
+    setValidation(!validation)
+  }
   function toogle() {
     if (!init) {
       setInit(true)

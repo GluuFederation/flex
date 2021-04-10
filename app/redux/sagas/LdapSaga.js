@@ -1,8 +1,19 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
-import { getLdapResponse, editLdapResponse, deleteLdapResponse, testLdapResponse } from '../actions/LdapActions'
+import {
+  getLdapResponse,
+  editLdapResponse,
+  deleteLdapResponse,
+  testLdapResponse,
+} from '../actions/LdapActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { GET_LDAP, PUT_LDAP, ADD_LDAP, DELETE_LDAP, TEST_LDAP } from '../actions/types'
+import {
+  GET_LDAP,
+  PUT_LDAP,
+  ADD_LDAP,
+  DELETE_LDAP,
+  TEST_LDAP,
+} from '../actions/types'
 import LdapApi from '../api/LdapApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
@@ -106,6 +117,11 @@ export function* watchTestLdapConfig() {
 }
 
 export default function* rootSaga() {
-  yield all([fork(watchGetLdapConfig), fork(watchPutLdapConfig), fork(watchAddLdapConfig),
-  fork(watchDeleteLdap), fork(watchTestLdapConfig)])
+  yield all([
+    fork(watchGetLdapConfig),
+    fork(watchPutLdapConfig),
+    fork(watchAddLdapConfig),
+    fork(watchDeleteLdap),
+    fork(watchTestLdapConfig),
+  ])
 }

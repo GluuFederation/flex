@@ -44,16 +44,16 @@ export default class SmtpApi {
 
   // test SMTP Config
   testSmtpConfig = () => {
-	  console.log('Smtp Api testSmtpConfig  ')
+    console.log('Smtp Api testSmtpConfig  ')
     return new Promise((resolve, reject) => {
       this.api.testConfigSmtp((error, data, response) => {
         if (error) {
-        	console.log('Smtp Api testSmtpConfig error ='+JSON.stringify(error))
+          console.log('Smtp Api testSmtpConfig error =' + JSON.stringify(error))
           reject(error)
         } else {
-        	console.log('Smtp Api testSmtpConfig response  ='+response)
-        	console.log('Smtp Api testSmtpConfig  data ='+JSON.stringify(data))
-        	resolve(data)
+          console.log('Smtp Api testSmtpConfig response  =' + response)
+          console.log('Smtp Api testSmtpConfig  data =' + JSON.stringify(data))
+          resolve(data)
         }
       })
     })

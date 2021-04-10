@@ -14,12 +14,11 @@ import GluuFooter from '../Gluu/GluuFooter'
 import GluuLabel from '../Gluu/GluuLabel'
 
 function ScopeForm({ scope, handleSubmit }) {
-  const [init, setInit] = useState(false)
-  const [validation, setValidation] = useState(getInitialState(scope))
-
   function getInitialState(scope) {
     return scope.scopeType != null && scope.scopeType === 'openid'
   }
+  const [init, setInit] = useState(false)
+  const [validation, setValidation] = useState(getInitialState(scope))
 
   function handleValidation() {
     console.log(' handleValidation validation = ' + validation)
