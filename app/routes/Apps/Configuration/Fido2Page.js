@@ -34,7 +34,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
     dispatch(getFidoConfig())
   }, [])
   
-  //console.log('**** Fido Page - fido = '+JSON.stringify(fido))
+  console.log('**** Fido Page - fido = '+JSON.stringify(fido))
   const requested_parties = 'requested_parties'
   const requestedPartiesList = []	
   
@@ -43,17 +43,32 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
 	  }
   
   const initialValues = {
-    authenticatorCertsFolder: fido.fido2Configuration.authenticatorCertsFolder,
-    mdsCertsFolder: fido.fido2Configuration.mdsCertsFolder,
-    mdsTocsFolder: fido.fido2Configuration.mdsTocsFolder,
-    serverMetadataFolder: fido.fido2Configuration.serverMetadataFolder,
-    requestedCredentialTypes: fido.fido2Configuration.requestedCredentialTypes,
-    requestedParties: fido.fido2Configuration.requestedParties,
-    userAutoEnrollment: fido.fido2Configuration.userAutoEnrollment,
-    unfinishedRequestExpiration:
-    fido.fido2Configuration.unfinishedRequestExpiration,
-    authenticationHistoryExpiration:
-      fido.fido2Configuration.authenticationHistoryExpiration,
+   issuer: fido.issuer,
+   baseEndpoint: fido.baseEndpoint,
+   cleanServiceInterval: fido.cleanServiceInterval,
+   cleanServiceBatchChunkSize: fido.cleanServiceBatchChunkSize,
+   useLocalCache: fido.useLocalCache,
+   disableJdkLogger: fido.disableJdkLogger,
+   loggingLevel: fido.loggingLevel,
+   loggingLayout: fido.loggingLayout,
+   externalLoggerConfiguration: fido.externalLoggerConfiguration,
+   metricReporterInterval: fido.metricReporterInterval,
+   metricReporterKeepDataDays: fido.metricReporterKeepDataDays,
+   metricReporterEnabled: fido.metricReporterEnabled,
+   personCustomObjectClassList: fido.personCustomObjectClassList,
+   fido2Configuration: fido.fido2Configuration
+   //fido2Configuration 
+  // authenticatorCertsFolder: fido.fido2Configuration.authenticatorCertsFolder,
+   //mdsAccessToken: fido.fido2Configuration.mdsAccessToken,
+  // mdsCertsFolder: fido.fido2Configuration.mdsCertsFolder,
+ //   mdsTocsFolder: fido.fido2Configuration.mdsTocsFolder,
+   // checkU2fAttestations: fido.fido2Configuration.checkU2fAttestations,
+ //  userAutoEnrollment: fido.fido2Configuration.userAutoEnrollment,
+  //  unfinishedRequestExpiration:  fido.fido2Configuration.unfinishedRequestExpiration,
+ //   authenticationHistoryExpiration: fido.fido2Configuration.authenticationHistoryExpiration,
+  //  serverMetadataFolder: fido.fido2Configuration.serverMetadataFolder,
+//   requestedCredentialTypes: fido.fido2Configuration.requestedCredentialTypes,
+ //   requestedParties: fido.fido2Configuration.requestedParties,
   }
   
   function toogle() {
@@ -80,14 +95,17 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                 onSubmit={(values) => {
                 	console.log('********************** Fido Page values = '+values)
                 	const result = Object.assign(fido, values)
-                	console.log('********************** Fido Page result = '+result)
+                	console.log('********************** Fido Page result = '+JSON.stringify(result))
                   const opts = {}
                   var dataString = JSON.stringify(values)
                   console.log('********************** Fido Page dataString = '+dataString)
-                  var subObject = JSON.parse(dataString)
-                  console.log('********************** Fido Page subObject = '+subObject)
-                  fido.fido2Configuration = subObject
-                  opts['jansFido2DynConfiguration'] = fido
+                  //var subObject = JSON.parse(dataString)
+                 // console.log('********************** Fido Page subObject = '+ JSON.stringify(subObject))
+                  //fido.fido2Configuration = subObject
+                  console.log('********************** Fido Page fido = '+fido)
+                   opts['jansFido2DynConfiguration'] = fido
+                  
+                  console.log('********************** Fido Page Final opts = '+ JSON.stringify(opts))
                   dispatch(editFidoConfig(opts))
                 }}
               >
@@ -415,18 +433,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label="Auto Enroll User?" size={2} />
-                      <Col sm={2}>
-                        <Input
-                          id="userAutoEnrollment"
-                          name="userAutoEnrollment"
-                          onChange={formik.handleChange}
-                          type="checkbox"
-                          defaultChecked={
-                            fido.fido2Configuration.userAutoEnrollment
-                          }
-                        />
-                      </Col>
+                     
                       <GluuLabel
                         label="Unfinished Request Expiration"
                         size={2}
