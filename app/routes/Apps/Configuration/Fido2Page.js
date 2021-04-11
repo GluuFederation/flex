@@ -39,7 +39,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
   const requestedPartiesList = []	
   
   function requestedPartiesValidator(name) {
-	    return trues
+	    return true;
 	  }
   
   const initialValues = {
@@ -106,7 +106,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                    opts['jansFido2DynConfiguration'] = result
                   
                   console.log('********************** Fido Page Final opts = '+ JSON.stringify(opts))
-                  //dispatch(editFidoConfig(opts))
+                  dispatch(editFidoConfig(opts))
                 }}
               >
                 {(formik) => (

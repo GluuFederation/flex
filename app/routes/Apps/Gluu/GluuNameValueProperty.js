@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import { FormGroup, Col, Row, Button, Input } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
+import GluuTypeAheadWithAdd from '../Gluu/GluuTypeAheadWithAdd'
 import { Formik } from 'formik'
 import Typography from '@material-ui/core/Typography';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -25,7 +26,8 @@ class GluuNameValueProperty extends React.Component {
 	    		options: this.props.options || null,
 	    		validator : this.props.validator || null,
 	    		items: this.props.items || [],
-	    		dataArr: [{name: "", value: []}]
+	    		//dataArr: [{name: "", value: []}]
+	    		dataArr: [{name: "", domains: []}],
 	    };
 	   // this.handleSubmit = this.handleSubmit.bind(this);
 	    this.setValues();
@@ -49,7 +51,7 @@ class GluuNameValueProperty extends React.Component {
     		console.log(' setValue -  this.state.value.length = '+this.state.value.length)
     		
     		if(this.state.value.length == 0){
-    			dataArr = [{name: "", value: []}];
+    			dataArr = this.state.dataArr;
     			return;
     		}
     		for (var i = 0; i < this.state.value.length; i++) {
@@ -57,7 +59,7 @@ class GluuNameValueProperty extends React.Component {
     			var valueList = [] ;    		
     			var opts = [];
    			  	//console.log('****JSON.stringify(elm)= '+JSON.stringify(elm))
-    			  valueList =  this.state.value[i].domains;
+    			  valueList =  this.state.value[i].domains;//??
     			  console.log('**** valueList= '+valueList)
     			  if(valueList!=null ){
     					for (var j = 0; j< valueList.length; j++) {
@@ -67,7 +69,7 @@ class GluuNameValueProperty extends React.Component {
     		    			}
     			  }
     			  console.log(' opts = '+opts);
-    			  this.state.dataArr[i] = {name: this.state.value[i].name, value: opts};
+    			  this.state.dataArr[i] = {name: this.state.value[i].name, domains: opts};
     			  
     		}
     	}//this.state.value != null
@@ -91,7 +93,7 @@ class GluuNameValueProperty extends React.Component {
   
   addClick(){
   this.setState(prevState => ({ 
-    	dataArr: [...prevState.dataArr, { name: "", value: [] }]
+    	dataArr: [...prevState.dataArr, { name: "", domains: [] }]
     }))
    /* console.log('Before addClick()  dataArr = '+this.state.dataArr);
     console.log('Before addClick()  dataArr.length = '+this.state.dataArr.length)
@@ -128,12 +130,14 @@ class GluuNameValueProperty extends React.Component {
         console.log(' i am here selected = '+selected.value);
         this.handleChange3(this, index,selected,this.state.name2)
       }}
-      
+    onRemove={() => {
+        console.log(option); // Add your own code here
+        props.onRemove();}}
 
       id={this.state.name2}
       name={this.state.name2}
       multiple={true}
-      defaultSelected={party.value}
+      defaultSelected={party.domains}
       options={this.state.options}
     />
     <ThemeProvider theme={this.theme}>
@@ -171,10 +175,11 @@ class GluuNameValueProperty extends React.Component {
 	      console.log('Inside handleChange- dataArr - 1'+ JSON.stringify(dataArr));
 	      var modEle = dataArr[e];
 	      console.log('Inside handleChange- modEle - 1'+ JSON.stringify(modEle));
-	      modEle.value.push(obj_text)
-	      dataArr[e] = {...dataArr[e], ['value']: modEle.value};
+	      modEle.domains.push(obj_text)
+	      dataArr[e] = {...dataArr[e], domains: modEle.domains};
 	      this.setState({ dataArr });
 	      console.log('Inside handleChange- dataArr 2 -'+ JSON.stringify(dataArr));
+	      this.state.formik.setFieldValue(this.state.name,dataArr);
 	  }
 
   
@@ -188,7 +193,8 @@ class GluuNameValueProperty extends React.Component {
      this.setState({ dataArr });
      console.log('Inside handleChange- dataArr 2 -'+ JSON.stringify(dataArr));
      console.log('*** Inside handleChange-  this.state.name = '+this.state.name);
-     this.state.formik.setFieldValue("requestedParties",dataArr);
+     //this.state.formik.setFieldValue("requestedParties",dataArr);
+     this.state.formik.setFieldValue(this.state.name,dataArr);
     // console.log('Inside handleChange-  this.state.formik.fido2RequestedParties.value = '+  this.state.formik.fido2RequestedParties.value);
   }
     
