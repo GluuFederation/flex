@@ -33,6 +33,8 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
   useEffect(() => {
     dispatch(getFidoConfig())
   }, [])
+  const [init, setInit] = useState(false)
+  
 
   console.log('**** Fido Page - fido = ' + JSON.stringify(fido))
   const requested_parties = 'requested_parties'
