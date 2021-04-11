@@ -1,11 +1,32 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, hasApiToken } from '../../utils/TokenController'
-import { getLdapResponse, editLdapResponse, deleteLdapResponse } from '../actions/LdapActions'
+import { isFourZeroOneError } from '../../utils/TokenController'
+import {
+  getLdapResponse,
+  editLdapResponse,
+  addLdapResponse,
+  deleteLdapResponse,
+  testLdapResponse,
+} from '../actions/LdapActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { GET_LDAP, PUT_LDAP, ADD_LDAP,  DELETE_LDAP,} from '../actions/types'
+import {
+  GET_LDAP,
+  PUT_LDAP,
+  ADD_LDAP,
+  DELETE_LDAP,
+  TEST_LDAP,
+} from '../actions/types'
 import LdapApi from '../api/LdapApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
+
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new LdapApi(api)
+}
 
 export function* getLdap() {
   try {
@@ -62,13 +83,18 @@ export function* deleteLdap({ payload }) {
   }
 }
 
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new LdapApi(api)
+export function* testLdap({ payload }) {
+  try {
+    const api = yield* newFunction()
+    const data = yield call(api.testLdapConfig, payload.data)
+    yield put(testLdapResponse(data))
+  } catch (e) {
+    yield put(testLdapResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
 }
 
 export function* watchGetLdapConfig() {
@@ -87,6 +113,16 @@ export function* watchDeleteLdap() {
   yield takeLatest(DELETE_LDAP, deleteLdap)
 }
 
+export function* watchTestLdapConfig() {
+  yield takeLatest(TEST_LDAP, testLdap)
+}
+
 export default function* rootSaga() {
-  yield all([fork(watchGetLdapConfig), fork(watchPutLdapConfig), fork(watchAddLdapConfig), fork(watchDeleteLdap)])
+  yield all([
+    fork(watchGetLdapConfig),
+    fork(watchPutLdapConfig),
+    fork(watchAddLdapConfig),
+    fork(watchDeleteLdap),
+    fork(watchTestLdapConfig),
+  ])
 }

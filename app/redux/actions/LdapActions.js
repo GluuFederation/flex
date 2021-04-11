@@ -8,6 +8,8 @@ import {
   DELETE_LDAP,
   DELETE_LDAP_RESPONSE,
   SET_LDAP,
+  TEST_LDAP,
+  TEST_LDAP_RESPONSE,
 } from './types'
 
 export const getLdapConfig = () => ({
@@ -52,4 +54,14 @@ export const deleteLdapResponse = (configId) => ({
 export const setCurrentItem = (item) => ({
   type: SET_LDAP,
   payload: { item },
+})
+
+export const testLdap = (data) => ({
+  type: TEST_LDAP,
+  payload: {data},
+})
+
+export const testLdapResponse = (data) => ({
+  type: TEST_LDAP_RESPONSE,
+  payload: { data },
 })

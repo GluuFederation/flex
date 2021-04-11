@@ -92,12 +92,10 @@ export function* getOpenidClientsWatcher() {
 }
 
 export function* addClientWatcher() {
-  console.log('=================== add Watcher')
   yield takeLatest(ADD_NEW_CLIENT, addNewClient)
 }
 
 export function* editClientWatcher() {
-  console.log('=================== Edit Watcher')
   yield takeLatest(EDIT_CLIENT, editAClient)
 }
 export function* deleteClientWatcher() {

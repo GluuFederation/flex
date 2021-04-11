@@ -11,16 +11,70 @@ import {
   editMemCacheResponse,
   editMemoryCacheResponse,
   editNativeCacheResponse,
-  editRedisCacheResponse
+  editRedisCacheResponse,
 } from '../actions/CacheActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import {
-  GET_CACHE, GET_MEMORY_CACHE, GET_MEM_CACHE, GET_NATIVE_CACHE, GET_REDIS_CACHE,
-  PUT_CACHE, PUT_MEMORY_CACHE, PUT_MEM_CACHE, PUT_NATIVE_CACHE, PUT_REDIS_CACHE, SET_CACHE
+  GET_CACHE,
+  GET_MEMORY_CACHE,
+  GET_MEM_CACHE,
+  GET_NATIVE_CACHE,
+  GET_REDIS_CACHE,
+  PUT_CACHE,
+  PUT_MEMORY_CACHE,
+  PUT_MEM_CACHE,
+  PUT_NATIVE_CACHE,
+  PUT_REDIS_CACHE,
+  SET_CACHE,
 } from '../actions/types'
 import CacheApi from '../api/CacheApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
+
+function* newFunctionForRedisCache() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.CacheConfigurationRedisApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new CacheApi(api)
+}
+
+function* newFunctionForCacheConfig() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.CacheConfigurationApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new CacheApi(api)
+}
+
+function* newFunctionForMemoryCache() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.CacheConfigurationInMemoryApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new CacheApi(api)
+}
+
+function* newFunctionForMemCache() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.CacheConfigurationMemcachedApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new CacheApi(api)
+}
+
+function* newFunctionForNativeCache() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.CacheConfigurationNativePersistenceApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new CacheApi(api)
+}
 
 export function* getCache() {
   try {
@@ -83,7 +137,6 @@ export function* getRedisCache() {
     const api = yield* newFunctionForRedisCache()
     const data = yield call(api.getConfigCacheRedis)
     yield put(getRedisCacheResponse(data))
-
   } catch (e) {
     yield put(getRedisCacheResponse(null))
     if (isFourZeroOneError(e)) {
@@ -95,11 +148,9 @@ export function* getRedisCache() {
 
 // Getting end here .............
 
-
-
 export function* addCache({ payload }) {
   try {
-    const api = yield* newFunction()
+    const api = yield* newFunctionForCacheConfig()
     const data = yield call(api.addCacheConfig, payload.data)
     yield put(addCacheResponse(data))
   } catch (e) {
@@ -108,7 +159,6 @@ export function* addCache({ payload }) {
     }
   }
 }
-
 
 // Editing Cache Saga
 
@@ -174,51 +224,6 @@ export function* editRedisCache({ payload }) {
 
 // Editing Ends Here ......
 
-function* newFunctionForCacheConfig() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CacheConfigurationApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new CacheApi(api)
-}
-
-function* newFunctionForMemoryCache() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CacheConfigurationInMemoryApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new CacheApi(api)
-}
-
-function* newFunctionForMemCache() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CacheConfigurationMemcachedApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new CacheApi(api)
-}
-
-function* newFunctionForNativeCache() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CacheConfigurationNativePersistenceApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new CacheApi(api)
-}
-
-function* newFunctionForRedisCache() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CacheConfigurationRedisApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new CacheApi(api)
-}
-
 export function* watchGetCacheConfig() {
   yield takeLatest(GET_CACHE, getCache)
 }
@@ -239,14 +244,9 @@ export function* watchGetRedisCache() {
   yield takeLatest(GET_REDIS_CACHE, getRedisCache)
 }
 
-
-
-
 export function* watchAddCacheConfig() {
   yield takeLatest(SET_CACHE, addCache)
 }
-
-
 
 export function* watchPutCacheConfig() {
   yield takeLatest(PUT_CACHE, editCache)
@@ -268,14 +268,17 @@ export function* watchPutRedisCacheConfig() {
   yield takeLatest(PUT_REDIS_CACHE, editRedisCache)
 }
 
-
-
-
 export default function* rootSaga() {
   yield all([
-    fork(watchGetCacheConfig), fork(watchGetMemoryCache), fork(watchGetMemCache),
-    fork(watchGetNativeCache), fork(watchGetRedisCache), fork(watchPutCacheConfig),
-    fork(watchPutMemoryCacheConfig), fork(watchPutMemCacheConfig), fork(watchPutNativeCacheConfig),
-    fork(watchPutRedisCacheConfig)
+    fork(watchGetCacheConfig),
+    fork(watchGetMemoryCache),
+    fork(watchGetMemCache),
+    fork(watchGetNativeCache),
+    fork(watchGetRedisCache),
+    fork(watchPutCacheConfig),
+    fork(watchPutMemoryCacheConfig),
+    fork(watchPutMemCacheConfig),
+    fork(watchPutNativeCacheConfig),
+    fork(watchPutRedisCacheConfig),
   ])
 }

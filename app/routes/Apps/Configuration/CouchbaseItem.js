@@ -27,7 +27,6 @@ function CouchbaseItem({ couchbase, index, formik }) {
               disabled
               defaultValue={couchbase.configId}
               onChange={formik.handleChange}
-              disabled
             />
           </Col>
         </FormGroup>

@@ -5,100 +5,130 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
-import { getScopes, deleteScope, setCurrentItem } from '../../../redux/actions/ScopeActions'
 import {
-	  hasPermission,
-	  SCOPE_READ,
-	  SCOPE_WRITE,
-	  SCOPE_DELETE,
-	} from '../../../utils/PermChecker'
+  getScopes,
+  deleteScope,
+  setCurrentItem,
+} from '../../../redux/actions/ScopeActions'
+import GluuAdvancedSearch from '../Gluu/GluuAdvancedSearch'
+import {
+  hasPermission,
+  SCOPE_READ,
+  SCOPE_WRITE,
+  SCOPE_DELETE,
+} from '../../../utils/PermChecker'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getScopes())
   }, [])
-  
+
   const myActions = []
   const history = useHistory()
   const [item, setItem] = useState({})
+  const [limit, setLimit] = useState(100)
+  const [pattern, setPattern] = useState(null)
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
+  const limitId = 'searchLimit'
+  const patternId = 'searchPattern'
+  function handleLimitChange(i) {
+    setLimit(document.getElementById(limitId).value)
+    setPattern(document.getElementById(patternId).value)
+  }
 
   function handleGoToScopeAddPage() {
     return history.push('/scope/new')
   }
   function handleGoToScopeEditPage(row) {
-	  dispatch(setCurrentItem(row))
+    dispatch(setCurrentItem(row))
     return history.push(`/scope/edit:` + row.inum)
   }
-  
+
   function handleScopeDelete(row) {
-	    dispatch(setCurrentItem(row))
-	    setItem(row)
-	    toggle()
+    dispatch(setCurrentItem(row))
+    setItem(row)
+    toggle()
   }
-  
+
   function onDeletionConfirmed() {
-	  console.log('Scope onDeletionConfirmed - item.inum = '+item.inum)
-	  dispatch(deleteScope(item.inum))
-	  history.push('/scopes')
-	  toggle()
+    console.log('Scope onDeletionConfirmed - item.inum = ' + item.inum)
+    dispatch(deleteScope(item.inum))
+    history.push('/scopes')
+    toggle()
   }
-  
+
   function getBadgeTheme(status) {
-	    if (status === 'ACTIVE') {
-	      return 'primary'
-	    } else {
-	      return 'warning'
-	    }
-	  }
-  
+    if (status === 'ACTIVE') {
+      return 'primary'
+    } else {
+      return 'warning'
+    }
+  }
+
   if (hasPermission(permissions, SCOPE_WRITE)) {
-	    myActions.push((rowData) => ({
-	      icon: 'edit',
-	      iconProps: {
-	        color: 'primary',
-	        id: 'editScope' + rowData.inum,
-	      },
-	      tooltip: 'Edit Scope',
-	      onClick: (event, rowData) => handleGoToScopeEditPage(rowData),
-	      disabled: !hasPermission(permissions, SCOPE_WRITE),
-	    }))
-	  }
-	  if (hasPermission(permissions, SCOPE_WRITE)) {
-	    myActions.push({
-	      icon: 'add',
-	      tooltip: 'Add Scope',
-	      iconProps: { color: 'primary' },
-	      isFreeAction: true,
-	      onClick: () => handleGoToScopeAddPage(),
-	      disabled: !hasPermission(permissions, SCOPE_WRITE),
-	    })
-	  }
-	  if (hasPermission(permissions, SCOPE_READ)) {
-	    myActions.push({
-	      icon: 'refresh',
-	      tooltip: 'Refresh Data',
-	      iconProps: { color: 'primary' },
-	      isFreeAction: true,
-	      onClick: () => {
-	        dispatch(getScopes())
-	      },
-	    })
-	  }
-	  if (hasPermission(permissions, SCOPE_DELETE)) {
-	    myActions.push((rowData) => ({
-	      icon: 'delete',
-	      iconProps: {
-	        color: 'secondary',
-	        id: 'deleteScope' + rowData.inum,
-	      },
-	      tooltip: 'Delete Scope',
-	      onClick: (event, rowData) => handleScopeDelete(rowData),
-	      disabled: !hasPermission(permissions, SCOPE_DELETE),
-	    }))
-	  }
-	  
+    myActions.push((rowData) => ({
+      icon: 'edit',
+      iconProps: {
+        color: 'primary',
+        id: 'editScope' + rowData.inum,
+      },
+      tooltip: 'Edit Scope',
+      onClick: (event, rowData) => handleGoToScopeEditPage(rowData),
+      disabled: !hasPermission(permissions, SCOPE_WRITE),
+    }))
+  }
+
+  if (hasPermission(permissions, SCOPE_READ)) {
+    myActions.push({
+      icon: () => (
+        <GluuAdvancedSearch
+          limitId={limitId}
+          patternId={patternId}
+          handler={handleLimitChange}
+        />
+      ),
+      tooltip: 'Advanced search options',
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => {},
+    })
+  }
+  if (hasPermission(permissions, SCOPE_READ)) {
+    myActions.push({
+      icon: 'refresh',
+      tooltip: 'Refresh Data',
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => {
+        dispatch(getScopes())
+      },
+    })
+  }
+  if (hasPermission(permissions, SCOPE_WRITE)) {
+    myActions.push({
+      icon: 'add',
+      tooltip: 'Add Scope',
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => handleGoToScopeAddPage(),
+      disabled: !hasPermission(permissions, SCOPE_WRITE),
+    })
+  }
+
+  if (hasPermission(permissions, SCOPE_DELETE)) {
+    myActions.push((rowData) => ({
+      icon: 'delete',
+      iconProps: {
+        color: 'secondary',
+        id: 'deleteScope' + rowData.inum,
+      },
+      tooltip: 'Delete Scope',
+      onClick: (event, rowData) => handleScopeDelete(rowData),
+      disabled: !hasPermission(permissions, SCOPE_DELETE),
+    }))
+  }
+
   return (
     <React.Fragment>
       {/* START Content */}
@@ -120,19 +150,20 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         ]}
         data={scopes}
         isLoading={loading}
-        title=" Scopes"
+        title="Scopes"
         actions={myActions}
         options={{
-        search: true,
-        selection: false,
-        pageSize: 10,
-        headerStyle: {
-        backgroundColor: '#1EB7FF', //#1EB7FF 01579b
-        color: '#FFF',
-        padding: '2px',
-        textTransform: 'uppercase',
-         fontSize: '18px',
-        },
+          search: true,
+          searchFieldAlignment: 'left',
+          selection: false,
+          pageSize: 10,
+          headerStyle: {
+            backgroundColor: '#1EB7FF', //#1EB7FF 01579b
+            color: '#FFF',
+            padding: '2px',
+            textTransform: 'uppercase',
+            fontSize: '18px',
+          },
           actionsColumnIndex: -1,
         }}
         detailPanel={(rowData) => {

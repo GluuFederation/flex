@@ -9,7 +9,6 @@ import {
   DELETE_CLIENT_RESPONSE,
   SET_CLIENT_ITEM,
   RESET,
-  
 } from '../actions/types'
 
 const INIT_STATE = {
