@@ -6,7 +6,7 @@ export default class AttributeApi {
   // Get all attributes
   getAllAttributes = () => {
     return new Promise((resolve, reject) => {
-      this.api.getAttributes({limit:500}, (error, data) => {
+      this.api.getAttributes({ limit: 500 }, (error, data) => {
         if (error) {
           reject(error)
         } else {

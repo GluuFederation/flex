@@ -15,12 +15,6 @@ import GluuLabel from '../Gluu/GluuLabel'
 
 function AttributeForm({ item, customOnSubmit }) {
   const [init, setInit] = useState(false)
-  const [validation, setValidation] = useState(getInitialState(item))
-
-  function handleValidation() {
-    setValidation(!validation)
-  }
-
   function getInitialState(item) {
     return (
       item.attributeValidation &&
@@ -29,7 +23,10 @@ function AttributeForm({ item, customOnSubmit }) {
       item.attributeValidation.maxLength != null
     )
   }
-
+  const [validation, setValidation] = useState(getInitialState(item))
+  function handleValidation() {
+    setValidation(!validation)
+  }
   function toogle() {
     if (!init) {
       setInit(true)
@@ -61,7 +58,7 @@ function AttributeForm({ item, customOnSubmit }) {
         status: Yup.string().required('Required!'),
         dataType: Yup.string().required('Required!'),
         editType: Yup.array().required('Required!'),
-        usageType: Yup.array().required('Required!')
+        usageType: Yup.array().required('Required!'),
       })}
       onSubmit={(values) => {
         const result = Object.assign(item, values)
@@ -232,7 +229,7 @@ function AttributeForm({ item, customOnSubmit }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label="Usage Type" required/>
+            <GluuLabel label="Usage Type" required />
             <Col sm={9}>
               <Input
                 type="select"

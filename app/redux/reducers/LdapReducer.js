@@ -96,7 +96,9 @@ export default (state = INIT_STATE, action) => {
       if (action.payload.configId) {
         return {
           ...state,
-          ldap: state.ldap.filter((i) => i.configId !== action.payload.configId),
+          ldap: state.ldap.filter(
+            (i) => i.configId !== action.payload.configId,
+          ),
           loading: false,
         }
       } else {
@@ -113,11 +115,11 @@ export default (state = INIT_STATE, action) => {
       }
 
     case TEST_LDAP_RESPONSE:
-        return {
-          ...state,
-          testStatus: !!action.payload.data,
-          loading: false,
-        }
+      return {
+        ...state,
+        testStatus: !!action.payload.data,
+        loading: false,
+      }
 
     case RESET:
       return {

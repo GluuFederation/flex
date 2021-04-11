@@ -5,20 +5,24 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
-import { getScopes, deleteScope, setCurrentItem } from '../../../redux/actions/ScopeActions'
+import {
+  getScopes,
+  deleteScope,
+  setCurrentItem,
+} from '../../../redux/actions/ScopeActions'
 import GluuAdvancedSearch from '../Gluu/GluuAdvancedSearch'
 import {
-	  hasPermission,
-	  SCOPE_READ,
-	  SCOPE_WRITE,
-	  SCOPE_DELETE,
-	} from '../../../utils/PermChecker'
+  hasPermission,
+  SCOPE_READ,
+  SCOPE_WRITE,
+  SCOPE_DELETE,
+} from '../../../utils/PermChecker'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getScopes())
   }, [])
-  
+
   const myActions = []
   const history = useHistory()
   const [item, setItem] = useState({})
@@ -37,31 +41,31 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     return history.push('/scope/new')
   }
   function handleGoToScopeEditPage(row) {
-	  dispatch(setCurrentItem(row))
+    dispatch(setCurrentItem(row))
     return history.push(`/scope/edit:` + row.inum)
   }
-  
+
   function handleScopeDelete(row) {
-	    dispatch(setCurrentItem(row))
-	    setItem(row)
-	    toggle()
+    dispatch(setCurrentItem(row))
+    setItem(row)
+    toggle()
   }
-  
+
   function onDeletionConfirmed() {
-	  console.log('Scope onDeletionConfirmed - item.inum = '+item.inum)
-	  dispatch(deleteScope(item.inum))
-	  history.push('/scopes')
-	  toggle()
+    console.log('Scope onDeletionConfirmed - item.inum = ' + item.inum)
+    dispatch(deleteScope(item.inum))
+    history.push('/scopes')
+    toggle()
   }
-  
+
   function getBadgeTheme(status) {
-	    if (status === 'ACTIVE') {
-	      return 'primary'
-	    } else {
-	      return 'warning'
-	    }
-	  }
-  
+    if (status === 'ACTIVE') {
+      return 'primary'
+    } else {
+      return 'warning'
+    }
+  }
+
   if (hasPermission(permissions, SCOPE_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
@@ -77,7 +81,13 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
 
   if (hasPermission(permissions, SCOPE_READ)) {
     myActions.push({
-      icon: () => <GluuAdvancedSearch limitId={limitId} patternId={patternId} handler={handleLimitChange} />,
+      icon: () => (
+        <GluuAdvancedSearch
+          limitId={limitId}
+          patternId={patternId}
+          handler={handleLimitChange}
+        />
+      ),
       tooltip: 'Advanced search options',
       iconProps: { color: 'primary' },
       isFreeAction: true,
@@ -140,7 +150,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         ]}
         data={scopes}
         isLoading={loading}
-        title=" Scopes"
+        title="Scopes"
         actions={myActions}
         options={{
           search: true,

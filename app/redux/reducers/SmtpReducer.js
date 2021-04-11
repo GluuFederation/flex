@@ -83,7 +83,7 @@ export default (state = INIT_STATE, action) => {
 
     case TEST_SMTP_RESPONSE:
       if (action.payload.data) {
-    	  console.log('Smtp Reducer action.payload.data = '+action.payload.data)
+        console.log('Smtp Reducer action.payload.data = ' + action.payload.data)
         return {
           ...state,
           testStatus: action.payload.data,
@@ -92,7 +92,6 @@ export default (state = INIT_STATE, action) => {
       }
       return {
         ...state,
-        ... testStatus,
         loading: false,
       }
 

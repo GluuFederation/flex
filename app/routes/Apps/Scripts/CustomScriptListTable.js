@@ -11,8 +11,12 @@ import {
 } from '../../../redux/actions/CustomScriptActions'
 //import scripts from './scripts'
 
-function CustomScriptListTable({ selectedScripts, loading, dispatch, removeRowAfterDelete }) {
-
+function CustomScriptListTable({
+  selectedScripts,
+  loading,
+  dispatch,
+  removeRowAfterDelete,
+}) {
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
@@ -39,8 +43,7 @@ function CustomScriptListTable({ selectedScripts, loading, dispatch, removeRowAf
   function onDeletionConfirmed() {
     // perform delete request
     toggle()
-    removeRowAfterDelete(item.inum);
-    
+    removeRowAfterDelete(item.inum)
   }
   return (
     <React.Fragment>
@@ -120,7 +123,7 @@ function CustomScriptListTable({ selectedScripts, loading, dispatch, removeRowAf
         }}
       />
       {/* END Content */}
-      
+
       <GluuDialog
         row={item}
         handler={toggle}

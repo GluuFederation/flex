@@ -11,11 +11,20 @@ import CouchbaseApi from '../api/CouchbaseApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
 
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.DatabaseCouchbaseConfigurationApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new CouchbaseApi(api)
+}
+
 export function* getCouchbase() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getCouchBaseConfig)
-    console.log("couchbase saga data: ", data);
+    console.log('couchbase saga data: ', data)
     yield put(getCouchBaseResponse(data))
   } catch (e) {
     yield put(getCouchBaseResponse(null))
@@ -50,15 +59,6 @@ export function* editCouchbase({ payload }) {
       yield put(getAPIAccessToken(jwt))
     }
   }
-}
-
-function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
-  const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.DatabaseCouchbaseConfigurationApi(
-    getClient(JansConfigApi, token, issuer),
-  )
-  return new CouchbaseApi(api)
 }
 
 export function* watchGetCouchbaseConfig() {
