@@ -27,24 +27,38 @@ import {
   getFidoConfig,
   editFidoConfig,
 } from '../../../redux/actions/FidoActions'
+import GluuNameValueProperty from '../Gluu/GluuNameValueProperty'
 
 function Fido2Page({ fido, loading, permissions, dispatch }) {
   useEffect(() => {
     dispatch(getFidoConfig())
   }, [])
   const [init, setInit] = useState(false)
+  
+
+  console.log('**** Fido Page - fido = ' + JSON.stringify(fido))
+  const requested_parties = 'requested_parties'
+  const requestedPartiesList = []
+
+  function requestedPartiesValidator(name) {
+    return true;
+  }
+
   const initialValues = {
-    authenticatorCertsFolder: fido.fido2Configuration.authenticatorCertsFolder,
-    mdsCertsFolder: fido.fido2Configuration.mdsCertsFolder,
-    mdsTocsFolder: fido.fido2Configuration.mdsTocsFolder,
-    serverMetadataFolder: fido.fido2Configuration.serverMetadataFolder,
-    requestedCredentialTypes: fido.fido2Configuration.requestedCredentialTypes,
-    requestedParties: fido.fido2Configuration.requestedParties,
-    userAutoEnrollment: fido.fido2Configuration.userAutoEnrollment,
-    unfinishedRequestExpiration:
-      fido.fido2Configuration.unfinishedRequestExpiration,
-    authenticationHistoryExpiration:
-      fido.fido2Configuration.authenticationHistoryExpiration,
+    issuer: fido.issuer,
+    baseEndpoint: fido.baseEndpoint,
+    cleanServiceInterval: fido.cleanServiceInterval,
+    cleanServiceBatchChunkSize: fido.cleanServiceBatchChunkSize,
+    useLocalCache: fido.useLocalCache,
+    disableJdkLogger: fido.disableJdkLogger,
+    loggingLevel: fido.loggingLevel,
+    loggingLayout: fido.loggingLayout,
+    externalLoggerConfiguration: fido.externalLoggerConfiguration,
+    metricReporterInterval: fido.metricReporterInterval,
+    metricReporterKeepDataDays: fido.metricReporterKeepDataDays,
+    metricReporterEnabled: fido.metricReporterEnabled,
+    personCustomObjectClassList: fido.personCustomObjectClassList,
+    fido2Configuration: fido.fido2Configuration
   }
 
   function toogle() {
@@ -53,10 +67,12 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
     }
   }
 
+
   return (
     <React.Fragment>
       <BlockUi
         tag="div"
+
         keepInView={true}
         renderChildren={true}
         message={'Performing the request, please wait!'}
@@ -67,25 +83,32 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
               <Formik
                 initialValues={initialValues}
                 onSubmit={(values) => {
+                  //console.log('********************** Fido Page values = '+values)
                   const result = Object.assign(fido, values)
+                  //console.log('********************** Fido Page result = '+JSON.stringify(result))
                   const opts = {}
                   var dataString = JSON.stringify(values)
-                  var subObject = JSON.parse(dataString)
-                  fido.fido2Configuration = subObject
-                  opts['jansFido2DynConfiguration'] = fido
+                  opts['jansFido2DynConfiguration'] = result
+                  console.log('********************** Fido Page Final opts = ' + JSON.stringify(opts))
                   dispatch(editFidoConfig(opts))
                 }}
               >
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
                     <FormGroup row>
-                      <GluuLabel label="Issuer" required size={4} />
+                      <GluuLabel
+                        label="Issuer"
+                        required
+                        size={4}
+                      />
                       <Col sm={8}>
                         <Input
                           id="issuer"
                           name="issuer"
                           onChange={formik.handleChange}
-                          defaultValue={fido.issuer}
+                          defaultValue={
+                            fido.issuer
+                          }
                         />
                       </Col>
                     </FormGroup>
@@ -100,7 +123,9 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           id="baseEndpoint"
                           name="baseEndpoint"
                           onChange={formik.handleChange}
-                          defaultValue={fido.baseEndpoint}
+                          defaultValue={
+                            fido.baseEndpoint
+                          }
                         />
                       </Col>
                     </FormGroup>
@@ -113,17 +138,24 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           name="useLocalCache"
                           onChange={formik.handleChange}
                           type="checkbox"
-                          defaultChecked={fido.useLocalCache}
+                          defaultChecked={
+                            fido.useLocalCache
+                          }
                         />
                       </Col>
-                      <GluuLabel label="Clean Service Interval" size={2} />
+                      <GluuLabel
+                        label="Clean Service Interval"
+                        size={2}
+                      />
                       <Col sm={2}>
                         <Input
                           id="cleanServiceInterval"
                           name="cleanServiceInterval"
                           type="number"
                           onChange={formik.handleChange}
-                          defaultValue={fido.cleanServiceInterval}
+                          defaultValue={
+                            fido.cleanServiceInterval
+                          }
                         />
                       </Col>
                       <GluuLabel
@@ -136,7 +168,9 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           name="cleanServiceBatchChunkSize"
                           type="number"
                           onChange={formik.handleChange}
-                          defaultValue={fido.cleanServiceBatchChunkSize}
+                          defaultValue={
+                            fido.cleanServiceBatchChunkSize
+                          }
                         />
                       </Col>
                     </FormGroup>
@@ -149,10 +183,15 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           name="disableJdkLogger"
                           onChange={formik.handleChange}
                           type="checkbox"
-                          defaultChecked={fido.disableJdkLogger}
+                          defaultChecked={
+                            fido.disableJdkLogger
+                          }
                         />
                       </Col>
-                      <GluuLabel label="loggingLevel" size={2} />
+                      <GluuLabel
+                        label="loggingLevel"
+                        size={2}
+                      />
                       <Col sm={2}>
                         <InputGroup>
                           <CustomInput
@@ -170,11 +209,16 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                             <option value="ERROR">ERROR</option>
                             <option value="FATAL">FATAL</option>
                             <option value="OFF">OFF</option>
-                          </CustomInput>
+			}
+			/>
+			</CustomInput>
                         </InputGroup>
                       </Col>
 
-                      <GluuLabel label="loggingLayout" size={2} />
+                      <GluuLabel
+                        label="loggingLayout"
+                        size={2}
+                      />
                       <Col sm={2}>
                         <InputGroup>
                           <CustomInput
@@ -187,7 +231,9 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           >
                             <option value="text">text</option>
                             <option value="json">json</option>
-                          </CustomInput>
+}
+/>
+</CustomInput>
                         </InputGroup>
                       </Col>
                     </FormGroup>
@@ -201,7 +247,9 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           id="externalLoggerConfiguration"
                           name="externalLoggerConfiguration"
                           onChange={formik.handleChange}
-                          defaultValue={fido.externalLoggerConfiguration}
+                          defaultValue={
+                            fido.externalLoggerConfiguration
+                          }
                         />
                       </Col>
                     </FormGroup>
@@ -213,17 +261,24 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           name="metricReporterEnabled"
                           onChange={formik.handleChange}
                           type="checkbox"
-                          defaultChecked={fido.metricReporterEnabled}
+                          defaultChecked={
+                            fido.metricReporterEnabled
+                          }
                         />
                       </Col>
-                      <GluuLabel label="Metric Reporter Interval" size={2} />
+                      <GluuLabel
+                        label="Metric Reporter Interval"
+                        size={2}
+                      />
                       <Col sm={2}>
                         <Input
                           id="metricReporterInterval"
                           name="metricReporterInterval"
                           type="number"
                           onChange={formik.handleChange}
-                          defaultValue={fido.metricReporterInterval}
+                          defaultValue={
+                            fido.metricReporterInterval
+                          }
                         />
                       </Col>
                       <GluuLabel
@@ -236,7 +291,9 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                           name="metricReporterKeepDataDays"
                           type="number"
                           onChange={formik.handleChange}
-                          defaultValue={fido.metricReporterKeepDataDays}
+                          defaultValue={
+                            fido.metricReporterKeepDataDays
+                          }
                         />
                       </Col>
                       <FormGroup row>
@@ -250,8 +307,13 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                             onKeyUp={toogle}
                             value={fido.personCustomObjectClassList}
                           ></GluuTypeAhead>
+
                         </Col>
                       </FormGroup>
+
+
+
+
                     </FormGroup>
                     <FormGroup row>
                       <GluuLabel
@@ -311,9 +373,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                             type="select"
                             id="checkU2fAttestations"
                             name="checkU2fAttestations"
-                            defaultValue={
-                              fido.fido2Configuration.checkU2fAttestationss
-                            }
+                            defaultValue={fido.fido2Configuration.checkU2fAttestationss}
                             onChange={formik.handleChange}
                           >
                             <option value="true">true</option>
@@ -329,9 +389,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                             type="select"
                             id="userAutoEnrollment"
                             name="userAutoEnrollment"
-                            defaultValue={
-                              fido.fido2Configuration.userAutoEnrollment
-                            }
+                            defaultValue={fido.fido2Configuration.userAutoEnrollment}
                             onChange={formik.handleChange}
                           >
                             <option value="true">true</option>
@@ -359,18 +417,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label="Auto Enroll User?" size={2} />
-                      <Col sm={2}>
-                        <Input
-                          id="userAutoEnrollment"
-                          name="userAutoEnrollment"
-                          onChange={formik.handleChange}
-                          type="checkbox"
-                          defaultChecked={
-                            fido.fido2Configuration.userAutoEnrollment
-                          }
-                        />
-                      </Col>
+
                       <GluuLabel
                         label="Unfinished Request Expiration"
                         size={2}
@@ -405,11 +452,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                     </FormGroup>
 
                     <FormGroup row>
-                      <GluuLabel
-                        label="Requested Credential Types"
-                        required
-                        size={4}
-                      />
+                      <GluuLabel label="Requested Credential Types" required size={4} />
                       <Col sm={8}>
                         <InputGroup>
                           <CustomInput
@@ -417,9 +460,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                             multiple
                             id="requestedCredentialTypes"
                             name="requestedCredentialTypes"
-                            defaultValue={
-                              fido.fido2Configuration.requestedCredentialTypes
-                            }
+                            defaultValue={fido.fido2Configuration.requestedCredentialTypes}
                             onChange={formik.handleChange}
                           >
                             <option value="ES256">ES256</option>
@@ -427,9 +468,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                             <option value="ES512">ES512</option>
                             <option value="ED256">ED256</option>
                             <option value="ED512">ED512</option>
-                            <option value="ECDH_ES_HKDF_256">
-                              ECDH_ES_HKDF_256
-                            </option>
+                            <option value="ECDH_ES_HKDF_256">ECDH_ES_HKDF_256</option>
                             <option value="RS256">RS256</option>
                             <option value="RS384">RS384</option>
                             <option value="RS512">RS512</option>
@@ -443,43 +482,25 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                       </Col>
                     </FormGroup>
 
+
+                    <GluuNameValueProperty
+                      formik={formik}
+                      name="requestedParties"
+                      label1="Name"
+                      name1="name"
+                      placeholder1="Enter requested party name"
+                      label2="Domains"
+                      name2="domains"
+                      placeholder2="Enter requested party domains"
+                      value={fido.fido2Configuration.requestedParties || []}
+                      inputId={requested_parties}
+                      options={requestedPartiesList}
+                      validator={requestedPartiesValidator}
+                    >
+                    </GluuNameValueProperty>
+
                     <Divider></Divider>
-                    {fido.fido2Configuration.requestedParties && (
-                      <FormGroup row>
-                        <GluuLabel
-                          label="Requested Parties"
-                          required
-                          size={4}
-                        />
-                        <Col sm={8}>
-                          {fido.fido2Configuration.requestedParties.map(
-                            (item, index) => (
-                              <FormGroup row key={index}>
-                                <GluuLabel label="Name" size={2} />
-                                <Col sm={4} key={index}>
-                                  <Input
-                                    id="Name"
-                                    key={index}
-                                    name="name"
-                                    type="text"
-                                    onChange={formik.handleChange}
-                                    defaultValue={item.name}
-                                  />
-                                </Col>
-                                <GluuLabel label="Domains" size={3} />
-                                <Col sm={3}>
-                                  {item.domains.map((domain, key) => (
-                                    <Badge key={key} color="primary">
-                                      {domain}
-                                    </Badge>
-                                  ))}
-                                </Col>
-                              </FormGroup>
-                            ),
-                          )}
-                        </Col>
-                      </FormGroup>
-                    )}
+
                     <FormGroup row></FormGroup>
                     {hasPermission(permissions, FIDO_WRITE) && <GluuFooter />}
                   </Form>
