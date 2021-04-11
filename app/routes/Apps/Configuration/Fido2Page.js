@@ -102,11 +102,11 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                   //var subObject = JSON.parse(dataString)
                  // console.log('********************** Fido Page subObject = '+ JSON.stringify(subObject))
                   //fido.fido2Configuration = subObject
-                  console.log('********************** Fido Page fido = '+fido)
-                   opts['jansFido2DynConfiguration'] = fido
+                  //console.log('********************** Fido Page fido = '+fido)
+                   opts['jansFido2DynConfiguration'] = result
                   
                   console.log('********************** Fido Page Final opts = '+ JSON.stringify(opts))
-                  dispatch(editFidoConfig(opts))
+                  //dispatch(editFidoConfig(opts))
                 }}
               >
                 {(formik) => (

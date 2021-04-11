@@ -25,7 +25,7 @@ class GluuNameValueProperty extends React.Component {
 	    		options: this.props.options || null,
 	    		validator : this.props.validator || null,
 	    		items: this.props.items || [],
-	    		dataArr: [{name: "", value: []}]	            
+	    		dataArr: [{name: "", value: []}]
 	    };
 	   // this.handleSubmit = this.handleSubmit.bind(this);
 	    this.setValues();
@@ -113,7 +113,7 @@ class GluuNameValueProperty extends React.Component {
 		id={this.state.name1}
 		name={this.state.name1}
 		defaultValue={party.name}
-		 onChange={this.handleChange.bind(this, index)}
+		onChange={this.handleChange.bind(this, index)}
 		/>
 		</Col>
 	<GluuLabel label={this.state.label2} />
@@ -123,9 +123,13 @@ class GluuNameValueProperty extends React.Component {
       emptyLabel=""
       labelKey={this.state.name2}
 	  placeholder={this.state.placeholder2}
-    onChange={(selected) => {
-    	{this.handleChange2.bind(this, index,selected)
-      }}}
+      onInputChange={this.handleInputChange}
+      onChange={(selected) => {
+        console.log(' i am here selected = '+selected.value);
+        this.handleChange3(this, index,selected,this.state.name2)
+      }}
+      
+
       id={this.state.name2}
       name={this.state.name2}
       multiple={true}
@@ -145,9 +149,39 @@ class GluuNameValueProperty extends React.Component {
      ))
   }
   
+  handleInputChange(input, e) {
+	    console.log("value", input)
+	  }
+
+	  handleChange3(i, e,selected,name) {
+		  console.log('Inside handleChange- Entry -  i '+i+' , e = '+e+" , selected = "+selected+', name = '+name);
+	      console.log('****** Inside handleChange- Entry -  JSON.stringify(selected) = '+JSON.stringify(selected));
+	      var dataLength = selected.length;
+	      console.log('****** Inside handleChange- dataLength = '+dataLength+'  , selected[dataLength-1].domains = '+selected[dataLength-1].domains);
+	      console.log('****** Inside handleChange- dataLength = '+dataLength+'  ,selected[dataLength-1] = '+selected[dataLength-1]);
+	      var obj = JSON.stringify(selected[dataLength-1]);
+	      console.log('****** Inside handleChange- Entry -  obj = '+obj);
+	      var jsonObj = JSON.parse(obj);
+	      console.log('****** Inside handleChange- Entry -  jsonObj = '+jsonObj);
+	      var obj_text = jsonObj[name];
+	      console.log('****** Inside handleChange- Entry -  obj_text = '+obj_text);
+	      
+	     
+	      let dataArr = [...this.state.dataArr];
+	      console.log('Inside handleChange- dataArr - 1'+ JSON.stringify(dataArr));
+	      var modEle = dataArr[e];
+	      console.log('Inside handleChange- modEle - 1'+ JSON.stringify(modEle));
+	      modEle.value.push(obj_text)
+	      dataArr[e] = {...dataArr[e], ['value']: modEle.value};
+	      this.setState({ dataArr });
+	      console.log('Inside handleChange- dataArr 2 -'+ JSON.stringify(dataArr));
+	  }
+
+  
   handleChange(i, e) {
 	  console.log('Inside handleChange- Entry -  i '+i+' , e = '+e );
      const { name, value } = e.target;
+     console.log('Inside handleChange- name='+ name+" , value = "+value);
      let dataArr = [...this.state.dataArr];
      console.log('Inside handleChange- dataArr - 1'+ JSON.stringify(dataArr));
      dataArr[i] = {...dataArr[i], [name]: value};
@@ -159,7 +193,8 @@ class GluuNameValueProperty extends React.Component {
   }
     
     handleChange2(i, e, s) {
-  	  console.log('Inside handleChange- Entry -  i '+i+' , e = '+e+' , s ='+s );
+  	  console.log('****** Inside handleChange2- Entry -  i '+i+' , e = '+e+' ,s = '+s);
+  	console.log('****** Inside handleChange- Entry -  JSON.stringify(s) = '+JSON.stringify(s));
     }
   
   removeClick(i){
