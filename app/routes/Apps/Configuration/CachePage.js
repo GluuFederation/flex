@@ -9,6 +9,8 @@ import {
   Col,
   Input,
   CardBody,
+  InputGroup,
+  CustomInput,
 } from './../../../components'
 import GluuFooter from '../Gluu/GluuFooter'
 import GluuLabel from '../Gluu/GluuLabel'
@@ -19,12 +21,12 @@ import CacheMemcached from './CacheMemcached'
 import { connect } from 'react-redux'
 import {
   getCacheConfig, getMemoryCacheConfig, getMemCacheConfig, getNativeCacheConfig, getRedisCacheConfig,
-  editMemoryCache, editNativeCache, editRedisCache, editMemCache
+  editCache, editMemoryCache, editNativeCache, editRedisCache, editMemCache
 } from '../../../redux/actions/CacheActions'
 
 
 
-function CachePage({ cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisData, loading, dispatch }) {
+function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisData, loading, dispatch }) {
 
   useEffect(() => {
     dispatch(getCacheConfig())
@@ -45,8 +47,7 @@ function CachePage({ cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisD
 
   const INITIAL_VALUES = {
 
-    cacheProviderType: 'NATIVE_PERSISTENCE',
-
+    cacheProviderType: cacheData.cacheProviderType,
     memCacheServers: cacheMemData.servers,
     maxOperationQueueLength: cacheMemData.maxOperationQueueLength,
     bufferSize: cacheMemData.bufferSize,
@@ -55,7 +56,10 @@ function CachePage({ cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisD
     memoryDefaultPutExpiration: cacheMemoryData.defaultPutExpiration,
     redisProviderType: cacheRedisData.redisProviderType,
     servers: cacheRedisData.servers,
-    defaultPutExpiration: cacheRedisData.defaultPutExpiration,
+    password: cacheRedisData.password ? cacheRedisData.password : "",
+    sentinelMasterGroupName: cacheRedisData.sentinelMasterGroupName ? cacheRedisData.sentinelMasterGroupName : "",
+    sslTrustStoreFilePath: cacheRedisData.sslTrustStoreFilePath ? cacheRedisData.sslTrustStoreFilePath : "",
+    redisDefaultPutExpiration: cacheRedisData.defaultPutExpiration,
     useSSL: cacheRedisData.useSSL,
     maxIdleConnections: cacheRedisData.maxIdleConnections,
     maxTotalConnections: cacheRedisData.maxTotalConnections,
@@ -85,6 +89,13 @@ function CachePage({ cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisD
                 initialValues={INITIAL_VALUES}
                 enableReinitialize
                 onSubmit={(values) => {
+                  const cache= [
+                    {
+                      "op": "replace",
+                      "path": "/cacheProviderType",
+                      "value": values.cacheProviderType
+                    }
+                  ]
                   const nativeCache = {
                     "defaultPutExpiration": values.nativeDefaultPutExpiration,
                     "defaultCleanupBatchSize": values.defaultCleanupBatchSize,
@@ -96,7 +107,10 @@ function CachePage({ cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisD
                   const redisCache = {
                     "redisProviderType": values.redisProviderType,
                     "servers": values.servers,
-                    "defaultPutExpiration": values.defaultPutExpiration,
+                    "password": values.password,
+                    "sentinelMasterGroupName": values.sentinelMasterGroupName,
+                    "sslTrustStoreFilePath": values.sslTrustStoreFilePath,
+                    "defaultPutExpiration": values.redisDefaultPutExpiration,
                     "useSSL": values.useSSL,
                     "maxIdleConnections": values.maxIdleConnections,
                     "maxTotalConnections": values.maxTotalConnections,
@@ -128,32 +142,49 @@ function CachePage({ cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisD
                   const opts4 = {}
                   opts4['memcachedConfiguration'] = JSON.stringify(memCache)
                   dispatch(editMemCache(opts4))
+
+                  const opts5 = {}
+                  opts5['patchRequest'] = JSON.stringify(cache)
+                  dispatch(editCache(opts5))
                 }}
               >
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
                     <FormGroup row>
+                      <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>Cache Configuration</Col>
                       <GluuLabel label="Cache Provider Type" size={4} />
                       <Col sm={8}>
-                        <Input
-                          id="cacheProviderType"
-                          name="cacheProviderType"
-                          defaultValue={INITIAL_VALUES.cacheProviderType}
-                          onChange={formik.handleChange}
-                        />
+                        {
+                          cacheData.cacheProviderType && (
+                            <InputGroup>
+                              <CustomInput
+                                type="select"
+                                id="cacheProviderType"
+                                name="cacheProviderType"
+                                defaultValue={cacheData.cacheProviderType}
+                                onChange={formik.handleChange}
+                              >
+                                <option>IN_MEMORY</option>
+                                <option>MEMCACHED</option>
+                                <option>REDIS</option>
+                                <option>NATIVE_PERSISTENCE</option>
+                              </CustomInput>
+                            </InputGroup>
+                          )
+                        }
                       </Col>
-                    </FormGroup>
-                    <FormGroup row>
-                      <CacheRedis config={cacheRedisData} formik={formik} />
-                    </FormGroup>
-                    <FormGroup row>
-                      <CacheNative config={cacheNativeData} formik={formik} />
                     </FormGroup>
                     <FormGroup row>
                       <CacheMemcached config={cacheMemData} formik={formik} />
                     </FormGroup>
                     <FormGroup row>
                       <CacheInMemory config={cacheMemoryData} formik={formik} />
+                    </FormGroup>
+                    <FormGroup row>
+                      <CacheRedis config={cacheRedisData} formik={formik} />
+                    </FormGroup>
+                    <FormGroup row>
+                      <CacheNative config={cacheNativeData} formik={formik} />
                     </FormGroup>
                     <FormGroup row></FormGroup>
                     <GluuFooter />

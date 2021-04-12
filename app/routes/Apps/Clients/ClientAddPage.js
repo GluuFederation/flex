@@ -43,7 +43,6 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
       allowSpontaneousScopes: false,
       backchannelLogoutSessionRequired: false,
       backchannelLogoutUri: [],
-      additionalAudience: [],
       rptClaimsScripts: [],
       consentGatheringScripts: [],
       spontaneousScopeScriptDns: [],
