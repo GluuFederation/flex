@@ -15,6 +15,7 @@ import GluuLabel from "../Gluu/GluuLabel";
 import Counter from '../../../components/Widgets/GroupedButtons/Counter'
 function CustomScriptForm({ item, scripts, handleSubmit }) {
   const [init, setInit] = useState(false);
+  const [scriptTypeState, setScriptTypeState] = useState(item.scriptType);
   const scriptTypes = [...(new Set(scripts.map(item => item.scriptType)))];
   function toogle() {
     if (!init) {
@@ -29,7 +30,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       programmingLanguage: item.programmingLanguage,
       level: item.level,
       script: item.script,
-      moduleProperties: [{ "value1": "location_type", "value2": "ldap", "description": "" }]
+      aliases: item.aliases,
+      moduleProperties: item.moduleProperties,
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -48,6 +50,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
 
     onSubmit: values => {
       values.level = item.level;
+      values.moduleProperties = item.moduleProperties;
       if (typeof values.enabled == 'object') {
         if (values.enabled.length > 0) {
           values.enabled = true;
@@ -62,6 +65,35 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       handleSubmit(reqBody);
     }
   });
+
+  function locationTypeChange(value) {
+    if (value != '') {
+
+      if (!item.moduleProperties) {
+        item.moduleProperties = [];
+      }
+
+      if (item.moduleProperties.filter((item) => item.value1 === 'location_type').length > 0) {
+        item.moduleProperties.splice(item.moduleProperties.findIndex((item) => item.value1 === 'location_type'), 1);
+      }
+      item.moduleProperties.push({ "value1": "location_type", "value2": value, "description": "" });
+    }
+  }
+
+  function usageTypeChange(value) {
+    if (value != '') {
+
+      if (!item.moduleProperties) {
+        item.moduleProperties = [];
+      }
+
+      if (item.moduleProperties.filter((item) => item.value1 === 'usage_type').length > 0) {
+        item.moduleProperties.splice(item.moduleProperties.findIndex((item) => item.value1 === 'usage_type'), 1);
+      }
+      item.moduleProperties.push({ "value1": "usage_type", "value2": value, "description": "" });
+    }
+  }
+
   function onLevelChange(level) {
     item.level = level;
   }
@@ -121,6 +153,24 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           </InputGroup>
         </Col>
       </FormGroup>
+      {scriptTypeState === 'PERSON_AUTHENTICATION' &&
+        <FormGroup row>
+          <GluuLabel label="Select SAML ACRS" />
+          <Col sm={9}>
+            <Input
+              type="select"
+              name="aliases"
+              id="aliases"
+              defaultValue={item.aliases}
+              multiple
+              onChange={formik.handleChange}
+            >
+              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol">urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol</option>
+              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:Password">urn:oasis:names:tc:SAML:2.0:ac:classes:Password</option>
+              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport">urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</option>
+            </Input>
+          </Col>
+        </FormGroup>}
 
       <FormGroup row>
         <GluuLabel label="Script Type" required />
@@ -131,7 +181,10 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               id="scriptType"
               name="scriptType"
               defaultValue={item.scriptType}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                setScriptTypeState(e.target.value);
+                formik.setFieldValue('scriptType', e.target.value);
+              }}
             >
               <option value="">Choose...</option>
               {scriptTypes.map((item, index) => (<option key={index} value={item}>{item}</option>))}
@@ -164,6 +217,45 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           ) : null}
         </Col>
       </FormGroup>
+
+      <FormGroup row>
+        <GluuLabel label="Location Type" />
+        <Col sm={9}>
+          <InputGroup>
+            <CustomInput
+              type="select"
+              id="location_type"
+              name="location_type"
+              defaultValue={(!!item.moduleProperties && item.moduleProperties.filter((item) => item.value1 === 'location_type').length > 0) ?
+                (item.moduleProperties.filter((item) => item.value1 === 'location_type')[0]).value2 : undefined}
+              onChange={(e) => { locationTypeChange(e.target.value) }}>
+              <option value="">Choose...</option>
+              <option value="ldap">Database</option>
+              <option value="file">File</option>
+            </CustomInput>
+          </InputGroup>
+        </Col>
+      </FormGroup>
+      {scriptTypeState === 'PERSON_AUTHENTICATION' &&
+        <FormGroup row>
+          <GluuLabel label="Interactive" />
+          <Col sm={9}>
+            <InputGroup>
+              <CustomInput
+                type="select"
+                id="usage_type"
+                name="usage_type"
+                defaultValue={(!!item.moduleProperties && item.moduleProperties.filter((item) => item.value1 === 'usage_type').length > 0) ?
+                (item.moduleProperties.filter((item) => item.value1 === 'usage_type')[0]).value2 : undefined}
+                onChange={(e) => { usageTypeChange(e.target.value) }}>
+                <option value="">Choose...</option>
+                <option value="interactive">Web</option>
+                <option value="service">Native</option>
+                <option value="both">Both methods</option>
+              </CustomInput>
+            </InputGroup>
+          </Col>
+        </FormGroup>}
 
       <FormGroup row>
         <GluuLabel label="Level" />
