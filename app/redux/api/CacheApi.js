@@ -65,16 +65,11 @@ export default class CacheApi {
           resolve(data)
         }
       })
-    }
-  
-  
-  
-  
-  
+    })
+  }
   
     // update Cache Config
-  
-    updateCacheConfig = (input) => {
+  updateCacheConfig = (input) => {
       return new Promise((resolve, reject) => {
         this.api.patchConfigCache(input, (error, data) => {
           if (error) {
@@ -83,9 +78,6 @@ export default class CacheApi {
             resolve(data)
           }
         })
-    })
-  }
-      })
     })
   }
 
