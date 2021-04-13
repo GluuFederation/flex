@@ -38,11 +38,12 @@ class GluuNameValueProperty extends React.Component {
 
   setValues() {
     //console.log(' setValue - Entry value = '+JSON.stringify(this.state.value))
+    var dataArr2 = this.state.dataArr;
     if (this.state.value != null && this.state.value.length) {
       //console.log(' setValue -  this.state.value.length = '+this.state.value.length)
       if (this.state.value.length == 0) {
-        dataArr = this.state.dataArr
-        return
+        //dataArr = this.state.dataArr
+        return;
       }
       for (var i = 0; i < this.state.value.length; i++) {
         var elm = this.state.value[i]
@@ -57,13 +58,19 @@ class GluuNameValueProperty extends React.Component {
             opts.push(obj)
           }
         }
-        //console.log(' opts = '+opts);
+        console.log(' opts = ' + opts);
+        dataArr2[i] = { name: this.state.value[i].name, domains: opts };
         this.state.dataArr[i] = {
           name: this.state.value[i].name,
           domains: opts,
         }
-      }
-    }
+      }//for
+      console.log('****Final this.state.dataArr2 = ' + JSON.stringify(this.state.dataArr2))
+      this.setState({
+        dataArr: dataArr2
+      })
+    }//this.state.value != null 
+    console.log('****Final this.state.dataArr = ' + JSON.stringify(this.state.dataArr))
   }
 
   addClick() {
@@ -96,10 +103,6 @@ class GluuNameValueProperty extends React.Component {
               onInputChange={this.handleInputChange}
               onChange={(selected) => {
                 this.handleChangeValue(this, index, selected, this.state.name2)
-              }}
-              onRemove={() => {
-                //console.log(option);
-                props.onRemove()
               }}
               id={this.state.name2}
               name={this.state.name2}
