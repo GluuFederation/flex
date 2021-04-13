@@ -60,10 +60,6 @@ class GluuNameValueProperty extends React.Component {
         }
         console.log(' opts = ' + opts);
         dataArr2[i] = { name: this.state.value[i].name, domains: opts };
-        this.state.dataArr[i] = {
-          name: this.state.value[i].name,
-          domains: opts,
-        }
       }//for
       console.log('****Final this.state.dataArr2 = ' + JSON.stringify(this.state.dataArr2))
       this.setState({
