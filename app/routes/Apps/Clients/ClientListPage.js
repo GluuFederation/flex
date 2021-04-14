@@ -5,8 +5,10 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
+import GluuAdvancedSearch from '../Gluu/GluuAdvancedSearch'
 import {
   getOpenidClients,
+  searchClients,
   setCurrentItem,
   deleteClient,
 } from '../../../redux/actions/OIDCActions'
@@ -17,16 +19,25 @@ import {
   CLIENT_DELETE,
 } from '../../../utils/PermChecker'
 function ClientListPage({ clients, permissions, loading, dispatch }) {
+  const options = {}
+  const [limit, setLimit] = useState(5)
+  const [pattern, setPattern] = useState(null)
   useEffect(() => {
-    dispatch(getOpenidClients())
+    makeOptions()
+    dispatch(getOpenidClients(options))
   }, [])
 
   const myActions = []
+  const limitId = 'searchLimit'
+  const patternId = 'searchPattern'
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
-
+  function handleOptionsChange() {
+    setLimit(document.getElementById(limitId).value)
+    setPattern(document.getElementById(patternId).value)
+  }
   function handleGoToClientEditPage(row) {
     dispatch(setCurrentItem(row))
     return history.push(`/client/edit:` + row.inum.substring(0, 4))
@@ -39,7 +50,12 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
     setItem(row)
     toggle()
   }
-
+  function makeOptions() {
+    options['limit'] = limit
+    if (pattern) {
+      options['pattern'] = pattern
+    }
+  }
   function onDeletionConfirmed() {
     dispatch(deleteClient(item.inum))
     history.push('/clients')
@@ -58,13 +74,20 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
       disabled: false,
     }))
   }
-  if (hasPermission(permissions, CLIENT_WRITE)) {
+  if (hasPermission(permissions, CLIENT_READ)) {
     myActions.push({
-      icon: 'add',
-      tooltip: 'Add Client',
+      icon: () => (
+        <GluuAdvancedSearch
+          limitId={limitId}
+          patternId={patternId}
+          limit={limit}
+          handler={handleOptionsChange}
+        />
+      ),
+      tooltip: 'Advanced search options',
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => handleGoToClientAddPage(),
+      onClick: () => {},
     })
   }
   if (hasPermission(permissions, CLIENT_READ)) {
@@ -74,7 +97,8 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
-        dispatch(getOpenidClients())
+        makeOptions()
+        dispatch(searchClients(options))
       },
     })
   }
@@ -91,6 +115,15 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
       onClick: (event, rowData) => handleClientDelete(rowData),
       disabled: false,
     }))
+  }
+  if (hasPermission(permissions, CLIENT_WRITE)) {
+    myActions.push({
+      icon: 'add',
+      tooltip: 'Add Client',
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => handleGoToClientAddPage(),
+    })
   }
 
   function getBadgeTheme(status) {
@@ -146,10 +179,11 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
         ]}
         data={clients}
         isLoading={loading}
-        title="OpenId Connect Clients"
+        title="OIDC Clients"
         actions={myActions}
         options={{
           search: true,
+          searchFieldAlignment: 'left',
           selection: false,
           pageSize: 10,
           headerStyle: {

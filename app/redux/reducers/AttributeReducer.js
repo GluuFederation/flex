@@ -25,11 +25,11 @@ export default (state = INIT_STATE, action) => {
         ...state,
         loading: true,
       }
-      case SEARCH_ATTRIBUTES:
-        return {
-          ...state,
-          loading: true,
-        }  
+    case SEARCH_ATTRIBUTES:
+      return {
+        ...state,
+        loading: true,
+      }
     case GET_ATTRIBUTES_RESPONSE:
       if (action.payload.data) {
         return {

@@ -12,6 +12,7 @@ import {
   ADD_NEW_CLIENT,
   EDIT_CLIENT,
   DELETE_CLIENT,
+  SEARCH_CLIENTS,
 } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../api/base'
@@ -27,10 +28,10 @@ function* newFunction() {
   return new OIDCApi(api)
 }
 
-export function* getOauthOpenidClients() {
+export function* getOauthOpenidClients({ payload }) {
   try {
     const openIdApi = yield* newFunction()
-    const data = yield call(openIdApi.getAllOpenidClients)
+    const data = yield call(openIdApi.getAllOpenidClients, payload.options)
     yield put(getOpenidClientsResponse(data))
   } catch (e) {
     yield put(getOpenidClientsResponse(null))
@@ -88,7 +89,13 @@ export function* deleteAClient({ payload }) {
 }
 
 export function* getOpenidClientsWatcher() {
+  console.log('==========================')
   yield takeLatest(GET_OPENID_CLIENTS, getOauthOpenidClients)
+}
+
+export function* searchClientsWatcher() {
+  console.log('---------------------------------')
+  yield takeLatest(SEARCH_CLIENTS, getOauthOpenidClients)
 }
 
 export function* addClientWatcher() {
@@ -105,6 +112,7 @@ export function* deleteClientWatcher() {
 export default function* rootSaga() {
   yield all([
     fork(getOpenidClientsWatcher),
+    fork(searchClientsWatcher),
     fork(addClientWatcher),
     fork(editClientWatcher),
     fork(deleteClientWatcher),

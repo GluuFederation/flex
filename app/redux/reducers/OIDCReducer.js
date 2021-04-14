@@ -9,6 +9,7 @@ import {
   DELETE_CLIENT_RESPONSE,
   SET_CLIENT_ITEM,
   RESET,
+  SEARCH_CLIENTS,
 } from '../actions/types'
 
 const INIT_STATE = {
@@ -20,6 +21,11 @@ const INIT_STATE = {
 export default (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_OPENID_CLIENTS:
+      return {
+        ...state,
+        loading: true,
+      }
+    case SEARCH_CLIENTS:
       return {
         ...state,
         loading: true,
