@@ -15,16 +15,24 @@ function GluuTypeAheadWithAdd({
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
-  function addItem() {
+
+  const addItem = () => {
     const newItem = document.getElementById(inputId).value
     document.getElementById(inputId).value = ''
     if (validator(newItem)) {
-      items.push(newItem)
-      opts.push(newItem)
-      setItems(items)
+      setItems( currItems => [...currItems, newItem])
+      setOpts( currOpts => [...currOpts, newItem])
       formik.setFieldValue(name, items)
     }
   }
+
+  const handleChange= (name, selected) => {
+    console.log(selected)
+    setItems(selected)
+    setOpts(selected)
+    formik.setFieldValue(name, items)
+  }
+
   return (
     <FormGroup row>
       <GluuLabel label={label} size={4} />
@@ -50,7 +58,7 @@ function GluuTypeAheadWithAdd({
           emptyLabel=""
           labelKey={name}
           onChange={(selected) => {
-            formik.setFieldValue(name, selected)
+            handleChange(name, selected)
           }}
           id={name}
           name={name}
