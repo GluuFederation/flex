@@ -13,6 +13,7 @@ import {
   SET_ITEM,
   GET_SCOPE_BY_PATTERN,
   GET_SCOPE_BY_PATTERN_RESPONSE,
+  SEARCH_SCOPES,
 } from '../actions/types'
 
 const INIT_STATE = {
@@ -24,6 +25,11 @@ const INIT_STATE = {
 export default (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_SCOPES:
+      return {
+        ...state,
+        loading: true,
+      }
+    case SEARCH_SCOPES:
       return {
         ...state,
         loading: true,

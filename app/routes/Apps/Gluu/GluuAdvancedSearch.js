@@ -13,7 +13,7 @@ function GluuAdvancedSearch({ handler, patternId, limitId, limit }) {
       />
       &nbsp;
       <Input
-        style={{ width: '200px' }}
+        style={{ width: '180px' }}
         id={patternId}
         type="text"
         placeholder="search pattern"

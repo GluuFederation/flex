@@ -7,6 +7,7 @@ import GluuDialog from '../Gluu/GluuDialog'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import {
   getScopes,
+  searchScopes,
   deleteScope,
   setCurrentItem,
 } from '../../../redux/actions/ScopeActions'
@@ -19,8 +20,12 @@ import {
 } from '../../../utils/PermChecker'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
+  const options = {}
+  const [limit, setLimit] = useState(10)
+  const [pattern, setPattern] = useState(null)
   useEffect(() => {
-    dispatch(getScopes())
+    makeOptions()
+    dispatch(getScopes(options))
   }, [])
 
   const myActions = []
@@ -28,8 +33,6 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const [item, setItem] = useState({})
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
-  const [limit, setLimit] = useState(100)
-  const [pattern, setPattern] = useState(null)
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
 
@@ -92,6 +95,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         <GluuAdvancedSearch
           limitId={limitId}
           patternId={patternId}
+          limit={limit}
           handler={handleOptionsChange}
         />
       ),
@@ -104,11 +108,12 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   if (hasPermission(permissions, SCOPE_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: 'Refresh Data',
-      iconProps: { color: 'primary' },
+      tooltip: 'search',
+      iconProps: { color: 'primary', fontSize: 'large' },
       isFreeAction: true,
       onClick: () => {
-        dispatch(getScopes())
+        makeOptions()
+        dispatch(searchScopes(options))
       },
     })
   }

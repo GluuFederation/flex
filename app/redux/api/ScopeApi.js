@@ -4,9 +4,9 @@ export default class ScopeApi {
   }
 
   // Get All scopes
-  getAllScopes = () => {
+  getAllScopes = (options) => {
     return new Promise((resolve, reject) => {
-      this.api.getOauthScopes({}, (error, data) => {
+      this.api.getOauthScopes(options, (error, data) => {
         if (error) {
           reject(error)
         } else {
@@ -15,7 +15,6 @@ export default class ScopeApi {
       })
     })
   }
-
   // Get scope by inum
   getScope = async (inum) => {
     return new Promise((resolve, reject) => {

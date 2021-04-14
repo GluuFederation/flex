@@ -13,15 +13,14 @@ import {
 import { getAPIAccessToken } from '../actions/AuthActions'
 import {
   getScopesResponse,
-  getScopeResponse,
   getScopeByPatternResponse,
   addScopeResponse,
   editScopeResponse,
   deleteScopeResponse,
-  setApiError,
 } from '../actions/ScopeActions'
 import {
   GET_SCOPES,
+  SEARCH_SCOPES,
   GET_SCOPE_BY_INUM,
   ADD_SCOPE,
   EDIT_SCOPE,
@@ -57,10 +56,10 @@ export function* getScopeByInum() {
   }
 }
 
-export function* getScopes() {
+export function* getScopes({ payload }) {
   try {
     const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.getAllScopes)
+    const data = yield call(scopeApi.getAllScopes, payload.options)
     yield put(getScopesResponse(data))
   } catch (e) {
     yield put(getScopesResponse(null))
@@ -70,7 +69,6 @@ export function* getScopes() {
     }
   }
 }
-
 export function* getScopeBasedOnOpts({ payload }) {
   console.log('Scope Saga -  getScopeBasedOnOpts payload.data =' + payload)
   try {
@@ -146,6 +144,9 @@ export function* watchGetScopeByInum() {
 export function* watchGetScopes() {
   yield takeLatest(GET_SCOPES, getScopes)
 }
+export function* watchSearchScopes() {
+  yield takeLatest(SEARCH_SCOPES, getScopes)
+}
 export function* watchGetScopeByOpts() {
   yield takeLatest(GET_SCOPE_BY_PATTERN, getScopeBasedOnOpts)
 }
@@ -163,6 +164,7 @@ export default function* rootSaga() {
   yield all([
     fork(watchGetScopeByInum),
     fork(watchGetScopes),
+    fork(watchSearchScopes),
     fork(watchGetScopeByOpts),
     fork(watchAddScope),
     fork(watchEditScope),
