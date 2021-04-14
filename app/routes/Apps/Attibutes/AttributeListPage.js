@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../Gluu/GluuDialog'
 import AttributeDetailPage from '../Attibutes/AttributeDetailPage'
+import GluuAdvancedSearch from '../Gluu/GluuAdvancedSearch'
 import {
   hasPermission,
   ATTRIBUTE_WRITE,
@@ -13,27 +14,43 @@ import {
 } from '../../../utils/PermChecker'
 import {
   getAttributes,
+  searchAttributes,
   setCurrentItem,
   deleteAttribute,
 } from '../../../redux/actions/AttributeActions'
 
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {
+  const options = {}
+  const [limit, setLimit] = useState(10)
+  const [pattern, setPattern] = useState(null)
   useEffect(() => {
-    dispatch(getAttributes())
+    makeOptions()
+    dispatch(getAttributes(options))
   }, [])
-
+  const limitId = 'searchLimit'
+  const patternId = 'searchPattern'
   const myActions = []
+
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
-
+  function makeOptions() {
+    options['limit'] = parseInt(limit)
+    if (pattern) {
+      options['pattern'] = pattern
+    }
+  }
+  function handleOptionsChange(i) {
+    setLimit(document.getElementById(limitId).value)
+    setPattern(document.getElementById(patternId).value)
+  }
   function handleGoToAttributeEditPage(row) {
     dispatch(setCurrentItem(row))
     return history.push(`/attribute/edit:` + row.inum)
   }
   function handleAttribueDelete(row) {
-    setItem(row);
+    setItem(row)
     toggle()
   }
   function handleGoToAttributeAddPage() {
@@ -52,14 +69,20 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
       disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
     }))
   }
-  if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
+  if (hasPermission(permissions, ATTRIBUTE_READ)) {
     myActions.push({
-      icon: 'add',
-      tooltip: 'Add Attribute',
+      icon: () => (
+        <GluuAdvancedSearch
+          limitId={limitId}
+          limit={limit}
+          patternId={patternId}
+          handler={handleOptionsChange}
+        />
+      ),
+      tooltip: 'Advanced search options',
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => handleGoToAttributeAddPage(),
-      disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
+      onClick: () => {},
     })
   }
   if (hasPermission(permissions, ATTRIBUTE_READ)) {
@@ -69,7 +92,8 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
-        dispatch(getAttributes())
+        makeOptions()
+        dispatch(searchAttributes(options))
       },
     })
   }
@@ -84,6 +108,16 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
       onClick: (event, rowData) => handleAttribueDelete(rowData),
       disabled: !hasPermission(permissions, ATTRIBUTE_DELETE),
     }))
+  }
+  if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
+    myActions.push({
+      icon: 'add',
+      tooltip: 'Add Attribute',
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => handleGoToAttributeAddPage(),
+      disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
+    })
   }
 
   function getBadgeTheme(status) {
@@ -124,6 +158,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         options={{
           search: true,
           selection: false,
+          searchFieldAlignment: 'left',
           pageSize: 10,
           headerStyle: {
             backgroundColor: '#1EB7FF', //#1EB7FF 01579b

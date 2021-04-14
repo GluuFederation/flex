@@ -8,10 +8,17 @@ import {
   DELETE_ATTRIBUTE,
   DELETE_ATTRIBUTE_RESPONSE,
   SET_ATTRIBUTE_ITEM,
+  SEARCH_ATTRIBUTES,
 } from './types'
 
-export const getAttributes = () => ({
+export const getAttributes = (options) => ({
   type: GET_ATTRIBUTES,
+  payload: { options },
+})
+
+export const searchAttributes = (options) => ({
+  type: SEARCH_ATTRIBUTES,
+  payload: { options },
 })
 
 export const getAttributesResponse = (data) => ({

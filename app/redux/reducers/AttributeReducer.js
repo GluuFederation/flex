@@ -9,6 +9,7 @@ import {
   DELETE_ATTRIBUTE_RESPONSE,
   RESET,
   SET_ATTRIBUTE_ITEM,
+  SEARCH_ATTRIBUTES,
 } from '../actions/types'
 
 const INIT_STATE = {
@@ -24,6 +25,11 @@ export default (state = INIT_STATE, action) => {
         ...state,
         loading: true,
       }
+      case SEARCH_ATTRIBUTES:
+        return {
+          ...state,
+          loading: true,
+        }  
     case GET_ATTRIBUTES_RESPONSE:
       if (action.payload.data) {
         return {

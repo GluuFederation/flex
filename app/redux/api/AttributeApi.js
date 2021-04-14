@@ -4,9 +4,22 @@ export default class AttributeApi {
   }
 
   // Get all attributes
-  getAllAttributes = () => {
+  getAllAttributes = (opts) => {
     return new Promise((resolve, reject) => {
-      this.api.getAttributes({ limit: 500 }, (error, data) => {
+      this.api.getAttributes(opts, (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(data)
+        }
+      })
+    })
+  }
+
+  // search attributes
+  searchAttributes = (opts) => {
+    return new Promise((resolve, reject) => {
+      this.api.getAttributes(opts, (error, data) => {
         if (error) {
           reject(error)
         } else {

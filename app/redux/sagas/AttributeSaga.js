@@ -1,6 +1,7 @@
 /**
  * Attribute Sagas
  */
+import { options } from 'numeral'
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from '../../utils/TokenController'
 import {
@@ -12,9 +13,11 @@ import {
 import { getAPIAccessToken } from '../actions/AuthActions'
 import {
   GET_ATTRIBUTES,
+  SEARCH_ATTRIBUTES,
   ADD_ATTRIBUTE,
   EDIT_ATTRIBUTE,
   DELETE_ATTRIBUTE,
+  SEARCH_CLIENTS,
 } from '../actions/types'
 import AttributeApi from '../api/AttributeApi'
 import { getClient } from '../api/base'
@@ -30,10 +33,23 @@ function* newFunction() {
   return new AttributeApi(api)
 }
 
-export function* getAttributes() {
+export function* getAttributes({ payload }) {
   try {
     const attributeApi = yield* newFunction()
-    const data = yield call(attributeApi.getAllAttributes)
+    const data = yield call(attributeApi.getAllAttributes, payload.options)
+    yield put(getAttributesResponse(data))
+  } catch (e) {
+    yield put(getAttributesResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+export function* searchAttributes({ payload }) {
+  try {
+    const attributeApi = yield* newFunction()
+    const data = yield call(attributeApi.searchAttributes, payload.options)
     yield put(getAttributesResponse(data))
   } catch (e) {
     yield put(getAttributesResponse(null))
@@ -90,6 +106,10 @@ export function* watchGetAttributes() {
   yield takeLatest(GET_ATTRIBUTES, getAttributes)
 }
 
+export function* watchSearchAttributes() {
+  yield takeLatest(SEARCH_ATTRIBUTES, searchAttributes)
+}
+
 export function* watchAddAttribute() {
   yield takeLatest(ADD_ATTRIBUTE, addAttribute)
 }
@@ -104,6 +124,7 @@ export function* watchDeleteAttribute() {
 export default function* rootSaga() {
   yield all([
     fork(watchGetAttributes),
+    fork(watchSearchAttributes),
     fork(watchAddAttribute),
     fork(watchEditAttribute),
     fork(watchDeleteAttribute),

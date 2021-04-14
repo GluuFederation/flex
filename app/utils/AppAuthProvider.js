@@ -102,8 +102,6 @@ class AppAuthProvider extends Component {
       } else {
         if (!props.token) {
           props.getAPIAccessToken(props.jwt)
-        } else {
-          props.getAuthScript()
         }
         return {
           showContent: true,
@@ -149,6 +147,5 @@ export default withRouter(
     getUserInfo,
     getAPIAccessToken,
     getAllPlugins,
-    getAuthScript,
   })(AppAuthProvider),
 )

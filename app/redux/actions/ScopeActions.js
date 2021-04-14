@@ -12,10 +12,17 @@ import {
   SET_ITEM,
   GET_SCOPE_BY_PATTERN,
   GET_SCOPE_BY_PATTERN_RESPONSE,
+  SEARCH_SCOPES,
 } from './types'
 
-export const getScopes = () => ({
+export const getScopes = (options) => ({
   type: GET_SCOPES,
+  payload: { options },
+})
+
+export const searchScopes = (options) => ({
+  type: SEARCH_SCOPES,
+  payload: { options },
 })
 
 export const getScopesResponse = (data) => ({

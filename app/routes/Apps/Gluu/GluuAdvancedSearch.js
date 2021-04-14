@@ -1,14 +1,14 @@
 import React from 'react'
 import { Input, FormGroup } from './../../../components'
 
-function GluuAdvancedSearch({ handler, patternId, limitId }) {
+function GluuAdvancedSearch({ handler, patternId, limitId, limit }) {
   return (
     <FormGroup row style={{ marginTop: '10px' }}>
       <Input
         style={{ width: '100px' }}
         id={limitId}
         type="number"
-        defaultValue={100}
+        defaultValue={limit}
         onChange={handler}
       />
       &nbsp;
@@ -17,7 +17,6 @@ function GluuAdvancedSearch({ handler, patternId, limitId }) {
         id={patternId}
         type="text"
         placeholder="search pattern"
-        defaultValue=""
         onChange={handler}
       />
     </FormGroup>

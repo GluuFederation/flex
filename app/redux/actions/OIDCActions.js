@@ -8,10 +8,17 @@ import {
   DELETE_CLIENT,
   DELETE_CLIENT_RESPONSE,
   SET_CLIENT_ITEM,
+  SEARCH_CLIENTS,
 } from './types'
 
-export const getOpenidClients = () => ({
+export const getOpenidClients = (options) => ({
   type: GET_OPENID_CLIENTS,
+  payload: { options },
+})
+
+export const searchClients = (options) => ({
+  type: SEARCH_CLIENTS,
+  payload: { options },
 })
 
 export const getOpenidClientsResponse = (data) => ({

@@ -26,15 +26,22 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const myActions = []
   const history = useHistory()
   const [item, setItem] = useState({})
+  const limitId = 'searchLimit'
+  const patternId = 'searchPattern'
   const [limit, setLimit] = useState(100)
   const [pattern, setPattern] = useState(null)
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
-  const limitId = 'searchLimit'
-  const patternId = 'searchPattern'
-  function handleLimitChange(i) {
+
+  function handleOptionsChange(i) {
     setLimit(document.getElementById(limitId).value)
     setPattern(document.getElementById(patternId).value)
+  }
+  function makeOptions() {
+    options['limit'] = limit
+    if (pattern) {
+      options['pattern'] = pattern
+    }
   }
 
   function handleGoToScopeAddPage() {
@@ -85,7 +92,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         <GluuAdvancedSearch
           limitId={limitId}
           patternId={patternId}
-          handler={handleLimitChange}
+          handler={handleOptionsChange}
         />
       ),
       tooltip: 'Advanced search options',
