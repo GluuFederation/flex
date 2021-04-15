@@ -128,7 +128,6 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     }
   }
   function onDeletionConfirmed() {
-    // perform delete request
     dispatch(deleteAttribute(item.inum))
     history.push('/attributes')
     toggle()
@@ -161,7 +160,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
           searchFieldAlignment: 'left',
           pageSize: 10,
           headerStyle: {
-            backgroundColor: '#1EB7FF', //#1EB7FF 01579b
+            backgroundColor: '#1EB7FF',
             color: '#FFF',
             padding: '2px',
             textTransform: 'uppercase',

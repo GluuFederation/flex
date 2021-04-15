@@ -22,6 +22,9 @@ import ClientEditPage from './Apps/Clients/ClientEditPage'
 import CustomScriptListPage from './Apps/Scripts/CustomScriptListPage'
 import CustomScriptAddPage from './Apps/Scripts/CustomScriptAddPage'
 import CustomScriptEditPage from './Apps/Scripts/CustomScriptEditPage'
+
+import ScriptListPage from './Apps/CustomScripts/ScriptListPage'
+
 import ProfilePage from './Apps/Profile/ProfilePage'
 // ----------- Layout Imports ---------------
 import { DefaultSidebar } from './../layout/components/DefaultSidebar'
@@ -61,13 +64,15 @@ import {
 } from '../utils/PermChecker'
 import Gluu404Error from './Apps/Gluu/Gluu404Error'
 import GluuNavBar from './Apps/Gluu/GluuNavBar'
-import { selectPlugin } from "../../plugins/selector";
+import { selectPlugin } from '../../plugins/selector'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
 export const RoutedContent = () => {
   const scopes = useSelector((state) => state.authReducer.permissions)
-  const availablePlugins = useSelector((state) => state.pluginMenuReducer.plugins)
+  const availablePlugins = useSelector(
+    (state) => state.pluginMenuReducer.plugins,
+  )
 
   return (
     <Switch>
@@ -119,7 +124,7 @@ export const RoutedContent = () => {
       )}
       {/*    Scripts Routes     */}
       {hasPermission(scopes, SCRIPT_READ) && (
-        <Route component={CustomScriptListPage} path="/scripts" />
+        <Route component={ScriptListPage} path="/scripts" />
       )}
       {hasPermission(scopes, SCRIPT_WRITE) && (
         <Route component={CustomScriptAddPage} path="/script/new" />
