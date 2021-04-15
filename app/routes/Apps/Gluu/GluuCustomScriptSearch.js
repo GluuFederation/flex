@@ -10,7 +10,6 @@ function GluuCustomScriptSearch({
   handler,
   patternId,
   limitId,
-  statusId,
   typeId,
   limit,
 }) {
@@ -26,22 +25,29 @@ function GluuCustomScriptSearch({
       &nbsp;
       <InputGroup style={{ width: '210px' }}>
         <CustomInput type="select" id={typeId} onChange={handler}>
-          <option value="">ALL</option>
           <option>PERSON_AUTHENTICATION</option>
-          <option></option>
-        </CustomInput>
-      </InputGroup>
-      &nbsp;
-      <InputGroup style={{ width: '110px' }}>
-        <CustomInput
-          type="select"
-          placeholder="Status"
-          id={statusId}
-          onChange={handler}
-        >
-          <option value="">Choose status</option>
-          <option>true</option>
-          <option>false</option>
+          <option>INTROSPECTION</option>
+          <option>RESOURCE_OWNER_PASSWORD_CREDENTIALS</option>
+          <option>APPLICATION_SESSION</option>
+          <option>CACHE_REFRESH</option>
+          <option>UPDATE_USER</option>
+          <option>USER_REGISTRATION</option>
+          <option>CLIENT_REGISTRATION</option>
+          <option>ID_GENERATOR</option>
+          <option>UMA_RPT_POLICY</option>
+          <option>UMA_RPT_CLAIMS</option>
+          <option>UMA_CLAIMS_GATHERING</option>
+          <option>CONSENT_GATHERING</option>
+          <option>DYNAMIC_SCOPE</option>
+          <option>SPONTANEOUS_SCOPE</option>
+          <option>END_SESSION</option>
+          <option>POST_AUTHN</option>
+          <option>SCIM</option>
+          <option>CIBA_END_USER_NOTIFICATION</option>
+          <option>REVOKE_TOKEN</option>
+          <option>PERSISTENCE_EXTENSION</option>
+          <option>IDP</option>
+          <option>UPDATE_TOKEN</option>
         </CustomInput>
       </InputGroup>
       &nbsp;

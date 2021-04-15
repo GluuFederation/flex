@@ -9,6 +9,7 @@ import GluuCustomScriptSearch from '../Gluu/GluuCustomScriptSearch'
 import {
   getCustomScripts,
   deleteCustomScript,
+  getCustomScriptByType,
   setCurrentItem,
 } from '../../../redux/actions/CustomScriptActions'
 import {
@@ -24,19 +25,14 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const myActions = []
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
-  const statusId = 'statusId'
   const typeId = 'typeId'
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
-  const [status, setStatus] = useState(true)
   const [type, setType] = useState(true)
   function makeOptions() {
     options['limit'] = parseInt(limit)
     if (pattern) {
       options['pattern'] = pattern
-    }
-    if (status && status != '') {
-      options['status'] = status
     }
     if (type && type != '') {
       options['type'] = type
@@ -67,7 +63,6 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         <GluuCustomScriptSearch
           limitId={limitId}
           limit={limit}
-          statusId={statusId}
           typeId={typeId}
           patternId={patternId}
           handler={handleOptionsChange}
@@ -87,7 +82,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        dispatch(getCustomScripts(options))
+        dispatch(getCustomScriptByType(options))
       },
     })
   }
@@ -161,7 +156,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
           selection: false,
           pageSize: 10,
           rowStyle: (rowData) => ({
-            backgroundColor: rowData.enabled ? '#00FF00' : '#FFF',
+            backgroundColor: rowData.enabled ? '#00A36C' : '#FFF',
           }),
           headerStyle: {
             backgroundColor: '#1EB7FF',
