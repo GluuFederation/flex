@@ -89,12 +89,10 @@ export function* deleteAClient({ payload }) {
 }
 
 export function* getOpenidClientsWatcher() {
-  console.log('==========================')
   yield takeLatest(GET_OPENID_CLIENTS, getOauthOpenidClients)
 }
 
 export function* searchClientsWatcher() {
-  console.log('---------------------------------')
   yield takeLatest(SEARCH_CLIENTS, getOauthOpenidClients)
 }
 

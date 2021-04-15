@@ -3,9 +3,9 @@ export default class OIDCApi {
     this.api = api
   }
 
-  getAllOpenidClients = () => {
+  getAllOpenidClients = (opts) => {
     return new Promise((resolve, reject) => {
-      this.api.getOauthOpenidClients({}, (error, data) => {
+      this.api.getOauthOpenidClients(opts, (error, data) => {
         if (error) {
           reject(error)
         } else {
