@@ -11,7 +11,8 @@ require("dotenv").config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || ".env"
 });
 
-const BASE_PATH = process.env.BASE_PATH || "/";
+const BASE_PATH = process.env.BASE_PATH || "/admin";
+const API_BASE_URL = process.env.API_BASE_URL || "https://bank.gluu.org/admin-ui-api";
 
 module.exports = {
   devtool: "inline-source-map",
@@ -46,7 +47,7 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production"),
       "process.env.BASE_PATH": JSON.stringify(BASE_PATH),
-      "process.env.API_BASE_URL": JSON.stringify(process.env.API_BASE_URL)
+      "process.env.API_BASE_URL": JSON.stringify(API_BASE_URL)
     })
   ],
   optimization: {
