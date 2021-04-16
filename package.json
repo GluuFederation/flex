@@ -26,6 +26,7 @@
     "start": "npm run start:dev",
     "build:dev": "node ./build/cli-tools.js --clear dist --create dist && webpack --config ./build/webpack.config.client.dev.js",
     "build:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack --config ./build/webpack.config.client.prod.js",
+    "build:bank": "NODE_ENV=bank node ./build/cli-tools.js --clear dist --create dist && NODE_ENV=bank webpack --config ./build/webpack.config.client.prod.js",
     "build:jenkins": "NODE_ENV=jenkins node ./build/cli-tools.js --clear dist --create dist && NODE_ENV=jenkins webpack --config ./build/webpack.config.client.prod.js",
     "start:dev": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.dev.js",
     "start:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.prod.js",
