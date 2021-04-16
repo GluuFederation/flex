@@ -138,7 +138,7 @@ module.exports = {
         test: /\.(jpg|jpeg|png|gif|svg|ico)$/,
         loader: "file-loader",
         options: {
-          name: "/static/[name].[ext]"
+          name: BASE_PATH+"/static/[name].[ext]"
         }
       }
     ]
