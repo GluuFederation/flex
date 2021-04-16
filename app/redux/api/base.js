@@ -3,7 +3,8 @@ export const getDefaultClient = (JansConfigApi) => {
   defaultClient.timeout = 50000
   const jansauth = defaultClient.authentications['jans-auth']
   defaultClient.basePath =
-    process.env.BASE_API || 'https://jans-ui.jans.io'.replace(/\/+$/, '')
+    process.env.CONFIG_API_BASE_URL ||
+    'https://jans-ui.jans.io'.replace(/\/+$/, '')
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers':
@@ -22,7 +23,8 @@ export const getClient = (JansConfigApi, r_token, r_issuer) => {
   defaultClient.timeout = 50000
   const jansauth = defaultClient.authentications['jans-auth']
   defaultClient.basePath =
-    process.env.BASE_API || 'https://jans-ui.jans.io'.replace(/\/+$/, '')
+    process.env.CONFIG_API_BASE_URL ||
+    'https://jans-ui.jans.io'.replace(/\/+$/, '')
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers':
