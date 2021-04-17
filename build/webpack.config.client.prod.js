@@ -16,7 +16,7 @@ const API_BASE_URL =
   process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
 
 module.exports = {
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   mode: 'production',
   entry: {
     app: [path.join(config.srcDir, 'index.js')],
