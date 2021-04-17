@@ -63,6 +63,7 @@ class AppAuthProvider extends Component {
   }
 
   static getDerivedStateFromProps(props) {
+   console.log("====permissions=============="+JSON.stringify(props.permissions))
     if (window.location.href.indexOf('logout') > -1) {
       return { showContent: true }
     }
