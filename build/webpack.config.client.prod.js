@@ -17,7 +17,7 @@ const API_BASE_URL =
 
 module.exports = {
   devtool: 'inline-source-map',
-  mode: 'development',
+  mode: 'production',
   entry: {
     app: [path.join(config.srcDir, 'index.js')],
   },

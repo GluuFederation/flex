@@ -34,7 +34,7 @@ const LogoThemed = ({ checkBackground, className, ...otherProps }) => (
               getLogoUrl(style, color)
           }
           className={ classNames('d-block', className) }
-          alt="Jans admin ui Logo"
+          alt="AdminUI Logo"
           { ...otherProps }
         />
       )

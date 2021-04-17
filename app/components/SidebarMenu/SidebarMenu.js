@@ -7,6 +7,8 @@ import classNames from 'classnames';
 import { withPageConfig } from './../Layout/withPageConfig';
 import Common from './../../common';
 import { MenuContext } from './MenuContext';
+import { ErrorBoundary } from 'react-error-boundary'
+import GluuErrorFallBack from '../../routes/Apps/Gluu/GluuErrorFallBack'
 
 class SidebarMenu extends React.Component {
     static propTypes = {
@@ -142,8 +144,10 @@ class SidebarMenu extends React.Component {
             removeEntry: this.removeEntry.bind(this)
           }}
         >
+          <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
           <ul className={ sidebarMenuClass } ref={ this.containerRef }>
             {
+              
               React.Children.map(this.props.children, (child) =>
                 <MenuContext.Consumer>
                   {
@@ -157,6 +161,7 @@ class SidebarMenu extends React.Component {
               )
             }
           </ul>
+          </ErrorBoundary>
         </MenuContext.Provider>
       );
     }

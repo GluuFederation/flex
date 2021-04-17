@@ -5,6 +5,8 @@ import classNames from 'classnames'
 import uuid from 'uuid/v4'
 
 import { MenuContext } from './MenuContext'
+import { ErrorBoundary } from 'react-error-boundary'
+import GluuErrorFallBack from '../../routes/Apps/Gluu/GluuErrorFallBack'
 
 /**
  * Renders a collapse trigger or a ReactRouter Link
@@ -122,7 +124,7 @@ export class SidebarMenuItem extends React.Component {
           'sidebar-menu__entry--no-caret': this.props.noCaret,
         })}
       >
-        { !this.props.isEmptyNode &&
+        {!this.props.isEmptyNode && (
           <SidebarMenuItemLink
             to={this.props.to || null}
             href={this.props.href || null}
@@ -142,23 +144,25 @@ export class SidebarMenuItem extends React.Component {
               this.props.title
             )}
           </SidebarMenuItemLink>
-        }
+        )}
         {this.props.children && (
-          <ul className="sidebar-submenu">
-            {React.Children.map(this.props.children, (child) => (
-              <MenuContext.Consumer>
-                {(ctx) =>
-                  React.cloneElement(child, {
-                    isSubNode: true,
-                    parentId: this.id,
-                    currentUrl: this.props.currentUrl,
-                    slim: this.props.slim,
-                    ...ctx,
-                  })
-                }
-              </MenuContext.Consumer>
-            ))}
-          </ul>
+          <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
+            <ul className="sidebar-submenu">
+              {React.Children.map(this.props.children, (child) => (
+                <MenuContext.Consumer>
+                  {(ctx) =>
+                    React.cloneElement(child, {
+                      isSubNode: true,
+                      parentId: this.id,
+                      currentUrl: this.props.currentUrl,
+                      slim: this.props.slim,
+                      ...ctx,
+                    })
+                  }
+                </MenuContext.Consumer>
+              ))}
+            </ul>
+          </ErrorBoundary>
         )}
       </li>
     )
