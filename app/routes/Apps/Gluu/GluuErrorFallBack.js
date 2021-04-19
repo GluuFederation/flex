@@ -3,7 +3,7 @@ import React from 'react'
 function GluuErrorFallBack({ error, resetErrorBoundary}) {
   return (
     <div role="alert">
-      <p>Gluu Admin UI: something went wrong</p>
+      <p>Gluu Admin UI-Sidebar: something went wrong</p>
       <pre>{error.message}</pre>
       <pre>{JSON.stringify(error.stack)}</pre>
       <pre>{JSON.stringify(error)}</pre>
