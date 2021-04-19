@@ -49,19 +49,9 @@ export const COUCHBASE_DELETE = '/config/database/couchbase.delete'
 const BASE_URL = 'https://jans.io/oauth'
 
 export const hasPermission = (scopes, scope) => {
-  return false
+  return true
 }
 
 export const hasAny = (scopes, scope1, scope2, scope3) => {
-  const fullScope1 = BASE_URL + scope1
-  const fullScope2 = BASE_URL + scope2
-  const fullScope3 = BASE_URL + scope3
-  if (scopes) {
-    return (
-      scopes.includes(fullScope1, 0) ||
-      scopes.includes(fullScope2, 0) ||
-      scopes.includes(fullScope3, 0)
-    )
-  }
   return false
 }

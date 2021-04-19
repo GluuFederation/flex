@@ -16,7 +16,6 @@ import {
   getUserInfo,
   getAPIAccessToken,
   getAllPlugins,
-  getAuthScript,
 } from '../redux/actions'
 
 class AppAuthProvider extends Component {
@@ -63,7 +62,9 @@ class AppAuthProvider extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-   console.log("====permissions=============="+JSON.stringify(props.permissions))
+    console.log('====permissions ' + JSON.stringify(props.permissions))
+    console.log('====userinfo ' + JSON.stringify(props.userinfo))
+    console.log('====token ' + JSON.stringify(props.token))
     if (window.location.href.indexOf('logout') > -1) {
       return { showContent: true }
     }

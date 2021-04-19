@@ -146,23 +146,21 @@ export class SidebarMenuItem extends React.Component {
           </SidebarMenuItemLink>
         )}
         {this.props.children && (
-          <ErrorBoundary FallbackComponent={GluuSidebarItemFallBack}>
-            <ul className="sidebar-submenu">
-              {React.Children.map(this.props.children, (child) => (
-                <MenuContext.Consumer>
-                  {(ctx) =>
-                    React.cloneElement(child, {
-                      isSubNode: true,
-                      parentId: this.id,
-                      currentUrl: this.props.currentUrl,
-                      slim: this.props.slim,
-                      ...ctx,
-                    })
-                  }
-                </MenuContext.Consumer>
-              ))}
-            </ul>
-          </ErrorBoundary>
+          <ul className="sidebar-submenu">
+            {React.Children.map(this.props.children, (child) => (
+              <MenuContext.Consumer>
+                {(ctx) =>
+                  React.cloneElement(child, {
+                    isSubNode: true,
+                    parentId: this.id,
+                    currentUrl: this.props.currentUrl,
+                    slim: this.props.slim,
+                    ...ctx,
+                  })
+                }
+              </MenuContext.Consumer>
+            ))}
+          </ul>
         )}
       </li>
     )
