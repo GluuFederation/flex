@@ -5,8 +5,6 @@ import classNames from 'classnames'
 import uuid from 'uuid/v4'
 
 import { MenuContext } from './MenuContext'
-import { ErrorBoundary } from 'react-error-boundary'
-import GluuSidebarItemFallBack from '../../routes/Apps/Gluu/GluuSidebarItemFallBack'
 
 /**
  * Renders a collapse trigger or a ReactRouter Link
