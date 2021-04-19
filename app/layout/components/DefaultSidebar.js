@@ -32,7 +32,7 @@ export const DefaultSidebar = () => (
       {/* <SidebarTopA /> */}
       <Sidebar.Section fluid cover>
         {/* SIDEBAR: Menu */}
-        {/* <GluuAppSidebar />*/}
+        <GluuAppSidebar />
       </Sidebar.Section>
     </Sidebar.MobileFluid>
     {/* END SIDEBAR: Only for Mobile */}
