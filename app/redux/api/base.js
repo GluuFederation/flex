@@ -2,7 +2,7 @@ export const getDefaultClient = (JansConfigApi) => {
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 50000
   const jansauth = defaultClient.authentications['jans-auth']
-  defaultClient.basePath =
+  defaultClient =
     process.env.CONFIG_API_BASE_URL ||
     'https://jans-ui.jans.io'.replace(/\/+$/, '')
   const headers = {
