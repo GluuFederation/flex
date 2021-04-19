@@ -5,8 +5,8 @@ import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 
 function GluuAppSidebar({ scopes, plugins }) {
-  console.log('==========SCOPES ' + JSON.stringify(scopes))
-  console.log('==========PLUGINS ' + JSON.stringify(scopes))
+  //console.log('==========SCOPES ' + JSON.stringify(scopes))
+  //console.log('==========PLUGINS ' + JSON.stringify(scopes))
   function getIcon(name) {
     let fullName = 'fa fa-fw fa-plug'
     if (name) {
@@ -66,7 +66,7 @@ function GluuAppSidebar({ scopes, plugins }) {
         <Divider />
         <Divider />
         {/* -------- Plugins ---------*/}
-        
+
         {/* -------- Plugins ---------*/}
         <Divider />
         <Divider />

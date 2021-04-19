@@ -12,6 +12,7 @@ require('dotenv').config({
 })
 
 const BASE_PATH = process.env.BASE_PATH || '/admin'
+const CONFIG_API_BASE_URL = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 const API_BASE_URL =
   process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
 
@@ -49,6 +50,7 @@ module.exports = {
       'process.env.NODE_ENV': JSON.stringify('production'),
       'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
       'process.env.API_BASE_URL': JSON.stringify(API_BASE_URL),
+      'process.env.CONFIG_API_BASE_URL': JSON.stringify(CONFIG_API_BASE_URL),
     }),
   ],
   optimization: {
