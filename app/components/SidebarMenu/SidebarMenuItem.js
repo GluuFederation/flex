@@ -6,7 +6,7 @@ import uuid from 'uuid/v4'
 
 import { MenuContext } from './MenuContext'
 import { ErrorBoundary } from 'react-error-boundary'
-import GluuErrorFallBack from '../../routes/Apps/Gluu/GluuErrorFallBack'
+import GluuSidebarItemFallBack from '../../routes/Apps/Gluu/GluuSidebarItemFallBack'
 
 /**
  * Renders a collapse trigger or a ReactRouter Link
@@ -146,7 +146,7 @@ export class SidebarMenuItem extends React.Component {
           </SidebarMenuItemLink>
         )}
         {this.props.children && (
-          <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
+          <ErrorBoundary FallbackComponent={GluuSidebarItemFallBack}>
             <ul className="sidebar-submenu">
               {React.Children.map(this.props.children, (child) => (
                 <MenuContext.Consumer>
