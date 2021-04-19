@@ -66,21 +66,8 @@ function GluuAppSidebar({ scopes, plugins }) {
         <Divider />
         <Divider />
         {/* -------- Plugins ---------*/}
-        {plugins.length != 0 && (
-          <SidebarMenu.Item
-            icon={<i className="fa fa-fw fa-plug"></i>}
-            title="Plugins"
-          >
-            {plugins.map((item, key) => (
-              <SidebarMenu.Item
-                icon={getIcon(item.icon)}
-                key={key}
-                title={item.title}
-                to={item.path}
-              ></SidebarMenu.Item>
-            ))}
-          </SidebarMenu.Item>
-        )}
+        
+        {/* -------- Plugins ---------*/}
         <Divider />
         <Divider />
         {/* -------- Configuration ---------*/}
