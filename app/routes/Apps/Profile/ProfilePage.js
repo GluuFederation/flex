@@ -15,7 +15,7 @@ import {
 } from '../../../components'
 import { HeaderMain } from '../../components/HeaderMain'
 import { ErrorBoundary } from 'react-error-boundary'
-import GluuErrorFallBack from './GluuErrorFallBack'
+import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { Profile } from '../../components/Profile'
 import { TimelineDefault } from '../../components/Timeline/TimelineDefault'
 import { connect } from 'react-redux'
