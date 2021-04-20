@@ -22,45 +22,47 @@ import GluuErrorFallBack from './GluuErrorFallBack'
 
 function GluuNavBar({ themeColor, themeStyle, userinfo }) {
   return (
-    <NavbarThemeProvider
-      style={themeStyle}
-      color={themeColor}
-      className="shadow-sm"
-    >
-      <Navbar expand="lg" themed>
-        <Nav>
-          <NavItem className="mr-3">
-            <SidebarTrigger />
-          </NavItem>
-        </Nav>
-        <Nav className="ml-auto" pills>
-          <NavbarMessages />
-          <NavbarActivityFeed />
-          <LanguageMenu />
-          <UncontrolledDropdown nav inNavbar>
-            <DropdownToggle nav>
-              <Avatar.Image
-                size="sm"
-                src={randomAvatar()}
-                addOns={[
-                  <AvatarAddOn.Icon
-                    className="fa fa-circle"
-                    color="white"
-                    key="avatar-icon-bg"
-                  />,
-                  <AvatarAddOn.Icon
-                    className="fa fa-circle"
-                    color="success"
-                    key="avatar-icon-fg"
-                  />,
-                ]}
-              />
-            </DropdownToggle>
-            <DropdownProfile right userinfo={userinfo} />
-          </UncontrolledDropdown>
-        </Nav>
-      </Navbar>
-    </NavbarThemeProvider>
+    <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
+      <NavbarThemeProvider
+        style={themeStyle}
+        color={themeColor}
+        className="shadow-sm"
+      >
+        <Navbar expand="lg" themed>
+          <Nav>
+            <NavItem className="mr-3">
+              <SidebarTrigger />
+            </NavItem>
+          </Nav>
+          <Nav className="ml-auto" pills>
+            <NavbarMessages />
+            <NavbarActivityFeed />
+            <LanguageMenu />
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav>
+                <Avatar.Image
+                  size="sm"
+                  src={randomAvatar()}
+                  addOns={[
+                    <AvatarAddOn.Icon
+                      className="fa fa-circle"
+                      color="white"
+                      key="avatar-icon-bg"
+                    />,
+                    <AvatarAddOn.Icon
+                      className="fa fa-circle"
+                      color="success"
+                      key="avatar-icon-fg"
+                    />,
+                  ]}
+                />
+              </DropdownToggle>
+              <DropdownProfile right userinfo={userinfo} />
+            </UncontrolledDropdown>
+          </Nav>
+        </Navbar>
+      </NavbarThemeProvider>
+    </ErrorBoundary>
   )
 }
 

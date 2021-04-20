@@ -16,19 +16,25 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
             </Button>
           )}
         </Col>
-        {(!hideButtons || !hideButtons['save']) ?
+        {!hideButtons || !hideButtons['save'] ? (
           <Col sm={2} md={1}>
             <Button color="primary" type="submit">
               Save
-          </Button>
-          </Col> : ''}
+            </Button>
+          </Col>
+        ) : (
+          ''
+        )}
         &nbsp;
-        {(!hideButtons || !hideButtons['back']) ?
+        {!hideButtons || !hideButtons['back'] ? (
           <Col sm={2} md={1}>
             <Button color="secondary" onClick={goBack}>
               Cancel
-          </Button>
-          </Col> : ''}
+            </Button>
+          </Col>
+        ) : (
+          ''
+        )}
       </FormGroup>
     </div>
   )
