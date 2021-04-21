@@ -42,6 +42,7 @@ import LdapListPage from './Apps/Configuration/LdapListPage'
 import LdapAddPage from './Apps/Configuration/LdapAddPage'
 import LdapEditPage from './Apps/Configuration/LdapEditPage'
 import CouchbasePage from './Apps/Configuration/CouchbasePage'
+import SettingsPage from './Apps/Configuration/SettingsPage'
 import {
   hasPermission,
   ATTRIBUTE_READ,
@@ -171,6 +172,7 @@ export const RoutedContent = () => {
 
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />
+      <Route component={SettingsPage} path="/settings" />
       <Route component={ByeBye} path="/logout" />
       <Route component={Gluu404Error} path="/error-404" />
 
