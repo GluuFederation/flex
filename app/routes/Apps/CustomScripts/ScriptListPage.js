@@ -159,7 +159,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
             backgroundColor: rowData.enabled ? '#00A36C' : '#FFF',
           }),
           headerStyle: {
-            backgroundColor: '#1EB7FF',
+            backgroundColor: '#03a96d',
             color: '#FFF',
             padding: '2px',
             textTransform: 'uppercase',

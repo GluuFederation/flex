@@ -26,12 +26,12 @@ const NavbarMessages = props => (
     <DropdownToggle nav>
       <IconWithBadge
         badge={
-          <Badge pill color="secondary">
+          <Badge pill color="white">
             1
           </Badge>
         }
       >
-        <i className="fa fa-envelope-o fa-fw" />
+        <i className="fa fa-envelope-o fa-fw" style={{color: 'white'}} />
       </IconWithBadge>
     </DropdownToggle>
     <ExtendedDropdown right>

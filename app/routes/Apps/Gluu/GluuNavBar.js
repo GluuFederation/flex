@@ -31,7 +31,7 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
           </NavItem>
         </Nav>
         <Nav className="ml-auto" pills>
-          <NavbarMessages />
+          <NavbarMessages  />
           <NavbarActivityFeed />
           <LanguageMenu />
           <UncontrolledDropdown nav inNavbar>
