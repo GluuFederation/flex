@@ -24,6 +24,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 
 function GluuAppSidebar({ scopes, plugins }) {
+  console.log('===============' + JSON.stringify(scopes))
   function getIcon(name) {
     let fullName = 'fa fa-fw fa-plug'
     if (name) {
