@@ -47,7 +47,8 @@ export default (state = INIT_STATE, action) => {
         ...state,
       }
     case USERINFO_RESPONSE:
-      if (action.payload.uclaims && action.payload.scopes) {
+      console.log('======UCLAIMS ' + JSON.stringify(action.payload.uclaims))
+      if (action.payload.uclaims) {
         return {
           ...state,
           userinfo: action.payload.uclaims,
@@ -58,6 +59,7 @@ export default (state = INIT_STATE, action) => {
       } else {
         return {
           ...state,
+          isAuthenticated: true,
         }
       }
 
@@ -68,6 +70,7 @@ export default (state = INIT_STATE, action) => {
 
     case GET_API_ACCESS_TOKEN_RESPONSE:
       if (action.payload.accessToken) {
+        console.log('======SCOPES ' + JSON.stringify(action.payload.accessToken.scopes))
         return {
           ...state,
           token: action.payload.accessToken,
