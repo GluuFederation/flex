@@ -41,7 +41,7 @@ function GluuTypeAheadWithAdd({
         style={{
           borderStyle: 'solid',
           borderRadius: '5px',
-          borderColor: '#1EB7FF',
+          borderColor: '#03a96d',
         }}
       >
         &nbsp;

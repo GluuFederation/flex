@@ -12,7 +12,7 @@ const NavbarThemeProvider = ({ style, color, children, className }) => {
     return React.cloneElement(child, {
       className: classNames(
         child.props.className,
-        themeClass
+        'bg-primary'
       ),
     });
   } else {

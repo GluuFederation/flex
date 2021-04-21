@@ -160,7 +160,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
           searchFieldAlignment: 'left',
           pageSize: 10,
           headerStyle: {
-            backgroundColor: '#1EB7FF',
+            backgroundColor: '#03a96d',
             color: '#FFF',
             padding: '2px',
             textTransform: 'uppercase',

@@ -29,7 +29,7 @@ class ThemeSelector extends React.Component {
         { name: 'Color', value: 'color' }
       ],
       colorOptions: [
-        { name: 'Primary', value: 'primary' },
+        { name: 'Primary', value: '#03a96d' },
         { name: 'Success', value: 'success' },
         { name: 'Info', value: 'info' },
         { name: 'Danger', value: 'danger' },

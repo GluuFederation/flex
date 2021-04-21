@@ -8,7 +8,7 @@ const Nav = ({ accent, className, ...otherProps }) => {
   return (
     <BsNav
       className={
-        classNames(className, 'nav', { 'nav-accent': accent })
+        classNames(className, 'nav', { 'nav-accent': false })
       }
       { ...otherProps }
     />

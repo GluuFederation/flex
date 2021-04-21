@@ -187,7 +187,7 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
           selection: false,
           pageSize: 10,
           headerStyle: {
-            backgroundColor: '#1EB7FF', //#1EB7FF 01579b
+            backgroundColor: '#03a96d', //#03a96d 01579b
             color: '#FFF',
             padding: '2px',
             textTransform: 'uppercase',
