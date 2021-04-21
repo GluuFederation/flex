@@ -49,18 +49,28 @@ class OuterClick extends React.Component {
     }
 
     handleDocumentClick = (evt) => {
-      if(this.props.active) {
-        // eslint-disable-next-line react/no-find-dom-node
-        const domElement = ReactDOM.findDOMNode(this.elementRef);
-
-        const isExcluded = _.some(this.props.excludedElements,
+      if(this.openSidebar(evt.path)){
+        if(this.props.active) {
           // eslint-disable-next-line react/no-find-dom-node
-          (element) => element && ReactDOM.findDOMNode(element).contains(evt.target));
-
-        if (!isExcluded && !domElement.contains(evt.target)) {
-          this.props.onClickOutside(evt);
+          const domElement = ReactDOM.findDOMNode(this.elementRef);
+  
+          const isExcluded = _.some(this.props.excludedElements,
+            // eslint-disable-next-line react/no-find-dom-node
+            (element) => element && ReactDOM.findDOMNode(element).contains(evt.target));
+  
+          if (!isExcluded && !domElement.contains(evt.target)) {
+            this.props.onClickOutside(evt);
+          }
         }
       }
+    }
+
+    openSidebar(path){
+      const exists= path.some(item => item.id === "navToggleBtn")
+      if(exists)
+        return false
+
+      return true
     }
 
     render() {

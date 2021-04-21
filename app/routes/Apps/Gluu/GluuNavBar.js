@@ -27,7 +27,7 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
       <Navbar expand="lg" themed>
         <Nav>
           <NavItem className="mr-3">
-            <SidebarTrigger />
+            <SidebarTrigger id="navToggleBtn" />
           </NavItem>
         </Nav>
         <Nav className="ml-auto" pills>

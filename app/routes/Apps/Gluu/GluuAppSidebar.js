@@ -150,7 +150,7 @@ function GluuAppSidebar({ scopes, plugins }) {
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-wrench"></i>}
           title="Settings"
-          to="/settings-edit"
+          to="/settings"
         />
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
