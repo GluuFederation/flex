@@ -124,7 +124,7 @@ export const RoutedContent = () => {
       )}
       {/*    Scripts Routes     */}
       {hasPermission(scopes, SCRIPT_READ) && (
-        <Route component={ScriptListPage} path="/scripts" />
+        <Route component={CustomScriptListPage} path="/scripts" />
       )}
       {hasPermission(scopes, SCRIPT_WRITE) && (
         <Route component={CustomScriptAddPage} path="/script/new" />
