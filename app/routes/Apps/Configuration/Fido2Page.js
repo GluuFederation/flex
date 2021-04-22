@@ -27,7 +27,7 @@ import {
   getFidoConfig,
   editFidoConfig,
 } from '../../../redux/actions/FidoActions'
-import GluuNameValueProperty from '../Gluu/GluuNameValueProperty'
+import GluuNameValuesProperty from '../Gluu/GluuNameValuesProperty'
 
 function Fido2Page({ fido, loading, permissions, dispatch }) {
   useEffect(() => {
@@ -448,7 +448,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                       </Col>
                     </FormGroup>
 
-                    <GluuNameValueProperty
+                    <GluuNameValuesProperty
                       formik={formik}
                       name="requestedParties"
                       label1="Name"
@@ -461,7 +461,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
                       inputId={requested_parties}
                       options={requestedPartiesList}
                       validator={requestedPartiesValidator}
-                    ></GluuNameValueProperty>
+                    ></GluuNameValuesProperty>
 
                     <Divider></Divider>
 

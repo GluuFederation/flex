@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
   Col,
+  Row,
   InputGroup,
   CustomInput,
   Form,
@@ -12,6 +13,7 @@ import {
 } from "./../../../components";
 import GluuFooter from "../Gluu/GluuFooter";
 import GluuLabel from "../Gluu/GluuLabel";
+import GluuNameValueProperty from '../Gluu/GluuNameValueProperty'
 import Counter from '../../../components/Widgets/GroupedButtons/Counter'
 function CustomScriptForm({ item, scripts, handleSubmit }) {
   const [init, setInit] = useState(false);
@@ -32,6 +34,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       script: item.script,
       aliases: item.aliases,
       moduleProperties: item.moduleProperties,
+      configurationProperties: item.configurationProperties,
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -51,6 +54,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     onSubmit: values => {
       values.level = item.level;
       values.moduleProperties = item.moduleProperties;
+      values.configurationProperties = values.configurationProperties.map(ele => ({value1:ele.key, value2:ele.value, description:''}));
       if (typeof values.enabled == 'object') {
         if (values.enabled.length > 0) {
           values.enabled = true;
@@ -246,7 +250,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 id="usage_type"
                 name="usage_type"
                 defaultValue={(!!item.moduleProperties && item.moduleProperties.filter((item) => item.value1 === 'usage_type').length > 0) ?
-                (item.moduleProperties.filter((item) => item.value1 === 'usage_type')[0]).value2 : undefined}
+                  (item.moduleProperties.filter((item) => item.value1 === 'usage_type')[0]).value2 : undefined}
                 onChange={(e) => { usageTypeChange(e.target.value) }}>
                 <option value="">Choose...</option>
                 <option value="interactive">Web</option>
@@ -268,6 +272,21 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           />
         </Col>
       </FormGroup>
+      
+      <GluuNameValueProperty
+        name="configurationProperties"
+        formik={formik}
+        keyLabel="Key"
+        keyName="key"
+        keyId="key"
+        keyPlaceholder="Enter key"
+        valueId="value"
+        valueName="value"
+        valueLabel="Value"
+        valuePlaceholder="Enter value"
+        dataArr={!!item.configurationProperties ? item.configurationProperties.map(ele => ({key:ele.value1, value:ele.value2})) : undefined}
+        nameValueLabel="Custom Properties (key/values)"
+      ></GluuNameValueProperty>
 
       <FormGroup row>
         <GluuLabel label="Script" size={3} required />
