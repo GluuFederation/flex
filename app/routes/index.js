@@ -8,7 +8,6 @@ import Reports from './Dashboards/Reports'
 import NavbarOnly from './Layouts/NavbarOnly'
 import SidebarDefault from './Layouts/SidebarDefault'
 import SidebarA from './Layouts/SidebarA'
-import DragAndDropLayout from './Layouts/DragAndDropLayout'
 import SidebarWithNavbar from './Layouts/SidebarWithNavbar'
 
 import AttributeListPage from './Apps/Attibutes/AttributeListPage'

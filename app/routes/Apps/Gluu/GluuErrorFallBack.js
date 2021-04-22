@@ -1,13 +1,12 @@
 import React from 'react'
 
-function GluuErrorFallBack({ error, resetErrorBoundary}) {
+function GluuErrorFallBack({ error, resetErrorBoundary }) {
+  function logger(error) {
+    console.log(error.message)
+  }
   return (
     <div role="alert">
-      <p>Gluu Admin UI-Sidebar: something went wrong</p>
       <pre>{error.message}</pre>
-      <pre>{JSON.stringify(error.stack)}</pre>
-      <pre>{JSON.stringify(error)}</pre>
-      <button onClick={resetErrorBoundary}>Try again</button>
     </div>
   )
 }
