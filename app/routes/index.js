@@ -89,7 +89,6 @@ export const RoutedContent = () => {
         path="/layouts/sidebar-with-navbar"
         component={SidebarWithNavbar}
       />
-      <Route path="/layouts/dnd-layout" component={DragAndDropLayout} />
 
       {/*    Apps Routes     */}
 

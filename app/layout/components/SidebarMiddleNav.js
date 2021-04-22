@@ -1,5 +1,7 @@
 import React from 'react'
 import { SidebarMenu, Divider } from './../../components'
+import { ErrorBoundary } from 'react-error-boundary'
+import GluuErrorFallBack from '../../routes/Apps/Gluu/GluuErrorFallBack'
 
 export const SidebarMiddleNav = () => (
   <SidebarMenu>

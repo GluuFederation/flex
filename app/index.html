@@ -10,8 +10,8 @@
   <!--<![endif]-->
   <head>
     <meta charset="utf-8" />
+    <base href="/">
     <title>AdminUI</title>
-
     <% if (config.files.favicon) { %>
     <link rel="shortcut icon" href="<%= config.files.favicon%>" />
     <% } %>
@@ -22,7 +22,7 @@
 
     <% for (var css in config.files.css) { %>
     <link href="<%= config.files.css[css] %>" rel="preload" as="style" />
-    <link href="<%= config.files.css[css] %>" rel="stylesheet" />
+    <link href="<%= config.files.css[css] %>" rel="stylesheet"/>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/react-block-ui/1.3.3/style.min.css"

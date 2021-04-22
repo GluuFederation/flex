@@ -62,7 +62,7 @@ const NavbarMessages = props => (
             >
               <Media>
                 <Media left>
-                  <Avatar.Image src="static/logo.png" className="mr-4" />
+                  <Avatar.Image src="admin/static/logo.png" className="mr-4" />
                 </Media>
                 <Media body>
                   <span className="d-flex justify-content-start">

@@ -30,23 +30,39 @@ export default (state = INIT_STATE, action) => {
         isAuthenticated: false,
       }
     case GET_OAUTH2_CONFIG_RESPONSE:
-      return {
-        ...state,
-        isAuthenticated: false,
-        config: action.payload.config,
+      if (action.payload.config) {
+        return {
+          ...state,
+          isAuthenticated: false,
+          config: action.payload.config,
+        }
+      } else {
+        return {
+          ...state,
+        }
       }
+
     case USERINFO_REQUEST:
       return {
         ...state,
       }
     case USERINFO_RESPONSE:
-      return {
-        ...state,
-        userinfo: action.payload.uclaims,
-        userinfo_jwt: action.payload.ujwt,
-        permissions: action.payload.scopes,
-        isAuthenticated: true,
+      console.log('======UCLAIMS ' + JSON.stringify(action.payload.uclaims))
+      if (action.payload.uclaims) {
+        return {
+          ...state,
+          userinfo: action.payload.uclaims,
+          userinfo_jwt: action.payload.ujwt,
+          permissions: action.payload.scopes,
+          isAuthenticated: true,
+        }
+      } else {
+        return {
+          ...state,
+          isAuthenticated: true,
+        }
       }
+
     case GET_API_ACCESS_TOKEN:
       return {
         ...state,
@@ -54,22 +70,20 @@ export default (state = INIT_STATE, action) => {
 
     case GET_API_ACCESS_TOKEN_RESPONSE:
       if (action.payload.accessToken) {
-        localStorage.setItem(
-          'gluu.api.token',
-          action.payload.accessToken.access_token,
-        )
-        localStorage.setItem(
-          'gluu.api.token.issuer',
-          action.payload.accessToken.issuer,
-        )
+        //console.log('======SCOPES ' + JSON.stringify(action.payload.accessToken.scopes))
+        return {
+          ...state,
+          token: action.payload.accessToken,
+          issuer: action.payload.accessToken.issuer,
+          permissions: action.payload.accessToken.scopes,
+          isAuthenticated: true,
+        }
+      } else {
+        return {
+          ...state,
+        }
       }
-      return {
-        ...state,
-        token: action.payload.accessToken,
-        issuer: action.payload.accessToken.issuer,
-        permissions: action.payload.accessToken.scopes,
-        isAuthenticated: true,
-      }
+
     default:
       return {
         ...state,

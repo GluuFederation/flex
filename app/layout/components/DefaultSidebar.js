@@ -1,15 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Sidebar, SidebarTrigger, Divider } from "./../../components";
-import { SidebarMiddleNav } from "./SidebarMiddleNav";
-import { LogoThemed } from "../../routes/components/LogoThemed/LogoThemed";
-import GluuAppSidebar from "../../routes/Apps/Gluu/GluuAppSidebar";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { Sidebar, SidebarTrigger, Divider } from './../../components'
+import { SidebarMiddleNav } from './SidebarMiddleNav'
+import { LogoThemed } from '../../routes/components/LogoThemed/LogoThemed'
+import GluuAppSidebar from '../../routes/Apps/Gluu/GluuAppSidebar'
 
 export const DefaultSidebar = () => (
   <Sidebar>
     {/* START SIDEBAR-OVERLAY: Close (x) */}
     <Sidebar.Close>
-      <SidebarTrigger tag={"a"} href="#">
+      <SidebarTrigger tag={'a'} href="#">
         <i className="fa fa-times-circle fa-fw"></i>
       </SidebarTrigger>
     </Sidebar.Close>
@@ -37,4 +37,4 @@ export const DefaultSidebar = () => (
     </Sidebar.MobileFluid>
     {/* END SIDEBAR: Only for Mobile */}
   </Sidebar>
-);
+)

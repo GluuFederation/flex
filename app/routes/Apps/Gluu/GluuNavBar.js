@@ -17,6 +17,9 @@ import { LanguageMenu } from './LanguageMenu'
 import { connect } from 'react-redux'
 import { DropdownProfile } from '../../../routes/components/Dropdowns/DropdownProfile'
 import { randomAvatar } from '../../../utilities'
+import { ErrorBoundary } from 'react-error-boundary'
+import GluuErrorFallBack from './GluuErrorFallBack'
+
 function GluuNavBar({ themeColor, themeStyle, userinfo }) {
   return (
     <NavbarThemeProvider

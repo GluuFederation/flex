@@ -27,7 +27,7 @@ const SidebarMenuItemLink = (props) =>
     )
   ) : (
     <a
-      href="#"
+      href="javascript:void(0)"
       className={`${props.classBase}__entry__link`}
       onClick={() => props.onToggle()}
     >
@@ -122,7 +122,7 @@ export class SidebarMenuItem extends React.Component {
           'sidebar-menu__entry--no-caret': this.props.noCaret,
         })}
       >
-        { !this.props.isEmptyNode &&
+        {!this.props.isEmptyNode && (
           <SidebarMenuItemLink
             to={this.props.to || null}
             href={this.props.href || null}
@@ -142,7 +142,7 @@ export class SidebarMenuItem extends React.Component {
               this.props.title
             )}
           </SidebarMenuItemLink>
-        }
+        )}
         {this.props.children && (
           <ul className="sidebar-submenu">
             {React.Children.map(this.props.children, (child) => (
