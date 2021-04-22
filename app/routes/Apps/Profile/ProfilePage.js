@@ -1,6 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-
 import {
   Container,
   Row,
@@ -17,7 +15,6 @@ import { HeaderMain } from '../../components/HeaderMain'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { Profile } from '../../components/Profile'
-import { TimelineDefault } from '../../components/Timeline/TimelineDefault'
 import { connect } from 'react-redux'
 
 const ProfileDetails = ({ userinfo }) => (
@@ -31,21 +28,10 @@ const ProfileDetails = ({ userinfo }) => (
             <Card>
               <CardBody>
                 <Profile userinfo={userinfo} />
-                <div className="text-center pb-1">
-                  <ul className="list-inline">
-                    <li className="list-inline-item text-center">
-                      <h2 className="mb-1">3</h2>
-                      <span>Groups Count</span>
-                    </li>
-                    <li className="list-inline-item text-center">
-                      <h2 className="mb-1">7</h2>
-                      <span>Login count</span>
-                    </li>
-                  </ul>
-                </div>
+                <div className="text-center pb-1"></div>
 
                 <div className="mt-4 mb-2">
-                  <span className="small">Informations</span>
+                  <span className="small">Detailed information</span>
                 </div>
                 <div className="text-left mb-4">
                   <Badge pill color="info" className="mr-1">
@@ -65,14 +51,9 @@ const ProfileDetails = ({ userinfo }) => (
             </Card>
           </Col>
           <Col lg={8}>
-            <UncontrolledTabs initialActiveTabId="overview">
+            <UncontrolledTabs initialActiveTabId="detailContact">
               {/* START Pills Nav */}
               <Nav pills className="mb-4 flex-column flex-md-row mt-4 mt-lg-0">
-                <NavItem>
-                  <UncontrolledTabs.NavLink tabId="overview">
-                    Latest activities
-                  </UncontrolledTabs.NavLink>
-                </NavItem>
                 <NavItem>
                   <UncontrolledTabs.NavLink tabId="detailContact">
                     Detail Contact
@@ -81,26 +62,10 @@ const ProfileDetails = ({ userinfo }) => (
               </Nav>
               {/* END Pills Nav */}
               <UncontrolledTabs.TabContent>
-                <TabPane tabId="overview">
-                  <TimelineDefault
-                    showPillDate
-                    pillDate="Today"
-                    smallIconColor="danger"
-                    iconCircleColor="danger"
-                    iconCircle="exclamation"
-                  />
-                  <TimelineDefault
-                    showPillDate
-                    pillDate="Yesterday"
-                    smallIconColor="info"
-                    iconCircleColor="info"
-                    iconCircle="comment"
-                  />
-                </TabPane>
                 <TabPane tabId="detailContact">
                   <Card body>
                     <div className="mb-2">
-                      <span className="small">Config api roles</span>
+                      <span className="small">Config Api Roles</span>
                     </div>
                     {userinfo.jansAdminUIRole &&
                       userinfo.jansAdminUIRole.map((role, index) => (
@@ -114,9 +79,22 @@ const ProfileDetails = ({ userinfo }) => (
                         </Badge>
                       ))}
                     <div className="mt-4 mb-2">
-                      <span className="small">Informations</span>
+                      <span className="small">Detailed information</span>
                     </div>
-                    {}
+                    <div className="text-left mb-4">
+                      <Badge pill color="info" className="mr-1">
+                        {userinfo.family_name}
+                      </Badge>
+                      <Badge pill color="info" className="mr-1">
+                        {userinfo.nickname}
+                      </Badge>
+                      <Badge pill color="info" className="mr-1">
+                        {userinfo.name}
+                      </Badge>
+                      <Badge pill color="info" className="mr-1">
+                        {userinfo.middle_name}
+                      </Badge>
+                    </div>
                   </Card>
                 </TabPane>
               </UncontrolledTabs.TabContent>
