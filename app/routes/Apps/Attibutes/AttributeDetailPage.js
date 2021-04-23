@@ -45,84 +45,33 @@ const AttributeDetailPage = ({ row }) => {
           <Col sm={6}>
             <FormGroup row>
               <Label sm={6}>Status:</Label>
-              <Label sm={6}>{row.status}</Label>
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>Admin Can Access:</Label>
+
               <Label sm={6}>
-                {row.adminCanAccess ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="info">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>Admin Can View:</Label>
-              <Label sm={6}>
-                {row.viewtype ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="info">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>Admin Can Edit:</Label>
-              <Label sm={6}>
-                {row.adminCanEdit ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="info">No</Badge>
-                )}
+                <Badge color="primary">{row.status}</Badge>
               </Label>
             </FormGroup>
           </Col>
         </Row>
         <Row>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>User Can Access:</Label>
-              <Label sm={6}>
-                {row.userCanAccess ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="info">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
+          <Col sm={3}>
+            <Label sm={12}>Attribute Edit Type:</Label>
           </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>User Can View:</Label>
-              <Label sm={6}>
-                {row.userCanView ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="info">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
+          <Col sm={3}>
+            {Array.from(row.editType).map((item, index) => (
+              <Badge key={index} color="primary">
+                {item}
+              </Badge>
+            ))}
           </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>User Can Edit:</Label>
-              <Label sm={6}>
-                {row.userCanEdit ? (
-                  <Badge color="primary">Yes</Badge>
-                ) : (
-                  <Badge color="info">No</Badge>
-                )}
-              </Label>
-            </FormGroup>
+          <Col sm={3}>
+            <Label sm={12}>Attribute View Type:</Label>
+          </Col>
+          <Col sm={3}>
+            {Array.from(row.viewType).map((item, index) => (
+              <Badge key={index} color="primary">
+                {item}
+              </Badge>
+            ))}
           </Col>
         </Row>
         {/* END Content */}

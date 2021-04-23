@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Container,
   Badge,
@@ -6,14 +6,22 @@ import {
   Col,
   FormGroup,
   Label,
-  Accordion
-} from "./../../../components";
-import GluuFormDetailRow from "../Gluu/GluuFormDetailRow";
+  Accordion,
+} from './../../../components'
+import GluuFormDetailRow from '../Gluu/GluuFormDetailRow'
 function ClientDetailPage({ row }) {
+  function extractDescription(customAttributes) {
+    var result = customAttributes.filter((item) => item.name === 'description')
+    if (result && result.length >= 1) {
+      return result[0].values
+    }
+    return ''
+  }
+
   return (
     <React.Fragment>
       {/* START Content */}
-      <Container style={{ backgroundColor: "#F5F5F5" }}>
+      <Container style={{ backgroundColor: '#F5F5F5' }}>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow label="Client Id" value={row.inum} />
@@ -21,7 +29,7 @@ function ClientDetailPage({ row }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="Client Secret"
-              value={row.clientSecret ? row.clientSecret : "-"}
+              value={row.clientSecret ? row.clientSecret : '-'}
             />
           </Col>
         </Row>
@@ -29,18 +37,21 @@ function ClientDetailPage({ row }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="Name"
-              value={row.displayName ? row.displayName : "-"}
+              value={row.displayName || row.clientName || '-'}
             />
           </Col>
           <Col sm={6}>
-            <GluuFormDetailRow label="Description"  value={row.description ? row.description : "-"} />
+            <GluuFormDetailRow
+              label="Description"
+              value={extractDescription(row.customAttributes || []) || '-'}
+            />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
               label="Subject Type"
-              value={row.subjectType ? row.subjectType : "-"}
+              value={row.subjectType ? row.subjectType : '-'}
             />
           </Col>
           <Col sm={6}>
@@ -170,7 +181,7 @@ function ClientDetailPage({ row }) {
         {/* END Content */}
       </Container>
     </React.Fragment>
-  );
+  )
 }
 
-export default ClientDetailPage;
+export default ClientDetailPage

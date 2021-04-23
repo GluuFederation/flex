@@ -2,6 +2,7 @@ import React from 'react'
 import { Container, Row, Col } from './../../../components'
 import GluuFormDetailRow from '../Gluu/GluuFormDetailRow'
 function ScopeDetailPage({ row }) {
+  console.log('==============' + JSON.stringify(row))
   function getBadgeTheme(status) {
     if (status) {
       return 'primary'
@@ -47,14 +48,14 @@ function ScopeDetailPage({ row }) {
           </Col>
         </Row>
         <Row>
-          <Col sm={6}>Attributes:</Col>
-          <Col sm={6}>
-            {Object.keys(row.attributes).map((key, i) => (
+          <Col sm={3}>Attributes:</Col>
+          <Col sm={9}>
+            {Object.keys(row.attributes).map((item, key) => (
               <GluuFormDetailRow
                 key={key}
-                label={key}
-                isBadge={row.attributes[key]}
-                value={String(row.attributes[key])}
+                label={item}
+                isBadge={true}
+                value={String(row.attributes[item])}
               />
             ))}
           </Col>
