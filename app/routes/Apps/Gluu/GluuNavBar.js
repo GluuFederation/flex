@@ -21,6 +21,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 
 function GluuNavBar({ themeColor, themeStyle, userinfo }) {
+  const userInfo = userinfo ? userinfo : {}
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <NavbarThemeProvider
@@ -57,7 +58,7 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
                   ]}
                 />
               </DropdownToggle>
-              <DropdownProfile right userinfo={userinfo} />
+              <DropdownProfile right userinfo={userInfo} />
             </UncontrolledDropdown>
           </Nav>
         </Navbar>
