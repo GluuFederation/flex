@@ -69,7 +69,9 @@ import { selectPlugin } from '../../plugins/selector'
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
 export const RoutedContent = () => {
-  const scopes = useSelector((state) => state.authReducer.permissions)
+  const scopes = useSelector((state) =>
+    state.token ? state.token.scopes : state.authReducer.permissions,
+  )
   const availablePlugins = useSelector(
     (state) => state.pluginMenuReducer.plugins,
   )
