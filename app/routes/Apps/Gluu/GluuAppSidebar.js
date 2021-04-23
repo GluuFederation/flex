@@ -23,16 +23,7 @@ import {
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 
-function GluuAppSidebar({ scopes, plugins }) {
-  //console.log('===============' + JSON.stringify(scopes))
-  function getIcon(name) {
-    let fullName = 'fa fa-fw fa-plug'
-    if (name) {
-      fullName = 'fa fa-fw ' + name
-    }
-    return <i className={fullName}></i>
-  }
-
+function GluuAppSidebar({ scopes }) {
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
@@ -150,11 +141,11 @@ function GluuAppSidebar({ scopes, plugins }) {
 }
 
 const mapStateToProps = ({ authReducer, pluginMenuReducer }) => {
-  const scopes = authReducer.permissions
-  const plugins = pluginMenuReducer.plugins
+  const scopes = authReducer.token
+    ? authReducer.token.scopes
+    : authReducer.permissions
   return {
     scopes,
-    plugins,
   }
 }
 

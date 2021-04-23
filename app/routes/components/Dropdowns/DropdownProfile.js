@@ -9,7 +9,7 @@ const DropdownProfile = (props) => (
   <React.Fragment>
     <DropdownMenu right={props.right}>
       <DropdownItem header>
-        {props.userinfo.user_name}-{props.userinfo.email}
+        {props.userinfo.user_name || props.userinfo.name || props.userinfo.given_name}
       </DropdownItem>
       <DropdownItem divider />
       <DropdownItem tag={Link} to="/profile">

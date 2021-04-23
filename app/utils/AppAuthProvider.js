@@ -15,7 +15,6 @@ import {
   getOAuth2Config,
   getUserInfo,
   getAPIAccessToken,
-  getAllPlugins,
 } from '../redux/actions'
 
 class AppAuthProvider extends Component {
@@ -58,7 +57,6 @@ class AppAuthProvider extends Component {
   }
 
   componentDidMount() {
-    //this.props.getAllPlugins()
   }
 
   static getDerivedStateFromProps(props) {
@@ -90,7 +88,6 @@ class AppAuthProvider extends Component {
               uuidv4(),
             )
             if (authzUrl) {
-              console.log('Url to process authz: ', authzUrl)
               window.location.href = authzUrl
               return null
             }
@@ -148,6 +145,5 @@ export default withRouter(
     getOAuth2Config,
     getUserInfo,
     getAPIAccessToken,
-    getAllPlugins,
   })(AppAuthProvider),
 )
