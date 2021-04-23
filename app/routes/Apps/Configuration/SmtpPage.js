@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
 import {
-Badge,
+  Badge,
   Col,
   Form,
   FormGroup,
@@ -26,9 +26,6 @@ import {
 } from '../../../utils/PermChecker'
 
 function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
-   console.log('SmtpPage smtp = '+smtp+'\n\n')
-   console.log('SmtpPage testStatus = '+testStatus+'\n\n')
-      
   useEffect(() => {
     dispatch(getSmtpConfig())
   }, [])
@@ -70,20 +67,17 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
               >
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
-                  
-                 
-                  {testStatus => (
-                		  <FormGroup row>
-                          <GluuLabel label="Smtp Test Status" size={4} />
-                          <Col sm={8} >
-                          <Badge color="primary"> 
-                          {testStatus.service} {testStatus.status}
+                    {(testStatus) => (
+                      <FormGroup row>
+                        <GluuLabel label="Smtp Test Status" size={4} />
+                        <Col sm={8}>
+                          <Badge color="primary">
+                            {testStatus.service} {testStatus.status}
                           </Badge>
-                          </Col>
-                          </FormGroup>
-                        )}
-               
-                
+                        </Col>
+                      </FormGroup>
+                    )}
+
                     <FormGroup row>
                       <GluuLabel label="Host Name" required />
                       <Col sm={9}>

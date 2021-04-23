@@ -99,6 +99,7 @@ function GluuAppSidebar({ scopes }) {
           icon={<i className="fa fa-fw fa-gears"></i>}
           title="Configuration"
         >
+          <SidebarMenu.Item title="Json Config" to="/configuration" />
           {(hasPermission(scopes, SMTP_READ) && (
             <SidebarMenu.Item title="Smtp" to="/config/smtp" />
           )) || <SidebarMenu.Item isEmptyNode={true} />}

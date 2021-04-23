@@ -32,6 +32,7 @@ import ScopeAddPage from './Apps/Scopes/ScopeAddPage'
 import ScopeEditPage from './Apps/Scopes/ScopeEditPage'
 import ByeBye from './Pages/ByeBye'
 import SmtpPage from './Apps/Configuration/SmtpPage'
+import ConfigPage from './Apps/Configuration/ConfigPage'
 import AcrsPage from './Apps/Configuration/AcrsPage'
 import LoggingPage from './Apps/Configuration/LoggingPage'
 import JwksPage from './Apps/Configuration/JwksPage'
@@ -79,9 +80,7 @@ export const RoutedContent = () => {
   return (
     <Switch>
       <Redirect from="/" to="/home/dashboard" exact />
-      {/*<Route path="/home/analytics" exact component={ Analytics } />*/}
       <Route path="/home/dashboard" exact component={Reports} />
-
       {/*    Layouts     */}
       <Route path="/layouts/navbar" component={NavbarOnly} />
       <Route path="/layouts/sidebar" component={SidebarDefault} />
@@ -134,6 +133,7 @@ export const RoutedContent = () => {
         <Route component={CustomScriptEditPage} path="/script/edit:gid" />
       )}
       {/*    Configuration Routes     */}
+      <Route component={ConfigPage} path="/configuration" />
       {hasPermission(scopes, SMTP_READ) && (
         <Route component={SmtpPage} path="/config/smtp" />
       )}
