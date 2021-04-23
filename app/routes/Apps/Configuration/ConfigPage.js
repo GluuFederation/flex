@@ -38,6 +38,9 @@ function ConfigPage({ configuration, loading, dispatch }) {
           <Card>
             <CardBody>
               <Form>
+                <FormGroup row>
+                  <GluuLabel label="Work in progress"/>
+                </FormGroup>
                 <FormGroup row></FormGroup>
                 <GluuFooter />
               </Form>
