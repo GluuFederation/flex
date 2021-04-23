@@ -33,7 +33,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
         <FormGroup row>
           <GluuLabel label="Servers" size={4} />
           <Col sm={8}>
-            {couchbase.servers.map((server, index) => (
+            {(couchbase.servers && couchbase.servers.length) && couchbase.servers.map((server, index) => (
               <Badge key={index} color="primary">
                 {server}
               </Badge>
