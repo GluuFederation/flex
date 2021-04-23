@@ -22,7 +22,7 @@ SidebarTrigger.propTypes = {
 };
 SidebarTrigger.defaultProps = {
   tag: NavLink,
-  children: <i className="fa fa-bars fa-fw" style={{color: 'white'}}></i>
+  children: <i className="fa fa-bars fa-fw fa-2x" style={{color: 'white', cursor: 'pointer'}}></i>
 };
 
 const cfgSidebarTrigger = withPageConfig(SidebarTrigger);

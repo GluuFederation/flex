@@ -69,39 +69,6 @@ function GluuAppSidebar({ scopes, plugins }) {
             <SidebarMenu.Item title="New Client" to="/client/new" exact />
           )) || <SidebarMenu.Item isEmptyNode={true} />}
         </SidebarMenu.Item>
-        {/* -------- Scopes ---------*/}
-        <SidebarMenu.Item
-          icon={<i className="fa fa-fw fa-sitemap"></i>}
-          title="Scopes"
-        >
-          {(hasPermission(scopes, SCOPE_READ) && (
-            <SidebarMenu.Item title="All Scopes" to="/scopes" />
-          )) || <SidebarMenu.Item isEmptyNode={true} />}
-          {(hasPermission(scopes, SCOPE_WRITE) && (
-            <SidebarMenu.Item title="New Scope" to="/scope/new" />
-          )) || <SidebarMenu.Item isEmptyNode={true} />}
-        </SidebarMenu.Item>
-        {/* -------- Custom scripts ---------*/}
-        <SidebarMenu.Item
-          icon={<i className="fa fa-fw fa-puzzle-piece"></i>}
-          title="Custom Scripts"
-        >
-          {(hasPermission(scopes, SCRIPT_READ) && (
-            <SidebarMenu.Item title="All Scripts" to="/scripts" exact />
-          )) || <SidebarMenu.Item isEmptyNode={true} />}
-          {(hasPermission(scopes, SCRIPT_WRITE) && (
-            <SidebarMenu.Item title="New Script" to="/script/new" exact />
-          )) || <SidebarMenu.Item isEmptyNode={true} />}
-        </SidebarMenu.Item>
-
-        {/* -------- Scopes ---------*/}
-
-        <Divider />
-        <Divider />
-        {/* -------- Plugins ---------*/}
-
-        {/* -------- Plugins ---------*/}
-        <Divider />
         <Divider />
         {/* -------- Configuration ---------*/}
         <SidebarMenu.Item
@@ -133,6 +100,39 @@ function GluuAppSidebar({ scopes, plugins }) {
             <SidebarMenu.Item title="Jwks" to="/config/jwks" exact />
           )) || <SidebarMenu.Item isEmptyNode={true} />}
         </SidebarMenu.Item>
+        <Divider />
+        {/* -------- Custom scripts ---------*/}
+        <SidebarMenu.Item
+          icon={<i className="fa fa-fw fa-puzzle-piece"></i>}
+          title="Custom Scripts"
+        >
+          {(hasPermission(scopes, SCRIPT_READ) && (
+            <SidebarMenu.Item title="All Scripts" to="/scripts" exact />
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
+          {(hasPermission(scopes, SCRIPT_WRITE) && (
+            <SidebarMenu.Item title="New Script" to="/script/new" exact />
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
+        </SidebarMenu.Item>
+        {/* -------- Scopes ---------*/}
+        <SidebarMenu.Item
+          icon={<i className="fa fa-fw fa-sitemap"></i>}
+          title="Scopes"
+        >
+          {(hasPermission(scopes, SCOPE_READ) && (
+            <SidebarMenu.Item title="All Scopes" to="/scopes" />
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
+          {(hasPermission(scopes, SCOPE_WRITE) && (
+            <SidebarMenu.Item title="New Scope" to="/scope/new" />
+          )) || <SidebarMenu.Item isEmptyNode={true} />}
+        </SidebarMenu.Item>
+
+        {/* -------- Scopes ---------*/}
+
+        <Divider />
+        <Divider />
+        {/* -------- Plugins ---------*/}
+
+        {/* -------- Plugins ---------*/}
         <Divider />
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-wrench"></i>}
