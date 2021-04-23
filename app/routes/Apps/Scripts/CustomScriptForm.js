@@ -54,7 +54,10 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     onSubmit: values => {
       values.level = item.level;
       values.moduleProperties = item.moduleProperties;
-      values.configurationProperties = values.configurationProperties.map(ele => ({value1:ele.key, value2:ele.value, description:''}));
+      
+      if (!!values.configurationProperties) {
+        values.configurationProperties = values.configurationProperties.map(ele => ({ value1: ele.key, value2: ele.value, description: '' }));
+      }
       if (typeof values.enabled == 'object') {
         if (values.enabled.length > 0) {
           values.enabled = true;
@@ -272,7 +275,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           />
         </Col>
       </FormGroup>
-      
+
       <GluuNameValueProperty
         name="configurationProperties"
         formik={formik}
@@ -284,7 +287,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         valueName="value"
         valueLabel="Value"
         valuePlaceholder="Enter value"
-        dataArr={!!item.configurationProperties ? item.configurationProperties.map(ele => ({key:ele.value1, value:ele.value2})) : undefined}
+        dataArr={!!item.configurationProperties ? item.configurationProperties.map(ele => ({ key: ele.value1, value: ele.value2 })) : undefined}
         nameValueLabel="Custom Properties (key/values)"
       ></GluuNameValueProperty>
 
