@@ -5,7 +5,7 @@ import { combineReducers } from 'redux'
 import authReducer from './AuthReducer'
 import scopeReducer from './ScopeReducer'
 import attributeReducer from './AttributeReducer'
-//import openidClientReducer from './OpenidClientReducer'
+import jsonConfigReducer from './JsonConfigReducer'
 import oidcReducer from './OIDCReducer'
 import customScriptReducer from './CustomScriptReducer'
 import smtpReducer from './SmtpReducer'
@@ -37,6 +37,7 @@ const appReducers = {
   cacheReducer,
   jwksReducer,
   initReducer,
+  jsonConfigReducer,
 }
 
 const allReducers = { ...appReducers, healthCheck }

@@ -1,7 +1,6 @@
 /**
  * Attribute Sagas
  */
-import { options } from 'numeral'
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from '../../utils/TokenController'
 import {
@@ -17,7 +16,6 @@ import {
   ADD_ATTRIBUTE,
   EDIT_ATTRIBUTE,
   DELETE_ATTRIBUTE,
-  SEARCH_CLIENTS,
 } from '../actions/types'
 import AttributeApi from '../api/AttributeApi'
 import { getClient } from '../api/base'
