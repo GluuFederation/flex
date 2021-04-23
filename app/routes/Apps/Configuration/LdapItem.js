@@ -62,7 +62,7 @@ function LdapItem({ ldap, index, formik }) {
           <Col sm={8}>
             { ldap.baseDNs && ldap.baseDNs.map((dn, index) => (
               <Badge key={index} color="primary">
-                {dn}
+                {dn} {dn}
               </Badge>
             ))}
           </Col>

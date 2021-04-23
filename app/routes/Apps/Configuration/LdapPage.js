@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import BlockUi from 'react-block-ui';
 import { Formik } from 'formik';
 import {
@@ -7,39 +7,17 @@ import {
   Card,
   CardBody,
 
-} from './../../../components'
-import GluuFooter from '../Gluu/GluuFooter'
-import LdapItem from './LdapItem'
-import { connect } from 'react-redux'
-import { getLdapConfig, editLdap } from '../../../redux/actions/LdapActions'
+} from './../../../components';
+import GluuFooter from '../Gluu/GluuFooter';
+import LdapItem from './LdapItem';
+import { connect } from 'react-redux';
+import { getLdapConfig, editLdap } from '../../../redux/actions/LdapActions';
 
 function LdapPage({ ldap, loading, dispatch }) {
 
-  const [initialValues, setInitialValues] = useState({})
-
   useEffect(() => {
-    dispatch(getLdapConfig())
-  }, [])
-
-  useEffect(() => {
-    if (ldap.length) {
-      setInitialValues({
-        configId: ldap[0].configId,
-        bindDN: ldap[0].bindDN,
-        bindPassword: ldap[0].bindPassword,
-        servers: ldap[0].servers,
-        maxConnections: ldap[0].maxConnections,
-        useSSL: ldap[0].useSSL,
-        baseDNs: ldap[0].baseDNs,
-        primaryKey: ldap[0].primaryKey,
-        localPrimaryKey: ldap[0].localPrimaryKey,
-        useAnonymousBind: ldap[0].useAnonymousBind,
-        enabled: ldap[0].enabled,
-        version: ldap[0].version,
-        level: ldap[0].level,
-      })
-    }
-  }, [ldap])
+    dispatch(getLdapConfig());
+  }, []);
 
   return (
     <React.Fragment>
@@ -51,14 +29,12 @@ function LdapPage({ ldap, loading, dispatch }) {
           renderChildren={true}
           message={'Performing the request, please wait!'}
         >
-          {
-            Object.keys(initialValues).length && ldap.length ?
-              <Card>
-                <CardBody>
+          <Card>
+              <CardBody>
                   <Formik
-                    initialValues={initialValues}
+                    initialValues={ldap}
                     onSubmit={(values) => {
-                      dispatch(editLdap(JSON.stringify(values)))
+                      dispatch(editLdap(JSON.stringify(values)));
                     }}
                   >
                     {(formik) => (
@@ -72,12 +48,11 @@ function LdapPage({ ldap, loading, dispatch }) {
                   </Formik>
 
                 </CardBody>
-              </Card> : null
-          }
+            </Card>
         </BlockUi>
       </Container>
     </React.Fragment>
-  )
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -85,7 +60,7 @@ const mapStateToProps = (state) => {
     ldap: state.ldapReducer.ldap,
     permissions: state.authReducer.permissions,
     loading: state.ldapReducer.loading,
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps)(LdapPage)
+export default connect(mapStateToProps)(LdapPage);
