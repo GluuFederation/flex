@@ -30,7 +30,7 @@ module.exports = {
         "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
         "prefer-const": "error",
         "no-unused-vars": "off",
-        "no-use-before-define": "error",
+        //"no-use-before-define": "error",
         "react/jsx-uses-react": "error",
         "react/jsx-uses-vars": "error",
         'object-curly-spacing': ['error', 'always'],

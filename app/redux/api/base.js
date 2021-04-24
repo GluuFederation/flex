@@ -1,5 +1,5 @@
 export const getDefaultClient = (JansConfigApi) => {
-  const defaultClient = JansConfigApi.ApiClient.instance
+  let defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 50000
   const jansauth = defaultClient.authentications['jans-auth']
   defaultClient =
