@@ -152,7 +152,7 @@ module.exports = {
     contentBase: config.distDir,
     compress: true,
     historyApiFallback: {
-      index: '/',
+      index: BASE_PATH,
     },
     host: '0.0.0.0',
     port: 4100,
