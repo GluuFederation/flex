@@ -111,7 +111,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     setLimit(document.getElementById(limitId).value)
     setPattern(document.getElementById(patternId).value)
     setType(document.getElementById(typeId).value)
-    setStatus(document.getElementById(statusId).value)
+    //setStatus(document.getElementById(statusId).value)
   }
   function handleGoToCustomScriptAddPage() {
     return history.push('/script/new')
