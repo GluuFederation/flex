@@ -91,22 +91,15 @@ function ClientDetailPage({ row }) {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Accordion className="mb-2">
-                <Accordion.Header className="h6">
-                  Scopes
-                  <Accordion.Indicator className="ml-auto" />
-                </Accordion.Header>
-                <Accordion.Body>
-                  <Label sm={8}>
-                    {row.scopes &&
-                      row.scopes.map((item, key) => (
-                        <Badge key={key} color="primary">
-                          {item}
-                        </Badge>
-                      ))}
-                  </Label>
-                </Accordion.Body>
-              </Accordion>
+              <Label sm={4}>Scopes:</Label>
+              <Label sm={8}>
+                {row.scopes &&
+                  row.scopes.map((item, key) => (
+                    <Badge key={key} color="primary">
+                      {item}
+                    </Badge>
+                  ))}
+              </Label>
             </FormGroup>
           </Col>
           <Col sm={6}>
