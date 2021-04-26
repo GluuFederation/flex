@@ -24,7 +24,6 @@ import {
 } from '../../../redux/actions/JsonConfigActions'
 
 function ConfigPage({ configuration, loading, dispatch }) {
-  console.log('===================' + JSON.stringify(configuration))
   useEffect(() => {
     dispatch(getJsonConfig())
   }, [])

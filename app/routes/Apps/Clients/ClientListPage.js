@@ -18,7 +18,7 @@ import {
   CLIENT_READ,
   CLIENT_DELETE,
 } from '../../../utils/PermChecker'
-function ClientListPage({ clients, permissions, loading, dispatch }) {
+function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const options = {}
   const [limit, setLimit] = useState(5)
   const [pattern, setPattern] = useState(null)
@@ -196,7 +196,7 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
           actionsColumnIndex: -1,
         }}
         detailPanel={(rowData) => {
-          return <ClientDetailPage row={rowData} />
+          return <ClientDetailPage row={rowData} scopes={scopes} />
         }}
       />
       {/* END Content */}
@@ -215,6 +215,7 @@ function ClientListPage({ clients, permissions, loading, dispatch }) {
 const mapStateToProps = (state) => {
   return {
     clients: state.oidcReducer.items,
+    scopes: state.scopeReducer.items,
     loading: state.oidcReducer.loading,
     permissions: state.authReducer.permissions,
   }
