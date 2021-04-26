@@ -28,25 +28,17 @@ function ConfigPage({ configuration, loading, dispatch }) {
   return (
     <React.Fragment>
       <Container>
-        <BlockUi
-          tag="div"
-          blocking={loading}
-          keepInView={true}
-          renderChildren={true}
-          message={'Performing the request, please wait!'}
-        >
-          <Card>
-            <CardBody>
-              <Form>
-                <FormGroup row>
-                  <GluuLabel label="Work in progress"/>
-                </FormGroup>
-                <FormGroup row></FormGroup>
-                <GluuFooter />
-              </Form>
-            </CardBody>
-          </Card>
-        </BlockUi>
+        <Card>
+          <CardBody>
+            <Form>
+              <FormGroup row>
+                <GluuLabel label="Work in progress" />
+              </FormGroup>
+              <FormGroup row></FormGroup>
+              <GluuFooter />
+            </Form>
+          </CardBody>
+        </Card>
       </Container>
     </React.Fragment>
   )
