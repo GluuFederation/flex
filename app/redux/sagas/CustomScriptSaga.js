@@ -50,7 +50,7 @@ export function* getCustomScripts() {
 export function* getScriptsByType({ payload }) {
   try {
     const scriptApi = yield* newFunction()
-    const data = yield call(scriptApi.getScriptsByType, payload.options)
+    const data = yield call(scriptApi.getScriptsByType, payload.type)
     yield put(getCustomScriptsResponse(data))
   } catch (e) {
     yield put(getCustomScriptsResponse(null))
@@ -120,12 +120,15 @@ export function* watchEditScript() {
 export function* watchDeleteScript() {
   yield takeLatest(DELETE_CUSTOM_SCRIPT, deleteScript)
 }
-
+export function* watchScriptsByType() {
+  yield takeLatest(GET_CUSTOM_SCRIPT_BY_TYPE, getScriptsByType)
+}
 export default function* rootSaga() {
   yield all([
     fork(watchGetAllCustomScripts),
     fork(watchAddScript),
     fork(watchEditScript),
     fork(watchDeleteScript),
+    fork(watchScriptsByType),
   ])
 }

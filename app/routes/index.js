@@ -18,9 +18,9 @@ import ClientListPage from './Apps/Clients/ClientListPage'
 import ClientAddPage from './Apps/Clients/ClientAddPage'
 import ClientEditPage from './Apps/Clients/ClientEditPage'
 
-import CustomScriptListPage from './Apps/Scripts/CustomScriptListPage'
-import CustomScriptAddPage from './Apps/Scripts/CustomScriptAddPage'
-import CustomScriptEditPage from './Apps/Scripts/CustomScriptEditPage'
+import ScriptListTable from './Apps/CustomScripts/ScriptListPage'
+import CustomScriptAddPage from './Apps/CustomScripts/CustomScriptAddPage'
+import CustomScriptEditPage from './Apps/CustomScripts/CustomScriptEditPage'
 
 import ScriptListPage from './Apps/CustomScripts/ScriptListPage'
 
@@ -124,7 +124,7 @@ export const RoutedContent = () => {
       )}
       {/*    Scripts Routes     */}
       {hasPermission(scopes, SCRIPT_READ) && (
-        <Route component={CustomScriptListPage} path="/scripts" />
+        <Route component={ScriptListTable} path="/scripts" />
       )}
       {hasPermission(scopes, SCRIPT_WRITE) && (
         <Route component={CustomScriptAddPage} path="/script/new" />
