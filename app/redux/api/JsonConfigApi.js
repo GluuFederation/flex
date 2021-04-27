@@ -6,10 +6,8 @@ export default class JsonConfigApi {
   // Get json Config
   fetchJsonConfig = () => {
     return new Promise((resolve, reject) => {
-      console.log('==============call');
       this.api.getProperties((error, data) => {
         if (error) {
-          console.log('==============error '+error);
           reject(error)
         } else {
           resolve(data)

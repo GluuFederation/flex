@@ -6,10 +6,13 @@ import {
   Col,
   FormGroup,
   Label,
-  Accordion,
 } from './../../../components'
 import GluuFormDetailRow from '../Gluu/GluuFormDetailRow'
-function ClientDetailPage({ row }) {
+function ClientDetailPage({ row, scopes }) {
+  const scopesDns = row.scopes
+  const clientScopes = scopes
+    .filter((item) => scopesDns.includes(item.dn, 0))
+    .map((item) => item.id)
   function extractDescription(customAttributes) {
     var result = customAttributes.filter((item) => item.name === 'description')
     if (result && result.length >= 1) {
@@ -91,22 +94,15 @@ function ClientDetailPage({ row }) {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Accordion className="mb-2">
-                <Accordion.Header className="h6">
-                  Scopes
-                  <Accordion.Indicator className="ml-auto" />
-                </Accordion.Header>
-                <Accordion.Body>
-                  <Label sm={8}>
-                    {row.scopes &&
-                      row.scopes.map((item, key) => (
-                        <Badge key={key} color="primary">
-                          {item}
-                        </Badge>
-                      ))}
-                  </Label>
-                </Accordion.Body>
-              </Accordion>
+              <Label sm={4}>Scopes:</Label>
+              <Label sm={8}>
+                {clientScopes &&
+                  clientScopes.map((item, key) => (
+                    <Badge key={key} color="primary">
+                      {item}
+                    </Badge>
+                  ))}
+              </Label>
             </FormGroup>
           </Col>
           <Col sm={6}>

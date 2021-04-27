@@ -7,12 +7,19 @@ import {
   Form,
   FormGroup,
   Container,
+  Accordion,
   Input,
   Card,
+  CardText,
   CardBody,
 } from './../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
+import GluuInput from '../Gluu/GluuInput'
+import GluuBooleanBox from '../Gluu/GluuBooleanInput'
+import ConfigEndpointPanel from './ConfigEndpoints'
+import ConfigUmaPanel from './ConfigUmaPanel'
+import ConfigSessionPanel from './ConfigSessionPanel'
 import { connect } from 'react-redux'
 import {
   getJsonConfig,
@@ -20,33 +27,50 @@ import {
 } from '../../../redux/actions/JsonConfigActions'
 
 function ConfigPage({ configuration, loading, dispatch }) {
-  console.log('===================' + JSON.stringify(configuration))
   useEffect(() => {
     dispatch(getJsonConfig())
   }, [])
-
   return (
     <React.Fragment>
       <Container>
-        <BlockUi
-          tag="div"
-          blocking={loading}
-          keepInView={true}
-          renderChildren={true}
-          message={'Performing the request, please wait!'}
-        >
-          <Card>
-            <CardBody>
-              <Form>
-                <FormGroup row>
-                  <GluuLabel label="Work in progress"/>
-                </FormGroup>
-                <FormGroup row></FormGroup>
-                <GluuFooter />
-              </Form>
-            </CardBody>
-          </Card>
-        </BlockUi>
+        <Card>
+          <CardBody>
+            <Form>
+              <ConfigEndpointPanel configuration={configuration} />
+              <ConfigUmaPanel configuration={configuration} />
+              <ConfigSessionPanel configuration={configuration} />
+              <FormGroup row>
+                <Col sm={12}>
+                  <Accordion className="mb-12 text-white">
+                    <Accordion.Header className="d-flex bg-primary text-white align-items-center h6">
+                      URIs
+                      <Accordion.Indicator className="ml-auto" />
+                    </Accordion.Header>
+                    &nbsp;
+                    <Accordion.Body></Accordion.Body>
+                  </Accordion>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <Col sm={12}>
+                  <Accordion className="mb-12 text-white">
+                    <Accordion.Header className="d-flex bg-primary text-white align-items-center h6">
+                      Basic settings
+                      <Accordion.Indicator className="ml-auto" />
+                    </Accordion.Header>
+                    &nbsp;
+                    <Accordion.Body></Accordion.Body>
+                  </Accordion>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <GluuLabel label="Work in progress" />
+              </FormGroup>
+              <FormGroup row></FormGroup>
+              <GluuFooter />
+            </Form>
+          </CardBody>
+        </Card>
       </Container>
     </React.Fragment>
   )

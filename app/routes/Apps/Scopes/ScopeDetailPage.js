@@ -2,7 +2,6 @@ import React from 'react'
 import { Container, Row, Col } from './../../../components'
 import GluuFormDetailRow from '../Gluu/GluuFormDetailRow'
 function ScopeDetailPage({ row }) {
-  console.log('==============' + JSON.stringify(row))
   function getBadgeTheme(status) {
     if (status) {
       return 'primary'

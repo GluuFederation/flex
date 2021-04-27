@@ -9,7 +9,7 @@
     "admin-ui",
     "gluu"
   ],
-  "homepage": "https://github.com/GluuFederation/gluu-admin-ui.git",
+  "homepage": "/admin",
   "bugs": {
     "url": "https://github.com/GluuFederation/gluu-admin-ui/issues",
     "email": "support@gluu.org"
