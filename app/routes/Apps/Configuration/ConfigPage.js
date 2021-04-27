@@ -20,6 +20,7 @@ import GluuBooleanBox from '../Gluu/GluuBooleanInput'
 import ConfigEndpointPanel from './ConfigEndpoints'
 import ConfigUmaPanel from './ConfigUmaPanel'
 import ConfigSessionPanel from './ConfigSessionPanel'
+import ConfigBasicPanel from './ConfigBasicPanel'
 import { connect } from 'react-redux'
 import {
   getJsonConfig,
@@ -36,26 +37,16 @@ function ConfigPage({ configuration, loading, dispatch }) {
         <Card>
           <CardBody>
             <Form>
+              <ConfigBasicPanel configuration={configuration} />
               <ConfigEndpointPanel configuration={configuration} />
               <ConfigUmaPanel configuration={configuration} />
               <ConfigSessionPanel configuration={configuration} />
+              
               <FormGroup row>
                 <Col sm={12}>
                   <Accordion className="mb-12 text-white">
                     <Accordion.Header className="d-flex bg-primary text-white align-items-center h6">
                       URIs
-                      <Accordion.Indicator className="ml-auto" />
-                    </Accordion.Header>
-                    &nbsp;
-                    <Accordion.Body></Accordion.Body>
-                  </Accordion>
-                </Col>
-              </FormGroup>
-              <FormGroup row>
-                <Col sm={12}>
-                  <Accordion className="mb-12 text-white">
-                    <Accordion.Header className="d-flex bg-primary text-white align-items-center h6">
-                      Basic settings
                       <Accordion.Indicator className="ml-auto" />
                     </Accordion.Header>
                     &nbsp;

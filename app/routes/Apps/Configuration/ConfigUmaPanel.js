@@ -41,6 +41,8 @@ function ConfigUmaPanel({ configuration }) {
             />
             <GluuInput
               id="umaResourceLifetime"
+              lsize={lSize}
+              rsize={lSize}
               type="number"
               label="Uma Resource Lifetime"
               value={configuration.umaResourceLifetime}

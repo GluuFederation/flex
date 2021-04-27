@@ -119,17 +119,6 @@ function ConfigEndpoints({ configuration }) {
               label="Back Channel Device Registration Endpoint"
               value={configuration.backchannelDeviceRegistrationEndpoint}
             />
-
-            <GluuInput
-              id="checkSessionIFrame"
-              label="Check Session IFrame"
-              value={configuration.checkSessionIFrame}
-            />
-            <GluuInput
-              id="jwksUri"
-              label="Jwks Uri"
-              value={configuration.jwksUri}
-            />
           </Accordion.Body>
         </Accordion>
       </Col>

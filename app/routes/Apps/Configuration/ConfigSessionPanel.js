@@ -22,6 +22,12 @@ function ConfigSessionPanel({ configuration }) {
               value={configuration.sessionIdEnabled}
             />
             <GluuBooleanBox
+              id="sessionAsJwt"
+              lsize={lSize}
+              label="Session As Jwt"
+              value={configuration.sessionAsJwt}
+            />
+            <GluuBooleanBox
               id="sessionIdPersistOnPromptNone"
               lsize={lSize}
               label="SessionId Persist On Prompt None"
