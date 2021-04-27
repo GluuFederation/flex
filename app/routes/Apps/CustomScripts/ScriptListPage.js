@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
 import GluuDialog from '../Gluu/GluuDialog'
-import CustomScriptDetailPage from '../Scripts/CustomScriptDetailPage'
+import CustomScriptDetailPage from '../CustomScripts/CustomScriptDetailPage'
 import GluuCustomScriptSearch from '../Gluu/GluuCustomScriptSearch'
 import {
   getCustomScripts,
@@ -28,6 +28,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const typeId = 'typeId'
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
+  const [selectedScripts, setSelectedScripts] = useState(scripts)
   const [type, setType] = useState(true)
   function makeOptions() {
     options['limit'] = parseInt(limit)
@@ -42,6 +43,9 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     makeOptions()
     dispatch(getCustomScripts(options))
   }, [])
+  useEffect(() => {
+    setSelectedScripts(scripts.filter((script) => (script.scriptType == document.getElementById(typeId).value)))
+  }, [scripts])
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -111,6 +115,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     setLimit(document.getElementById(limitId).value)
     setPattern(document.getElementById(patternId).value)
     setType(document.getElementById(typeId).value)
+    setSelectedScripts(scripts.filter((script) => (script.scriptType == document.getElementById(typeId).value)))
     //setStatus(document.getElementById(statusId).value)
   }
   function handleGoToCustomScriptAddPage() {
@@ -125,7 +130,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     toggle()
   }
   function onDeletionConfirmed() {
-    deleteCustomScript(item.inum)
+    dispatch(deleteCustomScript(item.inum))
     history.push('/scripts')
     toggle()
   }
@@ -140,13 +145,13 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
             field: 'enabled',
             type: 'boolean',
             render: (rowData) => (
-              <Badge color={rowData.enabled ? 'primary' : 'info'}>
+              <Badge color={rowData.enabled == 'true' ? 'primary' : 'info'}>
                 {rowData.enabled ? 'true' : 'false'}
               </Badge>
             ),
           },
         ]}
-        data={scripts}
+        data={selectedScripts}
         isLoading={loading}
         title="Scripts"
         actions={myActions}

@@ -102,22 +102,6 @@ const CustomScriptDetailPage = ({ row, loading }) => {
             ))}
           </Col>
         </Row>
-        <Row>
-          <Col sm={4}> Script: </Col>
-        </Row>
-        <Row>
-          <Col sm={10}>
-            <TextField
-              id="filled-multiline-static"
-              label="Script"
-              multiline
-              rows={20}
-              fullWidth={true}
-              defaultValue={row.script}
-              variant="filled"
-            />
-          </Col>
-        </Row>
         {/* END Content */}
       </Container>
     </React.Fragment>
