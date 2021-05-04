@@ -11,14 +11,16 @@ import {
   RESET,
   SEARCH_CLIENTS,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   items: [],
   item: {},
   loading: false,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'oidcReducer';
+
+export default function oidcReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_OPENID_CLIENTS:
       return {
@@ -120,3 +122,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, oidcReducer);

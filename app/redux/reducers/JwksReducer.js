@@ -1,11 +1,13 @@
 import { GET_JWKS, GET_JWKS_RESPONSE, RESET } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   jwks: {},
   loading: false,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'jwksReducer';
+
+export default function jwksReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_JWKS:
       return {
@@ -37,3 +39,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, jwksReducer);

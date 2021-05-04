@@ -4,13 +4,15 @@ import {
   PATCH_JSON_CONFIG,
   PATCH_JSONCONFIG_RESPONSE,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   configuration: {},
   loading: false,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'jsonConfigReducer';
+
+export default function jsonConfigReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_JSON_CONFIG:
       return {
@@ -55,3 +57,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, jsonConfigReducer);

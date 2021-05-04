@@ -15,14 +15,16 @@ import {
   GET_SCOPE_BY_PATTERN_RESPONSE,
   SEARCH_SCOPES,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   items: [],
   item: {},
   loading: false,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'scopeReducer';
+
+export default function scopeReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_SCOPES:
       return {
@@ -162,3 +164,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, scopeReducer);

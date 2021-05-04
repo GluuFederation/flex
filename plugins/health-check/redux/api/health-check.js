@@ -1,4 +1,4 @@
-import axios from '../../../app/redux/api/axios'
+import axios from '../../../../app/redux/api/axios'
 
 // Get health-check
 export const fetchHealthCheckComponents = async () => {

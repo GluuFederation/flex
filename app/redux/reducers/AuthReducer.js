@@ -9,7 +9,7 @@ import {
   GET_API_ACCESS_TOKEN,
   GET_API_ACCESS_TOKEN_RESPONSE,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 /**
  * initial auth user
  */
@@ -22,7 +22,9 @@ const INIT_STATE = {
   permissions: [],
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'authReducer';
+
+export default function authReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_OAUTH2_CONFIG:
       return {
@@ -90,3 +92,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, authReducer);

@@ -24,7 +24,7 @@ import {
   RESET,
   SET_ITEM,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   cache: {},
   cacheMemory: {},
@@ -34,7 +34,9 @@ const INIT_STATE = {
   loading: false,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'cacheReducer';
+
+export default function cacheReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_CACHE:
       return {
@@ -214,3 +216,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, cacheReducer);

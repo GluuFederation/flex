@@ -1,30 +1,26 @@
 /**
- * Plugin Reducers
+ * HealthCheck Reducers
  */
-import {
-  GET_ALL_PLUGIN_MENU,
-  GET_ALL_PLUGIN_MENU_RESPONSE,
-  RESET,
-} from '../actions/types'
-
+import { GET_HEALTH_CHECK, GET_HEALTH_CHECK_RESPONSE, RESET } from '../types'
 /**
  * initial plugin state
  */
 const INIT_STATE = {
-  plugins: [],
+  components: [],
+  loading: false,
 }
 
-export default (state = INIT_STATE, action) => {
+export default function healthCheckReducer(state = INIT_STATE, action)  {
   switch (action.type) {
-    case GET_ALL_PLUGIN_MENU:
+    case GET_HEALTH_CHECK:
       return {
         ...state,
         loading: true,
       }
-    case GET_ALL_PLUGIN_MENU_RESPONSE:
+    case GET_HEALTH_CHECK_RESPONSE:
       return {
         ...state,
-        plugins: action.payload.plugins,
+        components: action.payload.components,
         loading: false,
       }
     case RESET:

@@ -5,13 +5,15 @@ import {
   PUT_FIDO_RESPONSE,
   RESET,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   fido: { fido2Configuration: {} },
   loading: false,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'fidoReducer';
+
+export default function fidoReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_FIDO:
       return {
@@ -62,3 +64,5 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+
+reducerRegistry.register(reducerName, fidoReducer);

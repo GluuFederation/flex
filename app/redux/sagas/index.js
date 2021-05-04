@@ -13,16 +13,17 @@ import smtpSaga from './SmtpSaga'
 import acrsSaga from './AcrsSaga'
 import fidoSaga from './FidoSaga'
 import loggingSaga from './LoggingSaga'
-import pluginSaga from './PluginMenuSaga'
-import pluginArr from '../../../plugins/redux/sagas'
 import ldapSaga from './LdapSaga'
 import jwksSaga from './JwksSaga'
 import couchBaseSaga from './CouchbaseSaga'
 import cacheSaga from './CacheSaga'
 import initSaga from './InitSaga'
 import jsonConfigSaga from './JsonConfigSaga'
+import process from '../../../plugins/PluginSagasResolver';
 
 export default function* rootSaga() {
+
+  let pluginSagaArr = process();
   yield all(
     [].concat(
       [
@@ -32,7 +33,6 @@ export default function* rootSaga() {
         customScriptSaga(),
         oidcSaga(),
         smtpSaga(),
-        pluginSaga(),
         acrsSaga(),
         fidoSaga(),
         loggingSaga(),
@@ -43,7 +43,7 @@ export default function* rootSaga() {
         initSaga(),
         jsonConfigSaga(),
       ],
-      pluginArr,
+      pluginSagaArr,
     ),
   )
 }

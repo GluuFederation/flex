@@ -123,20 +123,18 @@ class AppAuthProvider extends Component {
 
 // Redux
 
-const mapStateToProps = ({ authReducer, pluginMenuReducer }) => {
+const mapStateToProps = ({ authReducer }) => {
   const config = authReducer.config
   const userinfo = authReducer.userinfo
   const jwt = authReducer.userinfo_jwt
   const token = authReducer.token
   const permissions = authReducer.permissions
-  const plugins = pluginMenuReducer.plugins
   return {
     config,
     userinfo,
     jwt,
     token,
     permissions,
-    plugins,
   }
 }
 

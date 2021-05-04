@@ -14,13 +14,15 @@ import {
   DELETE_CUSTOM_SCRIPT_RESPONSE,
   RESET,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   items: [],
   loading: true,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'customScriptReducer';
+
+export default function customScriptReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_CUSTOM_SCRIPT:
       return {
@@ -117,3 +119,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, customScriptReducer);

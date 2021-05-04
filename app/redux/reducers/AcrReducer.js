@@ -4,6 +4,7 @@ import {
   PUT_ACRS,
   PUT_ACRS_RESPONSE,
 } from '../actions/types'
+import reducerRegistry from './ReducerRegistry';
 
 const INIT_STATE = {
   acrs: {},
@@ -11,7 +12,9 @@ const INIT_STATE = {
   loading: true,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'acrReducer';
+
+export default function acrReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_ACRS:
       return {
@@ -56,3 +59,5 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+
+reducerRegistry.register(reducerName, acrReducer);

@@ -2,12 +2,14 @@ import {
   GET_ACR_AUTH_SCRIPT,
   GET_ACR_AUTH_SCRIPT_RESPONSE,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   scripts: [],
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'initReducer';
+
+export default function initReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_ACR_AUTH_SCRIPT:
       return {
@@ -31,3 +33,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, initReducer);

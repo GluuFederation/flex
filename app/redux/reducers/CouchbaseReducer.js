@@ -7,13 +7,15 @@ import {
   PUT_COUCHBASE_RESPONSE,
   RESET,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   couchbase: [],
   loading: false,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'couchbaseReducer';
+
+export default function couchbaseReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_COUCHBASE:
       return {
@@ -83,3 +85,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, couchbaseReducer);

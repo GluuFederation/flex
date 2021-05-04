@@ -9,14 +9,16 @@ import {
   TEST_SMTP_RESPONSE,
   RESET,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   smtp: {},
   loading: false,
   testStatus: {},
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'smtpReducer';
+
+export default function smtpReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_SMTP:
       return {
@@ -107,3 +109,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, smtpReducer);

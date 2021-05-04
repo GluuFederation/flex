@@ -12,7 +12,7 @@ import {
   TEST_LDAP,
   TEST_LDAP_RESPONSE,
 } from '../actions/types'
-
+import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   ldap: [],
   item: {},
@@ -20,7 +20,9 @@ const INIT_STATE = {
   testStatus: false,
 }
 
-export default (state = INIT_STATE, action) => {
+const reducerName = 'ldapReducer';
+
+export default function ldapReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_LDAP:
       return {
@@ -133,3 +135,4 @@ export default (state = INIT_STATE, action) => {
       }
   }
 }
+reducerRegistry.register(reducerName, ldapReducer);

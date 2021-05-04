@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { getHealthCheck } from '../redux/actions/HealthCheckActions'
+import { getHealthCheck } from './redux/actions/HealthCheckActions'
 import MaterialTable from 'material-table'
 import { Badge } from 'reactstrap'
 
-function HealthCheck({ components, dispatch }) {
+
+function HealthCheck({ components, dispatch, loading }) {
   useEffect(() => {
     dispatch(getHealthCheck())
   }, [])
@@ -67,8 +68,8 @@ function HealthCheck({ components, dispatch }) {
 
 const mapStateToProps = (state) => {
   return {
-    components: state.healthCheck.components,
-    loading: state.healthCheck.loading,
+    components: state.healthCheckReducer.components,
+    loading: state.healthCheckReducer.loading,
   }
 }
 export default connect(mapStateToProps)(HealthCheck)

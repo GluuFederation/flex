@@ -14,7 +14,7 @@ import { getOpenidClients } from '../../../redux/actions/OIDCActions'
 import { getScopes } from '../../../redux/actions/ScopeActions'
 import { getCustomScripts } from '../../../redux/actions/CustomScriptActions'
 
-function Reports({ attributes, clients, scopes, scripts, dispatch, plugins }) {
+function Reports({ attributes, clients, scopes, scripts, dispatch}) {
   useEffect(() => {
     if (attributes.length === 0) {
       dispatch(getAttributes())
@@ -115,7 +115,6 @@ const mapStateToProps = (state) => {
     clients: state.oidcReducer.items,
     scopes: state.scopeReducer.items,
     scripts: state.customScriptReducer.items,
-    plugins: state.pluginMenuReducer.plugins,
   }
 }
 
