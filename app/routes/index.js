@@ -30,7 +30,8 @@ export const RoutedContent = () => {
 
   //
   useEffect(() => {
-    process().then(menus=> setPluginMenus(menus));
+    setPluginMenus(process());
+    //process().then(menus=> setPluginMenus(menus));
   }, [])
 
   

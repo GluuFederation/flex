@@ -3,11 +3,12 @@ import plugins from '../plugins.config'
 //get all metadata path
 let pluginMenus = [];
 
-async function process() {
-    const metadataFilePath = await plugins.map((item) => (item.metadataFile))
-    
-    await metadataFilePath.forEach(async (path) => {
-        pluginMenus = await [...pluginMenus, ...(require(`${path}`)).default.menus]
+function process() {
+    const metadataFilePath = plugins.map((item) => (item.metadataFile))
+    metadataFilePath.forEach((path) => {
+        console.log(pluginMenus)
+        pluginMenus = pluginMenus.concat((require(`${path}`)).default.menus)//[...pluginMenus, ...(require(`${path}`)).default.menus]
+        console.log(pluginMenus)
     })
     console.log(pluginMenus)
     return pluginMenus;

@@ -6,11 +6,14 @@ async function process() {
     let pluginReducers = [];
     await metadataFilePath.forEach(async (path) => {
         pluginReducers = await [...pluginReducers, ...(require(`${path}`)).default.reducers]
+
+        pluginReducers.forEach(async (element) => {
+            await reducerRegistry.register(element.name, element.reducer);
+        })
+
     })
     console.log(pluginReducers)
-    pluginReducers.forEach(async (element) => {
-        await reducerRegistry.register(element.name, element.reducer);
-    })
+    
 
     //return await pluginReducers;
 }

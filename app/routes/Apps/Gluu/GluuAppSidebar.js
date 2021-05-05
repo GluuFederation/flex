@@ -23,7 +23,8 @@ function GluuAppSidebar({ scopes }) {
   const [pluginMenus, setPluginMenus] = useState([])
   
   useEffect(() => {
-    process().then(menus=> setPluginMenus(menus));
+    setPluginMenus(process());
+    //process().then(menus=> setPluginMenus(menus));
   }, [])
   
   return (
