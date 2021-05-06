@@ -3,6 +3,8 @@ import CachePage from './Components/Configuration/CachePage'
 import CouchbasePage from './Components/Configuration/CouchbasePage'
 import JwksPage from './Components/Configuration/JwksPage'
 import LdapListPage from './Components/Configuration/LdapListPage'
+import LdapAddPage from './Components/Configuration/LdapAddPage'
+import LdapEditPage from './Components/Configuration/LdapEditPage'
 
 import acrReducer from './redux/reducers/AcrReducer'
 import cacheReducer from './redux/reducers/CacheReducer'
@@ -25,6 +27,8 @@ const pluginMetadata = {
         { name: "Couchbase", component: CouchbasePage, path: "/config/couchbase" },
         { name: "Jwks", component: JwksPage, path: "/config/jwks" },
         { name: "Ldap", component: LdapListPage, path: "/config/ldap" },
+        { name: undefined, component: LdapEditPage, path: "/config/ldap/edit:configId" },
+        { name: undefined, component: LdapAddPage, path: "/config/ldap/new" },
     ],
     reducers: [
         { name: "acrReducer", reducer: acrReducer },

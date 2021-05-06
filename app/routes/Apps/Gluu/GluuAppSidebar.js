@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { SidebarMenu, Divider } from './../../../components'
 import { connect } from 'react-redux'
 import {
@@ -12,7 +12,7 @@ import GluuErrorFallBack from './GluuErrorFallBack'
 import process from "../../../../plugins/PluginMenuResolver";
 
 function GluuAppSidebar({ scopes }) {
-  
+
   function getIcon(name) {
     let fullName = 'fa fa-fw fa-plug'
     if (name) {
@@ -21,12 +21,12 @@ function GluuAppSidebar({ scopes }) {
     return <i className={fullName}></i>
   }
   const [pluginMenus, setPluginMenus] = useState([])
-  
+
   useEffect(() => {
-    setPluginMenus(process());
+    setPluginMenus(process().filter(item => !!item.name));
     //process().then(menus=> setPluginMenus(menus));
   }, [])
-  
+
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
@@ -39,16 +39,16 @@ function GluuAppSidebar({ scopes }) {
         </SidebarMenu.Item>
         <Divider />
         <Divider />
-        {/* -------- Plugins ---------*/}       
-        {pluginMenus.map((item, key) => (
-          <SidebarMenu.Item
-            icon={getIcon(item.icon)}
-            key={key}
-            title={item.name}
-            to={item.path}
-          ></SidebarMenu.Item>
-        ))}
-           
+        {/* -------- Plugins ---------*/}
+        {pluginMenus.map((item, key) =>
+        (<SidebarMenu.Item
+          icon={getIcon(item.icon)}
+          key={key}
+          title={item.name}
+          to={item.path}
+        ></SidebarMenu.Item>)
+        )}
+
         {/* -------- Plugins ---------*/}
         <Divider />
         <SidebarMenu.Item
