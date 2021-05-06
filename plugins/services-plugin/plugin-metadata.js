@@ -26,9 +26,9 @@ const pluginMetadata = {
         { name: "Cache", component: CachePage, path: "/config/cache" },
         { name: "Couchbase", component: CouchbasePage, path: "/config/couchbase" },
         { name: "Jwks", component: JwksPage, path: "/config/jwks" },
-        { name: "Ldap", component: LdapListPage, path: "/config/ldap" },
         { name: undefined, component: LdapEditPage, path: "/config/ldap/edit:configId" },
         { name: undefined, component: LdapAddPage, path: "/config/ldap/new" },
+        { name: "Ldap", component: LdapListPage, path: "/config/ldap" },
     ],
     reducers: [
         { name: "acrReducer", reducer: acrReducer },
