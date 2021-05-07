@@ -20,6 +20,8 @@ import SettingsPage from './Apps/Configuration/SettingsPage'
 import Gluu404Error from './Apps/Gluu/Gluu404Error'
 import GluuNavBar from './Apps/Gluu/GluuNavBar'
 import process from "../../plugins/PluginMenuResolver";
+
+import { RoutesRecursiveWrapper } from '../components/SidebarMenu/RoutesRecursiveWrapper';
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
 export const RoutedContent = () => {
@@ -50,9 +52,8 @@ export const RoutedContent = () => {
       />
 
       {/* -------- Plugins ---------*/}
-      {pluginMenus.map((item, key) => (
-        <Route key={key} component={item.component} path={item.path} />
-      ))}
+      {pluginMenus.map((item, key) => (<RoutesRecursiveWrapper key={key} item={item} />))}
+
 
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />

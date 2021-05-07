@@ -22,21 +22,29 @@ import smtpSaga from './redux/sagas/SmtpSaga'
 
 const pluginMetadata = {
     menus: [
-        { name: "Acrs", component: AcrsPage, path: "/config/acrs" },
-        { name: "Cache", component: CachePage, path: "/config/cache" },
-        { name: "Couchbase", component: CouchbasePage, path: "/config/couchbase" },
-        { name: "Jwks", component: JwksPage, path: "/config/jwks" },
-        { name: undefined, component: LdapEditPage, path: "/config/ldap/edit:configId" },
-        { name: undefined, component: LdapAddPage, path: "/config/ldap/new" },
-        { name: "Ldap", component: LdapListPage, path: "/config/ldap" },
+        {
+            icon: 'fa-gears', label: 'Services', children: [
+                { label: 'Acrs', component: AcrsPage, path: '/config/acrs' },
+                { label: 'Cache', component: CachePage, path: '/config/cache' },
+                { label: 'Jwks', component: JwksPage, path: '/config/jwks' },
+                {
+                    icon: 'fa-database', label: 'Persistence', children: [
+                        { label: undefined, component: LdapEditPage, path: '/config/ldap/edit:configId' },
+                        { label: undefined, component: LdapAddPage, path: '/config/ldap/new' },
+                        { label: 'Ldap', component: LdapListPage, path: '/config/ldap' },
+                        { label: 'Couchbase', component: CouchbasePage, path: '/config/couchbase' }
+                    ]
+                }
+            ]
+        }
     ],
     reducers: [
-        { name: "acrReducer", reducer: acrReducer },
-        { name: "cacheReducer", reducer: cacheReducer },
-        { name: "couchbaseReducer", reducer: couchbaseReducer },
-        { name: "jwksReducer", reducer: jwksReducer },
-        { name: "ldapReducer", reducer: ldapReducer },
-        { name: "smtpReducer", reducer: smtpReducer },
+        { name: 'acrReducer', reducer: acrReducer },
+        { name: 'cacheReducer', reducer: cacheReducer },
+        { name: 'couchbaseReducer', reducer: couchbaseReducer },
+        { name: 'jwksReducer', reducer: jwksReducer },
+        { name: 'ldapReducer', reducer: ldapReducer },
+        { name: 'smtpReducer', reducer: smtpReducer },
     ],
     sagas: [acrsSaga(), cacheSaga(), couchbaseSaga(), jwksSaga(), ldapSaga(), smtpSaga()]
 }

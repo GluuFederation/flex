@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { SidebarMenu, Divider } from './../../../components'
+import { SidebarMenusRecursiveWrapper } from './../../../components/SidebarMenu/SidebarMenusRecursiveWrapper'
 import { connect } from 'react-redux'
 import {
   hasPermission,
@@ -13,17 +14,10 @@ import process from "../../../../plugins/PluginMenuResolver";
 
 function GluuAppSidebar({ scopes }) {
 
-  function getIcon(name) {
-    let fullName = 'fa fa-fw fa-plug'
-    if (name) {
-      fullName = 'fa fa-fw ' + name
-    }
-    return <i className={fullName}></i>
-  }
   const [pluginMenus, setPluginMenus] = useState([])
 
   useEffect(() => {
-    setPluginMenus(process().filter(item => !!item.name));
+    setPluginMenus(process().filter(item => !!item.label));
     //process().then(menus=> setPluginMenus(menus));
   }, [])
 
@@ -38,15 +32,21 @@ function GluuAppSidebar({ scopes }) {
           <SidebarMenu.Item title="Reports" to="/home/dashboard" exact />
         </SidebarMenu.Item>
         <Divider />
-        <Divider />
         {/* -------- Plugins ---------*/}
-        {pluginMenus.map((item, key) =>
+        {/*pluginMenus.map((item, key) =>
         (<SidebarMenu.Item
           icon={getIcon(item.icon)}
           key={key}
-          title={item.name}
+          title={item.label}
           to={item.path}
         ></SidebarMenu.Item>)
+        )*/}
+
+        {pluginMenus.map((item, key) =>
+        (<div key={key}>
+          <SidebarMenusRecursiveWrapper item={item} key={key}></SidebarMenusRecursiveWrapper>
+          <Divider />
+        </div>)
         )}
 
         {/* -------- Plugins ---------*/}
