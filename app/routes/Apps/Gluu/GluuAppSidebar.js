@@ -10,15 +10,14 @@ import {
 } from '../../../utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
-import process from "../../../../plugins/PluginMenuResolver";
+import { processMenus } from "../../../../plugins/PluginMenuResolver";
 
 function GluuAppSidebar({ scopes }) {
 
   const [pluginMenus, setPluginMenus] = useState([])
 
   useEffect(() => {
-    setPluginMenus(process().filter(item => !!item.label));
-    //process().then(menus=> setPluginMenus(menus));
+    setPluginMenus(processMenus());
   }, [])
 
   return (
@@ -33,15 +32,7 @@ function GluuAppSidebar({ scopes }) {
         </SidebarMenu.Item>
         <Divider />
         {/* -------- Plugins ---------*/}
-        {/*pluginMenus.map((item, key) =>
-        (<SidebarMenu.Item
-          icon={getIcon(item.icon)}
-          key={key}
-          title={item.label}
-          to={item.path}
-        ></SidebarMenu.Item>)
-        )*/}
-
+        
         {pluginMenus.map((item, key) =>
         (<div key={key}>
           <SidebarMenusRecursiveWrapper item={item} key={key}></SidebarMenusRecursiveWrapper>

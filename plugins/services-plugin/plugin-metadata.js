@@ -38,6 +38,15 @@ const pluginMetadata = {
             ]
         }
     ],
+    routes: [
+        { component: AcrsPage, path: '/config/acrs' },
+        { component: CachePage, path: '/config/cache' },
+        { component: JwksPage, path: '/config/jwks' },
+        { component: LdapEditPage, path: '/config/ldap/edit:configId' },
+        { component: LdapAddPage, path: '/config/ldap/new' },
+        { component: LdapListPage, path: '/config/ldap' },
+        { component: CouchbasePage, path: '/config/couchbase' }
+    ],
     reducers: [
         { name: 'acrReducer', reducer: acrReducer },
         { name: 'cacheReducer', reducer: cacheReducer },
