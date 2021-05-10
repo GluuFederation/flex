@@ -11,6 +11,7 @@ function GluuAutoCompleteWithAdd({
   validator,
   inputId,
   formik = undefined,
+  placeholder
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
