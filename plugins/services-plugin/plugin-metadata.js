@@ -24,9 +24,9 @@ const pluginMetadata = {
     menus: [
         {
             icon: 'fa-gears', label: 'Services', children: [
-                { label: 'Acrs', component: AcrsPage, path: '/config/acrs' },
+                { label: 'ACRS', component: AcrsPage, path: '/config/acrs' },
                 { label: 'Cache', component: CachePage, path: '/config/cache' },
-                { label: 'Jwks', component: JwksPage, path: '/config/jwks' },
+                { label: 'JWKS', component: JwksPage, path: '/config/jwks' },
                 {
                     icon: 'fa-database', label: 'Persistence', children: [
                         { label: undefined, component: LdapEditPage, path: '/config/ldap/edit:configId' },
