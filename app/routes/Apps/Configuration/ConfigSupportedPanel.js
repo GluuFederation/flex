@@ -22,7 +22,6 @@ function ConfigSupportedPanel({ configuration }) {
             <GluuTypeAheadWithAdd
               name="responseTypesSupported"
               label="Response Types Supported"
-              formik={}
               value={configuration.responseTypesSupported || []}
               options={configuration.responseTypesSupported}
               validator={validator}
