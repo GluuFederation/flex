@@ -17,6 +17,15 @@ function GluuAppSidebar({ scopes }) {
     setPluginMenus(processMenus())
   }, [])
 
+  function getMenuIcon(name) {
+    let fullName = ''
+    if (name) {
+      fullName = 'fa fa-fw ' + name
+      return <i className={fullName}></i>
+    }
+    return 'fa fa-fw fa-search'
+  }
+
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
@@ -33,15 +42,14 @@ function GluuAppSidebar({ scopes }) {
         {pluginMenus.map((plugin, key) => (
           <SidebarMenu.Item
             key={key}
-            icon={<i className="fa fa-fw fa-home"></i>}
+            icon={getMenuIcon(plugin.icon)}
             title={plugin.title}
           >
             {typeof plugin.children !== 'undefined' &&
               plugin.children.length &&
               plugin.children.map((item, idx) => (
                 <SidebarMenu.Item
-                  title={item.label}
-                  to={item.path}
+                  title={item.title}
                   key={idx}
                   exact
                 >
@@ -49,7 +57,7 @@ function GluuAppSidebar({ scopes }) {
                     item.children.length &&
                     item.children.map((sub, idx) => (
                       <SidebarMenu.Item
-                        title={sub.label}
+                        title={sub.title}
                         to={sub.path}
                         key={idx}
                         exact

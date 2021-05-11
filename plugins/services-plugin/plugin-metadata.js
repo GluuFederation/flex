@@ -25,18 +25,17 @@ const pluginMetadata = {
     {
       title: 'Services',
       icon: 'fa-gears',
-      label: 'Services',
       children: [
-        { label: 'ACRS', component: AcrsPage, icon: 'fa-gears', path: '/config/acrs' },
-        { label: 'Cache', component: CachePage, icon: 'fa-gears', path: '/config/cache' },
-        { label: 'JWKS', component: JwksPage, icon: 'fa-gears', path: '/config/jwks' },
+        { title: 'ACRS', component: AcrsPage, icon: 'fa-gears', path: '/config/acrs' },
+        { title: 'Cache', component: CachePage, icon: 'fa-gears', path: '/config/cache' },
+        { title: 'JWKS', component: JwksPage, icon: 'fa-gears', path: '/config/jwks' },
         {
           icon: 'fa-database',
-          label: 'Persistence',
+          title: 'Persistence',
           children: [
-            { label: 'Ldap', component: LdapListPage, path: '/config/ldap' },
+            { title: 'Ldap', component: LdapListPage, path: '/config/ldap' },
             {
-              label: 'Couchbase',
+                title: 'Couchbase',
               component: CouchbasePage,
               path: '/config/couchbase',
             },
