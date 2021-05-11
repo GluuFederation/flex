@@ -23,7 +23,7 @@ function GluuAppSidebar({ scopes }) {
       fullName = 'fa fa-fw ' + name
       return <i className={fullName}></i>
     }
-    return 'fa fa-fw fa-search'
+    return null
   }
 
   function getMenuPath(menu) {
@@ -56,14 +56,21 @@ function GluuAppSidebar({ scopes }) {
             {typeof plugin.children !== 'undefined' &&
               plugin.children.length &&
               plugin.children.map((item, idx) => (
-                <SidebarMenu.Item title={item.title} key={idx} to={getMenuPath(item)} exact>
+                <SidebarMenu.Item
+                  key={idx}
+                  title={item.title}
+                  to={getMenuPath(item)}
+                  icon={getMenuIcon(item.icon)}
+                  exact
+                >
                   {typeof item.children !== 'undefined' &&
                     item.children.length &&
                     item.children.map((sub, idx) => (
                       <SidebarMenu.Item
+                        key={idx}
                         title={sub.title}
                         to={getMenuPath(sub)}
-                        key={idx}
+                        icon={getMenuIcon(sub.icon)}
                         exact
                       ></SidebarMenu.Item>
                     ))}
