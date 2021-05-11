@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import uuid from 'uuid/v4'
 
 import { MenuContext } from './MenuContext'
+import { NavigateBeforeSharp } from '@material-ui/icons'
 
 /**
  * Renders a collapse trigger or a ReactRouter Link

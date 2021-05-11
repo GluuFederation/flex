@@ -1,24 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import { SidebarMenu, Divider } from './../../../components'
-import { SidebarMenusRecursiveWrapper } from './../../../components/SidebarMenu/SidebarMenusRecursiveWrapper'
 import { connect } from 'react-redux'
 import {
   hasPermission,
   ATTRIBUTE_READ,
   ATTRIBUTE_WRITE,
-
 } from '../../../utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
-import { processMenus } from "../../../../plugins/PluginMenuResolver";
+import { processMenus } from '../../../../plugins/PluginMenuResolver'
 
 function GluuAppSidebar({ scopes }) {
-
   const [pluginMenus, setPluginMenus] = useState([])
 
   useEffect(() => {
-    setPluginMenus(processMenus());
+    setPluginMenus(processMenus())
   }, [])
+
+  function getMenuIcon(name) {
+    let fullName = ''
+    if (name) {
+      fullName = 'fa fa-fw ' + name
+      return <i className={fullName}></i>
+    }
+    return null
+  }
+
+  function getMenuPath(menu) {
+    if (menu.children) {
+      return null
+    }
+    return menu.path
+  }
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -32,13 +45,39 @@ function GluuAppSidebar({ scopes }) {
         </SidebarMenu.Item>
         <Divider />
         {/* -------- Plugins ---------*/}
-        
-        {pluginMenus.map((item, key) =>
-        (<div key={key}>
-          <SidebarMenusRecursiveWrapper item={item} key={key}></SidebarMenusRecursiveWrapper>
-          <Divider />
-        </div>)
-        )}
+
+        {pluginMenus.map((plugin, key) => (
+          <SidebarMenu.Item
+            key={key}
+            icon={getMenuIcon(plugin.icon)}
+            to={getMenuPath(plugin)}
+            title={plugin.title}
+          >
+            {typeof plugin.children !== 'undefined' &&
+              plugin.children.length &&
+              plugin.children.map((item, idx) => (
+                <SidebarMenu.Item
+                  key={idx}
+                  title={item.title}
+                  to={getMenuPath(item)}
+                  icon={getMenuIcon(item.icon)}
+                  exact
+                >
+                  {typeof item.children !== 'undefined' &&
+                    item.children.length &&
+                    item.children.map((sub, idx) => (
+                      <SidebarMenu.Item
+                        key={idx}
+                        title={sub.title}
+                        to={getMenuPath(sub)}
+                        icon={getMenuIcon(sub.icon)}
+                        exact
+                      ></SidebarMenu.Item>
+                    ))}
+                </SidebarMenu.Item>
+              ))}
+          </SidebarMenu.Item>
+        ))}
 
         {/* -------- Plugins ---------*/}
         <Divider />
