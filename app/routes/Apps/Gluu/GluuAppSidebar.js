@@ -26,6 +26,13 @@ function GluuAppSidebar({ scopes }) {
     return 'fa fa-fw fa-search'
   }
 
+  function getMenuPath(menu) {
+    if (menu.children) {
+      return null
+    }
+    return menu.path
+  }
+
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <SidebarMenu>
@@ -43,22 +50,19 @@ function GluuAppSidebar({ scopes }) {
           <SidebarMenu.Item
             key={key}
             icon={getMenuIcon(plugin.icon)}
+            to={getMenuPath(plugin)}
             title={plugin.title}
           >
             {typeof plugin.children !== 'undefined' &&
               plugin.children.length &&
               plugin.children.map((item, idx) => (
-                <SidebarMenu.Item
-                  title={item.title}
-                  key={idx}
-                  exact
-                >
+                <SidebarMenu.Item title={item.title} key={idx} to={getMenuPath(item)} exact>
                   {typeof item.children !== 'undefined' &&
                     item.children.length &&
                     item.children.map((sub, idx) => (
                       <SidebarMenu.Item
                         title={sub.title}
-                        to={sub.path}
+                        to={getMenuPath(sub)}
                         key={idx}
                         exact
                       ></SidebarMenu.Item>
