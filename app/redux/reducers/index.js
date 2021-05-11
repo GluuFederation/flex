@@ -11,6 +11,7 @@ import customScriptReducer from './CustomScriptReducer'
 import fidoReducer from './FidoReducer'
 import loggingReducer from './LoggingReducer'
 import initReducer from './InitReducer'
+import logoutReducer from './LogoutReducer'
 
 const appReducers = {
   authReducer,
@@ -22,6 +23,7 @@ const appReducers = {
   loggingReducer,
   initReducer,
   jsonConfigReducer,
+  logoutReducer,
 }
 
 export default appReducers;

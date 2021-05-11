@@ -57,6 +57,7 @@ class AppAuthProvider extends Component {
   }
 
   componentDidMount() {
+    this.props.getOAuth2Config()
   }
 
   static getDerivedStateFromProps(props) {
