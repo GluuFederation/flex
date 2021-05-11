@@ -26,9 +26,9 @@ const pluginMetadata = {
       title: 'Services',
       icon: 'fa-gears',
       children: [
-        { title: 'ACRs', icon: 'fa-gears', path: '/config/acrs' },
-        { title: 'Cache', icon: 'fa-gears', path: '/config/cache' },
-        { title: 'JWKS', icon: 'fa-gears', path: '/config/jwks' },
+        { title: 'ACRs',path: '/config/acrs' },
+        { title: 'Cache', path: '/config/cache' },
+        { title: 'JWKS', path: '/config/jwks' },
         {
           icon: 'fa-database',
           title: 'Persistence',
