@@ -21,41 +21,55 @@ import ldapSaga from './redux/sagas/LdapSaga'
 import smtpSaga from './redux/sagas/SmtpSaga'
 
 const pluginMetadata = {
-    menus: [
+  menus: [
+    {
+      title: 'Services',
+      icon: 'fa-gears',
+      label: 'Services',
+      children: [
+        { label: 'ACRS', component: AcrsPage, icon: 'fa-gears', path: '/config/acrs' },
+        { label: 'Cache', component: CachePage, icon: 'fa-gears', path: '/config/cache' },
+        { label: 'JWKS', component: JwksPage, icon: 'fa-gears', path: '/config/jwks' },
         {
-            icon: 'fa-gears', label: 'Services', children: [
-                { label: 'ACRS', component: AcrsPage, path: '/config/acrs' },
-                { label: 'Cache', component: CachePage, path: '/config/cache' },
-                { label: 'JWKS', component: JwksPage, path: '/config/jwks' },
-                {
-                    icon: 'fa-database', label: 'Persistence', children: [
-                        { label: undefined, component: LdapEditPage, path: '/config/ldap/edit:configId' },
-                        { label: undefined, component: LdapAddPage, path: '/config/ldap/new' },
-                        { label: 'Ldap', component: LdapListPage, path: '/config/ldap' },
-                        { label: 'Couchbase', component: CouchbasePage, path: '/config/couchbase' }
-                    ]
-                }
-            ]
-        }
-    ],
-    routes: [
-        { component: AcrsPage, path: '/config/acrs' },
-        { component: CachePage, path: '/config/cache' },
-        { component: JwksPage, path: '/config/jwks' },
-        { component: LdapEditPage, path: '/config/ldap/edit:configId' },
-        { component: LdapAddPage, path: '/config/ldap/new' },
-        { component: LdapListPage, path: '/config/ldap' },
-        { component: CouchbasePage, path: '/config/couchbase' }
-    ],
-    reducers: [
-        { name: 'acrReducer', reducer: acrReducer },
-        { name: 'cacheReducer', reducer: cacheReducer },
-        { name: 'couchbaseReducer', reducer: couchbaseReducer },
-        { name: 'jwksReducer', reducer: jwksReducer },
-        { name: 'ldapReducer', reducer: ldapReducer },
-        { name: 'smtpReducer', reducer: smtpReducer },
-    ],
-    sagas: [acrsSaga(), cacheSaga(), couchbaseSaga(), jwksSaga(), ldapSaga(), smtpSaga()]
+          icon: 'fa-database',
+          label: 'Persistence',
+          children: [
+            { label: 'Ldap', component: LdapListPage, path: '/config/ldap' },
+            {
+              label: 'Couchbase',
+              component: CouchbasePage,
+              path: '/config/couchbase',
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  routes: [
+    { component: AcrsPage, path: '/config/acrs' },
+    { component: CachePage, path: '/config/cache' },
+    { component: JwksPage, path: '/config/jwks' },
+    { component: LdapEditPage, path: '/config/ldap/edit:configId' },
+    { component: LdapAddPage, path: '/config/ldap/new' },
+    { component: LdapListPage, path: '/config/ldap' },
+    { component: CouchbasePage, path: '/config/couchbase' },
+  ],
+  reducers: [
+    { name: 'acrReducer', reducer: acrReducer },
+    { name: 'cacheReducer', reducer: cacheReducer },
+    { name: 'couchbaseReducer', reducer: couchbaseReducer },
+    { name: 'jwksReducer', reducer: jwksReducer },
+    { name: 'ldapReducer', reducer: ldapReducer },
+    { name: 'smtpReducer', reducer: smtpReducer },
+  ],
+  sagas: [
+    acrsSaga(),
+    cacheSaga(),
+    couchbaseSaga(),
+    jwksSaga(),
+    ldapSaga(),
+    smtpSaga(),
+  ],
 }
 
-export default pluginMetadata;
+export default pluginMetadata

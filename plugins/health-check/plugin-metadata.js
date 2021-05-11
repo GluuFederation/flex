@@ -4,7 +4,7 @@ import healthCheckSaga from './redux/sagas/HealthCheckSaga'
 
 const pluginMetadata = {
     menus: [
-        { icon: 'fa-thermometer-half', label: 'Health Check', component: HealthCheck, path: '/health-check' },
+        //{ icon: 'fa-thermometer-half', label: 'Health Check', component: HealthCheck, path: '/health-check' },
     ],
     routes: [
         { component: HealthCheck, path: '/health-check' },
