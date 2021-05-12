@@ -1,15 +1,13 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Route, Switch, Redirect } from 'react-router'
 import { useSelector } from 'react-redux'
 
 // ----------- Pages Imports ---------------
 import Reports from './Dashboards/Reports'
-
 import NavbarOnly from './Layouts/NavbarOnly'
 import SidebarDefault from './Layouts/SidebarDefault'
 import SidebarA from './Layouts/SidebarA'
 import SidebarWithNavbar from './Layouts/SidebarWithNavbar'
-
 
 import ProfilePage from './Apps/Profile/ProfilePage'
 // ----------- Layout Imports ---------------
@@ -19,7 +17,8 @@ import SettingsPage from './Apps/Configuration/SettingsPage'
 
 import Gluu404Error from './Apps/Gluu/Gluu404Error'
 import GluuNavBar from './Apps/Gluu/GluuNavBar'
-import {processRoutes} from "../../plugins/PluginMenuResolver";
+import { processRoutes } from '../../plugins/PluginMenuResolver'
+import { hasPermission } from '../utils/PermChecker'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
@@ -28,13 +27,11 @@ export const RoutedContent = () => {
     state.token ? state.token.scopes : state.authReducer.permissions,
   )
   const [pluginMenus, setPluginMenus] = useState([])
-
+  console.log('==============' + JSON.stringify(scopes))
   useEffect(() => {
-    setPluginMenus(processRoutes());
+    setPluginMenus(processRoutes())
   }, [])
 
-  
-  
   return (
     <Switch>
       <Redirect from="/" to="/home/dashboard" exact />
@@ -49,9 +46,9 @@ export const RoutedContent = () => {
       />
 
       {/* -------- Plugins ---------*/}
-      {pluginMenus.map((item, key) => (<Route key={key} path={item.path} component={item.component} />))}
-
-
+      {pluginMenus.map((item, key) => (
+        hasPermission(scopes, item.permission) && <Route key={key} path={item.path} component={item.component} />)
+      )}
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />
       <Route component={SettingsPage} path="/settings" />
