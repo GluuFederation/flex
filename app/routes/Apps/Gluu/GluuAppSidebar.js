@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { SidebarMenu, Divider } from './../../../components'
 import { connect } from 'react-redux'
-import {
-  hasPermission,
-  ATTRIBUTE_READ,
-  ATTRIBUTE_WRITE,
-} from '../../../utils/PermChecker'
+import { hasPermission } from '../../../utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from '../../../../plugins/PluginMenuResolver'
@@ -32,6 +28,9 @@ function GluuAppSidebar({ scopes }) {
     }
     return menu.path
   }
+  function hasChildren(plugin) {
+    return typeof plugin.children !== 'undefined' && plugin.children.length
+  }
 
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -53,23 +52,26 @@ function GluuAppSidebar({ scopes }) {
             to={getMenuPath(plugin)}
             title={plugin.title}
           >
-            {typeof plugin.children !== 'undefined' &&
-              plugin.children.length &&
+            {hasChildren(plugin) &&
               plugin.children.map((item, idx) => (
                 <SidebarMenu.Item
                   key={idx}
                   title={item.title}
+                  isEmptyNode={
+                    !hasPermission(scopes, item.permission) &&
+                    !hasChildren(item)
+                  }
                   to={getMenuPath(item)}
                   icon={getMenuIcon(item.icon)}
                   exact
                 >
-                  {typeof item.children !== 'undefined' &&
-                    item.children.length &&
+                  {hasChildren(item) &&
                     item.children.map((sub, idx) => (
                       <SidebarMenu.Item
                         key={idx}
                         title={sub.title}
                         to={getMenuPath(sub)}
+                        isEmptyNode={!hasPermission(scopes, sub.permission)}
                         icon={getMenuIcon(sub.icon)}
                         exact
                       ></SidebarMenu.Item>

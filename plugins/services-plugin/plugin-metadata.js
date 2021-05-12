@@ -26,17 +26,34 @@ const pluginMetadata = {
       title: 'Services',
       icon: 'fa-gears',
       children: [
-        { title: 'ACRs',path: '/config/acrs' },
-        { title: 'Cache', path: '/config/cache' },
-        { title: 'JWKS', path: '/config/jwks' },
+        {
+          title: 'ACRs',
+          path: '/config/acrs',
+          permission: '/config/acrs.readonly',
+        },
+        {
+          title: 'Cache',
+          path: '/config/cache',
+          permission: '/config/cache.readonly',
+        },
+        {
+          title: 'JWKS',
+          path: '/config/jwks',
+          permission: '/config/jwks.readonly',
+        },
         {
           icon: 'fa-database',
           title: 'Persistence',
           children: [
-            { title: 'Ldap', path: '/config/ldap' },
+            {
+              title: 'Ldap',
+              path: '/config/ldap',
+              permission: '/config/database/ldap.readonly',
+            },
             {
               title: 'Couchbase',
               path: '/config/couchbase',
+              permission: '/config/database/couchbase.readonly',
             },
           ],
         },
@@ -44,13 +61,41 @@ const pluginMetadata = {
     },
   ],
   routes: [
-    { component: AcrsPage, path: '/config/acrs' },
-    { component: CachePage, path: '/config/cache' },
-    { component: JwksPage, path: '/config/jwks' },
-    { component: LdapEditPage, path: '/config/ldap/edit:configId' },
-    { component: LdapAddPage, path: '/config/ldap/new' },
-    { component: LdapListPage, path: '/config/ldap' },
-    { component: CouchbasePage, path: '/config/couchbase' },
+    {
+      component: AcrsPage,
+      path: '/config/acrs',
+      permission: '/config/acrs.readonly',
+    },
+    {
+      component: CachePage,
+      path: '/config/cache',
+      permission: '/config/cache.readonly',
+    },
+    {
+      component: JwksPage,
+      path: '/config/jwks',
+      permission: '/config/jwks.readonly',
+    },
+    {
+      component: LdapEditPage,
+      path: '/config/ldap/edit:configId',
+      permission: '/config/database/ldap.readonly',
+    },
+    {
+      component: LdapAddPage,
+      path: '/config/ldap/new',
+      permission: '/config/database/ldap.readonly',
+    },
+    {
+      component: LdapListPage,
+      path: '/config/ldap',
+      permission: '/config/database/ldap.readonly',
+    },
+    {
+      component: CouchbasePage,
+      path: '/config/couchbase',
+      permission: '/config/database/couchbase.readonly',
+    },
   ],
   reducers: [
     { name: 'acrReducer', reducer: acrReducer },
