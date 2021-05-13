@@ -10,12 +10,7 @@ async function process() {
         pluginReducers.forEach(async (element) => {
             await reducerRegistry.register(element.name, element.reducer);
         })
-
     })
     console.log(pluginReducers)
-    
-
-    //return await pluginReducers;
 }
-//process();
 export default process;

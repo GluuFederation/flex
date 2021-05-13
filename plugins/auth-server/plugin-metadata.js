@@ -35,7 +35,6 @@ const pluginMetadata = {
           permission: '/config/cache.readonly',
         },
         {
-          icon: 'fa-wrench',
           title: 'Configuration',
           children: [
             {
@@ -63,17 +62,17 @@ const pluginMetadata = {
         {
           title: 'Clients',
           path: '/clients',
-          permission: '/config/jwks.readonly',
+          permission: '/config/clients.readonly',
         },
         {
           title: 'Scopes',
           path: '/scopes',
-          permission: '/config/jwks.readonly',
+          permission: '/config/scopes.readonly',
         },
         {
           title: 'Scripts',
           path: '/scripts',
-          permission: '/config/jwks.readonly',
+          permission: '/config/scripts.readonly',
         },
         {
           title: 'UMA',
@@ -92,47 +91,47 @@ const pluginMetadata = {
     {
       component: ClientListPage,
       path: '/clients',
-      permission: '/config/acrs.readonly',
+      permission: '/config/clients.readonly',
     },
     {
       component: ClientAddPage,
       path: '/client/new',
-      permission: '/config/cache.readonly',
+      permission: '/config/clients.write',
     },
     {
       component: ClientEditPage,
       path: '/client/edit:id',
-      permission: '/config/jwks.readonly',
+      permission: '/config/clients.write',
     },
     {
       component: ScriptListPage,
       path: '/config/ldap/edit:configId',
-      permission: '/config/database/ldap.readonly',
+      permission: '/config/scripts.readonly',
     },
     {
       component: CustomScriptAddPage,
       path: '/config/ldap/new',
-      permission: '/config/database/ldap.readonly',
+      permission: '/config/scripts.write',
     },
     {
       component: CustomScriptEditPage,
       path: '/config/ldap/new',
-      permission: '/config/database/ldap.readonly',
+      permission: '/config/scripts.write',
     },
     {
       component: ScopeListPage,
       path: '/scopes',
-      permission: '/config/acrs.readonly',
+      permission: '/config/scopes.readonly',
     },
     {
       component: ScopeAddPage,
       path: '/scope/new',
-      permission: '/config/cache.readonly',
+      permission: '/config/scopes.write',
     },
     {
       component: ScopeEditPage,
       path: '/scope/edit:id',
-      permission: '/config/jwks.readonly',
+      permission: '/config/scopes.write',
     },
   ],
   reducers: [
