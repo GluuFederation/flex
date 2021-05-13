@@ -26,12 +26,12 @@ const pluginMetadata = {
       children: [
         {
           title: 'Health',
-          path: '/config/acrs',
+          path: '/config/health',
           permission: '/config/acrs.readonly',
         },
         {
           title: 'Reports',
-          path: '/config/cache',
+          path: '/config/reports',
           permission: '/config/cache.readonly',
         },
         {
@@ -40,49 +40,49 @@ const pluginMetadata = {
           children: [
             {
               title: 'Keys',
-              path: '/config/ldap',
+              path: '/config/keys',
               permission: '/config/database/ldap.readonly',
             },
             {
               title: 'Defaults',
-              path: '/config/couchbase',
+              path: '/config/defaults',
               permission: '/config/database/couchbase.readonly',
             },
             {
               title: 'Properties',
-              path: '/config/couchbase',
+              path: '/config/properties',
               permission: '/config/database/couchbase.readonly',
             },
             {
               title: 'Logging',
-              path: '/config/couchbase',
+              path: '/config/logging',
               permission: '/config/database/couchbase.readonly',
             },
           ],
         },
         {
           title: 'Clients',
-          path: '/config/jwks',
+          path: '/clients',
           permission: '/config/jwks.readonly',
         },
         {
           title: 'Scopes',
-          path: '/config/jwks',
+          path: '/scopes',
           permission: '/config/jwks.readonly',
         },
         {
           title: 'Scripts',
-          path: '/config/jwks',
+          path: '/scripts',
           permission: '/config/jwks.readonly',
         },
         {
           title: 'UMA',
-          path: '/config/jwks',
+          path: '/uma',
           permission: '/config/jwks.readonly',
         },
         {
           title: 'PW Authn',
-          path: '/config/jwks',
+          path: '/pwauthn',
           permission: '/config/jwks.readonly',
         },
       ],
