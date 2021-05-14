@@ -1,10 +1,9 @@
 import plugins from '../plugins.config'
 
 //get all metadata path
-let pluginMenus = []
-let pluginRoutes = []
 
 export function processMenus() {
+  let pluginMenus = []
   plugins
     .map((item) => item.metadataFile)
     .forEach((path) => {
@@ -13,6 +12,7 @@ export function processMenus() {
   return pluginMenus
 }
 export function processRoutes() {
+  let pluginRoutes = []
   plugins
     .map((item) => item.metadataFile)
     .forEach((path) => {
