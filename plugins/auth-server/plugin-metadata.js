@@ -18,6 +18,8 @@ import scriptSaga from './redux/sagas/CustomScriptSaga'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
 
+const PLUGIN_BASE_APTH = '/auth-server'
+
 const pluginMetadata = {
   menus: [
     {
@@ -26,12 +28,12 @@ const pluginMetadata = {
       children: [
         {
           title: 'Health',
-          path: '/config/health',
+          path: PLUGIN_BASE_APTH + '/health',
           permission: '/config/acrs.readonly',
         },
         {
           title: 'Reports',
-          path: '/config/reports',
+          path: PLUGIN_BASE_APTH + '/reports',
           permission: '/config/cache.readonly',
         },
         {
@@ -39,49 +41,49 @@ const pluginMetadata = {
           children: [
             {
               title: 'Keys',
-              path: '/config/keys',
+              path: PLUGIN_BASE_APTH + '/keys',
               permission: '/config/database/ldap.readonly',
             },
             {
               title: 'Defaults',
-              path: '/config/defaults',
+              path: PLUGIN_BASE_APTH + '/defaults',
               permission: '/config/database/couchbase.readonly',
             },
             {
               title: 'Properties',
-              path: '/config/properties',
+              path: PLUGIN_BASE_APTH + '/properties',
               permission: '/config/database/couchbase.readonly',
             },
             {
               title: 'Logging',
-              path: '/config/logging',
+              path: PLUGIN_BASE_APTH + '/logging',
               permission: '/config/database/couchbase.readonly',
             },
           ],
         },
         {
           title: 'Clients',
-          path: '/clients',
-          permission: '/config/clients.readonly',
+          path: PLUGIN_BASE_APTH + '/clients',
+          permission: '/config/openid/clients.readonly',
         },
         {
           title: 'Scopes',
-          path: '/scopes',
+          path: PLUGIN_BASE_APTH + '/scopes',
           permission: '/config/scopes.readonly',
         },
         {
           title: 'Scripts',
-          path: '/scripts',
+          path: PLUGIN_BASE_APTH + '/scripts',
           permission: '/config/scripts.readonly',
         },
         {
           title: 'UMA',
-          path: '/uma',
+          path: PLUGIN_BASE_APTH + '/uma',
           permission: '/config/jwks.readonly',
         },
         {
           title: 'PW Authn',
-          path: '/pwauthn',
+          path: PLUGIN_BASE_APTH + '/pwauthn',
           permission: '/config/jwks.readonly',
         },
       ],
@@ -90,47 +92,47 @@ const pluginMetadata = {
   routes: [
     {
       component: ClientListPage,
-      path: '/clients',
-      permission: '/config/clients.readonly',
+      path: PLUGIN_BASE_APTH + '/clients',
+      permission: '/config/openid/clients.readonly',
     },
     {
       component: ClientAddPage,
-      path: '/client/new',
-      permission: '/config/clients.write',
+      path: PLUGIN_BASE_APTH + '/client/new',
+      permission: '/config/openid/clients.write',
     },
     {
       component: ClientEditPage,
-      path: '/client/edit:id',
-      permission: '/config/clients.write',
+      path: PLUGIN_BASE_APTH + '/client/edit:id',
+      permission: '/config/openid/clients.write',
     },
     {
       component: ScriptListPage,
-      path: '/config/ldap/edit:configId',
+      path: PLUGIN_BASE_APTH + '/scripts',
       permission: '/config/scripts.readonly',
     },
     {
       component: CustomScriptAddPage,
-      path: '/config/ldap/new',
+      path: PLUGIN_BASE_APTH + '/scripts/new',
       permission: '/config/scripts.write',
     },
     {
       component: CustomScriptEditPage,
-      path: '/config/ldap/new',
+      path: PLUGIN_BASE_APTH + '/scripts/edit:id',
       permission: '/config/scripts.write',
     },
     {
       component: ScopeListPage,
-      path: '/scopes',
+      path: PLUGIN_BASE_APTH + '/scopes',
       permission: '/config/scopes.readonly',
     },
     {
       component: ScopeAddPage,
-      path: '/scope/new',
+      path: PLUGIN_BASE_APTH + '/scope/new',
       permission: '/config/scopes.write',
     },
     {
       component: ScopeEditPage,
-      path: '/scope/edit:id',
+      path: PLUGIN_BASE_APTH + '/scope/edit:id',
       permission: '/config/scopes.write',
     },
   ],
