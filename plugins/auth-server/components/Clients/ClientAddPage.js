@@ -12,7 +12,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
       const postBody = {}
       postBody['client'] = data
       dispatch(addNewClientAction(postBody))
-      history.push('/clients')
+      history.push('/auth-server/clients')
     }
   }
   const client = {

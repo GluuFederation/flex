@@ -18,7 +18,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
   function customHandleSubmit(data) {
     if (data) {
       dispatch(editAttribute(data))
-      history.push('/attributes')
+      history.push('/auth-server/attributes')
     }
   }
   return (

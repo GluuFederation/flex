@@ -98,7 +98,7 @@ function GluuAppSidebar({ scopes }) {
   )
 }
 
-const mapStateToProps = ({ authReducer}) => {
+const mapStateToProps = ({ authReducer }) => {
   const scopes = authReducer.token
     ? authReducer.token.scopes
     : authReducer.permissions

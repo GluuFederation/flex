@@ -30,7 +30,7 @@ function ClientEditPage({
   function handleSubmit(data) {
     if (data) {
       dispatch(editClient(data))
-      history.push('/clients')
+      history.push('/auth-server/clients')
     }
   }
   return (

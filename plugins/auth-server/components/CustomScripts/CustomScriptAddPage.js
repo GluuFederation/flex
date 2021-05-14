@@ -9,7 +9,7 @@ function CustomScriptAddPage({ scripts, dispatch }) {
   function handleSubmit(data) {
     if (data) {
       dispatch(addCustomScript(data))
-      history.push('/scripts')
+      history.push('/auth-server/scripts')
     }
   }
   return (

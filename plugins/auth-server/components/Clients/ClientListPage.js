@@ -40,10 +40,10 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   }
   function handleGoToClientEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/client/edit:` + row.inum.substring(0, 4))
+    return history.push(`/auth-server/client/edit:` + row.inum.substring(0, 4))
   }
   function handleGoToClientAddPage() {
-    return history.push('/client/new')
+    return history.push('/auth-server/client/new')
   }
   function handleClientDelete(row) {
     dispatch(setCurrentItem(row))
@@ -58,7 +58,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   }
   function onDeletionConfirmed() {
     dispatch(deleteClient(item.inum))
-    history.push('/clients')
+    history.push('/auth-server/clients')
     toggle()
   }
 

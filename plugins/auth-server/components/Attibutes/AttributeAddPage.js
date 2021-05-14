@@ -9,7 +9,7 @@ function AttributeAddPage({ dispatch }) {
   function onSubmit(data) {
     if (data) {
       dispatch(addAttribute(data))
-      history.push('/attributes')
+      history.push('/auth-server/attributes')
     }
   }
   const defautAttribute = {

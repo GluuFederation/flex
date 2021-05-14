@@ -119,11 +119,11 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     //setStatus(document.getElementById(statusId).value)
   }
   function handleGoToCustomScriptAddPage() {
-    return history.push('/script/new')
+    return history.push('/auth-server/script/new')
   }
   function handleGoToCustomScriptEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/script/edit:` + row.inum)
+    return history.push(`/auth-server/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
     setItem(row)
@@ -131,7 +131,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   }
   function onDeletionConfirmed() {
     dispatch(deleteCustomScript(item.inum))
-    history.push('/scripts')
+    history.push('/auth-server/scripts')
     toggle()
   }
   return (

@@ -2,6 +2,10 @@ import ScopeListPage from './components/Scopes/ScopeListPage'
 import ScopeAddPage from './components/Scopes/ScopeAddPage'
 import ScopeEditPage from './components/Scopes/ScopeEditPage'
 
+import AttributeListPage from './components/Attibutes/AttributeListPage'
+import AttributeEditPage from './components/Attibutes/AttributeEditPage'
+import AttributeAddPage from './components/Attibutes/AttributeAddPage'
+
 import ClientListPage from './components/Clients/ClientListPage'
 import ClientAddPage from './components/Clients/ClientAddPage'
 import ClientEditPage from './components/Clients/ClientEditPage'
@@ -13,10 +17,12 @@ import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPag
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import oidcReducer from './redux/reducers/OIDCReducer'
 import scopeReducer from './redux/reducers/ScopeReducer'
+import attributeReducer from './redux/reducers/AttributeReducer'
 
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
+import attributeSaga from './redux/sagas/AttributeSaga'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -42,7 +48,7 @@ const pluginMetadata = {
             {
               title: 'Keys',
               path: PLUGIN_BASE_APTH + '/keys',
-              permission: '/config/database/ldap.readonly',
+              permission: '/config/database/couchbase.readonly',
             },
             {
               title: 'Defaults',
@@ -60,6 +66,11 @@ const pluginMetadata = {
               permission: '/config/database/couchbase.readonly',
             },
           ],
+        },
+        {
+          title: 'Attributes',
+          path: PLUGIN_BASE_APTH + '/attributes',
+          permission: '/config/attributes.readonly',
         },
         {
           title: 'Clients',
@@ -112,12 +123,12 @@ const pluginMetadata = {
     },
     {
       component: CustomScriptAddPage,
-      path: PLUGIN_BASE_APTH + '/scripts/new',
+      path: PLUGIN_BASE_APTH + '/script/new',
       permission: '/config/scripts.write',
     },
     {
       component: CustomScriptEditPage,
-      path: PLUGIN_BASE_APTH + '/scripts/edit:id',
+      path: PLUGIN_BASE_APTH + '/script/edit:id',
       permission: '/config/scripts.write',
     },
     {
@@ -135,13 +146,29 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/scope/edit:id',
       permission: '/config/scopes.write',
     },
+    {
+      component: AttributeListPage,
+      path: PLUGIN_BASE_APTH + '/attributes',
+      permission: '/config/attributes.readonly',
+    },
+    {
+      component: AttributeAddPage,
+      path: PLUGIN_BASE_APTH + '/attribute/new',
+      permission: '/config/attributes.write',
+    },
+    {
+      component: AttributeEditPage,
+      path: PLUGIN_BASE_APTH + '/attribute/edit:id',
+      permission: '/config/attributes.write',
+    },
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
     { name: 'oidcReducer', reducer: oidcReducer },
     { name: 'scriptReducer', reducer: scriptReducer },
+    { name: 'attributeReducer', reducer: attributeReducer },
   ],
-  sagas: [scopesSaga(), scriptSaga(), oidcSaga()],
+  sagas: [scopesSaga(), scriptSaga(), oidcSaga(), attributeSaga()],
 }
 
 export default pluginMetadata

@@ -48,11 +48,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   }
 
   function handleGoToScopeAddPage() {
-    return history.push('/scope/new')
+    return history.push('/auth-server/scope/new')
   }
   function handleGoToScopeEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/scope/edit:` + row.inum)
+    return history.push(`/auth-server/scope/edit:` + row.inum)
   }
 
   function handleScopeDelete(row) {
@@ -64,7 +64,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   function onDeletionConfirmed() {
     console.log('Scope onDeletionConfirmed - item.inum = ' + item.inum)
     dispatch(deleteScope(item.inum))
-    history.push('/scopes')
+    history.push('/auth-server/scopes')
     toggle()
   }
 

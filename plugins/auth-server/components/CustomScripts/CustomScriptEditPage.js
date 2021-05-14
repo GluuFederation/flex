@@ -11,7 +11,7 @@ function CustomScriptEditPage({ item, scripts, loading, dispatch }) {
   function handleSubmit(data) {
     if (data) {
       dispatch(editCustomScript(data))
-      history.push('/scripts')
+      history.push('/auth-server/scripts')
     }
   }
   return (

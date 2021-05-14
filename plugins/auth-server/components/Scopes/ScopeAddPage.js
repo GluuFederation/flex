@@ -15,7 +15,7 @@ function ScopeAddPage({ scripts, dispatch }) {
       const postBody = {}
       postBody['scope'] = JSON.parse(data)
       dispatch(addScope(postBody))
-      history.push('/scopes')
+      history.push('/auth-server/scopes')
     }
   }
 

@@ -47,14 +47,14 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }
   function handleGoToAttributeEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/attribute/edit:` + row.inum)
+    return history.push(`/auth-server/attribute/edit:` + row.inum)
   }
   function handleAttribueDelete(row) {
     setItem(row)
     toggle()
   }
   function handleGoToAttributeAddPage() {
-    return history.push('/attribute/new')
+    return history.push('/auth-server/attribute/new')
   }
 
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
@@ -129,7 +129,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }
   function onDeletionConfirmed() {
     dispatch(deleteAttribute(item.inum))
-    history.push('/attributes')
+    history.push('/auth-server/attributes')
     toggle()
   }
   return (
