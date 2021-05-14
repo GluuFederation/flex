@@ -14,15 +14,19 @@ import ScriptListPage from './components/CustomScripts/ScriptListPage'
 import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
 import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
 
+import PropertiesPage from './components/Configuration/ConfigPage'
+
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import oidcReducer from './redux/reducers/OIDCReducer'
 import scopeReducer from './redux/reducers/ScopeReducer'
 import attributeReducer from './redux/reducers/AttributeReducer'
+import jsonReducer from './redux/reducers/JsonConfigReducer'
 
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
 import attributeSaga from './redux/sagas/AttributeSaga'
+import jsonSaga from './redux/sagas/JsonConfigSaga'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -47,22 +51,22 @@ const pluginMetadata = {
           children: [
             {
               title: 'Keys',
-              path: PLUGIN_BASE_APTH + '/keys',
+              path: PLUGIN_BASE_APTH + '/config/keys',
               permission: '/config/database/couchbase.readonly',
             },
             {
               title: 'Defaults',
-              path: PLUGIN_BASE_APTH + '/defaults',
+              path: PLUGIN_BASE_APTH + '/config/defaults',
               permission: '/config/database/couchbase.readonly',
             },
             {
               title: 'Properties',
-              path: PLUGIN_BASE_APTH + '/properties',
+              path: PLUGIN_BASE_APTH + '/config/properties',
               permission: '/config/database/couchbase.readonly',
             },
             {
               title: 'Logging',
-              path: PLUGIN_BASE_APTH + '/logging',
+              path: PLUGIN_BASE_APTH + '/config/logging',
               permission: '/config/database/couchbase.readonly',
             },
           ],
@@ -161,14 +165,21 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/attribute/edit:id',
       permission: '/config/attributes.write',
     },
+
+    {
+      component: PropertiesPage,
+      path: PLUGIN_BASE_APTH + '/config/properties',
+      permission: '/config/attributes.write',
+    },
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
     { name: 'oidcReducer', reducer: oidcReducer },
     { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'attributeReducer', reducer: attributeReducer },
+    { name: 'authPrpertiesReducer', reducer: jsonReducer },
   ],
-  sagas: [scopesSaga(), scriptSaga(), oidcSaga(), attributeSaga()],
+  sagas: [scopesSaga(), scriptSaga(), oidcSaga(), attributeSaga(), jsonSaga()],
 }
 
 export default pluginMetadata
