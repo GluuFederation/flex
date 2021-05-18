@@ -2,10 +2,6 @@ import ScopeListPage from './components/Scopes/ScopeListPage'
 import ScopeAddPage from './components/Scopes/ScopeAddPage'
 import ScopeEditPage from './components/Scopes/ScopeEditPage'
 
-import AttributeListPage from './components/Attibutes/AttributeListPage'
-import AttributeEditPage from './components/Attibutes/AttributeEditPage'
-import AttributeAddPage from './components/Attibutes/AttributeAddPage'
-
 import ClientListPage from './components/Clients/ClientListPage'
 import ClientAddPage from './components/Clients/ClientAddPage'
 import ClientEditPage from './components/Clients/ClientEditPage'
@@ -16,10 +12,12 @@ import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPag
 
 import PropertiesPage from './components/Configuration/ConfigPage'
 
+import HealthPage from './components/Health/HealthPage'
+import ReportPage from './components/Reports/ReportPage'
+
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import oidcReducer from './redux/reducers/OIDCReducer'
 import scopeReducer from './redux/reducers/ScopeReducer'
-import attributeReducer from './redux/reducers/AttributeReducer'
 import jsonReducer from './redux/reducers/JsonConfigReducer'
 
 import scriptSaga from './redux/sagas/CustomScriptSaga'
@@ -39,12 +37,13 @@ const pluginMetadata = {
         {
           title: 'Health',
           path: PLUGIN_BASE_APTH + '/health',
+          //permission: '/config/properties.readonly',
           permission: '/config/acrs.readonly',
         },
         {
           title: 'Reports',
           path: PLUGIN_BASE_APTH + '/reports',
-          permission: '/config/cache.readonly',
+          permission: '/config/acrs.readonly',
         },
         {
           title: 'Configuration',
@@ -52,29 +51,29 @@ const pluginMetadata = {
             {
               title: 'Keys',
               path: PLUGIN_BASE_APTH + '/config/keys',
-              permission: '/config/database/couchbase.readonly',
+              permission: '/config/properties.readonly',
             },
             {
               title: 'Defaults',
               path: PLUGIN_BASE_APTH + '/config/defaults',
-              permission: '/config/database/couchbase.readonly',
+              permission: '/config/properties.readonly',
             },
             {
               title: 'Properties',
               path: PLUGIN_BASE_APTH + '/config/properties',
-              permission: '/config/database/couchbase.readonly',
+              permission: '/config/properties.readonly',
             },
             {
               title: 'Logging',
               path: PLUGIN_BASE_APTH + '/config/logging',
-              permission: '/config/database/couchbase.readonly',
+              permission: '/config/properties.readonly',
+            },
+            {
+              title: 'PW Authn',
+              path: PLUGIN_BASE_APTH + '/config/pwauthn',
+              permission: '/config/properties.readonly',
             },
           ],
-        },
-        {
-          title: 'Attributes',
-          path: PLUGIN_BASE_APTH + '/attributes',
-          permission: '/config/attributes.readonly',
         },
         {
           title: 'Clients',
@@ -94,11 +93,6 @@ const pluginMetadata = {
         {
           title: 'UMA',
           path: PLUGIN_BASE_APTH + '/uma',
-          permission: '/config/jwks.readonly',
-        },
-        {
-          title: 'PW Authn',
-          path: PLUGIN_BASE_APTH + '/pwauthn',
           permission: '/config/jwks.readonly',
         },
       ],
@@ -151,32 +145,25 @@ const pluginMetadata = {
       permission: '/config/scopes.write',
     },
     {
-      component: AttributeListPage,
-      path: PLUGIN_BASE_APTH + '/attributes',
-      permission: '/config/attributes.readonly',
-    },
-    {
-      component: AttributeAddPage,
-      path: PLUGIN_BASE_APTH + '/attribute/new',
-      permission: '/config/attributes.write',
-    },
-    {
-      component: AttributeEditPage,
-      path: PLUGIN_BASE_APTH + '/attribute/edit:id',
-      permission: '/config/attributes.write',
-    },
-
-    {
       component: PropertiesPage,
       path: PLUGIN_BASE_APTH + '/config/properties',
       permission: '/config/attributes.write',
+    },
+    {
+      component: HealthPage,
+      path: PLUGIN_BASE_APTH + '/health',
+      permission: '/config/acrs.readonly',
+    },
+    {
+      component: ReportPage,
+      path: PLUGIN_BASE_APTH + '/reports',
+      permission: '/config/acrs.readonly',
     },
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
     { name: 'oidcReducer', reducer: oidcReducer },
     { name: 'scriptReducer', reducer: scriptReducer },
-    { name: 'attributeReducer', reducer: attributeReducer },
     { name: 'authPrpertiesReducer', reducer: jsonReducer },
   ],
   sagas: [scopesSaga(), scriptSaga(), oidcSaga(), attributeSaga(), jsonSaga()],

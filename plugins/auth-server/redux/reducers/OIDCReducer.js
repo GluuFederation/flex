@@ -11,14 +11,14 @@ import {
   RESET,
   SEARCH_CLIENTS,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry';
+import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   item: {},
   loading: false,
 }
 
-const reducerName = 'oidcReducer';
+const reducerName = 'oidcReducer'
 
 export default function oidcReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -122,4 +122,4 @@ export default function oidcReducer(state = INIT_STATE, action) {
       }
   }
 }
-reducerRegistry.register(reducerName, oidcReducer);
+reducerRegistry.register(reducerName, oidcReducer)
