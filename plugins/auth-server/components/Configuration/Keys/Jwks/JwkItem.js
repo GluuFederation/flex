@@ -5,14 +5,14 @@ import {
   Input,
   Card,
   CardBody,
-} from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+} from '../../../../../../app/components'
+import GluuLabel from '../../../../../../app/routes/Apps/Gluu/GluuLabel'
 function JwkItem({ item, index }) {
   return (
     <Card
       style={{
         marginBottom: '5px',
-        backgroundColor: (index % 2 === 0) ? 'white' : '#f7f7f7',
+        backgroundColor: index % 2 === 0 ? 'white' : '#f7f7f7',
       }}
     >
       <CardBody>

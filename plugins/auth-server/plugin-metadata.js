@@ -14,17 +14,20 @@ import PropertiesPage from './components/Configuration/ConfigPage'
 
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
+import KeysPage from './components/Configuration/Keys/KeysPage'
 
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import oidcReducer from './redux/reducers/OIDCReducer'
 import scopeReducer from './redux/reducers/ScopeReducer'
 import jsonReducer from './redux/reducers/JsonConfigReducer'
+import jwksReducer from './redux/reducers/JwksReducer'
 
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
 import attributeSaga from './redux/sagas/AttributeSaga'
 import jsonSaga from './redux/sagas/JsonConfigSaga'
+import jwksSaga from './redux/sagas/JwksSaga'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -51,17 +54,17 @@ const pluginMetadata = {
             {
               title: 'Keys',
               path: PLUGIN_BASE_APTH + '/config/keys',
-              permission: '/config/properties.readonly',
+              permission: '/config/jwks.readonly',
             },
             {
               title: 'Defaults',
               path: PLUGIN_BASE_APTH + '/config/defaults',
-              permission: '/config/properties.readonly',
+              permission: '/config/acrs.readonly',
             },
             {
               title: 'Properties',
               path: PLUGIN_BASE_APTH + '/config/properties',
-              permission: '/config/properties.readonly',
+              permission: '/config/acrs.readonly',
             },
             {
               title: 'Logging',
@@ -71,7 +74,7 @@ const pluginMetadata = {
             {
               title: 'PW Authn',
               path: PLUGIN_BASE_APTH + '/config/pwauthn',
-              permission: '/config/properties.readonly',
+              permission: '/config/acrs.readonly',
             },
           ],
         },
@@ -150,6 +153,11 @@ const pluginMetadata = {
       permission: '/config/attributes.write',
     },
     {
+      component: KeysPage,
+      path: PLUGIN_BASE_APTH + '/config/keys',
+      permission: '/config/jwks.readonly',
+    },
+    {
       component: HealthPage,
       path: PLUGIN_BASE_APTH + '/health',
       permission: '/config/acrs.readonly',
@@ -164,9 +172,17 @@ const pluginMetadata = {
     { name: 'scopeReducer', reducer: scopeReducer },
     { name: 'oidcReducer', reducer: oidcReducer },
     { name: 'scriptReducer', reducer: scriptReducer },
-    { name: 'authPrpertiesReducer', reducer: jsonReducer },
+    { name: 'authPropertiesReducer', reducer: jsonReducer },
+    { name: 'jwksReducer', reducer: jwksReducer },
   ],
-  sagas: [scopesSaga(), scriptSaga(), oidcSaga(), attributeSaga(), jsonSaga()],
+  sagas: [
+    scopesSaga(),
+    scriptSaga(),
+    oidcSaga(),
+    attributeSaga(),
+    jsonSaga(),
+    jwksSaga(),
+  ],
 }
 
 export default pluginMetadata

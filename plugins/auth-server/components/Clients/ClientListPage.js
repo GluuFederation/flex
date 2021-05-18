@@ -102,6 +102,18 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       },
     })
   }
+  if (hasPermission(permissions, CLIENT_READ)) {
+    myActions.push((rowData) => ({
+      icon: 'visibility',
+      iconProps: {
+        color: 'primary',
+        id: 'viewClient' + rowData.inum,
+      },
+      tooltip: 'View client details',
+      onClick: (event, rowData) => handleGoToClientEditPage(rowData),
+      disabled: false,
+    }))
+  }
   if (hasPermission(permissions, CLIENT_DELETE)) {
     myActions.push((rowData) => ({
       icon: 'delete',

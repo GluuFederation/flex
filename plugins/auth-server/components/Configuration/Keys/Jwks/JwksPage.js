@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
-import { Container, Card, CardBody } from '../../../../app/components'
-import { getJwks } from '../../redux/actions/JwksActions'
+import { Container, Card, CardBody } from '../../../../../../app/components'
+import { getJwks } from '../../../../redux/actions/JwksActions'
 import BlockUi from 'react-block-ui'
-import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuFooter from '../../../../../../app/routes/Apps/Gluu/GluuFooter'
+import GluuLabel from '../../../../../../app/routes/Apps/Gluu/GluuLabel'
 import { connect } from 'react-redux'
 import JwkItem from './JwkItem'
 function JwksPage({ jwks, loading, dispatch }) {
