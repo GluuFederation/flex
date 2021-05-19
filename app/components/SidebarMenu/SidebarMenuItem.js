@@ -115,20 +115,24 @@ export class SidebarMenuItem extends React.Component {
       active: entry && entry.active,
     })
     const activeMenu = {
-      color: "white !important",
-      backgroundColor: "rgb(3, 169, 109)"
+      color: 'white !important',
+      backgroundColor: 'rgb(3, 169, 109)',
     }
-    const nonaActiveMenu = {
-    }
-     
-    function getStyle(itemClass){
-      if(itemClass.includes("active", 0) && itemClass.includes("submenu__entry", 0) && !itemClass.includes("open", 0)){
+    const nonaActiveMenu = {}
+
+    function getStyle(itemClass) {
+      if (
+        itemClass.includes('active', 0) &&
+        itemClass.includes('submenu__entry', 0) &&
+        !itemClass.includes('open', 0)
+      ) {
         return activeMenu
       }
       return nonaActiveMenu
     }
     return (
-      <li style={getStyle(itemClass)}
+      <li
+        style={getStyle(itemClass)}
         className={classNames(itemClass, {
           'sidebar-menu__entry--no-caret': this.props.noCaret,
         })}
