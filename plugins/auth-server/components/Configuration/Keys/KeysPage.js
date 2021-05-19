@@ -13,7 +13,7 @@ function KeysPage() {
   return (
     <Card>
       <CardBody>
-        <UncontrolledTabs initialActiveTabId="overview">
+        <UncontrolledTabs initialActiveTabId="jwkpanel">
           <Nav pills className="mb-4 flex-column flex-md-row mt-4 mt-lg-0">
             <NavItem>
               <UncontrolledTabs.NavLink tabId="jwkpanel">

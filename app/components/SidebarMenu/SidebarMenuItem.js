@@ -2,10 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
+import style from './styles.css'
 import uuid from 'uuid/v4'
 
 import { MenuContext } from './MenuContext'
 import { NavigateBeforeSharp } from '@material-ui/icons'
+import { blue } from '@miltonbo/dashboard-style-airframe/js-modules/colors'
 
 /**
  * Renders a collapse trigger or a ReactRouter Link
@@ -115,9 +117,21 @@ export class SidebarMenuItem extends React.Component {
       open: entry && entry.open,
       active: entry && entry.active,
     })
-
+    const activeMenu = {
+      color: "white !important",
+      backgroundColor: "rgb(3, 169, 109)"
+    }
+    const nonaActiveMenu = {
+    }
+     
+    function getStyle(itemClass){
+      if(itemClass.includes("active", 0) && itemClass.includes("submenu__entry", 0) && !itemClass.includes("open", 0)){
+        return activeMenu
+      }
+      return nonaActiveMenu
+    }
     return (
-      <li
+      <li style={getStyle(itemClass)}
         className={classNames(itemClass, {
           'sidebar-menu__entry--no-caret': this.props.noCaret,
         })}
