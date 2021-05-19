@@ -21,8 +21,18 @@ function KeysPage() {
               </UncontrolledTabs.NavLink>
             </NavItem>
             <NavItem>
-              <UncontrolledTabs.NavLink tabId="otherpanel">
-                Others Keys
+              <UncontrolledTabs.NavLink tabId="algorithmickeyspanel">
+                Algorithmic Keys
+              </UncontrolledTabs.NavLink>
+            </NavItem>
+            <NavItem>
+              <UncontrolledTabs.NavLink tabId="privatekeyspanel">
+                Private Keys
+              </UncontrolledTabs.NavLink>
+            </NavItem>
+            <NavItem>
+              <UncontrolledTabs.NavLink tabId="publickeyspanel">
+                Public Keys
               </UncontrolledTabs.NavLink>
             </NavItem>
           </Nav>
@@ -31,6 +41,15 @@ function KeysPage() {
               <JwksPage />
             </TabPane>
             <TabPane tabId="otherpanel">
+              <div>Not implemented yet</div>
+            </TabPane>
+            <TabPane tabId="algorithmickeyspanel">
+              <div>Not implemented yet</div>
+            </TabPane>
+            <TabPane tabId="privatekeyspanel">
+              <div>Not implemented yet</div>
+            </TabPane>
+            <TabPane tabId="publickeyspanel">
               <div>Not implemented yet</div>
             </TabPane>
           </UncontrolledTabs.TabContent>

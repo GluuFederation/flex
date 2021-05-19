@@ -2,12 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-import style from './styles.css'
 import uuid from 'uuid/v4'
 
 import { MenuContext } from './MenuContext'
-import { NavigateBeforeSharp } from '@material-ui/icons'
-import { blue } from '@miltonbo/dashboard-style-airframe/js-modules/colors'
 
 /**
  * Renders a collapse trigger or a ReactRouter Link
