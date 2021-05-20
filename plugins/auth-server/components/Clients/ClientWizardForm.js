@@ -71,6 +71,7 @@ function ClientWizardForm({
     tokenEndpointAuthMethod: client.tokenEndpointAuthMethod,
     accessTokenSigningAlg: client.accessTokenSigningAlg,
     authenticationMethod: client.authenticationMethod,
+    backchannelUserCodeParameter: client.backchannelUserCodeParameter,
     policyUri: client.policyUri,
     logoURI: client.logoURI,
 

@@ -31,6 +31,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
     customObjectClasses: ['top'],
     rptAsJwt: false,
     accessTokenAsJwt: false,
+    backchannelUserCodeParameter:false,
     disabled: false,
     runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
     keepClientAuthorizationAfterExpiration: false,
