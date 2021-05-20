@@ -16,6 +16,7 @@ import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
 import AcrPage from './components/Configuration/AcrsPage'
+import DefaultPage from './components/Configuration/Defaults/DefaultConfigPage'
 
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import oidcReducer from './redux/reducers/OIDCReducer'
@@ -27,7 +28,6 @@ import acrReducer from './redux/reducers/AcrReducer'
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
-import attributeSaga from './redux/sagas/AttributeSaga'
 import jsonSaga from './redux/sagas/JsonConfigSaga'
 import jwksSaga from './redux/sagas/JwksSaga'
 import acrSaga from './redux/sagas/AcrsSaga'
@@ -180,6 +180,11 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/config/acrs',
       permission: '/config/acrs.readonly',
     },
+    {
+      component: DefaultPage,
+      path: PLUGIN_BASE_APTH + '/config/defaults',
+      permission: '/config/acrs.readonly',
+    },
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
@@ -193,7 +198,6 @@ const pluginMetadata = {
     scopesSaga(),
     scriptSaga(),
     oidcSaga(),
-    attributeSaga(),
     jsonSaga(),
     jwksSaga(),
     acrSaga(),
