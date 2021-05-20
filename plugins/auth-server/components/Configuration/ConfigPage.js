@@ -41,7 +41,7 @@ function ConfigPage({ configuration, loading, dispatch }) {
               <ConfigEndpointPanel configuration={configuration} />
               <ConfigUmaPanel configuration={configuration} />
               <ConfigSessionPanel configuration={configuration} />
-              
+
               <FormGroup row>
                 <Col sm={12}>
                   <Accordion className="mb-12 text-white">

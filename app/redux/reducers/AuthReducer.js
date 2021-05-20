@@ -49,7 +49,7 @@ export default function authReducer(state = INIT_STATE, action) {
         ...state,
       }
     case USERINFO_RESPONSE:
-      console.log('======UCLAIMS ' + JSON.stringify(action.payload.uclaims))
+      //console.log('======UCLAIMS ' + JSON.stringify(action.payload.uclaims))
       if (action.payload.uclaims) {
         return {
           ...state,

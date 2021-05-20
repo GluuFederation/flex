@@ -19,7 +19,6 @@ import {
 } from '../actions/types'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from '../../../../app/redux/api/base'
-import { options } from 'numeral'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {

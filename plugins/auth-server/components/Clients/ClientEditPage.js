@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ClientWizardForm from './ClientWizardForm'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { editClient } from '../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
+import { getScopes } from '../../redux/actions/ScopeActions'
+import { getCustomScripts } from '../../redux/actions/CustomScriptActions'
 
 function ClientEditPage({
   client,
@@ -13,6 +15,17 @@ function ClientEditPage({
   permissions,
   dispatch,
 }) {
+  const options = {}
+  options['limit'] = parseInt(100000)
+  useEffect(() => {
+    if (scopes.length < 1) {
+      dispatch(getScopes(options))
+    }
+    if (scripts.length < 1) {
+      dispatch(getCustomScripts(options))
+    }
+  }, [])
+
   if (
     !client.attributes ||
     (Object.keys(client.attributes).length === 0 &&

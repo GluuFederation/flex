@@ -1,10 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import { useHistory } from 'react-router-dom'
 import { addNewClientAction } from '../../redux/actions/OIDCActions'
+import { getScopes } from '../../redux/actions/ScopeActions'
+import { getCustomScripts } from '../../redux/actions/CustomScriptActions'
 import BlockUi from 'react-block-ui'
 function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
+  const options = {}
+  options['limit'] = parseInt(100000)
+  useEffect(() => {
+    if (scopes.length < 1) {
+      dispatch(getScopes(options))
+    }
+    if (scripts.length < 1) {
+      dispatch(getCustomScripts(options))
+    }
+  }, [])
   const history = useHistory()
   scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
   function handleSubmit(data) {
@@ -31,7 +43,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
     customObjectClasses: ['top'],
     rptAsJwt: false,
     accessTokenAsJwt: false,
-    backchannelUserCodeParameter:false,
+    backchannelUserCodeParameter: false,
     disabled: false,
     runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
     keepClientAuthorizationAfterExpiration: false,
