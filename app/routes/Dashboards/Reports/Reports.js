@@ -9,12 +9,14 @@ import {
   Col,
 } from './../../../components'
 import { connect } from 'react-redux'
-import { getAttributes } from '../../../redux/actions/AttributeActions'
-import { getOpenidClients } from '../../../redux/actions/OIDCActions'
-import { getScopes } from '../../../redux/actions/ScopeActions'
-import { getCustomScripts } from '../../../redux/actions/CustomScriptActions'
+import {
+  getAttributes,
+  getCustomScripts,
+  getScopes,
+  getOpenidClients,
+} from '../../../redux/actions/ReportsActions'
 
-function Reports({ attributes, clients, scopes, scripts, dispatch}) {
+function Reports({ attributes, clients, scopes, scripts, dispatch }) {
   useEffect(() => {
     if (attributes.length === 0) {
       dispatch(getAttributes())

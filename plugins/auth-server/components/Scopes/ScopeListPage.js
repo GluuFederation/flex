@@ -21,7 +21,7 @@ import {
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const options = {}
-  const [limit, setLimit] = useState(10)
+  const [limit, setLimit] = useState(100000)
   const [pattern, setPattern] = useState(null)
   useEffect(() => {
     makeOptions()
