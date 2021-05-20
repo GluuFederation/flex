@@ -15,12 +15,14 @@ import PropertiesPage from './components/Configuration/ConfigPage'
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
+import AcrPage from './components/Configuration/AcrsPage'
 
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import oidcReducer from './redux/reducers/OIDCReducer'
 import scopeReducer from './redux/reducers/ScopeReducer'
 import jsonReducer from './redux/reducers/JsonConfigReducer'
 import jwksReducer from './redux/reducers/JwksReducer'
+import acrReducer from './redux/reducers/AcrReducer'
 
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
@@ -28,6 +30,7 @@ import oidcSaga from './redux/sagas/OIDCSaga'
 import attributeSaga from './redux/sagas/AttributeSaga'
 import jsonSaga from './redux/sagas/JsonConfigSaga'
 import jwksSaga from './redux/sagas/JwksSaga'
+import acrSaga from './redux/sagas/AcrsSaga'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -55,6 +58,11 @@ const pluginMetadata = {
               title: 'Keys',
               path: PLUGIN_BASE_APTH + '/config/keys',
               permission: '/config/jwks.readonly',
+            },
+            {
+              title: 'ACRs',
+              path: PLUGIN_BASE_APTH + '/config/acrs',
+              permission: '/config/acrs.readonly',
             },
             {
               title: 'Defaults',
@@ -167,6 +175,11 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/reports',
       permission: '/config/acrs.readonly',
     },
+    {
+      component: AcrPage,
+      path: PLUGIN_BASE_APTH + '/config/acrs',
+      permission: '/config/acrs.readonly',
+    },
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
@@ -174,6 +187,7 @@ const pluginMetadata = {
     { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'authPropertiesReducer', reducer: jsonReducer },
     { name: 'jwksReducer', reducer: jwksReducer },
+    { name: 'acrReducer', reducer: acrReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -182,6 +196,7 @@ const pluginMetadata = {
     attributeSaga(),
     jsonSaga(),
     jwksSaga(),
+    acrSaga(),
   ],
 }
 

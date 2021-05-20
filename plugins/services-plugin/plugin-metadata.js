@@ -1,15 +1,12 @@
-import AcrsPage from './Components/Configuration/AcrsPage'
 import CachePage from './Components/Configuration/CachePage'
 import CouchbasePage from './Components/Configuration/CouchbasePage'
 import LdapListPage from './Components/Configuration/LdapListPage'
 import LdapAddPage from './Components/Configuration/LdapAddPage'
 import LdapEditPage from './Components/Configuration/LdapEditPage'
-import acrReducer from './redux/reducers/AcrReducer'
 import cacheReducer from './redux/reducers/CacheReducer'
 import couchbaseReducer from './redux/reducers/CouchbaseReducer'
 import ldapReducer from './redux/reducers/LdapReducer'
 import smtpReducer from './redux/reducers/SmtpReducer'
-import acrsSaga from './redux/sagas/AcrsSaga'
 import cacheSaga from './redux/sagas/CacheSaga'
 import couchbaseSaga from './redux/sagas/CouchbaseSaga'
 import ldapSaga from './redux/sagas/LdapSaga'
@@ -21,11 +18,6 @@ const pluginMetadata = {
       title: 'Services',
       icon: 'fa-gears',
       children: [
-        {
-          title: 'ACRs',
-          path: '/config/acrs',
-          permission: '/config/acrs.readonly',
-        },
         {
           title: 'Cache',
           path: '/config/cache',
@@ -51,11 +43,6 @@ const pluginMetadata = {
     },
   ],
   routes: [
-    {
-      component: AcrsPage,
-      path: '/config/acrs',
-      permission: '/config/acrs.readonly',
-    },
     {
       component: CachePage,
       path: '/config/cache',
@@ -83,14 +70,12 @@ const pluginMetadata = {
     },
   ],
   reducers: [
-    { name: 'acrReducer', reducer: acrReducer },
     { name: 'cacheReducer', reducer: cacheReducer },
     { name: 'couchbaseReducer', reducer: couchbaseReducer },
     { name: 'ldapReducer', reducer: ldapReducer },
     { name: 'smtpReducer', reducer: smtpReducer },
   ],
   sagas: [
-    acrsSaga(),
     cacheSaga(),
     couchbaseSaga(),
     ldapSaga(),
