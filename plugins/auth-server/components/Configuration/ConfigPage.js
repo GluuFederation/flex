@@ -17,9 +17,6 @@ import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuInput from '../../../../app/routes/Apps/Gluu/GluuInput'
 import GluuBooleanBox from '../../../../app/routes/Apps/Gluu/GluuBooleanInput'
-import ConfigEndpointPanel from './ConfigEndpoints'
-import ConfigUmaPanel from './ConfigUmaPanel'
-import ConfigSessionPanel from './ConfigSessionPanel'
 import ConfigBasicPanel from './ConfigBasicPanel'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
@@ -39,12 +36,6 @@ function ConfigPage({ configuration, loading, dispatch }) {
         <Card>
           <CardBody>
             <Form>
-              {/*<ConfigBasicPanel configuration={configuration} />
-              <ConfigEndpointPanel configuration={configuration} />
-              <ConfigUmaPanel configuration={configuration} />
-              <ConfigSessionPanel configuration={configuration} />
-  */}
-
               {Object.keys(configuration).map((propKey, idx) => (
                 <PropertyBuilder
                   key={idx}

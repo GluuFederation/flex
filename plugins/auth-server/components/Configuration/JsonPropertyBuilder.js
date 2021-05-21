@@ -30,7 +30,11 @@ function JsonPropertyBuilder({ propKey, propValue, lSize }) {
   }
 
   function isStringArray(item) {
-    return Array.isArray(item) && item.length>1 &&  typeof item[0] === 'string'
+    return Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string'
+  }
+
+  function isObjectArray(item) {
+    return Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
   }
 
   if (isBoolean(propValue)) {
@@ -77,6 +81,9 @@ function JsonPropertyBuilder({ propKey, propValue, lSize }) {
         options={propValue}
       />
     )
+  }
+  if (isObjectArray(propValue)) {
+    return null
   }
   return <div></div>
 }
