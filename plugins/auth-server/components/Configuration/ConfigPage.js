@@ -2,22 +2,13 @@ import React, { useEffect } from 'react'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
 import {
-  Badge,
-  Col,
   Form,
   FormGroup,
   Container,
-  Accordion,
-  Input,
   Card,
-  CardText,
   CardBody,
 } from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
-import GluuInput from '../../../../app/routes/Apps/Gluu/GluuInput'
-import GluuBooleanBox from '../../../../app/routes/Apps/Gluu/GluuBooleanInput'
-import ConfigBasicPanel from './ConfigBasicPanel'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
 import {
@@ -44,9 +35,6 @@ function ConfigPage({ configuration, loading, dispatch }) {
                   lSize={lSize}
                 />
               ))}
-              <FormGroup row>
-                <GluuLabel label="Work in progress" />
-              </FormGroup>
               <FormGroup row></FormGroup>
               <GluuFooter />
             </Form>

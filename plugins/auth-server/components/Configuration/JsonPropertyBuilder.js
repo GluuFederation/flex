@@ -1,16 +1,15 @@
 import React from 'react'
-import {
-  Container,
-  Accordion,
-  CardText,
-  CardBody,
-} from '../../../../app/components'
+import { Accordion } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuArrayCompleter from '../../../../app/routes/Apps/Gluu/GluuArrayCompleter'
 import GluuInput from '../../../../app/routes/Apps/Gluu/GluuInput'
 import GluuBooleanBox from '../../../../app/routes/Apps/Gluu/GluuBooleanInput'
 
-function JsonPropertyBuilder({ propKey, propValue, lSize }) {
+function JsonPropertyBuilder({ propKey, propValue, lSize, logger }) {
+  if (logger) {
+    console.log('========key ' + JSON.stringify(propKey))
+    console.log('========value ' + JSON.stringify(propValue))
+  }
   function isBoolean(item) {
     return typeof item === 'boolean'
   }
@@ -86,13 +85,15 @@ function JsonPropertyBuilder({ propKey, propValue, lSize }) {
   if (isObjectArray(propValue)) {
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
-        <Accordion.Header className="text-primary">{propKey.toUpperCase()}</Accordion.Header>
+        <Accordion.Header className="text-primary">
+          {propKey.toUpperCase()}
+        </Accordion.Header>
         <Accordion.Body>
-          {propValue.map((objKey, idx) => (
+          {Object.keys(propValue).map((item, idx) => (
             <JsonPropertyBuilder
               key={idx}
-              propKey={objKey}
-              propValue={propValue[objKey]}
+              propKey={item}
+              propValue={propValue[item]}
               lSize={lSize}
             />
           ))}
@@ -103,9 +104,11 @@ function JsonPropertyBuilder({ propKey, propValue, lSize }) {
   if (isObject(propValue)) {
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
-        <Accordion.Header className="text-primary">{propKey.toUpperCase()}</Accordion.Header>
+        <Accordion.Header className="text-primary">
+          {propKey.toUpperCase().length > 2 ? propKey.toUpperCase() : ''}
+        </Accordion.Header>
         <Accordion.Body>
-        {Object.keys(propValue).map((objKey, idx) => (
+          {Object.keys(propValue).map((objKey, idx) => (
             <JsonPropertyBuilder
               key={idx}
               propKey={objKey}
