@@ -21,6 +21,7 @@ import ConfigEndpointPanel from './ConfigEndpoints'
 import ConfigUmaPanel from './ConfigUmaPanel'
 import ConfigSessionPanel from './ConfigSessionPanel'
 import ConfigBasicPanel from './ConfigBasicPanel'
+import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
 import {
   getJsonConfig,
@@ -28,6 +29,7 @@ import {
 } from '../../redux/actions/JsonConfigActions'
 
 function ConfigPage({ configuration, loading, dispatch }) {
+  const lSize = 6
   useEffect(() => {
     dispatch(getJsonConfig())
   }, [])
@@ -37,23 +39,20 @@ function ConfigPage({ configuration, loading, dispatch }) {
         <Card>
           <CardBody>
             <Form>
-              <ConfigBasicPanel configuration={configuration} />
+              {/*<ConfigBasicPanel configuration={configuration} />
               <ConfigEndpointPanel configuration={configuration} />
               <ConfigUmaPanel configuration={configuration} />
               <ConfigSessionPanel configuration={configuration} />
+  */}
 
-              <FormGroup row>
-                <Col sm={12}>
-                  <Accordion className="mb-12 text-white">
-                    <Accordion.Header className="d-flex bg-primary text-white align-items-center h6">
-                      URIs
-                      <Accordion.Indicator className="ml-auto" />
-                    </Accordion.Header>
-                    &nbsp;
-                    <Accordion.Body></Accordion.Body>
-                  </Accordion>
-                </Col>
-              </FormGroup>
+              {Object.keys(configuration).map((propKey, idx) => (
+                <PropertyBuilder
+                  key={idx}
+                  propKey={propKey}
+                  propValue={configuration[propKey]}
+                  lSize={lSize}
+                />
+              ))}
               <FormGroup row>
                 <GluuLabel label="Work in progress" />
               </FormGroup>

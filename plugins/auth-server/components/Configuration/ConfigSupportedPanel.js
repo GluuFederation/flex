@@ -11,25 +11,14 @@ function ConfigSupportedPanel({ configuration }) {
   }
   return (
     <FormGroup row>
-      <Col sm={12}>
-        <Accordion className="mb-12 text-white">
-          <Accordion.Header className="d-flex bg-primary text-white align-items-center h6">
-            Default supported
-            <Accordion.Indicator className="ml-auto" />
-          </Accordion.Header>
-          &nbsp;
-          <Accordion.Body>
-            <GluuTypeAheadWithAdd
-              name="responseTypesSupported"
-              label="Response Types Supported"
-              value={configuration.responseTypesSupported || []}
-              options={configuration.responseTypesSupported}
-              validator={validator}
-              inputId={responseTypesSupported}
-            ></GluuTypeAheadWithAdd>
-          </Accordion.Body>
-        </Accordion>
-      </Col>
+      <GluuTypeAheadWithAdd
+        name="responseTypesSupported"
+        label="Response Types Supported"
+        value={configuration.responseTypesSupported || []}
+        options={configuration.responseTypesSupported}
+        validator={validator}
+        inputId={responseTypesSupported}
+      ></GluuTypeAheadWithAdd>
     </FormGroup>
   )
 }

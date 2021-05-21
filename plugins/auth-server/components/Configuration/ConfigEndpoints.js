@@ -1,127 +1,159 @@
 import React from 'react'
-import { Col, FormGroup, Accordion } from '../../../../app/components'
+import { FormGroup } from '../../../../app/components'
 import GluuInput from '../../../../app/routes/Apps/Gluu/GluuInput'
 import GluuBooleanBox from '../../../../app/routes/Apps/Gluu/GluuBooleanInput'
 
 function ConfigEndpoints({ configuration }) {
+  const lSize = 6
   return (
-    <FormGroup row>
-      <Col sm={12}>
-        <Accordion className="mb-12 text-white">
-          <Accordion.Header className="d-flex bg-primary text-white align-items-center h6">
-            OAuth Server endpoints
-            <Accordion.Indicator className="ml-auto" />
-          </Accordion.Header>
-          &nbsp;
-          <Accordion.Body>
-            <GluuInput
-              id="issuer"
-              label="Issuer"
-              value={configuration.issuer}
-            />
-            <GluuInput
-              id="baseEndpoint"
-              label="Base Endpoint"
-              value={configuration.baseEndpoint}
-            />
-            <GluuInput
-              id="authorizationEndpoint"
-              label="Authorization Endpoint"
-              value={configuration.authorizationEndpoint}
-            />
-            <GluuInput
-              id="tokenEndpoint"
-              label="Token Endpoint"
-              value={configuration.tokenEndpoint}
-            />
-            <GluuInput
-              id="tokenRevocationEndpoint"
-              label="Token Revocation Endpoint"
-              value={configuration.tokenRevocationEndpoint}
-            />
-            <GluuInput
-              id="userInfoEndpoint"
-              label="User Info Endpoint"
-              value={configuration.userInfoEndpoint}
-            />
-            <GluuInput
-              id="clientInfoEndpoint"
-              label="Client Info Endpoint"
-              value={configuration.clientInfoEndpoint}
-            />
-            <GluuInput
-              id="endSessionEndpoint"
-              label="End Session Endpoint"
-              value={configuration.endSessionEndpoint}
-            />
-            <GluuInput
-              id="registrationEndpoint"
-              label="Registration Endpoint"
-              value={configuration.registrationEndpoint}
-            />
-            <GluuInput
-              id="openIdDiscoveryEndpoint"
-              label="OpenId Discovery Endpoint"
-              value={configuration.openIdDiscoveryEndpoint}
-            />
-            <GluuInput
-              id="openIdConfigurationEndpoint"
-              label="OpenId Configuration Endpoint"
-              value={configuration.openIdConfigurationEndpoint}
-            />
-            <GluuInput
-              id="idGenerationEndpoint"
-              label="Id Generation Endpoint"
-              value={configuration.idGenerationEndpoint}
-            />
-            <GluuInput
-              id="introspectionEndpoint"
-              label="Introspection Endpoint"
-              value={configuration.introspectionEndpoint}
-            />
-            <GluuInput
-              id="deviceAuthzEndpoint"
-              label="D eviceAuthz Endpoint"
-              value={configuration.deviceAuthzEndpoint}
-            />
-            <GluuInput
-              id="umaConfigurationEndpoint"
-              label="Uma Configuration Endpoint"
-              value={configuration.umaConfigurationEndpoint}
-            />
-            <GluuInput
-              id="oxElevenGenerateKeyEndpoint"
-              label="oxEleven Generate Key Endpoint"
-              value={configuration.oxElevenGenerateKeyEndpoint}
-            />
-            <GluuInput
-              id="oxElevenSignEndpoint"
-              label="oxEleven Sign Endpoint"
-              value={configuration.oxElevenSignEndpoint}
-            />
-            <GluuInput
-              id="oxElevenVerifySignatureEndpoint"
-              label="oxEleven Verify Signature Endpoint"
-              value={configuration.oxElevenVerifySignatureEndpoint}
-            />
-            <GluuInput
-              id="oxElevenDeleteKeyEndpoint"
-              label="oxEleven Delete Key Endpoint"
-              value={configuration.oxElevenDeleteKeyEndpoint}
-            />
-            <GluuInput
-              id="backchannelAuthenticationEndpoint"
-              label="Back Channel Authentication Endpoint"
-              value={configuration.backchannelAuthenticationEndpoint}
-            />
-            <GluuInput
-              id="backchannelDeviceRegistrationEndpoint"
-              label="Back Channel Device Registration Endpoint"
-              value={configuration.backchannelDeviceRegistrationEndpoint}
-            />
-          </Accordion.Body>
-        </Accordion>
-      </Col>
+    <FormGroup>
+      <GluuInput
+        id="issuer"
+        lsize={lSize}
+        rsize={lSize}
+        label="Issuer"
+        value={configuration.issuer}
+      />
+      <GluuInput
+        id="baseEndpoint"
+        lsize={lSize}
+        rsize={lSize}
+        label="Base Endpoint"
+        value={configuration.baseEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="authorizationEndpoint"
+        label="Authorization Endpoint"
+        value={configuration.authorizationEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="tokenEndpoint"
+        label="Token Endpoint"
+        value={configuration.tokenEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="tokenRevocationEndpoint"
+        label="Token Revocation Endpoint"
+        value={configuration.tokenRevocationEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="userInfoEndpoint"
+        label="User Info Endpoint"
+        value={configuration.userInfoEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="clientInfoEndpoint"
+        label="Client Info Endpoint"
+        value={configuration.clientInfoEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="endSessionEndpoint"
+        label="End Session Endpoint"
+        value={configuration.endSessionEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="registrationEndpoint"
+        label="Registration Endpoint"
+        value={configuration.registrationEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="openIdDiscoveryEndpoint"
+        label="OpenId Discovery Endpoint"
+        value={configuration.openIdDiscoveryEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="openIdConfigurationEndpoint"
+        label="OpenId Configuration Endpoint"
+        value={configuration.openIdConfigurationEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="idGenerationEndpoint"
+        label="Id Generation Endpoint"
+        value={configuration.idGenerationEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="introspectionEndpoint"
+        label="Introspection Endpoint"
+        value={configuration.introspectionEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="deviceAuthzEndpoint"
+        label="D eviceAuthz Endpoint"
+        value={configuration.deviceAuthzEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="umaConfigurationEndpoint"
+        label="Uma Configuration Endpoint"
+        value={configuration.umaConfigurationEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="oxElevenGenerateKeyEndpoint"
+        label="oxEleven Generate Key Endpoint"
+        value={configuration.oxElevenGenerateKeyEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="oxElevenSignEndpoint"
+        label="oxEleven Sign Endpoint"
+        value={configuration.oxElevenSignEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="oxElevenVerifySignatureEndpoint"
+        label="oxEleven Verify Signature Endpoint"
+        value={configuration.oxElevenVerifySignatureEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="oxElevenDeleteKeyEndpoint"
+        label="oxEleven Delete Key Endpoint"
+        value={configuration.oxElevenDeleteKeyEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="backchannelAuthenticationEndpoint"
+        label="Back Channel Authentication Endpoint"
+        value={configuration.backchannelAuthenticationEndpoint}
+      />
+      <GluuInput
+        lsize={lSize}
+        rsize={lSize}
+        id="backchannelDeviceRegistrationEndpoint"
+        label="Back Channel Device Registration Endpoint"
+        value={configuration.backchannelDeviceRegistrationEndpoint}
+      />
     </FormGroup>
   )
 }

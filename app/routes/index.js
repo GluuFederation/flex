@@ -46,8 +46,11 @@ export const RoutedContent = () => {
       />
 
       {/* -------- Plugins ---------*/}
-      {pluginMenus.map((item, key) => (
-        hasPermission(scopes, item.permission) && <Route key={key} path={item.path} component={item.component} />)
+      {pluginMenus.map(
+        (item, key) =>
+          hasPermission(scopes, item.permission) && (
+            <Route key={key} path={item.path} component={item.component} />
+          ),
       )}
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />
