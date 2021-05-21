@@ -1,13 +1,7 @@
 import React from 'react'
 import {
-  Badge,
-  Col,
-  Form,
-  FormGroup,
   Container,
   Accordion,
-  Input,
-  Card,
   CardText,
   CardBody,
 } from '../../../../app/components'
@@ -30,11 +24,18 @@ function JsonPropertyBuilder({ propKey, propValue, lSize }) {
   }
 
   function isStringArray(item) {
-    return Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string'
+    return (
+      Array.isArray(item) && item.length >= 1 && typeof item[0] === 'string'
+    )
   }
 
   function isObjectArray(item) {
-    return Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
+    return (
+      Array.isArray(item) && item.length >= 1 && typeof item[0] === 'object'
+    )
+  }
+  function isObject(item) {
+    return typeof item === 'object'
   }
 
   if (isBoolean(propValue)) {
@@ -83,7 +84,38 @@ function JsonPropertyBuilder({ propKey, propValue, lSize }) {
     )
   }
   if (isObjectArray(propValue)) {
-    return null
+    return (
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <Accordion.Header className="text-primary">{propKey.toUpperCase()}</Accordion.Header>
+        <Accordion.Body>
+          {propValue.map((objKey, idx) => (
+            <JsonPropertyBuilder
+              key={idx}
+              propKey={objKey}
+              propValue={propValue[objKey]}
+              lSize={lSize}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion>
+    )
+  }
+  if (isObject(propValue)) {
+    return (
+      <Accordion className="mb-2 b-primary" initialOpen>
+        <Accordion.Header className="text-primary">{propKey.toUpperCase()}</Accordion.Header>
+        <Accordion.Body>
+        {Object.keys(propValue).map((objKey, idx) => (
+            <JsonPropertyBuilder
+              key={idx}
+              propKey={objKey}
+              propValue={propValue[objKey]}
+              lSize={lSize}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion>
+    )
   }
   return <div></div>
 }
