@@ -3,21 +3,21 @@ import MaterialTable from 'material-table'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
-import GluuDialog from '../Gluu/GluuDialog'
-import AttributeDetailPage from '../Attibutes/AttributeDetailPage'
-import GluuAdvancedSearch from '../Gluu/GluuAdvancedSearch'
+import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
+import AttributeDetailPage from './AttributeDetailPage'
+import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
 import {
   hasPermission,
   ATTRIBUTE_WRITE,
   ATTRIBUTE_READ,
   ATTRIBUTE_DELETE,
-} from '../../../utils/PermChecker'
+} from '../../../../app/utils/PermChecker'
 import {
   getAttributes,
   searchAttributes,
   setCurrentItem,
   deleteAttribute,
-} from '../../../redux/actions/AttributeActions'
+} from '../../redux/actions/AttributeActions'
 
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const options = {}

@@ -1,10 +1,5 @@
 const plugins = [
   {
-    title: 'Health Check',
-    key: 'health-check',
-    metadataFile: './health-check/plugin-metadata',
-  },
-  {
     title: 'Services Plugin',
     key: 'services-plugin',
     metadataFile: './services-plugin/plugin-metadata',
@@ -13,6 +8,11 @@ const plugins = [
     title: 'Auth Server',
     key: 'auth-server',
     metadataFile: './auth-server/plugin-metadata',
+  },
+  {
+    title: 'Schema',
+    key: 'schema',
+    metadataFile: './schema/plugin-metadata',
   },
 ]
 export default plugins

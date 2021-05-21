@@ -11,7 +11,7 @@ import {
   SET_ATTRIBUTE_ITEM,
   SEARCH_ATTRIBUTES,
 } from '../actions/types'
-import reducerRegistry from './ReducerRegistry';
+
 const INIT_STATE = {
   items: [],
   item: {},
@@ -122,5 +122,3 @@ export default function attributeReducer(state = INIT_STATE, action) {
       }
   }
 }
-
-reducerRegistry.register(reducerName, attributeReducer);

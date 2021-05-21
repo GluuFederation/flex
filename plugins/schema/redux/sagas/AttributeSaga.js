@@ -2,14 +2,14 @@
  * Attribute Sagas
  */
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from '../../utils/TokenController'
+import { isFourZeroOneError } from '../../../../app/utils/TokenController'
 import {
   getAttributesResponse,
   addAttributeResponse,
   editAttributeResponse,
   deleteAttributeResponse,
 } from '../actions/AttributeActions'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
 import {
   GET_ATTRIBUTES,
   SEARCH_ATTRIBUTES,
@@ -18,7 +18,7 @@ import {
   DELETE_ATTRIBUTE,
 } from '../actions/types'
 import AttributeApi from '../api/AttributeApi'
-import { getClient } from '../api/base'
+import { getClient } from '../../../../app/redux/api/base'
 
 const JansConfigApi = require('jans_config_api')
 

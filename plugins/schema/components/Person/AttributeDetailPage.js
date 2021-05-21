@@ -6,7 +6,7 @@ import {
   Col,
   FormGroup,
   Label,
-} from './../../../components'
+} from '../../../../app/components'
 
 const AttributeDetailPage = ({ row }) => {
   return (

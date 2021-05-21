@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from './../../../components'
+import { Container, CardBody, Card } from '../../../../app/components'
 import AttributeForm from './AttributeForm'
-import { addAttribute } from '../../../redux/actions/AttributeActions'
+import { addAttribute } from '../../redux/actions/AttributeActions'
 function AttributeAddPage({ dispatch }) {
   const history = useHistory()
   function onSubmit(data) {

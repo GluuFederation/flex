@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from './../../../components'
+import { Container, CardBody, Card } from '../../../../app/components'
 import AttributeForm from './AttributeForm'
 import BlockUi from 'react-block-ui'
-import { editAttribute } from '../../../redux/actions/AttributeActions'
+import { editAttribute } from '../../redux/actions/AttributeActions'
 
 function AttributeEditPage({ item, loading, dispatch }) {
   if (!item.attributeValidation) {

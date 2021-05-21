@@ -9,9 +9,9 @@ import {
   FormGroup,
   Label,
   Input,
-} from './../../../components'
-import GluuFooter from '../Gluu/GluuFooter'
-import GluuLabel from '../Gluu/GluuLabel'
+} from '../../../../app/components'
+import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
+import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 
 function AttributeForm({ item, customOnSubmit }) {
   const [init, setInit] = useState(false)
