@@ -8,6 +8,7 @@ import {
   Label,
 } from '../../../../app/components'
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
+import GluuSecretDetail from '../../../../app/routes/Apps/Gluu/GluuSecretDetail'
 function ClientDetailPage({ row, scopes }) {
   const scopesDns = row.scopes || []
   const clientScopes = scopes
@@ -30,7 +31,7 @@ function ClientDetailPage({ row, scopes }) {
             <GluuFormDetailRow label="Client Id" value={row.inum} />
           </Col>
           <Col sm={6}>
-            <GluuFormDetailRow
+            <GluuSecretDetail
               label="Client Secret"
               value={row.clientSecret ? row.clientSecret : '-'}
             />
@@ -40,7 +41,7 @@ function ClientDetailPage({ row, scopes }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="Name"
-              value={row.displayName || row.clientName || '-'}
+              value={row.clientName || row.displayName|| '-'}
             />
           </Col>
           <Col sm={6}>
