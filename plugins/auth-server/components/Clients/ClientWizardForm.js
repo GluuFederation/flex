@@ -57,11 +57,16 @@ function ClientWizardForm({
     }
   }
 
+  function removeDecription(customAttributes) {
+    return customAttributes.filter((item) => item.name !== 'description')
+  }
+
   const initialValues = {
     inum: client.inum,
     dn: client.dn,
     clientSecret: client.secret,
     displayName: client.displayName,
+    clientName: client.clientName,
     description: client.description,
     applicationType: client.applicationType,
     subjectType: client.subjectType,
@@ -148,9 +153,15 @@ function ClientWizardForm({
           if (!values['customAttributes']) {
             values['customAttributes'] = []
           }
+          if (values['description']) {
+            values['customAttributes'] = removeDecription(
+              values['customAttributes'],
+            )
+          }
           values['customAttributes'].push(
             buildDescription(values['description']),
           )
+          values['displayName'] = values['clientName']
           customOnSubmit(JSON.parse(JSON.stringify(values)))
         }}
       >

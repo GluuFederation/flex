@@ -20,7 +20,7 @@ import {
 } from '../../../../app/utils/PermChecker'
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const options = {}
-  const [limit, setLimit] = useState(5)
+  const [limit, setLimit] = useState(50)
   const [pattern, setPattern] = useState(null)
   useEffect(() => {
     makeOptions()

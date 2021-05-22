@@ -9,7 +9,7 @@ import {
 } from '../../../../app/components'
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
 function ClientDetailPage({ row, scopes }) {
-  const scopesDns = row.scopes
+  const scopesDns = row.scopes || []
   const clientScopes = scopes
     .filter((item) => scopesDns.includes(item.dn, 0))
     .map((item) => item.id)

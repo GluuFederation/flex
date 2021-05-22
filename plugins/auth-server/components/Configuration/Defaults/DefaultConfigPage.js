@@ -9,7 +9,6 @@ import {
 } from '../../../../../app/components'
 import GluuFooter from '../../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuInput from '../../../../../app/routes/Apps/Gluu/GluuInput'
-import GluuBooleanBox from '../../../../../app/routes/Apps/Gluu/GluuBooleanInput'
 import {
   getJsonConfig,
   patchJsonConfig,

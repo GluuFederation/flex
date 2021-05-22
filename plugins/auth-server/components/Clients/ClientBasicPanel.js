@@ -92,13 +92,13 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Display Name" />
+        <GluuLabel label="Client Name" />
         <Col sm={9}>
           <Input
-            placeholder="Enter the client displayName"
-            id="displayName"
-            name="displayName"
-            defaultValue={client.displayName || client.clientName}
+            placeholder="Enter the client name"
+            id="clientName"
+            name="clientName"
+            defaultValue={client.clientName || client.displayName}
             onChange={formik.handleChange}
           />
         </Col>
