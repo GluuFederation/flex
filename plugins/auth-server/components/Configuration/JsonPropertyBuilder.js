@@ -6,10 +6,6 @@ import GluuInput from '../../../../app/routes/Apps/Gluu/GluuInput'
 import GluuBooleanBox from '../../../../app/routes/Apps/Gluu/GluuBooleanInput'
 
 function JsonPropertyBuilder({ propKey, propValue, lSize, logger }) {
-  if (logger) {
-    console.log('========key ' + JSON.stringify(propKey))
-    console.log('========value ' + JSON.stringify(propValue))
-  }
   function isBoolean(item) {
     return typeof item === 'boolean'
   }

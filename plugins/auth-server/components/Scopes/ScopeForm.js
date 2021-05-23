@@ -8,20 +8,22 @@ import {
   Form,
   FormGroup,
   Input,
+  Accordion,
 } from '../../../../app/components'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 
 function ScopeForm({ scope, handleSubmit }) {
-  function getInitialState(scope) {
-    return scope.scopeType != null && scope.scopeType === 'openid'
-  }
+  console.log('=================' + JSON.stringify(scope))
   const [init, setInit] = useState(false)
-  const [validation, setValidation] = useState(getInitialState(scope))
+  const [showClaimsPanel, handleClaimsPanel] = useState(true)
+  const [showDynamicPanel, handleDynamicPanel] = useState(true)
+  const claims = []
 
-  function handleValidation() {
-    console.log(' handleValidation validation = ' + validation)
-    setValidation(!validation)
+  function handleScopeTypeChanged() {
+    handleClaimsPanel(!showClaimsPanel)
+    handleDynamicPanel(!showDynamicPanel)
   }
 
   function toogle() {
@@ -100,12 +102,11 @@ function ScopeForm({ scope, handleSubmit }) {
               </Col>
             </FormGroup>
           )}
-
           <FormGroup row>
-            <GluuLabel label="DisplayName" required />
-            <Col sm={9}>
+            <GluuLabel label="Display Name" required />
+            <Col sm={8}>
               <Input
-                placeholder="Enter the displayName"
+                placeholder="Enter the display name"
                 id="displayName"
                 valid={
                   !formik.errors.displayName &&
@@ -125,7 +126,7 @@ function ScopeForm({ scope, handleSubmit }) {
 
           <FormGroup row>
             <GluuLabel label="Description" />
-            <Col sm={9}>
+            <Col sm={8}>
               <Input
                 type="textarea"
                 placeholder="Enter the description"
@@ -141,7 +142,7 @@ function ScopeForm({ scope, handleSubmit }) {
 
           <FormGroup row>
             <GluuLabel label="Scope Type" required />
-            <Col sm={9}>
+            <Col sm={8}>
               <InputGroup>
                 <CustomInput
                   type="select"
@@ -164,8 +165,8 @@ function ScopeForm({ scope, handleSubmit }) {
           </FormGroup>
 
           <FormGroup row>
-            <GluuLabel label="Default Scope" size={3} />
-            <Col sm={9}>
+            <GluuLabel label="Default Scope" size={4} />
+            <Col sm={8}>
               <Input
                 id="defaultScope"
                 name="defaultScope"
@@ -175,51 +176,83 @@ function ScopeForm({ scope, handleSubmit }) {
               />
             </Col>
           </FormGroup>
-
-          <FormGroup row>
-            <GluuLabel label="SpontaneousClientId" />
-            <Col sm={9}>
-              <Input
-                placeholder="Enter spontaneousClientId"
-                id="spontaneousClientId"
-                name="spontaneousClientId"
-                defaultValue={scope.attributes.spontaneousClientId}
-                onChange={formik.handleChange}
-              />
-            </Col>
-          </FormGroup>
-
-          <FormGroup row>
-            <GluuLabel label="ShowInConfigurationEndpoint" />
-            <Col sm={9}>
-              <InputGroup>
-                <CustomInput
-                  type="select"
-                  id="showInConfigurationEndpoint"
-                  name="showInConfigurationEndpoint"
-                  defaultValue={scope.attributes.showInConfigurationEndpoint}
-                  onChange={formik.handleChange}
-                >
-                  <option value="true">true</option>
-                  <option value="false">false</option>
-                </CustomInput>
-              </InputGroup>
-            </Col>
-          </FormGroup>
-
-          <FormGroup row>
-            <GluuLabel label="SpontaneousClientScopes   - Enter comma sperated scopes" />
-            <Col sm={9}>
-              <Input
-                style={{ backgroundColor: '#F5F5F5' }}
-                id="spontaneousClientScopes"
-                name="spontaneousClientScopes"
-                defaultValue={scope.attributes.spontaneousClientScopes}
-                onChange={formik.handleChange}
-              />
-            </Col>
-          </FormGroup>
-
+          {showDynamicPanel && (
+            <Accordion className="mb-2 b-primary" initialOpen>
+              <Accordion.Header className="text-primary">
+                {'Dynamics Scopes Scripts'.toUpperCase()}
+              </Accordion.Header>
+              <Accordion.Body></Accordion.Body>
+            </Accordion>
+          )}
+          {showClaimsPanel && (
+            <Accordion className="mb-2 b-primary" initialOpen>
+              <Accordion.Header className="text-primary">
+                {'Claims'.toUpperCase()}
+              </Accordion.Header>
+              <Accordion.Body>
+                <GluuTypeAhead
+                  name="claims"
+                  label="Claims"
+                  formik={formik}
+                  value={scope.claims}
+                  options={claims}
+                ></GluuTypeAhead>
+              </Accordion.Body>
+            </Accordion>
+          )}
+          <Accordion className="mb-2 b-primary" initialOpen>
+            <Accordion.Header className="text-primary">
+              {'oxAttributes'.toUpperCase()}
+            </Accordion.Header>
+            <Accordion.Body>
+              <FormGroup row>
+                <GluuLabel label="SpontaneousClientId" size={4} />
+                <Col sm={8}>
+                  <Input
+                    placeholder="Enter spontaneousClientId"
+                    id="spontaneousClientId"
+                    name="spontaneousClientId"
+                    defaultValue={scope.attributes.spontaneousClientId}
+                    onChange={formik.handleChange}
+                  />
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <GluuLabel label="ShowInConfigurationEndpoint" size={4} />
+                <Col sm={8}>
+                  <InputGroup>
+                    <CustomInput
+                      type="select"
+                      id="showInConfigurationEndpoint"
+                      name="showInConfigurationEndpoint"
+                      defaultValue={
+                        scope.attributes.showInConfigurationEndpoint
+                      }
+                      onChange={formik.handleChange}
+                    >
+                      <option value="true">true</option>
+                      <option value="false">false</option>
+                    </CustomInput>
+                  </InputGroup>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <GluuLabel
+                  label="SpontaneousClientScopes   - Enter comma sperated scopes"
+                  size={4}
+                />
+                <Col sm={8}>
+                  <Input
+                    style={{ backgroundColor: '#F5F5F5' }}
+                    id="spontaneousClientScopes"
+                    name="spontaneousClientScopes"
+                    defaultValue={scope.attributes.spontaneousClientScopes}
+                    onChange={formik.handleChange}
+                  />
+                </Col>
+              </FormGroup>
+            </Accordion.Body>
+          </Accordion>
           <FormGroup row></FormGroup>
           <GluuFooter />
         </Form>
