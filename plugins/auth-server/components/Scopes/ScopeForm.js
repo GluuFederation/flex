@@ -12,9 +12,15 @@ import {
 } from '../../../../app/components'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
+import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 
-function ScopeForm({ scope, handleSubmit }) {
+function ScopeForm({ scope, scripts, handleSubmit }) {
+  let dynamicScopeScripts = []
+  scripts = scripts || []
+  dynamicScopeScripts = scripts
+    .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
   const [init, setInit] = useState(false)
   const [showClaimsPanel, handleClaimsPanel] = useState(
     enableClaims(scope.scopeType),
@@ -23,7 +29,6 @@ function ScopeForm({ scope, handleSubmit }) {
     enableDynamic(scope.scopeType),
   )
   const claims = []
-  const dynamicScopeScripts = []
   function enableClaims(type) {
     return type === 'openid'
   }
@@ -115,8 +120,8 @@ function ScopeForm({ scope, handleSubmit }) {
           {/* START Input */}
           {scope.inum && (
             <FormGroup row>
-              <GluuLabel label="Inum" />
-              <Col sm={9}>
+              <GluuLabel label="Inum" size={4} />
+              <Col sm={8}>
                 <Input
                   style={{ backgroundColor: '#F5F5F5' }}
                   id="inum"
@@ -128,7 +133,7 @@ function ScopeForm({ scope, handleSubmit }) {
             </FormGroup>
           )}
           <FormGroup row>
-            <GluuLabel label="Display Name" required />
+            <GluuLabel label="Display Name" size={4} required />
             <Col sm={8}>
               <Input
                 placeholder="Enter the display name"
@@ -166,7 +171,7 @@ function ScopeForm({ scope, handleSubmit }) {
           </FormGroup>
 
           <FormGroup row>
-            <GluuLabel label="Scope Type" required />
+            <GluuLabel label="Scope Type" size={4} required />
             <Col sm={8}>
               <InputGroup>
                 <CustomInput
@@ -206,7 +211,18 @@ function ScopeForm({ scope, handleSubmit }) {
               <Accordion.Header className="text-primary">
                 {'Dynamics Scopes Scripts'.toUpperCase()}
               </Accordion.Header>
-              <Accordion.Body></Accordion.Body>
+              <Accordion.Body>
+                <GluuTypeAheadForDn
+                  name="dynamicScopeScripts"
+                  label="Dynamic Scope Scripts"
+                  formik={formik}
+                  value={getMapping(
+                    scope.dynamicScopeScripts,
+                    dynamicScopeScripts,
+                  )}
+                  options={dynamicScopeScripts}
+                ></GluuTypeAheadForDn>
+              </Accordion.Body>
             </Accordion>
           )}
           {showClaimsPanel && (
@@ -215,13 +231,13 @@ function ScopeForm({ scope, handleSubmit }) {
                 {'Claims'.toUpperCase()}
               </Accordion.Header>
               <Accordion.Body>
-                <GluuTypeAhead
+                <GluuTypeAheadForDn
                   name="claims"
                   label="Claims"
                   formik={formik}
-                  value={scope.claims}
+                  value={getMapping(scope.claims, claims)}
                   options={claims}
-                ></GluuTypeAhead>
+                ></GluuTypeAheadForDn>
               </Accordion.Body>
             </Accordion>
           )}

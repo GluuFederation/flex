@@ -6,7 +6,6 @@ import ScopeForm from './ScopeForm'
 import { addScope } from '../../redux/actions/ScopeActions'
 
 function ScopeAddPage({ scripts, dispatch }) {
-  console.log(' ScopeAddPage - scripts = ' + scripts)
 
   const history = useHistory()
   function handleSubmit(data) {
@@ -35,7 +34,7 @@ function ScopeAddPage({ scripts, dispatch }) {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <ScopeForm scope={scope} handleSubmit={handleSubmit} />
+            <ScopeForm scope={scope} scripts={scripts} handleSubmit={handleSubmit} />
           </CardBody>
         </Card>
       </Container>
