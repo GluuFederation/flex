@@ -15,15 +15,40 @@ import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 
 function ScopeForm({ scope, handleSubmit }) {
-  console.log('=================' + JSON.stringify(scope))
   const [init, setInit] = useState(false)
-  const [showClaimsPanel, handleClaimsPanel] = useState(true)
-  const [showDynamicPanel, handleDynamicPanel] = useState(true)
+  const [showClaimsPanel, handleClaimsPanel] = useState(
+    enableClaims(scope.scopeType),
+  )
+  const [showDynamicPanel, handleDynamicPanel] = useState(
+    enableDynamic(scope.scopeType),
+  )
   const claims = []
-
+  const dynamicScopeScripts = []
+  function enableClaims(type) {
+    return type === 'openid'
+  }
+  function enableDynamic(type) {
+    return type === 'dynamic'
+  }
   function handleScopeTypeChanged() {
-    handleClaimsPanel(!showClaimsPanel)
-    handleDynamicPanel(!showDynamicPanel)
+    const type = document.getElementById('scopeType')
+    if (type && type.value === 'openid') {
+      handleClaimsPanel(true)
+    } else {
+      handleClaimsPanel(false)
+    }
+    if (type && type.value === 'dynamic') {
+      handleDynamicPanel(true)
+    } else {
+      handleDynamicPanel(false)
+    }
+  }
+
+  function getMapping(partial, total) {
+    if (!partial) {
+      partial = []
+    }
+    return total.filter((item) => partial.includes(item.dn))
   }
 
   function toogle() {
@@ -149,13 +174,13 @@ function ScopeForm({ scope, handleSubmit }) {
                   id="scopeType"
                   name="scopeType"
                   defaultValue={scope.scopeType}
-                  onChange={formik.handleChange}
+                  onChange={handleScopeTypeChanged}
                 >
                   <option value="">Choose...</option>
+                  <option value="oauth">OAuth</option>
                   <option value="openid">OpenID</option>
                   <option value="dynamic">Dynamic</option>
                   <option value="spontaneous">Spontaneous</option>
-                  <option value="oauth">OAuth</option>
                 </CustomInput>
               </InputGroup>
             </Col>
