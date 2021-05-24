@@ -5,7 +5,7 @@ import { Container, CardBody, Card } from '../../../../app/components'
 import ScopeForm from './ScopeForm'
 import { addScope } from '../../redux/actions/ScopeActions'
 
-function ScopeAddPage({ scripts, dispatch,attributes }) {
+function ScopeAddPage({ scripts, dispatch, attributes }) {
   const history = useHistory()
   function handleSubmit(data) {
     console.log('ScopeAdd :  handleSubmit() - data = ' + data)
@@ -19,8 +19,8 @@ function ScopeAddPage({ scripts, dispatch,attributes }) {
 
   const scope = {
     claims: [],
+    dynamicScopeScripts:[],
     defaultScope: false,
-    groupClaims: false,
     attributes: {
       spontaneousClientId: null,
       spontaneousClientScopes: [],

@@ -70,7 +70,6 @@ export function* getScopes({ payload }) {
   }
 }
 export function* getScopeBasedOnOpts({ payload }) {
-  console.log('Scope Saga -  getScopeBasedOnOpts payload.data =' + payload)
   try {
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.getScopeByOpts, payload.data)
@@ -88,9 +87,6 @@ export function* getScopeBasedOnOpts({ payload }) {
 }
 
 export function* addAScope({ payload }) {
-  console.log(
-    'Scope Saga -  addAScope payload.data =' + JSON.stringify(payload.data),
-  )
   try {
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.addNewScope, payload.data)
@@ -106,9 +102,6 @@ export function* addAScope({ payload }) {
 }
 
 export function* editAnScope({ payload }) {
-  console.log(
-    'Scope Saga -  editAnScope payload.data =' + JSON.stringify(payload.data),
-  )
   try {
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.editAScope, payload.data)
@@ -124,11 +117,10 @@ export function* editAnScope({ payload }) {
 }
 
 export function* deleteAnScope({ payload }) {
-  console.log('Scope Saga -  deleteAnScope payload =' + JSON.stringify(payload))
   try {
     const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.deleteAScope, payload.inum)
-    yield put(deleteScopeResponse(data))
+    yield call(scopeApi.deleteAScope, payload.inum)
+    yield put(deleteScopeResponse(payload.inum))
   } catch (e) {
     yield put(deleteScopeResponse(null))
     if (isFourZeroOneError(e)) {

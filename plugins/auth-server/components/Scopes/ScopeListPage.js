@@ -149,14 +149,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
           { title: 'iNum', field: 'inum' },
           { title: 'Display Name', field: 'displayName' },
           { title: 'Description', field: 'description' },
-          { title: 'Type', field: 'scopeType' },
           {
-            title: 'IS Default',
-            field: 'defaultScope',
+            title: 'Type',
+            field: 'scopeType',
             render: (rowData) => (
-              <Badge color={rowData.defaultScope ? 'primary' : 'info'}>
-                {rowData.defaultScope ? 'Yes' : 'No'}
-              </Badge>
+              <Badge color="primary">{rowData.scopeType}</Badge>
             ),
           },
         ]}

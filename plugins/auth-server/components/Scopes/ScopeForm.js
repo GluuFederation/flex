@@ -16,6 +16,7 @@ import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadFo
 
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   let dynamicScopeScripts = []
+  let spontaneousClientScopes = []
   let claims = []
   scripts = scripts || []
   attributes = attributes || []
@@ -72,42 +73,20 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
         description: scope.description,
         scopeType: scope.scopeType,
         defaultScope: scope.defaultScope,
-        groupClaims: scope.groupClaims,
+        claims: scope.claims,
+        dynamicScopeScripts: scope.dynamicScopeScripts,
         attributes: scope.attributes,
       }}
       validationSchema={Yup.object({
         displayName: Yup.string()
           .min(2, 'displayName 2 characters')
           .required('Required!'),
-        scopeType: Yup.string()
-          .min(2, 'Please select scopeType')
-          .required('Required!'),
       })}
       onSubmit={(values) => {
         const result = Object.assign(scope, values)
-        console.log(
-          'ID 1 - scope id = ' + scope.id + ' , result(id) = ' + result['id'],
-        )
         const spontaneousClientScopesList = []
-        if (
-          result.spontaneousClientScopes != null &&
-          result.spontaneousClientScopes.trim().length > 0
-        ) {
-          var myArray = result.spontaneousClientScopes.split(',')
-          console.log('myArray.length = ' + myArray.length)
-          Object.keys(myArray).forEach((key, index) => {
-            spontaneousClientScopesList.push(myArray[key])
-          })
-          console.log(
-            'spontaneousClientScopesList = ' + spontaneousClientScopesList,
-          )
-        }
-        if (scope.id == null || scope.id == 'undefined') {
-          result['id'] = result.displayName
-          console.log(
-            'ID 2 - scope id = ' + scope.id + ' , result(id) = ' + result['id'],
-          )
-        }
+        result['scopeType'] = document.getElementById('scopeType').value
+        result['id'] = result.displayName
         result['attributes'].spontaneousClientId = result.spontaneousClientId
         result[
           'attributes'
@@ -157,7 +136,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           </FormGroup>
 
           <FormGroup row>
-            <GluuLabel label="Description" />
+            <GluuLabel label="Description" size={4} />
             <Col sm={8}>
               <Input
                 type="textarea"
@@ -171,9 +150,20 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               />
             </Col>
           </FormGroup>
-
           <FormGroup row>
-            <GluuLabel label="Scope Type" size={4} required />
+            <GluuLabel label="Is Default Scope" size={4} />
+            <Col sm={8}>
+              <Input
+                id="defaultScope"
+                name="defaultScope"
+                type="checkbox"
+                onChange={formik.handleChange}
+                defaultChecked={scope.defaultScope}
+              />
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <GluuLabel label="Scope Type" size={4} />
             <Col sm={8}>
               <InputGroup>
                 <CustomInput
@@ -194,19 +184,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             <ErrorMessage name="scopeType">
               {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
             </ErrorMessage>
-          </FormGroup>
-
-          <FormGroup row>
-            <GluuLabel label="Default Scope" size={4} />
-            <Col sm={8}>
-              <Input
-                id="defaultScope"
-                name="defaultScope"
-                type="checkbox"
-                onChange={formik.handleChange}
-                defaultChecked={scope.defaultScope}
-              />
-            </Col>
           </FormGroup>
           {showDynamicPanel && (
             <Accordion className="mb-2 b-primary" initialOpen>
@@ -279,21 +256,17 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   </InputGroup>
                 </Col>
               </FormGroup>
-              <FormGroup row>
-                <GluuLabel
-                  label="SpontaneousClientScopes   - Enter comma sperated scopes"
-                  size={4}
-                />
-                <Col sm={8}>
-                  <Input
-                    style={{ backgroundColor: '#F5F5F5' }}
-                    id="spontaneousClientScopes"
-                    name="spontaneousClientScopes"
-                    defaultValue={scope.attributes.spontaneousClientScopes}
-                    onChange={formik.handleChange}
-                  />
-                </Col>
-              </FormGroup>
+
+              <GluuTypeAheadForDn
+                name="spontaneousClientScopes"
+                label="Spontaneous Client Scopes"
+                formik={formik}
+                value={getMapping(
+                  scope.attributes.spontaneousClientScopes,
+                  spontaneousClientScopes,
+                )}
+                options={spontaneousClientScopes}
+              ></GluuTypeAheadForDn>
             </Accordion.Body>
           </Accordion>
           <FormGroup row></FormGroup>

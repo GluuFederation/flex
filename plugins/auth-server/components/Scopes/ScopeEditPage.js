@@ -6,7 +6,7 @@ import ScopeForm from './ScopeForm'
 import BlockUi from 'react-block-ui'
 import { editScope } from '../../redux/actions/ScopeActions'
 
-function ScopeEditPage({ scope, loading, dispatch, scripts,attributes }) {
+function ScopeEditPage({ scope, loading, dispatch, scripts, attributes }) {
   if (!scope.attributes) {
     scope.attributes = {
       spontaneousClientId: null,
