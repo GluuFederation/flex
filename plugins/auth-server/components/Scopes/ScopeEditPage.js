@@ -6,7 +6,7 @@ import ScopeForm from './ScopeForm'
 import BlockUi from 'react-block-ui'
 import { editScope } from '../../redux/actions/ScopeActions'
 
-function ScopeEditPage({ scope, loading, dispatch, scripts }) {
+function ScopeEditPage({ scope, loading, dispatch, scripts,attributes }) {
   if (!scope.attributes) {
     scope.attributes = {
       spontaneousClientId: null,
@@ -36,7 +36,12 @@ function ScopeEditPage({ scope, loading, dispatch, scripts }) {
         >
           <Card className="mb-3">
             <CardBody>
-              <ScopeForm scope={scope} handleSubmit={handleSubmit} />
+              <ScopeForm
+                scope={scope}
+                attributes={attributes}
+                scripts={scripts}
+                handleSubmit={handleSubmit}
+              />
             </CardBody>
           </Card>
         </BlockUi>
@@ -49,7 +54,8 @@ const mapStateToProps = (state) => {
     scope: state.scopeReducer.item,
     loading: state.scopeReducer.loading,
     permissions: state.authReducer.permissions,
-    scripts: state.initReducer.scripts,
+    scripts: state.customScriptReducer.items,
+    attributes: state.attributeReducer.items,
   }
 }
 

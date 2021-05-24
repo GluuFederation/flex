@@ -14,13 +14,16 @@ import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 
-function ScopeForm({ scope, scripts, handleSubmit }) {
+function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   let dynamicScopeScripts = []
+  let claims = []
   scripts = scripts || []
+  attributes = attributes || []
   dynamicScopeScripts = scripts
-    .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
+    .filter((item) => item.scriptType == 'DYNAMIC_SCOPE')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
+  claims = attributes.map((item) => ({ dn: item.dn, name: item.name }))
   const [init, setInit] = useState(false)
   const [showClaimsPanel, handleClaimsPanel] = useState(
     enableClaims(scope.scopeType),
@@ -28,7 +31,6 @@ function ScopeForm({ scope, scripts, handleSubmit }) {
   const [showDynamicPanel, handleDynamicPanel] = useState(
     enableDynamic(scope.scopeType),
   )
-  const claims = []
   function enableClaims(type) {
     return type === 'openid'
   }
