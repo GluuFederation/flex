@@ -226,10 +226,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             </Accordion.Header>
             <Accordion.Body>
               <FormGroup row>
-                <GluuLabel label="SpontaneousClientId" size={4} />
+                <GluuLabel label="Spontaneous Client Id" size={4} />
                 <Col sm={8}>
                   <Input
-                    placeholder="Enter spontaneousClientId"
+                    placeholder="Enter Spontaneous Client Id"
                     id="spontaneousClientId"
                     name="spontaneousClientId"
                     defaultValue={scope.attributes.spontaneousClientId}
@@ -238,7 +238,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <GluuLabel label="ShowInConfigurationEndpoint" size={4} />
+                <GluuLabel label="Show In Configuration Endpoint" size={4} />
                 <Col sm={8}>
                   <InputGroup>
                     <CustomInput

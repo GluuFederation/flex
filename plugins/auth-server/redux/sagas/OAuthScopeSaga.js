@@ -73,9 +73,6 @@ export function* getScopeBasedOnOpts({ payload }) {
   try {
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.getScopeByOpts, payload.data)
-    console.log(
-      'Scope Saga -  getScopeBasedOnOpts response =' + JSON.stringify(data),
-    )
     yield put(getScopeByPatternResponse(data))
   } catch (e) {
     yield put(getScopeByPatternResponse(null))
@@ -90,7 +87,6 @@ export function* addAScope({ payload }) {
   try {
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.addNewScope, payload.data)
-    console.log('Scope Saga -  addScope response =' + JSON.stringify(data))
     yield put(addScopeResponse(data))
   } catch (e) {
     yield put(addScopeResponse(null))
@@ -105,7 +101,6 @@ export function* editAnScope({ payload }) {
   try {
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.editAScope, payload.data)
-    console.log('Scope Saga -  editAnScope response =' + JSON.stringify(data))
     yield put(editScopeResponse(data))
   } catch (e) {
     yield put(editScopeResponse(null))

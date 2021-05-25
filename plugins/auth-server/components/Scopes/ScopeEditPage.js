@@ -16,12 +16,11 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes }) {
   }
   const history = useHistory()
   function handleSubmit(data) {
-    console.log('ScopeEdit :  handleSubmit() - data = ' + data)
     if (data) {
       const postBody = {}
       postBody['scope'] = JSON.parse(data)
       dispatch(editScope(postBody))
-      history.push('/scopes')
+      history.push('/auth-server/scopes')
     }
   }
   return (

@@ -19,7 +19,7 @@ function ScopeAddPage({ scripts, dispatch, attributes }) {
 
   const scope = {
     claims: [],
-    dynamicScopeScripts:[],
+    dynamicScopeScripts: [],
     defaultScope: false,
     attributes: {
       spontaneousClientId: null,
