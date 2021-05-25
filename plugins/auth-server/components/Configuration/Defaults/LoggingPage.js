@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react'
 import { Form, Button } from '../../../../../app/components'
-import GluuFooter from '../../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuSelectRow from '../../../../../app/routes/Apps/Gluu/GluuSelectRow'
 import GluuInputRow from '../../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuCheckBoxRow from '../../../../../app/routes/Apps/Gluu/GluuCheckBoxRow'
-import GluuEmptyRow from '../../../../../app/routes/Apps/Gluu/GluuEmptyRow'
 import { connect } from 'react-redux'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
@@ -107,7 +105,6 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
 }
 const mapStateToProps = (state) => {
   return {
-    logging: state.loggingReducer.logging,
     loading: state.loggingReducer.loading,
     permissions: state.authReducer.permissions,
   }
