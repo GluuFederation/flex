@@ -105,6 +105,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
 }
 const mapStateToProps = (state) => {
   return {
+    logging: state.loggingReducer.logging,
     loading: state.loggingReducer.loading,
     permissions: state.authReducer.permissions,
   }
