@@ -5,7 +5,7 @@ import {
   PUT_LOGGING_RESPONSE,
   RESET,
 } from '../actions/types'
-import reducerRegistry from './ReducerRegistry';
+import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry';
 const INIT_STATE = {
   logging: {},
   loading: false,

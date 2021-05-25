@@ -1,13 +1,13 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from '../../utils/TokenController'
+import { isFourZeroOneError } from '../../../../app/utils/TokenController'
 import {
   getLoggingResponse,
   editLoggingResponse,
 } from '../actions/LoggingActions'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
 import { GET_LOGGING, PUT_LOGGING } from '../actions/types'
 import LoggingApi from '../api/LoggingApi'
-import { getClient } from '../api/base'
+import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {

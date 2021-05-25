@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+import AcrsPage from './AcrsPage'
+import LoggingPage from './LoggingPage'
 import {
   Container,
-  FormGroup,
+  Accordion,
   Card,
   CardBody,
-  Form,
 } from '../../../../../app/components'
-import GluuFooter from '../../../../../app/routes/Apps/Gluu/GluuFooter'
-import GluuInput from '../../../../../app/routes/Apps/Gluu/GluuInput'
 import {
   getJsonConfig,
   patchJsonConfig,
@@ -24,61 +23,22 @@ function DefaultConfigPage({ configuration, loading, dispatch }) {
       <Container>
         <Card>
           <CardBody>
-            <Form>
-              <GluuInput
-                id="checkSessionIFrame"
-                lsize={lSize}
-                rsize={lSize}
-                label="Check Session IFrame"
-                value={configuration.checkSessionIFrame}
-              />
-              <GluuInput
-                id="jwksUri"
-                lsize={lSize}
-                rsize={lSize}
-                label="Jwks Uri"
-                value={configuration.jwksUri}
-              />
-              <GluuInput
-                id="sectorIdentifierCacheLifetimeInMinutes"
-                lsize={lSize}
-                rsize={lSize}
-                type="number"
-                label="Sector Identifier Cache Lifetime In Minutes"
-                value={configuration.sectorIdentifierCacheLifetimeInMinutes}
-              />
-              <GluuInput
-                id="spontaneousScopeLifetime"
-                lsize={lSize}
-                rsize={lSize}
-                type="number"
-                label="Spontaneous Scope Lifetime"
-                value={configuration.spontaneousScopeLifetime}
-              />
-              <GluuInput
-                id="openidSubAttribute"
-                lsize={lSize}
-                rsize={lSize}
-                label="Openid Sub Attribute"
-                value={configuration.openidSubAttribute}
-              />
-              <GluuInput
-                id="defaultSubjectType"
-                lsize={lSize}
-                rsize={lSize}
-                label="Default Subject Type"
-                value={configuration.defaultSubjectType}
-              />
-              <GluuInput
-                id="serviceDocumentation"
-                lsize={lSize}
-                rsize={lSize}
-                label="Service Documentation"
-                value={configuration.serviceDocumentation}
-              />
-              <FormGroup row></FormGroup>
-              <GluuFooter />
-            </Form>
+            <Accordion className="mb-2 b-primary" initialOpen>
+              <Accordion.Header className="text-primary">
+                {'ACRs'.toUpperCase()}
+              </Accordion.Header>
+              <Accordion.Body>
+                <AcrsPage></AcrsPage>
+              </Accordion.Body>
+            </Accordion>
+            <Accordion className="mb-2 b-primary" initialOpen>
+              <Accordion.Header className="text-primary">
+                {'Logging'.toUpperCase()}
+              </Accordion.Header>
+              <Accordion.Body>
+                <LoggingPage></LoggingPage>
+              </Accordion.Body>
+            </Accordion>
           </CardBody>
         </Card>
       </Container>

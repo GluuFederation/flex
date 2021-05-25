@@ -18,7 +18,6 @@ export default class LoggingApi {
 
   // update logging Config
   editLoggingConfig = (input) => {
-    console.log('***********************' + input)
     return new Promise((resolve, reject) => {
       this.api.putConfigLogging(input, (error, data) => {
         if (error) {
