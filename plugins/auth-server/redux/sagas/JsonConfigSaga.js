@@ -27,7 +27,6 @@ export function* getJsonConfig() {
   try {
     const configApi = yield* newFunction()
     const data = yield call(configApi.fetchJsonConfig)
-    console.log('==============response ' + JSON.stringify(data))
     yield put(getJsonConfigResponse(data))
   } catch (e) {
     yield put(getJsonConfigResponse(null))

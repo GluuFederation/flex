@@ -37,6 +37,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, logger }) {
     return (
       <GluuBooleanBox
         id={propKey}
+        name={propKey}
         lsize={lSize}
         rsize={lSize}
         label={propKey}
