@@ -123,7 +123,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-text-mask": "^5.4.3",
-    "react-toastify": "^5.2.1",
+    "react-toastify": "^5.5.0",
     "react-toggle": "^4.1.2",
     "react-universal-component": "^4.0.0",
     "reactstrap": "^8.7.1",

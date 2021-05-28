@@ -43,8 +43,6 @@ class AppAuthProvider extends Component {
      &redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`
     return url
   }
-
-  // Life Cycle
   constructor() {
     super()
   }
@@ -54,7 +52,6 @@ class AppAuthProvider extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    //console.log('====permissions ' + JSON.stringify(props.permissions))
     //console.log('====userinfo ' + JSON.stringify(props.userinfo))
     //console.log('====token ' + JSON.stringify(props.token))
     if (window.location.href.indexOf('logout') > -1) {
@@ -110,7 +107,7 @@ class AppAuthProvider extends Component {
     return (
       <React.Fragment>
         {showContent && this.props.children}
-        {!showContent && <ViewRedirect config={this.props.config} />}
+        {!showContent && <ViewRedirect backendIsUp={this.props.backendIsUp} />}
       </React.Fragment>
     )
   }
@@ -121,12 +118,14 @@ const mapStateToProps = ({ authReducer }) => {
   const jwt = authReducer.userinfo_jwt
   const token = authReducer.token
   const permissions = authReducer.permissions
+  const backendIsUp = authReducer.backendIsUp
   return {
     config,
     userinfo,
     jwt,
     token,
     permissions,
+    backendIsUp,
   }
 }
 

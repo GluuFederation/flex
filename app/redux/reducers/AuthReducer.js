@@ -23,6 +23,7 @@ const INIT_STATE = {
   issuer: null,
   permissions: [],
   location: {},
+  backendIsUp: true,
 }
 
 const reducerName = 'authReducer'
@@ -49,14 +50,16 @@ export default function authReducer(state = INIT_STATE, action) {
         ...state,
       }
     case GET_OAUTH2_CONFIG_RESPONSE:
-      if (action.payload.config) {
+      if (action.payload.config && action.payload.config != -1) {
         return {
           ...state,
           config: action.payload.config,
+          backendIsUp: true,
         }
       } else {
         return {
           ...state,
+          backendIsUp: false,
         }
       }
 
