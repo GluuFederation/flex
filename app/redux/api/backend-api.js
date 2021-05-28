@@ -1,4 +1,5 @@
 import axios from '../api/axios'
+import axios_instance from 'axios'
 
 // Get OAuth2 Configuration
 export const fetchServerConfiguration = async () => {
@@ -10,6 +11,17 @@ export const fetchServerConfiguration = async () => {
         'Problems getting OAuth2 configuration in order to process authz code flow.',
         error,
       )
+      return -1
+    })
+}
+
+// get user location and ip
+export const getUserIpAndLocation = async () => {
+  return await axios_instance
+    .get('https://geolocation-db.com/json/')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error('Error fetching user location and ip address', error)
       return -1
     })
 }

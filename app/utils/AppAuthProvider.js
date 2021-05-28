@@ -3,27 +3,20 @@ import ViewRedirect from './ViewRedirect'
 import { withRouter } from 'react-router'
 import { saveState, isValidState } from './TokenController'
 
-// -----Third party dependencies -----
 import queryString from 'query-string'
-
-// ------------ Custom Resources -----
 import { uuidv4 } from './Util'
-
-// ------------ Redux ----------------
 import { connect } from 'react-redux'
 import {
   getOAuth2Config,
   getUserInfo,
   getAPIAccessToken,
+  getUserLocation,
 } from '../redux/actions'
 
 class AppAuthProvider extends Component {
   state = {
     showContent: false,
   }
-
-  // Methods
-
   static buildAuthzUrl = (config, state, nonce) => {
     const {
       authzBaseUrl,
@@ -102,6 +95,7 @@ class AppAuthProvider extends Component {
       } else {
         if (!props.token) {
           props.getAPIAccessToken(props.jwt)
+          props.getUserLocation()
         }
         return {
           showContent: true,
@@ -121,9 +115,6 @@ class AppAuthProvider extends Component {
     )
   }
 }
-
-// Redux
-
 const mapStateToProps = ({ authReducer }) => {
   const config = authReducer.config
   const userinfo = authReducer.userinfo
@@ -144,5 +135,6 @@ export default withRouter(
     getOAuth2Config,
     getUserInfo,
     getAPIAccessToken,
+    getUserLocation,
   })(AppAuthProvider),
 )

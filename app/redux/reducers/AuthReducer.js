@@ -8,8 +8,10 @@ import {
   USERINFO_RESPONSE,
   GET_API_ACCESS_TOKEN,
   GET_API_ACCESS_TOKEN_RESPONSE,
+  GET_USER_LOCATION,
+  GET_USER_LOCATION_RESPONSE,
 } from '../actions/types'
-import reducerRegistry from './ReducerRegistry';
+import reducerRegistry from './ReducerRegistry'
 /**
  * initial auth user
  */
@@ -20,22 +22,36 @@ const INIT_STATE = {
   token: null,
   issuer: null,
   permissions: [],
+  location: {},
 }
 
-const reducerName = 'authReducer';
+const reducerName = 'authReducer'
 
 export default function authReducer(state = INIT_STATE, action) {
   switch (action.type) {
+    case GET_USER_LOCATION:
+      return {
+        ...state,
+      }
+    case GET_USER_LOCATION_RESPONSE:
+      if (action.payload.location) {
+        return {
+          ...state,
+          location: action.payload.location,
+        }
+      } else {
+        return {
+          ...state,
+        }
+      }
     case GET_OAUTH2_CONFIG:
       return {
         ...state,
-        isAuthenticated: false,
       }
     case GET_OAUTH2_CONFIG_RESPONSE:
       if (action.payload.config) {
         return {
           ...state,
-          isAuthenticated: false,
           config: action.payload.config,
         }
       } else {
@@ -49,7 +65,6 @@ export default function authReducer(state = INIT_STATE, action) {
         ...state,
       }
     case USERINFO_RESPONSE:
-      //console.log('======UCLAIMS ' + JSON.stringify(action.payload.uclaims))
       if (action.payload.uclaims) {
         return {
           ...state,
@@ -72,7 +87,6 @@ export default function authReducer(state = INIT_STATE, action) {
 
     case GET_API_ACCESS_TOKEN_RESPONSE:
       if (action.payload.accessToken) {
-        //console.log('======SCOPES ' + JSON.stringify(action.payload.accessToken.scopes))
         return {
           ...state,
           token: action.payload.accessToken,
@@ -92,4 +106,4 @@ export default function authReducer(state = INIT_STATE, action) {
       }
   }
 }
-reducerRegistry.register(reducerName, authReducer);
+reducerRegistry.register(reducerName, authReducer)

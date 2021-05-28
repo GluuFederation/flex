@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
+import UserAction from '../../../../app/audit/UserAction'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
 import {
@@ -57,6 +58,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     }
   }
   function onDeletionConfirmed() {
+    const userAction= new UserAction(new Date(),"admin",);
     dispatch(deleteClient(item.inum))
     history.push('/auth-server/clients')
     toggle()

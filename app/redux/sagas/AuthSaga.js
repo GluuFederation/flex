@@ -6,17 +6,20 @@ import {
   GET_OAUTH2_CONFIG,
   GET_API_ACCESS_TOKEN,
   USERINFO_REQUEST,
+  GET_USER_LOCATION,
 } from '../actions/types'
 import {
   getOAuth2ConfigResponse,
   getUserInfoResponse,
   getAPIAccessTokenResponse,
+  getUserLocationResponse,
 } from '../actions'
 
 import {
   fetchServerConfiguration,
   fetchUserInformation,
   fetchApiAccessToken,
+  getUserIpAndLocation,
 } from '../api/backend-api'
 
 function* getOAuth2ConfigWorker() {
@@ -47,7 +50,6 @@ function* getAPIAccessTokenWorker({ payload }) {
   try {
     if (payload.jwt) {
       const response = yield call(fetchApiAccessToken, payload.jwt)
-      //console.log("###########"+JSON.stringify(response));
       if (response) {
         yield put(getAPIAccessTokenResponse(response))
         return
@@ -55,6 +57,18 @@ function* getAPIAccessTokenWorker({ payload }) {
     }
   } catch (error) {
     console.log('Problems getting API Access Token.', error)
+  }
+}
+
+function* getLocationWorker() {
+  try {
+    const response = yield call(getUserIpAndLocation)
+    if (response) {
+      yield put(getUserLocationResponse(response))
+      return
+    }
+  } catch (error) {
+    console.log('Problem getting user location.', error)
   }
 }
 
@@ -70,6 +84,9 @@ export function* userInfoWatcher() {
 export function* getOAuth2ConfigWatcher() {
   yield takeEvery(GET_OAUTH2_CONFIG, getOAuth2ConfigWorker)
 }
+export function* getLocationWatcher() {
+  yield takeEvery(GET_USER_LOCATION, getLocationWorker)
+}
 
 /**
  * Auth Root Saga
@@ -79,5 +96,6 @@ export default function* rootSaga() {
     fork(getOAuth2ConfigWatcher),
     fork(userInfoWatcher),
     fork(getApiTokenWatcher),
+    fork(getLocationWatcher),
   ])
 }

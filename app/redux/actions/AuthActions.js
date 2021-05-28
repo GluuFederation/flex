@@ -8,7 +8,9 @@ import {
   USERINFO_RESPONSE,
   GET_API_ACCESS_TOKEN,
   GET_API_ACCESS_TOKEN_RESPONSE,
+  GET_USER_LOCATION_RESPONSE,
   SET_STATE,
+  GET_USER_LOCATION,
 } from './types'
 
 export const getOAuth2Config = () => ({
@@ -48,4 +50,13 @@ export const getAPIAccessToken = (jwt) => ({
 export const getAPIAccessTokenResponse = (accessToken) => ({
   type: GET_API_ACCESS_TOKEN_RESPONSE,
   payload: { accessToken },
+})
+
+export const getUserLocation = () => ({
+  type: GET_USER_LOCATION,
+})
+
+export const getUserLocationResponse = (location) => ({
+  type: GET_USER_LOCATION_RESPONSE,
+  payload: { location },
 })
