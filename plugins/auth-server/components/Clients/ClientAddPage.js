@@ -6,15 +6,19 @@ import { addNewClientAction } from '../../redux/actions/OIDCActions'
 import { getScopes } from '../../redux/actions/ScopeActions'
 import { getCustomScripts } from '../../redux/actions/CustomScriptActions'
 import BlockUi from 'react-block-ui'
+import { buildPayload } from '../../../../app/utils/PermChecker'
+
 function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
+  const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
   useEffect(() => {
+    buildPayload(userAction, options)
     if (scopes.length < 1) {
-      dispatch(getScopes(options))
+      dispatch(getScopes(userAction))
     }
     if (scripts.length < 1) {
-      dispatch(getCustomScripts(options))
+      dispatch(getCustomScripts(userAction))
     }
   }, [])
   const history = useHistory()
@@ -23,7 +27,8 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
     if (data) {
       const postBody = {}
       postBody['client'] = data
-      dispatch(addNewClientAction(postBody))
+      buildPayload(userAction, postBody)
+      dispatch(addNewClientAction(userAction))
       history.push('/auth-server/clients')
     }
   }

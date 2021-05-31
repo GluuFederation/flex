@@ -1,5 +1,9 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from '../../../../app/utils/TokenController'
+import {
+  isFourZeroOneError,
+  addAdditionalData,
+} from '../../../../app/utils/TokenController'
+import { postUserAction } from '../../../../app/redux/api/backend-api'
 import {
   getOpenidClientsResponse,
   addClientResponse,
@@ -7,6 +11,13 @@ import {
   deleteClientResponse,
 } from '../actions/OIDCActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
+import { OIDC } from '../audit/Resources'
+import {
+  CREATE,
+  UPDATE,
+  DELETION,
+  FETCH,
+} from '../../../../app/audit/UserActionType'
 import {
   GET_OPENID_CLIENTS,
   ADD_NEW_CLIENT,
@@ -16,7 +27,6 @@ import {
 } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../../../../app/redux/api/base'
-
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -27,12 +37,30 @@ function* newFunction() {
   )
   return new OIDCApi(api)
 }
+function* initAudit() {
+  const auditlog = {}
+  const client_id = yield select((state) => state.authReducer.config.clientId)
+  const ip_address = yield select((state) => state.authReducer.location.IPv4)
+  const userinfo = yield select((state) => state.authReducer.userinfo)
+  const author = userinfo ? userinfo.family_name || userinfo.name : '-'
+  auditlog['client_id'] = client_id
+  auditlog['ip_address'] = ip_address
+  auditlog['author'] = author
+  auditlog['status'] = 'succeed'
+  return auditlog
+}
 
 export function* getOauthOpenidClients({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, OIDC, payload)
     const openIdApi = yield* newFunction()
-    const data = yield call(openIdApi.getAllOpenidClients, payload.options)
+    const data = yield call(
+      openIdApi.getAllOpenidClients,
+      payload.action.action_data,
+    )
     yield put(getOpenidClientsResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(getOpenidClientsResponse(null))
     if (isFourZeroOneError(e)) {
@@ -43,14 +71,17 @@ export function* getOauthOpenidClients({ payload }) {
 }
 
 export function* addNewClient({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, CREATE, OIDC, payload)
     const api = yield* newFunction()
-    const data = yield call(api.addNewOpenIdClient, payload.data)
+    const data = yield call(api.addNewOpenIdClient, payload.action.action_data)
     yield put(addClientResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      console.log('================= ' + e)
+      console.log(e)
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
@@ -58,14 +89,17 @@ export function* addNewClient({ payload }) {
 }
 
 export function* editAClient({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, UPDATE, OIDC, payload)
     const postBody = {}
-    postBody['client'] = payload.data
+    postBody['client'] = payload.action.action_data
     const api = yield* newFunction()
     const data = yield call(api.editAClient, postBody)
     yield put(editClientResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
-    console.log('====================' + e)
+    console.log(e)
     yield put(editClientResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -75,10 +109,13 @@ export function* editAClient({ payload }) {
 }
 
 export function* deleteAClient({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, DELETION, OIDC, payload)
     const api = yield* newFunction()
-    yield call(api.deleteAClient, payload.inum)
-    yield put(deleteClientResponse(payload.inum))
+    yield call(api.deleteAClient, payload.action.action_data)
+    yield put(deleteClientResponse(payload.action.action_data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteClientResponse(null))
     if (isFourZeroOneError(e)) {

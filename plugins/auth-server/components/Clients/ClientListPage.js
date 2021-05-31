@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
-import UserAction from '../../../../app/audit/UserAction'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
 import {
@@ -15,19 +14,21 @@ import {
 } from '../../redux/actions/OIDCActions'
 import {
   hasPermission,
+  buildPayload,
   CLIENT_WRITE,
   CLIENT_READ,
   CLIENT_DELETE,
 } from '../../../../app/utils/PermChecker'
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
+  const userAction = {}
   const options = {}
   const [limit, setLimit] = useState(50)
   const [pattern, setPattern] = useState(null)
   useEffect(() => {
     makeOptions()
-    dispatch(getOpenidClients(options))
+    buildPayload(userAction, options)
+    dispatch(getOpenidClients(userAction))
   }, [])
-
   const myActions = []
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
@@ -58,8 +59,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     }
   }
   function onDeletionConfirmed() {
-    const userAction= new UserAction(new Date(),"admin",);
-    dispatch(deleteClient(item.inum))
+    buildPayload(userAction, item.inum)
+    dispatch(deleteClient(userAction))
     history.push('/auth-server/clients')
     toggle()
   }
@@ -100,7 +101,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        dispatch(searchClients(options))
+        buildPayload(userAction, options)
+        dispatch(searchClients(userAction))
       },
     })
   }

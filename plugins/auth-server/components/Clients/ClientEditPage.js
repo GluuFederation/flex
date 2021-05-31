@@ -6,6 +6,7 @@ import { editClient } from '../../redux/actions/OIDCActions'
 import BlockUi from 'react-block-ui'
 import { getScopes } from '../../redux/actions/ScopeActions'
 import { getCustomScripts } from '../../redux/actions/CustomScriptActions'
+import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function ClientEditPage({
   client,
@@ -15,9 +16,11 @@ function ClientEditPage({
   permissions,
   dispatch,
 }) {
+  const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
   useEffect(() => {
+    buildPayload(userAction, options)
     if (scopes.length < 1) {
       dispatch(getScopes(options))
     }
@@ -42,7 +45,8 @@ function ClientEditPage({
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      dispatch(editClient(data))
+      buildPayload(userAction, data)
+      dispatch(editClient(userAction))
       history.push('/auth-server/clients')
     }
   }

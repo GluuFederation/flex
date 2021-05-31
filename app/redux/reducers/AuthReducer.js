@@ -23,6 +23,7 @@ const INIT_STATE = {
   issuer: null,
   permissions: [],
   location: {},
+  config: {},
   backendIsUp: true,
 }
 

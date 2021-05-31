@@ -11,14 +11,14 @@ import {
   SEARCH_CLIENTS,
 } from './types'
 
-export const getOpenidClients = (options) => ({
+export const getOpenidClients = (action) => ({
   type: GET_OPENID_CLIENTS,
-  payload: { options },
+  payload: { action },
 })
 
-export const searchClients = (options) => ({
+export const searchClients = (action) => ({
   type: SEARCH_CLIENTS,
-  payload: { options },
+  payload: { action },
 })
 
 export const getOpenidClientsResponse = (data) => ({
@@ -26,9 +26,9 @@ export const getOpenidClientsResponse = (data) => ({
   payload: { data },
 })
 
-export const addNewClientAction = (data) => ({
+export const addNewClientAction = (action) => ({
   type: ADD_NEW_CLIENT,
-  payload: { data },
+  payload: { action },
 })
 
 export const addClientResponse = (data) => ({
@@ -36,18 +36,18 @@ export const addClientResponse = (data) => ({
   payload: { data },
 })
 
-export const editClient = (data) => ({
+export const editClient = (action) => ({
   type: EDIT_CLIENT,
-  payload: { data },
+  payload: { action },
 })
 export const editClientResponse = (data) => ({
   type: EDIT_CLIENT_RESPONSE,
   payload: { data },
 })
 
-export const deleteClient = (inum) => ({
+export const deleteClient = (action) => ({
   type: DELETE_CLIENT,
-  payload: { inum },
+  payload: { action },
 })
 
 export const deleteClientResponse = (data) => ({

@@ -56,6 +56,10 @@ export const hasPermission = (scopes, scope) => {
   return false
 }
 
+export const buildPayload = (userAction, payload) => {
+  userAction['action_data'] = payload
+}
+
 export const hasAny = (scopes, scope1, scope2, scope3) => {
   const fullScope1 = BASE_URL + scope1
   const fullScope2 = BASE_URL + scope2
