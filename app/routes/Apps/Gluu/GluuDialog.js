@@ -1,7 +1,29 @@
-import React from 'react'
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import React, { useState } from 'react'
+import {
+  FormGroup,
+  Col,
+  Input,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'reactstrap'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
+  const [active, setActive] = useState(false)
+  function handleStatus() {
+    var value = document.getElementById('user_action_message').value
+    if (value.length >= 10) {
+      setActive(true)
+    } else {
+      setActive(false)
+    }
+  }
+
+  function handleAccept() {
+    onAccept(document.getElementById('user_action_message').value)
+  }
   return (
     <div>
       <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
@@ -13,10 +35,26 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
           Deletion confirmation for {subject} ({name}-{row.inum})
         </ModalHeader>
         <ModalBody>Do you really want to delete this item?</ModalBody>
+        <ModalBody>
+          <FormGroup row>
+            <Col sm={12}>
+              <Input
+                id="user_action_message"
+                type="textarea"
+                name="user_action_message"
+                onKeyUp={handleStatus}
+                placeholder="Provide the reason of this change"
+                defaultValue=""
+              />
+            </Col>
+          </FormGroup>
+        </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={onAccept}>
-            Yes
-          </Button>{' '}
+          {active && (
+            <Button color="primary" onClick={handleAccept}>
+              Yes
+            </Button>
+          )}{' '}
           <Button color="secondary" onClick={handler}>
             No
           </Button>

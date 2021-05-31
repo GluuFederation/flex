@@ -20,7 +20,7 @@ function ClientEditPage({
   const options = {}
   options['limit'] = parseInt(100000)
   useEffect(() => {
-    buildPayload(userAction, options)
+    buildPayload(userAction, '', options)
     if (scopes.length < 1) {
       dispatch(getScopes(options))
     }
@@ -45,7 +45,7 @@ function ClientEditPage({
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      buildPayload(userAction, data)
+      buildPayload(userAction, data.action_message, data)
       dispatch(editClient(userAction))
       history.push('/auth-server/clients')
     }

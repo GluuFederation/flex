@@ -26,7 +26,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const [pattern, setPattern] = useState(null)
   useEffect(() => {
     makeOptions()
-    buildPayload(userAction, options)
+    buildPayload(userAction, 'Fetch openid connect clients', options)
     dispatch(getOpenidClients(userAction))
   }, [])
   const myActions = []
@@ -58,8 +58,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       options['pattern'] = pattern
     }
   }
-  function onDeletionConfirmed() {
-    buildPayload(userAction, item.inum)
+  function onDeletionConfirmed(message) {
+    buildPayload(userAction, message, item.inum)
     dispatch(deleteClient(userAction))
     history.push('/auth-server/clients')
     toggle()
@@ -101,7 +101,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        buildPayload(userAction, options)
+        buildPayload(userAction, 'Search openid connect clients', options)
         dispatch(searchClients(userAction))
       },
     })
@@ -166,7 +166,6 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   }
   return (
     <React.Fragment>
-      {/* START Content */}
       <MaterialTable
         columns={[
           { title: 'Client Name', field: 'clientName' },
@@ -203,7 +202,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
           selection: false,
           pageSize: 10,
           headerStyle: {
-            backgroundColor: '#03a96d', //#03a96d 01579b
+            backgroundColor: '#03a96d',
             color: '#FFF',
             padding: '2px',
             textTransform: 'uppercase',
@@ -215,7 +214,6 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
           return <ClientDetailPage row={rowData} scopes={scopes} />
         }}
       />
-      {/* END Content */}
       <GluuDialog
         row={item}
         name={item.clientName}

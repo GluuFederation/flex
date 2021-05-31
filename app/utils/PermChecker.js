@@ -56,7 +56,8 @@ export const hasPermission = (scopes, scope) => {
   return false
 }
 
-export const buildPayload = (userAction, payload) => {
+export const buildPayload = (userAction, message, payload) => {
+  userAction['action_message'] = message
   userAction['action_data'] = payload
 }
 

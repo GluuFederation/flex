@@ -290,6 +290,3 @@ function ClientWizardForm({
 }
 
 export default ClientWizardForm
-function newFunction() {
-  return () => {}
-}

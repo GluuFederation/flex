@@ -90,6 +90,7 @@ export function* addNewClient({ payload }) {
 
 export function* editAClient({ payload }) {
   const audit = yield* initAudit()
+  console.log('=======================' + JSON.stringify(payload))
   try {
     addAdditionalData(audit, UPDATE, OIDC, payload)
     const postBody = {}

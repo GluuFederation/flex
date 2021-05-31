@@ -13,7 +13,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
   const options = {}
   options['limit'] = parseInt(100000)
   useEffect(() => {
-    buildPayload(userAction, options)
+    buildPayload(userAction, '', options)
     if (scopes.length < 1) {
       dispatch(getScopes(userAction))
     }
@@ -27,7 +27,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
     if (data) {
       const postBody = {}
       postBody['client'] = data
-      buildPayload(userAction, postBody)
+      buildPayload(userAction, data.action_message, postBody)
       dispatch(addNewClientAction(userAction))
       history.push('/auth-server/clients')
     }

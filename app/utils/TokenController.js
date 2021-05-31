@@ -19,15 +19,10 @@ export const isValidState = (newState) => {
   return localStorage.getItem('gluu.flow.state') === newState ? true : false
 }
 
-export const addAdditionalData = (
-  audit,
-  action,
-  resource,
-  payload,
-) => {
+export const addAdditionalData = (audit, action, resource, payload) => {
   audit['action'] = action
   audit['resource'] = resource
-  audit['message'] = payload.message
-  audit['payload'] = payload.payload
+  audit['message'] = payload.action.action_message
+  audit['payload'] = payload.action.action_data
   audit['date'] = new Date()
 }
