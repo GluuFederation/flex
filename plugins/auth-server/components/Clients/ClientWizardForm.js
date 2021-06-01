@@ -13,6 +13,7 @@ import ClientAdvanced from './ClientAdvancedPanel'
 import ClientEncryption from './ClientEncryptionPanel'
 import ClientAttributes from './ClientAttributesPanel'
 import ClientScript from './ClientScriptPanel'
+import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 const sequence = [
   'Basic',
@@ -21,7 +22,7 @@ const sequence = [
   'ClientAttributes',
   'CustomScripts',
 ]
-
+let commitMessage = ''
 function ClientWizardForm({
   client,
   scopes,
@@ -29,23 +30,23 @@ function ClientWizardForm({
   permissions,
   customOnSubmit,
 }) {
+  const [modal, setModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(sequence[0])
   function changeStep(stepId) {
     setCurrentStep(stepId)
   }
-
+  function toggle() {
+    setModal(!modal)
+  }
   function setId(index) {
     return sequence[index]
   }
-
   function prevStep() {
     setCurrentStep(sequence[sequence.indexOf(currentStep) - 1])
   }
-
   function nextStep() {
     setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
   }
-
   function isComplete(stepId) {
     return sequence.indexOf(stepId) < sequence.indexOf(currentStep)
   }
@@ -56,9 +57,13 @@ function ClientWizardForm({
       values: [description],
     }
   }
-
   function removeDecription(customAttributes) {
     return customAttributes.filter((item) => item.name !== 'description')
+  }
+  function submitForm(message) {
+    commitMessage = message
+    toggle()
+    document.querySelector('button[type="submit"]').click()
   }
 
   const initialValues = {
@@ -126,6 +131,7 @@ function ClientWizardForm({
       <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
+          values['action_message'] = commitMessage
           values[
             'attributes'
           ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
@@ -272,19 +278,28 @@ function ClientWizardForm({
                   )}
                   {currentStep === sequence[sequence.length - 1] && (
                     <Button
-                      type="submit"
+                      type="button"
                       color="primary"
                       className="ml-auto px-4"
+                      onClick={toggle}
                     >
-                      Submit
+                      Apply
                     </Button>
                   )}
                 </div>
               </CardFooter>
+              <Button
+                type="submit"
+                color="primary"
+                style={{ visibility: 'hidden' }}
+              >
+                Submit
+              </Button>
             </Card>
           </Form>
         )}
       </Formik>
+      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
     </Container>
   )
 }
