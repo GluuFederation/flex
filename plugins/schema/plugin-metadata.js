@@ -1,7 +1,7 @@
 import AttributeListPage from './components/Person/AttributeListPage'
 import AttributeAddPage from './components/Person/AttributeAddPage'
 import AttributeEditPage from './components/Person/AttributeEditPage'
-
+import AttributeViewPage from './components/Person/AttributeViewPage'
 import attributeReducer from './redux/reducers/AttributeReducer'
 import attributeSaga from './redux/sagas/AttributeSaga'
 
@@ -24,6 +24,11 @@ const pluginMetadata = {
       component: AttributeEditPage,
       path: '/attribute/edit:gid',
       permission: '/config/attributes.write',
+    },
+    {
+      component: AttributeViewPage,
+      path: '/attribute/view:gid',
+      permission: '/config/attributes.readonly',
     },
     {
       component: AttributeAddPage,
