@@ -1,6 +1,3 @@
-/**
- * Custom Script Sagas
- */
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
   getCustomScriptsResponse,
@@ -8,8 +5,18 @@ import {
   editCustomScriptResponse,
   deleteCustomScriptResponse,
 } from '../actions/CustomScriptActions'
+import { SCRIPT } from '../audit/Resources'
+import {
+  CREATE,
+  UPDATE,
+  DELETION,
+  FETCH,
+} from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { isFourZeroOneError } from '../../../../app/utils/TokenController'
+import {
+  isFourZeroOneError,
+  addAdditionalData,
+} from '../../../../app/utils/TokenController'
 import {
   GET_CUSTOM_SCRIPT,
   GET_CUSTOM_SCRIPT_BY_TYPE,
@@ -19,6 +26,8 @@ import {
 } from '../actions/types'
 import ScriptApi from '../api/ScriptApi'
 import { getClient } from '../../../../app/redux/api/base'
+import { postUserAction } from '../../../../app/redux/api/backend-api'
+
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -30,12 +39,27 @@ function* newFunction() {
   return new ScriptApi(api)
 }
 
-//get-all-scripts
-export function* getCustomScripts() {
+function* initAudit() {
+  const auditlog = {}
+  const client_id = yield select((state) => state.authReducer.config.clientId)
+  const ip_address = yield select((state) => state.authReducer.location.IPv4)
+  const userinfo = yield select((state) => state.authReducer.userinfo)
+  const author = userinfo ? userinfo.family_name || userinfo.name : '-'
+  auditlog['client_id'] = client_id
+  auditlog['ip_address'] = ip_address
+  auditlog['author'] = author
+  auditlog['status'] = 'succeed'
+  return auditlog
+}
+
+export function* getCustomScripts({payload}) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, SCRIPT, payload)
     const scriptApi = yield* newFunction()
     const data = yield call(scriptApi.getAllCustomScript)
     yield put(getCustomScriptsResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(getCustomScriptsResponse(null))
     if (isFourZeroOneError(e)) {
@@ -44,13 +68,17 @@ export function* getCustomScripts() {
     }
   }
 }
-
-//search scripts by type
 export function* getScriptsByType({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data = yield call(scriptApi.getScriptsByType, payload.type)
+    const data = yield call(
+      scriptApi.getScriptsByType,
+      payload.action.action_data,
+    )
     yield put(getCustomScriptsResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(getCustomScriptsResponse(null))
     if (isFourZeroOneError(e)) {
@@ -59,13 +87,17 @@ export function* getScriptsByType({ payload }) {
     }
   }
 }
-
-//add
 export function* addScript({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, CREATE, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data = yield call(scriptApi.addCustomScript, payload.data)
+    const data = yield call(
+      scriptApi.addCustomScript,
+      payload.action.action_data,
+    )
     yield put(addCustomScriptResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(addCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
@@ -74,13 +106,17 @@ export function* addScript({ payload }) {
     }
   }
 }
-
-//edit
 export function* editScript({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, UPDATE, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data = yield call(scriptApi.editCustomScript, payload.data)
+    const data = yield call(
+      scriptApi.editCustomScript,
+      payload.action.action_data,
+    )
     yield put(editCustomScriptResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(editCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
@@ -90,12 +126,14 @@ export function* editScript({ payload }) {
   }
 }
 
-//delete
 export function* deleteScript({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, DELETION, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data = yield call(scriptApi.deleteCustomScript, payload.inum)
-    yield put(deleteCustomScriptResponse(payload.inum))
+    yield call(scriptApi.deleteCustomScript, payload.action.action_data)
+    yield put(deleteCustomScriptResponse(payload.action.action_data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {

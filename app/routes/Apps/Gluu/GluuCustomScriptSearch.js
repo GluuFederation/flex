@@ -19,8 +19,8 @@ function GluuCustomScriptSearch({
         style={{ width: '80px' }}
         id={limitId}
         type="number"
-        defaultValue={limit}
         onChange={handler}
+        defaultValue={limit}
       />
       &nbsp;
       <InputGroup style={{ width: '210px' }}>
@@ -55,8 +55,8 @@ function GluuCustomScriptSearch({
         style={{ width: '180px' }}
         id={patternId}
         type="text"
-        placeholder="search pattern"
         onChange={handler}
+        placeholder="search pattern"
       />
     </FormGroup>
   )

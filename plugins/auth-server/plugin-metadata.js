@@ -97,11 +97,11 @@ const pluginMetadata = {
           path: PLUGIN_BASE_APTH + '/scripts',
           permission: '/config/scripts.readonly',
         },
-        {
+        /**{
           title: 'UMA',
           path: PLUGIN_BASE_APTH + '/uma',
           permission: '/config/jwks.readonly',
-        },
+        },*/
       ],
     },
   ],

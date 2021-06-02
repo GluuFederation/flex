@@ -14,8 +14,9 @@ import {
   SET_SCRIPT_ITEM,
 } from './types'
 
-export const getCustomScripts = () => ({
+export const getCustomScripts = (action) => ({
   type: GET_CUSTOM_SCRIPT,
+  payload: { action },
 })
 
 export const getCustomScriptsResponse = (data) => ({
@@ -23,9 +24,9 @@ export const getCustomScriptsResponse = (data) => ({
   payload: { data },
 })
 
-export const addCustomScript = (data) => ({
+export const addCustomScript = (action) => ({
   type: ADD_CUSTOM_SCRIPT,
-  payload: { data },
+  payload: { action },
 })
 
 export const addCustomScriptResponse = (data) => ({
@@ -33,9 +34,9 @@ export const addCustomScriptResponse = (data) => ({
   payload: { data },
 })
 
-export const editCustomScript = (data) => ({
+export const editCustomScript = (action) => ({
   type: EDIT_CUSTOM_SCRIPT,
-  payload: { data },
+  payload: { action },
 })
 
 export const editCustomScriptResponse = (data) => ({
@@ -43,9 +44,9 @@ export const editCustomScriptResponse = (data) => ({
   payload: { data },
 })
 
-export const getCustomScriptByInum = (inum) => ({
+export const getCustomScriptByInum = (action) => ({
   type: GET_CUSTOM_SCRIPT_BY_INUM,
-  payload: { inum },
+  payload: { action },
 })
 
 export const getCustomScriptByInumResponse = (data) => ({
@@ -53,9 +54,9 @@ export const getCustomScriptByInumResponse = (data) => ({
   payload: { data },
 })
 
-export const getCustomScriptByType = (type) => ({
+export const getCustomScriptByType = (action) => ({
   type: GET_CUSTOM_SCRIPT_BY_TYPE,
-  payload: { type },
+  payload: { action },
 })
 
 export const getCustomScriptByTypeResponse = (data) => ({
@@ -63,9 +64,9 @@ export const getCustomScriptByTypeResponse = (data) => ({
   payload: { data },
 })
 
-export const deleteCustomScript = (inum) => ({
+export const deleteCustomScript = (action) => ({
   type: DELETE_CUSTOM_SCRIPT,
-  payload: { inum },
+  payload: { action },
 })
 
 export const deleteCustomScriptResponse = (inum) => ({
