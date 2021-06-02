@@ -11,12 +11,14 @@ import {
   Input,
   Accordion,
 } from '../../../../app/components'
-import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
+import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
+  const [init, setInit] = useState(false)
+  const [modal, setModal] = useState(false)
   let dynamicScopeScripts = []
   let spontaneousClientScopes = []
   let claims = []
@@ -27,8 +29,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
   claims = attributes.map((item) => ({ dn: item.dn, name: item.name }))
-  const [init, setInit] = useState(false)
-  const [modal, setModal] = useState(false)
+
   const [showClaimsPanel, handleClaimsPanel] = useState(
     enableClaims(scope.scopeType),
   )
@@ -82,7 +83,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
         initialValues={{
           id: scope.id,
           displayName: scope.displayName,
-          action_message: null,
           description: scope.description,
           scopeType: scope.scopeType,
           defaultScope: scope.defaultScope,

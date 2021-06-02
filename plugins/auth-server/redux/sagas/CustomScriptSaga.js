@@ -52,7 +52,7 @@ function* initAudit() {
   return auditlog
 }
 
-export function* getCustomScripts({payload}) {
+export function* getCustomScripts({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, SCRIPT, payload)

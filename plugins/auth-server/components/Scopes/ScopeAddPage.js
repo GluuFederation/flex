@@ -12,8 +12,11 @@ function ScopeAddPage({ scripts, dispatch, attributes }) {
   function handleSubmit(data) {
     if (data) {
       const postBody = {}
-      postBody['scope'] = JSON.parse(data)
-      buildPayload(userAction, data.action_message, postBody)
+      data = JSON.parse(data)
+      let message = data.action_message
+      delete data.action_message
+      postBody['scope'] = data
+      buildPayload(userAction, message, postBody)
       dispatch(addScope(userAction))
       history.push('/auth-server/scopes')
     }

@@ -11,7 +11,9 @@ function CustomScriptAddPage({ scripts, dispatch }) {
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      buildPayload(userAction, data.action_message, data)
+      let message = data.customScript.action_message
+      delete data.customScript.action_message
+      buildPayload(userAction, message, data)
       dispatch(addCustomScript(userAction))
       history.push('/auth-server/scripts')
     }

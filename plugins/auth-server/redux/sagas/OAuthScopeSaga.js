@@ -1,6 +1,3 @@
-/**
- * OAuth Scopes Sagas
- */
 import {
   call,
   all,
