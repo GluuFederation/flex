@@ -7,7 +7,6 @@ import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import CustomScriptDetailPage from '../CustomScripts/CustomScriptDetailPage'
 import GluuCustomScriptSearch from '../../../../app/routes/Apps/Gluu/GluuCustomScriptSearch'
 import {
-  getCustomScripts,
   deleteCustomScript,
   getCustomScriptByType,
   setCurrentItem,
@@ -140,7 +139,6 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         columns={[
           { title: 'Inum', field: 'inum' },
           { title: 'Name', field: 'name' },
-          { title: 'Type', field: 'scriptType' },
           {
             title: 'Enabled',
             field: 'enabled',
