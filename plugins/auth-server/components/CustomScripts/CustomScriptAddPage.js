@@ -4,11 +4,15 @@ import { useHistory } from 'react-router-dom'
 import { Container, CardBody, Card } from '../../../../app/components'
 import CustomScriptForm from './CustomScriptForm'
 import { addCustomScript } from '../../redux/actions/CustomScriptActions'
+import { buildPayload } from '../../../../app/utils/PermChecker'
+
 function CustomScriptAddPage({ scripts, dispatch }) {
+  const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      dispatch(addCustomScript(data))
+      buildPayload(userAction, data.action_message, data)
+      dispatch(addCustomScript(userAction))
       history.push('/auth-server/scripts')
     }
   }
@@ -17,7 +21,11 @@ function CustomScriptAddPage({ scripts, dispatch }) {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <CustomScriptForm item={new Object()} scripts={scripts} handleSubmit={handleSubmit} />
+            <CustomScriptForm
+              item={new Object()}
+              scripts={scripts}
+              handleSubmit={handleSubmit}
+            />
           </CardBody>
         </Card>
       </Container>

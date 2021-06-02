@@ -116,7 +116,6 @@ export function* getScopeBasedOnOpts({ payload }) {
 }
 
 export function* addAScope({ payload }) {
-  console.log('======================= add' + JSON.stringify(payload))
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, CREATE, SCOPE, payload)
@@ -134,7 +133,6 @@ export function* addAScope({ payload }) {
 }
 
 export function* editAnScope({ payload }) {
-  console.log('=======================edit ' + JSON.stringify(payload))
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, UPDATE, SCOPE, payload)

@@ -10,10 +10,11 @@ import {
   ModalFooter,
 } from 'reactstrap'
 
-const GluuCommitDialog = ({ handler, modal, onAccept }) => {
+const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
   const [active, setActive] = useState(false)
+  const USER_MESSAGE = 'user_action_message'
   function handleStatus() {
-    var value = document.getElementById('user_action_message').value
+    var value = document.getElementById(USER_MESSAGE).value
     if (value.length >= 10) {
       setActive(true)
     } else {
@@ -22,7 +23,13 @@ const GluuCommitDialog = ({ handler, modal, onAccept }) => {
   }
 
   function handleAccept() {
-    onAccept(document.getElementById('user_action_message').value)
+    if (formik) {
+      formik.setFieldValue(
+        'action_message',
+        document.getElementById(USER_MESSAGE).value,
+      )
+    }
+    onAccept(document.getElementById(USER_MESSAGE).value)
   }
   return (
     <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
@@ -37,9 +44,9 @@ const GluuCommitDialog = ({ handler, modal, onAccept }) => {
         <FormGroup row>
           <Col sm={12}>
             <Input
-              id="user_action_message"
+              id={USER_MESSAGE}
               type="textarea"
-              name="user_action_message"
+              name={USER_MESSAGE}
               onKeyUp={handleStatus}
               placeholder="Provide the reason of this change"
               defaultValue=""

@@ -160,7 +160,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
           selection: false,
           pageSize: 10,
           rowStyle: (rowData) => ({
-            backgroundColor: rowData.enabled ? '#00A36C' : '#FFF',
+            backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
           }),
           headerStyle: {
             backgroundColor: '#03a96d',

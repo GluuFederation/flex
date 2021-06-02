@@ -1,6 +1,8 @@
 import {
   GET_CUSTOM_SCRIPT,
   GET_CUSTOM_SCRIPT_RESPONSE,
+  GET_CUSTOM_SCRIPT_BY_TYPE,
+  GET_CUSTOM_SCRIPT_BY_TYPE_RESPONSE,
   ADD_CUSTOM_SCRIPT,
   ADD_CUSTOM_SCRIPT_RESPONSE,
   EDIT_CUSTOM_SCRIPT,
@@ -10,13 +12,13 @@ import {
   DELETE_CUSTOM_SCRIPT_RESPONSE,
   RESET,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry';
+import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   loading: true,
 }
 
-const reducerName = 'customScriptReducer';
+const reducerName = 'customScriptReducer'
 
 export default function customScriptReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -38,7 +40,24 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
         }
       }
-
+    case GET_CUSTOM_SCRIPT_BY_TYPE:
+      return {
+        ...state,
+        loading: true,
+      }
+    case GET_CUSTOM_SCRIPT_BY_TYPE_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
+      }
     case ADD_CUSTOM_SCRIPT:
       return {
         ...state,
@@ -115,4 +134,4 @@ export default function customScriptReducer(state = INIT_STATE, action) {
       }
   }
 }
-reducerRegistry.register(reducerName, customScriptReducer);
+reducerRegistry.register(reducerName, customScriptReducer)

@@ -5,8 +5,10 @@ import { Container, CardBody, Card } from '../../../../app/components'
 import ScopeForm from './ScopeForm'
 import BlockUi from 'react-block-ui'
 import { editScope } from '../../redux/actions/ScopeActions'
+import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function ScopeEditPage({ scope, loading, dispatch, scripts, attributes }) {
+  const userAction = {}
   if (!scope.attributes) {
     scope.attributes = {
       spontaneousClientId: null,
@@ -19,7 +21,8 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes }) {
     if (data) {
       const postBody = {}
       postBody['scope'] = JSON.parse(data)
-      dispatch(editScope(postBody))
+      buildPayload(userAction, data.action_message, postBody)
+      dispatch(editScope(userAction))
       history.push('/auth-server/scopes')
     }
   }
