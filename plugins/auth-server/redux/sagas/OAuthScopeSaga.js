@@ -27,9 +27,20 @@ import {
   DELETE_SCOPE,
   GET_SCOPE_BY_PATTERN,
 } from '../actions/types'
+import { SCOPE } from '../audit/Resources'
+import {
+  CREATE,
+  UPDATE,
+  DELETION,
+  FETCH,
+} from '../../../../app/audit/UserActionType'
 import ScopeApi from '../api/ScopeApi'
 import { getClient } from '../../../../app/redux/api/base'
-import { isFourZeroOneError } from '../../../../app/utils/TokenController'
+import {
+  isFourZeroOneError,
+  addAdditionalData,
+} from '../../../../app/utils/TokenController'
+import { postUserAction } from '../../../../app/redux/api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
 
@@ -41,12 +52,27 @@ function* newFunction() {
   )
   return new ScopeApi(api)
 }
+function* initAudit() {
+  const auditlog = {}
+  const client_id = yield select((state) => state.authReducer.config.clientId)
+  const ip_address = yield select((state) => state.authReducer.location.IPv4)
+  const userinfo = yield select((state) => state.authReducer.userinfo)
+  const author = userinfo ? userinfo.family_name || userinfo.name : '-'
+  auditlog['client_id'] = client_id
+  auditlog['ip_address'] = ip_address
+  auditlog['author'] = author
+  auditlog['status'] = 'succeed'
+  return auditlog
+}
 
 export function* getScopeByInum() {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, SCOPE, {})
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.getScope)
     yield put(deleteScopeResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteScopeResponse(null))
     if (isFourZeroOneError(e)) {
@@ -57,10 +83,13 @@ export function* getScopeByInum() {
 }
 
 export function* getScopes({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, SCOPE, payload)
     const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.getAllScopes, payload.options)
+    const data = yield call(scopeApi.getAllScopes, payload.action.action_data)
     yield put(getScopesResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(getScopesResponse(null))
     if (isFourZeroOneError(e)) {
@@ -70,10 +99,13 @@ export function* getScopes({ payload }) {
   }
 }
 export function* getScopeBasedOnOpts({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, SCOPE, payload)
     const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.getScopeByOpts, payload.data)
+    const data = yield call(scopeApi.getScopeByOpts, payload.action.action_data)
     yield put(getScopeByPatternResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(getScopeByPatternResponse(null))
     if (isFourZeroOneError(e)) {
@@ -84,10 +116,14 @@ export function* getScopeBasedOnOpts({ payload }) {
 }
 
 export function* addAScope({ payload }) {
+  console.log('======================= add' + JSON.stringify(payload))
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, CREATE, SCOPE, payload)
     const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.addNewScope, payload.data)
+    const data = yield call(scopeApi.addNewScope, payload.action.action_data)
     yield put(addScopeResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(addScopeResponse(null))
     if (isFourZeroOneError(e)) {
@@ -98,10 +134,14 @@ export function* addAScope({ payload }) {
 }
 
 export function* editAnScope({ payload }) {
+  console.log('=======================edit ' + JSON.stringify(payload))
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, UPDATE, SCOPE, payload)
     const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.editAScope, payload.data)
+    const data = yield call(scopeApi.editAScope, payload.action.action_data)
     yield put(editScopeResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(editScopeResponse(null))
     if (isFourZeroOneError(e)) {
@@ -112,10 +152,13 @@ export function* editAnScope({ payload }) {
 }
 
 export function* deleteAnScope({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, DELETION, SCOPE, payload)
     const scopeApi = yield* newFunction()
-    yield call(scopeApi.deleteAScope, payload.inum)
-    yield put(deleteScopeResponse(payload.inum))
+    yield call(scopeApi.deleteAScope, payload.action.action_data)
+    yield put(deleteScopeResponse(payload.action.action_data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteScopeResponse(null))
     if (isFourZeroOneError(e)) {

@@ -14,18 +14,21 @@ import {
 import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
 import {
   hasPermission,
+  buildPayload,
   SCOPE_READ,
   SCOPE_WRITE,
   SCOPE_DELETE,
 } from '../../../../app/utils/PermChecker'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
+  const userAction = {}
   const options = {}
   const [limit, setLimit] = useState(100000)
   const [pattern, setPattern] = useState(null)
   useEffect(() => {
     makeOptions()
-    dispatch(getScopes(options))
+    buildPayload(userAction, 'Fetch scopes', options)
+    dispatch(getScopes(userAction))
   }, [])
 
   const myActions = []
@@ -61,19 +64,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     toggle()
   }
 
-  function onDeletionConfirmed() {
-    console.log('Scope onDeletionConfirmed - item.inum = ' + item.inum)
-    dispatch(deleteScope(item.inum))
+  function onDeletionConfirmed(message) {
+    buildPayload(userAction, message, item.inum)
+    dispatch(deleteScope(userAction))
     history.push('/auth-server/scopes')
     toggle()
-  }
-
-  function getBadgeTheme(status) {
-    if (status === 'ACTIVE') {
-      return 'primary'
-    } else {
-      return 'warning'
-    }
   }
 
   if (hasPermission(permissions, SCOPE_WRITE)) {
@@ -113,7 +108,8 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        dispatch(searchScopes(options))
+        buildPayload(userAction, 'Search scopes', options)
+        dispatch(searchScopes(userAction))
       },
     })
   }
@@ -143,7 +139,6 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
 
   return (
     <React.Fragment>
-      {/* START Content */}
       <MaterialTable
         columns={[
           { title: 'iNum', field: 'inum' },
@@ -167,7 +162,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
           selection: false,
           pageSize: 10,
           headerStyle: {
-            backgroundColor: '#03a96d', //#03a96d 01579b
+            backgroundColor: '#03a96d',
             color: '#FFF',
             padding: '2px',
             textTransform: 'uppercase',
@@ -179,7 +174,6 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
           return <ScopeDetailPage row={rowData} />
         }}
       />
-      {/* END Content */}
       <GluuDialog
         row={item}
         name={item.id}

@@ -2,8 +2,6 @@ export default class ScriptApi {
   constructor(api) {
     this.api = api
   }
-
-  // Get all custom scripts
   getAllCustomScript = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScripts((error, data) => {
@@ -15,8 +13,6 @@ export default class ScriptApi {
       })
     })
   }
-
-  // Get script by type
   getScriptsByType = (options) => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScriptsByType(
@@ -57,7 +53,6 @@ export default class ScriptApi {
     })
   }
 
-  //Get script by inum
   getCustomScript = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScriptsByInum(inum, (error, data) => {
@@ -70,7 +65,6 @@ export default class ScriptApi {
     })
   }
 
-  //Get script by type
   getCustomScriptByType = async (type) => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScriptsByType(type, (error, data) => {

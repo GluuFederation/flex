@@ -15,14 +15,14 @@ import {
   SEARCH_SCOPES,
 } from './types'
 
-export const getScopes = (options) => ({
+export const getScopes = (action) => ({
   type: GET_SCOPES,
-  payload: { options },
+  payload: { action },
 })
 
-export const searchScopes = (options) => ({
+export const searchScopes = (action) => ({
   type: SEARCH_SCOPES,
-  payload: { options },
+  payload: { action },
 })
 
 export const getScopesResponse = (data) => ({
@@ -30,9 +30,9 @@ export const getScopesResponse = (data) => ({
   payload: { data },
 })
 
-export const getScope = (inum) => ({
+export const getScope = (action) => ({
   type: GET_SCOPE_BY_INUM,
-  payload: { inum },
+  payload: { action },
 })
 
 export const getScopeResponse = (data) => ({
@@ -40,9 +40,9 @@ export const getScopeResponse = (data) => ({
   payload: { data },
 })
 
-export const getScopeByPattern = (opts) => ({
+export const getScopeByPattern = (action) => ({
   type: GET_SCOPE_BY_PATTERN,
-  payload: { opts },
+  payload: { action },
 })
 
 export const getScopeByPatternResponse = (data) => ({
@@ -50,9 +50,9 @@ export const getScopeByPatternResponse = (data) => ({
   payload: { data },
 })
 
-export const addScope = (data) => ({
+export const addScope = (action) => ({
   type: ADD_SCOPE,
-  payload: { data },
+  payload: { action },
 })
 
 export const addScopeResponse = (data) => ({
@@ -60,9 +60,9 @@ export const addScopeResponse = (data) => ({
   payload: { data },
 })
 
-export const editScope = (data) => ({
+export const editScope = (action) => ({
   type: EDIT_SCOPE,
-  payload: { data },
+  payload: { action },
 })
 
 export const editScopeResponse = (data) => ({
@@ -70,9 +70,9 @@ export const editScopeResponse = (data) => ({
   payload: { data },
 })
 
-export const deleteScope = (inum) => ({
+export const deleteScope = (action) => ({
   type: DELETE_SCOPE,
-  payload: { inum },
+  payload: { action },
 })
 
 export const deleteScopeResponse = (data) => ({
