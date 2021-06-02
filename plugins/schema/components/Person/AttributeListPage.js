@@ -49,6 +49,10 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     dispatch(setCurrentItem(row))
     return history.push(`/attribute/edit:` + row.inum)
   }
+  function handleGoToAttributeViewPage(row) {
+    dispatch(setCurrentItem(row))
+    return history.push(`/attribute/view:` + row.inum)
+  }
   function handleAttribueDelete(row) {
     setItem(row)
     toggle()
@@ -67,6 +71,18 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
       tooltip: 'Edit Attribute',
       onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
       disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
+    }))
+  }
+  if (hasPermission(permissions, ATTRIBUTE_READ)) {
+    myActions.push((rowData) => ({
+      icon: 'visibility',
+      iconProps: {
+        color: 'primary',
+        id: 'viewAttribute' + rowData.inum,
+      },
+      tooltip: 'View Attribute',
+      onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
+      disabled: false,
     }))
   }
   if (hasPermission(permissions, ATTRIBUTE_READ)) {

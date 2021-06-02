@@ -13,7 +13,7 @@ import {
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 
-function AttributeForm({ item, customOnSubmit }) {
+function AttributeForm({ item, customOnSubmit, hideButtons }) {
   const [init, setInit] = useState(false)
   function getInitialState(item) {
     return (
@@ -369,7 +369,7 @@ function AttributeForm({ item, customOnSubmit }) {
               />
             </Col>
           </FormGroup>
-          <GluuFooter />
+          <GluuFooter hideButtons={hideButtons}/>
         </Form>
       )}
     </Formik>
