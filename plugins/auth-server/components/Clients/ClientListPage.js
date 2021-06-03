@@ -27,6 +27,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   useEffect(() => {
     makeOptions()
     buildPayload(userAction, 'Fetch openid connect clients', options)
+    console.log('================Listing openid connect client')
     dispatch(getOpenidClients(userAction))
   }, [])
   const myActions = []

@@ -51,6 +51,7 @@ function* initAudit() {
 }
 
 export function* getOauthOpenidClients({ payload }) {
+  console.log('================Listing openid connect client saga')
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, OIDC, payload)
@@ -62,6 +63,7 @@ export function* getOauthOpenidClients({ payload }) {
     yield put(getOpenidClientsResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    console.log('================' + e)
     yield put(getOpenidClientsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
