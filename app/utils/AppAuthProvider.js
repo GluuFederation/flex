@@ -52,9 +52,9 @@ class AppAuthProvider extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    console.log('====config ' + JSON.stringify(props.config))
-    console.log('====userinfo ' + JSON.stringify(props.userinfo))
-    console.log('====token ' + JSON.stringify(props.token))
+    //console.log('====config ' + JSON.stringify(props.config))
+    //console.log('====userinfo ' + JSON.stringify(props.userinfo))
+    //console.log('====token ' + JSON.stringify(props.token))
     if (window.location.href.indexOf('logout') > -1) {
       return { showContent: true }
     }

@@ -31,14 +31,11 @@ const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
   const wholeToken = yield select((state) => state.authReducer.token)
-  console.log('---------------------1---whole token saga ' + JSON.stringify(wholeToken))
   let token = null
   if (wholeToken) {
     token = yield select((state) => state.authReducer.token.access_token)
-    console.log('---------------2------Token saga ' + JSON.stringify(token))
   } else {
-    console.log('---------------3------Token saga3 ' + JSON.stringify(wholeToken))
-    token = wholeToken
+    token = null
   }
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(
@@ -63,15 +60,21 @@ export function* getOauthOpenidClients({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, OIDC, payload)
+    console.log('############ one')
     const openIdApi = yield* newFunction()
+    console.log('############ two')
     const data = yield call(
       openIdApi.getAllOpenidClients,
       payload.action.action_data,
     )
+    console.log('############ three')
     yield put(getOpenidClientsResponse(data))
+    console.log('############ four')
     yield call(postUserAction, audit)
+    console.log('############ five')
   } catch (e) {
     console.log('================' + e)
+    console.log('================' + JSON.stringify(e))
     yield put(getOpenidClientsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

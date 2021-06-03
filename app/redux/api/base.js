@@ -19,6 +19,7 @@ export const getDefaultClient = (JansConfigApi) => {
 }
 
 export const getClient = (JansConfigApi, r_token, r_issuer) => {
+  console.log('--------1---getclient')
   const defaultClient = JansConfigApi.ApiClient.instance
   defaultClient.timeout = 50000
   const jansauth = defaultClient.authentications['jans-auth']
@@ -34,6 +35,8 @@ export const getClient = (JansConfigApi, r_token, r_issuer) => {
     issuer: r_issuer,
   }
   defaultClient.defaultHeaders = headers
+  console.log('--------2---getclient')
   jansauth.accessToken = r_token
+  console.log('--------3---getclient')
   return defaultClient
 }

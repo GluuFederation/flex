@@ -17,10 +17,6 @@ import {
 } from '../../../redux/actions/ReportsActions'
 
 function Reports({ attributes, clients, scopes, scripts, dispatch }) {
-  console.log('====================================Reports')
-  console.log('==================' + JSON.stringify(attributes))
-  console.log('==================' + JSON.stringify(scopes))
-  console.log('==================' + JSON.stringify(scripts))
   useEffect(() => {
     if (attributes.length === 0) {
       dispatch(getAttributes())
