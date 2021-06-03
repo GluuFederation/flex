@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
+import BlockUi from 'react-block-ui'
 import {
   Form,
   FormGroup,
@@ -24,22 +24,30 @@ function ConfigPage({ configuration, loading, dispatch }) {
   return (
     <React.Fragment>
       <Container>
-        <Card>
-          <CardBody>
-            <Form>
-              {Object.keys(configuration).map((propKey, idx) => (
-                <PropertyBuilder
-                  key={idx}
-                  propKey={propKey}
-                  propValue={configuration[propKey]}
-                  lSize={lSize}
-                />
-              ))}
-              <FormGroup row></FormGroup>
-              <GluuFooter />
-            </Form>
-          </CardBody>
-        </Card>
+        <BlockUi
+          tag="div"
+          blocking={loading}
+          keepInView={true}
+          renderChildren={true}
+          message={'Performing the request, please wait!'}
+        >
+          <Card>
+            <CardBody>
+              <Form>
+                {Object.keys(configuration).map((propKey, idx) => (
+                  <PropertyBuilder
+                    key={idx}
+                    propKey={propKey}
+                    propValue={configuration[propKey]}
+                    lSize={lSize}
+                  />
+                ))}
+                <FormGroup row></FormGroup>
+                <GluuFooter />
+              </Form>
+            </CardBody>
+          </Card>
+        </BlockUi>
       </Container>
     </React.Fragment>
   )
