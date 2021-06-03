@@ -31,11 +31,13 @@ const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
   const wholeToken = yield select((state) => state.authReducer.token)
-  console.log('==============Token ' + JSON.stringify(wholeToken))
+  console.log('---------------------1---whole token saga ' + JSON.stringify(wholeToken))
   let token = null
   if (wholeToken) {
     token = yield select((state) => state.authReducer.token.access_token)
+    console.log('---------------2------Token saga ' + JSON.stringify(token))
   } else {
+    console.log('---------------3------Token saga3 ' + JSON.stringify(wholeToken))
     token = wholeToken
   }
   const issuer = yield select((state) => state.authReducer.issuer)
