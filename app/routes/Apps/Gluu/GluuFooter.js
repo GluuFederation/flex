@@ -1,6 +1,10 @@
 import React from 'react'
 import { Col, Button, FormGroup, Divider } from './../../../components'
-function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
+function GluuFooter({ 
+  extraOnClick, 
+  saveHandler,
+  extraLabel, 
+  hideButtons }) {
   function goBack() {
     window.history.back()
   }
@@ -15,10 +19,16 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
               {extraLabel}
             </Button>
           )}
+          <Button color="primary" type="submit" className="LdapUserActionSubmitButton" style={{ visibility: 'hidden' }}>
+            Submit
+          </Button>
         </Col>
         {!hideButtons || !hideButtons['save'] ? (
           <Col sm={2} md={1}>
-            <Button color="primary" type="submit">
+            <Button 
+              color="primary" 
+              type="button"
+              onClick={saveHandler}>
               Save
             </Button>
           </Col>

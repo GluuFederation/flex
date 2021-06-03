@@ -21,9 +21,9 @@ export const getLdapResponse = (data) => ({
   payload: { data },
 })
 
-export const addLdap = (data) => ({
+export const addLdap = (script) => ({
   type: ADD_LDAP,
-  payload: { data },
+  payload: { script },
 })
 
 export const addLdapResponse = (data) => ({
@@ -31,9 +31,9 @@ export const addLdapResponse = (data) => ({
   payload: { data },
 })
 
-export const editLdap = (data) => ({
+export const editLdap = (action) => ({
   type: PUT_LDAP,
-  payload: { data },
+  payload: { action },
 })
 
 export const editLdapResponse = (data) => ({
@@ -41,9 +41,9 @@ export const editLdapResponse = (data) => ({
   payload: { data },
 })
 
-export const deleteLdap = (configId) => ({
+export const deleteLdap = (action) => ({
   type: DELETE_LDAP,
-  payload: { configId },
+  payload: { action },
 })
 
 export const deleteLdapResponse = (configId) => ({

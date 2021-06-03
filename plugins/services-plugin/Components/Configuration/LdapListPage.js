@@ -81,6 +81,15 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
       disabled: !hasPermission(permissions, LDAP_DELETE),
     }))
   }
+  if (hasPermission(permissions, LDAP_WRITE)) {
+    myActions.push({
+      icon: 'add',
+      tooltip: 'Add LDAP',
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => handleGoToLdapAddPage(),
+    })
+  }
 
   function getBadgeTheme(status) {
     if (status) {

@@ -13,13 +13,24 @@ import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 
+import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
+import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+
 function LdapForm({ item, handleSubmit }) {
     const [init, setInit] = useState(false)
+    const [modal, setModal] = useState(false)
 
     function toogle() {
         if (!init) {
             setInit(true)
         }
+    }
+    function toggle() {
+        setModal(!modal)
+      }
+    function submitForm() {
+        toggle()
+        document.getElementsByClassName('LdapUserActionSubmitButton')[0].click()
     }
     const formik = useFormik({
         initialValues: {
@@ -269,8 +280,22 @@ function LdapForm({ item, handleSubmit }) {
                     </InputGroup>
                 </Col>
             </FormGroup>
+            <FormGroup row>
+                {' '}
+                <Input
+                type="hidden"
+                id="moduleProperties"
+                defaultValue={item.moduleProperties}
+                />
+            </FormGroup>
             <FormGroup row></FormGroup>
-            <GluuFooter />
+            <GluuFooter saveHandler={toggle} />
+            <GluuCommitDialog
+                handler={toggle}
+                modal={modal}
+                onAccept={submitForm}
+                formik={formik}
+            />
         </Form>
     )
 }

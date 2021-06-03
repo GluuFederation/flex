@@ -24,10 +24,11 @@ import {
   editCache, editMemoryCache, editNativeCache, editRedisCache, editMemCache
 } from '../../redux/actions/CacheActions'
 
-
+import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 
 function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisData, loading, dispatch }) {
-
+  const [modal, setModal] = useState(false)
+  
   useEffect(() => {
     dispatch(getCacheConfig())
   }, [])
@@ -72,6 +73,13 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
 
   }
 
+  function toggle() {
+    setModal(!modal)
+  }
+  function submitForm() {
+    toggle()
+    document.getElementsByClassName('LdapUserActionSubmitButton')[0].click()
+  }
 
   return (
     <React.Fragment>
@@ -187,7 +195,13 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                       <CacheNative config={cacheNativeData} formik={formik} />
                     </FormGroup>
                     <FormGroup row></FormGroup>
-                    <GluuFooter />
+                    <GluuFooter saveHandler={toggle}/>
+                    <GluuCommitDialog
+                      handler={toggle}
+                      modal={modal}
+                      onAccept={submitForm}
+                      formik={formik}
+                    />
                   </Form>
                 )}
 
