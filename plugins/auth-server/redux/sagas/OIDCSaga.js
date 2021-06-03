@@ -54,8 +54,11 @@ export function* getOauthOpenidClients({ payload }) {
   console.log('================Listing openid connect client saga')
   const audit = yield* initAudit()
   try {
+    console.log('================one')
     addAdditionalData(audit, FETCH, OIDC, payload)
+    console.log('================two')
     const openIdApi = yield* newFunction()
+    console.log('================three')
     const data = yield call(
       openIdApi.getAllOpenidClients,
       payload.action.action_data,

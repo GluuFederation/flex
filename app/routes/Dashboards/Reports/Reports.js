@@ -19,6 +19,8 @@ import {
 function Reports({ attributes, clients, scopes, scripts, dispatch }) {
   console.log('====================================Reports')
   useEffect(() => {
+    console.log('================Attributes '+attributes)
+    console.log('================Fetch OIDC '+clients)
     if (attributes.length === 0) {
       console.log('================Fetch Attributes')
       dispatch(getAttributes())
