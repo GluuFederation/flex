@@ -56,33 +56,6 @@ module.exports = {
   ],
   optimization: {
     minimizer: [new TerserPlugin()],
-    splitChunks: {
-      chunks: 'all',
-      minSize: 100000,
-      maxSize: 200000,
-      maxInitialRequests: 200,
-      maxAsyncRequests: 200,
-     
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]jspdf[\\/]dist[\\/]/,
-          name: 'jspdf',
-          priority: -1,
-          chunks: 'all',
-          
-        },
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-          reuseExistingChunk: true,
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true,
-        },
-      },
-    },
   },
   module: {
     rules: [
