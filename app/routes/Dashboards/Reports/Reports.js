@@ -18,23 +18,20 @@ import {
 
 function Reports({ attributes, clients, scopes, scripts, dispatch }) {
   console.log('====================================Reports')
+  console.log('==================' + JSON.stringify(attributes))
+  console.log('==================' + JSON.stringify(scopes))
+  console.log('==================' + JSON.stringify(scripts))
   useEffect(() => {
-    console.log('================Attributes '+attributes)
-    console.log('================Fetch OIDC '+clients)
     if (attributes.length === 0) {
-      console.log('================Fetch Attributes')
       dispatch(getAttributes())
     }
     if (clients.length === 0) {
-      console.log('================Fetch OIDC')
       dispatch(getOpenidClients())
     }
     if (scopes.length === 0) {
-      console.log('================Fetch SCOPES')
       dispatch(getScopes())
     }
     if (scripts.length === 0) {
-      console.log('================Fetch Scripts')
       dispatch(getCustomScripts())
     }
   }, [])
