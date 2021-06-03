@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import React, { useState } from 'react'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 import {
   Col,
   Row,
@@ -9,20 +9,31 @@ import {
   Form,
   FormGroup,
   Label,
-  Input
-} from "../../../../app/components";
-import GluuFooter from "../../../../app/routes/Apps/Gluu/GluuFooter";
-import GluuLabel from "../../../../app/routes/Apps/Gluu/GluuLabel";
+  Input,
+} from '../../../../app/components'
+import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuNameValueProperty from '../../../../app/routes/Apps/Gluu/GluuNameValueProperty'
 import Counter from '../../../../app/components/Widgets/GroupedButtons/Counter'
+import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
+import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+
 function CustomScriptForm({ item, scripts, handleSubmit }) {
-  const [init, setInit] = useState(false);
-  const [scriptTypeState, setScriptTypeState] = useState(item.scriptType);
-  const scriptTypes = [...(new Set(scripts.map(item => item.scriptType)))];
-  function toogle() {
+  const [init, setInit] = useState(false)
+  const [modal, setModal] = useState(false)
+  const [scriptTypeState, setScriptTypeState] = useState(item.scriptType)
+  const scriptTypes = [...new Set(scripts.map((item) => item.scriptType))]
+  function activate() {
     if (!init) {
-      setInit(true);
+      setInit(true)
     }
+  }
+  function toggle() {
+    setModal(!modal)
+  }
+
+  function submitForm() {
+    toggle()
+    document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
   const formik = useFormik({
     initialValues: {
@@ -37,72 +48,91 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       configurationProperties: item.configurationProperties,
     },
     validationSchema: Yup.object({
-      name: Yup.string()
-        .min(2, "Mininum 2 characters")
-        .required("Required!"),
+      name: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
       description: Yup.string(),
       scriptType: Yup.string()
-        .min(2, "Mininum 2 characters")
-        .required("Required!"),
+        .min(2, 'Mininum 2 characters')
+        .required('Required!'),
       programmingLanguage: Yup.string()
-        .min(3, "This value is required")
-        .required("Required!"),
-      script: Yup.string()
-        .required("Required!")
+        .min(3, 'This value is required')
+        .required('Required!'),
+      script: Yup.string().required('Required!'),
     }),
 
-    onSubmit: values => {
-      values.level = item.level;
-      values.moduleProperties = item.moduleProperties;
-      
+    onSubmit: (values) => {
+      values.level = item.level
+      values.moduleProperties = item.moduleProperties
+
       if (!!values.configurationProperties) {
-        values.configurationProperties = values.configurationProperties.map(ele => ({ value1: ele.key, value2: ele.value, description: '' }));
+        values.configurationProperties = values.configurationProperties.map(
+          (ele) => ({ value1: ele.key, value2: ele.value, description: '' }),
+        )
       }
       if (typeof values.enabled == 'object') {
         if (values.enabled.length > 0) {
-          values.enabled = true;
+          values.enabled = true
         } else {
-          values.enabled = false;
+          values.enabled = false
         }
       }
-
-      const result = Object.assign(item, values);
-      const reqBody = { customScript: result };
-
-      handleSubmit(reqBody);
-    }
-  });
+      const result = Object.assign(item, values)
+      const reqBody = { customScript: result }
+      handleSubmit(reqBody)
+    },
+  })
 
   function locationTypeChange(value) {
     if (value != '') {
-
       if (!item.moduleProperties) {
-        item.moduleProperties = [];
+        item.moduleProperties = []
       }
 
-      if (item.moduleProperties.filter((item) => item.value1 === 'location_type').length > 0) {
-        item.moduleProperties.splice(item.moduleProperties.findIndex((item) => item.value1 === 'location_type'), 1);
+      if (
+        item.moduleProperties.filter((item) => item.value1 === 'location_type')
+          .length > 0
+      ) {
+        item.moduleProperties.splice(
+          item.moduleProperties.findIndex(
+            (item) => item.value1 === 'location_type',
+          ),
+          1,
+        )
       }
-      item.moduleProperties.push({ "value1": "location_type", "value2": value, "description": "" });
+      item.moduleProperties.push({
+        value1: 'location_type',
+        value2: value,
+        description: '',
+      })
     }
   }
 
   function usageTypeChange(value) {
     if (value != '') {
-
       if (!item.moduleProperties) {
-        item.moduleProperties = [];
+        item.moduleProperties = []
       }
 
-      if (item.moduleProperties.filter((item) => item.value1 === 'usage_type').length > 0) {
-        item.moduleProperties.splice(item.moduleProperties.findIndex((item) => item.value1 === 'usage_type'), 1);
+      if (
+        item.moduleProperties.filter((item) => item.value1 === 'usage_type')
+          .length > 0
+      ) {
+        item.moduleProperties.splice(
+          item.moduleProperties.findIndex(
+            (item) => item.value1 === 'usage_type',
+          ),
+          1,
+        )
       }
-      item.moduleProperties.push({ "value1": "usage_type", "value2": value, "description": "" });
+      item.moduleProperties.push({
+        value1: 'usage_type',
+        value2: value,
+        description: '',
+      })
     }
   }
 
   function onLevelChange(level) {
-    item.level = level;
+    item.level = level
   }
 
   return (
@@ -115,7 +145,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           </Label>
           <Col sm={9}>
             <Input
-              style={{ backgroundColor: "#F5F5F5" }}
+              style={{ backgroundColor: '#F5F5F5' }}
               placeholder="Enter the script inum"
               id="inum"
               name="inum"
@@ -134,7 +164,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
             valid={!formik.errors.name && !formik.touched.name && init}
             name="name"
             defaultValue={item.name}
-            onKeyUp={toogle}
+            onKeyUp={activate}
             onChange={formik.handleChange}
           />
           {formik.errors.name && formik.touched.name ? (
@@ -160,7 +190,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           </InputGroup>
         </Col>
       </FormGroup>
-      {scriptTypeState === 'PERSON_AUTHENTICATION' &&
+      {scriptTypeState === 'PERSON_AUTHENTICATION' && (
         <FormGroup row>
           <GluuLabel label="Select SAML ACRS" />
           <Col sm={9}>
@@ -172,12 +202,19 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               multiple
               onChange={formik.handleChange}
             >
-              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol">urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol</option>
-              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:Password">urn:oasis:names:tc:SAML:2.0:ac:classes:Password</option>
-              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport">urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</option>
+              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol">
+                urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol
+              </option>
+              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:Password">
+                urn:oasis:names:tc:SAML:2.0:ac:classes:Password
+              </option>
+              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport">
+                urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+              </option>
             </Input>
           </Col>
-        </FormGroup>}
+        </FormGroup>
+      )}
 
       <FormGroup row>
         <GluuLabel label="Script Type" required />
@@ -189,12 +226,16 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               name="scriptType"
               defaultValue={item.scriptType}
               onChange={(e) => {
-                setScriptTypeState(e.target.value);
-                formik.setFieldValue('scriptType', e.target.value);
+                setScriptTypeState(e.target.value)
+                formik.setFieldValue('scriptType', e.target.value)
               }}
             >
               <option value="">Choose...</option>
-              {scriptTypes.map((item, index) => (<option key={index} value={item}>{item}</option>))}
+              {scriptTypes.map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
             </CustomInput>
           </InputGroup>
           {formik.errors.scriptType && formik.touched.scriptType ? (
@@ -219,8 +260,11 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               <option>JAVASCRIPT</option>
             </CustomInput>
           </InputGroup>
-          {formik.errors.programmingLanguage && formik.touched.programmingLanguage ? (
-            <div style={{ color: 'red' }}>{formik.errors.programmingLanguage}</div>
+          {formik.errors.programmingLanguage &&
+          formik.touched.programmingLanguage ? (
+            <div style={{ color: 'red' }}>
+              {formik.errors.programmingLanguage}
+            </div>
           ) : null}
         </Col>
       </FormGroup>
@@ -233,9 +277,20 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               type="select"
               id="location_type"
               name="location_type"
-              defaultValue={(!!item.moduleProperties && item.moduleProperties.filter((item) => item.value1 === 'location_type').length > 0) ?
-                (item.moduleProperties.filter((item) => item.value1 === 'location_type')[0]).value2 : undefined}
-              onChange={(e) => { locationTypeChange(e.target.value) }}>
+              defaultValue={
+                !!item.moduleProperties &&
+                item.moduleProperties.filter(
+                  (item) => item.value1 === 'location_type',
+                ).length > 0
+                  ? item.moduleProperties.filter(
+                      (item) => item.value1 === 'location_type',
+                    )[0].value2
+                  : undefined
+              }
+              onChange={(e) => {
+                locationTypeChange(e.target.value)
+              }}
+            >
               <option value="">Choose...</option>
               <option value="ldap">Database</option>
               <option value="file">File</option>
@@ -243,7 +298,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           </InputGroup>
         </Col>
       </FormGroup>
-      {scriptTypeState === 'PERSON_AUTHENTICATION' &&
+      {scriptTypeState === 'PERSON_AUTHENTICATION' && (
         <FormGroup row>
           <GluuLabel label="Interactive" />
           <Col sm={9}>
@@ -252,9 +307,20 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 type="select"
                 id="usage_type"
                 name="usage_type"
-                defaultValue={(!!item.moduleProperties && item.moduleProperties.filter((item) => item.value1 === 'usage_type').length > 0) ?
-                  (item.moduleProperties.filter((item) => item.value1 === 'usage_type')[0]).value2 : undefined}
-                onChange={(e) => { usageTypeChange(e.target.value) }}>
+                defaultValue={
+                  !!item.moduleProperties &&
+                  item.moduleProperties.filter(
+                    (item) => item.value1 === 'usage_type',
+                  ).length > 0
+                    ? item.moduleProperties.filter(
+                        (item) => item.value1 === 'usage_type',
+                      )[0].value2
+                    : undefined
+                }
+                onChange={(e) => {
+                  usageTypeChange(e.target.value)
+                }}
+              >
                 <option value="">Choose...</option>
                 <option value="interactive">Web</option>
                 <option value="service">Native</option>
@@ -262,17 +328,17 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               </CustomInput>
             </InputGroup>
           </Col>
-        </FormGroup>}
+        </FormGroup>
+      )}
 
       <FormGroup row>
         <GluuLabel label="Level" />
         <Col sm={9}>
-          <Counter counter={item.level} onCounterChange={(level) => onLevelChange(level)} />
-          <Input
-            type="hidden"
-            id="level"
-            defaultValue={item.level}
+          <Counter
+            counter={item.level}
+            onCounterChange={(level) => onLevelChange(level)}
           />
+          <Input type="hidden" id="level" defaultValue={item.level} />
         </Col>
       </FormGroup>
 
@@ -287,7 +353,14 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         valueName="value"
         valueLabel="Value"
         valuePlaceholder="Enter value"
-        dataArr={!!item.configurationProperties ? item.configurationProperties.map(ele => ({ key: ele.value1, value: ele.value2 })) : undefined}
+        dataArr={
+          !!item.configurationProperties
+            ? item.configurationProperties.map((ele) => ({
+                key: ele.value1,
+                value: ele.value2,
+              }))
+            : undefined
+        }
         nameValueLabel="Custom Properties (key/values)"
       ></GluuNameValueProperty>
 
@@ -299,11 +372,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         <Col sm={10}>
           <Input
             placeholder="Script"
-            valid={
-              !formik.errors.script &&
-              !formik.touched.script &&
-              init
-            }
+            valid={!formik.errors.script && !formik.touched.script && init}
             type="textarea"
             rows={20}
             id="script"
@@ -327,14 +396,23 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         </Col>
       </FormGroup>
 
-      <FormGroup row> <Input
-        type="hidden"
-        id="moduleProperties"
-        defaultValue={item.moduleProperties}
-      /></FormGroup>
-      <GluuFooter />
+      <FormGroup row>
+        {' '}
+        <Input
+          type="hidden"
+          id="moduleProperties"
+          defaultValue={item.moduleProperties}
+        />
+      </FormGroup>
+      <GluuCommitFooter saveHandler={toggle} />
+      <GluuCommitDialog
+        handler={toggle}
+        modal={modal}
+        onAccept={submitForm}
+        formik={formik}
+      />
     </Form>
-  );
+  )
 }
 
-export default CustomScriptForm;
+export default CustomScriptForm

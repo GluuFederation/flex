@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { Container, CardBody, Card } from '../../../../app/components'
 import ScopeForm from './ScopeForm'
 import { addScope } from '../../redux/actions/ScopeActions'
+import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function ScopeAddPage({ scripts, dispatch, attributes }) {
+  const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
-    console.log('ScopeAdd :  handleSubmit() - data = ' + data)
     if (data) {
       const postBody = {}
-      postBody['scope'] = JSON.parse(data)
-      dispatch(addScope(postBody))
+      data = JSON.parse(data)
+      let message = data.action_message
+      delete data.action_message
+      postBody['scope'] = data
+      buildPayload(userAction, message, postBody)
+      dispatch(addScope(userAction))
       history.push('/auth-server/scopes')
     }
   }

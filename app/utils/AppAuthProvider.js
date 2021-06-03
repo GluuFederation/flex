@@ -92,7 +92,7 @@ class AppAuthProvider extends Component {
       } else {
         if (!props.token) {
           props.getAPIAccessToken(props.jwt)
-          props.getUserLocation()
+         // props.getUserLocation()
         }
         return {
           showContent: true,

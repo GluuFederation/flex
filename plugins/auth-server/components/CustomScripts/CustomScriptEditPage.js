@@ -5,12 +5,17 @@ import { Container, CardBody, Card } from '../../../../app/components'
 import CustomScriptForm from './CustomScriptForm'
 import BlockUi from 'react-block-ui'
 import { editCustomScript } from '../../redux/actions/CustomScriptActions'
+import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function CustomScriptEditPage({ item, scripts, loading, dispatch }) {
+  const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      dispatch(editCustomScript(data))
+      let message = data.customScript.action_message
+      delete data.customScript.action_message
+      buildPayload(userAction, message, data)
+      dispatch(editCustomScript(userAction))
       history.push('/auth-server/scripts')
     }
   }
@@ -25,7 +30,11 @@ function CustomScriptEditPage({ item, scripts, loading, dispatch }) {
               keepInView={true}
               message={'Performing the request, please wait!'}
             >
-              <CustomScriptForm item={item} scripts={scripts} handleSubmit={handleSubmit} />
+              <CustomScriptForm
+                item={item}
+                scripts={scripts}
+                handleSubmit={handleSubmit}
+              />
             </BlockUi>
           </CardBody>
         </Card>

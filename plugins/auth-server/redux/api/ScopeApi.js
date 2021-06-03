@@ -3,7 +3,6 @@ export default class ScopeApi {
     this.api = api
   }
 
-  // Get All scopes
   getAllScopes = (options) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthScopes(options, (error, data) => {
@@ -15,7 +14,7 @@ export default class ScopeApi {
       })
     })
   }
-  // Get scope by inum
+
   getScope = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthScopesByInum(inum, (error, data) => {
@@ -28,7 +27,6 @@ export default class ScopeApi {
     })
   }
 
-  // Get scope by id
   getScope = async (id) => {
     return new Promise((resolve, reject) => {
       this.api.patchOauthScopesById(id, (error, data) => {
@@ -41,12 +39,10 @@ export default class ScopeApi {
     })
   }
 
-  s // Get scope by pattern
   getScopeByOpts = (opts) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthScopes(opts, (error, data, response) => {
         if (error) {
-          console.log('Scope Api getScopeByOpts error =' + error)
           reject(error)
         } else {
           resolve(data)
@@ -54,16 +50,12 @@ export default class ScopeApi {
       })
     })
   }
-
-  //Add Scope Config
   addNewScope = (input) => {
     return new Promise((resolve, reject) => {
       this.api.postOauthScopes(input, (error, data) => {
         if (error) {
-          console.log('Scope Api add error =' + error)
           reject(error)
         } else {
-          console.log('Scope Api add response =' + data)
           resolve(data)
         }
       })
@@ -74,25 +66,20 @@ export default class ScopeApi {
     return new Promise((resolve, reject) => {
       this.api.putOauthScopes(input, (error, data) => {
         if (error) {
-          console.log('Scope Api editAScope error =' + error)
           reject(error)
         } else {
-          console.log('Scope Api editAScope response =' + data)
           resolve(data)
         }
       })
     })
   }
 
-  // Delete existing scope
   deleteAScope = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteOauthScopesByInum(inum, (error, data) => {
         if (error) {
-          console.log('Scope Api deleteAScope error =' + error)
           reject(error)
         } else {
-          console.log('Scope Api deleteAScope response =' + data)
           resolve(data)
         }
       })
