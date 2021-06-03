@@ -22,8 +22,8 @@ function ConfigPage({ configuration, loading, dispatch }) {
     dispatch(getJsonConfig())
   }, [])
   return (
-    <React.Fragment>
-      <Container>
+    <React.Fragment style={{ minHeight: '400px' }}>
+      <Container style={{ minHeight: '400px' }}>
         <BlockUi
           tag="div"
           blocking={loading}
