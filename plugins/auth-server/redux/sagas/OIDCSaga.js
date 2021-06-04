@@ -60,21 +60,15 @@ export function* getOauthOpenidClients({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, OIDC, payload)
-    console.log('############ one')
     const openIdApi = yield* newFunction()
-    console.log('############ two')
     const data = yield call(
       openIdApi.getAllOpenidClients,
       payload.action.action_data,
     )
-    console.log('############ three')
     yield put(getOpenidClientsResponse(data))
-    console.log('############ four')
     yield call(postUserAction, audit)
-    console.log('############ five')
   } catch (e) {
-    console.log('================' + e)
-    console.log('================' + JSON.stringify(e))
+    console.log(e)
     yield put(getOpenidClientsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
