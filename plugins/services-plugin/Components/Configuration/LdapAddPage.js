@@ -6,7 +6,7 @@ import LdapForm from './LdapForm'
 import { addLdap } from '../../redux/actions/LdapActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
-function LdapAddPage({ scripts, dispatch }) {
+function LdapAddPage({ dispatch }) {
   const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
@@ -31,7 +31,6 @@ function LdapAddPage({ scripts, dispatch }) {
           <CardBody>
             <LdapForm 
               item={defautConfigurations} 
-              scripts={scripts} 
               handleSubmit={handleSubmit} 
             />
           </CardBody>
@@ -42,7 +41,6 @@ function LdapAddPage({ scripts, dispatch }) {
 }
 const mapStateToProps = (state) => {
   return {
-    scripts: state.ldapReducer.items,
     loading: state.ldapReducer.loading,
     permissions: state.authReducer.permissions,
   }

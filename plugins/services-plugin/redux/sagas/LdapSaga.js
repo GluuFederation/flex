@@ -30,16 +30,12 @@ import LdapApi from '../api/LdapApi'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
-function* newFunction() {
-  //const token = yield select((state) => state.authReducer.token.access_token)
-  
+function* newFunction() {  
   const wholeToken = yield select((state) => state.authReducer.token)
-  console.log('==============Token ' + JSON.stringify(wholeToken))
   let token = null
   if (wholeToken) {
     token = yield select((state) => state.authReducer.token.access_token)
   } else {
-    // token = wholeToken
     token = null
   }
 
@@ -91,8 +87,6 @@ export function* addLdap({ payload }) {
     yield put(addLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
-    console.log('add ldap data:')
-    console.log(payload)
     yield put(addLdapResponse(null))
     if (isFourZeroOneError(e)) {
       console.log(e)

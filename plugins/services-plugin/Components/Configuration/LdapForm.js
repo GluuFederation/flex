@@ -16,11 +16,9 @@ import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 
-function LdapForm({ item, scripts, handleSubmit }) {
+function LdapForm({ item, handleSubmit }) {
     const [init, setInit] = useState(false)
     const [modal, setModal] = useState(false)
-    // const [scriptTypeState, setScriptTypeState] = useState(item.scriptType)
-    // const scriptTypes = [...new Set(scripts.map((item) => item.scriptType))]
 
     function toogle() {
         if (!init) {
@@ -32,7 +30,7 @@ function LdapForm({ item, scripts, handleSubmit }) {
       }
     function submitForm() {
         toggle()
-        document.getElementsByClassName('LdapUserActionSubmitButton')[0].click()
+        document.getElementsByClassName('UserActionSubmitButton')[0].click()
     }
     const formik = useFormik({
         initialValues: {
@@ -292,7 +290,7 @@ function LdapForm({ item, scripts, handleSubmit }) {
                 />
             </FormGroup>
             <FormGroup row></FormGroup>
-            <GluuFooter saveHandler={toggle} />
+            <GluuCommitFooter saveHandler={toggle} />
             <GluuCommitDialog
                 handler={toggle}
                 modal={modal}

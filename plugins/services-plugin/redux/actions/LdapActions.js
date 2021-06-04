@@ -12,9 +12,8 @@ import {
   TEST_LDAP_RESPONSE,
 } from './types'
 
-export const getLdapConfig = (action) => ({
+export const getLdapConfig = () => ({
   type: GET_LDAP,
-  payload: { action },
 })
 
 export const getLdapResponse = (data) => ({
@@ -22,9 +21,9 @@ export const getLdapResponse = (data) => ({
   payload: { data },
 })
 
-export const addLdap = (action) => ({
+export const addLdap = (data) => ({
   type: ADD_LDAP,
-  payload: { action },
+  payload: { data },
 })
 
 export const addLdapResponse = (data) => ({
@@ -32,9 +31,9 @@ export const addLdapResponse = (data) => ({
   payload: { data },
 })
 
-export const editLdap = (action) => ({
+export const editLdap = (data) => ({
   type: PUT_LDAP,
-  payload: { action },
+  payload: { data },
 })
 
 export const editLdapResponse = (data) => ({
@@ -42,9 +41,9 @@ export const editLdapResponse = (data) => ({
   payload: { data },
 })
 
-export const deleteLdap = (action) => ({
+export const deleteLdap = (configId) => ({
   type: DELETE_LDAP,
-  payload: { action },
+  payload: { configId },
 })
 
 export const deleteLdapResponse = (configId) => ({
@@ -57,9 +56,9 @@ export const setCurrentItem = (item) => ({
   payload: { item },
 })
 
-export const testLdap = (action) => ({
+export const testLdap = (data) => ({
   type: TEST_LDAP,
-  payload: {action},
+  payload: {data},
 })
 
 export const testLdapResponse = (data) => ({
