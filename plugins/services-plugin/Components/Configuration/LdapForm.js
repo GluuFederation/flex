@@ -16,9 +16,11 @@ import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 
-function LdapForm({ item, handleSubmit }) {
+function LdapForm({ item, scripts, handleSubmit }) {
     const [init, setInit] = useState(false)
     const [modal, setModal] = useState(false)
+    // const [scriptTypeState, setScriptTypeState] = useState(item.scriptType)
+    // const scriptTypes = [...new Set(scripts.map((item) => item.scriptType))]
 
     function toogle() {
         if (!init) {
@@ -61,7 +63,8 @@ function LdapForm({ item, handleSubmit }) {
             values.baseDNs = values.baseDNs.map((ele) => !!ele.baseDNs ? ele.baseDNs : ele)
 
             const result = Object.assign(item, values)
-            handleSubmit(JSON.stringify(result))
+            const reqBody = { ldap: result }
+            handleSubmit(reqBody)
         },
     })
     return (

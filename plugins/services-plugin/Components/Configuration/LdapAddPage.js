@@ -6,15 +6,13 @@ import LdapForm from './LdapForm'
 import { addLdap } from '../../redux/actions/LdapActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
-function LdapAddPage({ dispatch }) {
+function LdapAddPage({ scripts, dispatch }) {
   const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      let message = "LDAP Auth" //data.customScript.action_message
-      //delete data.customScript.action_message
-      console.log('LDAP data:')
-      console.log(data)
+      let message = data.ldap.action_message
+      delete data.ldap.action_message
       buildPayload(userAction, message, data)
       dispatch(addLdap(userAction))
       history.push('/config/ldap')
@@ -31,7 +29,11 @@ function LdapAddPage({ dispatch }) {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <LdapForm item={defautConfigurations} handleSubmit={handleSubmit} />
+            <LdapForm 
+              item={defautConfigurations} 
+              scripts={scripts} 
+              handleSubmit={handleSubmit} 
+            />
           </CardBody>
         </Card>
       </Container>
@@ -40,6 +42,7 @@ function LdapAddPage({ dispatch }) {
 }
 const mapStateToProps = (state) => {
   return {
+    scripts: state.ldapReducer.items,
     loading: state.ldapReducer.loading,
     permissions: state.authReducer.permissions,
   }

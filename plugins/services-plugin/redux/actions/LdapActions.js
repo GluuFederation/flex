@@ -12,8 +12,9 @@ import {
   TEST_LDAP_RESPONSE,
 } from './types'
 
-export const getLdapConfig = () => ({
+export const getLdapConfig = (action) => ({
   type: GET_LDAP,
+  payload: { action },
 })
 
 export const getLdapResponse = (data) => ({
@@ -21,9 +22,9 @@ export const getLdapResponse = (data) => ({
   payload: { data },
 })
 
-export const addLdap = (script) => ({
+export const addLdap = (action) => ({
   type: ADD_LDAP,
-  payload: { script },
+  payload: { action },
 })
 
 export const addLdapResponse = (data) => ({
@@ -56,9 +57,9 @@ export const setCurrentItem = (item) => ({
   payload: { item },
 })
 
-export const testLdap = (data) => ({
+export const testLdap = (action) => ({
   type: TEST_LDAP,
-  payload: {data},
+  payload: {action},
 })
 
 export const testLdapResponse = (data) => ({

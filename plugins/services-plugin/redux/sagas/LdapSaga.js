@@ -73,10 +73,15 @@ export function* addLdap({ payload }) {
   try {
     addAdditionalData(audit, CREATE, LDAP, payload)
     const api = yield* newFunction()
-    const data = yield call(api.addLdapConfig, payload.data)
+    const data = yield call(
+      api.addLdapConfig,
+      payload.action.action_data,
+    )
     yield put(addLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    console.log('add ldap data:')
+    console.log(payload)
     yield put(addLdapResponse(null))
     if (isFourZeroOneError(e)) {
       console.log(e)
