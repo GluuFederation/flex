@@ -40,7 +40,6 @@ function* initAudit() {
 }
 
 export function* getJsonConfig() {
-  console.log('========================calling this config')
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, JSON_CONFIG, { action: {} })
@@ -49,7 +48,7 @@ export function* getJsonConfig() {
     yield put(getJsonConfigResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
-    console.log('========================' + e)
+    console.log(e)
     yield put(getJsonConfigResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -73,7 +72,6 @@ export function* patchJsonConfig({ payload }) {
 }
 
 export function* watchGetJsonConfig() {
-  console.log('========================calling this config')
   yield takeLatest(GET_JSON_CONFIG, getJsonConfig)
 }
 export function* watchPatchJsonConfig() {

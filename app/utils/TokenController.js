@@ -22,7 +22,7 @@ export const isValidState = (newState) => {
 export const addAdditionalData = (audit, action, resource, payload) => {
   audit['action'] = action
   audit['resource'] = resource
-  audit['message'] = payload.action.action_message
-  audit['payload'] = payload.action.action_data
+  audit['message'] = payload.action ? payload.action.action_message : ''
+  audit['payload'] = payload.action ? payload.action.action_data : {}
   audit['date'] = new Date()
 }

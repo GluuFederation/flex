@@ -30,7 +30,13 @@ import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
-  const token = yield select((state) => state.authReducer.token.access_token)
+  const wholeToken = yield select((state) => state.authReducer.token)
+  let token = null
+  if (wholeToken) {
+    token = yield select((state) => state.authReducer.token.access_token)
+  } else {
+    token = null
+  }
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(
     getClient(JansConfigApi, token, issuer),
@@ -53,6 +59,7 @@ function* initAudit() {
 export function* getOauthOpenidClients({ payload }) {
   const audit = yield* initAudit()
   try {
+    payload = payload ? payload : { action: {} }
     addAdditionalData(audit, FETCH, OIDC, payload)
     const openIdApi = yield* newFunction()
     const data = yield call(
@@ -62,6 +69,7 @@ export function* getOauthOpenidClients({ payload }) {
     yield put(getOpenidClientsResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    console.log(e)
     yield put(getOpenidClientsResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

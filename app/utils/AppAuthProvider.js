@@ -52,6 +52,7 @@ class AppAuthProvider extends Component {
   }
 
   static getDerivedStateFromProps(props) {
+    //console.log('====config ' + JSON.stringify(props.config))
     //console.log('====userinfo ' + JSON.stringify(props.userinfo))
     //console.log('====token ' + JSON.stringify(props.token))
     if (window.location.href.indexOf('logout') > -1) {
@@ -92,7 +93,7 @@ class AppAuthProvider extends Component {
       } else {
         if (!props.token) {
           props.getAPIAccessToken(props.jwt)
-         // props.getUserLocation()
+          // props.getUserLocation()
         }
         return {
           showContent: true,
