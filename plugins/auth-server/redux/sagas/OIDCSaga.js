@@ -59,6 +59,7 @@ function* initAudit() {
 export function* getOauthOpenidClients({ payload }) {
   const audit = yield* initAudit()
   try {
+    payload = payload ? payload : { action: {} }
     addAdditionalData(audit, FETCH, OIDC, payload)
     const openIdApi = yield* newFunction()
     const data = yield call(
