@@ -45,7 +45,10 @@ export const fetchUserInformation = async (code) => {
 // post user action
 export const postUserAction = async (userAction) => {
   return await axios
-    .post('/logging/audit', userAction)
+    .post('/logging/audit', {
+      headers: {
+          'Content-Type': 'application/json',
+      }, userAction})
     .then((response) => response)
     .catch((e) => {
       return -1
