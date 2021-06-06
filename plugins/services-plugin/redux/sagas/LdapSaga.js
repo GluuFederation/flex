@@ -31,14 +31,7 @@ import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {  
-  const wholeToken = yield select((state) => state.authReducer.token)
-  let token = null
-  if (wholeToken) {
-    token = yield select((state) => state.authReducer.token.access_token)
-  } else {
-    token = null
-  }
-
+  const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
     getClient(JansConfigApi, token, issuer),
@@ -58,7 +51,7 @@ function* initAudit() {
   return auditlog
 }
 
-export function* getLdap() {
+export function* getLdap(payload) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, LDAP, payload)
@@ -80,10 +73,14 @@ export function* addLdap({ payload }) {
   try {
     addAdditionalData(audit, CREATE, LDAP, payload)
     const api = yield* newFunction()
+    console.log(api)
     const data = yield call(
       api.addLdapConfig,
       payload.action.action_data,
     )
+    console.log(data)
+    console.log(payload)
+    yield call(api.addLdapConfig, payload.action.action_data)
     yield put(addLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -100,10 +97,14 @@ export function* editLdap({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, UPDATE, LDAP, payload)
-    const postBody = {}
-    postBody['ldap'] = payload.action.action_data
+    // const postBody = {}
+    // postBody['ldap'] = payload.action.action_data
     const api = yield* newFunction()
-    const data = yield call(api.updateLdapConfig, payload.data)
+//    const data = yield call(api.updateLdapConfig, payload.data)
+    const data = yield call(
+      api.addLdapConfig,
+      payload.action.action_data,
+    )
     yield put(editLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -122,7 +123,7 @@ export function* deleteLdap({ payload }) {
   try {
     addAdditionalData(audit, DELETION, LDAP, payload)
     const api = yield* newFunction()
-    const data = yield call(api.deleteLdapConfig, payload.configId)
+    yield call(api.deleteLdapConfig, payload.configId)
     yield put(deleteLdapResponse(payload.configId))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -137,7 +138,7 @@ export function* deleteLdap({ payload }) {
 export function* testLdap({ payload }) {
   const audit = yield* initAudit()
   try {
-    // addAdditionalData(audit, , LDAP, payload)
+    // addAdditionalData(audit, UPDATE, LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.testLdapConfig, payload.data)
     yield put(testLdapResponse(data))

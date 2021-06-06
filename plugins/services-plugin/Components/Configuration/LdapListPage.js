@@ -9,6 +9,7 @@ import { Button } from '../../../../app/components'
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import {
   hasPermission,
+  buildPayload,
   LDAP_READ,
   LDAP_WRITE,
   LDAP_DELETE,
@@ -25,6 +26,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
     dispatch(getLdapConfig())
   }, [])
 
+  const userAction = {}
   const myActions = []
   const history = useHistory()
   const [item, setItem] = useState({})
@@ -98,8 +100,9 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
       return 'warning'
     }
   }
-  function onDeletionConfirmed() {
+  function onDeletionConfirmed(message) {
     // perform delete request
+    buildPayload(userAction, message, item.configId)
     dispatch(deleteLdap(item.configId))
     history.push('/config/ldap')
     toggle()
