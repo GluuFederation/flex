@@ -73,13 +73,10 @@ export function* addLdap({ payload }) {
   try {
     addAdditionalData(audit, CREATE, LDAP, payload)
     const api = yield* newFunction()
-    console.log(api)
     const data = yield call(
       api.addLdapConfig,
       payload.action.action_data,
     )
-    console.log(data)
-    console.log(payload)
     yield call(api.addLdapConfig, payload.action.action_data)
     yield put(addLdapResponse(data))
     yield call(postUserAction, audit)
@@ -97,12 +94,9 @@ export function* editLdap({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, UPDATE, LDAP, payload)
-    // const postBody = {}
-    // postBody['ldap'] = payload.action.action_data
     const api = yield* newFunction()
-//    const data = yield call(api.updateLdapConfig, payload.data)
     const data = yield call(
-      api.addLdapConfig,
+      api.updateLdapConfig,
       payload.action.action_data,
     )
     yield put(editLdapResponse(data))
