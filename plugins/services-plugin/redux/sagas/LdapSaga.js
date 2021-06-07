@@ -121,7 +121,6 @@ export function* deleteLdap({ payload }) {
 export function* testLdap({ payload }) {
   const audit = yield* initAudit()
   try {
-    // addAdditionalData(audit, UPDATE, LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.testLdapConfig, payload.data)
     yield put(testLdapResponse(data))
