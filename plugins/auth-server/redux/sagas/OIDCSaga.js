@@ -28,6 +28,7 @@ import {
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
+import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 
 function* newFunction() {
   const wholeToken = yield select((state) => state.authReducer.token)
@@ -42,18 +43,6 @@ function* newFunction() {
     getClient(JansConfigApi, token, issuer),
   )
   return new OIDCApi(api)
-}
-function* initAudit() {
-  const auditlog = {}
-  const client_id = yield select((state) => state.authReducer.config.clientId)
-  const ip_address = yield select((state) => state.authReducer.location.IPv4)
-  const userinfo = yield select((state) => state.authReducer.userinfo)
-  const author = userinfo ? userinfo.family_name || userinfo.name : '-'
-  auditlog['client_id'] = client_id
-  auditlog['ip_address'] = ip_address
-  auditlog['author'] = author
-  auditlog['status'] = 'succeed'
-  return auditlog
 }
 
 export function* getOauthOpenidClients({ payload }) {
