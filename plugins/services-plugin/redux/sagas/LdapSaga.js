@@ -29,6 +29,7 @@ import {
 import LdapApi from '../api/LdapApi'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
+import { initAudit } from '../../plugin-selector'
 
 function* newFunction() {  
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -37,18 +38,6 @@ function* newFunction() {
     getClient(JansConfigApi, token, issuer),
   )
   return new LdapApi(api)
-}
-function* initAudit() {
-  const auditlog = {}
-  const client_id = yield select((state) => state.authReducer.config.clientId)
-  const ip_address = yield select((state) => state.authReducer.location.IPv4)
-  const userinfo = yield select((state) => state.authReducer.userinfo)
-  const author = userinfo ? userinfo.family_name || userinfo.name : '-'
-  auditlog['client_id'] = client_id
-  auditlog['ip_address'] = ip_address
-  auditlog['author'] = author
-  auditlog['status'] = 'succeed'
-  return auditlog
 }
 
 export function* getLdap(payload) {
