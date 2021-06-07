@@ -97,7 +97,7 @@ export function* editLdap({ payload }) {
     const api = yield* newFunction()
     const data = yield call(
       api.updateLdapConfig,
-      payload.action.action_data,
+      payload.data.action_data,
     )
     yield put(editLdapResponse(data))
     yield call(postUserAction, audit)
