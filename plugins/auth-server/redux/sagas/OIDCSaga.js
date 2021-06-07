@@ -28,7 +28,7 @@ import {
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from '../../plugin-selector'
+import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 
 function* newFunction() {
   const wholeToken = yield select((state) => state.authReducer.token)
