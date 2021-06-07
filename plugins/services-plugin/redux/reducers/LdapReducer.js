@@ -12,15 +12,12 @@ import {
   TEST_LDAP,
   TEST_LDAP_RESPONSE,
 } from '../actions/types'
-
 const INIT_STATE = {
   ldap: [],
   item: {},
   loading: false,
   testStatus: false,
 }
-
-const reducerName = 'ldapReducer';
 
 export default function ldapReducer(state = INIT_STATE, action) {
   switch (action.type) {

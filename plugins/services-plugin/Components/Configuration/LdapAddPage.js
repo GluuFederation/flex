@@ -4,11 +4,17 @@ import { useHistory } from 'react-router-dom'
 import { Container, CardBody, Card } from '../../../../app/components'
 import LdapForm from './LdapForm'
 import { addLdap } from '../../redux/actions/LdapActions'
+import { buildPayload } from '../../../../app/utils/PermChecker'
+
 function LdapAddPage({ dispatch }) {
+  const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      dispatch(addLdap(data))
+      let message = data.ldap.action_message
+      delete data.ldap.action_message
+      buildPayload(userAction, message, data)
+      dispatch(addLdap(userAction))
       history.push('/config/ldap')
     }
   }
@@ -23,7 +29,10 @@ function LdapAddPage({ dispatch }) {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <LdapForm item={defautConfigurations} handleSubmit={handleSubmit} />
+            <LdapForm 
+              item={defautConfigurations} 
+              handleSubmit={handleSubmit} 
+            />
           </CardBody>
         </Card>
       </Container>

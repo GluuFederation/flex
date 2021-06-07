@@ -1,5 +1,9 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from '../../../../app/utils/TokenController'
+import { 
+  isFourZeroOneError,
+  addAdditionalData,
+ } from '../../../../app/utils/TokenController'
+import { postUserAction } from '../../../../app/redux/api/backend-api'
 import {
   getLdapResponse,
   editLdapResponse,
@@ -8,6 +12,13 @@ import {
   testLdapResponse,
 } from '../actions/LdapActions'
 import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { LDAP } from '../audit/Resources'
+import {
+  CREATE,
+  UPDATE,
+  DELETION,
+  FETCH,
+} from '../../../../app/audit/UserActionType'
 import {
   GET_LDAP,
   PUT_LDAP,
@@ -19,7 +30,7 @@ import LdapApi from '../api/LdapApi'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
-function* newFunction() {
+function* newFunction() {  
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
@@ -27,12 +38,27 @@ function* newFunction() {
   )
   return new LdapApi(api)
 }
+function* initAudit() {
+  const auditlog = {}
+  const client_id = yield select((state) => state.authReducer.config.clientId)
+  const ip_address = yield select((state) => state.authReducer.location.IPv4)
+  const userinfo = yield select((state) => state.authReducer.userinfo)
+  const author = userinfo ? userinfo.family_name || userinfo.name : '-'
+  auditlog['client_id'] = client_id
+  auditlog['ip_address'] = ip_address
+  auditlog['author'] = author
+  auditlog['status'] = 'succeed'
+  return auditlog
+}
 
-export function* getLdap() {
+export function* getLdap(payload) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.getLdapConfig)
     yield put(getLdapResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(getLdapResponse(null))
     if (isFourZeroOneError(e)) {
@@ -43,12 +69,21 @@ export function* getLdap() {
 }
 
 export function* addLdap({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, CREATE, LDAP, payload)
     const api = yield* newFunction()
-    const data = yield call(api.addLdapConfig, payload.data)
+    const data = yield call(
+      api.addLdapConfig,
+      payload.action.action_data,
+    )
+    yield call(api.addLdapConfig, payload.action.action_data)
     yield put(addLdapResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
+    yield put(addLdapResponse(null))
     if (isFourZeroOneError(e)) {
+      console.log(e)
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
@@ -56,11 +91,19 @@ export function* addLdap({ payload }) {
 }
 
 export function* editLdap({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, UPDATE, LDAP, payload)
     const api = yield* newFunction()
-    const data = yield call(api.updateLdapConfig, payload.data)
+    const data = yield call(
+      api.updateLdapConfig,
+      payload.data.action_data,
+    )
     yield put(editLdapResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
+    console.log(e)
+    yield put(editLdapResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -70,10 +113,13 @@ export function* editLdap({ payload }) {
 
 //delete
 export function* deleteLdap({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, DELETION, LDAP, payload)
     const api = yield* newFunction()
-    const data = yield call(api.deleteLdapConfig, payload.configId)
+    yield call(api.deleteLdapConfig, payload.configId)
     yield put(deleteLdapResponse(payload.configId))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteLdapResponse(null))
     if (isFourZeroOneError(e)) {
@@ -84,11 +130,15 @@ export function* deleteLdap({ payload }) {
 }
 
 export function* testLdap({ payload }) {
+  const audit = yield* initAudit()
   try {
+    // addAdditionalData(audit, UPDATE, LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.testLdapConfig, payload.data)
     yield put(testLdapResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
+    console.log(e)
     yield put(testLdapResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
