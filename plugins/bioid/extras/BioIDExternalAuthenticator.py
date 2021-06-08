@@ -280,6 +280,11 @@ class PersonAuthentication(PersonAuthenticationType):
         userService = CdiUtil.bean(UserService)
         authenticationService = CdiUtil.bean(AuthenticationService)
 
+        find_user_by_uid = authenticationService.getAuthenticatedUser()
+        if find_user_by_uid != None:
+            print "BioID. Process basic authentication. There is an authenticated user already"
+            return find_user_by_uid
+
         user_name = credentials.getUsername()
         user_password = credentials.getPassword()
 
