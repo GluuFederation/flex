@@ -18,8 +18,10 @@ import {
   SCRIPT_WRITE,
   SCRIPT_DELETE,
 } from '../../../../app/utils/PermChecker'
+import { useTranslation } from 'react-i18next'
 
 function ScriptListTable({ scripts, loading, dispatch, permissions }) {
+  const { t } = useTranslation()
   const userAction = {}
   const history = useHistory()
   const options = {}
@@ -54,7 +56,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         color: 'primary',
         id: 'editCustomScript' + rowData.inum,
       },
-      tooltip: 'Edit Script',
+      tooltip: `${t("Edit Script")}`,
       onClick: (event, rowData) => handleGoToCustomScriptEditPage(rowData),
       disabled: false,
     }))
@@ -70,7 +72,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
           handler={handleOptionsChange}
         />
       ),
-      tooltip: 'Advanced search options',
+      tooltip: `${t("Advanced search options")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {},
@@ -79,7 +81,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   if (hasPermission(permissions, SCRIPT_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: 'Search',
+      tooltip: `${t("Search")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
@@ -96,7 +98,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         color: 'secondary',
         id: 'deleteCustomScript' + rowData.inum,
       },
-      tooltip: 'Delete Custom Script',
+      tooltip: `${t("Delete Custom Script")}`,
       onClick: (event, rowData) => handleCustomScriptDelete(rowData),
       disabled: false,
     }))
@@ -104,7 +106,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   if (hasPermission(permissions, SCRIPT_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: 'Add Script',
+      tooltip: `${t("Add Script")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToCustomScriptAddPage(),
@@ -137,10 +139,10 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     <React.Fragment>
       <MaterialTable
         columns={[
-          { title: 'Inum', field: 'inum' },
-          { title: 'Name', field: 'name' },
+          { title: `${t("Inum")}`, field: 'inum' },
+          { title: `${t("Name")}`, field: 'name' },
           {
-            title: 'Enabled',
+            title: `${t("Enabled")}`,
             field: 'enabled',
             type: 'boolean',
             render: (rowData) => (
@@ -152,7 +154,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         ]}
         data={scripts}
         isLoading={loading}
-        title="Scripts"
+        title={t("Scripts")}
         actions={myActions}
         options={{
           search: false,

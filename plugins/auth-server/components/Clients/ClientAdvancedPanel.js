@@ -5,8 +5,10 @@ import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadFo
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import Toggle from 'react-toggle'
+import { useTranslation } from 'react-i18next'
 
 function ClientAdvancedPanel({ client, scripts, formik }) {
+  const { t } = useTranslation()
   const claim_uri_id = 'claim_uri_id'
   const request_uri_id = 'request_uri_id'
   const origin_uri_id = 'origin_uri_id'
@@ -56,7 +58,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
   return (
     <Container>
       <FormGroup row>
-        <GluuLabel label="Access Token as JWT" size={3} />
+        <GluuLabel label={t("Access Token as JWT")} size={3} />
         <Col sm={1}>
           <Input
             id="accessTokenAsJwt"
@@ -66,7 +68,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
             defaultChecked={client.accessTokenAsJwt}
           />
         </Col>
-        <GluuLabel label="Require AuthTime" size={3} />
+        <GluuLabel label={t("Require AuthTime")} size={3} />
         <Col sm={1}>
           <Input
             id="requireAuthTime"
@@ -76,7 +78,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
             defaultChecked={client.requireAuthTime}
           />
         </Col>
-        <GluuLabel label="Rpt As Jwt" size={3} />
+        <GluuLabel label={t("Rpt As Jwt")} size={3} />
         <Col sm={1}>
           <Input
             id="rptAsJwt"
@@ -88,7 +90,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Include Claims In IdToken" size={3} />
+        <GluuLabel label={t("Include Claims In IdToken")} size={3} />
         <Col sm={1}>
           <Input
             id="includeClaimsInIdToken"
@@ -98,7 +100,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
             defaultChecked={client.includeClaimsInIdToken}
           />
         </Col>
-        <GluuLabel label="Logout Session Required" size={3} />
+        <GluuLabel label={t("Logout Session Required")} size={3} />
         <Col sm={1}>
           <Input
             id="frontChannelLogoutSessionRequired"
@@ -110,10 +112,10 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Client Uri" />
+        <GluuLabel label={t("Client Uri")} />
         <Col sm={9}>
           <Input
-            placeholder="Enter the client Uri"
+            placeholder={t("Enter the client Uri")}
             id="clientUri"
             name="clientUri"
             defaultValue={client.clientUri}
@@ -122,10 +124,10 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Initiate Login Uri" />
+        <GluuLabel label={t("Initiate Login Uri")} />
         <Col sm={9}>
           <Input
-            placeholder="Enter the initiate Login Uri"
+            placeholder={t("Enter the initiate Login Uri")}
             id="initiateLoginUri"
             name="initiateLoginUri"
             defaultValue={client.initiateLoginUri}
@@ -134,10 +136,10 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Terms of service Uri" />
+        <GluuLabel label={t("Terms of service Uri")} />
         <Col sm={9}>
           <Input
-            placeholder="Enter the term of service Uri"
+            placeholder={t("Enter the term of service Uri")}
             id="tosUri"
             name="tosUri"
             defaultValue={client.tosUri}
@@ -146,10 +148,10 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="IdToken Binding Confirmation method" />
+        <GluuLabel label={t("IdToken Binding Confirmation method")} />
         <Col sm={9}>
           <Input
-            placeholder="Enter the idToken Binding confirmation"
+            placeholder={t("Enter the idToken Binding confirmation")}
             id="idTokenTokenBindingCnf"
             name="idTokenTokenBindingCnf"
             defaultValue={client.idTokenTokenBindingCnf}
@@ -158,7 +160,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Refresh Token Lifetime" />
+        <GluuLabel label={t("Refresh Token Lifetime")} />
         <Col sm={9}>
           <Input
             id="refreshTokenLifetime"
@@ -170,7 +172,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Oxd Id" />
+        <GluuLabel label={t("Oxd Id")} />
         <Col sm={9}>
           <Input
             id="oxdId"
@@ -181,7 +183,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Default Maximun Authentication Age" />
+        <GluuLabel label={t("Default Maximun Authentication Age")} />
         <Col sm={9}>
           <Input
             id="defaultMaxAge"
@@ -193,7 +195,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Access Token Lifetime" />
+        <GluuLabel label={t("Access Token Lifetime")} />
         <Col sm={9}>
           <Input
             id="accessTokenLifetime"
@@ -205,7 +207,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Show Software related settings ?" size={6} />
+        <GluuLabel label={t("Show Software related settings ?")} size={6} />
         <Col sm={2}>
           <Toggle
             defaultChecked={softwareSection}
@@ -215,7 +217,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       </FormGroup>
       {softwareSection && (
         <FormGroup row>
-          <GluuLabel label="Software Id" />
+          <GluuLabel label={t("Software Id")} />
           <Col sm={9}>
             <Input
               id="softwareId"
@@ -228,7 +230,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       )}
       {softwareSection && (
         <FormGroup row>
-          <GluuLabel label="Software Version" />
+          <GluuLabel label={t("Software Version")} />
           <Col sm={9}>
             <Input
               id="softwareVersion"
@@ -241,7 +243,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       )}
       {softwareSection && (
         <FormGroup row>
-          <GluuLabel label="Software Statement" />
+          <GluuLabel label={t("Software Statement")} />
           <Col sm={9}>
             <Input
               id="softwareStatement"
@@ -254,7 +256,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </FormGroup>
       )}
       <FormGroup row>
-        <GluuLabel label="Show CIBA related settings ?" size={6} />
+        <GluuLabel label={t("Show CIBA related settings ?")} size={6} />
         <Col sm={6}>
           <Toggle defaultChecked={cibaSection} onChange={handleCibaSection} />
         </Col>
@@ -264,7 +266,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
           name="backchannelTokenDeliveryMode"
           lsize={6}
           rsize={6}
-          label="CIBA Token Delivery Mode"
+          label={t("CIBA Token Delivery Mode")}
           formik={formik}
           value={client.backchannelTokenDeliveryMode}
           values={cibaDeliveryModes}
@@ -272,7 +274,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       )}
       {cibaSection && (
         <FormGroup row>
-          <GluuLabel label="CIBA Client Notification Endpoint" size={6} />
+          <GluuLabel label={t("CIBA Client Notification Endpoint")} size={6} />
           <Col sm={6}>
             <Input
               name="backchannelClientNotificationEndpoint"
@@ -284,7 +286,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       )}
       {cibaSection && (
         <FormGroup row>
-          <GluuLabel label="CIBA User Code Parameter?" size={7} />
+          <GluuLabel label={t("CIBA User Code Parameter?")} size={7} />
           <Col sm={5}>
             <Input
               name="backchannelUserCodeParameter"
@@ -296,7 +298,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </FormGroup>
       )}
       <FormGroup row>
-        <GluuLabel label="Front Channel Logout Uri" />
+        <GluuLabel label={t("Front Channel Logout Uri")} />
         <Col sm={9}>
           <Input
             id="frontChannelLogoutUri"
@@ -308,7 +310,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       </FormGroup>
       <GluuTypeAheadWithAdd
         name="contacts"
-        label="Contacts"
+        label={t("Contacts")}
         formik={formik}
         placeholder="Eg. sample@org.com"
         value={client.contacts || []}
@@ -318,9 +320,9 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="claimRedirectURIs"
-        label="Claim Redirect URIs"
+        label={t("Claim Redirect URIs")}
         formik={formik}
-        placeholder="Enter a valid claim uri eg https://..."
+        placeholder= {t("Enter a valid claim uri eg")+" https://..."}
         value={client.claimRedirectUris || []}
         options={claimRedirectURI}
         validator={uriValidator}
@@ -328,9 +330,9 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="requestUris"
-        label="Request Uris"
+        label={t("Request Uris")}
         formik={formik}
-        placeholder="Enter a valid request uri eg https://..."
+        placeholder={t("Enter a valid request uri eg")+" https://..."}
         value={client.requestUris || []}
         options={requestUris}
         validator={uriValidator}
@@ -338,9 +340,9 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="authorizedOrigins"
-        label="Authorized Javascript Origins"
+        label={t("Authorized Javascript Origins")}
         formik={formik}
-        placeholder="Enter a valid origin uri eg https://..."
+        placeholder={t("Enter a valid origin uri eg")+" https://..."}
         value={client.authorizedOrigins || []}
         options={authorizedOrigins}
         validator={uriValidator}
@@ -348,7 +350,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadForDn
         name="defaultAcrValues"
-        label="Default Acr Values"
+        label={t("Default Acr Values")}
         formik={formik}
         value={getMapping(client.defaultAcrValues, scripts)}
         options={scripts}

@@ -6,6 +6,7 @@ import {
 } from './../../../components';
 
 import { randomArray } from './../../../utilities';
+import { useTranslation } from 'react-i18next'
 
 const stars = [
   <span key="stars5">
@@ -45,31 +46,34 @@ const stars = [
   </span>,
 ];
 
-const SearchResultsCard = () => (
-  <React.Fragment>
-    <Card className="mb-3">
-      <CardBody>
-        <a href="#" className="h6 text-decoration-none">
-          { 'faker.lorem.sentence()' }
-        </a>
-        <br />
-        <div className="mb-2">
-          <span className="text-success">
-            { 'faker.internet.url()' }
-          </span>
-          <span className="mx-2">·</span>
-          { randomArray(stars) }
-          <span className="mx-2">·</span>
-          <span>
-            Votes
-          </span>
-        </div>
-        <p className="mb-0">
-          { 'faker.lorem.paragraph()' }
-        </p>
-      </CardBody>
-    </Card>
-  </React.Fragment>
-);
+const SearchResultsCard = () => {
+  const { t } = useTranslation()
+  return (
+    <React.Fragment>
+      <Card className="mb-3">
+        <CardBody>
+          <a href="#" className="h6 text-decoration-none">
+            { 'faker.lorem.sentence()' }
+          </a>
+          <br />
+          <div className="mb-2">
+            <span className="text-success">
+              { 'faker.internet.url()' }
+            </span>
+            <span className="mx-2">·</span>
+            { randomArray(stars) }
+            <span className="mx-2">·</span>
+            <span>
+              {t("Votes")}
+            </span>
+          </div>
+          <p className="mb-0">
+            { 'faker.lorem.paragraph()' }
+          </p>
+        </CardBody>
+      </Card>
+    </React.Fragment>
+  );
+}
 
 export { SearchResultsCard };

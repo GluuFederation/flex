@@ -10,8 +10,10 @@ import {
   ACR_WRITE,
 } from '../../../../../app/utils/PermChecker'
 import GluuSelectRow from '../../../../../app/routes/Apps/Gluu/GluuSelectRow'
+import { useTranslation } from 'react-i18next'
 
 function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
+  const { t } = useTranslation()
   const authScripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
     .filter((item) => item.enabled)
@@ -30,7 +32,7 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
         blocking={loading}
         keepInView={true}
         renderChildren={true}
-        message={'Performing the request, please wait!'}
+        message={t("Performing the request, please wait!")}
       >
         <Formik
           initialValues={initialValues}
@@ -43,7 +45,7 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
           {(formik) => (
             <Form onSubmit={formik.handleSubmit}>
               <GluuSelectRow
-                label="Default Authentication Method(Acr)"
+                label={t("Default Authentication Method(Acr)")}
                 name="defaultAcr"
                 value={acrs.defaultAcr}
                 formik={formik}

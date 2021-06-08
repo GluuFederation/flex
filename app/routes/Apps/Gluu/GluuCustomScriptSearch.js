@@ -5,6 +5,7 @@ import {
   CustomInput,
   FormGroup,
 } from './../../../components'
+import { useTranslation } from 'react-i18next'
 
 function GluuCustomScriptSearch({
   handler,
@@ -13,6 +14,7 @@ function GluuCustomScriptSearch({
   typeId,
   limit,
 }) {
+  const { t } = useTranslation()
   return (
     <FormGroup row style={{ marginTop: '10px' }}>
       <Input
@@ -56,7 +58,7 @@ function GluuCustomScriptSearch({
         id={patternId}
         type="text"
         onChange={handler}
-        placeholder="search pattern"
+        placeholder={t("search pattern")}
       />
     </FormGroup>
   )

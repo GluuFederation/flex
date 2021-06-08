@@ -7,8 +7,10 @@ import {
   FormGroup,
   Label,
 } from '../../../../app/components'
+import { useTranslation } from 'react-i18next'
 
 const AttributeDetailPage = ({ row }) => {
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       {/* START Content */}
@@ -17,7 +19,7 @@ const AttributeDetailPage = ({ row }) => {
           <Col sm={6}>
             <FormGroup row>
               <Label for="input" sm={6}>
-                Name:
+                {t("Name")}:
               </Label>
               <Label for="input" sm={6}>
                 {row.name}
@@ -27,7 +29,7 @@ const AttributeDetailPage = ({ row }) => {
           <Col sm={6}>
             <FormGroup row>
               <Label for="input" sm={6}>
-                Display Name:
+                {t("Display Name")}:
               </Label>
               <Label for="input" sm={6}>
                 {row.displayName}
@@ -38,13 +40,13 @@ const AttributeDetailPage = ({ row }) => {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={6}>Description:</Label>
+              <Label sm={6}>{t("Description")}:</Label>
               <Label sm={6}>{row.description}</Label>
             </FormGroup>
           </Col>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={6}>Status:</Label>
+              <Label sm={6}>{t("Status")}:</Label>
 
               <Label sm={6}>
                 <Badge color="primary">{row.status}</Badge>
@@ -54,7 +56,7 @@ const AttributeDetailPage = ({ row }) => {
         </Row>
         <Row>
           <Col sm={3}>
-            <Label sm={12}>Attribute Edit Type:</Label>
+            <Label sm={12}>{t("Attribute Edit Type")}:</Label>
           </Col>
           <Col sm={3}>
             {Array.from(row.editType).map((item, index) => (
@@ -64,7 +66,7 @@ const AttributeDetailPage = ({ row }) => {
             ))}
           </Col>
           <Col sm={3}>
-            <Label sm={12}>Attribute View Type:</Label>
+            <Label sm={12}>{t("Attribute View Type")}:</Label>
           </Col>
           <Col sm={3}>
             {Array.from(row.viewType).map((item, index) => (

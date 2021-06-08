@@ -6,8 +6,10 @@ import CustomScriptForm from './CustomScriptForm'
 import BlockUi from 'react-block-ui'
 import { editCustomScript } from '../../redux/actions/CustomScriptActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
+import { useTranslation } from 'react-i18next'
 
 function CustomScriptEditPage({ item, scripts, loading, dispatch }) {
+  const { t } = useTranslation()
   const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
@@ -28,7 +30,7 @@ function CustomScriptEditPage({ item, scripts, loading, dispatch }) {
               tag="div"
               blocking={loading}
               keepInView={true}
-              message={'Performing the request, please wait!'}
+              message={t("Performing the request, please wait!")}
             >
               <CustomScriptForm
                 item={item}

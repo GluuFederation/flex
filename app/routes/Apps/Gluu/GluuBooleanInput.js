@@ -1,6 +1,7 @@
 import React from 'react'
 import GluuLabel from './GluuLabel'
 import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
+import { useTranslation } from 'react-i18next'
 
 function GluuBooleanInput({
   label,
@@ -9,6 +10,7 @@ function GluuBooleanInput({
   lsize,
   rsize,
 }) {
+  const { t } = useTranslation()
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} />
@@ -20,8 +22,8 @@ function GluuBooleanInput({
             name={name}
             defaultValue={value}
           >
-            <option value="false">false</option>
-            <option value="true">true</option>
+            <option value="false">{t("false")}</option>
+            <option value="true">{t("true")}</option>
           </CustomInput>
         </InputGroup>
       </Col>

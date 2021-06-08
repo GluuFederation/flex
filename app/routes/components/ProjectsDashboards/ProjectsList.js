@@ -6,48 +6,52 @@ import {
   Badge,
   Progress
 } from './../../../components';
+import { useTranslation } from 'react-i18next'
 
-const ProjectsList = (props) => (
-  <React.Fragment>
-    <div className="d-flex flex-column">
-      <div className="mb-3 d-flex justify-content-between">
-        <span className="mb-0 text-inverse">
-          { props.title || 'faker.commerce.productName()' }
-        </span>
-        <Badge color={ `${ props.badgeColor }` } pill className="align-self-center">
-          { props.badgeTitle }
-        </Badge>
-      </div>
-      <Progress value={ `${ props.progressValue }` } className="mb-4" style={{ height: "5px" }} />
-      <div className="d-flex justify-content-between">
-        <div className="text-center">
-          <h5 className="mb-1">
-            { props.completeValue }%
-          </h5>
-          <span>
-            Complete
+const ProjectsList = (props) => {
+  const { t } = useTranslation()
+  return (
+    <React.Fragment>
+      <div className="d-flex flex-column">
+        <div className="mb-3 d-flex justify-content-between">
+          <span className="mb-0 text-inverse">
+            { props.title || 'faker.commerce.productName()' }
           </span>
+          <Badge color={ `${ props.badgeColor }` } pill className="align-self-center">
+            { props.badgeTitle }
+          </Badge>
         </div>
-        <div className="text-center">
-          <h5 className="mb-1">
-            { props.myTasksValue }
-          </h5>
-          <span>
-            My Tasks
-          </span>
+        <Progress value={ `${ props.progressValue }` } className="mb-4" style={{ height: "5px" }} />
+        <div className="d-flex justify-content-between">
+          <div className="text-center">
+            <h5 className="mb-1">
+              { props.completeValue }%
+            </h5>
+            <span>
+              {t("Complete")}
+            </span>
+          </div>
+          <div className="text-center">
+            <h5 className="mb-1">
+              { props.myTasksValue }
+            </h5>
+            <span>
+              {t("My Tasks")}
+            </span>
+          </div>
+          <div className="text-center">
+            <h5 className="mb-1">
+              { props.daysDueValue }
+            </h5>
+            <span>
+              {t("Days Due")}
+            </span>
+          </div>  
         </div>
-        <div className="text-center">
-          <h5 className="mb-1">
-            { props.daysDueValue }
-          </h5>
-          <span>
-            Days Due
-          </span>
-        </div>  
       </div>
-    </div>
-  </React.Fragment>
-);
+    </React.Fragment>
+  );
+}
 ProjectsList.propTypes = {
   title: PropTypes.string,
   badgeColor: PropTypes.string,

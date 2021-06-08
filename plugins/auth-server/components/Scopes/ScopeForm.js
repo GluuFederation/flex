@@ -15,8 +15,10 @@ import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import { useTranslation } from 'react-i18next'
 
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
+  const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   let dynamicScopeScripts = []
@@ -108,7 +110,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           <Form onSubmit={formik.handleSubmit}>
             {scope.inum && (
               <FormGroup row>
-                <GluuLabel label="Inum" size={4} />
+                <GluuLabel label={t("Inum")} size={4} />
                 <Col sm={8}>
                   <Input
                     style={{ backgroundColor: '#F5F5F5' }}
@@ -121,10 +123,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </FormGroup>
             )}
             <FormGroup row>
-              <GluuLabel label="Display Name" size={4} required />
+              <GluuLabel label={t("Display Name")} size={4} required />
               <Col sm={8}>
                 <Input
-                  placeholder="Enter the display name"
+                  placeholder={t("Enter the display name")}
                   id="displayName"
                   valid={
                     !formik.errors.displayName &&
@@ -143,11 +145,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             </FormGroup>
 
             <FormGroup row>
-              <GluuLabel label="Description" size={4} />
+              <GluuLabel label={t("Description")} size={4} />
               <Col sm={8}>
                 <Input
                   type="textarea"
-                  placeholder="Enter the description"
+                  placeholder={t("Enter the description")}
                   maxLength="4000"
                   id="description"
                   name="description"
@@ -158,7 +160,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </Col>
             </FormGroup>
             <FormGroup row>
-              <GluuLabel label="Is Default Scope" size={4} />
+              <GluuLabel label={t("Is Default Scope")} size={4} />
               <Col sm={8}>
                 <Input
                   id="defaultScope"
@@ -170,7 +172,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </Col>
             </FormGroup>
             <FormGroup row>
-              <GluuLabel label="Scope Type" size={4} />
+              <GluuLabel label={t("Scope Type")} size={4} />
               <Col sm={8}>
                 <InputGroup>
                   <CustomInput
@@ -180,11 +182,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     defaultValue={scope.scopeType}
                     onChange={handleScopeTypeChanged}
                   >
-                    <option value="">Choose...</option>
-                    <option value="oauth">OAuth</option>
-                    <option value="openid">OpenID</option>
-                    <option value="dynamic">Dynamic</option>
-                    <option value="spontaneous">Spontaneous</option>
+                    <option value="">{t("Choose")}...</option>
+                    <option value="oauth">{t("OAuth")}</option>
+                    <option value="openid">{t("OpenID")}</option>
+                    <option value="dynamic">{t("Dynamic")}</option>
+                    <option value="spontaneous">{t("Spontaneous")}</option>
                   </CustomInput>
                 </InputGroup>
               </Col>
@@ -200,7 +202,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 <Accordion.Body>
                   <GluuTypeAheadForDn
                     name="dynamicScopeScripts"
-                    label="Dynamic Scope Scripts"
+                    label={t("Dynamic Scope Scripts")}
                     formik={formik}
                     value={getMapping(
                       scope.dynamicScopeScripts,
@@ -219,7 +221,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 <Accordion.Body>
                   <GluuTypeAheadForDn
                     name="claims"
-                    label="Claims"
+                    label={t("Claims")}
                     formik={formik}
                     value={getMapping(scope.claims, claims)}
                     options={claims}
@@ -233,10 +235,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </Accordion.Header>
               <Accordion.Body>
                 <FormGroup row>
-                  <GluuLabel label="Spontaneous Client Id" size={4} />
+                  <GluuLabel label={t("Spontaneous Client Id")} size={4} />
                   <Col sm={8}>
                     <Input
-                      placeholder="Enter Spontaneous Client Id"
+                      placeholder={t("Enter Spontaneous Client Id")}
                       id="spontaneousClientId"
                       name="spontaneousClientId"
                       defaultValue={scope.attributes.spontaneousClientId}
@@ -245,7 +247,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   </Col>
                 </FormGroup>
                 <FormGroup row>
-                  <GluuLabel label="Show In Configuration Endpoint" size={4} />
+                  <GluuLabel label={t("Show In Configuration Endpoint")} size={4} />
                   <Col sm={8}>
                     <InputGroup>
                       <CustomInput
@@ -257,8 +259,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                         }
                         onChange={formik.handleChange}
                       >
-                        <option value="true">true</option>
-                        <option value="false">false</option>
+                        <option value="true">{t("true")}</option>
+                        <option value="false">{t("false")}</option>
                       </CustomInput>
                     </InputGroup>
                   </Col>
@@ -266,7 +268,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
 
                 <GluuTypeAheadForDn
                   name="spontaneousClientScopes"
-                  label="Spontaneous Client Scopes"
+                  label={t("Spontaneous Client Scopes")}
                   formik={formik}
                   value={getMapping(
                     scope.attributes.spontaneousClientScopes,

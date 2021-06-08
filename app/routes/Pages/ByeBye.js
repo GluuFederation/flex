@@ -3,8 +3,10 @@ import { connect } from 'react-redux'
 import { uuidv4 } from '../../utils/Util'
 import { EmptyLayout, Label } from '../../../app/components'
 import { logoutUser } from '../../redux/actions/LogoutActions'
+import { useTranslation } from 'react-i18next'
 
 function ByeBye({config, dispatch}) {
+  const { t } = useTranslation()
   useEffect(() => {
     if(!!config){
       const state = uuidv4()
@@ -20,7 +22,7 @@ function ByeBye({config, dispatch}) {
     <div className='fullscreen'>
       <EmptyLayout.Section center>
         <Label style={{ fontSize: '2em', fontWeight: 'bold' }}>
-          Thanks for using the admin ui.
+          {t("Thanks for using the admin ui")}.
         </Label>
       </EmptyLayout.Section>
     </div>

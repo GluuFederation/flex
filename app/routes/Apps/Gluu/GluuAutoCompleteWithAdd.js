@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { FormGroup, Col, Row, Button, Input } from '../../../components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
+import { useTranslation } from 'react-i18next'
 
 function GluuAutoCompleteWithAdd({
   label,
@@ -15,6 +16,7 @@ function GluuAutoCompleteWithAdd({
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
+  const { t } = useTranslation()
 
   const addItem = () => {
     const newItem = document.getElementById(inputId).value
@@ -50,7 +52,7 @@ function GluuAutoCompleteWithAdd({
             <Input placeholder={placeholder} id={inputId} />
           </Col>
           <Button color="primary" type="button" onClick={addItem}>
-            Add
+            {t("Add")}
           </Button>
         </Row>
         &nbsp;

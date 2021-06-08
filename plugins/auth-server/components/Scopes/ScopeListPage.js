@@ -19,8 +19,10 @@ import {
   SCOPE_WRITE,
   SCOPE_DELETE,
 } from '../../../../app/utils/PermChecker'
+import { useTranslation } from 'react-i18next'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
+  const { t } = useTranslation()
   const userAction = {}
   const options = {}
   const [limit, setLimit] = useState(100000)
@@ -78,7 +80,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         color: 'primary',
         id: 'editScope' + rowData.inum,
       },
-      tooltip: 'Edit Scope',
+      tooltip: `${t("Edit Scope")}`,
       onClick: (event, rowData) => handleGoToScopeEditPage(rowData),
       disabled: !hasPermission(permissions, SCOPE_WRITE),
     }))
@@ -94,7 +96,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
           handler={handleOptionsChange}
         />
       ),
-      tooltip: 'Advanced search options',
+      tooltip: `${t("Advanced search options")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {},
@@ -103,7 +105,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   if (hasPermission(permissions, SCOPE_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: 'search',
+      tooltip: `${t("search")}`,
       iconProps: { color: 'primary', fontSize: 'large' },
       isFreeAction: true,
       onClick: () => {
@@ -116,7 +118,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   if (hasPermission(permissions, SCOPE_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: 'Add Scope',
+      tooltip: `${t("Add Scope")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToScopeAddPage(),
@@ -131,7 +133,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         color: 'secondary',
         id: 'deleteScope' + rowData.inum,
       },
-      tooltip: 'Delete Scope',
+      tooltip: `${t("Delete Scope")}`,
       onClick: (event, rowData) => handleScopeDelete(rowData),
       disabled: !hasPermission(permissions, SCOPE_DELETE),
     }))
@@ -141,11 +143,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     <React.Fragment>
       <MaterialTable
         columns={[
-          { title: 'iNum', field: 'inum' },
-          { title: 'Display Name', field: 'displayName' },
-          { title: 'Description', field: 'description' },
+          { title: `${t("iNum")}`, field: 'inum' },
+          { title: `${t("Display Name")}`, field: 'displayName' },
+          { title: `${t("Description")}`, field: 'description' },
           {
-            title: 'Type',
+            title: `${t("Type")}`,
             field: 'scopeType',
             render: (rowData) => (
               <Badge color="primary">{rowData.scopeType}</Badge>
@@ -154,7 +156,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         ]}
         data={scopes}
         isLoading={loading}
-        title="Scopes"
+        title={t("Scopes")}
         actions={myActions}
         options={{
           search: true,

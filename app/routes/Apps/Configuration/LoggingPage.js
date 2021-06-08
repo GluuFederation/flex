@@ -18,7 +18,10 @@ import {
   LOGGING_WRITE,
 } from '../../../utils/PermChecker'
 
+import { useTranslation } from "react-i18next";
+
 function LoggingPage({ logging, dispatch, permissions, loading }) {
+  const { t, i18n } = useTranslation();
   useEffect(() => {
     dispatch(getLoggingConfig())
   }, [])
@@ -38,7 +41,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
         blocking={loading}
         keepInView={true}
         renderChildren={true}
-        message={'Performing the request, please wait!'}
+        message={t("Performing the request, please wait!")}
       >
         <Container>
           <Card>

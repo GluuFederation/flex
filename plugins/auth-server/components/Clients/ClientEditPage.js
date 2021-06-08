@@ -7,6 +7,7 @@ import BlockUi from 'react-block-ui'
 import { getScopes } from '../../redux/actions/ScopeActions'
 import { getCustomScripts } from '../../redux/actions/CustomScriptActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
+import { useTranslation } from 'react-i18next'
 
 function ClientEditPage({
   client,
@@ -16,6 +17,7 @@ function ClientEditPage({
   permissions,
   dispatch,
 }) {
+  const { t } = useTranslation()
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
@@ -57,7 +59,7 @@ function ClientEditPage({
         blocking={loading}
         keepInView={true}
         renderChildren={true}
-        message={'Performing the request, please wait!'}
+        message={t("Performing the request, please wait!")}
       >
         <ClientWizardForm
           client={client}

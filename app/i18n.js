@@ -23,8 +23,7 @@ i18n
     // have a common namespace used around the full app
     ns: ['translation'],
     defaultNS: 'translation',
-    keySeparator: false, // we use content as keys
-    interpolation: {},
+   keySeparator: false, // we use content as keys
     react: {
       wait: true,
     },

@@ -2,7 +2,10 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField';
 import { Container, Row, Col } from '../../../../app/components'
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
+import { useTranslation } from 'react-i18next'
+
 const CustomScriptDetailPage = ({ row, loading }) => {
+  const { t } = useTranslation()
   function getBadgeTheme(status) {
     if (status) {
       return 'primary'
@@ -54,31 +57,31 @@ const CustomScriptDetailPage = ({ row, loading }) => {
         <Row>
           <Col sm={4}>
             <GluuFormDetailRow
-              label="Programming Language"
+              label={t("Programming Language")}
               value={row.programmingLanguage}
             />
           </Col>
           <Col sm={6}>
-            <GluuFormDetailRow label="Script Type" value={row.scriptType} />
+            <GluuFormDetailRow label={t("Script Type")} value={row.scriptType} />
           </Col>
         </Row>
 
         <Row>
           <Col sm={4}>
-            <GluuFormDetailRow label="Level" value={row.level} />
+            <GluuFormDetailRow label={t("Level")} value={row.level} />
           </Col>
           <Col sm={6}>
-            <GluuFormDetailRow label="revision" value={row.revision} />
+            <GluuFormDetailRow label={t("revision")} value={row.revision} />
           </Col>
         </Row>
 
         <Row>
-          <Col sm={4}> Module Properties: </Col>
+          <Col sm={4}> {t("Module Properties")}: </Col>
           <Col sm={2}>
             {Object.keys(row.moduleProperties).map((key, i) => (
               <GluuFormDetailRow
                 key={key}
-                label="value1"
+                label={t("value")+"1"}
                 value={String(row.moduleProperties[key].value1)}
               />
             ))}
@@ -87,7 +90,7 @@ const CustomScriptDetailPage = ({ row, loading }) => {
             {Object.keys(row.moduleProperties).map((key, i) => (
               <GluuFormDetailRow
                 key={key}
-                label="value2"
+                label={t("value")+"2"}
                 value={String(row.moduleProperties[key].value2)}
               />
             ))}
@@ -96,7 +99,7 @@ const CustomScriptDetailPage = ({ row, loading }) => {
             {Object.keys(row.moduleProperties).map((key, i) => (
               <GluuFormDetailRow
                 key={key}
-                label="description"
+                label={t("description")}
                 value={String(row.moduleProperties[key].description)}
               />
             ))}

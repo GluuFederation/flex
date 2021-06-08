@@ -15,8 +15,10 @@ import {
   LOGGING_READ,
   LOGGING_WRITE,
 } from '../../../../../app/utils/PermChecker'
+import { useTranslation } from 'react-i18next'
 
 function LoggingPage({ logging, dispatch, permissions, loading }) {
+  const { t } = useTranslation()
   useEffect(() => {
     dispatch(getLoggingConfig())
   }, [])
@@ -36,7 +38,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
         blocking={loading}
         keepInView={true}
         renderChildren={true}
-        message={'Performing the request, please wait!'}
+        message={t("Performing the request, please wait!")}
       >
         <Formik
           initialValues={initialValues}
@@ -49,7 +51,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
           {(formik) => (
             <Form onSubmit={formik.handleSubmit}>
               <GluuSelectRow
-                label="Logging level"
+                label={t("Logging level")}
                 name="loggingLevel"
                 formik={formik}
                 lsize={4}
@@ -58,7 +60,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                 values={levels}
               ></GluuSelectRow>
               <GluuInputRow
-                label="Logging layout"
+                label={t("Logging layout")}
                 name="loggingLayout"
                 formik={formik}
                 lsize={4}
@@ -67,7 +69,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                 value={logging.loggingLayout}
               ></GluuInputRow>
               <GluuCheckBoxRow
-                label="Enable HTTP Logging"
+                label={t("Enable HTTP Logging")}
                 name="httpLoggingEnabled"
                 formik={formik}
                 lsize={5}
@@ -75,7 +77,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                 value={logging.httpLoggingEnabled}
               ></GluuCheckBoxRow>
               <GluuCheckBoxRow
-                label="Disable JSK Logger?"
+                label={t("Disable JSK Logger?")}
                 name="disableJdkLogger"
                 formik={formik}
                 lsize={5}
@@ -83,7 +85,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                 value={logging.disableJdkLogger}
               ></GluuCheckBoxRow>
               <GluuCheckBoxRow
-                label="Enable Oauth Audit Logging?"
+                label={t("Enable Oauth Audit Logging?")}
                 name="enabledOAuthAuditLogging"
                 formik={formik}
                 lsize={5}

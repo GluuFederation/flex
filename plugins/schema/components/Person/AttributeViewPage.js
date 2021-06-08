@@ -29,7 +29,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={'Performing the request, please wait!'}
+          message={t("Performing the request, please wait!")}
         >
           <Card className="mb-3">
             <CardBody>

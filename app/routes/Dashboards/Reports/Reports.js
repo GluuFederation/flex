@@ -15,8 +15,10 @@ import {
   getScopes,
   getOpenidClients,
 } from '../../../redux/actions/ReportsActions'
+import { useTranslation } from 'react-i18next'
 
 function Reports({ attributes, clients, scopes, scripts, dispatch }) {
+  const { t } = useTranslation()
   useEffect(() => {
     if (attributes.length === 0) {
       dispatch(getAttributes())
@@ -39,7 +41,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                All OIDC Clients
+                {t("All OIDC Clients")}
               </CardTitle>
               <div>
                 <div className="mb-3">
@@ -57,7 +59,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                All Attributes
+                {t("All Attributes")}
               </CardTitle>
               <div>
                 <div className="mb-3">
@@ -75,7 +77,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                All Scopes
+                {t("All Scopes")}
               </CardTitle>
               <div>
                 <div className="mb-3">
@@ -93,7 +95,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                All Custom Scripts
+                {t("All Custom Scripts")}
               </CardTitle>
               <div>
                 <div className="mb-3">

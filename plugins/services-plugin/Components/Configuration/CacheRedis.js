@@ -10,13 +10,16 @@ import {
   CustomInput,
 } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import { useTranslation } from 'react-i18next'
+
 function CacheRedis({ config, formik }) {
+  const { t } = useTranslation()
   return (
     <Card>
       <CardBody>
         <FormGroup row>
         <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>redisConfiguration:</Col>
-          <GluuLabel label="Redis Provider Type" size={4} />
+          <GluuLabel label={t("Redis Provider Type")} size={4} />
           <Col sm={8}>
             <InputGroup>
               <CustomInput
@@ -26,20 +29,20 @@ function CacheRedis({ config, formik }) {
                 defaultValue={config.redisProviderType}
                 onChange={formik.handleChange}
               >
-                <option>STANDALONE</option>
-                <option>CLUSTER</option>
-                <option>SHARDED</option>
-                <option>SENTINEL</option>
+                <option>{t("STANDALONE")}</option>
+                <option>{t("CLUSTER")}</option>
+                <option>{t("SHARDED")}</option>
+                <option>{t("SENTINEL")}</option>
               </CustomInput>
             </InputGroup>
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label="Servers" size={2} />
+          <GluuLabel label={t("Servers")} size={2} />
           <Col sm={7}>
             <Badge color="primary">{config.servers}</Badge>
           </Col>
-          <GluuLabel label="Use SSL" size={2} />
+          <GluuLabel label={t("Use SSL")} size={2} />
           <Col sm={1}>
             <Input
               type="checkbox"
@@ -51,7 +54,7 @@ function CacheRedis({ config, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label="Password" size={2}/>
+          <GluuLabel label={t("Password")} size={2}/>
           <Col sm={3}>
             <Input
               name="password"
@@ -62,7 +65,7 @@ function CacheRedis({ config, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label="sentinelMasterGroupName" size={4}/>
+          <GluuLabel label={t("sentinelMasterGroupName")} size={4}/>
           <Col sm={3}>
             <Input
               name="sentinelMasterGroupName"
@@ -73,7 +76,7 @@ function CacheRedis({ config, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label="sslTrustStoreFilePath" size={3}/>
+          <GluuLabel label={t("sslTrustStoreFilePath")} size={3}/>
           <Col sm={3}>
             <Input
               name="sslTrustStoreFilePath"
@@ -84,7 +87,7 @@ function CacheRedis({ config, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label="Default Put Expiration" size={2} />
+          <GluuLabel label={t("Default Put Expiration")} size={2} />
           <Col sm={2}>
             <Input
               id="redisDefaultPutExpiration"
@@ -94,7 +97,7 @@ function CacheRedis({ config, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label="Max Retry Attempts" size={2} />
+          <GluuLabel label={t("Max Retry Attempts")} size={2} />
           <Col sm={2}>
             <Input
               id="maxRetryAttempts"
@@ -104,7 +107,7 @@ function CacheRedis({ config, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label="So Timeout" size={2} />
+          <GluuLabel label={t("So Timeout")} size={2} />
           <Col sm={2}>
             <Input
               id="soTimeout"
@@ -116,7 +119,7 @@ function CacheRedis({ config, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label="Max Idle Connections" size={2} />
+          <GluuLabel label={t("Max Idle Connections")} size={2} />
           <Col sm={2}>
             <Input
               id="maxIdleConnections"
@@ -126,7 +129,7 @@ function CacheRedis({ config, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label="Max Total Connections" size={2} />
+          <GluuLabel label={t("Max Total Connections")} size={2} />
           <Col sm={2}>
             <Input
               id="maxTotalConnections"
@@ -136,7 +139,7 @@ function CacheRedis({ config, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label="Connection Timeout" size={2} />
+          <GluuLabel label={t("Connection Timeout")} size={2} />
           <Col sm={2}>
             <Input
               id="connectionTimeout"

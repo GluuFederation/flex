@@ -4,6 +4,7 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import Typography from '@material-ui/core/Typography'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 
 const theme = createMuiTheme({
   typography: {
@@ -14,6 +15,7 @@ const theme = createMuiTheme({
 })
 
 function GluuArrayCompleter({ label, name, value, options, required }) {
+  const { t } = useTranslation()
   return (
     <FormGroup row>
       {!!required ? (
@@ -35,8 +37,7 @@ function GluuArrayCompleter({ label, name, value, options, required }) {
         />
         <ThemeProvider theme={theme}>
           <Typography variant="subtitle1">
-            Enter multiple items by selecting from appeared dropdown after
-            entering each item.
+            {t("Enter multiple items by selecting from appeared dropdown after entering each item.")}
           </Typography>
         </ThemeProvider>
       </Col>

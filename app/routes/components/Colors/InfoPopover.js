@@ -5,6 +5,7 @@ import {
   PopoverHeader,
   PopoverBody
 } from './../../../components';
+import { useTranslation } from 'react-i18next'
 
 export const POPOVER_BODY_PARTS = [
   '.text-',
@@ -19,28 +20,31 @@ export const POPOVER_BODY_PARTS = [
   '.btn-'
 ];
 
-export const InfoPopover = ({ colorId, children, className, tag: Tag, ...otherProps }) => (
-  <React.Fragment>
-    <Tag color="link" id={ `color-popover--${ colorId }` } className={ className } { ...otherProps }>
-      { children }
-    </Tag>
-    <UncontrolledPopover
-      target={ `color-popover--${ colorId }` }
-      placement="top"
-    >
-      <PopoverHeader>
-        Color Options for { colorId }
-      </PopoverHeader>
-      <PopoverBody>
-        {
-          POPOVER_BODY_PARTS.map((partText, index) =>
-            <span className="mr-1" key={ index }>{ `${partText}${colorId}` }</span>
-          )
-        }   
-      </PopoverBody>
-    </UncontrolledPopover>
-  </React.Fragment>
-);
+export const InfoPopover = ({ colorId, children, className, tag: Tag, ...otherProps }) => {
+  const { t } = useTranslation()
+  return (
+    <React.Fragment>
+      <Tag color="link" id={ `color-popover--${ colorId }` } className={ className } { ...otherProps }>
+        { children }
+      </Tag>
+      <UncontrolledPopover
+        target={ `color-popover--${ colorId }` }
+        placement="top"
+      >
+        <PopoverHeader>
+          {t("Color Options for")+" "} { colorId }
+        </PopoverHeader>
+        <PopoverBody>
+          {
+            POPOVER_BODY_PARTS.map((partText, index) =>
+              <span className="mr-1" key={ index }>{ `${partText}${colorId}` }</span>
+            )
+          }   
+        </PopoverBody>
+      </UncontrolledPopover>
+    </React.Fragment>
+  );
+}
 InfoPopover.propTypes = {
   colorId: PropTypes.string,
   children: PropTypes.node,

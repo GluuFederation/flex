@@ -25,8 +25,10 @@ import { NavbarNavigation } from './NavbarNavigation';
 import { DropdownProfile } from './../Dropdowns/DropdownProfile';
 
 import { randomAvatar } from './../../../utilities';
+import { useTranslation } from 'react-i18next'
 
 const NavbarExample = ({ themeColor, themeStyle, navStyle }) => {
+  const { t } = useTranslation()
   return (
     <NavbarThemeProvider style={ themeStyle } color={ themeColor } className="shadow-sm">
       <Navbar expand="lg" themed>
@@ -89,11 +91,11 @@ const NavbarExample = ({ themeColor, themeStyle, navStyle }) => {
 
       <Navbar light expand="lg" className="py-3 bg-white">
         <h1 className="mb-0 h4">
-          Navbar Only
+          {t("Navbar Only")}
         </h1>
                 
         <Button color={ themeColor } className="px-4 my-sm-0">
-          Download <i className="fa ml-1 fa-fw fa-download"></i>
+          {t("Download")} <i className="fa ml-1 fa-fw fa-download"></i>
         </Button>
       </Navbar>
     </NavbarThemeProvider>
