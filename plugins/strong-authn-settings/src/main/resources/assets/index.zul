@@ -3,7 +3,7 @@
     <z:div viewModel="@('org.gluu.casa.plugins.strongauthn.vm.FragmentViewModel')">
 
         <z:div visible="@load(vm.customPolicy)">            
-            <a class="underline dark-blue2" href="${base}/policy.zul" target="_blank">
+            <a class="underline dark-blue2" href="${zkService.contextPath}${base}/policy.zul" target="_blank">
                 ${labels.policy.go_manage}
                 <i class="fas fa-external-link-alt" />
             </a>
