@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FormGroup, Col, Row, Button, Input } from "../../../components";
 import GluuLabel from "../Gluu/GluuLabel";
 
