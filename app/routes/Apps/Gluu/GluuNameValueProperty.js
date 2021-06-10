@@ -1,101 +1,87 @@
-import React, { useState } from 'react'
-import { FormGroup, Col, Row, Button, Input } from '../../../components'
-import GluuLabel from '../Gluu/GluuLabel'
+import React, { useState } from "react";
+import { FormGroup, Col, Row, Button, Input } from "../../../components";
+import GluuLabel from "../Gluu/GluuLabel";
 
+function GluuNameValueProperty({
+  nameValueLabel,
+  name,
+  formik = null,
+  keyId,
+  keyName,
+  keyLabel = "Key",
+  keyPlaceholder = "Enter key",
+  valueId,
+  valueName,
+  valueLabel = "Value",
+  valuePlaceholder = "Enter value",
+  dataArr = [],
+}) {
+  const [dataArray, setDataArray] = useState(dataArr);
 
-class GluuNameValueProperty extends React.Component {
+  const addClick = () => {
+    setDataArray((prevDataArray) => [...prevDataArray, { key: "", value: "" }]);
+  };
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			nameValueLabel: this.props.nameValueLabel,
-			name: this.props.name,
-			formik: this.props.formik || null,
-			keyId: this.props.keyId,
-			keyName: this.props.keyName,
-			keyLabel: this.props.keyLabel || 'Key',
-			keyPlaceholder: this.props.keyPlaceholder || 'Enter key',
-			valueId: this.props.valueId,
-			valueName: this.props.valueName,
-			valueLabel: this.props.valueLabel || 'Value',
-			valuePlaceholder: this.props.valuePlaceholder || 'Enter value',
-			dataArr: this.props.dataArr || [],
-		};
-	}
+  const handleChange = (i) => (e) => {
+    const { name, value } = e.target;
 
-	addClick() {
-		this.setState(prevState => ({
-			dataArr: [...prevState.dataArr, { key: "", value: "" }]
-		}))
-	}
+    const newDataArr = [...dataArray];
+    newDataArr[i] = { ...newDataArr[i], [name]: value };
 
-	createUI() {
-		return this.state.dataArr.map((element, index) => (
-			<div key={index}>
-				<FormGroup row>
-					<GluuLabel label={this.state.keyLabel} />
-					<Col sm={9}>
-						<Input
-							placeholder={this.state.keyPlaceholder}
-							id={this.state.keyId}
-							name={this.state.keyName}
-							defaultValue={element.key}
-							onChange={this.handleChange.bind(this, index)}
-						/>
-					</Col>
-				
-					<GluuLabel label={this.state.valueLabel} />
-					<Col sm={9}>
-						<Input
-							placeholder={this.state.valuePlaceholder}
-							id={this.state.valueId}
-							name={this.state.valueName}
-							defaultValue={element.value}
-							onChange={this.handleChange.bind(this, index)}
-						/>
-					</Col>
-					<Col sm={3}>
-						<input type='button' value='remove' onClick={this.removeClick.bind(this, index)} />
-					</Col>
-				</FormGroup>
-					
-			</div>
+    setDataArray(newDataArr);
 
-		))
-	}
+    formik.setFieldValue(name, newDataArr);
+  };
 
-	handleInputChange(input, e) {
-		console.log("value", input)
-	}
+  const removeClick = (i) => {
+    const newDataArray = [...dataArray];
+    newDataArray.splice(i, 1);
+    setDataArray(newDataArray);
+    formik.setFieldValue(name, newDataArray);
+  };
 
-	handleChange(i, e) {
-		const { name, value } = e.target;
-		let dataArr = [...this.state.dataArr];
-		dataArr[i] = { ...dataArr[i], [name]: value };
-		this.setState({ dataArr });
-		this.state.formik.setFieldValue(this.state.name, dataArr);
-	}
+  return (
+    <Row>
+      <GluuLabel label={nameValueLabel} size={9} />
 
-	removeClick(i) {
-		let dataArr = [...this.state.dataArr];
-		dataArr.splice(i, 1);
-		this.setState({ dataArr });
-		this.state.formik.setFieldValue(this.state.name, dataArr);
-	}
+      <input type="button" value="Add more" onClick={addClick} />
 
+      {dataArray.map((element, index) => (
+        <div key={index}>
+          <FormGroup row>
+            <GluuLabel label={keyLabel} />
+            <Col sm={9}>
+              <Input
+                placeholder={keyPlaceholder}
+                id={keyId}
+                name={keyName}
+                defaultValue={element.key}
+                onChange={handleChange(index)}
+              />
+            </Col>
 
-	render() {
-		return (
-
-			<Row>
-				<GluuLabel label={this.state.nameValueLabel} size={9} />
-
-				<input type='button' value='Add more' onClick={this.addClick.bind(this)} />
-
-				{this.createUI()}
-			</Row>
-		);
-	}
+            <GluuLabel label={valueLabel} />
+            <Col sm={9}>
+              <Input
+                placeholder={valuePlaceholder}
+                id={valueId}
+                name={valueName}
+                defaultValue={element.value}
+                onChange={handleChange(index)}
+              />
+            </Col>
+            <Col sm={3}>
+              <input
+                type="button"
+                value="remove"
+                onClick={() => removeClick(index)}
+              />
+            </Col>
+          </FormGroup>
+        </div>
+      ))}
+    </Row>
+  );
 }
 
-export default GluuNameValueProperty;	
+export default GluuNameValueProperty;
