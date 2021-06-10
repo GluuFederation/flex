@@ -10,6 +10,8 @@ import {
   deleteCustomScript,
   getCustomScriptByType,
   setCurrentItem,
+  getCustomScripts,
+  
 } from '../../redux/actions/CustomScriptActions'
 import {
   hasPermission,
@@ -20,16 +22,16 @@ import {
 } from '../../../../app/utils/PermChecker'
 
 function ScriptListTable({ scripts, loading, dispatch, permissions }) {
-  const userAction = {}
   const history = useHistory()
   const options = {}
   const myActions = []
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
-  const typeId = 'SearchType'
-  const [limit, setLimit] = useState(100)
+  const typeId = 'typeId'
+  const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
-  const [type, setType] = useState('PERSON_AUTHENTICATION')
+  const [selectedScripts, setSelectedScripts] = useState(scripts)
+  const [type, setType] = useState(true)
   function makeOptions() {
     options['limit'] = parseInt(limit)
     if (pattern) {
@@ -41,9 +43,11 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   }
   useEffect(() => {
     makeOptions()
-    buildPayload(userAction, 'Fetch custom script', options)
-    dispatch(getCustomScriptByType(userAction))
+    dispatch(getCustomScripts(options))
   }, [])
+  useEffect(() => {
+    setSelectedScripts(scripts.filter((script) => (script.scriptType == document.getElementById(typeId).value)))
+  }, [scripts])
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -84,8 +88,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        buildPayload(userAction, 'Search custom scripts', options)
-        dispatch(getCustomScriptByType(userAction))
+        dispatch(getCustomScriptByType(options))
       },
     })
   }
@@ -110,27 +113,27 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       onClick: () => handleGoToCustomScriptAddPage(),
     })
   }
-  function handleOptionsChange() {
+  function handleOptionsChange(i) {
     setLimit(document.getElementById(limitId).value)
     setPattern(document.getElementById(patternId).value)
-    let types = document.getElementById(typeId)
-    setType(types.options[types.selectedIndex].text)
+    setType(document.getElementById(typeId).value)
+    setSelectedScripts(scripts.filter((script) => (script.scriptType == document.getElementById(typeId).value)))
+    //setStatus(document.getElementById(statusId).value)
   }
   function handleGoToCustomScriptAddPage() {
-    return history.push('/auth-server/script/new')
+    return history.push('/script/new')
   }
   function handleGoToCustomScriptEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/auth-server/script/edit:` + row.inum)
+    return history.push(`/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
     setItem(row)
     toggle()
   }
-  function onDeletionConfirmed(message) {
-    buildPayload(userAction, message, item.inum)
-    dispatch(deleteCustomScript(userAction))
-    history.push('/auth-server/scripts')
+  function onDeletionConfirmed() {
+    dispatch(deleteCustomScript(item.inum))
+    history.push('/scripts')
     toggle()
   }
   return (
@@ -150,7 +153,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
             ),
           },
         ]}
-        data={scripts}
+        data={selectedScripts}
         isLoading={loading}
         title="Scripts"
         actions={myActions}
@@ -160,7 +163,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
           selection: false,
           pageSize: 10,
           rowStyle: (rowData) => ({
-            backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+            backgroundColor: rowData.enabled ? '#00A36C' : '#FFF',
           }),
           headerStyle: {
             backgroundColor: '#03a96d',
