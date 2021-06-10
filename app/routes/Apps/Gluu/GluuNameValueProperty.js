@@ -4,7 +4,7 @@ import GluuLabel from "../Gluu/GluuLabel";
 
 function GluuNameValueProperty({
   nameValueLabel,
-  name,
+  componentName,
   formik = null,
   keyId,
   keyName,
@@ -30,14 +30,14 @@ function GluuNameValueProperty({
 
     setDataArray(newDataArr);
 
-    formik.setFieldValue(name, newDataArr);
+    formik.setFieldValue(componentName, newDataArr);
   };
 
   const removeClick = (i) => {
     const newDataArray = [...dataArray];
     newDataArray.splice(i, 1);
     setDataArray(newDataArray);
-    formik.setFieldValue(name, newDataArray);
+    formik.setFieldValue(componentName, newDataArray);
   };
 
   return (

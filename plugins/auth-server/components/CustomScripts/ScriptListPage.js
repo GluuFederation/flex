@@ -113,7 +113,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       onClick: () => handleGoToCustomScriptAddPage(),
     })
   }
-  function handleOptionsChange(i) {
+  function handleOptionsChange() {
     setLimit(document.getElementById(limitId).value)
     setPattern(document.getElementById(patternId).value)
     setType(document.getElementById(typeId).value)
@@ -121,11 +121,11 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     //setStatus(document.getElementById(statusId).value)
   }
   function handleGoToCustomScriptAddPage() {
-    return history.push('/script/new')
+    return history.push('/auth-server/script/new')
   }
   function handleGoToCustomScriptEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/script/edit:` + row.inum)
+    return history.push(`/auth-server/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
     setItem(row)
@@ -133,7 +133,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   }
   function onDeletionConfirmed() {
     dispatch(deleteCustomScript(item.inum))
-    history.push('/scripts')
+    history.push('/auth-server/scripts')
     toggle()
   }
   return (
@@ -163,7 +163,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
           selection: false,
           pageSize: 10,
           rowStyle: (rowData) => ({
-            backgroundColor: rowData.enabled ? '#00A36C' : '#FFF',
+            backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
           }),
           headerStyle: {
             backgroundColor: '#03a96d',
