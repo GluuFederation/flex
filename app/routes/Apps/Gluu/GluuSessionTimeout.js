@@ -9,7 +9,7 @@ const SessionTimeout = ({isAuthenticated}) => {
   const [timeoutModalOpen, setTimeoutModalOpen] = useState(false);
   const [timeoutCountdown, setTimeoutCountdown] = useState(0);
   const idleTimer = useRef(null);
-
+  const SESSION_TIMEOUT_IN_MILISECONDS= process.env.SESSION_TIMEOUT_IN_MILISECONDS;
   const history = useHistory()
 
   const clearSessionTimeout = () => {
@@ -69,7 +69,7 @@ const SessionTimeout = ({isAuthenticated}) => {
         onActive={onActive}
         onIdle={onIdle}
         debounce={250}
-        timeout={120000}
+        timeout={SESSION_TIMEOUT_IN_MILISECONDS}
       />
       <SessionTimeoutDialog
         countdown={timeoutCountdown}

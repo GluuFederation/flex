@@ -10,7 +10,9 @@ require("dotenv").config({
 });
 
 const BASE_PATH = process.env.BASE_PATH || "/";
-
+const SESSION_TIMEOUT_IN_MILISECONDS =
+  process.env.SESSION_TIMEOUT_IN_MILISECONDS || 120000
+  
 module.exports = {
   name: "client",
   devtool: "cheap-eval-source-map",
@@ -44,7 +46,8 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("development"),
       "process.env.BASE_PATH": JSON.stringify(BASE_PATH),
-      "process.env.API_BASE_URL": JSON.stringify(process.env.API_BASE_URL)
+      "process.env.API_BASE_URL": JSON.stringify(process.env.API_BASE_URL),
+      'process.env.SESSION_TIMEOUT_IN_MILISECONDS': JSON.stringify(SESSION_TIMEOUT_IN_MILISECONDS),
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),

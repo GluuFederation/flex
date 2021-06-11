@@ -16,6 +16,8 @@ const CONFIG_API_BASE_URL =
   process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 const API_BASE_URL =
   process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
+const SESSION_TIMEOUT_IN_MILISECONDS =
+  process.env.SESSION_TIMEOUT_IN_MILISECONDS || 120000
 
 module.exports = {
   devtool: 'source-map',
@@ -52,6 +54,7 @@ module.exports = {
       'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
       'process.env.API_BASE_URL': JSON.stringify(API_BASE_URL),
       'process.env.CONFIG_API_BASE_URL': JSON.stringify(CONFIG_API_BASE_URL),
+      'process.env.SESSION_TIMEOUT_IN_MILISECONDS': JSON.stringify(SESSION_TIMEOUT_IN_MILISECONDS),
     }),
   ],
   optimization: {
