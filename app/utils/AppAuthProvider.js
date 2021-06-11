@@ -12,6 +12,8 @@ import {
   getAPIAccessToken,
   getUserLocation,
 } from '../redux/actions'
+import SessionTimeout from '../routes/Apps/Gluu/GluuSessionTimeout'
+
 
 class AppAuthProvider extends Component {
   state = {
@@ -107,6 +109,7 @@ class AppAuthProvider extends Component {
     const { showContent } = this.state
     return (
       <React.Fragment>
+        <SessionTimeout isAuthenticated={showContent}/>
         {showContent && this.props.children}
         {!showContent && <ViewRedirect backendIsUp={this.props.backendIsUp} />}
       </React.Fragment>

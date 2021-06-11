@@ -10,6 +10,8 @@ import {
   deleteCustomScript,
   getCustomScriptByType,
   setCurrentItem,
+  getCustomScripts,
+  
 } from '../../redux/actions/CustomScriptActions'
 import {
   hasPermission,
@@ -20,16 +22,16 @@ import {
 } from '../../../../app/utils/PermChecker'
 
 function ScriptListTable({ scripts, loading, dispatch, permissions }) {
-  const userAction = {}
   const history = useHistory()
   const options = {}
   const myActions = []
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
-  const typeId = 'SearchType'
-  const [limit, setLimit] = useState(100)
+  const typeId = 'typeId'
+  const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
-  const [type, setType] = useState('PERSON_AUTHENTICATION')
+  const [selectedScripts, setSelectedScripts] = useState(scripts)
+  const [type, setType] = useState(true)
   function makeOptions() {
     options['limit'] = parseInt(limit)
     if (pattern) {
@@ -41,9 +43,11 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   }
   useEffect(() => {
     makeOptions()
-    buildPayload(userAction, 'Fetch custom script', options)
-    dispatch(getCustomScriptByType(userAction))
+    dispatch(getCustomScripts(options))
   }, [])
+  useEffect(() => {
+    setSelectedScripts(scripts.filter((script) => (script.scriptType == document.getElementById(typeId).value)))
+  }, [scripts])
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -84,8 +88,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        buildPayload(userAction, 'Search custom scripts', options)
-        dispatch(getCustomScriptByType(userAction))
+        dispatch(getCustomScriptByType(options))
       },
     })
   }
@@ -113,8 +116,9 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   function handleOptionsChange() {
     setLimit(document.getElementById(limitId).value)
     setPattern(document.getElementById(patternId).value)
-    let types = document.getElementById(typeId)
-    setType(types.options[types.selectedIndex].text)
+    setType(document.getElementById(typeId).value)
+    setSelectedScripts(scripts.filter((script) => (script.scriptType == document.getElementById(typeId).value)))
+    //setStatus(document.getElementById(statusId).value)
   }
   function handleGoToCustomScriptAddPage() {
     return history.push('/auth-server/script/new')
@@ -127,9 +131,8 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     setItem(row)
     toggle()
   }
-  function onDeletionConfirmed(message) {
-    buildPayload(userAction, message, item.inum)
-    dispatch(deleteCustomScript(userAction))
+  function onDeletionConfirmed() {
+    dispatch(deleteCustomScript(item.inum))
     history.push('/auth-server/scripts')
     toggle()
   }
@@ -150,7 +153,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
             ),
           },
         ]}
-        data={scripts}
+        data={selectedScripts}
         isLoading={loading}
         title="Scripts"
         actions={myActions}
