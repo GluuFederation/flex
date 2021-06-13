@@ -10,8 +10,8 @@ require("dotenv").config({
 });
 
 const BASE_PATH = process.env.BASE_PATH || "/";
-const SESSION_TIMEOUT_IN_MILISECONDS =
-  process.env.SESSION_TIMEOUT_IN_MILISECONDS || 120000
+const SESSION_TIMEOUT_IN_MINUTES =
+  process.env.SESSION_TIMEOUT_IN_MINUTES || 2
   
 module.exports = {
   name: "client",
@@ -47,7 +47,7 @@ module.exports = {
       "process.env.NODE_ENV": JSON.stringify("development"),
       "process.env.BASE_PATH": JSON.stringify(BASE_PATH),
       "process.env.API_BASE_URL": JSON.stringify(process.env.API_BASE_URL),
-      'process.env.SESSION_TIMEOUT_IN_MILISECONDS': JSON.stringify(SESSION_TIMEOUT_IN_MILISECONDS),
+      'process.env.SESSION_TIMEOUT_IN_MINUTES': SESSION_TIMEOUT_IN_MINUTES,
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
