@@ -84,6 +84,10 @@ function GluuNameValuesProperty ({formik, name, label1, name1, placeholder1, lab
     setDataArray( newDataArr )
   }
 
+  const handleInputChange = (input) => e => {
+    console.log('value', input)
+  }
+
   return (
     <Row>
       <GluuLabel label="Parties" size={9} />

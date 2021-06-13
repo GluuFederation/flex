@@ -10,7 +10,7 @@ Node, NPM (latest, stable version)
 
 ### Development
 
-To run the project locally execute followig commands.
+To run the project locally execute following commands.
 
 ```
 git clone https://github.com/GluuFederation/gluu-admin-ui
