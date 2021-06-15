@@ -11,8 +11,6 @@ import {
   SidebarTrigger,
   UncontrolledDropdown,
 } from '../../../components'
-import { NavbarActivityFeed } from '../../../layout/components/NavbarActivityFeed'
-import { NavbarMessages } from '../../../layout/components/NavbarMessages'
 import { LanguageMenu } from './LanguageMenu'
 import { connect } from 'react-redux'
 import { DropdownProfile } from '../../../routes/components/Dropdowns/DropdownProfile'
