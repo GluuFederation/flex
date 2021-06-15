@@ -44,10 +44,15 @@ function GluuNameValueProperty({
     <Row>
       <GluuLabel label={nameValueLabel} size={9} />
 
-      <input type="button" value="Add more" onClick={addClick} />
+      <input 
+	  	type="button" 
+		value="Add more" 
+		onClick={addClick} 
+		style={{background: '#03a96d', color: '#fff', border: 'none', padding: 5, borderRadius: 5}}
+	/>
 
       {dataArray.map((element, index) => (
-        <div key={index}>
+        <div key={index} style={{marginLeft: 20}}>
           <FormGroup row>
             <GluuLabel label={keyLabel} />
             <Col sm={9}>
@@ -70,11 +75,12 @@ function GluuNameValueProperty({
                 onChange={handleChange(index)}
               />
             </Col>
-            <Col sm={3}>
+            <Col sm={3} style={{marginTop: 20}}>
               <input
                 type="button"
-                value="remove"
+                value="Remove"
                 onClick={() => removeClick(index)}
+				style={{background: '#03a96d', color: '#fff', border: 'none', padding: 5, borderRadius: 5}}
               />
             </Col>
           </FormGroup>
