@@ -19,7 +19,10 @@ import {
   CLIENT_READ,
   CLIENT_DELETE,
 } from '../../../../app/utils/PermChecker'
+import { useTranslation } from 'react-i18next'
+
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
+  const { t } = useTranslation()
   const userAction = {}
   const options = {}
   const [limit, setLimit] = useState(50)
@@ -72,7 +75,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         color: 'primary',
         id: 'editClient' + rowData.inum,
       },
-      tooltip: 'Edit Client',
+      tooltip: `${t("Edit Client")}`,
       onClick: (event, rowData) => handleGoToClientEditPage(rowData),
       disabled: false,
     }))
@@ -87,7 +90,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
           handler={handleOptionsChange}
         />
       ),
-      tooltip: 'Advanced search options',
+      tooltip: `${t("Advanced search options")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {},
@@ -96,7 +99,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   if (hasPermission(permissions, CLIENT_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: 'Refresh Data',
+      tooltip: `${t("Refresh Data")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
@@ -113,7 +116,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         color: 'primary',
         id: 'viewClient' + rowData.inum,
       },
-      tooltip: 'View client details',
+      tooltip: `${t("View client details")}`,
       onClick: (event, rowData) => handleGoToClientEditPage(rowData),
       disabled: false,
     }))
@@ -126,8 +129,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         id: 'deleteClient' + rowData.inum,
       },
       tooltip: rowData.deletable
-        ? 'Delete Client'
-        : "This Client can't be detele",
+        ? `${t("Delete Client")}`
+        : `${t("This Client can't be detele")}`,
       onClick: (event, rowData) => handleClientDelete(rowData),
       disabled: false,
     }))
@@ -135,7 +138,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   if (hasPermission(permissions, CLIENT_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: 'Add Client',
+      tooltip: `${t("Add Client")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToClientAddPage(),
@@ -168,11 +171,11 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     <React.Fragment>
       <MaterialTable
         columns={[
-          { title: 'Client Name', field: 'clientName' },
-          { title: 'App Type', field: 'applicationType' },
+          { title: `${t("Client Name")}`, field: 'clientName' },
+          { title: `${t("App Type")}`, field: 'applicationType' },
           { title: 'Subject Type', field: 'subjectType' },
           {
-            title: 'Status',
+            title: `${t("Status")}`,
             field: 'disabled',
             type: 'boolean',
             render: (rowData) => (
@@ -182,7 +185,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
             ),
           },
           {
-            title: 'Trusted',
+            title: `${t("Trusted")}`,
             field: 'trustedClient',
             type: 'boolean',
             render: (rowData) => (
@@ -194,7 +197,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         ]}
         data={clients}
         isLoading={loading}
-        title="OIDC Clients"
+        title={t("OIDC Clients")}
         actions={myActions}
         options={{
           search: true,

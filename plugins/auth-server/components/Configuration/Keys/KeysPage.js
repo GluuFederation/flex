@@ -8,8 +8,10 @@ import {
   CardBody,
 } from '../../../../../app/components'
 import JwksPage from './Jwks/JwksPage'
+import { useTranslation } from 'react-i18next'
 
 function KeysPage() {
+  const { t } = useTranslation()
   return (
     <Card>
       <CardBody>
@@ -17,22 +19,22 @@ function KeysPage() {
           <Nav pills className="mb-4 flex-column flex-md-row mt-4 mt-lg-0">
             <NavItem>
               <UncontrolledTabs.NavLink tabId="jwkpanel">
-                JWK Keys
+                {t("JWK Keys")}
               </UncontrolledTabs.NavLink>
             </NavItem>
             <NavItem>
               <UncontrolledTabs.NavLink tabId="algorithmickeyspanel">
-                Algorithmic Keys
+                {t("Algorithmic Keys")}
               </UncontrolledTabs.NavLink>
             </NavItem>
             <NavItem>
               <UncontrolledTabs.NavLink tabId="privatekeyspanel">
-                Private Keys
+                {t("Private Keys")}
               </UncontrolledTabs.NavLink>
             </NavItem>
             <NavItem>
               <UncontrolledTabs.NavLink tabId="publickeyspanel">
-                Public Keys
+                {t("Public Keys")}
               </UncontrolledTabs.NavLink>
             </NavItem>
           </Nav>
@@ -41,16 +43,16 @@ function KeysPage() {
               <JwksPage />
             </TabPane>
             <TabPane tabId="otherpanel">
-              <div>Not implemented yet</div>
+              <div>{t("Not implemented yet")}</div>
             </TabPane>
             <TabPane tabId="algorithmickeyspanel">
-              <div>Not implemented yet</div>
+              <div>{t("Not implemented yet")}</div>
             </TabPane>
             <TabPane tabId="privatekeyspanel">
-              <div>Not implemented yet</div>
+              <div>{t("Not implemented yet")}</div>
             </TabPane>
             <TabPane tabId="publickeyspanel">
-              <div>Not implemented yet</div>
+              <div>{t("Not implemented yet")}</div>
             </TabPane>
           </UncontrolledTabs.TabContent>
         </UncontrolledTabs>

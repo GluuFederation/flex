@@ -1,6 +1,10 @@
 import React from 'react'
 import { Col, Button, FormGroup, Divider } from './../../../components'
+import { useTranslation } from 'react-i18next'
+
 function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
+  const { t } = useTranslation()
+
   function goBack() {
     window.history.back()
   }
@@ -19,7 +23,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         {!hideButtons || !hideButtons['save'] ? (
           <Col sm={2} md={1}>
             <Button color="primary" type="submit">
-              Save
+              {t("Save")}
             </Button>
           </Col>
         ) : (
@@ -29,7 +33,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         {!hideButtons || !hideButtons['back'] ? (
           <Col sm={2} md={1}>
             <Button color="secondary" onClick={goBack}>
-              Cancel
+              {t("Cancel")}
             </Button>
           </Col>
         ) : (

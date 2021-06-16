@@ -18,8 +18,10 @@ import {
   setCurrentItem,
   deleteAttribute,
 } from '../../redux/actions/AttributeActions'
+import { useTranslation } from 'react-i18next'
 
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {
+  const { t } = useTranslation()
   const options = {}
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
@@ -68,7 +70,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         color: 'primary',
         id: 'editAttribute' + rowData.inum,
       },
-      tooltip: 'Edit Attribute',
+      tooltip: `${t("Edit Attribute")}`,
       onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
       disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
     }))
@@ -80,7 +82,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         color: 'primary',
         id: 'viewAttribute' + rowData.inum,
       },
-      tooltip: 'View Attribute',
+      tooltip: `${t("View Attribute")}`,
       onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
       disabled: false,
     }))
@@ -95,7 +97,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
           handler={handleOptionsChange}
         />
       ),
-      tooltip: 'Advanced search options',
+      tooltip: `${t("Advanced search options")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {},
@@ -104,7 +106,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   if (hasPermission(permissions, ATTRIBUTE_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: 'Refresh Data',
+      tooltip: `${t("Refresh Data")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
@@ -120,7 +122,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         color: 'secondary',
         id: 'deleteAttribute' + rowData.inum,
       },
-      tooltip: 'Delete Attribute',
+      tooltip: `${t("Delete Attribute")}`,
       onClick: (event, rowData) => handleAttribueDelete(rowData),
       disabled: !hasPermission(permissions, ATTRIBUTE_DELETE),
     }))
@@ -128,7 +130,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: 'Add Attribute',
+      tooltip: `${t("Add Attribute")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToAttributeAddPage(),
@@ -153,10 +155,10 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
       {/* START Content */}
       <MaterialTable
         columns={[
-          { title: 'Inum', field: 'inum' },
-          { title: 'Display Name', field: 'displayName' },
+          { title: `${t("Inum")}`, field: 'inum' },
+          { title: `${t("Display Name")}`, field: 'displayName' },
           {
-            title: 'Status',
+            title: `${t("Status")}`,
             field: 'status',
             type: 'boolean',
             render: (rowData) => (
@@ -168,7 +170,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         ]}
         data={attributes}
         isLoading={loading}
-        title="Attributes"
+        title={t("Attributes")}
         actions={myActions}
         options={{
           search: true,

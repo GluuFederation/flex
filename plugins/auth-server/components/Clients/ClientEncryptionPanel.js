@@ -1,8 +1,10 @@
 import React from 'react'
 import { Col, Container, FormGroup, Label, Input } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import { useTranslation } from 'react-i18next'
 
 function ClientEncryptionPanel({ client, formik }) {
+  const { t } = useTranslation()
   const accessTokenSigningAlg = [
     'none',
     'HS256',
@@ -51,7 +53,7 @@ function ClientEncryptionPanel({ client, formik }) {
   return (
     <Container>
       <FormGroup row>
-        <GluuLabel label="Jwks Uri" />
+        <GluuLabel label={t("Jwks Uri")} />
         <Col sm={9}>
           <Input
             id="jwksUri"
@@ -62,7 +64,7 @@ function ClientEncryptionPanel({ client, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Jwks" />
+        <GluuLabel label={t("Jwks")} />
         <Col sm={9}>
           <Input
             id="jwks"
@@ -73,7 +75,7 @@ function ClientEncryptionPanel({ client, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Access Token Signing Algorithm" size={4} />
+        <GluuLabel label={t("Access Token Signing Algorithm")} size={4} />
         <Col sm={2}>
           <Input
             type="select"
@@ -91,7 +93,7 @@ function ClientEncryptionPanel({ client, formik }) {
           </Input>
         </Col>
         <GluuLabel
-          label="JWE alg Algorithm for encrypting the ID Token"
+          label={t("JWE alg Algorithm for encrypting the ID Token")}
           size={4}
         />
         <Col sm={2}>
@@ -113,7 +115,7 @@ function ClientEncryptionPanel({ client, formik }) {
       </FormGroup>
       <FormGroup row>
         <GluuLabel
-          label="JWS alg Algorithm for signing the ID Token"
+          label={t("JWS alg Algorithm for signing the ID Token")}
           size={4}
         />
         <Col sm={2}>
@@ -133,7 +135,7 @@ function ClientEncryptionPanel({ client, formik }) {
           </Input>
         </Col>
         <GluuLabel
-          label="JWE enc Algorithm for encrypting the ID Token"
+          label={t("JWE enc Algorithm for encrypting the ID Token")}
           size={4}
         />
         <Col sm={2}>
@@ -155,7 +157,7 @@ function ClientEncryptionPanel({ client, formik }) {
       </FormGroup>
       <FormGroup row>
         <GluuLabel
-          label="JWE alg Algorithm for encrypting request objects"
+          label={t("JWE alg Algorithm for encrypting request objects")}
           size={4}
         />
         <Col sm={2}>
@@ -175,7 +177,7 @@ function ClientEncryptionPanel({ client, formik }) {
           </Input>
         </Col>
         <GluuLabel
-          label="JWS enc Algorithm for signing request objects"
+          label={t("JWS enc Algorithm for signing request objects")}
           size={4}
         />
         <Col sm={2}>
@@ -197,7 +199,7 @@ function ClientEncryptionPanel({ client, formik }) {
       </FormGroup>
       <FormGroup row>
         <GluuLabel
-          label="JWE enc Algorithm for encrypting request objects"
+          label={t("JWE enc Algorithm for encrypting request objects")}
           size={4}
         />
         <Col sm={2}>
@@ -217,7 +219,7 @@ function ClientEncryptionPanel({ client, formik }) {
           </Input>
         </Col>
         <GluuLabel
-          label="JWS alg Algoritm for Authentication method to token Endpoint Method"
+          label={t("JWS alg Algoritm for Authentication method to token Endpoint Method")}
           size={4}
         />
         <Col sm={2}>
@@ -240,7 +242,7 @@ function ClientEncryptionPanel({ client, formik }) {
 
       <FormGroup row>
         <GluuLabel
-          label="JWE alg Algorithm for encrypting userinfo responses"
+          label={t("JWE alg Algorithm for encrypting userinfo responses")}
           size={4}
         />
         <Col sm={2}>
@@ -260,7 +262,7 @@ function ClientEncryptionPanel({ client, formik }) {
           </Input>
         </Col>
         <GluuLabel
-          label="JWS alg Algorithm for signing userinfo responses"
+          label={t("JWS alg Algorithm for signing userinfo responses")}
           size={4}
         />
         <Col sm={2}>
@@ -282,7 +284,7 @@ function ClientEncryptionPanel({ client, formik }) {
       </FormGroup>
       <FormGroup row>
         <GluuLabel
-          label="JWE enc Algorithm for encrypting userinfo responses"
+          label={t("JWE enc Algorithm for encrypting userinfo responses")}
           size={8}
         />
         <Col sm={4}>

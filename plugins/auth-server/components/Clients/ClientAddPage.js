@@ -7,8 +7,10 @@ import { getScopes } from '../../redux/actions/ScopeActions'
 import { getCustomScripts } from '../../redux/actions/CustomScriptActions'
 import BlockUi from 'react-block-ui'
 import { buildPayload } from '../../../../app/utils/PermChecker'
+import { useTranslation } from 'react-i18next'
 
 function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
+  const { t } = useTranslation()
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
@@ -76,7 +78,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
         blocking={loading}
         keepInView={true}
         renderChildren={true}
-        message={'Performing the request, please wait!'}
+        message={t("Performing the request, please wait!")}
       >
         <ClientWizardForm
           client={client}

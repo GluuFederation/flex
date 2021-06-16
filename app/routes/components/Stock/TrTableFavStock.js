@@ -4,6 +4,7 @@ import { randomArray } from './../../../utilities';
 import {
   Badge
 } from './../../../components';
+import { useTranslation } from 'react-i18next'
 
 const name = [
   "Action Score",
@@ -29,13 +30,14 @@ const value = [
 ];
 
 const TrTableFavStock = () => {
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       {
         _.times(5, (index) => (
           <tr key={ index }>
             <td className="align-middle">
-              { randomArray(name) }
+              {t( randomArray(name) )}
             </td>
             <td className="align-middle">
               <Badge pill className="text-uppercase mr-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>

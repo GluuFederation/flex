@@ -1,8 +1,10 @@
 import React from 'react'
 import { Container } from '../../../../app/components'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
+import { useTranslation } from 'react-i18next'
 
 function ClientScriptPanel({ client, scopes, scripts, formik }) {
+  const { t } = useTranslation()
   const postScripts = scripts
     .filter((item) => item.scriptType == 'POST_AUTHN')
     .filter((item) => item.enabled)
@@ -39,14 +41,14 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
     <Container>
       <GluuTypeAheadForDn
         name="postAuthnScripts"
-        label="Post Authn Scripts"
+        label={t("Post Authn Scripts")}
         formik={formik}
         value={getMapping(client.attributes.postAuthnScripts, postScripts)}
         options={postScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="consentGatheringScripts"
-        label="Consent Gathering Scripts"
+        label={t("Consent Gathering Scripts")}
         formik={formik}
         value={getMapping(
           client.attributes.consentGatheringScripts,
@@ -56,7 +58,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="spontaneousScopeScriptDns"
-        label="Spontaneous Scope Script Dns"
+        label={t("Spontaneous Scope Script Dns")}
         formik={formik}
         value={getMapping(
           client.attributes.spontaneousScopeScriptDns,
@@ -66,7 +68,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="introspectionScripts"
-        label="Introspection Scripts"
+        label={t("Introspection Scripts")}
         formik={formik}
         value={getMapping(
           client.attributes.introspectionScripts,
@@ -76,14 +78,14 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="rptScripts"
-        label="Rpt Scripts"
+        label={t("Rpt Scripts")}
         formik={formik}
         value={getMapping(client.attributes.rptClaimsScripts, rptScripts)}
         options={rptScripts}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="spontaneousScopes"
-        label="Spontaneous Scopes"
+        label={t("Spontaneous Scopes")}
         formik={formik}
         value={getMapping(client.attributes.spontaneousScopes, scopes)}
         options={scopes}

@@ -1,6 +1,7 @@
 import React from 'react'
 import GluuLabel from './GluuLabel'
 import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
+import { useTranslation } from 'react-i18next'
 
 function GluuBooleanSelectBox({
   label,
@@ -10,6 +11,7 @@ function GluuBooleanSelectBox({
   lsize,
   rsize,
 }) {
+  const { t } = useTranslation()
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} />
@@ -22,8 +24,8 @@ function GluuBooleanSelectBox({
             defaultValue={value}
             onChange={formik.handleChange}
           >
-            <option value="false">false</option>
-            <option value="true">true</option>
+            <option value="false">{t("false")}</option>
+            <option value="true">{t("true")}</option>
           </CustomInput>
         </InputGroup>
       </Col>

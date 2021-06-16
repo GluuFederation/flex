@@ -1,8 +1,10 @@
 import React from 'react'
 import { Container } from './../components'
 import GluuNotification from './../routes/Apps/Gluu/GluuNotification'
+import { useTranslation } from 'react-i18next'
 
 function ViewRedirect({ backendIsUp }) {
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       <Container>
@@ -28,8 +30,8 @@ function ViewRedirect({ backendIsUp }) {
           {!backendIsUp && (
             <GluuNotification
               type="error"
-              message="The UI backend service is down"
-              description="Please contact the side administrator or make sure it is up and running."
+              message={t("The UI backend service is down")}
+              description={t("Please contact the side administrator or make sure it is up and running.")}
               show={true}
             />
           )}

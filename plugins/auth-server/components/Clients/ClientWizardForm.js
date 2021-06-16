@@ -15,6 +15,8 @@ import ClientAttributes from './ClientAttributesPanel'
 import ClientScript from './ClientScriptPanel'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
+import { useTranslation } from 'react-i18next'
+
 const sequence = [
   'Basic',
   'Advanced',
@@ -30,6 +32,7 @@ function ClientWizardForm({
   permissions,
   customOnSubmit,
 }) {
+  const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [currentStep, setCurrentStep] = useState(sequence[0])
   function changeStep(stepId) {
@@ -181,35 +184,35 @@ function ClientWizardForm({
                     icon={<i className="fa fa-shopping-basket fa-fw"></i>}
                     complete={isComplete(sequence[0])}
                   >
-                    Basic
+                    {t("Basic")}
                   </Wizard.Step>
                   <Wizard.Step
                     id={setId(1)}
                     icon={<i className="fa fa-cube fa-fw"></i>}
                     complete={isComplete(sequence[1])}
                   >
-                    Advanced
+                    {t("Advanced")}
                   </Wizard.Step>
                   <Wizard.Step
                     id={setId(2)}
                     icon={<i className="fa fa-credit-card fa-fw"></i>}
                     complete={isComplete(sequence[2])}
                   >
-                    Encryption/Signing
+                    {t("Encryption/Signing")}
                   </Wizard.Step>
                   <Wizard.Step
                     id={setId(3)}
                     icon={<i className="fa fa-credit-card fa-fw"></i>}
                     complete={isComplete(sequence[3])}
                   >
-                    Attributes
+                    {t("Attributes")}
                   </Wizard.Step>
                   <Wizard.Step
                     id={setId(4)}
                     icon={<i className="fa fa-credit-card fa-fw"></i>}
                     complete={isComplete(sequence[4])}
                   >
-                    Custom Scripts
+                    {t("Custom Scripts")}
                   </Wizard.Step>
                 </Wizard>
               </CardBody>
@@ -262,7 +265,7 @@ function ClientWizardForm({
                       className="mr-3"
                     >
                       <i className="fa fa-angle-left mr-2"></i>
-                      Previous
+                      {t("Previous")}
                     </Button>
                   )}
                   {currentStep !== sequence[sequence.length - 1] && (
@@ -272,7 +275,7 @@ function ClientWizardForm({
                       onClick={nextStep}
                       className="ml-auto px-4"
                     >
-                      Next
+                      {t("Next")}
                       <i className="fa fa-angle-right ml-2"></i>
                     </Button>
                   )}
@@ -283,7 +286,7 @@ function ClientWizardForm({
                       className="ml-auto px-4"
                       onClick={toggle}
                     >
-                      Apply
+                      {t("Apply")}
                     </Button>
                   )}
                 </div>
@@ -293,7 +296,7 @@ function ClientWizardForm({
                 color="primary"
                 style={{ visibility: 'hidden' }}
               >
-                Submit
+                {t("Submit")}
               </Button>
             </Card>
           </Form>

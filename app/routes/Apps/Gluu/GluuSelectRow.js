@@ -1,7 +1,10 @@
 import React from 'react'
 import GluuLabel from './GluuLabel'
 import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
+import { useTranslation } from 'react-i18next'
+
 function GluuSelectRow({ label, name, value, formik, values, lsize, rsize }) {
+  const { t } = useTranslation()
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} />
@@ -14,7 +17,7 @@ function GluuSelectRow({ label, name, value, formik, values, lsize, rsize }) {
             defaultValue={value}
             onChange={formik.handleChange}
           >
-            <option value="">Choose...</option>
+            <option value="">{t("Choose")}...</option>
             {values.map((item, key) => (
               <option value={item} key={key}>
                 {item}

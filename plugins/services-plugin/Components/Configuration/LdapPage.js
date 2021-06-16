@@ -12,8 +12,10 @@ import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter';
 import LdapItem from './LdapItem';
 import { connect } from 'react-redux';
 import { getLdapConfig, editLdap } from '../../redux/actions/LdapActions';
+import { useTranslation } from 'react-i18next'
 
 function LdapPage({ ldap, loading, dispatch }) {
+  const { t } = useTranslation()
 
   useEffect(() => {
     dispatch(getLdapConfig());
@@ -27,7 +29,7 @@ function LdapPage({ ldap, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={'Performing the request, please wait!'}
+        message={t("Performing the request, please wait!")}
         >
           <Card>
               <CardBody>

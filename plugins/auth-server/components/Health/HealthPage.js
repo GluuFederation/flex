@@ -5,8 +5,10 @@ import {
   Card,
   CardHeader,
 } from '../../../../app/components'
+import { useTranslation } from 'react-i18next'
 
 function HealthPage() {
+  const { t } = useTranslation()
   useEffect(() => {}, [])
   return (
     <Container>
@@ -14,15 +16,15 @@ function HealthPage() {
         <CardBody>
           <Card className="mb-3">
             <CardHeader tag="h6" className="bg-success text-white">
-              Jans-auth server status
+              {t("Jans-auth server status")}
             </CardHeader>
-            <CardBody>Running</CardBody>
+            <CardBody>{t("Running")}</CardBody>
           </Card>
           <Card className="mb-3">
             <CardHeader tag="h6" className="bg-success text-white">
-              database status
+              {t("database status")}
             </CardHeader>
-            <CardBody>Online</CardBody>
+            <CardBody>{t("Online")}</CardBody>
           </Card>
         </CardBody>
       </Card>

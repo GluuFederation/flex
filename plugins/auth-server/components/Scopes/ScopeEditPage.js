@@ -6,8 +6,10 @@ import ScopeForm from './ScopeForm'
 import BlockUi from 'react-block-ui'
 import { editScope } from '../../redux/actions/ScopeActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
+import { useTranslation } from 'react-i18next'
 
 function ScopeEditPage({ scope, loading, dispatch, scripts, attributes }) {
+  const { t } = useTranslation()
   const userAction = {}
   if (!scope.attributes) {
     scope.attributes = {
@@ -37,7 +39,7 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={'Performing the request, please wait!'}
+          message={t("Performing the request, please wait!")}
         >
           <Card className="mb-3">
             <CardBody>

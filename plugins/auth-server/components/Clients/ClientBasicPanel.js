@@ -12,8 +12,10 @@ import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import DatePicker from 'react-datepicker'
+import { useTranslation } from 'react-i18next'
 
 const ClientBasicPanel = ({ client, scopes, formik }) => {
+  const { t } = useTranslation()
   const uri_id = 'redirect_uri'
   const post_uri_id = 'post_uri_id'
   const grantTypes = [
@@ -67,7 +69,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
     <Container>
       {client.inum && (
         <FormGroup row>
-          <GluuLabel label="Inum" />
+          <GluuLabel label={t("Inum")} />
           <Col sm={9}>
             <Input
               style={{ backgroundColor: '#F5F5F5' }}
@@ -80,7 +82,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </FormGroup>
       )}
       <FormGroup row>
-        <GluuLabel label="Client Secret" />
+        <GluuLabel label={t("Client Secret")} />
         <Col sm={9}>
           <Input
             id="clientSecret"
@@ -92,10 +94,10 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Client Name" />
+        <GluuLabel label={t("Client Name")} />
         <Col sm={9}>
           <Input
-            placeholder="Enter the client name"
+            placeholder={t("Enter the client name")}
             id="clientName"
             name="clientName"
             defaultValue={client.clientName || client.displayName}
@@ -104,10 +106,10 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Description" />
+        <GluuLabel label={t("Description")} />
         <Col sm={9}>
           <Input
-            placeholder="Enter the client description"
+            placeholder={t("Enter the client description")}
             id="description"
             name="description"
             defaultValue={extractDescription(client.customAttributes || [])}
@@ -116,11 +118,11 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Expirable client?" size={4} />
+        <GluuLabel label={t("Expirable client?")} size={4} />
         <Col sm={8}>
           <Input
             id="expirable"
-            label="Expirable client?"
+            label={t("Expirable client?")}
             type="checkbox"
             onChange={handleExpirable}
             defaultChecked={expirable}
@@ -129,7 +131,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
       </FormGroup>
       {expirable && (
         <FormGroup row>
-          <GluuLabel label="Client Expiration Date" size={5} />
+          <GluuLabel label={t("Client Expiration Date")} size={5} />
 
           <Col sm={7}>
             <DatePicker
@@ -149,10 +151,10 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </FormGroup>
       )}
       <FormGroup row>
-        <GluuLabel label="Logo URI" />
+        <GluuLabel label={t("Logo URI")} />
         <Col sm={9}>
           <Input
-            placeholder="Enter the logo uri"
+            placeholder={t("Enter the logo uri")}
             id="logoURI"
             name="logoURI"
             defaultValue={client.logoUri}
@@ -161,10 +163,10 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Policy URI" />
+        <GluuLabel label={t("Policy URI")} />
         <Col sm={9}>
           <Input
-            placeholder="Enter the policy uri"
+            placeholder={t("Enter the policy uri")}
             id="policyUri"
             name="policyUri"
             defaultValue={client.policyUri}
@@ -173,10 +175,10 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Sector URI" />
+        <GluuLabel label={t("Sector URI")} />
         <Col sm={9}>
           <Input
-            placeholder="Enter the sector uri"
+            placeholder={t("Enter the sector uri")}
             id="sectorIdentifierUri"
             name="sectorIdentifierUri"
             defaultValue={client.sectorIdentifierUri}
@@ -185,7 +187,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="Application Type" />
+        <GluuLabel label={t("Application Type")} />
         <Col sm={3}>
           <InputGroup>
             <CustomInput
@@ -195,13 +197,13 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
               defaultValue={client.applicationType}
               onChange={formik.handleChange}
             >
-              <option value="">Choose...</option>
-              <option>web</option>
-              <option>native</option>
+              <option value="">{t("Choose")}...</option>
+              <option>{t("web")}</option>
+              <option>{("native")}</option>
             </CustomInput>
           </InputGroup>
         </Col>
-        <GluuLabel label="Subject Type" />
+        <GluuLabel label={t("Subject Type")} />
         <Col sm={3}>
           <InputGroup>
             <CustomInput
@@ -211,9 +213,9 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
               defaultValue={client.subjectType}
               onChange={formik.handleChange}
             >
-              <option value="">Choose...</option>
-              <option>pairwise</option>
-              <option>public</option>
+              <option value="">{t("Choose")}...</option>
+              <option>{t("pairwise")}</option>
+              <option>{t("public")}</option>
             </CustomInput>
           </InputGroup>
         </Col>
@@ -221,7 +223,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
 
       <GluuTypeAhead
         name="grantTypes"
-        label="Grant Types"
+        label={t("Grant Types")}
         formik={formik}
         value={client.grantTypes}
         options={grantTypes}
@@ -229,23 +231,23 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
 
       <GluuTypeAhead
         name="responseTypes"
-        label="Responses Types"
+        label={t("Responses Types")}
         formik={formik}
         value={client.responseTypes}
         options={responseTypes}
       ></GluuTypeAhead>
       <GluuTypeAheadForDn
         name="scopes"
-        label="Scopes"
+        label={t("Scopes")}
         formik={formik}
         value={getScopeMapping(client.scopes, scopes)}
         options={scopes}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"
-        label="Post Logout RedirectUris"
+        label={t("Post Logout RedirectUris")}
         formik={formik}
-        placeholder="Enter a post redirect uri with pattern https://"
+        placeholder={t("Enter a post redirect uri with pattern")+" https://"}
         value={client.postLogoutRedirectUris || []}
         options={postLogoutRedirectUris}
         validator={postUriValidator}
@@ -254,9 +256,9 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
 
       <GluuTypeAheadWithAdd
         name="redirectUris"
-        label="Redirect Uris"
+        label={t("Redirect Uris")}
         formik={formik}
-        placeholder="Enter a redirect uri with pattern https:// or schema://"
+        placeholder={t("Enter a redirect uri with pattern")+" https:// "+t("or")+" schema://"}
         value={client.redirectUris || []}
         options={redirectUris}
         validator={uriValidator}
@@ -264,7 +266,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
       ></GluuTypeAheadWithAdd>
 
       <FormGroup row>
-        <GluuLabel label="Persist Client Authorizations" size={3} />
+        <GluuLabel label={t("Persist Client Authorizations")} size={3} />
         <Col sm={1}>
           <Input
             id="persistClientAuthorizations"
@@ -274,7 +276,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
             defaultChecked={client.persistClientAuthorizations}
           />
         </Col>
-        <GluuLabel label="Is Active" size={3} />
+        <GluuLabel label={t("Is Active")} size={3} />
         <Col sm={1}>
           <Input
             id="disabled"
@@ -284,7 +286,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
             defaultChecked={!client.disabled}
           />
         </Col>
-        <GluuLabel label="Pre-Authorization" size={3} />
+        <GluuLabel label={t("Pre-Authorization")} size={3} />
         <Col sm={1}>
           <Input
             id="trustedClient"

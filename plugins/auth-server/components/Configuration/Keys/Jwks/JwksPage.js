@@ -6,7 +6,10 @@ import GluuFooter from '../../../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../../../app/routes/Apps/Gluu/GluuLabel'
 import { connect } from 'react-redux'
 import JwkItem from './JwkItem'
+import { useTranslation } from 'react-i18next'
+
 function JwksPage({ jwks, loading, dispatch }) {
+  const { t } = useTranslation()
   useEffect(() => {
     dispatch(getJwks())
   }, [])
@@ -19,9 +22,9 @@ function JwksPage({ jwks, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={'Performing the request, please wait!'}
+          message={t("Performing the request, please wait!")}
         >
-          <GluuLabel label="JSON Web Keys" size={3} />
+          <GluuLabel label={t("JSON Web Keys")} size={3} />
           <Card>
             <CardBody>
               {Object.keys(jwks).length

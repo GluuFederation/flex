@@ -5,8 +5,10 @@ import { Container, CardBody, Card } from '../../../../app/components'
 import AttributeForm from './AttributeForm'
 import BlockUi from 'react-block-ui'
 import { editAttribute } from '../../redux/actions/AttributeActions'
+import { useTranslation } from 'react-i18next'
 
 function AttributeEditPage({ item, loading, dispatch }) {
+  const { t } = useTranslation()
   if (!item.attributeValidation) {
     item.attributeValidation = {
       maxLength: null,
@@ -29,7 +31,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={'Performing the request, please wait!'}
+          message={t("Performing the request, please wait!")}
         >
           <Card className="mb-3">
             <CardBody>

@@ -7,8 +7,10 @@ import {
   ModalFooter,
   Input,
 } from 'reactstrap'
+import { useTranslation } from 'react-i18next'
 
 function GluuModal({ title, modal, handler, onAccept}) {
+  const { t } = useTranslation()
   let uri = ''
   function savePress(e) {
     uri = document.getElementById('uri').value
@@ -23,15 +25,15 @@ function GluuModal({ title, modal, handler, onAccept}) {
         {title}
       </ModalHeader>
       <ModalBody>
-        <Input placeholder="entry a redirect uri" />
+        <Input placeholder={t("entry a redirect uri")} />
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={onAccept}>
-          Add
+          {t("Add")}
         </Button>
         &nbsp;
         <Button color="primary" onClick={handler}>
-          Cancel
+        {t("Cancel")}
         </Button>
       </ModalFooter>
     </Modal>

@@ -8,43 +8,47 @@ import {
 } from './../../../components';
 
 import { InfoPopover } from './InfoPopover';
+import { useTranslation } from 'react-i18next'
 
-const CardColor = (props) => (
-  <Card className={ `mb-3 ${ props.cardClass }` }>
-    <CardHeader className={ `bg-${ props.color }` } style={{ height: '120px' }} />
-    <CardBody>
-      <CardTitle tag="h6">
-        { props.color }
-      </CardTitle>
-      <dl className="row mb-0">
-        <dt className="col-sm-4">Hex</dt>
-        <dd className="col-sm-8 text-inverse samp">
-          {props.hex}
-        </dd>
-        <dt className="col-sm-4">Rgba</dt>
-        <dd className="col-sm-8 text-inverse">
-          {props.rgba}
-        </dd>
-        <dt className="col-sm-4">Cmyk</dt>
-        <dd className="col-sm-8 text-inverse">
-          {props.cmyk}
-        </dd>
-        <dt className="col-sm-4">Scss</dt>
-        <dd className="col-sm-8 text-inverse">
-          ${ props.color }
-        </dd>
-        <dt className="col-sm-4">More</dt>
-        <dd className="col-sm-8 text-inverse">
-          <InfoPopover colorId={ props.color } href="#">
-            Details 
-            <i className="fa fa-angle-up ml-1"></i>
-          </InfoPopover>
-        </dd>
-      </dl>
-    </CardBody>
-  </Card>
+const CardColor = (props) => {
+  const { t } = useTranslation()
+  return (
+    <Card className={ `mb-3 ${ props.cardClass }` }>
+      <CardHeader className={ `bg-${ props.color }` } style={{ height: '120px' }} />
+      <CardBody>
+        <CardTitle tag="h6">
+          { props.color }
+        </CardTitle>
+        <dl className="row mb-0">
+          <dt className="col-sm-4">Hex</dt>
+          <dd className="col-sm-8 text-inverse samp">
+            {props.hex}
+          </dd>
+          <dt className="col-sm-4">Rgba</dt>
+          <dd className="col-sm-8 text-inverse">
+            {props.rgba}
+          </dd>
+          <dt className="col-sm-4">Cmyk</dt>
+          <dd className="col-sm-8 text-inverse">
+            {props.cmyk}
+          </dd>
+          <dt className="col-sm-4">Scss</dt>
+          <dd className="col-sm-8 text-inverse">
+            ${ props.color }
+          </dd>
+          <dt className="col-sm-4">More</dt>
+          <dd className="col-sm-8 text-inverse">
+            <InfoPopover colorId={ props.color } href="#">
+              {t("Details")}
+              <i className="fa fa-angle-up ml-1"></i>
+            </InfoPopover>
+          </dd>
+        </dl>
+      </CardBody>
+    </Card>
 
-);
+  );
+}
 CardColor.propTypes = {
   cardClass: PropTypes.node,
   color: PropTypes.node,

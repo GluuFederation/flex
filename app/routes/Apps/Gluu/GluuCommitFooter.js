@@ -1,5 +1,6 @@
 import React from 'react'
 import { Col, Button, FormGroup, Divider } from './../../../components'
+import { useTranslation } from 'react-i18next'
 
 function GluuCommitFooter({
   extraOnClick,
@@ -7,6 +8,7 @@ function GluuCommitFooter({
   extraLabel,
   hideButtons,
 }) {
+  const { t } = useTranslation()
   function goBack() {
     window.history.back()
   }
@@ -19,7 +21,7 @@ function GluuCommitFooter({
         {!hideButtons || !hideButtons['back'] ? (
           <Col sm={2} md={1}>
             <Button color="secondary" type="button" onClick={goBack}>
-              Cancel
+              {t("Cancel")}
             </Button>
           </Col>
         ) : (
@@ -37,7 +39,7 @@ function GluuCommitFooter({
             className="UserActionSubmitButton"
             style={{ visibility: 'hidden' }}
           >
-            Submit
+            {t("Submit")}
           </Button>
         </Col>
         {!hideButtons || !hideButtons['save'] ? (
@@ -47,7 +49,7 @@ function GluuCommitFooter({
             className="ml-auto px-4"
             onClick={saveHandler}
           >
-            Apply
+            {t("Apply")}
           </Button>
         ) : (
           ''

@@ -3,8 +3,11 @@ import { Container, FormGroup, Input, Col } from '../../../../app/components'
 import GluuBooleanSelectBox from '../../../../app/routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
+import { useTranslation } from 'react-i18next'
 
 function ClientAttributesPanel({ client, formik }) {
+  const { t } = useTranslation()
+
   const backchannel_uri_id = 'backchannel_uri_id'
   const audience_id = 'audience_id'
 
@@ -20,7 +23,7 @@ function ClientAttributesPanel({ client, formik }) {
   return (
     <Container>
       <FormGroup row>
-        <GluuLabel label="Tls Client Auth Subject Dn" />
+        <GluuLabel label={t("Tls Client Auth Subject Dn")} />
         <Col sm={9}>
           <Input
             id="tlsClientAuthSubjectDn"
@@ -32,7 +35,7 @@ function ClientAttributesPanel({ client, formik }) {
       </FormGroup>
       <GluuBooleanSelectBox
         name="runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims"
-        label="Run Introspection Script Before AccessToken As Jwt Creation And Include Claims"
+        label={t("Run Introspection Script Before AccessToken As Jwt Creation And Include Claims")}
         value={
           client.attributes
             .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
@@ -43,7 +46,7 @@ function ClientAttributesPanel({ client, formik }) {
       />
       <GluuBooleanSelectBox
         name="keepClientAuthorizationAfterExpiration"
-        label="Keep Client Authorization After Expiration"
+        label={t("Keep Client Authorization After Expiration")}
         value={client.attributes.keepClientAuthorizationAfterExpiration}
         formik={formik}
         lsize={8}
@@ -51,7 +54,7 @@ function ClientAttributesPanel({ client, formik }) {
       />
       <GluuBooleanSelectBox
         name="allowSpontaneousScopes"
-        label="Allow Spontaneous Scopes"
+        label={t("Allow Spontaneous Scopes")}
         value={client.attributes.allowSpontaneousScopes}
         formik={formik}
         lsize={8}
@@ -59,7 +62,7 @@ function ClientAttributesPanel({ client, formik }) {
       />
       <GluuBooleanSelectBox
         name="backchannelLogoutSessionRequired"
-        label="Back Channel Logout Session Required"
+        label={t("Back Channel Logout Session Required")}
         value={client.attributes.backchannelLogoutSessionRequired}
         formik={formik}
         lsize={8}
@@ -67,9 +70,9 @@ function ClientAttributesPanel({ client, formik }) {
       />
       <GluuTypeAheadWithAdd
         name="backchannelLogoutUri"
-        label="Back Channel Logout Uri"
+        label={t("Back Channel Logout Uri")}
         formik={formik}
-        placeholder="Enter a valid uri with pattern https://"
+        placeholder={t("Enter a valid uri with pattern")+" https://"}
         value={client.attributes.backchannelLogoutUri || []}
         options={backchannelLogoutUris}
         validator={uriValidator}
@@ -77,7 +80,7 @@ function ClientAttributesPanel({ client, formik }) {
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="additionalAudience"
-        label="Additional Audience"
+        label={t("Additional Audience")}
         formik={formik}
         value={client.attributes.additionalAudience || []}
         options={additionalAudiences}

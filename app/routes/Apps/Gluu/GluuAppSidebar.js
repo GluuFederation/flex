@@ -5,9 +5,11 @@ import { hasPermission } from '../../../utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from '../../../../plugins/PluginMenuResolver'
+import { useTranslation } from "react-i18next";
 
 function GluuAppSidebar({ scopes }) {
   const [pluginMenus, setPluginMenus] = useState([])
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     setPluginMenus(processMenus())
@@ -38,9 +40,9 @@ function GluuAppSidebar({ scopes }) {
         {/* -------- Home ---------*/}
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-home"></i>}
-          title="Home"
+          title={t("Home")}
         >
-          <SidebarMenu.Item title="Reports" to="/home/dashboard" exact />
+          <SidebarMenu.Item title={t("Reports")} to="/home/dashboard" exact />
         </SidebarMenu.Item>
         <Divider />
         {/* -------- Plugins ---------*/}
@@ -50,13 +52,13 @@ function GluuAppSidebar({ scopes }) {
             key={key}
             icon={getMenuIcon(plugin.icon)}
             to={getMenuPath(plugin)}
-            title={plugin.title}
+            title={t(`${plugin.title}`)}
           >
             {hasChildren(plugin) &&
               plugin.children.map((item, idx) => (
                 <SidebarMenu.Item
                   key={idx}
-                  title={item.title}
+                  title={t(`${item.title}`)}
                   isEmptyNode={
                     !hasPermission(scopes, item.permission) &&
                     !hasChildren(item)
@@ -69,7 +71,7 @@ function GluuAppSidebar({ scopes }) {
                     item.children.map((sub, idx) => (
                       <SidebarMenu.Item
                         key={idx}
-                        title={sub.title}
+                        title={t(`${sub.title}`)}
                         to={getMenuPath(sub)}
                         isEmptyNode={!hasPermission(scopes, sub.permission)}
                         icon={getMenuIcon(sub.icon)}
@@ -85,12 +87,12 @@ function GluuAppSidebar({ scopes }) {
         <Divider />
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-wrench"></i>}
-          title="Settings"
+          title={t("Settings")}
           to="/settings"
         />
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
-          title="Sign out"
+          title={t("Sign out")}
           to="/logout"
         />
       </SidebarMenu>

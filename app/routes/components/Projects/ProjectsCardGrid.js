@@ -16,19 +16,20 @@ import {
 } from './../../../components';
 
 import { randomArray, randomAvatar } from './../../../utilities';
-
+import { useTranslation } from 'react-i18next'
+const { t } = useTranslation()
 const badges = [
   <Badge pill color="success" className="mb-2" key="badge-active">
-    Active
+    {t("Active")}
   </Badge>,
   <Badge pill color="danger" className="mb-2" key="badge-suspended">
-    Suspended
+    {t("Suspended")}
   </Badge>,
   <Badge pill color="warning" className="mb-2" key="badge-waiting">
-    Waiting
+    {t("Waiting")}
   </Badge>,
   <Badge pill color="secondary" className="mb-2" key="badge-paused">
-    Paused
+    {t("Paused")}
   </Badge>,
 ];
 
@@ -56,13 +57,13 @@ const ProjectsCardGrid = () => (
           </Link>
         </div>
         <div className="mb-3">
-          Last Edited by: { 'faker.name.firstName()' } { 'faker.name.lastName()' } <br />
+          {t("Last Edited by")+": "}: { 'faker.name.firstName()' } { 'faker.name.lastName()' } <br />
           { 'faker.date.weekday()' }, 12 { 'faker.date.month()' }, 2018
         </div>
         <div className="mb-3">
           <Progress value={ randomArray(taskCompleted) } style={{ height: "5px" }} className="mb-2" />
           <div>
-            Tasks Completed: 
+            {t("Tasks Completed")+": "}
             <span className="text-inverse">
               36/94
             </span>
@@ -97,20 +98,20 @@ const ProjectsCardGrid = () => (
           <DropdownMenu right>
             <DropdownItem>
               <i className="fa fa-fw fa-folder-open mr-2"></i>
-              View
+              {t("View")}
             </DropdownItem>
             <DropdownItem>
               <i className="fa fa-fw fa-ticket mr-2"></i>
-              Add Task
+              {t("Add Task")}
             </DropdownItem>
             <DropdownItem>
               <i className="fa fa-fw fa-paperclip mr-2"></i>
-              Add Files
+              {t("Add Files")}
             </DropdownItem>
             <DropdownItem divider />
             <DropdownItem>
               <i className="fa fa-fw fa-trash mr-2"></i>
-              Delete
+              {t("Delete")}
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledButtonDropdown>

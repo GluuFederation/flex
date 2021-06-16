@@ -9,8 +9,10 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap'
+import { useTranslation } from 'react-i18next'
 
 const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
+  const { t } = useTranslation()
   const [active, setActive] = useState(false)
   const USER_MESSAGE = 'user_action_message'
   function handleStatus() {
@@ -48,7 +50,7 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
               type="textarea"
               name={USER_MESSAGE}
               onKeyUp={handleStatus}
-              placeholder="Provide the reason of this change"
+              placeholder={t("Provide the reason of this change")}
               defaultValue=""
             />
           </Col>
@@ -57,11 +59,11 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
       <ModalFooter>
         {active && (
           <Button color="primary" onClick={handleAccept}>
-            Accept
+            {t("Accept")}
           </Button>
         )}{' '}
         <Button color="secondary" onClick={handler}>
-          Cancel
+        {t("Cancel")}
         </Button>
       </ModalFooter>
     </Modal>

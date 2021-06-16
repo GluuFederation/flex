@@ -15,8 +15,10 @@ import {
   getJsonConfig,
   patchJsonConfig,
 } from '../../redux/actions/JsonConfigActions'
+import { useTranslation } from 'react-i18next'
 
 function ConfigPage({ configuration, loading, dispatch }) {
+  const { t } = useTranslation()
   const lSize = 6
   useEffect(() => {
     dispatch(getJsonConfig())
@@ -29,7 +31,7 @@ function ConfigPage({ configuration, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={'Performing the request, please wait!'}
+          message={t("Performing the request, please wait!")}
         >
           <Card>
             <CardBody>

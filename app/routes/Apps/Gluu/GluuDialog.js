@@ -9,9 +9,12 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap'
+import { useTranslation } from 'react-i18next'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
   const [active, setActive] = useState(false)
+  const { t } = useTranslation()
+
   function handleStatus() {
     var value = document.getElementById('user_action_message').value
     if (value.length >= 10) {
@@ -32,9 +35,9 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
             style={{ color: 'red' }}
             className="fa fa-2x fa-warning fa-fw modal-icon mb-3"
           ></i>
-          Deletion confirmation for {subject} ({name}-{row.inum})
+          {t("Deletion confirmation for")} {" "} {subject} ({name}-{row.inum})
         </ModalHeader>
-        <ModalBody>Do you really want to delete this item?</ModalBody>
+        <ModalBody>{t("Do you really want to delete this item?")}</ModalBody>
         <ModalBody>
           <FormGroup row>
             <Col sm={12}>
@@ -43,7 +46,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
                 type="textarea"
                 name="user_action_message"
                 onKeyUp={handleStatus}
-                placeholder="Provide the reason of this change"
+                placeholder={t("Provide the reason of this change")}
                 defaultValue=""
               />
             </Col>
@@ -52,11 +55,11 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
         <ModalFooter>
           {active && (
             <Button color="primary" onClick={handleAccept}>
-              Yes
+              {t("Yes")}
             </Button>
           )}{' '}
           <Button color="secondary" onClick={handler}>
-            No
+            {t("No")}
           </Button>
         </ModalFooter>
       </Modal>

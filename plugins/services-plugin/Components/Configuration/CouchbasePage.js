@@ -12,11 +12,10 @@ import {
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import { connect } from 'react-redux'
 import { getCouchBaseConfig, editCouchBase } from '../../redux/actions/CouchbaseActions'
-
-
+import { useTranslation } from 'react-i18next'
 
 function CouchbasePage({ couchbase, loading, dispatch }) {
-
+  const { t } = useTranslation()
   useEffect(() => {
     dispatch(getCouchBaseConfig())
   }, [])
@@ -29,7 +28,7 @@ function CouchbasePage({ couchbase, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={'Performing the request, please wait!'}
+          message={t("Performing the request, please wait!")}
         >
 
           <Card>
