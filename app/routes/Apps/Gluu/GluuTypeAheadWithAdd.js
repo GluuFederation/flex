@@ -52,7 +52,7 @@ function GluuTypeAheadWithAdd({
             <Input placeholder={placeholder} id={inputId} />
           </Col>
           <Button color="primary" type="button" onClick={addItem}>
-            {t("Add")}
+            {t("actions.add")}
           </Button>
         </Row>
         &nbsp;

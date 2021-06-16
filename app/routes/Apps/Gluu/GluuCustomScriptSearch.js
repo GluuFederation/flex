@@ -58,7 +58,7 @@ function GluuCustomScriptSearch({
         id={patternId}
         type="text"
         onChange={handler}
-        placeholder={t("search pattern")}
+        placeholder={t("placeholders.search_pattern")}
       />
     </FormGroup>
   )

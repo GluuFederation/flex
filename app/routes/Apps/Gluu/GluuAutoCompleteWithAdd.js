@@ -12,7 +12,7 @@ function GluuAutoCompleteWithAdd({
   validator,
   inputId,
   formik = undefined,
-  placeholder
+  placeholder,
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
@@ -52,7 +52,7 @@ function GluuAutoCompleteWithAdd({
             <Input placeholder={placeholder} id={inputId} />
           </Col>
           <Button color="primary" type="button" onClick={addItem}>
-            {t("Add")}
+            {t('actions.add')}
           </Button>
         </Row>
         &nbsp;

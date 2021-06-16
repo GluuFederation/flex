@@ -35,9 +35,9 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
             style={{ color: 'red' }}
             className="fa fa-2x fa-warning fa-fw modal-icon mb-3"
           ></i>
-          {t("Deletion confirmation for")} {" "} {subject} ({name}-{row.inum})
+          {t('messages.action_deletion_for')} {subject} ({name}-{row.inum})
         </ModalHeader>
-        <ModalBody>{t("Do you really want to delete this item?")}</ModalBody>
+        <ModalBody>{t('messages.action_deletion_question')}</ModalBody>
         <ModalBody>
           <FormGroup row>
             <Col sm={12}>
@@ -46,7 +46,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
                 type="textarea"
                 name="user_action_message"
                 onKeyUp={handleStatus}
-                placeholder={t("Provide the reason of this change")}
+                placeholder={t('placeholders.action_commit_message')}
                 defaultValue=""
               />
             </Col>
@@ -55,11 +55,11 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
         <ModalFooter>
           {active && (
             <Button color="primary" onClick={handleAccept}>
-              {t("Yes")}
+              {t('actions.yes')}
             </Button>
           )}{' '}
           <Button color="secondary" onClick={handler}>
-            {t("No")}
+            {t('actions.no')}
           </Button>
         </ModalFooter>
       </Modal>

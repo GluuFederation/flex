@@ -21,7 +21,7 @@ function GluuCommitFooter({
         {!hideButtons || !hideButtons['back'] ? (
           <Col sm={2} md={1}>
             <Button color="secondary" type="button" onClick={goBack}>
-              {t("Cancel")}
+              {t('actions.cancel')}
             </Button>
           </Col>
         ) : (
@@ -39,7 +39,7 @@ function GluuCommitFooter({
             className="UserActionSubmitButton"
             style={{ visibility: 'hidden' }}
           >
-            {t("Submit")}
+            {t('actions.submit')}
           </Button>
         </Col>
         {!hideButtons || !hideButtons['save'] ? (
@@ -49,7 +49,7 @@ function GluuCommitFooter({
             className="ml-auto px-4"
             onClick={saveHandler}
           >
-            {t("Apply")}
+            {t('actions.apply')}
           </Button>
         ) : (
           ''

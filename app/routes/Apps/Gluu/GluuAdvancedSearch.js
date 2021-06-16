@@ -18,7 +18,7 @@ function GluuAdvancedSearch({ handler, patternId, limitId, limit }) {
         style={{ width: '180px' }}
         id={patternId}
         type="text"
-        placeholder={t("search pattern")}
+        placeholder={t('placeholders.search_pattern')}
         onChange={handler}
       />
     </FormGroup>

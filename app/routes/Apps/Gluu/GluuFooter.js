@@ -23,7 +23,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         {!hideButtons || !hideButtons['save'] ? (
           <Col sm={2} md={1}>
             <Button color="primary" type="submit">
-              {t("Save")}
+              {t('actions.save')}
             </Button>
           </Col>
         ) : (
@@ -33,7 +33,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         {!hideButtons || !hideButtons['back'] ? (
           <Col sm={2} md={1}>
             <Button color="secondary" onClick={goBack}>
-              {t("Cancel")}
+              {t('actions.cancel')}
             </Button>
           </Col>
         ) : (

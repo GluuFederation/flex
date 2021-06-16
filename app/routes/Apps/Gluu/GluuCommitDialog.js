@@ -40,7 +40,7 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
           style={{ color: 'green' }}
           className="fa fa-2x fa-info fa-fw modal-icon mb-3"
         ></i>
-        Audit log: Want to apply changes made on this page?
+        {t('messages.action_commit_question')}
       </ModalHeader>
       <ModalBody>
         <FormGroup row>
@@ -50,7 +50,7 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
               type="textarea"
               name={USER_MESSAGE}
               onKeyUp={handleStatus}
-              placeholder={t("Provide the reason of this change")}
+              placeholder={t('placeholders.action_commit_message')}
               defaultValue=""
             />
           </Col>
@@ -59,11 +59,11 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
       <ModalFooter>
         {active && (
           <Button color="primary" onClick={handleAccept}>
-            {t("Accept")}
+            {t('actions.accept')}
           </Button>
         )}{' '}
         <Button color="secondary" onClick={handler}>
-        {t("Cancel")}
+          {t('actions.no')}
         </Button>
       </ModalFooter>
     </Modal>

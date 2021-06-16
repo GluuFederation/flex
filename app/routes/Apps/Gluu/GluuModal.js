@@ -9,7 +9,7 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 
-function GluuModal({ title, modal, handler, onAccept}) {
+function GluuModal({ title, modal, handler, onAccept }) {
   const { t } = useTranslation()
   let uri = ''
   function savePress(e) {
@@ -25,15 +25,15 @@ function GluuModal({ title, modal, handler, onAccept}) {
         {title}
       </ModalHeader>
       <ModalBody>
-        <Input placeholder={t("entry a redirect uri")} />
+        <Input placeholder={t('placeholders.redirect_uri')} />
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={onAccept}>
-          {t("Add")}
+          {t('actions.add')}
         </Button>
         &nbsp;
         <Button color="primary" onClick={handler}>
-        {t("Cancel")}
+          {t('ations.cancel')}
         </Button>
       </ModalFooter>
     </Modal>

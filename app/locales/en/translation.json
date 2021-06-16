@@ -3,13 +3,16 @@
     "add": "Add",
     "apply": "Apply",
     "accept": "Accept",
+    "back_home": "Back Home",
     "edit": "Edit",
     "cancel": "Cancel",
+    "choose": "Choose",
     "no": "No",
     "next": "Next",
     "previous": "Previous",
     "save": "Save",
     "submit": "Submit",
+    "remove": "Remove",
     "test": "Test",
     "yes": "Yes"
   },
@@ -19,7 +22,8 @@
     "client_expiration_date": "Client Expiration Date",
     "client_name": "Client Name",
     "description": "Description",
-    "is_expirable_client": "Is Expirable Client?"
+    "is_expirable_client": "Is Expirable Client?",
+    "pre_authorization": "Pre-Authorization"
   },
   "languages": {
     "french": "French",
@@ -49,7 +53,17 @@
     "signout": "Sign out"
   },
   "messages": {
-    "request_waiting_message": "Performing the request, please wait!"
+    "request_waiting_message": "Performing the request, please wait!",
+    "resource_not_found_title": "Resource not found",
+    "action_commit_question": "Audit log: Want to apply changes made on this page?",
+    "action_deletion_question": "Do you really want to delete this item?",
+    "action_deletion_for": "Deletion confirmation for",
+    "resource_not_found_message": "The requested resource doesn't exist on this server. Please contact the site administrator or the support team."
+  },
+  "placeholders": {
+    "search_pattern": "Search pattern",
+    "action_commit_message": "Provide the reason of this change",
+    "redirect_uri": "Enter a redirect uri"
   },
   "titles": {
     "custom_scripts": "All Custom Scripts",
@@ -58,5 +72,12 @@
     "client_encryption_signing": "Encryption/Signing",
     "client_advanced": "Advanced",
     "client_basic": "Basic"
+  },
+  "links": {
+    "support": "https://support.gluu.org/"
+  },
+  "options": {
+    "false": "false",
+    "true": "true"
   }
 }

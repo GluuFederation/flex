@@ -23,7 +23,10 @@ function GluuTypeAheadForDn({ label, name, value, options, formik, required }) {
         <Typeahead
           labelKey={(option) => `${option.name}`}
           onChange={(selected) => {
-            formik.setFieldValue(name, selected.map((item) => item.dn))
+            formik.setFieldValue(
+              name,
+              selected.map((item) => item.dn),
+            )
           }}
           id={name}
           name={name}
@@ -33,7 +36,7 @@ function GluuTypeAheadForDn({ label, name, value, options, formik, required }) {
         />
         <ThemeProvider theme={theme}>
           <Typography variant="subtitle1">
-            {t("Enter multiple items by selecting from appeared dropdown after entering each item.")}
+            {t('placeholders.typeahead_holder_message')}
           </Typography>
         </ThemeProvider>
       </Col>

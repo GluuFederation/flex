@@ -2,8 +2,8 @@ import React from 'react'
 import { FormGroup, Col } from '../../../components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
-import Typography from '@material-ui/core/Typography';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 
 const theme = createMuiTheme({
@@ -12,13 +12,17 @@ const theme = createMuiTheme({
       fontSize: 12,
     },
   },
-});
+})
 
-function GluuTypeAhead({ label, name, value, options, formik, required, }) {
+function GluuTypeAhead({ label, name, value, options, formik, required }) {
   const { t } = useTranslation()
   return (
     <FormGroup row>
-      {!!required ? <GluuLabel label={label} size={4} required /> : <GluuLabel label={label} size={4} />}
+      {!!required ? (
+        <GluuLabel label={label} size={4} required />
+      ) : (
+        <GluuLabel label={label} size={4} />
+      )}
       <Col sm={8}>
         <Typeahead
           allowNew
@@ -34,7 +38,9 @@ function GluuTypeAhead({ label, name, value, options, formik, required, }) {
           options={options}
         />
         <ThemeProvider theme={theme}>
-          <Typography variant="subtitle1">{t("Enter multiple items by selecting from appeared dropdown after entering each item.")}</Typography>
+          <Typography variant="subtitle1">
+            {t('placeholders.typeahead_holder_message')}
+          </Typography>
         </ThemeProvider>
       </Col>
     </FormGroup>
