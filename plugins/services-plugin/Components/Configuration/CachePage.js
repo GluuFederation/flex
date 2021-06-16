@@ -30,23 +30,19 @@ import { useTranslation } from 'react-i18next'
 function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisData, loading, dispatch }) {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
-  
+  const [cacheProviderType, setCacheProviderType] = useState(cacheData.cacheProviderType)
+
   useEffect(() => {
     dispatch(getCacheConfig())
-  }, [])
-  useEffect(() => {
     dispatch(getMemoryCacheConfig())
-  }, [])
-  useEffect(() => {
     dispatch(getMemCacheConfig())
-  }, [])
-  useEffect(() => {
     dispatch(getNativeCacheConfig())
-  }, [])
-  useEffect(() => {
     dispatch(getRedisCacheConfig())
   }, [])
 
+  useEffect(() => {
+    setCacheProviderType(cacheData.cacheProviderType)
+  }, [cacheData])
 
   const INITIAL_VALUES = {
 
@@ -173,6 +169,10 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                                 name="cacheProviderType"
                                 defaultValue={cacheData.cacheProviderType}
                                 onChange={formik.handleChange}
+                                onChange={(e) => {
+                                  setCacheProviderType(e.target.value)
+                                  formik.setFieldValue('cacheProviderType', e.target.value)
+                                }}
                               >
                                 <option>{t("IN_MEMORY")}</option>
                                 <option>{t("MEMCACHED")}</option>
@@ -184,18 +184,18 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                         }
                       </Col>
                     </FormGroup>
-                    <FormGroup row>
+                    {cacheProviderType == 'MEMCACHED' && (<FormGroup row>
                       <CacheMemcached config={cacheMemData} formik={formik} />
-                    </FormGroup>
-                    <FormGroup row>
+                    </FormGroup>)}
+                    {cacheProviderType == 'IN_MEMORY' && (<FormGroup row>
                       <CacheInMemory config={cacheMemoryData} formik={formik} />
-                    </FormGroup>
-                    <FormGroup row>
+                    </FormGroup>)}
+                    {cacheProviderType == 'REDIS' && (<FormGroup row>
                       <CacheRedis config={cacheRedisData} formik={formik} />
-                    </FormGroup>
-                    <FormGroup row>
+                    </FormGroup>)}
+                    {cacheProviderType == 'NATIVE_PERSISTENCE' && (<FormGroup row>
                       <CacheNative config={cacheNativeData} formik={formik} />
-                    </FormGroup>
+                    </FormGroup>)}
                     <FormGroup row></FormGroup>
                     <GluuFooter saveHandler={toggle}/>
                     <GluuCommitDialog

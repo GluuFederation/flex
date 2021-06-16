@@ -31,6 +31,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
     enabledOAuthAuditLogging: logging.enabledOAuthAuditLogging,
   }
   const levels = ['TRACE', 'DEBUG', 'INFO', 'ERROR']
+  const logLayouts = ['text', 'json']
   return (
     <React.Fragment>
       <BlockUi
@@ -59,7 +60,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                 value={logging.loggingLevel}
                 values={levels}
               ></GluuSelectRow>
-              <GluuInputRow
+              <GluuSelectRow
                 label={t("Logging layout")}
                 name="loggingLayout"
                 formik={formik}
@@ -67,7 +68,8 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                 rsize={8}
                 required
                 value={logging.loggingLayout}
-              ></GluuInputRow>
+                values={logLayouts}
+              ></GluuSelectRow>
               <GluuCheckBoxRow
                 label={t("Enable HTTP Logging")}
                 name="httpLoggingEnabled"

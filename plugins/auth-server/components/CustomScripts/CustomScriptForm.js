@@ -345,7 +345,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       </FormGroup>
 
       <GluuNameValueProperty
-        name="configurationProperties"
+        componentName="configurationProperties"
         formik={formik}
         keyLabel={t("Key")}
         keyName="key"
