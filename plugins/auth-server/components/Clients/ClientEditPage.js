@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react'
 import ClientWizardForm from './ClientWizardForm'
+import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { editClient } from '../../redux/actions/OIDCActions'
-import BlockUi from 'react-block-ui'
 import { getScopes } from '../../redux/actions/ScopeActions'
 import { getCustomScripts } from '../../redux/actions/CustomScriptActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
-import { useTranslation } from 'react-i18next'
 
 function ClientEditPage({
   client,
@@ -17,7 +16,6 @@ function ClientEditPage({
   permissions,
   dispatch,
 }) {
-  const { t } = useTranslation()
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
@@ -53,23 +51,15 @@ function ClientEditPage({
     }
   }
   return (
-    <React.Fragment>
-      <BlockUi
-        tag="div"
-        blocking={loading}
-        keepInView={true}
-        renderChildren={true}
-        message={t("Performing the request, please wait!")}
-      >
-        <ClientWizardForm
-          client={client}
-          scopes={scopes}
-          scripts={scripts}
-          permissions={permissions}
-          customOnSubmit={handleSubmit}
-        />
-      </BlockUi>
-    </React.Fragment>
+    <GluuLoader loading={loading}>
+      <ClientWizardForm
+        client={client}
+        scopes={scopes}
+        scripts={scripts}
+        permissions={permissions}
+        customOnSubmit={handleSubmit}
+      />
+    </GluuLoader>
   )
 }
 const mapStateToProps = (state) => {

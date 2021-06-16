@@ -1,14 +1,25 @@
 {
   "ations": {
-    "save": "Save",
     "add": "Add",
-    "edit": "Edit",
-    "cancel": "Cancel",
-    "test": "Test",
     "apply": "Apply",
     "accept": "Accept",
-    "yes": "Yes",
-    "no": "No"
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "no": "No",
+    "next": "Next",
+    "previous": "Previous",
+    "save": "Save",
+    "submit": "Submit",
+    "test": "Test",
+    "yes": "Yes"
+  },
+  "fields": {
+    "inum": "Inum",
+    "client_secret": "Client Secret",
+    "client_expiration_date": "Client Expiration Date",
+    "client_name": "Client Name",
+    "description": "Description",
+    "is_expirable_client": "Is Expirable Client?"
   },
   "languages": {
     "french": "French",
@@ -41,6 +52,11 @@
     "request_waiting_message": "Performing the request, please wait!"
   },
   "titles": {
-    "custom_scripts": "All Custom Scripts"
+    "custom_scripts": "All Custom Scripts",
+    "client_scripts": "Client Scripts",
+    "client_attributes": "Client Attributes",
+    "client_encryption_signing": "Encryption/Signing",
+    "client_advanced": "Advanced",
+    "client_basic": "Basic"
   }
 }

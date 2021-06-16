@@ -184,35 +184,35 @@ function ClientWizardForm({
                     icon={<i className="fa fa-shopping-basket fa-fw"></i>}
                     complete={isComplete(sequence[0])}
                   >
-                    {t("Basic")}
+                    {t('titles.client_basic')}
                   </Wizard.Step>
                   <Wizard.Step
                     id={setId(1)}
                     icon={<i className="fa fa-cube fa-fw"></i>}
                     complete={isComplete(sequence[1])}
                   >
-                    {t("Advanced")}
+                    {t('titles.client_advanced')}
                   </Wizard.Step>
                   <Wizard.Step
                     id={setId(2)}
                     icon={<i className="fa fa-credit-card fa-fw"></i>}
                     complete={isComplete(sequence[2])}
                   >
-                    {t("Encryption/Signing")}
+                    {t('titles.client_encryption_signing')}
                   </Wizard.Step>
                   <Wizard.Step
                     id={setId(3)}
                     icon={<i className="fa fa-credit-card fa-fw"></i>}
                     complete={isComplete(sequence[3])}
                   >
-                    {t("Attributes")}
+                    {t('titles.client_attributes')}
                   </Wizard.Step>
                   <Wizard.Step
                     id={setId(4)}
                     icon={<i className="fa fa-credit-card fa-fw"></i>}
                     complete={isComplete(sequence[4])}
                   >
-                    {t("Custom Scripts")}
+                    {t('titles.client_scripts')}
                   </Wizard.Step>
                 </Wizard>
               </CardBody>
@@ -265,7 +265,7 @@ function ClientWizardForm({
                       className="mr-3"
                     >
                       <i className="fa fa-angle-left mr-2"></i>
-                      {t("Previous")}
+                      {t('actions.previous')}
                     </Button>
                   )}
                   {currentStep !== sequence[sequence.length - 1] && (
@@ -275,7 +275,7 @@ function ClientWizardForm({
                       onClick={nextStep}
                       className="ml-auto px-4"
                     >
-                      {t("Next")}
+                      {t('actions.next')}
                       <i className="fa fa-angle-right ml-2"></i>
                     </Button>
                   )}
@@ -286,7 +286,7 @@ function ClientWizardForm({
                       className="ml-auto px-4"
                       onClick={toggle}
                     >
-                      {t("Apply")}
+                      {t('actions.apply')}
                     </Button>
                   )}
                 </div>
@@ -296,7 +296,7 @@ function ClientWizardForm({
                 color="primary"
                 style={{ visibility: 'hidden' }}
               >
-                {t("Submit")}
+                {t('actions.submit')}
               </Button>
             </Card>
           </Form>

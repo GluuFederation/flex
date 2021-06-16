@@ -69,7 +69,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
     <Container>
       {client.inum && (
         <FormGroup row>
-          <GluuLabel label={t("Inum")} />
+          <GluuLabel label={t("fields.inum")} />
           <Col sm={9}>
             <Input
               style={{ backgroundColor: '#F5F5F5' }}
@@ -82,7 +82,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </FormGroup>
       )}
       <FormGroup row>
-        <GluuLabel label={t("Client Secret")} />
+        <GluuLabel label={t("fields.client_secret")} />
         <Col sm={9}>
           <Input
             id="clientSecret"
@@ -94,7 +94,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label={t("Client Name")} />
+        <GluuLabel label={t("fields.client_name")} />
         <Col sm={9}>
           <Input
             placeholder={t("Enter the client name")}
@@ -106,7 +106,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label={t("Description")} />
+        <GluuLabel label={t("fields.description")} />
         <Col sm={9}>
           <Input
             placeholder={t("Enter the client description")}
@@ -118,7 +118,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label={t("Expirable client?")} size={4} />
+        <GluuLabel label={t("fields.is_expirable_client")} size={4} />
         <Col sm={8}>
           <Input
             id="expirable"
@@ -131,7 +131,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
       </FormGroup>
       {expirable && (
         <FormGroup row>
-          <GluuLabel label={t("Client Expiration Date")} size={5} />
+          <GluuLabel label={t("client_expiration_date")} size={5} />
 
           <Col sm={7}>
             <DatePicker
