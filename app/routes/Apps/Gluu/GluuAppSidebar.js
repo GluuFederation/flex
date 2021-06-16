@@ -5,11 +5,11 @@ import { hasPermission } from '../../../utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from '../../../../plugins/PluginMenuResolver'
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next'
 
 function GluuAppSidebar({ scopes }) {
   const [pluginMenus, setPluginMenus] = useState([])
-  const { t, i18n } = useTranslation();
+  const { t} = useTranslation()
 
   useEffect(() => {
     setPluginMenus(processMenus())
@@ -40,9 +40,13 @@ function GluuAppSidebar({ scopes }) {
         {/* -------- Home ---------*/}
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-home"></i>}
-          title={t("Home")}
+          title={t('menus.home')}
         >
-          <SidebarMenu.Item title={t("Reports")} to="/home/dashboard" exact />
+          <SidebarMenu.Item
+            title={t('menus.reports')}
+            to="/home/dashboard"
+            exact
+          />
         </SidebarMenu.Item>
         <Divider />
         {/* -------- Plugins ---------*/}
@@ -87,12 +91,12 @@ function GluuAppSidebar({ scopes }) {
         <Divider />
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-wrench"></i>}
-          title={t("Settings")}
+          title={t('menus.settings')}
           to="/settings"
         />
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
-          title={t("Sign out")}
+          title={t('menus.signout')}
           to="/logout"
         />
       </SidebarMenu>

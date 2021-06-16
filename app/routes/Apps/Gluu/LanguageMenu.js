@@ -4,17 +4,17 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  ButtonDropdown
-} from "../../../components";
+  ButtonDropdown,
+} from '../../../components'
 
 const LanguageMenu = () => {
-  const [isOpen, setOpen] = useState(false);
-  const [lang, setLang] = useState("en");
-  const { t, i18n } = useTranslation();
-  const toggle = () => setOpen(!isOpen);
+  const [isOpen, setOpen] = useState(false)
+  const [lang, setLang] = useState('en')
+  const { t, i18n } = useTranslation()
+  const toggle = () => setOpen(!isOpen)
   function changeLanguage(code) {
-    i18n.changeLanguage(code);
-    setLang(code);
+    i18n.changeLanguage(code)
+    setLang(code)
   }
   return (
     <ButtonDropdown isOpen={isOpen} toggle={toggle}>
@@ -22,14 +22,14 @@ const LanguageMenu = () => {
         {lang}
       </DropdownToggle>
       <DropdownMenu>
-        <DropdownItem onClick={() => changeLanguage("fr")}>
-          {t("french")}
+        <DropdownItem onClick={() => changeLanguage('fr')}>
+          {t('languages.french')}
         </DropdownItem>
-        <DropdownItem onClick={() => changeLanguage("en")}>
-          {t("english")}
+        <DropdownItem onClick={() => changeLanguage('en')}>
+          {t('languages.english')}
         </DropdownItem>
       </DropdownMenu>
     </ButtonDropdown>
-  );
-};
-export { LanguageMenu };
+  )
+}
+export { LanguageMenu }

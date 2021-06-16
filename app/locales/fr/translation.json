@@ -1,26 +1,19 @@
 {
-  "french": "Français",
-  "english": "Anglais",
-  "Home": "Domicile",
-  "Reports": "Reports1",
-  "Services": "Services1",
-  "Cache": "Cache1",
-  "Persistence": "Persistence1",
-  "Ldap": "Ldap1",
-  "Couchbase": "Couchbase1",
-  "Auth Server": "Auth Server1",
-  "Health": "Health1",
-  "Configuration": "Configuration1",
-  "Keys": "Keys1",
-  "Defaults": "Defaults1",
-  "Properties": "Properties1",
-  "Logging": "Logging1",
-  "PW Authn": "PW Authn1",
-  "Clients": "Clients1",
-  "Scopes": "Scopes1",
-  "Scripts": "Scripts1",
-  "Schema": "Schema1",
-  "Person": "Person1",
-  "Settings": "Settings1",
-  "Sign out": "Sign out1"
+  "languages": {
+    "french": "Français",
+    "english": "Anglais"
+  },
+  "menus": {
+    "home": "Accueil",
+    "reports": "Reportsfr",
+    "services": "Servicesfr",
+    "Cache": "Cachefr"
+  },
+  "ations": {
+    "save": "Enregistrer",
+    "add": "Ajouter",
+    "edit": "Editer",
+    "cancel": "Annuler",
+    "test": "Tester"
+  }
 }

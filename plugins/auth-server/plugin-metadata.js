@@ -38,62 +38,62 @@ const PLUGIN_BASE_APTH = '/auth-server'
 const pluginMetadata = {
   menus: [
     {
-      title: 'Auth Server',
+      title: 'menus.oauthserver',
       icon: 'fa-server',
       children: [
         {
-          title: 'Health',
+          title: 'menus.health',
           path: PLUGIN_BASE_APTH + '/health',
           //permission: '/config/properties.readonly',
           permission: '/config/acrs.readonly',
         },
         {
-          title: 'Reports',
+          title: 'menus.reports',
           path: PLUGIN_BASE_APTH + '/reports',
           permission: '/config/acrs.readonly',
         },
         {
-          title: 'Configuration',
+          title: 'menus.configuration',
           children: [
             {
-              title: 'Keys',
+              title: 'menus.keys',
               path: PLUGIN_BASE_APTH + '/config/keys',
               permission: '/config/jwks.readonly',
             },
             {
-              title: 'Defaults',
+              title: 'menus.defaults',
               path: PLUGIN_BASE_APTH + '/config/defaults',
               permission: '/config/acrs.readonly',
             },
             {
-              title: 'Properties',
+              title: 'menus.properties',
               path: PLUGIN_BASE_APTH + '/config/properties',
               permission: '/config/acrs.readonly',
             },
             {
-              title: 'Logging',
+              title: 'menus.logging',
               path: PLUGIN_BASE_APTH + '/config/logging',
               permission: '/config/properties.readonly',
             },
-            {
+            /**{
               title: 'PW Authn',
               path: PLUGIN_BASE_APTH + '/config/pwauthn',
               permission: '/config/acrs.readonly',
-            },
+            },**/
           ],
         },
         {
-          title: 'Clients',
+          title: 'menus.clients',
           path: PLUGIN_BASE_APTH + '/clients',
           permission: '/config/openid/clients.readonly',
         },
         {
-          title: 'Scopes',
+          title: 'menus.scopes',
           path: PLUGIN_BASE_APTH + '/scopes',
           permission: '/config/scopes.readonly',
         },
         {
-          title: 'Scripts',
+          title: 'menus.scripts',
           path: PLUGIN_BASE_APTH + '/scripts',
           permission: '/config/scripts.readonly',
         },

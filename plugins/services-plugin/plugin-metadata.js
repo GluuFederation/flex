@@ -15,25 +15,25 @@ import smtpSaga from './redux/sagas/SmtpSaga'
 const pluginMetadata = {
   menus: [
     {
-      title: 'Services',
+      title: 'menus.services',
       icon: 'fa-gears',
       children: [
         {
-          title: 'Cache',
+          title: 'menus.cache',
           path: '/config/cache',
           permission: '/config/cache.readonly',
         },
         {
           icon: 'fa-database',
-          title: 'Persistence',
+          title: 'menus.persistence',
           children: [
             {
-              title: 'Ldap',
+              title: 'menus.ldap',
               path: '/config/ldap',
               permission: '/config/database/ldap.readonly',
             },
             {
-              title: 'Couchbase',
+              title: 'menus.couchbase',
               path: '/config/couchbase',
               permission: '/config/database/couchbase.readonly',
             },

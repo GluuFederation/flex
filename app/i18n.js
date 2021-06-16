@@ -7,23 +7,21 @@ import translationFr from './locales/fr/translation.json'
 
 i18n
   .use(initReactI18next)
-  // .use(LanguageDetector)
+  .use(LanguageDetector)
   .init({
-    // we init with resources
     resources: {
       en: {
-        translation: translationEn
+        translation: translationEn,
       },
       fr: {
-        translation: translationFr
-      }
+        translation: translationFr,
+      },
     },
     fallbackLng: 'en',
     debug: true,
-    // have a common namespace used around the full app
     ns: ['translation'],
     defaultNS: 'translation',
-   keySeparator: false, // we use content as keys
+    keySeparator: '.',
     react: {
       wait: true,
     },

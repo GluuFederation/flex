@@ -8,11 +8,11 @@ import attributeSaga from './redux/sagas/AttributeSaga'
 const pluginMetadata = {
   menus: [
     {
-      title: 'Schema',
+      title: 'menus.schema',
       icon: 'fa-database',
       children: [
         {
-          title: 'Person',
+          title: 'menus.person',
           path: '/attributes',
           permission: '/config/attributes.readonly',
         },
