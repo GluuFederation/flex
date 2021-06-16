@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 
 function GluuAppSidebar({ scopes }) {
   const [pluginMenus, setPluginMenus] = useState([])
-  const { t} = useTranslation()
+  const { t } = useTranslation()
 
   useEffect(() => {
     setPluginMenus(processMenus())

@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react'
-
+import {
+  hasPermission,
+  buildPayload,
+  CLIENT_WRITE,
+  CLIENT_READ,
+  CLIENT_DELETE,
+} from '../../../../app/utils/PermChecker'
 import {
   Container,
   Row,
@@ -19,18 +25,23 @@ import { useTranslation } from 'react-i18next'
 
 function Reports({ attributes, clients, scopes, scripts, dispatch }) {
   const { t } = useTranslation()
+  const userAction = {}
   useEffect(() => {
     if (attributes.length === 0) {
-      dispatch(getAttributes())
+      buildPayload(userAction, 'Fetch attributes', {})
+      dispatch(getAttributes(userAction))
     }
     if (clients.length === 0) {
-      dispatch(getOpenidClients())
+      buildPayload(userAction, 'Fetch openid connect clients', {})
+      dispatch(getOpenidClients(userAction))
     }
     if (scopes.length === 0) {
-      dispatch(getScopes())
+      buildPayload(userAction, 'Fetch scopes', {})
+      dispatch(getScopes(userAction))
     }
     if (scripts.length === 0) {
-      dispatch(getCustomScripts())
+      buildPayload(userAction, 'Fetch custom scripts', {})
+      dispatch(getCustomScripts(userAction))
     }
   }, [])
 
@@ -41,7 +52,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                {t("All OIDC Clients")}
+                {t('All OIDC Clients')}
               </CardTitle>
               <div>
                 <div className="mb-3">
@@ -59,7 +70,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                {t("All Attributes")}
+                {t('All Attributes')}
               </CardTitle>
               <div>
                 <div className="mb-3">
@@ -77,7 +88,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                {t("All Scopes")}
+                {t('All Scopes')}
               </CardTitle>
               <div>
                 <div className="mb-3">
@@ -95,7 +106,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                {t("All Custom Scripts")}
+                {t('All Custom Scripts')}
               </CardTitle>
               <div>
                 <div className="mb-3">

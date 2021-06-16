@@ -16,10 +16,10 @@ function* newFunction() {
   return new InitApi(api)
 }
 
-export function* getPersonAuthScript() {
+export function* getPersonAuthScript({ payload }) {
   try {
     const api = yield* newFunction()
-    const data = yield call(api.getPersonScripts)
+    const data = yield call(api.getPersonScripts, payload.action.action_data)
     yield put(getAuthScriptResponse(data))
   } catch (e) {
     yield put(getAuthScriptResponse(null))

@@ -18,7 +18,7 @@ i18n
       },
     },
     fallbackLng: 'en',
-    debug: true,
+    debug: false,
     ns: ['translation'],
     defaultNS: 'translation',
     keySeparator: '.',

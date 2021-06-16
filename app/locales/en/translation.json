@@ -1,4 +1,15 @@
 {
+  "ations": {
+    "save": "Save",
+    "add": "Add",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "test": "Test",
+    "apply": "Apply",
+    "accept": "Accept",
+    "yes": "Yes",
+    "no": "No"
+  },
   "languages": {
     "french": "French",
     "english": "English"
@@ -26,18 +37,10 @@
     "settings": "Settings",
     "signout": "Sign out"
   },
-  "ations": {
-    "save": "Save",
-    "add": "Add",
-    "edit": "Edit",
-    "cancel": "Cancel",
-    "test": "Test",
-    "apply": "Apply",
-    "accept": "Accept",
-    "yes": "Yes",
-    "no": "No"
-  },
   "messages": {
     "request_waiting_message": "Performing the request, please wait!"
+  },
+  "titles": {
+    "custom_scripts": "All Custom Scripts"
   }
 }

@@ -75,12 +75,7 @@ const pluginMetadata = {
     { name: 'ldapReducer', reducer: ldapReducer },
     { name: 'smtpReducer', reducer: smtpReducer },
   ],
-  sagas: [
-    cacheSaga(),
-    couchbaseSaga(),
-    ldapSaga(),
-    smtpSaga(),
-  ],
+  sagas: [cacheSaga(), couchbaseSaga(), ldapSaga(), smtpSaga()],
 }
 
 export default pluginMetadata

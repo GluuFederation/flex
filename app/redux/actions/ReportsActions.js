@@ -5,21 +5,22 @@ import {
   GET_ATTRIBUTES,
 } from './types'
 
-export const getCustomScripts = () => ({
+export const getCustomScripts = (action) => ({
   type: GET_CUSTOM_SCRIPT,
+  payload: { action },
 })
 
-export const getOpenidClients = (options) => ({
+export const getOpenidClients = (action) => ({
   type: GET_OPENID_CLIENTS,
-  payload: { options },
+  payload: { action },
 })
 
-export const getScopes = (options) => ({
+export const getScopes = (action) => ({
   type: GET_SCOPES,
-  payload: { options },
+  payload: { action },
 })
 
-export const getAttributes = (options) => ({
+export const getAttributes = (action) => ({
   type: GET_ATTRIBUTES,
-  payload: { options },
+  payload: { action },
 })
