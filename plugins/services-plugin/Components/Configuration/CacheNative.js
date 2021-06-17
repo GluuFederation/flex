@@ -16,8 +16,8 @@ function CacheNative({ config, formik }) {
     <Card>
       <CardBody>
         <FormGroup row>
-        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>nativePersistenceConfiguration:</Col>
-          <GluuLabel label={t("Default Put Expiration")} size={2} />
+        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>{t("fields.native_persistence_configuration")}:</Col>
+          <GluuLabel label="fields.default_put_expiration" size={2} />
           <Col sm={2}>
             <Input
               id="nativeDefaultPutExpiration"
@@ -27,7 +27,7 @@ function CacheNative({ config, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label={t("Default Cleanup Batch Size")} size={2} />
+          <GluuLabel label="fields.default_cleanup_batch_size" size={2} />
           <Col sm={2}>
             <Input
               id="defaultCleanupBatchSize"
@@ -37,7 +37,7 @@ function CacheNative({ config, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label={t("Delete Expired OnGetRequest")} size={2} />
+          <GluuLabel label="fields.delete_expired_on_get_request" size={2} />
           <Col sm={1}>
             <Input
               type="checkbox"

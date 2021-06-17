@@ -21,7 +21,7 @@ function LdapItem({ ldap, index, formik }) {
     >
       <CardBody>
         <FormGroup row>
-          <GluuLabel label={t("Configuration Id")} size={4} />
+          <GluuLabel label="fields.configuration_id" size={4} />
           <Col sm={8}>
             <Input
               id="configId"
@@ -33,13 +33,13 @@ function LdapItem({ ldap, index, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label={t("Bind DN")} size={4} />
+          <GluuLabel label="fields.bind_dn" size={4} />
           <Col sm={8}>
             <Input id="bindDN" name="bindDN" defaultValue={ldap.bindDN} onChange={formik.handleChange} />
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label={t("Bind Password")} size={4} />
+          <GluuLabel label="fields.bind_password" size={4} />
           <Col sm={8}>
             <Input
               id="bindPassword"
@@ -50,7 +50,7 @@ function LdapItem({ ldap, index, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label={t("Servers")} size={4} />
+          <GluuLabel label="fields.servers" size={4} />
           <Col sm={8}>
             {ldap.servers && ldap.servers.map((server, index) => (
               <Badge key={index} color="primary">
@@ -60,7 +60,7 @@ function LdapItem({ ldap, index, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label={t("Base DNs")} size={4} />
+          <GluuLabel label="fields.base_dns" size={4} />
           <Col sm={8}>
             { ldap.baseDNs && ldap.baseDNs.map((dn, index) => (
               <Badge key={index} color="primary">
@@ -70,7 +70,7 @@ function LdapItem({ ldap, index, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label={t("Use SSL")} size={3} />
+          <GluuLabel label="fields.use_ssl" size={3} />
           <Col sm={1}>
             <Input
               id="useSSL"
@@ -80,7 +80,7 @@ function LdapItem({ ldap, index, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label={t("Use Anonymous Bind")} size={3} />
+          <GluuLabel label="fields.use_anonymous_bind" size={3} />
           <Col sm={1}>
             <Input
               id="useAnonymousBind"
@@ -90,7 +90,7 @@ function LdapItem({ ldap, index, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label={t("Enabled")} size={3} />
+          <GluuLabel label="fields.enabled" size={3} />
           <Col sm={1}>
             <Input
               id="enabled"
@@ -102,7 +102,7 @@ function LdapItem({ ldap, index, formik }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label={t("Max Connections")} size={2} />
+          <GluuLabel label="fields.max_connections" size={2} />
           <Col sm={2}>
             <Input
               id="maxConnections"
@@ -112,7 +112,7 @@ function LdapItem({ ldap, index, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label={t("Primary Key")} size={3} />
+          <GluuLabel label="fields.primary_key" size={3} />
           <Col sm={1}>
             <Input
               id="primaryKey"
@@ -122,7 +122,7 @@ function LdapItem({ ldap, index, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label={t("Local Primary Key")} size={3} />
+          <GluuLabel label="fields.local_primary_key" size={3} />
           <Col sm={1}>
             <Input
               id="localPrimaryKey"

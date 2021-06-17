@@ -16,7 +16,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         <Col sm={0} md={7}>
           {extraLabel && extraOnClick && (
             <Button color="primary" onClick={extraOnClick}>
-              {extraLabel}
+              {t(extraLabel)}
             </Button>
           )}
         </Col>
