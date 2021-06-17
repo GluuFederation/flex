@@ -31,13 +31,13 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
                 <Row>
                     <Col sm={6}>
                         <FormGroup row>
-                            <Label for="input" sm={6}>{t("Configuration Id")}:</Label>
+                            <Label for="input" sm={6}>{t("fields.configuration_id")}:</Label>
                             <Label for="input" sm={6}>{row.configId}</Label>
                         </FormGroup>
                     </Col>
                     <Col sm={6}>
                         <FormGroup row>
-                            <Label for="input" sm={6}>{t("Bind DN")}:</Label>
+                            <Label for="input" sm={6}>{t("fields.bind_dn")}:</Label>
                             <Label for="input" sm={6}>{row.bindDN}</Label>
                         </FormGroup>
                     </Col>
@@ -45,17 +45,17 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
                 <Row>
                     <Col sm={6}>
                         <FormGroup row>
-                            <Label sm={6}>{t("Status")}:</Label>
+                            <Label sm={6}>{t("fields.status")}:</Label>
                             <Label sm={6}>
                                 <Badge color={getBadgeTheme(row.enabled)}>
-                                    {row.enabled ? `${t("enabled")}` : `${t("disable")}`}
+                                    {row.enabled ? `${t("options.enabled")}` : `${t("options.disable")}`}
                                 </Badge>
                             </Label>
                         </FormGroup>
                     </Col>
                     <Col sm={6}>
                         <FormGroup row>
-                            <Label sm={6}>{t("Servers")}:</Label>
+                            <Label sm={6}>{t("fields.servers")}:</Label>
                             <Label sm={6}>
                                 {row.servers && row.servers.map((server, index) => (
                                     <Badge key={index} color="primary">
@@ -69,24 +69,24 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
                 <Row>
                     <Col sm={4}>
                         <FormGroup row>
-                            <Label sm={6}>{t("Max Connections")}:</Label>
+                            <Label sm={6}>{t("fields.max_connections")}:</Label>
                             <Label sm={6}>{row.maxConnections}</Label>
                         </FormGroup>
                     </Col>
                     <Col sm={4}>
                         <FormGroup row>
-                            <Label sm={6}>{t("Use SSL")}:</Label>
+                            <Label sm={6}>{t("fields.use_ssl")}:</Label>
                             <Label sm={6}>
                                 {row.useSSL}
                                 <Badge color={getBadgeTheme(row.useSSL)}>
-                                    {row.useSSL ? "True" : "False"}
+                                    {row.useSSL ? t("options.true") : t("options.false")}
                                 </Badge>
                             </Label>
                         </FormGroup>
                     </Col>
                     <Col sm={4}>
                         <FormGroup row>
-                            <Label sm={6}>{t("Base DNs")}:</Label>
+                            <Label sm={6}>{t("fields.base_dns")}:</Label>
                             <Label sm={6}>
                                 {row.baseDNs && row.baseDNs.map((baseDN, index) => (
                                     <Badge key={baseDN} color="primary">
@@ -100,26 +100,26 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
                 <Row>
                     <Col sm={4}>
                         <FormGroup row>
-                            <Label sm={6}>{t("Primary Key")}:</Label>
+                            <Label sm={6}>{t("fields.primary_key")}:</Label>
                             <Label sm={6}>{row.primaryKey}</Label>
                         </FormGroup>
                     </Col>
                     <Col sm={4}>
                         <FormGroup row>
-                            <Label sm={6}>{t("Local Primary Key")}:</Label>
+                            <Label sm={6}>{t("fields.local_primary_key")}:</Label>
                             <Label sm={6}>{row.localPrimaryKey}</Label>
                         </FormGroup>
                     </Col>
                     <Col sm={4}>
                         <FormGroup row>
-                            <Label sm={6}>{t("Use Anonymous Bind")}:</Label>
+                            <Label sm={6}>{t("fields.use_anonymous_bind")}:</Label>
                             <Label sm={6}>{row.useAnonymousBind}</Label>
                         </FormGroup>
                     </Col>
                 </Row>
                 <Row>
                     <Col sm={4}>
-                    <button onClick={checkLdapConnection} type="button" className="btn btn-primary text-center">{t("Test Connection")}</button>
+                    <button onClick={checkLdapConnection} type="button" className="btn btn-primary text-center">{t("fields.test_connection")}</button>
                     </Col>
                 </Row>
                 {/* END Content */}

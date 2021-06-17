@@ -25,7 +25,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
             <FormGroup row>
               <Col style={{ marginBottom: 15}}>
                 <div className="alert alert-warning" role="alert">
-                  {t("Backing data source is not Couchbase !")}
+                  {t("messages.alert_couchbase")}
                 </div>
               </Col>
             </FormGroup>
@@ -34,7 +34,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
         {
           couchbase.configId && (
             <FormGroup row>
-              <GluuLabel label={t("Configuration Id")} size={4} />
+              <GluuLabel label="fields.configuration_id" size={4} />
               <Col sm={8}>
                 <Input
                   id="configId"
@@ -50,7 +50,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
         {
           couchbase.servers && (
             <FormGroup row>
-              <GluuLabel label={t("Servers")} size={4} />
+              <GluuLabel label="fields.servers" size={4} />
               <Col sm={8}>
                 {couchbase.servers.length && couchbase.servers.map((server, index) => (
                   <Badge key={index} color="primary" className="ml-1">
@@ -64,7 +64,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
         {
           couchbase.buckets && (
             <FormGroup row>
-              <GluuLabel label={t("Buckets")} size={4} />
+              <GluuLabel label="fields.buckets" size={4} />
               <Col sm={8}>
                 { couchbase.buckets.length && couchbase.buckets.map((bucket, index) => (
                   <Badge key={index} color="primary" className="ml-1">
@@ -78,7 +78,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
         {
           couchbase.defaultBucket && (
             <FormGroup row>
-              <GluuLabel label={("Default Bucket")} size={4} />
+              <GluuLabel label="fields.default_bucket" size={4} />
               <Col sm={8}>
                 <Input
                   id="defaultBucket"
@@ -92,7 +92,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
           )
         }
         <FormGroup row>
-          { couchbase.connectTimeout !== 0 && <GluuLabel label={t("Connection Timeout")} size={2} />}
+          { couchbase.connectTimeout !== 0 && <GluuLabel label="fields.connection_timeout" size={2} />}
           {
             couchbase.connectTimeout !== 0 && (
               <Col sm={2}>
@@ -106,7 +106,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               </Col>
             )
           }
-          { couchbase.computationPoolSize !== 0 && <GluuLabel label={t("Computation Pool Size")} size={2} />}
+          { couchbase.computationPoolSize !== 0 && <GluuLabel label="fields.computation_pool_size" size={2} />}
           {
             couchbase.computationPoolSize !== 0 && (
               <Col sm={2}>
@@ -120,7 +120,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               </Col>
             )
           }
-          { couchbase.useSSL && <GluuLabel label={t("Use SSL")} size={3} />}
+          { couchbase.useSSL && <GluuLabel label="fields.use_ssl" size={3} />}
           {
             couchbase.useSSL && (
               <Col sm={1}>
@@ -137,7 +137,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
           }
         </FormGroup>
         <FormGroup row>
-          { couchbase.sslTrustStoreFile && <GluuLabel label={t("SSL Trust Store File")} size={2} /> }
+          { couchbase.sslTrustStoreFile && <GluuLabel label="fields.ssl_trust_store_file" size={2} /> }
           {
             couchbase.sslTrustStoreFile && (
               <Col sm={2}>
@@ -151,7 +151,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               </Col>
             )
           }
-          { couchbase.sslTrustStoreFormat && <GluuLabel label={t("SSL Trust Store Format")} size={2} /> }
+          { couchbase.sslTrustStoreFormat && <GluuLabel label="fields.ssl_trust_store_format" size={2} /> }
           {couchbase.sslTrustStoreFormat && (
             <Col sm={2}>
               <Input
@@ -163,7 +163,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               />
             </Col>
           )}
-          { couchbase.sslTrustStorePin && <GluuLabel label={t("SSL Trust Store Pin")} size={2} />}
+          { couchbase.sslTrustStorePin && <GluuLabel label="fields.ssl_trust_store_pin" size={2} />}
           {
             couchbase.sslTrustStorePin && (
               <Col sm={2}>
@@ -179,7 +179,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
           }
         </FormGroup>
         <FormGroup row>
-          {couchbase.userName && <GluuLabel label={t("User Name")} size={2} />}
+          {couchbase.userName && <GluuLabel label="fields.user_name" size={2} />}
           {
             couchbase.userName && (
               <Col sm={3}>
@@ -193,7 +193,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               </Col>
             )
           }
-          { couchbase.userPassword && <GluuLabel label="User Password" size={2} />}
+          { couchbase.userPassword && <GluuLabel label="fields.user_password" size={2} />}
           {
             couchbase.userPassword && (
               <Col sm={4}>

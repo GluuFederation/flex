@@ -71,12 +71,12 @@ function LdapForm({ item, handleSubmit }) {
         <Form onSubmit={formik.handleSubmit}>
             {/* START Input */}
             <FormGroup row>
-                <GluuLabel label={t("Name")} required />
+                <GluuLabel label="fields.name" required />
                 <Col sm={9}>
                     {!!item.configId ?
                         <Input
                             valid={!formik.errors.configId && !formik.touched.configId && init}
-                            placeholder={t("Enter the ldap Name")}
+                            placeholder={t("placeholders.ldap_name")}
                             id="configId"
                             name="configId"
                             defaultValue={item.configId}
@@ -86,7 +86,7 @@ function LdapForm({ item, handleSubmit }) {
                         /> :
                         <Input
                             valid={!formik.errors.configId && !formik.touched.configId && init}
-                            placeholder={t("Enter the ldap Name")}
+                            placeholder={t("placeholders.ldap_name")}
                             id="configId"
                             name="configId"
                             defaultValue={item.configId}
@@ -100,10 +100,10 @@ function LdapForm({ item, handleSubmit }) {
                 </Col>
             </FormGroup>
             <FormGroup row>
-                <GluuLabel label={t("Bind DN")} required />
+                <GluuLabel label="fields.bind_dn" required />
                 <Col sm={9}>
                     <Input
-                        placeholder={t("Enter the ldap Bind DN")}
+                        placeholder={t("placeholders.ldap_bind_dn")}
                         id="bindDN"
                         valid={!formik.errors.bindDN && !formik.touched.bindDN && init}
                         name="bindDN"
@@ -117,11 +117,11 @@ function LdapForm({ item, handleSubmit }) {
                 </Col>
             </FormGroup>
             <FormGroup row>
-                <GluuLabel label={t("Bind Password")} required />
+                <GluuLabel label="fields.bind_password" required />
                 <Col sm={9}>
                     <InputGroup>
                         <Input
-                            placeholder={t("Enter the ldap Bind Password")}
+                            placeholder={t("placeholders.ldap_bind_password")}
                             valid={
                                 !formik.errors.bindPassword &&
                                 !formik.touched.bindPassword &&
@@ -143,7 +143,7 @@ function LdapForm({ item, handleSubmit }) {
                 <Col sm={9}>
                     <GluuTypeAhead
                         name="servers"
-                        label={t("Servers")}
+                        label="fields.servers"
                         formik={formik}
                         required={true}
                         options={['localhost:1636']}
@@ -162,11 +162,11 @@ function LdapForm({ item, handleSubmit }) {
                 </Col>
             </FormGroup>
             <FormGroup row>
-                <GluuLabel label={t("Max Connections")} required />
+                <GluuLabel label="fields.max_connections" required />
                 <Col sm={9}>
                     <InputGroup>
                         <Input
-                            placeholder={t("Enter the ldap Bind Max Connections")}
+                            placeholder={t("placeholders.ldap_bind_max_connections")}
                             valid={
                                 !formik.errors.maxConnections &&
                                 !formik.touched.maxConnections &&
@@ -184,11 +184,11 @@ function LdapForm({ item, handleSubmit }) {
                 </Col>
             </FormGroup>
             <FormGroup row>
-                <GluuLabel label={t("Use SSL")} required />
+                <GluuLabel label="fields.use_ssl" required />
                 <Col sm={9}>
                     <InputGroup>
                         <Input
-                            placeholder={t("Enable SSL communication between auth Server and LDAP server")}
+                            placeholder={t("placeholders.enable_ssl_communication")}
                             valid={
                                 !formik.errors.useSSL &&
                                 !formik.touched.useSSL &&
@@ -207,7 +207,7 @@ function LdapForm({ item, handleSubmit }) {
                 <Col sm={9}>
                     <GluuTypeAhead
                         name="baseDNs"
-                        label={t("Base DNs")}
+                        label="fields.base_dns"
                         formik={formik}
                         options={[]}
                         required={true}
@@ -220,11 +220,11 @@ function LdapForm({ item, handleSubmit }) {
                 </Col>
             </FormGroup>
             <FormGroup row>
-                <GluuLabel label={t("Primary Key")} required />
+                <GluuLabel label="fields.primary_key" required />
                 <Col sm={9}>
                     <InputGroup>
                         <Input
-                            placeholder={t("Enter the ldap Primary Key")}
+                            placeholder={t("placeholders.ldap_primary_key")}
                             valid={
                                 !formik.errors.primaryKey &&
                                 !formik.touched.primaryKey &&
@@ -242,11 +242,11 @@ function LdapForm({ item, handleSubmit }) {
                 </Col>
             </FormGroup>
             <FormGroup row>
-                <GluuLabel label={t("Local Primary Key")} required />
+                <GluuLabel label="fields.local_primary_key" required />
                 <Col sm={9}>
                     <InputGroup>
                         <Input
-                            placeholder={t("Enter the ldap Primary Key")}
+                            placeholder={t("placeholders.ldap_primary_key")}
                             valid={
                                 !formik.errors.localPrimaryKey &&
                                 !formik.touched.localPrimaryKey &&
@@ -264,11 +264,11 @@ function LdapForm({ item, handleSubmit }) {
                 </Col>
             </FormGroup>
             <FormGroup row>
-                <GluuLabel label={t("Activate")} />
+                <GluuLabel label="fields.activate" />
                 <Col sm={9}>
                     <InputGroup>
                         <Input
-                            placeholder={t("Activate ldap configuration")}
+                            placeholder={t("placeholders.activate_ldap_configuration")}
                             valid={
                                 !formik.errors.enabled &&
                                 !formik.touched.enabled &&

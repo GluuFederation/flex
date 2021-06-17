@@ -55,7 +55,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
         color: 'primary',
         id: 'editLdap' + rowData.configId,
       },
-      tooltip: `${t("Edit Ldap")}`,
+      tooltip: `${t("tooltips.edit_ldap")}`,
       onClick: (event, rowData) => handleGoToLdapEditPage(rowData),
       disabled: !hasPermission(permissions, LDAP_WRITE),
     }))
@@ -64,7 +64,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
   if (hasPermission(permissions, LDAP_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: `${t("Refresh Data")}`,
+      tooltip: `${t("tooltips.refresh_data")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
@@ -79,7 +79,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
         color: 'secondary',
         id: 'deleteLdap' + rowData.configId,
       },
-      tooltip: `${t("Delete record")}`,
+      tooltip: `${t("tooltips.delete_record")}`,
       onClick: (event, rowData) => handleLdapDelete(rowData),
       disabled: !hasPermission(permissions, LDAP_DELETE),
     }))
@@ -87,7 +87,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
   if (hasPermission(permissions, LDAP_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: `${t("Add LDAP")}`,
+      tooltip: `${t("tooltips.add_ldap")}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToLdapAddPage(),
@@ -121,9 +121,9 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
       })
       .then(() => {
         if (testStatus) {
-          setAlertObj({ ...alertObj, severity: 'success', message: `${t("LDAP Connection successful!")}`, show: true })
+          setAlertObj({ ...alertObj, severity: 'success', message: `${t("messages.ldap_connection_success")}`, show: true })
         } else {
-          setAlertObj({ ...alertObj, severity: 'error', message: `${t("LDAP Connection Failed!")}`, show: true })
+          setAlertObj({ ...alertObj, severity: 'error', message: `${t("messages.ldap_connection_error")}`, show: true })
         }
       })
   }
@@ -131,27 +131,27 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
     <React.Fragment>
       {/* START Content */}
       <div>
-        <Button color="primary" onClick={handleGoToLdapAddPage}>{t("Add LDAP Configuration")}</Button>
+        <Button color="primary" onClick={handleGoToLdapAddPage}>{t("actions.add_ldap_configuration")}</Button>
       </div>
       <hr/>
       <MaterialTable
         columns={[
-          { title: `${t("Configuration Id")}`, field: 'configId' },
-          { title: `${t("Bind DN")}`, field: 'bindDN' },
+          { title: `${t("fields.configuration_id")}`, field: 'configId' },
+          { title: `${t("fields.bind_dn")}`, field: 'bindDN' },
           {
-            title: `${t("Status")}`,
+            title: `${t("fields.status")}`,
             field: 'enabled',
             type: 'boolean',
             render: (rowData) => (
               <Badge color={getBadgeTheme(rowData.enabled)}>
-                {rowData.enabled ? `${t("Enable")}` : `${t("Disable")}`}
+                {rowData.enabled ? `${t("fields.enable")}` : `${t("fields.disable")}`}
               </Badge>
             ),
           },
         ]}
         data={ldapConfigurations}
         isLoading={loading}
-        title={t("Ldap Authentication")}
+        title={t("titles.ldap_authentication")}
         actions={myActions}
         options={{
           search: true,

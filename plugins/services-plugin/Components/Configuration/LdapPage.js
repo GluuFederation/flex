@@ -29,7 +29,7 @@ function LdapPage({ ldap, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-        message={t("Performing the request, please wait!")}
+        message={t("messages.request_waiting_message")}
         >
           <Card>
               <CardBody>

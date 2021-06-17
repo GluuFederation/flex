@@ -87,7 +87,7 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={t("Performing the request, please wait!")}
+          message={t("messages.request_waiting_message")}
         >
           <Card>
             <CardBody>
@@ -157,8 +157,8 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
                     <FormGroup row>
-                      <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>Cache Configuration</Col>
-                      <GluuLabel label={t("Cache Provider Type")} size={4} />
+                      <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>{t("fields.cache_configuration")}</Col>
+                      <GluuLabel label="fields.cache_provider_type" size={4} />
                       <Col sm={8}>
                         {
                           cacheData.cacheProviderType && (
@@ -174,10 +174,10 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                                   formik.setFieldValue('cacheProviderType', e.target.value)
                                 }}
                               >
-                                <option>{t("IN_MEMORY")}</option>
-                                <option>{t("MEMCACHED")}</option>
-                                <option>{t("REDIS")}</option>
-                                <option>{t("NATIVE_PERSISTENCE")}</option>
+                                <option>{t("options.in_memory")}</option>
+                                <option>{t("options.memcached")}</option>
+                                <option>{t("options.redis")}</option>
+                                <option>{t("options.native_persistence")}</option>
                               </CustomInput>
                             </InputGroup>
                           )

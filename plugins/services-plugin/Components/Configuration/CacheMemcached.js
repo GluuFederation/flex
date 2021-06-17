@@ -18,12 +18,12 @@ function CacheMemcached({ config, formik }) {
     <Card>
       <CardBody>
         <FormGroup row>
-        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>memcachedConfiguration:</Col>
-          <GluuLabel label={t("Servers")} size={2} />
+        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>{t("fields.memcached_configuration")}:</Col>
+          <GluuLabel label="fields.servers" size={2} />
           <Col sm={6}>
             <Badge color="primary">{config.servers}</Badge>
           </Col>
-          <GluuLabel label={t("Connection Factory Type")} size={2} />
+          <GluuLabel label="fields.connection_factory_type" size={2} />
           <Col sm={2}>
             <CustomInput
                 type="select"
@@ -32,13 +32,13 @@ function CacheMemcached({ config, formik }) {
                 defaultValue={config.connectionFactoryType}
                 onChange={formik.handleChange}
               >
-                <option>{t("DEFAULT")}</option>
-                <option>{t("BINARY")}</option>
+                <option>{t("options.default")}</option>
+                <option>{t("options.binary")}</option>
               </CustomInput>
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label={t("Max Operation Queue Length")} size={2} />
+          <GluuLabel label="fields.max_operation_queue_length" size={2} />
           <Col sm={2}>
             <Input
               id="maxOperationQueueLength"
@@ -48,7 +48,7 @@ function CacheMemcached({ config, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label={t("Buffer Size")} size={2} />
+          <GluuLabel label="fields.buffer_size" size={2} />
           <Col sm={2}>
             <Input
               id="bufferSize"
@@ -58,7 +58,7 @@ function CacheMemcached({ config, formik }) {
               onChange={formik.handleChange}
             />
           </Col>
-          <GluuLabel label={t("Default Put Expiration")} size={2} />
+          <GluuLabel label="fields.default_put_expiration" size={2} />
           <Col sm={2}>
             <Input
               type="number"
