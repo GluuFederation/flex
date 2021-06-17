@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import AcrsPage from './AcrsPage'
 import LoggingPage from './LoggingPage'
+import { useTranslation } from 'react-i18next'
 import {
   Container,
   Accordion,
@@ -13,8 +14,8 @@ import {
   patchJsonConfig,
 } from '../../../redux/actions/JsonConfigActions'
 
-function DefaultConfigPage({ configuration, loading, dispatch }) {
-  const lSize = 6
+function DefaultConfigPage({ dispatch }) {
+  const { t } = useTranslation()
   useEffect(() => {
     dispatch(getJsonConfig())
   }, [])
@@ -25,7 +26,7 @@ function DefaultConfigPage({ configuration, loading, dispatch }) {
           <CardBody>
             <Accordion className="mb-2 b-primary" initialOpen>
               <Accordion.Header className="text-primary">
-                {'ACRs'.toUpperCase()}
+                {t('titles.acrs').toUpperCase()}
               </Accordion.Header>
               <Accordion.Body>
                 <AcrsPage></AcrsPage>
@@ -33,7 +34,7 @@ function DefaultConfigPage({ configuration, loading, dispatch }) {
             </Accordion>
             <Accordion className="mb-2 b-primary" initialOpen>
               <Accordion.Header className="text-primary">
-                {'Logging'.toUpperCase()}
+                {t('titles.logging').toUpperCase()}
               </Accordion.Header>
               <Accordion.Body>
                 <LoggingPage></LoggingPage>

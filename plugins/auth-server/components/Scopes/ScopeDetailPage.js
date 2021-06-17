@@ -14,43 +14,48 @@ function ScopeDetailPage({ row }) {
   }
   return (
     <React.Fragment>
-      {/* START Content */}
       <Container style={{ backgroundColor: '#F5F5F5' }}>
         <Row>
           <Col sm={6}>
-            <GluuFormDetailRow label={t("Inum")} value={row.inum} />
+            <GluuFormDetailRow label="fields.inum" value={row.inum} />
           </Col>
           <Col sm={6}>
-            <GluuFormDetailRow label={t("Id")} value={row.id} />
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={6}>
-            <GluuFormDetailRow label={t("Description")} value={row.description} />
-          </Col>
-          <Col sm={6}>
-            <GluuFormDetailRow label={t("Display Name")} value={row.displayName} />
+            <GluuFormDetailRow label="fields.id" value={row.id} />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label={t("Scope Type")}
+              label="fields.description"
+              value={row.description}
+            />
+          </Col>
+          <Col sm={6}>
+            <GluuFormDetailRow
+              label="fields.displayname"
+              value={row.displayName}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={6}>
+            <GluuFormDetailRow
+              label="fields.scope_type"
               value={row.scopeType}
               isBadge
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label={t("Default Scope")}
+              label="fields.default_scope"
               isBadge
               badgeColor={getBadgeTheme(row.defaultScope)}
-              value={row.defaultScope ? 'Yes' : 'No'}
+              value={row.defaultScope ? t('options.yes') : t('options.no')}
             />
           </Col>
         </Row>
         <Row>
-          <Col sm={3}>{t("Attributes")}:</Col>
+          <Col sm={3}>{t('fields.attributes')}:</Col>
           <Col sm={9}>
             {Object.keys(row.attributes).map((item, key) => (
               <GluuFormDetailRow
@@ -62,7 +67,6 @@ function ScopeDetailPage({ row }) {
             ))}
           </Col>
         </Row>
-        {/* END Content */}
       </Container>
     </React.Fragment>
   )

@@ -27,15 +27,14 @@ function ClientDetailPage({ row, scopes }) {
 
   return (
     <React.Fragment>
-      {/* START Content */}
       <Container style={{ backgroundColor: '#F5F5F5' }}>
         <Row>
           <Col sm={6}>
-            <GluuFormDetailRow label={t("Client Id")} value={row.inum} />
+            <GluuFormDetailRow label="fields.client_id" value={row.inum} />
           </Col>
           <Col sm={6}>
             <GluuSecretDetail
-              label={t("Client Secret")}
+              label="fields.client_secret"
               value={row.clientSecret ? row.clientSecret : '-'}
             />
           </Col>
@@ -43,13 +42,13 @@ function ClientDetailPage({ row, scopes }) {
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label={t("Name")}
-              value={row.clientName || row.displayName|| '-'}
+              label="fields.name"
+              value={row.clientName || row.displayName || '-'}
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label={t("Description")}
+              label="fields.description"
               value={extractDescription(row.customAttributes || []) || '-'}
             />
           </Col>
@@ -57,13 +56,13 @@ function ClientDetailPage({ row, scopes }) {
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label={t("Subject Type")}
+              label="fields.subject_type"
               value={row.subjectType ? row.subjectType : '-'}
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label={t("Application Type")}
+              label="fields.application_type"
               value={row.applicationType}
             />
           </Col>
@@ -71,24 +70,24 @@ function ClientDetailPage({ row, scopes }) {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={6}>{t("Trusted Client")}:</Label>
+              <Label sm={6}>{t('fields.is_trusted_client')}:</Label>
               <Label sm={6}>
                 {row.trustedClient ? (
-                  <Badge color="primary">{t("Yes")}</Badge>
+                  <Badge color="primary">{t('options.yes')}</Badge>
                 ) : (
-                  <Badge color="danger">{t("No")}</Badge>
+                  <Badge color="danger">{t('options.no')}</Badge>
                 )}
               </Label>
             </FormGroup>
           </Col>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={6}>{t("Status")}:</Label>
+              <Label sm={6}>{t('fields.status')}:</Label>
               <Label sm={6}>
                 {!row.disabled ? (
-                  <Badge color="primary">{t("Enabled")}</Badge>
+                  <Badge color="primary">{t('options.enabled')}</Badge>
                 ) : (
-                  <Badge color="danger">{t("Disabled")}</Badge>
+                  <Badge color="danger">{t('options.disabled')}</Badge>
                 )}
               </Label>
             </FormGroup>
@@ -98,7 +97,7 @@ function ClientDetailPage({ row, scopes }) {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={4}>{t("Scopes")}:</Label>
+              <Label sm={4}>{t('fields.scopes')}:</Label>
               <Label sm={8}>
                 {clientScopes &&
                   clientScopes.map((item, key) => (
@@ -111,7 +110,7 @@ function ClientDetailPage({ row, scopes }) {
           </Col>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={4}>{t("Grant types")}:</Label>
+              <Label sm={4}>{t('fields.grant_types')}:</Label>
               <Label sm={8}>
                 {row.grantTypes &&
                   row.grantTypes.map((item, key) => (
@@ -126,7 +125,7 @@ function ClientDetailPage({ row, scopes }) {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={4}>{t("Response types")}:</Label>
+              <Label sm={4}>{t('fields.response_types')}:</Label>
               <Label sm={8}>
                 {row.responseTypes &&
                   row.responseTypes.map((item, key) => (
@@ -139,7 +138,7 @@ function ClientDetailPage({ row, scopes }) {
           </Col>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={4}>{t("Login uris")}:</Label>
+              <Label sm={4}>{t('fields.login_uris')}:</Label>
               <Label sm={8}>
                 {row.redirectUris &&
                   row.redirectUris.map((item, key) => (
@@ -154,7 +153,7 @@ function ClientDetailPage({ row, scopes }) {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={4}>{t("Logout Redirect Uris")}: </Label>
+              <Label sm={4}>{t('fields.logout_redirect_uris')}: </Label>
               <Label sm={8}>
                 {row.postLogoutRedirectUris &&
                   row.postLogoutRedirectUris.map((item, key) => (
@@ -167,9 +166,7 @@ function ClientDetailPage({ row, scopes }) {
           </Col>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={6}>
-                {t("Authentication method for the Token Endpoint")}:
-              </Label>
+              <Label sm={6}>{t('fields.authentication_method')}:</Label>
               <Label sm={6}>
                 {row.authenticationMethod && (
                   <Badge color="primary">{row.authenticationMethod}</Badge>
@@ -178,7 +175,6 @@ function ClientDetailPage({ row, scopes }) {
             </FormGroup>
           </Col>
         </Row>
-        {/* END Content */}
       </Container>
     </React.Fragment>
   )

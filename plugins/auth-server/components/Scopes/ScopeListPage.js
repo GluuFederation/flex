@@ -4,14 +4,15 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
+import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
+import { useTranslation } from 'react-i18next'
 import {
   getScopes,
   searchScopes,
   deleteScope,
   setCurrentItem,
 } from '../../redux/actions/ScopeActions'
-import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
 import {
   hasPermission,
   buildPayload,
@@ -19,36 +20,42 @@ import {
   SCOPE_WRITE,
   SCOPE_DELETE,
 } from '../../../../app/utils/PermChecker'
-import { useTranslation } from 'react-i18next'
+import {
+  LIMIT_ID,
+  LIMIT,
+  PATTERN,
+  PATTERN_ID,
+  SEARCHING_SCOPES,
+  FETCHING_SCOPES,
+} from '../../common/Constants'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const userAction = {}
   const options = {}
-  const [limit, setLimit] = useState(100000)
-  const [pattern, setPattern] = useState(null)
-  useEffect(() => {
-    makeOptions()
-    buildPayload(userAction, 'Fetch scopes', options)
-    dispatch(getScopes(userAction))
-  }, [])
-
   const myActions = []
   const history = useHistory()
   const [item, setItem] = useState({})
-  const limitId = 'searchLimit'
-  const patternId = 'searchPattern'
   const [modal, setModal] = useState(false)
+  const [limit, setLimit] = useState(100000)
+  const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
 
+  useEffect(() => {
+    makeOptions()
+    buildPayload(userAction, FETCHING_SCOPES, options)
+    dispatch(getScopes(userAction))
+  }, [])
+
   function handleOptionsChange(i) {
-    setLimit(document.getElementById(limitId).value)
-    setPattern(document.getElementById(patternId).value)
+    setLimit(document.getElementById(LIMIT_ID).value)
+    setPattern(document.getElementById(PATTERN_ID).value)
   }
+
   function makeOptions() {
-    options['limit'] = limit
+    options[LIMIT] = limit
     if (pattern) {
-      options['pattern'] = pattern
+      options[PATTERN] = pattern
     }
   }
 
@@ -80,7 +87,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         color: 'primary',
         id: 'editScope' + rowData.inum,
       },
-      tooltip: `${t("Edit Scope")}`,
+      tooltip: `${t('messages.edit_scope')}`,
       onClick: (event, rowData) => handleGoToScopeEditPage(rowData),
       disabled: !hasPermission(permissions, SCOPE_WRITE),
     }))
@@ -90,13 +97,13 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     myActions.push({
       icon: () => (
         <GluuAdvancedSearch
-          limitId={limitId}
-          patternId={patternId}
+          limitId={LIMIT_ID}
+          patternId={PATTERN_ID}
           limit={limit}
           handler={handleOptionsChange}
         />
       ),
-      tooltip: `${t("Advanced search options")}`,
+      tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {},
@@ -105,12 +112,12 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   if (hasPermission(permissions, SCOPE_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: `${t("search")}`,
+      tooltip: `${t('messages.refresh')}`,
       iconProps: { color: 'primary', fontSize: 'large' },
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        buildPayload(userAction, 'Search scopes', options)
+        buildPayload(userAction, SEARCHING_SCOPES, options)
         dispatch(searchScopes(userAction))
       },
     })
@@ -118,7 +125,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   if (hasPermission(permissions, SCOPE_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: `${t("Add Scope")}`,
+      tooltip: `${t('messages.add_scope')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToScopeAddPage(),
@@ -133,7 +140,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         color: 'secondary',
         id: 'deleteScope' + rowData.inum,
       },
-      tooltip: `${t("Delete Scope")}`,
+      tooltip: `${t('Delete Scope')}`,
       onClick: (event, rowData) => handleScopeDelete(rowData),
       disabled: !hasPermission(permissions, SCOPE_DELETE),
     }))
@@ -143,11 +150,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     <React.Fragment>
       <MaterialTable
         columns={[
-          { title: `${t("iNum")}`, field: 'inum' },
-          { title: `${t("Display Name")}`, field: 'displayName' },
-          { title: `${t("Description")}`, field: 'description' },
+          { title: `${t('fields.inum')}`, field: 'inum' },
+          { title: `${t('fields.displayname')}`, field: 'displayName' },
+          { title: `${t('fields.description')}`, field: 'description' },
           {
-            title: `${t("Type")}`,
+            title: `${t('fields.scope_type')}`,
             field: 'scopeType',
             render: (rowData) => (
               <Badge color="primary">{rowData.scopeType}</Badge>
@@ -156,7 +163,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
         ]}
         data={scopes}
         isLoading={loading}
-        title={t("Scopes")}
+        title={t('titles.scopes')}
         actions={myActions}
         options={{
           search: true,

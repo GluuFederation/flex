@@ -11,7 +11,6 @@ import {
   getCustomScriptByType,
   setCurrentItem,
   getCustomScripts,
-  
 } from '../../redux/actions/CustomScriptActions'
 import {
   hasPermission,
@@ -20,39 +19,52 @@ import {
   SCRIPT_WRITE,
   SCRIPT_DELETE,
 } from '../../../../app/utils/PermChecker'
+import {
+  LIMIT_ID,
+  LIMIT,
+  PATTERN,
+  PATTERN_ID,
+  TYPE,
+  TYPE_ID,
+  FETCHING_SCRIPTS,
+  SEARCHING_SCRIPTS,
+} from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
 
 function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const { t } = useTranslation()
   const history = useHistory()
+  const userAction = {}
   const options = {}
   const myActions = []
-  const limitId = 'searchLimit'
-  const patternId = 'searchPattern'
-  const typeId = 'typeId'
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState(null)
   const [selectedScripts, setSelectedScripts] = useState(scripts)
   const [type, setType] = useState(true)
   function makeOptions() {
-    options['limit'] = parseInt(limit)
+    options[LIMIT] = parseInt(limit)
     if (pattern) {
-      options['pattern'] = pattern
+      options[PATTERN] = pattern
     }
     if (type && type != '') {
-      options['type'] = type
+      options[TYPE] = type
     }
   }
-  useEffect(() => {
-    makeOptions()
-    dispatch(getCustomScripts(options))
-  }, [])
-  useEffect(() => {
-    setSelectedScripts(scripts.filter((script) => (script.scriptType == document.getElementById(typeId).value)))
-  }, [scripts])
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
+  const [limit, setLimit] = useState(10)
+  const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
+  useEffect(() => {
+    makeOptions()
+    buildPayload(userAction, FETCHING_SCRIPTS, options)
+    dispatch(getCustomScripts(userAction))
+  }, [])
+  useEffect(() => {
+    setSelectedScripts(
+      scripts.filter(
+        (script) => script.scriptType == document.getElementById(TYPE_ID).value,
+      ),
+    )
+  }, [scripts])
   if (hasPermission(permissions, SCRIPT_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
@@ -60,7 +72,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         color: 'primary',
         id: 'editCustomScript' + rowData.inum,
       },
-      tooltip: `${t("Edit Script")}`,
+      tooltip: `${t('messages.edit_script')}`,
       onClick: (event, rowData) => handleGoToCustomScriptEditPage(rowData),
       disabled: false,
     }))
@@ -69,14 +81,14 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     myActions.push({
       icon: () => (
         <GluuCustomScriptSearch
-          limitId={limitId}
-          limit={limit}
-          typeId={typeId}
-          patternId={patternId}
+          limitId={LIMIT_ID}
+          limit={LIMIT}
+          typeId={TYPE_ID}
+          patternId={PATTERN_ID}
           handler={handleOptionsChange}
         />
       ),
-      tooltip: `${t("Advanced search options")}`,
+      tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {},
@@ -85,12 +97,13 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   if (hasPermission(permissions, SCRIPT_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: `${t("Search")}`,
+      tooltip: `${t('messages.refresh')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        dispatch(getCustomScriptByType(options))
+        buildPayload(userAction, SEARCHING_SCRIPTS, options)
+        dispatch(getCustomScriptByType(userAction))
       },
     })
   }
@@ -101,7 +114,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         color: 'secondary',
         id: 'deleteCustomScript' + rowData.inum,
       },
-      tooltip: `${t("Delete Custom Script")}`,
+      tooltip: `${t('messages.delete_script')}`,
       onClick: (event, rowData) => handleCustomScriptDelete(rowData),
       disabled: false,
     }))
@@ -109,18 +122,21 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   if (hasPermission(permissions, SCRIPT_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: `${t("Add Script")}`,
+      tooltip: `${t('messages.add_script')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToCustomScriptAddPage(),
     })
   }
   function handleOptionsChange() {
-    setLimit(document.getElementById(limitId).value)
-    setPattern(document.getElementById(patternId).value)
-    setType(document.getElementById(typeId).value)
-    setSelectedScripts(scripts.filter((script) => (script.scriptType == document.getElementById(typeId).value)))
-    //setStatus(document.getElementById(statusId).value)
+    setLimit(document.getElementById(LIMIT_ID).value)
+    setPattern(document.getElementById(PATTERN_ID).value)
+    setType(document.getElementById(TYPE_ID).value)
+    setSelectedScripts(
+      scripts.filter(
+        (script) => script.scriptType == document.getElementById(typeId).value,
+      ),
+    )
   }
   function handleGoToCustomScriptAddPage() {
     return history.push('/auth-server/script/new')
@@ -142,10 +158,10 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     <React.Fragment>
       <MaterialTable
         columns={[
-          { title: `${t("Inum")}`, field: 'inum' },
-          { title: `${t("Name")}`, field: 'name' },
+          { title: `${t('fields.inum')}`, field: 'inum' },
+          { title: `${t('fields.name')}`, field: 'name' },
           {
-            title: `${t("Enabled")}`,
+            title: `${t('options.enabled')}`,
             field: 'enabled',
             type: 'boolean',
             render: (rowData) => (
@@ -157,7 +173,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         ]}
         data={selectedScripts}
         isLoading={loading}
-        title={t("Scripts")}
+        title={t('titles.scripts')}
         actions={myActions}
         options={{
           search: false,

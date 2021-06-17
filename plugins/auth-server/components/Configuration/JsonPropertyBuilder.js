@@ -1,6 +1,5 @@
 import React from 'react'
 import { Accordion } from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuArrayCompleter from '../../../../app/routes/Apps/Gluu/GluuArrayCompleter'
 import GluuInput from '../../../../app/routes/Apps/Gluu/GluuInput'
 import GluuBooleanBox from '../../../../app/routes/Apps/Gluu/GluuBooleanInput'

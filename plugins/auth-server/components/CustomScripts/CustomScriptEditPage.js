@@ -1,15 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from '../../../../app/components'
+import { CardBody, Card } from '../../../../app/components'
+import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import CustomScriptForm from './CustomScriptForm'
-import BlockUi from 'react-block-ui'
 import { editCustomScript } from '../../redux/actions/CustomScriptActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
-import { useTranslation } from 'react-i18next'
 
 function CustomScriptEditPage({ item, scripts, loading, dispatch }) {
-  const { t } = useTranslation()
   const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
@@ -22,26 +20,17 @@ function CustomScriptEditPage({ item, scripts, loading, dispatch }) {
     }
   }
   return (
-    <React.Fragment>
-      <Container>
-        <Card className="mb-3">
-          <CardBody>
-            <BlockUi
-              tag="div"
-              blocking={loading}
-              keepInView={true}
-              message={t("Performing the request, please wait!")}
-            >
-              <CustomScriptForm
-                item={item}
-                scripts={scripts}
-                handleSubmit={handleSubmit}
-              />
-            </BlockUi>
-          </CardBody>
-        </Card>
-      </Container>
-    </React.Fragment>
+    <GluuLoader blocking={loading}>
+      <Card className="mb-3">
+        <CardBody>
+          <CustomScriptForm
+            item={item}
+            scripts={scripts}
+            handleSubmit={handleSubmit}
+          />
+        </CardBody>
+      </Card>
+    </GluuLoader>
   )
 }
 const mapStateToProps = (state) => {

@@ -6,6 +6,15 @@ import { Badge } from 'reactstrap'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
+import { useTranslation } from 'react-i18next'
+import {
+  LIMIT_ID,
+  LIMIT,
+  PATTERN,
+  PATTERN_ID,
+  SEARCHING_OIDC_CLIENTS,
+  FETCHING_OIDC_CLIENTS,
+} from '../../common/Constants'
 import {
   getOpenidClients,
   searchClients,
@@ -19,29 +28,26 @@ import {
   CLIENT_READ,
   CLIENT_DELETE,
 } from '../../../../app/utils/PermChecker'
-import { useTranslation } from 'react-i18next'
 
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const { t } = useTranslation()
   const userAction = {}
   const options = {}
+  const myActions = []
+  const history = useHistory()
   const [limit, setLimit] = useState(50)
   const [pattern, setPattern] = useState(null)
-  useEffect(() => {
-    makeOptions()
-    buildPayload(userAction, 'Fetch openid connect clients', options)
-    dispatch(getOpenidClients(userAction))
-  }, [])
-  const myActions = []
-  const limitId = 'searchLimit'
-  const patternId = 'searchPattern'
-  const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
+  useEffect(() => {
+    makeOptions()
+    buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
+    dispatch(getOpenidClients(userAction))
+  }, [])
   function handleOptionsChange() {
-    setLimit(document.getElementById(limitId).value)
-    setPattern(document.getElementById(patternId).value)
+    setLimit(document.getElementById(LIMIT_ID).value)
+    setPattern(document.getElementById(PATTERN_ID).value)
   }
   function handleGoToClientEditPage(row) {
     dispatch(setCurrentItem(row))
@@ -56,9 +62,9 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     toggle()
   }
   function makeOptions() {
-    options['limit'] = limit
+    options[LIMIT] = limit
     if (pattern) {
-      options['pattern'] = pattern
+      options[PATTERN] = pattern
     }
   }
   function onDeletionConfirmed(message) {
@@ -75,7 +81,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         color: 'primary',
         id: 'editClient' + rowData.inum,
       },
-      tooltip: `${t("Edit Client")}`,
+      tooltip: `${t('messages.edit_client')}`,
       onClick: (event, rowData) => handleGoToClientEditPage(rowData),
       disabled: false,
     }))
@@ -90,7 +96,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
           handler={handleOptionsChange}
         />
       ),
-      tooltip: `${t("Advanced search options")}`,
+      tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {},
@@ -99,12 +105,12 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   if (hasPermission(permissions, CLIENT_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: `${t("Refresh Data")}`,
+      tooltip: `${t('messages.refresh')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        buildPayload(userAction, 'Search openid connect clients', options)
+        buildPayload(userAction, SEARCHING_OIDC_CLIENTS, options)
         dispatch(searchClients(userAction))
       },
     })
@@ -116,7 +122,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         color: 'primary',
         id: 'viewClient' + rowData.inum,
       },
-      tooltip: `${t("View client details")}`,
+      tooltip: `${t('messages.view_client_details')}`,
       onClick: (event, rowData) => handleGoToClientEditPage(rowData),
       disabled: false,
     }))
@@ -129,8 +135,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         id: 'deleteClient' + rowData.inum,
       },
       tooltip: rowData.deletable
-        ? `${t("Delete Client")}`
-        : `${t("This Client can't be detele")}`,
+        ? `${t('messages.delete_client')}`
+        : `${t('messages.not_deletable_client')}`,
       onClick: (event, rowData) => handleClientDelete(rowData),
       disabled: false,
     }))
@@ -138,7 +144,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   if (hasPermission(permissions, CLIENT_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: `${t("Add Client")}`,
+      tooltip: `${t('messages.add_client')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToClientAddPage(),
@@ -162,20 +168,23 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   }
   function getClientStatus(status) {
     if (!status) {
-      return 'Enabled'
+      return t('options.enabled')
     } else {
-      return 'Disabled'
+      return t('options.disabled')
     }
   }
   return (
     <React.Fragment>
       <MaterialTable
         columns={[
-          { title: `${t("Client Name")}`, field: 'clientName' },
-          { title: `${t("App Type")}`, field: 'applicationType' },
-          { title: 'Subject Type', field: 'subjectType' },
+          { title: `${t('fields.client_name')}`, field: 'clientName' },
           {
-            title: `${t("Status")}`,
+            title: `${t('fields.application_type')}`,
+            field: 'applicationType',
+          },
+          { title: `${t('fields.subject_type')}`, field: 'subjectType' },
+          {
+            title: `${t('fields.status')}`,
             field: 'disabled',
             type: 'boolean',
             render: (rowData) => (
@@ -185,19 +194,19 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
             ),
           },
           {
-            title: `${t("Trusted")}`,
+            title: `${t('fields.is_trusted_client')}`,
             field: 'trustedClient',
             type: 'boolean',
             render: (rowData) => (
               <Badge color={getTrustedTheme(rowData.trustedClient)}>
-                {rowData.trustedClient ? 'Yes' : 'No'}
+                {rowData.trustedClient ? t('options.yes') : t('options.no')}
               </Badge>
             ),
           },
         ]}
         data={clients}
         isLoading={loading}
-        title={t("OIDC Clients")}
+        title={t('titles.oidc_clients')}
         actions={myActions}
         options={{
           search: true,

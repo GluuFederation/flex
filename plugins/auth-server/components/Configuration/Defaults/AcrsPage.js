@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { Form, Button } from '../../../../../app/components'
-import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
 import { connect } from 'react-redux'
 import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
@@ -9,7 +8,9 @@ import {
   ACR_READ,
   ACR_WRITE,
 } from '../../../../../app/utils/PermChecker'
+import { SIMPLE_PASSWORD_AUTH } from '../../../common/Constants'
 import GluuSelectRow from '../../../../../app/routes/Apps/Gluu/GluuSelectRow'
+import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
 
 function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
@@ -18,7 +19,7 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
     .filter((item) => item.enabled)
     .map((item) => item.name)
-  authScripts.push('simple_password_auth')
+  authScripts.push(SIMPLE_PASSWORD_AUTH)
   useEffect(() => {
     dispatch(getAcrsConfig())
   }, [])
@@ -26,45 +27,37 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
     defaultAcr: acrs.defaultAcr,
   }
   return (
-    <React.Fragment>
-      <BlockUi
-        tag="div"
-        blocking={loading}
-        keepInView={true}
-        renderChildren={true}
-        message={t("Performing the request, please wait!")}
+    <GluuLoader blocking={loading}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(values) => {
+          const opts = {}
+          opts['authenticationMethod'] = JSON.stringify(values)
+          dispatch(editAcrs(opts))
+        }}
       >
-        <Formik
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            const opts = {}
-            opts['authenticationMethod'] = JSON.stringify(values)
-            dispatch(editAcrs(opts))
-          }}
-        >
-          {(formik) => (
-            <Form onSubmit={formik.handleSubmit}>
-              <GluuSelectRow
-                label={t("Default Authentication Method(Acr)")}
-                name="defaultAcr"
-                value={acrs.defaultAcr}
-                formik={formik}
-                lsize={4}
-                rsize={8}
-                values={authScripts}
-                required
-              ></GluuSelectRow>
+        {(formik) => (
+          <Form onSubmit={formik.handleSubmit}>
+            <GluuSelectRow
+              label="fields.default_acr"
+              name="defaultAcr"
+              value={acrs.defaultAcr}
+              formik={formik}
+              lsize={4}
+              rsize={8}
+              values={authScripts}
+              required
+            ></GluuSelectRow>
 
-              {hasPermission(permissions, ACR_WRITE) && (
-                <Button color="primary" type="submit">
-                  Save
-                </Button>
-              )}
-            </Form>
-          )}
-        </Formik>
-      </BlockUi>
-    </React.Fragment>
+            {hasPermission(permissions, ACR_WRITE) && (
+              <Button color="primary" type="submit">
+                {t(actions.save)}
+              </Button>
+            )}
+          </Form>
+        )}
+      </Formik>
+    </GluuLoader>
   )
 }
 

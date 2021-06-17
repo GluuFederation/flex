@@ -1,16 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from '../../../../app/components'
+import { CardBody, Card } from '../../../../app/components'
+import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import ScopeForm from './ScopeForm'
-import BlockUi from 'react-block-ui'
 import { editScope } from '../../redux/actions/ScopeActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
-import { useTranslation } from 'react-i18next'
 
 function ScopeEditPage({ scope, loading, dispatch, scripts, attributes }) {
-  const { t } = useTranslation()
   const userAction = {}
+  const history = useHistory()
   if (!scope.attributes) {
     scope.attributes = {
       spontaneousClientId: null,
@@ -18,7 +17,7 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes }) {
       showInConfigurationEndpoint: false,
     }
   }
-  const history = useHistory()
+
   function handleSubmit(data) {
     if (data) {
       const postBody = {}
@@ -32,28 +31,18 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes }) {
     }
   }
   return (
-    <React.Fragment>
-      <Container>
-        <BlockUi
-          tag="div"
-          blocking={loading}
-          keepInView={true}
-          renderChildren={true}
-          message={t("Performing the request, please wait!")}
-        >
-          <Card className="mb-3">
-            <CardBody>
-              <ScopeForm
-                scope={scope}
-                attributes={attributes}
-                scripts={scripts}
-                handleSubmit={handleSubmit}
-              />
-            </CardBody>
-          </Card>
-        </BlockUi>
-      </Container>
-    </React.Fragment>
+    <GluuLoader blocking={loading}>
+      <Card className="mb-3">
+        <CardBody>
+          <ScopeForm
+            scope={scope}
+            attributes={attributes}
+            scripts={scripts}
+            handleSubmit={handleSubmit}
+          />
+        </CardBody>
+      </Card>
+    </GluuLoader>
   )
 }
 const mapStateToProps = (state) => {

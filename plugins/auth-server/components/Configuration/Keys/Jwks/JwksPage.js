@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
-import { Container, Card, CardBody } from '../../../../../../app/components'
+import { Card, CardBody } from '../../../../../../app/components'
 import { getJwks } from '../../../../redux/actions/JwksActions'
-import BlockUi from 'react-block-ui'
 import GluuFooter from '../../../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuLoader from '../../../../../../app/routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'
 import JwkItem from './JwkItem'
 import { useTranslation } from 'react-i18next'
@@ -15,29 +15,19 @@ function JwksPage({ jwks, loading, dispatch }) {
   }, [])
 
   return (
-    <React.Fragment>
-      <Container>
-        <BlockUi
-          tag="div"
-          blocking={loading}
-          keepInView={true}
-          renderChildren={true}
-          message={t("Performing the request, please wait!")}
-        >
-          <GluuLabel label={t("JSON Web Keys")} size={3} />
-          <Card>
-            <CardBody>
-              {Object.keys(jwks).length
-                ? Array.from(jwks['keys']).map((item, index) => (
-                    <JwkItem key={index} item={item} index={index}></JwkItem>
-                  ))
-                : ''}
-            </CardBody>
-          </Card>
-          <GluuFooter hideButtons={{ save: true }} />
-        </BlockUi>
-      </Container>
-    </React.Fragment>
+    <GluuLoader blocking={loading}>
+      <GluuLabel label="fields.json_web_keys" size={3} />
+      <Card>
+        <CardBody>
+          {Object.keys(jwks).length
+            ? Array.from(jwks['keys']).map((item, index) => (
+                <JwkItem key={index} item={item} index={index}></JwkItem>
+              ))
+            : ''}
+        </CardBody>
+      </Card>
+      <GluuFooter hideButtons={{ save: true }} />
+    </GluuLoader>
   )
 }
 

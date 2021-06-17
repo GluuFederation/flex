@@ -16,15 +16,15 @@ function HealthPage() {
         <CardBody>
           <Card className="mb-3">
             <CardHeader tag="h6" className="bg-success text-white">
-              {t("Jans-auth server status")}
+              {t('tiltes.oauth_server_status_title')}
             </CardHeader>
-            <CardBody>{t("Running")}</CardBody>
+            <CardBody>{t('messages.oauth_server_status_up')}</CardBody>
           </Card>
           <Card className="mb-3">
             <CardHeader tag="h6" className="bg-success text-white">
-              {t("database status")}
+              {t('titles.database_status_title')}
             </CardHeader>
-            <CardBody>{t("Online")}</CardBody>
+            <CardBody>{t('messages.database_status_up')}</CardBody>
           </Card>
         </CardBody>
       </Card>

@@ -19,8 +19,6 @@ import { useTranslation } from 'react-i18next'
 
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const { t } = useTranslation()
-  const [init, setInit] = useState(false)
-  const [modal, setModal] = useState(false)
   let dynamicScopeScripts = []
   let spontaneousClientScopes = []
   let claims = []
@@ -31,7 +29,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
   claims = attributes.map((item) => ({ dn: item.dn, name: item.name }))
-
+  const [init, setInit] = useState(false)
+  const [modal, setModal] = useState(false)
   const [showClaimsPanel, handleClaimsPanel] = useState(
     enableClaims(scope.scopeType),
   )
@@ -110,7 +109,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           <Form onSubmit={formik.handleSubmit}>
             {scope.inum && (
               <FormGroup row>
-                <GluuLabel label={t("Inum")} size={4} />
+                <GluuLabel label="fields.inum" size={4} />
                 <Col sm={8}>
                   <Input
                     style={{ backgroundColor: '#F5F5F5' }}
@@ -123,10 +122,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </FormGroup>
             )}
             <FormGroup row>
-              <GluuLabel label={t("Display Name")} size={4} required />
+              <GluuLabel label="fields.displayname" size={4} required />
               <Col sm={8}>
                 <Input
-                  placeholder={t("Enter the display name")}
+                  placeholder={t('placeholders.display_name')}
                   id="displayName"
                   valid={
                     !formik.errors.displayName &&
@@ -145,11 +144,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             </FormGroup>
 
             <FormGroup row>
-              <GluuLabel label={t("Description")} size={4} />
+              <GluuLabel label="fields.description" size={4} />
               <Col sm={8}>
                 <Input
                   type="textarea"
-                  placeholder={t("Enter the description")}
+                  placeholder={t('placeholders.description')}
                   maxLength="4000"
                   id="description"
                   name="description"
@@ -160,7 +159,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </Col>
             </FormGroup>
             <FormGroup row>
-              <GluuLabel label={t("Is Default Scope")} size={4} />
+              <GluuLabel label="fields.default_scope" size={4} />
               <Col sm={8}>
                 <Input
                   id="defaultScope"
@@ -172,7 +171,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </Col>
             </FormGroup>
             <FormGroup row>
-              <GluuLabel label={t("Scope Type")} size={4} />
+              <GluuLabel label="fields.scope_type" size={4} />
               <Col sm={8}>
                 <InputGroup>
                   <CustomInput
@@ -182,11 +181,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     defaultValue={scope.scopeType}
                     onChange={handleScopeTypeChanged}
                   >
-                    <option value="">{t("Choose")}...</option>
-                    <option value="oauth">{t("OAuth")}</option>
-                    <option value="openid">{t("OpenID")}</option>
-                    <option value="dynamic">{t("Dynamic")}</option>
-                    <option value="spontaneous">{t("Spontaneous")}</option>
+                    <option value="">{t('actions.choose')}...</option>
+                    <option value="oauth">OAuth</option>
+                    <option value="openid">OpenID</option>
+                    <option value="dynamic">Dynamic</option>
+                    <option value="spontaneous">Spontaneous</option>
                   </CustomInput>
                 </InputGroup>
               </Col>
@@ -197,12 +196,12 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             {showDynamicPanel && (
               <Accordion className="mb-2 b-primary" initialOpen>
                 <Accordion.Header className="text-primary">
-                  {'Dynamics Scopes Scripts'.toUpperCase()}
+                  {t('fields.dynamic_scope_scripts').toUpperCase()}
                 </Accordion.Header>
                 <Accordion.Body>
                   <GluuTypeAheadForDn
                     name="dynamicScopeScripts"
-                    label={t("Dynamic Scope Scripts")}
+                    label="fields.dynamic_scope_scripts"
                     formik={formik}
                     value={getMapping(
                       scope.dynamicScopeScripts,
@@ -216,12 +215,12 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             {showClaimsPanel && (
               <Accordion className="mb-2 b-primary" initialOpen>
                 <Accordion.Header className="text-primary">
-                  {'Claims'.toUpperCase()}
+                  {t('fields.claims').toUpperCase()}
                 </Accordion.Header>
                 <Accordion.Body>
                   <GluuTypeAheadForDn
                     name="claims"
-                    label={t("Claims")}
+                    label="fields.claims"
                     formik={formik}
                     value={getMapping(scope.claims, claims)}
                     options={claims}
@@ -231,14 +230,14 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             )}
             <Accordion className="mb-2 b-primary" initialOpen>
               <Accordion.Header className="text-primary">
-                {'oxAttributes'.toUpperCase()}
+                {t('fields.ox_attributes').toUpperCase()}
               </Accordion.Header>
               <Accordion.Body>
                 <FormGroup row>
-                  <GluuLabel label={t("Spontaneous Client Id")} size={4} />
+                  <GluuLabel label="fields.spontaneous_client_id" size={4} />
                   <Col sm={8}>
                     <Input
-                      placeholder={t("Enter Spontaneous Client Id")}
+                      placeholder="placeholders.spontaneous_client_id"
                       id="spontaneousClientId"
                       name="spontaneousClientId"
                       defaultValue={scope.attributes.spontaneousClientId}
@@ -247,7 +246,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   </Col>
                 </FormGroup>
                 <FormGroup row>
-                  <GluuLabel label={t("Show In Configuration Endpoint")} size={4} />
+                  <GluuLabel
+                    label="fields.show_in_onfiguration_endpoint"
+                    size={4}
+                  />
                   <Col sm={8}>
                     <InputGroup>
                       <CustomInput
@@ -259,8 +261,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                         }
                         onChange={formik.handleChange}
                       >
-                        <option value="true">{t("true")}</option>
-                        <option value="false">{t("false")}</option>
+                        <option value="true">{t('options.true')}</option>
+                        <option value="false">{t('options.false')}</option>
                       </CustomInput>
                     </InputGroup>
                   </Col>
@@ -268,7 +270,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
 
                 <GluuTypeAheadForDn
                   name="spontaneousClientScopes"
-                  label={t("Spontaneous Client Scopes")}
+                  label="fields.spontaneous_client_scopes"
                   formik={formik}
                   value={getMapping(
                     scope.attributes.spontaneousClientScopes,

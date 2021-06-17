@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
 import { Form, Button } from '../../../../../app/components'
 import GluuSelectRow from '../../../../../app/routes/Apps/Gluu/GluuSelectRow'
-import GluuInputRow from '../../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuCheckBoxRow from '../../../../../app/routes/Apps/Gluu/GluuCheckBoxRow'
+import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'
-import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
 import {
   getLoggingConfig,
@@ -33,78 +32,70 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
   const levels = ['TRACE', 'DEBUG', 'INFO', 'ERROR']
   const logLayouts = ['text', 'json']
   return (
-    <React.Fragment>
-      <BlockUi
-        tag="div"
-        blocking={loading}
-        keepInView={true}
-        renderChildren={true}
-        message={t("Performing the request, please wait!")}
+    <GluuLoader blocking={loading}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(values) => {
+          const opts = {}
+          opts['loggingConfiguration'] = JSON.stringify(values)
+          dispatch(editLoggingConfig(opts))
+        }}
       >
-        <Formik
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            const opts = {}
-            opts['loggingConfiguration'] = JSON.stringify(values)
-            dispatch(editLoggingConfig(opts))
-          }}
-        >
-          {(formik) => (
-            <Form onSubmit={formik.handleSubmit}>
-              <GluuSelectRow
-                label={t("Logging level")}
-                name="loggingLevel"
-                formik={formik}
-                lsize={4}
-                rsize={8}
-                value={logging.loggingLevel}
-                values={levels}
-              ></GluuSelectRow>
-              <GluuSelectRow
-                label={t("Logging layout")}
-                name="loggingLayout"
-                formik={formik}
-                lsize={4}
-                rsize={8}
-                required
-                value={logging.loggingLayout}
-                values={logLayouts}
-              ></GluuSelectRow>
-              <GluuCheckBoxRow
-                label={t("Enable HTTP Logging")}
-                name="httpLoggingEnabled"
-                formik={formik}
-                lsize={5}
-                rsize={7}
-                value={logging.httpLoggingEnabled}
-              ></GluuCheckBoxRow>
-              <GluuCheckBoxRow
-                label={t("Disable JSK Logger?")}
-                name="disableJdkLogger"
-                formik={formik}
-                lsize={5}
-                rsize={7}
-                value={logging.disableJdkLogger}
-              ></GluuCheckBoxRow>
-              <GluuCheckBoxRow
-                label={t("Enable Oauth Audit Logging?")}
-                name="enabledOAuthAuditLogging"
-                formik={formik}
-                lsize={5}
-                rsize={7}
-                value={logging.enabledOAuthAuditLogging}
-              ></GluuCheckBoxRow>
+        {(formik) => (
+          <Form onSubmit={formik.handleSubmit}>
+            <GluuSelectRow
+              label="fields.log_level"
+              name="loggingLevel"
+              formik={formik}
+              lsize={4}
+              rsize={8}
+              value={logging.loggingLevel}
+              values={levels}
+            ></GluuSelectRow>
+            <GluuSelectRow
+              label="fields.log_layout"
+              name="loggingLayout"
+              formik={formik}
+              lsize={4}
+              rsize={8}
+              required
+              value={logging.loggingLayout}
+              values={logLayouts}
+            ></GluuSelectRow>
+            <GluuCheckBoxRow
+              label="fields.http_logging_enabled"
+              name="httpLoggingEnabled"
+              formik={formik}
+              lsize={5}
+              rsize={7}
+              value={logging.httpLoggingEnabled}
+            ></GluuCheckBoxRow>
+            <GluuCheckBoxRow
+              label="fields.disable_jdk_logger"
+              name="disableJdkLogger"
+              formik={formik}
+              lsize={5}
+              rsize={7}
+              value={logging.disableJdkLogger}
+            ></GluuCheckBoxRow>
+            <GluuCheckBoxRow
+              label="fields.enabled_oAuth_audit_logging"
+              name="enabledOAuthAuditLogging"
+              formik={formik}
+              lsize={5}
+              rsize={7}
+              value={logging.enabledOAuthAuditLogging}
+            ></GluuCheckBoxRow>
 
-              {hasPermission(permissions, LOGGING_WRITE) && (
-                <Button color="primary" type="submit">
-                  Save
-                </Button>
-              )}
-            </Form>
-          )}
-        </Formik>
-      </BlockUi>
-    </React.Fragment>
+            {hasPermission(permissions, LOGGING_WRITE) && (
+              <Button color="primary" type="submit">
+                {t('actions.save')}
+              </Button>
+            )}
+          </Form>
+        )}
+      </Formik>
+    </GluuLoader>
   )
 }
 const mapStateToProps = (state) => {

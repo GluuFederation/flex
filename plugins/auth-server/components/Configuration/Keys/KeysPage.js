@@ -19,22 +19,22 @@ function KeysPage() {
           <Nav pills className="mb-4 flex-column flex-md-row mt-4 mt-lg-0">
             <NavItem>
               <UncontrolledTabs.NavLink tabId="jwkpanel">
-                {t("JWK Keys")}
+                {t('titles.jwk_keys')}
               </UncontrolledTabs.NavLink>
             </NavItem>
             <NavItem>
               <UncontrolledTabs.NavLink tabId="algorithmickeyspanel">
-                {t("Algorithmic Keys")}
+                {t('titles.algorithmic_keys')}
               </UncontrolledTabs.NavLink>
             </NavItem>
             <NavItem>
               <UncontrolledTabs.NavLink tabId="privatekeyspanel">
-                {t("Private Keys")}
+                {t('titles.private_keys')}
               </UncontrolledTabs.NavLink>
             </NavItem>
             <NavItem>
               <UncontrolledTabs.NavLink tabId="publickeyspanel">
-                {t("Public Keys")}
+                {t('titles.public_keys')}
               </UncontrolledTabs.NavLink>
             </NavItem>
           </Nav>
@@ -43,16 +43,16 @@ function KeysPage() {
               <JwksPage />
             </TabPane>
             <TabPane tabId="otherpanel">
-              <div>{t("Not implemented yet")}</div>
+              <div>{t('messages.not_implemented')}</div>
             </TabPane>
             <TabPane tabId="algorithmickeyspanel">
-              <div>{t("Not implemented yet")}</div>
+              <div>{t('messages.not_implemented')}</div>
             </TabPane>
             <TabPane tabId="privatekeyspanel">
-              <div>{t("Not implemented yet")}</div>
+              <div>{t('messages.not_implemented')}</div>
             </TabPane>
             <TabPane tabId="publickeyspanel">
-              <div>{t("Not implemented yet")}</div>
+              <div>{t('messages.not_implemented')}</div>
             </TabPane>
           </UncontrolledTabs.TabContent>
         </UncontrolledTabs>

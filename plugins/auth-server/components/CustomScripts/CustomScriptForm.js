@@ -3,7 +3,6 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import {
   Col,
-  Row,
   InputGroup,
   CustomInput,
   Form,
@@ -143,12 +142,11 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       {item.inum && (
         <FormGroup row>
           <Label for="name" sm={3}>
-            {t("Inum")}
+            {t('fields.inum')}
           </Label>
           <Col sm={9}>
             <Input
               style={{ backgroundColor: '#F5F5F5' }}
-              placeholder={t("Enter the script inum")}
               id="inum"
               name="inum"
               disabled
@@ -158,10 +156,10 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         </FormGroup>
       )}
       <FormGroup row>
-        <GluuLabel label={t("Name")} required />
+        <GluuLabel label="fields.name" required />
         <Col sm={9}>
           <Input
-            placeholder={t("Enter the script name")}
+            placeholder={t('placeholders.name')}
             id="name"
             valid={!formik.errors.name && !formik.touched.name && init}
             name="name"
@@ -175,11 +173,11 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label={t("Description")} />
+        <GluuLabel label="fields.description" />
         <Col sm={9}>
           <InputGroup>
             <Input
-              placeholder={t("Enter script description")}
+              placeholder={t('placeholders.description')}
               valid={
                 !formik.errors.description &&
                 !formik.touched.description &&
@@ -194,7 +192,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       </FormGroup>
       {scriptTypeState === 'PERSON_AUTHENTICATION' && (
         <FormGroup row>
-          <GluuLabel label={t("Select SAML ACRS")} />
+          <GluuLabel label={t('Select SAML ACRS')} />
           <Col sm={9}>
             <Input
               type="select"
@@ -219,7 +217,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       )}
 
       <FormGroup row>
-        <GluuLabel label={t("Script Type")} required />
+        <GluuLabel label="fields.script_type" required />
         <Col sm={9}>
           <InputGroup>
             <CustomInput
@@ -232,7 +230,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 formik.setFieldValue('scriptType', e.target.value)
               }}
             >
-              <option value="">{t("Choose")}...</option>
+              <option value="">{t('options.choose')}...</option>
               {scriptTypes.map((item, index) => (
                 <option key={index} value={item}>
                   {item}
@@ -247,7 +245,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       </FormGroup>
 
       <FormGroup row>
-        <GluuLabel label={t("Programming Language")} required />
+        <GluuLabel label="fields.programming_language" required />
         <Col sm={9}>
           <InputGroup>
             <CustomInput
@@ -257,7 +255,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               defaultValue={item.programmingLanguage}
               onChange={formik.handleChange}
             >
-              <option value="">{t("Choose")}...</option>
+              <option value="">{t('Choose')}...</option>
               <option>PYTHON</option>
               <option>JAVASCRIPT</option>
             </CustomInput>
@@ -272,7 +270,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       </FormGroup>
 
       <FormGroup row>
-        <GluuLabel label={t("Location Type")} />
+        <GluuLabel label="fields.location_type" />
         <Col sm={9}>
           <InputGroup>
             <CustomInput
@@ -293,9 +291,9 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 locationTypeChange(e.target.value)
               }}
             >
-              <option value="">{t("Choose")}...</option>
-              <option value="ldap">{t("Database")}</option>
-              <option value="file">{t("File")}</option>
+              <option value="">{t('options.choose')}...</option>
+              <option value="ldap">{t('Database')}</option>
+              <option value="file">{t('File')}</option>
             </CustomInput>
           </InputGroup>
         </Col>
@@ -323,10 +321,10 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                   usageTypeChange(e.target.value)
                 }}
               >
-                <option value="">{t("Choose")}...</option>
-                <option value="interactive">{t("Web")}</option>
-                <option value="service">{t("Native")}</option>
-                <option value="both">{t("Both methods")}</option>
+                <option value="">{t('options.choose')}...</option>
+                <option value="interactive">interactive</option>
+                <option value="service">service</option>
+                <option value="both">both</option>
               </CustomInput>
             </InputGroup>
           </Col>
@@ -334,7 +332,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       )}
 
       <FormGroup row>
-        <GluuLabel label="Level" />
+        <GluuLabel label="fields.level" />
         <Col sm={9}>
           <Counter
             counter={item.level}
@@ -347,14 +345,14 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       <GluuNameValueProperty
         componentName="configurationProperties"
         formik={formik}
-        keyLabel={t("Key")}
+        keyLabel={t('Key')}
         keyName="key"
         keyId="key"
-        keyPlaceholder={t("Enter key")}
+        keyPlaceholder={t('Enter key')}
         valueId="value"
         valueName="value"
-        valueLabel={t("Value")}
-        valuePlaceholder={t("Enter value")}
+        valueLabel={t('Value')}
+        valuePlaceholder={t('Enter value')}
         dataArr={
           !!item.configurationProperties
             ? item.configurationProperties.map((ele) => ({
@@ -363,17 +361,17 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               }))
             : undefined
         }
-        nameValueLabel={t("Custom Properties (key/values)")}
+        nameValueLabel={t('Custom Properties (key/values)')}
       ></GluuNameValueProperty>
 
       <FormGroup row>
-        <GluuLabel label={t("Script")} size={3} required />
+        <GluuLabel label={t('Script')} size={3} required />
         {formik.errors.script && formik.touched.script ? (
           <div style={{ color: 'red' }}>{formik.errors.script}</div>
         ) : null}
         <Col sm={10}>
           <Input
-            placeholder={t("Script")}
+            placeholder={t('Script')}
             valid={!formik.errors.script && !formik.touched.script && init}
             type="textarea"
             rows={20}
@@ -386,7 +384,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       </FormGroup>
 
       <FormGroup row>
-        <GluuLabel label={t("Enabled")} size={3} />
+        <GluuLabel label="options.enabled" size={3} />
         <Col sm={1}>
           <Input
             id="enabled"
