@@ -90,8 +90,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     myActions.push({
       icon: () => (
         <GluuAdvancedSearch
-          limitId={limitId}
-          patternId={patternId}
+          limitId={LIMIT_ID}
+          patternId={PATTERN_ID}
           limit={limit}
           handler={handleOptionsChange}
         />

@@ -97,7 +97,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         <GluuLabel label="fields.client_name" />
         <Col sm={9}>
           <Input
-            placeholder="placeholders.client_name"
+            placeholder={t("placeholders.client_name")}
             id="clientName"
             name="clientName"
             defaultValue={client.clientName || client.displayName}
@@ -109,7 +109,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         <GluuLabel label="fields.description" />
         <Col sm={9}>
           <Input
-            placeholder="placeholders.client_description"
+            placeholder={t("placeholders.client_description")}
             id="description"
             name="description"
             defaultValue={extractDescription(client.customAttributes || [])}
@@ -153,7 +153,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         <GluuLabel label="fields.logo_uri" />
         <Col sm={9}>
           <Input
-            placeholder="placeholders.logo_uri"
+            placeholder={t("placeholders.logo_uri")}
             id="logoURI"
             name="logoURI"
             defaultValue={client.logoUri}
@@ -165,7 +165,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         <GluuLabel label="fields.policy_uri" />
         <Col sm={9}>
           <Input
-            placeholder="placeholders.policy_uri"
+            placeholder={t("placeholders.policy_uri")}
             id="policyUri"
             name="policyUri"
             defaultValue={client.policyUri}
@@ -177,7 +177,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         <GluuLabel label="fields.sector_uri" />
         <Col sm={9}>
           <Input
-            placeholder="placeholders.sector_uri"
+            placeholder={t("placeholders.sector_uri")}
             id="sectorIdentifierUri"
             name="sectorIdentifierUri"
             defaultValue={client.sectorIdentifierUri}
@@ -246,7 +246,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         name="postLogoutRedirectUris"
         label="post_logout_redirect_uris"
         formik={formik}
-        placeholder="placeholders.post_logout_redirect_uris"
+        placeholder={t("placeholders.post_logout_redirect_uris")}
         value={client.postLogoutRedirectUris || []}
         options={postLogoutRedirectUris}
         validator={postUriValidator}
@@ -257,7 +257,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         name="redirectUris"
         label="fields.redirect_uris"
         formik={formik}
-        placeholder="placeholders.redirect_uris"
+        placeholder={t("placeholders.redirect_uris")}
         value={client.redirectUris || []}
         options={redirectUris}
         validator={uriValidator}

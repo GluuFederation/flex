@@ -17,7 +17,7 @@ function GluuSelectRow({ label, name, value, formik, values, lsize, rsize }) {
             defaultValue={value}
             onChange={formik.handleChange}
           >
-            <option value="">{t("actions.choose")}...</option>
+            <option value="">{t('actions.choose')}...</option>
             {values.map((item, key) => (
               <option value={item} key={key}>
                 {item}

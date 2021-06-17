@@ -16,7 +16,7 @@ function HealthPage() {
         <CardBody>
           <Card className="mb-3">
             <CardHeader tag="h6" className="bg-success text-white">
-              {t('tiltes.oauth_server_status_title')}
+              {t('titles.oauth_server_status_title')}
             </CardHeader>
             <CardBody>{t('messages.oauth_server_status_up')}</CardBody>
           </Card>

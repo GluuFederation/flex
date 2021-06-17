@@ -51,7 +51,7 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
 
             {hasPermission(permissions, ACR_WRITE) && (
               <Button color="primary" type="submit">
-                {t(actions.save)}
+                {t('actions.save')}
               </Button>
             )}
           </Form>

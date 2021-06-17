@@ -1,5 +1,5 @@
 {
-  "ations": {
+  "actions": {
     "add": "Add",
     "apply": "Apply",
     "accept": "Accept",
@@ -166,6 +166,8 @@
     "oidc_clients": "OIDC Clients",
     "logging": "LOGGING",
     "acrs": "ACRs",
+    "scopes": "Scopes",
+    "scripts": "Scripts",
     "jwk_keys": "JWK keys",
     "public_keys": "Public Keys",
     "private_keys": "Private Keys",
@@ -182,6 +184,7 @@
     "true": "true",
     "yes": "Yes",
     "no": "No",
+    "choose": "Choose",
     "enabled": "Enabled",
     "disabled": "Disabled"
   }

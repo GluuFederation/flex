@@ -237,7 +237,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   <GluuLabel label="fields.spontaneous_client_id" size={4} />
                   <Col sm={8}>
                     <Input
-                      placeholder="placeholders.spontaneous_client_id"
+                      placeholder={t("placeholders.spontaneous_client_id")}
                       id="spontaneousClientId"
                       name="spontaneousClientId"
                       defaultValue={scope.attributes.spontaneousClientId}

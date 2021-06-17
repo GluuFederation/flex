@@ -37,8 +37,14 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const userAction = {}
   const options = {}
   const myActions = []
+  const [item, setItem] = useState({})
+  const [modal, setModal] = useState(false)
+  const [limit, setLimit] = useState(100)
+  const [pattern, setPattern] = useState(null)
   const [selectedScripts, setSelectedScripts] = useState(scripts)
-  const [type, setType] = useState(true)
+  const [type, setType] = useState('PERSON_AUTHENTICATION')
+  const toggle = () => setModal(!modal)
+
   function makeOptions() {
     options[LIMIT] = parseInt(limit)
     if (pattern) {
@@ -48,11 +54,6 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       options[TYPE] = type
     }
   }
-  const [item, setItem] = useState({})
-  const [modal, setModal] = useState(false)
-  const [limit, setLimit] = useState(10)
-  const [pattern, setPattern] = useState(null)
-  const toggle = () => setModal(!modal)
   useEffect(() => {
     makeOptions()
     buildPayload(userAction, FETCHING_SCRIPTS, options)
@@ -82,7 +83,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       icon: () => (
         <GluuCustomScriptSearch
           limitId={LIMIT_ID}
-          limit={LIMIT}
+          limit={limit}
           typeId={TYPE_ID}
           patternId={PATTERN_ID}
           handler={handleOptionsChange}
@@ -134,7 +135,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     setType(document.getElementById(TYPE_ID).value)
     setSelectedScripts(
       scripts.filter(
-        (script) => script.scriptType == document.getElementById(typeId).value,
+        (script) => script.scriptType == document.getElementById(TYPE_ID).value,
       ),
     )
   }
