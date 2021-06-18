@@ -70,7 +70,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         color: 'primary',
         id: 'editAttribute' + rowData.inum,
       },
-      tooltip: `${t("Edit Attribute")}`,
+      tooltip: `${t('Edit Attribute')}`,
       onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
       disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
     }))
@@ -82,7 +82,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         color: 'primary',
         id: 'viewAttribute' + rowData.inum,
       },
-      tooltip: `${t("View Attribute")}`,
+      tooltip: `${t('View Attribute')}`,
       onClick: (event, rowData) => handleGoToAttributeViewPage(rowData),
       disabled: false,
     }))
@@ -97,7 +97,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
           handler={handleOptionsChange}
         />
       ),
-      tooltip: `${t("Advanced search options")}`,
+      tooltip: `${t('Advanced search options')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {},
@@ -106,7 +106,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   if (hasPermission(permissions, ATTRIBUTE_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: `${t("Refresh Data")}`,
+      tooltip: `${t('Refresh Data')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
@@ -122,7 +122,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         color: 'secondary',
         id: 'deleteAttribute' + rowData.inum,
       },
-      tooltip: `${t("Delete Attribute")}`,
+      tooltip: `${t('Delete Attribute')}`,
       onClick: (event, rowData) => handleAttribueDelete(rowData),
       disabled: !hasPermission(permissions, ATTRIBUTE_DELETE),
     }))
@@ -130,7 +130,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: `${t("Add Attribute")}`,
+      tooltip: `${t('Add Attribute')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToAttributeAddPage(),
@@ -152,13 +152,12 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }
   return (
     <React.Fragment>
-      {/* START Content */}
       <MaterialTable
         columns={[
-          { title: `${t("Inum")}`, field: 'inum' },
-          { title: `${t("Display Name")}`, field: 'displayName' },
+          { title: `${t('Inum')}`, field: 'inum' },
+          { title: `${t('Display Name')}`, field: 'displayName' },
           {
-            title: `${t("Status")}`,
+            title: `${t('Status')}`,
             field: 'status',
             type: 'boolean',
             render: (rowData) => (
@@ -170,7 +169,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         ]}
         data={attributes}
         isLoading={loading}
-        title={t("Attributes")}
+        title={t('Attributes')}
         actions={myActions}
         options={{
           search: true,
@@ -190,7 +189,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
           return <AttributeDetailPage row={rowData} />
         }}
       />
-      {/* END Content */}
+
       <GluuDialog
         row={item}
         handler={toggle}

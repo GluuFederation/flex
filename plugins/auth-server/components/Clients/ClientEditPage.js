@@ -51,7 +51,7 @@ function ClientEditPage({
     }
   }
   return (
-    <GluuLoader loading={loading}>
+    <GluuLoader blocking={loading}>
       <ClientWizardForm
         client={client}
         scopes={scopes}

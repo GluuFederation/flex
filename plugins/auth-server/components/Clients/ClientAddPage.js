@@ -70,7 +70,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
     },
   }
   return (
-    <GluuLoader loading={loading}>
+    <GluuLoader blocking={loading}>
       <ClientWizardForm
         client={client}
         scopes={scopes}

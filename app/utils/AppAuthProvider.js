@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import ViewRedirect from './ViewRedirect'
 import { withRouter } from 'react-router'
 import { saveState, isValidState } from './TokenController'
-
 import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { connect } from 'react-redux'
@@ -13,7 +12,6 @@ import {
   getUserLocation,
 } from '../redux/actions'
 import SessionTimeout from '../routes/Apps/Gluu/GluuSessionTimeout'
-
 
 class AppAuthProvider extends Component {
   state = {
@@ -95,7 +93,6 @@ class AppAuthProvider extends Component {
       } else {
         if (!props.token) {
           props.getAPIAccessToken(props.jwt)
-          // props.getUserLocation()
         }
         return {
           showContent: true,
@@ -109,7 +106,7 @@ class AppAuthProvider extends Component {
     const { showContent } = this.state
     return (
       <React.Fragment>
-        <SessionTimeout isAuthenticated={showContent}/>
+        <SessionTimeout isAuthenticated={showContent} />
         {showContent && this.props.children}
         {!showContent && <ViewRedirect backendIsUp={this.props.backendIsUp} />}
       </React.Fragment>
