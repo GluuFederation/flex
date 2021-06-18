@@ -345,14 +345,12 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       <GluuNameValueProperty
         componentName="configurationProperties"
         formik={formik}
-        keyLabel={t('Key')}
         keyName="key"
         keyId="key"
-        keyPlaceholder={t('Enter key')}
+        keyPlaceholder={t('placeholders.enter_property_key')}
         valueId="value"
         valueName="value"
-        valueLabel={t('Value')}
-        valuePlaceholder={t('Enter value')}
+        valuePlaceholder={t('placeholders.enter_property_value')}
         dataArr={
           !!item.configurationProperties
             ? item.configurationProperties.map((ele) => ({
@@ -361,11 +359,11 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               }))
             : undefined
         }
-        nameValueLabel={t('Custom Properties (key/values)')}
+        nameValueLabel="fields.custom_properties"
       ></GluuNameValueProperty>
 
       <FormGroup row>
-        <GluuLabel label={t('Script')} size={3} required />
+        <GluuLabel label={t('Script')} size={2} required />
         {formik.errors.script && formik.touched.script ? (
           <div style={{ color: 'red' }}>{formik.errors.script}</div>
         ) : null}

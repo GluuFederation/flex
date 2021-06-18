@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { FormGroup, Col, Row, Input } from '../../../components'
-import GluuLabel from '../Gluu/GluuLabel'
+import { FormGroup, Col, Input, Button } from '../../../components'
+import { Accordion } from '../../../../app/components'
+import { useTranslation } from 'react-i18next'
 
 function GluuNameValueProperty({
   nameValueLabel,
@@ -8,28 +9,23 @@ function GluuNameValueProperty({
   formik = null,
   keyId,
   keyName,
-  keyLabel = 'Key',
-  keyPlaceholder = 'Enter key',
+  keyPlaceholder,
   valueId,
   valueName,
-  valueLabel = 'Value',
-  valuePlaceholder = 'Enter value',
+  valuePlaceholder,
   dataArr = [],
 }) {
   const [dataArray, setDataArray] = useState(dataArr)
-
+  const { t } = useTranslation()
   const addClick = () => {
     setDataArray((prevDataArray) => [...prevDataArray, { key: '', value: '' }])
   }
 
   const handleChange = (i) => (e) => {
     const { name, value } = e.target
-
     const newDataArr = [...dataArray]
     newDataArr[i] = { ...newDataArr[i], [name]: value }
-
     setDataArray(newDataArr)
-
     formik.setFieldValue(componentName, newDataArr)
   }
 
@@ -41,64 +37,64 @@ function GluuNameValueProperty({
   }
 
   return (
-    <Row>
-      <GluuLabel label={nameValueLabel} size={9} />
-
-      <input
-        type="button"
-        value="Add more"
-        onClick={addClick}
-        style={{
-          background: '#03a96d',
-          color: '#fff',
-          border: 'none',
-          padding: 5,
-          borderRadius: 5,
-        }}
-      />
-
-      {dataArray.map((element, index) => (
-        <div key={index} style={{ marginLeft: 20 }}>
-          <FormGroup row>
-            <GluuLabel label={keyLabel} />
-            <Col sm={9}>
-              <Input
-                placeholder={keyPlaceholder}
-                id={keyId}
-                name={keyName}
-                defaultValue={element.key}
-                onChange={handleChange(index)}
-              />
-            </Col>
-
-            <GluuLabel label={valueLabel} />
-            <Col sm={9}>
-              <Input
-                placeholder={valuePlaceholder}
-                id={valueId}
-                name={valueName}
-                defaultValue={element.value}
-                onChange={handleChange(index)}
-              />
-            </Col>
-            <Col sm={3} style={{ marginTop: 20 }}>
-              <input
-                type="button"
-                value="Remove"
-                onClick={() => removeClick(index)}
-                style={{
-                  background: '#03a96d',
-                  color: '#fff',
-                  border: 'none',
-                  padding: 5,
-                  borderRadius: 5,
-                }}
-              />
-            </Col>
-          </FormGroup>
-        </div>
-      ))}
-    </Row>
+    <Accordion className="mb-2 b-primary" initialOpen>
+      <Accordion.Header>{t(nameValueLabel).toUpperCase()}</Accordion.Header>
+      <Accordion.Body>
+        <Button
+          style={{ float: 'right', marginTop: -30 }}
+          type="button"
+          color="primary"
+          onClick={addClick}
+        >
+          <i className="fa fa-fw fa-plus mr-2"></i>
+          {t('actions.add_property')}
+        </Button>
+        <FormGroup row>
+          <Col sm={12}>
+            {dataArray.map((element, index) => (
+              <FormGroup key={index} row>
+                <Col sm={4}>
+                  <Input
+                    placeholder={
+                      keyPlaceholder
+                        ? t(keyPlaceholder)
+                        : t('placeholders.enter_property_key')
+                    }
+                    id={keyId}
+                    name={keyName}
+                    defaultValue={element.key}
+                    onChange={handleChange(index)}
+                  />
+                </Col>
+                <Col sm={6}>
+                  <Input
+                    placeholder={
+                      valuePlaceholder
+                        ? t(valuePlaceholder)
+                        : t('placeholders.enter_property_value')
+                    }
+                    id={valueId}
+                    name={valueName}
+                    defaultValue={element.value}
+                    onChange={handleChange(index)}
+                  />
+                </Col>
+                <Col sm={2}>
+                  <Button
+                    type="button"
+                    color="danger"
+                    onClick={() => removeClick(index)}
+                  >
+                    <i className="fa fa-fw fa-trash mr-2"></i>
+                    {t('actions.remove')}
+                  </Button>
+                </Col>
+              </FormGroup>
+            ))}
+          </Col>
+        </FormGroup>
+      </Accordion.Body>
+    </Accordion>
   )
 }
 
