@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  Form,
   FormGroup,
   Card,
   Col,
@@ -16,7 +15,12 @@ function CacheInMemory({ config, formik }) {
     <Card>
       <CardBody>
         <FormGroup row>
-        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>{t("fields.in_memory_configuration")}:</Col>
+          <Col
+            xs="12"
+            style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
+          >
+            {t('fields.in_memory_configuration')}:
+          </Col>
           <GluuLabel label="fields.default_put_expiration" size={6} />
           <Col sm={6}>
             <Input

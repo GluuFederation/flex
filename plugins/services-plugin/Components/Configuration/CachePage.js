@@ -20,17 +20,35 @@ import CacheNative from './CacheNative'
 import CacheMemcached from './CacheMemcached'
 import { connect } from 'react-redux'
 import {
-  getCacheConfig, getMemoryCacheConfig, getMemCacheConfig, getNativeCacheConfig, getRedisCacheConfig,
-  editCache, editMemoryCache, editNativeCache, editRedisCache, editMemCache
+  getCacheConfig,
+  getMemoryCacheConfig,
+  getMemCacheConfig,
+  getNativeCacheConfig,
+  getRedisCacheConfig,
+  editCache,
+  editMemoryCache,
+  editNativeCache,
+  editRedisCache,
+  editMemCache,
 } from '../../redux/actions/CacheActions'
 
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 
-function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, cacheRedisData, loading, dispatch }) {
+function CachePage({
+  cacheData,
+  cacheMemoryData,
+  cacheMemData,
+  cacheNativeData,
+  cacheRedisData,
+  loading,
+  dispatch,
+}) {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
-  const [cacheProviderType, setCacheProviderType] = useState(cacheData.cacheProviderType)
+  const [cacheProviderType, setCacheProviderType] = useState(
+    cacheData.cacheProviderType,
+  )
 
   useEffect(() => {
     dispatch(getCacheConfig())
@@ -45,7 +63,6 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
   }, [cacheData])
 
   const INITIAL_VALUES = {
-
     cacheProviderType: cacheData.cacheProviderType,
     memCacheServers: cacheMemData.servers,
     maxOperationQueueLength: cacheMemData.maxOperationQueueLength,
@@ -55,9 +72,13 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
     memoryDefaultPutExpiration: cacheMemoryData.defaultPutExpiration,
     redisProviderType: cacheRedisData.redisProviderType,
     servers: cacheRedisData.servers,
-    password: cacheRedisData.password ? cacheRedisData.password : "",
-    sentinelMasterGroupName: cacheRedisData.sentinelMasterGroupName ? cacheRedisData.sentinelMasterGroupName : "",
-    sslTrustStoreFilePath: cacheRedisData.sslTrustStoreFilePath ? cacheRedisData.sslTrustStoreFilePath : "",
+    password: cacheRedisData.password ? cacheRedisData.password : '',
+    sentinelMasterGroupName: cacheRedisData.sentinelMasterGroupName
+      ? cacheRedisData.sentinelMasterGroupName
+      : '',
+    sslTrustStoreFilePath: cacheRedisData.sslTrustStoreFilePath
+      ? cacheRedisData.sslTrustStoreFilePath
+      : '',
     redisDefaultPutExpiration: cacheRedisData.defaultPutExpiration,
     useSSL: cacheRedisData.useSSL,
     maxIdleConnections: cacheRedisData.maxIdleConnections,
@@ -68,7 +89,6 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
     nativeDefaultPutExpiration: cacheNativeData.defaultPutExpiration,
     defaultCleanupBatchSize: cacheNativeData.defaultCleanupBatchSize,
     deleteExpiredOnGetRequest: cacheNativeData.deleteExpiredOnGetRequest,
-
   }
 
   function toggle() {
@@ -87,7 +107,7 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={t("messages.request_waiting_message")}
+          message={t('messages.request_waiting_message')}
         >
           <Card>
             <CardBody>
@@ -95,46 +115,48 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                 initialValues={INITIAL_VALUES}
                 enableReinitialize
                 onSubmit={(values) => {
-                  const cache= [
+                  const cache = [
                     {
-                      "op": "replace",
-                      "path": "/cacheProviderType",
-                      "value": values.cacheProviderType
-                    }
+                      op: 'replace',
+                      path: '/cacheProviderType',
+                      value: values.cacheProviderType,
+                    },
                   ]
                   const nativeCache = {
-                    "defaultPutExpiration": values.nativeDefaultPutExpiration,
-                    "defaultCleanupBatchSize": values.defaultCleanupBatchSize,
-                    "deleteExpiredOnGetRequest": values.deleteExpiredOnGetRequest,
+                    defaultPutExpiration: values.nativeDefaultPutExpiration,
+                    defaultCleanupBatchSize: values.defaultCleanupBatchSize,
+                    deleteExpiredOnGetRequest: values.deleteExpiredOnGetRequest,
                   }
                   const memoryCache = {
-                    "defaultPutExpiration": values.memoryDefaultPutExpiration,
+                    defaultPutExpiration: values.memoryDefaultPutExpiration,
                   }
                   const redisCache = {
-                    "redisProviderType": values.redisProviderType,
-                    "servers": values.servers,
-                    "password": values.password,
-                    "sentinelMasterGroupName": values.sentinelMasterGroupName,
-                    "sslTrustStoreFilePath": values.sslTrustStoreFilePath,
-                    "defaultPutExpiration": values.redisDefaultPutExpiration,
-                    "useSSL": values.useSSL,
-                    "maxIdleConnections": values.maxIdleConnections,
-                    "maxTotalConnections": values.maxTotalConnections,
-                    "connectionTimeout": values.connectionTimeout,
-                    "soTimeout": values.soTimeout,
-                    "maxRetryAttempts": values.maxRetryAttempts,
+                    redisProviderType: values.redisProviderType,
+                    servers: values.servers,
+                    password: values.password,
+                    sentinelMasterGroupName: values.sentinelMasterGroupName,
+                    sslTrustStoreFilePath: values.sslTrustStoreFilePath,
+                    defaultPutExpiration: values.redisDefaultPutExpiration,
+                    useSSL: values.useSSL,
+                    maxIdleConnections: values.maxIdleConnections,
+                    maxTotalConnections: values.maxTotalConnections,
+                    connectionTimeout: values.connectionTimeout,
+                    soTimeout: values.soTimeout,
+                    maxRetryAttempts: values.maxRetryAttempts,
                   }
 
                   const memCache = {
-                    "servers": values.memCacheServers,
-                    "maxOperationQueueLength": values.maxOperationQueueLength,
-                    "bufferSize": values.bufferSize,
-                    "defaultPutExpiration": values.memDefaultPutExpiration,
-                    "connectionFactoryType": values.connectionFactoryType,
+                    servers: values.memCacheServers,
+                    maxOperationQueueLength: values.maxOperationQueueLength,
+                    bufferSize: values.bufferSize,
+                    defaultPutExpiration: values.memDefaultPutExpiration,
+                    connectionFactoryType: values.connectionFactoryType,
                   }
 
                   const opts1 = {}
-                  opts1['nativePersistenceConfiguration'] = JSON.stringify(nativeCache)
+                  opts1['nativePersistenceConfiguration'] = JSON.stringify(
+                    nativeCache,
+                  )
                   dispatch(editNativeCache(opts1))
 
                   const opts2 = {}
@@ -157,47 +179,68 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
                     <FormGroup row>
-                      <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>{t("fields.cache_configuration")}</Col>
+                      <Col
+                        xs="12"
+                        style={{
+                          fontSize: 24,
+                          fontWeight: 'bold',
+                          marginBottom: 15,
+                        }}
+                      >
+                        {t('fields.cache_configuration')}
+                      </Col>
                       <GluuLabel label="fields.cache_provider_type" size={4} />
                       <Col sm={8}>
-                        {
-                          cacheData.cacheProviderType && (
-                            <InputGroup>
-                              <CustomInput
-                                type="select"
-                                id="cacheProviderType"
-                                name="cacheProviderType"
-                                defaultValue={cacheData.cacheProviderType}
-                                onChange={formik.handleChange}
-                                onChange={(e) => {
-                                  setCacheProviderType(e.target.value)
-                                  formik.setFieldValue('cacheProviderType', e.target.value)
-                                }}
-                              >
-                                <option>{t("options.in_memory")}</option>
-                                <option>{t("options.memcached")}</option>
-                                <option>{t("options.redis")}</option>
-                                <option>{t("options.native_persistence")}</option>
-                              </CustomInput>
-                            </InputGroup>
-                          )
-                        }
+                        {cacheData.cacheProviderType && (
+                          <InputGroup>
+                            <CustomInput
+                              type="select"
+                              id="cacheProviderType"
+                              name="cacheProviderType"
+                              defaultValue={cacheData.cacheProviderType}
+                              onChange={formik.handleChange}
+                              onChange={(e) => {
+                                setCacheProviderType(e.target.value)
+                                formik.setFieldValue(
+                                  'cacheProviderType',
+                                  e.target.value,
+                                )
+                              }}
+                            >
+                              <option>{t('options.in_memory')}</option>
+                              <option>{t('options.memcached')}</option>
+                              <option>{t('options.redis')}</option>
+                              <option>{t('options.native_persistence')}</option>
+                            </CustomInput>
+                          </InputGroup>
+                        )}
                       </Col>
                     </FormGroup>
-                    {cacheProviderType == 'MEMCACHED' && (<FormGroup row>
-                      <CacheMemcached config={cacheMemData} formik={formik} />
-                    </FormGroup>)}
-                    {cacheProviderType == 'IN_MEMORY' && (<FormGroup row>
-                      <CacheInMemory config={cacheMemoryData} formik={formik} />
-                    </FormGroup>)}
-                    {cacheProviderType == 'REDIS' && (<FormGroup row>
-                      <CacheRedis config={cacheRedisData} formik={formik} />
-                    </FormGroup>)}
-                    {cacheProviderType == 'NATIVE_PERSISTENCE' && (<FormGroup row>
-                      <CacheNative config={cacheNativeData} formik={formik} />
-                    </FormGroup>)}
+                    {cacheProviderType == 'MEMCACHED' && (
+                      <FormGroup row>
+                        <CacheMemcached config={cacheMemData} formik={formik} />
+                      </FormGroup>
+                    )}
+                    {cacheProviderType == 'IN_MEMORY' && (
+                      <FormGroup row>
+                        <CacheInMemory
+                          config={cacheMemoryData}
+                          formik={formik}
+                        />
+                      </FormGroup>
+                    )}
+                    {cacheProviderType == 'REDIS' && (
+                      <FormGroup row>
+                        <CacheRedis config={cacheRedisData} formik={formik} />
+                      </FormGroup>
+                    )}
+                    {cacheProviderType == 'NATIVE_PERSISTENCE' && (
+                      <FormGroup row>
+                        <CacheNative config={cacheNativeData} formik={formik} />
+                      </FormGroup>
+                    )}
                     <FormGroup row></FormGroup>
-                    <GluuFooter saveHandler={toggle}/>
+                    <GluuFooter saveHandler={toggle} />
                     <GluuCommitDialog
                       handler={toggle}
                       modal={modal}
@@ -206,9 +249,7 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
                     />
                   </Form>
                 )}
-
               </Formik>
-
             </CardBody>
           </Card>
         </BlockUi>
@@ -217,7 +258,6 @@ function CachePage({ cacheData, cacheMemoryData, cacheMemData, cacheNativeData, 
   )
 }
 
-
 const mapStateToProps = (state) => {
   return {
     cacheData: state.cacheReducer.cache,
@@ -225,11 +265,9 @@ const mapStateToProps = (state) => {
     cacheMemData: state.cacheReducer.cacheMem,
     cacheNativeData: state.cacheReducer.cacheNative,
     cacheRedisData: state.cacheReducer.cacheRedis,
-
     permissions: state.authReducer.permissions,
     loading: state.cacheReducer.loading,
   }
 }
-
 
 export default connect(mapStateToProps)(CachePage)

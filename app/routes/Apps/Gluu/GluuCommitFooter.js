@@ -21,6 +21,7 @@ function GluuCommitFooter({
         {!hideButtons || !hideButtons['back'] ? (
           <Col sm={2} md={1}>
             <Button color="secondary" type="button" onClick={goBack}>
+              <i className="fa fa-arrow-circle-left mr-2"></i>
               {t('actions.cancel')}
             </Button>
           </Col>
@@ -49,6 +50,7 @@ function GluuCommitFooter({
             className="ml-auto px-4"
             onClick={saveHandler}
           >
+            <i className="fa fa-check-circle mr-2"></i>
             {t('actions.apply')}
           </Button>
         ) : (

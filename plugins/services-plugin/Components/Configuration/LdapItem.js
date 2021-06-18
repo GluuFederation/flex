@@ -35,7 +35,12 @@ function LdapItem({ ldap, index, formik }) {
         <FormGroup row>
           <GluuLabel label="fields.bind_dn" size={4} />
           <Col sm={8}>
-            <Input id="bindDN" name="bindDN" defaultValue={ldap.bindDN} onChange={formik.handleChange} />
+            <Input
+              id="bindDN"
+              name="bindDN"
+              defaultValue={ldap.bindDN}
+              onChange={formik.handleChange}
+            />
           </Col>
         </FormGroup>
         <FormGroup row>
@@ -52,21 +57,23 @@ function LdapItem({ ldap, index, formik }) {
         <FormGroup row>
           <GluuLabel label="fields.servers" size={4} />
           <Col sm={8}>
-            {ldap.servers && ldap.servers.map((server, index) => (
-              <Badge key={index} color="primary">
-                {server}
-              </Badge>
-            ))}
+            {ldap.servers &&
+              ldap.servers.map((server, index) => (
+                <Badge key={index} color="primary">
+                  {server}
+                </Badge>
+              ))}
           </Col>
         </FormGroup>
         <FormGroup row>
           <GluuLabel label="fields.base_dns" size={4} />
           <Col sm={8}>
-            { ldap.baseDNs && ldap.baseDNs.map((dn, index) => (
-              <Badge key={index} color="primary">
-                {dn}
-              </Badge>
-            ))}
+            {ldap.baseDNs &&
+              ldap.baseDNs.map((dn, index) => (
+                <Badge key={index} color="primary">
+                  {dn}
+                </Badge>
+              ))}
           </Col>
         </FormGroup>
         <FormGroup row>

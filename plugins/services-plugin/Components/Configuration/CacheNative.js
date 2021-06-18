@@ -16,7 +16,12 @@ function CacheNative({ config, formik }) {
     <Card>
       <CardBody>
         <FormGroup row>
-        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>{t("fields.native_persistence_configuration")}:</Col>
+          <Col
+            xs="12"
+            style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
+          >
+            {t('fields.native_persistence_configuration')}:
+          </Col>
           <GluuLabel label="fields.default_put_expiration" size={2} />
           <Col sm={2}>
             <Input

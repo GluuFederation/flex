@@ -20,20 +20,22 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
             </Button>
           )}
         </Col>
-        {!hideButtons || !hideButtons['save'] ? (
+        {!hideButtons || !hideButtons['back'] ? (
           <Col sm={2} md={1}>
-            <Button color="primary" type="submit">
-              {t('actions.save')}
+            <Button color="secondary" onClick={goBack}>
+              <i className="fa fa-arrow-circle-left mr-2"></i>
+              {t('actions.cancel')}
             </Button>
           </Col>
         ) : (
           ''
         )}
         &nbsp;
-        {!hideButtons || !hideButtons['back'] ? (
+        {!hideButtons || !hideButtons['save'] ? (
           <Col sm={2} md={1}>
-            <Button color="secondary" onClick={goBack}>
-              {t('actions.cancel')}
+            <Button color="primary" type="submit">
+              <i className="fa fa-check-circle mr-2"></i>
+              {t('actions.save')}
             </Button>
           </Col>
         ) : (

@@ -18,7 +18,12 @@ function CacheMemcached({ config, formik }) {
     <Card>
       <CardBody>
         <FormGroup row>
-        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>{t("fields.memcached_configuration")}:</Col>
+          <Col
+            xs="12"
+            style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
+          >
+            {t('fields.memcached_configuration')}:
+          </Col>
           <GluuLabel label="fields.servers" size={2} />
           <Col sm={6}>
             <Badge color="primary">{config.servers}</Badge>
@@ -26,15 +31,15 @@ function CacheMemcached({ config, formik }) {
           <GluuLabel label="fields.connection_factory_type" size={2} />
           <Col sm={2}>
             <CustomInput
-                type="select"
-                id="connectionFactoryType"
-                name="connectionFactoryType"
-                defaultValue={config.connectionFactoryType}
-                onChange={formik.handleChange}
-              >
-                <option>{t("options.default")}</option>
-                <option>{t("options.binary")}</option>
-              </CustomInput>
+              type="select"
+              id="connectionFactoryType"
+              name="connectionFactoryType"
+              defaultValue={config.connectionFactoryType}
+              onChange={formik.handleChange}
+            >
+              <option>{t('options.default')}</option>
+              <option>{t('options.binary')}</option>
+            </CustomInput>
           </Col>
         </FormGroup>
         <FormGroup row>

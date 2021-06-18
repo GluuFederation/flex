@@ -54,7 +54,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={t("messages.request_waiting_message")}
+          message={t('messages.request_waiting_message')}
         >
           <Card>
             <CardBody>
@@ -84,7 +84,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       <GluuLabel label="fields.host_name" required />
                       <Col sm={9}>
                         <Input
-                          placeholder={t("placeholders.smtp_server_hostname")}
+                          placeholder={t('placeholders.smtp_server_hostname')}
                           id="host"
                           name="host"
                           onChange={formik.handleChange}
@@ -96,7 +96,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       <GluuLabel label="fields.sender_name" required />
                       <Col sm={9}>
                         <Input
-                          placeholder={t("placeholders.sender_name")}
+                          placeholder={t('placeholders.sender_name')}
                           id="from_name"
                           name="from_name"
                           onChange={formik.handleChange}
@@ -109,7 +109,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       <Col sm={9}>
                         <Input
                           type="email"
-                          placeholder={t("placeholders.sender_email")}
+                          placeholder={t('placeholders.sender_email')}
                           id="from_email_address"
                           name="from_email_address"
                           onChange={formik.handleChange}
@@ -121,7 +121,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       <GluuLabel label="fields.smtp_user_name" required />
                       <Col sm={9}>
                         <Input
-                          placeholder={t("placeholders.smtp_user_name")}
+                          placeholder={t('placeholders.smtp_user_name')}
                           id="user_name"
                           name="user_name"
                           onChange={formik.handleChange}
@@ -134,7 +134,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       <Col sm={9}>
                         <Input
                           type="password"
-                          placeholder={t("placeholders.smtp_user_password")}
+                          placeholder={t('placeholders.smtp_user_password')}
                           id="password"
                           name="password"
                           onChange={formik.handleChange}
@@ -143,7 +143,10 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label="fields.required_authentication" size={3} />
+                      <GluuLabel
+                        label="fields.required_authentication"
+                        size={3}
+                      />
                       <Col sm={1}>
                         <Input
                           id="requires_authentication"
@@ -179,7 +182,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       <Col sm={9}>
                         <Input
                           type="number"
-                          placeholder={t("placeholders.smtp_server_port")}
+                          placeholder={t('placeholders.smtp_server_port')}
                           id="port"
                           name="port"
                           onChange={formik.handleChange}

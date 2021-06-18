@@ -22,13 +22,13 @@ function GluuTypeAheadWithAdd({
     const newItem = document.getElementById(inputId).value
     document.getElementById(inputId).value = ''
     if (validator(newItem)) {
-      setItems( currItems => [...currItems, newItem])
-      setOpts( currOpts => [...currOpts, newItem])
+      setItems((currItems) => [...currItems, newItem])
+      setOpts((currOpts) => [...currOpts, newItem])
       formik.setFieldValue(name, items)
     }
   }
 
-  const handleChange= (name, selected) => {
+  const handleChange = (name, selected) => {
     console.log(selected)
     setItems(selected)
     setOpts(selected)
@@ -52,7 +52,8 @@ function GluuTypeAheadWithAdd({
             <Input placeholder={placeholder} id={inputId} />
           </Col>
           <Button color="primary" type="button" onClick={addItem}>
-            {t("actions.add")}
+            <i className="fa fa-plus-circle mr-2"></i>
+            {t('actions.add')}
           </Button>
         </Row>
         &nbsp;
