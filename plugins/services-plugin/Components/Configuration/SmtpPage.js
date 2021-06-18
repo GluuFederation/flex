@@ -54,7 +54,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-          message={t("Performing the request, please wait!")}
+          message={t("messages.request_waiting_message")}
         >
           <Card>
             <CardBody>
@@ -71,7 +71,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                   <Form onSubmit={formik.handleSubmit}>
                     {(testStatus) => (
                       <FormGroup row>
-                        <GluuLabel label={t("Smtp Test Status")} size={4} />
+                        <GluuLabel label="fields.smtp_test_status" size={4} />
                         <Col sm={8}>
                           <Badge color="primary">
                             {testStatus.service} {testStatus.status}
@@ -81,10 +81,10 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                     )}
 
                     <FormGroup row>
-                      <GluuLabel label={t("Host Name")} required />
+                      <GluuLabel label="fields.host_name" required />
                       <Col sm={9}>
                         <Input
-                          placeholder={t("Enter the SMTP server hostname")}
+                          placeholder={t("placeholders.smtp_server_hostname")}
                           id="host"
                           name="host"
                           onChange={formik.handleChange}
@@ -93,10 +93,10 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label={t("Sender Name")} required />
+                      <GluuLabel label="fields.sender_name" required />
                       <Col sm={9}>
                         <Input
-                          placeholder={t("Enter the sender name")}
+                          placeholder={t("placeholders.sender_name")}
                           id="from_name"
                           name="from_name"
                           onChange={formik.handleChange}
@@ -105,11 +105,11 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label={t("Sender Email")} required />
+                      <GluuLabel label="fields.sender_email" required />
                       <Col sm={9}>
                         <Input
                           type="email"
-                          placeholder={t("Enter the sender email")}
+                          placeholder={t("placeholders.sender_email")}
                           id="from_email_address"
                           name="from_email_address"
                           onChange={formik.handleChange}
@@ -118,10 +118,10 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label={t("SMTP User Name")} required />
+                      <GluuLabel label="fields.smtp_user_name" required />
                       <Col sm={9}>
                         <Input
-                          placeholder={t("Enter the SMTP user name")}
+                          placeholder={t("placeholders.smtp_user_name")}
                           id="user_name"
                           name="user_name"
                           onChange={formik.handleChange}
@@ -130,11 +130,11 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label={t("SMTP User Password")} required />
+                      <GluuLabel label="fields.smtp_user_password" required />
                       <Col sm={9}>
                         <Input
                           type="password"
-                          placeholder={t("Enter the SMTP user password")}
+                          placeholder={t("placeholders.smtp_user_password")}
                           id="password"
                           name="password"
                           onChange={formik.handleChange}
@@ -143,7 +143,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label={t("Required Authentication")} size={3} />
+                      <GluuLabel label="fields.required_authentication" size={3} />
                       <Col sm={1}>
                         <Input
                           id="requires_authentication"
@@ -153,7 +153,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                           defaultChecked={smtp.requires_authentication}
                         />
                       </Col>
-                      <GluuLabel label={t("Required SSL")} size={3} />
+                      <GluuLabel label="fields.required_ssl" size={3} />
                       <Col sm={1}>
                         <Input
                           id="requires_ssl"
@@ -163,7 +163,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                           defaultChecked={smtp.requires_ssl}
                         />
                       </Col>
-                      <GluuLabel label={t("Trusted Host ?")} size={3} />
+                      <GluuLabel label="fields.trusted_host" size={3} />
                       <Col sm={1}>
                         <Input
                           id="trust_host"
@@ -175,11 +175,11 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                       </Col>
                     </FormGroup>
                     <FormGroup row>
-                      <GluuLabel label={t("SMTP server port")} required />
+                      <GluuLabel label="fields.smtp_server_port" required />
                       <Col sm={9}>
                         <Input
                           type="number"
-                          placeholder={t("Enter the SMTP server port")}
+                          placeholder={t("placeholders.smtp_server_port")}
                           id="port"
                           name="port"
                           onChange={formik.handleChange}
@@ -190,7 +190,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                     <FormGroup row></FormGroup>
                     {hasPermission(permissions, SMTP_WRITE) && (
                       <GluuFooter
-                        extraLabel={t("Test Config")}
+                        extraLabel="fields.test_config"
                         extraOnClick={checkSmtpConfig}
                       />
                     )}
