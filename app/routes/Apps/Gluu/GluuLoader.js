@@ -7,7 +7,7 @@ function GluuLoader(props) {
     <React.Fragment>
       <BlockUi
         tag="div"
-        blocking={props.loading}
+        blocking={props.blocking}
         keepInView={true}
         renderChildren={true}
         message={t('messages.request_waiting_message')}
