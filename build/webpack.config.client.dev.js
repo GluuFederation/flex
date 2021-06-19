@@ -1,151 +1,154 @@
-const path = require("path");
-const webpack = require("webpack");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CircularDependencyPlugin = require("circular-dependency-plugin");
-const ExtractCssChunks = require("extract-css-chunks-webpack-plugin");
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 
-const config = require("./../config");
-require("dotenv").config({
-  path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || ".env"
-});
+const config = require('./../config')
+require('dotenv').config({
+  path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
+})
 
-const BASE_PATH = process.env.BASE_PATH || "/";
-const SESSION_TIMEOUT_IN_MINUTES =
-  process.env.SESSION_TIMEOUT_IN_MINUTES || 2
-  
+const BASE_PATH = process.env.BASE_PATH || '/'
+const SESSION_TIMEOUT_IN_MINUTES = process.env.SESSION_TIMEOUT_IN_MINUTES || 2
+
 module.exports = {
-  name: "client",
-  devtool: "cheap-eval-source-map",
-  target: "web",
-  mode: "development",
-  entry: {
-    app: [path.join(config.srcDir, "index.js")]
+  name: 'client',
+  optimization: {
+    moduleIds: 'named',
+    minimizer: [`...`, new CssMinimizerPlugin()],
   },
+  devtool: 'source-map',
+  target: 'web',
+  mode: 'development',
+  entry: {
+    app: [path.join(config.srcDir, 'index.js')],
+  },
+
   output: {
-    filename: "[name].bundle.js",
-    chunkFilename: "[name].chunk.js",
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].chunk.js',
     path: config.distDir,
-    publicPath: BASE_PATH
+    publicPath: BASE_PATH,
   },
   resolve: {
-    modules: ["node_modules", config.srcDir]
+    modules: ['node_modules', config.srcDir],
+    alias: {
+      path: require.resolve('path-browserify'),
+    },
   },
   plugins: [
     new CircularDependencyPlugin({
       exclude: /a\.js|node_modules/,
       failOnError: true,
       allowAsyncCycles: false,
-      cwd: process.cwd()
+      cwd: process.cwd(),
     }),
     new HtmlWebpackPlugin({
+      title: 'AdminUI',
+      inject: 'body',
       template: config.srcHtmlLayout,
-      inject: false,
-      title: "AdminUI",
-      chunksSortMode: "none"
     }),
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("development"),
-      "process.env.BASE_PATH": JSON.stringify(BASE_PATH),
-      "process.env.API_BASE_URL": JSON.stringify(process.env.API_BASE_URL),
-      'process.env.SESSION_TIMEOUT_IN_MINUTES': SESSION_TIMEOUT_IN_MINUTES,
+      'process.env': {
+        NODE_ENV: JSON.stringify('development'),
+        BASE_PATH: JSON.stringify(BASE_PATH),
+        API_BASE_URL: JSON.stringify(process.env.API_BASE_URL),
+        SESSION_TIMEOUT_IN_MINUTES: SESSION_TIMEOUT_IN_MINUTES,
+      },
     }),
-    new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new ExtractCssChunks()
+    new MiniCssExtractPlugin(),
   ],
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: "babel-loader"
+        use: 'babel-loader',
       },
-      // Modular Styles
       {
         test: /\.css$/i,
         use: [
-          { loader: "style-loader" },
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-              importLoaders: 1
-            }
-          },
-          { loader: "postcss-loader" }
+          MiniCssExtractPlugin.loader,
+          'style-loader',
+          'css-loader',
+          'postcss-loader',
         ],
-        exclude: [path.resolve(config.srcDir, "styles")],
-        include: [config.srcDir]
+        exclude: [path.resolve(config.srcDir, 'styles')],
+        include: [config.srcDir],
       },
       {
         test: /\.scss$/,
         use: [
-          { loader: "style-loader" },
+          { loader: 'style-loader' },
+          MiniCssExtractPlugin.loader,
           {
-            loader: "css-loader",
+            loader: 'css-loader',
             options: {
               modules: true,
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
-          { loader: "postcss-loader" },
+          { loader: 'postcss-loader' },
           {
-            loader: "sass-loader",
+            loader: 'sass-loader',
             options: {
-              includePaths: config.scssIncludes
-            }
-          }
+              includePaths: config.scssIncludes,
+            },
+          },
         ],
-        exclude: [path.resolve(config.srcDir, "styles")],
-        include: [config.srcDir]
+        exclude: [path.resolve(config.srcDir, 'styles')],
+        include: [config.srcDir],
       },
       // Global Styles
       {
         test: /\.css$/,
-        use: [ExtractCssChunks.loader, "css-loader", "postcss-loader"],
-        include: [path.resolve(config.srcDir, "styles")]
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+        include: [path.resolve(config.srcDir, 'styles')],
       },
       {
         test: /\.scss$/,
         use: [
-          ExtractCssChunks.loader,
-          "css-loader",
-          "postcss-loader",
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader',
           {
-            loader: "sass-loader",
+            loader: 'sass-loader',
             options: {
-              includePaths: config.scssIncludes
-            }
-          }
+              includePaths: config.scssIncludes,
+            },
+          },
         ],
-        include: [path.resolve(config.srcDir, "styles")]
+        include: [path.resolve(config.srcDir, 'styles')],
       },
       // Fonts
       {
         test: /\.(ttf|eot|woff|woff2)$/,
-        loader: "file-loader",
+        loader: 'file-loader',
         options: {
-          name: "fonts/[name].[ext]"
-        }
+          name: 'fonts/[name].[ext]',
+        },
       },
       // Files
       {
         test: /\.(jpg|jpeg|png|gif|svg|ico)$/,
-        loader: "file-loader",
+        loader: 'file-loader',
         options: {
-          name: "static/[name].[ext]"
-        }
-      }
-    ]
+          name: 'static/[name].[ext]',
+        },
+      },
+    ],
   },
   devServer: {
     hot: true,
     contentBase: config.serveDir,
     compress: true,
     historyApiFallback: {
-      index: BASE_PATH
+      index: BASE_PATH,
     },
-    host: "0.0.0.0",
-    port: 4100
-  }
-};
+    host: '0.0.0.0',
+    port: 4100,
+  },
+}

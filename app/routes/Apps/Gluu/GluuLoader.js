@@ -1,8 +1,9 @@
 import React from 'react'
 import BlockUi from 'react-block-ui'
 import { useTranslation } from 'react-i18next'
-const { t } = useTranslation()
+
 function GluuLoader(props) {
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       <BlockUi
