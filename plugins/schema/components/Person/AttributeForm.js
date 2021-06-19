@@ -76,12 +76,12 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
           {item.inum && (
             <FormGroup row>
               <Label for="name" sm={3}>
-                {t("Inum")}
+                {t('Inum')}
               </Label>
               <Col sm={9}>
                 <Input
                   style={{ backgroundColor: '#F5F5F5' }}
-                  placeholder={t("Enter the attribute inum")}
+                  placeholder={t('Enter the attribute inum')}
                   id="inum"
                   name="inum"
                   disabled
@@ -91,10 +91,10 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </FormGroup>
           )}
           <FormGroup row>
-            <GluuLabel label={t("Name")} required />
+            <GluuLabel label={t('Name')} required />
             <Col sm={9}>
               <Input
-                placeholder={t("Enter the attribute name")}
+                placeholder={t('Enter the attribute name')}
                 id="name"
                 valid={!formik.errors.name && !formik.touched.name && init}
                 name="name"
@@ -108,11 +108,11 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("Display Name")} required />
+            <GluuLabel label={t('Display Name')} required />
             <Col sm={9}>
               <InputGroup>
                 <Input
-                  placeholder={t("Enter the attribute display name")}
+                  placeholder={t('Enter the attribute display name')}
                   valid={
                     !formik.errors.displayName &&
                     !formik.touched.displayName &&
@@ -130,13 +130,13 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("Description")} required />
+            <GluuLabel label={t('Description')} required />
             <Col sm={9}>
               <InputGroup>
                 <Input
                   type="textarea"
                   rows="3"
-                  placeholder={t("Enter the attribute description")}
+                  placeholder={t('Enter the attribute description')}
                   id="description"
                   name="description"
                   defaultValue={item.description}
@@ -149,7 +149,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("Status")} required />
+            <GluuLabel label={t('Status')} required />
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -159,9 +159,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                   defaultValue={item.status}
                   onChange={formik.handleChange}
                 >
-                  <option value="">{t("Choose")}...</option>
-                  <option>{t("ACTIVE")}</option>
-                  <option>{t("INACTIVE")}</option>
+                  <option value="">{t('Choose')}...</option>
+                  <option>{t('ACTIVE')}</option>
+                  <option>{t('INACTIVE')}</option>
                 </CustomInput>
               </InputGroup>
               <ErrorMessage name="status">
@@ -170,7 +170,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("Data Type")} required />
+            <GluuLabel label={t('Data Type')} required />
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -180,14 +180,14 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                   defaultValue={item.dataType}
                   onChange={formik.handleChange}
                 >
-                  <option value="">{t("Choose")}...</option>
-                  <option>{t("STRING")}</option>
-                  <option>{t("JSON")}</option>
-                  <option>{t("NUMERIC")}</option>
-                  <option>{t("BINARY")}</option>
-                  <option>{t("CERTIFICATE")}</option>
-                  <option>{t("DATE")}</option>
-                  <option>{t("BOOLEAN")}</option>
+                  <option value="">{t('Choose')}...</option>
+                  <option>{t('STRING')}</option>
+                  <option>{t('JSON')}</option>
+                  <option>{t('NUMERIC')}</option>
+                  <option>{t('BINARY')}</option>
+                  <option>{t('CERTIFICATE')}</option>
+                  <option>{t('DATE')}</option>
+                  <option>{t('BOOLEAN')}</option>
                 </CustomInput>
               </InputGroup>
               <ErrorMessage name="dataType">
@@ -196,7 +196,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("Edit Type")} required />
+            <GluuLabel label={t('Edit Type')} required />
             <Col sm={9}>
               <Input
                 type="select"
@@ -206,8 +206,8 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 multiple
                 onChange={formik.handleChange}
               >
-                <option>{t("ADMIN")}</option>
-                <option>{t("USER")}</option>
+                <option>{t('ADMIN')}</option>
+                <option>{t('USER')}</option>
               </Input>
               <ErrorMessage name="editType">
                 {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
@@ -215,7 +215,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("View Type")} />
+            <GluuLabel label={t('View Type')} />
             <Col sm={9}>
               <Input
                 type="select"
@@ -225,13 +225,13 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 multiple
                 onChange={formik.handleChange}
               >
-                <option>{t("ADMIN")}</option>
-                <option>{t("USER")}</option>
+                <option>{t('ADMIN')}</option>
+                <option>{t('USER')}</option>
               </Input>
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("Usage Type")} required />
+            <GluuLabel label={t('Usage Type')} required />
             <Col sm={9}>
               <Input
                 type="select"
@@ -241,7 +241,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 multiple
                 onChange={formik.handleChange}
               >
-                <option>{t("OPENID")}</option>
+                <option>{t('OPENID')}</option>
               </Input>
               <ErrorMessage name="usageType">
                 {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
@@ -249,7 +249,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("oxAuth claim name")} />
+            <GluuLabel label={t('oxAuth claim name')} />
             <Col sm={9}>
               <Input
                 name="claimName"
@@ -260,7 +260,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("Multivalued?")} size={3} />
+            <GluuLabel label={t('Multivalued?')} size={3} />
             <Col sm={1}>
               <Input
                 id="oxMultiValuedAttribute"
@@ -270,7 +270,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 defaultChecked={item.oxMultiValuedAttribute}
               />
             </Col>
-            <GluuLabel label={t("Hide On Discovery?")} size={3} />
+            <GluuLabel label={t('Hide On Discovery?')} size={3} />
             <Col sm={1}>
               <Input
                 id="jansHideOnDiscovery"
@@ -280,7 +280,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 defaultChecked={item.jansHideOnDiscovery}
               />
             </Col>
-            <GluuLabel label={t("Include In SCIM Extension?")} size={3} />
+            <GluuLabel label={t('Include In SCIM Extension?')} size={3} />
             <Col sm={1}>
               <Input
                 id="scimCustomAttr"
@@ -294,7 +294,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
 
           <FormGroup row>
             <GluuLabel
-              label={t("Enable custom validation for this attribute?")}
+              label={t('Enable custom validation for this attribute?')}
               size={6}
             />
             <Col sm={6}>
@@ -310,7 +310,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
 
           {validation && (
             <FormGroup row>
-              <GluuLabel label={t("Regular expression")} />
+              <GluuLabel label={t('Regular expression')} />
               <Col sm={9}>
                 <Input
                   name="regexp"
@@ -323,7 +323,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
           )}
           {validation && (
             <FormGroup row>
-              <GluuLabel label={t("Minimum length")} />
+              <GluuLabel label={t('Minimum length')} />
               <Col sm={3}>
                 <Input
                   name="minLength"
@@ -333,7 +333,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                   onChange={formik.handleChange}
                 />
               </Col>
-              <GluuLabel label={t("Maximum length")} />
+              <GluuLabel label={t('Maximum length')} />
               <Col sm={3}>
                 <Input
                   name="maxLength"
@@ -346,10 +346,10 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </FormGroup>
           )}
           <FormGroup row>
-            <GluuLabel label={t("Saml1 Uri")} />
+            <GluuLabel label={t('Saml1 Uri')} />
             <Col sm={9}>
               <Input
-                placeholder={t("Enter the saml1 Uri")}
+                placeholder={t('Enter the saml1 Uri')}
                 id="saml1Uri"
                 name="saml1Uri"
                 defaultValue={item.saml1Uri}
@@ -359,10 +359,10 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t("Saml2 Uri")} />
+            <GluuLabel label={t('Saml2 Uri')} />
             <Col sm={9}>
               <Input
-                placeholder={t("Enter the saml2 Uri")}
+                placeholder={t('Enter the saml2 Uri')}
                 id="saml2Uri"
                 name="saml2Uri"
                 defaultValue={item.saml2Uri}
@@ -371,7 +371,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
               />
             </Col>
           </FormGroup>
-          <GluuFooter hideButtons={hideButtons}/>
+          <GluuFooter hideButtons={hideButtons} />
         </Form>
       )}
     </Formik>

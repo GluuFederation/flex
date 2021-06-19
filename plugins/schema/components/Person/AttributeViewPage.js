@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from '../../../../app/components'
+import { CardBody, Card } from '../../../../app/components'
+import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import AttributeForm from './AttributeForm'
-import BlockUi from 'react-block-ui'
 import { editAttribute } from '../../redux/actions/AttributeActions'
 
 function AttributeEditPage({ item, loading, dispatch }) {
@@ -22,23 +22,17 @@ function AttributeEditPage({ item, loading, dispatch }) {
     }
   }
   return (
-    <React.Fragment>
-      <Container>
-        <BlockUi
-          tag="div"
-          blocking={loading}
-          keepInView={true}
-          renderChildren={true}
-          message={t("Performing the request, please wait!")}
-        >
-          <Card className="mb-3">
-            <CardBody>
-              <AttributeForm item={item} customOnSubmit={customHandleSubmit} hideButtons={{ save: true }}/>
-            </CardBody>
-          </Card>
-        </BlockUi>
-      </Container>
-    </React.Fragment>
+    <GluuLoader blocking={loading}>
+      <Card className="mb-3">
+        <CardBody>
+          <AttributeForm
+            item={item}
+            customOnSubmit={customHandleSubmit}
+            hideButtons={{ save: true }}
+          />
+        </CardBody>
+      </Card>
+    </GluuLoader>
   )
 }
 const mapStateToProps = (state) => {
