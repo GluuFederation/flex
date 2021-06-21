@@ -26,21 +26,29 @@ module.exports = {
   },
   optimization: {
     moduleIds: 'named',
-    minimizer: [`...`, new CssMinimizerPlugin(), new TerserPlugin()],
+    chunkIds: 'named',
+    minimize: false,
+    nodeEnv: 'production',
+    mangleWasmImports: true,
+    removeEmptyChunks: false,
+    mergeDuplicateChunks: false,
+    flagIncludedChunks: true,
+    minimizer: [
+      `...`,
+      new CssMinimizerPlugin(),
+      new TerserPlugin({ parallel: true }),
+      '...',
+    ],
+    emitOnErrors: true,
     splitChunks: {
       chunks: 'all',
-      minSize: 100000,
-      maxSize: 200000,
-      maxInitialRequests: 200,
-      maxAsyncRequests: 200,
-
+      minSize: 20000,
+      minRemainingSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 30,
+      maxInitialRequests: 30,
+      enforceSizeThreshold: 50000,
       cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]jspdf[\\/]dist[\\/]/,
-          name: 'jspdf',
-          priority: -1,
-          chunks: 'all',
-        },
         defaultVendors: {
           test: /[\\/]node_modules[\\/]/,
           priority: -10,

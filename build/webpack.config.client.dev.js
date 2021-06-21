@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
-
 const config = require('./../config')
 require('dotenv').config({
   path: (process.env.NODE_ENV && `.env.${process.env.NODE_ENV}`) || '.env',
