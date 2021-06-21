@@ -3,7 +3,6 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const TerserPlugin = require('terser-webpack-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const config = require('./../config')
@@ -33,12 +32,7 @@ module.exports = {
     removeEmptyChunks: false,
     mergeDuplicateChunks: false,
     flagIncludedChunks: true,
-    minimizer: [
-      `...`,
-      new CssMinimizerPlugin(),
-      new TerserPlugin({ parallel: true }),
-      '...',
-    ],
+    minimizer: [`...`, new CssMinimizerPlugin(), '...'],
     emitOnErrors: true,
     splitChunks: {
       chunks: 'all',

@@ -22,7 +22,13 @@ import {
 } from '../../redux/actions/LdapActions'
 import { useTranslation } from 'react-i18next'
 
-function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, testStatus }) {
+function LdapListPage({
+  ldapConfigurations,
+  permissions,
+  loading,
+  dispatch,
+  testStatus,
+}) {
   useEffect(() => {
     dispatch(getLdapConfig())
   }, [])
@@ -32,7 +38,11 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const [alertObj, setAlertObj] = useState({ severity: '', message: '', show: false })
+  const [alertObj, setAlertObj] = useState({
+    severity: '',
+    message: '',
+    show: false,
+  })
   const toggle = () => setModal(!modal)
 
   function handleGoToLdapEditPage(row) {
@@ -41,7 +51,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
   }
 
   function handleLdapDelete(row) {
-    setItem(row);
+    setItem(row)
     toggle()
   }
   function handleGoToLdapAddPage() {
@@ -55,7 +65,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
         color: 'primary',
         id: 'editLdap' + rowData.configId,
       },
-      tooltip: `${t("tooltips.edit_ldap")}`,
+      tooltip: `${t('tooltips.edit_ldap')}`,
       onClick: (event, rowData) => handleGoToLdapEditPage(rowData),
       disabled: !hasPermission(permissions, LDAP_WRITE),
     }))
@@ -64,7 +74,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
   if (hasPermission(permissions, LDAP_READ)) {
     myActions.push({
       icon: 'refresh',
-      tooltip: `${t("tooltips.refresh_data")}`,
+      tooltip: `${t('tooltips.refresh_data')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
@@ -79,7 +89,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
         color: 'secondary',
         id: 'deleteLdap' + rowData.configId,
       },
-      tooltip: `${t("tooltips.delete_record")}`,
+      tooltip: `${t('tooltips.delete_record')}`,
       onClick: (event, rowData) => handleLdapDelete(rowData),
       disabled: !hasPermission(permissions, LDAP_DELETE),
     }))
@@ -87,7 +97,7 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
   if (hasPermission(permissions, LDAP_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: `${t("tooltips.add_ldap")}`,
+      tooltip: `${t('tooltips.add_ldap')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => handleGoToLdapAddPage(),
@@ -102,18 +112,16 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
     }
   }
   function onDeletionConfirmed(message) {
-    // perform delete request
     buildPayload(userAction, message, item.configId)
     dispatch(deleteLdap(item.configId))
     history.push('/config/ldap')
     toggle()
   }
   function testLdapConnect(row) {
-
     const testPromise = new Promise(function (resolve, reject) {
       setAlertObj({ ...alertObj, show: false })
-      resolve();
-    });
+      resolve()
+    })
 
     testPromise
       .then(() => {
@@ -121,44 +129,57 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
       })
       .then(() => {
         if (testStatus) {
-          setAlertObj({ ...alertObj, severity: 'success', message: `${t("messages.ldap_connection_success")}`, show: true })
+          setAlertObj({
+            ...alertObj,
+            severity: 'success',
+            message: `${t('messages.ldap_connection_success')}`,
+            show: true,
+          })
         } else {
-          setAlertObj({ ...alertObj, severity: 'error', message: `${t("messages.ldap_connection_error")}`, show: true })
+          setAlertObj({
+            ...alertObj,
+            severity: 'error',
+            message: `${t('messages.ldap_connection_error')}`,
+            show: true,
+          })
         }
       })
   }
   return (
     <React.Fragment>
-      {/* START Content */}
       <div>
-        <Button color="primary" onClick={handleGoToLdapAddPage}>{t("actions.add_ldap_configuration")}</Button>
+        <Button color="primary" onClick={handleGoToLdapAddPage}>
+          {t('actions.add_ldap_configuration')}
+        </Button>
       </div>
-      <hr/>
+      <hr />
       <MaterialTable
         columns={[
-          { title: `${t("fields.configuration_id")}`, field: 'configId' },
-          { title: `${t("fields.bind_dn")}`, field: 'bindDN' },
+          { title: `${t('fields.configuration_id')}`, field: 'configId' },
+          { title: `${t('fields.bind_dn')}`, field: 'bindDN' },
           {
-            title: `${t("fields.status")}`,
+            title: `${t('fields.status')}`,
             field: 'enabled',
             type: 'boolean',
             render: (rowData) => (
               <Badge color={getBadgeTheme(rowData.enabled)}>
-                {rowData.enabled ? `${t("fields.enable")}` : `${t("fields.disable")}`}
+                {rowData.enabled
+                  ? `${t('fields.enable')}`
+                  : `${t('fields.disable')}`}
               </Badge>
             ),
           },
         ]}
         data={ldapConfigurations}
         isLoading={loading}
-        title={t("titles.ldap_authentication")}
+        title={t('titles.ldap_authentication')}
         actions={myActions}
         options={{
           search: true,
           selection: false,
           pageSize: 10,
           headerStyle: {
-            backgroundColor: '#03a96d', //#03a96d 01579b
+            backgroundColor: '#03a96d',
             color: '#FFF',
             padding: '2px',
             textTransform: 'uppercase',
@@ -167,11 +188,19 @@ function LdapListPage({ ldapConfigurations, permissions, loading, dispatch, test
           actionsColumnIndex: -1,
         }}
         detailPanel={(rowData) => {
-          return <LdapDetailPage row={rowData} testLdapConnection={testLdapConnect} />
+          return (
+            <LdapDetailPage
+              row={rowData}
+              testLdapConnection={testLdapConnect}
+            />
+          )
         }}
       />
-      <GluuAlert severity={alertObj.severity} message={alertObj.message} show={alertObj.show} />
-      {/* END Content */}
+      <GluuAlert
+        severity={alertObj.severity}
+        message={alertObj.message}
+        show={alertObj.show}
+      />
       <GluuDialog
         row={item}
         handler={toggle}
