@@ -6,7 +6,6 @@ import {
 } from './../../../components';
 
 const TrResponsive = () => {
-  const { t } = useTranslation()
   return (
     <React.Fragment>
       { /* START TR */}
@@ -59,7 +58,7 @@ const TrResponsive = () => {
             <i className="fa fa-fw fa-close text-danger"></i>
           </a>
           <UncontrolledTooltip placement="left" target="UncontrolledTooltipRevoke">
-            {t("Revoke")}
+            Revoke
           </UncontrolledTooltip>
         </td>
       </tr>

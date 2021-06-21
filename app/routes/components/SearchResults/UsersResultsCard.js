@@ -25,7 +25,6 @@ const badgesColors = [
 ];
 
 const UsersResultsCard = () => {
-  const { t } = useTranslation()
   return (
     <React.Fragment>
       { /* START Card */}
@@ -36,7 +35,7 @@ const UsersResultsCard = () => {
               <i className="fa fa-star-o"></i>
             </Button>
             <UncontrolledTooltip placement="top" target="tooltipGridAddToFavorites">
-              {t("Add To Favorites")}
+              Add To Favorites
             </UncontrolledTooltip>
             <UncontrolledButtonDropdown className="ml-auto">
               <DropdownToggle color="link" size="sm">
@@ -45,28 +44,28 @@ const UsersResultsCard = () => {
               <DropdownMenu right>
                 <DropdownItem>
                   <i className="fa fa-fw fa-phone mr-2"></i>
-                  {t("Call")}
+                  Call
                 </DropdownItem>
                 <DropdownItem>
                   <i className="fa fa-fw fa-comment mr-2"></i>
-                  {t("Chat")}
+                  Chat
                 </DropdownItem>
                 <DropdownItem>
                   <i className="fa fa-fw fa-video-camera mr-2"></i>
-                  {t("Video")}
+                  Video
                 </DropdownItem>
                 <DropdownItem>
                   <i className="fa fa-fw fa-user mr-2"></i>
-                  {t("Profile")}
+                  Profile
                 </DropdownItem>
                 <DropdownItem>
                   <i className="fa fa-fw fa-pencil mr-2"></i>
-                  {t("Edit")}
+                  Edit
                 </DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>
                   <i className="fa fa-fw fa-trash mr-2"></i>
-                  {t("Delete")}
+                  Delete
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>
@@ -75,7 +74,7 @@ const UsersResultsCard = () => {
           <div className="text-center mb-4">
             <div className="mb-2">
               <span className="small">
-                {t("Labels")}
+                Labels
               </span>
             </div>
             <Badge pill color={ randomArray(badgesColors) } className="mr-1">
@@ -91,7 +90,7 @@ const UsersResultsCard = () => {
           <div className="text-center mb-4">
             <div className="mb-2">
               <span className="small">
-                {t("Profile")}
+                Profile
               </span>
             </div>
             <p className="mb-0">

@@ -6,7 +6,6 @@ import {
 } from './../../../components';
 
 const TrBorderless = () => {
-  const { t } = useTranslation()
   return (
     <React.Fragment>
       { /* START TR */}
@@ -37,7 +36,7 @@ const TrBorderless = () => {
             <i className="fa fa-fw fa-download text-primary"></i>
           </a>
           <UncontrolledTooltip placement="left" target="UncontrolledTooltipDownload">
-            {t("Download")}
+            Download
           </UncontrolledTooltip>
         </td>
       </tr>

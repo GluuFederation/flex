@@ -6,7 +6,6 @@ import {
 } from 'reactstrap';
 
 const Attachment = (props) => {
-  const { t } = useTranslation()
   return (
     <Media className={ `${ props.mediaClassName }` }>
       <Media left className="mr-2">
@@ -21,7 +20,7 @@ const Attachment = (props) => {
             { 'faker.system.fileName()' }
           </div>
           <span>
-            {t("by")} <span>
+            by <span>
               { 'faker.name.firstName()' } { 'faker.name.firstName()' }
             </span> 
             <span className="text-muted"> · </span> 
