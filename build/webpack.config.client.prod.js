@@ -20,7 +20,7 @@ const SESSION_TIMEOUT_IN_MINUTES =
   process.env.SESSION_TIMEOUT_IN_MINUTES || 2
 
 module.exports = {
-  devtool: 'source-map',
+  devtool: false,
   mode: 'production',
   entry: {
     app: [path.join(config.srcDir, 'index.js')],
@@ -33,6 +33,9 @@ module.exports = {
   },
   resolve: {
     modules: ['node_modules', config.srcDir],
+    alias: {
+      path: require.resolve("path-browserify")
+  }
   },
   plugins: [
     new CircularDependencyPlugin({
