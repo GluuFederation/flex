@@ -37,8 +37,8 @@ function CacheMemcached({ config, formik }) {
               defaultValue={config.connectionFactoryType}
               onChange={formik.handleChange}
             >
-              <option>{t('options.default')}</option>
-              <option>{t('options.binary')}</option>
+              <option value="DEFAULT">{t('options.default')}</option>
+              <option value="BINARY">{t('options.binary')}</option>
             </CustomInput>
           </Col>
         </FormGroup>
