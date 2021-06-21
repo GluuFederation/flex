@@ -1,8 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExtractCssChunks = require('extract-css-chunks-webpack-plugin')
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 
@@ -16,8 +16,7 @@ const CONFIG_API_BASE_URL =
   process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 const API_BASE_URL =
   process.env.API_BASE_URL || 'https://bank.gluu.org/admin-ui-api'
-const SESSION_TIMEOUT_IN_MINUTES =
-  process.env.SESSION_TIMEOUT_IN_MINUTES || 2
+const SESSION_TIMEOUT_IN_MINUTES = process.env.SESSION_TIMEOUT_IN_MINUTES || 2
 
 module.exports = {
   devtool: false,
@@ -25,57 +24,22 @@ module.exports = {
   entry: {
     app: [path.join(config.srcDir, 'index.js')],
   },
-  output: {
-    filename: '[name].bundle.js',
-    chunkFilename: '[name].chunk.js',
-    path: config.distDir,
-    publicPath: BASE_PATH,
-  },
-  resolve: {
-    modules: ['node_modules', config.srcDir],
-    alias: {
-      path: require.resolve("path-browserify")
-  }
-  },
-  plugins: [
-    new CircularDependencyPlugin({
-      exclude: /a\.js|node_modules/,
-      failOnError: true,
-      allowAsyncCycles: false,
-      cwd: process.cwd(),
-    }),
-    new HtmlWebpackPlugin({
-      template: config.srcHtmlLayout,
-      inject: false,
-      title: 'AdminUI',
-    }),
-    new webpack.HashedModuleIdsPlugin(),
-    new ExtractCssChunks(),
-    new OptimizeCssAssetsPlugin(),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production'),
-      'process.env.BASE_PATH': JSON.stringify(BASE_PATH),
-      'process.env.API_BASE_URL': JSON.stringify(API_BASE_URL),
-      'process.env.CONFIG_API_BASE_URL': JSON.stringify(CONFIG_API_BASE_URL),
-      'process.env.SESSION_TIMEOUT_IN_MINUTES': JSON.stringify(SESSION_TIMEOUT_IN_MINUTES),
-    }),
-  ],
   optimization: {
-    minimizer: [new TerserPlugin()],
+    moduleIds: 'named',
+    minimizer: [`...`, new CssMinimizerPlugin(), new TerserPlugin()],
     splitChunks: {
       chunks: 'all',
       minSize: 100000,
       maxSize: 200000,
       maxInitialRequests: 200,
       maxAsyncRequests: 200,
-     
+
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]jspdf[\\/]dist[\\/]/,
           name: 'jspdf',
           priority: -1,
           chunks: 'all',
-          
         },
         defaultVendors: {
           test: /[\\/]node_modules[\\/]/,
@@ -90,6 +54,41 @@ module.exports = {
       },
     },
   },
+  output: {
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].chunk.js',
+    path: config.distDir,
+    publicPath: BASE_PATH,
+  },
+  resolve: {
+    modules: ['node_modules', config.srcDir],
+    alias: {
+      path: require.resolve('path-browserify'),
+    },
+  },
+  plugins: [
+    new CircularDependencyPlugin({
+      exclude: /a\.js|node_modules/,
+      failOnError: true,
+      allowAsyncCycles: false,
+      cwd: process.cwd(),
+    }),
+    new HtmlWebpackPlugin({
+      template: config.srcHtmlLayout,
+      inject: 'body',
+      title: 'AdminUI',
+    }),
+    new MiniCssExtractPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production'),
+        BASE_PATH: JSON.stringify(BASE_PATH),
+        API_BASE_URL: JSON.stringify(API_BASE_URL),
+        CONFIG_API_BASE_URL: JSON.stringify(CONFIG_API_BASE_URL),
+        SESSION_TIMEOUT_IN_MINUTES: JSON.stringify(SESSION_TIMEOUT_IN_MINUTES),
+      },
+    }),
+  ],
   module: {
     rules: [
       {
@@ -102,7 +101,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          ExtractCssChunks.loader,
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
@@ -118,7 +117,7 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          ExtractCssChunks.loader,
+          MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
@@ -126,7 +125,7 @@ module.exports = {
               importLoaders: 1,
             },
           },
-          { loader: 'postcss-loader' },
+          'postcss-loader',
           {
             loader: 'sass-loader',
             options: {
@@ -141,7 +140,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          ExtractCssChunks.loader,
+          MiniCssExtractPlugin.loader,
           { loader: 'css-loader' },
           { loader: 'postcss-loader' },
         ],
@@ -150,7 +149,7 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          ExtractCssChunks.loader,
+          MiniCssExtractPlugin.loader,
           { loader: 'css-loader' },
           { loader: 'postcss-loader' },
           {
