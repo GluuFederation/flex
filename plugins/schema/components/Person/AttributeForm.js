@@ -91,7 +91,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </FormGroup>
           )}
           <FormGroup row>
-            <GluuLabel label={t('Name')} required />
+            <GluuLabel label="fields.name" required />
             <Col sm={9}>
               <Input
                 placeholder={t('placeholders.enter_the_attribute_name')}
@@ -108,7 +108,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('Display Name')} required />
+            <GluuLabel label="fields.displayname" required />
             <Col sm={9}>
               <InputGroup>
                 <Input
@@ -130,7 +130,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('Description')} required />
+            <GluuLabel label="fields.description" required />
             <Col sm={9}>
               <InputGroup>
                 <Input
@@ -149,7 +149,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('Status')} required />
+            <GluuLabel label="fields.status" required />
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -170,7 +170,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('Data Type')} required />
+            <GluuLabel label="fields.data_type" required />
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -196,7 +196,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('Edit Type')} required />
+            <GluuLabel label="fields.edit_type" required />
             <Col sm={9}>
               <Input
                 type="select"
@@ -215,7 +215,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('View Type')} />
+            <GluuLabel label="fields.view_type" />
             <Col sm={9}>
               <Input
                 type="select"
@@ -231,7 +231,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('Usage Type')} required />
+            <GluuLabel label="fields.usage_type" required />
             <Col sm={9}>
               <Input
                 type="select"
@@ -249,7 +249,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('oxAuth claim name')} />
+            <GluuLabel label="fields.oxauth_claim_name" />
             <Col sm={9}>
               <Input
                 name="claimName"
@@ -260,7 +260,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('Multivalued?')} size={3} />
+            <GluuLabel label="fields.multivalued" size={3} />
             <Col sm={1}>
               <Input
                 id="oxMultiValuedAttribute"
@@ -270,7 +270,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 defaultChecked={item.oxMultiValuedAttribute}
               />
             </Col>
-            <GluuLabel label={t('Hide On Discovery?')} size={3} />
+            <GluuLabel label="fields.hide_on_discovery" size={3} />
             <Col sm={1}>
               <Input
                 id="jansHideOnDiscovery"
@@ -280,7 +280,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 defaultChecked={item.jansHideOnDiscovery}
               />
             </Col>
-            <GluuLabel label={t('Include In SCIM Extension?')} size={3} />
+            <GluuLabel label="fields.include_in_scim_extension" size={3} />
             <Col sm={1}>
               <Input
                 id="scimCustomAttr"
@@ -294,7 +294,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
 
           <FormGroup row>
             <GluuLabel
-              label={t('Enable custom validation for this attribute')+'?'}
+              label="fields.enable_custom_validation_for_this_attribute"
               size={6}
             />
             <Col sm={6}>
@@ -310,7 +310,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
 
           {validation && (
             <FormGroup row>
-              <GluuLabel label={t('Regular Expression')} />
+              <GluuLabel label="fields.regular_expression" />
               <Col sm={9}>
                 <Input
                   name="regexp"
@@ -323,7 +323,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
           )}
           {validation && (
             <FormGroup row>
-              <GluuLabel label={t('Minimum Length')} />
+              <GluuLabel label="fields.minimum_length" />
               <Col sm={3}>
                 <Input
                   name="minLength"
@@ -333,7 +333,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                   onChange={formik.handleChange}
                 />
               </Col>
-              <GluuLabel label={t('Maximum Length')} />
+              <GluuLabel label="fields.maximum_length" />
               <Col sm={3}>
                 <Input
                   name="maxLength"
@@ -346,7 +346,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </FormGroup>
           )}
           <FormGroup row>
-            <GluuLabel label={t('Saml1 Uri')} />
+            <GluuLabel label="fields.saml1_uri" />
             <Col sm={9}>
               <Input
                 placeholder={t('placeholders.enter_the_saml1_uri')}
@@ -359,7 +359,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('Saml2 Uri')} />
+            <GluuLabel label="fields.saml2_uri" />
             <Col sm={9}>
               <Input
                 placeholder={t('placeholders.enter_the_saml2_uri')}
