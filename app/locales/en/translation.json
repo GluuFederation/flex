@@ -218,10 +218,15 @@
     "view_client_details": "View client details"
   },
   "tooltips": {
+    "add_attribute": "Add attribute",
     "add_ldap": "Add LDAP",
+    "advanced_search_options": "Advanced search options",
+    "delete_attribute": "Delete attribute",
     "delete_record": "Delete record",
     "edit_ldap": "Edit Ldap",
-    "refresh_data": "Refresh Data"
+    "edit_attribute": "Edit Attribute",
+    "refresh_data": "Refresh Data",
+    "view_attribute": "View attribute"
   },
   "placeholders": {
     "action_commit_message": "Provide the reason of this change",

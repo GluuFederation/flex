@@ -359,7 +359,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <GluuLabel label={t('fields.saml1_uri')} />
+            <GluuLabel label={t('fields.saml2_uri')} />
             <Col sm={9}>
               <Input
                 placeholder={t('placeholders.enter_the_saml2_uri')}
