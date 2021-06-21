@@ -207,10 +207,10 @@ function CachePage({
                                 )
                               }}
                             >
-                              <option>{t('options.in_memory')}</option>
-                              <option>{t('options.memcached')}</option>
-                              <option>{t('options.redis')}</option>
-                              <option>{t('options.native_persistence')}</option>
+                              <option value="IN_MEMORY">{t('options.in_memory')}</option>
+                              <option value="MEMCACHED">{t('options.memcached')}</option>
+                              <option value="REDIS">{t('options.redis')}</option>
+                              <option value="NATIVE_PERSISTENCE">{t('options.native_persistence')}</option>
                             </CustomInput>
                           </InputGroup>
                         )}

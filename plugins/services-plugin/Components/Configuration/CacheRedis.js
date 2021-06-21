@@ -29,10 +29,10 @@ function CacheRedis({ config, formik }) {
                 defaultValue={config.redisProviderType}
                 onChange={formik.handleChange}
               >
-                <option>{t("options.standalone")}</option>
-                <option>{t("options.cluster")}</option>
-                <option>{t("options.sharded")}</option>
-                <option>{t("options.sentinel")}</option>
+                <option value="STANDALONE">{t("options.standalone")}</option>
+                <option value="CLUSTER">{t("options.cluster")}</option>
+                <option value="SHARDED">{t("options.sharded")}</option>
+                <option value="SENTINEL">{t("options.sentinel")}</option>
               </CustomInput>
             </InputGroup>
           </Col>
