@@ -147,12 +147,14 @@ function LdapListPage({
   }
   return (
     <React.Fragment>
+      { hasPermission(permissions, LDAP_WRITE) &&
       <div>
         <Button color="primary" onClick={handleGoToLdapAddPage}>
           {t('actions.add_ldap_configuration')}
         </Button>
-      </div>
-      <hr />
+        <hr />
+      </div> }
+      
       <MaterialTable
         columns={[
           { title: `${t('fields.configuration_id')}`, field: 'configId' },
