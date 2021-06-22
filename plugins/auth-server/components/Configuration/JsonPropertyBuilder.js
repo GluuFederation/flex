@@ -1,10 +1,8 @@
 import React from 'react'
 import { Accordion } from '../../../../app/components'
-import GluuArrayCompleter from '../../../../app/routes/Apps/Gluu/GluuArrayCompleter'
-import GluuInput from '../../../../app/routes/Apps/Gluu/GluuInput'
-import GluuBooleanBox from '../../../../app/routes/Apps/Gluu/GluuBooleanInput'
+import GluuInlineInput from '../../../../app/routes/Apps/Gluu/GluuInlineInput'
 
-function JsonPropertyBuilder({ propKey, propValue, lSize, logger }) {
+function JsonPropertyBuilder({ propKey, propValue, lSize, handler }) {
   function isBoolean(item) {
     return typeof item === 'boolean'
   }
@@ -34,46 +32,56 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, logger }) {
 
   if (isBoolean(propValue)) {
     return (
-      <GluuBooleanBox
+      <GluuInlineInput
         id={propKey}
         name={propKey}
         lsize={lSize}
         rsize={lSize}
         label={propKey}
+        isBoolean={true}
+        handler={handler}
         value={propValue}
       />
     )
   }
   if (isString(propValue)) {
     return (
-      <GluuInput
+      <GluuInlineInput
         id={propKey}
+        name={propKey}
         lsize={lSize}
         rsize={lSize}
         label={propKey}
+        handler={handler}
         value={propValue}
       />
     )
   }
   if (isNumber(propValue)) {
     return (
-      <GluuInput
+      <GluuInlineInput
         id={propKey}
+        name={propKey}
         lsize={lSize}
         type="number"
         rsize={lSize}
         label={propKey}
+        handler={handler}
         value={propValue}
       />
     )
   }
   if (isStringArray(propValue)) {
     return (
-      <GluuArrayCompleter
+      <GluuInlineInput
         id={propKey}
         name={propKey}
         label={propKey}
         value={propValue}
+        lsize={lSize}
+        rsize={lSize}
+        isArray={true}
+        handler={handler}
         options={propValue}
       />
     )
@@ -90,6 +98,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, logger }) {
               key={idx}
               propKey={item}
               propValue={propValue[item]}
+              handler={handler}
               lSize={lSize}
             />
           ))}
@@ -109,6 +118,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, logger }) {
               key={idx}
               propKey={objKey}
               propValue={propValue[objKey]}
+              handler={handler}
               lSize={lSize}
             />
           ))}
