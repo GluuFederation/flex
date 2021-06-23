@@ -75,12 +75,12 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations }) => {
       <ModalFooter>
         {active && (
           <Button color="primary" onClick={handleAccept}>
-             <i className="fa fa-check-circle mr-2"></i>
+            <i className="fa fa-check-circle mr-2"></i>
             {t('actions.accept')}
           </Button>
         )}{' '}
         <Button color="danger" onClick={handler}>
-        <i className="fa fa-remove mr-2"></i>
+          <i className="fa fa-remove mr-2"></i>
           {t('actions.no')}
         </Button>
       </ModalFooter>
