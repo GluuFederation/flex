@@ -67,12 +67,14 @@ public class MobilePhoneEnrollingWS {
                 String aCode = Integer.toString(new Double(100000 + Math.random() * 899999).intValue());
                 //Compose SMS body
                 String body = Labels.getLabel("usr.mobile_sms_body", new String[]{ aCode });
+                //Numbers are stored without the prepending plus in database
+                String aNumber = number.substring(number.charAt(0) == '+' ? 1 : 0);
 
                 //Send message (service bean already knows all settings to perform this step)
-                SMSDeliveryStatus deliveryStatus = mobilePhoneService.sendSMS(number, body);
+                SMSDeliveryStatus deliveryStatus = mobilePhoneService.sendSMS(aNumber, body);
                 if (deliveryStatus.equals(SUCCESS)) {
                     logger.trace("sendCode. code={}", aCode);
-                    cacheProvider.put(EXPIRATION, RECENT_CODES_PREFIX + userId + SEPARATOR + aCode, number);
+                    cacheProvider.put(EXPIRATION, RECENT_CODES_PREFIX + userId + SEPARATOR + aCode, aNumber);
                     result = SendCode.SUCCESS;
                 } else {
                     result = SendCode.FAILURE;
