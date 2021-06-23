@@ -43,6 +43,7 @@ function GluuInlineInput({
     } else {
       patch['value'] = document.getElementById(name).value
     }
+    patch['op'] = 'replace'
     handler(patch)
     setShow(false)
   }

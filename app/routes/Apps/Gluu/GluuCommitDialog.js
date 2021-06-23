@@ -5,13 +5,15 @@ import {
   Input,
   Button,
   Modal,
+  Divider,
+  Badge,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 
-const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
+const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations }) => {
   const { t } = useTranslation()
   const [active, setActive] = useState(false)
   const USER_MESSAGE = 'user_action_message'
@@ -43,6 +45,20 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
         {t('messages.action_commit_question')}
       </ModalHeader>
       <ModalBody>
+        {operations && <FormGroup row>List of changes</FormGroup>}
+        {operations &&
+          operations.map((item, key) => (
+            <FormGroup row key={key}>
+              <Col sm={1}>Set</Col>
+              <Col sm={7}>
+                <Badge color="primary">{item.path}</Badge>
+              </Col>
+              <Col sm={1}>to</Col>
+              <Col sm={3}>
+                <Badge color="primary">{item.value}</Badge>
+              </Col>
+            </FormGroup>
+          ))}
         <FormGroup row>
           <Col sm={12}>
             <Input
@@ -59,10 +75,12 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik }) => {
       <ModalFooter>
         {active && (
           <Button color="primary" onClick={handleAccept}>
+             <i className="fa fa-check-circle mr-2"></i>
             {t('actions.accept')}
           </Button>
         )}{' '}
-        <Button color="secondary" onClick={handler}>
+        <Button color="danger" onClick={handler}>
+        <i className="fa fa-remove mr-2"></i>
           {t('actions.no')}
         </Button>
       </ModalFooter>
