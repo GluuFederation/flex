@@ -215,37 +215,4 @@ public class ZKService {
 
     }
 
-    byte[] getResourceBytes(String path) throws Exception {
-
-        InputStream stream = servletContext.getResourceAsStream(path);
-        List<byte[]> list = new ArrayList<>();
-        int l = 0;
-
-        int chunkSize = 8192;
-        byte[] b = new byte[chunkSize];
-        int read = stream.read(b);
-
-        while (read > 0) {
-            l += read;
-            list.add(b);
-            b = new byte[chunkSize];
-            read = stream.read(b);
-        }
-
-        int k = 0;
-        b = new byte[l];
-        for (int i = 0; i < list.size() - 1; i++) {
-            for (int j = 0; j < chunkSize; j++) {
-                b[k++] = list.get(i)[j];
-            }
-        }
-
-        int j = 0;
-        while (k < l) {
-            b[k++] = list.get(list.size() - 1)[j++];
-        }
-        return b;
-
-    }
-
 }
