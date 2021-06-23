@@ -46,9 +46,14 @@ export function* getJsonConfig() {
 }
 
 export function* patchJsonConfig({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, PATCH, JSON_CONFIG, { action: {} })
     const configApi = yield* newFunction()
-    const data = yield call(configApi.patchJsonConfig, payload.options)
+    const data = yield call(
+      configApi.patchJsonConfig,
+      payload.action.action_data,
+    )
     yield put(patchJsonConfigResponse(data))
   } catch (e) {
     yield put(patchJsonConfigResponse(null))

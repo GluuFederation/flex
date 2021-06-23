@@ -2,7 +2,12 @@ import React from 'react'
 import { Accordion } from '../../../../app/components'
 import GluuInlineInput from '../../../../app/routes/Apps/Gluu/GluuInlineInput'
 
-function JsonPropertyBuilder({ propKey, propValue, lSize, handler }) {
+function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
+  if (!path) {
+    path = '/' + propKey
+  } else {
+    path = path + '/' + propKey
+  }
   function isBoolean(item) {
     return typeof item === 'boolean'
   }
@@ -41,6 +46,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, handler }) {
         isBoolean={true}
         handler={handler}
         value={propValue}
+        path={path}
       />
     )
   }
@@ -54,6 +60,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, handler }) {
         label={propKey}
         handler={handler}
         value={propValue}
+        path={path}
       />
     )
   }
@@ -68,6 +75,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, handler }) {
         label={propKey}
         handler={handler}
         value={propValue}
+        path={path}
       />
     )
   }
@@ -83,6 +91,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, handler }) {
         isArray={true}
         handler={handler}
         options={propValue}
+        path={path}
       />
     )
   }
@@ -100,6 +109,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, handler }) {
               propValue={propValue[item]}
               handler={handler}
               lSize={lSize}
+              path={path}
             />
           ))}
         </Accordion.Body>
@@ -120,6 +130,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, handler }) {
               propValue={propValue[objKey]}
               handler={handler}
               lSize={lSize}
+              path={path}
             />
           ))}
         </Accordion.Body>

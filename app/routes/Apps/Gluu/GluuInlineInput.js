@@ -23,6 +23,7 @@ function GluuInlineInput({
   isArray,
   handler,
   options,
+  path,
 }) {
   const { t } = useTranslation()
   const [show, setShow] = useState(false)
@@ -36,7 +37,7 @@ function GluuInlineInput({
   }
   const onAccept = () => {
     const patch = {}
-    patch['path'] = '/' + name
+    patch['path'] = path
     if (isArray) {
       patch['value'] = correctValue
     } else {
@@ -46,6 +47,7 @@ function GluuInlineInput({
     setShow(false)
   }
   const onCancel = () => {
+    setCorrectValue([])
     setShow(false)
   }
   return (

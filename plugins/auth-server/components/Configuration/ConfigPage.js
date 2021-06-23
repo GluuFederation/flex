@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { FormGroup, Card, CardBody } from '../../../../app/components'
-import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
+import { FormGroup, Card, CardBody, Button } from '../../../../app/components'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import {
   getJsonConfig,
   patchJsonConfig,
 } from '../../redux/actions/JsonConfigActions'
 
 function ConfigPage({ configuration, loading, dispatch }) {
+  const { t } = useTranslation()
   const lSize = 6
   const [patches, setPatches] = useState([])
   useEffect(() => {
     dispatch(getJsonConfig())
   }, [])
   const patchHandler = (patch) => {
-    console.log('==============patch ' + JSON.stringify(patch))
     setPatches((existingPatches) => [...existingPatches, patch])
     const newPatches = patches
     newPatches.push(patch)
     setPatches(newPatches)
+  }
+  const handleSubmit = () => {
+    if (patches.length >= 0) {
+      dispatch(patchJsonConfig(patches))
+    }
   }
   return (
     <GluuLoader blocking={loading}>
@@ -35,8 +40,12 @@ function ConfigPage({ configuration, loading, dispatch }) {
               handler={patchHandler}
             />
           ))}
-          <FormGroup row></FormGroup>
-          <GluuFooter />
+          <FormGroup row>
+            <Button color="primary" onClick={handleSubmit}>
+              <i className="fa fa-check-circle mr-2"></i>
+              {t('actions.save')}
+            </Button>
+          </FormGroup>
         </CardBody>
       </Card>
     </GluuLoader>

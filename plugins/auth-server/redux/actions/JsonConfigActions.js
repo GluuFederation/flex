@@ -5,8 +5,9 @@ import {
   PATCH_JSONCONFIG_RESPONSE,
 } from './types'
 
-export const getJsonConfig = () => ({
+export const getJsonConfig = (action) => ({
   type: GET_JSON_CONFIG,
+  payload: { action },
 })
 
 export const getJsonConfigResponse = (data) => ({
@@ -14,9 +15,9 @@ export const getJsonConfigResponse = (data) => ({
   payload: { data },
 })
 
-export const patchJsonConfig = (options) => ({
+export const patchJsonConfig = (action) => ({
   type: PATCH_JSON_CONFIG,
-  payload: { options },
+  payload: { action },
 })
 
 export const patchJsonConfigResponse = (data) => ({
