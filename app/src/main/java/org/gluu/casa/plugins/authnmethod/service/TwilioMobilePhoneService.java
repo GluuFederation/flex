@@ -65,7 +65,7 @@ public class TwilioMobilePhoneService extends MobilePhoneService {
         if (initialized) {
 
             try {
-                Message message = Message.creator(new PhoneNumber(number), new PhoneNumber(fromNumber), body).create();
+                Message message = Message.creator(new PhoneNumber("+" + number), new PhoneNumber(fromNumber), body).create();
                 Message.Status statusMsg = message.getStatus();
 
                 logger.info("Message delivery status was {}", statusMsg.toString());
