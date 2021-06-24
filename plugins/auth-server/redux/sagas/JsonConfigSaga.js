@@ -55,6 +55,7 @@ export function* patchJsonConfig({ payload }) {
       configApi.patchJsonConfig,
       payload.action.action_data,
     )
+    console.log('========================' + JSON.stringify(data))
     yield put(patchJsonConfigResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {

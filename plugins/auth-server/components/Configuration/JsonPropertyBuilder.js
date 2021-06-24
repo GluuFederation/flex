@@ -1,8 +1,18 @@
-import React from 'react'
-import { Accordion } from '../../../../app/components'
+import React, { useState } from 'react'
+import { Accordion, FormGroup, Col, Button } from '../../../../app/components'
 import GluuInlineInput from '../../../../app/routes/Apps/Gluu/GluuInlineInput'
+import { useTranslation } from 'react-i18next'
 
-function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
+function JsonPropertyBuilder({
+  propKey,
+  propValue,
+  lSize,
+  path,
+  handler,
+  parentIsArray,
+}) {
+  const { t } = useTranslation()
+  const [show, setShow] = useState(true)
   if (!path) {
     path = '/' + propKey
   } else {
@@ -18,6 +28,14 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
 
   function isNumber(item) {
     return typeof item === 'number' || typeof item === 'bigint'
+  }
+  const removeHandler = () => {
+    const patch = {}
+    patch['path'] = path
+    patch['value'] = propValue
+    patch['op'] = 'remove'
+    handler(patch)
+    setShow(false)
   }
 
   function isStringArray(item) {
@@ -46,6 +64,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
         isBoolean={true}
         handler={handler}
         value={propValue}
+        parentIsArray={parentIsArray}
         path={path}
       />
     )
@@ -60,6 +79,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
         label={propKey}
         handler={handler}
         value={propValue}
+        parentIsArray={parentIsArray}
         path={path}
       />
     )
@@ -75,6 +95,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
         label={propKey}
         handler={handler}
         value={propValue}
+        parentIsArray={parentIsArray}
         path={path}
       />
     )
@@ -91,6 +112,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
         isArray={true}
         handler={handler}
         options={propValue}
+        parentIsArray={parentIsArray}
         path={path}
       />
     )
@@ -99,9 +121,20 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
         <Accordion.Header className="text-primary">
-          {propKey.toUpperCase()}
+          {propKey.toUpperCase()}{' '}
         </Accordion.Header>
         <Accordion.Body>
+          <FormGroup row>
+            <Col sm={11} md={11}></Col>
+            <Col sm={1} md={1}>
+              <Button color="primary" size="sm" style={{ float: 'right' }}>
+                <i className="fa fa-plus mr-2"></i>
+                {'  '}
+                {t('actions.add')}
+                {'  '}
+              </Button>
+            </Col>
+          </FormGroup>
           {Object.keys(propValue).map((item, idx) => (
             <JsonPropertyBuilder
               key={idx}
@@ -109,6 +142,7 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
               propValue={propValue[item]}
               handler={handler}
               lSize={lSize}
+              parentIsArray={true}
               path={path}
             />
           ))}
@@ -118,23 +152,47 @@ function JsonPropertyBuilder({ propKey, propValue, lSize, path, handler }) {
   }
   if (isObject(propValue)) {
     return (
-      <Accordion className="mb-2 b-primary" initialOpen>
-        <Accordion.Header className="text-primary">
-          {propKey.toUpperCase().length > 2 ? propKey.toUpperCase() : ''}
-        </Accordion.Header>
-        <Accordion.Body>
-          {Object.keys(propValue).map((objKey, idx) => (
-            <JsonPropertyBuilder
-              key={idx}
-              propKey={objKey}
-              propValue={propValue[objKey]}
-              handler={handler}
-              lSize={lSize}
-              path={path}
-            />
-          ))}
-        </Accordion.Body>
-      </Accordion>
+      <div>
+        {show && (
+          <Accordion className="mb-2 b-primary" initialOpen>
+            <Accordion.Header className="text-primary">
+              {propKey.toUpperCase().length > 10 ? propKey.toUpperCase() : ''}
+            </Accordion.Header>
+            <Accordion.Body>
+              {parentIsArray && (
+                <FormGroup row>
+                  <Col sm={11} md={11}></Col>
+                  <Col sm={1} md={1}>
+                    <Button
+                      color="danger"
+                      size="sm"
+                      style={{ float: 'right' }}
+                      onClick={removeHandler}
+                    >
+                      <i className="fa fa-remove mr-2"></i>
+                      {'  '}
+                      {t('actions.remove')}
+                      {'  '}
+                    </Button>
+                  </Col>
+                </FormGroup>
+              )}
+              {Object.keys(propValue).map((objKey, idx) => (
+                <JsonPropertyBuilder
+                  key={idx}
+                  propKey={objKey}
+                  propValue={propValue[objKey]}
+                  handler={handler}
+                  lSize={lSize}
+                  parentIsArray={parentIsArray}
+                  enableRemove={parentIsArray}
+                  path={path}
+                />
+              ))}
+            </Accordion.Body>
+          </Accordion>
+        )}
+      </div>
     )
   }
   return <div></div>

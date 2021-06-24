@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import GluuLabel from './GluuLabel'
+import { useTranslation } from 'react-i18next'
+import { Typeahead } from 'react-bootstrap-typeahead'
 import {
   Col,
   InputGroup,
@@ -7,9 +10,6 @@ import {
   Input,
   Button,
 } from '../../../components'
-import GluuLabel from './GluuLabel'
-import { useTranslation } from 'react-i18next'
-import { Typeahead } from 'react-bootstrap-typeahead'
 
 function GluuInlineInput({
   label,
@@ -26,6 +26,8 @@ function GluuInlineInput({
   path,
 }) {
   const { t } = useTranslation()
+  const VALUE = 'value'
+  const PATH = 'path'
   const [show, setShow] = useState(false)
   const [correctValue, setCorrectValue] = useState([])
   const onValueChanged = () => {
@@ -37,11 +39,11 @@ function GluuInlineInput({
   }
   const onAccept = () => {
     const patch = {}
-    patch['path'] = path
+    patch[PATH] = path
     if (isArray) {
-      patch['value'] = correctValue
+      patch[VALUE] = correctValue
     } else {
-      patch['value'] = document.getElementById(name).value
+      patch[VALUE] = document.getElementById(name).value
     }
     patch['op'] = 'replace'
     handler(patch)

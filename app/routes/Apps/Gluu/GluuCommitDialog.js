@@ -55,7 +55,7 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations }) => {
               </Col>
               <Col sm={1}>to</Col>
               <Col sm={3}>
-                <Badge color="primary">{item.value}</Badge>
+                <Badge color="primary">{String(item.value)}</Badge>
               </Col>
             </FormGroup>
           ))}

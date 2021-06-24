@@ -39,7 +39,8 @@ function ConfigPage({ configuration, loading, dispatch }) {
       const postBody = {}
       postBody['patchRequest'] = patches
       buildPayload(userAction, message, postBody)
-      dispatch(patchJsonConfig(userAction))
+      console.log('========================' + JSON.stringify(postBody))
+      // dispatch(patchJsonConfig(userAction))
     }
   }
   function toggle() {
