@@ -4,39 +4,35 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
-import LdapDetailPage from './LdapDetailPage'
+import SqlDetailPage from './SqlDetailPage'
 import { Button } from '../../../../app/components'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import Alert from '@material-ui/lab/Alert';
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import {
   hasPermission,
   buildPayload,
-  LDAP_READ,
-  LDAP_WRITE,
-  LDAP_DELETE,
+  SQL_READ,
+  SQL_WRITE,
+  SQL_DELETE,
 } from '../../../../app/utils/PermChecker'
 import {
-  getLdapConfig,
+  getSqlConfig,
   setCurrentItem,
-  deleteLdap,
-  testLdap,
-} from '../../redux/actions/LdapActions'
-import { getPersistenceType } from '../../redux/actions/PersistenceActions'
+  deleteSql,
+  testSql,
+} from '../../redux/actions/SqlActions'
 import { useTranslation } from 'react-i18next'
 
-function LdapListPage({
-  ldapConfigurations,
+function SqlListPage({
+  sqlConfigurations,
   permissions,
   loading,
   dispatch,
   testStatus,
   persistenceType,
-  persistenceTypeLoading,
 }) {
   useEffect(() => {
-    dispatch(getLdapConfig())
-    dispatch(getPersistenceType())
+    dispatch(getSqlConfig())
   }, [])
   const { t } = useTranslation()
   const userAction = {}
@@ -51,62 +47,62 @@ function LdapListPage({
   })
   const toggle = () => setModal(!modal)
 
-  function handleGoToLdapEditPage(row) {
+  function handleGoToSqlEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/config/ldap/edit:` + row.configId)
+    return history.push(`/config/sql/edit:` + row.configId)
   }
 
-  function handleLdapDelete(row) {
+  function handleSqlDelete(row) {
     setItem(row)
     toggle()
   }
-  function handleGoToLdapAddPage() {
-    return history.push('/config/ldap/new')
+  function handleGoToSqlAddPage() {
+    return history.push('/config/sql/new')
   }
 
-  if (hasPermission(permissions, LDAP_WRITE)) {
+  if (hasPermission(permissions, SQL_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
         color: 'primary',
-        id: 'editLdap' + rowData.configId,
+        id: 'editSql' + rowData.configId,
       },
-      tooltip: `${t('tooltips.edit_ldap')}`,
-      onClick: (event, rowData) => handleGoToLdapEditPage(rowData),
-      disabled: !hasPermission(permissions, LDAP_WRITE),
+      tooltip: `${t('tooltips.edit_sql')}`,
+      onClick: (event, rowData) => handleGoToSqlEditPage(rowData),
+      disabled: !hasPermission(permissions, SQL_WRITE),
     }))
   }
 
-  if (hasPermission(permissions, LDAP_READ)) {
+  if (hasPermission(permissions, SQL_READ)) {
     myActions.push({
       icon: 'refresh',
       tooltip: `${t('tooltips.refresh_data')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
-        dispatch(getLdapConfig())
+        dispatch(getSqlConfig())
       },
     })
   }
-  if (hasPermission(permissions, LDAP_DELETE)) {
+  if (hasPermission(permissions, SQL_DELETE)) {
     myActions.push((rowData) => ({
       icon: 'delete',
       iconProps: {
         color: 'secondary',
-        id: 'deleteLdap' + rowData.configId,
+        id: 'deleteSql' + rowData.configId,
       },
       tooltip: `${t('tooltips.delete_record')}`,
-      onClick: (event, rowData) => handleLdapDelete(rowData),
-      disabled: !hasPermission(permissions, LDAP_DELETE),
+      onClick: (event, rowData) => handleSqlDelete(rowData),
+      disabled: !hasPermission(permissions, SQL_DELETE),
     }))
   }
-  if (hasPermission(permissions, LDAP_WRITE)) {
+  if (hasPermission(permissions, SQL_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: `${t('tooltips.add_ldap')}`,
+      tooltip: `${t('tooltips.add_sql')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => handleGoToLdapAddPage(),
+      onClick: () => handleGoToSqlAddPage(),
     })
   }
 
@@ -119,11 +115,11 @@ function LdapListPage({
   }
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.configId)
-    dispatch(deleteLdap(item.configId))
-    history.push('/config/ldap')
+    dispatch(deleteSql(item.configId))
+    history.push('/config/sql')
     toggle()
   }
-  function testLdapConnect(row) {
+  function testSqlConnect(row) {
     const testPromise = new Promise(function (resolve, reject) {
       setAlertObj({ ...alertObj, show: false })
       resolve()
@@ -131,21 +127,21 @@ function LdapListPage({
 
     testPromise
       .then(() => {
-        dispatch(testLdap(row))
+        dispatch(testSql(row))
       })
       .then(() => {
         if (testStatus) {
           setAlertObj({
             ...alertObj,
             severity: 'success',
-            message: `${t('messages.ldap_connection_success')}`,
+            message: `${t('messages.sql_connection_success')}`,
             show: true,
           })
         } else {
           setAlertObj({
             ...alertObj,
             severity: 'error',
-            message: `${t('messages.ldap_connection_error')}`,
+            message: `${t('messages.sql_connection_error')}`,
             show: true,
           })
         }
@@ -153,28 +149,16 @@ function LdapListPage({
   }
   return (
     <React.Fragment>
-      <GluuLoader blocking={persistenceTypeLoading}>
-      {persistenceType == `ldap` ?
+      {persistenceType == `sql` ? 
       (<MaterialTable
         columns={[
           { title: `${t('fields.configuration_id')}`, field: 'configId' },
-          { title: `${t('fields.bind_dn')}`, field: 'bindDN' },
-          {
-            title: `${t('fields.status')}`,
-            field: 'enabled',
-            type: 'boolean',
-            render: (rowData) => (
-              <Badge color={getBadgeTheme(rowData.enabled)}>
-                {rowData.enabled
-                  ? `${t('fields.enable')}`
-                  : `${t('fields.disable')}`}
-              </Badge>
-            ),
-          },
+          { title: `${t('fields.connectionUri')}`, field: 'connectionUri' },
+          { title: `${t('fields.schemaName')}`, field: 'schemaName' },
         ]}
-        data={ldapConfigurations}
+        data={sqlConfigurations}
         isLoading={loading}
-        title={t('titles.ldap_authentication')}
+        title={t('titles.sql_authentication')}
         actions={myActions}
         options={{
           search: true,
@@ -193,11 +177,11 @@ function LdapListPage({
           return (
             <LdapDetailPage
               row={rowData}
-              testLdapConnection={testLdapConnect}
+              testSqlConnection={testSqlConnect}
             />
           )
         }}
-      />) : (<Alert severity="info">{!persistenceTypeLoading && 'The database of Authentication server is not LDAP.'}</Alert>)}
+      />) : (<Alert severity="info">The database of Authentication server is not RDBMS.</Alert>)}
       <GluuAlert
         severity={alertObj.severity}
         message={alertObj.message}
@@ -207,22 +191,20 @@ function LdapListPage({
         row={item}
         handler={toggle}
         modal={modal}
-        subject="ldap"
+        subject="sql"
         onAccept={onDeletionConfirmed}
       />
-      </GluuLoader>
     </React.Fragment>
   )
 }
 
 const mapStateToProps = (state) => {
   return {
-    ldapConfigurations: state.ldapReducer.ldap,
-    loading: state.ldapReducer.loading,
+    sqlConfigurations: state.sqlReducer.sql,
+    loading: state.sqlReducer.loading,
     permissions: state.authReducer.permissions,
-    testStatus: state.ldapReducer.testStatus,
-    persistenceType: state.persistenceTypeReducer.type,
-    persistenceTypeLoading: state.persistenceTypeReducer.loading
+    testStatus: state.sqlReducer.testStatus,
+    persistenceType: state.persistenceTypeReducer.type
   }
 }
-export default connect(mapStateToProps)(LdapListPage)
+export default connect(mapStateToProps)(SqlListPage)

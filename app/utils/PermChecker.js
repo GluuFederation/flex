@@ -46,6 +46,10 @@ export const COUCHBASE_READ = '/config/database/couchbase.readonly'
 export const COUCHBASE_WRITE = '/config/database/couchbase.write'
 export const COUCHBASE_DELETE = '/config/database/couchbase.delete'
 
+export const SQL_READ = '/config/database/sql.readonly'
+export const SQL_WRITE = '/config/database/sql.write'
+export const SQL_DELETE = '/config/database/sql.delete'
+
 const BASE_URL = 'https://jans.io/oauth'
 
 export const hasPermission = (scopes, scope) => {
