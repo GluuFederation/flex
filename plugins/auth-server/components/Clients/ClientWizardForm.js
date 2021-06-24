@@ -16,6 +16,10 @@ import ClientScript from './ClientScriptPanel'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
+import {
+  hasPermission,
+  CLIENT_WRITE
+} from '../../../../app/utils/PermChecker'
 
 const sequence = [
   'Basic',
@@ -279,7 +283,7 @@ function ClientWizardForm({
                       <i className="fa fa-angle-right ml-2"></i>
                     </Button>
                   )}
-                  {currentStep === sequence[sequence.length - 1] && (
+                  {currentStep === sequence[sequence.length - 1] && hasPermission(permissions, CLIENT_WRITE) && (
                     <Button
                       type="button"
                       color="primary"

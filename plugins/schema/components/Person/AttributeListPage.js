@@ -70,7 +70,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         color: 'primary',
         id: 'editAttribute' + rowData.inum,
       },
-      tooltip: `${t('tooltips.edit_Attribute')}`,
+      tooltip: `${t('tooltips.edit_attribute')}`,
       onClick: (event, rowData) => handleGoToAttributeEditPage(rowData),
       disabled: !hasPermission(permissions, ATTRIBUTE_WRITE),
     }))
@@ -189,14 +189,15 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
           return <AttributeDetailPage row={rowData} />
         }}
       />
-
-      <GluuDialog
-        row={item}
-        handler={toggle}
-        modal={modal}
-        subject="attribute"
-        onAccept={onDeletionConfirmed}
-      />
+       { hasPermission(permissions, ATTRIBUTE_DELETE) &&
+        <GluuDialog
+          row={item}
+          handler={toggle}
+          modal={modal}
+          subject="attribute"
+          onAccept={onDeletionConfirmed}
+        /> 
+      }
     </React.Fragment>
   )
 }

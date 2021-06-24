@@ -177,6 +177,7 @@
     "home": "Home",
     "keys": "Keys",
     "ldap": "Ldap",
+    "sql": "Sql",
     "logging": "Logging",
     "oauthserver": "OAuth server",
     "persistence": "Persistence",
@@ -279,6 +280,7 @@
     "detail_information": "Detailed information",
     "detail_contact": "Detail Contact",
     "ldap_authentication": "Ldap Authentication",
+    "sql_authentication": "Sql Authentication",
     "logging": "LOGGING",
     "jwk_keys": "JWK keys",
     "modules_properties": "Module Properties",
@@ -288,7 +290,9 @@
     "public_keys": "Public Keys",
     "profile_detail":"Profile Details",
     "scopes": "Scopes",
-    "scripts": "Scripts"
+    "scripts": "Scripts",
+    "connectionUri": "Connection Uri",
+    "schemaName": "Schema Name"
   },
   "links": {
     "support": "https://support.gluu.org/"
