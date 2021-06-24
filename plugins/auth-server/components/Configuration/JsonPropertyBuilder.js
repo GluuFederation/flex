@@ -37,6 +37,7 @@ function JsonPropertyBuilder({
     handler(patch)
     setShow(false)
   }
+  const addHandler = () => {}
 
   function isStringArray(item) {
     return (
@@ -117,6 +118,7 @@ function JsonPropertyBuilder({
       />
     )
   }
+
   if (isObjectArray(propValue)) {
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
@@ -127,7 +129,12 @@ function JsonPropertyBuilder({
           <FormGroup row>
             <Col sm={11} md={11}></Col>
             <Col sm={1} md={1}>
-              <Button color="primary" size="sm" style={{ float: 'right' }}>
+              <Button
+                color="primary"
+                onClick={addHandler}
+                size="sm"
+                style={{ float: 'right' }}
+              >
                 <i className="fa fa-plus mr-2"></i>
                 {'  '}
                 {t('actions.add')}
