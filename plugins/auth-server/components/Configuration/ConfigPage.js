@@ -4,6 +4,7 @@ import GluuNotification from '../../../../app/routes/Apps/Gluu/GluuNotification'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import useExitPrompt from '../../../../app/routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
@@ -20,9 +21,15 @@ function ConfigPage({ configuration, loading, dispatch }) {
   const userAction = {}
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState([])
+  const [showExitPrompt, setShowExitPrompt] = useExitPrompt(true)
   useEffect(() => {
     buildPayload(userAction, FETCHING_JSON_PROPERTIES, {})
     dispatch(getJsonConfig())
+  }, [])
+  useEffect(() => {
+    return () => {
+      setShowExitPrompt(false)
+    }
   }, [])
   const patchHandler = (patch) => {
     setPatches((existingPatches) => [...existingPatches, patch])
@@ -39,8 +46,7 @@ function ConfigPage({ configuration, loading, dispatch }) {
       const postBody = {}
       postBody['patchRequest'] = patches
       buildPayload(userAction, message, postBody)
-      console.log('========================' + JSON.stringify(postBody))
-      // dispatch(patchJsonConfig(userAction))
+      dispatch(patchJsonConfig(userAction))
     }
   }
   function toggle() {
