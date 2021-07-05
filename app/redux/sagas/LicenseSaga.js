@@ -32,7 +32,6 @@ function* checkLicensePresentWorker() {
 function* activateLicenseWorker({ payload }) {
   try {
     const response = yield call(activateLicense, payload.licenseKey)
-    alert(response)
     if (response) {
       yield put(activateLicenseResponse(response.isLicensePresent))
       return

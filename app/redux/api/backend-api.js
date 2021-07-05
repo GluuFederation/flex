@@ -87,7 +87,7 @@ export const activateLicense = async (licenseKey) => {
       licenseKey: licenseKey})
     .then((response) => response.data)
     .catch((e) => {
-      console.error('Error in activating license of admin-ui', error)
+      console.error('Error in activating license of admin-ui', e)
       return false
     })
 }
