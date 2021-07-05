@@ -68,3 +68,26 @@ export const fetchApiAccessToken = async (jwt) => {
       return -1
     })
 }
+
+// Check License present
+export const checkLicensePresent = async () => {
+  return await axios
+    .get('/license/checkLicense')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error('Error checking license of admin-ui', error)
+      return false
+    })
+}
+
+// Activate license using key
+export const activateLicense = async (licenseKey) => {
+  return await axios
+    .post('/license/activateLicense', {
+      licenseKey: licenseKey})
+    .then((response) => response.data)
+    .catch((e) => {
+      console.error('Error in activating license of admin-ui', error)
+      return false
+    })
+}

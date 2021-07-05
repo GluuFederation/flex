@@ -10,6 +10,8 @@ import {
   getUserInfo,
   getAPIAccessToken,
   getUserLocation,
+  checkLicensePresent,
+  activateLicense,
 } from '../redux/actions'
 import SessionTimeout from '../routes/Apps/Gluu/GluuSessionTimeout'
 
@@ -49,25 +51,21 @@ class AppAuthProvider extends Component {
 
   componentDidMount() {
     this.props.getOAuth2Config()
+    this.props.checkLicensePresent()
   }
 
   static getDerivedStateFromProps(props) {
-    //console.log('====config ' + JSON.stringify(props.config))
-    //console.log('====userinfo ' + JSON.stringify(props.userinfo))
-    //console.log('====token ' + JSON.stringify(props.token))
     if (window.location.href.indexOf('logout') > -1) {
       return { showContent: true }
+    }
+    if(!props.isLicensePresent) {
+      return { showContent: false }
     }
     if (!props.showContent) {
       if (!props.userinfo) {
         const params = queryString.parse(props.location.search)
         let showContent = false
         if (params.code && params.scope && params.state) {
-          // if (!isValidState(params.state)) {
-          //   return {
-          //     showContent: false,
-          //   }
-          // }
           props.getUserInfo(params.code)
         } else {
           showContent = !!props.config
@@ -108,18 +106,19 @@ class AppAuthProvider extends Component {
       <React.Fragment>
         <SessionTimeout isAuthenticated={showContent} />
         {showContent && this.props.children}
-        {!showContent && <ViewRedirect backendIsUp={this.props.backendIsUp} />}
+        {!showContent && <ViewRedirect backendIsUp={this.props.backendIsUp} isLicensePresent={this.props.isLicensePresent} activateLicense={this.props.activateLicense} redirectUrl={this.props.config.redirectUrl}/>}
       </React.Fragment>
     )
   }
 }
-const mapStateToProps = ({ authReducer }) => {
+const mapStateToProps = ({ authReducer, licenseReducer }) => {
   const config = authReducer.config
   const userinfo = authReducer.userinfo
   const jwt = authReducer.userinfo_jwt
   const token = authReducer.token
   const permissions = authReducer.permissions
   const backendIsUp = authReducer.backendIsUp
+  const isLicensePresent = licenseReducer.isLicensePresent
   return {
     config,
     userinfo,
@@ -127,6 +126,7 @@ const mapStateToProps = ({ authReducer }) => {
     token,
     permissions,
     backendIsUp,
+    isLicensePresent,
   }
 }
 
@@ -136,5 +136,7 @@ export default withRouter(
     getUserInfo,
     getAPIAccessToken,
     getUserLocation,
+    checkLicensePresent,
+    activateLicense,
   })(AppAuthProvider),
 )

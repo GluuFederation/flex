@@ -13,7 +13,7 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 
-const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations }) => {
+const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label, placeholderLabel }) => {
   const { t } = useTranslation()
   const [active, setActive] = useState(false)
   const USER_MESSAGE = 'user_action_message'
@@ -42,7 +42,7 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations }) => {
           style={{ color: 'green' }}
           className="fa fa-2x fa-info fa-fw modal-icon mb-3"
         ></i>
-        {t('messages.action_commit_question')}
+        {(!label || label === '') ? t('messages.action_commit_question') : label}
       </ModalHeader>
       <ModalBody>
         {operations && <FormGroup row>List of changes</FormGroup>}
@@ -66,7 +66,7 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations }) => {
               type="textarea"
               name={USER_MESSAGE}
               onKeyUp={handleStatus}
-              placeholder={t('placeholders.action_commit_message')}
+              placeholder={(!placeholderLabel || placeholderLabel === '') ? t('placeholders.action_commit_message') : placeholderLabel}
               defaultValue=""
             />
           </Col>
