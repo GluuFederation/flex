@@ -51,7 +51,7 @@ function ViewRedirect({ backendIsUp, isLicensePresent, activateLicense, redirect
               show={true}
             />
           )}
-          <GluuCommitDialog handler={toggle} modal={!isLicensePresent} onAccept={submitForm} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")}/>
+          <GluuCommitDialog handler={toggle} modal={!isLicensePresent} onAccept={submitForm} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")} inputType={"text"}/>
         </div>
       </Container>
     </React.Fragment>

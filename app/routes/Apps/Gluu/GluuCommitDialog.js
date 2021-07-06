@@ -13,7 +13,7 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 
-const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label, placeholderLabel }) => {
+const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label, placeholderLabel, inputType }) => {
   const { t } = useTranslation()
   const [active, setActive] = useState(false)
   const USER_MESSAGE = 'user_action_message'
@@ -63,7 +63,7 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label,
           <Col sm={12}>
             <Input
               id={USER_MESSAGE}
-              type="textarea"
+              type={!!inputType ? inputType : "textarea"}
               name={USER_MESSAGE}
               onKeyUp={handleStatus}
               placeholder={(!placeholderLabel || placeholderLabel === '') ? t('placeholders.action_commit_message') : placeholderLabel}

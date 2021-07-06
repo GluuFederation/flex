@@ -82,9 +82,12 @@ export const checkLicensePresent = async () => {
 
 // Activate license using key
 export const activateLicense = async (licenseKey) => {
+  let data = {licenseKey: licenseKey}
   return await axios
-    .post('/license/activateLicense', {
-      licenseKey: licenseKey})
+    .post('/license/activateLicense', data, {
+      headers: {
+          'Content-Type': 'application/json',
+      }})
     .then((response) => response.data)
     .catch((e) => {
       console.error('Error in activating license of admin-ui', e)
