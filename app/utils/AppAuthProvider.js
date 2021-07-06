@@ -58,7 +58,7 @@ class AppAuthProvider extends Component {
     if (window.location.href.indexOf('logout') > -1) {
       return { showContent: true }
     }
-    if(!props.isLicensePresent) {
+    if (!props.isLicensePresent) {
       return { showContent: false }
     }
     if (!props.showContent) {
@@ -106,7 +106,12 @@ class AppAuthProvider extends Component {
       <React.Fragment>
         <SessionTimeout isAuthenticated={showContent} />
         {showContent && this.props.children}
-        {!showContent && <ViewRedirect backendIsUp={this.props.backendIsUp} isLicensePresent={this.props.isLicensePresent} activateLicense={this.props.activateLicense} redirectUrl={this.props.config.redirectUrl}/>}
+        {!showContent &&
+          <ViewRedirect backendIsUp={this.props.backendIsUp}
+            isLicensePresent={this.props.isLicensePresent}
+            activateLicense={this.props.activateLicense}
+            redirectUrl={this.props.config.redirectUrl}
+          />}
       </React.Fragment>
     )
   }

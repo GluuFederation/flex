@@ -7,14 +7,10 @@ import { useTranslation } from 'react-i18next'
 function ViewRedirect({ backendIsUp, isLicensePresent, activateLicense, redirectUrl }) {
   const { t } = useTranslation()
   const [licensePresent, setLicensePresent] = useState(isLicensePresent)
-  useEffect(() => {
-    if(licensePresent) {
-      window.location.href = redirectUrl;
-    }
-  }, [licensePresent])
 
   function submitForm(message) {
     setLicensePresent(activateLicense(message.trim()))
+    setTimeout(function () { window.location.href = redirectUrl; }, 3000);
   }
 
   function toggle() {
@@ -51,7 +47,7 @@ function ViewRedirect({ backendIsUp, isLicensePresent, activateLicense, redirect
               show={true}
             />
           )}
-          <GluuCommitDialog handler={toggle} modal={!isLicensePresent} onAccept={submitForm} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")} inputType={"text"}/>
+          <GluuCommitDialog handler={toggle} modal={!isLicensePresent} onAccept={submitForm} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")} inputType={"text"} />
         </div>
       </Container>
     </React.Fragment>
