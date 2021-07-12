@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Sidebar, SidebarTrigger, Divider } from './../../components'
-// import { SidebarMiddleNav } from './SidebarMiddleNav'
 import { LogoThemed } from '../../routes/components/LogoThemed/LogoThemed'
 import GluuAppSidebar from '../../routes/Apps/Gluu/GluuAppSidebar'
 
