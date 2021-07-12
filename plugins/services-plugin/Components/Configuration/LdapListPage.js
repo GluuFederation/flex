@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import LdapDetailPage from './LdapDetailPage'
-import { Button } from '../../../../app/components'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import Alert from '@material-ui/lab/Alert';
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
