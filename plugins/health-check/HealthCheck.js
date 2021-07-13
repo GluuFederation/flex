@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { getHealthCheck } from './redux/actions/HealthCheckActions'
 import MaterialTable from 'material-table'

@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Badge } from 'reactstrap'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
-import SqlDetailPage from './SqlDetailPage'
-import { Button } from '../../../../app/components'
 import Alert from '@material-ui/lab/Alert';
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import {

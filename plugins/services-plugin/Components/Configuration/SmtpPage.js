@@ -20,7 +20,6 @@ import {
 } from '../../redux/actions/SmtpActions'
 import {
   hasPermission,
-  SMTP_READ,
   SMTP_WRITE,
 } from '../../../../app/utils/PermChecker'
 import { useTranslation } from 'react-i18next'

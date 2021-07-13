@@ -11,7 +11,6 @@ import {
 } from '../../../../../app/components'
 import {
   getJsonConfig,
-  patchJsonConfig,
 } from '../../../redux/actions/JsonConfigActions'
 
 function DefaultConfigPage({ dispatch }) {

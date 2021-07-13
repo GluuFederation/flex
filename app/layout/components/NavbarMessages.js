@@ -17,7 +17,6 @@ import {
   InputGroupAddon,
   Button
 } from "./../../components";
-import { LoadingOverlayComponent } from "ag-grid-community/dist/lib/rendering/overlays/loadingOverlayComponent";
 
 const messagesColors = ["text-success", "text-danger", "text-warning"];
 

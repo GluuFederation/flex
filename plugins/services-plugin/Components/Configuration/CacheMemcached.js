@@ -6,7 +6,6 @@ import {
   Col,
   Input,
   CardBody,
-  InputGroup,
   CustomInput,
 } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'

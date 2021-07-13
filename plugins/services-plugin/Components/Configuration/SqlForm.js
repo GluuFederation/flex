@@ -6,7 +6,6 @@ import {
   InputGroup,
   Form,
   FormGroup,
-  Label,
   Input,
 } from '../../../../app/components'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
