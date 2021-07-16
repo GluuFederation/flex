@@ -11,7 +11,6 @@ import javax.inject.Named;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
 import org.gluu.casa.core.model.OIDCClient;
 import org.gluu.service.cache.CacheInterface;
 import org.gluu.casa.conf.MainSettings;
@@ -404,8 +403,9 @@ public class OxdService {
         String payload = mapper.writeValueAsString(params);
         logger.trace("Sending /{} request to oxd-server with payload \n{}", path, payload);
 
-        String authz = StringUtils.isEmpty(token) ? null : "Bearer " + token;
-        ResteasyWebTarget target = client.target(String.format("https://%s:%s/%s", config.getHost(), config.getPort(), path));
+        String authz = Utils.isEmpty(token) ? null : "Bearer " + token;
+        String protocol = Utils.isEmpty(config.getProtocol()) ? "https" : config.getProtocol();
+        ResteasyWebTarget target = client.target(String.format("%s://%s:%s/%s", protocol, config.getHost(), config.getPort(), path));
 
         Response response = target.request().header("Authorization", authz).post(Entity.json(payload));
         response.bufferEntity();

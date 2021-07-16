@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class OxdSettings {
 
+    private String protocol;
     private String host;
     private int port;
 
@@ -33,6 +34,10 @@ public class OxdSettings {
 
     @JsonIgnore
     private List<String> acrValues;
+
+    public String getProtocol() {
+        return protocol;
+    }
 
     public String getHost() {
         return host;
@@ -81,6 +86,10 @@ public class OxdSettings {
 
     public void setPostLogoutUri(String postLogoutUri) {
         this.postLogoutUri = postLogoutUri;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
     }
 
     public void setHost(String host) {
