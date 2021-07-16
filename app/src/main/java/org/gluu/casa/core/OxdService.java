@@ -142,6 +142,9 @@ public class OxdService {
         if (oxdConfig == null) {
             logger.error("No oxd configuration was provided");
         } else {
+        	if (Utils.isEmpty(oxdConfig.getProtocol())) {
+        	    oxdConfig.setProtocol("https");
+        	}
             boolean missing = Stream.of(oxdConfig.getHost(), oxdConfig.getRedirectUri(), oxdConfig.getPostLogoutUri(),
                                         oxdConfig.getFrontLogoutUri()).anyMatch(Utils::isEmpty);
 
@@ -180,8 +183,10 @@ public class OxdService {
     	OxdSettings lastWorkingConfig = (OxdSettings) Utils.cloneObject(config);
         String msg = null;
         
-        //Triger a new registration only if host/port changed, otherwise call update site operation
-        if (lastWorkingConfig.getHost().equalsIgnoreCase(newConfig.getHost()) && lastWorkingConfig.getPort() == newConfig.getPort()) {
+        //Triger a new registration only if protocol/host/port changed, otherwise call update site operation
+        if (lastWorkingConfig.getProtocol().equals(newConfig.getProtocol()) && 
+            lastWorkingConfig.getHost().equalsIgnoreCase(newConfig.getHost()) &&
+            lastWorkingConfig.getPort() == newConfig.getPort()) {
 
             try {
                 //When logout url is changed and one logs off the first time, oxauth will give error
@@ -404,8 +409,8 @@ public class OxdService {
         logger.trace("Sending /{} request to oxd-server with payload \n{}", path, payload);
 
         String authz = Utils.isEmpty(token) ? null : "Bearer " + token;
-        String protocol = Utils.isEmpty(config.getProtocol()) ? "https" : config.getProtocol();
-        ResteasyWebTarget target = client.target(String.format("%s://%s:%s/%s", protocol, config.getHost(), config.getPort(), path));
+        ResteasyWebTarget target = client.target(
+        	String.format("%s://%s:%s/%s", config.getProtocol(), config.getHost(), config.getPort(), path));
 
         Response response = target.request().header("Authorization", authz).post(Entity.json(payload));
         response.bufferEntity();
