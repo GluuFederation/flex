@@ -26,7 +26,7 @@ import java.util.stream.Stream;
  */
 public class OxdViewModel extends MainViewModel {
 
-	private static final List<String> PROTOCOLS = Arrays.asList("https", "http");
+	private static final List<String> PROTOCOLS = Arrays.asList("http", "https");
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @WireVariable

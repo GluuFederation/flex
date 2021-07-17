@@ -235,8 +235,8 @@ public class OxdService {
 
         OxdClientSettings computedSettings;
         String clientName;
-        logger.info("Setting oxd configs (host: {}, port: {}, post logout: {})",
-                config.getHost(), config.getPort(),  config.getPostLogoutUri());
+        logger.info("Setting oxd configs (protocol:{}, host: {}, port: {}, post logout: {})",
+                config.getProtocol(), config.getHost(), config.getPort(),  config.getPostLogoutUri());
 
         try {
             String timeStamp = Long.toString(System.currentTimeMillis()/1000);

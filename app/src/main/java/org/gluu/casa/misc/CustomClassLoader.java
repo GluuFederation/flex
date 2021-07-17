@@ -50,7 +50,7 @@ public class CustomClassLoader implements ContextClassLoaderFactory {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         //Filter out uninteresting classes
         if (Arrays.stream(DEFAULT_PACKAGES).anyMatch(pkg -> className.startsWith(pkg + "."))
-                || !Character.isLetter(className.charAt(0))) {
+                || !Character.isLetter(className.charAt(0)) || className.equals("event")) {
             return loader;
         }
 
