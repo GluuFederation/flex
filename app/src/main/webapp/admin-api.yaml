@@ -411,15 +411,16 @@ definitions:
   OxdSettings:
     type: object
     required:
-      - opHost
+      - protocol
       - host
       - port
-      - acrValues
       - scopes
       - frontchannel_logout_uri
       - post_logout_uri
       - authz_redirect_uri
     properties:
+      protocol:
+        type: string
       host:
         type: string
       port:

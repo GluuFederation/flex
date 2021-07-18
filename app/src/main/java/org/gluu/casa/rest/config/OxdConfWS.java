@@ -3,10 +3,12 @@ package org.gluu.casa.rest.config;
 import org.gluu.casa.conf.OxdClientSettings;
 import org.gluu.casa.conf.OxdSettings;
 import org.gluu.casa.core.OxdService;
+import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.rest.ProtectedApi;
 import org.slf4j.Logger;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,6 +17,8 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import static org.gluu.casa.core.ConfigurationHandler.DEFAULT_ACR;
 
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.OK;
@@ -26,6 +30,9 @@ public class OxdConfWS extends BaseWS {
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private PersistenceService persistenceService;
 
     @Inject
     private OxdService oxdService;
@@ -70,6 +77,9 @@ public class OxdConfWS extends BaseWS {
         logger.trace("OxdConfWS replace operation called");
 
         try {
+			oxdSettings.setOpHost(persistenceService.getIssuerUrl());
+            oxdSettings.setAcrValues(Collections.singletonList(DEFAULT_ACR));
+
             logger.info("Trying to override current OXD configuration with {}", Utils.jsonFromObject(oxdSettings));
             json = oxdService.updateSettings(oxdSettings);
             
