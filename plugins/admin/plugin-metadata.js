@@ -11,11 +11,16 @@ const pluginMetadata = {
   menus: [
     {
       title: 'menus.adminui',
-      icon: 'fa-server',
+      icon: 'fa-cubes',
       children: [
         {
           title: 'menus.roles',
           path: PLUGIN_BASE_APTH + '/roles',
+          permission: '/config/acrs.readonly',
+        },
+        {
+          title: 'menus.mau',
+          path: PLUGIN_BASE_APTH + '/mau',
           permission: '/config/acrs.readonly',
         },
         {

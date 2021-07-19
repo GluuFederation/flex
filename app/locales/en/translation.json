@@ -181,6 +181,7 @@
     "license": "Licensing",
     "sql": "Sql",
     "logging": "Logging",
+    "mau":"MAU",
     "oauthserver": "OAuth server",
     "persistence": "Persistence",
     "person": "Person",
