@@ -14,5 +14,10 @@ const plugins = [
     key: 'schema',
     metadataFile: './schema/plugin-metadata',
   },
+  {
+    title: 'AdminUi',
+    key: 'admin_ui',
+    metadataFile: './admin/plugin-metadata',
+  },
 ]
 export default plugins

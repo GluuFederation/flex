@@ -168,6 +168,7 @@
     "english": "English"
   },
   "menus": {
+    "adminui": "Admin",
     "cache": "Cache",
     "clients": "Clients",
     "configuration": "Configuration",
@@ -177,6 +178,7 @@
     "home": "Home",
     "keys": "Keys",
     "ldap": "Ldap",
+    "license": "Licensing",
     "sql": "Sql",
     "logging": "Logging",
     "oauthserver": "OAuth server",
@@ -184,6 +186,7 @@
     "person": "Person",
     "properties": "Properties",
     "reports": "Reports",
+    "roles": "Roles",
     "schema": "Schema",
     "scopes": "Scopes",
     "scripts": "Scripts",
