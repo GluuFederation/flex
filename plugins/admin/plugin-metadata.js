@@ -1,5 +1,6 @@
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
+import MaximumActiveUsersPage from './components/MaximumActiveUsersPage'
 
 import testReducer from './redux/reducers/TestReducer'
 
@@ -60,6 +61,11 @@ const pluginMetadata = {
     {
       component: ReportPage,
       path: PLUGIN_BASE_APTH + '/reports',
+      permission: '/config/acrs.readonly',
+    },
+    {
+      component: MaximumActiveUsersPage,
+      path: PLUGIN_BASE_APTH + '/mau',
       permission: '/config/acrs.readonly',
     },
   ],
