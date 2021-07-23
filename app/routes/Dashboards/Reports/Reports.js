@@ -21,28 +21,72 @@ import {
   getScopes,
   getOpenidClients,
 } from '../../../redux/actions/ReportsActions'
+import ReportPiChartItem from './ReportPiChartItem'
 import { useTranslation } from 'react-i18next'
 
 function Reports({ attributes, clients, scopes, scripts, dispatch }) {
   const { t } = useTranslation()
+  const attributeData = [
+    {
+      name: 'Active',
+      value: attributes.filter((item) => item.status === 'ACTIVE').length,
+    },
+    {
+      name: 'InActive',
+      value: attributes.filter((item) => item.status === 'INACTIVE').length,
+    },
+  ]
+  const clientData = [
+    {
+      name: 'Enabled',
+      value: clients.filter((item) => !item.disabled).length,
+    },
+    {
+      name: 'Disabled',
+      value: clients.filter((item) => item.disabled).length,
+    },
+  ]
+  const scopeData = [
+    {
+      name: 'OAuth',
+      value: scopes.filter((item) => item.scopeType === 'oauth').length,
+    },
+    {
+      name: 'OpenID',
+      value: scopes.filter((item) => item.scopeType === 'openid').length,
+    },
+  ]
+  const scriptData = [
+    {
+      name: 'Enabled',
+      value: scripts.filter((item) => item.enabled).length,
+    },
+    {
+      name: 'Disabled',
+      value: scripts.filter((item) => !item.enabled).length,
+    },
+  ]
   const userAction = {}
   useEffect(() => {
-    if (attributes.length === 0) {
-      buildPayload(userAction, 'Fetch attributes', {})
-      dispatch(getAttributes(userAction))
-    }
-    if (clients.length === 0) {
-      buildPayload(userAction, 'Fetch openid connect clients', {})
-      dispatch(getOpenidClients(userAction))
-    }
-    if (scopes.length === 0) {
-      buildPayload(userAction, 'Fetch scopes', {})
-      dispatch(getScopes(userAction))
-    }
-    if (scripts.length === 0) {
-      buildPayload(userAction, 'Fetch custom scripts', {})
-      dispatch(getCustomScripts(userAction))
-    }
+    const interval = setInterval(() => {
+      if (attributes.length === 0) {
+        buildPayload(userAction, 'Fetch attributes', {})
+        dispatch(getAttributes(userAction))
+      }
+      if (clients.length === 0) {
+        buildPayload(userAction, 'Fetch openid connect clients', {})
+        dispatch(getOpenidClients(userAction))
+      }
+      if (scopes.length === 0) {
+        buildPayload(userAction, 'Fetch scopes', {})
+        dispatch(getScopes(userAction))
+      }
+      if (scripts.length === 0) {
+        buildPayload(userAction, 'Fetch custom scripts', {})
+        dispatch(getCustomScripts(userAction))
+      }
+    }, 1000)
+    return () => clearInterval(interval)
   }, [])
 
   return (
@@ -54,6 +98,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
               <CardTitle tag="h6" className="mb-4">
                 {t('All OIDC Clients')}
               </CardTitle>
+              <ReportPiChartItem data={clientData} />
               <div>
                 <div className="mb-3">
                   <h2>{clients.length}</h2>
@@ -72,6 +117,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
               <CardTitle tag="h6" className="mb-4">
                 {t('All Attributes')}
               </CardTitle>
+              <ReportPiChartItem data={attributeData} />
               <div>
                 <div className="mb-3">
                   <h2>{attributes.length}</h2>
@@ -90,6 +136,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
               <CardTitle tag="h6" className="mb-4">
                 {t('All Scopes')}
               </CardTitle>
+              <ReportPiChartItem data={scopeData} />
               <div>
                 <div className="mb-3">
                   <h2>{scopes.length}</h2>
@@ -108,6 +155,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
               <CardTitle tag="h6" className="mb-4">
                 {t('All Custom Scripts')}
               </CardTitle>
+              <ReportPiChartItem data={scriptData} />
               <div>
                 <div className="mb-3">
                   <h2>{scripts.length}</h2>
