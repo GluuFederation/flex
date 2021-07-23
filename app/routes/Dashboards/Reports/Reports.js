@@ -101,7 +101,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
               <ReportPiChartItem data={clientData} />
               <div>
                 <div className="mb-3">
-                  <h2>{clients.length}</h2>
+                  <h2>{clients.filter((item) => item.disabled).length}</h2>
                 </div>
                 <div>
                   <i className="fa fa-caret-down fa-fw text-success"></i>
@@ -120,7 +120,12 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
               <ReportPiChartItem data={attributeData} />
               <div>
                 <div className="mb-3">
-                  <h2>{attributes.length}</h2>
+                  <h2>
+                    {
+                      attributes.filter((item) => item.status === 'INACTIVE')
+                        .length
+                    }
+                  </h2>
                 </div>
                 <div>
                   <i className="fa fa-caret-down fa-fw text-success"></i>
@@ -139,7 +144,12 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
               <ReportPiChartItem data={scopeData} />
               <div>
                 <div className="mb-3">
-                  <h2>{scopes.length}</h2>
+                  <h2>
+                    {
+                      scopes.filter((item) => item.scopeType === 'openid')
+                        .length
+                    }
+                  </h2>
                 </div>
                 <div>
                   <i className="fa fa-caret-down fa-fw text-success"></i>
@@ -158,7 +168,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
               <ReportPiChartItem data={scriptData} />
               <div>
                 <div className="mb-3">
-                  <h2>{scripts.length}</h2>
+                  <h2>{scripts.filter((item) => !item.enabled).length}</h2>
                 </div>
                 <div>
                   <i className="fa fa-caret-down fa-fw text-success"></i>
