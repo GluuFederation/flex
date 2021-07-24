@@ -1,5 +1,15 @@
 import React from 'react'
-import { Card, CardFooter, CardBody, Button } from '../../../app/components'
+import {
+  Button,
+  Card,
+  CardFooter,
+  CardBody,
+  Col,
+  FormGroup,
+  InputGroup,
+  Container,
+  CustomInput,
+} from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import {
   LineChart,
@@ -11,8 +21,10 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts'
+import { useTranslation } from 'react-i18next'
 
 function MaximumActiveUsersPage() {
+  const { t } = useTranslation()
   const data = [
     {
       name: '19-07-2021',
@@ -66,35 +78,107 @@ function MaximumActiveUsersPage() {
             className="d-flex justify-content-center pt-5"
             style={{ minHeight: '400px' }}
           >
-            <LineChart
-              width={900}
-              height={300}
-              data={data}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <XAxis dataKey="name"  padding={{ left: 30, right: 30 }}/>
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="uv"
-                stroke="#870000"
-                activeDot={{ r: 8 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="pv"
-                stroke="#03a96d"
-                activeDot={{ r: 8 }}
-              />
-              <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-            </LineChart>
+            <Container>
+              <FormGroup
+                row
+                style={{ marginLeft: '20px', marginBottom: '20px' }}
+              >
+                <InputGroup style={{ width: '100px' }}>
+                  <CustomInput label="From" type="select" id="fromMonth">
+                    <option>2021</option>
+                    <option>2020</option>
+                    <option>2019</option>
+                  </CustomInput>
+                </InputGroup>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                <InputGroup style={{ width: '100px' }}>
+                  <CustomInput label="From" type="select" id="fromMonth">
+                    <option>January</option>
+                    <option>February</option>
+                    <option>March</option>
+                    <option>April</option>
+                    <option>May</option>
+                    <option>June</option>
+                    <option>July</option>
+                    <option>August</option>
+                    <option>September</option>
+                    <option>October</option>
+                    <option>November</option>
+                    <option>December</option>
+                  </CustomInput>
+                </InputGroup>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                <InputGroup style={{ width: '100px' }}>
+                  <CustomInput label="From" type="select" id="fromMonth">
+                    <option>2021</option>
+                    <option>2020</option>
+                    <option>2019</option>
+                  </CustomInput>
+                </InputGroup>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                <InputGroup style={{ width: '100px' }}>
+                  <CustomInput type="select" label="To" id="toMonth">
+                    <option>January</option>
+                    <option>February</option>
+                    <option>March</option>
+                    <option>April</option>
+                    <option>May</option>
+                    <option>June</option>
+                    <option>July</option>
+                    <option>August</option>
+                    <option>September</option>
+                    <option>October</option>
+                    <option>November</option>
+                    <option>December</option>
+                  </CustomInput>
+                </InputGroup>
+                <Col>
+                  <Button color="primary" type="button">
+                    <i className="fa fa-bell mr-2"></i>
+                    {t('Current year')}
+                  </Button>
+                  {'  '}
+                  <Button color="primary" type="button">
+                    <i className="fa fa-asterisk mr-2"></i>
+                    {t('Current month')}
+                  </Button>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <LineChart
+                  width={900}
+                  height={400}
+                  data={data}
+                  margin={{
+                    top: 5,
+                    right: 5,
+                    left: 5,
+                    bottom: 5,
+                  }}
+                >
+                  <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="uv"
+                    stroke="#870000"
+                    activeDot={{ r: 8 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="pv"
+                    stroke="#03a96d"
+                    activeDot={{ r: 8 }}
+                  />
+                  <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                </LineChart>
+              </FormGroup>
+            </Container>
           </CardBody>
           <CardFooter className="p-4 bt-0"></CardFooter>
         </Card>

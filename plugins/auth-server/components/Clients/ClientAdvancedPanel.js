@@ -338,6 +338,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         validator={uriValidator}
         inputId={request_uri_id}
       ></GluuTypeAheadWithAdd>
+      {"  "}
       <GluuTypeAheadWithAdd
         name="authorizedOrigins"
         label={t("Authorized Javascript Origins")}
