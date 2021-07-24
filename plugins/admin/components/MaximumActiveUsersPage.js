@@ -11,7 +11,6 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts'
-//import { SimpleLineChart } from '../../../app/routes/components/Stock/SimpleLineChart'
 
 function MaximumActiveUsersPage() {
   const data = [

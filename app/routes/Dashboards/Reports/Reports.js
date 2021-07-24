@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   hasPermission,
   buildPayload,
@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next'
 
 function Reports({ attributes, clients, scopes, scripts, dispatch }) {
   const { t } = useTranslation()
+
   const attributeData = [
     {
       name: 'Active',
