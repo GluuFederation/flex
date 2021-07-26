@@ -1,0 +1,35 @@
+{
+  "languages": {
+    "french": "Francesa",
+    "english": "inglês",
+    "portuguese": "português"
+  },
+  "menus": {
+    "adminui": "Admin",
+    "cache": "Cache",
+    "clients": "Clientes",
+    "configuration": "Configuração",
+    "couchbase": "Couchbase",
+    "defaults": "Padrões",
+    "health": "Saúde",
+    "home": "Lar",
+    "keys": "Chaves",
+    "ldap": "Ldap",
+    "license": "Licenciamento",
+    "sql": "Sql",
+    "logging": "Exploração madeireira",
+    "mau":"MAU",
+    "oauthserver": "Servidor OAuth",
+    "persistence": "Persistência",
+    "person": "Pessoa",
+    "properties": "Propriedades",
+    "reports": "Relatórios",
+    "roles": "Funções",
+    "schema": "Esquema",
+    "scopes": "Scopes",
+    "scripts": "Scripts",
+    "services": "Serviços",
+    "settings": "Configurações",
+    "signout": "Sair"
+  }
+}

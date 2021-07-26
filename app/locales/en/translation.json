@@ -165,7 +165,8 @@
   },
   "languages": {
     "french": "French",
-    "english": "English"
+    "english": "English",
+    "portuguese": "Portuguese"
   },
   "menus": {
     "adminui": "Admin",
