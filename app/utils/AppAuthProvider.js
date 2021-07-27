@@ -55,7 +55,7 @@ class AppAuthProvider extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    if (window.location.href.indexOf('logout') > -1) {
+   if (window.location.href.indexOf('logout') > -1) {
       return { showContent: true }
     }
     if (!props.isLicensePresent) {
@@ -111,6 +111,7 @@ class AppAuthProvider extends Component {
             isLicensePresent={this.props.isLicensePresent}
             activateLicense={this.props.activateLicense}
             redirectUrl={this.props.config.redirectUrl}
+            isLoadedLicensePresent={this.props.isLoadedLicensePresent}
           />}
       </React.Fragment>
     )
@@ -124,6 +125,7 @@ const mapStateToProps = ({ authReducer, licenseReducer }) => {
   const permissions = authReducer.permissions
   const backendIsUp = authReducer.backendIsUp
   const isLicensePresent = licenseReducer.isLicensePresent
+  const isLoadedLicensePresent = licenseReducer.isLoadedLicensePresent
   return {
     config,
     userinfo,
@@ -132,6 +134,7 @@ const mapStateToProps = ({ authReducer, licenseReducer }) => {
     permissions,
     backendIsUp,
     isLicensePresent,
+    isLoadedLicensePresent,
   }
 }
 

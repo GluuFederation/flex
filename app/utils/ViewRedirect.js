@@ -4,7 +4,7 @@ import GluuNotification from './../routes/Apps/Gluu/GluuNotification'
 import GluuCommitDialog from '../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 
-function ViewRedirect({ backendIsUp, isLicensePresent, activateLicense, redirectUrl }) {
+function ViewRedirect({ backendIsUp, isLicensePresent, isLoadedLicensePresent, activateLicense, redirectUrl }) {
   const { t } = useTranslation()
   const [licensePresent, setLicensePresent] = useState(isLicensePresent)
 
@@ -47,7 +47,7 @@ function ViewRedirect({ backendIsUp, isLicensePresent, activateLicense, redirect
               show={true}
             />
           )}
-          <GluuCommitDialog handler={toggle} modal={!isLicensePresent} onAccept={submitForm} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")} inputType={"text"} />
+          <GluuCommitDialog handler={toggle} modal={!isLicensePresent && isLoadedLicensePresent} onAccept={submitForm} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")} inputType={"text"} />
         </div>
       </Container>
     </React.Fragment>
