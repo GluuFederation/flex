@@ -2,9 +2,8 @@ import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import MaximumActiveUsersPage from './components/MaximumActiveUsersPage'
 
-import testReducer from './redux/reducers/TestReducer'
-
-import testSaga from './redux/sagas/TestSaga'
+import mauReducer from './redux/reducers/MauReducer'
+import mauSaga from './redux/sagas/MauSaga'
 
 const PLUGIN_BASE_APTH = '/adm'
 
@@ -69,8 +68,8 @@ const pluginMetadata = {
       permission: '/config/acrs.readonly',
     },
   ],
-  reducers: [{ name: 'testReducer', reducer: testReducer }],
-  sagas: [testSaga()],
+  reducers: [{ name: 'mauReducer', reducer: mauReducer }],
+  sagas: [mauSaga()],
 }
 
 export default pluginMetadata

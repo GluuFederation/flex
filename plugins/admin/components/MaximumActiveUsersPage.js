@@ -22,8 +22,9 @@ import {
   Tooltip,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
+import { connect } from 'react-redux'
 
-function MaximumActiveUsersPage() {
+function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const data = [
     {
@@ -187,4 +188,11 @@ function MaximumActiveUsersPage() {
   )
 }
 
-export default MaximumActiveUsersPage
+const mapStateToProps = (state) => {
+  return {
+    stat: state.mauReducer.stat,
+    loading: state.oidcReducer.loading,
+    permissions: state.authReducer.permissions,
+  }
+}
+export default connect(mapStateToProps)(MaximumActiveUsersPage)
