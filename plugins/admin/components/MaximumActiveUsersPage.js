@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Button,
   Card,
@@ -21,10 +21,24 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts'
+import {
+  hasPermission,
+  buildPayload,
+  CLIENT_WRITE,
+  CLIENT_READ,
+  CLIENT_DELETE,
+} from '../../../app/utils/PermChecker'
+import { getMau } from './../redux/actions/MauActions'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
 function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
+  const userAction = {}
+  const options = {}
+  useEffect(() => {
+    buildPayload(userAction, 'GET MAU', options)
+    dispatch(getMau(userAction))
+  }, [])
   const { t } = useTranslation()
   const data = [
     {
@@ -72,7 +86,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   ]
 
   return (
-    <GluuLoader blocking={false}>
+    <GluuLoader blocking={loading}>
       <ResponsiveContainer>
         <Card>
           <CardBody
