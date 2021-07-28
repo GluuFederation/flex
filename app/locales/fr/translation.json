@@ -1,13 +1,36 @@
 {
   "languages": {
     "french": "Français",
-    "english": "Anglais"
+    "english": "Anglais",
+    "portuguese": "Portugais"
   },
   "menus": {
-    "home": "Accueil",
-    "reports": "Reportsfr",
-    "services": "Servicesfr",
-    "Cache": "Cachefr"
+    "adminui": "Administratrice",
+    "cache": "Cacher",
+    "clients": "Clientes",
+    "configuration": "Configuration",
+    "couchbase": "Base de canapé",
+    "defaults": "Valeurs par défaut",
+    "health": "Santé",
+    "home": "Domicile",
+    "keys": "Clés",
+    "ldap": "Ldap",
+    "license": "Licence",
+    "sql": "Sql",
+    "logging": "Enregistrement",
+    "mau":"MAU",
+    "oauthserver": "Serveur OAuth",
+    "persistence": "Persistance",
+    "person": "Personne",
+    "properties": "Propriétés",
+    "reports": "Rapports",
+    "roles": "Les rôles",
+    "schema": "Schéma",
+    "scopes": "Portées",
+    "scripts": "Scénarios",
+    "services": "Prestations de service",
+    "settings": "Paramètres",
+    "signout": "Déconnexion"
   },
   "actions": {
     "save": "Enregistrer",

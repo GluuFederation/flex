@@ -25,6 +25,9 @@ const LanguageMenu = () => {
         <DropdownItem onClick={() => changeLanguage('fr')}>
           {t('languages.french')}
         </DropdownItem>
+        <DropdownItem onClick={() => changeLanguage('pt')}>
+          {t('languages.portuguese')}
+        </DropdownItem>
         <DropdownItem onClick={() => changeLanguage('en')}>
           {t('languages.english')}
         </DropdownItem>
