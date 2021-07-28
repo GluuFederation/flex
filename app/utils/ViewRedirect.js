@@ -4,17 +4,17 @@ import GluuNotification from './../routes/Apps/Gluu/GluuNotification'
 import GluuCommitDialog from '../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 
-function ViewRedirect({ backendIsUp, isLicensePresent, isLoadedLicensePresent, activateLicense, redirectUrl }) {
+function ViewRedirect({ backendIsUp, isLicensePresent, isCheckedLicense, isLoadedLicensePresent, activateLicense, checkLicensePresent, redirectUrl }) {
   const { t } = useTranslation()
   const [licensePresent, setLicensePresent] = useState(isLicensePresent)
+  const [isLoading, setIsLoading] = useState(false);
 
   function submitForm(message) {
-    setLicensePresent(activateLicense(message.trim()))
-    setTimeout(function () { window.location.href = redirectUrl; }, 3000);
+    activateLicense(message.trim());
   }
 
   function toggle() {
-    window.location.href = redirectUrl;
+   window.location.href = redirectUrl;
   }
 
   return (
@@ -47,7 +47,15 @@ function ViewRedirect({ backendIsUp, isLicensePresent, isLoadedLicensePresent, a
               show={true}
             />
           )}
-          <GluuCommitDialog handler={toggle} modal={!isLicensePresent && isLoadedLicensePresent} onAccept={submitForm} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")} inputType={"text"} />
+          {isCheckedLicense && !isLicensePresent && (
+            <GluuNotification
+              type="error"
+              message={t("Invalid License")}
+              description={t("License has been not enabled for this application. Please contact support and confirm if license-key is correct.")}
+              show={true}
+            />
+          )}
+          <GluuCommitDialog handler={toggle} modal={!isLicensePresent && isLoadedLicensePresent} onAccept={submitForm} isLoading={isLoading} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")} inputType={"text"} />
         </div>
       </Container>
     </React.Fragment>
