@@ -9,6 +9,7 @@ import reducerRegistry from './ReducerRegistry';
 const INIT_STATE = {
   isLicensePresent: false,
   isLoadedLicensePresent: false,
+  isCheckedLicense: false,
 }
 
 const reducerName = 'licenseReducer';
@@ -18,6 +19,7 @@ export default function licenseReducer(state = INIT_STATE, action) {
     case CHECK_FOR_VALID_LICENSE:
       return {
         ...state,
+        isLoadedLicensePresent: false,
       }
     case CHECK_FOR_VALID_LICENSE_RESPONSE:
       if (action.payload.isLicensePresent) {
@@ -35,18 +37,19 @@ export default function licenseReducer(state = INIT_STATE, action) {
     case ACTIVATE_LICENSE:
       return {
         ...state,
+        isCheckedLicense: true,
       }
     case ACTIVATE_LICENSE_RESPONSE:
       if (action.payload.isLicensePresent) {
         return {
           ...state,
           isLicensePresent: action.payload.isLicensePresent,
-          isLoadedLicensePresent: true,
+          isCheckedLicense: true,
         }
       } else {
         return {
           ...state,
-          isLoadedLicensePresent: true,
+          isCheckedLicense: false,
         }
       }
 

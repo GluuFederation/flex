@@ -33,7 +33,7 @@ function* activateLicenseWorker({ payload }) {
   try {
     const response = yield call(activateLicense, payload.licenseKey)
     if (response) {
-      yield put(activateLicenseResponse(response.isLicensePresent))
+      yield put(activateLicenseResponse(response))
       return
     }
   } catch (error) {
