@@ -8,6 +8,7 @@ import reducerRegistry from './ReducerRegistry';
 
 const INIT_STATE = {
   isLicensePresent: false,
+  isLoadedLicensePresent: false,
 }
 
 const reducerName = 'licenseReducer';
@@ -23,10 +24,12 @@ export default function licenseReducer(state = INIT_STATE, action) {
         return {
           ...state,
           isLicensePresent: action.payload.isLicensePresent,
+          isLoadedLicensePresent: true,
         }
       } else {
         return {
           ...state,
+          isLoadedLicensePresent: true,
         }
       }
     case ACTIVATE_LICENSE:
@@ -38,10 +41,12 @@ export default function licenseReducer(state = INIT_STATE, action) {
         return {
           ...state,
           isLicensePresent: action.payload.isLicensePresent,
+          isLoadedLicensePresent: true,
         }
       } else {
         return {
           ...state,
+          isLoadedLicensePresent: true,
         }
       }
 
