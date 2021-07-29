@@ -86,7 +86,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
         buildPayload(userAction, 'Fetch custom scripts', {})
         dispatch(getCustomScripts(userAction))
       }
-    }, 1000)
+    }, 1000 * 1000)
     return () => clearInterval(interval)
   }, [])
 

@@ -3,7 +3,7 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 import { FormGroup, Col, Row, Button, Input } from '../../../components'
 import GluuLabel from '../Gluu/GluuLabel'
 import Typography from '@material-ui/core/Typography'
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 
 function GluuNameValuesProperty({
   formik,
@@ -22,7 +22,7 @@ function GluuNameValuesProperty({
   dataArr,
 }) {
   const [dataArray, setDataArray] = useState(dataArr)
-  const theme = createMuiTheme({
+  const theme = createTheme({
     typography: {
       subtitle1: {
         fontSize: 12,
