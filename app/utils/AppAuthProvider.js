@@ -112,6 +112,7 @@ class AppAuthProvider extends Component {
             activateLicense={this.props.activateLicense}
             redirectUrl={this.props.config.redirectUrl}
             isLoadedLicensePresent={this.props.isLoadedLicensePresent}
+            isCheckedLicense={this.props.isCheckedLicense}
           />}
       </React.Fragment>
     )
@@ -126,6 +127,7 @@ const mapStateToProps = ({ authReducer, licenseReducer }) => {
   const backendIsUp = authReducer.backendIsUp
   const isLicensePresent = licenseReducer.isLicensePresent
   const isLoadedLicensePresent = licenseReducer.isLoadedLicensePresent
+  const isCheckedLicense = licenseReducer.isCheckedLicense
   return {
     config,
     userinfo,
@@ -135,6 +137,7 @@ const mapStateToProps = ({ authReducer, licenseReducer }) => {
     backendIsUp,
     isLicensePresent,
     isLoadedLicensePresent,
+    isCheckedLicense,
   }
 }
 

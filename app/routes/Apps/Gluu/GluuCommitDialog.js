@@ -14,10 +14,10 @@ import {
 import { useTranslation } from 'react-i18next'
 import ClipLoader from "react-spinners/ClipLoader"
 
-const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label, placeholderLabel, inputType }) => {
+const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label, placeholderLabel, inputType, isLoading }) => {
   const { t } = useTranslation()
   const [active, setActive] = useState(false)
-  let [loading, setLoading] = useState(false);
+  let [loading, setLoading] = useState(isLoading);
   const USER_MESSAGE = 'user_action_message'
   function handleStatus() {
     var value = document.getElementById(USER_MESSAGE).value
@@ -35,7 +35,8 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label,
         document.getElementById(USER_MESSAGE).value,
       )
     }
-    setLoading(true);
+    console.log("loading:", loading, isLoading);
+  //  setLoading(true);
     onAccept(document.getElementById(USER_MESSAGE).value)
   }
   return (
