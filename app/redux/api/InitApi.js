@@ -16,7 +16,7 @@ export default class InitApi {
   }
 
   getScripts = (options) => {
-    return new Promise(opts, (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.api.getConfigScripts(options, (error, data) => {
         if (error) {
           reject(error)
