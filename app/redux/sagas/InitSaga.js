@@ -10,12 +10,14 @@ import {
   getClientsResponse,
 } from '../actions/InitActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
+import { postUserAction } from '../api/backend-api'
 import {
   GET_SCOPES_FOR_STAT,
   GET_SCRIPTS_FOR_STAT,
   GET_CLIENTS_FOR_STAT,
   GET_ATTRIBUTES_FOR_STAT,
 } from '../actions/types'
+import { initAudit } from '../sagas/SagaUtils'
 import InitApi from '../api/InitApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
@@ -48,6 +50,7 @@ function* initClients() {
 }
 
 function* initAttributes() {
+  addAdditionalData(audit, 'FETCH', 'SCRIPT', payload)
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.AttributeApi(
@@ -59,7 +62,7 @@ function* initAttributes() {
 export function* getScripts({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, SCRIPT, payload)
+    addAdditionalData(audit, 'FETCH', 'SCRIPT', payload)
     const scriptApi = yield* initScripts()
     const data = yield call(scriptApi.getAllCustomScript)
     yield put(getScriptsResponse(data))
@@ -77,7 +80,7 @@ export function* getClients({ payload }) {
   const audit = yield* initAudit()
   try {
     payload = payload ? payload : { action: {} }
-    addAdditionalData(audit, FETCH, OIDC, payload)
+    addAdditionalData(audit, 'FETCH', 'OIDC', payload)
     const openIdApi = yield* initClients()
     const data = yield call(
       openIdApi.getAllOpenidClients,
@@ -98,7 +101,7 @@ export function* getClients({ payload }) {
 export function* getScopes({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, SCOPE, payload)
+    addAdditionalData(audit, 'FETCH', 'SCOPE', payload)
     const scopeApi = yield* initScopes()
     const data = yield call(scopeApi.getAllScopes, payload.action.action_data)
     yield put(getScopesResponse(data))
@@ -115,7 +118,7 @@ export function* getScopes({ payload }) {
 export function* getAttributes({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, SCOPE, payload)
+    addAdditionalData(audit, 'FETCH', 'SCOPE', payload)
     const attributeApi = yield* initAttributes()
     const data = yield call(attributeApi.getAllAttributes, payload.options)
     yield put(getAttributesResponse(data))
