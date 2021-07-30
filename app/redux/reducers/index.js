@@ -16,4 +16,4 @@ const appReducers = {
   licenseReducer,
 }
 
-export default appReducers;
+export default appReducers

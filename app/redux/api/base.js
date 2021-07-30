@@ -4,7 +4,7 @@ export const getDefaultClient = (JansConfigApi) => {
   const jansauth = defaultClient.authentications['jans-auth']
   defaultClient =
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+    'https://jans-ui.jans.io'.replace(/\/+$/, '')
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers':
@@ -24,7 +24,7 @@ export const getClient = (JansConfigApi, r_token, r_issuer) => {
   const jansauth = defaultClient.authentications['oauth2']
   defaultClient.basePath =
     process.env.CONFIG_API_BASE_URL ||
-    'https://admin-ui-test.gluu.org'.replace(/\/+$/, '')
+    'https://jans-ui.jans.io'.replace(/\/+$/, '')
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers':

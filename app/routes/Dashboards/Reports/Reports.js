@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import {
   hasPermission,
   buildPayload,
@@ -17,10 +17,10 @@ import {
 import { connect } from 'react-redux'
 import {
   getAttributes,
-  getCustomScripts,
+  getScripts,
   getScopes,
-  getOpenidClients,
-} from '../../../redux/actions/ReportsActions'
+  getClients,
+} from '../../../redux/actions/InitActions'
 import ReportPiChartItem from './ReportPiChartItem'
 import { useTranslation } from 'react-i18next'
 
@@ -76,7 +76,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
       }
       if (clients.length === 0) {
         buildPayload(userAction, 'Fetch openid connect clients', {})
-        dispatch(getOpenidClients(userAction))
+        dispatch(getClients(userAction))
       }
       if (scopes.length === 0) {
         buildPayload(userAction, 'Fetch scopes', {})
@@ -84,7 +84,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
       }
       if (scripts.length === 0) {
         buildPayload(userAction, 'Fetch custom scripts', {})
-        dispatch(getCustomScripts(userAction))
+        dispatch(getScripts(userAction))
       }
     }, 1000 * 1000)
     return () => clearInterval(interval)
@@ -185,10 +185,10 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
 }
 const mapStateToProps = (state) => {
   return {
-    attributes: state.attributeReducer.items,
-    clients: state.oidcReducer.items,
-    scopes: state.scopeReducer.items,
-    scripts: state.customScriptReducer.items,
+    attributes: state.initReducer.attributes,
+    clients: state.initReducer.clients,
+    scopes: state.initReducer.scopes,
+    scripts: state.initReducer.scripts,
   }
 }
 
