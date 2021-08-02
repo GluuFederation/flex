@@ -1,5 +1,6 @@
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
+import AdminUiRole from './components/Roles/AdminUiRole'
 import MaximumActiveUsersPage from './components/MaximumActiveUsersPage'
 
 import mauReducer from './redux/reducers/MauReducer'
@@ -65,6 +66,11 @@ const pluginMetadata = {
     {
       component: MaximumActiveUsersPage,
       path: PLUGIN_BASE_APTH + '/mau',
+      permission: '/config/acrs.readonly',
+    },
+    {
+      component: AdminUiRole,
+      path: PLUGIN_BASE_APTH + '/roles',
       permission: '/config/acrs.readonly',
     },
   ],

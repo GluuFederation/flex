@@ -3,7 +3,7 @@ import { Container, Row, Col } from '../../../../app/components'
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
 import { useTranslation } from 'react-i18next'
 
-const CustomScriptDetailPage = ({ row, loading }) => {
+const CustomScriptDetailPage = ({ row}) => {
   const { t } = useTranslation()
   function getBadgeTheme(status) {
     if (status) {
