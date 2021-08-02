@@ -44,7 +44,7 @@ export default function initReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          scripts: action.payload.data,
+          clients: action.payload.data,
         }
       } else {
         return {
@@ -60,7 +60,7 @@ export default function initReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          scripts: action.payload.data,
+          attributes: action.payload.data,
         }
       } else {
         return {
@@ -76,7 +76,7 @@ export default function initReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          scripts: action.payload.data,
+          scopes: action.payload.data,
         }
       } else {
         return {
