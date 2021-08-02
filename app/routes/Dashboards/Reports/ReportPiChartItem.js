@@ -1,5 +1,5 @@
 import React from 'react'
-import { PieChart, Pie, Cell, Legend } from 'recharts'
+import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
 
 function ReportPiChartItem({ data }) {
   const COLORS = ['#00C49F', '#0088FE']
@@ -47,6 +47,7 @@ function ReportPiChartItem({ data }) {
         ))}
       </Pie>
       <Legend />
+      <Tooltip />
     </PieChart>
   )
 }
