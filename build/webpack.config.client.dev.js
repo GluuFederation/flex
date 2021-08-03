@@ -11,6 +11,7 @@ require('dotenv').config({
 
 const BASE_PATH = process.env.BASE_PATH || '/'
 const SESSION_TIMEOUT_IN_MINUTES = process.env.SESSION_TIMEOUT_IN_MINUTES || 2
+const CONFIG_API_BASE_URL = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 
 module.exports = {
   name: 'client',
@@ -54,6 +55,7 @@ module.exports = {
         NODE_ENV: JSON.stringify('development'),
         BASE_PATH: JSON.stringify(BASE_PATH),
         API_BASE_URL: JSON.stringify(process.env.API_BASE_URL),
+        CONFIG_API_BASE_URL: JSON.stringify(CONFIG_API_BASE_URL),
         SESSION_TIMEOUT_IN_MINUTES: SESSION_TIMEOUT_IN_MINUTES,
       },
     }),
