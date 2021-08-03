@@ -69,26 +69,28 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
   ]
   const userAction = {}
   useEffect(() => {
+    let count = 0
     const interval = setInterval(() => {
-      if (attributes.length === 0) {
+      if (attributes.length === 0 && count < 2) {
         buildPayload(userAction, 'Fetch attributes', {})
         dispatch(getAttributes(userAction))
       }
-      if (clients.length === 0) {
+      if (clients.length === 0 && count < 2) {
         buildPayload(userAction, 'Fetch openid connect clients', {})
         dispatch(getClients(userAction))
       }
-      if (scopes.length === 0) {
+      if (scopes.length === 0 && count < 2) {
         buildPayload(userAction, 'Fetch scopes', {})
         dispatch(getScopes(userAction))
       }
-      if (scripts.length === 0) {
+      if (scripts.length === 0 && count < 2) {
         buildPayload(userAction, 'Fetch custom scripts', {})
         dispatch(getScripts(userAction))
       }
-    }, 1000 * 1000)
+      count++
+    }, 1000)
     return () => clearInterval(interval)
-  }, [])
+  }, [1000])
 
   return (
     <Container>

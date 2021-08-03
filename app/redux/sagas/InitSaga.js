@@ -61,9 +61,9 @@ function* initAttributes() {
 export function* getScripts({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, 'FETCH', 'SCRIPT', payload)
+    addAdditionalData(audit, 'FETCH SCRIPTS FOR STAT', 'SCRIPT', payload)
     const scriptApi = yield* initScripts()
-    const data = yield call(scriptApi.getAllCustomScript)
+    const data = yield call(scriptApi.getScripts, payload.action.action_data)
     yield put(getScriptsResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -79,12 +79,9 @@ export function* getClients({ payload }) {
   const audit = yield* initAudit()
   try {
     payload = payload ? payload : { action: {} }
-    addAdditionalData(audit, 'FETCH', 'OIDC', payload)
+    addAdditionalData(audit, 'FETCH CIENTS FOR STAT', 'OIDC', payload)
     const openIdApi = yield* initClients()
-    const data = yield call(
-      openIdApi.getAllOpenidClients,
-      payload.action.action_data,
-    )
+    const data = yield call(openIdApi.getClients, payload.action.action_data)
     yield put(getClientsResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -100,9 +97,9 @@ export function* getClients({ payload }) {
 export function* getScopes({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, 'FETCH', 'SCOPE', payload)
+    addAdditionalData(audit, 'FETCH SCOPES FOR STAT', 'SCOPE', payload)
     const scopeApi = yield* initScopes()
-    const data = yield call(scopeApi.getAllScopes, payload.action.action_data)
+    const data = yield call(scopeApi.getScopes, payload.action.action_data)
     yield put(getScopesResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -117,9 +114,9 @@ export function* getScopes({ payload }) {
 export function* getAttributes({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, 'FETCH', 'SCOPE', payload)
+    addAdditionalData(audit, 'FETCH ATTRIBUTES FOR STAT', 'SCOPE', payload)
     const attributeApi = yield* initAttributes()
-    const data = yield call(attributeApi.getAllAttributes, payload.options)
+    const data = yield call(attributeApi.getAttributes, payload.options)
     yield put(getAttributesResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
