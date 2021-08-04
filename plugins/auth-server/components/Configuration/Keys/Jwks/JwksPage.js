@@ -26,7 +26,7 @@ function JwksPage({ jwks, loading, dispatch }) {
             : ''}
         </CardBody>
       </Card>
-      <GluuFooter hideButtons={{ save: true }} />
+      {false && <GluuFooter hideButtons={{ save: true }} />}
     </GluuLoader>
   )
 }

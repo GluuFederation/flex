@@ -25,23 +25,14 @@ const pluginMetadata = {
           permission: '/config/acrs.readonly',
         },
         {
-          title: 'menus.health',
-          path: PLUGIN_BASE_APTH + '/health',
-          permission: '/config/acrs.readonly',
-        },
-        {
-          title: 'menus.reports',
-          path: PLUGIN_BASE_APTH + '/reports',
-          permission: '/config/acrs.readonly',
-        },
-        {
           title: 'menus.configuration',
           children: [
-            {
+           /** {
               title: 'menus.license',
               path: PLUGIN_BASE_APTH + '/config/liense',
               permission: '/config/jwks.readonly',
             },
+            */ 
             {
               title: 'menus.logging',
               path: PLUGIN_BASE_APTH + '/config/logging',
