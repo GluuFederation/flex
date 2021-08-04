@@ -13,7 +13,7 @@
 
 package org.gluu.casa.client.config;
 
-
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2021-07-18T14:15:05.565Z")
 public class StringUtil {
   /**
    * Check if the given array contains the given value (with case-insensitive comparison).

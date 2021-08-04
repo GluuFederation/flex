@@ -2,13 +2,15 @@ package org.gluu.casa.client.config.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.gluu.oxauth.client.*;
 import org.gluu.casa.client.config.*;
 import org.gluu.casa.client.config.auth.*;
 
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.util.Base64;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.Response;
@@ -49,22 +51,14 @@ public class BaseTest {
     
     private static String getAccessToken(String tokenEndpoint, String clientId, 
         String clientSecret, String scope) throws Exception {
-        /*
-        I tried using oxauth-client (tokenClient.execClientCredentialsGrant) 
-        but it conflicts with resteasy of swagger-generated client
         
-        TokenClient tokenClient = new TokenClient(tokenEndpoint);
-        TokenResponse response = tokenClient.execClientCredentialsGrant(scope, clientId, clientSecret);
-        return response.getAccessToken();
-        
-        Resorting to requesting a token manually...
-        */
-        
-        ResteasyWebTarget target = new ResteasyClientBuilder().build().target(tokenEndpoint);
+        WebTarget target = ClientBuilder.newClient().target(tokenEndpoint);
         Form form = new Form().param("grant_type", "client_credentials").param("scope", scope);
         
         String authz = clientId + ":" + clientSecret;
-        authz = "Basic " + Base64.encodeBytes(authz.getBytes("UTF-8"));
+        authz = new String(Base64.getEncoder().encode(authz.getBytes("UTF-8")), StandardCharsets.UTF_8);
+        authz = "Basic " + authz;
+
         Response response = target.request().header("Authorization", authz).post(Entity.form(form));
         try {
             ObjectMapper mapper = new ObjectMapper();

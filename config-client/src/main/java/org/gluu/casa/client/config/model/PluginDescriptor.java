@@ -15,7 +15,6 @@ package org.gluu.casa.client.config.model;
 
 import java.util.Objects;
 import java.util.Arrays;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -25,10 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * PluginDescriptor
  */
-
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2021-07-18T14:15:05.565Z")
 public class PluginDescriptor {
   @JsonProperty("pluginId")
   private String pluginId = null;

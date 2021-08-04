@@ -15,7 +15,6 @@ package org.gluu.casa.client.config.model;
 
 import java.util.Objects;
 import java.util.Arrays;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -27,22 +26,16 @@ import java.util.List;
 /**
  * OxdSettings
  */
-
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2021-07-18T14:15:05.565Z")
 public class OxdSettings {
-  @JsonProperty("opHost")
-  private String opHost = null;
+  @JsonProperty("protocol")
+  private String protocol = null;
 
   @JsonProperty("host")
   private String host = null;
 
   @JsonProperty("port")
   private String port = null;
-
-  @JsonProperty("acrValues")
-  private List<String> acrValues = new ArrayList<>();
 
   @JsonProperty("scopes")
   private List<String> scopes = new ArrayList<>();
@@ -56,22 +49,22 @@ public class OxdSettings {
   @JsonProperty("authz_redirect_uri")
   private String authzRedirectUri = null;
 
-  public OxdSettings opHost(String opHost) {
-    this.opHost = opHost;
+  public OxdSettings protocol(String protocol) {
+    this.protocol = protocol;
     return this;
   }
 
    /**
-   * Get opHost
-   * @return opHost
+   * Get protocol
+   * @return protocol
   **/
   @ApiModelProperty(required = true, value = "")
-  public String getOpHost() {
-    return opHost;
+  public String getProtocol() {
+    return protocol;
   }
 
-  public void setOpHost(String opHost) {
-    this.opHost = opHost;
+  public void setProtocol(String protocol) {
+    this.protocol = protocol;
   }
 
   public OxdSettings host(String host) {
@@ -108,29 +101,6 @@ public class OxdSettings {
 
   public void setPort(String port) {
     this.port = port;
-  }
-
-  public OxdSettings acrValues(List<String> acrValues) {
-    this.acrValues = acrValues;
-    return this;
-  }
-
-  public OxdSettings addAcrValuesItem(String acrValuesItem) {
-    this.acrValues.add(acrValuesItem);
-    return this;
-  }
-
-   /**
-   * Get acrValues
-   * @return acrValues
-  **/
-  @ApiModelProperty(required = true, value = "")
-  public List<String> getAcrValues() {
-    return acrValues;
-  }
-
-  public void setAcrValues(List<String> acrValues) {
-    this.acrValues = acrValues;
   }
 
   public OxdSettings scopes(List<String> scopes) {
@@ -220,10 +190,9 @@ public class OxdSettings {
       return false;
     }
     OxdSettings oxdSettings = (OxdSettings) o;
-    return Objects.equals(this.opHost, oxdSettings.opHost) &&
+    return Objects.equals(this.protocol, oxdSettings.protocol) &&
         Objects.equals(this.host, oxdSettings.host) &&
         Objects.equals(this.port, oxdSettings.port) &&
-        Objects.equals(this.acrValues, oxdSettings.acrValues) &&
         Objects.equals(this.scopes, oxdSettings.scopes) &&
         Objects.equals(this.frontchannelLogoutUri, oxdSettings.frontchannelLogoutUri) &&
         Objects.equals(this.postLogoutUri, oxdSettings.postLogoutUri) &&
@@ -232,7 +201,7 @@ public class OxdSettings {
 
   @Override
   public int hashCode() {
-    return Objects.hash(opHost, host, port, acrValues, scopes, frontchannelLogoutUri, postLogoutUri, authzRedirectUri);
+    return Objects.hash(protocol, host, port, scopes, frontchannelLogoutUri, postLogoutUri, authzRedirectUri);
   }
 
 
@@ -241,10 +210,9 @@ public class OxdSettings {
     StringBuilder sb = new StringBuilder();
     sb.append("class OxdSettings {\n");
     
-    sb.append("    opHost: ").append(toIndentedString(opHost)).append("\n");
+    sb.append("    protocol: ").append(toIndentedString(protocol)).append("\n");
     sb.append("    host: ").append(toIndentedString(host)).append("\n");
     sb.append("    port: ").append(toIndentedString(port)).append("\n");
-    sb.append("    acrValues: ").append(toIndentedString(acrValues)).append("\n");
     sb.append("    scopes: ").append(toIndentedString(scopes)).append("\n");
     sb.append("    frontchannelLogoutUri: ").append(toIndentedString(frontchannelLogoutUri)).append("\n");
     sb.append("    postLogoutUri: ").append(toIndentedString(postLogoutUri)).append("\n");

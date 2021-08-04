@@ -15,7 +15,6 @@ package org.gluu.casa.client.config.model;
 
 import java.util.Objects;
 import java.util.Arrays;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -27,10 +26,7 @@ import org.gluu.casa.client.config.model.OxdSettings;
 /**
  * OxdConfiguration
  */
-
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2021-07-18T14:15:05.565Z")
 public class OxdConfiguration {
   @JsonProperty("settings")
   private OxdSettings settings = null;

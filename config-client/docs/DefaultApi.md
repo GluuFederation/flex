@@ -229,7 +229,7 @@ This endpoint does not need any parameter.
 
 <a name="corsGet"></a>
 # **corsGet**
-> corsGet()
+> List&lt;String&gt; corsGet()
 
 
 
@@ -252,7 +252,8 @@ config_auth.setAccessToken("YOUR ACCESS TOKEN");
 
 DefaultApi apiInstance = new DefaultApi();
 try {
-    apiInstance.corsGet();
+    List<String> result = apiInstance.corsGet();
+    System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling DefaultApi#corsGet");
     e.printStackTrace();
@@ -264,7 +265,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-null (empty response body)
+**List&lt;String&gt;**
 
 ### Authorization
 
@@ -732,7 +733,7 @@ This endpoint does not need any parameter.
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: text/plain
+ - **Accept**: application/json
 
 <a name="pwdResetEnabledGet"></a>
 # **pwdResetEnabledGet**
