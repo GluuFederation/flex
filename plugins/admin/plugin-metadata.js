@@ -2,6 +2,7 @@ import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import AdminUiRole from './components/Roles/AdminUiRole'
 import MaximumActiveUsersPage from './components/MaximumActiveUsersPage'
+import SettingsPage from './components/Settings/SettingsPage'
 
 import mauReducer from './redux/reducers/MauReducer'
 import mauSaga from './redux/sagas/MauSaga'
@@ -22,6 +23,11 @@ const pluginMetadata = {
         {
           title: 'menus.mau',
           path: PLUGIN_BASE_APTH + '/mau',
+          permission: '/config/acrs.readonly',
+        },
+        {
+          title: 'menus.settings',
+          path: PLUGIN_BASE_APTH + '/settings',
           permission: '/config/acrs.readonly',
         },
         {
@@ -63,6 +69,11 @@ const pluginMetadata = {
     {
       component: AdminUiRole,
       path: PLUGIN_BASE_APTH + '/roles',
+      permission: '/config/acrs.readonly',
+    },
+    {
+      component: SettingsPage,
+      path: PLUGIN_BASE_APTH + '/settings',
       permission: '/config/acrs.readonly',
     },
   ],
