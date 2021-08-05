@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import useDarkMode from 'use-dark-mode';
 import { Layout, ThemeProvider } from "./../components";
 
 import "./../styles/bootstrap.scss";
@@ -37,31 +37,29 @@ const favIcons = [
   },
 ];
 
-class AppLayout extends React.Component {
-  static propTypes = {
-    children: PropTypes.node.isRequired,
-  };
+const AppLayout = (prop) => {
+  const { children } = prop;
+  const darkMode = useDarkMode(false);
+  const initialMode = darkMode.value?"dark":"light";
+  return (
+    <ThemeProvider initialStyle={initialMode} initialColor="primary">
+      <Layout sidebarSlim favIcons={ favIcons }>
+        {/* --------- Navbar ----------- */}
+        <Layout.Navbar>
+          <RoutedNavbars />
+        </Layout.Navbar>
+        {/* -------- Sidebar ------------*/}
+        <Layout.Sidebar>
+          <RoutedSidebars />
+        </Layout.Sidebar>
 
-  render() {
-    const { children } = this.props;
-    return (
-      <ThemeProvider initialStyle="light" initialColor="primary">
-        <Layout sidebarSlim favIcons={ favIcons }>
-          {/* --------- Navbar ----------- */}
-          <Layout.Navbar>
-            <RoutedNavbars />
-          </Layout.Navbar>
-          {/* -------- Sidebar ------------*/}
-          <Layout.Sidebar>
-            <RoutedSidebars />
-          </Layout.Sidebar>
-
-          {/* -------- Content ------------*/}
-          <Layout.Content>{children}</Layout.Content>
-        </Layout>
-      </ThemeProvider>
-    );
-  }
+        {/* -------- Content ------------*/}
+        <Layout.Content>{children}</Layout.Content>
+      </Layout>
+    </ThemeProvider>
+  );
 }
-
+AppLayout.prop = {
+  children: PropTypes.node.isRequired,
+};
 export default AppLayout;

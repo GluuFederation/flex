@@ -6,8 +6,8 @@ import { Formik } from 'formik'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow';
 
-import { Form, Container, Card, CardBody, FormGroup } from '../../../../app/components'
-import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle';
+import { Form, Container, Card, CardBody, FormGroup, Col, Label, Badge } from '../../../../app/components'
+import GluuDarkModeToggle from '../../../../app/routes/Apps/Gluu/GluuDarkModeToggle';
 
 function SettingsPage({  }) {
   const { t } = useTranslation();
@@ -40,9 +40,17 @@ function SettingsPage({  }) {
                       value={levels[0]}
                       values={levels}
                     ></GluuSelectRow>
-                    <FormGroup row>
+                    <FormGroup row style={{justifyContent:"space-between"}}>
                       <GluuLabel label="Dark Mode" />
-                      <GluuToogle name="darkMode" value={true} formik={formik} />
+                      <div className="toggle-container" style={{display:"flex", flexDirection:"column", justifyContent:"center", padding:"0px 15px 0px 15px"}}>
+                        <GluuDarkModeToggle />
+                      </div>
+                    </FormGroup>
+                    <FormGroup row style={{justifyContent:"space-between"}}>
+                      <GluuLabel label="Config API URL" />
+                      <Label sm={ 3 } style={{display:"flex", flexDirection:"column", justifyContent:"center"}} >
+                        <Badge color={'primary'} style={{fontSize:"100%"}}>admin.org</Badge>
+                      </Label>
                     </FormGroup>
                   </Form>)}
               </Formik>
