@@ -43,7 +43,7 @@ function GluuAppSidebar({ scopes }) {
           title={t('menus.home')}
         >
           <SidebarMenu.Item
-            title={t('menus.reports')}
+            title={t('menus.dashboard')}
             to="/home/dashboard"
             exact
           />
@@ -89,11 +89,6 @@ function GluuAppSidebar({ scopes }) {
 
         {/* -------- Plugins ---------*/}
         <Divider />
-        <SidebarMenu.Item
-          icon={<i className="fa fa-fw fa-wrench"></i>}
-          title={t('menus.settings')}
-          to="/settings"
-        />
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
           title={t('menus.signout')}
