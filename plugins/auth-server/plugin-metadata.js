@@ -47,11 +47,14 @@ const pluginMetadata = {
           //permission: '/config/properties.readonly',
           permission: '/config/acrs.readonly',
         },
+
+        /**
         {
           title: 'menus.reports',
           path: PLUGIN_BASE_APTH + '/reports',
           permission: '/config/acrs.readonly',
         },
+         */
         {
           title: 'menus.configuration',
           children: [

@@ -19,21 +19,6 @@ function KeysPage() {
           <Nav pills className="mb-4 flex-column flex-md-row mt-4 mt-lg-0">
             <NavItem>
               <UncontrolledTabs.NavLink tabId="jwkpanel">
-                {t('titles.jwk_keys')}
-              </UncontrolledTabs.NavLink>
-            </NavItem>
-            <NavItem>
-              <UncontrolledTabs.NavLink tabId="algorithmickeyspanel">
-                {t('titles.algorithmic_keys')}
-              </UncontrolledTabs.NavLink>
-            </NavItem>
-            <NavItem>
-              <UncontrolledTabs.NavLink tabId="privatekeyspanel">
-                {t('titles.private_keys')}
-              </UncontrolledTabs.NavLink>
-            </NavItem>
-            <NavItem>
-              <UncontrolledTabs.NavLink tabId="publickeyspanel">
                 {t('titles.public_keys')}
               </UncontrolledTabs.NavLink>
             </NavItem>
@@ -41,18 +26,6 @@ function KeysPage() {
           <UncontrolledTabs.TabContent>
             <TabPane tabId="jwkpanel">
               <JwksPage />
-            </TabPane>
-            <TabPane tabId="otherpanel">
-              <div>{t('messages.not_implemented')}</div>
-            </TabPane>
-            <TabPane tabId="algorithmickeyspanel">
-              <div>{t('messages.not_implemented')}</div>
-            </TabPane>
-            <TabPane tabId="privatekeyspanel">
-              <div>{t('messages.not_implemented')}</div>
-            </TabPane>
-            <TabPane tabId="publickeyspanel">
-              <div>{t('messages.not_implemented')}</div>
             </TabPane>
           </UncontrolledTabs.TabContent>
         </UncontrolledTabs>

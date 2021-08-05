@@ -175,6 +175,7 @@
     "configuration": "Configuration",
     "couchbase": "Couchbase",
     "defaults": "Defaults",
+    "dashboard": "Dashboard",
     "health": "Health",
     "home": "Home",
     "keys": "Keys",

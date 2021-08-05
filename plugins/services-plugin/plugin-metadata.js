@@ -29,7 +29,6 @@ const pluginMetadata = {
           permission: '/config/cache.readonly',
         },
         {
-          icon: 'fa-database',
           title: 'menus.persistence',
           children: [
             {

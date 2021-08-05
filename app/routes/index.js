@@ -13,7 +13,6 @@ import ProfilePage from './Apps/Profile/ProfilePage'
 // ----------- Layout Imports ---------------
 import { DefaultSidebar } from './../layout/components/DefaultSidebar'
 import ByeBye from './Pages/ByeBye'
-// import SettingsPage from './Apps/Configuration/SettingsPage'
 
 import Gluu404Error from './Apps/Gluu/Gluu404Error'
 import GluuNavBar from './Apps/Gluu/GluuNavBar'
@@ -54,7 +53,6 @@ export const RoutedContent = () => {
       )}
       {/*    Pages Routes    */}
       <Route component={ProfilePage} path="/profile" />
-      {/* <Route component={SettingsPage} path="/settings" /> */}
       <Route component={ByeBye} path="/logout" />
       <Route component={Gluu404Error} path="/error-404" />
 
