@@ -12,7 +12,7 @@ import {
   DELETION,
   FETCH,
 } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from '../actions/AuthActions'
+import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
 import {
   isFourZeroOneError,
   addAdditionalData,
