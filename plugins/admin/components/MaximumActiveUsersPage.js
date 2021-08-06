@@ -40,6 +40,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     dispatch(getMau(userAction))
   }, [])
   const { t } = useTranslation()
+  console.log("========================= "+JSON.stringify(stat))
   const data = [
     {
       name: '19-07-2021',
