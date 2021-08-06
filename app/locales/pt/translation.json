@@ -31,5 +31,24 @@
     "services": "Serviços",
     "settings": "Configurações",
     "signout": "Sair"
+  },
+  "actions": {
+    "accept": "Accept",
+    "add": "Add",
+    "add_ldap_configuration": "Add LDAP Configuration",
+    "add_property": "Add property",
+    "apply": "Apply",
+    "back_home": "Back Home",
+    "cancel": "Cancel",
+    "choose": "Choose",
+    "edit": "Edit",
+    "next": "Next",
+    "no": "No",
+    "previous": "Previous",
+    "save": "Save",
+    "submit": "Submit",
+    "remove": "Remove",
+    "test": "Test",
+    "yes": "Yes"
   }
 }
