@@ -25,7 +25,7 @@
                             
                             <div class="flex flex-wrap">
                             	<z:listbox mold="select" rows="1" onSelect="@('switchProtocol', event.target.selectedItem.value)"
-                            		sclass="bg-white mr3">
+                            		sclass="bg-white mr3 dark-gray">
                             		<z:listitem label="${each}" value="${each}" forEach="${vm.protocols}"
                             			selected="${each eq vm.oxdSettings.protocol ? 'true' : 'false'}" />
                             	</z:listbox>
