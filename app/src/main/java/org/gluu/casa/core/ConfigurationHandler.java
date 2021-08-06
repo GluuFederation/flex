@@ -206,7 +206,7 @@ public class ConfigurationHandler extends JobListenerSupport {
     public Map<String, Integer> getAcrLevelMapping() {
     	Map<String, Integer> map = getEnabledScripts().stream()
     	    .collect(Collectors.toMap(CustomScript::getDisplayName, CustomScript::getLevel));
-    	logger.debug("ACR/Level mapping is: {}", map);
+    	logger.trace("ACR/Level mapping is: {}", map);
     	return map;
     }
 
