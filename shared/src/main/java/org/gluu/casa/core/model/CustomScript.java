@@ -50,14 +50,6 @@ public class CustomScript extends Entry {
         return enabled;
     }
 
-    /**
-     * A convenience method.
-     * @return False if {@link #getEnabled()} returns null or false. True otherwise
-     */
-    public boolean isEnabled() {
-        return Optional.ofNullable(enabled).orElse(false);
-    }
-
     public List<SimpleCustomProperty> getConfigurationProperties() {
         return configurationProperties;
     }

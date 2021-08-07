@@ -91,7 +91,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
             script = persistenceService.getScript(acr);
 
             if (script != null) {
-                if (script.isEnabled()) {
+                if (Optional.ofNullable(script.getEnabled()).orElse(false)) {
                     previous = scriptFingerPrints.get(acr);
                     current = scriptFingerPrint(script);
                     scriptFingerPrints.put(acr, current);
