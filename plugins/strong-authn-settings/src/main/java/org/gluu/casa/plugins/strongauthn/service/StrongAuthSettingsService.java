@@ -69,13 +69,16 @@ public class StrongAuthSettingsService {
                 });
             }
 
-            String trustedDevicesInfo = Utils.stringEncrypter().decrypt(person.getTrustedDevices());
-            if (Utils.isNotEmpty(trustedDevicesInfo)) {
-                trustedDevices = mapper.readValue(trustedDevicesInfo, new TypeReference<List<TrustedDevice>>() { });
-                trustedDevices.forEach(TrustedDevice::sortOriginsDescending);
-
-                TrustedDeviceComparator comparator = new TrustedDeviceComparator(true);
-                trustedDevices.sort((first, second) -> comparator.compare(second, first));
+            if (Utils.isNotEmpty(person.getTrustedDevices())) {
+                String trustedDevicesInfo = Utils.stringEncrypter().decrypt(person.getTrustedDevices());
+                
+                if (Utils.isNotEmpty(trustedDevicesInfo)) {
+                    trustedDevices = mapper.readValue(trustedDevicesInfo, new TypeReference<List<TrustedDevice>>() { });
+                    trustedDevices.forEach(TrustedDevice::sortOriginsDescending);
+    
+                    TrustedDeviceComparator comparator = new TrustedDeviceComparator(true);
+                    trustedDevices.sort((first, second) -> comparator.compare(second, first));
+                }
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
