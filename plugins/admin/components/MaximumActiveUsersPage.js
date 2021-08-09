@@ -35,12 +35,18 @@ import { connect } from 'react-redux'
 function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const userAction = {}
   const options = {}
+  const currentDate = new Date()
+  const currentMonth =
+    currentDate.getFullYear() +
+    String(currentDate.getMonth() + 1).padStart(2, '0')
   useEffect(() => {
+    options['month'] = currentMonth
+    options['format'] = "json"
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }, [])
   const { t } = useTranslation()
-  console.log("========================= "+JSON.stringify(stat))
+ // console.log('========================= ' + JSON.stringify(currentMonth))
   const data = [
     {
       name: '19-07-2021',
