@@ -3,9 +3,15 @@ import ReportPage from './components/Reports/ReportPage'
 import AdminUiRole from './components/Roles/AdminUiRole'
 import MaximumActiveUsersPage from './components/MaximumActiveUsersPage'
 import SettingsPage from './components/Settings/SettingsPage'
+import scriptSaga from './redux/sagas/CustomScriptSaga'
+
+import ScriptListPage from './components/CustomScripts/ScriptListPage'
+import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
+import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
 
 import mauReducer from './redux/reducers/MauReducer'
 import mauSaga from './redux/sagas/MauSaga'
+import scriptReducer from './redux/reducers/CustomScriptReducer'
 
 const PLUGIN_BASE_APTH = '/adm'
 
@@ -24,6 +30,11 @@ const pluginMetadata = {
           title: 'menus.mau',
           path: PLUGIN_BASE_APTH + '/mau',
           permission: '/config/acrs.readonly',
+        },
+        {
+          title: 'menus.scripts',
+          path: PLUGIN_BASE_APTH + '/scripts',
+          permission: '/config/scripts.readonly',
         },
         {
           title: 'menus.settings',
@@ -72,13 +83,34 @@ const pluginMetadata = {
       permission: '/config/acrs.readonly',
     },
     {
+      component: ScriptListPage,
+      path: PLUGIN_BASE_APTH + '/scripts',
+      permission: '/config/scripts.readonly',
+    },
+    {
+      component: CustomScriptAddPage,
+      path: PLUGIN_BASE_APTH + '/script/new',
+      permission: '/config/scripts.write',
+    },
+    {
+      component: CustomScriptEditPage,
+      path: PLUGIN_BASE_APTH + '/script/edit:id',
+      permission: '/config/scripts.write',
+    },
+    {
       component: SettingsPage,
       path: PLUGIN_BASE_APTH + '/settings',
       permission: '/config/acrs.readonly',
     },
   ],
-  reducers: [{ name: 'mauReducer', reducer: mauReducer }],
-  sagas: [mauSaga()],
+  reducers: [
+    { name: 'mauReducer', reducer: mauReducer },
+    { name: 'scriptReducer', reducer: scriptReducer },
+  ],
+  sagas: [
+    mauSaga(),
+    scriptSaga(),
+  ],
 }
 
 export default pluginMetadata
