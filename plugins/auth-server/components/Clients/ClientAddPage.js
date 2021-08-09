@@ -5,7 +5,7 @@ import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import { useHistory } from 'react-router-dom'
 import { addNewClientAction } from '../../redux/actions/OIDCActions'
 import { getScopes } from '../../redux/actions/ScopeActions'
-import { getCustomScripts } from '../../redux/actions/CustomScriptActions'
+import { getCustomScripts } from '../../../admin/redux/actions/CustomScriptActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {

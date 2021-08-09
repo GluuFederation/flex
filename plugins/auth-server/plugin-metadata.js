@@ -6,10 +6,6 @@ import ClientListPage from './components/Clients/ClientListPage'
 import ClientAddPage from './components/Clients/ClientAddPage'
 import ClientEditPage from './components/Clients/ClientEditPage'
 
-import ScriptListPage from './components/CustomScripts/ScriptListPage'
-import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
-import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
-
 import PropertiesPage from './components/Configuration/ConfigPage'
 
 import HealthPage from './components/Health/HealthPage'
@@ -17,7 +13,6 @@ import ReportPage from './components/Reports/ReportPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
 import DefaultPage from './components/Configuration/Defaults/DefaultConfigPage'
 
-import scriptReducer from './redux/reducers/CustomScriptReducer'
 import oidcReducer from './redux/reducers/OIDCReducer'
 import scopeReducer from './redux/reducers/ScopeReducer'
 import jsonReducer from './redux/reducers/JsonConfigReducer'
@@ -25,7 +20,6 @@ import jwksReducer from './redux/reducers/JwksReducer'
 import acrReducer from './redux/reducers/AcrReducer'
 import loggingReducer from './redux/reducers/LoggingReducer'
 
-import scriptSaga from './redux/sagas/CustomScriptSaga'
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
 import jsonSaga from './redux/sagas/JsonConfigSaga'
@@ -95,11 +89,6 @@ const pluginMetadata = {
           path: PLUGIN_BASE_APTH + '/scopes',
           permission: '/config/scopes.readonly',
         },
-        {
-          title: 'menus.scripts',
-          path: PLUGIN_BASE_APTH + '/scripts',
-          permission: '/config/scripts.readonly',
-        },
         /**{
           title: 'UMA',
           path: PLUGIN_BASE_APTH + '/uma',
@@ -123,21 +112,6 @@ const pluginMetadata = {
       component: ClientEditPage,
       path: PLUGIN_BASE_APTH + '/client/edit:id',
       permission: '/config/openid/clients.write',
-    },
-    {
-      component: ScriptListPage,
-      path: PLUGIN_BASE_APTH + '/scripts',
-      permission: '/config/scripts.readonly',
-    },
-    {
-      component: CustomScriptAddPage,
-      path: PLUGIN_BASE_APTH + '/script/new',
-      permission: '/config/scripts.write',
-    },
-    {
-      component: CustomScriptEditPage,
-      path: PLUGIN_BASE_APTH + '/script/edit:id',
-      permission: '/config/scripts.write',
     },
     {
       component: ScopeListPage,
@@ -183,7 +157,6 @@ const pluginMetadata = {
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
     { name: 'oidcReducer', reducer: oidcReducer },
-    { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'authPropertiesReducer', reducer: jsonReducer },
     { name: 'jwksReducer', reducer: jwksReducer },
     { name: 'acrReducer', reducer: acrReducer },
@@ -191,7 +164,6 @@ const pluginMetadata = {
   ],
   sagas: [
     scopesSaga(),
-    scriptSaga(),
     oidcSaga(),
     jsonSaga(),
     jwksSaga(),

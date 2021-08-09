@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { editClient } from '../../redux/actions/OIDCActions'
 import { getScopes } from '../../redux/actions/ScopeActions'
-import { getCustomScripts } from '../../redux/actions/CustomScriptActions'
+import { getCustomScripts } from '../../../admin/redux/actions/CustomScriptActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function ClientEditPage({

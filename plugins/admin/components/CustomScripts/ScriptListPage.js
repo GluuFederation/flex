@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
-import CustomScriptDetailPage from '../CustomScripts/CustomScriptDetailPage'
+import CustomScriptDetailPage from './CustomScriptDetailPage'
 import GluuCustomScriptSearch from '../../../../app/routes/Apps/Gluu/GluuCustomScriptSearch'
 import {
   deleteCustomScript,
@@ -140,11 +140,11 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     )
   }
   function handleGoToCustomScriptAddPage() {
-    return history.push('/auth-server/script/new')
+    return history.push('/adm/script/new')
   }
   function handleGoToCustomScriptEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/auth-server/script/edit:` + row.inum)
+    return history.push(`/adm/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
     setItem(row)
@@ -152,7 +152,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   }
   function onDeletionConfirmed() {
     dispatch(deleteCustomScript(item.inum))
-    history.push('/auth-server/scripts')
+    history.push('/adm/scripts')
     toggle()
   }
   return (

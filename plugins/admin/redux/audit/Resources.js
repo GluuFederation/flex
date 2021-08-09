@@ -1,0 +1,1 @@
+export const SCRIPT = 'custom-script'
