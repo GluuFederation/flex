@@ -3,6 +3,7 @@ package org.gluu.casa.plugins.authnmethod.rs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.model.Person;
+import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
@@ -68,7 +69,7 @@ public class SecurityKey2EnrollingWS {
             } else {
                 try {
                     String userName = person.getUid();
-                    request = fido2Service.doRegister(userName, Optional.ofNullable(person.getGivenName()).orElse(userName));
+                    request = fido2Service.doRegister(userName, Optional.ofNullable(person.getGivenName()).orElse(userName),false);
                     result = RegisterMessageCode.SUCCESS;
                     cacheProvider.put(EXPIRATION, USERS_PENDING_REG_PREFIX + userId, "");
                 } catch (Exception e) {
@@ -88,7 +89,7 @@ public class SecurityKey2EnrollingWS {
     public Response sendRegistrationResult(String body, @PathParam("userid") String userId) {
 
         RegistrationCode result;
-        SecurityKey newDevice = null;
+        FidoDevice newDevice = null;
         logger.trace("sendRegistrationResult WS operation called");
         String key = USERS_PENDING_REG_PREFIX + userId;
 

@@ -1,6 +1,7 @@
 package org.gluu.casa.plugins.authnmethod.service;
 
 import org.gluu.casa.core.pojo.FidoDevice;
+import org.gluu.casa.core.pojo.PlatformAuthenticator;
 import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
 import org.gluu.casa.rest.RSUtils;
@@ -70,7 +71,7 @@ public class Fido2Service extends BaseService {
         return getDevices(userId, active).size();
     }
 
-    public List<SecurityKey> getDevices(String userId, boolean active) {
+    public List<FidoDevice> getDevices(String userId, boolean active) {
 
         //In CB the ou=fido2_register branch does not exist (not a hierarchical DB)
         String state = active ? Fido2RegistrationStatus.registered.getValue() : Fido2RegistrationStatus.pending.getValue();
@@ -79,17 +80,26 @@ public class Fido2Service extends BaseService {
                 Filter.createEqualityFilter("oxStatus", state),
                 Filter.createEqualityFilter("personInum", userId));
 
-        List<SecurityKey> devices = new ArrayList<>();
+        List<FidoDevice> devices = new ArrayList<>();
         try {
             List<Fido2RegistrationEntry> list = persistenceService.find(Fido2RegistrationEntry.class,
             	String.format("ou=%s,%s", FIDO2_OU, persistenceService.getPersonDn(userId)), filter);
 
             for (Fido2RegistrationEntry entry : list) {
-                SecurityKey sk = new SecurityKey();
-                sk.setId(entry.getId());
-                sk.setCreationDate(entry.getCreationDate());
-                sk.setNickName(entry.getDisplayName());
-                devices.add(sk);
+            	FidoDevice device = null;
+            	if(entry.getRegistrationData().getAttenstationRequest().contains("platform") )
+            	{
+            		 device = new PlatformAuthenticator();
+            	}
+            	else
+            	{
+            		device = new SecurityKey();
+            	}
+            	device.setId(entry.getId());
+            	device.setCreationDate(entry.getCreationDate());
+            	device.setNickName(entry.getDisplayName());
+            	logger.trace("device name - "+device.getNickName());
+                devices.add(device);
             }
             return devices.stream().sorted().collect(Collectors.toList());
         } catch (Exception e) {
@@ -139,12 +149,20 @@ public class Fido2Service extends BaseService {
 
     }
 
-    public String doRegister(String userName, String displayName) throws Exception {
+    public String doRegister(String userName, String displayName, boolean platformAuthenticator) throws Exception {
 
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("username", userName);
         map.put("displayName", displayName);
         map.put("attestation", "direct");
+        if (platformAuthenticator)
+        {
+        	Map <String, String> platform = new HashMap<String, String>();
+        	platform.put("authenticatorAttachment", "platform");
+        	platform.put("requireResidentKey","false");
+        	platform.put("userVerification", "discouraged");
+        	map.put("authenticatorSelection",platform);
+        }
         return attestationService.register(mapper.writeValueAsString(map)).readEntity(String.class);
 
     }
@@ -160,11 +178,11 @@ public class Fido2Service extends BaseService {
         
     }
 
-    public SecurityKey getLatestSecurityKey(String userId, long time) {
+    public FidoDevice getLatestSecurityKey(String userId, long time) {
 
-        SecurityKey sk = null;
+    	FidoDevice sk = null;
         try {
-            List<SecurityKey> list = getDevices(userId, true);
+            List<FidoDevice> list = getDevices(userId, true);
             sk = FidoService.getRecentlyCreatedDevice(list, time);
             if (sk != null && sk.getNickName() != null) {
                 sk = null;    //should have no name

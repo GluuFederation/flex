@@ -1,16 +1,24 @@
 package org.gluu.casa.ui.vm.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gluu.casa.core.pojo.BrowserInfo;
+import org.gluu.casa.core.pojo.FidoDevice;
+import org.gluu.casa.core.pojo.PlatformAuthenticator;
 import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
 import org.gluu.casa.plugins.authnmethod.service.Fido2Service;
 import org.gluu.casa.ui.UIUtils;
 import org.zkoss.bind.BindUtils;
-import org.zkoss.bind.annotation.*;
+import org.zkoss.bind.annotation.AfterCompose;
+import org.zkoss.bind.annotation.ContextParam;
+import org.zkoss.bind.annotation.ContextType;
+import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.json.JSONObject;
 import org.zkoss.json.JavaScriptValue;
 import org.zkoss.util.Pair;
@@ -25,273 +33,390 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
-import java.util.List;
-import java.util.Optional;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * This is the ViewModel of page fido2-detail.zul. It controls the CRUD of security keys
+ * This is the ViewModel of page fido2-detail.zul. It controls the CRUD of
+ * security keys
  */
 public class SecurityKey2ViewModel extends UserViewModel {
 
-    private static final int REGISTRATION_TIMEOUT = 8000;
+	private static final int REGISTRATION_TIMEOUT = 8000;
 
-    private Logger logger = LogManager.getLogger(getClass());
+	private Logger logger = LogManager.getLogger(getClass());
 
-    @WireVariable
-    private Fido2Service fido2Service;
+	@WireVariable
+	private Fido2Service fido2Service;
 
-    private SecurityKey newDevice;
-    private List<SecurityKey> devices;
-    private String fido2SupportMessage;
+	private FidoDevice newDevice;
+	private FidoDevice newTouchId;
+	private List<FidoDevice> devices;
+	private String fido2SupportMessage;
 
-    private String editingId;
-    private boolean uiAwaiting;
-    private boolean uiEnrolled;
+	private String editingId;
+	private boolean uiAwaiting;
+	private boolean uiEnrolled;
 
-    private ObjectMapper mapper;
+	private String editingIdPlatformAuthenticator;
+	private boolean uiAwaitingPlatformAuthenticator;
+	private boolean uiEnrolledPlatformAuthenticator;
 
-    public SecurityKey getNewDevice() {
-        return newDevice;
-    }
+	private boolean platformAuthenticator;
 
-    public List<SecurityKey> getDevices() {
-        return devices;
-    }
-    
-    public String getFido2SupportMessage() {
-    	return fido2SupportMessage;
-    }
+	private ObjectMapper mapper;
 
-    public String getEditingId() {
-        return editingId;
-    }
+	public FidoDevice getNewDevice() {
+		return newDevice;
+	}
 
-    public boolean isUiAwaiting() {
-        return uiAwaiting;
-    }
+	public List<FidoDevice> getDevices() {
+		return devices;
+	}
 
-    public boolean isUiEnrolled() {
-        return uiEnrolled;
-    }
+	public String getFido2SupportMessage() {
+		return fido2SupportMessage;
+	}
 
-    @Init(superclass = true)
-    public void childInit() throws Exception {
-        mapper = new ObjectMapper();
-        newDevice = new SecurityKey();
-        devices = fido2Service.getDevices(user.getId(), true);
-        checkFido2Support();
-    }
+	public boolean getPlatformAuthenticator() {
+		return platformAuthenticator;
+	}
 
-    @AfterCompose
-    public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
-        Selectors.wireEventListeners(view, this);
-    }
+	public void setPlatformAuthenticator(boolean platformAuthenticator) {
+		this.platformAuthenticator = platformAuthenticator;
+	}
 
-    public void triggerAttestationRequest() {
-        try {
-            uiAwaiting = true;
-            BindUtils.postNotifyChange(this, "uiAwaiting");
+	public String getEditingId() {
+		return editingId;
+	}
 
-            String uid = user.getUserName();
-            String jsonRequest = fido2Service.doRegister(uid, Optional.ofNullable(user.getGivenName()).orElse(uid));
-            //Notify browser to exec proper function
-            UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_INFO, Labels.getLabel("usr.fido2_touch"));
-            Clients.response(new AuInvoke("triggerFido2Attestation", new JavaScriptValue(jsonRequest), REGISTRATION_TIMEOUT));
-        } catch (Exception e) {
-            UIUtils.showMessageUI(false);
-            logger.error(e.getMessage(), e);
-        }
+	public FidoDevice getNewTouchId() {
+		return newTouchId;
+	}
 
-    }
+	public void setNewTouchId(FidoDevice newTouchId) {
+		this.newTouchId = newTouchId;
+	}
 
-    @Listen("onData=#readyButton")
-    public void notified(Event event) throws Exception {
+	public void setNewDevice(FidoDevice newDevice) {
+		this.newDevice = newDevice;
+	}
 
-        String errMessage = null;
-        try {
-            if (fido2Service.verifyRegistration(mapper.writeValueAsString(event.getData()))) {
-                //pick the most suitable recent entry
-                newDevice = fido2Service.getLatestSecurityKey(user.getId(), System.currentTimeMillis());
+	public boolean isUiAwaiting() {
+		return uiAwaiting;
+	}
 
-                if (newDevice != null) {
-                    uiEnrolled = true;
-                    BindUtils.postNotifyChange(this, "uiEnrolled");
-                } else {
-                    errMessage = Labels.getLabel("general.error.general");
-                }
-            } else {
-                errMessage = Labels.getLabel("usr.fido2.error_invalid");
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            errMessage = Labels.getLabel("general.error.detailed", new String[]{e.getMessage()});
-        }
+	public boolean isUiEnrolled() {
+		return uiEnrolled;
+	}
 
-        uiAwaiting = false;
-        BindUtils.postNotifyChange(this, "uiAwaiting");
-        if (errMessage != null) {
-            UIUtils.showMessageUI(false, errMessage);
-        }
+	public String getEditingIdPlatformAuthenticator() {
+		return editingIdPlatformAuthenticator;
+	}
 
-    }
+	public boolean isUiAwaitingPlatformAuthenticator() {
+		return uiAwaitingPlatformAuthenticator;
+	}
 
-    @Listen("onError=#readyButton")
-    public void notifiedErr(Event event) throws Exception {
+	public boolean isUiEnrolledPlatformAuthenticator() {
+		return uiEnrolledPlatformAuthenticator;
+	}
 
-        JSONObject jsonObject = (JSONObject) event.getData();
-        boolean excludedCredentials = (boolean) jsonObject.get("excludeCredentials");
-        String name = Optional.ofNullable(jsonObject.get("name")).map(Object::toString).orElse("");
-        String msg = Optional.ofNullable(jsonObject.get("message")).map(Object::toString).orElse("");
+	@Init(superclass = true)
+	public void childInit() throws Exception {
+		logger.debug("childInit");
+		mapper = new ObjectMapper();
+		newDevice = new SecurityKey();
+		newTouchId = new PlatformAuthenticator();
+		devices = fido2Service.getDevices(user.getId(), true);
+		checkFido2Support();
 
-        String message;
-        logger.error("An error occurred when enrolling fido2 cred for user {}. {}: {}", user.getUserName(), name, msg);
+	}
 
-        if (name.equals("NotAllowedError")) {
-            message = Labels.getLabel(excludedCredentials ? "usr.fido2.error_exclude" : "general.error.general");
-        } else if (name.equals("AbortError")) {
-            message = Labels.getLabel("usr.fido2.error_cancel");
-        } else {
-            message = Labels.getLabel("general.error.detailed", new String[]{msg});
-        }
-        uiAwaiting = false;
-        BindUtils.postNotifyChange(this, "uiAwaiting");
-        UIUtils.showMessageUI(false, message);
+	@AfterCompose
+	public void afterCompose(@ContextParam(ContextType.VIEW) Component view) {
+		logger.debug("afterCompose");
+		Selectors.wireEventListeners(view, this);
 
-    }
+	}
 
-    @NotifyChange({"uiEnrolled", "newDevice", "devices"})
-    public void add() {
+	public void triggerAttestationRequest() {
+		logger.debug("triggerAttestationRequest");
+		try {
 
-        if (Utils.isNotEmpty(newDevice.getNickName())) {
-            try {
-                fido2Service.updateDevice(newDevice);
-                devices.add(newDevice);
-                UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
-                userService.notifyEnrollment(user, SecurityKey2Extension.ACR);
-            } catch (Exception e) {
-                UIUtils.showMessageUI(false, Labels.getLabel("usr.error_updating"));
-                logger.error(e.getMessage(), e);
-            }
-            resetAddSettings();
-        }
+			if (platformAuthenticator) {
+				uiAwaitingPlatformAuthenticator = true;
+				BindUtils.postNotifyChange(this, "uiAwaitingPlatforAuthenticator");
+			} else {
+				uiAwaiting = true;
+				BindUtils.postNotifyChange(this, "uiAwaiting");
+			}
+			String uid = user.getUserName();
+			String jsonRequest = fido2Service.doRegister(uid, Optional.ofNullable(user.getGivenName()).orElse(uid),
+					platformAuthenticator);
+			logger.debug("JSONrequest - " + jsonRequest);
+			// Notify browser to exec proper function
+			UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_INFO, Labels.getLabel("usr.fido2_touch"));
+			Clients.response(
+					new AuInvoke("triggerFido2Attestation", new JavaScriptValue(jsonRequest), REGISTRATION_TIMEOUT));
+		} catch (Exception e) {
+			UIUtils.showMessageUI(false);
+			logger.error(e.getMessage(), e);
+		}
 
-    }
+	}
 
-    @NotifyChange({"uiEnrolled", "newDevice"})
-    public void cancel() {
+	@Listen("onData=#readyButton")
+	public void notified(Event event) throws Exception {
+		logger.debug("notified ready" + event.getTarget());
+		String errMessage = null;
+		try {
+			if (fido2Service.verifyRegistration(mapper.writeValueAsString(event.getData()))) {
 
-        boolean success;
-        try {
-            /*
-             Remove the recently enrolled key. This is so because once the user touches his key button, oxAuth creates the
-             corresponding entry in LDAP, and if the user regrets adding the current key by not supplying a nickname
-             (and thus pressing cancel), we need to be obliterate the entry
-             */
-            success = fido2Service.removeDevice(newDevice);
-        } catch (Exception e) {
-            success = false;
-            logger.error(e.getMessage(), e);
-        }
-        if (!success) {
-            UIUtils.showMessageUI(false);
-        }
-        resetAddSettings();
+				if (platformAuthenticator) {
+					newTouchId = fido2Service.getLatestSecurityKey(user.getId(), System.currentTimeMillis());
+					if (newTouchId != null) {
+						uiEnrolledPlatformAuthenticator = true;
+						BindUtils.postNotifyChange(this, "uiEnrolledPlatformAuthenticator");
 
-    }
+						uiAwaitingPlatformAuthenticator = false;
+						BindUtils.postNotifyChange(this, "uiAwaitingPlatformAuthenticator");
+					} else {
+						errMessage = Labels.getLabel("general.error.general");
+					}
+				} else {
+					// pick the most suitable recent entry
+					newDevice = fido2Service.getLatestSecurityKey(user.getId(), System.currentTimeMillis());
+					if (newDevice != null) {
 
-    @NotifyChange({"editingId", "newDevice"})
-    public void prepareForUpdate(SecurityKey dev) {
-        //This will make the modal window to become visible
-        editingId = dev.getId();
-        newDevice = new SecurityKey();
-        newDevice.setNickName(dev.getNickName());
-    }
+						uiEnrolled = true;
+						BindUtils.postNotifyChange(this, "uiEnrolled");
 
-    @NotifyChange({"editingId", "newDevice"})
-    public void cancelUpdate(Event event) {
-        newDevice.setNickName(null);
-        editingId = null;
-        if (event != null && event.getName().equals(Events.ON_CLOSE)) {
-            event.stopPropagation();
-        }
-    }
+						uiAwaiting = false;
+						BindUtils.postNotifyChange(this, "uiAwaiting");
+					} else {
+						errMessage = Labels.getLabel("general.error.general");
+					}
 
-    @NotifyChange({"devices", "editingId", "newDevice"})
-    public void update() {
+				}
 
-        String nick = newDevice.getNickName();
-        if (Utils.isNotEmpty(nick)) {
-            int i = Utils.firstTrue(devices, dev -> dev.getId().equals(editingId));
-            SecurityKey dev = devices.get(i);
-            dev.setNickName(nick);
-            cancelUpdate(null);
+			} else {
+				errMessage = Labels.getLabel("usr.fido2.error_invalid");
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			errMessage = Labels.getLabel("general.error.detailed", new String[] { e.getMessage() });
+		}
 
-            try {
-                fido2Service.updateDevice(dev);
-                UIUtils.showMessageUI(true);
-            } catch (Exception e) {
-                UIUtils.showMessageUI(false);
-                logger.error(e.getMessage(), e);
-            }
-        }
+		if (errMessage != null) {
+			UIUtils.showMessageUI(false, errMessage);
+		}
 
-    }
+	}
 
-    public void delete(SecurityKey device) {
+	@Listen("onData=#readyPlatformButton")
+	public void notifiedPlatform(Event event) throws Exception {
+		logger.debug("notified platform ready" + event.getTarget());
+		notified(event);
+	}
 
-        String resetMessages = resetPreferenceMessage(SecurityKey2Extension.ACR, devices.size());
-        boolean reset = resetMessages != null;
-        Pair<String, String> delMessages = getDeleteMessages(device.getNickName(), resetMessages);
+	@Listen("onError=#readyPlatformButton")
+	public void notifiedErrPlatform(Event event) throws Exception {
+		logger.debug("notified notifiedErrPlatform" + event.getTarget());
+		notifiedErr(event);
+	}
 
-        Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO,
-                reset ? Messagebox.EXCLAMATION : Messagebox.QUESTION,
-                event -> {
-                    if (Messagebox.ON_YES.equals(event.getName())) {
-                        try {
-                            devices.remove(device);
-                            boolean success = fido2Service.removeDevice(device);
+	@Listen("onError=#readyButton")
+	public void notifiedErr(Event event) throws Exception {
+		logger.debug("notifiedErr - " + event.getTarget());
+		JSONObject jsonObject = (JSONObject) event.getData();
+		boolean excludedCredentials = (boolean) jsonObject.get("excludeCredentials");
+		String name = Optional.ofNullable(jsonObject.get("name")).map(Object::toString).orElse("");
+		String msg = Optional.ofNullable(jsonObject.get("message")).map(Object::toString).orElse("");
 
-                            if (success) {
-                                if (reset) {
-                                    userService.turn2faOff(user);
-                                }
-                                //trigger refresh (this method is asynchronous...)
-                                BindUtils.postNotifyChange(SecurityKey2ViewModel.this, "devices");
-                            } else{
-                                devices.add(device);
-                            }
-                            UIUtils.showMessageUI(success);
-                        } catch (Exception e) {
-                            UIUtils.showMessageUI(false);
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                });
-    }
+		String message;
+		logger.error("An error occurred when enrolling fido2 cred for user {}. {}: {}", user.getUserName(), name, msg);
 
-    private void resetAddSettings() {
-        uiEnrolled = false;
-        newDevice = new SecurityKey();
-    }
+		if (name.equals("NotAllowedError")) {
+			message = Labels.getLabel(excludedCredentials ? "usr.fido2.error_exclude" : "general.error.general");
+		} else if (name.equals("AbortError")) {
+			message = Labels.getLabel("usr.fido2.error_cancel");
+		} else {
+			message = Labels.getLabel("general.error.detailed", new String[] { msg });
+		}
+		if (platformAuthenticator) {
+			uiAwaitingPlatformAuthenticator = false;
+			BindUtils.postNotifyChange(this, "uiAwaitingPlatformAuthenticator");
+		} else {
+			uiAwaiting = false;
+			BindUtils.postNotifyChange(this, "uiAwaiting");
+		}
+		UIUtils.showMessageUI(false, message);
 
-    private void checkFido2Support() {
+	}
 
-        boolean probablySupported = false;
-        try {
-            BrowserInfo binfo = getBrowserInfo();
-            String name = binfo.getName().toLowerCase();
-            int browserVer = binfo.getMainVersion();
+	@NotifyChange({ "uiEnrolled", "uiEnrolledPlatformAuthenticator", "newDevice", "newTouchId", "devices" })
+	public void add() {
+		logger.debug("add - ");
+		FidoDevice dev = null;
+		if (platformAuthenticator && Utils.isNotEmpty(newTouchId.getNickName())) {
+			dev = newTouchId;
+		} else if (Utils.isNotEmpty(newDevice.getNickName())) {
+			dev = newDevice;
+		}
+		if (dev != null) {
+			try {
+				fido2Service.updateDevice(dev);
+				devices.add(dev);
+				UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
+				userService.notifyEnrollment(user, SecurityKey2Extension.ACR);
+			} catch (Exception e) {
+				UIUtils.showMessageUI(false, Labels.getLabel("usr.error_updating"));
+				logger.error(e.getMessage(), e);
+			}
+			resetAddSettings();
+		}
 
-            probablySupported = (name.contains("edge") && browserVer >= 18) || (name.contains("firefox") && browserVer >= 64)
-                    || (name.contains("chrome") && browserVer >= 71) || (name.contains("opera") && browserVer >= 54);
+	}
 
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        if (!probablySupported) {
-        	fido2SupportMessage = Labels.getLabel("usr.fido2_unsupported_browser");
-        }
+	@NotifyChange({ "uiEnrolled", "uiEnrolledPlatformAuthenticator", "newDevice", "newTouchId" })
+	public void cancel() {
+		logger.info("cancel invoked");
+		boolean success = false;
+		try {
+			/*
+			 * Remove the recently enrolled key. This is so because once the user touches
+			 * his key button, oxAuth creates the corresponding entry in LDAP, and if the
+			 * user regrets adding the current key by not supplying a nickname (and thus
+			 * pressing cancel), we need to be obliterate the entry
+			 */
+			FidoDevice dev = null;
+			if (platformAuthenticator && Utils.isNotEmpty(newTouchId.getNickName())) {
+				dev = newTouchId;
+			} else if (Utils.isNotEmpty(newDevice.getNickName())) {
+				dev = newDevice;
+			}
+			if (dev != null) {
+				success = fido2Service.removeDevice(dev);
+			}
+		} catch (Exception e) {
+			success = false;
+			logger.error(e.getMessage(), e);
+		}
+		if (!success) {
+			UIUtils.showMessageUI(false);
+		}
+		resetAddSettings();
 
-    }
+	}
+
+	@NotifyChange({ "editingId", "editingIdPlatformAuthenticator", "newDevice" })
+	public void prepareForUpdate(FidoDevice dev) {
+		logger.debug("prepareForUpdate");
+		// This will make the modal window to become visible
+		editingId = dev.getId();
+		newDevice = new FidoDevice();
+		newDevice.setNickName(dev.getNickName());
+	}
+
+	@NotifyChange({ "editingId", "editingIdPlatformAuthenticator", "newDevice" })
+	public void cancelUpdate(Event event) {
+		logger.debug("cancelUpdate");
+		newDevice.setNickName(null);
+		editingId = null;
+		if (event != null && event.getName().equals(Events.ON_CLOSE)) {
+			event.stopPropagation();
+		}
+	}
+
+	@NotifyChange({ "devices", "editingId", "editingIdPlatformAuthenticator", "newDevice" })
+	public void update() {
+		logger.debug("update");
+		String nick = newDevice.getNickName();
+
+		if (Utils.isNotEmpty(nick)) {
+
+			int i = Utils.firstTrue(devices, dev -> dev.getId().equals(editingId));
+			FidoDevice dev = devices.get(i);
+			dev.setNickName(nick);
+			cancelUpdate(null);
+
+			try {
+				fido2Service.updateDevice(dev);
+				UIUtils.showMessageUI(true);
+			} catch (Exception e) {
+				UIUtils.showMessageUI(false);
+				logger.error(e.getMessage(), e);
+			}
+		}
+
+	}
+
+	public void delete(FidoDevice device) {
+		logger.debug("delete invoked");
+		String resetMessages = resetPreferenceMessage(SecurityKey2Extension.ACR, devices.size());
+		boolean reset = resetMessages != null;
+		Pair<String, String> delMessages = getDeleteMessages(device.getNickName(), resetMessages);
+
+		Messagebox.show(delMessages.getY(), delMessages.getX(), Messagebox.YES | Messagebox.NO,
+				reset ? Messagebox.EXCLAMATION : Messagebox.QUESTION, event -> {
+					if (Messagebox.ON_YES.equals(event.getName())) {
+						try {
+							devices.remove(device);
+							boolean success = fido2Service.removeDevice(device);
+
+							if (success) {
+								if (reset) {
+									userService.turn2faOff(user);
+								}
+								// trigger refresh (this method is asynchronous...)
+								BindUtils.postNotifyChange(SecurityKey2ViewModel.this, "devices");
+							} else {
+								devices.add(device);
+							}
+							UIUtils.showMessageUI(success);
+						} catch (Exception e) {
+							UIUtils.showMessageUI(false);
+							logger.error(e.getMessage(), e);
+						}
+					}
+				});
+	}
+
+	private void resetAddSettings() {
+		logger.debug("resetAddSettings");
+		uiEnrolled = false;
+		uiEnrolledPlatformAuthenticator = false;
+		newDevice = new SecurityKey();
+		newTouchId = new PlatformAuthenticator();
+	}
+
+	private void checkFido2Support() {
+		logger.debug("checkFido2Support");
+		boolean probablySupported = false;
+		try {
+			BrowserInfo binfo = getBrowserInfo();
+			String name = binfo.getName().toLowerCase();
+			int browserVer = binfo.getMainVersion();
+
+			probablySupported = (name.contains("edge") && browserVer >= 18)
+					|| (name.contains("firefox") && browserVer >= 64) || (name.contains("chrome") && browserVer >= 71)
+					|| (name.contains("opera") && browserVer >= 54);
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		if (!probablySupported) {
+			fido2SupportMessage = Labels.getLabel("usr.fido2_unsupported_browser");
+		}
+
+	}
+
+	@Listen("onData=#platformAuthenticator")
+	public void updatePlatform(Event event) throws Exception {
+		logger.debug("updatePlatform");
+		platformAuthenticator = Boolean.valueOf(event.getData().toString());
+		BindUtils.postNotifyChange(this, "platformAuthenticator");
+
+	}
 
 }

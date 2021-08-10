@@ -14,7 +14,7 @@ public class FidoDevice extends RegisteredCredential implements Comparable<FidoD
     private Date lastAccessTime;
     private String status;
     private String application;
-
+    
     public String getId() {
         return id;
     }
@@ -67,6 +67,12 @@ public class FidoDevice extends RegisteredCredential implements Comparable<FidoD
         long date1 = getCreationDate().getTime();
         long date2 = k.getCreationDate().getTime();
         return (date1 < date2) ? -1 : ((date1 > date2) ? 1 : 0);
+    }
+    
+    public static boolean isPlatformAuthenticator(FidoDevice device) {
+        if (device instanceof PlatformAuthenticator)
+            return true;
+        return false;
     }
 
 }

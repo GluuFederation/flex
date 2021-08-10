@@ -1,6 +1,6 @@
 package org.gluu.casa.plugins.authnmethod.rs.status.u2f;
 
-import org.gluu.casa.core.pojo.SecurityKey;
+import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.misc.Utils;
 
 import javax.ws.rs.core.Response;
@@ -19,7 +19,7 @@ public enum RegistrationCode {
     SUCCESS,
     FAILED;
 
-    public Response getResponse(SecurityKey securityKey) {
+    public Response getResponse(FidoDevice securityKey) {
 
         String json;
         Response.Status httpStatus;
