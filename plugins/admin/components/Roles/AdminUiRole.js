@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import MaterialTable from 'material-table'
 import UiRoleDetailPage from './UiRoleDetailPage'
 import { Badge } from 'reactstrap'
@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 function AdminUiRole({ roles, loading }) {
   const { t } = useTranslation()
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
   roles = roles || []
   const data = [
     {
@@ -64,7 +65,7 @@ function AdminUiRole({ roles, loading }) {
         search: false,
         searchFieldAlignment: 'left',
         selection: false,
-        pageSize: 10,
+        pageSize: pageSize,
         rowStyle: (rowData) => ({
           backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
         }),

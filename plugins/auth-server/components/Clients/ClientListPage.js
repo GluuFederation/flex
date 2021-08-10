@@ -39,6 +39,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const [pattern, setPattern] = useState(null)
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
   const toggle = () => setModal(!modal)
   useEffect(() => {
     makeOptions()
@@ -212,7 +213,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
           search: true,
           searchFieldAlignment: 'left',
           selection: false,
-          pageSize: 10,
+          pageSize: pageSize,
           headerStyle: {
             backgroundColor: '#03a96d',
             color: '#FFF',
