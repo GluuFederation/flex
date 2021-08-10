@@ -43,8 +43,8 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const currentMonth =
     currentDate.getFullYear() +
     String(currentDate.getMonth() + 1).padStart(2, '0')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [startDate, setStartDate] = useState('202101')
+  const [endDate, setEndDate] = useState('202101')
 
   useEffect(() => {
     options['month'] = currentMonth
@@ -127,6 +127,20 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     },
   ]
 
+  const MonthsComponent = <CustomInput type="select" label="To" id={TO_MONTH_ID}>
+    <option value="01">January</option>
+    <option value="02">February</option>
+    <option value="03">March</option>
+    <option value="04">April</option>
+    <option value="05">May</option>
+    <option value="06">June</option>
+    <option value="07">July</option>
+    <option value="08">August</option>
+    <option value="09">September</option>
+    <option value="10">October</option>
+    <option value="11">November</option>
+    <option value="12">December</option>
+  </CustomInput>
   return (
     <GluuLoader blocking={loading}>
       <GluuViewWrapper
@@ -179,20 +193,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   </InputGroup>
                   <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
                   <InputGroup style={{ width: '100px' }} onChange={getEndDate}>
-                    <CustomInput type="select" label="To" id={TO_MONTH_ID}>
-                      <option value="01">January</option>
-                      <option value="02">February</option>
-                      <option value="03">March</option>
-                      <option value="04">April</option>
-                      <option value="05">May</option>
-                      <option value="06">June</option>
-                      <option value="07">July</option>
-                      <option value="08">August</option>
-                      <option value="09">September</option>
-                      <option value="10">October</option>
-                      <option value="11">November</option>
-                      <option value="12">December</option>
-                    </CustomInput>
+                    {MonthsComponent}
                   </InputGroup>
                   <Col>
                     <Button color="info" type="button" onClick={search}>
