@@ -52,8 +52,8 @@ function SettingsPage({  }) {
               </FormGroup>
               <FormGroup row style={{justifyContent:"space-between"}}>
                 <GluuLabel label="Config API URL" />
-                <Label sm={ 3 } style={{display:"flex", flexDirection:"column", justifyContent:"center"}} >
-                  <Badge color={'primary'} style={{fontSize:"100%"}}>admin.org</Badge>
+                <Label style={{display:"flex", flexDirection:"column", justifyContent:"center", paddingLeft:"15px", paddingRight:"15px"}} >
+                  <h3><Badge color={'primary'} >{process.env.CONFIG_API_BASE_URL}</Badge></h3>
                 </Label>
               </FormGroup>
             </CardBody>
