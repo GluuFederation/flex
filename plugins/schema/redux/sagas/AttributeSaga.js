@@ -2,7 +2,10 @@
  * Attribute Sagas
  */
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from '../../../../app/utils/TokenController'
+import {
+  isFourZeroOneError,
+  addAdditionalData,
+} from '../../../../app/utils/TokenController'
 import {
   getAttributesResponse,
   addAttributeResponse,
@@ -10,6 +13,7 @@ import {
   deleteAttributeResponse,
 } from '../actions/AttributeActions'
 import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { postUserAction } from '../../../../app/redux/api/backend-api'
 import {
   GET_ATTRIBUTES,
   SEARCH_ATTRIBUTES,
@@ -17,8 +21,17 @@ import {
   EDIT_ATTRIBUTE,
   DELETE_ATTRIBUTE,
 } from '../actions/types'
+import {
+  CREATE,
+  UPDATE,
+  DELETION,
+  FETCH,
+} from '../../../../app/audit/UserActionType'
 import AttributeApi from '../api/AttributeApi'
 import { getClient } from '../../../../app/redux/api/base'
+import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+
+const PERSON_SCHEMA = 'person schema'
 
 const JansConfigApi = require('jans_config_api')
 
@@ -32,10 +45,13 @@ function* newFunction() {
 }
 
 export function* getAttributes({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.getAllAttributes, payload.options)
     yield put(getAttributesResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(getAttributesResponse(null))
     if (isFourZeroOneError(e)) {
@@ -45,10 +61,13 @@ export function* getAttributes({ payload }) {
   }
 }
 export function* searchAttributes({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.searchAttributes, payload.options)
     yield put(getAttributesResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(getAttributesResponse(null))
     if (isFourZeroOneError(e)) {
@@ -59,10 +78,13 @@ export function* searchAttributes({ payload }) {
 }
 
 export function* addAttribute({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, CREATE, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.addNewAttribute, payload.data)
     yield put(addAttributeResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(addAttributeResponse(null))
     if (isFourZeroOneError(e)) {
@@ -73,10 +95,13 @@ export function* addAttribute({ payload }) {
 }
 
 export function* editAttribute({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, UPDATE, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.editAnAttribute, payload.data)
     yield put(editAttributeResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(editAttributeResponse(null))
     if (isFourZeroOneError(e)) {
@@ -87,10 +112,13 @@ export function* editAttribute({ payload }) {
 }
 
 export function* deleteAttribute({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, DELETION, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
     const data = yield call(attributeApi.deleteAnAttribute, payload.inum)
     yield put(deleteAttributeResponse(payload.inum))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteAttributeResponse(null))
     if (isFourZeroOneError(e)) {
