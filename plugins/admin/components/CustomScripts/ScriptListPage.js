@@ -47,7 +47,6 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const [pattern, setPattern] = useState(null)
   const [selectedScripts, setSelectedScripts] = useState(scripts)
   const [type, setType] = useState('PERSON_AUTHENTICATION')
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
   const toggle = () => setModal(!modal)
 
   function makeOptions() {
