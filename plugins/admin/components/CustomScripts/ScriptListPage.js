@@ -44,6 +44,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const [pattern, setPattern] = useState(null)
   const [selectedScripts, setSelectedScripts] = useState(scripts)
   const [type, setType] = useState('PERSON_AUTHENTICATION')
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
   const toggle = () => setModal(!modal)
 
   function makeOptions() {
@@ -182,7 +183,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
             search: false,
             searchFieldAlignment: 'left',
             selection: false,
-            pageSize: 10,
+            pageSize: pageSize,
             rowStyle: (rowData) => ({
               backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
             }),

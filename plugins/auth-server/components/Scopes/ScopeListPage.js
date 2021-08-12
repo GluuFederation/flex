@@ -40,6 +40,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const [modal, setModal] = useState(false)
   const [limit, setLimit] = useState(100000)
   const [pattern, setPattern] = useState(null)
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
   const toggle = () => setModal(!modal)
 
   useEffect(() => {
@@ -171,7 +172,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
             search: true,
             searchFieldAlignment: 'left',
             selection: false,
-            pageSize: 10,
+            pageSize: pageSize,
             headerStyle: {
               backgroundColor: '#03a96d',
               color: '#FFF',

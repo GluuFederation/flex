@@ -37,6 +37,7 @@ function SqlListPage({
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
   const [alertObj, setAlertObj] = useState({
     severity: '',
     message: '',
@@ -160,7 +161,7 @@ function SqlListPage({
         options={{
           search: true,
           selection: false,
-          pageSize: 10,
+          pageSize: pageSize,
           headerStyle: {
             backgroundColor: '#03a96d',
             color: '#FFF',

@@ -37,6 +37,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
   const toggle = () => setModal(!modal)
   function makeOptions() {
     options['limit'] = parseInt(limit)
@@ -177,7 +178,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
             search: true,
             selection: false,
             searchFieldAlignment: 'left',
-            pageSize: 10,
+            pageSize: pageSize,
             headerStyle: {
               backgroundColor: '#03a96d',
               color: '#FFF',
