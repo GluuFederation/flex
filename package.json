@@ -32,7 +32,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "npm run start:dev",
+    "start": "export $(cat .env | xargs) && npm run start:dev",
     "build:dev": "node ./build/cli-tools.js --clear dist --create dist && webpack --config ./build/webpack.config.client.dev.js",
     "build:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack --config ./build/webpack.config.client.prod.js",
     "build:adminuitest": "NODE_ENV=adminuitest node ./build/cli-tools.js --clear dist --create dist && NODE_ENV=adminuitest webpack --config ./build/webpack.config.client.prod.js",

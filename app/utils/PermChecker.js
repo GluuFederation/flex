@@ -50,6 +50,9 @@ export const SQL_READ = '/config/database/sql.readonly'
 export const SQL_WRITE = '/config/database/sql.write'
 export const SQL_DELETE = '/config/database/sql.delete'
 
+export const STAT_READ = '/config/stats.readonly'
+export const STAT_JANS_READ = 'jans_stat'
+
 const BASE_URL = 'https://jans.io/oauth'
 
 export const hasPermission = (scopes, scope) => {
@@ -75,6 +78,15 @@ export const hasAny = (scopes, scope1, scope2, scope3) => {
       scopes.includes(fullScope2, 0) ||
       scopes.includes(fullScope3, 0)
     )
+  }
+  return false
+}
+
+export const hasBoth = (scopes, scope1, scope2) => {
+  const fullScope1 = BASE_URL + scope1
+  const fullScope2 = scope2
+  if (scopes) {
+    return scopes.includes(fullScope1, 0) && scopes.includes(fullScope2, 0)
   }
   return false
 }

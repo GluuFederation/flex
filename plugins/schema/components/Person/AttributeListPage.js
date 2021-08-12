@@ -6,6 +6,7 @@ import { Badge } from 'reactstrap'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import AttributeDetailPage from './AttributeDetailPage'
 import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
+import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import {
   hasPermission,
   ATTRIBUTE_WRITE,
@@ -23,7 +24,10 @@ import { useTranslation } from 'react-i18next'
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const options = {}
-  const [limit, setLimit] = useState(10)
+  const [pageSize, setPageSize] = useState(
+    localStorage.getItem('paggingSize') || 10,
+  )
+  const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   useEffect(() => {
     makeOptions()
@@ -153,52 +157,54 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }
   return (
     <React.Fragment>
-      <MaterialTable
-        columns={[
-          { title: `${t('fields.inum')}`, field: 'inum' },
-          { title: `${t('fields.displayname')}`, field: 'displayName' },
-          {
-            title: `${t('fields.status')}`,
-            field: 'status',
-            type: 'boolean',
-            render: (rowData) => (
-              <Badge color={getBadgeTheme(rowData.status)}>
-                {rowData.status}
-              </Badge>
-            ),
-          },
-        ]}
-        data={attributes}
-        isLoading={loading}
-        title={t('fields.attributes')}
-        actions={myActions}
-        options={{
-          search: true,
-          selection: false,
-          searchFieldAlignment: 'left',
-          pageSize: pageSize,
-          headerStyle: {
-            backgroundColor: '#03a96d',
-            color: '#FFF',
-            padding: '2px',
-            textTransform: 'uppercase',
-            fontSize: '18px',
-          },
-          actionsColumnIndex: -1,
-        }}
-        detailPanel={(rowData) => {
-          return <AttributeDetailPage row={rowData} />
-        }}
-      />
-       { hasPermission(permissions, ATTRIBUTE_DELETE) &&
+      <GluuViewWrapper canShow={hasPermission(permissions, ATTRIBUTE_READ)}>
+        <MaterialTable
+          columns={[
+            { title: `${t('fields.inum')}`, field: 'inum' },
+            { title: `${t('fields.displayname')}`, field: 'displayName' },
+            {
+              title: `${t('fields.status')}`,
+              field: 'status',
+              type: 'boolean',
+              render: (rowData) => (
+                <Badge color={getBadgeTheme(rowData.status)}>
+                  {rowData.status}
+                </Badge>
+              ),
+            },
+          ]}
+          data={attributes}
+          isLoading={loading}
+          title={t('fields.attributes')}
+          actions={myActions}
+          options={{
+            search: true,
+            selection: false,
+            searchFieldAlignment: 'left',
+            pageSize: pageSize,
+            headerStyle: {
+              backgroundColor: '#03a96d',
+              color: '#FFF',
+              padding: '2px',
+              textTransform: 'uppercase',
+              fontSize: '18px',
+            },
+            actionsColumnIndex: -1,
+          }}
+          detailPanel={(rowData) => {
+            return <AttributeDetailPage row={rowData} />
+          }}
+        />
+      </GluuViewWrapper>
+      {hasPermission(permissions, ATTRIBUTE_DELETE) && (
         <GluuDialog
           row={item}
           handler={toggle}
           modal={modal}
           subject="attribute"
           onAccept={onDeletionConfirmed}
-        /> 
-      }
+        />
+      )}
     </React.Fragment>
   )
 }
