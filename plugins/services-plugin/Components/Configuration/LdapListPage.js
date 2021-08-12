@@ -43,7 +43,7 @@ function LdapListPage({
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
   const [alertObj, setAlertObj] = useState({
     severity: '',
     message: '',

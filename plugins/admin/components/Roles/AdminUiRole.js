@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 function AdminUiRole({ roles, loading }) {
   const { t } = useTranslation()
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
   roles = roles || []
   const data = [
     {

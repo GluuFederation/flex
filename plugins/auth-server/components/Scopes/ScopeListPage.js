@@ -39,7 +39,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const [modal, setModal] = useState(false)
   const [limit, setLimit] = useState(100000)
   const [pattern, setPattern] = useState(null)
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
   const toggle = () => setModal(!modal)
 
   useEffect(() => {
