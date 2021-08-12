@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import CustomScriptDetailPage from './CustomScriptDetailPage'
 import GluuCustomScriptSearch from '../../../../app/routes/Apps/Gluu/GluuCustomScriptSearch'
+import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import {
   deleteCustomScript,
   getCustomScriptByType,
@@ -157,53 +158,57 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   }
   return (
     <React.Fragment>
-      <MaterialTable
-        columns={[
-          { title: `${t('fields.inum')}`, field: 'inum' },
-          { title: `${t('fields.name')}`, field: 'name' },
-          {
-            title: `${t('options.enabled')}`,
-            field: 'enabled',
-            type: 'boolean',
-            render: (rowData) => (
-              <Badge color={rowData.enabled == 'true' ? 'primary' : 'info'}>
-                {rowData.enabled ? 'true' : 'false'}
-              </Badge>
-            ),
-          },
-        ]}
-        data={selectedScripts}
-        isLoading={loading}
-        title={t('titles.scripts')}
-        actions={myActions}
-        options={{
-          search: false,
-          searchFieldAlignment: 'left',
-          selection: false,
-          pageSize: 10,
-          rowStyle: (rowData) => ({
-            backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
-          }),
-          headerStyle: {
-            backgroundColor: '#03a96d',
-            color: '#FFF',
-            padding: '2px',
-            textTransform: 'uppercase',
-            fontSize: '18px',
-          },
-          actionsColumnIndex: -1,
-        }}
-        detailPanel={(rowData) => {
-          return <CustomScriptDetailPage row={rowData} />
-        }}
-      />
-      <GluuDialog
-        row={item}
-        handler={toggle}
-        modal={modal}
-        subject="script"
-        onAccept={onDeletionConfirmed}
-      />
+      <GluuViewWrapper canShow={hasPermission(permissions, SCRIPT_READ)}>
+        <MaterialTable
+          columns={[
+            { title: `${t('fields.inum')}`, field: 'inum' },
+            { title: `${t('fields.name')}`, field: 'name' },
+            {
+              title: `${t('options.enabled')}`,
+              field: 'enabled',
+              type: 'boolean',
+              render: (rowData) => (
+                <Badge color={rowData.enabled == 'true' ? 'primary' : 'info'}>
+                  {rowData.enabled ? 'true' : 'false'}
+                </Badge>
+              ),
+            },
+          ]}
+          data={selectedScripts}
+          isLoading={loading}
+          title={t('titles.scripts')}
+          actions={myActions}
+          options={{
+            search: false,
+            searchFieldAlignment: 'left',
+            selection: false,
+            pageSize: 10,
+            rowStyle: (rowData) => ({
+              backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+            }),
+            headerStyle: {
+              backgroundColor: '#03a96d',
+              color: '#FFF',
+              padding: '2px',
+              textTransform: 'uppercase',
+              fontSize: '18px',
+            },
+            actionsColumnIndex: -1,
+          }}
+          detailPanel={(rowData) => {
+            return <CustomScriptDetailPage row={rowData} />
+          }}
+        />
+      </GluuViewWrapper>
+      {hasPermission(permissions, SCRIPT_DELETE) && (
+        <GluuDialog
+          row={item}
+          handler={toggle}
+          modal={modal}
+          subject="script"
+          onAccept={onDeletionConfirmed}
+        />
+      )}
     </React.Fragment>
   )
 }

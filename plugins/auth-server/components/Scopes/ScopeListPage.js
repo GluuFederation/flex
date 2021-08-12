@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
+import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { useTranslation } from 'react-i18next'
 import {
@@ -148,49 +149,53 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
 
   return (
     <React.Fragment>
-      <MaterialTable
-        columns={[
-          { title: `${t('fields.inum')}`, field: 'inum' },
-          { title: `${t('fields.displayname')}`, field: 'displayName' },
-          { title: `${t('fields.description')}`, field: 'description' },
-          {
-            title: `${t('fields.scope_type')}`,
-            field: 'scopeType',
-            render: (rowData) => (
-              <Badge color="primary">{rowData.scopeType}</Badge>
-            ),
-          },
-        ]}
-        data={scopes}
-        isLoading={loading}
-        title={t('titles.scopes')}
-        actions={myActions}
-        options={{
-          search: true,
-          searchFieldAlignment: 'left',
-          selection: false,
-          pageSize: 10,
-          headerStyle: {
-            backgroundColor: '#03a96d',
-            color: '#FFF',
-            padding: '2px',
-            textTransform: 'uppercase',
-            fontSize: '18px',
-          },
-          actionsColumnIndex: -1,
-        }}
-        detailPanel={(rowData) => {
-          return <ScopeDetailPage row={rowData} />
-        }}
-      />
-      <GluuDialog
-        row={item}
-        name={item.id}
-        handler={toggle}
-        modal={modal}
-        subject="scope"
-        onAccept={onDeletionConfirmed}
-      />
+      <GluuViewWrapper canShow={hasPermission(permissions, SCOPE_READ)}>
+        <MaterialTable
+          columns={[
+            { title: `${t('fields.inum')}`, field: 'inum' },
+            { title: `${t('fields.displayname')}`, field: 'displayName' },
+            { title: `${t('fields.description')}`, field: 'description' },
+            {
+              title: `${t('fields.scope_type')}`,
+              field: 'scopeType',
+              render: (rowData) => (
+                <Badge color="primary">{rowData.scopeType}</Badge>
+              ),
+            },
+          ]}
+          data={scopes}
+          isLoading={loading}
+          title={t('titles.scopes')}
+          actions={myActions}
+          options={{
+            search: true,
+            searchFieldAlignment: 'left',
+            selection: false,
+            pageSize: 10,
+            headerStyle: {
+              backgroundColor: '#03a96d',
+              color: '#FFF',
+              padding: '2px',
+              textTransform: 'uppercase',
+              fontSize: '18px',
+            },
+            actionsColumnIndex: -1,
+          }}
+          detailPanel={(rowData) => {
+            return <ScopeDetailPage row={rowData} />
+          }}
+        />
+      </GluuViewWrapper>
+      {hasPermission(permissions, SCOPE_DELETE) && (
+        <GluuDialog
+          row={item}
+          name={item.id}
+          handler={toggle}
+          modal={modal}
+          subject="scope"
+          onAccept={onDeletionConfirmed}
+        />
+      )}
     </React.Fragment>
   )
 }
