@@ -40,6 +40,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
   const toggle = () => setModal(!modal)
   function makeOptions() {
     options['limit'] = parseInt(limit)
