@@ -36,12 +36,12 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const options = {}
   const myActions = []
   const history = useHistory()
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
   const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
   useEffect(() => {
     makeOptions()
     buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
