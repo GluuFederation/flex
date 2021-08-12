@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next'
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const options = {}
+  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
   const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   useEffect(() => {
