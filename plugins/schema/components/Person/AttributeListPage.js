@@ -24,7 +24,10 @@ import { useTranslation } from 'react-i18next'
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const options = {}
-  const [limit, setLimit] = useState(10)
+  const [pageSize, setPageSize] = useState(
+    localStorage.getItem('paggingSize') || 10,
+  )
+  const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   useEffect(() => {
     makeOptions()
@@ -37,7 +40,6 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
   const toggle = () => setModal(!modal)
   function makeOptions() {
     options['limit'] = parseInt(limit)

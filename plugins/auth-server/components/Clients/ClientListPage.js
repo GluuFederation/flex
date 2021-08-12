@@ -36,11 +36,13 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const options = {}
   const myActions = []
   const history = useHistory()
-  const [limit, setLimit] = useState(50)
+  const [pageSize, setPageSize] = useState(
+    localStorage.getItem('paggingSize') || 10,
+  )
+  const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
   const toggle = () => setModal(!modal)
   useEffect(() => {
     makeOptions()

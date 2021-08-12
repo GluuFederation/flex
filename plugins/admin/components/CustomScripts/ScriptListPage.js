@@ -40,11 +40,13 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const myActions = []
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const [limit, setLimit] = useState(100)
+  const [pageSize, setPageSize] = useState(
+    localStorage.getItem('paggingSize') || 10,
+  )
+  const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   const [selectedScripts, setSelectedScripts] = useState(scripts)
   const [type, setType] = useState('PERSON_AUTHENTICATION')
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize'))
   const toggle = () => setModal(!modal)
 
   function makeOptions() {
