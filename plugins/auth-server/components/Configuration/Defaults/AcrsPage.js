@@ -10,6 +10,7 @@ import {
 } from '../../../../../app/utils/PermChecker'
 import { SIMPLE_PASSWORD_AUTH } from '../../../common/Constants'
 import GluuSelectRow from '../../../../../app/routes/Apps/Gluu/GluuSelectRow'
+import GluuViewWrapper from '../../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
 
@@ -28,35 +29,37 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
   }
   return (
     <GluuLoader blocking={loading}>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          const opts = {}
-          opts['authenticationMethod'] = JSON.stringify(values)
-          dispatch(editAcrs(opts))
-        }}
-      >
-        {(formik) => (
-          <Form onSubmit={formik.handleSubmit}>
-            <GluuSelectRow
-              label="fields.default_acr"
-              name="defaultAcr"
-              value={acrs.defaultAcr}
-              formik={formik}
-              lsize={4}
-              rsize={8}
-              values={authScripts}
-              required
-            ></GluuSelectRow>
+      <GluuViewWrapper canShow={hasPermission(permissions, ACR_READ)}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={(values) => {
+            const opts = {}
+            opts['authenticationMethod'] = JSON.stringify(values)
+            dispatch(editAcrs(opts))
+          }}
+        >
+          {(formik) => (
+            <Form onSubmit={formik.handleSubmit}>
+              <GluuSelectRow
+                label="fields.default_acr"
+                name="defaultAcr"
+                value={acrs.defaultAcr}
+                formik={formik}
+                lsize={4}
+                rsize={8}
+                values={authScripts}
+                required
+              ></GluuSelectRow>
 
-            {hasPermission(permissions, ACR_WRITE) && (
-              <Button color="primary" type="submit">
-                {t('actions.save')}
-              </Button>
-            )}
-          </Form>
-        )}
-      </Formik>
+              {hasPermission(permissions, ACR_WRITE) && (
+                <Button color="primary" type="submit">
+                  {t('actions.save')}
+                </Button>
+              )}
+            </Form>
+          )}
+        </Formik>
+      </GluuViewWrapper>
     </GluuLoader>
   )
 }
