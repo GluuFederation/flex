@@ -16,10 +16,7 @@ import ClientScript from './ClientScriptPanel'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
-import {
-  hasPermission,
-  CLIENT_WRITE
-} from '../../../../app/utils/PermChecker'
+import { hasPermission, CLIENT_WRITE } from '../../../../app/utils/PermChecker'
 
 const sequence = [
   'Basic',
@@ -28,6 +25,7 @@ const sequence = [
   'ClientAttributes',
   'CustomScripts',
 ]
+const ATTRIBUTE = 'attributes'
 let commitMessage = ''
 function ClientWizardForm({
   client,
@@ -140,29 +138,27 @@ function ClientWizardForm({
         onSubmit={(values) => {
           values['action_message'] = commitMessage
           values[
-            'attributes'
+            ATTRIBUTE
           ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
             values.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
-          values['attributes'].keepClientAuthorizationAfterExpiration =
+          values[ATTRIBUTE].keepClientAuthorizationAfterExpiration =
             values.keepClientAuthorizationAfterExpiration
-          values['attributes'].allowSpontaneousScopes =
+          values[ATTRIBUTE].allowSpontaneousScopes =
             values.allowSpontaneousScopes
-          values['attributes'].backchannelLogoutSessionRequired =
+          values[ATTRIBUTE].backchannelLogoutSessionRequired =
             values.backchannelLogoutSessionRequired
-          values['attributes'].tlsClientAuthSubjectDn =
+          values[ATTRIBUTE].tlsClientAuthSubjectDn =
             values.tlsClientAuthSubjectDn
-          values['attributes'].spontaneousScopes = values.spontaneousScopes
-          values['attributes'].introspectionScripts =
-            values.introspectionScripts
-          values['attributes'].spontaneousScopeScriptDns =
+          values[ATTRIBUTE].spontaneousScopes = values.spontaneousScopes
+          values[ATTRIBUTE].introspectionScripts = values.introspectionScripts
+          values[ATTRIBUTE].spontaneousScopeScriptDns =
             values.spontaneousScopeScriptDns
-          values['attributes'].consentGatheringScripts =
+          values[ATTRIBUTE].consentGatheringScripts =
             values.consentGatheringScripts
-          values['attributes'].rptClaimsScripts = values.rptClaimsScripts
-          values['attributes'].backchannelLogoutUri =
-            values.backchannelLogoutUri
-          values['attributes'].postAuthnScripts = values.postAuthnScripts
-          values['attributes'].additionalAudience = values.additionalAudience
+          values[ATTRIBUTE].rptClaimsScripts = values.rptClaimsScripts
+          values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
+          values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
+          values[ATTRIBUTE].additionalAudience = values.additionalAudience
           if (!values['customAttributes']) {
             values['customAttributes'] = []
           }
@@ -283,16 +279,17 @@ function ClientWizardForm({
                       <i className="fa fa-angle-right ml-2"></i>
                     </Button>
                   )}
-                  {currentStep === sequence[sequence.length - 1] && hasPermission(permissions, CLIENT_WRITE) && (
-                    <Button
-                      type="button"
-                      color="primary"
-                      className="ml-auto px-4"
-                      onClick={toggle}
-                    >
-                      {t('actions.apply')}
-                    </Button>
-                  )}
+                  {currentStep === sequence[sequence.length - 1] &&
+                    hasPermission(permissions, CLIENT_WRITE) && (
+                      <Button
+                        type="button"
+                        color="primary"
+                        className="ml-auto px-4"
+                        onClick={toggle}
+                      >
+                        {t('actions.apply')}
+                      </Button>
+                    )}
                 </div>
               </CardFooter>
               <Button

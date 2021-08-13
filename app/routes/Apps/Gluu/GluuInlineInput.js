@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import GluuLabel from './GluuLabel'
 import { useTranslation } from 'react-i18next'
 import { Typeahead } from 'react-bootstrap-typeahead'
+import Tooltip from '@material-ui/core/Tooltip'
+import { withStyles } from '@material-ui/core/styles'
 import {
   Col,
   InputGroup,
@@ -28,6 +30,14 @@ function GluuInlineInput({
   const { t } = useTranslation()
   const VALUE = 'value'
   const PATH = 'path'
+  const GluuTooltip = withStyles({
+    tooltip: {
+      color: 'white',
+      textAlign: 'center',
+      minWidth: '100px',
+      backgroundColor: 'green',
+    },
+  })(Tooltip)
   const [show, setShow] = useState(false)
   const [correctValue, setCorrectValue] = useState([])
   const onValueChanged = () => {
@@ -60,13 +70,15 @@ function GluuInlineInput({
           <GluuLabel label={label} size={lsize} required={required} />
           <Col sm={rsize}>
             {!isBoolean && !isArray && (
-              <Input
-                id={name}
-                name={name}
-                type={type}
-                defaultValue={value}
-                onChange={onValueChanged}
-              />
+              <GluuTooltip title={label}>
+                <Input
+                  id={name}
+                  name={name}
+                  type={type}
+                  defaultValue={value}
+                  onChange={onValueChanged}
+                />
+              </GluuTooltip>
             )}
             {isBoolean && (
               <InputGroup>

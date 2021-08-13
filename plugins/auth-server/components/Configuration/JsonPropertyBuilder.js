@@ -54,6 +54,11 @@ function JsonPropertyBuilder({
     return typeof item === 'object'
   }
 
+  function generateLabel(name) {
+    const result = name.replace(/([A-Z])/g, ' $1')
+    return result.charAt(0).toUpperCase() + result.slice(1)
+  }
+
   if (isBoolean(propValue)) {
     return (
       <GluuInlineInput
@@ -61,7 +66,7 @@ function JsonPropertyBuilder({
         name={propKey}
         lsize={lSize}
         rsize={lSize}
-        label={propKey}
+        label={generateLabel(propKey)}
         isBoolean={true}
         handler={handler}
         value={propValue}
@@ -77,7 +82,7 @@ function JsonPropertyBuilder({
         name={propKey}
         lsize={lSize}
         rsize={lSize}
-        label={propKey}
+        label={generateLabel(propKey)}
         handler={handler}
         value={propValue}
         parentIsArray={parentIsArray}
@@ -93,7 +98,7 @@ function JsonPropertyBuilder({
         lsize={lSize}
         type="number"
         rsize={lSize}
-        label={propKey}
+        label={generateLabel(propKey)}
         handler={handler}
         value={propValue}
         parentIsArray={parentIsArray}
@@ -106,7 +111,7 @@ function JsonPropertyBuilder({
       <GluuInlineInput
         id={propKey}
         name={propKey}
-        label={propKey}
+        label={generateLabel(propKey)}
         value={propValue}
         lsize={lSize}
         rsize={lSize}

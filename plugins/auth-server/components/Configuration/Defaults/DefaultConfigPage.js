@@ -9,9 +9,7 @@ import {
   Card,
   CardBody,
 } from '../../../../../app/components'
-import {
-  getJsonConfig,
-} from '../../../redux/actions/JsonConfigActions'
+import { getJsonConfig } from '../../../redux/actions/JsonConfigActions'
 
 function DefaultConfigPage({ dispatch }) {
   const { t } = useTranslation()
