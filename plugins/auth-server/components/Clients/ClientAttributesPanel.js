@@ -23,7 +23,7 @@ function ClientAttributesPanel({ client, formik }) {
   return (
     <Container>
       <FormGroup row>
-        <GluuLabel label={t("Tls Client Auth Subject Dn")} />
+        <GluuLabel label="fields.tls_client_auth_subject_dn" />
         <Col sm={9}>
           <Input
             id="tlsClientAuthSubjectDn"
@@ -35,7 +35,7 @@ function ClientAttributesPanel({ client, formik }) {
       </FormGroup>
       <GluuBooleanSelectBox
         name="runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims"
-        label={t("Run Introspection Script Before AccessToken As Jwt Creation And Include Claims")}
+        label="fields.run_introspection_script_before_accesstoken"
         value={
           client.attributes
             .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
@@ -46,7 +46,7 @@ function ClientAttributesPanel({ client, formik }) {
       />
       <GluuBooleanSelectBox
         name="keepClientAuthorizationAfterExpiration"
-        label={t("Keep Client Authorization After Expiration")}
+        label="fields.keep_client_authorization"
         value={client.attributes.keepClientAuthorizationAfterExpiration}
         formik={formik}
         lsize={8}
@@ -54,7 +54,7 @@ function ClientAttributesPanel({ client, formik }) {
       />
       <GluuBooleanSelectBox
         name="allowSpontaneousScopes"
-        label={t("Allow Spontaneous Scopes")}
+        label="fields.allow_spontaneous_scopes"
         value={client.attributes.allowSpontaneousScopes}
         formik={formik}
         lsize={8}
@@ -62,7 +62,7 @@ function ClientAttributesPanel({ client, formik }) {
       />
       <GluuBooleanSelectBox
         name="backchannelLogoutSessionRequired"
-        label={t("Back Channel Logout Session Required")}
+        label="fields.backchannelLogoutSessionRequired"
         value={client.attributes.backchannelLogoutSessionRequired}
         formik={formik}
         lsize={8}
@@ -70,9 +70,9 @@ function ClientAttributesPanel({ client, formik }) {
       />
       <GluuTypeAheadWithAdd
         name="backchannelLogoutUri"
-        label={t("Back Channel Logout Uri")}
+        label="fields.backchannelLogoutUri"
         formik={formik}
-        placeholder={t("Enter a valid uri with pattern")+" https://"}
+        placeholder={t('Enter a valid uri with pattern') + ' https://'}
         value={client.attributes.backchannelLogoutUri || []}
         options={backchannelLogoutUris}
         validator={uriValidator}
@@ -80,7 +80,7 @@ function ClientAttributesPanel({ client, formik }) {
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="additionalAudience"
-        label={t("Additional Audience")}
+        label="fields.additionalAudience"
         formik={formik}
         value={client.attributes.additionalAudience || []}
         options={additionalAudiences}
