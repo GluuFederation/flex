@@ -16,12 +16,12 @@ const DropdownProfile = (props) => {
         </DropdownItem>
         <DropdownItem divider />
         <DropdownItem tag={Link} to="/profile">
-          {t("My Profile")}
+          {t("menus.my_profile")}
         </DropdownItem>
         <DropdownItem divider />
         <DropdownItem tag={Link} to="/logout">
           <i className="fa fa-fw fa-sign-out mr-2"></i>
-          {t("Sign Out")}
+          {t("menus.signout")}
         </DropdownItem>
       </DropdownMenu>
     </React.Fragment>

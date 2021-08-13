@@ -29,41 +29,41 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
 
   const attributeData = [
     {
-      name: 'Active',
+      name: `${t('fields.active')}`,
       value: attributes.filter((item) => item.status === 'ACTIVE').length,
     },
     {
-      name: 'InActive',
+      name: `${t('fields.inactive')}`,
       value: attributes.filter((item) => item.status === 'INACTIVE').length,
     },
   ]
   const clientData = [
     {
-      name: 'Enabled',
+      name: `${t('fields.enabled')}`,
       value: clients.filter((item) => !item.disabled).length,
     },
     {
-      name: 'Disabled',
+      name: `${t('fields.disabled')}`,
       value: clients.filter((item) => item.disabled).length,
     },
   ]
   const scopeData = [
     {
-      name: 'OAuth',
+      name: `${t('fields.oauth')}`,
       value: scopes.filter((item) => item.scopeType === 'oauth').length,
     },
     {
-      name: 'OpenID',
+      name: `${t('fields.openid')}`,
       value: scopes.filter((item) => item.scopeType === 'openid').length,
     },
   ]
   const scriptData = [
     {
-      name: 'Enabled',
+      name: `${t('fields.enabled')}`,
       value: scripts.filter((item) => item.enabled).length,
     },
     {
-      name: 'Disabled',
+      name: `${t('fields.disabled')}`,
       value: scripts.filter((item) => !item.enabled).length,
     },
   ]
@@ -99,7 +99,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                {t('All OIDC Clients')}
+                {t('titles.all_oidc_clients')}
               </CardTitle>
               <ReportPiChartItem data={clientData} />
               <div>
@@ -118,7 +118,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                {t('All Attributes')}
+                {t('titles.all_attributes')}
               </CardTitle>
               <ReportPiChartItem data={attributeData} />
               <div>
@@ -142,7 +142,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                {t('All Scopes')}
+                {t('titles.all_scopes')}
               </CardTitle>
               <ReportPiChartItem data={scopeData} />
               <div>
@@ -166,7 +166,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
           <Card className="mb-3">
             <CardBody>
               <CardTitle tag="h6" className="mb-4">
-                {t('All Custom Scripts')}
+                {t('titles.all_custom_scripts')}
               </CardTitle>
               <ReportPiChartItem data={scriptData} />
               <div>
