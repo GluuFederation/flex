@@ -13,14 +13,14 @@ import {
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import {
-  LineChart,
-  Line,
-  Legend,
-  CartesianGrid,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
-  ResponsiveContainer,
+  CartesianGrid,
   Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from 'recharts'
 import {
   hasBoth,
@@ -82,50 +82,133 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   }
   const { t } = useTranslation()
   console.log('========stat ' + JSON.stringify(stat))
-  const data = [
-    {
-      name: '19-07-2021',
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
+  const data = {
+    '202101': {
+      monthly_active_users: 1939497078,
+      token_count_per_granttype: {
+        implicit: {
+          access_token: 8843443,
+          refresh_token: 361678620,
+          uma_token: 257653798,
+          id_token: 1196937417,
+        },
+        refresh_token: {
+          access_token: 198484847,
+          refresh_token: 527458534,
+          uma_token: 1552211159,
+          id_token: 2077968838,
+        },
+        password: {
+          access_token: 21293868,
+          refresh_token: 2003904704,
+          uma_token: 44144850,
+          id_token: 1713870170,
+        },
+        client_credentials: {
+          access_token: 1656091541,
+          refresh_token: 875245682,
+          uma_token: 1920358732,
+          id_token: 2029924857,
+        },
+        'urn:ietf:params:oauth:grant-type:device_code': {
+          access_token: 871050693,
+          refresh_token: 735390384,
+          uma_token: 902227655,
+          id_token: 572398177,
+        },
+        authorization_code: {
+          access_token: 1468057290,
+          refresh_token: 1576996227,
+          uma_token: 1755565333,
+          id_token: 944346498,
+        },
+        'urn:openid:params:grant-type:ciba': {
+          access_token: 1187334485,
+          refresh_token: 1043290537,
+          uma_token: 206572517,
+          id_token: 1850166398,
+        },
+        'urn:ietf:params:oauth:grant-type:uma-ticket': {
+          access_token: 933970698,
+          refresh_token: 1089756841,
+          uma_token: 352343374,
+          id_token: 645686974,
+        },
+      },
     },
-    {
-      name: '20-07-2021',
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
+    '202012': {
+      monthly_active_users: 1620607010,
+      token_count_per_granttype: {
+        implicit: {
+          access_token: 20676511,
+          refresh_token: 960308503,
+          uma_token: 703633153,
+          id_token: 573544490,
+        },
+        refresh_token: {
+          access_token: 526463917,
+          refresh_token: 483679318,
+          uma_token: 545888615,
+          id_token: 951286042,
+        },
+        password: {
+          access_token: 1883167951,
+          refresh_token: 1636169697,
+          uma_token: 1753544837,
+          id_token: 1675535757,
+        },
+        client_credentials: {
+          access_token: 290209545,
+          refresh_token: 1635984977,
+          uma_token: 1066472511,
+          id_token: 463520941,
+        },
+        'urn:ietf:params:oauth:grant-type:device_code': {
+          access_token: 84124820,
+          refresh_token: 1705729386,
+          uma_token: 2070635541,
+          id_token: 970034925,
+        },
+        authorization_code: {
+          access_token: 387026047,
+          refresh_token: 907425179,
+          uma_token: 370523863,
+          id_token: 1807260512,
+        },
+        'urn:openid:params:grant-type:ciba': {
+          access_token: 1408098991,
+          refresh_token: 819153423,
+          uma_token: 936295536,
+          id_token: 378210748,
+        },
+        'urn:ietf:params:oauth:grant-type:uma-ticket': {
+          access_token: 381038617,
+          refresh_token: 828068056,
+          uma_token: 448746427,
+          id_token: 650520169,
+        },
+      },
     },
-    {
-      name: '21-07-2021',
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: '22-07-2021',
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: '23-07-2021',
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: '24-07-2021',
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: '25-07-2021',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ]
+  }
+  const mData = Object.entries(data)
+  const mapData = mData.map((entry) => {
+    let jsonData = {}
+    jsonData['month'] = String(entry[0])
+    jsonData['monthly_active_users'] = entry[1].monthly_active_users
+    jsonData['monthly_refresh_token'] =
+      entry[1].token_count_per_granttype.refresh_token.refresh_token
+    jsonData['monthly_password'] =
+      entry[1].token_count_per_granttype.password.refresh_token
+    jsonData['monthly_implicit'] =
+      entry[1].token_count_per_granttype.implicit.refresh_token
+    jsonData['monthly_client_credentials'] =
+      entry[1].token_count_per_granttype.client_credentials.refresh_token
+    jsonData['monthly_authorization_code'] =
+      entry[1].token_count_per_granttype.authorization_code.refresh_token
+    return jsonData
+  })
+
+  console.log('================= ' + JSON.stringify(mapData))
 
   const MonthsComponent = (
     <CustomInput type="select" label="To" id={TO_MONTH_ID}>
@@ -223,35 +306,31 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   </Col>
                 </FormGroup>
                 <FormGroup row>
-                  <LineChart
+                  <BarChart
                     width={900}
                     height={400}
-                    data={data}
+                    data={mapData}
                     margin={{
                       top: 5,
                       right: 5,
-                      left: 5,
+                      left: 60,
                       bottom: 5,
                     }}
                   >
-                    <XAxis dataKey="name" padding={{ left: 30, right: 30 }} />
+                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                    <XAxis dataKey="month" />
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="uv"
-                      stroke="#870000"
-                      activeDot={{ r: 8 }}
+                    <Bar
+                      dataKey="monthly_active_users"
+                      fill="#009624"
+                      background={{ fill: '#eee' }}
                     />
-                    <Line
-                      type="monotone"
-                      dataKey="pv"
-                      stroke="#03a96d"
-                      activeDot={{ r: 8 }}
-                    />
-                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  </LineChart>
+                    <Bar dataKey="monthly_refresh_token" fill="#88ffff" />
+                    <Bar dataKey="monthly_password" fill="#000051" />
+                    <Bar dataKey="monthly_implicit" fill="#ffc4ff" />
+                  </BarChart>
                 </FormGroup>
               </Container>
             </CardBody>
