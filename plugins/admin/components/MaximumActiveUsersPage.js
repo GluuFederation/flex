@@ -12,6 +12,7 @@ import {
 } from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
+import ActiveUserStatPanel from './ActiveUserStatPanel'
 import {
   BarChart,
   Bar,
@@ -63,7 +64,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     dispatch(getMau(userAction))
   }
   function search() {
-    options['month'] = startDate + '%' + endDate
+    options['month'] = startDate + String('%') + endDate
     buildPayload(userAction, 'GET CURENT YEAR MAU', options)
     dispatch(getMau(userAction))
   }
@@ -195,16 +196,103 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     let jsonData = {}
     jsonData['month'] = String(entry[0])
     jsonData['monthly_active_users'] = entry[1].monthly_active_users
-    jsonData['monthly_refresh_token'] =
+
+    jsonData['monthly_refresh_token_refresh_token'] =
       entry[1].token_count_per_granttype.refresh_token.refresh_token
-    jsonData['monthly_password'] =
+    jsonData['monthly_refresh_token_access_token'] =
+      entry[1].token_count_per_granttype.refresh_token.access_token
+    jsonData['monthly_refresh_token_uma_token'] =
+      entry[1].token_count_per_granttype.refresh_token.uma_token
+    jsonData['monthly_refresh_token_id_token'] =
+      entry[1].token_count_per_granttype.refresh_token.id_token
+
+    jsonData['monthly_password_refresh_token'] =
       entry[1].token_count_per_granttype.password.refresh_token
-    jsonData['monthly_implicit'] =
+    jsonData['monthly_password_access_token'] =
+      entry[1].token_count_per_granttype.password.access_token
+    jsonData['monthly_password_uma_token'] =
+      entry[1].token_count_per_granttype.password.uma_token
+    jsonData['monthly_password_id_token'] =
+      entry[1].token_count_per_granttype.password.id_token
+
+    jsonData['monthly_implicit_refresh_token'] =
       entry[1].token_count_per_granttype.implicit.refresh_token
-    jsonData['monthly_client_credentials'] =
+    jsonData['monthly_implicit_access_token'] =
+      entry[1].token_count_per_granttype.implicit.access_token
+    jsonData['monthly_implicit_uma_token'] =
+      entry[1].token_count_per_granttype.implicit.uma_token
+    jsonData['monthly_implicit_id_token'] =
+      entry[1].token_count_per_granttype.implicit.id_token
+
+    jsonData['monthly_client_credentials_refresh_token'] =
       entry[1].token_count_per_granttype.client_credentials.refresh_token
-    jsonData['monthly_authorization_code'] =
+    jsonData['monthly_client_credentials_access_token'] =
+      entry[1].token_count_per_granttype.client_credentials.access_token
+    jsonData['monthly_client_credentials_uma_token'] =
+      entry[1].token_count_per_granttype.client_credentials.uma_token
+    jsonData['monthly_client_credentials_id_token'] =
+      entry[1].token_count_per_granttype.client_credentials.id_token
+
+    jsonData['monthly_authorization_code_refresh_token'] =
       entry[1].token_count_per_granttype.authorization_code.refresh_token
+    jsonData['monthly_authorization_code_access_token'] =
+      entry[1].token_count_per_granttype.authorization_code.access_token
+    jsonData['monthly_authorization_code_uma_token'] =
+      entry[1].token_count_per_granttype.authorization_code.uma_token
+    jsonData['monthly_authorization_code_id_token'] =
+      entry[1].token_count_per_granttype.authorization_code.id_token
+
+    jsonData['monthly_device_code_refresh_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:ietf:params:oauth:grant-type:device_code'
+      ].refresh_token
+    jsonData['monthly_device_code_access_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:ietf:params:oauth:grant-type:device_code'
+      ].access_token
+    jsonData['monthly_device_code_uma_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:ietf:params:oauth:grant-type:device_code'
+      ].uma_token
+    jsonData['monthly_device_code_id_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:ietf:params:oauth:grant-type:device_code'
+      ].id_token
+
+    jsonData['monthly_ciba_refresh_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:openid:params:grant-type:ciba'
+      ].refresh_token
+    jsonData['monthly_ciba_access_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:openid:params:grant-type:ciba'
+      ].access_token
+    jsonData['monthly_ciba_uma_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:openid:params:grant-type:ciba'
+      ].uma_token
+    jsonData['monthly_ciba_id_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:openid:params:grant-type:ciba'
+      ].id_token
+
+    jsonData['monthly_uma-ticket_refresh_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:ietf:params:oauth:grant-type:uma-ticket'
+      ].refresh_token
+    jsonData['monthly_uma-ticket_access_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:ietf:params:oauth:grant-type:uma-ticket'
+      ].access_token
+    jsonData['monthly_uma-ticket_uma_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:ietf:params:oauth:grant-type:uma-ticket'
+      ].uma_token
+    jsonData['monthly_uma-ticket_id_token'] =
+      entry[1].token_count_per_granttype[
+        'urn:ietf:params:oauth:grant-type:uma-ticket'
+      ].id_token
+
     return jsonData
   })
 
@@ -304,6 +392,9 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                       {t('actions.currentMonth')}
                     </Button>
                   </Col>
+                </FormGroup>
+                <FormGroup row>
+                  <ActiveUserStatPanel data={mapData}></ActiveUserStatPanel>
                 </FormGroup>
                 <FormGroup row>
                   <BarChart
