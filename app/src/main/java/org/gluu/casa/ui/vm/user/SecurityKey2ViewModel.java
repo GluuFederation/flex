@@ -62,8 +62,18 @@ public class SecurityKey2ViewModel extends UserViewModel {
 	private boolean uiEnrolledPlatformAuthenticator;
 
 	private boolean platformAuthenticator;
+	
+	private boolean showUIPlatformAuthenticator;
 
 	private ObjectMapper mapper;
+
+	public boolean isShowUIPlatformAuthenticator() {
+		return showUIPlatformAuthenticator;
+	}
+
+	public void setShowUIPlatformAuthenticator(boolean showUIPlatformAuthenticator) {
+		this.showUIPlatformAuthenticator = showUIPlatformAuthenticator;
+	}
 
 	public FidoDevice getNewDevice() {
 		return newDevice;
@@ -139,8 +149,14 @@ public class SecurityKey2ViewModel extends UserViewModel {
 
 	}
 
+	public void triggerAttestationRequestPlatformAuthenticator()
+	{
+		platformAuthenticator = true;
+		triggerAttestationRequest();
+	}
+	
 	public void triggerAttestationRequest() {
-		logger.debug("triggerAttestationRequest");
+		logger.debug("triggerAttestationRequest : "+platformAuthenticator);
 		try {
 
 			if (platformAuthenticator) {
@@ -157,7 +173,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
 			// Notify browser to exec proper function
 			UIUtils.showMessageUI(Clients.NOTIFICATION_TYPE_INFO, Labels.getLabel("usr.fido2_touch"));
 			Clients.response(
-					new AuInvoke("triggerFido2Attestation", new JavaScriptValue(jsonRequest), REGISTRATION_TIMEOUT));
+					new AuInvoke(platformAuthenticator? "triggerFido2AttestationPA" : "triggerFido2Attestation", new JavaScriptValue(jsonRequest), REGISTRATION_TIMEOUT));
 		} catch (Exception e) {
 			UIUtils.showMessageUI(false);
 			logger.error(e.getMessage(), e);
@@ -413,9 +429,10 @@ public class SecurityKey2ViewModel extends UserViewModel {
 
 	@Listen("onData=#platformAuthenticator")
 	public void updatePlatform(Event event) throws Exception {
+		
+		showUIPlatformAuthenticator = Boolean.valueOf(event.getData().toString());
 		logger.debug("updatePlatform");
-		platformAuthenticator = Boolean.valueOf(event.getData().toString());
-		BindUtils.postNotifyChange(this, "platformAuthenticator");
+		BindUtils.postNotifyChange(this, "showUIPlatformAuthenticator");
 
 	}
 

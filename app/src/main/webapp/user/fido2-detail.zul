@@ -91,7 +91,7 @@
                 
                 
                 <!-- loaded when platform Authenticator exists -->
-                 <z:div class="${css.panel} bg-near-white" id="platformAuthenticator" visible="@load(vm.platformAuthenticator)">
+                 <z:div class="${css.panel} bg-near-white" id="platformAuthenticator" visible="@load(vm.showUIPlatformAuthenticator)">
                     <h2 class="f5 dark-blue2 pt1">${labels.usr.fido2_add_touchId}</h2>
                     <div class="alert alert-success dn" id="feedback-key-platform" role="alert" />
 					
@@ -102,7 +102,7 @@
                         <z:image src="${assetsService.prefix}/images/throbber.gif" visible="@load(vm.uiAwaitingPlatformAuthenticator)" />
                     </div> 
                     <z:button id="readyPlatformButton" label="${labels.general.ready}" sclass="${css.primaryButton}"
-                              w:onClick="alertRef = $('#feedback-key-platform'); initialize(this)" onClick="@('triggerAttestationRequest')" />
+                              w:onClick="alertRef = $('#feedback-key-platform'); initialize(this)" onClick="@('triggerAttestationRequestPlatformAuthenticator')" />
 					
                     <z:div sclass="flex flex-wrap pt2" visible="@load(vm.uiEnrolledPlatformAuthenticator)">
                         <div class="relative w5 mt3 pr3">

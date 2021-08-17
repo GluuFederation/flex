@@ -10,8 +10,14 @@ function initialize(wgt){
 
 function triggerFido2Attestation(req){
     //Wait half a second to start attestation
-	setTimeout(startAttestation, 500, req)
+	setTimeout(startAttestation, 1000, req)
 }
+
+function triggerFido2AttestationPA(req){
+	console.error('triggerFido2AttestationPA invoked')
+	startAttestation(req)
+}
+
 
 function startAttestation(request) {
     console.log('Executing get attestation Fido2 request'+ JSON.stringify(request))
@@ -20,7 +26,7 @@ function startAttestation(request) {
     webauthn.createCredential(request)
         .then(data => sendBack(webauthn.responseToObject(data), "onData"))
         .catch(err => {
-            console.error('Registration failed'+ err)
+            console.error('Registration failed- '+ err)
             let errObj = {}
             errObj['excludeCredentials'] = request.excludeCredentials && request.excludeCredentials.length > 0
             errObj['name'] = err.name
