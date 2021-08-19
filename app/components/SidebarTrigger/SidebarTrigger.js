@@ -11,7 +11,8 @@ const SidebarTrigger = (props) => {
       active={ Tag !== 'a' ? !pageConfig.sidebarCollapsed : undefined }
       { ...otherProps }
     >
-      { props.children }
+      {pageConfig.sidebarCollapsed && <i className="fa fa-bars fa-fw fa-2x" style={{color: 'white', cursor: 'pointer'}}></i>}
+      {!pageConfig.sidebarCollapsed && <i className="fa fa-times fa-fw fa-2x" style={{color: 'white', cursor: 'pointer'}}></i>}
     </Tag>
   );
 };
@@ -22,7 +23,6 @@ SidebarTrigger.propTypes = {
 };
 SidebarTrigger.defaultProps = {
   tag: NavLink,
-  children: <i className="fa fa-bars fa-fw fa-2x" style={{color: 'white', cursor: 'pointer'}}></i>
 };
 
 const cfgSidebarTrigger = withPageConfig(SidebarTrigger);
