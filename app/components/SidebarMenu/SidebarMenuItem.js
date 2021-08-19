@@ -40,6 +40,7 @@ SidebarMenuItemLink.propTypes = {
   onToggle: PropTypes.func,
   children: PropTypes.node,
   classBase: PropTypes.string,
+  textStyle: PropTypes.object
 }
 
 /**
@@ -65,6 +66,7 @@ export class SidebarMenuItem extends React.Component {
     href: PropTypes.string,
     exact: PropTypes.bool,
     noCaret: PropTypes.bool,
+    textStyle: PropTypes.object
   }
 
   static defaultProps = {
@@ -118,7 +120,8 @@ export class SidebarMenuItem extends React.Component {
       color: 'white !important',
       backgroundColor: 'rgb(3, 169, 109)',
     }
-    const nonaActiveMenu = {}
+    const nonaActiveMenu = {
+    }
 
     function getStyle(itemClass) {
       if (
@@ -152,7 +155,7 @@ export class SidebarMenuItem extends React.Component {
                 ),
               })}
             {typeof this.props.title === 'string' ? (
-              <span>{this.props.title}</span>
+              <span style={this.props.textStyle}>{this.props.title}</span>
             ) : (
               this.props.title
             )}
