@@ -12,7 +12,7 @@ import { MenuContext } from './MenuContext'
 const SidebarMenuItemLink = (props) =>
   props.to || props.href ? (
     props.to ? (
-      <Link to={props.to} className={`${props.classBase}__entry__link`}>
+      <Link to={props.to} style={props.textStyle} className={`${props.classBase}__entry__link`}>
         {props.children}
       </Link>
     ) : (
@@ -21,6 +21,7 @@ const SidebarMenuItemLink = (props) =>
         target="_blank"
         rel="noopener noreferrer"
         className={`${props.classBase}__entry__link`}
+        style={props.textStyle}
       >
         {props.children}
       </a>
@@ -29,6 +30,7 @@ const SidebarMenuItemLink = (props) =>
     <a
       className={`${props.classBase}__entry__link`}
       onClick={() => props.onToggle()}
+      style={props.textStyle}
     >
       {props.children}
     </a>
@@ -40,6 +42,7 @@ SidebarMenuItemLink.propTypes = {
   onToggle: PropTypes.func,
   children: PropTypes.node,
   classBase: PropTypes.string,
+  textStyle: PropTypes.object
 }
 
 /**
@@ -65,6 +68,7 @@ export class SidebarMenuItem extends React.Component {
     href: PropTypes.string,
     exact: PropTypes.bool,
     noCaret: PropTypes.bool,
+    textStyle: PropTypes.object
   }
 
   static defaultProps = {
@@ -118,7 +122,8 @@ export class SidebarMenuItem extends React.Component {
       color: 'white !important',
       backgroundColor: 'rgb(3, 169, 109)',
     }
-    const nonaActiveMenu = {}
+    const nonaActiveMenu = {
+    }
 
     function getStyle(itemClass) {
       if (
@@ -143,6 +148,7 @@ export class SidebarMenuItem extends React.Component {
             href={this.props.href || null}
             onToggle={this.toggleNode.bind(this)}
             classBase={classBase}
+            textStyle={this.props.textStyle}
           >
             {this.props.icon &&
               React.cloneElement(this.props.icon, {
@@ -152,7 +158,7 @@ export class SidebarMenuItem extends React.Component {
                 ),
               })}
             {typeof this.props.title === 'string' ? (
-              <span>{this.props.title}</span>
+              <span style={this.props.textStyle}>{this.props.title}</span>
             ) : (
               this.props.title
             )}
