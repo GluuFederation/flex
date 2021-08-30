@@ -27,6 +27,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 @ApplicationScoped
 @Path("/config/cors")
 @ProtectedApi( scopes = "casa.config" )
+@Deprecated
 public class CORSDomainsWS extends BaseWS {
 
     @Inject

@@ -15,12 +15,6 @@
 	</parent>
 
     <dependencies>
-
-        <!-- PF4J -->
-        <dependency>
-            <groupId>org.pf4j</groupId>
-            <artifactId>pf4j</artifactId>
-        </dependency>
         
         <!-- JACKSON -->
         <dependency>

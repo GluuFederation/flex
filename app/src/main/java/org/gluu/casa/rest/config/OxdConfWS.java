@@ -26,6 +26,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 @ApplicationScoped
 @Path("/config/oxd")
 @ProtectedApi( scopes = "casa.config" )
+@Deprecated
 public class OxdConfWS extends BaseWS {
 
     @Inject
