@@ -2,7 +2,7 @@ package org.gluu.casa.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gluu.casa.core.model.ApplicationConfiguration;
+import org.gluu.casa.model.ApplicationConfiguration;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.model.GluuOrganization;
 import org.gluu.casa.core.model.oxAuthConfiguration;

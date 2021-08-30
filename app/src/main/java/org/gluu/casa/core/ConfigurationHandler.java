@@ -1,7 +1,7 @@
 package org.gluu.casa.core;
 
 import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.core.model.ApplicationConfiguration;
+import org.gluu.casa.model.ApplicationConfiguration;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.misc.AppStateEnum;
 import org.gluu.casa.timer.*;
