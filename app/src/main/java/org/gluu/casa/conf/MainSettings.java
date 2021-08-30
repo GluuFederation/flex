@@ -38,10 +38,6 @@ public class MainSettings {
     @JsonProperty("allowed_cors_domains")
     private List<String> corsDomains;
 
-    @JsonProperty("u2f_settings")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private U2fSettings u2fSettings;
-
     @JsonProperty("basic_2fa_settings")
     private Basic2FASettings basic2FASettings = new Basic2FASettings();
     
@@ -66,10 +62,6 @@ public class MainSettings {
 
     public String getExtraCssSnippet() {
         return extraCssSnippet;
-    }
-
-    public U2fSettings getU2fSettings() {
-        return u2fSettings;
     }
 
     public OxdSettings getOxdSettings() {
@@ -110,10 +102,6 @@ public class MainSettings {
 
     public void setOxdSettings(OxdSettings oxdSettings) {
         this.oxdSettings = oxdSettings;
-    }
-
-    public void setU2fSettings(U2fSettings u2fSettings) {
-        this.u2fSettings = u2fSettings;
     }
 
     public void setCorsDomains(List<String> corsDomains) {

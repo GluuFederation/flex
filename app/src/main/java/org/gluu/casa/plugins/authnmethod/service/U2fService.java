@@ -1,9 +1,7 @@
 package org.gluu.casa.plugins.authnmethod.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.conf.U2fSettings;
 import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.plugins.authnmethod.SecurityKeyExtension;
@@ -30,6 +28,8 @@ import java.util.*;
 @ApplicationScoped
 public class U2fService extends FidoService {
 
+    private static final String METADATA_URI = ".well-known/fido-configuration";
+    
     @Inject
     private Logger logger;
 
@@ -47,9 +47,7 @@ public class U2fService extends FidoService {
     public void reloadConfiguration() {
 
         conf = new U2FConfig();
-        String metadataUri = Optional.ofNullable(settings.getU2fSettings()).map(U2fSettings::getRelativeMetadataUri)
-                .orElse(".well-known/fido-configuration");
-        conf.setEndpointUrl(String.format("%s/%s", persistenceService.getIssuerUrl(), metadataUri));
+        conf.setEndpointUrl(String.format("%s/%s", persistenceService.getIssuerUrl(), METADATA_URI));
 
         try {
             props = persistenceService.getCustScriptConfigProperties(SecurityKeyExtension.ACR);

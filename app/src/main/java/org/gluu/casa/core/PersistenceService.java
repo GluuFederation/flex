@@ -2,7 +2,6 @@ package org.gluu.casa.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gluu.casa.conf.LdapSettings;
 import org.gluu.casa.core.model.ApplicationConfiguration;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.model.GluuOrganization;
@@ -419,9 +418,6 @@ public class PersistenceService implements IPersistenceService {
             logger.error("No EntryManager could be obtained");
         } else {
 
-            if (type.equals(LdapSettings.BACKEND.LDAP.getValue())) {
-                ldapOperationService = (LdapOperationService) entryManager.getOperationService();
-            }
             try (Reader f = new FileReader(String.format("%s/gluu.properties", DEFAULT_CONF_BASE))) {
 
                 Properties generalProps = new Properties();
