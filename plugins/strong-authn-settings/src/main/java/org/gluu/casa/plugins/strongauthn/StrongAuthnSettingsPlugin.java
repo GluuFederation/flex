@@ -1,7 +1,7 @@
 package org.gluu.casa.plugins.strongauthn;
 
 import org.gluu.casa.core.ITrackable;
-import org.gluu.casa.core.pojo.Basic2FASettings;
+import org.gluu.casa.conf.Basic2FASettings;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.strongauthn.conf.Configuration;
 import org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy;

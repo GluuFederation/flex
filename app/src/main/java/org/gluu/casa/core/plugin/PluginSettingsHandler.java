@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.gluu.casa.core.ConfigurationHandler;
-import org.gluu.casa.core.pojo.Basic2FASettings;
+import org.gluu.casa.conf.Basic2FASettings;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.settings.IPluginSettingsHandler;
 import org.slf4j.Logger;

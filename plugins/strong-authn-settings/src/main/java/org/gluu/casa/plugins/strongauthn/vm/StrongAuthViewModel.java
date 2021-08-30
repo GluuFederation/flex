@@ -1,6 +1,6 @@
 package org.gluu.casa.plugins.strongauthn.vm;
 
-import org.gluu.casa.core.pojo.Basic2FASettings;
+import org.gluu.casa.conf.Basic2FASettings;
 import org.gluu.casa.plugins.strongauthn.conf.TrustedDevicesSettings;
 import org.gluu.casa.plugins.strongauthn.conf.Configuration;
 import org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy;

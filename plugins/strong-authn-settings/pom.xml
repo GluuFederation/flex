@@ -71,6 +71,12 @@
     <dependencies>
         <dependency>
             <groupId>org.gluu</groupId>
+            <artifactId>casa-config</artifactId>
+            <version>${plugin.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
             <artifactId>casa-shared</artifactId>
             <version>${plugin.version}</version>
             <scope>provided</scope>

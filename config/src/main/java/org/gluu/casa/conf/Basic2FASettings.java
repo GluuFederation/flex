@@ -1,4 +1,4 @@
-package org.gluu.casa.core.pojo;
+package org.gluu.casa.conf;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
