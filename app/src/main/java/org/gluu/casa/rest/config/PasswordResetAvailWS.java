@@ -1,6 +1,5 @@
 package org.gluu.casa.rest.config;
 
-import org.gluu.casa.core.PasswordStatusService;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.rest.ProtectedApi;
 
@@ -26,9 +25,6 @@ public class PasswordResetAvailWS extends BaseWS {
 
     @Inject
     private PersistenceService persistenceService;
-
-    @Inject
-    private PasswordStatusService pst;
     
     @GET
     @Path("available")
@@ -40,7 +36,7 @@ public class PasswordResetAvailWS extends BaseWS {
         
         logger.trace("PasswordResetAvailWS available operation called");
         try {
-            json = isPwdResetAvailable() ? "true" : "false";
+            json = Boolean.toString(isPwdResetAvailable());
             httpStatus = OK;
         } catch (Exception e) {
             json = e.getMessage();
@@ -61,7 +57,7 @@ public class PasswordResetAvailWS extends BaseWS {
         
         logger.trace("PasswordResetAvailWS isEnabled operation called");
         try {
-            json = (isPwdResetAvailable() && mainSettings.isEnablePassReset()) ? "true" : "false";
+            json = Boolean.toString(isPwdResetAvailable() && mainSettings.isEnablePassReset());
             httpStatus = OK;
         } catch (Exception e) {
             json = e.getMessage();
