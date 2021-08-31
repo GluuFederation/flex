@@ -24,7 +24,7 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.OK;
 
 @Path("/config")
-@ProtectedApi( scopes = "casa.config" )
+@ProtectedApi( scopes = "https://jans.io/casa.config" )
 public class StrongAuthnSettingsWS {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

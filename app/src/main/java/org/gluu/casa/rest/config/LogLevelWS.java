@@ -17,7 +17,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 @Path("/config/log-level")
-@ProtectedApi( scopes = "casa.config" )
+@ProtectedApi( scopes = "https://jans.io/casa.config" )
 @Deprecated
 public class LogLevelWS extends BaseWS {
     

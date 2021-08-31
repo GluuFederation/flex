@@ -16,7 +16,7 @@ import static javax.ws.rs.core.Response.Status.OK;
 
 @ApplicationScoped
 @Path("/config/pwd-reset")
-@ProtectedApi( scopes = "casa.config" )
+@ProtectedApi( scopes = "https://jans.io/casa.config" )
 @Deprecated
 public class PasswordResetAvailWS extends BaseWS {
 
