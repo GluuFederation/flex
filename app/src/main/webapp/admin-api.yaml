@@ -18,7 +18,7 @@ schemes:
  - https
 
 security:
-  - config_auth: [casa.config]
+  - config_auth: ['https://jans.io/casa.config']
   
 consumes:
   - application/json
@@ -454,4 +454,4 @@ securityDefinitions:
     flow: application
     tokenUrl: https://test-casa.gluu.org/oxauth/restv1/token
     scopes: 
-      casa.config: Grants access to this API
+      'https://jans.io/casa.config': Grants access to this API

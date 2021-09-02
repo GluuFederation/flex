@@ -38,7 +38,7 @@ paths:
         by sending and OTP via SMS (backend technology: Twilio service)
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -91,7 +91,7 @@ paths:
         Checks validity of code received by user in SMS
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -144,7 +144,7 @@ paths:
         successful `validate-code` operation result
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -199,7 +199,7 @@ paths:
         by sending and OTP via SMS (backend technology: SMPP)
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -252,7 +252,7 @@ paths:
         Checks validity of code received by user in SMS
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -305,7 +305,7 @@ paths:
         successful `validate-code` operation result
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -359,7 +359,7 @@ paths:
         Generates a secret key URI suitable for displaying a QR code in the browser
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -416,7 +416,7 @@ paths:
         previously obtained by a call to `qr-request`
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -487,7 +487,7 @@ paths:
         supposed to be called **after** a successful `validate-code` operation with MATCH result
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -541,7 +541,7 @@ paths:
         Generates a QR request for enrolling a supergluu device
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -604,7 +604,7 @@ paths:
         lag of at least 5 seconds
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -654,7 +654,7 @@ paths:
         a call to `status` having received the data of the credential
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -863,7 +863,7 @@ paths:
         Gets an attestation message to be used in the browser
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -919,7 +919,7 @@ paths:
         made. This occurs after the user touches the security key button
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -974,7 +974,7 @@ paths:
         a call to `registration/{userid}` having received the data of the credential
 
       security:
-        - casa_auth: [casa.enroll]
+        - casa_auth: ['https://jans.io/casa.enroll']
 
       parameters:
         -
@@ -1024,7 +1024,7 @@ paths:
         Retrieves general info about credentials enrolled for a specific user
 
       security:
-        - casa_auth: [casa.2fa]
+        - casa_auth: ['https://jans.io/casa.2fa']
 
       parameters:
         -
@@ -1089,7 +1089,7 @@ paths:
         of the payload
 
       security:
-        - casa_auth: [casa.2fa]
+        - casa_auth: ['https://jans.io/casa.2fa']
 
       responses:
         200:
@@ -1106,7 +1106,7 @@ paths:
         of the payload
 
       security:
-        - casa_auth: [casa.2fa]
+        - casa_auth: ['https://jans.io/casa.2fa']
 
       responses:
         200:
@@ -1240,5 +1240,5 @@ securityDefinitions:
     flow: application
     tokenUrl: https://test-casa.gluu.org/oxauth/restv1/token
     scopes:
-      casa.enroll: Grants access to enrollment-related endpoints
-      casa.2fa: Grants access to 2FA-related endpoints
+      'https://jans.io/casa.enroll': Grants access to enrollment-related endpoints
+      'https://jans.io/casa.2fa': Grants access to 2FA-related endpoints

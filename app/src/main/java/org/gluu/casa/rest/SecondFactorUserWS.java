@@ -24,7 +24,7 @@ import static org.gluu.casa.rest.SecondFactorUserData.StatusCode.*;
 import static javax.ws.rs.core.Response.Status.*;
 
 @ApplicationScoped
-@ProtectedApi( scopes = "casa.2fa" )
+@ProtectedApi( scopes = "https://jans.io/casa.2fa" )
 @Path("/2fa")
 public class SecondFactorUserWS {
 
