@@ -11,14 +11,11 @@ import org.gluu.casa.core.UserService;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.extension.AuthnMethod;
-import org.gluu.casa.misc.Utils;
-import org.gluu.casa.rest.ProtectedApi;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.gluu.casa.rest.SecondFactorUserData.StatusCode.*;
 import static javax.ws.rs.core.Response.Status.*;
@@ -45,22 +42,23 @@ public class SecondFactorUserWS {
         SecondFactorUserData result = new SecondFactorUserData();
         logger.trace("get2FAUserData WS operation called");
 
-		Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
-		if (person == null) {
-			result.setCode(UNKNOWN_USER_ID);
-		} else {
-			try {
-				List<Pair<AuthnMethod, Integer>> methodsCount = userService.getUserMethodsCount(userId);
-				
-				result.setEnrolledMethods(methodsCount.stream().map(Pair::getX).map(AuthnMethod::getAcr).collect(Collectors.toList()));                	
-				result.setTotalCreds(methodsCount.stream().mapToInt(Pair::getY).sum());
-				result.setTurnedOn(person.getPreferredMethod() != null);
-				result.setCode(SUCCESS);
-			} catch (Exception e) {
-				result.setCode(FAILED);
-				logger.error(e.getMessage(), e);
-			}
-		}
+        Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
+        if (person == null) {
+            result.setCode(UNKNOWN_USER_ID);
+        } else {
+            try {
+                List<Pair<AuthnMethod, Integer>> methodsCount = userService.getUserMethodsCount(userId);
+
+                result.setEnrolledMethods(methodsCount.stream().map(Pair::getX)
+                        .map(AuthnMethod::getAcr).collect(Collectors.toList()));
+                result.setTotalCreds(methodsCount.stream().mapToInt(Pair::getY).sum());
+                result.setTurnedOn(person.getPreferredMethod() != null);
+                result.setCode(SUCCESS);
+            } catch (Exception e) {
+                result.setCode(FAILED);
+                logger.error(e.getMessage(), e);
+            }
+        }
         return result.getResponse();
     }
 
@@ -80,21 +78,28 @@ public class SecondFactorUserWS {
     	
     	Response.ResponseBuilder rb;
     	try {
-    		logger.trace("Turning 2FA {} for user '{}'", on ? "on" : "off", userId);
-    		
-    		Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
-    		if (person == null) {
-    			rb = Response.status(NOT_FOUND);
-    		} else {
-				User u = new User();
-				u.setId(userId);
-				rb = (on ? userService.turn2faOn(u) : userService.turn2faOff(u)) ? Response.ok() : Response.serverError();
-    		}
+            logger.trace("Turning 2FA {} for user '{}'", on ? "on" : "off", userId);
+
+            Person person = persistenceService.get(Person.class, persistenceService.getPersonDn(userId));
+            if (person == null) {
+                rb = Response.status(NOT_FOUND);
+            } else {
+                User u = new User();
+                u.setId(userId);
+                
+                boolean success;
+                if (on) {
+                    success = userService.turn2faOn(u);
+                } else {
+                    success = userService.turn2faOff(u);
+                }
+                rb = success ? Response.ok() : Response.serverError();
+            }
     	} catch (Exception e) {
-    		rb = Response.serverError();
-			logger.error(e.getMessage(), e);
-		}
-		return rb.build();
+            rb = Response.serverError();
+            logger.error(e.getMessage(), e);
+        }
+        return rb.build();
 		
     }
     
