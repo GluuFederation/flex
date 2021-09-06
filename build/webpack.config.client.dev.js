@@ -11,7 +11,8 @@ require('dotenv').config({
 
 const BASE_PATH = process.env.BASE_PATH || '/'
 const SESSION_TIMEOUT_IN_MINUTES = process.env.SESSION_TIMEOUT_IN_MINUTES || 2
-const CONFIG_API_BASE_URL = process.env.CONFIG_API_BASE_URL || 'https://sample.com'
+const CONFIG_API_BASE_URL =
+  process.env.CONFIG_API_BASE_URL || 'https://sample.com'
 
 module.exports = {
   name: 'client',
@@ -59,7 +60,6 @@ module.exports = {
         SESSION_TIMEOUT_IN_MINUTES: SESSION_TIMEOUT_IN_MINUTES,
       },
     }),
-    new webpack.HotModuleReplacementPlugin(),
     new MiniCssExtractPlugin(),
   ],
   module: {
@@ -95,9 +95,7 @@ module.exports = {
           { loader: 'postcss-loader' },
           {
             loader: 'sass-loader',
-            options: {
-              includePaths: config.scssIncludes,
-            },
+            options: {},
           },
         ],
         exclude: [path.resolve(config.srcDir, 'styles')],
@@ -117,9 +115,7 @@ module.exports = {
           'postcss-loader',
           {
             loader: 'sass-loader',
-            options: {
-              includePaths: config.scssIncludes,
-            },
+            options: {},
           },
         ],
         include: [path.resolve(config.srcDir, 'styles')],
@@ -144,7 +140,6 @@ module.exports = {
   },
   devServer: {
     hot: true,
-    contentBase: config.serveDir,
     compress: true,
     historyApiFallback: {
       index: BASE_PATH,

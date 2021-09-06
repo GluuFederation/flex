@@ -183,7 +183,7 @@ module.exports = {
   },
   devServer: {
     hot: false,
-    contentBase: config.distDir,
+    //contentBase: config.distDir,
     compress: true,
     historyApiFallback: {
       index: BASE_PATH,
