@@ -130,9 +130,7 @@ module.exports = {
           'postcss-loader',
           {
             loader: 'sass-loader',
-            options: {
-              includePaths: config.scssIncludes,
-            },
+            options: {},
           },
         ],
         exclude: [path.resolve(config.srcDir, 'styles')],
@@ -156,9 +154,7 @@ module.exports = {
           { loader: 'postcss-loader' },
           {
             loader: 'sass-loader',
-            options: {
-              includePaths: config.scssIncludes,
-            },
+            options: {},
           },
         ],
         include: [path.resolve(config.srcDir, 'styles')],

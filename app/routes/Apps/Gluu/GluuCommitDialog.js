@@ -5,19 +5,28 @@ import {
   Input,
   Button,
   Modal,
-  Divider,
   Badge,
   ModalHeader,
   ModalBody,
   ModalFooter,
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
-import ClipLoader from "react-spinners/ClipLoader"
+import ClipLoader from 'react-spinners/ClipLoader'
 
-const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label, placeholderLabel, inputType, isLoading }) => {
+const GluuCommitDialog = ({
+  handler,
+  modal,
+  onAccept,
+  formik,
+  operations,
+  label,
+  placeholderLabel,
+  inputType,
+  isLoading,
+}) => {
   const { t } = useTranslation()
   const [active, setActive] = useState(false)
-  let [loading, setLoading] = useState(isLoading);
+  let [loading, setLoading] = useState(isLoading)
   const USER_MESSAGE = 'user_action_message'
   function handleStatus() {
     var value = document.getElementById(USER_MESSAGE).value
@@ -35,8 +44,6 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label,
         document.getElementById(USER_MESSAGE).value,
       )
     }
-    console.log("loading:", loading, isLoading);
-  //  setLoading(true);
     onAccept(document.getElementById(USER_MESSAGE).value)
   }
   return (
@@ -46,7 +53,7 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label,
           style={{ color: 'green' }}
           className="fa fa-2x fa-info fa-fw modal-icon mb-3"
         ></i>
-        {(!label || label === '') ? t('messages.action_commit_question') : label}
+        {!label || label === '' ? t('messages.action_commit_question') : label}
       </ModalHeader>
       <ModalBody>
         {operations && <FormGroup row>List of changes</FormGroup>}
@@ -67,10 +74,14 @@ const GluuCommitDialog = ({ handler, modal, onAccept, formik, operations, label,
           <Col sm={12}>
             <Input
               id={USER_MESSAGE}
-              type={!!inputType ? inputType : "textarea"}
+              type={!!inputType ? inputType : 'textarea'}
               name={USER_MESSAGE}
               onKeyUp={handleStatus}
-              placeholder={(!placeholderLabel || placeholderLabel === '') ? t('placeholders.action_commit_message') : placeholderLabel}
+              placeholder={
+                !placeholderLabel || placeholderLabel === ''
+                  ? t('placeholders.action_commit_message')
+                  : placeholderLabel
+              }
               defaultValue=""
             />
           </Col>

@@ -9,7 +9,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
     window.history.back()
   }
   return (
-    <div>
+    <>
       <Divider></Divider>
       <FormGroup row></FormGroup>
       <FormGroup row>
@@ -42,7 +42,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
           ''
         )}
       </FormGroup>
-    </div>
+    </>
   )
 }
 

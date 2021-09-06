@@ -55,7 +55,7 @@ function GluuNotification({ type, message, description, show }) {
   }
 
   return (
-    <div>
+    <>
       {show && showToast(type)}
       <ToastContainer
         style={{ width: '98%' }}
@@ -66,7 +66,7 @@ function GluuNotification({ type, message, description, show }) {
         draggable={false}
         hideProgressBar={true}
       />
-    </div>
+    </>
   )
 }
 
