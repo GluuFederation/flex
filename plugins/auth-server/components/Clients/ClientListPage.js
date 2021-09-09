@@ -36,7 +36,9 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const options = {}
   const myActions = []
   const history = useHistory()
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
+  const [pageSize, setPageSize] = useState(
+    localStorage.getItem('paggingSize') || 10,
+  )
   const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   const [item, setItem] = useState({})
@@ -180,6 +182,13 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       <GluuViewWrapper canShow={hasPermission(permissions, CLIENT_READ)}>
         <MaterialTable
           columns={[
+            {
+              title: `${t('fields.inum')}`,
+              field: 'inum',
+              hidden: true,
+              sorting: true,
+              searchable: true,
+            },
             { title: `${t('fields.client_name')}`, field: 'clientName' },
             {
               title: `${t('fields.application_type')}`,
