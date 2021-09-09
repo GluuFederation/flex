@@ -222,7 +222,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
 
       <GluuTypeAhead
         name="grantTypes"
-        label="fields.grantTypes"
+        label="fields.grant_types"
         formik={formik}
         value={client.grantTypes}
         options={grantTypes}
