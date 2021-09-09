@@ -1,15 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Button,
-  Card,
-  CardFooter,
-  CardBody,
-  Col,
-  FormGroup,
-  InputGroup,
-  Container,
-  CustomInput,
-} from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import ActiveUserStatPanel from './ActiveUserStatPanel'
