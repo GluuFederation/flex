@@ -11,6 +11,7 @@ export default class MauApi {
         if (error) {
           reject(error)
         } else {
+          console.log('data recieved is : '+JSON.stringify(data))
           resolve(data)
         }
       })

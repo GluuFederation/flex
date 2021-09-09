@@ -28,7 +28,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
     onAccept(document.getElementById('user_action_message').value)
   }
   return (
-    <div>
+    <>
       <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
         <ModalHeader toggle={handler}>
           <i
@@ -63,7 +63,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
           </Button>
         </ModalFooter>
       </Modal>
-    </div>
+    </>
   )
 }
 

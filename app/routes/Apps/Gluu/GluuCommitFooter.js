@@ -13,7 +13,7 @@ function GluuCommitFooter({
     window.history.back()
   }
   return (
-    <div>
+    <>
       <Divider></Divider>
       <FormGroup row></FormGroup>
       <FormGroup row>
@@ -57,7 +57,7 @@ function GluuCommitFooter({
           ''
         )}
       </FormGroup>
-    </div>
+    </>
   )
 }
 
