@@ -42,7 +42,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
     requireAuthTime: false,
     postLogoutRedirectUris: [],
     oxAuthScopes: [],
-    trustedClient: true,
+    trustedClient: false,
     persistClientAuthorizations: false,
     customAttributes: [],
     customObjectClasses: ['top'],
