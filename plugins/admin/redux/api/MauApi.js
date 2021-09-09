@@ -5,13 +5,13 @@ export default class MauApi {
 
   // Get maximum actives users
   getMau = (opts) => {
-   opts['format'] = 'json'
+    opts['format'] = 'json'
     return new Promise((resolve, reject) => {
       this.api.getStat(opts['month'], opts, (error, data) => {
         if (error) {
           reject(error)
         } else {
-          
+          console.log('data recieved is : '+JSON.stringify(data))
           resolve(data)
         }
       })
