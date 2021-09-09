@@ -18,7 +18,7 @@ export default function mauReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          stat: action.payload.data.response,
+          stat: action.payload.data,
           loading: false,
         }
       } else {

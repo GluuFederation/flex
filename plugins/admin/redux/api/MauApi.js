@@ -11,8 +11,6 @@ export default class MauApi {
         if (error) {
           reject(error)
         } else {
-          console.log('Mau Data: ', data.response)
-          debugger
           resolve(data)
         }
       })
