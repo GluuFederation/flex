@@ -156,6 +156,7 @@
     "ssl_trust_store_format": "SSL Trust Store Format",
     "ssl_trust_store_pin": "SSL Trust Store Pin",
     "status": "Status",
+    "scopes": "Scopes",
     "subject_type": "Subject Type",
     "test_config": "Test Config",
     "test_connection": "Test Connection",
