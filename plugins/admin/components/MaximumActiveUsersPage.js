@@ -14,6 +14,7 @@ import {
   Line,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from 'recharts'
 import {
@@ -43,7 +44,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const [endDate, setEndDate] = useState('202101')
 
   useEffect(() => {
-    options['month'] = '202109'
+    options['month'] = '202109%20202108%20202107'
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }, [])
@@ -94,6 +95,20 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
       <option value="12">December</option>
     </CustomInput>
   )
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload) {
+      return (
+        <div className="custom-tooltip" style={{backgroundColor:"white"}}>
+          <p className="label">{`Month:${label}`}</p>
+          <p className="label">{`Monthly Active Users:${payload[0].value}`}</p>
+          <p className="label">{`Authorization Access Token:${payload[1].value}`}</p>
+          <p className="label">{`Client Credential Access Token:${payload[2].value}`}</p>
+        </div>
+      );
+    }
+  
+    return null;
+  };
   return (
     <GluuLoader blocking={loading}>
       <GluuViewWrapper
@@ -105,13 +120,16 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
               className="d-flex justify-content-center pt-5"
               style={{ minHeight: '400px' }}
             >
-              <ResponsiveContainer width="60%" height={300}>
-                <LineChart width={600} height={300} data={stat} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                  <Line type="monotone" dataKey="monthly_active_users" stroke="#8884d8" />
+              <ResponsiveContainer width="80%" height={500}>
+                <LineChart width={'100%'} height={300} data={stat} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                  <Line name="Monthly Active Users" type="monotone" dataKey="monthly_active_users" stroke="#8884d8" />
+                  <Line name="Authorization Access Token" type="monotone" dataKey="token_count_per_granttype.authorization_code.access_token" stroke="#ff1e86" />
+                  <Line name="Client Credential Access Token" type="monotone" dataKey="token_count_per_granttype.client_credentials.access_token" stroke="#4f1e86" />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip />
+                  <Tooltip content={<CustomTooltip />}/>
+                  <Legend />
                 </LineChart>
               </ResponsiveContainer>
             </CardBody>
