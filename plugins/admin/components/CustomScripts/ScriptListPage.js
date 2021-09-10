@@ -40,7 +40,9 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const myActions = []
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
+  const [pageSize, setPageSize] = useState(
+    localStorage.getItem('paggingSize') || 10,
+  )
   const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   const [selectedScripts, setSelectedScripts] = useState(scripts)
@@ -152,8 +154,9 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     setItem(row)
     toggle()
   }
-  function onDeletionConfirmed() {
-    dispatch(deleteCustomScript(item.inum))
+  function onDeletionConfirmed(message) {
+    buildPayload(userAction, message, item.inum)
+    dispatch(deleteCustomScript(userAction))
     history.push('/adm/scripts')
     toggle()
   }
