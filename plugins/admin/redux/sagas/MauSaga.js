@@ -5,7 +5,7 @@ import {
 } from '../../../../app/utils/TokenController'
 import { getMauResponse } from '../actions/MauActions'
 import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
+import { postUserAction} from '../../../../app/redux/api/backend-api'
 import { GET_MAU } from '../actions/types'
 import MauApi from '../api/MauApi'
 import { getClient } from '../../../../app/redux/api/base'
@@ -31,7 +31,7 @@ export function* getMau({ payload }) {
     yield put(getMauResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
-    console.log(e)
+
     yield put(getMauResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
