@@ -9,7 +9,7 @@ import { getCustomScripts } from '../../../admin/redux/actions/CustomScriptActio
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function ClientEditPage({
-  client,
+  clientData,
   scopes,
   scripts,
   loading,
@@ -30,11 +30,11 @@ function ClientEditPage({
   }, [])
 
   if (
-    !client.attributes ||
-    (Object.keys(client.attributes).length === 0 &&
-      client.attributes.constructor === Object)
+    !clientData.attributes ||
+    (Object.keys(clientData.attributes).length === 0 &&
+    clientData.attributes.constructor === Object)
   ) {
-    client.attributes = {
+    clientData.attributes = {
       runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
       keepClientAuthorizationAfterExpiration: false,
       allowSpontaneousScopes: false,
@@ -45,15 +45,15 @@ function ClientEditPage({
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-     buildPayload(userAction, data.action_message, data)
-     dispatch(editClient(userAction))
-     history.push('/auth-server/clients')
+      buildPayload(userAction, data.action_message, data)
+      dispatch(editClient(userAction))
+      history.push('/auth-server/clients')
     }
   }
   return (
     <GluuLoader blocking={loading}>
       <ClientWizardForm
-        client={client}
+        client_data={clientData}
         scopes={scopes}
         scripts={scripts}
         permissions={permissions}
@@ -64,7 +64,7 @@ function ClientEditPage({
 }
 const mapStateToProps = (state) => {
   return {
-    client: state.oidcReducer.item,
+    clientData: state.oidcReducer.item,
     loading: state.oidcReducer.loading,
     scopes: state.scopeReducer.items,
     scripts: state.initReducer.scripts,
