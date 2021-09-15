@@ -7,6 +7,7 @@ import {
   InputGroup,
   CustomInput,
 } from '../../../../app/components'
+import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
@@ -263,32 +264,29 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
       <FormGroup row>
         <GluuLabel label="fields.persist_client_authorizations" size={3} />
         <Col sm={1}>
-          <Input
+          <GluuToogle
             id="persistClientAuthorizations"
             name="persistClientAuthorizations"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked={client.persistClientAuthorizations}
+            formik={formik}
+            value={client.persistClientAuthorizations}
           />
         </Col>
         <GluuLabel label="fields.is_active" size={3} />
         <Col sm={1}>
-          <Input
+          <GluuToogle
             id="disabled"
             name="disabled"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked={!client.disabled}
+            formik={formik}
+            value={!client.disabled}
           />
         </Col>
         <GluuLabel label="fields.is_trusted_client" size={3} />
         <Col sm={1}>
-          <Input
+          <GluuToogle
             id="trustedClient"
             name="trustedClient"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked={client.trustedClient}
+            formik={formik}
+            value={client.trustedClient}
           />
         </Col>
       </FormGroup>

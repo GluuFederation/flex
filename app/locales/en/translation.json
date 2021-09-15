@@ -83,7 +83,7 @@
     "inum": "Inum",
     "is_active": "Is Active",
     "is_expirable_client": "Is Expirable Client?",
-    "is_trusted_client": "Is Trusted Client",
+    "is_trusted_client": "Skip Authorization Flow?",
     "json_web_keys": "JSON Web Keys",
     "jwks": "Jwks",
     "jwks_uri": "Jwks Uri",

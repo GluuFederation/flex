@@ -32,12 +32,15 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
       history.push('/auth-server/clients')
     }
   }
-  const client = {
+  const clientData = {
     frontChannelLogoutSessionRequired: false,
     includeClaimsInIdToken: false,
     redirectUris: [],
     claimRedirectUris: [],
     responseTypes: [],
+    policyuri: '',
+    logoURI: '',
+    sectorIdentifierUri: '',
     grantTypes: [],
     requireAuthTime: false,
     postLogoutRedirectUris: [],
@@ -72,7 +75,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
   return (
     <GluuLoader blocking={loading}>
       <ClientWizardForm
-        client={client}
+        client_data={clientData}
         scopes={scopes}
         scripts={scripts}
         permissions={permissions}

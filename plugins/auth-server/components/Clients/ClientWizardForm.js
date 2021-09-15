@@ -28,7 +28,7 @@ const sequence = [
 const ATTRIBUTE = 'attributes'
 let commitMessage = ''
 function ClientWizardForm({
-  client,
+  client_data,
   scopes,
   scripts,
   permissions,
@@ -36,8 +36,9 @@ function ClientWizardForm({
 }) {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
+  const [client, setClient] = useState(client_data)
   const [currentStep, setCurrentStep] = useState(sequence[0])
-  function changeStep(stepId) {
+  function changeStep(stepId, values) {
     setCurrentStep(stepId)
   }
   function toggle() {
@@ -89,7 +90,8 @@ function ClientWizardForm({
     backchannelUserCodeParameter: client.backchannelUserCodeParameter,
     policyUri: client.policyUri,
     logoURI: client.logoURI,
-
+    tlsClientAuthSubjectDn: client.tlsClientAuthSubjectDn,
+    sectorIdentifierUri: client.sectorIdentifierUri,
     redirectUris: client.redirectUris,
     claimRedirectUris: client.claimRedirectUris,
     responseTypes: client.responseTypes,
@@ -218,6 +220,8 @@ function ClientWizardForm({
               </CardBody>
               <CardBody className="p-5">
                 {(() => {
+                  console.log('current data: ' + JSON.stringify(formik.values))
+                  setClient(formik.values)
                   switch (currentStep) {
                     case sequence[0]:
                       return (
