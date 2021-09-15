@@ -1,9 +1,11 @@
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
+import LicenseDetailsPage from './components/Configuration/LicenseDetailsPage'
 import AdminUiRole from './components/Roles/AdminUiRole'
 import MaximumActiveUsersPage from './components/MaximumActiveUsersPage'
 import SettingsPage from './components/Settings/SettingsPage'
 import scriptSaga from './redux/sagas/CustomScriptSaga'
+import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
 
 import ScriptListPage from './components/CustomScripts/ScriptListPage'
 import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
@@ -12,6 +14,7 @@ import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPag
 import mauReducer from './redux/reducers/MauReducer'
 import mauSaga from './redux/sagas/MauSaga'
 import scriptReducer from './redux/reducers/CustomScriptReducer'
+import licenseDetailsReducer from './redux/reducers/LicenseDetailsReducer'
 
 const PLUGIN_BASE_APTH = '/adm'
 
@@ -29,6 +32,11 @@ const pluginMetadata = {
         {
           title: 'menus.mau',
           path: PLUGIN_BASE_APTH + '/mau',
+          permission: '/config/acrs.readonly',
+        },
+        {
+          title: 'menus.licenseDetails',
+          path: PLUGIN_BASE_APTH + '/licenseDetails',
           permission: '/config/acrs.readonly',
         },
         {
@@ -102,14 +110,21 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/settings',
       permission: '/config/acrs.readonly',
     },
+    {
+      component: LicenseDetailsPage,
+      path: PLUGIN_BASE_APTH + '/licenseDetails',
+      permission: '/config/acrs.readonly',
+    },
   ],
   reducers: [
     { name: 'mauReducer', reducer: mauReducer },
     { name: 'scriptReducer', reducer: scriptReducer },
+    { name: 'licenseDetailsReducer', reducer: licenseDetailsReducer },
   ],
   sagas: [
     mauSaga(),
     scriptSaga(),
+    licenseDetailsSaga(),
   ],
 }
 
