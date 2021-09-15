@@ -10,7 +10,6 @@ const reducerName = 'licenseDetailsReducer'
 export default function licenseDetailsReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_LICENSE_DETAILS:
-      alert('-------')
       return {
         ...state,
         loading: true,
