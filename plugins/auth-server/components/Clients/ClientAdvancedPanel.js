@@ -5,6 +5,7 @@ import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadFo
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import Toggle from 'react-toggle'
+import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
 import { useTranslation } from 'react-i18next'
 
 function ClientAdvancedPanel({ client, scripts, formik }) {
@@ -60,54 +61,49 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       <FormGroup row>
         <GluuLabel label="fields.accessTokenAsJwt" size={3} />
         <Col sm={1}>
-          <Input
+          <GluuToogle
             id="accessTokenAsJwt"
             name="accessTokenAsJwt"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked={client.accessTokenAsJwt}
+            formik={formik}
+            value={client.accessTokenAsJwt}
           />
         </Col>
-        <GluuLabel label="fields.requireAuthTime" size={3} />
-        <Col sm={1}>
-          <Input
+        <GluuLabel label="fields.requireAuthTime" size={2} />
+        <Col sm={2}>
+          <GluuToogle
             id="requireAuthTime"
             name="requireAuthTime"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked={client.requireAuthTime}
+            formik={formik}
+            value={client.requireAuthTime}
           />
         </Col>
-        <GluuLabel label="fields.rptAsJwt" size={3} />
-        <Col sm={1}>
-          <Input
+        <GluuLabel label="fields.rptAsJwt" size={2} />
+        <Col sm={2}>
+          <GluuToogle
             id="rptAsJwt"
             name="rptAsJwt"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked={client.rptAsJwt}
+            formik={formik}
+            value={client.rptAsJwt}
           />
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="fields.includeClaimsInIdToken" size={3} />
-        <Col sm={1}>
-          <Input
+        <GluuLabel label="fields.includeClaimsInIdToken" size={2} />
+        <Col sm={2}>
+          <GluuToogle
             id="includeClaimsInIdToken"
             name="includeClaimsInIdToken"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked={client.includeClaimsInIdToken}
+            formik={formik}
+            value={client.includeClaimsInIdToken}
           />
         </Col>
-        <GluuLabel label="fields.frontChannelLogoutSessionRequired" size={3} />
-        <Col sm={1}>
-          <Input
+        <GluuLabel label="fields.frontChannelLogoutSessionRequired" size={2} />
+        <Col sm={2}>
+          <GluuToogle
             id="frontChannelLogoutSessionRequired"
             name="frontChannelLogoutSessionRequired"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked={client.frontChannelLogoutSessionRequired}
+            formik={formik}
+            value={client.frontChannelLogoutSessionRequired}
           />
         </Col>
       </FormGroup>
