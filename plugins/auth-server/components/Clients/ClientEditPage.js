@@ -45,6 +45,7 @@ function ClientEditPage({
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
+      console.log("================================"+JSON.stringify(data))
       buildPayload(userAction, data.action_message, data)
       dispatch(editClient(userAction))
       history.push('/auth-server/clients')
