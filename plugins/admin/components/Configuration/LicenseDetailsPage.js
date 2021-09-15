@@ -68,7 +68,7 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
           <Col sm={9}>
             <GluuFormDetailRow
               label="fields.isLicenseActive"
-              value={item.isLicenseActive}
+              value={item.isLicenseActive ? "True" : "False"}
               isBadge={true}
               lsize={3}
               rsize={9}
@@ -103,7 +103,7 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
           </Col>
           <Col sm={9}>
             <GluuFormDetailRow
-              label="fields.companyName"
+              label="fields.customerName"
               value={item.customerFirstName + " " + item.customerLastName}
               isBadge={true}
               lsize={3}
@@ -118,7 +118,6 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
 }
 
 const mapStateToProps = (state) => {
-  alert(JSON.stringify(state.licenseDetailsReducer.item))
   return {
     item: state.licenseDetailsReducer.item,
     loading: state.licenseDetailsReducer.loading,

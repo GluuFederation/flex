@@ -13,9 +13,7 @@ import {
 
 function* getLicenseDetailsPresentWorker() {
   try {
-    alert('Inside getLicenseDetailsPresentWorker')
     const response = yield call(getLicenseDetails)
-    alert(response)
     if (response) {
       yield put(getLicenseDetailsResponse(response))
       return
