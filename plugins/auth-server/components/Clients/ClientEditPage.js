@@ -10,6 +10,7 @@ import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function ClientEditPage({
   clientData,
+  view_only,
   scopes,
   scripts,
   loading,
@@ -32,7 +33,7 @@ function ClientEditPage({
   if (
     !clientData.attributes ||
     (Object.keys(clientData.attributes).length === 0 &&
-    clientData.attributes.constructor === Object)
+      clientData.attributes.constructor === Object)
   ) {
     clientData.attributes = {
       runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
@@ -50,10 +51,12 @@ function ClientEditPage({
       history.push('/auth-server/clients')
     }
   }
+
   return (
     <GluuLoader blocking={loading}>
       <ClientWizardForm
         client_data={clientData}
+        view_only={view_only}
         scopes={scopes}
         scripts={scripts}
         permissions={permissions}
@@ -65,6 +68,7 @@ function ClientEditPage({
 const mapStateToProps = (state) => {
   return {
     clientData: state.oidcReducer.item,
+    view_only: state.oidcReducer.view,
     loading: state.oidcReducer.loading,
     scopes: state.scopeReducer.items,
     scripts: state.initReducer.scripts,
