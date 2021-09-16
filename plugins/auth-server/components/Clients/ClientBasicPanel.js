@@ -147,18 +147,6 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </FormGroup>
       )}
       <FormGroup row>
-        <GluuLabel label="fields.logo_uri" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('placeholders.logo_uri')}
-            id="logoURI"
-            name="logoURI"
-            defaultValue={client.logoUri}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
         <GluuLabel label="fields.policy_uri" />
         <Col sm={9}>
           <Input

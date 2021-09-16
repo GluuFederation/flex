@@ -21,6 +21,7 @@ import {
   searchClients,
   setCurrentItem,
   deleteClient,
+  viewOnly,
 } from '../../redux/actions/OIDCActions'
 import {
   hasPermission,
@@ -53,7 +54,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     setLimit(document.getElementById(LIMIT_ID).value)
     setPattern(document.getElementById(PATTERN_ID).value)
   }
-  function handleGoToClientEditPage(row) {
+  function handleGoToClientEditPage(row, edition) {
+    dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
     return history.push(`/auth-server/client/edit:` + row.inum.substring(0, 4))
   }
@@ -86,7 +88,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         id: 'editClient' + rowData.inum,
       },
       tooltip: `${t('messages.edit_client')}`,
-      onClick: (event, rowData) => handleGoToClientEditPage(rowData),
+      onClick: (event, rowData) => handleGoToClientEditPage(rowData, false),
       disabled: false,
     }))
   }
@@ -127,7 +129,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         id: 'viewClient' + rowData.inum,
       },
       tooltip: `${t('messages.view_client_details')}`,
-      onClick: (event, rowData) => handleGoToClientEditPage(rowData),
+      onClick: (event, rowData) => handleGoToClientEditPage(rowData, true),
       disabled: false,
     }))
   }
