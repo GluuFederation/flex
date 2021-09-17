@@ -64,15 +64,13 @@ export function* addLdap({ payload }) {
     const api = yield* newFunction()
     const data = yield call(
       api.addLdapConfig,
-      payload.action.action_data,
+      payload.data.action_data,
     )
-    yield call(api.addLdapConfig, payload.action.action_data)
     yield put(addLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(addLdapResponse(null))
     if (isFourZeroOneError(e)) {
-      console.log(e)
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }

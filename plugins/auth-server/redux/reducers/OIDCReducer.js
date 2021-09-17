@@ -10,11 +10,13 @@ import {
   SET_CLIENT_ITEM,
   RESET,
   SEARCH_CLIENTS,
+  SET_VIEW,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   item: {},
+  view: false,
   loading: false,
 }
 
@@ -110,6 +112,15 @@ export default function oidcReducer(state = INIT_STATE, action) {
         item: action.payload.item,
         loading: false,
       }
+    case SET_VIEW:
+      if (action.payload) {
+        return {
+          ...state,
+          view: action.payload.view,
+          loading: false,
+        }
+      }
+
     case RESET:
       return {
         ...state,

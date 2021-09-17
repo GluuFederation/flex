@@ -28,15 +28,19 @@ const sequence = [
 const ATTRIBUTE = 'attributes'
 let commitMessage = ''
 function ClientWizardForm({
-  client,
+  client_data,
+  view_only,
   scopes,
   scripts,
   permissions,
   customOnSubmit,
 }) {
+  
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
+  const [client, setClient] = useState(client_data)
   const [currentStep, setCurrentStep] = useState(sequence[0])
+
   function changeStep(stepId) {
     setCurrentStep(stepId)
   }
@@ -89,9 +93,10 @@ function ClientWizardForm({
     backchannelUserCodeParameter: client.backchannelUserCodeParameter,
     policyUri: client.policyUri,
     logoURI: client.logoURI,
-
+    tlsClientAuthSubjectDn: client.tlsClientAuthSubjectDn,
+    sectorIdentifierUri: client.sectorIdentifierUri,
     redirectUris: client.redirectUris,
-    claimRedirectUris: client.claimRedirectUris,
+    claimRedirectUris: client.claimRedirectUris || [],
     responseTypes: client.responseTypes,
     grantTypes: client.grantTypes,
     contacts: client.contacts,
@@ -101,15 +106,25 @@ function ClientWizardForm({
     oxAuthClaims: client.oxAuthClaims,
     customAttributes: client.customAttributes,
 
-    tlsClientAuthSubjectDn: client.tlsClientAuthSubjectDn,
-    spontaneousScopes: client.spontaneousScopes,
-    introspectionScripts: client.introspectionScripts,
-    spontaneousScopeScriptDns: client.spontaneousScopeScriptDns,
-    consentGatheringScripts: client.consentGatheringScripts,
-    rptClaimsScripts: client.rptClaimsScripts,
-    backchannelLogoutUri: client.backchannelLogoutUri,
-    postAuthnScripts: client.postAuthnScripts,
-    additionalAudience: client.additionalAudience,
+    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
+      client.attributes
+        .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims ||
+      false,
+    backchannelLogoutSessionRequired:
+      client.attributes.backchannelLogoutSessionRequired || false,
+    keepClientAuthorizationAfterExpiration:
+      client.attributes.keepClientAuthorizationAfterExpiration || false,
+    allowSpontaneousScopes: client.attributes.allowSpontaneousScopes || false,
+    tlsClientAuthSubjectDn: client.attributes.tlsClientAuthSubjectDn,
+    spontaneousScopes: client.attributes.spontaneousScopes || [],
+    introspectionScripts: client.attributes.introspectionScripts || [],
+    spontaneousScopeScriptDns:
+      client.attributes.spontaneousScopeScriptDns || [],
+    consentGatheringScripts: client.attributes.consentGatheringScripts || [],
+    rptClaimsScripts: client.attributes.rptClaimsScripts || [],
+    backchannelLogoutUri: client.attributes.backchannelLogoutUri,
+    postAuthnScripts: client.attributes.postAuthnScripts || [],
+    additionalAudience: client.attributes.additionalAudience || [],
 
     attributes: client.attributes,
     customObjectClasses: client.customObjectClasses,
@@ -218,39 +233,80 @@ function ClientWizardForm({
               </CardBody>
               <CardBody className="p-5">
                 {(() => {
+                  setClient(formik.values)
                   switch (currentStep) {
                     case sequence[0]:
                       return (
-                        <ClientBasic
-                          client={client}
-                          scopes={scopes}
-                          formik={formik}
-                        />
+                        <div
+                          style={
+                            view_only
+                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              : {}
+                          }
+                        >
+                          <ClientBasic
+                            client={client}
+                            scopes={scopes}
+                            formik={formik}
+                          />
+                        </div>
                       )
                     case sequence[1]:
                       return (
-                        <ClientAdvanced
-                          client={client}
-                          scripts={scripts}
-                          formik={formik}
-                        />
+                        <div
+                          style={
+                            view_only
+                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              : {}
+                          }
+                        >
+                          <ClientAdvanced
+                            client={client}
+                            scripts={scripts}
+                            formik={formik}
+                          />
+                        </div>
                       )
                     case sequence[2]:
                       return (
-                        <ClientEncryption client={client} formik={formik} />
+                        <div
+                          style={
+                            view_only
+                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              : {}
+                          }
+                        >
+                          <ClientEncryption client={client} formik={formik} />
+                        </div>
                       )
                     case sequence[3]:
                       return (
-                        <ClientAttributes client={client} formik={formik} />
+                        <div
+                          style={
+                            view_only
+                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              : {}
+                          }
+                        >
+                          <ClientAttributes client={client} formik={formik} />
+                        </div>
                       )
                     case sequence[4]:
                       return (
-                        <ClientScript
-                          client={client}
-                          formik={formik}
-                          scripts={scripts}
-                          scopes={scopes}
-                        />
+                        <div
+                          style={
+                            view_only
+                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              : {}
+                          }
+                        >
+                          <ClientScript
+                            client={client}
+                            formik={formik}
+                            scripts={scripts}
+                            scopes={scopes}
+                          />
+                        </div>
                       )
                   }
                 })()}
@@ -280,6 +336,7 @@ function ClientWizardForm({
                     </Button>
                   )}
                   {currentStep === sequence[sequence.length - 1] &&
+                    !view_only &&
                     hasPermission(permissions, CLIENT_WRITE) && (
                       <Button
                         type="button"

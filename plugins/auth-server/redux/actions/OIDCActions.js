@@ -8,6 +8,7 @@ import {
   DELETE_CLIENT,
   DELETE_CLIENT_RESPONSE,
   SET_CLIENT_ITEM,
+  SET_VIEW,
   SEARCH_CLIENTS,
 } from './types'
 
@@ -58,4 +59,9 @@ export const deleteClientResponse = (data) => ({
 export const setCurrentItem = (item) => ({
   type: SET_CLIENT_ITEM,
   payload: { item },
+})
+
+export const viewOnly = (view) => ({
+  type: SET_VIEW,
+  payload: { view },
 })

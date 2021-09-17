@@ -16,6 +16,7 @@
     "keys": "Chaves",
     "ldap": "Ldap",
     "license": "Licenciamento",
+    "licenseDetails": "License Details",
     "my_profile": "Meu perfil",
     "sql": "Sql",
     "logging": "Exploração madeireira",
@@ -201,7 +202,18 @@
     "user_info_signed_response_alg": "Algoritmo JWS para assinar respostas userinfo",
     "user_name": "Nome do usuário",
     "user_password": "Senha do usuário",
-    "view_type": "Tipo de vista"
+    "view_type": "Tipo de vista",
+    "productName": "Product Name",
+    "productCode": "Product Code",
+    "licenseType": "License Type",
+    "maxActivations": "Maximum Activations",
+    "licenseKey": "License Key",
+    "isLicenseActive": "Is License Active",
+    "validityPeriod": "License Valid Upto",
+    "companyName": "Company Name",
+    "customerEmail": "Customer Email",
+    "customerName": "Customer Name",
+    "licenseDetails": "License Details"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",

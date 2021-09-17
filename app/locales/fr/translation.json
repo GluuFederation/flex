@@ -17,6 +17,7 @@
     "keys": "Clés",
     "ldap": "Ldap",
     "license": "Licence",
+    "licenseDetails": "License Details",
     "my_profile": "Mon profil",
     "sql": "Sql",
     "logging": "Enregistrement",
@@ -202,7 +203,18 @@
     "user_info_signed_response_alg": "JWS alg Algorithm pour la signature des réponses userinfo",
     "user_name": "Nom d'utilisateur",
     "user_password": "Mot de passe de l'utilisateur",
-    "view_type": "Type de vue"
+    "view_type": "Type de vue",
+    "productName": "Product Name",
+    "productCode": "Product Code",
+    "licenseType": "License Type",
+    "maxActivations": "Maximum Activations",
+    "licenseKey": "License Key",
+    "isLicenseActive": "Is License Active",
+    "validityPeriod": "License Valid Upto",
+    "companyName": "Company Name",
+    "customerEmail": "Customer Email",
+    "customerName": "Customer Name",
+    "licenseDetails": "License Details"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",

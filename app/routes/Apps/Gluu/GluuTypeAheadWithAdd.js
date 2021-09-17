@@ -22,17 +22,17 @@ function GluuTypeAheadWithAdd({
     const newItem = document.getElementById(inputId).value
     document.getElementById(inputId).value = ''
     if (validator(newItem)) {
-      setItems((currItems) => [...currItems, newItem])
-      setOpts((currOpts) => [...currOpts, newItem])
+      items.push(newItem)
+      opts.push(newItem)
+      setItems(items)
       formik.setFieldValue(name, items)
     }
   }
 
   const handleChange = (name, selected) => {
-    console.log(selected)
-    setItems(selected)
     setOpts(selected)
-    formik.setFieldValue(name, items)
+    setItems(selected)
+    formik.setFieldValue(name, selected);
   }
 
   return (
@@ -63,6 +63,7 @@ function GluuTypeAheadWithAdd({
           onChange={(selected) => {
             handleChange(name, selected)
           }}
+         
           id={name}
           name={name}
           multiple={true}
