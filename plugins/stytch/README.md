@@ -18,7 +18,7 @@ Multi-factor authentication from Stytch protects your applications by using a se
 
 2. Upon registration, you can create the PROJECT_ID and SECRET https://stytch.com/dashboard/api-keys.
 
-## BioID Documentation
+## Stytch Documentation
 
 You can find all API reference at http://stytch.com/docs and http://stytch.com/docs/api. 
 
