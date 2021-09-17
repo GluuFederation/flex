@@ -66,7 +66,6 @@ export function* addLdap({ payload }) {
       api.addLdapConfig,
       payload.data.action_data,
     )
-    yield call(api.addLdapConfig, payload.data.action_data)
     yield put(addLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
