@@ -32,7 +32,7 @@ export default class LdapApi {
   // Add Ldap Config
   addLdapConfig = (input) => {
     return new Promise((resolve, reject) => {
-      this.api.postConfigDatabaseLdap(input, (error, data) => {
+      this.api.postConfigDatabaseLdap(input.ldap, (error, data) => {
         if (error) {
           reject(error)
         } else {
