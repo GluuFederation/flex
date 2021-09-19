@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
-import { Form, Button } from '../../../../../app/components'
-import GluuSelectRow from '../../../../../app/routes/Apps/Gluu/GluuSelectRow'
+import { Form, Button, FormGroup, Col, CustomInput } from '../../../../../app/components'
+import GluuLabel from '../../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuCheckBoxRow from '../../../../../app/routes/Apps/Gluu/GluuCheckBoxRow'
 import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../../../../../app/routes/Apps/Gluu/GluuViewWrapper'
@@ -45,25 +45,44 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
         >
           {(formik) => (
             <Form onSubmit={formik.handleSubmit}>
-              <GluuSelectRow
-                label="fields.log_level"
-                name="loggingLevel"
-                formik={formik}
-                lsize={4}
-                rsize={8}
-                value={logging.loggingLevel}
-                values={levels}
-              ></GluuSelectRow>
-              <GluuSelectRow
-                label="fields.log_layout"
-                name="loggingLayout"
-                formik={formik}
-                lsize={4}
-                rsize={8}
-                required
-                value={logging.loggingLayout}
-                values={logLayouts}
-              ></GluuSelectRow>
+              <FormGroup row>
+                <GluuLabel label="fields.log_level" size={4} />
+                <Col sm={8}>
+                  <CustomInput
+                    type="select"
+                    id="loggingLevel"
+                    name="loggingLevel"
+                    value={logging.loggingLevel}
+                    onChange={formik.handleChange}
+                  >
+                    <option value="">{t('actions.choose')}...</option>
+                    {levels.map((item, key) => (
+                      <option value={item} key={key}>
+                        {item}
+                      </option>
+                    ))}
+                  </CustomInput>
+                </Col>
+              </FormGroup>
+              <FormGroup row>
+                <GluuLabel label="fields.log_layout" size={4} />
+                <Col sm={8}>
+                  <CustomInput
+                    type="select"
+                    id="loggingLayout"
+                    name="loggingLayout"
+                    value={logging.loggingLayout}
+                    onChange={formik.handleChange}
+                  >
+                    <option value="">{t('actions.choose')}...</option>
+                    {logLayouts.map((item, key) => (
+                      <option value={item} key={key}>
+                        {item}
+                      </option>
+                    ))}
+                  </CustomInput>
+                </Col>
+              </FormGroup>
               <GluuCheckBoxRow
                 label="fields.http_logging_enabled"
                 name="httpLoggingEnabled"
