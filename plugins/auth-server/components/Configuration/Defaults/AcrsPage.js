@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
-import { Form, Button } from '../../../../../app/components'
+import { Form, Button, FormGroup, Col, CustomInput } from '../../../../../app/components'
 import { Formik } from 'formik'
+import GluuLabel from '../../../../../app/routes/Apps/Gluu/GluuLabel'
 import { connect } from 'react-redux'
 import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
 import {
@@ -9,7 +10,6 @@ import {
   ACR_WRITE,
 } from '../../../../../app/utils/PermChecker'
 import { SIMPLE_PASSWORD_AUTH } from '../../../common/Constants'
-import GluuSelectRow from '../../../../../app/routes/Apps/Gluu/GluuSelectRow'
 import GluuViewWrapper from '../../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
@@ -40,16 +40,25 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
         >
           {(formik) => (
             <Form onSubmit={formik.handleSubmit}>
-              <GluuSelectRow
-                label="fields.default_acr"
-                name="defaultAcr"
-                value={acrs.defaultAcr}
-                formik={formik}
-                lsize={4}
-                rsize={8}
-                values={authScripts}
-                required
-              ></GluuSelectRow>
+              <FormGroup row>
+                <GluuLabel label="fields.default_acr" size={4} />
+                <Col sm={8}>
+                  <CustomInput
+                    type="select"
+                    id="defaultAcr"
+                    name="defaultAcr"
+                    value={acrs.defaultAcr}
+                    onChange={formik.handleChange}
+                  >
+                    <option value="">{t('actions.choose')}...</option>
+                    {authScripts.map((item, key) => (
+                      <option value={item} key={key}>
+                        {item}
+                      </option>
+                    ))}
+                  </CustomInput>
+                </Col>
+              </FormGroup>
 
               {hasPermission(permissions, ACR_WRITE) && (
                 <Button color="primary" type="submit">
