@@ -11,7 +11,7 @@ import {
   Input,
 } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuNameValueProperty from '../../../../app/routes/Apps/Gluu/GluuNameValueProperty'
+import GluuProperties from '../../../../app/routes/Apps/Gluu/GluuProperties'
 import Counter from '../../../../app/components/Widgets/GroupedButtons/Counter'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
@@ -21,6 +21,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
+  const [properties, setProperties] = useState([])
   const [scriptTypeState, setScriptTypeState] = useState(item.scriptType)
   const scriptTypes = [...new Set(scripts.map((item) => item.scriptType))]
   function activate() {
@@ -35,6 +36,15 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
   function submitForm() {
     toggle()
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
+  }
+  const addProperty = () => {
+    setProperties((prev) => [...prev, { key: '', value: '' }])
+  }
+
+  const removeProperty = (i, name) => {
+    const newData = properties.filter((element, index) => index != i)
+    setProperties((prev) => [...newData])
+    // formik.setFieldValue(name, newData)
   }
   const formik = useFormik({
     initialValues: {
@@ -342,14 +352,11 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         </Col>
       </FormGroup>
 
-      <GluuNameValueProperty
-        componentName="configurationProperties"
+      <GluuProperties
+        name="configurationProperties"
+        label="fields.custom_properties"
         formik={formik}
-        keyName="key"
-        keyId="key"
         keyPlaceholder={t('placeholders.enter_property_key')}
-        valueId="value"
-        valueName="value"
         valuePlaceholder={t('placeholders.enter_property_value')}
         dataArr={
           !!item.configurationProperties
@@ -357,10 +364,9 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 key: ele.value1,
                 value: ele.value2,
               }))
-            : undefined
+            : []
         }
-        nameValueLabel="fields.custom_properties"
-      ></GluuNameValueProperty>
+      ></GluuProperties>
 
       <FormGroup row>
         <GluuLabel label={t('Script')} size={2} required />
