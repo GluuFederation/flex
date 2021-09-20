@@ -60,7 +60,6 @@ class MonthBox extends Component {
 }
 
 function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
-  console.log('========Data recieved ' + JSON.stringify(stat))
   const { t } = useTranslation()
   const userAction = {}
   const FROM_YEAR_ID = 'FROM_YEAR_ID'
@@ -69,24 +68,48 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const TO_MONTH_ID = 'TO_MONTH_ID'
   const options = {}
   const currentDate = new Date()
-  const currentMonth =
-    currentDate.getFullYear() +
-    String(currentDate.getMonth() + 1).padStart(2, '0')
-  const [startDate, setStartDate] = useState('202101')
-  const [endDate, setEndDate] = useState('202101')
+  // const currentMonth =
+  //   currentDate.getFullYear() +
+  //   String(currentDate.getMonth() + 1).padStart(2, '0')
+  // const [startDate, setStartDate] = useState('202101')
+  // const [endDate, setEndDate] = useState('202101')
 
   const pickRange2 = React.createRef()
-  const [rangeValue2,setRangeValue2] = useState({from: {year: 2021, month: 7}, to: {year: 2021, month: 9}})
+  const [rangeValue2,setRangeValue2] = useState({from: {year: 2021, month: 5}, to: {year: 2021, month: 9}})
   const pickerLang = {
     months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     from: 'From', to: 'To',
   }
 
   useEffect(() => {
-    options['month'] = '202109%20202108%20202107'
+    options['month'] = '202109%20202108%20202107%20202106%20202105'
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }, [])
+  function search() {
+    console.log('rangeValue2 : ', rangeValue2)
+    options['month'] = makeOptions()
+    // options['month'] = '202109%20202108' //startDate + String('%') + endDate
+    buildPayload(userAction, 'GET MAU', options)
+    dispatch(getMau(userAction))
+  }
+  function makeOptions() {
+    const date = new Date()
+    date.setFullYear(rangeValue2.from.year)
+    date.setMonth(rangeValue2.from.month-1)
+    var monthRange = date.toISOString().substr(0,7).replace('-','')
+    for (let i = rangeValue2.from.year; i <= rangeValue2.to.year; i++) {
+      date.setFullYear(i)
+      for (let j = rangeValue2.from.month; j < rangeValue2.to.month; j++) {
+        date.setMonth(j)
+        const temp = date.toISOString().substr(0,7).replace('-','')
+        monthRange = monthRange + '%20' + temp
+      }
+    }
+    console.log('Month Range : ', monthRange)
+    return monthRange
+  }
+
   function getCurrentMonthStat() {
     options['month'] = currentMonth
     buildPayload(userAction, 'GET CURRENT MONTH MAU', options)
@@ -98,18 +121,12 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     buildPayload(userAction, 'GET CURENT YEAR MAU', options)
     dispatch(getMau(userAction))
   }
-  function search() {
-    options['month'] = '202109%20202108%20202107' //startDate + String('%') + endDate
-    buildPayload(userAction, 'GET CURENT YEAR MAU', options)
-    dispatch(getMau(userAction))
-  }
   function getStartDate() {
     setStartDate(
       document.getElementById(FROM_YEAR_ID).value +
         document.getElementById(FROM_MONTH_ID).value,
     )
   }
-
   function getEndDate() {
     setEndDate(
       document.getElementById(TO_YEAR_ID).value +
@@ -117,7 +134,6 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     )
   }
 
-  
   const MonthsComponent = () => (
     <CustomInput type="select" label="To" id={TO_MONTH_ID}>
       <option value="01">January</option>
@@ -186,7 +202,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
               <div className="d-flex justify-content-center mb-5">
                 <Picker
                     ref={pickRange2}
-                    years={{min: {year: 2020, month: 1}, max: {year: 2021, month: 9}}}
+                    years={{min: {year: 2020, month: 1}, max: {year: currentDate.getFullYear(), month: currentDate.getMonth()}}}
                     value={rangeValue2}
                     lang={pickerLang}
                     theme="dark"
@@ -195,36 +211,6 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 >
                     <MonthBox value={makeText(rangeValue2.from) + ' ~ ' + makeText(rangeValue2.to) } onClick={_handleClickRangeBox2} />
                 </Picker>
-                {/* <Label className="d-flex flex-column justify-content-center mb-0">From</Label>
-                <CustomInput className="ml-4 mr-4" type="select" label="From" id={FROM_MONTH_ID}>
-                  <option value="01">January</option>
-                  <option value="02">February</option>
-                  <option value="03">March</option>
-                  <option value="04">April</option>
-                  <option value="05">May</option>
-                  <option value="06">June</option>
-                  <option value="07">July</option>
-                  <option value="08">August</option>
-                  <option value="09">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
-                </CustomInput>
-                <Label className="d-flex flex-column justify-content-center mb-0">To</Label>
-                <CustomInput className="ml-4 mr-4" type="select" label="To" id={TO_MONTH_ID}>
-                  <option value="01">January</option>
-                  <option value="02">February</option>
-                  <option value="03">March</option>
-                  <option value="04">April</option>
-                  <option value="05">May</option>
-                  <option value="06">June</option>
-                  <option value="07">July</option>
-                  <option value="08">August</option>
-                  <option value="09">September</option>
-                  <option value="10">October</option>
-                  <option value="11">November</option>
-                  <option value="12">December</option>
-                </CustomInput>*/}
                 <Button className="ml-4 mr-4" color="primary" onClick={search}>
                   {t('actions.view')}
                 </Button> 
