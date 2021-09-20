@@ -3,7 +3,6 @@ import { FormGroup, Col, Input, Button } from '../../../components'
 import { useTranslation } from 'react-i18next'
 
 function GluuPropertyItem({
-  name,
   property,
   position,
   keyPlaceholder,
@@ -16,7 +15,7 @@ function GluuPropertyItem({
     <FormGroup row>
       <Col sm={4}>
         <Input
-          name={'key' + position}
+          name={'key'}
           defaultValue={property.key}
           onChange={onPropertyChange(position)}
           placeholder={
@@ -28,7 +27,7 @@ function GluuPropertyItem({
       </Col>
       <Col sm={6}>
         <Input
-          name={'value' + position}
+          name={'value'}
           defaultValue={property.value}
           onChange={onPropertyChange(position)}
           placeholder={

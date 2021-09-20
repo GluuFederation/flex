@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import { FormGroup, Col, Button } from '../../../components'
 import { Accordion } from '../../../../app/components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
 
 function GluuProperties({
-  name,
+  compName,
   label,
   formik = null,
   keyPlaceholder,
@@ -16,25 +16,25 @@ function GluuProperties({
   const { t } = useTranslation()
 
   const addProperty = () => {
-    setProperties((prev) => [...prev, { key: '', value: '' }])
+    const item = { key: '', value: '' }
+    setProperties((prev) => [...prev, item])
   }
-
   const changeProperty = (position) => (e) => {
     const { name, value } = e.target
-    console.log('================ name ' + name)
-    console.log('================ value ' + value)
-    console.log('================ position ' + position)
     const newDataArr = [...properties]
-    newDataArr[position] = { ...newDataArr[i], [name]: value }
+    newDataArr[position] = { ...newDataArr[position], [name]: value }
     setProperties(newDataArr)
-    formik.setFieldValue(name, newDataArr)
+    formik.setFieldValue(compName, newDataArr)
   }
-
   const removeProperty = (position) => {
-    const list = properties.filter((element, index) => index !== position)
-    console.log('================ values' + JSON.stringify(list))
-    setProperties(list)
-    formik.setFieldValue(name, list)
+    const data = [...properties]
+    delete data[position]
+    data.filter((element) => element != null)
+    setProperties(data)
+    formik.setFieldValue(
+      compName,
+      data.filter((element) => element != null),
+    )
   }
 
   return (
@@ -54,15 +54,19 @@ function GluuProperties({
           <Col sm={12}>
             <FormGroup row></FormGroup>
             {properties.map((item, index) => (
-              <GluuPropertyItem
-                key={index}
-                position={index}
-                keyPlaceholder={keyPlaceholder}
-                valuePlaceholder={valuePlaceholder}
-                property={item}
-                onPropertyChange={changeProperty}
-                onPropertyRemove={removeProperty}
-              ></GluuPropertyItem>
+              <div key={index}>
+                {item != null && (
+                  <GluuPropertyItem
+                    key={index}
+                    position={index}
+                    keyPlaceholder={keyPlaceholder}
+                    valuePlaceholder={valuePlaceholder}
+                    property={item}
+                    onPropertyChange={changeProperty}
+                    onPropertyRemove={removeProperty}
+                  ></GluuPropertyItem>
+                )}
+              </div>
             ))}
           </Col>
         </FormGroup>
