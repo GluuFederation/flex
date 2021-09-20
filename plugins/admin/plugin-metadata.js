@@ -35,11 +35,6 @@ const pluginMetadata = {
           permission: '/config/acrs.readonly',
         },
         {
-          title: 'menus.licenseDetails',
-          path: PLUGIN_BASE_APTH + '/licenseDetails',
-          permission: '/config/acrs.readonly',
-        },
-        {
           title: 'menus.scripts',
           path: PLUGIN_BASE_APTH + '/scripts',
           permission: '/config/scripts.readonly',
@@ -58,7 +53,11 @@ const pluginMetadata = {
               permission: '/config/jwks.readonly',
             },
             */
-
+            {
+              title: 'menus.licenseDetails',
+              path: PLUGIN_BASE_APTH + '/licenseDetails',
+              permission: '/config/acrs.readonly',
+            },
             {
               title: 'menus.logging',
               path: PLUGIN_BASE_APTH + '/config/logging',
