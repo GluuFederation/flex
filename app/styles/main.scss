@@ -238,6 +238,7 @@
   display: flex;
   justify-content: center;
   cursor: pointer;
+  border-radius: 5px;
   width: 300px;}
   @media screen and (max-width: 767px) {
     .month-picker > .box {

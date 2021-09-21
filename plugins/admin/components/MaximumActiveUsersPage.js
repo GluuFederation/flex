@@ -62,17 +62,9 @@ class MonthBox extends Component {
 function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const userAction = {}
-  const FROM_YEAR_ID = 'FROM_YEAR_ID'
-  const FROM_MONTH_ID = 'FROM_MONTH_ID'
-  const TO_YEAR_ID = 'TO_YEAR_ID'
-  const TO_MONTH_ID = 'TO_MONTH_ID'
   const options = {}
   const currentDate = new Date()
-  // const currentMonth =
-  //   currentDate.getFullYear() +
-  //   String(currentDate.getMonth() + 1).padStart(2, '0')
-  // const [startDate, setStartDate] = useState('202101')
-  // const [endDate, setEndDate] = useState('202101')
+  const [average, setAverage] = useState(0)
 
   const pickRange2 = React.createRef()
   const [rangeValue2,setRangeValue2] = useState({from: {year: 2021, month: 5}, to: {year: 2021, month: 9}})
@@ -87,7 +79,6 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     dispatch(getMau(userAction))
   }, [])
   function search() {
-    console.log('rangeValue2 : ', rangeValue2)
     options['month'] = makeOptions()
     // options['month'] = '202109%20202108' //startDate + String('%') + endDate
     buildPayload(userAction, 'GET MAU', options)
@@ -100,62 +91,23 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     var monthRange = date.toISOString().substr(0,7).replace('-','')
     for (let i = rangeValue2.from.year; i <= rangeValue2.to.year; i++) {
       date.setFullYear(i)
-      for (let j = rangeValue2.from.month; j < rangeValue2.to.month; j++) {
+      for (let j = (i==rangeValue2.from.year?rangeValue2.from.month:0) ; j < (i<rangeValue2.to.year?12:rangeValue2.to.month) ; j++) {
         date.setMonth(j)
         const temp = date.toISOString().substr(0,7).replace('-','')
         monthRange = monthRange + '%20' + temp
       }
     }
+
     console.log('Month Range : ', monthRange)
     return monthRange
   }
 
-  function getCurrentMonthStat() {
-    options['month'] = currentMonth
-    buildPayload(userAction, 'GET CURRENT MONTH MAU', options)
-    dispatch(getMau(userAction))
-  }
-  function getCurrentYearStat() {
-    const year = currentDate.getFullYear()
-    options['month'] = String(year) + '01%' + String(year) + '12'
-    buildPayload(userAction, 'GET CURENT YEAR MAU', options)
-    dispatch(getMau(userAction))
-  }
-  function getStartDate() {
-    setStartDate(
-      document.getElementById(FROM_YEAR_ID).value +
-        document.getElementById(FROM_MONTH_ID).value,
-    )
-  }
-  function getEndDate() {
-    setEndDate(
-      document.getElementById(TO_YEAR_ID).value +
-        document.getElementById(TO_MONTH_ID).value,
-    )
-  }
-
-  const MonthsComponent = () => (
-    <CustomInput type="select" label="To" id={TO_MONTH_ID}>
-      <option value="01">January</option>
-      <option value="02">February</option>
-      <option value="03">March</option>
-      <option value="04">April</option>
-      <option value="05">May</option>
-      <option value="06">June</option>
-      <option value="07">July</option>
-      <option value="08">August</option>
-      <option value="09">September</option>
-      <option value="10">October</option>
-      <option value="11">November</option>
-      <option value="12">December</option>
-    </CustomInput>
-  )
   const CustomTooltipForMAU = ({ active, payload, label }) => {
     if (active && payload) {
       return (
-        <div className="custom-tooltip" style={{backgroundColor:"white"}}>
-          <p className="label">{`Month:${label}`}</p>
-          <p className="label">{`Monthly Active Users:${payload[0].value}`}</p>
+        <div className="custom-tooltip" style={{backgroundColor:"lightGray", padding: "5px", border:"1px solid gray", borderRadius: "5px", color:"black"}}>
+          <p className="label">{`Month : ${label}`}</p>
+          <p className="label">{`Monthly Active Users : ${payload[0].value}`}</p>
         </div>
       );
     }
@@ -165,10 +117,10 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const CustomTooltipForTokens = ({ active, payload, label }) => {
     if (active && payload) {
       return (
-        <div className="custom-tooltip" style={{backgroundColor:"white"}}>
-          <p className="label">{`Month:${label}`}</p>
-          <p className="label">{`Authorization Code Access Token:${payload[0].value}`}</p>
-          <p className="label">{`Client Credentials Access Token:${payload[1].value}`}</p>
+        <div className="custom-tooltip" style={{backgroundColor:"lightGray", padding: "5px", border:"1px solid gray", borderRadius: "5px", color:"black"}}>
+          <p className="label">{`Month : ${label}`}</p>
+          <p className="label">{`Authorization Code Access Token : ${payload[0].value}`}</p>
+          <p className="label">{`Client Credentials Access Token : ${payload[1].value}`}</p>
         </div>
       );
     }
@@ -188,6 +140,16 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const handleRangeDissmis2 = (value) => {
     setRangeValue2(value)
   }
+  const arrAvg = arr => {
+    let sum = 0;
+    let length = arr.length;
+    if(length < 1)
+      return 0
+    for (let i = 0; i < length; i++) {
+      sum += arr[i].monthly_active_users
+    }
+    return (sum / length).toFixed(2)
+  }
   return (
     <GluuLoader blocking={loading}>
       <GluuViewWrapper
@@ -202,7 +164,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
               <div className="d-flex justify-content-center mb-5">
                 <Picker
                     ref={pickRange2}
-                    years={{min: {year: 2020, month: 1}, max: {year: currentDate.getFullYear(), month: currentDate.getMonth()}}}
+                    years={{min: {year: 2018, month: 1}, max: {year: currentDate.getFullYear(), month: currentDate.getMonth()+1}}}
                     value={rangeValue2}
                     lang={pickerLang}
                     theme="dark"
@@ -214,12 +176,13 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 <Button className="ml-4 mr-4" color="primary" onClick={search}>
                   {t('actions.view')}
                 </Button> 
+                <label style={{border: "2px solid gray", borderRadius: "5px", marginBottom: "0px", fontSize:"larger", padding: "10px", marginLeft: "50px", minWidth: "230px", textAlign: "center", color: "black"}}>
+                  Average of MAU : {arrAvg(Object.values(stat))}
+                </label>
               </div>
               <ResponsiveContainer width="80%" height={500}>
                 <LineChart width={'100%'} height={300} data={stat} >
                   <Line name="Monthly Active Users" type="monotone" dataKey="monthly_active_users" stroke="#8884d8" />
-                  {/* <Line name="Authorization Access Token" type="monotone" dataKey="token_count_per_granttype.authorization_code.access_token" stroke="#ff1e86" /> */}
-                  {/* <Line name="Client Credential Access Token" type="monotone" dataKey="token_count_per_granttype.client_credentials.access_token" stroke="#4f1e86" /> */}
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="month" />
                   <YAxis />
