@@ -21,7 +21,6 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
-  const [properties, setProperties] = useState([])
   const [scriptTypeState, setScriptTypeState] = useState(item.scriptType)
   const scriptTypes = [...new Set(scripts.map((item) => item.scriptType))]
   function activate() {
@@ -37,15 +36,21 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     toggle()
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
-  const addProperty = () => {
-    setProperties((prev) => [...prev, { key: '', value: '' }])
+
+  function getPropertiesConfig(item) {
+    if (
+      item.configurationProperties &&
+      Array.isArray(item.configurationProperties)
+    ) {
+      return item.configurationProperties.map((e) => ({
+        key: e.value1,
+        value: e.value2,
+      }))
+    } else {
+      return []
+    }
   }
 
-  const removeProperty = (i, name) => {
-    const newData = properties.filter((element, index) => index != i)
-    setProperties((prev) => [...newData])
-    // formik.setFieldValue(name, newData)
-  }
   const formik = useFormik({
     initialValues: {
       name: item.name,
@@ -73,11 +78,15 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     onSubmit: (values) => {
       values.level = item.level
       values.moduleProperties = item.moduleProperties
-
       if (!!values.configurationProperties) {
-        values.configurationProperties = values.configurationProperties.map(
-          (ele) => ({ value1: ele.key, value2: ele.value, description: '' }),
-        )
+        values.configurationProperties = values.configurationProperties
+          .filter((e) => e != null)
+          .filter((e) => Object.keys(e).length !== 0)
+          .map((e) => ({
+            value1: e.key || e.value1,
+            value2: e.value || e.value2,
+            hide: false,
+          }))
       }
       if (typeof values.enabled == 'object') {
         if (values.enabled.length > 0) {
@@ -353,19 +362,12 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       </FormGroup>
 
       <GluuProperties
-        name="configurationProperties"
+        compName="configurationProperties"
         label="fields.custom_properties"
         formik={formik}
         keyPlaceholder={t('placeholders.enter_property_key')}
         valuePlaceholder={t('placeholders.enter_property_value')}
-        dataArr={
-          !!item.configurationProperties
-            ? item.configurationProperties.map((ele) => ({
-                key: ele.value1,
-                value: ele.value2,
-              }))
-            : []
-        }
+        options={getPropertiesConfig(item)}
       ></GluuProperties>
 
       <FormGroup row>

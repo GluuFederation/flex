@@ -16,7 +16,7 @@ function CustomScriptEditPage({ item, scripts, loading, dispatch }) {
       delete data.customScript.action_message
       buildPayload(userAction, message, data)
       dispatch(editCustomScript(userAction))
-      history.push('/auth-server/scripts')
+      history.push('/adm/scripts')
     }
   }
   return (
