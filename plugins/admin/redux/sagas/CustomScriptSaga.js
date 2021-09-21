@@ -37,7 +37,6 @@ function* newFunction() {
   const api = new JansConfigApi.CustomScriptsApi(
     getClient(JansConfigApi, token, issuer),
   )
-  console.log("ScriptApi:", api)
   return new ScriptApi(api)
 }
 

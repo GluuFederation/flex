@@ -10,7 +10,7 @@ function GluuProperties({
   formik = null,
   keyPlaceholder,
   valuePlaceholder,
-  options = [],
+  options,
 }) {
   const [properties, setProperties] = useState(options)
   const { t } = useTranslation()
