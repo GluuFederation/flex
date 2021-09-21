@@ -38,6 +38,34 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
+            values.httpLoggingEnabled = !!values.httpLoggingEnabled ? values.httpLoggingEnabled : logging.httpLoggingEnabled;
+            values.disableJdkLogger = !!values.disableJdkLogger ? values.disableJdkLogger : logging.disableJdkLogger;
+            values.enabledOAuthAuditLogging = !!values.enabledOAuthAuditLogging ? values.enabledOAuthAuditLogging : logging.enabledOAuthAuditLogging;
+
+            if (typeof values.httpLoggingEnabled == 'object') {
+              if (values.httpLoggingEnabled.length > 0) {
+                values.httpLoggingEnabled = true
+              } else {
+                values.httpLoggingEnabled = false
+              }
+            }
+
+            if (typeof values.disableJdkLogger == 'object') {
+              if (values.disableJdkLogger.length > 0) {
+                values.disableJdkLogger = true
+              } else {
+                values.disableJdkLogger = false
+              }
+            }
+
+            if (typeof values.enabledOAuthAuditLogging == 'object') {
+              if (values.enabledOAuthAuditLogging.length > 0) {
+                values.enabledOAuthAuditLogging = true
+              } else {
+                values.enabledOAuthAuditLogging = false
+              }
+            }
+
             const opts = {}
             opts['loggingConfiguration'] = JSON.stringify(values)
             dispatch(editLoggingConfig(opts))

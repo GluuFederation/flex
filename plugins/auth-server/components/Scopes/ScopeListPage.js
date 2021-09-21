@@ -38,8 +38,10 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
-  const [limit, setLimit] = useState(pageSize)
+  const [pageSize, setPageSize] = useState(
+    localStorage.getItem('paggingSize') || 10,
+  )
+  const [limit, setLimit] = useState(500)
   const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
 
@@ -48,7 +50,6 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     buildPayload(userAction, FETCHING_SCOPES, options)
     dispatch(getScopes(userAction))
   }, [])
-
   function handleOptionsChange(i) {
     setLimit(document.getElementById(LIMIT_ID).value)
     setPattern(document.getElementById(PATTERN_ID).value)
