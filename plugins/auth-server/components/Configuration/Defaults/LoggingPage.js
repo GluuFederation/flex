@@ -38,6 +38,10 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
+            values.httpLoggingEnabled = values.httpLoggingEnabled != undefined ? values.httpLoggingEnabled : logging.httpLoggingEnabled;
+            values.disableJdkLogger = values.disableJdkLogger != undefined ? values.disableJdkLogger : logging.disableJdkLogger;
+            values.enabledOAuthAuditLogging = values.enabledOAuthAuditLogging != undefined ? values.enabledOAuthAuditLogging : logging.enabledOAuthAuditLogging;
+
             const opts = {}
             opts['loggingConfiguration'] = JSON.stringify(values)
             dispatch(editLoggingConfig(opts))
@@ -53,7 +57,10 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                     id="loggingLevel"
                     name="loggingLevel"
                     value={logging.loggingLevel}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      logging.loggingLevel = e.target.value
+                      formik.setFieldValue('loggingLevel', e.target.value)
+                    }}
                   >
                     <option value="">{t('actions.choose')}...</option>
                     {levels.map((item, key) => (
@@ -72,7 +79,10 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                     id="loggingLayout"
                     name="loggingLayout"
                     value={logging.loggingLayout}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      logging.loggingLayout = e.target.value
+                      formik.setFieldValue('loggingLayout', e.target.value)
+                    }}
                   >
                     <option value="">{t('actions.choose')}...</option>
                     {logLayouts.map((item, key) => (
@@ -86,7 +96,9 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
               <GluuCheckBoxRow
                 label="fields.http_logging_enabled"
                 name="httpLoggingEnabled"
-                formik={formik}
+                handleOnChange={(e) => {
+                  formik.setFieldValue('httpLoggingEnabled', e.target.checked)
+                }}
                 lsize={5}
                 rsize={7}
                 value={logging.httpLoggingEnabled}
@@ -94,7 +106,9 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
               <GluuCheckBoxRow
                 label="fields.disable_jdk_logger"
                 name="disableJdkLogger"
-                formik={formik}
+                handleOnChange={(e) => {
+                  formik.setFieldValue('disableJdkLogger', e.target.checked)
+                }}
                 lsize={5}
                 rsize={7}
                 value={logging.disableJdkLogger}
@@ -102,7 +116,9 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
               <GluuCheckBoxRow
                 label="fields.enabled_oAuth_audit_logging"
                 name="enabledOAuthAuditLogging"
-                formik={formik}
+                handleOnChange={(e) => {
+                  formik.setFieldValue('enabledOAuthAuditLogging', e.target.checked)
+                }}
                 lsize={5}
                 rsize={7}
                 value={logging.enabledOAuthAuditLogging}

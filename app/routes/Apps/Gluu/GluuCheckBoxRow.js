@@ -2,7 +2,7 @@ import React from 'react'
 import { Col, FormGroup, Input } from '../../../components'
 import GluuLabel from './GluuLabel'
 
-function GluuCheckBoxRow({ label, name, value, formik, required,lsize, rsize }) {
+function GluuCheckBoxRow({ label, name, value, required,lsize, rsize, handleOnChange }) {
     return (
       <FormGroup row>
         <GluuLabel label={label} size={lsize} required={required}/>
@@ -12,7 +12,7 @@ function GluuCheckBoxRow({ label, name, value, formik, required,lsize, rsize }) 
             type="checkbox"
             name={name}
             defaultChecked={value}
-            onChange={formik.handleChange}
+            onChange={handleOnChange}
           />
         </Col>
       </FormGroup>
