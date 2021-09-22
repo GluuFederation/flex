@@ -17,7 +17,6 @@ import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { hasPermission, CLIENT_WRITE } from '../../../../app/utils/PermChecker'
-
 const sequence = [
   'Basic',
   'Advanced',
@@ -26,6 +25,7 @@ const sequence = [
   'CustomScripts',
 ]
 const ATTRIBUTE = 'attributes'
+const DESCRIPTION = 'description'
 let commitMessage = ''
 function ClientWizardForm({
   client_data,
@@ -35,11 +35,34 @@ function ClientWizardForm({
   permissions,
   customOnSubmit,
 }) {
-  
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [client, setClient] = useState(client_data)
   const [currentStep, setCurrentStep] = useState(sequence[0])
+  const postScripts = scripts
+    .filter((item) => item.scriptType == 'POST_AUTHN')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
+
+  const spontaneousScripts = scripts
+    .filter((item) => item.scriptType == 'SPONTANEOUS_SCOPE')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
+
+  const consentScripts = scripts
+    .filter((item) => item.scriptType == 'CONSENT_GATHERING')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
+
+  const instrospectionScripts = scripts
+    .filter((item) => item.scriptType == 'INTROSPECTION')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
+
+  const rptScripts = scripts
+    .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
 
   function changeStep(stepId) {
     setCurrentStep(stepId)
@@ -61,18 +84,33 @@ function ClientWizardForm({
   }
   function buildDescription(description) {
     return {
-      name: 'description',
+      name: DESCRIPTION,
       multiValued: false,
       values: [description],
     }
   }
   function removeDecription(customAttributes) {
-    return customAttributes.filter((item) => item.name !== 'description')
+    return customAttributes.filter((item) => item.name !== DESCRIPTION)
   }
   function submitForm(message) {
     commitMessage = message
     toggle()
     document.querySelector('button[type="submit"]').click()
+  }
+
+  function extractDescription(customAttributes) {
+    var result = customAttributes.filter((item) => item.name === DESCRIPTION)
+    if (result && result.length >= 1) {
+      return result[0].values
+    }
+    return ''
+  }
+
+  function getMapping(partial, total) {
+    if (!partial) {
+      partial = []
+    }
+    return total.filter((item) => partial.includes(item.dn))
   }
 
   const initialValues = {
@@ -81,7 +119,7 @@ function ClientWizardForm({
     clientSecret: client.secret,
     displayName: client.displayName,
     clientName: client.clientName,
-    description: client.description,
+    description: extractDescription(client.customAttributes || []),
     applicationType: client.applicationType,
     subjectType: client.subjectType,
     registrationAccessToken: client.registrationAccessToken,
@@ -93,7 +131,6 @@ function ClientWizardForm({
     backchannelUserCodeParameter: client.backchannelUserCodeParameter,
     policyUri: client.policyUri,
     logoURI: client.logoURI,
-    tlsClientAuthSubjectDn: client.tlsClientAuthSubjectDn,
     sectorIdentifierUri: client.sectorIdentifierUri,
     redirectUris: client.redirectUris,
     claimRedirectUris: client.claimRedirectUris || [],
@@ -106,6 +143,8 @@ function ClientWizardForm({
     oxAuthClaims: client.oxAuthClaims,
     customAttributes: client.customAttributes,
 
+    attributes: client.attributes,
+    tlsClientAuthSubjectDn: client.attributes.tlsClientAuthSubjectDn,
     runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
       client.attributes
         .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims ||
@@ -116,17 +155,27 @@ function ClientWizardForm({
       client.attributes.keepClientAuthorizationAfterExpiration || false,
     allowSpontaneousScopes: client.attributes.allowSpontaneousScopes || false,
     tlsClientAuthSubjectDn: client.attributes.tlsClientAuthSubjectDn,
-    spontaneousScopes: client.attributes.spontaneousScopes || [],
-    introspectionScripts: client.attributes.introspectionScripts || [],
+    spontaneousScopes:
+      getMapping(client.attributes.spontaneousScopes, scopes) || [],
+    introspectionScripts:
+      getMapping(
+        client.attributes.introspectionScripts,
+        instrospectionScripts,
+      ) || [],
     spontaneousScopeScriptDns:
-      client.attributes.spontaneousScopeScriptDns || [],
-    consentGatheringScripts: client.attributes.consentGatheringScripts || [],
+      getMapping(
+        client.attributes.spontaneousScopeScriptDns,
+        spontaneousScripts,
+      ) || [],
+    consentGatheringScripts:
+      getMapping(client.attributes.consentGatheringScripts, consentScripts) ||
+      [],
+    postAuthnScripts:
+      getMapping(client.attributes.postAuthnScripts, postScripts) || [],
     rptClaimsScripts: client.attributes.rptClaimsScripts || [],
     backchannelLogoutUri: client.attributes.backchannelLogoutUri,
-    postAuthnScripts: client.attributes.postAuthnScripts || [],
     additionalAudience: client.attributes.additionalAudience || [],
 
-    attributes: client.attributes,
     customObjectClasses: client.customObjectClasses,
     deletable: client.deletable,
     frontChannelLogoutSessionRequired: client.frontChannelLogoutSessionRequired,
@@ -145,7 +194,7 @@ function ClientWizardForm({
     allowSpontaneousScopes: client.allowSpontaneousScopes,
     backchannelLogoutSessionRequired: client.backchannelLogoutSessionRequired,
   }
-
+  // console.log('===============description ' + initialValues.description)
   return (
     <Container>
       <Formik
@@ -177,14 +226,12 @@ function ClientWizardForm({
           if (!values['customAttributes']) {
             values['customAttributes'] = []
           }
-          if (values['description']) {
+          if (values[DESCRIPTION]) {
             values['customAttributes'] = removeDecription(
               values['customAttributes'],
             )
           }
-          values['customAttributes'].push(
-            buildDescription(values['description']),
-          )
+          values['customAttributes'].push(buildDescription(values[DESCRIPTION]))
           values['displayName'] = values['clientName']
           customOnSubmit(JSON.parse(JSON.stringify(values)))
         }}

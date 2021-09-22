@@ -41,13 +41,6 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
     setExpirable(!expirable)
   }
 
-  function extractDescription(customAttributes) {
-    var result = customAttributes.filter((item) => item.name === 'description')
-    if (result && result.length >= 1) {
-      return result[0].values
-    }
-    return ''
-  }
   function getScopeMapping(exitingScopes, scopes) {
     if (!exitingScopes) {
       exitingScopes = []
@@ -109,7 +102,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
             placeholder={t('placeholders.client_description')}
             id="description"
             name="description"
-            defaultValue={extractDescription(client.customAttributes || [])}
+            defaultValue={client.description}
             onChange={formik.handleChange}
           />
         </Col>

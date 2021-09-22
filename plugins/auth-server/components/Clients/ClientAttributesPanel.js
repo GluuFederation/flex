@@ -28,7 +28,7 @@ function ClientAttributesPanel({ client, formik }) {
           <Input
             id="tlsClientAuthSubjectDn"
             name="tlsClientAuthSubjectDn"
-            defaultValue={client.attributes.tlsClientAuthSubjectDn}
+            defaultValue={client.tlsClientAuthSubjectDn}
             onChange={formik.handleChange}
           />
         </Col>
@@ -37,8 +37,7 @@ function ClientAttributesPanel({ client, formik }) {
         name="runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims"
         label="fields.run_introspection_script_before_accesstoken"
         value={
-          client.attributes
-            .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
+          client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
         }
         formik={formik}
         lsize={8}
@@ -47,7 +46,7 @@ function ClientAttributesPanel({ client, formik }) {
       <GluuBooleanSelectBox
         name="keepClientAuthorizationAfterExpiration"
         label="fields.keep_client_authorization"
-        value={client.attributes.keepClientAuthorizationAfterExpiration}
+        value={client.keepClientAuthorizationAfterExpiration}
         formik={formik}
         lsize={8}
         rsize={4}
@@ -63,7 +62,7 @@ function ClientAttributesPanel({ client, formik }) {
       <GluuBooleanSelectBox
         name="backchannelLogoutSessionRequired"
         label="fields.backchannelLogoutSessionRequired"
-        value={client.attributes.backchannelLogoutSessionRequired}
+        value={client.backchannelLogoutSessionRequired}
         formik={formik}
         lsize={8}
         rsize={4}

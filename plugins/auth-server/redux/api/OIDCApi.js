@@ -32,6 +32,7 @@ export default class OIDCApi {
       this.api.putOauthOpenidClients(data, (error, res) => {
         if (error) {
           reject(error)
+          console.log('===========' + JSON.stringify(error))
         } else {
           resolve(res)
         }
