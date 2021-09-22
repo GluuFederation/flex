@@ -48,7 +48,10 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
                     id="defaultAcr"
                     name="defaultAcr"
                     value={acrs.defaultAcr}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      acrs.defaultAcr = e.target.value
+                      formik.setFieldValue('defaultAcr', e.target.value)
+                    }}
                   >
                     <option value="">{t('actions.choose')}...</option>
                     {authScripts.map((item, key) => (

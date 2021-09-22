@@ -57,7 +57,10 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                     id="loggingLevel"
                     name="loggingLevel"
                     value={logging.loggingLevel}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      logging.loggingLevel = e.target.value
+                      formik.setFieldValue('loggingLevel', e.target.value)
+                    }}
                   >
                     <option value="">{t('actions.choose')}...</option>
                     {levels.map((item, key) => (
@@ -76,7 +79,10 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                     id="loggingLayout"
                     name="loggingLayout"
                     value={logging.loggingLayout}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      logging.loggingLayout = e.target.value
+                      formik.setFieldValue('loggingLayout', e.target.value)
+                    }}
                   >
                     <option value="">{t('actions.choose')}...</option>
                     {logLayouts.map((item, key) => (
@@ -117,7 +123,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                 rsize={7}
                 value={logging.enabledOAuthAuditLogging}
               ></GluuCheckBoxRow>
-             
+
               {hasPermission(permissions, LOGGING_WRITE) && (
                 <Button color="primary" type="submit">
                   {t('actions.save')}
