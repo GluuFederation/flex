@@ -7,6 +7,9 @@ import {
   InputGroup,
   CustomInput,
 } from '../../../../app/components'
+import IconButton from '@material-ui/core/IconButton'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
@@ -36,6 +39,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
   const [expDate, setExpDate] = useState(
     client.expirationDate ? new Date(client.expirationDate) : new Date(),
   )
+  const [showClientSecret, setShowClientSecret] = useState(false)
 
   function handleExpirable() {
     setExpirable(!expirable)
@@ -53,6 +57,13 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
   }
   function postUriValidator(uri) {
     return uri
+  }
+  function handleClickShowClientSecret() {
+    setShowClientSecret(!showClientSecret)
+  }
+
+  function handleMouseDownClientSecret(event) {
+    event.preventDefault()
   }
 
   return (
@@ -74,13 +85,21 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
       <FormGroup row>
         <GluuLabel label="fields.client_secret" />
         <Col sm={9}>
-          <Input
-            id="clientSecret"
-            name="clientSecret"
-            type="password"
-            defaultValue={client.clientSecret}
-            onChange={formik.handleChange}
-          />
+          <div style={{ height: "0.01em", display: "flex", maxHeight: "2em", whiteSpace: "nowrap" }}>
+            <Input
+              id="clientSecret"
+              name="clientSecret"
+              type={showClientSecret ? "text" : "password"}
+              defaultValue={client.clientSecret}
+              onChange={formik.handleChange}
+            />
+            <IconButton
+              onClick={handleClickShowClientSecret}
+              onMouseDown={handleMouseDownClientSecret}
+            >
+              {showClientSecret ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </div>
         </Col>
       </FormGroup>
       <FormGroup row>
