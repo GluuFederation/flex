@@ -16,12 +16,16 @@ const theme = createTheme({
 
 function GluuTypeAheadForDn({ label, name, value, options, formik, required }) {
   const { t } = useTranslation()
+  function getItemName(options, item) {
+    const data = options.filter((e) => e.dn === item)
+    return data[0].name
+  }
   return (
     <FormGroup row>
       <GluuLabel label={label} size={4} required={required} />
       <Col sm={8}>
         <Typeahead
-          labelKey={(option) => `${option.name}`}
+          labelKey={(opt) => `${opt.name || getItemName(options, opt)}`}
           onChange={(selected) => {
             formik.setFieldValue(
               name,

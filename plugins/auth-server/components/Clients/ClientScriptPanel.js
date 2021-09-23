@@ -3,6 +3,7 @@ import { Container } from '../../../../app/components'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 
 function ClientScriptPanel({ client, scopes, scripts, formik }) {
+  
   const postScripts = scripts
     .filter((item) => item.scriptType == 'POST_AUTHN')
     .filter((item) => item.enabled)
@@ -17,7 +18,6 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
     .filter((item) => item.scriptType == 'CONSENT_GATHERING')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
-
   const instrospectionScripts = scripts
     .filter((item) => item.scriptType == 'INTROSPECTION')
     .filter((item) => item.enabled)

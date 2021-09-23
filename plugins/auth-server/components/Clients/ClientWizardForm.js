@@ -110,7 +110,7 @@ function ClientWizardForm({
     if (!partial) {
       partial = []
     }
-    return total.filter((item) => partial.includes(item.dn))
+    return total.filter((item) => partial.includes(item.dn)) || []
   }
 
   const initialValues = {
@@ -194,7 +194,6 @@ function ClientWizardForm({
     allowSpontaneousScopes: client.allowSpontaneousScopes,
     backchannelLogoutSessionRequired: client.backchannelLogoutSessionRequired,
   }
-  // console.log('===============description ' + initialValues.description)
   return (
     <Container>
       <Formik
