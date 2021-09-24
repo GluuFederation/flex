@@ -83,13 +83,32 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </FormGroup>
       )}
       <FormGroup row>
+        <GluuLabel label="fields.client_name" />
+        <Col sm={9}>
+          <Input
+            placeholder={t('placeholders.client_name')}
+            id="clientName"
+            name="clientName"
+            defaultValue={client.clientName || client.displayName}
+            onChange={formik.handleChange}
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
         <GluuLabel label="fields.client_secret" />
         <Col sm={9}>
-          <div style={{ height: "0.01em", display: "flex", maxHeight: "2em", whiteSpace: "nowrap" }}>
+          <div
+            style={{
+              height: '0.01em',
+              display: 'flex',
+              maxHeight: '2em',
+              whiteSpace: 'nowrap',
+            }}
+          >
             <Input
               id="clientSecret"
               name="clientSecret"
-              type={showClientSecret ? "text" : "password"}
+              type={showClientSecret ? 'text' : 'password'}
               defaultValue={client.clientSecret}
               onChange={formik.handleChange}
             />
@@ -100,18 +119,6 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
               {showClientSecret ? <Visibility /> : <VisibilityOff />}
             </IconButton>
           </div>
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.client_name" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('placeholders.client_name')}
-            id="clientName"
-            name="clientName"
-            defaultValue={client.clientName || client.displayName}
-            onChange={formik.handleChange}
-          />
         </Col>
       </FormGroup>
       <FormGroup row>

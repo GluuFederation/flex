@@ -3,7 +3,6 @@ import { Container } from '../../../../app/components'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 
 function ClientScriptPanel({ client, scopes, scripts, formik }) {
-  
   const postScripts = scripts
     .filter((item) => item.scriptType == 'POST_AUTHN')
     .filter((item) => item.enabled)
