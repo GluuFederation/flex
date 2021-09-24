@@ -1,10 +1,12 @@
+import { isNull } from 'lodash'
 import React from 'react'
 import Toggle from 'react-toggle'
-function GluuToogle({ name, formik, value }) {
+function GluuToogle({ name, formik, value, handler}) {
   return (
     <Toggle
       name={name}
       defaultChecked={value}
+      onClick={handler}
       onChange={formik.handleChange}
     />
   )

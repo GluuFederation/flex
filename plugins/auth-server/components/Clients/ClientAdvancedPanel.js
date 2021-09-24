@@ -24,11 +24,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
   function uriValidator(uri) {
-    return (
-      uri.startsWith('https://') ||
-      uri.startsWith('schema://') ||
-      uri.startsWith('appschema://')
-    )
+    return uri
   }
   function getMapping(partial, total) {
     if (!partial) {
