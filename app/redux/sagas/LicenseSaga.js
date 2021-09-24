@@ -39,6 +39,7 @@ function* activateLicenseWorker({ payload }) {
   } catch (error) {
     console.log('Error in activating license.', error)
   }
+  yield put(activateLicenseResponse())
 }
 
 

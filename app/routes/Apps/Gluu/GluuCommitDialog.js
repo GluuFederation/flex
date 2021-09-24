@@ -44,6 +44,7 @@ const GluuCommitDialog = ({
         document.getElementById(USER_MESSAGE).value,
       )
     }
+    setLoading(true);
     onAccept(document.getElementById(USER_MESSAGE).value)
   }
   return (

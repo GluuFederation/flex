@@ -58,7 +58,7 @@ class AppAuthProvider extends Component {
    if (window.location.href.indexOf('logout') > -1) {
       return { showContent: true }
     }
-    if (!props.isLicensePresent) {
+    if (!props.isLicenseValid) {
       return { showContent: false }
     }
     if (!props.showContent) {
@@ -108,11 +108,11 @@ class AppAuthProvider extends Component {
         {showContent && this.props.children}
         {!showContent &&
           <ViewRedirect backendIsUp={this.props.backendIsUp}
-            isLicensePresent={this.props.isLicensePresent}
+            isLicenseValid={this.props.isLicenseValid}
             activateLicense={this.props.activateLicense}
             redirectUrl={this.props.config.redirectUrl}
-            isLoadedLicensePresent={this.props.isLoadedLicensePresent}
-            isCheckedLicense={this.props.isCheckedLicense}
+            islicenseCheckResultLoaded={this.props.islicenseCheckResultLoaded}
+            isLicenseActivationResultLoaded={this.props.isLicenseActivationResultLoaded}
           />}
       </React.Fragment>
     )
@@ -125,9 +125,10 @@ const mapStateToProps = ({ authReducer, licenseReducer }) => {
   const token = authReducer.token
   const permissions = authReducer.permissions
   const backendIsUp = authReducer.backendIsUp
-  const isLicensePresent = licenseReducer.isLicensePresent
-  const isLoadedLicensePresent = licenseReducer.isLoadedLicensePresent
-  const isCheckedLicense = licenseReducer.isCheckedLicense
+  const isLicenseValid = licenseReducer.isLicenseValid
+  const islicenseCheckResultLoaded = licenseReducer.islicenseCheckResultLoaded
+  const isLicenseActivationResultLoaded = licenseReducer.isLicenseActivationResultLoaded
+
   return {
     config,
     userinfo,
@@ -135,9 +136,9 @@ const mapStateToProps = ({ authReducer, licenseReducer }) => {
     token,
     permissions,
     backendIsUp,
-    isLicensePresent,
-    isLoadedLicensePresent,
-    isCheckedLicense,
+    isLicenseValid,
+    islicenseCheckResultLoaded,
+    isLicenseActivationResultLoaded,
   }
 }
 
