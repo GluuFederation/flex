@@ -35,13 +35,7 @@ const pluginMetadata = {
       title: 'menus.oauthserver',
       icon: 'fa-server',
       children: [
-        {
-          title: 'menus.health',
-          path: PLUGIN_BASE_APTH + '/health',
-          //permission: '/config/properties.readonly',
-          permission: '/config/acrs.readonly',
-        },
-
+        
         /**
         {
           title: 'menus.reports',
@@ -83,6 +77,12 @@ const pluginMetadata = {
           title: 'menus.clients',
           path: PLUGIN_BASE_APTH + '/clients',
           permission: '/config/openid/clients.readonly',
+        },
+        {
+          title: 'menus.health',
+          path: PLUGIN_BASE_APTH + '/health',
+          //permission: '/config/properties.readonly',
+          permission: '/config/acrs.readonly',
         },
         {
           title: 'menus.scopes',
