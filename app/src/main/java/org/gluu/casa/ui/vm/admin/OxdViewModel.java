@@ -179,7 +179,7 @@ public class OxdViewModel extends MainViewModel {
     }
     
     private void computeSelectableScopes() {
-        selectableScopes = scopeService.getNonUMAScopes().stream().map(Scope::getId).sorted().collect(Collectors.toSet());
+        selectableScopes = scopeService.getNonUMAScopes().stream().map(Scope::getId).collect(Collectors.toCollection(TreeSet::new));
         //Remove already checked ones
         selectableScopes.removeAll(oxdSettings.getScopes());
         logger.debug("Selectable scopes are: {}", selectableScopes);
