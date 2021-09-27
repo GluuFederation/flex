@@ -9,17 +9,17 @@ import {
     type: CHECK_FOR_VALID_LICENSE,
   })
   
-  export const checkLicensePresentResponse = (isLicensePresent) => ({
+  export const checkLicensePresentResponse = (isLicenseValid) => ({
     type: CHECK_FOR_VALID_LICENSE_RESPONSE,
-    payload: { isLicensePresent },
+    payload: { isLicenseValid },
   })
 
   export const activateLicense = (licenseKey) => ({
     type: ACTIVATE_LICENSE,
     payload: { licenseKey },
   })
-  
-  export const activateLicenseResponse = (isLicensePresent) => ({
+
+  export const activateLicenseResponse = (isLicenseValid) => ({
     type: ACTIVATE_LICENSE_RESPONSE,
-    payload: { isLicensePresent },
+    payload: { isLicenseValid },
   })

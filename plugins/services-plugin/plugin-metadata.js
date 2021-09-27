@@ -32,14 +32,14 @@ const pluginMetadata = {
           title: 'menus.persistence',
           children: [
             {
-              title: 'menus.ldap',
-              path: '/config/ldap',
-              permission: '/config/database/ldap.readonly',
-            },
-            {
               title: 'menus.couchbase',
               path: '/config/couchbase',
               permission: '/config/database/couchbase.readonly',
+            },
+            {
+              title: 'menus.ldap',
+              path: '/config/ldap',
+              permission: '/config/database/ldap.readonly',
             },
             {
               title: 'menus.sql',

@@ -24,99 +24,109 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
       />
       <GluuLoader blocking={loading}>
         {item.licenseEnable ?
-        (<Container style={{ backgroundColor: '#F5F5F5' }}>
-          <Row>
-            <Col sm={3}>
-              <GluuFormDetailRow
-                label="fields.productName"
-                value={item.productName}
-                isBadge={true}
-              />
-            </Col>
-            <Col sm={9}>
-              <GluuFormDetailRow
-                label="fields.productCode"
-                value={item.productCode}
-                isBadge={true}
-                lsize={3}
-                rsize={9}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={3}>
-              <GluuFormDetailRow
-                label="fields.licenseType"
-                value={item.licenseType}
-                isBadge={true}
-              />
-            </Col>
-            <Col sm={9}>
-              <GluuFormDetailRow
-                label="fields.maxActivations"
-                value={item.maxActivations}
-                isBadge={true}
-                lsize={3}
-                rsize={9}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={3}>
-              <GluuFormDetailRow
-                label="fields.licenseKey"
-                value={item.licenseKey}
-                isBadge={true}
-              />
-            </Col>
-            <Col sm={9}>
-              <GluuFormDetailRow
-                label="fields.licenseActive"
-                value={item.licenseActive ? "True" : "False"}
-                isBadge={true}
-                lsize={3}
-                rsize={9}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={3}>
-              <GluuFormDetailRow
-                label="fields.validityPeriod"
-                value={item.validityPeriod}
-                isBadge={true}
-              />
-            </Col>
-            <Col sm={9}>
-              <GluuFormDetailRow
-                label="fields.companyName"
-                value={item.companyName}
-                isBadge={true}
-                lsize={3}
-                rsize={9}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={3}>
-              <GluuFormDetailRow
-                label="fields.customerEmail"
-                value={item.customerEmail}
-                isBadge={true}
-              />
-            </Col>
-            <Col sm={9}>
-              <GluuFormDetailRow
-                label="fields.customerName"
-                value={item.customerFirstName + " " + item.customerLastName}
-                isBadge={true}
-                lsize={3}
-                rsize={9}
-              />
-            </Col>
-          </Row>
-        </Container>) :
-        (<Alert severity="info">{!loading && 'The License Api is not enabled for this application.'}</Alert>)}
+          (<Container style={{ backgroundColor: '#F5F5F5' }}>
+            <Row>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.productName"
+                  value={item.productName}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.productCode"
+                  value={item.productCode}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.licenseType"
+                  value={item.licenseType}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.maxActivations"
+                  value={item.maxActivations}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.licenseKey"
+                  value={item.licenseKey}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.isLicenseActive"
+                  value={item.licenseActive ? "True" : "False"}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.validityPeriod"
+                  value={item.validityPeriod}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.companyName"
+                  value={item.companyName}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.customerEmail"
+                  value={item.customerEmail}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+              <Col sm={6}>
+                <GluuFormDetailRow
+                  label="fields.customerName"
+                  value={item.customerFirstName + " " + item.customerLastName}
+                  isBadge={true}
+                  lsize={3}
+                  rsize={9}
+                />
+              </Col>
+            </Row>
+          </Container>) :
+          (<Alert severity="info">{!loading && 'The License Api is not enabled for this application.'}</Alert>)}
       </GluuLoader>
     </React.Fragment>
   )

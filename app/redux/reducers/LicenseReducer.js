@@ -7,9 +7,9 @@ import {
 import reducerRegistry from './ReducerRegistry';
 
 const INIT_STATE = {
-  isLicensePresent: false,
-  isLoadedLicensePresent: false,
-  isCheckedLicense: false,
+  isLicenseValid: false,
+  islicenseCheckResultLoaded: false,
+  isLicenseActivationResultLoaded: false,
 }
 
 const reducerName = 'licenseReducer';
@@ -19,37 +19,37 @@ export default function licenseReducer(state = INIT_STATE, action) {
     case CHECK_FOR_VALID_LICENSE:
       return {
         ...state,
-        isLoadedLicensePresent: false,
+        islicenseCheckResultLoaded: false,
       }
     case CHECK_FOR_VALID_LICENSE_RESPONSE:
-      if (action.payload.isLicensePresent) {
+      if (action.payload.isLicenseValid) {
         return {
           ...state,
-          isLicensePresent: action.payload.isLicensePresent,
-          isLoadedLicensePresent: true,
+          isLicenseValid: action.payload.isLicenseValid,
+          islicenseCheckResultLoaded: true,
         }
       } else {
         return {
           ...state,
-          isLoadedLicensePresent: true,
+          islicenseCheckResultLoaded: true,
         }
       }
     case ACTIVATE_LICENSE:
       return {
         ...state,
-        isCheckedLicense: true,
+        isLicenseActivationResultLoaded: false,
       }
     case ACTIVATE_LICENSE_RESPONSE:
-      if (action.payload.isLicensePresent) {
+      if (action.payload.isLicenseValid) {
         return {
           ...state,
-          isLicensePresent: action.payload.isLicensePresent,
-          isCheckedLicense: true,
+          isLicenseValid: action.payload.isLicenseValid,
+          isLicenseActivationResultLoaded: true,
         }
       } else {
         return {
           ...state,
-          isCheckedLicense: false,
+          isLicenseActivationResultLoaded: true,
         }
       }
 

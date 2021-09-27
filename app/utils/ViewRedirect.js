@@ -4,10 +4,10 @@ import GluuNotification from './../routes/Apps/Gluu/GluuNotification'
 import GluuCommitDialog from '../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 
-function ViewRedirect({ backendIsUp, isLicensePresent, isCheckedLicense, isLoadedLicensePresent, activateLicense, checkLicensePresent, redirectUrl }) {
+function ViewRedirect({ backendIsUp, isLicenseValid, activateLicense, redirectUrl, islicenseCheckResultLoaded, isLicenseActivationResultLoaded }) {
   const { t } = useTranslation()
-  const [licensePresent, setLicensePresent] = useState(isLicensePresent)
-  const [isLoading, setIsLoading] = useState(false);
+  //const [licensePresent, setLicensePresent] = useState(isLicenseValid)
+  //const [isLoading, setIsLoading] = useState(false);
 
   function submitForm(message) {
     activateLicense(message.trim());
@@ -47,7 +47,7 @@ function ViewRedirect({ backendIsUp, isLicensePresent, isCheckedLicense, isLoade
               show={true}
             />
           )}
-          {isCheckedLicense && !isLicensePresent && (
+          {isLicenseActivationResultLoaded && !isLicenseValid && (
             <GluuNotification
               type="error"
               message={t("Invalid License")}
@@ -55,7 +55,7 @@ function ViewRedirect({ backendIsUp, isLicensePresent, isCheckedLicense, isLoade
               show={true}
             />
           )}
-          <GluuCommitDialog handler={toggle} modal={!isLicensePresent && isLoadedLicensePresent} onAccept={submitForm} isLoading={isLoading} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")} inputType={"text"} />
+          <GluuCommitDialog handler={toggle} modal={!isLicenseValid && islicenseCheckResultLoaded} onAccept={submitForm} isLoading={false} label={t("License key required to access Gluu Admin UI. Please enter license key.")} placeholderLabel={t("Enter license key")} inputType={"text"} />
         </div>
       </Container>
     </React.Fragment>

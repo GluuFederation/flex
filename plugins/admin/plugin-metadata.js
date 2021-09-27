@@ -25,13 +25,18 @@ const pluginMetadata = {
       icon: 'fa-cubes',
       children: [
         {
-          title: 'menus.roles',
-          path: PLUGIN_BASE_APTH + '/roles',
+          title: 'menus.licenseDetails',
+          path: PLUGIN_BASE_APTH + '/licenseDetails',
           permission: '/config/acrs.readonly',
         },
         {
           title: 'menus.mau',
           path: PLUGIN_BASE_APTH + '/mau',
+          permission: '/config/acrs.readonly',
+        },
+        {
+          title: 'menus.roles',
+          path: PLUGIN_BASE_APTH + '/roles',
           permission: '/config/acrs.readonly',
         },
         {
@@ -43,27 +48,6 @@ const pluginMetadata = {
           title: 'menus.settings',
           path: PLUGIN_BASE_APTH + '/settings',
           permission: '/config/acrs.readonly',
-        },
-        {
-          title: 'menus.configuration',
-          children: [
-            /** {
-              title: 'menus.license',
-              path: PLUGIN_BASE_APTH + '/config/liense',
-              permission: '/config/jwks.readonly',
-            },
-            */
-            {
-              title: 'menus.licenseDetails',
-              path: PLUGIN_BASE_APTH + '/licenseDetails',
-              permission: '/config/acrs.readonly',
-            },
-            {
-              title: 'menus.logging',
-              path: PLUGIN_BASE_APTH + '/config/logging',
-              permission: '/config/properties.readonly',
-            },
-          ],
         },
       ],
     },

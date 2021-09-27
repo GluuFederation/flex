@@ -26,7 +26,7 @@ export function processRoutes() {
 
 const sortMenu= (menu) => {
   menu= sortParentMenu(menu)
-  menu= sortChildMenu(menu)
+  //menu= sortChildMenu(menu)
 
   return menu
 }
