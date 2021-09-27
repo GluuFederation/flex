@@ -14,11 +14,11 @@ function ClientAttributesPanel({ client, formik }) {
   const backchannelLogoutUris = []
   const additionalAudiences = []
   function uriValidator(uri) {
-    return uri.startsWith('https://')
+    return uri
   }
 
   function audienceValidator(aud) {
-    return aud != null
+    return aud
   }
   return (
     <Container>

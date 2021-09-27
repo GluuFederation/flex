@@ -134,14 +134,25 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="fields.is_expirable_client" size={4} />
-        <Col sm={8}>
-          <Input
+        <GluuLabel label="fields.is_active" size={3} />
+        <Col sm={9}>
+          <GluuToogle
+            id="disabled"
+            name="disabled"
+            formik={formik}
+            value={!client.disabled}
+          />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <GluuLabel label="fields.is_expirable_client" size={3} />
+        <Col sm={9}>
+          <GluuToogle
             id="expirable"
             name="expirable"
-            type="checkbox"
-            onChange={handleExpirable}
-            defaultChecked={expirable}
+            handler={handleExpirable}
+            formik={formik}
+            value={expirable}
           />
         </Col>
       </FormGroup>
@@ -269,8 +280,8 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
       ></GluuTypeAheadWithAdd>
 
       <FormGroup row>
-        <GluuLabel label="fields.persist_client_authorizations" size={3} />
-        <Col sm={1}>
+        <GluuLabel label="fields.persist_client_authorizations" size={4} />
+        <Col sm={2}>
           <GluuToogle
             id="persistClientAuthorizations"
             name="persistClientAuthorizations"
@@ -278,17 +289,8 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
             value={client.persistClientAuthorizations}
           />
         </Col>
-        <GluuLabel label="fields.is_active" size={3} />
-        <Col sm={1}>
-          <GluuToogle
-            id="disabled"
-            name="disabled"
-            formik={formik}
-            value={!client.disabled}
-          />
-        </Col>
-        <GluuLabel label="fields.is_trusted_client" size={3} />
-        <Col sm={1}>
+        <GluuLabel label="fields.is_trusted_client" size={4} />
+        <Col sm={2}>
           <GluuToogle
             id="trustedClient"
             name="trustedClient"

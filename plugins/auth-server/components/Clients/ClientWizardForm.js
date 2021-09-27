@@ -173,10 +173,11 @@ function ClientWizardForm({
       [],
     postAuthnScripts:
       getMapping(client.attributes.postAuthnScripts, postScripts) || [],
-    rptClaimsScripts: client.attributes.rptClaimsScripts || [],
+    rptClaimsScripts:
+      getMapping(client.attributes.rptClaimsScripts, rptScripts) || [],
     backchannelLogoutUri: client.attributes.backchannelLogoutUri,
-    additionalAudience: client.attributes.additionalAudience || [],
 
+    additionalAudience: client.attributes.additionalAudience || [],
     customObjectClasses: client.customObjectClasses,
     deletable: client.deletable,
     frontChannelLogoutSessionRequired: client.frontChannelLogoutSessionRequired,
@@ -287,7 +288,7 @@ function ClientWizardForm({
                         <div
                           style={
                             view_only
-                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              ? { pointerEvents: 'none', opacity: '0.99' }
                               : {}
                           }
                         >
@@ -303,7 +304,7 @@ function ClientWizardForm({
                         <div
                           style={
                             view_only
-                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              ? { pointerEvents: 'none', opacity: '0.99' }
                               : {}
                           }
                         >
@@ -319,7 +320,7 @@ function ClientWizardForm({
                         <div
                           style={
                             view_only
-                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              ? { pointerEvents: 'none', opacity: '0.99' }
                               : {}
                           }
                         >
@@ -331,7 +332,7 @@ function ClientWizardForm({
                         <div
                           style={
                             view_only
-                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              ? { pointerEvents: 'none', opacity: '0.99' }
                               : {}
                           }
                         >
@@ -343,7 +344,7 @@ function ClientWizardForm({
                         <div
                           style={
                             view_only
-                              ? { pointerEvents: 'none', opacity: '0.4' }
+                              ? { pointerEvents: 'none', opacity: '0.99' }
                               : {}
                           }
                         >

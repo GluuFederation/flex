@@ -24,11 +24,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
   function uriValidator(uri) {
-    return (
-      uri.startsWith('https://') ||
-      uri.startsWith('schema://') ||
-      uri.startsWith('appschema://')
-    )
+    return uri
   }
   function getMapping(partial, total) {
     if (!partial) {
@@ -68,8 +64,8 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
             value={client.accessTokenAsJwt}
           />
         </Col>
-        <GluuLabel label="fields.requireAuthTime" size={2} />
-        <Col sm={2}>
+        <GluuLabel label="fields.requireAuthTime" size={3} />
+        <Col sm={1}>
           <GluuToogle
             id="requireAuthTime"
             name="requireAuthTime"
@@ -88,7 +84,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="fields.includeClaimsInIdToken" size={2} />
+        <GluuLabel label="fields.includeClaimsInIdToken" size={4} />
         <Col sm={2}>
           <GluuToogle
             id="includeClaimsInIdToken"
@@ -97,7 +93,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
             value={client.includeClaimsInIdToken}
           />
         </Col>
-        <GluuLabel label="fields.frontChannelLogoutSessionRequired" size={2} />
+        <GluuLabel label="fields.frontChannelLogoutSessionRequired" size={4} />
         <Col sm={2}>
           <GluuToogle
             id="frontChannelLogoutSessionRequired"
