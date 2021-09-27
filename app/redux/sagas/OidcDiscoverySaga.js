@@ -12,6 +12,7 @@ import {
 import { isFourZeroOneError } from '../../utils/TokenController'
 import OidcDiscoveryApi from '../api/OidcDiscoveryApi'
 import { getClient } from '../api/base'
+import { getAPIAccessToken } from '../actions/AuthActions'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
