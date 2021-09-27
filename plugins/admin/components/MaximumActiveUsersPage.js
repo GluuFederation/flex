@@ -190,8 +190,9 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   <Legend />
                 </LineChart>
               </ResponsiveContainer>
+              <br/><br/><br/>
               <ResponsiveContainer width="80%" height={500}>
-                <LineChart width={'100%'} height={300} data={stat} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <LineChart width={'100%'} height={300} data={stat} >
                   {/* <Line name="Monthly Active Users" type="monotone" dataKey="monthly_active_users" stroke="#8884d8" /> */}
                   <Line name="Authorization Code Access Token" type="monotone" dataKey="token_count_per_granttype.authorization_code.access_token" stroke="#ff1e86" />
                   <Line name="Client Credentials Access Token" type="monotone" dataKey="token_count_per_granttype.client_credentials.access_token" stroke="#4f1e86" />
