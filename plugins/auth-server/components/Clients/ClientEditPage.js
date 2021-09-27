@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { editClient } from '../../redux/actions/OIDCActions'
 import { getScopes } from '../../redux/actions/ScopeActions'
+import { getOidcDiscovery } from '../../../../app/redux/actions/OidcDiscoveryActions'
 import { getCustomScripts } from '../../../admin/redux/actions/CustomScriptActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
@@ -28,6 +29,7 @@ function ClientEditPage({
     if (scripts.length < 1) {
       dispatch(getCustomScripts(options))
     }
+    dispatch(getOidcDiscovery())
   }, [])
 
   if (
@@ -60,6 +62,7 @@ function ClientEditPage({
         scopes={scopes}
         scripts={scripts}
         permissions={permissions}
+        oidcConfiguration={oidcConfiguration}
         customOnSubmit={handleSubmit}
       />
     </GluuLoader>
@@ -73,6 +76,7 @@ const mapStateToProps = (state) => {
     scopes: state.scopeReducer.items,
     scripts: state.initReducer.scripts,
     permissions: state.authReducer.permissions,
+    oidcConfiguration: state.oidcDiscoveryReducer.configuration,
   }
 }
 export default connect(mapStateToProps)(ClientEditPage)

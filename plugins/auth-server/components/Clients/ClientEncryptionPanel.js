@@ -3,52 +3,42 @@ import { Col, Container, FormGroup, Input } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
 
-function ClientEncryptionPanel({ client, formik }) {
+function ClientEncryptionPanel({ client, formik, oidcConfiguration }) {
   const { t } = useTranslation()
-  const accessTokenSigningAlg = [
-    'none',
-    'HS256',
-    'HS384',
-    'HS512',
-    'RS256',
-    'RS384',
-    'RS512',
-    'ES256',
-    'ES384',
-    'ES512',
-    'PS256',
-    'PS384',
-    'PS512',
-  ]
-  const idTokenSignedResponseAlg = [
-    'none',
-    'HS256',
-    'HS384',
-    'HS512',
-    'RS256',
-    'RS384',
-    'RS512',
-    'ES256',
-    'ES384',
-    'ES512',
-    'PS256',
-    'PS384',
-    'PS512',
-  ]
-  const idTokenEncryptedResponseAlg = ['RSA1_5', 'RSA-OAEP', 'A128KW', 'A256KW']
-  const idTokenEncryptedResponseEnc = [
-    'A128CBC+HS256',
-    'A256CBC+HS512',
-    'A128GCM',
-    'A256GCM',
-  ]
-  const tokenEndpointAuthMethod = [
-    'client_secret_basic',
-    'client_secret_post',
-    'client_secret_jwt',
-    'private_key_jwt',
-    'none',
-  ]
+  const accessTokenSigningAlg = !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported ?
+    oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported : []
+  //id_token
+  const idTokenSignedResponseAlg = !!oidcConfiguration.idTokenSigningAlgValuesSupported ?
+    oidcConfiguration.idTokenSigningAlgValuesSupported : []
+
+  const idTokenEncryptedResponseAlg = !!oidcConfiguration.idTokenEncryptionAlgValuesSupported ?
+    oidcConfiguration.idTokenEncryptionAlgValuesSupported : []
+
+  const idTokenEncryptedResponseEnc = !!oidcConfiguration.idTokenEncryptionEncValuesSupported ?
+    oidcConfiguration.idTokenEncryptionEncValuesSupported : []
+  //request-object
+  const requestObjectSignedResponseAlg = !!oidcConfiguration.requestObjectSigningAlgValuesSupported ?
+    oidcConfiguration.requestObjectSigningAlgValuesSupported : []
+
+  const requestObjectEncryptedResponseAlg = !!oidcConfiguration.requestObjectEncryptionAlgValuesSupported ?
+    oidcConfiguration.requestObjectEncryptionAlgValuesSupported : []
+
+  const requestObjectEncryptedResponseEnc = !!oidcConfiguration.requestObjectEncryptionEncValuesSupported ?
+    oidcConfiguration.requestObjectEncryptionEncValuesSupported : []
+  //user-info
+  const userInfoSignedResponseAlg = !!oidcConfiguration.userInfoSigningAlgValuesSupported ?
+    oidcConfiguration.userInfoSigningAlgValuesSupported : []
+
+  const userInfoEncryptedResponseAlg = !!oidcConfiguration.userInfoEncryptionAlgValuesSupported ?
+    oidcConfiguration.userInfoEncryptionAlgValuesSupported : []
+
+  const userInfoEncryptedResponseEnc = !!oidcConfiguration.userInfoEncryptionEncValuesSupported ?
+    oidcConfiguration.userInfoEncryptionEncValuesSupported : []
+
+  const tokenEndpointAuthMethod = !!oidcConfiguration.tokenEndpointAuthMethodsSupported ?
+    oidcConfiguration.tokenEndpointAuthMethodsSupported : []
+
+
 
   return (
     <Container>
@@ -157,7 +147,7 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            {idTokenEncryptedResponseAlg.map((item, key) => (
+            {requestObjectEncryptedResponseAlg.map((item, key) => (
               <option value={item} key={key}>
                 {item}
               </option>
@@ -174,7 +164,7 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            {idTokenSignedResponseAlg.map((item, key) => (
+            {requestObjectSignedResponseAlg.map((item, key) => (
               <option value={item} key={key}>
                 {item}
               </option>
@@ -193,7 +183,7 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            {idTokenEncryptedResponseEnc.map((item, key) => (
+            {requestObjectEncryptedResponseEnc.map((item, key) => (
               <option value={item} key={key}>
                 {item}
               </option>
@@ -230,7 +220,7 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            {idTokenEncryptedResponseAlg.map((item, key) => (
+            {userInfoEncryptedResponseAlg.map((item, key) => (
               <option value={item} key={key}>
                 {item}
               </option>
@@ -247,7 +237,7 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            {idTokenSignedResponseAlg.map((item, key) => (
+            {userInfoSignedResponseAlg.map((item, key) => (
               <option value={item} key={key}>
                 {item}
               </option>
@@ -266,7 +256,7 @@ function ClientEncryptionPanel({ client, formik }) {
             onChange={formik.handleChange}
           >
             <option></option>
-            {idTokenEncryptedResponseEnc.map((item, key) => (
+            {userInfoEncryptedResponseEnc.map((item, key) => (
               <option value={item} key={key}>
                 {item}
               </option>
