@@ -200,7 +200,7 @@ function ClientEncryptionPanel({ client, formik }) {
             ))}
           </Input>
         </Col>
-        <GluuLabel label="fields.token_endpoint_auth_methods" size={4} />
+        <GluuLabel label="fields.token_endpoint_auth_method" size={4} />
         <Col sm={2}>
           <Input
             type="select"
