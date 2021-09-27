@@ -17,6 +17,7 @@ function ClientEditPage({
   loading,
   permissions,
   dispatch,
+  oidcConfiguration,
 }) {
   const userAction = {}
   const options = {}
