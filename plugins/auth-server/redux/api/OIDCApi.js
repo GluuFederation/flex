@@ -28,11 +28,12 @@ export default class OIDCApi {
   }
 
   editAClient = (data) => {
+    console.log('======client to edit: ' + JSON.stringify(data))
     return new Promise((resolve, reject) => {
       this.api.putOauthOpenidClients(data, (error, res) => {
         if (error) {
           reject(error)
-          console.log('===========' + JSON.stringify(error))
+          console.log('======error: ' + JSON.stringify(error))
         } else {
           resolve(res)
         }
