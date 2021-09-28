@@ -34,6 +34,7 @@ function ClientWizardForm({
   scripts,
   permissions,
   customOnSubmit,
+  oidcConfiguration,
 }) {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
@@ -333,7 +334,7 @@ function ClientWizardForm({
                               : {}
                           }
                         >
-                          <ClientEncryption client={client} formik={formik} />
+                          <ClientEncryption client={client} formik={formik} oidcConfiguration={oidcConfiguration}/>
                         </div>
                       )
                     case sequence[3]:

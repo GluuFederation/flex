@@ -4,11 +4,12 @@ import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import { useHistory } from 'react-router-dom'
 import { addNewClientAction } from '../../redux/actions/OIDCActions'
+import { getOidcDiscovery } from '../../../../app/redux/actions/OidcDiscoveryActions'
 import { getScopes } from '../../redux/actions/ScopeActions'
 import { getCustomScripts } from '../../../admin/redux/actions/CustomScriptActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
-function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
+function ClientAddPage({ permissions, scopes, scripts, loading, dispatch, oidcConfiguration }) {
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
@@ -20,6 +21,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
     if (scripts.length < 1) {
       dispatch(getCustomScripts(userAction))
     }
+    dispatch(getOidcDiscovery())
   }, [])
   const history = useHistory()
   scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
@@ -76,6 +78,7 @@ function ClientAddPage({ permissions, scopes, scripts, loading, dispatch }) {
         scopes={scopes}
         scripts={scripts}
         permissions={permissions}
+        oidcConfiguration={oidcConfiguration}
         customOnSubmit={handleSubmit}
       />
     </GluuLoader>
@@ -88,6 +91,7 @@ const mapStateToProps = (state) => {
     scopes: state.scopeReducer.items,
     scripts: state.initReducer.scripts,
     loading: state.oidcReducer.loading,
+    oidcConfiguration: state.oidcDiscoveryReducer.configuration,
   }
 }
 export default connect(mapStateToProps)(ClientAddPage)
