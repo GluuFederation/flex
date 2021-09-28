@@ -18,7 +18,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
   const contacts = []
   const claimRedirectURI = []
   const requestUris = []
-  const authorizedOrigins = []
+  const authorizedOrigins = client.authorizedOrigins || []
   scripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
     .filter((item) => item.enabled)
