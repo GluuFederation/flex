@@ -16,7 +16,6 @@ export default class OIDCApi {
   }
 
   addNewOpenIdClient = (data) => {
-    console.log("=====:"+JSON.stringify(data.client))
     const client = {
       applicationType: 'web',
       includeClaimsInIdToken: true,

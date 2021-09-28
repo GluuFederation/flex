@@ -54,7 +54,7 @@ function ClientAttributesPanel({ client, formik }) {
       <GluuBooleanSelectBox
         name="allowSpontaneousScopes"
         label="fields.allow_spontaneous_scopes"
-        value={client.attributes.allowSpontaneousScopes}
+        value={client.allowSpontaneousScopes}
         formik={formik}
         lsize={8}
         rsize={4}
@@ -72,7 +72,7 @@ function ClientAttributesPanel({ client, formik }) {
         label="fields.backchannelLogoutUri"
         formik={formik}
         placeholder={t('Enter a valid uri with pattern') + ' https://'}
-        value={client.attributes.backchannelLogoutUri || []}
+        value={client.backchannelLogoutUri || []}
         options={backchannelLogoutUris}
         validator={uriValidator}
         inputId={backchannel_uri_id}
@@ -81,7 +81,7 @@ function ClientAttributesPanel({ client, formik }) {
         name="additionalAudience"
         label="fields.additionalAudience"
         formik={formik}
-        value={client.attributes.additionalAudience || []}
+        value={client.additionalAudience || []}
         options={additionalAudiences}
         validator={audienceValidator}
         inputId={audience_id}
