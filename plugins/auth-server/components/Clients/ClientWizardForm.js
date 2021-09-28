@@ -113,6 +113,24 @@ function ClientWizardForm({
     }
     return total.filter((item) => partial.includes(item.dn)) || []
   }
+  client.description = extractDescription(client.customAttributes || [])
+  client.spontaneousScopes =
+    getMapping(client.attributes.spontaneousScopes, scopes) || []
+  client.introspectionScripts =
+    getMapping(client.attributes.introspectionScripts, instrospectionScripts) ||
+    []
+  client.spontaneousScopeScriptDns =
+    getMapping(
+      client.attributes.spontaneousScopeScriptDns,
+      spontaneousScripts,
+    ) || []
+  client.consentGatheringScripts =
+    getMapping(client.attributes.consentGatheringScripts, consentScripts) || []
+
+  client.postAuthnScripts =
+    getMapping(client.attributes.postAuthnScripts, postScripts) || []
+  client.rptClaimsScripts =
+    getMapping(client.attributes.rptClaimsScripts, rptScripts) || []
 
   const initialValues = {
     inum: client.inum,
@@ -120,15 +138,21 @@ function ClientWizardForm({
     clientSecret: client.secret,
     displayName: client.displayName,
     clientName: client.clientName,
-    description: extractDescription(client.customAttributes || []),
+    description: client.description,
     applicationType: client.applicationType,
     subjectType: client.subjectType,
     registrationAccessToken: client.registrationAccessToken,
     clientIdIssuedAt: client.clientIdIssuedAt,
     initiateLoginUri: client.initiateLoginUri,
+    logoUri: client.logoUri,
+    clientUri: client.clientUri,
     tosUri: client.tosUri,
     jwksUri: client.jwksUri,
     jwks: client.jwks,
+
+    softwareStatement: client.softwareStatement,
+    softwareVersion: client.softwareVersion,
+    softwareId: client.softwareId,
 
     idTokenSignedResponseAlg: client.idTokenSignedResponseAlg,
     idTokenEncryptedResponseAlg: client.idTokenEncryptedResponseAlg,
@@ -174,25 +198,12 @@ function ClientWizardForm({
     keepClientAuthorizationAfterExpiration:
       client.attributes.keepClientAuthorizationAfterExpiration || false,
     allowSpontaneousScopes: client.attributes.allowSpontaneousScopes || false,
-    spontaneousScopes:
-      getMapping(client.attributes.spontaneousScopes, scopes) || [],
-    introspectionScripts:
-      getMapping(
-        client.attributes.introspectionScripts,
-        instrospectionScripts,
-      ) || [],
-    spontaneousScopeScriptDns:
-      getMapping(
-        client.attributes.spontaneousScopeScriptDns,
-        spontaneousScripts,
-      ) || [],
-    consentGatheringScripts:
-      getMapping(client.attributes.consentGatheringScripts, consentScripts) ||
-      [],
-    postAuthnScripts:
-      getMapping(client.attributes.postAuthnScripts, postScripts) || [],
-    rptClaimsScripts:
-      getMapping(client.attributes.rptClaimsScripts, rptScripts) || [],
+    spontaneousScopes: client.spontaneousScopes,
+    introspectionScripts: client.introspectionScripts,
+    spontaneousScopeScriptDns: client.spontaneousScopeScriptDns,
+    consentGatheringScripts: client.consentGatheringScripts,
+    postAuthnScripts: client.postAuthnScripts,
+    rptClaimsScripts: client.rptClaimsScripts,
     additionalAudience: client.attributes.additionalAudience || [],
     backchannelLogoutUri: client.attributes.backchannelLogoutUri,
     customObjectClasses: client.customObjectClasses,
@@ -291,7 +302,7 @@ function ClientWizardForm({
               </CardBody>
               <CardBody className="p-5">
                 {(() => {
-                  setClient(formik.values)
+                  // setClient(formik.values)
                   switch (currentStep) {
                     case sequence[0]:
                       return (
@@ -334,7 +345,11 @@ function ClientWizardForm({
                               : {}
                           }
                         >
-                          <ClientEncryption client={client} formik={formik} oidcConfiguration={oidcConfiguration}/>
+                          <ClientEncryption
+                            client={client}
+                            formik={formik}
+                            oidcConfiguration={oidcConfiguration}
+                          />
                         </div>
                       )
                     case sequence[3]:
