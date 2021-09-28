@@ -296,7 +296,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
 
 	@NotifyChange({ "uiEnrolled", "uiEnrolledPlatformAuthenticator", "newDevice", "newTouchId" })
 	public void cancel() {
-		logger.info("cancel invoked");
+		
 		boolean success = false;
 		try {
 			/*
@@ -306,10 +306,12 @@ public class SecurityKey2ViewModel extends UserViewModel {
 			 * pressing cancel), we need to be obliterate the entry
 			 */
 			FidoDevice dev = null;
-			if (platformAuthenticator && Utils.isNotEmpty(newTouchId.getNickName())) {
+			if (platformAuthenticator && Utils.isNotEmpty(newTouchId.getId())) {
 				dev = newTouchId;
-			} else if (Utils.isNotEmpty(newDevice.getNickName())) {
+				logger.debug("cancel invoked - platform authenticator");
+			} else if (Utils.isNotEmpty(newDevice.getId())) {
 				dev = newDevice;
+				logger.debug("cancel invoked");
 			}
 			if (dev != null) {
 				success = fido2Service.removeDevice(dev);
