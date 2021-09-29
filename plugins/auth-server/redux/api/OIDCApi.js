@@ -81,7 +81,7 @@ export default class OIDCApi {
       deletable: false,
     }
     return new Promise((resolve, reject) => {
-     // data['client'] = client
+      // data['client'] = client
       this.api.postOauthOpenidClients(data, (error, res) => {
         if (error) {
           reject(error)

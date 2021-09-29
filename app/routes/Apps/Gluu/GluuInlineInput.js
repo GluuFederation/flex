@@ -40,6 +40,7 @@ function GluuInlineInput({
   })(Tooltip)
   const [show, setShow] = useState(false)
   const [correctValue, setCorrectValue] = useState([])
+  const [data, setData] = useState(value)
   const onValueChanged = () => {
     setShow(true)
   }
@@ -57,11 +58,12 @@ function GluuInlineInput({
     }
     patch['op'] = 'replace'
     handler(patch)
-    setShow(false)
+    setShow(!show)
+    setData(document.getElementById(name).value)
   }
   const onCancel = () => {
     setCorrectValue([])
-    setShow(false)
+    setShow(!show)
   }
   return (
     <FormGroup row>
@@ -75,7 +77,7 @@ function GluuInlineInput({
                   id={name}
                   name={name}
                   type={type}
-                  defaultValue={value}
+                  defaultValue={data}
                   onChange={onValueChanged}
                 />
               </GluuTooltip>
@@ -112,14 +114,14 @@ function GluuInlineInput({
       </Col>
       <Col sm={2}>
         {show && (
-          <div>
+          <>
             <Button color="primary" size="sm" onClick={onAccept}>
               <i className="fa fa-check mr-2"></i>
             </Button>{' '}
             <Button color="danger" size="sm" onClick={onCancel}>
               <i className="fa fa-times mr-2"></i>
             </Button>
-          </div>
+          </>
         )}
       </Col>
     </FormGroup>
