@@ -7,7 +7,7 @@ function GluuTooltip(props) {
   return (
     <div data-tip data-for={props.id}>
       {props.children}
-      <ReactTooltip type="success" id={props.id}>
+      <ReactTooltip multiline type="success" id={props.id}>
         {t('documentation.' + props.id)}
       </ReactTooltip>
     </div>
