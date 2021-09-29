@@ -54,7 +54,7 @@ export function* getMau({ payload }) {
         statData.push(temp[0])
       } else {
         temp = {...dataType}
-        temp.month = months[i]
+        temp.month = parseInt(months[i])
         statData.push(temp)
       }
     }
