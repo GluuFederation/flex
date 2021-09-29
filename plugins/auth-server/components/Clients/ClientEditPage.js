@@ -33,17 +33,8 @@ function ClientEditPage({
     dispatch(getOidcDiscovery())
   }, [])
 
-  if (
-    !clientData.attributes ||
-    (Object.keys(clientData.attributes).length === 0 &&
-      clientData.attributes.constructor === Object)
-  ) {
-    clientData.attributes = {
-      runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims: false,
-      keepClientAuthorizationAfterExpiration: false,
-      allowSpontaneousScopes: false,
-      backchannelLogoutSessionRequired: false,
-    }
+  if (!clientData.attributes) {
+    clientData.attributes = {}
   }
   scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
   const history = useHistory()

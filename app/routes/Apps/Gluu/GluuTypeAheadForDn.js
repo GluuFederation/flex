@@ -2,6 +2,7 @@ import React from 'react'
 import { FormGroup, Col } from '../../../components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
+import GluuTooltip from './GluuTooltip'
 import Typography from '@material-ui/core/Typography'
 import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
@@ -21,30 +22,32 @@ function GluuTypeAheadForDn({ label, name, value, options, formik, required }) {
     return data[0].name
   }
   return (
-    <FormGroup row>
-      <GluuLabel label={label} size={4} required={required} />
-      <Col sm={8}>
-        <Typeahead
-          labelKey={(opt) => `${opt.name || getItemName(options, opt)}`}
-          onChange={(selected) => {
-            formik.setFieldValue(
-              name,
-              selected.map((item) => item.dn),
-            )
-          }}
-          id={name}
-          name={name}
-          multiple={true}
-          defaultSelected={value}
-          options={options}
-        />
-        <ThemeProvider theme={theme}>
-          <Typography variant="subtitle1">
-            {t('placeholders.typeahead_holder_message')}
-          </Typography>
-        </ThemeProvider>
-      </Col>
-    </FormGroup>
+    <GluuTooltip id={name}>
+      <FormGroup row>
+        <GluuLabel label={label} size={4} required={required} />
+        <Col sm={8}>
+          <Typeahead
+            labelKey={(opt) => `${opt.name || getItemName(options, opt)}`}
+            onChange={(selected) => {
+              formik.setFieldValue(
+                name,
+                selected.map((item) => item.dn),
+              )
+            }}
+            id={name}
+            name={name}
+            multiple={true}
+            defaultSelected={value}
+            options={options}
+          />
+          <ThemeProvider theme={theme}>
+            <Typography variant="subtitle1">
+              {t('placeholders.typeahead_holder_message')}
+            </Typography>
+          </ThemeProvider>
+        </Col>
+      </FormGroup>
+    </GluuTooltip>
   )
 }
 

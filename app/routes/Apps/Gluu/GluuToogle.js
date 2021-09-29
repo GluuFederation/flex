@@ -1,4 +1,3 @@
-import { isNull } from 'lodash'
 import React from 'react'
 import Toggle from 'react-toggle'
 function GluuToogle({ name, formik, value, handler}) {

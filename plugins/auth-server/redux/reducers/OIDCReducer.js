@@ -13,6 +13,7 @@ import {
   SET_VIEW,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import { data } from 'autoprefixer'
 const INIT_STATE = {
   items: [],
   item: {},
@@ -71,12 +72,17 @@ export default function oidcReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        items: [],
       }
     case EDIT_CLIENT_RESPONSE:
       if (action.payload.data) {
+        const clients = state.items.filter(
+          (e) => e.inum !== action.payload.data.inum,
+        )
+
         return {
           ...state,
-          items: [...state.items],
+          items: [action.payload.data, ...clients],
           loading: false,
         }
       } else {

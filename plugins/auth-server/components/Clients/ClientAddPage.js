@@ -9,7 +9,14 @@ import { getScopes } from '../../redux/actions/ScopeActions'
 import { getCustomScripts } from '../../../admin/redux/actions/CustomScriptActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
-function ClientAddPage({ permissions, scopes, scripts, loading, dispatch, oidcConfiguration }) {
+function ClientAddPage({
+  permissions,
+  scopes,
+  scripts,
+  loading,
+  dispatch,
+  oidcConfiguration,
+}) {
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)

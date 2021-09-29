@@ -106,7 +106,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     if (active && payload) {
       return (
         <div className="custom-tooltip" style={{backgroundColor:"lightGray", padding: "5px", border:"1px solid gray", borderRadius: "5px", color:"black"}}>
-          <p className="label">{`Month : ${label}`}</p>
+          <p className="label">{`Month : ${label%100}/${Math.floor(label/100)}`}</p>
           <p className="label">{`Monthly Active Users : ${payload[0].value}`}</p>
         </div>
       );
@@ -118,7 +118,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     if (active && payload) {
       return (
         <div className="custom-tooltip" style={{backgroundColor:"lightGray", padding: "5px", border:"1px solid gray", borderRadius: "5px", color:"black"}}>
-          <p className="label">{`Month : ${label}`}</p>
+          <p className="label">{`Month : ${label%100}/${Math.floor(label/100)}`}</p>
           <p className="label">{`Authorization Code Access Token : ${payload[0].value}`}</p>
           <p className="label">{`Client Credentials Access Token : ${payload[1].value}`}</p>
         </div>
@@ -184,7 +184,9 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 <LineChart width={'100%'} height={300} data={stat} >
                   <Line name="Monthly Active Users" type="monotone" dataKey="monthly_active_users" stroke="#8884d8" />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis dataKey="month" />
+                  <XAxis dataKey="month" tickFormatter={(tickItem)=>{
+                      return tickItem%100+'/'+Math.floor(tickItem/100)
+                    }} />
                   <YAxis />
                   <Tooltip content={<CustomTooltipForMAU />}/>
                   <Legend />
@@ -197,7 +199,9 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   <Line name="Authorization Code Access Token" type="monotone" dataKey="token_count_per_granttype.authorization_code.access_token" stroke="#ff1e86" />
                   <Line name="Client Credentials Access Token" type="monotone" dataKey="token_count_per_granttype.client_credentials.access_token" stroke="#4f1e86" />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                  <XAxis dataKey="month" />
+                  <XAxis dataKey="month" tickFormatter={(tickItem)=>{
+                      return tickItem%100+'/'+Math.floor(tickItem/100)
+                    }}/>
                   <YAxis />
                   <Tooltip content={<CustomTooltipForTokens />}/>
                   <Legend />
