@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FormGroup, Label, Col } from '../../../components'
 import Toggle from 'react-toggle'
+import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 
 function GluuSecretDetail({ label, value }) {
@@ -11,23 +12,25 @@ function GluuSecretDetail({ label, value }) {
   }
 
   return (
-    <FormGroup row>
-      <Label for="input" sm={2}>
-        {t(label)}:
-      </Label>
-      {value !== '-' && (
-        <Label for="input" sm={1}>
-          <Toggle defaultChecked={false} onChange={handleSecret} />
+    <GluuTooltip id={label}>
+      <FormGroup row>
+        <Label for="input" sm={2}>
+          {t(label)}:
         </Label>
-      )}
-      {up && (
-        <Col sm={9}>
-          <Label for="input" sm={12} style={{ fontWeight: 'bold' }}>
-            {value}
+        {value !== '-' && (
+          <Label for="input" sm={1}>
+            <Toggle defaultChecked={false} onChange={handleSecret} />
           </Label>
-        </Col>
-      )}
-    </FormGroup>
+        )}
+        {up && (
+          <Col sm={9}>
+            <Label for="input" sm={12} style={{ fontWeight: 'bold' }}>
+              {value}
+            </Label>
+          </Col>
+        )}
+      </FormGroup>
+    </GluuTooltip>
   )
 }
 

@@ -78,7 +78,7 @@ export function* addNewClient({ payload }) {
   } catch (e) {
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
-      console.log(e)
+      console.log(JSON.stringify(e))
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }

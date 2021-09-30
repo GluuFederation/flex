@@ -1,11 +1,21 @@
 import React from 'react'
 import { Col, FormGroup, Input } from '../../../components'
 import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
 
-function GluuCheckBoxRow({ label, name, value, required,lsize, rsize, handleOnChange }) {
-    return (
+function GluuCheckBoxRow({
+  label,
+  name,
+  value,
+  required,
+  lsize,
+  rsize,
+  handleOnChange,
+}) {
+  return (
+    <GluuTooltip id={name}>
       <FormGroup row>
-        <GluuLabel label={label} size={lsize} required={required}/>
+        <GluuLabel label={label} size={lsize} required={required} />
         <Col sm={rsize}>
           <Input
             id={name}
@@ -16,13 +26,14 @@ function GluuCheckBoxRow({ label, name, value, required,lsize, rsize, handleOnCh
           />
         </Col>
       </FormGroup>
-    )
-  }
+    </GluuTooltip>
+  )
+}
 
-  GluuCheckBoxRow.defaultProps = {
-    type: 'checkbox',
-    lsize: 3,
-    rsize: 9,
-    required: false
-  }
+GluuCheckBoxRow.defaultProps = {
+  type: 'checkbox',
+  lsize: 3,
+  rsize: 9,
+  required: false,
+}
 export default GluuCheckBoxRow

@@ -18,7 +18,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
   const contacts = []
   const claimRedirectURI = []
   const requestUris = []
-  const authorizedOrigins = []
+  const authorizedOrigins = client.authorizedOrigins || []
   scripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
     .filter((item) => item.enabled)
@@ -283,11 +283,11 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         <FormGroup row>
           <GluuLabel label="fields.backchannelUserCodeParameter" size={7} />
           <Col sm={5}>
-            <Input
+            <GluuToogle
               name="backchannelUserCodeParameter"
-              type="checkbox"
-              onChange={formik.handleChange}
-              defaultChecked={client.backchannelUserCodeParameter}
+              id="backchannelUserCodeParameter"
+              formik={formik}
+              value={client.backchannelUserCodeParameter}
             />
           </Col>
         </FormGroup>

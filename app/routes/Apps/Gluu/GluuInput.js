@@ -1,14 +1,17 @@
 import React from 'react'
 import { Col, FormGroup, Input } from '../../../components'
 import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
 function GluuInput({ label, name, type, value, required, lsize, rsize }) {
   return (
-    <FormGroup row>
-      <GluuLabel label={label} size={lsize} required={required} />
-      <Col sm={rsize}>
-        <Input id={name} type={type} defaultValue={value} />
-      </Col>
-    </FormGroup>
+    <GluuTooltip id={name}>
+      <FormGroup row>
+        <GluuLabel label={label} size={lsize} required={required} />
+        <Col sm={rsize}>
+          <Input id={name} type={type} defaultValue={value} />
+        </Col>
+      </FormGroup>
+    </GluuTooltip>
   )
 }
 

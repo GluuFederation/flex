@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import Tooltip from '@material-ui/core/Tooltip'
-import { withStyles } from '@material-ui/core/styles'
 import {
   Col,
   InputGroup,
@@ -30,16 +29,9 @@ function GluuInlineInput({
   const { t } = useTranslation()
   const VALUE = 'value'
   const PATH = 'path'
-  const GluuTooltip = withStyles({
-    tooltip: {
-      color: 'white',
-      textAlign: 'center',
-      minWidth: '100px',
-      backgroundColor: 'green',
-    },
-  })(Tooltip)
   const [show, setShow] = useState(false)
   const [correctValue, setCorrectValue] = useState([])
+  const [data, setData] = useState(value)
   const onValueChanged = () => {
     setShow(true)
   }
@@ -57,69 +49,75 @@ function GluuInlineInput({
     }
     patch['op'] = 'replace'
     handler(patch)
-    setShow(false)
+    setShow(!show)
+    setData(document.getElementById(name).value)
   }
   const onCancel = () => {
     setCorrectValue([])
-    setShow(false)
+    setShow(!show)
   }
   return (
     <FormGroup row>
       <Col sm={10}>
-        <FormGroup row>
-          <GluuLabel label={label} size={lsize} required={required} />
-          <Col sm={rsize}>
-            {!isBoolean && !isArray && (
-              <GluuTooltip title={label}>
+        <GluuTooltip id={name}>
+          <FormGroup row>
+            <GluuLabel
+              label={label}
+              size={lsize}
+              required={required}
+              withTooltip={false}
+            />
+            <Col sm={rsize}>
+              {!isBoolean && !isArray && (
                 <Input
                   id={name}
                   name={name}
                   type={type}
-                  defaultValue={value}
+                  defaultValue={data}
                   onChange={onValueChanged}
                 />
-              </GluuTooltip>
-            )}
-            {isBoolean && (
-              <InputGroup>
-                <CustomInput
-                  type="select"
-                  onChange={onValueChanged}
+              )}
+              {isBoolean && (
+                <InputGroup>
+                  <CustomInput
+                    type="select"
+                    onChange={onValueChanged}
+                    id={name}
+                    name={name}
+                    defaultValue={value}
+                  >
+                    <option value="false">{t('options.false')}</option>
+                    <option value="true">{t('options.true')}</option>
+                  </CustomInput>
+                </InputGroup>
+              )}
+              {isArray && (
+                <Typeahead
                   id={name}
                   name={name}
-                  defaultValue={value}
-                >
-                  <option value="false">{t('options.false')}</option>
-                  <option value="true">{t('options.true')}</option>
-                </CustomInput>
-              </InputGroup>
-            )}
-            {isArray && (
-              <Typeahead
-                id={name}
-                name={name}
-                allowNew
-                emptyLabel=""
-                labelKey={name}
-                onChange={handleTypeAheadChange}
-                multiple={true}
-                defaultSelected={value}
-                options={options}
-              />
-            )}
-          </Col>
-        </FormGroup>
+                  allowNew
+                  emptyLabel=""
+                  labelKey={name}
+                  onChange={handleTypeAheadChange}
+                  multiple={true}
+                  defaultSelected={value}
+                  options={options}
+                />
+              )}
+            </Col>
+          </FormGroup>
+        </GluuTooltip>
       </Col>
       <Col sm={2}>
         {show && (
-          <div>
+          <>
             <Button color="primary" size="sm" onClick={onAccept}>
               <i className="fa fa-check mr-2"></i>
             </Button>{' '}
             <Button color="danger" size="sm" onClick={onCancel}>
               <i className="fa fa-times mr-2"></i>
             </Button>
-          </div>
+          </>
         )}
       </Col>
     </FormGroup>

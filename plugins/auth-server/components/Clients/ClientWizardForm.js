@@ -102,7 +102,7 @@ function ClientWizardForm({
   function extractDescription(customAttributes) {
     var result = customAttributes.filter((item) => item.name === DESCRIPTION)
     if (result && result.length >= 1) {
-      return result[0].values
+      return result[0].values[0]
     }
     return ''
   }
@@ -113,6 +113,37 @@ function ClientWizardForm({
     }
     return total.filter((item) => partial.includes(item.dn)) || []
   }
+  client.description = extractDescription(client.customAttributes || [])
+  client.spontaneousScopes =
+    getMapping(client.attributes.spontaneousScopes, scopes) || []
+  client.introspectionScripts =
+    getMapping(client.attributes.introspectionScripts, instrospectionScripts) ||
+    []
+  client.spontaneousScopeScriptDns =
+    getMapping(
+      client.attributes.spontaneousScopeScriptDns,
+      spontaneousScripts,
+    ) || []
+  client.consentGatheringScripts =
+    getMapping(client.attributes.consentGatheringScripts, consentScripts) || []
+
+  client.postAuthnScripts =
+    getMapping(client.attributes.postAuthnScripts, postScripts) || []
+  client.rptClaimsScripts =
+    getMapping(client.attributes.rptClaimsScripts, rptScripts) || []
+  client.tlsClientAuthSubjectDn = client.attributes.tlsClientAuthSubjectDn
+  client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
+    client.attributes
+      .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims ||
+    false
+  client.backchannelLogoutSessionRequired =
+    client.attributes.backchannelLogoutSessionRequired || false
+  client.keepClientAuthorizationAfterExpiration =
+    client.attributes.keepClientAuthorizationAfterExpiration || false
+  client.allowSpontaneousScopes =
+    client.attributes.allowSpontaneousScopes || false
+  client.additionalAudience = client.attributes.additionalAudience || []
+  client.backchannelLogoutUri = client.attributes.backchannelLogoutUri
 
   const initialValues = {
     inum: client.inum,
@@ -120,14 +151,31 @@ function ClientWizardForm({
     clientSecret: client.secret,
     displayName: client.displayName,
     clientName: client.clientName,
-    description: extractDescription(client.customAttributes || []),
+    description: client.description,
     applicationType: client.applicationType,
     subjectType: client.subjectType,
     registrationAccessToken: client.registrationAccessToken,
     clientIdIssuedAt: client.clientIdIssuedAt,
+    initiateLoginUri: client.initiateLoginUri,
+    logoUri: client.logoUri,
+    clientUri: client.clientUri,
+    tosUri: client.tosUri,
+    jwksUri: client.jwksUri,
+    jwks: client.jwks,
+    softwareStatement: client.softwareStatement,
+    softwareVersion: client.softwareVersion,
+    softwareId: client.softwareId,
     idTokenSignedResponseAlg: client.idTokenSignedResponseAlg,
+    idTokenEncryptedResponseAlg: client.idTokenEncryptedResponseAlg,
     tokenEndpointAuthMethod: client.tokenEndpointAuthMethod,
     accessTokenSigningAlg: client.accessTokenSigningAlg,
+    idTokenEncryptedResponseEnc: client.idTokenEncryptedResponseEnc,
+    requestObjectEncryptionAlg: client.requestObjectEncryptionAlg,
+    requestObjectSigningAlg: client.requestObjectSigningAlg,
+    requestObjectEncryptionEnc: client.requestObjectEncryptionEnc,
+    userInfoEncryptedResponseAlg: client.userInfoEncryptedResponseAlg,
+    userInfoSignedResponseAlg: client.userInfoSignedResponseAlg,
+    userInfoEncryptedResponseEnc: client.userInfoEncryptedResponseEnc,
     authenticationMethod: client.authenticationMethod,
     backchannelUserCodeParameter: client.backchannelUserCodeParameter,
     policyUri: client.policyUri,
@@ -135,52 +183,34 @@ function ClientWizardForm({
     sectorIdentifierUri: client.sectorIdentifierUri,
     redirectUris: client.redirectUris,
     claimRedirectUris: client.claimRedirectUris || [],
+    authorizedOrigins: client.authorizedOrigins || [],
+    requestUris: client.requestUris || [],
+    postLogoutRedirectUris: client.postLogoutRedirectUris,
     responseTypes: client.responseTypes,
     grantTypes: client.grantTypes,
     contacts: client.contacts,
     defaultAcrValues: client.defaultAcrValues,
-    postLogoutRedirectUris: client.postLogoutRedirectUris,
     scopes: client.scopes,
     oxAuthClaims: client.oxAuthClaims,
     customAttributes: client.customAttributes,
-
     attributes: client.attributes,
-    tlsClientAuthSubjectDn: client.attributes.tlsClientAuthSubjectDn,
-    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
-      client.attributes
-        .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims ||
-      false,
-    backchannelLogoutSessionRequired:
-      client.attributes.backchannelLogoutSessionRequired || false,
-    keepClientAuthorizationAfterExpiration:
-      client.attributes.keepClientAuthorizationAfterExpiration || false,
-    allowSpontaneousScopes: client.attributes.allowSpontaneousScopes || false,
-    tlsClientAuthSubjectDn: client.attributes.tlsClientAuthSubjectDn,
-    spontaneousScopes:
-      getMapping(client.attributes.spontaneousScopes, scopes) || [],
-    introspectionScripts:
-      getMapping(
-        client.attributes.introspectionScripts,
-        instrospectionScripts,
-      ) || [],
-    spontaneousScopeScriptDns:
-      getMapping(
-        client.attributes.spontaneousScopeScriptDns,
-        spontaneousScripts,
-      ) || [],
-    consentGatheringScripts:
-      getMapping(client.attributes.consentGatheringScripts, consentScripts) ||
-      [],
-    postAuthnScripts:
-      getMapping(client.attributes.postAuthnScripts, postScripts) || [],
-    rptClaimsScripts:
-      getMapping(client.attributes.rptClaimsScripts, rptScripts) || [],
-    backchannelLogoutUri: client.attributes.backchannelLogoutUri,
-
-    additionalAudience: client.attributes.additionalAudience || [],
-    customObjectClasses: client.customObjectClasses,
-    deletable: client.deletable,
+    tlsClientAuthSubjectDn: client.tlsClientAuthSubjectDn,
     frontChannelLogoutSessionRequired: client.frontChannelLogoutSessionRequired,
+    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
+      client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims,
+    backchannelLogoutSessionRequired: client.backchannelLogoutSessionRequired,
+    keepClientAuthorizationAfterExpiration:
+      client.keepClientAuthorizationAfterExpiration,
+    allowSpontaneousScopes: client.allowSpontaneousScopes,
+    spontaneousScopes: client.spontaneousScopes,
+    introspectionScripts: client.introspectionScripts,
+    spontaneousScopeScriptDns: client.spontaneousScopeScriptDns,
+    consentGatheringScripts: client.consentGatheringScripts,
+    postAuthnScripts: client.postAuthnScripts,
+    rptClaimsScripts: client.rptClaimsScripts,
+    additionalAudience: client.additionalAudience,
+    backchannelLogoutUri: client.backchannelLogoutUri,
+    customObjectClasses: client.customObjectClasses,
     requireAuthTime: client.requireAuthTime,
     trustedClient: client.trustedClient,
     persistClientAuthorizations: client.persistClientAuthorizations,
@@ -188,13 +218,8 @@ function ClientWizardForm({
     rptAsJwt: client.rptAsJwt,
     accessTokenAsJwt: client.accessTokenAsJwt,
     disabled: client.disabled,
+    deletable: client.deletable,
     tokenBindingSupported: client.tokenBindingSupported,
-    runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
-      client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims,
-    keepClientAuthorizationAfterExpiration:
-      client.keepClientAuthorizationAfterExpiration,
-    allowSpontaneousScopes: client.allowSpontaneousScopes,
-    backchannelLogoutSessionRequired: client.backchannelLogoutSessionRequired,
   }
   return (
     <Container>
@@ -202,6 +227,8 @@ function ClientWizardForm({
         initialValues={initialValues}
         onSubmit={(values) => {
           values['action_message'] = commitMessage
+          values[ATTRIBUTE].tlsClientAuthSubjectDn =
+            values.tlsClientAuthSubjectDn
           values[
             ATTRIBUTE
           ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
@@ -212,8 +239,6 @@ function ClientWizardForm({
             values.allowSpontaneousScopes
           values[ATTRIBUTE].backchannelLogoutSessionRequired =
             values.backchannelLogoutSessionRequired
-          values[ATTRIBUTE].tlsClientAuthSubjectDn =
-            values.tlsClientAuthSubjectDn
           values[ATTRIBUTE].spontaneousScopes = values.spontaneousScopes
           values[ATTRIBUTE].introspectionScripts = values.introspectionScripts
           values[ATTRIBUTE].spontaneousScopeScriptDns =
@@ -281,7 +306,7 @@ function ClientWizardForm({
               </CardBody>
               <CardBody className="p-5">
                 {(() => {
-                  setClient(formik.values)
+                  // setClient(formik.values)
                   switch (currentStep) {
                     case sequence[0]:
                       return (
@@ -324,7 +349,11 @@ function ClientWizardForm({
                               : {}
                           }
                         >
-                          <ClientEncryption client={client} formik={formik} oidcConfiguration={oidcConfiguration}/>
+                          <ClientEncryption
+                            client={client}
+                            formik={formik}
+                            oidcConfiguration={oidcConfiguration}
+                          />
                         </div>
                       )
                     case sequence[3]:
