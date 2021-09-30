@@ -12,6 +12,7 @@ import {
 } from '../../../../app/components'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
 import { useTranslation } from 'react-i18next'
 
 function AttributeForm({ item, customOnSubmit, hideButtons }) {
@@ -112,7 +113,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
             <Col sm={9}>
               <InputGroup>
                 <Input
-                  placeholder={t('placeholders.enter_the_attribute_display_name')}
+                  placeholder={t(
+                    'placeholders.enter_the_attribute_display_name',
+                  )}
                   valid={
                     !formik.errors.displayName &&
                     !formik.touched.displayName &&
@@ -136,7 +139,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 <Input
                   type="textarea"
                   rows="3"
-                  placeholder={t('placeholders.enter_the_attribute_description')}
+                  placeholder={t(
+                    'placeholders.enter_the_attribute_description',
+                  )}
                   id="description"
                   name="description"
                   defaultValue={item.description}
@@ -185,7 +190,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                   <option value="JSON">{t('options.json')}</option>
                   <option value="NUMERIC">{t('options.numeric')}</option>
                   <option value="BINARY">{t('options.binary')}</option>
-                  <option value="CERTIFICATE">{t('options.certificate')}</option>
+                  <option value="CERTIFICATE">
+                    {t('options.certificate')}
+                  </option>
                   <option value="DATE">{t('options.date')}</option>
                   <option value="BOOLEAN">{t('options.boolean')}</option>
                 </CustomInput>
@@ -262,32 +269,29 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
           <FormGroup row>
             <GluuLabel label="fields.multivalued" size={3} />
             <Col sm={1}>
-              <Input
+              <GluuToogle
                 id="oxMultiValuedAttribute"
                 name="oxMultiValuedAttribute"
-                onChange={formik.handleChange}
-                type="checkbox"
-                defaultChecked={item.oxMultiValuedAttribute}
+                formik={formik}
+                value={item.oxMultiValuedAttribute}
               />
             </Col>
             <GluuLabel label="fields.hide_on_discovery" size={3} />
             <Col sm={1}>
-              <Input
+              <GluuToogle
                 id="jansHideOnDiscovery"
                 name="jansHideOnDiscovery"
-                onChange={formik.handleChange}
-                type="checkbox"
-                defaultChecked={item.jansHideOnDiscovery}
+                formik={formik}
+                value={item.jansHideOnDiscovery}
               />
             </Col>
             <GluuLabel label="fields.include_in_scim_extension" size={3} />
             <Col sm={1}>
-              <Input
+              <GluuToogle
                 id="scimCustomAttr"
                 name="scimCustomAttr"
-                onChange={formik.handleChange}
-                type="checkbox"
-                defaultChecked={item.scimCustomAttr}
+                formik={formik}
+                value={item.scimCustomAttr}
               />
             </Col>
           </FormGroup>
@@ -298,12 +302,12 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
               size={6}
             />
             <Col sm={6}>
-              <Input
+              <GluuToogle
                 id="validation"
                 name="validation"
-                onChange={handleValidation}
-                type="checkbox"
-                defaultChecked={validation}
+                handler={handleValidation}
+                formik={formik}
+                value={validation}
               />
             </Col>
           </FormGroup>
