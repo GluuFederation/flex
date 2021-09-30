@@ -283,11 +283,11 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         <FormGroup row>
           <GluuLabel label="fields.backchannelUserCodeParameter" size={7} />
           <Col sm={5}>
-            <Input
+            <GluuToogle
               name="backchannelUserCodeParameter"
-              type="checkbox"
-              onChange={formik.handleChange}
-              defaultChecked={client.backchannelUserCodeParameter}
+              id="backchannelUserCodeParameter"
+              formik={formik}
+              value={client.backchannelUserCodeParameter}
             />
           </Col>
         </FormGroup>

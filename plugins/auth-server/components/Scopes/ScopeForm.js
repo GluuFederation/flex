@@ -12,6 +12,7 @@ import {
   Accordion,
 } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
@@ -161,12 +162,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
             <FormGroup row>
               <GluuLabel label="fields.default_scope" size={4} />
               <Col sm={8}>
-                <Input
+                <GluuToogle
                   id="defaultScope"
                   name="defaultScope"
-                  type="checkbox"
-                  onChange={formik.handleChange}
-                  defaultChecked={scope.defaultScope}
+                  formik={formik}
+                  value={scope.defaultScope}
                 />
               </Col>
             </FormGroup>
@@ -237,7 +237,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   <GluuLabel label="fields.spontaneous_client_id" size={4} />
                   <Col sm={8}>
                     <Input
-                      placeholder={t("placeholders.spontaneous_client_id")}
+                      placeholder={t('placeholders.spontaneous_client_id')}
                       id="spontaneousClientId"
                       name="spontaneousClientId"
                       defaultValue={scope.attributes.spontaneousClientId}
