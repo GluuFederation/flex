@@ -1,4 +1,4 @@
-import { GET_LICENSE_DETAILS, GET_LICENSE_DETAILS_RESPONSE } from '../actions/types'
+import { GET_LICENSE_DETAILS, GET_LICENSE_DETAILS_RESPONSE, UPDATE_LICENSE_DETAILS, UPDATE_LICENSE_DETAILS_RESPONSE } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   item: {},
@@ -19,6 +19,24 @@ export default function licenseDetailsReducer(state = INIT_STATE, action) {
         return {
           ...state,
           item: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
+      }
+    case UPDATE_LICENSE_DETAILS:
+      return {
+        ...state,
+        loading: true,
+      }
+    case UPDATE_LICENSE_DETAILS_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: action.payload.data,
           loading: false,
         }
       } else {

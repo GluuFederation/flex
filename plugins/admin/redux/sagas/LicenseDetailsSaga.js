@@ -2,16 +2,18 @@
  * License Sagas
  */
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
-import { GET_LICENSE_DETAILS, GET_LICENSE_DETAILS_RESPONSE } from '../actions/types'
+import { GET_LICENSE_DETAILS, UPDATE_LICENSE_DETAILS } from '../actions/types'
 import {
     getLicenseDetailsResponse,
+    updateLicenseDetailsResponse,
 } from '../actions/LicenseDetailsActions'
 
 import {
     getLicenseDetails,
+    updateLicenseDetails,
 } from '../api/LicenseDetailsApi'
 
-function* getLicenseDetailsPresentWorker() {
+function* getLicenseDetailsWorker() {
   try {
     const response = yield call(getLicenseDetails)
     if (response) {
@@ -24,17 +26,34 @@ function* getLicenseDetailsPresentWorker() {
   yield put(getLicenseDetailsResponse())
 }
 
-//watcher sagas
-export function* getLicensePresentWatcher() {
-  yield takeEvery(GET_LICENSE_DETAILS, getLicenseDetailsPresentWorker)
+function* updateLicenseDetailsWorker({ payload }) {
+  try {
+    const response = yield call(updateLicenseDetails, payload.data)
+    if (response) {
+      yield put(updateLicenseDetailsResponse(response))
+      return
+    }
+  } catch (error) {
+    console.log('Error in fetching License Details.', error)
+  }
+  yield put(updateLicenseDetailsResponse())
 }
 
+//watcher sagas
+export function* getLicenseWatcher() {
+  yield takeEvery(GET_LICENSE_DETAILS, getLicenseDetailsWorker)
+}
+
+export function* updateLicenseWatcher() {
+  yield takeEvery(UPDATE_LICENSE_DETAILS, updateLicenseDetailsWorker)
+}
 
 /**
  * License Root Saga
  */
 export default function* rootSaga() {
   yield all([
-    fork(getLicensePresentWatcher),
+    fork(getLicenseWatcher),
+    fork(updateLicenseWatcher),
   ])
 }
