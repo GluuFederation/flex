@@ -1,69 +1,72 @@
 import React from 'react'
 import { Col, Container, FormGroup, Input } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import { useTranslation } from 'react-i18next'
+const DOC_CATEGORY = 'openid_client'
 
 function ClientEncryptionPanel({ client, formik, oidcConfiguration }) {
   const { t } = useTranslation()
-  const accessTokenSigningAlg = !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported ?
-    oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported : []
+  const accessTokenSigningAlg = !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
+    ? oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
+    : []
   //id_token
-  const idTokenSignedResponseAlg = !!oidcConfiguration.idTokenSigningAlgValuesSupported ?
-    oidcConfiguration.idTokenSigningAlgValuesSupported : []
+  const idTokenSignedResponseAlg = !!oidcConfiguration.idTokenSigningAlgValuesSupported
+    ? oidcConfiguration.idTokenSigningAlgValuesSupported
+    : []
 
-  const idTokenEncryptedResponseAlg = !!oidcConfiguration.idTokenEncryptionAlgValuesSupported ?
-    oidcConfiguration.idTokenEncryptionAlgValuesSupported : []
+  const idTokenEncryptedResponseAlg = !!oidcConfiguration.idTokenEncryptionAlgValuesSupported
+    ? oidcConfiguration.idTokenEncryptionAlgValuesSupported
+    : []
 
-  const idTokenEncryptedResponseEnc = !!oidcConfiguration.idTokenEncryptionEncValuesSupported ?
-    oidcConfiguration.idTokenEncryptionEncValuesSupported : []
+  const idTokenEncryptedResponseEnc = !!oidcConfiguration.idTokenEncryptionEncValuesSupported
+    ? oidcConfiguration.idTokenEncryptionEncValuesSupported
+    : []
   //request-object
-  const requestObjectSignedResponseAlg = !!oidcConfiguration.requestObjectSigningAlgValuesSupported ?
-    oidcConfiguration.requestObjectSigningAlgValuesSupported : []
+  const requestObjectSignedResponseAlg = !!oidcConfiguration.requestObjectSigningAlgValuesSupported
+    ? oidcConfiguration.requestObjectSigningAlgValuesSupported
+    : []
 
-  const requestObjectEncryptedResponseAlg = !!oidcConfiguration.requestObjectEncryptionAlgValuesSupported ?
-    oidcConfiguration.requestObjectEncryptionAlgValuesSupported : []
+  const requestObjectEncryptedResponseAlg = !!oidcConfiguration.requestObjectEncryptionAlgValuesSupported
+    ? oidcConfiguration.requestObjectEncryptionAlgValuesSupported
+    : []
 
-  const requestObjectEncryptedResponseEnc = !!oidcConfiguration.requestObjectEncryptionEncValuesSupported ?
-    oidcConfiguration.requestObjectEncryptionEncValuesSupported : []
+  const requestObjectEncryptedResponseEnc = !!oidcConfiguration.requestObjectEncryptionEncValuesSupported
+    ? oidcConfiguration.requestObjectEncryptionEncValuesSupported
+    : []
   //user-info
-  const userInfoSignedResponseAlg = !!oidcConfiguration.userInfoSigningAlgValuesSupported ?
-    oidcConfiguration.userInfoSigningAlgValuesSupported : []
+  const userInfoSignedResponseAlg = !!oidcConfiguration.userInfoSigningAlgValuesSupported
+    ? oidcConfiguration.userInfoSigningAlgValuesSupported
+    : []
 
-  const userInfoEncryptedResponseAlg = !!oidcConfiguration.userInfoEncryptionAlgValuesSupported ?
-    oidcConfiguration.userInfoEncryptionAlgValuesSupported : []
+  const userInfoEncryptedResponseAlg = !!oidcConfiguration.userInfoEncryptionAlgValuesSupported
+    ? oidcConfiguration.userInfoEncryptionAlgValuesSupported
+    : []
 
-  const userInfoEncryptedResponseEnc = !!oidcConfiguration.userInfoEncryptionEncValuesSupported ?
-    oidcConfiguration.userInfoEncryptionEncValuesSupported : []
+  const userInfoEncryptedResponseEnc = !!oidcConfiguration.userInfoEncryptionEncValuesSupported
+    ? oidcConfiguration.userInfoEncryptionEncValuesSupported
+    : []
 
-  const tokenEndpointAuthMethod = !!oidcConfiguration.tokenEndpointAuthMethodsSupported ?
-    oidcConfiguration.tokenEndpointAuthMethodsSupported : []
-
-
+  const tokenEndpointAuthMethod = !!oidcConfiguration.tokenEndpointAuthMethodsSupported
+    ? oidcConfiguration.tokenEndpointAuthMethodsSupported
+    : []
 
   return (
     <Container>
-      <FormGroup row>
-        <GluuLabel label="fields.jwks_uri" />
-        <Col sm={9}>
-          <Input
-            id="jwksUri"
-            name="jwksUri"
-            defaultValue={client.jwksUri}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.jwks" />
-        <Col sm={9}>
-          <Input
-            id="jwks"
-            name="jwks"
-            defaultValue={client.jwks}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
+      <GluuInputRow
+        label="fields.jwks_uri"
+        name="jwksUri"
+        formik={formik}
+        value={client.jwksUri}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.jwks"
+        name="jwks"
+        formik={formik}
+        value={client.jwks}
+        doc_category={DOC_CATEGORY}
+      />
       <FormGroup row>
         <GluuLabel label="fields.access_token_signing_alg" size={4} />
         <Col sm={2}>

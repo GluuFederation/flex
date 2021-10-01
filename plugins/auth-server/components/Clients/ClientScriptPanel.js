@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container } from '../../../../app/components'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
+const DOC_CATEGORY = 'openid_client'
 
 function ClientScriptPanel({ client, scopes, scripts, formik }) {
   const postScripts = scripts
@@ -35,6 +36,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         formik={formik}
         value={client.postAuthnScripts}
         options={postScripts}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="consentGatheringScripts"
@@ -42,6 +44,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         formik={formik}
         value={client.consentGatheringScripts}
         options={consentScripts}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="spontaneousScopeScriptDns"
@@ -49,6 +52,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         formik={formik}
         value={client.spontaneousScopeScriptDns}
         options={spontaneousScripts}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="introspectionScripts"
@@ -56,6 +60,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         formik={formik}
         value={client.introspectionScripts}
         options={instrospectionScripts}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="rptScripts"
@@ -63,6 +68,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         formik={formik}
         value={client.rptClaimsScripts}
         options={rptScripts}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="spontaneousScopes"
@@ -70,6 +76,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         formik={formik}
         value={client.spontaneousScopes}
         options={scopes}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
     </Container>
   )
