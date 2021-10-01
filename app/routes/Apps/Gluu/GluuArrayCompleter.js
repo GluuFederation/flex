@@ -15,10 +15,17 @@ const theme = createTheme({
   },
 })
 
-function GluuArrayCompleter({ label, name, value, options, required }) {
+function GluuArrayCompleter({
+  label,
+  name,
+  value,
+  options,
+  required,
+  doc_category,
+}) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip id={name}>
+    <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
         {!!required ? (
           <GluuLabel label={label} size={6} required />

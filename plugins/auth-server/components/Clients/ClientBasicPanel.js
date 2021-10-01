@@ -10,13 +10,15 @@ import {
 import IconButton from '@material-ui/core/IconButton'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
-import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
+import GluuToogleRow from '../../../../app/routes/Apps/Gluu/GluuToogleRow'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import DatePicker from 'react-datepicker'
 import { useTranslation } from 'react-i18next'
+const DOC_CATEGORY="openid_client"
 
 const ClientBasicPanel = ({ client, scopes, formik }) => {
   const { t } = useTranslation()
@@ -82,18 +84,13 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
           </Col>
         </FormGroup>
       )}
-      <FormGroup row>
-        <GluuLabel label="fields.client_name" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('placeholders.client_name')}
-            id="clientName"
-            name="clientName"
-            defaultValue={client.clientName || client.displayName}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
+      <GluuInputRow
+        label="fields.client_name"
+        name="clientName"
+        formik={formik}
+        value={client.clientName || client.displayName}
+        doc_category={DOC_CATEGORY}
+      />
       <FormGroup row>
         <GluuLabel label="fields.client_secret" />
         <Col sm={9}>
@@ -121,41 +118,29 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
           </div>
         </Col>
       </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.description" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('placeholders.client_description')}
-            id="description"
-            name="description"
-            defaultValue={client.description}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.is_active" size={3} />
-        <Col sm={9}>
-          <GluuToogle
-            id="disabled"
-            name="disabled"
-            formik={formik}
-            value={!client.disabled}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.is_expirable_client" size={3} />
-        <Col sm={9}>
-          <GluuToogle
-            id="expirable"
-            name="expirable"
-            handler={handleExpirable}
-            formik={formik}
-            value={expirable}
-          />
-        </Col>
-      </FormGroup>
+      <GluuInputRow
+        label="fields.description"
+        name="description"
+        formik={formik}
+        value={client.description}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuToogleRow
+        name="disabled"
+        formik={formik}
+        label="fields.is_active"
+        value={!client.disabled}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuToogleRow
+        name="expirable"
+        formik={formik}
+        label="fields.is_expirable_client"
+        value={expirable}
+        handler={handleExpirable}
+        doc_category={DOC_CATEGORY}
+      />
+
       {expirable && (
         <FormGroup row>
           <GluuLabel label="client_expiration_date" size={5} />
@@ -176,30 +161,28 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
           </Col>
         </FormGroup>
       )}
-      <FormGroup row>
-        <GluuLabel label="fields.policy_uri" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('placeholders.policy_uri')}
-            id="policyUri"
-            name="policyUri"
-            defaultValue={client.policyUri}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.sector_uri" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('placeholders.sector_uri')}
-            id="sectorIdentifierUri"
-            name="sectorIdentifierUri"
-            defaultValue={client.sectorIdentifierUri}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
+
+      <GluuInputRow
+        label="fields.policy_uri"
+        name="policyUri"
+        formik={formik}
+        value={client.policyUri}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.logo_uri"
+        name="logoUri"
+        formik={formik}
+        value={client.logoUri}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.sector_uri"
+        name="sectorIdentifierUri"
+        formik={formik}
+        value={client.sectorIdentifierUri}
+        doc_category={DOC_CATEGORY}
+      />
       <FormGroup row>
         <GluuLabel label="fields.application_type" />
         <Col sm={3}>
@@ -234,21 +217,21 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
           </InputGroup>
         </Col>
       </FormGroup>
-
       <GluuTypeAhead
         name="grantTypes"
         label="fields.grant_types"
         formik={formik}
         value={client.grantTypes}
         options={grantTypes}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAhead>
-
       <GluuTypeAhead
         name="responseTypes"
         label="fields.response_types"
         formik={formik}
         value={client.responseTypes}
         options={responseTypes}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAhead>
       <GluuTypeAheadForDn
         name="scopes"
@@ -256,6 +239,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         formik={formik}
         value={getScopeMapping(client.scopes, scopes)}
         options={scopes}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"
@@ -266,6 +250,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         options={postLogoutRedirectUris}
         validator={postUriValidator}
         inputId={post_uri_id}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadWithAdd>
 
       <GluuTypeAheadWithAdd
@@ -277,25 +262,30 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         options={redirectUris}
         validator={uriValidator}
         inputId={uri_id}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadWithAdd>
 
       <FormGroup row>
-        <GluuLabel label="fields.persist_client_authorizations" size={4} />
-        <Col sm={2}>
-          <GluuToogle
-            id="persistClientAuthorizations"
+        <Col sm={6}>
+          <GluuToogleRow
             name="persistClientAuthorizations"
+            lsize={9}
+            rsize={3}
             formik={formik}
+            label="fields.persist_client_authorizations"
             value={client.persistClientAuthorizations}
+            doc_category={DOC_CATEGORY}
           />
         </Col>
-        <GluuLabel label="fields.is_trusted_client" size={4} />
-        <Col sm={2}>
-          <GluuToogle
-            id="trustedClient"
+        <Col sm={6}>
+          <GluuToogleRow
             name="trustedClient"
+            lsize={9}
+            rsize={3}
             formik={formik}
+            label="fields.is_trusted_client"
             value={client.trustedClient}
+            doc_category={DOC_CATEGORY}
           />
         </Col>
       </FormGroup>

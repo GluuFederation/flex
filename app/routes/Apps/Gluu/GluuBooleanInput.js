@@ -4,10 +4,10 @@ import GluuTooltip from './GluuTooltip'
 import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
 import { useTranslation } from 'react-i18next'
 
-function GluuBooleanInput({ label, name, value, lsize, rsize }) {
+function GluuBooleanInput({ label, name, value, lsize, rsize, doc_category }) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip id={name}>
+    <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
         <GluuLabel label={label} size={lsize} />
         <Col sm={rsize}>

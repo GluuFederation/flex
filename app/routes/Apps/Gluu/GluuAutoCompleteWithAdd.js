@@ -14,6 +14,7 @@ function GluuAutoCompleteWithAdd({
   inputId,
   formik = undefined,
   placeholder,
+  doc_category,
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
@@ -37,7 +38,7 @@ function GluuAutoCompleteWithAdd({
   }
 
   return (
-    <GluuTooltip id={name}>
+    <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
         <GluuLabel label={label} size={4} />
         <Col

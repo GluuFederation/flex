@@ -9,10 +9,12 @@ function GluuFormDetailRow({
   badgeColor,
   lsize,
   rsize,
+  doc_category,
+  doc_entry,
 }) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip id={label}>
+    <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
       <FormGroup row>
         <Label for="input" sm={lsize || 6}>
           {t(label)}:

@@ -5,10 +5,15 @@ import { useTranslation } from 'react-i18next'
 function GluuTooltip(props) {
   const { t } = useTranslation()
   return (
-    <div data-tip data-for={props.id}>
+    <div data-tip data-for={props.doc_entry}>
       {props.children}
-      <ReactTooltip html={true} type="success" id={props.id} place="bottom">
-        {t('documentation.' + props.id)}
+      <ReactTooltip
+        html={true}
+        type="success"
+        id={props.doc_entry}
+        place="bottom"
+      >
+        {t('documentation.' + props.doc_category + '.' + props.doc_entry)}
       </ReactTooltip>
     </div>
   )

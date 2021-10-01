@@ -15,14 +15,22 @@ const theme = createTheme({
   },
 })
 
-function GluuTypeAheadForDn({ label, name, value, options, formik, required }) {
+function GluuTypeAheadForDn({
+  label,
+  name,
+  value,
+  options,
+  formik,
+  required,
+  doc_category,
+}) {
   const { t } = useTranslation()
   function getItemName(options, item) {
     const data = options.filter((e) => e.dn === item)
     return data[0].name
   }
   return (
-    <GluuTooltip id={name}>
+    <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
         <GluuLabel label={label} size={4} required={required} />
         <Col sm={8}>

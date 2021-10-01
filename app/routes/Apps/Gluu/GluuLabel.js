@@ -3,7 +3,7 @@ import { Label } from './../../../components'
 import ReactTooltip from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 
-function GluuLabel({ label, required, size, withTooltip }) {
+function GluuLabel({ label, required, size, doc_category, doc_entry }) {
   const { t } = useTranslation()
   function getSize() {
     if (size != null) {
@@ -18,9 +18,9 @@ function GluuLabel({ label, required, size, withTooltip }) {
         {required && <span style={{ color: 'red', fontSize: '22px' }}> *</span>}
         :
       </h5>
-      {withTooltip && (
-        <ReactTooltip type="success" id={label}>
-          {withTooltip || label}
+      {doc_category && (
+        <ReactTooltip html={true} type="success" id={doc_entry}>
+          {t('documentation.' + doc_category + '.' + doc_entry)}
         </ReactTooltip>
       )}
     </Label>

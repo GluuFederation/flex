@@ -164,17 +164,6 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       <FormGroup row>
-        <GluuLabel label="fields.oxdId" />
-        <Col sm={9}>
-          <Input
-            id="oxdId"
-            name="oxdId"
-            defaultValue={client.oxdId}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
         <GluuLabel label="fields.defaultMaxAge" />
         <Col sm={9}>
           <Input

@@ -59,7 +59,7 @@ function GluuInlineInput({
   return (
     <FormGroup row>
       <Col sm={10}>
-        <GluuTooltip id={name}>
+        <GluuTooltip doc_category="json_properties" doc_entry={name}>
           <FormGroup row>
             <GluuLabel
               label={label}
