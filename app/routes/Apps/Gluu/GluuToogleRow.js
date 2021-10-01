@@ -2,40 +2,38 @@ import React from 'react'
 import { Col, FormGroup, Input } from '../../../components'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
-function GluuInputRow({
+import GluuToogle from './GluuToogle'
+
+function GluuToogleRow({
   label,
   name,
-  type,
   value,
   formik,
-  required,
   lsize,
+  handler,
   rsize,
-  doc_category
+  doc_category ="not_category",
 }) {
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
-        <GluuLabel label={label} size={lsize} required={required} />
+        <GluuLabel label={label} size={lsize} />
         <Col sm={rsize}>
-          <Input
+          <GluuToogle
             id={name}
-            type={type}
             name={name}
-            defaultValue={value}
-            onChange={formik.handleChange}
+            handler={handler}
+            formik={formik}
+            value={value}
           />
         </Col>
       </FormGroup>
     </GluuTooltip>
   )
 }
-
-GluuInputRow.defaultProps = {
-  type: 'text',
+GluuToogleRow.defaultProps = {
   lsize: 3,
   rsize: 9,
-  required: false,
 }
 
-export default GluuInputRow
+export default GluuToogleRow

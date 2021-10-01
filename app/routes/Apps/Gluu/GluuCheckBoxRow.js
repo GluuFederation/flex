@@ -11,9 +11,10 @@ function GluuCheckBoxRow({
   lsize,
   rsize,
   handleOnChange,
+  doc_category,
 }) {
   return (
-    <GluuTooltip id={name}>
+    <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
         <GluuLabel label={label} size={lsize} required={required} />
         <Col sm={rsize}>

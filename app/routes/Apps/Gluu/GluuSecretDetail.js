@@ -4,7 +4,7 @@ import Toggle from 'react-toggle'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 
-function GluuSecretDetail({ label, value }) {
+function GluuSecretDetail({ label, value, doc_category, doc_entry }) {
   const { t } = useTranslation()
   const [up, setUp] = useState(false)
   function handleSecret() {
@@ -12,7 +12,7 @@ function GluuSecretDetail({ label, value }) {
   }
 
   return (
-    <GluuTooltip id={label}>
+    <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
       <FormGroup row>
         <Label for="input" sm={2}>
           {t(label)}:
