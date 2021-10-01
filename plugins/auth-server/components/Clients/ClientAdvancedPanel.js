@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
-import { Col, Container, FormGroup, Input } from '../../../../app/components'
+import { Col, Container, FormGroup} from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
+import GluuToogleRow from '../../../../app/routes/Apps/Gluu/GluuToogleRow'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import Toggle from 'react-toggle'
-import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
 import { useTranslation } from 'react-i18next'
+const DOC_CATEGORY = 'openid_client'
 
 function ClientAdvancedPanel({ client, scripts, formik }) {
   const { t } = useTranslation()
@@ -55,138 +57,118 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
   return (
     <Container>
       <FormGroup row>
-        <GluuLabel label="fields.accessTokenAsJwt" size={3} />
-        <Col sm={1}>
-          <GluuToogle
-            id="accessTokenAsJwt"
+        <Col sm={4}>
+          <GluuToogleRow
             name="accessTokenAsJwt"
+            lsize={9}
+            rsize={3}
             formik={formik}
+            label="fields.accessTokenAsJwt"
             value={client.accessTokenAsJwt}
+            doc_category={DOC_CATEGORY}
           />
         </Col>
-        <GluuLabel label="fields.requireAuthTime" size={3} />
-        <Col sm={1}>
-          <GluuToogle
-            id="requireAuthTime"
+        <Col sm={4}>
+          <GluuToogleRow
             name="requireAuthTime"
+            lsize={9}
+            rsize={3}
             formik={formik}
+            label="fields.requireAuthTime"
             value={client.requireAuthTime}
+            doc_category={DOC_CATEGORY}
           />
         </Col>
-        <GluuLabel label="fields.rptAsJwt" size={2} />
-        <Col sm={2}>
-          <GluuToogle
-            id="rptAsJwt"
+        <Col sm={4}>
+          <GluuToogleRow
             name="rptAsJwt"
+            lsize={9}
+            rsize={3}
             formik={formik}
+            label="fields.rptAsJwt"
             value={client.rptAsJwt}
+            doc_category={DOC_CATEGORY}
           />
         </Col>
       </FormGroup>
+
       <FormGroup row>
-        <GluuLabel label="fields.includeClaimsInIdToken" size={4} />
-        <Col sm={2}>
-          <GluuToogle
-            id="includeClaimsInIdToken"
+        <Col sm={6}>
+          <GluuToogleRow
             name="includeClaimsInIdToken"
+            lsize={9}
+            rsize={3}
             formik={formik}
+            label="fields.includeClaimsInIdToken"
             value={client.includeClaimsInIdToken}
+            doc_category={DOC_CATEGORY}
           />
         </Col>
-        <GluuLabel label="fields.frontChannelLogoutSessionRequired" size={4} />
-        <Col sm={2}>
-          <GluuToogle
-            id="frontChannelLogoutSessionRequired"
+        <Col sm={6}>
+          <GluuToogleRow
             name="frontChannelLogoutSessionRequired"
+            lsize={9}
+            rsize={3}
             formik={formik}
+            label="fields.frontChannelLogoutSessionRequired"
             value={client.frontChannelLogoutSessionRequired}
+            doc_category={DOC_CATEGORY}
           />
         </Col>
       </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.clientUri" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('Enter the client Uri')}
-            id="clientUri"
-            name="clientUri"
-            defaultValue={client.clientUri}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.initiateLoginUri" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('Enter the initiate Login Uri')}
-            id="initiateLoginUri"
-            name="initiateLoginUri"
-            defaultValue={client.initiateLoginUri}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.tosUri" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('Enter the term of service Uri')}
-            id="tosUri"
-            name="tosUri"
-            defaultValue={client.tosUri}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.idTokenTokenBindingCnf" />
-        <Col sm={9}>
-          <Input
-            placeholder={t('Enter the idToken Binding confirmation')}
-            id="idTokenTokenBindingCnf"
-            name="idTokenTokenBindingCnf"
-            defaultValue={client.idTokenTokenBindingCnf}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.refreshTokenLifetime" />
-        <Col sm={9}>
-          <Input
-            id="refreshTokenLifetime"
-            type="number"
-            name="refreshTokenLifetime"
-            defaultValue={client.refreshTokenLifetime}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.defaultMaxAge" />
-        <Col sm={9}>
-          <Input
-            id="defaultMaxAge"
-            type="number"
-            name="defaultMaxAge"
-            defaultValue={client.defaultMaxAge}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.accessTokenLifetime" />
-        <Col sm={9}>
-          <Input
-            id="accessTokenLifetime"
-            type="number"
-            name="accessTokenLifetime"
-            defaultValue={client.accessTokenLifetime}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
+      <GluuInputRow
+        label="fields.clientUri"
+        name="clientUri"
+        formik={formik}
+        value={client.clientUri}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.initiateLoginUri"
+        name="initiateLoginUri"
+        formik={formik}
+        value={client.initiateLoginUri}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.tosUri"
+        name="tosUri"
+        formik={formik}
+        value={client.tosUri}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.idTokenTokenBindingCnf"
+        name="idTokenTokenBindingCnf"
+        formik={formik}
+        value={client.idTokenTokenBindingCnf}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.refreshTokenLifetime"
+        name="refreshTokenLifetime"
+        formik={formik}
+        type="number"
+        value={client.refreshTokenLifetime}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.defaultMaxAge"
+        name="defaultMaxAge"
+        formik={formik}
+        type="number"
+        value={client.defaultMaxAge}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.accessTokenLifetime"
+        name="accessTokenLifetime"
+        formik={formik}
+        type="number"
+        value={client.accessTokenLifetime}
+        doc_category={DOC_CATEGORY}
+      />
+
       <FormGroup row>
         <GluuLabel label="fields.show_software_settings" size={6} />
         <Col sm={2}>
@@ -197,44 +179,31 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         </Col>
       </FormGroup>
       {softwareSection && (
-        <FormGroup row>
-          <GluuLabel label="fields.softwareId" />
-          <Col sm={9}>
-            <Input
-              id="softwareId"
-              name="softwareId"
-              defaultValue={client.softwareId}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
+        <GluuInputRow
+          label="fields.softwareId"
+          name="softwareId"
+          formik={formik}
+          value={client.softwareId}
+          doc_category={DOC_CATEGORY}
+        />
       )}
       {softwareSection && (
-        <FormGroup row>
-          <GluuLabel label="fields.softwareVersion" />
-          <Col sm={9}>
-            <Input
-              id="softwareVersion"
-              name="softwareVersion"
-              defaultValue={client.softwareVersion}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
+        <GluuInputRow
+          label="fields.softwareVersion"
+          name="softwareVersion"
+          formik={formik}
+          value={client.softwareVersion}
+          doc_category={DOC_CATEGORY}
+        />
       )}
       {softwareSection && (
-        <FormGroup row>
-          <GluuLabel label="fields.softwareStatement" />
-          <Col sm={9}>
-            <Input
-              id="softwareStatement"
-              type="textarea"
-              name="softwareStatement"
-              defaultValue={client.softwareStatement}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
+        <GluuInputRow
+          label="fields.softwareStatement"
+          name="softwareStatement"
+          formik={formik}
+          value={client.softwareStatement}
+          doc_category={DOC_CATEGORY}
+        />
       )}
       <FormGroup row>
         <GluuLabel label="fields.show_ciba_settings" size={6} />
@@ -245,53 +214,38 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       {cibaSection && (
         <GluuSelectRow
           name="backchannelTokenDeliveryMode"
-          lsize={6}
-          rsize={6}
           label="fields.backchannelTokenDeliveryMode"
           formik={formik}
           value={client.backchannelTokenDeliveryMode}
           values={cibaDeliveryModes}
+          doc_category={DOC_CATEGORY}
         ></GluuSelectRow>
       )}
       {cibaSection && (
-        <FormGroup row>
-          <GluuLabel
-            label="fields.backchannelClientNotificationEndpoint"
-            size={6}
-          />
-          <Col sm={6}>
-            <Input
-              name="backchannelClientNotificationEndpoint"
-              defaultValue={client.backchannelClientNotificationEndpoint}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
+        <GluuInputRow
+          label="fields.backchannelClientNotificationEndpoint"
+          name="backchannelClientNotificationEndpoint"
+          formik={formik}
+          value={client.backchannelClientNotificationEndpoint}
+          doc_category={DOC_CATEGORY}
+        />
       )}
       {cibaSection && (
-        <FormGroup row>
-          <GluuLabel label="fields.backchannelUserCodeParameter" size={7} />
-          <Col sm={5}>
-            <GluuToogle
-              name="backchannelUserCodeParameter"
-              id="backchannelUserCodeParameter"
-              formik={formik}
-              value={client.backchannelUserCodeParameter}
-            />
-          </Col>
-        </FormGroup>
+        <GluuToogleRow
+          name="backchannelUserCodeParameter"
+          formik={formik}
+          label="fields.backchannelUserCodeParameter"
+          value={client.backchannelUserCodeParameter}
+          doc_category={DOC_CATEGORY}
+        />
       )}
-      <FormGroup row>
-        <GluuLabel label="fields.frontChannelLogoutUri" />
-        <Col sm={9}>
-          <Input
-            id="frontChannelLogoutUri"
-            name="frontChannelLogoutUri"
-            defaultValue={client.frontChannelLogoutUri}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
+      <GluuInputRow
+        label="fields.frontChannelLogoutUri"
+        name="frontChannelLogoutUri"
+        formik={formik}
+        value={client.frontChannelLogoutUri}
+        doc_category={DOC_CATEGORY}
+      />
       <GluuTypeAheadWithAdd
         name="contacts"
         label="fields.contacts"
@@ -301,6 +255,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         options={contacts}
         validator={emailValidator}
         inputId={contact_uri_id}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="claimRedirectURIs"
@@ -311,6 +266,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         options={claimRedirectURI}
         validator={uriValidator}
         inputId={claim_uri_id}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="requestUris"
@@ -321,6 +277,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         options={requestUris}
         validator={uriValidator}
         inputId={request_uri_id}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadWithAdd>
       {'  '}
       <GluuTypeAheadWithAdd
@@ -332,6 +289,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         options={authorizedOrigins}
         validator={uriValidator}
         inputId={origin_uri_id}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadForDn
         name="defaultAcrValues"
@@ -339,6 +297,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         formik={formik}
         value={getMapping(client.defaultAcrValues, scripts)}
         options={scripts}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
     </Container>
   )

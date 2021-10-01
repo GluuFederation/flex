@@ -1,9 +1,10 @@
 import React from 'react'
-import { Container, FormGroup, Input, Col } from '../../../../app/components'
+import { Container} from '../../../../app/components'
 import GluuBooleanSelectBox from '../../../../app/routes/Apps/Gluu/GluuBooleanSelectBox'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
+const DOC_CATEGORY = 'openid_client'
 
 function ClientAttributesPanel({ client, formik }) {
   const { t } = useTranslation()
@@ -22,17 +23,13 @@ function ClientAttributesPanel({ client, formik }) {
   }
   return (
     <Container>
-      <FormGroup row>
-        <GluuLabel label="fields.tls_client_auth_subject_dn" />
-        <Col sm={9}>
-          <Input
-            id="tlsClientAuthSubjectDn"
-            name="tlsClientAuthSubjectDn"
-            defaultValue={client.tlsClientAuthSubjectDn}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
+      <GluuInputRow
+        label="fields.tls_client_auth_subject_dn"
+        name="tlsClientAuthSubjectDn"
+        formik={formik}
+        value={client.tlsClientAuthSubjectDn}
+        doc_category={DOC_CATEGORY}
+      />
       <GluuBooleanSelectBox
         name="runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims"
         label="fields.run_introspection_script_before_accesstoken"
@@ -42,6 +39,7 @@ function ClientAttributesPanel({ client, formik }) {
         formik={formik}
         lsize={8}
         rsize={4}
+        doc_category={DOC_CATEGORY}
       />
       <GluuBooleanSelectBox
         name="keepClientAuthorizationAfterExpiration"
@@ -50,6 +48,7 @@ function ClientAttributesPanel({ client, formik }) {
         formik={formik}
         lsize={8}
         rsize={4}
+        doc_category={DOC_CATEGORY}
       />
       <GluuBooleanSelectBox
         name="allowSpontaneousScopes"
@@ -58,6 +57,7 @@ function ClientAttributesPanel({ client, formik }) {
         formik={formik}
         lsize={8}
         rsize={4}
+        doc_category={DOC_CATEGORY}
       />
       <GluuBooleanSelectBox
         name="backchannelLogoutSessionRequired"
@@ -66,6 +66,7 @@ function ClientAttributesPanel({ client, formik }) {
         formik={formik}
         lsize={8}
         rsize={4}
+        doc_category={DOC_CATEGORY}
       />
       <GluuTypeAheadWithAdd
         name="backchannelLogoutUri"
@@ -76,6 +77,7 @@ function ClientAttributesPanel({ client, formik }) {
         options={backchannelLogoutUris}
         validator={uriValidator}
         inputId={backchannel_uri_id}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="additionalAudience"
@@ -85,6 +87,7 @@ function ClientAttributesPanel({ client, formik }) {
         options={additionalAudiences}
         validator={audienceValidator}
         inputId={audience_id}
+        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadWithAdd>
     </Container>
   )

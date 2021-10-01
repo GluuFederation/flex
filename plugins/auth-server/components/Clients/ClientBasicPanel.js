@@ -18,7 +18,7 @@ import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadFo
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import DatePicker from 'react-datepicker'
 import { useTranslation } from 'react-i18next'
-const DOC_CATEGORY="openid_client"
+const DOC_CATEGORY = 'openid_client'
 
 const ClientBasicPanel = ({ client, scopes, formik }) => {
   const { t } = useTranslation()

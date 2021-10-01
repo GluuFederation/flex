@@ -10,6 +10,7 @@ import {
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
 import GluuSecretDetail from '../../../../app/routes/Apps/Gluu/GluuSecretDetail'
 import { useTranslation } from 'react-i18next'
+const DOC_CATEGORY = 'openid_client'
 
 function ClientDetailPage({ row, scopes }) {
   const { t } = useTranslation()
@@ -30,12 +31,19 @@ function ClientDetailPage({ row, scopes }) {
       <Container style={{ backgroundColor: '#F5F5F5' }}>
         <Row>
           <Col sm={6}>
-            <GluuFormDetailRow label="fields.client_id" value={row.inum} />
+            <GluuFormDetailRow
+              label="fields.client_id"
+              value={row.inum}
+              doc_category={DOC_CATEGORY}
+              doc_entry="client_id"
+            />
           </Col>
           <Col sm={6}>
             <GluuSecretDetail
               label="fields.client_secret"
               value={row.clientSecret ? row.clientSecret : '-'}
+              doc_category={DOC_CATEGORY}
+              doc_entry="client_secret"
             />
           </Col>
         </Row>
@@ -44,12 +52,16 @@ function ClientDetailPage({ row, scopes }) {
             <GluuFormDetailRow
               label="fields.name"
               value={row.clientName || row.displayName || '-'}
+              doc_category={DOC_CATEGORY}
+              doc_entry="client_name"
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.description"
               value={extractDescription(row.customAttributes || []) || '-'}
+              doc_category={DOC_CATEGORY}
+              doc_entry="client_description"
             />
           </Col>
         </Row>
@@ -58,12 +70,16 @@ function ClientDetailPage({ row, scopes }) {
             <GluuFormDetailRow
               label="fields.subject_type"
               value={row.subjectType ? row.subjectType : '-'}
+              doc_category={DOC_CATEGORY}
+              doc_entry="subject_type"
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.application_type"
               value={row.applicationType}
+              doc_category={DOC_CATEGORY}
+              doc_entry="application_type"
             />
           </Col>
         </Row>
