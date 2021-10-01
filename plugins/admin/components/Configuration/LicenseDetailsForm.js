@@ -48,6 +48,7 @@ function LicenseDetailsForm({ item, handleSubmit }) {
           <Formik
             initialValues={initialValues}
             onSubmit={(values) => {
+              values.validityPeriod = validityPeriod
               handleSubmit(values)
             }}
           >
