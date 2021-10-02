@@ -583,6 +583,8 @@
     "openid_client": {
       "clientName": " The openid connect client name",
       "description": " A clear  and precise description of the client"
-    }
+    },
+    "scope": {},
+    "script": {}
   }
 }

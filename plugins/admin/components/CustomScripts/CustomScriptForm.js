@@ -7,14 +7,15 @@ import {
   CustomInput,
   Form,
   FormGroup,
-  Label,
   Input,
 } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuInumInput from '../../../../app/routes/Apps/Gluu/GluuInumInput'
 import GluuProperties from '../../../../app/routes/Apps/Gluu/GluuProperties'
 import Counter from '../../../../app/components/Widgets/GroupedButtons/Counter'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import { SCRIPT } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 function CustomScriptForm({ item, scripts, handleSubmit }) {
@@ -157,22 +158,15 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
 
   return (
     <Form onSubmit={formik.handleSubmit}>
-      {/* START Input */}
       {item.inum && (
-        <FormGroup row>
-          <Label for="name" sm={3}>
-            {t('fields.inum')}
-          </Label>
-          <Col sm={9}>
-            <Input
-              style={{ backgroundColor: '#F5F5F5' }}
-              id="inum"
-              name="inum"
-              disabled
-              value={item.inum}
-            />
-          </Col>
-        </FormGroup>
+        <GluuInumInput
+          label="fields.inum"
+          name="inum"
+          lsize={3}
+          rsize={9}
+          value={item.inum}
+          doc_category={SCRIPT}
+        />
       )}
       <FormGroup row>
         <GluuLabel label="fields.name" required />
@@ -349,7 +343,6 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           </Col>
         </FormGroup>
       )}
-
       <FormGroup row>
         <GluuLabel label="fields.level" />
         <Col sm={9}>
@@ -360,7 +353,6 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           <Input type="hidden" id="level" defaultValue={item.level} />
         </Col>
       </FormGroup>
-
       <GluuProperties
         compName="configurationProperties"
         label="fields.custom_properties"
@@ -369,7 +361,6 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         valuePlaceholder={t('placeholders.enter_property_value')}
         options={getPropertiesConfig(item)}
       ></GluuProperties>
-
       <FormGroup row>
         <GluuLabel label={t('Script')} size={2} required />
         {formik.errors.script && formik.touched.script ? (
@@ -388,7 +379,6 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           />
         </Col>
       </FormGroup>
-
       <FormGroup row>
         <GluuLabel label="options.enabled" size={3} />
         <Col sm={1}>
@@ -401,9 +391,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           />
         </Col>
       </FormGroup>
-
       <FormGroup row>
-        {' '}
         <Input
           type="hidden"
           id="moduleProperties"

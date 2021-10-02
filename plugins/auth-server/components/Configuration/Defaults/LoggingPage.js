@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react'
-import { Form, Button, FormGroup, Col, CustomInput } from '../../../../../app/components'
+import {
+  Form,
+  Button,
+  FormGroup,
+  Col,
+  CustomInput,
+} from '../../../../../app/components'
 import GluuLabel from '../../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuCheckBoxRow from '../../../../../app/routes/Apps/Gluu/GluuCheckBoxRow'
 import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
@@ -38,9 +44,18 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
         <Formik
           initialValues={initialValues}
           onSubmit={(values) => {
-            values.httpLoggingEnabled = values.httpLoggingEnabled != undefined ? values.httpLoggingEnabled : logging.httpLoggingEnabled;
-            values.disableJdkLogger = values.disableJdkLogger != undefined ? values.disableJdkLogger : logging.disableJdkLogger;
-            values.enabledOAuthAuditLogging = values.enabledOAuthAuditLogging != undefined ? values.enabledOAuthAuditLogging : logging.enabledOAuthAuditLogging;
+            values.httpLoggingEnabled =
+              values.httpLoggingEnabled != undefined
+                ? values.httpLoggingEnabled
+                : logging.httpLoggingEnabled
+            values.disableJdkLogger =
+              values.disableJdkLogger != undefined
+                ? values.disableJdkLogger
+                : logging.disableJdkLogger
+            values.enabledOAuthAuditLogging =
+              values.enabledOAuthAuditLogging != undefined
+                ? values.enabledOAuthAuditLogging
+                : logging.enabledOAuthAuditLogging
 
             const opts = {}
             opts['loggingConfiguration'] = JSON.stringify(values)
@@ -49,6 +64,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
         >
           {(formik) => (
             <Form onSubmit={formik.handleSubmit}>
+              <FormGroup row></FormGroup>
               <FormGroup row>
                 <GluuLabel label="fields.log_level" size={4} />
                 <Col sm={8}>
@@ -117,7 +133,10 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                 label="fields.enabled_oAuth_audit_logging"
                 name="enabledOAuthAuditLogging"
                 handleOnChange={(e) => {
-                  formik.setFieldValue('enabledOAuthAuditLogging', e.target.checked)
+                  formik.setFieldValue(
+                    'enabledOAuthAuditLogging',
+                    e.target.checked,
+                  )
                 }}
                 lsize={5}
                 rsize={7}
