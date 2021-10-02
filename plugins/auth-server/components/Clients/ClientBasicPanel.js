@@ -16,6 +16,7 @@ import GluuToogleRow from '../../../../app/routes/Apps/Gluu/GluuToogleRow'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
+import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import DatePicker from 'react-datepicker'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
@@ -71,18 +72,20 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
   return (
     <Container>
       {client.inum && (
-        <FormGroup row>
-          <GluuLabel label="fields.inum" />
-          <Col sm={9}>
-            <Input
-              style={{ backgroundColor: '#F5F5F5' }}
-              id="inum"
-              name="inum"
-              disabled
-              value={client.inum}
-            />
-          </Col>
-        </FormGroup>
+        <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="inum">
+          <FormGroup row>
+            <GluuLabel label="fields.inum" />
+            <Col sm={9}>
+              <Input
+                style={{ backgroundColor: '#F5F5F5' }}
+                id="inum"
+                name="inum"
+                disabled
+                value={client.inum}
+              />
+            </Col>
+          </FormGroup>
+        </GluuTooltip>
       )}
       <GluuInputRow
         label="fields.client_name"
@@ -91,33 +94,35 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         value={client.clientName || client.displayName}
         doc_category={DOC_CATEGORY}
       />
-      <FormGroup row>
-        <GluuLabel label="fields.client_secret" />
-        <Col sm={9}>
-          <div
-            style={{
-              height: '0.01em',
-              display: 'flex',
-              maxHeight: '2em',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <Input
-              id="clientSecret"
-              name="clientSecret"
-              type={showClientSecret ? 'text' : 'password'}
-              defaultValue={client.clientSecret}
-              onChange={formik.handleChange}
-            />
-            <IconButton
-              onClick={handleClickShowClientSecret}
-              onMouseDown={handleMouseDownClientSecret}
+      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="client_secret">
+        <FormGroup row>
+          <GluuLabel label="fields.client_secret" />
+          <Col sm={9}>
+            <div
+              style={{
+                height: '0.01em',
+                display: 'flex',
+                maxHeight: '2em',
+                whiteSpace: 'nowrap',
+              }}
             >
-              {showClientSecret ? <Visibility /> : <VisibilityOff />}
-            </IconButton>
-          </div>
-        </Col>
-      </FormGroup>
+              <Input
+                id="clientSecret"
+                name="clientSecret"
+                type={showClientSecret ? 'text' : 'password'}
+                defaultValue={client.clientSecret}
+                onChange={formik.handleChange}
+              />
+              <IconButton
+                onClick={handleClickShowClientSecret}
+                onMouseDown={handleMouseDownClientSecret}
+              >
+                {showClientSecret ? <Visibility /> : <VisibilityOff />}
+              </IconButton>
+            </div>
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
       <GluuInputRow
         label="fields.description"
         name="description"

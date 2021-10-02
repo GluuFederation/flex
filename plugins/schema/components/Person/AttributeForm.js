@@ -7,12 +7,14 @@ import {
   CustomInput,
   Form,
   FormGroup,
-  Label,
   Input,
 } from '../../../../app/components'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuInumInput from '../../../../app/routes/Apps/Gluu/GluuInumInput'
 import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
+import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
+import { ATTRIBUTE } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 function AttributeForm({ item, customOnSubmit, hideButtons }) {
@@ -73,86 +75,84 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
     >
       {(formik) => (
         <Form onSubmit={formik.handleSubmit}>
-          {/* START Input */}
           {item.inum && (
+            <GluuInumInput
+              label="fields.inum"
+              name="inum"
+              lsize={3}
+              rsize={9}
+              value={item.inum}
+              doc_category={ATTRIBUTE}
+            />
+          )}
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="name">
             <FormGroup row>
-              <Label for="name" sm={3}>
-                {t('fields.inum')}
-              </Label>
+              <GluuLabel label="fields.name" required />
               <Col sm={9}>
                 <Input
-                  style={{ backgroundColor: '#F5F5F5' }}
-                  placeholder={t('fields.enter_the_attribute_inum')}
-                  id="inum"
-                  name="inum"
-                  disabled
-                  value={item.inum}
+                  placeholder={t('placeholders.enter_the_attribute_name')}
+                  id="name"
+                  valid={!formik.errors.name && !formik.touched.name && init}
+                  name="name"
+                  defaultValue={item.name}
+                  onKeyUp={toogle}
+                  onChange={formik.handleChange}
                 />
+                <ErrorMessage name="name">
+                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                </ErrorMessage>
               </Col>
             </FormGroup>
-          )}
-          <FormGroup row>
-            <GluuLabel label="fields.name" required />
-            <Col sm={9}>
-              <Input
-                placeholder={t('placeholders.enter_the_attribute_name')}
-                id="name"
-                valid={!formik.errors.name && !formik.touched.name && init}
-                name="name"
-                defaultValue={item.name}
-                onKeyUp={toogle}
-                onChange={formik.handleChange}
-              />
-              <ErrorMessage name="name">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <GluuLabel label="fields.displayname" required />
-            <Col sm={9}>
-              <InputGroup>
-                <Input
-                  placeholder={t(
-                    'placeholders.enter_the_attribute_display_name',
-                  )}
-                  valid={
-                    !formik.errors.displayName &&
-                    !formik.touched.displayName &&
-                    init
-                  }
-                  id="displayName"
-                  name="displayName"
-                  defaultValue={item.displayName}
-                  onChange={formik.handleChange}
-                />
-              </InputGroup>
-              <ErrorMessage name="displayName">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <GluuLabel label="fields.description" required />
-            <Col sm={9}>
-              <InputGroup>
-                <Input
-                  type="textarea"
-                  rows="3"
-                  placeholder={t(
-                    'placeholders.enter_the_attribute_description',
-                  )}
-                  id="description"
-                  name="description"
-                  defaultValue={item.description}
-                  onChange={formik.handleChange}
-                />
-              </InputGroup>
-              <ErrorMessage name="description">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
+          </GluuTooltip>
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="displayName">
+            <FormGroup row>
+              <GluuLabel label="fields.displayname" required />
+              <Col sm={9}>
+                <InputGroup>
+                  <Input
+                    placeholder={t(
+                      'placeholders.enter_the_attribute_display_name',
+                    )}
+                    valid={
+                      !formik.errors.displayName &&
+                      !formik.touched.displayName &&
+                      init
+                    }
+                    id="displayName"
+                    name="displayName"
+                    defaultValue={item.displayName}
+                    onChange={formik.handleChange}
+                  />
+                </InputGroup>
+                <ErrorMessage name="displayName">
+                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="description">
+            <FormGroup row>
+              <GluuLabel label="fields.description" required />
+              <Col sm={9}>
+                <InputGroup>
+                  <Input
+                    type="textarea"
+                    rows="3"
+                    placeholder={t(
+                      'placeholders.enter_the_attribute_description',
+                    )}
+                    id="description"
+                    name="description"
+                    defaultValue={item.description}
+                    onChange={formik.handleChange}
+                  />
+                </InputGroup>
+                <ErrorMessage name="description">
+                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
           <FormGroup row>
             <GluuLabel label="fields.status" required />
             <Col sm={9}>
@@ -313,17 +313,19 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
           </FormGroup>
 
           {validation && (
-            <FormGroup row>
-              <GluuLabel label="fields.regular_expression" />
-              <Col sm={9}>
-                <Input
-                  name="regexp"
-                  id="regexp"
-                  defaultValue={item.attributeValidation.regexp}
-                  onChange={formik.handleChange}
-                />
-              </Col>
-            </FormGroup>
+            <GluuTooltip doc_category={ATTRIBUTE} doc_entry="regexp">
+              <FormGroup row>
+                <GluuLabel label="fields.regular_expression" />
+                <Col sm={9}>
+                  <Input
+                    name="regexp"
+                    id="regexp"
+                    defaultValue={item.attributeValidation.regexp}
+                    onChange={formik.handleChange}
+                  />
+                </Col>
+              </FormGroup>
+            </GluuTooltip>
           )}
           {validation && (
             <FormGroup row>
@@ -349,32 +351,36 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
               </Col>
             </FormGroup>
           )}
-          <FormGroup row>
-            <GluuLabel label="fields.saml1_uri" />
-            <Col sm={9}>
-              <Input
-                placeholder={t('placeholders.enter_the_saml1_uri')}
-                id="saml1Uri"
-                name="saml1Uri"
-                defaultValue={item.saml1Uri}
-                onKeyUp={toogle}
-                onChange={formik.handleChange}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <GluuLabel label="fields.saml2_uri" />
-            <Col sm={9}>
-              <Input
-                placeholder={t('placeholders.enter_the_saml2_uri')}
-                id="saml2Uri"
-                name="saml2Uri"
-                defaultValue={item.saml2Uri}
-                onKeyUp={toogle}
-                onChange={formik.handleChange}
-              />
-            </Col>
-          </FormGroup>
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="saml1Uri">
+            <FormGroup row>
+              <GluuLabel label="fields.saml1_uri" />
+              <Col sm={9}>
+                <Input
+                  placeholder={t('placeholders.enter_the_saml1_uri')}
+                  id="saml1Uri"
+                  name="saml1Uri"
+                  defaultValue={item.saml1Uri}
+                  onKeyUp={toogle}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="saml2Uri">
+            <FormGroup row>
+              <GluuLabel label="fields.saml2_uri" />
+              <Col sm={9}>
+                <Input
+                  placeholder={t('placeholders.enter_the_saml2_uri')}
+                  id="saml2Uri"
+                  name="saml2Uri"
+                  defaultValue={item.saml2Uri}
+                  onKeyUp={toogle}
+                  onChange={formik.handleChange}
+                />
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
           <GluuFooter hideButtons={hideButtons} />
         </Form>
       )}

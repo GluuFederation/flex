@@ -40,6 +40,7 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
         >
           {(formik) => (
             <Form onSubmit={formik.handleSubmit}>
+              <FormGroup row></FormGroup>
               <FormGroup row>
                 <GluuLabel label="fields.default_acr" size={4} />
                 <Col sm={8}>
