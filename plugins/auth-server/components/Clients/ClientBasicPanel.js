@@ -94,7 +94,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         value={client.clientName || client.displayName}
         doc_category={DOC_CATEGORY}
       />
-      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="client_secret">
+      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="clientSecret">
         <FormGroup row>
           <GluuLabel label="fields.client_secret" />
           <Col sm={9}>
@@ -248,7 +248,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
       ></GluuTypeAheadForDn>
       <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"
-        label="post_logout_redirect_uris"
+        label="fields.post_logout_redirect_uris"
         formik={formik}
         placeholder={t('placeholders.post_logout_redirect_uris')}
         value={client.postLogoutRedirectUris || []}

@@ -23,6 +23,7 @@ function GluuTypeAheadForDn({
   formik,
   required,
   doc_category,
+  doc_entry,
 }) {
   const { t } = useTranslation()
   function getItemName(options, item) {
@@ -30,7 +31,7 @@ function GluuTypeAheadForDn({
     return data[0].name
   }
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
+    <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
       <FormGroup row>
         <GluuLabel label={label} size={4} required={required} />
         <Col sm={8}>
