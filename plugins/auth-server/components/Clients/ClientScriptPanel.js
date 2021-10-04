@@ -69,6 +69,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         value={client.rptClaimsScripts}
         options={rptScripts}
         doc_category={DOC_CATEGORY}
+        doc_entry="rptClaimsScripts"
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="spontaneousScopes"

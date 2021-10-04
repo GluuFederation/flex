@@ -35,7 +35,7 @@ function ClientDetailPage({ row, scopes }) {
               label="fields.client_id"
               value={row.inum}
               doc_category={DOC_CATEGORY}
-              doc_entry="client_id"
+              doc_entry="clientId"
             />
           </Col>
           <Col sm={6}>
@@ -43,7 +43,7 @@ function ClientDetailPage({ row, scopes }) {
               label="fields.client_secret"
               value={row.clientSecret ? row.clientSecret : '-'}
               doc_category={DOC_CATEGORY}
-              doc_entry="client_secret"
+              doc_entry="clientSecret"
             />
           </Col>
         </Row>
@@ -53,7 +53,7 @@ function ClientDetailPage({ row, scopes }) {
               label="fields.name"
               value={row.clientName || row.displayName || '-'}
               doc_category={DOC_CATEGORY}
-              doc_entry="client_name"
+              doc_entry="clientName"
             />
           </Col>
           <Col sm={6}>
@@ -61,7 +61,7 @@ function ClientDetailPage({ row, scopes }) {
               label="fields.description"
               value={extractDescription(row.customAttributes || []) || '-'}
               doc_category={DOC_CATEGORY}
-              doc_entry="client_description"
+              doc_entry="description"
             />
           </Col>
         </Row>
@@ -71,7 +71,7 @@ function ClientDetailPage({ row, scopes }) {
               label="fields.subject_type"
               value={row.subjectType ? row.subjectType : '-'}
               doc_category={DOC_CATEGORY}
-              doc_entry="subject_type"
+              doc_entry="subjectType"
             />
           </Col>
           <Col sm={6}>
@@ -79,7 +79,7 @@ function ClientDetailPage({ row, scopes }) {
               label="fields.application_type"
               value={row.applicationType}
               doc_category={DOC_CATEGORY}
-              doc_entry="application_type"
+              doc_entry="applicationType"
             />
           </Col>
         </Row>
