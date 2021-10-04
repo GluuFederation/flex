@@ -30,6 +30,7 @@ import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import Picker from 'react-month-picker'
 import PropTypes from 'prop-types'
+// import '~pretty-checkbox/src/pretty-checkbox.scss'
 
 class MonthBox extends Component {
   static propTypes = {
@@ -65,6 +66,8 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const options = {}
   const currentDate = new Date()
   const [average, setAverage] = useState(0)
+  const [codeAT, setCodeAT] = useState(true)
+  const [credentialAT, setCredentialAT] = useState(true)
 
   const pickRange2 = React.createRef()
   const [rangeValue2,setRangeValue2] = useState({from: {year: 2021, month: 5}, to: {year: 2021, month: 9}})
@@ -161,7 +164,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
               className="d-flex flex-column justify-content-center align-items-center pt-5"
               style={{ minHeight: '400px' }}
             >
-              <div className="d-flex justify-content-center mb-5">
+              <div className="d-flex justify-content-center mb-3">
                 <Picker
                     ref={pickRange2}
                     years={{min: {year: 2018, month: 1}, max: {year: currentDate.getFullYear(), month: currentDate.getMonth()+1}}}
@@ -181,7 +184,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 </label>
               </div>
               <ResponsiveContainer width="80%" height={500}>
-                <LineChart width={'100%'} height={300} data={stat} >
+                <LineChart  height={300} data={Object.values(stat)} >
                   <Line name="Monthly Active Users" type="monotone" dataKey="monthly_active_users" stroke="#8884d8" />
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="month" tickFormatter={(tickItem)=>{
@@ -194,10 +197,10 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
               </ResponsiveContainer>
               <br/><br/><br/>
               <ResponsiveContainer width="80%" height={500}>
-                <LineChart width={'100%'} height={300} data={stat} >
+                <LineChart  height={300} data={Object.values(stat)} >
                   {/* <Line name="Monthly Active Users" type="monotone" dataKey="monthly_active_users" stroke="#8884d8" /> */}
-                  <Line name="Authorization Code Access Token" type="monotone" dataKey="token_count_per_granttype.authorization_code.access_token" stroke="#ff1e86" />
-                  <Line name="Client Credentials Access Token" type="monotone" dataKey="token_count_per_granttype.client_credentials.access_token" stroke="#4f1e86" />
+                  {codeAT && <Line name="Authorization Code Access Token" type="monotone" dataKey="token_count_per_granttype.authorization_code.access_token" stroke="#ff1e86" />}
+                  {credentialAT && <Line name="Client Credentials Access Token" type="monotone" dataKey="token_count_per_granttype.client_credentials.access_token" stroke="#4f1e86" />}
                   <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                   <XAxis dataKey="month" tickFormatter={(tickItem)=>{
                       return tickItem%100+'/'+Math.floor(tickItem/100)
@@ -207,6 +210,21 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   <Legend />
                 </LineChart>
               </ResponsiveContainer>
+              <hr/>
+              <div style={{display:"flex", flexDirection:"column", justifyContent:"center", marginBottom:"20px"}}>
+                <div className="pretty p-default p-curve p-smooth">
+                    <input type="checkbox" checked={codeAT} onClick={(e)=>{setCodeAT(!codeAT)}} />
+                    <div className="state p-primary">
+                        <label>Authorization Code Access Token</label>
+                    </div>
+                </div>
+                <div className="pretty p-default p-curve p-smooth">
+                    <input type="checkbox" checked={credentialAT} onClick={(e)=>{setCredentialAT(!credentialAT)}}/>
+                    <div className="state p-primary">
+                        <label>Client Credentials Access Token</label>
+                    </div>
+                </div>
+              </div>
             </CardBody>
             <CardFooter className="p-4 bt-0"></CardFooter>
           </Card>

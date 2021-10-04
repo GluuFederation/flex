@@ -1,4 +1,10 @@
 @import '~@miltonbo/dashboard-style-airframe/scss/style';
+@import '~pretty-checkbox/src/pretty-checkbox.scss';
+
+.pretty {
+  margin: 5px;
+}
+
 .sidebar-menu__entry__link:hover {
   color: black;
 }
