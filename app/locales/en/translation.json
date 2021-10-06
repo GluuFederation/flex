@@ -729,6 +729,11 @@
       "aliases": "List of possible aliases for the custom script.",
       "internal": "boolean value indicating if the script is internal.",
       "revision": "Update revision number of the script."
+    },
+    "settings": {
+      "pageSize": "The default ie for all list page.",
+      "darkMode": "Whether to enable or disable adrk mode.",
+      "configApiUrl": "The URL of the config api currently in used."
     }
   }
 }
