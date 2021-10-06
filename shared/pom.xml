@@ -72,10 +72,10 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
-        <!-- JMIME MAGIC -->
+        <!-- TIKA -->
         <dependency>
-            <groupId>net.sf.jmimemagic</groupId>
-            <artifactId>jmimemagic</artifactId>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
         </dependency>
 
         <!-- COMMONS -->

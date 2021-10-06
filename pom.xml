@@ -29,8 +29,8 @@
         <jackson.version>2.11.3</jackson.version>
         <zk.version>9.5.0.2</zk.version>
         <ldapsdk.version>5.1.4</ldapsdk.version>
-        <resteasy.version>3.15.1.Final</resteasy.version>
-        <mimemagic.version>0.1.5</mimemagic.version>
+        <resteasy.version>4.7.2.Final</resteasy.version>
+        <tika.version>2.1.0</tika.version>
     </properties>
 
     <repositories>
@@ -123,17 +123,11 @@
                 <version>${jackson.version}</version>
             </dependency>
 
-            <!-- JMIME MAGIC -->
+            <!-- APACHE TIKA -->
             <dependency>
-                <groupId>net.sf.jmimemagic</groupId>
-                <artifactId>jmimemagic</artifactId>
-                <version>${mimemagic.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>${tika.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -144,7 +138,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.8.1</version>                    
+                    <!--configuration>
+                        <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    </configuration-->
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

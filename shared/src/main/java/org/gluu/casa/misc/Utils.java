@@ -2,8 +2,12 @@ package org.gluu.casa.misc;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.sf.jmimemagic.Magic;
+
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.tika.Tika;
+import org.apache.tika.io.TikaInputStream;
+import org.apache.tika.mime.MimeTypes;
+
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.model.SimpleCustomProperty;
 import org.gluu.util.properties.FileConfiguration;
@@ -33,6 +37,7 @@ public final class Utils {
 
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
     private static ObjectMapper MAPPER = new ObjectMapper();
+    private static Tika tika = new Tika();    
     private static final String SALT_FILE_LOCATION = "/etc/gluu/conf/salt";
 
     private Utils() { }
@@ -141,8 +146,17 @@ public final class Utils {
 
         String mime = null;
         String encodedImg = Base64.getEncoder().encodeToString(bytes);
+
         try {
-            mime = Magic.getMagicMatch(bytes).getMimeType();
+            try (TikaInputStream tis = TikaInputStream.get(bytes)) {
+                mime = tika.detect(tis, hintName);
+                
+                if (mime.equals(MimeTypes.OCTET_STREAM) && hintName != null) {
+                    //detection failed
+                    LOG.trace("Cannot infer mime type of image using Tika");
+                    mime = URLConnection.guessContentTypeFromName(hintName);
+                }
+            }
         } catch (Exception e) {
             if (hintName != null) {
                 mime = URLConnection.guessContentTypeFromName(hintName);

@@ -52,6 +52,10 @@
                     <artifactId>resteasy-jaxb-provider</artifactId>
                 </exclusion>
                 <exclusion>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-jaxrs</artifactId>
+                </exclusion>
+                <exclusion>
                     <groupId>com.fasterxml.jackson.module</groupId>
                     <artifactId>jackson-module-jaxb-annotations</artifactId>
                 </exclusion>                
@@ -190,7 +194,7 @@
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jaxrs</artifactId>
+            <artifactId>resteasy-core-spi</artifactId>
             <version>${resteasy.version}</version>
         </dependency>
         <dependency>
@@ -241,10 +245,10 @@
             <artifactId>pf4j</artifactId>
         </dependency>
 
-        <!-- JMIME MAGIC -->
+        <!-- TIKA -->
         <dependency>
-            <groupId>net.sf.jmimemagic</groupId>
-            <artifactId>jmimemagic</artifactId>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
         </dependency>
 
         <!-- SMPP -->

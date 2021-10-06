@@ -9,7 +9,6 @@ import org.gluu.fido2.client.AttestationService;
 import org.gluu.casa.core.model.Fido2RegistrationEntry;
 import org.gluu.fido2.model.entry.Fido2RegistrationStatus;
 import org.gluu.search.filter.Filter;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
@@ -31,8 +30,6 @@ public class Fido2Service extends BaseService {
 
     @Inject
     private Logger logger;
-
-    private ResteasyClient client;
 
     private AttestationService attestationService;
 
@@ -58,8 +55,7 @@ public class Fido2Service extends BaseService {
                 String attestationURL = mapper.readTree(new URL(tmp)).get("attestation").get("base_path").asText();
 
                 logger.info("Base path is {}", attestationURL);
-                client = RSUtils.getClient();
-                attestationService = client.target(attestationURL).proxy(AttestationService.class);
+                attestationService = RSUtils.getClient().target(attestationURL).proxy(AttestationService.class);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

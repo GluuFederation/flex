@@ -2,7 +2,7 @@ package org.gluu.casa.rest;
 
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.misc.Utils;
-import org.gluu.oxauth.client.service.ClientFactory;
+import org.gluu.casa.rest.RSUtils;
 import org.gluu.oxauth.client.service.IntrospectionService;
 import org.gluu.oxauth.model.common.IntrospectionResponse;
 import org.slf4j.Logger;
@@ -118,7 +118,8 @@ public class AuthorizationProcessingFilter implements ContainerRequestFilter {
     private void init() {
 
         try {
-            introspectionService = ClientFactory.instance().createIntrospectionService(persistenceService.getIntrospectionEndpoint());
+            introspectionService = RSUtils.getClient().target(persistenceService.getIntrospectionEndpoint())
+                .proxy(IntrospectionService.class);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
