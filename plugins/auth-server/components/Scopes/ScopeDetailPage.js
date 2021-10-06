@@ -58,6 +58,7 @@ function ScopeDetailPage({ row }) {
               label="fields.scope_type"
               value={row.scopeType}
               doc_category={SCOPE}
+              doc_entry="scopeType"
               isBadge
             />
           </Col>

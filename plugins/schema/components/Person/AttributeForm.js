@@ -12,6 +12,8 @@ import {
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from '../../../../app/routes/Apps/Gluu/GluuInumInput'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
+import GluuToogleRow from '../../../../app/routes/Apps/Gluu/GluuToogleRow'
 import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
 import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import { ATTRIBUTE } from '../../../../app/utils/ApiResources'
@@ -153,234 +155,215 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
               </Col>
             </FormGroup>
           </GluuTooltip>
-          <FormGroup row>
-            <GluuLabel label="fields.status" required />
-            <Col sm={9}>
-              <InputGroup>
-                <CustomInput
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="status">
+            <FormGroup row>
+              <GluuLabel label="fields.status" required />
+              <Col sm={9}>
+                <InputGroup>
+                  <CustomInput
+                    type="select"
+                    id="status"
+                    name="status"
+                    defaultValue={item.status}
+                    onChange={formik.handleChange}
+                  >
+                    <option value="">{t('options.choose')}...</option>
+                    <option value="ACTIVE">{t('options.active')}</option>
+                    <option value="INACTIVE">{t('options.inactive')}</option>
+                  </CustomInput>
+                </InputGroup>
+                <ErrorMessage name="status">
+                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="dataType">
+            <FormGroup row>
+              <GluuLabel label="fields.data_type" required />
+              <Col sm={9}>
+                <InputGroup>
+                  <CustomInput
+                    type="select"
+                    id="dataType"
+                    name="dataType"
+                    defaultValue={item.dataType}
+                    onChange={formik.handleChange}
+                  >
+                    <option value="">{t('options.choose')}...</option>
+                    <option value="STRING">{t('options.string')}</option>
+                    <option value="JSON">{t('options.json')}</option>
+                    <option value="NUMERIC">{t('options.numeric')}</option>
+                    <option value="BINARY">{t('options.binary')}</option>
+                    <option value="CERTIFICATE">
+                      {t('options.certificate')}
+                    </option>
+                    <option value="DATE">{t('options.date')}</option>
+                    <option value="BOOLEAN">{t('options.boolean')}</option>
+                  </CustomInput>
+                </InputGroup>
+                <ErrorMessage name="dataType">
+                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="editType">
+            <FormGroup row>
+              <GluuLabel label="fields.edit_type" required />
+              <Col sm={9}>
+                <Input
                   type="select"
-                  id="status"
-                  name="status"
-                  defaultValue={item.status}
+                  name="editType"
+                  id="editType"
+                  defaultValue={item.editType}
+                  multiple
                   onChange={formik.handleChange}
                 >
-                  <option value="">{t('options.choose')}...</option>
-                  <option value="ACTIVE">{t('options.active')}</option>
-                  <option value="INACTIVE">{t('options.inactive')}</option>
-                </CustomInput>
-              </InputGroup>
-              <ErrorMessage name="status">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <GluuLabel label="fields.data_type" required />
-            <Col sm={9}>
-              <InputGroup>
-                <CustomInput
+                  <option value="ADMIN">{t('options.admin')}</option>
+                  <option value="USER">{t('options.user')}</option>
+                </Input>
+                <ErrorMessage name="editType">
+                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="viewType">
+            <FormGroup row>
+              <GluuLabel label="fields.view_type" />
+              <Col sm={9}>
+                <Input
                   type="select"
-                  id="dataType"
-                  name="dataType"
-                  defaultValue={item.dataType}
+                  name="viewType"
+                  id="viewType"
+                  defaultValue={item.viewType}
+                  multiple
                   onChange={formik.handleChange}
                 >
-                  <option value="">{t('options.choose')}...</option>
-                  <option value="STRING">{t('options.string')}</option>
-                  <option value="JSON">{t('options.json')}</option>
-                  <option value="NUMERIC">{t('options.numeric')}</option>
-                  <option value="BINARY">{t('options.binary')}</option>
-                  <option value="CERTIFICATE">
-                    {t('options.certificate')}
-                  </option>
-                  <option value="DATE">{t('options.date')}</option>
-                  <option value="BOOLEAN">{t('options.boolean')}</option>
-                </CustomInput>
-              </InputGroup>
-              <ErrorMessage name="dataType">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
+                  <option value="ADMIN">{t('options.admin')}</option>
+                  <option value="USER">{t('options.user')}</option>
+                </Input>
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
+          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="usageType">
+            <FormGroup row>
+              <GluuLabel label="fields.usage_type" required />
+              <Col sm={9}>
+                <Input
+                  type="select"
+                  name="usageType"
+                  id="usageType"
+                  defaultValue={item.usageType}
+                  multiple
+                  onChange={formik.handleChange}
+                >
+                  <option value="OPENID">{t('options.openid')}</option>
+                </Input>
+                <ErrorMessage name="usageType">
+                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                </ErrorMessage>
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
+          <GluuInputRow
+            label="fields.oxauth_claim_name"
+            name="claimName"
+            formik={formik}
+            value={item.claimName}
+            doc_category={ATTRIBUTE}
+          />
           <FormGroup row>
-            <GluuLabel label="fields.edit_type" required />
-            <Col sm={9}>
-              <Input
-                type="select"
-                name="editType"
-                id="editType"
-                defaultValue={item.editType}
-                multiple
-                onChange={formik.handleChange}
-              >
-                <option value="ADMIN">{t('options.admin')}</option>
-                <option value="USER">{t('options.user')}</option>
-              </Input>
-              <ErrorMessage name="editType">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <GluuLabel label="fields.view_type" />
-            <Col sm={9}>
-              <Input
-                type="select"
-                name="viewType"
-                id="viewType"
-                defaultValue={item.viewType}
-                multiple
-                onChange={formik.handleChange}
-              >
-                <option value="ADMIN">{t('options.admin')}</option>
-                <option value="USER">{t('options.user')}</option>
-              </Input>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <GluuLabel label="fields.usage_type" required />
-            <Col sm={9}>
-              <Input
-                type="select"
-                name="usageType"
-                id="usageType"
-                defaultValue={item.usageType}
-                multiple
-                onChange={formik.handleChange}
-              >
-                <option value="OPENID">{t('options.openid')}</option>
-              </Input>
-              <ErrorMessage name="usageType">
-                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-              </ErrorMessage>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <GluuLabel label="fields.oxauth_claim_name" />
-            <Col sm={9}>
-              <Input
-                name="claimName"
-                id="claimName"
-                defaultValue={item.claimName}
-                onChange={formik.handleChange}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <GluuLabel label="fields.multivalued" size={3} />
-            <Col sm={1}>
-              <GluuToogle
-                id="oxMultiValuedAttribute"
+            <Col sm={4}>
+              <GluuToogleRow
                 name="oxMultiValuedAttribute"
                 formik={formik}
+                lsize={6}
+                rsize={6}
+                label="fields.multivalued"
                 value={item.oxMultiValuedAttribute}
+                doc_category={ATTRIBUTE}
               />
             </Col>
-            <GluuLabel label="fields.hide_on_discovery" size={3} />
-            <Col sm={1}>
-              <GluuToogle
-                id="jansHideOnDiscovery"
+            <Col sm={4}>
+              <GluuToogleRow
                 name="jansHideOnDiscovery"
                 formik={formik}
+                lsize={6}
+                rsize={6}
+                label="fields.hide_on_discovery"
                 value={item.jansHideOnDiscovery}
+                doc_category={ATTRIBUTE}
               />
             </Col>
-            <GluuLabel label="fields.include_in_scim_extension" size={3} />
-            <Col sm={1}>
-              <GluuToogle
-                id="scimCustomAttr"
+            <Col sm={4}>
+              <GluuToogleRow
                 name="scimCustomAttr"
                 formik={formik}
+                lsize={6}
+                rsize={6}
+                label="fields.include_in_scim_extension"
                 value={item.scimCustomAttr}
+                doc_category={ATTRIBUTE}
               />
             </Col>
           </FormGroup>
-
-          <FormGroup row>
-            <GluuLabel
-              label="fields.enable_custom_validation_for_this_attribute"
-              size={6}
+          <GluuToogleRow
+            name="validation"
+            formik={formik}
+            label="fields.enable_custom_validation_for_this_attribute"
+            value={validation}
+            handler={handleValidation}
+            doc_category={ATTRIBUTE}
+          />
+          {validation && (
+            <GluuInputRow
+              label="fields.regular_expression"
+              name="regexp"
+              formik={formik}
+              value={item.attributeValidation.regexp}
+              doc_category={ATTRIBUTE}
             />
-            <Col sm={6}>
-              <GluuToogle
-                id="validation"
-                name="validation"
-                handler={handleValidation}
-                formik={formik}
-                value={validation}
-              />
-            </Col>
-          </FormGroup>
-
-          {validation && (
-            <GluuTooltip doc_category={ATTRIBUTE} doc_entry="regexp">
-              <FormGroup row>
-                <GluuLabel label="fields.regular_expression" />
-                <Col sm={9}>
-                  <Input
-                    name="regexp"
-                    id="regexp"
-                    defaultValue={item.attributeValidation.regexp}
-                    onChange={formik.handleChange}
-                  />
-                </Col>
-              </FormGroup>
-            </GluuTooltip>
           )}
           {validation && (
             <FormGroup row>
-              <GluuLabel label="fields.minimum_length" />
-              <Col sm={3}>
-                <Input
+              <Col sm={6}>
+                <GluuInputRow
+                  label="fields.minimum_length"
                   name="minLength"
-                  id="minLength"
+                  formik={formik}
                   type="number"
-                  defaultValue={item.attributeValidation.minLength}
-                  onChange={formik.handleChange}
+                  value={item.attributeValidation.minLength}
+                  doc_category={ATTRIBUTE}
                 />
               </Col>
-              <GluuLabel label="fields.maximum_length" />
-              <Col sm={3}>
-                <Input
+              <Col sm={6}>
+                <GluuInputRow
+                  label="fields.maximum_length"
                   name="maxLength"
-                  id="maxLength"
+                  formik={formik}
                   type="number"
-                  defaultValue={item.attributeValidation.maxLength}
-                  onChange={formik.handleChange}
+                  value={item.attributeValidation.maxLength}
+                  doc_category={ATTRIBUTE}
                 />
               </Col>
             </FormGroup>
           )}
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="saml1Uri">
-            <FormGroup row>
-              <GluuLabel label="fields.saml1_uri" />
-              <Col sm={9}>
-                <Input
-                  placeholder={t('placeholders.enter_the_saml1_uri')}
-                  id="saml1Uri"
-                  name="saml1Uri"
-                  defaultValue={item.saml1Uri}
-                  onKeyUp={toogle}
-                  onChange={formik.handleChange}
-                />
-              </Col>
-            </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="saml2Uri">
-            <FormGroup row>
-              <GluuLabel label="fields.saml2_uri" />
-              <Col sm={9}>
-                <Input
-                  placeholder={t('placeholders.enter_the_saml2_uri')}
-                  id="saml2Uri"
-                  name="saml2Uri"
-                  defaultValue={item.saml2Uri}
-                  onKeyUp={toogle}
-                  onChange={formik.handleChange}
-                />
-              </Col>
-            </FormGroup>
-          </GluuTooltip>
+          <GluuInputRow
+            label="fields.saml1_uri"
+            name="saml1Uri"
+            formik={formik}
+            value={item.saml1Uri}
+            doc_category={ATTRIBUTE}
+          />
+          <GluuInputRow
+            label="fields.saml2_uri"
+            name="saml2Uri"
+            formik={formik}
+            value={item.saml2Uri}
+            doc_category={ATTRIBUTE}
+          />
           <GluuFooter hideButtons={hideButtons} />
         </Form>
       )}
