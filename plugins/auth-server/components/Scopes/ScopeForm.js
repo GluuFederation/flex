@@ -255,7 +255,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 </GluuTooltip>
                 <GluuTooltip
                   doc_category={SCOPE}
-                  doc_entry="spontaneousClientId"
+                  doc_entry="showInConfigurationEndpoint"
                 >
                   <FormGroup row>
                     <GluuLabel
