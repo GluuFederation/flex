@@ -398,6 +398,7 @@
   },
   "documentation": {
     "json_properties": {
+      "defaultAcr":"This field controls the default authentication mechanism that is presented to users from all applications that leverage Janssen Server for authentication.",
       "accessTokenLifetime": "Specifies the Client-specific access token expiration.",
       "allowPostLogoutRedirectWithoutValidation": "Allows post logout redirect without validation for End Session Endpoint.",
       "authenticationFilters": "List of authentication filters.",

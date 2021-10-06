@@ -1,9 +1,17 @@
 import React, { useEffect } from 'react'
-import { Form, Button, FormGroup, Col, CustomInput } from '../../../../../app/components'
+import {
+  Form,
+  Button,
+  FormGroup,
+  Col,
+  CustomInput,
+} from '../../../../../app/components'
 import { Formik } from 'formik'
 import GluuLabel from '../../../../../app/routes/Apps/Gluu/GluuLabel'
 import { connect } from 'react-redux'
 import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
+import { JSON_CONFIG } from '../../../../../app/utils/ApiResources'
+import GluuTooltip from '../../../../../app/routes/Apps/Gluu/GluuTooltip'
 import {
   hasPermission,
   ACR_READ,
@@ -41,28 +49,30 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
           {(formik) => (
             <Form onSubmit={formik.handleSubmit}>
               <FormGroup row></FormGroup>
-              <FormGroup row>
-                <GluuLabel label="fields.default_acr" size={4} />
-                <Col sm={8}>
-                  <CustomInput
-                    type="select"
-                    id="defaultAcr"
-                    name="defaultAcr"
-                    value={acrs.defaultAcr}
-                    onChange={(e) => {
-                      acrs.defaultAcr = e.target.value
-                      formik.setFieldValue('defaultAcr', e.target.value)
-                    }}
-                  >
-                    <option value="">{t('actions.choose')}...</option>
-                    {authScripts.map((item, key) => (
-                      <option value={item} key={key}>
-                        {item}
-                      </option>
-                    ))}
-                  </CustomInput>
-                </Col>
-              </FormGroup>
+              <GluuTooltip doc_category={JSON_CONFIG} doc_entry="defaultAcr">
+                <FormGroup row>
+                  <GluuLabel label="fields.default_acr" size={4} />
+                  <Col sm={8}>
+                    <CustomInput
+                      type="select"
+                      id="defaultAcr"
+                      name="defaultAcr"
+                      value={acrs.defaultAcr}
+                      onChange={(e) => {
+                        acrs.defaultAcr = e.target.value
+                        formik.setFieldValue('defaultAcr', e.target.value)
+                      }}
+                    >
+                      <option value="">{t('actions.choose')}...</option>
+                      {authScripts.map((item, key) => (
+                        <option value={item} key={key}>
+                          {item}
+                        </option>
+                      ))}
+                    </CustomInput>
+                  </Col>
+                </FormGroup>
+              </GluuTooltip>
 
               {hasPermission(permissions, ACR_WRITE) && (
                 <Button color="primary" type="submit">
