@@ -398,7 +398,7 @@
   },
   "documentation": {
     "json_properties": {
-      "defaultAcr":"This field controls the default authentication mechanism that is presented to users from all applications that leverage Janssen Server for authentication.",
+      "defaultAcr": "This field controls the default authentication mechanism that is presented to users from all applications that leverage Janssen Server for authentication.",
       "accessTokenLifetime": "Specifies the Client-specific access token expiration.",
       "allowPostLogoutRedirectWithoutValidation": "Allows post logout redirect without validation for End Session Endpoint.",
       "authenticationFilters": "List of authentication filters.",
@@ -692,29 +692,43 @@
       "attributes": "Custom attributes for the scope"
     },
     "attribute": {
-      "inum":"Identifier to uniquely identify the attribute.",
-      "name":"Name of the attribute.",
-      "displayName":"DisplayName of the attribute.",
-      "description":"User friendly descriptive detail of attribute.",
-      "dataType":"Data Type of attribute.",
-      "status":"Attrubute status",
-      "editType":"Attribute edit type(s)",
-      "viewType":"Attribute view type(s)",
-      "usageType":"Attribute usage type(s)",
-      "claimName":"Attribute claim name",
-      "saml1Uri":"The URI of the SAML v1 for this attribute.",
-      "saml2Uri":"The URI of the SAML v2 for this attribute.",
-      "scimCustomAttr":"Boolean value indicating if the attribute is a SCIM custom attribute.",
-      "oxMultiValuedAttribute":"Boolean value indicating if the attribute can hold multiple value.",
-      "attributeValidation":"Details of validations to be applied on the attribute",
-      "jansHideOnDiscovery":"Boolean value indicating if the attribute should be shown on that discovery page.",
-      "regexp":"Reguar expression to be used to validate the dataType.",
-      "minLength":"Minimum length",
-      "maxcLength":"Maximum length",
-      "custom":"Boolean value indicating if the attribute is a custom attribute."
-
+      "inum": "Identifier to uniquely identify the attribute.",
+      "name": "Name of the attribute.",
+      "displayName": "DisplayName of the attribute.",
+      "description": "User friendly descriptive detail of attribute.",
+      "dataType": "Data Type of attribute.",
+      "status": "Attrubute status",
+      "editType": "Attribute edit type(s)",
+      "viewType": "Attribute view type(s)",
+      "usageType": "Attribute usage type(s)",
+      "claimName": "Attribute claim name",
+      "saml1Uri": "The URI of the SAML v1 for this attribute.",
+      "saml2Uri": "The URI of the SAML v2 for this attribute.",
+      "scimCustomAttr": "Boolean value indicating if the attribute is a SCIM custom attribute.",
+      "oxMultiValuedAttribute": "Boolean value indicating if the attribute can hold multiple value.",
+      "attributeValidation": "Details of validations to be applied on the attribute",
+      "jansHideOnDiscovery": "Boolean value indicating if the attribute should be shown on that discovery page.",
+      "regexp": "Reguar expression to be used to validate the dataType.",
+      "minLength": "Minimum length",
+      "maxcLength": "Maximum length",
+      "location_type": "",
+      "custom": "Boolean value indicating if the attribute is a custom attribute."
     },
-    "script": {}
-   
+    "script": {
+      "inum": "Unique id identifying the script",
+      "name": "Custom script name. Should contain only letters, digits and underscores.",
+      "description": "Details describing the script.",
+      "script": "Actual script content.",
+      "scriptType": "Type of script.",
+      "locationType": "Where the script is located.",
+      "programmingLanguage": "Programming language of the custom script.",
+      "moduleProperties": " Module-level properties applicable to the script.",
+      "configurationProperties": "Configuration properties applicable to the script.",
+      "level": "Script level.",
+      "enabled": "boolean value indicating if script enabled.",
+      "aliases": "List of possible aliases for the custom script.",
+      "internal": "boolean value indicating if the script is internal.",
+      "revision": "Update revision number of the script."
+    }
   }
 }

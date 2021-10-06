@@ -15,6 +15,7 @@ import GluuProperties from '../../../../app/routes/Apps/Gluu/GluuProperties'
 import Counter from '../../../../app/components/Widgets/GroupedButtons/Counter'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
@@ -168,191 +169,204 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           doc_category={SCRIPT}
         />
       )}
-      <FormGroup row>
-        <GluuLabel label="fields.name" required />
-        <Col sm={9}>
-          <Input
-            placeholder={t('placeholders.name')}
-            id="name"
-            valid={!formik.errors.name && !formik.touched.name && init}
-            name="name"
-            defaultValue={item.name}
-            onKeyUp={activate}
-            onChange={formik.handleChange}
-          />
-          {formik.errors.name && formik.touched.name ? (
-            <div style={{ color: 'red' }}>{formik.errors.name}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.description" />
-        <Col sm={9}>
-          <InputGroup>
-            <Input
-              placeholder={t('placeholders.description')}
-              valid={
-                !formik.errors.description &&
-                !formik.touched.description &&
-                init
-              }
-              id="description"
-              defaultValue={item.description}
-              onChange={formik.handleChange}
-            />
-          </InputGroup>
-        </Col>
-      </FormGroup>
-      {scriptTypeState === 'PERSON_AUTHENTICATION' && (
+      <GluuTooltip doc_category={SCRIPT} doc_entry="name">
         <FormGroup row>
-          <GluuLabel label={t('Select SAML ACRS')} />
+          <GluuLabel label="fields.name" required />
           <Col sm={9}>
             <Input
-              type="select"
-              name="aliases"
-              id="aliases"
-              defaultValue={item.aliases}
-              multiple
+              placeholder={t('placeholders.name')}
+              id="name"
+              valid={!formik.errors.name && !formik.touched.name && init}
+              name="name"
+              defaultValue={item.name}
+              onKeyUp={activate}
               onChange={formik.handleChange}
-            >
-              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol">
-                urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol
-              </option>
-              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:Password">
-                urn:oasis:names:tc:SAML:2.0:ac:classes:Password
-              </option>
-              <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport">
-                urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
-              </option>
-            </Input>
+            />
+            {formik.errors.name && formik.touched.name ? (
+              <div style={{ color: 'red' }}>{formik.errors.name}</div>
+            ) : null}
           </Col>
         </FormGroup>
-      )}
-
-      <FormGroup row>
-        <GluuLabel label="fields.script_type" required />
-        <Col sm={9}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id="scriptType"
-              name="scriptType"
-              defaultValue={item.scriptType}
-              onChange={(e) => {
-                setScriptTypeState(e.target.value)
-                formik.setFieldValue('scriptType', e.target.value)
-              }}
-            >
-              <option value="">{t('options.choose')}...</option>
-              {scriptTypes.map((item, index) => (
-                <option key={index} value={item}>
-                  {item}
-                </option>
-              ))}
-            </CustomInput>
-          </InputGroup>
-          {formik.errors.scriptType && formik.touched.scriptType ? (
-            <div style={{ color: 'red' }}>{formik.errors.scriptType}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-
-      <FormGroup row>
-        <GluuLabel label="fields.programming_language" required />
-        <Col sm={9}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id="programmingLanguage"
-              name="programmingLanguage"
-              defaultValue={item.programmingLanguage}
-              onChange={formik.handleChange}
-            >
-              <option value="">{t('Choose')}...</option>
-              <option>PYTHON</option>
-              <option>JAVASCRIPT</option>
-            </CustomInput>
-          </InputGroup>
-          {formik.errors.programmingLanguage &&
-          formik.touched.programmingLanguage ? (
-            <div style={{ color: 'red' }}>
-              {formik.errors.programmingLanguage}
-            </div>
-          ) : null}
-        </Col>
-      </FormGroup>
-
-      <FormGroup row>
-        <GluuLabel label="fields.location_type" />
-        <Col sm={9}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id="location_type"
-              name="location_type"
-              defaultValue={
-                !!item.moduleProperties &&
-                item.moduleProperties.filter(
-                  (item) => item.value1 === 'location_type',
-                ).length > 0
-                  ? item.moduleProperties.filter(
-                      (item) => item.value1 === 'location_type',
-                    )[0].value2
-                  : undefined
-              }
-              onChange={(e) => {
-                locationTypeChange(e.target.value)
-              }}
-            >
-              <option value="">{t('options.choose')}...</option>
-              <option value="ldap">{t('Database')}</option>
-              <option value="file">{t('File')}</option>
-            </CustomInput>
-          </InputGroup>
-        </Col>
-      </FormGroup>
-      {scriptTypeState === 'PERSON_AUTHENTICATION' && (
+      </GluuTooltip>
+      <GluuTooltip doc_category={SCRIPT} doc_entry="description">
         <FormGroup row>
-          <GluuLabel label="Interactive" />
+          <GluuLabel label="fields.description" />
+          <Col sm={9}>
+            <InputGroup>
+              <Input
+                placeholder={t('placeholders.description')}
+                valid={
+                  !formik.errors.description &&
+                  !formik.touched.description &&
+                  init
+                }
+                id="description"
+                defaultValue={item.description}
+                onChange={formik.handleChange}
+              />
+            </InputGroup>
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+      {scriptTypeState === 'PERSON_AUTHENTICATION' && (
+        <GluuTooltip doc_category={SCRIPT} doc_entry="aliases">
+          <FormGroup row>
+            <GluuLabel label={t('Select SAML ACRS')} />
+            <Col sm={9}>
+              <Input
+                type="select"
+                name="aliases"
+                id="aliases"
+                defaultValue={item.aliases}
+                multiple
+                onChange={formik.handleChange}
+              >
+                <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol">
+                  urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol
+                </option>
+                <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:Password">
+                  urn:oasis:names:tc:SAML:2.0:ac:classes:Password
+                </option>
+                <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport">
+                  urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+                </option>
+              </Input>
+            </Col>
+          </FormGroup>
+        </GluuTooltip>
+      )}
+      <GluuTooltip doc_category={SCRIPT} doc_entry="scriptType">
+        <FormGroup row>
+          <GluuLabel label="fields.script_type" required />
           <Col sm={9}>
             <InputGroup>
               <CustomInput
                 type="select"
-                id="usage_type"
-                name="usage_type"
+                id="scriptType"
+                name="scriptType"
+                defaultValue={item.scriptType}
+                onChange={(e) => {
+                  setScriptTypeState(e.target.value)
+                  formik.setFieldValue('scriptType', e.target.value)
+                }}
+              >
+                <option value="">{t('options.choose')}...</option>
+                {scriptTypes.map((item, index) => (
+                  <option key={index} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </CustomInput>
+            </InputGroup>
+            {formik.errors.scriptType && formik.touched.scriptType ? (
+              <div style={{ color: 'red' }}>{formik.errors.scriptType}</div>
+            ) : null}
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+      <GluuTooltip doc_category={SCRIPT} doc_entry="programmingLanguage">
+        <FormGroup row>
+          <GluuLabel label="fields.programming_language" required />
+          <Col sm={9}>
+            <InputGroup>
+              <CustomInput
+                type="select"
+                id="programmingLanguage"
+                name="programmingLanguage"
+                defaultValue={item.programmingLanguage}
+                onChange={formik.handleChange}
+              >
+                <option value="">{t('Choose')}...</option>
+                <option>PYTHON</option>
+                <option>JAVASCRIPT</option>
+              </CustomInput>
+            </InputGroup>
+            {formik.errors.programmingLanguage &&
+            formik.touched.programmingLanguage ? (
+              <div style={{ color: 'red' }}>
+                {formik.errors.programmingLanguage}
+              </div>
+            ) : null}
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+      <GluuTooltip doc_category={SCRIPT} doc_entry="location_type">
+        <FormGroup row>
+          <GluuLabel label="fields.location_type" />
+          <Col sm={9}>
+            <InputGroup>
+              <CustomInput
+                type="select"
+                id="location_type"
+                name="location_type"
                 defaultValue={
                   !!item.moduleProperties &&
                   item.moduleProperties.filter(
-                    (item) => item.value1 === 'usage_type',
+                    (item) => item.value1 === 'location_type',
                   ).length > 0
                     ? item.moduleProperties.filter(
-                        (item) => item.value1 === 'usage_type',
+                        (item) => item.value1 === 'location_type',
                       )[0].value2
                     : undefined
                 }
                 onChange={(e) => {
-                  usageTypeChange(e.target.value)
+                  locationTypeChange(e.target.value)
                 }}
               >
                 <option value="">{t('options.choose')}...</option>
-                <option value="interactive">interactive</option>
-                <option value="service">service</option>
-                <option value="both">both</option>
+                <option value="ldap">{t('Database')}</option>
+                <option value="file">{t('File')}</option>
               </CustomInput>
             </InputGroup>
           </Col>
         </FormGroup>
+      </GluuTooltip>
+      {scriptTypeState === 'PERSON_AUTHENTICATION' && (
+        <GluuTooltip doc_category={SCRIPT} doc_entry="usage_type">
+          <FormGroup row>
+            <GluuLabel label="Interactive" />
+            <Col sm={9}>
+              <InputGroup>
+                <CustomInput
+                  type="select"
+                  id="usage_type"
+                  name="usage_type"
+                  defaultValue={
+                    !!item.moduleProperties &&
+                    item.moduleProperties.filter(
+                      (item) => item.value1 === 'usage_type',
+                    ).length > 0
+                      ? item.moduleProperties.filter(
+                          (item) => item.value1 === 'usage_type',
+                        )[0].value2
+                      : undefined
+                  }
+                  onChange={(e) => {
+                    usageTypeChange(e.target.value)
+                  }}
+                >
+                  <option value="">{t('options.choose')}...</option>
+                  <option value="interactive">interactive</option>
+                  <option value="service">service</option>
+                  <option value="both">both</option>
+                </CustomInput>
+              </InputGroup>
+            </Col>
+          </FormGroup>
+        </GluuTooltip>
       )}
-      <FormGroup row>
-        <GluuLabel label="fields.level" />
-        <Col sm={9}>
-          <Counter
-            counter={item.level}
-            onCounterChange={(level) => onLevelChange(level)}
-          />
-          <Input type="hidden" id="level" defaultValue={item.level} />
-        </Col>
-      </FormGroup>
+      <GluuTooltip doc_category={SCRIPT} doc_entry="level">
+        <FormGroup row>
+          <GluuLabel label="fields.level" />
+          <Col sm={9}>
+            <Counter
+              counter={item.level}
+              onCounterChange={(level) => onLevelChange(level)}
+            />
+            <Input type="hidden" id="level" defaultValue={item.level} />
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
       <GluuProperties
         compName="configurationProperties"
         label="fields.custom_properties"
@@ -361,43 +375,49 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         valuePlaceholder={t('placeholders.enter_property_value')}
         options={getPropertiesConfig(item)}
       ></GluuProperties>
-      <FormGroup row>
-        <GluuLabel label={t('Script')} size={2} required />
-        {formik.errors.script && formik.touched.script ? (
-          <div style={{ color: 'red' }}>{formik.errors.script}</div>
-        ) : null}
-        <Col sm={10}>
+      <GluuTooltip doc_category={SCRIPT} doc_entry="script">
+        <FormGroup row>
+          <GluuLabel label={t('Script')} size={2} required />
+          {formik.errors.script && formik.touched.script ? (
+            <div style={{ color: 'red' }}>{formik.errors.script}</div>
+          ) : null}
+          <Col sm={10}>
+            <Input
+              placeholder={t('Script')}
+              valid={!formik.errors.script && !formik.touched.script && init}
+              type="textarea"
+              rows={20}
+              id="script"
+              name="script"
+              defaultValue={item.script}
+              onChange={formik.handleChange}
+            />
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+      <GluuTooltip doc_category={SCRIPT} doc_entry="enabled">
+        <FormGroup row>
+          <GluuLabel label="options.enabled" size={3} />
+          <Col sm={1}>
+            <Input
+              id="enabled"
+              name="enabled"
+              onChange={formik.handleChange}
+              type="checkbox"
+              defaultChecked={item.enabled}
+            />
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+      <GluuTooltip doc_category={SCRIPT} doc_entry="moduleProperties">
+        <FormGroup row>
           <Input
-            placeholder={t('Script')}
-            valid={!formik.errors.script && !formik.touched.script && init}
-            type="textarea"
-            rows={20}
-            id="script"
-            name="script"
-            defaultValue={item.script}
-            onChange={formik.handleChange}
+            type="hidden"
+            id="moduleProperties"
+            defaultValue={item.moduleProperties}
           />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="options.enabled" size={3} />
-        <Col sm={1}>
-          <Input
-            id="enabled"
-            name="enabled"
-            onChange={formik.handleChange}
-            type="checkbox"
-            defaultChecked={item.enabled}
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <Input
-          type="hidden"
-          id="moduleProperties"
-          defaultValue={item.moduleProperties}
-        />
-      </FormGroup>
+        </FormGroup>
+      </GluuTooltip>
       <GluuCommitFooter saveHandler={toggle} />
       <GluuCommitDialog
         handler={toggle}
