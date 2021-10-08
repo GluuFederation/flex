@@ -734,6 +734,18 @@
       "pageSize": "The default ie for all list page.",
       "darkMode": "Whether to enable or disable adrk mode.",
       "configApiUrl": "The URL of the config api currently in used."
+    },
+    "license": {
+      "productName":"The license is registered under following product.",
+      "productCode":"The short code is used in our API calls in order to identify the product.",
+      "licenseType":"The type of license (eg: Perpetual, Time-based, Subscription, and Consumption-based licenses).",
+      "licenseKey":"The license key",
+      "customerEmail":"The customer email address of the registered license.",
+      "customerName":"The customer name of the registered license.",
+      "companyName":"The company name of the registered license.",
+      "validityPeriod":"The license will expire on following date.",
+      "maxActivations":"The maximum allowed activations of this license on different machines.",
+      "isLicenseActive":"Is license active?"
     }
   }
 }
