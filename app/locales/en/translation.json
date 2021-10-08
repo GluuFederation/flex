@@ -141,7 +141,7 @@
     "sender_email": "Sender Email",
     "sender_name": "Sender Name",
     "sentinel_master_group_name": "sentinelMasterGroupName",
-    "servers": "server details separated by comma, e.g. 'server1:8080,server2:8081'",
+    "servers": "Server Details",
     "show_in_onfiguration_endpoint": "Show In Configuration Endpoint",
     "smtp_server_port": "SMTP server port",
     "smtp_test_status": "Smtp Test Status",
@@ -746,6 +746,18 @@
       "validityPeriod":"The license will expire on following date.",
       "maxActivations":"The maximum allowed activations of this license on different machines.",
       "isLicenseActive":"Is license active?"
+    },
+    "ldap": {
+      "configId": "Unique name of the configuration.",
+      "bind_dn": "This contains the username to connect to the backend server. You need to use full DN here. As for example, cn=gluu,dc=company,dc=org.",
+      "bind_password": " This can be used for a new password or to change any existing password.",
+      "servers": "This contains the backend Active Directory/LDAP server hostname with port i.e. backend.organization.com:389.",
+      "max_connections": "This value defines the maximum number of connections that are allowed to read the backend Active Directory/LDAP server. It is recommended to keep the value of 2 or 3.",
+      "use_ssl": "Use this feature if the backend server allows SSL connectivity.",
+      "base_dns": "This contains the location of the Active Directory/LDAP tree from where the Gluu Server shall read the user information.",
+      "primary_key": "Primary Key",
+      "local_primary_key": "Local Primary Key",
+      "activate": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values."
     }
   }
 }
