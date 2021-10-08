@@ -5,7 +5,9 @@ import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
-import { Container, Row, Col, Form, FormGroup, Input, Accordion } from '../../../../app/components'
+import { LICENSE } from '../../../../app/utils/ApiResources'
+import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
+import { Container, Row, Col, Form, FormGroup, CustomInput, Accordion } from '../../../../app/components'
 import { Formik } from 'formik'
 
 function LicenseDetailsForm({ item, handleSubmit }) {
@@ -54,23 +56,26 @@ function LicenseDetailsForm({ item, handleSubmit }) {
           >
             {(formik) => (
               <Form onSubmit={formik.handleSubmit}>
-                <FormGroup row>
-                  <GluuLabel label="fields.validityPeriod" size={5} />
-                  <Col sm={7}>
-                    <DatePicker
-                      id="validityPeriod"
-                      name="validityPeriod"
-                      dateFormat="yyyy-MM-dd"
-                      selected={validityPeriod}
-                      dropdownMode="select"
-                      onChange={(date) => setValidityPeriod(date)}
-                    />
-                  </Col>
-                </FormGroup>
+                <GluuTooltip doc_category={LICENSE} doc_entry="validityPeriod">
+                  <FormGroup row>
+                    <GluuLabel label="fields.validityPeriod" size={5} />
+                    <Col sm={7}>
+                      <DatePicker
+                        id="validityPeriod"
+                        name="validityPeriod"
+                        dateFormat="yyyy-MM-dd"
+                        selected={validityPeriod}
+                        dropdownMode="select"
+                        onChange={(date) => setValidityPeriod(date)}
+                      />
+                    </Col>
+                  </FormGroup>
+                </GluuTooltip>
+                <GluuTooltip doc_category={LICENSE} doc_entry="maxActivations">
                 <FormGroup row>
                   <GluuLabel label="fields.maxActivations" size={5} />
                   <Col sm={7}>
-                    <Input
+                    <CustomInput
                       type="number"
                       placeholder={t('fields.maxActivations')}
                       id="maxActivations"
@@ -80,6 +85,8 @@ function LicenseDetailsForm({ item, handleSubmit }) {
                     />
                   </Col>
                 </FormGroup>
+                </GluuTooltip>
+                <GluuTooltip doc_category={LICENSE} doc_entry="isLicenseActive">
                 <FormGroup row>
                   <GluuLabel label="fields.isLicenseActive" size={5} />
                   <Col sm={7}>
@@ -91,6 +98,7 @@ function LicenseDetailsForm({ item, handleSubmit }) {
                     />
                   </Col>
                 </FormGroup>
+                </GluuTooltip>
                 <FormGroup row></FormGroup>
                 <GluuCommitFooter saveHandler={toggle} />
                 <GluuCommitDialog
