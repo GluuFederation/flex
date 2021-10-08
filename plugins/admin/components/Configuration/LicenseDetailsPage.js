@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import LicenseDetailsForm  from './LicenseDetailsForm'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
+import { LICENSE } from '../../../../app/utils/ApiResources'
 import { getLicenseDetails, updateLicenseDetails } from '../../redux/actions/LicenseDetailsActions'
 import { Container, Row, Col, Form, FormGroup, Input, Accordion } from '../../../../app/components'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
@@ -58,6 +59,9 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                     isBadge={true}
                     lsize={3}
                     rsize={9}
+                    doc_entry="productName"
+                    doc_category={LICENSE}
+                    
                   />
                 </Col>
                 <Col sm={6}>
@@ -67,6 +71,8 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                     isBadge={true}
                     lsize={3}
                     rsize={9}
+                    doc_entry="productCode"
+                    doc_category={LICENSE}
                   />
                 </Col>
               </Row>
@@ -78,6 +84,8 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                     isBadge={true}
                     lsize={3}
                     rsize={9}
+                    doc_entry="licenseType"
+                    doc_category={LICENSE}
                   />
                 </Col>
                 <Col sm={6}>
@@ -87,6 +95,8 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                     isBadge={true}
                     lsize={3}
                     rsize={9}
+                    doc_entry="licenseKey"
+                    doc_category={LICENSE}
                   />
                 </Col>
               </Row>
@@ -98,6 +108,8 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                     isBadge={true}
                     lsize={3}
                     rsize={9}
+                    doc_entry="customerEmail"
+                    doc_category={LICENSE}
                   />
                 </Col>
                 <Col sm={6}>
@@ -107,6 +119,8 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                     isBadge={true}
                     lsize={3}
                     rsize={9}
+                    doc_entry="customerName"
+                    doc_category={LICENSE}
                   />
                 </Col>
               </Row>
@@ -118,6 +132,8 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                     isBadge={true}
                     lsize={3}
                     rsize={9}
+                    doc_entry="companyName"
+                    doc_category={LICENSE}
                   />
                 </Col>
               </Row>
