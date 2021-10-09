@@ -7,7 +7,7 @@ import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
 import { LICENSE } from '../../../../app/utils/ApiResources'
 import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import { Container, Row, Col, Form, FormGroup, CustomInput, Accordion } from '../../../../app/components'
+import { Col, Form, FormGroup, CustomInput, Accordion } from '../../../../app/components'
 import { Formik } from 'formik'
 
 function LicenseDetailsForm({ item, handleSubmit }) {
