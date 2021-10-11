@@ -4,11 +4,13 @@ import {
   FormGroup,
   Card,
   Col,
-  Input,
   CardBody,
   CustomInput,
 } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import { CACHE } from '../../../../app/utils/ApiResources'
+import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import { useTranslation } from 'react-i18next'
 
 function CacheMemcached({ config, formik }) {
@@ -16,63 +18,61 @@ function CacheMemcached({ config, formik }) {
   return (
     <Card>
       <CardBody>
-        <FormGroup row>
-          <Col
-            xs="12"
-            style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
-          >
-            {t('fields.memcached_configuration')}:
-          </Col>
-          <GluuLabel label="fields.servers" size={2} />
-          <Col sm={6}>
-            <Badge color="primary">{config.servers}</Badge>
-          </Col>
-          <GluuLabel label="fields.connection_factory_type" size={2} />
-          <Col sm={2}>
-            <CustomInput
-              type="select"
-              id="connectionFactoryType"
-              name="connectionFactoryType"
-              defaultValue={config.connectionFactoryType}
-              onChange={formik.handleChange}
-            >
-              <option value="DEFAULT">{t('options.default')}</option>
-              <option value="BINARY">{t('options.binary')}</option>
-            </CustomInput>
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <GluuLabel label="fields.max_operation_queue_length" size={2} />
-          <Col sm={2}>
-            <Input
-              id="maxOperationQueueLength"
-              name="maxOperationQueueLength"
-              type="number"
-              defaultValue={config.maxOperationQueueLength}
-              onChange={formik.handleChange}
-            />
-          </Col>
-          <GluuLabel label="fields.buffer_size" size={2} />
-          <Col sm={2}>
-            <Input
-              id="bufferSize"
-              name="bufferSize"
-              type="number"
-              defaultValue={config.bufferSize}
-              onChange={formik.handleChange}
-            />
-          </Col>
-          <GluuLabel label="fields.default_put_expiration" size={2} />
-          <Col sm={2}>
-            <Input
-              type="number"
-              name="memDefaultPutExpiration"
-              id="memDefaultPutExpiration"
-              defaultValue={config.defaultPutExpiration}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
+        <GluuTooltip doc_category={CACHE} doc_entry="servers">
+          <FormGroup row>
+            <GluuLabel label="fields.servers" size={6} />
+            <Col sm={6}>
+              <Badge color="primary">{config.servers}</Badge>
+            </Col>
+          </FormGroup>
+        </GluuTooltip>
+        <GluuTooltip doc_category={CACHE} doc_entry="connectionFactoryType">
+          <FormGroup row>
+            <GluuLabel label="fields.connection_factory_type" size={6} />
+            <Col sm={6}>
+              <CustomInput
+                type="select"
+                id="connectionFactoryType"
+                name="connectionFactoryType"
+                defaultValue={config.connectionFactoryType}
+                onChange={formik.handleChange}
+              >
+                <option value="DEFAULT">{t('options.default')}</option>
+                <option value="BINARY">{t('options.binary')}</option>
+              </CustomInput>
+            </Col>
+          </FormGroup>
+        </GluuTooltip>
+        <GluuInputRow
+          label="fields.max_operation_queue_length"
+          name="maxOperationQueueLength"
+          type="number"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.maxOperationQueueLength}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.buffer_size"
+          name="bufferSize"
+          type="number"
+          formik={formik}
+          lsize={6}
+          rsize={6}
+          value={config.bufferSize}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.default_put_expiration"
+          name="memDefaultPutExpiration"
+          type="number"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.memDefaultPutExpiration}
+          doc_category={CACHE}
+        />
       </CardBody>
     </Card>
   )

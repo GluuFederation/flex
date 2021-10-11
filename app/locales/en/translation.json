@@ -736,16 +736,16 @@
       "configApiUrl": "The URL of the config api currently in used."
     },
     "license": {
-      "productName":"The license is registered under following product.",
-      "productCode":"The short code is used in our API calls in order to identify the product.",
-      "licenseType":"The type of license (eg: Perpetual, Time-based, Subscription, and Consumption-based licenses).",
-      "licenseKey":"The license key",
-      "customerEmail":"The customer email address of the registered license.",
-      "customerName":"The customer name of the registered license.",
-      "companyName":"The company name of the registered license.",
-      "validityPeriod":"The license will expire on following date.",
-      "maxActivations":"The maximum allowed activations of this license on different machines.",
-      "isLicenseActive":"Is license active?"
+      "productName": "The license is registered under following product.",
+      "productCode": "The short code is used in our API calls in order to identify the product.",
+      "licenseType": "The type of license (eg: Perpetual, Time-based, Subscription, and Consumption-based licenses).",
+      "licenseKey": "The license key",
+      "customerEmail": "The customer email address of the registered license.",
+      "customerName": "The customer name of the registered license.",
+      "companyName": "The company name of the registered license.",
+      "validityPeriod": "The license will expire on following date.",
+      "maxActivations": "The maximum allowed activations of this license on different machines.",
+      "isLicenseActive": "Is license active?"
     },
     "ldap": {
       "configId": "Unique name of the configuration.",
@@ -758,6 +758,29 @@
       "primary_key": "Primary Key",
       "local_primary_key": "Local Primary Key",
       "activate": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values."
+    },
+    "cache": {
+      "cacheProviderType": "The cache Provider Type.",
+      "servers": "Server details separated by spaces.",
+      "maxOperationQueueLength": "Maximum operation Queue Length.",
+      "bufferSize": "Buffer Size.",
+      "defaultPutExpiration": "Expiration timeout value.",
+      "redisDefaultPutExpiration": "Redis expiration timeout value.",
+      "memDefaultPutExpiration": "memcached expiration timeout value.",
+      "nativeDefaultPutExpiration": "Native cahce expiration timeout value.",
+      "connectionFactoryType": "The Memcached Connection Factory Type.",
+      "redisProviderType": "Type of redis connection.",
+      "password": "Redis password.",
+      "sentinelMasterGroupName": "Sentinel Master Group Name (required if SENTINEL type of connection is selected).",
+      "useSSL": "Enable SSL communication between Gluu Server and Redis cache.",
+      "sslTrustStoreFilePath": "Directory Path to Trust Store.",
+      "maxIdleConnections": "The cap on the number of idle instances in the pool. If max idle is set too low on heavily loaded systems it is possible you will see objects being destroyed and almost immediately new objects being created.",
+      "maxTotalConnections": "The number of maximum connection instances in the pool.",
+      "connectionTimeout": "Connection time out.",
+      "soTimeout":"So timeout",
+      "maxRetryAttempts": " Maximum retry attempts in case of failure.",
+      "defaultCleanupBatchSize": "default cleanup batch page size.",
+      "deleteExpiredOnGetRequest": "Whether to delete on get request."
     }
   }
 }

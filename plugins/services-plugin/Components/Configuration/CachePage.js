@@ -13,6 +13,7 @@ import {
 } from '../../../../app/components'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import CacheInMemory from './CacheInMemory'
 import CacheRedis from './CacheRedis'
 import CacheNative from './CacheNative'
@@ -30,7 +31,7 @@ import {
   editRedisCache,
   editMemCache,
 } from '../../redux/actions/CacheActions'
-
+import { CACHE } from '../../../../app/utils/ApiResources'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 
@@ -191,52 +192,54 @@ function CachePage({
                       <GluuLabel label="fields.cache_provider_type" size={4} />
                       <Col sm={8}>
                         {cacheData.cacheProviderType && (
-                          <InputGroup>
-                            <CustomInput
-                              type="select"
-                              id="cacheProviderType"
-                              name="cacheProviderType"
-                              defaultValue={cacheData.cacheProviderType}
-                              onChange={formik.handleChange}
-                              onChange={(e) => {
-                                setCacheProviderType(e.target.value)
-                                formik.setFieldValue(
-                                  'cacheProviderType',
-                                  e.target.value,
-                                )
-                              }}
-                            >
-                              <option value="IN_MEMORY">{t('options.in_memory')}</option>
-                              <option value="MEMCACHED">{t('options.memcached')}</option>
-                              <option value="REDIS">{t('options.redis')}</option>
-                              <option value="NATIVE_PERSISTENCE">{t('options.native_persistence')}</option>
-                            </CustomInput>
-                          </InputGroup>
+                          <GluuTooltip
+                            doc_category={CACHE}
+                            doc_entry="cacheProviderType"
+                          >
+                            <InputGroup>
+                              <CustomInput
+                                type="select"
+                                id="cacheProviderType"
+                                name="cacheProviderType"
+                                defaultValue={cacheData.cacheProviderType}
+                                onChange={formik.handleChange}
+                                onChange={(e) => {
+                                  setCacheProviderType(e.target.value)
+                                  formik.setFieldValue(
+                                    'cacheProviderType',
+                                    e.target.value,
+                                  )
+                                }}
+                              >
+                                <option value="IN_MEMORY">
+                                  {t('options.in_memory')}
+                                </option>
+                                <option value="MEMCACHED">
+                                  {t('options.memcached')}
+                                </option>
+                                <option value="REDIS">
+                                  {t('options.redis')}
+                                </option>
+                                <option value="NATIVE_PERSISTENCE">
+                                  {t('options.native_persistence')}
+                                </option>
+                              </CustomInput>
+                            </InputGroup>
+                          </GluuTooltip>
                         )}
                       </Col>
                     </FormGroup>
                     {cacheProviderType == 'MEMCACHED' && (
-                      <FormGroup row>
-                        <CacheMemcached config={cacheMemData} formik={formik} />
-                      </FormGroup>
+                      <CacheMemcached config={cacheMemData} formik={formik} />
                     )}
                     {cacheProviderType == 'IN_MEMORY' && (
-                      <FormGroup row>
-                        <CacheInMemory
-                          config={cacheMemoryData}
-                          formik={formik}
-                        />
-                      </FormGroup>
+                      <CacheInMemory config={cacheMemoryData} formik={formik} />
                     )}
                     {cacheProviderType == 'REDIS' && (
-                      <FormGroup row>
-                        <CacheRedis config={cacheRedisData} formik={formik} />
-                      </FormGroup>
+                      <CacheRedis config={cacheRedisData} formik={formik} />
                     )}
                     {cacheProviderType == 'NATIVE_PERSISTENCE' && (
-                      <FormGroup row>
-                        <CacheNative config={cacheNativeData} formik={formik} />
-                      </FormGroup>
+                      <CacheNative config={cacheNativeData} formik={formik} />
                     )}
                     <FormGroup row></FormGroup>
                     <GluuFooter saveHandler={toggle} />

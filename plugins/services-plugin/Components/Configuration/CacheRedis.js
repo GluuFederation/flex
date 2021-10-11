@@ -4,12 +4,15 @@ import {
   FormGroup,
   Card,
   Col,
-  Input,
   CardBody,
   InputGroup,
   CustomInput,
 } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
+import GluuToogleRow from '../../../../app/routes/Apps/Gluu/GluuToogleRow'
+import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
+import { CACHE } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 function CacheRedis({ config, formik }) {
@@ -18,138 +21,139 @@ function CacheRedis({ config, formik }) {
     <Card>
       <CardBody>
         <FormGroup row>
-        <Col xs="12" style={{fontSize: 24, fontWeight: 'bold', marginBottom: 15}}>{t("fields.redis_configuration")}:</Col>
-          <GluuLabel label="fields.redis_provider_type" size={4} />
-          <Col sm={8}>
-            <InputGroup>
-              <CustomInput
-                type="select"
-                id="redisProviderType"
-                name="redisProviderType"
-                defaultValue={config.redisProviderType}
-                onChange={formik.handleChange}
-              >
-                <option value="STANDALONE">{t("options.standalone")}</option>
-                <option value="CLUSTER">{t("options.cluster")}</option>
-                <option value="SHARDED">{t("options.sharded")}</option>
-                <option value="SENTINEL">{t("options.sentinel")}</option>
-              </CustomInput>
-            </InputGroup>
+          <Col
+            sm="12"
+            style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 15 }}
+          >
+            {t('fields.redis_configuration')}:
           </Col>
         </FormGroup>
-        <FormGroup row>
-          <GluuLabel label="fields.servers" size={2} />
-          <Col sm={7}>
-            <Badge color="primary">{config.servers}</Badge>
-          </Col>
-          <GluuLabel label="fields.use_ssl" size={2} />
-          <Col sm={1}>
-            <Input
-              type="checkbox"
-              name="useSSL"
-              id="useSSL"
-              defaultChecked={config.useSSL}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <GluuLabel label="fields.password" size={2}/>
-          <Col sm={3}>
-            <Input
-              name="password"
-              id="password"
-              defaultValue={config.password}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <GluuLabel label="fields.sentinel_master_group_name" size={4}/>
-          <Col sm={3}>
-            <Input
-              name="sentinelMasterGroupName"
-              id="sentinelMasterGroupName"
-              defaultValue={config.sentinelMasterGroupName}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <GluuLabel label="fields.ssl_trust_store_file_path" size={3}/>
-          <Col sm={3}>
-            <Input
-              name="sslTrustStoreFilePath"
-              id="sslTrustStoreFilePath"
-              defaultValue={config.sslTrustStoreFilePath}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <GluuLabel label="fields.default_put_expiration" size={2} />
-          <Col sm={2}>
-            <Input
-              id="redisDefaultPutExpiration"
-              name="redisDefaultPutExpiration"
-              type="number"
-              defaultValue={config.defaultPutExpiration}
-              onChange={formik.handleChange}
-            />
-          </Col>
-          <GluuLabel label="fields.max_retry_attempts" size={2} />
-          <Col sm={2}>
-            <Input
-              id="maxRetryAttempts"
-              name="maxRetryAttempts"
-              type="number"
-              defaultValue={config.maxRetryAttempts}
-              onChange={formik.handleChange}
-            />
-          </Col>
-          <GluuLabel label="fields.so_timeout" size={2} />
-          <Col sm={2}>
-            <Input
-              id="soTimeout"
-              name="soTimeout"
-              type="number"
-              defaultValue={config.soTimeout}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <GluuLabel label="fields.max_idle_connections" size={2} />
-          <Col sm={2}>
-            <Input
-              id="maxIdleConnections"
-              name="maxIdleConnections"
-              type="number"
-              defaultValue={config.maxIdleConnections}
-              onChange={formik.handleChange}
-            />
-          </Col>
-          <GluuLabel label="fields.max_total_connections" size={2} />
-          <Col sm={2}>
-            <Input
-              id="maxTotalConnections"
-              name="maxTotalConnections"
-              type="number"
-              defaultValue={config.maxTotalConnections}
-              onChange={formik.handleChange}
-            />
-          </Col>
-          <GluuLabel label="fields.connection_timeout" size={2} />
-          <Col sm={2}>
-            <Input
-              id="connectionTimeout"
-              name="connectionTimeout"
-              type="number"
-              defaultValue={config.connectionTimeout}
-              onChange={formik.handleChange}
-            />
-          </Col>
-        </FormGroup>
+        <GluuTooltip doc_category={CACHE} doc_entry="redisProviderType">
+          <FormGroup row>
+            <GluuLabel label="fields.redis_provider_type" size={6} />
+            <Col sm={6}>
+              <InputGroup>
+                <CustomInput
+                  type="select"
+                  id="redisProviderType"
+                  name="redisProviderType"
+                  defaultValue={config.redisProviderType}
+                  onChange={formik.handleChange}
+                >
+                  <option value="STANDALONE">{t('options.standalone')}</option>
+                  <option value="CLUSTER">{t('options.cluster')}</option>
+                  <option value="SHARDED">{t('options.sharded')}</option>
+                  <option value="SENTINEL">{t('options.sentinel')}</option>
+                </CustomInput>
+              </InputGroup>
+            </Col>
+          </FormGroup>
+        </GluuTooltip>
+        <GluuTooltip doc_category={CACHE} doc_entry="servers">
+          <FormGroup row>
+            <GluuLabel label="fields.servers" size={6} />
+            <Col sm={6}>
+              <Badge color="primary">{config.servers}</Badge>
+            </Col>
+          </FormGroup>
+        </GluuTooltip>
+        <GluuToogleRow
+          name="useSSL"
+          formik={formik}
+          lsize={6}
+          rsize={6}
+          label="fields.use_ssl"
+          value={config.useSSL}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.password"
+          name="password"
+          type="password"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.password}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.sentinel_master_group_name"
+          name="sentinelMasterGroupName"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.sentinelMasterGroupName}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.ssl_trust_store_file_path"
+          name="sslTrustStoreFilePath"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.sslTrustStoreFilePath}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.default_put_expiration"
+          name="redisDefaultPutExpiration"
+          type="number"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.defaultPutExpiration}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.max_retry_attempts"
+          name="maxRetryAttempts"
+          type="number"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.maxRetryAttempts}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.so_timeout"
+          name="soTimeout"
+          type="number"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.soTimeout}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.max_idle_connections"
+          name="maxIdleConnections"
+          type="number"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.maxIdleConnections}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.max_total_connections"
+          name="maxTotalConnections"
+          type="number"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.maxTotalConnections}
+          doc_category={CACHE}
+        />
+        <GluuInputRow
+          label="fields.connection_timeout"
+          name="connectionTimeout"
+          type="number"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.connectionTimeout}
+          doc_category={CACHE}
+        />
       </CardBody>
     </Card>
   )

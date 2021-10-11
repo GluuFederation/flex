@@ -1,12 +1,7 @@
 import React from 'react'
-import {
-  FormGroup,
-  Card,
-  Col,
-  Input,
-  CardBody,
-} from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import { FormGroup, Card, Col, CardBody } from '../../../../app/components'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
+import { CACHE } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 function CacheInMemory({ config, formik }) {
@@ -21,17 +16,17 @@ function CacheInMemory({ config, formik }) {
           >
             {t('fields.in_memory_configuration')}:
           </Col>
-          <GluuLabel label="fields.default_put_expiration" size={6} />
-          <Col sm={6}>
-            <Input
-              id="memoryDefaultPutExpiration"
-              name="memoryDefaultPutExpiration"
-              type="number"
-              defaultValue={config.defaultPutExpiration}
-              onChange={formik.handleChange}
-            />
-          </Col>
         </FormGroup>
+        <GluuInputRow
+          label="fields.default_put_expiration"
+          name="memoryDefaultPutExpiration"
+          type="number"
+          lsize={6}
+          rsize={6}
+          formik={formik}
+          value={config.defaultPutExpiration}
+          doc_category={CACHE}
+        />
       </CardBody>
     </Card>
   )
