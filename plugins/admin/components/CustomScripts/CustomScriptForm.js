@@ -290,7 +290,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           </Col>
         </FormGroup>
       </GluuTooltip>
-      <GluuTooltip doc_category={SCRIPT} doc_entry="location_type">
+      <GluuTooltip doc_category={SCRIPT} doc_entry="locationType">
         <FormGroup row>
           <GluuLabel label="fields.location_type" />
           <Col sm={9}>

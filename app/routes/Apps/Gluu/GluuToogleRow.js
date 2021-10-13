@@ -12,7 +12,7 @@ function GluuToogleRow({
   lsize,
   handler,
   rsize,
-  doc_category ="not_category",
+  doc_category ="no_category",
 }) {
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>

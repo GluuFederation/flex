@@ -731,7 +731,7 @@
       "revision": "Update revision number of the script."
     },
     "settings": {
-      "pageSize": "The default ie for all list page.",
+      "pageSize": "The default size for all list page.",
       "darkMode": "Whether to enable or disable adrk mode.",
       "configApiUrl": "The URL of the config api currently in used."
     },
@@ -779,7 +779,7 @@
       "connectionTimeout": "Connection time out.",
       "soTimeout":"So timeout",
       "maxRetryAttempts": " Maximum retry attempts in case of failure.",
-      "defaultCleanupBatchSize": "default cleanup batch page size.",
+      "defaultCleanupBatchSize": "Default cleanup batch page size.",
       "deleteExpiredOnGetRequest": "Whether to delete on get request."
     }
   }
