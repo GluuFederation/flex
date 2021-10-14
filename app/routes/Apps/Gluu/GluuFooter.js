@@ -13,7 +13,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
       <Divider></Divider>
       <FormGroup row></FormGroup>
       <FormGroup row>
-        <Col sm={0} md={7}>
+        <Col sm={4} md={2}>
           {extraLabel && extraOnClick && (
             <Button color="primary" onClick={extraOnClick}>
               {t(extraLabel)}
@@ -21,7 +21,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
           )}
         </Col>
         {!hideButtons || !hideButtons['back'] ? (
-          <Col sm={2} md={1}>
+          <Col sm={4} md={2}>
             <Button color="secondary" onClick={goBack}>
               <i className="fa fa-arrow-circle-left mr-2"></i>
               {t('actions.cancel')}
@@ -32,7 +32,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         )}
         &nbsp;
         {!hideButtons || !hideButtons['save'] ? (
-          <Col sm={2} md={1}>
+          <Col sm={4} md={2}>
             <Button color="primary" type="submit">
               <i className="fa fa-check-circle mr-2"></i>
               {t('actions.save')}

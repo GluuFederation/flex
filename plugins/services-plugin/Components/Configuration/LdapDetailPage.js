@@ -27,6 +27,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
   return (
     <React.Fragment>
       <Container style={{ backgroundColor: '#F5F5F5' }}>
+        <FormGroup row> </FormGroup>
         <Row>
           <Col sm={6}>
             <FormGroup row>
@@ -139,6 +140,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
             </button>
           </Col>
         </Row>
+        <FormGroup row> </FormGroup>
       </Container>
     </React.Fragment>
   )
