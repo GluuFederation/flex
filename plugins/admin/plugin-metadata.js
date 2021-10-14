@@ -2,7 +2,7 @@ import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import LicenseDetailsPage from './components/Configuration/LicenseDetailsPage'
 import AdminUiRole from './components/Roles/AdminUiRole'
-import MaximumActiveUsersPage from './components/MaximumActiveUsersPage'
+import MonthlyActiveUsersPage from './components/MonthlyActiveUsersPage'
 import SettingsPage from './components/Settings/SettingsPage'
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
@@ -64,7 +64,7 @@ const pluginMetadata = {
       permission: '/config/acrs.readonly',
     },
     {
-      component: MaximumActiveUsersPage,
+      component: MonthlyActiveUsersPage,
       path: PLUGIN_BASE_APTH + '/mau',
       permission: '/config/acrs.readonly',
     },
