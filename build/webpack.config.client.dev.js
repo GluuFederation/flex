@@ -104,7 +104,7 @@ module.exports = {
       // Global Styles
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader','postcss-loader'],
         include: [path.resolve(config.srcDir, 'styles')],
       },
       {

@@ -57,6 +57,11 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const userAction = {}
   const options = {}
   const currentDate = new Date()
+  const selectionRange = {
+    startDate: new Date(),
+    endDate: new Date(),
+    key: 'selection',
+  }
   const [average, setAverage] = useState(0)
   const [codeAT, setCodeAT] = useState(true)
   const [credentialAT, setCredentialAT] = useState(true)
@@ -183,6 +188,9 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
     }
     return (sum / length).toFixed(2)
   }
+  
+  
+
   return (
     <GluuLoader blocking={loading}>
       <GluuViewWrapper
@@ -194,6 +202,7 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
               className="d-flex flex-column justify-content-center align-items-center pt-5"
               style={{ minHeight: '400px' }}
             >
+             
               <div className="d-flex justify-content-center mb-3">
                 <Picker
                   ref={pickRange2}
