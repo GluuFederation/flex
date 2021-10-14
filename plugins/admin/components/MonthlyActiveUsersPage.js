@@ -51,8 +51,10 @@ class MonthBox extends Component {
     this.props.onClick && this.props.onClick(e)
   }
 }
-
-function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
+function prepending(n){
+  return n > 9 ? "" + n: "0" + n;
+}
+function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const userAction = {}
   const options = {}
@@ -68,8 +70,8 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
 
   const pickRange2 = React.createRef()
   const [rangeValue2, setRangeValue2] = useState({
-    from: { year: 2021, month: 5 },
-    to: { year: 2021, month: 9 },
+    from: { year: currentDate.getFullYear(), month: currentDate.getMonth()-3 },
+    to: { year: currentDate.getFullYear(), month: currentDate.getMonth()+1 },
   })
   const pickerLang = {
     months: [
@@ -91,7 +93,11 @@ function MaximumActiveUsersPage({ stat, permissions, loading, dispatch }) {
   }
 
   useEffect(() => {
-    options['month'] = '202109%20202108%20202107%20202106%20202105'
+    let initialMonths = currentDate.getFullYear().toString() + prepending(currentDate.getMonth()+1)
+    for(let i = 0; i < 4; i ++) {
+      initialMonths = initialMonths + '%20' + currentDate.getFullYear().toString() + prepending(currentDate.getMonth()-i)
+    }
+    options['month'] = initialMonths
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }, [])
@@ -350,4 +356,4 @@ const mapStateToProps = (state) => {
     permissions: state.authReducer.permissions,
   }
 }
-export default connect(mapStateToProps)(MaximumActiveUsersPage)
+export default connect(mapStateToProps)(MonthlyActiveUsersPage)
