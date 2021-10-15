@@ -11,11 +11,8 @@
   ],
   "jest": {
     "verbose": true,
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/build/",
-      "<rootDir>/node_modules/",
-      "<rootDir>/jans_config_api/",
-      "/jans_config_api"
+    "testPathIgnorePatterns": [
+      "<rootDir>/jans_config_api/"
     ]
   },
   "homepage": "/admin",
