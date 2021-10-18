@@ -1,11 +1,24 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
+import { Provider } from 'react-redux'
+import { createStore } from "redux";
 import ClientListPage from './ClientListPage'
+import oidcReducer from '../../redux/reducers/OIDCReducer'
+import { screen, render } from "@testing-library/react";
 
-test('List OpenId Connect Clients', () => {
-  const component = renderer.create(<ClientListPage />)
-  let tree = component.toJSON()
-  expect(tree).toMatchSnapshot()
+const initialState = {
+};
+const store = createStore(oidcReducer, initialState);
 
-  expect(tree).toMatchSnapshot()
-})
+const Wrapper = ({ children }) => (
+	<Provider store={store}>{children}</Provider>
+);
+
+describe("List OpenId Connect Clients", () => {
+    it("First test", async () => {
+      render(<ClientListPage />, { wrapper: Wrapper });
+      const userName = await screen.findByText("mock name");
+      expect(userName).toBeTruthy();
+    });
+
+  });

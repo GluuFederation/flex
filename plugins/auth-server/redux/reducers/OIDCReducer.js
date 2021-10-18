@@ -13,7 +13,6 @@ import {
   SET_VIEW,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
-import { data } from 'autoprefixer'
 const INIT_STATE = {
   items: [],
   item: {},
