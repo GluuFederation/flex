@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react'
-import { Button, Card, CardFooter, CardBody } from '../../../app/components'
+import { Button, Card, CardFooter, CardBody, Label } from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import {
@@ -65,8 +65,8 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
     key: 'selection',
   }
   const [average, setAverage] = useState(0)
-  const [codeAT, setCodeAT] = useState(true)
-  const [credentialAT, setCredentialAT] = useState(true)
+  const [authCodeAT, setAuthCodeAT] = useState(true)
+  const [clientCredentialAT, setClientCredentialAT] = useState(true)
 
   const pickRange2 = React.createRef()
   const [rangeValue2, setRangeValue2] = useState({
@@ -237,7 +237,7 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 <Button className="ml-4 mr-4" color="primary" onClick={search}>
                   {t('actions.view')}
                 </Button>
-                <label
+                <Label
                   style={{
                     border: '2px solid gray',
                     borderRadius: '5px',
@@ -251,9 +251,9 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   }}
                 >
                   Average of MAU : {arrAvg(Object.values(stat))}
-                </label>
+                </Label>
               </div>
-              <ResponsiveContainer width="80%" height={500}>
+              <ResponsiveContainer className="mau-graph" width="80%" height={500}>
                 <LineChart height={300} data={Object.values(stat)}>
                   <Line
                     name="Monthly Active Users"
@@ -273,12 +273,9 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   <Legend />
                 </LineChart>
               </ResponsiveContainer>
-              <br />
-              <br />
-              <br />
-              <ResponsiveContainer width="80%" height={500}>
+              <ResponsiveContainer className="token-graph" width="80%" height={500} >
                 <LineChart height={300} data={Object.values(stat)}>
-                  {codeAT && (
+                  {authCodeAT && (
                     <Line
                       name="Authorization Code Access Token"
                       type="monotone"
@@ -286,7 +283,7 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                       stroke="#ff1e86"
                     />
                   )}
-                  {credentialAT && (
+                  {clientCredentialAT && (
                     <Line
                       name="Client Credentials Access Token"
                       type="monotone"
@@ -318,9 +315,9 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 <div className="pretty p-default p-curve p-smooth">
                   <input
                     type="checkbox"
-                    checked={codeAT}
+                    checked={authCodeAT}
                     onClick={(e) => {
-                      setCodeAT(!codeAT)
+                      setAuthCodeAT(!authCodeAT)
                     }}
                   />
                   <div className="state p-primary">
@@ -330,9 +327,9 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 <div className="pretty p-default p-curve p-smooth">
                   <input
                     type="checkbox"
-                    checked={credentialAT}
+                    checked={clientCredentialAT}
                     onClick={(e) => {
-                      setCredentialAT(!credentialAT)
+                      setClientCredentialAT(!clientCredentialAT)
                     }}
                   />
                   <div className="state p-primary">

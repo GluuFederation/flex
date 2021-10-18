@@ -1,6 +1,12 @@
 @import '~@miltonbo/dashboard-style-airframe/scss/style';
 @import '~pretty-checkbox/src/pretty-checkbox.scss';
 
+.mau-graph {
+  margin-top: 50px;
+}
+.token-graph {
+  margin-top: 100px;
+}
 .pretty {
   margin: 5px;
 }
