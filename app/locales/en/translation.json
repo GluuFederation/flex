@@ -781,6 +781,21 @@
       "maxRetryAttempts": " Maximum retry attempts in case of failure.",
       "defaultCleanupBatchSize": "Default cleanup batch page size.",
       "deleteExpiredOnGetRequest": "Whether to delete on get request."
+    },
+    "couchbase": {
+      "configId": "Unique name of the configuration.",
+      "servers": "Enter the IP address or hostname for your Couchbase nodes.",
+      "buckets": "The couchbase buckets to store data.",
+      "defaultBucket": "The default bucket for the Gluu Server.",
+      "connectTimeout": "Connection time out.",
+      "computationPoolSize": "Computation pool size.",
+      "useSSL":"Use this feature if the backend server allows SSL connectivity.",
+      "sslTrustStoreFile": "SSL truststore file.",
+      "sslTrustStoreFormat": "SSL truststore format.",
+      "sslTrustStorePin": "Encoded truststore pin.",
+      "userName": "Database username.",
+      "userPassword": "Database password."
+
     }
   }
 }
