@@ -9,7 +9,7 @@ import {
 } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
 
-const LdapDetailPage = ({ row, testLdapConnection }) => {
+const SqlDetailPage = ({ row, testSqlConnection }) => {
   const { t } = useTranslation()
 
   function getBadgeTheme(status) {
@@ -20,8 +20,8 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
     }
   }
 
-  function checkLdapConnection() {
-    testLdapConnection(row)
+  function checkSqlConnection() {
+    testSqlConnection(row)
   }
 
   return (
@@ -31,7 +31,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
           <Col sm={6}>
             <FormGroup row>
               <Label for="input" sm={6}>
-                {t('fields.configuration_id')}:
+                {t('fields.name')}:
               </Label>
               <Label for="input" sm={6}>
                 {row.configId}
@@ -41,10 +41,10 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
           <Col sm={6}>
             <FormGroup row>
               <Label for="input" sm={6}>
-                {t('fields.bind_dn')}:
+                {t('fields.username')}:
               </Label>
               <Label for="input" sm={6}>
-                {row.bindDN}
+                {row.userName}
               </Label>
             </FormGroup>
           </Col>
@@ -52,24 +52,25 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
         <Row>
           <Col sm={6}>
             <FormGroup row>
-              <Label sm={6}>{t('fields.status')}:</Label>
+              <Label sm={6}>{t('fields.connectionUris')}:</Label>
               <Label sm={6}>
-                <Badge color={getBadgeTheme(row.enabled)}>
-                  {row.enabled
-                    ? `${t('options.enabled')}`
-                    : `${t('options.disable')}`}
-                </Badge>
-              </Label>
-            </FormGroup>
-          </Col>
-          <Col sm={6}>
-            <FormGroup row>
-              <Label sm={6}>{t('fields.servers')}:</Label>
-              <Label sm={6}>
-                {row.servers &&
-                  row.servers.map((server, index) => (
+                {row.connectionUri &&
+                  row.connectionUri.map((ele, index) => (
                     <Badge key={index} color="primary">
-                      {server}
+                      {ele}
+                    </Badge>
+                  ))}
+              </Label>
+            </FormGroup>
+          </Col>
+          <Col sm={6}>
+            <FormGroup row>
+              <Label sm={6}>{t('fields.binaryAttributes')}:</Label>
+              <Label sm={6}>
+                {row.binaryAttributes &&
+                  row.binaryAttributes.map((attr, index) => (
+                    <Badge key={index} color="primary">
+                      {attr}
                     </Badge>
                   ))}
               </Label>
@@ -79,68 +80,29 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
         <Row>
           <Col sm={4}>
             <FormGroup row>
-              <Label sm={6}>{t('fields.max_connections')}:</Label>
-              <Label sm={6}>{row.maxConnections}</Label>
+              <Label sm={6}>{t('fields.schemaName')}:</Label>
+              <Label sm={6}>{row.schemaName}</Label>
             </FormGroup>
           </Col>
           <Col sm={4}>
             <FormGroup row>
-              <Label sm={6}>{t('fields.use_ssl')}:</Label>
+              <Label sm={6}>{t('fields.passwordEncryptionMethod')}:</Label>
               <Label sm={6}>
-                {row.useSSL}
-                <Badge color={getBadgeTheme(row.useSSL)}>
-                  {row.useSSL ? t('options.true') : t('options.false')}
-                </Badge>
+                {row.passwordEncryptionMethod}
               </Label>
             </FormGroup>
           </Col>
           <Col sm={4}>
             <FormGroup row>
-              <Label sm={6}>{t('fields.base_dns')}:</Label>
+              <Label sm={6}>{t('fields.serverTimezone')}:</Label>
               <Label sm={6}>
-                {row.baseDNs &&
-                  row.baseDNs.map((baseDN, index) => (
-                    <Badge key={baseDN} color="primary">
-                      {baseDN}
-                    </Badge>
-                  ))}
+                {row.serverTimezone}
               </Label>
             </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>{t('fields.primary_key')}:</Label>
-              <Label sm={6}>{row.primaryKey}</Label>
-            </FormGroup>
-          </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>{t('fields.local_primary_key')}:</Label>
-              <Label sm={6}>{row.localPrimaryKey}</Label>
-            </FormGroup>
-          </Col>
-          <Col sm={4}>
-            <FormGroup row>
-              <Label sm={6}>{t('fields.use_anonymous_bind')}:</Label>
-              <Label sm={6}>{row.useAnonymousBind}</Label>
-            </FormGroup>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={4}>
-            <button
-              onClick={checkLdapConnection}
-              type="button"
-              className="btn btn-primary text-center"
-            >
-              {t('fields.test_connection')}
-            </button>
           </Col>
         </Row>
       </Container>
     </React.Fragment>
   )
 }
-export default LdapDetailPage
+export default SqlDetailPage

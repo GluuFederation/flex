@@ -10,12 +10,13 @@ import {
 } from '../../../../app/components'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-
+import { SQL } from '../../../../app/utils/ApiResources'
+import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 
-function LdapForm({ item, handleSubmit }) {
+function SqlForm({ item, handleSubmit }) {
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
@@ -35,265 +36,236 @@ function LdapForm({ item, handleSubmit }) {
   const formik = useFormik({
     initialValues: {
       configId: item.configId,
-      bindDN: item.bindDN,
-      bindPassword: item.bindPassword,
-      servers: item.servers,
-      maxConnections: item.maxConnections,
-      useSSL: item.useSSL,
-      baseDNs: item.baseDNs,
-      primaryKey: item.primaryKey,
-      localPrimaryKey: item.localPrimaryKey,
-      enabled: item.enabled,
+      userName: item.userName,
+      userPassword: item.userPassword,
+      connectionUri: item.connectionUri,
+      schemaName: item.schemaName,
+      passwordEncryptionMethod: item.passwordEncryptionMethod,
+      serverTimezone: item.serverTimezone,
+      binaryAttributes: item.binaryAttributes,
+      certificateAttributes: item.certificateAttributes,
+      enabled: item.enabled
     },
     validationSchema: Yup.object({
       configId: Yup.string()
         .min(2, 'Mininum 2 characters')
         .required('Required!'),
-      bindDN: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
-      bindPassword: Yup.string()
+      userName: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
+      userPassword: Yup.string()
         .min(2, 'Mininum 2 characters')
         .required('Required!'),
-      servers: Yup.array().required('Required!'),
-      maxConnections: Yup.number()
-        .required()
-        .positive()
-        .integer()
-        .required('Required!'),
-      baseDNs: Yup.array().required('Required!'),
-      primaryKey: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required('Required!'),
-      localPrimaryKey: Yup.string()
-        .min(2, 'Mininum 2 characters')
-        .required('Required!'),
+      connectionUri: Yup.array().required('Required!'),
+      schemaName: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
     }),
     onSubmit: (values) => {
-      values.servers = values.servers.map((ele) =>
-        !!ele.servers ? ele.servers : ele,
-      )
-      values.baseDNs = values.baseDNs.map((ele) =>
-        !!ele.baseDNs ? ele.baseDNs : ele,
-      )
-
       const result = Object.assign(item, values)
-      const reqBody = { ldap: result }
+      const reqBody = { sql: result }
       handleSubmit(reqBody)
     },
   })
   return (
     <Form onSubmit={formik.handleSubmit}>
-      <FormGroup row>
-        <GluuLabel label="fields.name" required />
-        <Col sm={9}>
-          {!!item.configId ? (
+      <GluuTooltip doc_category={SQL} doc_entry="config_name">
+        <FormGroup row>
+          <GluuLabel label="fields.name" required />
+          <Col sm={9}>
+            {!!item.configId ? (
+              <Input
+                valid={
+                  !formik.errors.configId && !formik.touched.configId && init
+                }
+                placeholder={t('placeholders.sql_config_name')}
+                id="configId"
+                name="configId"
+                defaultValue={item.configId}
+                disabled
+                onKeyUp={toogle}
+                onChange={formik.handleChange}
+              />
+            ) : (
+                <Input
+                  valid={
+                    !formik.errors.configId && !formik.touched.configId && init
+                  }
+                  placeholder={t('placeholders.sql_config_name')}
+                  id="configId"
+                  name="configId"
+                  defaultValue={item.configId}
+                  onKeyUp={toogle}
+                  onChange={formik.handleChange}
+                />
+              )}
+            {formik.errors.configId && formik.touched.configId ? (
+              <div style={{ color: 'red' }}>{formik.errors.configId}</div>
+            ) : null}
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+      <GluuTooltip doc_category={SQL} doc_entry="username">
+        <FormGroup row>
+          <GluuLabel label="fields.username" required />
+          <Col sm={9}>
             <Input
-              valid={
-                !formik.errors.configId && !formik.touched.configId && init
-              }
-              placeholder={t('placeholders.ldap_name')}
-              id="configId"
-              name="configId"
-              defaultValue={item.configId}
-              disabled
+              placeholder={t('placeholders.sql_username')}
+              id="userName"
+              valid={!formik.errors.userName && !formik.touched.userName && init}
+              name="userName"
+              defaultValue={item.userName}
               onKeyUp={toogle}
               onChange={formik.handleChange}
             />
-          ) : (
-            <Input
-              valid={
-                !formik.errors.configId && !formik.touched.configId && init
-              }
-              placeholder={t('placeholders.ldap_name')}
-              id="configId"
-              name="configId"
-              defaultValue={item.configId}
+            {formik.errors.userName && formik.touched.userName ? (
+              <div style={{ color: 'red' }}>{formik.errors.userName}</div>
+            ) : null}
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+      <GluuTooltip doc_category={SQL} doc_entry="password">
+        <FormGroup row>
+          <GluuLabel label="fields.password" required />
+          <Col sm={9}>
+            <InputGroup>
+              <Input
+                placeholder={t('placeholders.sql_password')}
+                valid={
+                  !formik.errors.userPassword &&
+                  !formik.touched.userPassword &&
+                  init
+                }
+                onKeyUp={toogle}
+                id="userPassword"
+                type="password"
+                defaultValue={item.userPassword}
+                onChange={formik.handleChange}
+              />
+            </InputGroup>
+            {formik.errors.userPassword && formik.touched.userPassword ? (
+              <div style={{ color: 'red' }}>{formik.errors.userPassword}</div>
+            ) : null}
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+        <FormGroup row>
+          <Col sm={9}>
+            <GluuTypeAhead
+              name="connectionUri"
+              label="fields.connectionUris"
+              formik={formik}
+              required={true}
+              options={['jdbc:mysql://localhost:3306/gluudb']}
+              value={item.connectionUri}
+              valid={!formik.errors.connectionUri && !formik.touched.connectionUri && init}
               onKeyUp={toogle}
-              onChange={formik.handleChange}
-            />
-          )}
-          {formik.errors.configId && formik.touched.configId ? (
-            <div style={{ color: 'red' }}>{formik.errors.configId}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.bind_dn" required />
-        <Col sm={9}>
-          <Input
-            placeholder={t('placeholders.ldap_bind_dn')}
-            id="bindDN"
-            valid={!formik.errors.bindDN && !formik.touched.bindDN && init}
-            name="bindDN"
-            defaultValue={item.bindDN}
-            onKeyUp={toogle}
-            onChange={formik.handleChange}
-          />
-          {formik.errors.bindDN && formik.touched.bindDN ? (
-            <div style={{ color: 'red' }}>{formik.errors.bindDN}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.bind_password" required />
-        <Col sm={9}>
-          <InputGroup>
-            <Input
-              placeholder={t('placeholders.ldap_bind_password')}
-              valid={
-                !formik.errors.bindPassword &&
-                !formik.touched.bindPassword &&
-                init
-              }
-              onKeyUp={toogle}
-              id="bindPassword"
-              type="password"
-              defaultValue={item.bindPassword}
-              onChange={formik.handleChange}
-            />
-          </InputGroup>
-          {formik.errors.bindPassword && formik.touched.bindPassword ? (
-            <div style={{ color: 'red' }}>{formik.errors.bindPassword}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <Col sm={9}>
-          <GluuTypeAhead
-            name="servers"
-            label="fields.servers"
-            formik={formik}
-            required={true}
-            options={['localhost:1636']}
-            value={item.servers}
-            valid={!formik.errors.servers && !formik.touched.servers && init}
-            onKeyUp={toogle}
-          ></GluuTypeAhead>
+              doc_category={SQL}
+              doc_entry="connectionUri"
+            ></GluuTypeAhead>
 
-          {formik.errors.servers && formik.touched.servers ? (
-            <div style={{ color: 'red' }}>{formik.errors.servers}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.max_connections" required />
-        <Col sm={9}>
-          <InputGroup>
+            {formik.errors.connectionUri && formik.touched.connectionUri ? (
+              <div style={{ color: 'red' }}>{formik.errors.connectionUri}</div>
+            ) : null}
+          </Col>
+        </FormGroup>
+      <GluuTooltip doc_category={SQL} doc_entry="schemaname">
+        <FormGroup row>
+          <GluuLabel label="fields.schemaName" required />
+          <Col sm={9}>
             <Input
-              placeholder={t('placeholders.ldap_bind_max_connections')}
-              valid={
-                !formik.errors.maxConnections &&
-                !formik.touched.maxConnections &&
-                init
-              }
-              id="maxConnections"
+              placeholder={t('placeholders.sql_schemaname')}
+              id="schemaName"
+              valid={!formik.errors.schemaName && !formik.touched.schemaName && init}
+              name="schemaName"
+              defaultValue={item.schemaName}
               onKeyUp={toogle}
-              defaultValue={item.maxConnections}
               onChange={formik.handleChange}
             />
-          </InputGroup>
-          {formik.errors.maxConnections && formik.touched.maxConnections ? (
-            <div style={{ color: 'red' }}>{formik.errors.maxConnections}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.use_ssl" required />
-        <Col sm={9}>
-          <InputGroup>
+            {formik.errors.schemaName && formik.touched.schemaName ? (
+              <div style={{ color: 'red' }}>{formik.errors.schemaName}</div>
+            ) : null}
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+      <GluuTooltip doc_category={SQL} doc_entry="passwordEncryptionMethod">
+        <FormGroup row>
+          <GluuLabel label="fields.passwordEncryptionMethod" />
+          <Col sm={9}>
             <Input
-              placeholder={t('placeholders.enable_ssl_communication')}
-              valid={!formik.errors.useSSL && !formik.touched.useSSL && init}
-              id="useSSL"
-              type="checkbox"
+              placeholder={t('placeholders.sql_passwordEncryptionMethod')}
+              id="passwordEncryptionMethod"
+              valid={!formik.errors.passwordEncryptionMethod && !formik.touched.passwordEncryptionMethod && init}
+              name="passwordEncryptionMethod"
+              defaultValue={item.passwordEncryptionMethod}
               onKeyUp={toogle}
-              defaultChecked={item.useSSL}
               onChange={formik.handleChange}
             />
-          </InputGroup>
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <Col sm={9}>
-          <GluuTypeAhead
-            name="baseDNs"
-            label="fields.base_dns"
-            formik={formik}
-            options={[]}
-            required={true}
-            onKeyUp={toogle}
-            value={item.baseDNs}
-          ></GluuTypeAhead>
-          {formik.errors.baseDNs && formik.touched.baseDNs ? (
-            <div style={{ color: 'red' }}>{formik.errors.baseDNs}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.primary_key" required />
-        <Col sm={9}>
-          <InputGroup>
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+      <GluuTooltip doc_category={SQL} doc_entry="serverTimezone">
+        <FormGroup row>
+          <GluuLabel label="fields.serverTimezone" />
+          <Col sm={9}>
             <Input
-              placeholder={t('placeholders.ldap_primary_key')}
-              valid={
-                !formik.errors.primaryKey && !formik.touched.primaryKey && init
-              }
-              id="primaryKey"
+              placeholder={t('placeholders.sql_serverTimezone')}
+              id="serverTimezone"
+              valid={!formik.errors.serverTimezone && !formik.touched.serverTimezone && init}
+              name="serverTimezone"
+              defaultValue={item.serverTimezone}
               onKeyUp={toogle}
-              defaultValue={item.primaryKey}
               onChange={formik.handleChange}
             />
-          </InputGroup>
-          {formik.errors.primaryKey && formik.touched.primaryKey ? (
-            <div style={{ color: 'red' }}>{formik.errors.primaryKey}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.local_primary_key" required />
-        <Col sm={9}>
-          <InputGroup>
-            <Input
-              placeholder={t('placeholders.ldap_primary_key')}
-              valid={
-                !formik.errors.localPrimaryKey &&
-                !formik.touched.localPrimaryKey &&
-                init
-              }
-              id="localPrimaryKey"
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
+        <FormGroup row>
+          <Col sm={9}>
+            <GluuTypeAhead
+              name="binaryAttributes"
+              label="fields.binaryAttributes"
+              formik={formik}
+              required={false}
+              options={['objectGUID']}
+              value={item.binaryAttributes}
+              valid={!formik.errors.binaryAttributes && !formik.touched.binaryAttributes && init}
               onKeyUp={toogle}
-              defaultValue={item.localPrimaryKey}
-              onChange={formik.handleChange}
-            />
-          </InputGroup>
-          {formik.errors.localPrimaryKey && formik.touched.localPrimaryKey ? (
-            <div style={{ color: 'red' }}>{formik.errors.localPrimaryKey}</div>
-          ) : null}
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.activate" />
-        <Col sm={9}>
-          <InputGroup>
-            <Input
-              placeholder={t('placeholders.activate_ldap_configuration')}
-              valid={!formik.errors.enabled && !formik.touched.enabled && init}
-              type="checkbox"
-              id="enabled"
+              doc_category={SQL} 
+              doc_entry="binaryAttributes"
+            ></GluuTypeAhead>
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Col sm={9}>
+            <GluuTypeAhead
+              name="certificateAttributes"
+              label="fields.certificateAttributes"
+              formik={formik}
+              required={false}
+              options={['userCertificate']}
+              value={item.certificateAttributes}
+              valid={!formik.errors.certificateAttributes && !formik.touched.certificateAttributes && init}
               onKeyUp={toogle}
-              defaultChecked={item.enabled}
-              onChange={formik.handleChange}
-            />
-          </InputGroup>
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        {' '}
-        <Input
-          type="hidden"
-          id="moduleProperties"
-          defaultValue={item.moduleProperties}
-        />
-      </FormGroup>
+              doc_category={SQL} 
+              doc_entry="certificateAttributes"
+            ></GluuTypeAhead>
+          </Col>
+        </FormGroup>
+      <GluuTooltip doc_category={SQL} doc_entry="activate">
+        <FormGroup row>
+          <GluuLabel label="fields.activate" />
+          <Col sm={9}>
+            <InputGroup>
+              <Input
+                placeholder={t('placeholders.activate_sql_configuration')}
+                valid={!formik.errors.enabled && !formik.touched.enabled && init}
+                type="checkbox"
+                id="enabled"
+                onKeyUp={toogle}
+                defaultChecked={item.enabled}
+                onChange={formik.handleChange}
+              />
+            </InputGroup>
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
       <FormGroup row></FormGroup>
       <GluuCommitFooter saveHandler={toggle} />
       <GluuCommitDialog
@@ -306,4 +278,4 @@ function LdapForm({ item, handleSubmit }) {
   )
 }
 
-export default LdapForm
+export default SqlForm

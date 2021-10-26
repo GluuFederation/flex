@@ -24,7 +24,7 @@
   },
   "fields": {
     "access_token_signing_alg": "Access Token Signing Algorithm",
-    "activate": "activate",
+    "activate": "Activate",
     "active": "Active",
     "application_type": "Application Type",
     "attributes": "Attributes",
@@ -221,7 +221,14 @@
     "companyName": "Company Name",
     "customerEmail": "Customer Email",
     "customerName": "Customer Name",
-    "licenseDetails": "License Details"
+    "licenseDetails": "License Details",
+    "username": "Username",
+    "connectionUris": "Connection URIs",
+    "schemaName": "Schema Name",
+    "passwordEncryptionMethod": "Password Encryption Method",
+    "serverTimezone": "Server Timezone",
+    "binaryAttributes": "Binary Attributes",
+    "certificateAttributes": "Certificate Attributes"
   },
   "languages": {
     "french": "Français",
@@ -295,7 +302,9 @@
     "edit_ldap": "Edit Ldap",
     "edit_attribute": "Edit Attribute",
     "refresh_data": "Refresh Data",
-    "view_attribute": "View attribute"
+    "view_attribute": "View attribute",
+    "edit_sql": "Edit SQL",
+    "add_sql": "Add SQL"
   },
   "placeholders": {
     "action_commit_message": "Provide the reason of this change",
@@ -332,7 +341,14 @@
     "smtp_user_name": "Enter the SMTP user name",
     "smtp_user_password": "Enter the SMTP user password",
     "spontaneous_client_id": "Enter the spontaneous client id",
-    "typeahead_holder_message": "Enter multiple items by selecting from appeared dropdown after entering each item."
+    "typeahead_holder_message": "Enter multiple items by selecting from appeared dropdown after entering each item.",
+    "sql_config_name": "Enter the sql configuration name.",
+    "sql_username": "Enter the Username.",
+    "sql_password": "Enter the Password.",
+    "sql_schemaname": "Enter the schema name.",
+    "sql_passwordEncryptionMethod": "Add password encryption method.",
+    "sql_serverTimezone": "Enter server timezone.",
+    "activate_sql_configuration": "Activate SQL configuration."
   },
   "titles": {
     "acrs": "ACRs",
@@ -801,6 +817,18 @@
       "userName": "Database username.",
       "userPassword": "Database password."
 
+    },
+    "sql": {
+      "config_name": "Enter the sql configuration name.",
+      "username": "Enter the database username.",
+      "password": "Enter the database password.",
+      "schemaname": "Enter the schema name.",
+      "passwordEncryptionMethod": "Add password encryption method.",
+      "serverTimezone": "Enter server timezone.",
+      "binaryAttributes": "Binary attributes.",
+      "certificateAttributes": "Certificate attributes.",
+      "activate": "Activate SQL configuration.",
+      "connectionUri": "Connection URI of database."
     }
   }
 }

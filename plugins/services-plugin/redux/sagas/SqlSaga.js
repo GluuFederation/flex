@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from '../../../../app/utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from '../../../../app/utils/TokenController'
 import {
   getSqlResponse,
   addSqlResponse,
@@ -8,8 +8,17 @@ import {
   testSqlResponse,
 } from '../actions/SqlActions'
 import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
-import { GET_SQL, PUT_SQL, SET_SQL, DELETE_SQL, TEST_SQL } from '../actions/types'
+import { SQL } from '../audit/Resources'
+import {
+  CREATE,
+  UPDATE,
+  DELETION,
+  FETCH,
+} from '../../../../app/audit/UserActionType'
+import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { GET_SQL, PUT_SQL, SET_SQL, DELETE_SQL, TEST_SQL, ADD_SQL } from '../actions/types'
 import SqlApi from '../api/SqlApi'
+import { postUserAction } from '../../../../app/redux/api/backend-api'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
@@ -22,12 +31,14 @@ function* newFunction() {
   return new SqlApi(api)
 }
 
-export function* getSql() {
+export function* getSql(payload) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, FETCH, SQL, payload)
     const api = yield* newFunction()
     const data = yield call(api.getSqlConfig)
-    console.log('sql saga data: ', data)
     yield put(getSqlResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
     yield put(getSqlResponse(null))
     if (isFourZeroOneError(e)) {
@@ -38,11 +49,15 @@ export function* getSql() {
 }
 
 export function* addSql({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, CREATE, SQL, payload)
     const api = yield* newFunction()
-    const data = yield call(api.addSqlConfig, payload.data)
+    const data = yield call(api.addSqlConfig, payload.data.action_data)
     yield put(addSqlResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
+    yield put(addSqlResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -51,11 +66,15 @@ export function* addSql({ payload }) {
 }
 
 export function* editSql({ payload }) {
+  const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, UPDATE, SQL, payload)
     const api = yield* newFunction()
-    const data = yield call(api.updateSqlConfig, payload.data)
+    const data = yield call(api.updateSqlConfig, payload.data.action_data)
     yield put(editSqlResponse(data))
+    yield call(postUserAction, audit)
   } catch (e) {
+    yield put(editSqlResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -67,7 +86,7 @@ export function* editSql({ payload }) {
 export function* deleteSql({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, DELETION, LDAP, payload)
+    addAdditionalData(audit, DELETION, SQL, payload)
     const api = yield* newFunction()
     yield call(api.deleteSqlConfig, payload.configId)
     yield put(deleteSqlResponse(payload.configId))
@@ -84,6 +103,7 @@ export function* deleteSql({ payload }) {
 export function* testSql({ payload }) {
   const audit = yield* initAudit()
   try {
+    addAdditionalData(audit, DELETION, SQL, payload)
     const api = yield* newFunction()
     const data = yield call(api.testSqlConfig, payload.data)
     yield put(testSqlResponse(data))
@@ -104,7 +124,7 @@ export function* watchGetSqlConfig() {
 }
 
 export function* watchAddSqlConfig() {
-  yield takeLatest(SET_SQL, addSql)
+  yield takeLatest(ADD_SQL, addSql)
 }
 
 export function* watchPutSqlConfig() {

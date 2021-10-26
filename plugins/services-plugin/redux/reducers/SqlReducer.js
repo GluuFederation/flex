@@ -6,11 +6,15 @@ import {
   PUT_SQL,
   PUT_SQL_RESPONSE,
   RESET,
+  ADD_SQL,
+  ADD_SQL_RESPONSE
 } from '../actions/types'
 
 const INIT_STATE = {
   sql: [],
+  item: {},
   loading: false,
+  testStatus: false,
 }
 
 const reducerName = 'sqlReducer';
@@ -26,7 +30,7 @@ export default function sqlReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          SQL: action.payload.data,
+          sql: action.payload.data,
           loading: false,
         }
       } else {
@@ -39,13 +43,21 @@ export default function sqlReducer(state = INIT_STATE, action) {
     case SET_SQL:
       return {
         ...state,
+        item: action.payload.item,
+        loading: false,
+      }
+
+    case ADD_SQL:
+      return {
+        ...state,
         loading: true,
       }
-    case SET_SQL_RESPONSE:
+
+    case ADD_SQL_RESPONSE:
       if (action.payload.data) {
         return {
           ...state,
-          sql: action.payload.data,
+          sql: [...state.sql, action.payload.data],
           loading: false,
         }
       } else {
