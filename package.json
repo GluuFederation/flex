@@ -10,7 +10,7 @@
     "gluu"
   ],
   "jest": {
-    "verbose": true,
+    "verbose": false,
     "testEnvironment": "jsdom",
     "setupFiles": [
       "jest-canvas-mock"

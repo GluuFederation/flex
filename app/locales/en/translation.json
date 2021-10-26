@@ -662,7 +662,7 @@
       "tlsClientAuthSubjectDn": "The tls Client Auth Subject Dn",
       "grantTypes": "The list of grant types for this client",
       "responseTypes": "The list of responses types for this client",
-      "applicationType": "The type of this client",
+      "applicationType": "The OpenID connect Client application type.",
       "redirectUris": "The list of redirect uri for this client",
       "contacts": "OpenId connect client contacts list",
       "claimRedirectURIs": "Claim redirect URIs",
