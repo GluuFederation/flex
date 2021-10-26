@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
+import SqlDetailPage from './SqlDetailPage'
+import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import Alert from '@material-ui/lab/Alert';
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
+import { getPersistenceType } from '../../redux/actions/PersistenceActions'
 import {
   hasPermission,
   buildPayload,
@@ -27,9 +30,11 @@ function SqlListPage({
   dispatch,
   testStatus,
   persistenceType,
+  persistenceTypeLoading,
 }) {
   useEffect(() => {
     dispatch(getSqlConfig())
+    dispatch(getPersistenceType())
   }, [])
   const { t } = useTranslation()
   const userAction = {}
@@ -147,51 +152,53 @@ function SqlListPage({
   }
   return (
     <React.Fragment>
-      {persistenceType == `sql` ? 
-      (<MaterialTable
-        columns={[
-          { title: `${t('fields.configuration_id')}`, field: 'configId' },
-          { title: `${t('fields.connectionUri')}`, field: 'connectionUri' },
-          { title: `${t('fields.schemaName')}`, field: 'schemaName' },
-        ]}
-        data={sqlConfigurations}
-        isLoading={loading}
-        title={t('titles.sql_authentication')}
-        actions={myActions}
-        options={{
-          search: true,
-          selection: false,
-          pageSize: pageSize,
-          headerStyle: {
-            backgroundColor: '#03a96d',
-            color: '#FFF',
-            padding: '2px',
-            textTransform: 'uppercase',
-            fontSize: '18px',
-          },
-          actionsColumnIndex: -1,
-        }}
-        detailPanel={(rowData) => {
-          return (
-            <LdapDetailPage
-              row={rowData}
-              testSqlConnection={testSqlConnect}
-            />
-          )
-        }}
-      />) : (<Alert severity="info">The database of Authentication server is not RDBMS.</Alert>)}
-      <GluuAlert
-        severity={alertObj.severity}
-        message={alertObj.message}
-        show={alertObj.show}
-      />
-      <GluuDialog
-        row={item}
-        handler={toggle}
-        modal={modal}
-        subject="sql"
-        onAccept={onDeletionConfirmed}
-      />
+      <GluuLoader blocking={persistenceTypeLoading}>
+        {persistenceType == `sql` ?
+          (<MaterialTable
+            columns={[
+              { title: `${t('fields.name')}`, field: 'configId' },
+              { title: `${t('fields.connectionUris')}`, field: 'connectionUri' },
+              { title: `${t('fields.schemaName')}`, field: 'schemaName' },
+            ]}
+            data={sqlConfigurations}
+            isLoading={loading}
+            title={t('titles.sql_authentication')}
+            actions={myActions}
+            options={{
+              search: true,
+              selection: false,
+              pageSize: pageSize,
+              headerStyle: {
+                backgroundColor: '#03a96d',
+                color: '#FFF',
+                padding: '2px',
+                textTransform: 'uppercase',
+                fontSize: '18px',
+              },
+              actionsColumnIndex: -1,
+            }}
+            detailPanel={(rowData) => {
+              return (
+                <SqlDetailPage
+                  row={rowData}
+                  testSqlConnection={testSqlConnect}
+                />
+              )
+            }}
+          />) : (<Alert severity="info">The database of Authentication server is not RDBMS.</Alert>)}
+        <GluuAlert
+          severity={alertObj.severity}
+          message={alertObj.message}
+          show={alertObj.show}
+        />
+        <GluuDialog
+          row={item}
+          handler={toggle}
+          modal={modal}
+          subject="sql"
+          onAccept={onDeletionConfirmed}
+        />
+      </GluuLoader>
     </React.Fragment>
   )
 }
@@ -202,7 +209,8 @@ const mapStateToProps = (state) => {
     loading: state.sqlReducer.loading,
     permissions: state.authReducer.permissions,
     testStatus: state.sqlReducer.testStatus,
-    persistenceType: state.persistenceTypeReducer.type
+    persistenceType: state.persistenceTypeReducer.type,
+    persistenceTypeLoading: state.persistenceTypeReducer.loading
   }
 }
 export default connect(mapStateToProps)(SqlListPage)

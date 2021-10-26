@@ -2,34 +2,29 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { Container, CardBody, Card } from '../../../../app/components'
-import LdapForm from './LdapForm'
-import { editLdap } from '../../redux/actions/LdapActions'
+import SqlForm from './SqlForm'
+import { editSql } from '../../redux/actions/SqlActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
-function LdapEditPage({ item, dispatch }) {
+function SqlEditPage({ item, dispatch }) {
   const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      let message = data.ldap.action_message
-      delete data.ldap.action_message
+      let message = data.sql.action_message
+      delete data.sql.action_message
       buildPayload(userAction, message, data)
-      dispatch(editLdap(userAction))
-      history.push('/config/ldap')
+      dispatch(editSql(userAction))
+      history.push('/config/sql')
     }
   }
-  const defautConfigurations = {
-    maxConnections: 2,
-    useSSL: false,
-    useAnonymousBind: false,
-    enabled: false
-  }
+
   return (
     <React.Fragment>
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <LdapForm item={item} handleSubmit={handleSubmit} />
+            <SqlForm item={item} handleSubmit={handleSubmit} />
           </CardBody>
         </Card>
       </Container>
@@ -38,9 +33,9 @@ function LdapEditPage({ item, dispatch }) {
 }
 const mapStateToProps = (state) => {
   return {
-    item: state.ldapReducer.item,
-    loading: state.ldapReducer.loading,
+    item: state.sqlReducer.item,
+    loading: state.sqlReducer.loading,
     permissions: state.authReducer.permissions,
   }
 }
-export default connect(mapStateToProps)(LdapEditPage)
+export default connect(mapStateToProps)(SqlEditPage)

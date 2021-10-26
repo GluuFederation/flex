@@ -24,15 +24,13 @@
   },
   "fields": {
     "access_token_signing_alg": "Access Token Signing Algorithm",
-    "activate": "activate",
+    "activate": "Activate",
     "active": "Active",
     "application_type": "Application Type",
     "attributes": "Attributes",
     "attribute_edit_type": "Attribute Edit Type",
     "attribute_view_type": "Attribute View Type",
     "authentication_method": "Authentication method for the Token Endpoint",
-    "authorization_code_access_token": "Authorization Code Access Token",
-    "average_of_mau": "Average of MAU",
     "base_dns": "Base DNs",
     "bind_dn": "Bind DN",
     "bind_password": "Bind Password",
@@ -41,7 +39,6 @@
     "cache_configuration": "Cache Configuration",
     "cache_provider_type": "Cache Provider Type",
     "claims": "Claims",
-    "client_credentials_access_token": "Client Credentials Access Token",
     "client_expiration_date": "Client Expiration Date",
     "client_id": "Client Id",
     "client_name": "Client Name",
@@ -107,8 +104,6 @@
     "memcached_configuration": "memcachedConfiguration",
     "maximum_length": "Maximum length",
     "minimum_length": "Minimum length",
-    "month": "Month",
-    "monthly_active_users": "Monthly Active Users",
     "multivalued": "Multivalued?",
     "name": "Name",
     "native_persistence_configuration": "nativePersistenceConfiguration",
@@ -221,7 +216,14 @@
     "companyName": "Company Name",
     "customerEmail": "Customer Email",
     "customerName": "Customer Name",
-    "licenseDetails": "License Details"
+    "licenseDetails": "License Details",
+    "username": "Username",
+    "connectionUris": "Connection URIs",
+    "schemaName": "Schema Name",
+    "passwordEncryptionMethod": "Password Encryption Method",
+    "serverTimezone": "Server Timezone",
+    "binaryAttributes": "Binary Attributes",
+    "certificateAttributes": "Certificate Attributes"
   },
   "languages": {
     "french": "Français",
@@ -295,7 +297,9 @@
     "edit_ldap": "Edit Ldap",
     "edit_attribute": "Edit Attribute",
     "refresh_data": "Refresh Data",
-    "view_attribute": "View attribute"
+    "view_attribute": "View attribute",
+    "edit_sql": "Edit SQL",
+    "add_sql": "Add SQL"
   },
   "placeholders": {
     "action_commit_message": "Provide the reason of this change",
@@ -332,7 +336,14 @@
     "smtp_user_name": "Enter the SMTP user name",
     "smtp_user_password": "Enter the SMTP user password",
     "spontaneous_client_id": "Enter the spontaneous client id",
-    "typeahead_holder_message": "Enter multiple items by selecting from appeared dropdown after entering each item."
+    "typeahead_holder_message": "Enter multiple items by selecting from appeared dropdown after entering each item.",
+    "sql_config_name": "Enter the sql configuration name.",
+    "sql_username": "Enter the Username.",
+    "sql_password": "Enter the Password.",
+    "sql_schemaname": "Enter the schema name.",
+    "sql_passwordEncryptionMethod": "Add password encryption method.",
+    "sql_serverTimezone": "Enter server timezone.",
+    "activate_sql_configuration": "Activate SQL configuration."
   },
   "titles": {
     "acrs": "ACRs",
@@ -793,7 +804,7 @@
       "buckets": "The couchbase buckets to store data.",
       "defaultBucket": "The default bucket for the Gluu Server.",
       "connectTimeout": "Connection time out.",
-      "computationPoolSize": "Computation pool size.",
+      "computationPoolSize": "",
       "useSSL":"Use this feature if the backend server allows SSL connectivity.",
       "sslTrustStoreFile": "SSL truststore file.",
       "sslTrustStoreFormat": "SSL truststore format.",
@@ -801,6 +812,18 @@
       "userName": "Database username.",
       "userPassword": "Database password."
 
+    },
+    "sql": {
+      "config_name": "Enter the sql configuration name.",
+      "username": "Enter the database username.",
+      "password": "Enter the database password.",
+      "schemaname": "Enter the schema name.",
+      "passwordEncryptionMethod": "Add password encryption method.",
+      "serverTimezone": "Enter server timezone.",
+      "binaryAttributes": "Binary attributes.",
+      "certificateAttributes": "Certificate attributes.",
+      "activate": "Activate SQL configuration.",
+      "connectionUri": "Connection URI of database."
     }
   }
 }

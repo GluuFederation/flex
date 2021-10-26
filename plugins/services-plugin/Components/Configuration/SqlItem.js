@@ -10,7 +10,7 @@ import {
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
 
-function LdapItem({ ldap, index, formik }) {
+function SqlItem({ ldap, index, formik }) {
   const { t } = useTranslation()
   return (
     <Card
@@ -145,4 +145,4 @@ function LdapItem({ ldap, index, formik }) {
   )
 }
 
-export default LdapItem
+export default SqlItem

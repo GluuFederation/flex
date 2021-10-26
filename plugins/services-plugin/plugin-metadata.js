@@ -4,6 +4,8 @@ import LdapListPage from './Components/Configuration/LdapListPage'
 import LdapAddPage from './Components/Configuration/LdapAddPage'
 import LdapEditPage from './Components/Configuration/LdapEditPage'
 import SqlListPage from './Components/Configuration/SqlListPage'
+import SqlAddPage from './Components/Configuration/SqlAddPage'
+import SqlEditPage from './Components/Configuration/SqlEditPage'
 import cacheReducer from './redux/reducers/CacheReducer'
 import couchbaseReducer from './redux/reducers/CouchbaseReducer'
 import ldapReducer from './redux/reducers/LdapReducer'
@@ -71,6 +73,16 @@ const pluginMetadata = {
       component: LdapListPage,
       path: '/config/ldap',
       permission: '/config/database/ldap.readonly',
+    },
+    {
+      component: SqlEditPage,
+      path: '/config/sql/edit:configId',
+      permission: '/config/database/sql.readonly',
+    },
+    {
+      component: SqlAddPage,
+      path: '/config/sql/new',
+      permission: '/config/database/sql.readonly',
     },
     {
       component: SqlListPage,

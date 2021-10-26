@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { getLdapConfig, editLdap } from '../../redux/actions/LdapActions';
 import { useTranslation } from 'react-i18next'
 
-function LdapPage({ ldap, loading, dispatch }) {
+function SqlPage({ ldap, loading, dispatch }) {
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -65,4 +65,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(LdapPage);
+export default connect(mapStateToProps)(SqlPage);

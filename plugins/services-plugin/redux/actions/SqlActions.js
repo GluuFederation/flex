@@ -9,6 +9,8 @@ import {
   DELETE_SQL_RESPONSE,
   TEST_SQL,
   TEST_SQL_RESPONSE,
+  ADD_SQL,
+  ADD_SQL_RESPONSE,
 } from './types'
 
 export const getSqlConfig = () => ({
@@ -20,11 +22,11 @@ export const getSqlResponse = (data) => ({
   payload: { data },
 })
 export const addSql = (data) => ({
-  type: SET_SQL,
+  type: ADD_SQL,
   payload: { data },
 })
 export const addSqlResponse = (data) => ({
-  type: SET_SQL_RESPONSE,
+  type: ADD_SQL_RESPONSE,
   payload: { data },
 })
 
