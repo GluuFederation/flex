@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react'
-import { Button, Card, CardFooter, CardBody } from '../../../app/components'
+import { Button, Card, CardFooter, CardBody, Label, Input } from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import {
@@ -65,8 +65,8 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
     key: 'selection',
   }
   const [average, setAverage] = useState(0)
-  const [codeAT, setCodeAT] = useState(true)
-  const [credentialAT, setCredentialAT] = useState(true)
+  const [showAuthCodeATGraph, setShowAuthCodeATGraph] = useState(true)
+  const [showClientCredentialATGraph, setShowClientCredentialATGraph] = useState(true)
 
   const pickRange2 = React.createRef()
   const [rangeValue2, setRangeValue2] = useState({
@@ -139,10 +139,10 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
             color: 'black',
           }}
         >
-          <p className="label">{`Month : ${label % 100}/${Math.floor(
+          <p className="label">{`${t('fields.month')} : ${label % 100}/${Math.floor(
             label / 100,
           )}`}</p>
-          <p className="label">{`Monthly Active Users : ${payload[0].value}`}</p>
+          <p className="label">{`${t('fields.monthly_active_users')} : ${payload[0].value}`}</p>
         </div>
       )
     }
@@ -162,11 +162,11 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
             color: 'black',
           }}
         >
-          <p className="label">{`Month : ${label % 100}/${Math.floor(
+          <p className="label">{`${t('fields.month')} : ${label % 100}/${Math.floor(
             label / 100,
           )}`}</p>
-          <p className="label">{`Authorization Code Access Token : ${payload[0].value}`}</p>
-          <p className="label">{`Client Credentials Access Token : ${payload[1].value}`}</p>
+          <p className="label">{`${t('fields.authorization_code_access_token')} : ${payload[0].value}`}</p>
+          <p className="label">{`${t('fields.client_credentials_access_token')} : ${payload[1].value}`}</p>
         </div>
       )
     }
@@ -209,7 +209,7 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
               style={{ minHeight: '400px' }}
             >
              
-              <div className="d-flex justify-content-center mb-3">
+              <div className="d-flex justify-content-center align-items-center mb-3">
                 <Picker
                   ref={pickRange2}
                   years={{
@@ -237,26 +237,14 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 <Button className="ml-4 mr-4" color="primary" onClick={search}>
                   {t('actions.view')}
                 </Button>
-                <label
-                  style={{
-                    border: '2px solid gray',
-                    borderRadius: '5px',
-                    marginBottom: '0px',
-                    fontSize: 'larger',
-                    padding: '10px',
-                    marginLeft: '50px',
-                    minWidth: '230px',
-                    textAlign: 'center',
-                    color: 'black',
-                  }}
-                >
-                  Average of MAU : {arrAvg(Object.values(stat))}
-                </label>
+                <Label className="h4">
+                  {t('fields.average_of_mau')}{arrAvg(Object.values(stat))}
+                </Label>
               </div>
-              <ResponsiveContainer width="80%" height={500}>
+              <ResponsiveContainer className="mau-graph" width="80%" height={500}>
                 <LineChart height={300} data={Object.values(stat)}>
                   <Line
-                    name="Monthly Active Users"
+                    name={t('fields.monthly_active_users')}
                     type="monotone"
                     dataKey="monthly_active_users"
                     stroke="#8884d8"
@@ -273,22 +261,19 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   <Legend />
                 </LineChart>
               </ResponsiveContainer>
-              <br />
-              <br />
-              <br />
-              <ResponsiveContainer width="80%" height={500}>
+              <ResponsiveContainer className="token-graph" width="80%" height={500} >
                 <LineChart height={300} data={Object.values(stat)}>
-                  {codeAT && (
+                  {showAuthCodeATGraph && (
                     <Line
-                      name="Authorization Code Access Token"
+                      name={t('fields.authorization_code_access_token')}
                       type="monotone"
                       dataKey="token_count_per_granttype.authorization_code.access_token"
                       stroke="#ff1e86"
                     />
                   )}
-                  {credentialAT && (
+                  {showClientCredentialATGraph && (
                     <Line
-                      name="Client Credentials Access Token"
+                      name={t('fields.client_credentials_access_token')}
                       type="monotone"
                       dataKey="token_count_per_granttype.client_credentials.access_token"
                       stroke="#4f1e86"
@@ -306,7 +291,6 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   <Legend />
                 </LineChart>
               </ResponsiveContainer>
-              <hr />
               <div
                 style={{
                   display: 'flex',
@@ -316,27 +300,27 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 }}
               >
                 <div className="pretty p-default p-curve p-smooth">
-                  <input
+                  <Input
                     type="checkbox"
-                    checked={codeAT}
+                    checked={showAuthCodeATGraph}
                     onClick={(e) => {
-                      setCodeAT(!codeAT)
+                      setShowAuthCodeATGraph(!showAuthCodeATGraph)
                     }}
                   />
                   <div className="state p-primary">
-                    <label>Authorization Code Access Token</label>
+                    <Label>{t('fields.authorization_code_access_token')}</Label>
                   </div>
                 </div>
                 <div className="pretty p-default p-curve p-smooth">
-                  <input
+                  <Input
                     type="checkbox"
-                    checked={credentialAT}
+                    checked={showClientCredentialATGraph}
                     onClick={(e) => {
-                      setCredentialAT(!credentialAT)
+                      setShowClientCredentialATGraph(!showClientCredentialATGraph)
                     }}
                   />
                   <div className="state p-primary">
-                    <label>Client Credentials Access Token</label>
+                    <Label>{t('fields.client_credentials_access_token')}</Label>
                   </div>
                 </div>
               </div>
