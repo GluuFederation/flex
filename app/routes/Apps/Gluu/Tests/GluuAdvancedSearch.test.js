@@ -7,12 +7,13 @@ import { I18nextProvider } from 'react-i18next'
 it('Should render a required label with internationalized text', () => {
   const PATTERN_ID = 'patternId'
   const LIMIT_ID = 'limitId'
-  const container = render(
+  const LIMIT =1000;
+  render(
     <I18nextProvider i18n={i18n}>
-      <GluuAdvancedSearch patternId={PATTERN_ID} limitId={LIMIT_ID} />
+      <GluuAdvancedSearch patternId={PATTERN_ID} limitId={LIMIT_ID} limit={LIMIT} />
     </I18nextProvider>,
   )
-  screen.findAllByTestId(PATTERN_ID)
-  //expect(container.firstChild).toHave
-  //expect(screen.queryByT).toBeInTheDocument;
+  
+  expect(screen.getByDisplayValue("").id).toBe(PATTERN_ID);
+  expect(screen.getByDisplayValue(LIMIT).id).toBe(LIMIT_ID);
 })
