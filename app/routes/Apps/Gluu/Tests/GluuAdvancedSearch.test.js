@@ -13,6 +13,6 @@ it('Should render a required label with internationalized text', () => {
     </I18nextProvider>,
   )
   screen.findAllByTestId(PATTERN_ID)
-  expect(container.firstChild).toHave
-  expect(screen.queryByT).toBeInTheDocument;
+  //expect(container.firstChild).toHave
+  //expect(screen.queryByT).toBeInTheDocument;
 })

@@ -15,6 +15,9 @@
     "setupFiles": [
       "jest-canvas-mock"
     ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/__tests__/setup.js"
+    ],
     "transform": {
       "\\.[jt]sx?$": "babel-jest"
     },
@@ -121,6 +124,7 @@
     "date-fns": "^2.25.0",
     "dateformat": "^5.0.1",
     "dotenv": "^8.2.0",
+    "eslint-plugin-jest": "^25.2.2",
     "font-awesome": "^4.7.0",
     "formik": "^2.2.9",
     "holderjs": "^2.9.6",
