@@ -15,7 +15,15 @@ const theme = createTheme({
   },
 })
 
-function GluuTypeAhead({ label, name, value, options, formik, required, doc_category }) {
+function GluuTypeAhead({
+  label,
+  name,
+  value,
+  options,
+  formik,
+  required,
+  doc_category,
+}) {
   const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>

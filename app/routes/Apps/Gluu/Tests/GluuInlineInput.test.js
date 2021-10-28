@@ -46,20 +46,19 @@ it('Should render a typeahead component with array', () => {
   fireEvent.click(screen.getByText(VALUE))
 })
 
-
 it('Should render a text input', () => {
-    const VALUE = "Client Secret"
-    function handler() {}
-    render(
-      <I18nextProvider i18n={i18n}>
-        <GluuInlineInput
-          label={LABEL}
-          value={VALUE}
-          name={NAME}
-          handler={handler}
-        />
-      </I18nextProvider>,
-    )
-    screen.getByText('Application Type:')
-    expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
-  })
+  const VALUE = 'Client Secret'
+  function handler() {}
+  render(
+    <I18nextProvider i18n={i18n}>
+      <GluuInlineInput
+        label={LABEL}
+        value={VALUE}
+        name={NAME}
+        handler={handler}
+      />
+    </I18nextProvider>,
+  )
+  screen.getByText('Application Type:')
+  expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
+})

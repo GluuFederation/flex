@@ -10,7 +10,7 @@ it('Should show input text', () => {
   const VALUE = 'Public'
   render(
     <I18nextProvider i18n={i18n}>
-      <GluuInput label={LABEL} value={VALUE} name={NAME}/>
+      <GluuInput label={LABEL} value={VALUE} name={NAME} />
     </I18nextProvider>,
   )
   screen.getByText('Application Type:')
