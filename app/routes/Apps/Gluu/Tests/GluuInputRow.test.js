@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react'
 import GluuInputRow from '../GluuInputRow'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
-import { Formik } from 'formik'
 
 it('Should show the input with proper text', () => {
     const LABEL = 'fields.application_type'
