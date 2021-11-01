@@ -52,7 +52,7 @@ function GluuTypeAheadWithAdd({
           &nbsp;
           <Row>
             <Col sm={10}>
-              <Input placeholder={placeholder} id={inputId} />
+              <Input placeholder={placeholder} id={inputId} aria-label="new_entry"/>
             </Col>
             <Button color="primary" type="button" onClick={addItem}>
               <i className="fa fa-plus-circle mr-2"></i>
