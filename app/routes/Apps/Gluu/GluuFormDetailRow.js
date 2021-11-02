@@ -16,10 +16,10 @@ function GluuFormDetailRow({
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
       <FormGroup row>
-        <Label for="input" sm={lsize || 6}>
+        <Label for={label} sm={lsize || 6}>
           {t(label)}:
         </Label>
-        <Label for="input" sm={rsize || 6}>
+        <Label for={value} sm={rsize || 6}>
           {!isBadge ? (
             value
           ) : (

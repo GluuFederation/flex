@@ -4,7 +4,7 @@ import GluuAdvancedSearch from '../GluuAdvancedSearch'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
 
-it('Should render a required label with internationalized text', () => {
+it('Should render two inputs with proper ids', () => {
   const PATTERN_ID = 'patternId'
   const LIMIT_ID = 'limitId'
   const LIMIT =1000;

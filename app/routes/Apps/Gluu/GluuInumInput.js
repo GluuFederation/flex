@@ -3,7 +3,7 @@ import { Col, FormGroup, Input } from '../../../components'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 
-function GluuInumInput({ label, name, value, lsize,rsize, doc_category }) {
+function GluuInumInput({ label, name, value, lsize, rsize, doc_category }) {
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>

@@ -15,10 +15,19 @@ const theme = createTheme({
   },
 })
 
-function GluuTypeAhead({ label, name, value, options, formik, required, doc_category }) {
+function GluuTypeAhead({
+  label,
+  name,
+  value,
+  options,
+  formik,
+  required,
+  doc_category,
+  doc_entry,
+}) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
+    <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
       <FormGroup row>
         {!!required ? (
           <GluuLabel label={label} size={4} required />
