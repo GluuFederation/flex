@@ -6,7 +6,7 @@ import { I18nextProvider } from 'react-i18next'
 
 it('Test GluuTypeAheadWithAdd component', () => {
   const LABEL = 'fields.application_type'
-  let NAME = 'application_type'
+  const NAME = 'application_type'
   const VALUE = ['Monday']
   const OPTIONS = ['Monday', 'Tuesday']
   render(
