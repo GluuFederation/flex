@@ -1,7 +1,7 @@
 package org.gluu.casa.core.navigation;
 
 import org.gluu.casa.core.ConfigurationHandler;
-import org.gluu.casa.core.OxdService;
+import org.gluu.casa.core.OIDCFlowService;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
 import org.slf4j.Logger;
@@ -24,11 +24,9 @@ public class ReloginInitiator implements Initiator {
     public void doInit(Page page, Map<String, Object> map) throws Exception {
 
         try {
-            //logger.info("Forcing logout from the OP");
-            //WebUtils.execRedirect(Utils.managedBean(OxdService.class).getLogoutUrl(null));
             logger.info("Forcing re-login");
             List<String> acrs = Collections.singletonList(ConfigurationHandler.DEFAULT_ACR);
-            WebUtils.execRedirect(Utils.managedBean(OxdService.class).getAuthzUrl(acrs, "login"));
+            WebUtils.execRedirect(Utils.managedBean(OIDCFlowService.class).getAuthzUrl(acrs, "login"));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

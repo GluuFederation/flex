@@ -39,9 +39,6 @@ public class ConfigurationHandler extends JobListenerSupport {
     private PersistenceService persistenceService;
 
     @Inject
-    private OxdService oxdService;
-
-    @Inject
     private ExtensionsManager extManager;
 
     @Inject
@@ -156,30 +153,24 @@ public class ConfigurationHandler extends JobListenerSupport {
                     computeAcrPluginMapping();
                     computeCorsOrigins();
 
-                    if (oxdService.initialize()) {
-                        //Call to initialize should be followed by saving
-                        try {
-                            saveSettings();
-                            setAppState(AppStateEnum.OPERATING);
-                        } catch (Exception e) {
-                            logger.error(e.getMessage());
-                            setAppState(AppStateEnum.FAIL);
-                        }
-                        if (appState.equals(AppStateEnum.OPERATING)) {
-                            logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
-                            //Add some random seconds to gaps. This reduces the chance of timers running at the same time
-                            //in a multi node environment, which IMO it's somewhat safer
-                            int gap = Double.valueOf(Math.random() * 7).intValue();
-                            scriptsReloader.init(1 + gap);
-                            syncSettingsTimer.activate(60 + gap);
-                            //statistics timer executes in a single node in theory...
-                            //statisticsTimer.activate(120 + gap);
-                            //plugin checker is not shared-state related
-                            pluginChecker.activate(5);
-                        }
-                    } else {
-                        logger.warn("oxd configuration could not be initialized.");
+                    try {
+                        saveSettings();
+                        setAppState(AppStateEnum.OPERATING);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage());
                         setAppState(AppStateEnum.FAIL);
+                    }
+                    if (appState.equals(AppStateEnum.OPERATING)) {
+                        logger.info("=== WEBAPP INITIALIZED SUCCESSFULLY ===");
+                        //Add some random seconds to gaps. This reduces the chance of timers running at the same time
+                        //in a multi node environment, which IMO it's somewhat safer
+                        int gap = Double.valueOf(Math.random() * 7).intValue();
+                        scriptsReloader.init(1 + gap);
+                        syncSettingsTimer.activate(60 + gap);
+                        //statistics timer executes in a single node in theory...
+                        //statisticsTimer.activate(120 + gap);
+                        //plugin checker is not shared-state related
+                        pluginChecker.activate(5);
                     }
                 }
 

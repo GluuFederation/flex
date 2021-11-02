@@ -2,7 +2,7 @@ package org.gluu.casa.core.navigation;
 
 import org.gluu.casa.core.AuthFlowContext;
 import org.gluu.casa.core.ConfigurationHandler;
-import org.gluu.casa.core.OxdService;
+import org.gluu.casa.core.OIDCFlowService;
 import org.gluu.casa.core.SessionContext;
 import org.gluu.casa.core.UserService;
 import org.gluu.casa.core.pojo.User;
@@ -29,7 +29,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private AuthFlowContext flowContext;
-    private OxdService oxdService;
+    private OIDCFlowService oidcFlowService;
 
     public void doInit(Page page, Map<String, Object> map) throws Exception {
 
@@ -37,7 +37,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
         if (page.getAttribute("error") == null) {
 
             flowContext = Utils.managedBean(AuthFlowContext.class);
-            oxdService = Utils.managedBean(OxdService.class);
+            oidcFlowService = Utils.managedBean(OIDCFlowService.class);
             try {
                 switch (flowContext.getStage()) {
                     case NONE:
@@ -59,13 +59,13 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
                                 //This may happen when user did not ever entered his username at IDP, and tries accessing the app again
                                 goForAuthorization();
                             } else {
-                                Pair<String, String> tokens = oxdService.getTokens(code, WebUtils.getQueryParam("state"));
+                                Pair<String, String> tokens = oidcFlowService.getTokens(code, WebUtils.getQueryParam("state"));
                                 String accessToken = tokens.getX();
                                 String idToken = tokens.getY();
                                 logger.debug("Authorization code={}, Access token={}, Id token {}", code, accessToken, idToken);
 
                                 User user = Utils.managedBean(UserService.class)
-                                        .getUserFromClaims((Map<String, Object>) oxdService.getUserClaims(accessToken));
+                                        .getUserFromClaims((Map<String, Object>) oidcFlowService.getUserClaims(accessToken));
                                 //Store in session
                                 logger.debug("Adding user to session");
                                 Utils.managedBean(SessionContext.class).setUser(user);
@@ -98,7 +98,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
         flowContext.setStage(INITIAL);
         logger.debug("Starting authorization flow");
         //do Authz Redirect
-        WebUtils.execRedirect(oxdService.getAuthzUrl(ConfigurationHandler.DEFAULT_ACR));
+        WebUtils.execRedirect(oidcFlowService.getAuthzUrl(ConfigurationHandler.DEFAULT_ACR));
     }
 
     private boolean errorsParsed(Page page) {

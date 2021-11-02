@@ -1,7 +1,7 @@
 package org.gluu.casa.ui.vm;
 
 import org.gluu.casa.core.AuthFlowContext;
-import org.gluu.casa.core.OxdService;
+import org.gluu.casa.core.OIDCFlowService;
 import org.gluu.casa.core.SessionContext;
 import org.gluu.casa.extension.navigation.MenuType;
 import org.gluu.casa.extension.navigation.NavigationMenu;
@@ -24,7 +24,7 @@ public class HeaderViewModel {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @WireVariable
-    private OxdService oxdService;
+    private OIDCFlowService oidcFlowService;
 
     @WireVariable
     private AuthFlowContext authFlowContext;
@@ -55,7 +55,7 @@ public class HeaderViewModel {
 
             //After End-User has logged out, the Client might request to log him out of the OP too
             String idToken = authFlowContext.getIdToken();
-            Executions.sendRedirect(oxdService.getLogoutUrl(idToken));
+            Executions.sendRedirect(oidcFlowService.getLogoutUrl(idToken));
 
             //Kill session
             WebUtils.invalidateSession(WebUtils.getServletRequest());
