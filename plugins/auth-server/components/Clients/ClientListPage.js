@@ -33,6 +33,7 @@ import {
 
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const { t } = useTranslation()
+ // console.log("======scopes : "+JSON.stringify(scopes))
   const userAction = {}
   const options = {}
   const myActions = []
