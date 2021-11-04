@@ -31,7 +31,7 @@ public class MainSettings {
     private String extraCssSnippet;
 
     @JsonProperty("oxd_config")
-    private OxdSettings oxdSettings;
+    private OIDCSettings oidcSettings;
 
     @JsonProperty("allowed_cors_domains")
     private List<String> corsDomains;
@@ -62,8 +62,8 @@ public class MainSettings {
         return extraCssSnippet;
     }
 
-    public OxdSettings getOxdSettings() {
-        return oxdSettings;
+    public OIDCSettings getOidcSettings() {
+        return oidcSettings;
     }
 
     public List<String> getCorsDomains() {
@@ -98,8 +98,8 @@ public class MainSettings {
         this.extraCssSnippet = extraCssSnippet;
     }
 
-    public void setOxdSettings(OxdSettings oxdSettings) {
-        this.oxdSettings = oxdSettings;
+    public void setOidcSettings(OIDCSettings oxdSettings) {
+        this.oidcSettings = oidcSettings;
     }
 
     public void setCorsDomains(List<String> corsDomains) {

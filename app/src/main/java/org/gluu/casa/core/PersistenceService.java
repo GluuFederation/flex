@@ -2,6 +2,14 @@ package org.gluu.casa.core;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.*;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import org.gluu.casa.model.ApplicationConfiguration;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.model.GluuOrganization;
@@ -26,13 +34,6 @@ import org.gluu.util.security.StringEncrypter;
 import org.gluu.search.filter.Filter;
 import org.jboss.weld.inject.WeldInstance;
 import org.slf4j.Logger;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import java.io.FileReader;
-import java.io.Reader;
-import java.util.*;
 
 @ApplicationScoped
 public class PersistenceService implements IPersistenceService {
@@ -193,23 +194,23 @@ public class PersistenceService implements IPersistenceService {
     }
 
     public String getPeopleDn() {
-        return oxAuthConfStatic.get("baseDn").get("people").asText();
+        return jsonProperty(oxAuthConfStatic, "baseDn", "people");
     }
 
     public String getGroupsDn() {
-        return oxAuthConfStatic.get("baseDn").get("groups").asText();
+        return jsonProperty(oxAuthConfStatic, "baseDn", "groups");
     }
 
     public String getClientsDn() {
-        return oxAuthConfStatic.get("baseDn").get("clients").asText();
+        return jsonProperty(oxAuthConfStatic, "baseDn", "clients");
     }
 
     public String getScopesDn() {
-        return oxAuthConfStatic.get("baseDn").get("scopes").asText();
+        return jsonProperty(oxAuthConfStatic, "baseDn", "scopes");
     }
 
     public String getCustomScriptsDn() {
-        return oxAuthConfStatic.get("baseDn").get("scripts").asText();
+        return jsonProperty(oxAuthConfStatic, "baseDn", "scripts");
     }
 
     public GluuOrganization getOrganization() {
@@ -217,7 +218,7 @@ public class PersistenceService implements IPersistenceService {
     }
 
     public String getIssuerUrl() {
-        return oxAuthConfDynamic.get("issuer").asText();
+        return jsonProperty(oxAuthConfDynamic, "issuer");
     }
 
     public Set<String> getPersonOCs() {
@@ -235,12 +236,23 @@ public class PersistenceService implements IPersistenceService {
     }
 
     public String getIntrospectionEndpoint() {
-        return oxAuthConfDynamic.get("introspectionEndpoint").asText();
+        return jsonProperty(oxAuthConfDynamic, "introspectionEndpoint");
     }
-
-    public int getDynamicClientExpirationTime() {
-        boolean dynRegEnabled = oxAuthConfDynamic.get("dynamicRegistrationEnabled").asBoolean();
-        return dynRegEnabled ? oxAuthConfDynamic.get("dynamicRegistrationExpirationTime").asInt() : -1;
+    
+    public String getAuthorizationEndpoint() {
+        return jsonProperty(oxAuthConfDynamic, "authorizationEndpoint");
+    }
+    
+    public String getTokenEndpoint() {
+        return jsonProperty(oxAuthConfDynamic, "tokenEndpoint");
+    }
+    
+    public String getUserInfoEndpoint() {
+        return jsonProperty(oxAuthConfDynamic, "userInfoEndpoint");
+    }
+    
+    public String getJwksUri() {
+        return jsonProperty(oxAuthConfDynamic, "jwksUri");
     }
 
 	@Produces
@@ -302,7 +314,7 @@ public class PersistenceService implements IPersistenceService {
         script.setBaseDn(getCustomScriptsDn());
 
         List<CustomScript> scripts = find(script);
-        if (scripts.size() == 0) {
+        if (scripts.isEmpty()) {
             logger.warn("Script '{}' not found", acr);
             script = null;
         } else {
@@ -310,6 +322,15 @@ public class PersistenceService implements IPersistenceService {
         }
         return script;
 
+    }
+    
+    private String jsonProperty(JsonNode node, String ...path) {
+        
+        for (String prop : path) {
+            node = node.get(prop);
+        }
+        return node.textValue();
+        
     }
 
     private boolean loadApplianceSettings(Properties properties) {
@@ -320,7 +341,7 @@ public class PersistenceService implements IPersistenceService {
             rootDn = "o=gluu";
             success = true;
 
-            GluuConfiguration gluuConf = get(GluuConfiguration.class, oxAuthConfStatic.get("baseDn").get("configuration").asText());
+            GluuConfiguration gluuConf = get(GluuConfiguration.class, jsonProperty(oxAuthConfStatic, "baseDn", "configuration"));
             cacheConfiguration = gluuConf.getCacheConfiguration();
             backendLdapEnabled = gluuConf.isVdsCacheRefreshEnabled();
             logger.info("Backend ldap for cache refresh was{} detected", backendLdapEnabled ? "" : " not");
@@ -367,7 +388,7 @@ public class PersistenceService implements IPersistenceService {
         oxTrustConfiguration confT = get(oxTrustConfiguration.class, dn);
         if (confT != null) {
             JsonNode oxTrustConfApplication = mapper.readTree(confT.getOxTrustConfApplication());
-            rootDn = oxTrustConfApplication.get("baseDN").asText();
+            rootDn = jsonProperty(oxTrustConfApplication, "baseDN");
         }
 
     }

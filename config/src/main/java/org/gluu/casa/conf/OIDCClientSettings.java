@@ -2,32 +2,23 @@ package org.gluu.casa.conf;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-/**
- * @author jgomer
- */
-public class OxdClientSettings {
+public class OIDCClientSettings {
 
-    private String oxdId;
     private String clientId;
     private String clientSecret;
     private String clientName;
 
-    public OxdClientSettings() {
+    public OIDCClientSettings() {
         //Do not remove
     }
 
-    public OxdClientSettings(String clientName, String oxdId, String clientId, String clientSecret) {
+    public OIDCClientSettings(String clientName, String clientId, String clientSecret) {
 
         this.clientName = clientName;
-        this.oxdId = oxdId;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
     }
-
-    public String getOxdId() {
-        return oxdId;
-    }
-
+    
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public String getClientId() {
         return clientId;

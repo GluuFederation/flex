@@ -18,6 +18,8 @@ public class AuthFlowContext implements Serializable {
     private RedirectStage stage;
 
     private String idToken;
+    
+    private String state;
 
     private boolean hasSessionAtOP;
 
@@ -43,6 +45,14 @@ public class AuthFlowContext implements Serializable {
 
     public void setHasSessionAtOP(boolean hasSessionAtOP) {
         this.hasSessionAtOP = hasSessionAtOP;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     @PostConstruct
