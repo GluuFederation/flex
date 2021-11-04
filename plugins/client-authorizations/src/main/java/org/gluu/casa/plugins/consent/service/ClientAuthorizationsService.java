@@ -1,12 +1,13 @@
 package org.gluu.casa.plugins.consent.service;
 
+import io.jans.orm.search.filter.Filter;
+
 import org.gluu.casa.plugins.consent.model.ClientAuthorization;
 import org.gluu.casa.core.model.Client;
 import org.gluu.casa.core.model.Scope;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.consent.model.Token;
 import org.gluu.casa.service.IPersistenceService;
-import org.gluu.search.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

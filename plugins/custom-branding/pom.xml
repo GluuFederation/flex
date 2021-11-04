@@ -10,17 +10,23 @@
     <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <plugin.id>custom-branding</plugin.id>
         <plugin.version>5.0.0-SNAPSHOT</plugin.version>
+        <jans.version>1.0.0-SNAPSHOT</jans.version>
     </properties>
 
     <repositories>
         <repository>
             <id>gluu</id>
             <name>Gluu repository</name>
-            <url>http://ox.gluu.org/maven</url>
+            <url>https://maven.gluu.org/maven</url>
+        </repository>
+        <repository>
+            <id>jans</id>
+            <name>Janssen project repository</name>
+            <url>https://maven.jans.io/maven</url>
         </repository>
     </repositories>
 
@@ -59,11 +65,11 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-				<groupId>com.github.spotbugs</groupId>
-				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>4.2.0</version>
-			</plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.2.0</version>
+            </plugin>
         </plugins>
     </build>
 
@@ -72,6 +78,12 @@
             <groupId>org.gluu</groupId>
             <artifactId>casa-shared</artifactId>
             <version>5.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jans</groupId>
+            <artifactId>jans-core-util</artifactId>
+            <version>${jans.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

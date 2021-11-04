@@ -10,8 +10,8 @@
     <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <plugin.id>hello-world-plugin</plugin.id>
         <plugin.version>0.2</plugin.version>
     </properties>
@@ -20,7 +20,7 @@
         <repository>
             <id>gluu</id>
             <name>Gluu repository</name>
-            <url>http://ox.gluu.org/maven</url>
+            <url>http://maven.gluu.org/maven</url>
         </repository>
     </repositories>
 

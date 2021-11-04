@@ -1,6 +1,13 @@
 package org.gluu.casa.plugins.cert.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.jans.as.common.cert.fingerprint.FingerprintHelper;
+import io.jans.as.common.cert.validation.model.ValidationStatus;
+import io.jans.as.common.cert.validation.*;
+import io.jans.as.model.util.CertUtils;
+import io.jans.orm.search.filter.Filter;
+
 import org.gluu.casa.core.model.BasePerson;
 import org.gluu.casa.core.model.IdentityPerson;
 import org.gluu.casa.misc.Utils;
@@ -8,11 +15,6 @@ import org.gluu.casa.plugins.cert.CertAuthenticationExtension;
 import org.gluu.casa.plugins.cert.model.CertPerson;
 import org.gluu.casa.plugins.cert.model.Certificate;
 import org.gluu.casa.service.IPersistenceService;
-import org.gluu.oxauth.cert.fingerprint.FingerprintHelper;
-import org.gluu.oxauth.cert.validation.*;
-import org.gluu.oxauth.cert.validation.model.ValidationStatus;
-import org.gluu.oxauth.model.util.CertUtils;
-import org.gluu.search.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -185,7 +187,7 @@ public class CertService {
         try {
             CertPerson person = persistenceService.get(CertPerson.class, persistenceService.getPersonDn(userId));
 
-            List<org.gluu.oxtrust.model.scim2.user.X509Certificate> x509Certificates = getScimX509Certificates(
+            List<io.jans.scim.model.scim2.user.X509Certificate> x509Certificates = getScimX509Certificates(
                     Optional.ofNullable(person.getX509Certificates()).orElse(Collections.emptyList()));
 
             certs = person.getOxExternalUid().stream().filter(uid -> uid.startsWith(CERT_PREFIX))
@@ -210,13 +212,13 @@ public class CertService {
 
     }
 
-    private Certificate getExtraCertsInfo(String externalUid, List<org.gluu.oxtrust.model.scim2.user.X509Certificate> scimCerts) {
+    private Certificate getExtraCertsInfo(String externalUid, List<io.jans.scim.model.scim2.user.X509Certificate> scimCerts) {
 
         String fingerPrint = externalUid.replace(CERT_PREFIX, "");
         Certificate cert = new Certificate();
         cert.setFingerPrint(fingerPrint);
 
-        for (org.gluu.oxtrust.model.scim2.user.X509Certificate sc : scimCerts) {
+        for (io.jans.scim.model.scim2.user.X509Certificate sc : scimCerts) {
             try {
                 X509Certificate x509Certificate = CertUtils.x509CertificateFromPem(sc.getValue());
                 if (fingerPrint.equals(getFingerPrint(x509Certificate))) {
@@ -266,7 +268,7 @@ public class CertService {
         CertPerson person = persistenceService.get(CertPerson.class, persistenceService.getPersonDn(userId));
 
         List<String> stringCerts = Optional.ofNullable(person.getX509Certificates()).orElse(new ArrayList<>());
-        List<org.gluu.oxtrust.model.scim2.user.X509Certificate> scimCerts = getScimX509Certificates(stringCerts);
+        List<io.jans.scim.model.scim2.user.X509Certificate> scimCerts = getScimX509Certificates(stringCerts);
 
         boolean found = false;
         int i;
@@ -285,12 +287,12 @@ public class CertService {
 
     }
 
-    private List<org.gluu.oxtrust.model.scim2.user.X509Certificate> getScimX509Certificates(List<String> scimStringCerts) {
+    private List<io.jans.scim.model.scim2.user.X509Certificate> getScimX509Certificates(List<String> scimStringCerts) {
 
-        List<org.gluu.oxtrust.model.scim2.user.X509Certificate> scimCerts = new ArrayList<>();
+        List<io.jans.scim.model.scim2.user.X509Certificate> scimCerts = new ArrayList<>();
         for (String scimCert : scimStringCerts) {
             try {
-                scimCerts.add(mapper.readValue(scimCert, org.gluu.oxtrust.model.scim2.user.X509Certificate.class));
+                scimCerts.add(mapper.readValue(scimCert, io.jans.scim.model.scim2.user.X509Certificate.class));
             } catch (Exception e) {
                 logger.error("Unable to convert value '{}' to expected SCIM format", scimCert);
                 logger.error(e.getMessage());
@@ -308,9 +310,9 @@ public class CertService {
 
             logger.info("Reading user's stored X509 certificates");
             List<String> stringCerts = Optional.ofNullable(person.getX509Certificates()).orElse(new ArrayList<>());
-            List<org.gluu.oxtrust.model.scim2.user.X509Certificate> scimCerts = getScimX509Certificates(stringCerts);
+            List<io.jans.scim.model.scim2.user.X509Certificate> scimCerts = getScimX509Certificates(stringCerts);
 
-            for (org.gluu.oxtrust.model.scim2.user.X509Certificate scimCert : scimCerts) {
+            for (io.jans.scim.model.scim2.user.X509Certificate scimCert : scimCerts) {
                 String scimDisplay = scimCert.getDisplay();
                 if (Utils.isNotEmpty(scimDisplay) && scimDisplay.equals(display)) {
                     logger.debug("The certificate presented is already in user's profile");
@@ -320,7 +322,7 @@ public class CertService {
             }
 
             if (!match) {
-                org.gluu.oxtrust.model.scim2.user.X509Certificate scimX509Cert = new org.gluu.oxtrust.model.scim2.user.X509Certificate();
+                io.jans.scim.model.scim2.user.X509Certificate scimX509Cert = new io.jans.scim.model.scim2.user.X509Certificate();
                 byte DEREncoded[] = certificate.getEncoded();
                 scimX509Cert.setValue(new String(Base64.getEncoder().encode(DEREncoded), StandardCharsets.UTF_8));
                 scimX509Cert.setDisplay(display);

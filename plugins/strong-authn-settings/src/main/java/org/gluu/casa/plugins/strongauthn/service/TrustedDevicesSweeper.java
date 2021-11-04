@@ -2,6 +2,15 @@ package org.gluu.casa.plugins.strongauthn.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.jans.orm.search.filter.Filter;
+import io.jans.util.security.StringEncrypter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
 import org.gluu.casa.core.model.PersonPreferences;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.strongauthn.conf.Configuration;
@@ -9,16 +18,9 @@ import org.gluu.casa.plugins.strongauthn.model.TrustedDevice;
 import org.gluu.casa.plugins.strongauthn.conf.TrustedDevicesSettings;
 import org.gluu.casa.plugins.strongauthn.model.TrustedOrigin;
 import org.gluu.casa.service.IPersistenceService;
-import org.gluu.search.filter.Filter;
-import org.gluu.util.security.StringEncrypter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static org.gluu.casa.plugins.strongauthn.StrongAuthnSettingsPlugin.*;
 

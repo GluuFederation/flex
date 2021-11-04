@@ -1,9 +1,10 @@
 package org.gluu.casa.plugins.cert.model;
 
+import io.jans.orm.annotation.AttributeName;
+import io.jans.orm.annotation.DataEntry;
+import io.jans.orm.annotation.ObjectClass;
+
 import org.gluu.casa.core.model.IdentityPerson;
-import org.gluu.persist.annotation.AttributeName;
-import org.gluu.persist.annotation.DataEntry;
-import org.gluu.persist.annotation.ObjectClass;
 
 import java.util.List;
 

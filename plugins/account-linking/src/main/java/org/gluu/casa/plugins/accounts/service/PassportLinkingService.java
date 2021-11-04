@@ -1,5 +1,20 @@
 package org.gluu.casa.plugins.accounts.service;
 
+import io.jans.as.model.common.WebKeyStorage;
+import io.jans.as.model.configuration.AppConfiguration;
+import io.jans.as.model.crypto.CryptoProviderFactory;
+import io.jans.as.model.jwt.Jwt;
+import io.jans.util.security.StringEncrypter;
+
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
+import javax.ws.rs.*;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.pojo.User;
@@ -7,28 +22,11 @@ import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.accounts.pojo.*;
 import org.gluu.casa.service.IPersistenceService;
 import org.gluu.casa.service.ISessionContext;
-import org.gluu.oxauth.model.common.WebKeyStorage;
-import org.gluu.oxauth.model.configuration.AppConfiguration;
-import org.gluu.oxauth.model.crypto.CryptoProviderFactory;
-import org.gluu.oxauth.model.jwt.Jwt;
-import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.web.servlet.http.Encodes;
 
-import javax.ws.rs.*;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.net.URI;
-import java.net.URL;
-import java.util.*;
-
-/**
- * @author jgomer
- */
 @Path("/idp-linking")
 public class PassportLinkingService {
 

@@ -1,5 +1,11 @@
 package org.gluu.casa.plugins.strongauthn;
 
+import io.jans.service.cache.CacheInterface;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import org.gluu.casa.core.ITrackable;
 import org.gluu.casa.conf.Basic2FASettings;
 import org.gluu.casa.misc.Utils;
@@ -8,19 +14,12 @@ import org.gluu.casa.plugins.strongauthn.conf.EnforcementPolicy;
 import org.gluu.casa.plugins.strongauthn.service.StrongAuthSettingsService;
 import org.gluu.casa.plugins.strongauthn.service.TrustedDevicesSweeper;
 import org.gluu.casa.service.settings.IPluginSettingsHandler;
-import org.gluu.service.cache.CacheInterface;
 import org.pf4j.Plugin;
 import org.pf4j.PluginWrapper;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 

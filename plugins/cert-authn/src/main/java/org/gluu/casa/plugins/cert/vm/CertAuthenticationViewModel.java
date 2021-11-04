@@ -1,6 +1,16 @@
 package org.gluu.casa.plugins.cert.vm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.jans.as.model.util.CertUtils;
+import io.jans.util.security.StringEncrypter;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.security.cert.X509Certificate;
+import javax.servlet.http.Cookie;
+
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
@@ -10,19 +20,11 @@ import org.gluu.casa.plugins.cert.service.UserCertificateMatch;
 import org.gluu.casa.service.IPersistenceService;
 import org.gluu.casa.service.ISessionContext;
 import org.gluu.casa.service.SndFactorAuthenticationUtils;
-import org.gluu.oxauth.model.util.CertUtils;
-import org.gluu.util.security.StringEncrypter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.Pair;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
-
-import javax.servlet.http.Cookie;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.security.cert.X509Certificate;
 
 public class CertAuthenticationViewModel {
 

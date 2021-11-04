@@ -1,5 +1,12 @@
 package org.gluu.casa.plugins.accounts.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.gluu.casa.misc.Utils;
 import org.gluu.config.oxtrust.LdapOxPassportConfiguration;
 import org.gluu.casa.plugins.accounts.pojo.Provider;
@@ -7,14 +14,6 @@ import org.gluu.casa.service.IPersistenceService;
 import org.gluu.model.passport.PassportConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author jgomer

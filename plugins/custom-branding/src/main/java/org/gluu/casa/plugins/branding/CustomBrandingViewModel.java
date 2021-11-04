@@ -1,9 +1,13 @@
 package org.gluu.casa.plugins.branding;
 
+import io.jans.util.Pair;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.gluu.casa.service.IBrandingManager;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
-import org.gluu.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.BindUtils;
@@ -14,12 +18,8 @@ import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Messagebox;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 /**
  * ZK View Model for the custom branding page.
- * @author jgomer
  */
 public class CustomBrandingViewModel {
 
