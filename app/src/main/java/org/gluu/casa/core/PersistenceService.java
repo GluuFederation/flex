@@ -14,17 +14,16 @@ import org.gluu.casa.model.ApplicationConfiguration;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.model.GluuOrganization;
 import org.gluu.casa.core.model.oxAuthConfiguration;
-import org.gluu.casa.core.model.oxTrustConfiguration;
 import org.gluu.casa.core.model.Person;
-import org.gluu.oxtrust.model.GluuConfiguration;
-import org.gluu.oxtrust.model.OrganizationalUnit;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
+import org.oxauth.persistence.model.configuration.GluuConfiguration;
 import org.gluu.persist.PersistenceEntryManager;
 import org.gluu.persist.PersistenceEntryManagerFactory;
 import org.gluu.persist.ldap.operation.LdapOperationService;
 import org.gluu.persist.model.PersistenceConfiguration;
 import org.gluu.persist.model.SearchScope;
+import org.gluu.persist.model.base.SimpleBranch;
 import org.gluu.persist.service.PersistanceFactoryService;
 import org.gluu.service.cache.CacheConfiguration;
 import org.gluu.service.document.store.conf.DocumentStoreConfiguration;
@@ -60,8 +59,6 @@ public class PersistenceService implements IPersistenceService {
     private JsonNode oxAuthConfDynamic;
 
     private JsonNode oxAuthConfStatic;
-
-    private boolean backendLdapEnabled;
 
     private Set<String> personCustomObjectClasses;
 
@@ -255,8 +252,8 @@ public class PersistenceService implements IPersistenceService {
         return jsonProperty(oxAuthConfDynamic, "jwksUri");
     }
 
-	@Produces
-	@ApplicationScoped
+    @Produces
+    @ApplicationScoped
     public StringEncrypter getStringEncrypter() {
         return stringEncrypter;
     }
@@ -270,7 +267,8 @@ public class PersistenceService implements IPersistenceService {
     }
 
     public boolean isBackendLdapEnabled() {
-        return backendLdapEnabled;
+        //TODO: remove dependency on this method
+        return false;
     }
 
     public boolean authenticate(String uid, String pass) throws Exception {
@@ -293,12 +291,10 @@ public class PersistenceService implements IPersistenceService {
     private void prepareBranch(String userInum, String ou) {
 
         String dn = String.format("ou=%s,%s", ou, getPersonDn(userInum));
-        OrganizationalUnit entry = get(OrganizationalUnit.class, dn);
+        SimpleBranch entry = get(SimpleBranch.class, dn);
         if (entry == null) {
             logger.info("Non existing {} branch for {}, creating...", ou, userInum);
-            entry = new OrganizationalUnit();
-            entry.setOu(ou);
-            entry.setDn(dn);
+            entry = new SimpleBranch(dn, ou);
 
             if (!add(entry)) {
                 logger.error("Could not create {} branch", ou);
@@ -343,15 +339,7 @@ public class PersistenceService implements IPersistenceService {
 
             GluuConfiguration gluuConf = get(GluuConfiguration.class, jsonProperty(oxAuthConfStatic, "baseDn", "configuration"));
             cacheConfiguration = gluuConf.getCacheConfiguration();
-            backendLdapEnabled = gluuConf.isVdsCacheRefreshEnabled();
-            logger.info("Backend ldap for cache refresh was{} detected", backendLdapEnabled ? "" : " not");
-
             documentStoreConfiguration = gluuConf.getDocumentStoreConfiguration();
-
-            String dn = properties.getProperty("oxtrust_ConfigurationEntryDN");
-            if (dn != null) {
-                loadOxTrustSettings(dn);
-            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -380,16 +368,6 @@ public class PersistenceService implements IPersistenceService {
                     }
                 })
                 .orElse(Collections.singleton("gluuCustomPerson"));
-
-    }
-
-    private void loadOxTrustSettings(String dn) throws Exception {
-
-        oxTrustConfiguration confT = get(oxTrustConfiguration.class, dn);
-        if (confT != null) {
-            JsonNode oxTrustConfApplication = mapper.readTree(confT.getOxTrustConfApplication());
-            rootDn = jsonProperty(oxTrustConfApplication, "baseDN");
-        }
 
     }
 

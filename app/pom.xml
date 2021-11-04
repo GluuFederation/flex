@@ -9,9 +9,9 @@
 	<packaging>war</packaging>
 
 	<parent>
-		<groupId>org.gluu</groupId>
-		<artifactId>casa-base</artifactId>
-        <version>5.0.0-SNAPSHOT</version>
+            <groupId>org.gluu</groupId>
+            <artifactId>casa-base</artifactId>
+            <version>5.0.0-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
@@ -29,8 +29,8 @@
         <!-- GLUU -->
         <dependency>
             <groupId>org.gluu</groupId>
-            <artifactId>oxd-common</artifactId>
-            <version>${ox.version}</version>
+            <artifactId>gluu-orm-model</artifactId>
+            <version>4.3.0.Final</version>
             <exclusions>
                 <exclusion>
                     <groupId>*</groupId>
@@ -44,10 +44,6 @@
             <version>${ox.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.github.stephenc.jcip</groupId>
-                    <artifactId>jcip-annotations</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.jboss.resteasy</groupId>
                     <artifactId>resteasy-jaxb-provider</artifactId>
                 </exclusion>
@@ -59,6 +55,17 @@
                     <groupId>com.fasterxml.jackson.module</groupId>
                     <artifactId>jackson-module-jaxb-annotations</artifactId>
                 </exclusion>                
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.gluu</groupId>
+            <artifactId>oxauth-persistence-model</artifactId>
+            <version>${ox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -114,29 +121,18 @@
             <artifactId>oxcore-persistence-couchbase</artifactId>
             <version>${ox.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.gluu</groupId>
-            <artifactId>oxtrust-model</artifactId>
-            <version>${ox.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
-		<!-- WELD -->
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>el-api</artifactId>
-			<version>2.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.web</groupId>
-			<artifactId>el-impl</artifactId>
-			<version>2.2</version>
-		</dependency>
+        <!-- WELD -->
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>el-impl</artifactId>
+            <version>2.2</version>
+        </dependency>
         <dependency>
             <groupId>org.jboss.weld.servlet</groupId>
             <artifactId>weld-servlet-shaded</artifactId>
@@ -217,7 +213,6 @@
         <dependency>
             <groupId>com.unboundid</groupId>
             <artifactId>unboundid-ldapsdk</artifactId>
-            <version>${ldapsdk.version}</version>
         </dependency>
 
         <!-- Twilio SDK -->
@@ -253,10 +248,10 @@
 
         <!-- SMPP -->
     	<dependency>
-			<groupId>org.jsmpp</groupId>
-			<artifactId>jsmpp</artifactId>
-			<version>2.3.7</version>
-		</dependency>
+            <groupId>org.jsmpp</groupId>
+            <artifactId>jsmpp</artifactId>
+            <version>2.3.7</version>
+        </dependency>
 
         <!-- QUARTZ -->
         <dependency>
@@ -264,14 +259,17 @@
             <artifactId>quartz</artifactId>
             <version>2.3.2</version>
         </dependency>
-        
-		<!-- Jackson CBOR (needed for script.bsh only) -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-cbor</artifactId>
-			<version>${jackson.version}</version>
-		</dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>oauth2-oidc-sdk</artifactId>
+            <version>9.19</version>
+        </dependency>
     </dependencies>
 
     <build>
