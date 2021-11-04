@@ -175,7 +175,7 @@ const Wrapper = ({ children }) => (
 )
 const emptyArray = []
 
-it('Should the client edit page properly properly', () => {
+it('Should the client edit page properly', () => {
   render(
     <ClientEditPage
       scopes={scopes}
