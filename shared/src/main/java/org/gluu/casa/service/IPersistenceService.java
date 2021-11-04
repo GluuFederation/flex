@@ -1,6 +1,6 @@
 package org.gluu.casa.service;
 
-import org.gluu.search.filter.Filter;
+import io.jans.orm.search.filter.Filter;
 
 import java.util.List;
 

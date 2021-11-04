@@ -1,22 +1,14 @@
 package org.gluu.casa.misc;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.tika.Tika;
-import org.apache.tika.io.TikaInputStream;
-import org.apache.tika.mime.MimeTypes;
-
-import org.gluu.casa.core.model.CustomScript;
-import org.gluu.model.SimpleCustomProperty;
-import org.gluu.util.properties.FileConfiguration;
-import org.gluu.util.security.StringEncrypter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.jans.model.SimpleCustomProperty;
+import io.jans.util.properties.FileConfiguration;
+import io.jans.util.security.StringEncrypter;
 
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -25,9 +17,14 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import javax.enterprise.inject.spi.CDI;
-import java.net.HttpURLConnection;
+
+import org.apache.tika.Tika;
+import org.apache.tika.io.TikaInputStream;
+import org.apache.tika.mime.MimeTypes;
+import org.gluu.casa.core.model.CustomScript;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides miscelaneous utilities.

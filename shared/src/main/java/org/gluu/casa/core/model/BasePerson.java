@@ -1,14 +1,15 @@
 package org.gluu.casa.core.model;
 
-import org.gluu.casa.misc.Utils;
-import org.gluu.casa.service.IPersistenceService;
-import org.gluu.persist.model.base.InumEntry;
-import org.gluu.persist.annotation.AttributeName;
-import org.gluu.persist.annotation.CustomObjectClass;
-import org.gluu.persist.annotation.DataEntry;
-import org.gluu.persist.annotation.ObjectClass;
+import io.jans.orm.model.base.InumEntry;
+import io.jans.orm.annotation.AttributeName;
+import io.jans.orm.annotation.CustomObjectClass;
+import io.jans.orm.annotation.DataEntry;
+import io.jans.orm.annotation.ObjectClass;
 
 import java.util.Set;
+
+import org.gluu.casa.misc.Utils;
+import org.gluu.casa.service.IPersistenceService;
 
 /**
  * Serves as a minimal representation of a user (person) entry in Gluu database directory. Plugin developers can extend

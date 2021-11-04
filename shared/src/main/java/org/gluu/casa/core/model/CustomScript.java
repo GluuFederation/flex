@@ -1,15 +1,15 @@
 package org.gluu.casa.core.model;
 
-import org.gluu.casa.misc.Utils;
-import org.gluu.model.SimpleCustomProperty;
-import org.gluu.persist.model.base.Entry;
-import org.gluu.persist.annotation.AttributeName;
-import org.gluu.persist.annotation.DataEntry;
-import org.gluu.persist.annotation.JsonObject;
-import org.gluu.persist.annotation.ObjectClass;
+import io.jans.model.SimpleCustomProperty;
+import io.jans.orm.model.base.Entry;
+import io.jans.orm.annotation.AttributeName;
+import io.jans.orm.annotation.DataEntry;
+import io.jans.orm.annotation.JsonObject;
+import io.jans.orm.annotation.ObjectClass;
 
 import java.util.List;
-import java.util.Optional;
+
+import org.gluu.casa.misc.Utils;
 
 /**
  * A basic representation of a Gluu Server custom script. Use this class in conjuction with
