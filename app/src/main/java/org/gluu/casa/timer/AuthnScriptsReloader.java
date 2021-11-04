@@ -1,5 +1,19 @@
 package org.gluu.casa.timer;
 
+import io.jans.model.ScriptLocationType;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.MessageFormat;
+import java.util.*;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.ExtensionsManager;
 import org.gluu.casa.core.PersistenceService;
@@ -8,21 +22,9 @@ import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.*;
-import org.gluu.model.ScriptLocationType;
 import org.quartz.JobExecutionContext;
 import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.MessageFormat;
-import java.util.*;
 
 /**
  * @author jgomer

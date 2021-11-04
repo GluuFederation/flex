@@ -1,9 +1,10 @@
 package org.gluu.casa.ui.vm.admin;
 
+import io.jans.as.model.util.Pair;
+
 import org.gluu.casa.core.AssetsService;
 import org.gluu.casa.ui.UIUtils;
 import org.gluu.casa.misc.Utils;
-import org.gluu.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.bind.annotation.Init;

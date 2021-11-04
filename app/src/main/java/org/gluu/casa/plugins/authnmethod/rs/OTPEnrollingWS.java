@@ -1,5 +1,17 @@
 package org.gluu.casa.plugins.authnmethod.rs;
 
+import io.jans.service.cache.CacheProvider;
+
+import java.util.Base64;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.gluu.casa.core.pojo.OTPDevice;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.OTPExtension;
@@ -9,18 +21,7 @@ import org.gluu.casa.plugins.authnmethod.rs.status.otp.ValidateCode;
 import org.gluu.casa.plugins.authnmethod.service.OTPService;
 import org.gluu.casa.plugins.authnmethod.service.otp.IOTPAlgorithm;
 import org.gluu.casa.rest.ProtectedApi;
-import org.gluu.service.cache.CacheProvider;
 import org.slf4j.Logger;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.Base64;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
 

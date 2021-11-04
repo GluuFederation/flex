@@ -1,5 +1,17 @@
 package org.gluu.casa.core;
 
+import io.jans.orm.search.filter.Filter;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.management.AttributeNotFoundException;
+
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.User;
@@ -8,21 +20,9 @@ import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.service.SndFactorAuthenticationUtils;
-import org.gluu.search.filter.Filter;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.management.AttributeNotFoundException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * An app. scoped bean that encapsulates logic related to users manipulation (CRUD) at memory level (no LDAP storage)
  * @author jgomer

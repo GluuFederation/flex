@@ -1,15 +1,13 @@
 package org.gluu.casa.core;
 
-import org.gluu.service.document.store.conf.*;
-import org.slf4j.Logger;
+import io.jans.service.document.store.conf.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-/**
- * @author Yuriy Movchan
- */
+import org.slf4j.Logger;
+
 @ApplicationScoped
 public class DocumentStoreFactory {
 

@@ -1,9 +1,9 @@
 package org.gluu.casa.core.model;
 
-import org.gluu.persist.model.base.Entry;
-import org.gluu.persist.annotation.AttributeName;
-import org.gluu.persist.annotation.DataEntry;
-import org.gluu.persist.annotation.ObjectClass;
+import io.jans.orm.annotation.AttributeName;
+import io.jans.orm.annotation.DataEntry;
+import io.jans.orm.annotation.ObjectClass;
+import io.jans.orm.model.base.Entry;
 
 import java.util.Date;
 

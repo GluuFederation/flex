@@ -1,21 +1,21 @@
 package org.gluu.casa.core.filter;
 
+import java.util.Locale;
+import java.util.Set;
+import javax.servlet.ServletRequest;
+
+import io.jans.util.StringHelper;
+
 import org.gluu.casa.core.ZKService;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.misc.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.gluu.util.StringHelper;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.util.RequestInterceptor;
 
-import javax.servlet.ServletRequest;
-import java.util.Locale;
-import java.util.Set;
-
 /**
- * @author jgomer
  * This class solves the problem described here: http://forum.zkoss.org/question/110980/how-to-constrain-to-a-set-of-locales/
  */
 public class LocaleInterceptor implements RequestInterceptor {

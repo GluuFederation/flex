@@ -1,22 +1,24 @@
 package org.gluu.casa.core;
 
-import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.model.ApplicationConfiguration;
-import org.gluu.casa.core.model.CustomScript;
-import org.gluu.casa.misc.AppStateEnum;
-import org.gluu.casa.timer.*;
-import org.gluu.oxauth.model.util.SecurityProviderUtility;
-import org.gluu.persist.exception.operation.PersistenceException;
-import org.quartz.JobExecutionContext;
-import org.quartz.listeners.JobListenerSupport;
-import org.slf4j.Logger;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import io.jans.as.model.util.SecurityProviderUtility;
+import io.jans.orm.exception.operation.PersistenceException;
+
+import org.gluu.casa.conf.MainSettings;
+import org.gluu.casa.model.ApplicationConfiguration;
+import org.gluu.casa.core.model.CustomScript;
+import org.gluu.casa.misc.AppStateEnum;
+import org.gluu.casa.timer.*;
+
+import org.quartz.JobExecutionContext;
+import org.quartz.listeners.JobListenerSupport;
+import org.slf4j.Logger;
 
 /**
  * @author jgomer

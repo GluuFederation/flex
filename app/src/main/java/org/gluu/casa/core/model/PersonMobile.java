@@ -1,11 +1,12 @@
 package org.gluu.casa.core.model;
 
-import org.gluu.casa.misc.Utils;
-import org.gluu.persist.annotation.AttributeName;
-import org.gluu.persist.annotation.DataEntry;
-import org.gluu.persist.annotation.ObjectClass;
+import io.jans.orm.annotation.AttributeName;
+import io.jans.orm.annotation.DataEntry;
+import io.jans.orm.annotation.ObjectClass;
 
 import java.util.List;
+
+import org.gluu.casa.misc.Utils;
 
 @DataEntry
 @ObjectClass("gluuPerson")

@@ -2,22 +2,25 @@ package org.gluu.casa.core;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gluu.casa.conf.MainSettings;
-import org.gluu.casa.misc.Utils;
-import org.gluu.casa.service.IBrandingManager;
-import org.gluu.service.cache.CacheProvider;
-import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import io.jans.service.cache.CacheProvider;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.gluu.casa.conf.MainSettings;
+import org.gluu.casa.misc.Utils;
+import org.gluu.casa.service.IBrandingManager;
+import org.slf4j.Logger;
 
 /**
  * Created by jgomer on 2018-09-24.

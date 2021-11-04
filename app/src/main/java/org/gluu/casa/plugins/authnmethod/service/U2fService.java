@@ -1,24 +1,26 @@
 package org.gluu.casa.plugins.authnmethod.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import io.jans.as.client.fido.u2f.FidoU2fClientFactory;
+import io.jans.as.client.fido.u2f.RegistrationRequestService;
+import io.jans.as.client.fido.u2f.U2fConfigurationService;
+import io.jans.as.model.fido.u2f.U2fConfiguration;
+import io.jans.as.model.fido.u2f.protocol.RegisterRequestMessage;
+import io.jans.as.model.fido.u2f.protocol.RegisterStatus;
+
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.pojo.SecurityKey;
 import org.gluu.casa.plugins.authnmethod.SecurityKeyExtension;
 import org.gluu.casa.plugins.authnmethod.conf.U2FConfig;
-import org.gluu.oxauth.client.fido.u2f.FidoU2fClientFactory;
-import org.gluu.oxauth.client.fido.u2f.RegistrationRequestService;
-import org.gluu.oxauth.client.fido.u2f.U2fConfigurationService;
-import org.gluu.oxauth.model.fido.u2f.U2fConfiguration;
-import org.gluu.oxauth.model.fido.u2f.protocol.RegisterRequestMessage;
-import org.gluu.oxauth.model.fido.u2f.protocol.RegisterStatus;
 import org.slf4j.Logger;
 
+import java.util.*;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.*;
 
 /**
  * An app. scoped bean that encapsulates logic related to management of registration requests for u2f devices

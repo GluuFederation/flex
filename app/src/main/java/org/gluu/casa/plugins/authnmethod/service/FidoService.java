@@ -1,12 +1,13 @@
 package org.gluu.casa.plugins.authnmethod.service;
 
+import io.jans.as.model.fido.u2f.DeviceRegistrationStatus;
+import io.jans.as.model.fido.u2f.protocol.DeviceData;
+import io.jans.orm.search.filter.Filter;
+
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.model.DeviceRegistration;
 import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
-import org.gluu.oxauth.model.fido.u2f.DeviceRegistrationStatus;
-import org.gluu.oxauth.model.fido.u2f.protocol.DeviceData;
-import org.gluu.search.filter.Filter;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 

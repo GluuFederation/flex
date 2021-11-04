@@ -2,6 +2,20 @@ package org.gluu.casa.plugins.authnmethod.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.jans.as.model.fido.u2f.protocol.DeviceData;
+
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.http.HttpEntity;
@@ -16,20 +30,8 @@ import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.gluu.casa.plugins.authnmethod.SuperGluuExtension;
 import org.gluu.casa.plugins.authnmethod.conf.SGConfig;
-import org.gluu.oxauth.model.fido.u2f.protocol.DeviceData;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * An app. scoped bean that encapsulates logic needed to enroll supergluu devices

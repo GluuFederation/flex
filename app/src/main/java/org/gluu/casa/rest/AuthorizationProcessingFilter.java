@@ -1,11 +1,7 @@
 package org.gluu.casa.rest;
 
-import org.gluu.casa.core.PersistenceService;
-import org.gluu.casa.misc.Utils;
-import org.gluu.casa.rest.RSUtils;
-import org.gluu.oxauth.client.service.IntrospectionService;
-import org.gluu.oxauth.model.common.IntrospectionResponse;
-import org.slf4j.Logger;
+import io.jans.as.client.service.IntrospectionService;
+import io.jans.as.model.common.IntrospectionResponse;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
@@ -15,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,9 +23,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
-/**
- * @author jgomer
- */
+import org.gluu.casa.core.PersistenceService;
+import org.gluu.casa.misc.Utils;
+import org.slf4j.Logger;
+
 @ApplicationScoped
 @Provider
 @ProtectedApi

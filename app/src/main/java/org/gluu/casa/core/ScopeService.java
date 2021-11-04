@@ -1,17 +1,18 @@
 package org.gluu.casa.core;
 
-import org.gluu.oxauth.model.common.ScopeType;
+import io.jans.orm.search.filter.Filter;
+import io.jans.as.model.common.ScopeType;
+
 import org.gluu.casa.core.model.Scope;
-import org.gluu.search.filter.Filter;
 import org.slf4j.Logger;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Named
 @ApplicationScoped

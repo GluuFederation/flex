@@ -1,5 +1,15 @@
 package org.gluu.casa.plugins.authnmethod.rs;
 
+import io.jans.service.cache.CacheProvider;
+
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.VerifiedMobile;
@@ -10,17 +20,8 @@ import org.gluu.casa.plugins.authnmethod.rs.status.sms.ValidateCode;
 import org.gluu.casa.plugins.authnmethod.service.MobilePhoneService;
 import org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus;
 import org.gluu.casa.rest.ProtectedApi;
-import org.gluu.service.cache.CacheProvider;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
-
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import static org.gluu.casa.plugins.authnmethod.service.SMSDeliveryStatus.SUCCESS;
 

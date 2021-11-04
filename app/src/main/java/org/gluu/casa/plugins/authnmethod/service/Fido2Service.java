@@ -1,21 +1,9 @@
 package org.gluu.casa.plugins.authnmethod.service;
 
-import org.gluu.casa.core.pojo.FidoDevice;
-import org.gluu.casa.core.pojo.PlatformAuthenticator;
-import org.gluu.casa.core.pojo.SecurityKey;
-import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
-import org.gluu.casa.rest.RSUtils;
-import org.gluu.fido2.client.AttestationService;
-import org.gluu.casa.core.model.Fido2RegistrationEntry;
-import org.gluu.fido2.model.entry.Fido2RegistrationStatus;
-import org.gluu.search.filter.Filter;
-import org.slf4j.Logger;
+import io.jans.orm.search.filter.Filter;
+import io.jans.fido2.client.AttestationService;
+import io.jans.fido2.model.entry.Fido2RegistrationStatus;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.ws.rs.core.Response;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +11,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.core.Response;
+
+import org.gluu.casa.core.pojo.FidoDevice;
+import org.gluu.casa.core.pojo.PlatformAuthenticator;
+import org.gluu.casa.core.pojo.SecurityKey;
+import org.gluu.casa.plugins.authnmethod.SecurityKey2Extension;
+import org.gluu.casa.rest.RSUtils;
+import org.gluu.casa.core.model.Fido2RegistrationEntry;
+import org.slf4j.Logger;
 
 @Named
 @ApplicationScoped

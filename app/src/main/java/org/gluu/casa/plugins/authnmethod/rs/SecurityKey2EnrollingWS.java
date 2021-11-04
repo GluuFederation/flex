@@ -1,6 +1,19 @@
 package org.gluu.casa.plugins.authnmethod.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.jans.service.cache.CacheProvider;
+
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.FidoDevice;
@@ -12,18 +25,7 @@ import org.gluu.casa.plugins.authnmethod.rs.status.u2f.RegisterMessageCode;
 import org.gluu.casa.plugins.authnmethod.rs.status.u2f.RegistrationCode;
 import org.gluu.casa.plugins.authnmethod.service.Fido2Service;
 import org.gluu.casa.rest.ProtectedApi;
-import org.gluu.service.cache.CacheProvider;
 import org.slf4j.Logger;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 /**
  * @author jgomer

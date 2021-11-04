@@ -1,6 +1,21 @@
 package org.gluu.casa.plugins.authnmethod.rs;
 
+import io.jans.service.cache.CacheProvider;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import net.jodah.expiringmap.ExpiringMap;
+
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.UserService;
 import org.gluu.casa.core.model.Person;
@@ -13,20 +28,7 @@ import org.gluu.casa.plugins.authnmethod.rs.status.sg.EnrollmentStatusCode;
 import org.gluu.casa.plugins.authnmethod.rs.status.u2f.FinishCode;
 import org.gluu.casa.plugins.authnmethod.service.SGService;
 import org.gluu.casa.rest.ProtectedApi;
-import org.gluu.service.cache.CacheProvider;
 import org.slf4j.Logger;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 /**
  * @author jgomer

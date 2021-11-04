@@ -1,19 +1,17 @@
 package org.gluu.casa.core;
 
-import org.gluu.service.cache.*;
-import org.gluu.util.security.StringEncrypter;
-import org.slf4j.Logger;
-
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import java.util.Optional;
 
-import static org.gluu.service.cache.CacheProviderType.*;
+import io.jans.service.cache.*;
+import io.jans.util.security.StringEncrypter;
 
-/**
- * @author jgomer
- */
+import org.slf4j.Logger;
+
+import static io.jans.service.cache.CacheProviderType.*;
+
 @ApplicationScoped
 public class CacheFactory {
 
