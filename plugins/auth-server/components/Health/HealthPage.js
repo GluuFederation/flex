@@ -7,9 +7,27 @@ import {
 } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
 
-function HealthPage() {
+import {
+  hasBoth,
+  buildPayload,
+  STAT_READ,
+  STAT_JANS_READ,
+} from '../../../../app/utils/PermChecker'
+import { connect } from 'react-redux'
+import { getHealthStatus } from '../../redux/actions/HealthAction'
+
+function HealthPage({ serverStatus, dbStatus, permissions, loading, dispatch }) {
   const { t } = useTranslation()
-  useEffect(() => {}, [])
+  const userAction = {}
+  const options = {}
+
+  console.log('Health Status', status)
+
+  useEffect(() => {
+    buildPayload(userAction, 'GET Health Status', options)
+    dispatch(getHealthStatus(userAction))
+  }, [])
+
   return (
     <Container>
       <Card className="mb-3">
@@ -18,13 +36,13 @@ function HealthPage() {
             <CardHeader tag="h6" className="bg-success text-white">
               {t('titles.oauth_server_status_title')}
             </CardHeader>
-            <CardBody>{t('messages.oauth_server_status_up')}</CardBody>
+            <CardBody>{serverStatus}</CardBody>
           </Card>
           <Card className="mb-3">
             <CardHeader tag="h6" className="bg-success text-white">
               {t('titles.database_status_title')}
             </CardHeader>
-            <CardBody>{t('messages.database_status_up')}</CardBody>
+            <CardBody>{dbStatus}</CardBody>
           </Card>
         </CardBody>
       </Card>
@@ -32,4 +50,12 @@ function HealthPage() {
   )
 }
 
-export default HealthPage
+const mapStateToProps = (state) => {
+  return {
+    serverStatus: state.healthReducer.serverStatus,
+    dbStatus: state.healthReducer.dbStatus,
+    loading: state.healthReducer.loading,
+    permissions: state.authReducer.permissions,
+  }
+}
+export default connect(mapStateToProps)(HealthPage)
