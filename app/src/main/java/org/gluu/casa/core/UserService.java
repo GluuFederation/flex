@@ -31,7 +31,7 @@ import org.zkoss.util.resource.Labels;
 @ApplicationScoped
 public class UserService implements SndFactorAuthenticationUtils {
 
-    private static final String PREFERRED_METHOD_ATTR = "oxPreferredMethod";
+    private static final String PREFERRED_METHOD_ATTR = "jansPreferredMethod";
     private static final String ADMIN_LOCK_FILE = ".administrable";
     private static final String BASE_PATH = System.getProperty("server.base");
 

@@ -86,7 +86,7 @@ public class FidoService extends BaseService {
         String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));
         logger.trace("Finding {}active U2F devices for user={}", active ? "" : "in", userId);
                         
-        Filter statusFilter = Filter.createEqualityFilter("oxStatus", DeviceRegistrationStatus.ACTIVE.getValue());
+        Filter statusFilter = Filter.createEqualityFilter("jansStatus", DeviceRegistrationStatus.ACTIVE.getValue());
         
         //This filters allows to account old enrollments that don't have personInum set (they are LDAP-based)
         Filter personInumFilter = Filter.createORFilter(
@@ -99,7 +99,7 @@ public class FidoService extends BaseService {
         //See https://github.com/GluuFederation/oxAuth/commit/7e5606e0ef51dfbea3a17ff3a2516f9e97f9b35a
         Filter filter = Filter.createANDFilter(
                 active ? statusFilter : Filter.createNOTFilter(statusFilter),
-                Filter.createEqualityFilter("oxApplication", appId),
+                Filter.createEqualityFilter("jansApp", appId),
                 personInumFilter);
 
         try {

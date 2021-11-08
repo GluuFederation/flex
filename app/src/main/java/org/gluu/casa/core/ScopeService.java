@@ -29,7 +29,7 @@ public class ScopeService {
     private String scopesDN;
 
     public List<String> getDNsFromIds(List<String> oxIds) {
-        List<Filter> filters = oxIds.stream().map(oxId -> Filter.createEqualityFilter("oxId", oxId)).collect(Collectors.toList());
+        List<Filter> filters = oxIds.stream().map(oxId -> Filter.createEqualityFilter("jansId", oxId)).collect(Collectors.toList());
         List<Scope> scopes = persistenceService.find(Scope.class, scopesDN, Filter.createORFilter(filters.toArray(new Filter[0])));
         return scopes.stream().map(Scope::getDn).collect(Collectors.toList());
     }

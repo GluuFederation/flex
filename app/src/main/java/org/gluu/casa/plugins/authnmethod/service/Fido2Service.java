@@ -74,7 +74,7 @@ public class Fido2Service extends BaseService {
         String state = active ? Fido2RegistrationStatus.registered.getValue() : Fido2RegistrationStatus.pending.getValue();
         logger.trace("Finding Fido 2 devices with state={} for user={}", state, userId);
         Filter filter = Filter.createANDFilter(
-                Filter.createEqualityFilter("oxStatus", state),
+                Filter.createEqualityFilter("jansStatus", state),
                 Filter.createEqualityFilter("personInum", userId));
 
         List<FidoDevice> devices = new ArrayList<>();
@@ -84,12 +84,9 @@ public class Fido2Service extends BaseService {
 
             for (Fido2RegistrationEntry entry : list) {
             	FidoDevice device = null;
-            	if(entry.getRegistrationData().getAttenstationRequest().contains("platform") )
-            	{
+            	if(entry.getRegistrationData().getAttenstationRequest().contains("platform") ) {
             		 device = new PlatformAuthenticator();
-            	}
-            	else
-            	{
+            	} else {
             		device = new SecurityKey();
             	}
             	device.setId(entry.getId());
