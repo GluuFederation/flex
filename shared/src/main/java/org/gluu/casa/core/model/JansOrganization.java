@@ -8,13 +8,13 @@ import io.jans.orm.annotation.ObjectClass;
 import java.util.List;
 
 /**
- * A basic representation of the directory tree organization entry (see <code>gluuOrganization</code> object class of
+ * A basic representation of the directory tree organization entry (see <code>jansOrganization</code> object class of
  * LDAP for instance).This class gives you access to data such as organization name, inum, and manager group.
  * <p>To obtain an instance of this class use {@link org.gluu.casa.service.IPersistenceService}.</p>
  */
 @DataEntry
 @ObjectClass("jansOrganization")
-public class GluuOrganization extends Entry {
+public class JansOrganization extends Entry {
 
     @AttributeName
     private String displayName;

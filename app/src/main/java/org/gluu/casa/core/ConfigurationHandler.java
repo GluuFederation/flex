@@ -99,9 +99,9 @@ public class ConfigurationHandler extends JobListenerSupport {
                 //This is a trick so the timer event logic can be coded inside this managed bean
                 timerService.addListener(this, acrQuartzJobName);
                 /*
-                 A gap of 5 seconds is enough for the RestEasy scanning process to take place (in case oxAuth is already up and running)
+                 A gap of 5 seconds is enough for the RestEasy scanning process to take place (in case AS is already up and running)
                  RETRIES*RETRY_INTERVAL seconds gives room to recover the acr list. This big amount of time may be required
-                 in cases where casa service starts too soon (even before oxAuth itself)
+                 in cases where casa service starts too soon (even before AS itself)
                 */
                 timerService.schedule(acrQuartzJobName, 5, RETRIES, RETRY_INTERVAL);
             } else {

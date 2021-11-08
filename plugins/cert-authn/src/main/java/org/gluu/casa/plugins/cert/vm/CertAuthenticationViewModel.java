@@ -129,7 +129,7 @@ public class CertAuthenticationViewModel {
 
             logger.info("Preparing redirect for completion of authentication flow");
             String url = Utils.managedBean(IPersistenceService.class).getIssuerUrl();
-            WebUtils.execRedirect(String.format("%s/oxauth/postlogin.htm", url), true);
+            WebUtils.execRedirect(String.format("%s/jans-auth/postlogin.htm", url), true);
         }
 
     }

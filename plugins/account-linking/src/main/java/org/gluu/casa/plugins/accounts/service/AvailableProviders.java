@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.gluu.casa.misc.Utils;
-import org.gluu.config.oxtrust.LdapOxPassportConfiguration;
+import org.gluu.model.passport.PassportConfigurationEntry;
 import org.gluu.casa.plugins.accounts.pojo.Provider;
 import org.gluu.casa.service.IPersistenceService;
 import org.gluu.model.passport.PassportConfiguration;
@@ -67,8 +67,8 @@ public class AvailableProviders {
             //skip uninteresting chars
             dn = dn.replaceFirst("[\\W]*=[\\W]*","");
 
-            List<org.gluu.model.passport.Provider> details = Optional.ofNullable(persistenceService.get(LdapOxPassportConfiguration.class, dn))
-                    .map(LdapOxPassportConfiguration::getPassportConfiguration).map(PassportConfiguration::getProviders)
+            List<org.gluu.model.passport.Provider> details = Optional.ofNullable(persistenceService.get(PassportConfigurationEntry.class, dn))
+                    .map(PassportConfigurationEntry::getPassportConfiguration).map(PassportConfiguration::getProviders)
                     .orElse(Collections.emptyList());
 
             details = details.stream().filter(org.gluu.model.passport.Provider::isEnabled).collect(Collectors.toList());
@@ -85,7 +85,7 @@ public class AvailableProviders {
                 String logo = provider.getLogoImg();
                 if (logo != null && !logo.startsWith("http")) {
                     //It's not an absolute URL
-                    logo = "/oxauth/auth/passport/" + logo;
+                    logo = "/jans-auth/auth/passport/" + logo;
                 }
                 provider.setLogoImg(logo);
                 providers.add(provider);

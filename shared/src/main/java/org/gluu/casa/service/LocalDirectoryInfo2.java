@@ -1,6 +1,6 @@
 package org.gluu.casa.service;
 
-import org.gluu.casa.core.model.GluuOrganization;
+import org.gluu.casa.core.model.JansOrganization;
 
 import java.util.Set;
 import java.util.Map;
@@ -19,14 +19,14 @@ public interface LocalDirectoryInfo2 extends LocalDirectoryInfo {
     Map<String, String> getCustScriptConfigProperties(String acr);
 
     /**
-     * Returns an instance of {@link GluuOrganization} that represents the organization entry of your local Gluu Server.
+     * Returns an instance of {@link JansOrganization} that represents the organization entry of your local Gluu Server.
      * This is the <i>o</i> entry that contains most of Gluu Server directory branches like <i>people, groups, clients, etc.</i>.
-     * @return A {@link GluuOrganization} object
+     * @return A {@link JansOrganization} object
      */
-    GluuOrganization getOrganization();
+    JansOrganization getOrganization();
 
     /**
-     * Returns a list of Object Classes as configured in underlying oxAuth
+     * Returns a list of Object Classes as configured in underlying AS
      * @return Non-empty List of strings
      */
     Set<String> getPersonOCs();

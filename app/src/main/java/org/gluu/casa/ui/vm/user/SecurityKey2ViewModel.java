@@ -301,7 +301,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
 		try {
 			/*
 			 * Remove the recently enrolled key. This is so because once the user touches
-			 * his key button, oxAuth creates the corresponding entry in LDAP, and if the
+			 * his key button, fido2 creates the corresponding entry in LDAP, and if the
 			 * user regrets adding the current key by not supplying a nickname (and thus
 			 * pressing cancel), we need to be obliterate the entry
 			 */

@@ -327,7 +327,7 @@ public class CertService {
                 scimX509Cert.setValue(new String(Base64.getEncoder().encode(DEREncoded), StandardCharsets.UTF_8));
                 scimX509Cert.setDisplay(display);
 
-                logger.debug("Updating user's oxTrustx509Certificate attribute");
+                logger.debug("Updating user's x509Certificate attribute");
                 stringCerts.add(mapper.writeValueAsString(scimX509Cert));
                 person.setX509Certificates(stringCerts);
             }

@@ -105,7 +105,7 @@ abstract public class MobilePhoneService extends BaseService {
 
     /**
      * Creates an instance of VerifiedMobile by looking up in the list of VerifiedPhones passed. If the item is not found
-     * in the list, it means the user had already that phone added by means of another application, ie. oxTrust. In this
+     * in the list, it means the user had already that phone added by means of another application, ie. admin-ui. In this
      * case the resulting object will not have properties like nickname, etc. Just the phone number
      * @param number Phone number (LDAP attribute "mobile" inside a user entry)
      * @param list List of existing phones enrolled. Ideally, there is an item here corresponding to the uid number passed

@@ -46,7 +46,7 @@ public class AuthnMethodsViewModel extends MainViewModel {
 
         Map<String, String> mappedAcrs = getSettings().getAcrPluginMap();
 
-        //This set contains entries associated to active acr methods in oxauth
+        //This set contains entries associated to active acr methods in AS
         Set<String> serverAcrs = Optional.ofNullable(Utils.managedBean(ConfigurationHandler.class).retrieveAcrs())
                 .orElse(Collections.emptySet());
 

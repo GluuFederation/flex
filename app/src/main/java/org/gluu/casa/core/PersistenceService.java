@@ -27,8 +27,8 @@ import javax.inject.Inject;
 
 import org.gluu.casa.model.ApplicationConfiguration;
 import org.gluu.casa.core.model.CustomScript;
-import org.gluu.casa.core.model.GluuOrganization;
-import org.gluu.casa.core.model.oxAuthConfiguration;
+import org.gluu.casa.core.model.JansOrganization;
+import org.gluu.casa.core.model.ASConfiguration;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
@@ -57,9 +57,9 @@ public class PersistenceService implements IPersistenceService {
 
     private String rootDn;
 
-    private JsonNode oxAuthConfDynamic;
+    private JsonNode dynamicConfig;
 
-    private JsonNode oxAuthConfStatic;
+    private JsonNode staticConfig;
 
     private Set<String> personCustomObjectClasses;
 
@@ -192,31 +192,31 @@ public class PersistenceService implements IPersistenceService {
     }
 
     public String getPeopleDn() {
-        return jsonProperty(oxAuthConfStatic, "baseDn", "people");
+        return jsonProperty(staticConfig, "baseDn", "people");
     }
 
     public String getGroupsDn() {
-        return jsonProperty(oxAuthConfStatic, "baseDn", "groups");
+        return jsonProperty(staticConfig, "baseDn", "groups");
     }
 
     public String getClientsDn() {
-        return jsonProperty(oxAuthConfStatic, "baseDn", "clients");
+        return jsonProperty(staticConfig, "baseDn", "clients");
     }
 
     public String getScopesDn() {
-        return jsonProperty(oxAuthConfStatic, "baseDn", "scopes");
+        return jsonProperty(staticConfig, "baseDn", "scopes");
     }
 
     public String getCustomScriptsDn() {
-        return jsonProperty(oxAuthConfStatic, "baseDn", "scripts");
+        return jsonProperty(staticConfig, "baseDn", "scripts");
     }
 
-    public GluuOrganization getOrganization() {
-        return get(GluuOrganization.class, rootDn);
+    public JansOrganization getOrganization() {
+        return get(JansOrganization.class, rootDn);
     }
 
     public String getIssuerUrl() {
-        return jsonProperty(oxAuthConfDynamic, "issuer");
+        return jsonProperty(dynamicConfig, "issuer");
     }
 
     public Set<String> getPersonOCs() {
@@ -224,7 +224,7 @@ public class PersistenceService implements IPersistenceService {
     }
 
     public boolean isAdmin(String userId) {
-        GluuOrganization organization = getOrganization();
+        JansOrganization organization = getOrganization();
         List<String> dns = organization.getManagerGroups();
 
         Person personMember = get(Person.class, getPersonDn(userId));
@@ -234,23 +234,23 @@ public class PersistenceService implements IPersistenceService {
     }
 
     public String getIntrospectionEndpoint() {
-        return jsonProperty(oxAuthConfDynamic, "introspectionEndpoint");
+        return jsonProperty(dynamicConfig, "introspectionEndpoint");
     }
     
     public String getAuthorizationEndpoint() {
-        return jsonProperty(oxAuthConfDynamic, "authorizationEndpoint");
+        return jsonProperty(dynamicConfig, "authorizationEndpoint");
     }
     
     public String getTokenEndpoint() {
-        return jsonProperty(oxAuthConfDynamic, "tokenEndpoint");
+        return jsonProperty(dynamicConfig, "tokenEndpoint");
     }
     
     public String getUserInfoEndpoint() {
-        return jsonProperty(oxAuthConfDynamic, "userInfoEndpoint");
+        return jsonProperty(dynamicConfig, "userInfoEndpoint");
     }
     
     public String getJwksUri() {
-        return jsonProperty(oxAuthConfDynamic, "jwksUri");
+        return jsonProperty(dynamicConfig, "jwksUri");
     }
 
     @Produces
@@ -334,11 +334,11 @@ public class PersistenceService implements IPersistenceService {
 
         boolean success = false;
         try {
-            loadOxAuthSettings(properties.getProperty("oxauth_ConfigurationEntryDN"));
-            rootDn = "o=gluu";
+            loadASSettings(properties.getProperty("jansAuth_ConfigurationEntryDN"));
+            rootDn = "o=jans";
             success = true;
 
-            GluuConfiguration gluuConf = get(GluuConfiguration.class, jsonProperty(oxAuthConfStatic, "baseDn", "configuration"));
+            GluuConfiguration gluuConf = get(GluuConfiguration.class, jsonProperty(staticConfig, "baseDn", "configuration"));
             cacheConfiguration = gluuConf.getCacheConfiguration();
             documentStoreConfiguration = gluuConf.getDocumentStoreConfiguration();
         } catch (Exception e) {
@@ -348,13 +348,13 @@ public class PersistenceService implements IPersistenceService {
 
     }
 
-    private void loadOxAuthSettings(String dn) throws Exception {
+    private void loadASSettings(String dn) throws Exception {
 
-        oxAuthConfiguration conf = get(oxAuthConfiguration.class, dn);
-        oxAuthConfDynamic = mapper.readTree(conf.getJansConfStatic());
-        oxAuthConfStatic = mapper.readTree(conf.getJansConfDyn());
+        ASConfiguration conf = get(ASConfiguration.class, dn);
+        dynamicConfig = mapper.readTree(conf.getJansConfStatic());
+        staticConfig = mapper.readTree(conf.getJansConfDyn());
 
-        personCustomObjectClasses = Optional.ofNullable(oxAuthConfDynamic.get("personCustomObjectClassList"))
+        personCustomObjectClasses = Optional.ofNullable(dynamicConfig.get("personCustomObjectClassList"))
                 .map(node -> {
                     try {
                         Set<String> ocs = new HashSet<>();

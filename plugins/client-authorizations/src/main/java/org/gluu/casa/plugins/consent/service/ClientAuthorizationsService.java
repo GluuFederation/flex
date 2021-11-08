@@ -16,12 +16,11 @@ import java.util.stream.Collectors;
 
 /**
  * Handles client authorizations for a user
- * @author jgomer
  */
 public class ClientAuthorizationsService {
 
-    private static final String TOKENS_DN = "ou=tokens,o=gluu";
-    private static final String AUTHORIZATIONS_DN = "ou=authorizations,o=gluu";
+    private static final String TOKENS_DN = "ou=tokens,o=jans";
+    private static final String AUTHORIZATIONS_DN = "ou=authorizations,o=jans";
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private IPersistenceService persistenceService;
@@ -85,14 +84,14 @@ public class ClientAuthorizationsService {
 
         Token sampleToken = new Token();
         sampleToken.setBaseDn(TOKENS_DN);
-        sampleToken.setOxAuthClientId(clientId);
-        sampleToken.setOxAuthTokenType("refresh_token");
-        sampleToken.setOxAuthUserId(userName);
+        sampleToken.setClientId(clientId);
+        sampleToken.setTokenType("refresh_token");
+        sampleToken.setUserId(userName);
 
         logger.info("Removing refresh tokens associated to this user/client pair");
         //Here we ignore the return value of deletion
         persistenceService.find(sampleToken).forEach(token -> {
-                    logger.debug("Deleting token {}", token.getOxAuthTokenCode());
+                    logger.debug("Deleting token {}", token.getTokenCode());
                     persistenceService.delete(token);
                 });
 

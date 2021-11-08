@@ -8,7 +8,7 @@ import org.gluu.persist.annotation.ObjectClass;
 import java.util.Optional;
 
 @DataEntry
-@ObjectClass("gluuPerson")
+@ObjectClass("jansPerson")
 public class Owner extends BasePerson {
 
     @AttributeName

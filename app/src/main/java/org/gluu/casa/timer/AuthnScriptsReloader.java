@@ -150,7 +150,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
         if (reload) {
             //"touch" main script so that it gets reloaded. This helps the script to keep the list of supported methods up-to-date
             try {
-                logger.info("Touching main interception script to trigger reload by oxAuth...");
+                logger.info("Touching main interception script to trigger reload by jans-auth-server...");
                 script = persistenceService.getScript(ConfigurationHandler.DEFAULT_ACR);
                 Map<String, String> moduleProperties = Utils.scriptModulePropertiesAsMap(script);
                 ScriptLocationType locType = ScriptLocationType.getByValue(moduleProperties.get(LOCATION_TYPE_PROPERTY));

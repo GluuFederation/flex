@@ -25,8 +25,7 @@ public class HelloWorldVM {
 
     /**
      * Getter of private class field <code>organizationName</code>.
-     * @return A string with the value of the organization name found in your Gluu installation. Find this value in
-     * Gluu Server oxTrust GUI at "Configuration" &gt; "Organization configuration"
+     * @return A string with the value of the organization name found in your Gluu installation.
      */
     public String getOrganizationName() {
         return organizationName;

@@ -85,7 +85,7 @@ public class TrustedDevicesSweeper implements Job {
                 }
             } catch (Exception e) {
                 if (jsonStr == null) {
-                    //This may happen when data in oxTrustedDevicesInfo attribute could not be parsed (e.g. migration
+                    //This may happen when data in jansTrustedDevices attribute could not be parsed (e.g. migration
                     //of gluu version brought change in encryption salt?)
                     updateTrustedDevices(person, null);
                 }
@@ -133,7 +133,7 @@ public class TrustedDevicesSweeper implements Job {
         List<PersonPreferences> list = new ArrayList<>();
         try {
             list = persistenceService.find(PersonPreferences.class, persistenceService.getPeopleDn(),
-                    Filter.createPresenceFilter("oxTrustedDevicesInfo"));
+                    Filter.createPresenceFilter("jansTrustedDevices"));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

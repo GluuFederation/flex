@@ -1,4 +1,4 @@
-package org.gluu.config.oxtrust;
+package org.gluu.model.passport;
 
 import io.jans.orm.model.base.Entry;
 import io.jans.orm.annotation.AttributeName;
@@ -6,11 +6,9 @@ import io.jans.orm.annotation.DataEntry;
 import io.jans.orm.annotation.JsonObject;
 import io.jans.orm.annotation.ObjectClass;
 
-import org.gluu.model.passport.PassportConfiguration;
-
 @DataEntry
 @ObjectClass(value = "jansPassportConf")
-public class LdapOxPassportConfiguration extends Entry {
+public class PassportConfigurationEntry extends Entry {
 
     private static final long serialVersionUID = -8451013277721189767L;
 

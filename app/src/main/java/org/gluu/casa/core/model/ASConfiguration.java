@@ -7,7 +7,7 @@ import io.jans.orm.model.base.Entry;
 
 @DataEntry
 @ObjectClass("jansAppConf")
-public class oxAuthConfiguration extends Entry {
+public class ASConfiguration extends Entry {
 
     @AttributeName
     private String jansConfDyn;

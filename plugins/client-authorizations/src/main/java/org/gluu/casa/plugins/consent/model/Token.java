@@ -10,47 +10,47 @@ import io.jans.orm.model.base.Entry;
 public class Token extends Entry {
 
     @AttributeName(name = "tknCde")
-    private String oxAuthTokenCode;
+    private String tokenCode;
 
     @AttributeName(name = "clnId")
-    private String oxAuthClientId;
+    private String clientId;
 
     @AttributeName(name = "tknTyp")
-    private String oxAuthTokenType;
+    private String tokenType;
 
     @AttributeName(name = "usrId")
-    private String oxAuthUserId;
+    private String userId;
 
-    public String getOxAuthTokenCode() {
-        return oxAuthTokenCode;
+    public String getTokenCode() {
+        return tokenCode;
     }
 
-    public String getOxAuthClientId() {
-        return oxAuthClientId;
+    public String getClientId() {
+        return clientId;
     }
 
-    public String getOxAuthTokenType() {
-        return oxAuthTokenType;
+    public String getTokenType() {
+        return tokenType;
     }
 
-    public String getOxAuthUserId() {
-        return oxAuthUserId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setOxAuthTokenCode(String oxAuthTokenCode) {
-        this.oxAuthTokenCode = oxAuthTokenCode;
+    public void setTokenCode(String tokenCode) {
+        this.tokenCode = tokenCode;
     }
 
-    public void setOxAuthClientId(String v) {
-        this.oxAuthClientId = v;
+    public void setClientId(String v) {
+        this.clientId = v;
     }
 
-    public void setOxAuthTokenType(String v) {
-        this.oxAuthTokenType = v;
+    public void setTokenType(String v) {
+        this.tokenType = v;
     }
 
-    public void setOxAuthUserId(String oxAuthUserId) {
-        this.oxAuthUserId = oxAuthUserId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 }

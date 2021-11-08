@@ -14,7 +14,7 @@ public interface AuthnMethod extends ExtensionPoint {
 
     /**
      * The <code>acr</code> value associated to this authentication method in the Gluu Server. This value must
-     * be equal to the display name of the custom script associated to this authentication method (via oxTrust Admin UI).
+     * be equal to the display name of the custom script associated to this authentication method (via Admin UI).
      * <p>To list the acr values supported in your gluu installation, visit <code>https://HOST_NAME/.well-known/openid-configuration</code>
      * in a browser.
      * @return A String value

@@ -76,7 +76,7 @@ public class U2fService extends FidoService {
 
     /**
      * Triggers a registration request to a U2F endpoint and outputs the request message returned by the service in form of JSON
-     * @param userName As required per org.gluu.oxauth.client.fido.u2f.RegistrationRequestService#startRegistration
+     * @param userName As required per io.jans.as.client.fido.u2f.RegistrationRequestService#startRegistration
      * @param enrollmentCode A previously generated random code stored under user's LDAP entry
      * @return Json string representation
      * @throws Exception Network problem, De/Serialization error, ...
@@ -89,11 +89,11 @@ public class U2fService extends FidoService {
 
     /**
      * Executes the finish registration step of the U2F service
-     * @param userName As required per org.gluu.oxauth.client.fido.u2f.RegistrationRequestService#finishRegistration
+     * @param userName As required per io.jans.as.client.fido.u2f.RegistrationRequestService#finishRegistration
      * @param response This is the Json response obtained in the web browser after calling the u2f.register function in Javascript
      */
     public void finishRegistration(String userName, String response) {
-        //first parameter is not used in current implementation, see: org.gluu.oxauth.ws.rs.fido.u2f.U2fRegistrationWS#finishRegistration
+        //first parameter is not used in current implementation, see: io.jans.as.server.ws.rs.fido.u2f.U2fRegistrationWS#finishRegistration
         RegisterStatus status = registrationRequestService.finishRegistration(userName, response);
         logger.info("Response of finish registration: {}", status.getStatus());
     }

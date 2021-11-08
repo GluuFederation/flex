@@ -114,7 +114,7 @@ public class SecurityKey2EnrollingWS {
                             result = RegistrationCode.SUCCESS;
                         }
                     } else {
-                        logger.error("Verification has failed. See oxauth logs");
+                        logger.error("Verification has failed. See fido2 logs");
                         result = RegistrationCode.FAILED;
                     }
                 } catch (Exception e) {
