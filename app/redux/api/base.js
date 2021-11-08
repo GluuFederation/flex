@@ -42,10 +42,8 @@ export const getJansUIClient = (JansConfigApi, r_token, r_issuer) => {
   defaultClient.timeout = 50000
   const jansauth = defaultClient.authentications['oauth2']
   defaultClient.basePath =
-    process.env.JANS_API_BASE_URL ||
-    'https://jans-ui.jans.io'.replace(/\/+$/, '')
+    process.env.JANS_API_BASE_URL
   const headers = {
-    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers':
       'Origin, X-Requested-With, Content-Type, Accept',
     'Content-Type': 'application/json',
