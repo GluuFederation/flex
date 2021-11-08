@@ -351,8 +351,8 @@ public class PersistenceService implements IPersistenceService {
     private void loadOxAuthSettings(String dn) throws Exception {
 
         oxAuthConfiguration conf = get(oxAuthConfiguration.class, dn);
-        oxAuthConfDynamic = mapper.readTree(conf.getOxAuthConfDynamic());
-        oxAuthConfStatic = mapper.readTree(conf.getOxAuthConfStatic());
+        oxAuthConfDynamic = mapper.readTree(conf.getJansConfStatic());
+        oxAuthConfStatic = mapper.readTree(conf.getJansConfDyn());
 
         personCustomObjectClasses = Optional.ofNullable(oxAuthConfDynamic.get("personCustomObjectClassList"))
                 .map(node -> {

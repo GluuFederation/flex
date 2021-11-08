@@ -1,14 +1,10 @@
 package org.gluu.model.passport.idpinitiated;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jgomer on 2019-02-21.
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class IIConfiguration {
 

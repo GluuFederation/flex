@@ -5,9 +5,6 @@ import org.gluu.casa.plugins.accounts.service.enrollment.ProviderEnrollmentManag
 import org.gluu.casa.plugins.accounts.service.enrollment.SamlEnrollmentManager;
 import org.gluu.casa.plugins.accounts.service.enrollment.SocialEnrollmentManager;
 
-/**
- * @author jgomer
- */
 public class Provider extends org.gluu.model.passport.Provider {
 
     public Provider(org.gluu.model.passport.Provider pd) {

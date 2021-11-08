@@ -38,7 +38,7 @@ public class ClientAuthorizationsService {
         List<ClientAuthorization> authorizations = persistenceService.find(caSample);
 
         //Obtain client ids from all this user's client authorizations
-        Set<String> clientIds = authorizations.stream().map(ClientAuthorization::getOxAuthClientId).collect(Collectors.toSet());
+        Set<String> clientIds = authorizations.stream().map(ClientAuthorization::getJansClntId).collect(Collectors.toSet());
 
         //Create a filter based on client Ids, alternatively one can make n queries to obtain client references one by one
         Filter[] filters = clientIds.stream().map(id -> Filter.createEqualityFilter("inum", id))
@@ -59,7 +59,7 @@ public class ClientAuthorizationsService {
             Set<Scope> clientScopes = new HashSet<>();
 
             for (ClientAuthorization auth : authorizations) {
-                if (auth.getOxAuthClientId().equals(client.getInum())) {
+                if (auth.getJansClntId().equals(client.getInum())) {
                     for (String scopeName : auth.getScopes()) {
                         scopes.stream().filter(sc -> sc.getId().equals(scopeName)).findAny().ifPresent(clientScopes::add);
                     }
@@ -75,7 +75,7 @@ public class ClientAuthorizationsService {
     public void removeClientAuthorizations(String userId, String userName, String clientId) {
 
         ClientAuthorization caSample = new ClientAuthorization();
-        caSample.setOxAuthClientId(clientId);
+        caSample.setJansClntId(clientId);
         caSample.setBaseDn(AUTHORIZATIONS_DN);
         caSample.setUserId(userId);
 

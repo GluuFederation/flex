@@ -2,9 +2,6 @@ package org.gluu.casa.plugins.strongauthn.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-/**
- * Created by jgomer on 2018-04-18.
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrustedOrigin {
 

@@ -8,13 +8,13 @@ import io.jans.orm.model.base.InumEntry;
 import java.util.List;
 
 @DataEntry
-@ObjectClass("oxAuthClient")
+@ObjectClass("jansClnt")
 public class OIDCClient extends InumEntry {
 
-    @AttributeName(name = "oxAuthPostLogoutRedirectURI")
+    @AttributeName(name = "jansPostLogoutRedirectURI")
     private String postLogoutURI;
 
-    @AttributeName(name = "oxAuthScope")
+    @AttributeName(name = "jansScope")
     private List<String> scopes;
 
     public String getPostLogoutURI() {

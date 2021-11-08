@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
 
-/**
- * Created by jgomer on 2018-04-18.
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TrustedDevice {
 

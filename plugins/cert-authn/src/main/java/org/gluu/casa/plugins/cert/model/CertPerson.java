@@ -9,10 +9,10 @@ import org.gluu.casa.core.model.IdentityPerson;
 import java.util.List;
 
 @DataEntry
-@ObjectClass("gluuPerson")
+@ObjectClass("jansPerson")
 public class CertPerson extends IdentityPerson {
 
-    @AttributeName(name = "oxTrustx509Certificate")
+    @AttributeName(name = "jans509Certificate")
     private List<String> x509Certificates;
 
     public List<String> getX509Certificates() {

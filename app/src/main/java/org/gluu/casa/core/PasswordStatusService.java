@@ -64,7 +64,7 @@ public class PasswordStatusService implements Serializable {
         if (p.hasPassword()) {
             passResetAvailable = confSettings.isEnablePassReset();
         } else {
-            passSetAvailable = hasPassportPrefix(p.getOxExternalUid()) || hasPassportPrefix(p.getOxUnlinkedExternalUids());
+            passSetAvailable = hasPassportPrefix(p.getJansExtUid()) || hasPassportPrefix(p.getJansUnlinkedExternalUids());
         }
         password2faRequisite = p.hasPassword() || persistenceService.isBackendLdapEnabled();
 

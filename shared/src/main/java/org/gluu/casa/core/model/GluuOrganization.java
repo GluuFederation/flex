@@ -13,13 +13,13 @@ import java.util.List;
  * <p>To obtain an instance of this class use {@link org.gluu.casa.service.IPersistenceService}.</p>
  */
 @DataEntry
-@ObjectClass("gluuOrganization")
+@ObjectClass("jansOrganization")
 public class GluuOrganization extends Entry {
 
     @AttributeName
     private String displayName;
 
-    @AttributeName(name = "gluuManagerGroup")
+    @AttributeName(name = "jansManagerGrp")
     private List<String> managerGroups;
 
     public String getDisplayName() {

@@ -9,10 +9,10 @@ import java.util.List;
 import org.gluu.casa.misc.Utils;
 
 @DataEntry
-@ObjectClass("gluuPerson")
+@ObjectClass("jansPerson")
 public class PersonMobile extends BasePerson {
 
-    @AttributeName(name = "oxMobileDevices")
+    @AttributeName(name = "jansMobileDevices")
     private String mobileDevices;
 
     @AttributeName

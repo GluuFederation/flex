@@ -1,14 +1,10 @@
 package org.gluu.model.passport.idpinitiated;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by jgomer on 2019-02-21.
- */
 public class AuthzParams {
 
     private String provider;

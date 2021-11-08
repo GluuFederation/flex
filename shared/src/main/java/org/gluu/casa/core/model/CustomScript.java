@@ -12,34 +12,34 @@ import java.util.List;
 import org.gluu.casa.misc.Utils;
 
 /**
- * A basic representation of a Gluu Server custom script. Use this class in conjuction with
+ * A basic representation of a Gluu Server custom script. Use this class in conjunction with
  * {@link org.gluu.casa.service.IPersistenceService} to read data, modify or delete custom scripts from the server.
  */
 @DataEntry
-@ObjectClass("oxCustomScript")
+@ObjectClass("jansCustomScr")
 public class CustomScript extends Entry {
 
     @AttributeName
     private String displayName;
 
-    @AttributeName(name = "oxEnabled")
+    @AttributeName(name = "jansEnabled")
     private Boolean enabled;
 
     @JsonObject
-    @AttributeName(name = "oxConfigurationProperty")
+    @AttributeName(name = "jansConfProperty")
     private List<SimpleCustomProperty> configurationProperties;
 
-    @AttributeName(name = "oxLevel")
+    @AttributeName(name = "jansLevel")
     private Integer level;
 
     @JsonObject
-    @AttributeName(name = "oxModuleProperty")
+    @AttributeName(name = "jansModuleProperty")
     private List<SimpleCustomProperty> moduleProperties;
 
-    @AttributeName(name = "oxRevision")
+    @AttributeName(name = "jansRevision")
     private Long revision;
 
-    @AttributeName(name = "oxScript")
+    @AttributeName(name = "jansScr")
     private String script;
 
     public String getDisplayName() {

@@ -3,9 +3,6 @@ package org.gluu.model.passport.config;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.gluu.model.passport.config.logging.LoggingConfig;
 
-/**
- * Created by jgomer on 2019-02-21.
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Configuration {
 

@@ -4,12 +4,12 @@ import io.jans.orm.annotation.AttributeName;
 import io.jans.orm.annotation.DataEntry;
 import io.jans.orm.annotation.ObjectClass;
 
-import org.gluu.casa.misc.Utils;
-
 import java.util.List;
 
+import org.gluu.casa.misc.Utils;
+
 @DataEntry
-@ObjectClass("gluuPerson")
+@ObjectClass("jansPerson")
 public class Person extends BasePerson {
 
     @AttributeName
@@ -18,10 +18,10 @@ public class Person extends BasePerson {
     @AttributeName(name = "sn")
     private String surname;
 
-    @AttributeName(name = "oxEnrollmentCode")
+    @AttributeName(name = "jansEnrollmentCode")
     private String enrollmentCode;
 
-    @AttributeName(name = "oxPreferredMethod")
+    @AttributeName(name = "jansPreferredMethod")
     private String preferredMethod;
 
     @AttributeName

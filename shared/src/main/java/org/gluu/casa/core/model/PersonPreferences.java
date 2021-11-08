@@ -5,13 +5,13 @@ import io.jans.orm.annotation.DataEntry;
 import io.jans.orm.annotation.ObjectClass;
 
 @DataEntry
-@ObjectClass("gluuPerson")
+@ObjectClass("jansPerson")
 public class PersonPreferences extends BasePerson {
 
-    @AttributeName(name = "oxStrongAuthPolicy")
+    @AttributeName(name = "jansStrongAuthPolicy")
     private String strongAuthPolicy;
 
-    @AttributeName(name = "oxTrustedDevicesInfo")
+    @AttributeName(name = "jansTrustedDevices")
     private String trustedDevices;
 
     public String getStrongAuthPolicy() {

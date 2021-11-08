@@ -8,13 +8,13 @@ import io.jans.orm.model.base.InumEntry;
 import java.util.Optional;
 
 @DataEntry
-@ObjectClass("oxAuthCustomScope")
+@ObjectClass("jansScope")
 public class Scope extends InumEntry {
 
     @AttributeName
     private String description;
 
-    @AttributeName(name = "oxId")
+    @AttributeName(name = "jansId")
     private String id;
 
     public String getDescription() {

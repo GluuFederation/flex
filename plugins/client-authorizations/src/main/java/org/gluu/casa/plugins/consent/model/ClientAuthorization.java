@@ -5,25 +5,25 @@ import io.jans.orm.annotation.DataEntry;
 import io.jans.orm.annotation.ObjectClass;
 import io.jans.orm.model.base.Entry;
 
-import org.gluu.casa.misc.Utils;
-
 import java.util.List;
 
+import org.gluu.casa.misc.Utils;
+
 @DataEntry
-@ObjectClass("oxClientAuthorization")
+@ObjectClass("jansClntAuthz")
 public class ClientAuthorization extends Entry {
 
     @AttributeName
-    private String oxAuthClientId;
+    private String jansClntId;
 
-    @AttributeName(name = "oxAuthScope")
+    @AttributeName(name = "jansScope")
     private List<String> scopes;
 
-    @AttributeName(name = "oxAuthUserId")
+    @AttributeName(name = "jansUsrId")
     private String userId;
 
-    public String getOxAuthClientId() {
-        return oxAuthClientId;
+    public String getJansClntId() {
+        return jansClntId;
     }
 
     public List<String> getScopes() {
@@ -38,8 +38,8 @@ public class ClientAuthorization extends Entry {
         this.userId = userId;
     }
 
-    public void setOxAuthClientId(String v) {
-        this.oxAuthClientId = v;
+    public void setJansClntId(String v) {
+        this.jansClntId = v;
     }
 
     public void setScopes(List<String> scopes) {

@@ -1,8 +1,5 @@
 package org.gluu.casa.plugins.accounts.pojo;
 
-/**
- * @author jgomer
- */
 public class ExternalAccount {
 
     private Provider provider;

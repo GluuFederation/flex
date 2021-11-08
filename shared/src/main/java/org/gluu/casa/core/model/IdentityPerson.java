@@ -9,20 +9,20 @@ import java.util.List;
 import org.gluu.casa.misc.Utils;
 
 /**
- * Extends {@link BasePerson} in order to manipulate attributes <code>userPassword</code> and <code>oxExternalUid</code>.
+ * Extends {@link BasePerson} in order to manipulate attributes <code>userPassword</code> and <code>jansExtUid</code>.
  */
 @DataEntry
-@ObjectClass("gluuPerson")
+@ObjectClass("jansPerson")
 public class IdentityPerson extends BasePerson {
 
-    @AttributeName(name ="userPassword")
+    @AttributeName(name = "userPassword")
     private String password;
 
     @AttributeName
-    private List<String> oxExternalUid;
+    private List<String> jansExtUid;
 
     @AttributeName
-    private List<String> oxUnlinkedExternalUids;
+    private List<String> jansUnlinkedExternalUids;
 
     public boolean hasPassword() {
         return Utils.isNotEmpty(password);
@@ -32,24 +32,24 @@ public class IdentityPerson extends BasePerson {
         return password;
     }
 
-    public List<String> getOxExternalUid() {
-        return Utils.nonNullList(oxExternalUid);
+    public List<String> getJansExtUid() {
+        return Utils.nonNullList(jansExtUid);
     }
 
-    public List<String> getOxUnlinkedExternalUids() {
-        return Utils.nonNullList(oxUnlinkedExternalUids);
+    public List<String> getJansUnlinkedExternalUids() {
+        return Utils.nonNullList(jansUnlinkedExternalUids);
     }
 
     public void setPassword(String userPassword) {
         this.password = userPassword;
     }
 
-    public void setOxExternalUid(List<String> oxExternalUid) {
-        this.oxExternalUid = oxExternalUid;
+    public void setJansExtUid(List<String> jansExtUid) {
+        this.jansExtUid = jansExtUid;
     }
 
-    public void setOxUnlinkedExternalUids(List<String> oxUnlinkedExternalUids) {
-        this.oxUnlinkedExternalUids = oxUnlinkedExternalUids;
+    public void setJansUnlinkedExternalUids(List<String> jansUnlinkedExternalUids) {
+        this.jansUnlinkedExternalUids = jansUnlinkedExternalUids;
     }
 
 }

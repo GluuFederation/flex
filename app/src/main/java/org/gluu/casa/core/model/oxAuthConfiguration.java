@@ -6,29 +6,29 @@ import io.jans.orm.annotation.ObjectClass;
 import io.jans.orm.model.base.Entry;
 
 @DataEntry
-@ObjectClass("oxAuthConfiguration")
+@ObjectClass("jansAppConf")
 public class oxAuthConfiguration extends Entry {
 
     @AttributeName
-    private String oxAuthConfDynamic;
+    private String jansConfDyn;
 
     @AttributeName
-    private String oxAuthConfStatic;
+    private String jansConfStatic;
 
-    public String getOxAuthConfDynamic() {
-        return oxAuthConfDynamic;
+    public String getJansConfStatic() {
+        return jansConfDyn;
     }
 
-    public String getOxAuthConfStatic() {
-        return oxAuthConfStatic;
+    public String getJansConfDyn() {
+        return jansConfStatic;
     }
 
-    public void setOxAuthConfDynamic(String oxAuthConfDynamic) {
-        this.oxAuthConfDynamic = oxAuthConfDynamic;
+    public void setJansConfDyn(String jansConfDyn) {
+        this.jansConfDyn = jansConfDyn;
     }
 
-    public void setOxAuthConfStatic(String oxAuthConfStatic) {
-        this.oxAuthConfStatic = oxAuthConfStatic;
+    public void setJansConfStatic(String jansConfStatic) {
+        this.jansConfStatic = jansConfStatic;
     }
 
 }

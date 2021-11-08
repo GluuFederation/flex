@@ -6,7 +6,7 @@ import io.jans.orm.annotation.ObjectClass;
 import io.jans.orm.model.base.Entry;
 
 @DataEntry
-@ObjectClass("token")
+@ObjectClass("jansToken")
 public class Token extends Entry {
 
     @AttributeName(name = "tknCde")

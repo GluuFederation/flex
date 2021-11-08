@@ -9,21 +9,21 @@ import io.jans.orm.annotation.ObjectClass;
 import org.gluu.model.passport.PassportConfiguration;
 
 @DataEntry
-@ObjectClass(value = "oxPassportConfiguration")
+@ObjectClass(value = "jansPassportConf")
 public class LdapOxPassportConfiguration extends Entry {
 
-	private static final long serialVersionUID = -8451013277721189767L;
+    private static final long serialVersionUID = -8451013277721189767L;
 
-	@JsonObject
-	@AttributeName(name = "gluuPassportConfiguration")
-	private PassportConfiguration passportConfiguration;
+    @JsonObject
+    @AttributeName(name = "jansPassportConfiguration")
+    private PassportConfiguration passportConfiguration;
 
-	public PassportConfiguration getPassportConfiguration() {
-		return passportConfiguration;
-	}
+    public PassportConfiguration getPassportConfiguration() {
+            return passportConfiguration;
+    }
 
-	public void setPassportConfiguration(PassportConfiguration passportConfiguration) {
-		this.passportConfiguration = passportConfiguration;
-	}
+    public void setPassportConfiguration(PassportConfiguration passportConfiguration) {
+            this.passportConfiguration = passportConfiguration;
+    }
 
 }

@@ -157,9 +157,9 @@ public class CertService {
                 } else {
                     if (enroll) {
                         logger.info("Associating presented cert to user");
-                        List<String> oeuid = new ArrayList<>(Optional.ofNullable(person.getOxExternalUid()).orElse(Collections.emptyList()));
+                        List<String> oeuid = new ArrayList<>(Optional.ofNullable(person.getJansExtUid()).orElse(Collections.emptyList()));
                         oeuid.add(externalUid);
-                        person.setOxExternalUid(oeuid);
+                        person.setJansExtUid(oeuid);
 
                         status = SUCCESS;
                     } else {
@@ -190,7 +190,7 @@ public class CertService {
             List<io.jans.scim.model.scim2.user.X509Certificate> x509Certificates = getScimX509Certificates(
                     Optional.ofNullable(person.getX509Certificates()).orElse(Collections.emptyList()));
 
-            certs = person.getOxExternalUid().stream().filter(uid -> uid.startsWith(CERT_PREFIX))
+            certs = person.getJansExtUid().stream().filter(uid -> uid.startsWith(CERT_PREFIX))
                     .map(uid -> getExtraCertsInfo(uid, x509Certificates)).collect(Collectors.toList());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -204,7 +204,7 @@ public class CertService {
         int total = 0;
         try {
             IdentityPerson person = persistenceService.get(IdentityPerson.class, persistenceService.getPersonDn(userId));
-            total = (int) person.getOxExternalUid().stream().filter(uid -> uid.startsWith(CERT_PREFIX)).count();
+            total = (int) person.getJansExtUid().stream().filter(uid -> uid.startsWith(CERT_PREFIX)).count();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -279,9 +279,9 @@ public class CertService {
             person.getX509Certificates().remove(i - 1);
         }
 
-        Optional<String> externalUid = person.getOxExternalUid().stream()
+        Optional<String> externalUid = person.getJansExtUid().stream()
                 .filter(str -> str.equals(CERT_PREFIX + fingerPrint)).findFirst();
-        externalUid.ifPresent(uid ->  person.getOxExternalUid().remove(uid));
+        externalUid.ifPresent(uid ->  person.getJansExtUid().remove(uid));
 
         return persistenceService.modify(person);
 

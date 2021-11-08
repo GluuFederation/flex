@@ -1,8 +1,5 @@
 package org.gluu.model.passport.idpinitiated;
 
-/**
- * Created by jgomer on 2019-02-21.
- */
 public class OIDCDetails {
 
     private String authorizationEndpoint;

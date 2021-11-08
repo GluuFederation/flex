@@ -18,7 +18,7 @@ public class SamlEnrollmentManager extends AbstractEnrollmentManager {
 
     public String getUid(IdentityPerson p, boolean linked) {
 
-        List<String> list = linked ? p.getOxExternalUid() : p.getOxUnlinkedExternalUids();
+        List<String> list = linked ? p.getJansExtUid() : p.getJansUnlinkedExternalUids();
         for (String externalUid : list) {
             if (externalUid.startsWith(OXEXTERNALUID_PREFIX)) {
 
@@ -37,11 +37,11 @@ public class SamlEnrollmentManager extends AbstractEnrollmentManager {
 
     public boolean link(IdentityPerson p, String externalId) {
 
-        List<String> list = new ArrayList<>(p.getOxExternalUid());
+        List<String> list = new ArrayList<>(p.getJansExtUid());
         list.add(getFormattedAttributeVal(externalId));
 
         logger.info("Linked accounts for {} will be {}", p.getUid(), list);
-        p.setOxExternalUid(list);
+        p.setJansExtUid(list);
         return updatePerson(p);
 
     }
@@ -58,9 +58,9 @@ public class SamlEnrollmentManager extends AbstractEnrollmentManager {
             return false;
         }
 
-        List<String> list = new ArrayList<>(p.getOxUnlinkedExternalUids());
+        List<String> list = new ArrayList<>(p.getJansUnlinkedExternalUids());
         list.add(getFormattedAttributeVal(uid));
-        p.setOxUnlinkedExternalUids(list);
+        p.setJansUnlinkedExternalUids(list);
         return updatePerson(p);
 
     }
@@ -72,16 +72,16 @@ public class SamlEnrollmentManager extends AbstractEnrollmentManager {
             return false;
         }
 
-        List<String> list = new ArrayList<>(p.getOxExternalUid());
+        List<String> list = new ArrayList<>(p.getJansExtUid());
         list.add(getFormattedAttributeVal(uid));
-        p.setOxExternalUid(list);
+        p.setJansExtUid(list);
         return updatePerson(p);
 
     }
 
     public boolean isAssigned(String uid) {
         IdentityPerson p = new IdentityPerson();
-        p.setOxExternalUid(Collections.singletonList(getFormattedAttributeVal(uid)));
+        p.setJansExtUid(Collections.singletonList(getFormattedAttributeVal(uid)));
         p.setBaseDn(persistenceService.getPeopleDn());
         return persistenceService.count(p) > 0;
     }
@@ -90,8 +90,8 @@ public class SamlEnrollmentManager extends AbstractEnrollmentManager {
 
         String pattern = String.format("%s%s:",OXEXTERNALUID_PREFIX, provider.getId());
 
-        Set<String> externalUids = new HashSet<>(p.getOxExternalUid());
-        Set<String> unlinkedUids = new HashSet<>(p.getOxUnlinkedExternalUids());
+        Set<String> externalUids = new HashSet<>(p.getJansExtUid());
+        Set<String> unlinkedUids = new HashSet<>(p.getJansUnlinkedExternalUids());
 
         String externalUid = externalUids.stream().filter(str -> str.startsWith(pattern)).findFirst()
                 .map(str -> str.substring(pattern.length())).orElse("");
@@ -108,8 +108,8 @@ public class SamlEnrollmentManager extends AbstractEnrollmentManager {
             externalUid = null;
         }
 
-        p.setOxExternalUid(new ArrayList<>(externalUids));
-        p.setOxUnlinkedExternalUids(new ArrayList<>(unlinkedUids));
+        p.setJansExtUid(new ArrayList<>(externalUids));
+        p.setJansUnlinkedExternalUids(new ArrayList<>(unlinkedUids));
         return externalUid;
 
     }

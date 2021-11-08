@@ -1,12 +1,8 @@
 package org.gluu.model.passport.config.logging;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-/**
- * Created by jgomer on 2019-02-21.
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class LoggingConfig {

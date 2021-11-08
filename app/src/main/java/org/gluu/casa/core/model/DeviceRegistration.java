@@ -8,17 +8,17 @@ import io.jans.orm.model.base.Entry;
 import java.util.Date;
 
 @DataEntry
-@ObjectClass("oxDeviceRegistration")
+@ObjectClass("jansDeviceRegistration")
 public class DeviceRegistration extends Entry {
 
     @AttributeName
-    private String oxId;
+    private String jansId;
 
     @AttributeName
-    private String oxApplication;
+    private String jansApp;
 
     @AttributeName
-    private Long oxCounter;
+    private Long jansCounter;
 
     @AttributeName
     private String displayName;
@@ -26,17 +26,17 @@ public class DeviceRegistration extends Entry {
     @AttributeName
     private Date creationDate;
 
-    @AttributeName(name = "oxLastAccessTime")
+    @AttributeName(name = "jansLastAccessTime")
     private Date lastAccessTime;
 
     @AttributeName
-    private String oxStatus;
+    private String jansStatus;
 
-    @AttributeName(name = "oxDeviceData")
+    @AttributeName(name = "jansDeviceData")
     private String deviceData;
 
-    public String getOxId() {
-        return oxId;
+    public String getJansId() {
+        return jansId;
     }
 
     public Date getCreationDate() {
@@ -47,16 +47,16 @@ public class DeviceRegistration extends Entry {
         return lastAccessTime;
     }
 
-    public Long getOxCounter() {
-        return oxCounter;
+    public Long getJansCounter() {
+        return jansCounter;
     }
 
-    public String getOxApplication() {
-        return oxApplication;
+    public String getJansApp() {
+        return jansApp;
     }
 
-    public String getOxStatus() {
-        return oxStatus;
+    public String getJansStatus() {
+        return jansStatus;
     }
 
     public String getDeviceData() {
@@ -67,23 +67,23 @@ public class DeviceRegistration extends Entry {
         return displayName;
     }
 
-    public void setOxId(String oxId) {
-        this.oxId = oxId;
+    public void setJansId(String jansId) {
+        this.jansId = jansId;
     }
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
-    public void setOxApplication(String oxApplication) {
-        this.oxApplication = oxApplication;
+    public void setJansApp(String jansApp) {
+        this.jansApp = jansApp;
     }
 
-    public void setOxStatus(String oxStatus) {
-        this.oxStatus = oxStatus;
+    public void setJansStatus(String jansStatus) {
+        this.jansStatus = jansStatus;
     }
 
-    public void setOxCounter(Long oxCounter) {
-        this.oxCounter = oxCounter;
+    public void setJansCounter(Long jansCounter) {
+        this.jansCounter = jansCounter;
     }
 
     public void setCreationDate(Date creationDate) {

@@ -69,7 +69,7 @@ public class FidoService extends BaseService {
         String id = device.getId();
         DeviceRegistration deviceRegistration = new DeviceRegistration();
         deviceRegistration.setBaseDn(persistenceService.getPeopleDn());
-        deviceRegistration.setOxId(id);
+        deviceRegistration.setJansId(id);
 
         List<DeviceRegistration> list = persistenceService.find(deviceRegistration);
         if (list.size() == 1) {
@@ -132,12 +132,12 @@ public class FidoService extends BaseService {
                 DeviceData data = mapper.readValue(deviceRegistration.getDeviceData(), DeviceData.class);
                 ((SuperGluuDevice) device).setDeviceData(data);
             }
-            device.setApplication(deviceRegistration.getOxApplication());
+            device.setApplication(deviceRegistration.getJansApp());
             device.setNickName(deviceRegistration.getDisplayName());
-            device.setStatus(deviceRegistration.getOxStatus());
-            device.setId(deviceRegistration.getOxId());
+            device.setStatus(deviceRegistration.getJansStatus());
+            device.setId(deviceRegistration.getJansId());
             device.setCreationDate(deviceRegistration.getCreationDate());
-            device.setCounter(deviceRegistration.getOxCounter());
+            device.setCounter(deviceRegistration.getJansCounter());
             device.setLastAccessTime(deviceRegistration.getLastAccessTime());
 
             devices.add(device);

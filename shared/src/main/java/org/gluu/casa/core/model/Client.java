@@ -11,7 +11,7 @@ import java.util.Optional;
 import org.gluu.casa.misc.Utils;
 
 @DataEntry
-@ObjectClass("oxAuthClient")
+@ObjectClass("jansClnt")
 public class Client extends InumEntry {
 
     @AttributeName(name = "associatedPerson")
@@ -21,30 +21,30 @@ public class Client extends InumEntry {
     private String displayName;
 
     @AttributeName
-    private String oxAuthClientURI;
+    private String jansClntURI;
 
-    @AttributeName(name ="oxAuthContact")
+    @AttributeName(name ="jansContact")
     private List<String> contacts;
 
-    @AttributeName(name = "oxAuthLogoURI")
+    @AttributeName(name = "jansLogoURI")
     private String logoURI;
 
-    @AttributeName(name = "oxAuthPolicyURI")
+    @AttributeName(name = "jansPolicyURI")
     private String policyURI;
 
-    @AttributeName(name = "oxAuthTosURI")
+    @AttributeName(name = "jansTosURI")
     private String tosURI;
 
-	@AttributeName
-	private String oxAuthClientIdIssuedAt;
+    @AttributeName
+    private String jansClntIdIssuedAt;
 
-	public String getOxAuthClientIdIssuedAt() {
-		return oxAuthClientIdIssuedAt;
-	}
+    public String getJansClntIdIssuedAt() {
+        return jansClntIdIssuedAt;
+    }
 
-	public void setOxAuthClientIdIssuedAt(String oxAuthClientIdIssuedAt) {
-		this.oxAuthClientIdIssuedAt = oxAuthClientIdIssuedAt;
-	}
+    public void setJansClntIdIssuedAt(String jansClntIdIssuedAt) {
+        this.jansClntIdIssuedAt = jansClntIdIssuedAt;
+    }
 
     public List<String> getAssociatedPeople() {
         return Utils.nonNullList(associatedPeople);
@@ -54,8 +54,8 @@ public class Client extends InumEntry {
         return displayName;
     }
 
-    public String getOxAuthClientURI() {
-        return oxAuthClientURI;
+    public String getJansClntURI() {
+        return jansClntURI;
     }
 
     public List<String> getContacts() {
@@ -91,8 +91,8 @@ public class Client extends InumEntry {
         this.displayName = displayName;
     }
 
-    public void setOxAuthClientURI(String oxAuthClientURI) {
-        this.oxAuthClientURI = oxAuthClientURI;
+    public void setJansClntURI(String jansClntURI) {
+        this.jansClntURI = jansClntURI;
     }
 
     public void setContacts(List<String> contacts) {

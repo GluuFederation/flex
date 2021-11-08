@@ -6,9 +6,6 @@ import org.zkoss.util.Pair;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author jgomer
- */
 public class PendingLinks {
 
     private static final int TIME_WINDOW_DEFAULT = 2;

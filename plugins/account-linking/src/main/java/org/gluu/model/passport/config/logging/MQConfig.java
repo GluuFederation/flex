@@ -1,8 +1,5 @@
 package org.gluu.model.passport.config.logging;
 
-/**
- * Created by jgomer on 2019-02-21.
- */
 public class MQConfig {
 
     private boolean enabled;

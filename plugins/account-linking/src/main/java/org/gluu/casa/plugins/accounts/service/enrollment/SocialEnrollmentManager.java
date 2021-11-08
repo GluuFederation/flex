@@ -19,7 +19,7 @@ public class SocialEnrollmentManager extends AbstractEnrollmentManager {
 
     public String getUid(IdentityPerson p, boolean linked) {
 
-        List<String> list = linked ? p.getOxExternalUid() : p.getOxUnlinkedExternalUids();
+        List<String> list = linked ? p.getJansExtUid() : p.getJansUnlinkedExternalUids();
         for (String externalUid : list) {
             if (externalUid.startsWith(OXEXTERNALUID_PREFIX)) {
                 int i = externalUid.indexOf(":");
@@ -38,30 +38,30 @@ public class SocialEnrollmentManager extends AbstractEnrollmentManager {
     }
 
     public boolean link(IdentityPerson p, String externalId) {
-        Set<String> set = new HashSet<>(p.getOxExternalUid());
+        Set<String> set = new HashSet<>(p.getJansExtUid());
         set.add(getFormatedAttributeVal(externalId));
         logger.info("Linked accounts for {} will be {}", p.getUid(), set);
 
-        p.setOxExternalUid(new ArrayList<>(set));
+        p.setJansExtUid(new ArrayList<>(set));
         return updatePerson(p);
     }
 
     public boolean remove(IdentityPerson p) {
         logger.info("Removing provider {} for {}", provider.getDisplayName(), p.getUid());
-        List<String> linked = removeProvider(provider, p.getOxExternalUid()).getY();
-        List<String> unlinked = removeProvider(provider, p.getOxUnlinkedExternalUids()).getY();
+        List<String> linked = removeProvider(provider, p.getJansExtUid()).getY();
+        List<String> unlinked = removeProvider(provider, p.getJansUnlinkedExternalUids()).getY();
         return updateExternalIdentities(p, linked, unlinked);
     }
 
     public boolean unlink(IdentityPerson p) {
 
         boolean success = false;
-        Pair<String, List<String>> tmp = removeProvider(provider, p.getOxExternalUid());
+        Pair<String, List<String>> tmp = removeProvider(provider, p.getJansExtUid());
         List<String> linked = tmp.getY();
         String oxExternalUid = tmp.getX();
 
         if (oxExternalUid != null) {
-            List<String> unlinked = new ArrayList<>(p.getOxUnlinkedExternalUids());
+            List<String> unlinked = new ArrayList<>(p.getJansUnlinkedExternalUids());
             unlinked.add(oxExternalUid);
 
             logger.info("Linked accounts for {} will be {}", p.getUid(), linked);
@@ -76,12 +76,12 @@ public class SocialEnrollmentManager extends AbstractEnrollmentManager {
     public boolean enable(IdentityPerson p) {
 
         boolean success = false;
-        Pair<String, List<String>> tmp = removeProvider(provider, p.getOxUnlinkedExternalUids());
+        Pair<String, List<String>> tmp = removeProvider(provider, p.getJansUnlinkedExternalUids());
         List<String> unlinked = tmp.getY();
         String oxExternalUid = tmp.getX();
 
         if (oxExternalUid != null) {
-            List<String> linked = new ArrayList<>(p.getOxExternalUid());
+            List<String> linked = new ArrayList<>(p.getJansExtUid());
             linked.add(oxExternalUid);
 
             logger.info("Linked accounts for {} will be {}", p.getUid(), linked);
@@ -120,14 +120,14 @@ public class SocialEnrollmentManager extends AbstractEnrollmentManager {
     }
 
     private boolean updateExternalIdentities(IdentityPerson p, List<String> linked, List<String> unlinked) {
-        p.setOxExternalUid(linked);
-        p.setOxUnlinkedExternalUids(unlinked);
+        p.setJansExtUid(linked);
+        p.setJansUnlinkedExternalUids(unlinked);
         return updatePerson(p);
     }
 
     public boolean isAssigned(String uid) {
         IdentityPerson p = new IdentityPerson();
-        p.setOxExternalUid(Collections.singletonList(getFormatedAttributeVal(uid)));
+        p.setJansExtUid(Collections.singletonList(getFormatedAttributeVal(uid)));
         p.setBaseDn(persistenceService.getPeopleDn());
         return persistenceService.count(p) > 0;
     }

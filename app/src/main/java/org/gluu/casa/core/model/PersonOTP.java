@@ -9,13 +9,13 @@ import java.util.List;
 import org.gluu.casa.misc.Utils;
 
 @DataEntry
-@ObjectClass("gluuPerson")
+@ObjectClass("jansPerson")
 public class PersonOTP extends BasePerson {
 
-    @AttributeName(name ="oxExternalUid")
+    @AttributeName(name ="jansExtUid")
     private List<String> externalUids;
 
-    @AttributeName(name = "oxOTPDevices")
+    @AttributeName(name = "jansOTPDevices")
     private String OTPDevices;
 
     public List<String> getExternalUids() {
