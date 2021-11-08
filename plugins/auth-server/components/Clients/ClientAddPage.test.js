@@ -29,14 +29,6 @@ const INIT_STATE = {
   config: {},
   backendIsUp: true,
 }
-
-const INIT_CLIENTS_STATE = {
-  items: [],
-  item: {},
-  view: false,
-  loading: false,
-}
-
 const INIT_SCPOPES_STATE = {
   items: [
     {
@@ -75,7 +67,7 @@ const Wrapper = ({ children }) => (
 )
 const emptyArray = []
 
-it('Should show the sidebar properly', () => {
+it('Should he client add page properly', () => {
   render(
     <ClientAddPage
       scopes={scopes}
