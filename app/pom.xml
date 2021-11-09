@@ -308,22 +308,21 @@
                 </configuration>
             </plugin>
 
-            <!-- Remove beans.xml from oxcore-service and oxcore-cache jars.
-            It allows disabling jar scanning by Weld. It produces lots of errors as is -->
+            <!-- Remove beans.xml from jans-core-service and jans-core-cache jars. -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>truezip-maven-plugin</artifactId>
                 <version>1.1</version>
                 <executions>
                     <execution>
-                        <id>remove-beans-file-oxcore-service</id>
+                        <id>remove-beans-file-jans-core-service</id>
                         <phase>package</phase>
                         <goals>
                             <goal>remove</goal>
                         </goals>
                         <configuration>
                             <fileset>
-                                <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/oxcore-service-${ox.version}.jar</directory>
+                                <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/jans-core-service-${jans.version}.jar</directory>
                                 <includes>
                                     <include>META-INF/beans.xml</include>
                                 </includes>
@@ -331,14 +330,14 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>remove-beans-file-oxcore-cache</id>
+                        <id>remove-beans-file-jans-core-cache</id>
                         <phase>package</phase>
                         <goals>
                             <goal>remove</goal>
                         </goals>
                         <configuration>
                             <fileset>
-                                <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/oxcore-cache-${ox.version}.jar</directory>
+                                <directory>${project.build.directory}/${project.build.finalName}.war/WEB-INF/lib/jans-core-cache-${jans.version}.jar</directory>
                                 <includes>
                                     <include>META-INF/beans.xml</include>
                                 </includes>
