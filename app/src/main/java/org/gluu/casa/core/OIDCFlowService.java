@@ -21,8 +21,6 @@ import java.io.IOException;
 
 import java.net.*;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -48,8 +46,6 @@ public class OIDCFlowService {
      */
     public static final List<String> REQUIRED_SCOPES = Arrays.asList("openid", "profile", "user_name", "clientinfo");
 
-    private static final Charset utf8 = StandardCharsets.UTF_8;
-
     @Inject
     private Logger logger;
 
@@ -60,7 +56,6 @@ public class OIDCFlowService {
     private MainSettings mainSettings;
 
     private OIDCSettings settings;
-    private ObjectMapper objectMapper;
 
     private String authzEndpoint;
     private String tokenEndpoint;
@@ -107,7 +102,7 @@ public class OIDCFlowService {
             if (response instanceof AuthenticationErrorResponse) {
                 error = response.toErrorResponse().getErrorObject();
 
-            } else if (!response.getState().equals(expectedState)) {
+            } else if (!response.getState().toString().equals(expectedState)) {
                 error = new ErrorObject("Unexpected authentication response");
 
             } else {
@@ -228,7 +223,6 @@ public class OIDCFlowService {
     @PostConstruct
     private void init() {
         settings = mainSettings.getOidcSettings();
-        objectMapper = new ObjectMapper();
         authzEndpoint = persistenceService.getAuthorizationEndpoint();
         tokenEndpoint = persistenceService.getTokenEndpoint();
         userInfoEndpoint = persistenceService.getUserInfoEndpoint();

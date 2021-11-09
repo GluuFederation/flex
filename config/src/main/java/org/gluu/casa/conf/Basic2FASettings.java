@@ -6,13 +6,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Basic2FASettings {
 
-	public static final int MIN_CREDS_2FA_DEFAULT = 2;
-	
-	private boolean autoEnable;
-	
-	private boolean allowSelfEnableDisable = true;
-	
-	private boolean allowSelectPreferred = true;
+    public static final int MIN_CREDS_2FA_DEFAULT = 2;
+
+    private boolean autoEnable;
+
+    private boolean allowSelfEnableDisable = true;
+
+    private boolean allowSelectPreferred = true;
 	
     @JsonProperty("min_creds")
     private Integer minCreds = MIN_CREDS_2FA_DEFAULT;
