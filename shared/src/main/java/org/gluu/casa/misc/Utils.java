@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides miscelaneous utilities.
+ * Provides miscellaneous utilities.
  * @author jgomer
  */
 public final class Utils {
@@ -35,7 +35,7 @@ public final class Utils {
     private static Logger LOG = LoggerFactory.getLogger(Utils.class);
     private static ObjectMapper MAPPER = new ObjectMapper();
     private static Tika tika = new Tika();    
-    private static final String SALT_FILE_LOCATION = "/etc/gluu/conf/salt";
+    private static final String SALT_FILE_LOCATION = "/etc/jans/conf/salt";
 
     private Utils() { }
 

@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author jgomer
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MainSettings {
 
@@ -30,7 +27,7 @@ public class MainSettings {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String extraCssSnippet;
 
-    @JsonProperty("oxd_config")
+    @JsonProperty("oidc_config")
     private OIDCSettings oidcSettings;
 
     @JsonProperty("allowed_cors_domains")
@@ -98,7 +95,7 @@ public class MainSettings {
         this.extraCssSnippet = extraCssSnippet;
     }
 
-    public void setOidcSettings(OIDCSettings oxdSettings) {
+    public void setOidcSettings(OIDCSettings oidcSettings) {
         this.oidcSettings = oidcSettings;
     }
 

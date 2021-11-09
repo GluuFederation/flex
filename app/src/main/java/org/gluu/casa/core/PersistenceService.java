@@ -40,7 +40,7 @@ public class PersistenceService implements IPersistenceService {
 
     private static final int RETRIES = 15;
     private static final int RETRY_INTERVAL = 15;
-    private static final String DEFAULT_CONF_BASE = "/etc/gluu/conf";
+    private static final String DEFAULT_CONF_BASE = "/etc/jans/conf";
 
     @Inject
     private Logger logger;
@@ -386,7 +386,7 @@ public class PersistenceService implements IPersistenceService {
         entryManager = null;
         stringEncrypter = Utils.stringEncrypter();
 
-        //load the configuration using the oxcore-persistence-cdi API
+        //load the configuration using the jans-core-persistence-cdi API
         logger.debug("Obtaining PersistenceEntryManagerFactory from persistence API");
         PersistenceConfiguration persistenceConf = persistanceFactoryService.loadPersistenceConfiguration();
         FileConfiguration persistenceConfig = persistenceConf.getConfiguration();
@@ -418,14 +418,14 @@ public class PersistenceService implements IPersistenceService {
             logger.error("No EntryManager could be obtained");
         } else {
 
-            try (Reader f = new FileReader(String.format("%s/gluu.properties", DEFAULT_CONF_BASE))) {
+            try (Reader f = new FileReader(String.format("%s/jans.properties", DEFAULT_CONF_BASE))) {
 
                 Properties generalProps = new Properties();
                 generalProps.load(f);
                 //Initialize important class members
                 ret = loadApplianceSettings(generalProps);
             } catch (Exception e) {
-                logger.error("Fatal: gluu.properties not readable", e);
+                logger.error("Fatal: jans.properties not readable", e);
             }
         }
 
