@@ -22,4 +22,5 @@ it('Should render the scope detail page properly', () => {
   screen.getByText(/Display Name/)
   screen.getByText(/Description/)
   screen.getByText(/Default Scope/)
+  screen.getByText(/attributes/)
 })
