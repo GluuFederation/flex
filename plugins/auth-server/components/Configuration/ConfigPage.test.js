@@ -5,8 +5,6 @@ import { combineReducers, createStore } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import authReducer from '../../../../app/redux/reducers/AuthReducer'
-import jsonConfigReducer from '../../redux/reducers/JsonConfigReducer'
 
 const config = {
   issuer: 'https://admin-ui-test.gluu.org',
