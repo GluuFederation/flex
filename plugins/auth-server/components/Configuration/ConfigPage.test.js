@@ -48,7 +48,7 @@ const config = {
   spontaneousScopeLifetime: 86400,
   openidSubAttribute: 'inum',
 
-  serviceDocumentation: 'http://jans.org/docs',
+  serviceDocumentation: 'https://jans.org/docs',
   claimsLocalesSupported: ['en'],
   idTokenTokenBindingCnfValuesSupported: ['tbh'],
   uiLocalesSupported: ['en', 'bg', 'de', 'es', 'fr', 'it', 'ru', 'tr'],
@@ -57,8 +57,8 @@ const config = {
   requestUriParameterSupported: true,
   requestUriHashVerificationEnabled: false,
   requireRequestUriRegistration: false,
-  opPolicyUri: 'http://www.jans.io/doku.php?id=jans:policy',
-  opTosUri: 'http://www.jans.io/doku.php?id=jans:tos',
+  opPolicyUri: 'https://www.jans.io/doku.php?id=jans:policy',
+  opTosUri: 'https://www.jans.io/doku.php?id=jans:tos',
   authorizationCodeLifetime: 60,
   refreshTokenLifetime: 14400,
   idTokenLifetime: 3600,
@@ -167,6 +167,8 @@ it('Should render json properties page properly', () => {
   waitFor(() => expect(screen.getByText(config.issuer)).toBeInTheDocument())
   expect(screen.getByTestId('issuer')).toHaveValue(config.issuer)
   expect(screen.getByTestId('baseEndpoint')).toHaveValue(config.baseEndpoint)
-  expect(screen.getByTestId('authorizationEndpoint')).toHaveValue(config.authorizationEndpoint)
+  expect(screen.getByTestId('authorizationEndpoint')).toHaveValue(
+    config.authorizationEndpoint,
+  )
   screen.getByText(/Base Endpoint:/)
 })
