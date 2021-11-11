@@ -44,6 +44,7 @@ function GluuTypeAheadForDn({
               )
             }}
             id={name}
+            data-testid={name}
             name={name}
             multiple={true}
             defaultSelected={value}

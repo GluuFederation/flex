@@ -71,6 +71,7 @@ function GluuInlineInput({
               {!isBoolean && !isArray && (
                 <Input
                   id={name}
+                  data-testid={name}
                   name={name}
                   type={type}
                   defaultValue={data}
@@ -82,6 +83,7 @@ function GluuInlineInput({
                   <CustomInput
                     type="select"
                     onChange={onValueChanged}
+                    data-testid={name}
                     id={name}
                     name={name}
                     defaultValue={value}
@@ -94,6 +96,7 @@ function GluuInlineInput({
               {isArray && (
                 <Typeahead
                   id={name}
+                  data-testid={name}
                   name={name}
                   allowNew
                   emptyLabel=""

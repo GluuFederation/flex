@@ -55,6 +55,7 @@ function GluuTypeAheadWithAdd({
               <Input
                 placeholder={placeholder}
                 id={inputId}
+                data-testid="new_entry"
                 aria-label="new_entry"
               />
             </Col>
@@ -72,6 +73,7 @@ function GluuTypeAheadWithAdd({
             }}
             id={name}
             name={name}
+            data-testid={name}
             multiple={true}
             selected={items}
             options={opts}

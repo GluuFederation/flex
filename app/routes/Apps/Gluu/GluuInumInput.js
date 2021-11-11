@@ -12,6 +12,7 @@ function GluuInumInput({ label, name, value, lsize, rsize, doc_category }) {
           <Input
             style={{ backgroundColor: '#F5F5F5' }}
             id={name}
+            data-testid={name}
             name={name}
             disabled
             value={value}
