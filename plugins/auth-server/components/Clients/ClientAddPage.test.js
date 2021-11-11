@@ -67,7 +67,7 @@ const Wrapper = ({ children }) => (
 )
 const emptyArray = []
 
-it('Should he client add page properly', () => {
+it('Should render client add page properly', () => {
   render(
     <ClientAddPage
       scopes={scopes}

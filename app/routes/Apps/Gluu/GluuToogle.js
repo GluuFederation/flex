@@ -4,6 +4,7 @@ function GluuToogle({ name, formik, value, handler}) {
   return (
     <Toggle
       name={name}
+      data-testid={name}
       defaultChecked={value}
       onClick={handler}
       onChange={formik.handleChange}

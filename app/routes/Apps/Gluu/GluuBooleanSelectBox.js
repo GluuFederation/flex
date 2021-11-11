@@ -24,6 +24,7 @@ function GluuBooleanSelectBox({
               type="select"
               id={name}
               name={name}
+              data-testid={name}
               defaultValue={value}
               onChange={formik.handleChange}
             >

@@ -43,6 +43,7 @@ function GluuTypeAhead({
               formik.setFieldValue(name, selected)
             }}
             id={name}
+            data-testid={name}
             name={name}
             multiple={true}
             defaultSelected={value}
