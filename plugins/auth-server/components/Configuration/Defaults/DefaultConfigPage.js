@@ -48,7 +48,6 @@ const mapStateToProps = (state) => {
   return {
     configuration: state.jsonConfigReducer.configuration,
     permissions: state.authReducer.permissions,
-    loading: state.smtpReducer.loading,
   }
 }
 
