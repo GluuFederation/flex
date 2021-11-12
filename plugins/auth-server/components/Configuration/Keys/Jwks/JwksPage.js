@@ -6,10 +6,8 @@ import GluuLabel from '../../../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuLoader from '../../../../../../app/routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'
 import JwkItem from './JwkItem'
-import { useTranslation } from 'react-i18next'
 
 function JwksPage({ jwks, loading, dispatch }) {
-  const { t } = useTranslation()
   useEffect(() => {
     dispatch(getJwks())
   }, [])

@@ -22,7 +22,6 @@ function ConfigPage({ configuration, loading, dispatch }) {
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState([])
   const [showExitPrompt, setShowExitPrompt] = useExitPrompt(true)
-  console.log(JSON.stringify(configuration))
   useEffect(() => {
     buildPayload(userAction, FETCHING_JSON_PROPERTIES, {})
     dispatch(getJsonConfig())
