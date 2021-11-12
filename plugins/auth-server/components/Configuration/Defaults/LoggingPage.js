@@ -26,6 +26,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 function LoggingPage({ logging, dispatch, permissions, loading }) {
+  console.log(JSON.stringify(logging))
   const { t } = useTranslation()
   useEffect(() => {
     dispatch(getLoggingConfig())
@@ -75,6 +76,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                       type="select"
                       id="loggingLevel"
                       name="loggingLevel"
+                      data-testid="loggingLevel"
                       value={logging.loggingLevel}
                       onChange={(e) => {
                         logging.loggingLevel = e.target.value
@@ -99,6 +101,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                       type="select"
                       id="loggingLayout"
                       name="loggingLayout"
+                      data-testid="loggingLayout"
                       value={logging.loggingLayout}
                       onChange={(e) => {
                         logging.loggingLayout = e.target.value

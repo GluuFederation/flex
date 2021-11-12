@@ -57,6 +57,7 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
                       type="select"
                       id="defaultAcr"
                       name="defaultAcr"
+                      data-testid="defaultAcr"
                       value={acrs.defaultAcr}
                       onChange={(e) => {
                         acrs.defaultAcr = e.target.value
@@ -90,9 +91,9 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
 const mapStateToProps = (state) => {
   return {
     acrs: state.acrReducer.acrs,
+    loading: state.acrReducer.loading,
     permissions: state.authReducer.permissions,
     scripts: state.customScriptReducer.items,
-    loading: state.acrReducer.loading,
   }
 }
 
