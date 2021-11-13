@@ -29,7 +29,7 @@ function GluuProperties({
   const removeProperty = (position) => {
     const data = [...properties]
     delete data[position]
-    data.filter((element) => element != null)
+    data = data.filter((element) => element != null)
     setProperties(data)
     formik.setFieldValue(
       compName,

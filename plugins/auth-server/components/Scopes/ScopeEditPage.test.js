@@ -10,8 +10,8 @@ import authReducer from '../../../../app/redux/reducers/AuthReducer'
 import attributeReducer from '../../../schema/redux/reducers/AttributeReducer'
 import customScriptReducer from '../../../admin/redux/reducers/CustomScriptReducer'
 import scopeReducer from '../../redux/reducers/ScopeReducer'
+import scopes from './scopes'
 
-const scopes = []
 const permissions = [
   'https://jans.io/oauth/config/scopes.readonly',
   'https://jans.io/oauth/config/scopes.write',

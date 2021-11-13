@@ -10,8 +10,8 @@ import authReducer from '../../../../app/redux/reducers/AuthReducer'
 import attributeReducer from '../../../schema/redux/reducers/AttributeReducer'
 import customScriptReducer from '../../../admin/redux/reducers/CustomScriptReducer'
 import scopeReducer from '../../redux/reducers/ScopeReducer'
+import scopes from './scopes'
 
-const scopes = []
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
   'https://jans.io/oauth/config/openid/clients.write',
@@ -61,7 +61,7 @@ const Wrapper = ({ children }) => (
 
 it('Should render the scope add page properly', () => {
   render(
-    <ScopeAddPage scopes={scopes} permissions={permissions} scopes={[]} />,
+    <ScopeAddPage permissions={permissions} scopes={[]} />,
     { wrapper: Wrapper },
   )
   screen.getByText(/Display Name/)

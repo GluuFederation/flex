@@ -18,7 +18,7 @@ import {
 } from '../../../../app/components'
 import GluuDarkModeToggle from '../../../../app/routes/Apps/Gluu/GluuDarkModeToggle'
 
-function SettingsPage({}) {
+function SettingsPage() {
   const { t } = useTranslation()
   const [paggingSize, setPaggingSize] = useState(
     localStorage.getItem('paggingSize') || 10,
