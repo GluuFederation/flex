@@ -9,6 +9,7 @@ it('Should show the input with proper text', () => {
     const NAME = 'application_type'
     const VALUE = 'Public'
     function handler(){
+      console.log("========");
     }
     render(
       <I18nextProvider i18n={i18n}>

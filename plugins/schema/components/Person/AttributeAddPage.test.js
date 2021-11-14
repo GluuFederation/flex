@@ -1,12 +1,10 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import AttributeAddPage from './AttributeAddPage'
-import { combineReducers } from 'redux'
-import { createStore } from 'redux'
+import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import attributeReducer from '../../../schema/redux/reducers/AttributeReducer'
 
 const permissions = [
   'https://jans.io/oauth/config/attributes.readonly',
@@ -14,11 +12,6 @@ const permissions = [
   'https://jans.io/oauth/config/attributes.delete',
 ]
 const INIT_STATE = {
-  isAuthenticated: false,
-  userinfo: null,
-  userinfo_jwt: null,
-  token: null,
-  issuer: null,
   permissions: permissions,
 }
 const INIT_ATTRIBUTE_STATE = {
@@ -57,10 +50,7 @@ const Wrapper = ({ children }) => (
 )
 
 it('Should render the attribute add page properly', () => {
-  render(
-    <AttributeAddPage/>,
-    { wrapper: Wrapper },
-  )
+  render(<AttributeAddPage />, { wrapper: Wrapper })
   screen.getByText(/Display Name/)
   screen.getByText(/Description/)
   screen.getByText(/Status/)

@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react'
 import {
-  hasPermission,
   buildPayload,
-  CLIENT_WRITE,
-  CLIENT_READ,
-  CLIENT_DELETE,
 } from '../../../../app/utils/PermChecker'
 import {
   Container,

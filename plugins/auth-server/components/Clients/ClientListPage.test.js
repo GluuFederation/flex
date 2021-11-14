@@ -8,9 +8,6 @@ import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import clients from './clients'
 import { I18nextProvider } from 'react-i18next'
-import authReducer from '../../../../app/redux/reducers/AuthReducer'
-import oidcReducer from '../../redux/reducers/OIDCReducer'
-import scopeReducer from '../../redux/reducers/ScopeReducer'
 
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
@@ -18,15 +15,7 @@ const permissions = [
   'https://jans.io/oauth/config/openid/clients.delete',
 ]
 const INIT_STATE = {
-  isAuthenticated: false,
-  userinfo: null,
-  userinfo_jwt: null,
-  token: null,
-  issuer: null,
   permissions: permissions,
-  location: {},
-  config: {},
-  backendIsUp: true,
 }
 
 const INIT_CLIENTS_STATE = {
@@ -57,8 +46,8 @@ const INIT_SCPOPES_STATE = {
 const store = createStore(
   combineReducers({
     authReducer: (state = INIT_STATE) => state,
-    oidcReducer: (state = INIT_SCPOPES_STATE) => state,
-    scopeReducer,
+    oidcReducer: (state = INIT_CLIENTS_STATE) => state,
+    scopeReducer: (state = INIT_SCPOPES_STATE) => state,
     noReducer: (state = {}) => state,
   }),
 )
@@ -70,17 +59,9 @@ const Wrapper = ({ children }) => (
     </Provider>
   </I18nextProvider>
 )
-const emptyArray = []
 
 it('Should show the sidebar properly', () => {
-  render(
-    <ClientListPage
-      clients={emptyArray}
-      permissions={permissions}
-      scopes={emptyArray}
-    />,
-    { wrapper: Wrapper },
-  )
+  render(<ClientListPage />, { wrapper: Wrapper })
   screen.getByText(/OIDC Clients/)
   screen.getByTitle('Add Client')
   screen.getByText(/refresh/)
