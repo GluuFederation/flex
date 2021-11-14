@@ -13,11 +13,6 @@ const permissions = [
   'https://jans.io/oauth/config/attributes.delete',
 ]
 const INIT_STATE = {
-  isAuthenticated: false,
-  userinfo: null,
-  userinfo_jwt: null,
-  token: null,
-  issuer: null,
   permissions: permissions,
 }
 const INIT_ATTRIBUTE_STATE = {
@@ -40,10 +35,7 @@ const Wrapper = ({ children }) => (
 )
 
 it('Should render the attribute edit page properly', () => {
-  render(
-    <AttributeEditPage item={attributes[0]}/>,
-    { wrapper: Wrapper },
-  )
+  render(<AttributeEditPage />, { wrapper: Wrapper })
   screen.getByText(/Display Name/)
   screen.getByText(/Description/)
   screen.getByText(/Status/)

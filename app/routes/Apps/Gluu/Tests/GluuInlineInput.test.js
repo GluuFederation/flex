@@ -9,7 +9,9 @@ let NAME = 'application_type'
 let VALUE = true
 
 it('Should render a boolean select box', () => {
-  function handler() {}
+  function handler() {
+    console.log("========");
+  }
   render(
     <I18nextProvider i18n={i18n}>
       <GluuInlineInput

@@ -1,14 +1,11 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import ScopeListPage from './ScopeListPage'
-import { combineReducers } from 'redux'
-import { createStore } from 'redux'
+import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import scopes from './scopes'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import authReducer from '../../../../app/redux/reducers/AuthReducer'
-import scopeReducer from '../../redux/reducers/ScopeReducer'
 
 const permissions = [
   'https://jans.io/oauth/config/scopes.readonly',
@@ -16,11 +13,6 @@ const permissions = [
   'https://jans.io/oauth/config/scopes.delete',
 ]
 const INIT_STATE = {
-  isAuthenticated: false,
-  userinfo: null,
-  userinfo_jwt: null,
-  token: null,
-  issuer: null,
   permissions: permissions,
 }
 
@@ -44,7 +36,7 @@ const Wrapper = ({ children }) => (
 )
 
 it('Should render the scope list page properly', () => {
-  render(<ScopeListPage scopes={scopes} permissions={permissions} />, {
+  render(<ScopeListPage />, {
     wrapper: Wrapper,
   })
   const inum = scopes[0].inum
