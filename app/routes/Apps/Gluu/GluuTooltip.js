@@ -7,7 +7,7 @@ function GluuTooltip(props) {
   return (
     <div data-tip data-for={props.doc_entry}>
       {props.children}
-      <ReactTooltip html type="success" id={props.doc_entry} place="bottom">
+      <ReactTooltip html type="success" id={props.doc_entry} data-testid={props.doc_entry} place="bottom">
         {t('documentation.' + props.doc_category + '.' + props.doc_entry)}
       </ReactTooltip>
     </div>

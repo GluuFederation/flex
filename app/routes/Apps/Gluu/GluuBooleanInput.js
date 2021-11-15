@@ -16,6 +16,7 @@ function GluuBooleanInput({ label, name, value, lsize, rsize, doc_category }) {
               type="select"
               id={name}
               name={name}
+              data-testid={name}
               defaultValue={value}
             >
               <option value="false">{t('options.false')}</option>

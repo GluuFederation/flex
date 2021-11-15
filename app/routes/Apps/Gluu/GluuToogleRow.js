@@ -21,6 +21,7 @@ function GluuToogleRow({
         <Col sm={rsize}>
           <GluuToogle
             id={name}
+            data-testid={name}
             name={name}
             handler={handler}
             formik={formik}

@@ -67,6 +67,7 @@ function GluuAutoCompleteWithAdd({
             }}
             id={name}
             name={name}
+            data-testid={name}
             multiple={true}
             selected={items}
             options={opts}

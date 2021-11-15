@@ -21,12 +21,13 @@ function GluuCustomScriptSearch({
         style={{ width: '80px' }}
         id={limitId}
         type="number"
+        data-testid={limitId}
         onChange={handler}
         defaultValue={limit}
       />
       &nbsp;
       <InputGroup style={{ width: '210px' }}>
-        <CustomInput type="select" id={typeId} onChange={handler}>
+        <CustomInput type="select"   data-testid={typeId}  id={typeId} onChange={handler}>
           <option>PERSON_AUTHENTICATION</option>
           <option>INTROSPECTION</option>
           <option>RESOURCE_OWNER_PASSWORD_CREDENTIALS</option>
@@ -57,6 +58,7 @@ function GluuCustomScriptSearch({
         style={{ width: '180px' }}
         id={patternId}
         type="text"
+        data-testid={patternId}
         onChange={handler}
         placeholder={t("placeholders.search_pattern")}
       />

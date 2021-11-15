@@ -24,6 +24,7 @@ function GluuSelectRow({
             <CustomInput
               type="select"
               id={name}
+              data-testid={name}
               name={name}
               defaultValue={value}
               onChange={formik.handleChange}

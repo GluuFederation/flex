@@ -20,6 +20,7 @@ function GluuInputRow({
         <Col sm={rsize}>
           <Input
             id={name}
+            data-testid={name}
             type={type}
             name={name}
             defaultValue={value}

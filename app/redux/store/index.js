@@ -1,7 +1,4 @@
-/**
- * Redux Store
- */
-import { createStore, applyMiddleware, compose } from 'redux'
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import appReducers from '../reducers'
 import RootSaga from '../sagas'
@@ -9,13 +6,10 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 import reducerRegistry from '../reducers/ReducerRegistry'
-import { combineReducers } from 'redux'
 import process from '../../../plugins/PluginReducersResolver'
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware()
-
 const middlewares = [sagaMiddleware]
-
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const persistConfig = {
@@ -25,14 +19,14 @@ const persistConfig = {
 }
 
 // Preserve initial state for not-yet-loaded reducers
-const combine = (reducers) => {
-  const reducerNames = Object.keys(reducers)
+const combine = (reducersObjects) => {
+  const reducerNames = Object.keys(reducersObjects)
   Object.keys(appReducers).forEach((item) => {
     if (reducerNames.indexOf(item) === -1) {
-      reducers[item] = (state = null) => state
+      reducersObjects[item] = (state = null) => state
     }
   })
-  return combineReducers(reducers)
+  return combineReducers(reducersObjects)
 }
 
 const reducers = combine(reducerRegistry.getReducers())

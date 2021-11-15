@@ -19,35 +19,65 @@ function JwkItem({ item, index }) {
         <FormGroup row>
           <GluuLabel label="crv" size={1} />
           <Col sm={2}>
-            <Input id="crv" name="crv" defaultValue={item.crv} />
+            <Input
+              id="crv"
+              data-testid="crv"
+              name="crv"
+              defaultValue={item.crv}
+            />
           </Col>
           <GluuLabel label="exp" size={1} />
           <Col sm={3}>
-            <Input id="exp" name="exp" defaultValue={item.exp} />
+            <Input
+              id="exp"
+              data-testid="exp"
+              name="exp"
+              defaultValue={item.exp}
+            />
           </Col>
           <GluuLabel label="use" size={1} />
           <Col sm={2}>
-            <Input id="use" name="use" defaultValue={item.use} />
+            <Input
+              id="use"
+              data-testid="use"
+              name="use"
+              defaultValue={item.use}
+            />
           </Col>
         </FormGroup>
         <FormGroup row>
           <GluuLabel label="kty" size={1} />
           <Col sm={2}>
-            <Input id="kty" name="kty" defaultValue={item.kty} />
+            <Input
+              id="kty"
+              data-testid="kty"
+              name="kty"
+              defaultValue={item.kty}
+            />
           </Col>
           <GluuLabel label="alg" size={1} />
           <Col sm={2}>
-            <Input id="alg" name="alg" defaultValue={item.alg} />
+            <Input
+              id="alg"
+              data-testid="alg"
+              name="alg"
+              defaultValue={item.alg}
+            />
           </Col>
           <GluuLabel label="e" size={1} />
           <Col sm={2}>
-            <Input id="e" name="e" defaultValue={item.e} />
+            <Input id="e" data-testid="e" name="e" defaultValue={item.e} />
           </Col>
         </FormGroup>
         <FormGroup row>
           <GluuLabel label="kid" size={1} />
           <Col sm={6}>
-            <Input id="kid" name="kid" defaultValue={item.kid} />
+            <Input
+              id="kid"
+              data-testid="kid"
+              name="kid"
+              defaultValue={item.kid}
+            />
           </Col>
         </FormGroup>
         <FormGroup row>
@@ -56,6 +86,7 @@ function JwkItem({ item, index }) {
             <Input
               id="x5c"
               type="textarea"
+              data-testid="x5c"
               name="x5c"
               defaultValue={item.x5c}
             />
@@ -65,11 +96,23 @@ function JwkItem({ item, index }) {
           <FormGroup row>
             <GluuLabel label="x" size={1} />
             <Col sm={5}>
-              <Input id="x" type="textarea" name="x" defaultValue={item.x} />
+              <Input
+                id="x"
+                data-testid="x"
+                type="textarea"
+                name="x"
+                defaultValue={item.x}
+              />
             </Col>
             <GluuLabel label="y" size={1} />
             <Col sm={5}>
-              <Input id="y" type="textarea" name="y" defaultValue={item.y} />
+              <Input
+                id="y"
+                data-testid="y"
+                type="textarea"
+                name="y"
+                defaultValue={item.y}
+              />
             </Col>
           </FormGroup>
         )}
@@ -77,7 +120,13 @@ function JwkItem({ item, index }) {
           <FormGroup row>
             <GluuLabel label="n" size={1} />
             <Col sm={11}>
-              <Input id="n" type="textarea" name="n" defaultValue={item.n} />
+              <Input
+                id="n"
+                data-testid="n"
+                type="textarea"
+                name="n"
+                defaultValue={item.n}
+              />
             </Col>
           </FormGroup>
         )}

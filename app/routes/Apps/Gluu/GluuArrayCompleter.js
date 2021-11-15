@@ -40,6 +40,7 @@ function GluuArrayCompleter({
             onChange={(selected) => {}}
             id={name}
             name={name}
+            data-testid={name}
             multiple={true}
             defaultSelected={value}
             options={options}

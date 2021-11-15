@@ -19,7 +19,7 @@ const getLogoUrlBackground = (style, color) => {
   if (style === 'color') {
     return logos['default'];
   } else {
-    return getLogoUrl(style, color);
+    return getLogoUrl();
   }
 };
 
@@ -32,7 +32,7 @@ const LogoThemed = ({ checkBackground, className, ...otherProps }) => (
             src={
               checkBackground ?
                 getLogoUrlBackground(style, color) :
-                getLogoUrl(style, color)
+                getLogoUrl()
             }
             className={ classNames('d-block', className) }
             alt="Jans admin ui Logo"
