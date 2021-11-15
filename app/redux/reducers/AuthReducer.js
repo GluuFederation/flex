@@ -1,6 +1,3 @@
-/**
- * Auth Reducers
- */
 import {
   GET_OAUTH2_CONFIG,
   GET_OAUTH2_CONFIG_RESPONSE,
@@ -40,10 +37,6 @@ export default function authReducer(state = INIT_STATE, action) {
         return {
           ...state,
           location: action.payload.location,
-        }
-      } else {
-        return {
-          ...state,
         }
       }
     case GET_OAUTH2_CONFIG:
@@ -97,10 +90,6 @@ export default function authReducer(state = INIT_STATE, action) {
           issuer: action.payload.accessToken.issuer,
           permissions: action.payload.accessToken.scopes,
           isAuthenticated: true,
-        }
-      } else {
-        return {
-          ...state,
         }
       }
 

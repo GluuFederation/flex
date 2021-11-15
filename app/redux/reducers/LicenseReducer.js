@@ -56,6 +56,7 @@ export default function licenseReducer(state = INIT_STATE, action) {
     default:
       return {
         ...state,
+        islicenseCheckResultLoaded: false,
       }
   }
 }
