@@ -3,9 +3,8 @@ export default class HealthApi {
     this.api = api
   }
 
-  // Get maximum actives users
-  getHealthStatus = (opts) => {
-    opts['format'] = 'json'
+  // Get Health Status
+  getHealthStatus = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigHealthReady( (error, data) => {
         if (error) {

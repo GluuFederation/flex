@@ -8,7 +8,7 @@ import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
 import { postUserAction} from '../../../../app/redux/api/backend-api'
 import { GET_HEALTH } from '../actions/types'
 import HealthApi from '../api/HealthApi'
-import { getJansUIClient } from '../../../../app/redux/api/base'
+import { getClient } from '../../../../app/redux/api/base'
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
@@ -16,7 +16,7 @@ function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.AuthServerHealthCheckApi(
-    getJansUIClient(JansConfigApi, token, issuer),
+    getClient(JansConfigApi, token, issuer),
   )
   return new HealthApi(api)
 }

@@ -16,12 +16,10 @@ import {
 import { connect } from 'react-redux'
 import { getHealthStatus } from '../../redux/actions/HealthAction'
 
-function HealthPage({ serverStatus, dbStatus, permissions, loading, dispatch }) {
+function HealthPage({ serverStatus, dbStatus, dispatch }) {
   const { t } = useTranslation()
   const userAction = {}
   const options = {}
-
-  console.log('Health Status', status)
 
   useEffect(() => {
     buildPayload(userAction, 'GET Health Status', options)
