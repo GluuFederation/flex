@@ -1,13 +1,10 @@
 import React from 'react'
-import { Col, Container, FormGroup, Input } from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import { Col, Container, FormGroup} from '../../../../app/components'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
-import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientEncryptionPanel({ client, formik, oidcConfiguration }) {
-  const { t } = useTranslation()
   const accessTokenSigningAlg = !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
     ? oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
     : []

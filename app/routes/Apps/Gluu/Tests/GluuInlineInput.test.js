@@ -32,7 +32,6 @@ it('Should render a boolean select box', () => {
 it('Should render a typeahead component with array', () => {
   VALUE = ['Two']
   const options = ['One', 'Two', 'Three']
-
   render(
     <I18nextProvider i18n={i18n}>
       <GluuInlineInput

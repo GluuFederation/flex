@@ -22,8 +22,8 @@ export class Accordion extends React.Component {
       };
 
       if (props.open !== 'undefined' && props.onToggle === 'undefined') {
-        throw "Accordion: props.open has to be used combined with props.onToggle " +
-                "use props.initialOpen to create an uncontrolled Accordion.";
+        throw new Error("Accordion: props.open has to be used combined with props.onToggle " +
+                "use props.initialOpen to create an uncontrolled Accordion.");
       }
     }
 

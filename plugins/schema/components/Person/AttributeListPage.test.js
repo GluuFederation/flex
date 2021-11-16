@@ -6,7 +6,6 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import attributeReducer from '../../../schema/redux/reducers/AttributeReducer'
 import attributes from './attributes'
 
 const permissions = [
@@ -15,11 +14,6 @@ const permissions = [
   'https://jans.io/oauth/config/attributes.delete',
 ]
 const INIT_STATE = {
-  isAuthenticated: false,
-  userinfo: null,
-  userinfo_jwt: null,
-  token: null,
-  issuer: null,
   permissions: permissions,
 }
 
@@ -43,7 +37,7 @@ const Wrapper = ({ children }) => (
 )
 
 it('Should render the attribute list page properly', () => {
-  render(<AttributeListPage attributes={attributes}/>, {
+  render(<AttributeListPage />, {
     wrapper: Wrapper,
   })
   const inum = attributes[0].inum
