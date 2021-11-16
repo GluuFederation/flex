@@ -1,5 +1,12 @@
 import React, { Component, useState, useEffect } from 'react'
-import { Button, Card, CardFooter, CardBody, Label, Input } from '../../../app/components'
+import {
+  Button,
+  Card,
+  CardFooter,
+  CardBody,
+  Label,
+  Input,
+} from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import {
@@ -51,27 +58,27 @@ class MonthBox extends Component {
     this.props.onClick && this.props.onClick(e)
   }
 }
-function prepending(n){
-  return n > 9 ? "" + n: "0" + n;
+function prepending(n) {
+  return n > 9 ? '' + n : '0' + n
 }
 function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const userAction = {}
   const options = {}
   const currentDate = new Date()
-  const selectionRange = {
-    startDate: new Date(),
-    endDate: new Date(),
-    key: 'selection',
-  }
-  const [average, setAverage] = useState(0)
   const [showAuthCodeATGraph, setShowAuthCodeATGraph] = useState(true)
-  const [showClientCredentialATGraph, setShowClientCredentialATGraph] = useState(true)
+  const [
+    showClientCredentialATGraph,
+    setShowClientCredentialATGraph,
+  ] = useState(true)
 
   const pickRange2 = React.createRef()
   const [rangeValue2, setRangeValue2] = useState({
-    from: { year: currentDate.getFullYear(), month: currentDate.getMonth()-3 },
-    to: { year: currentDate.getFullYear(), month: currentDate.getMonth()+1 },
+    from: {
+      year: currentDate.getFullYear(),
+      month: currentDate.getMonth() - 3,
+    },
+    to: { year: currentDate.getFullYear(), month: currentDate.getMonth() + 1 },
   })
   const pickerLang = {
     months: [
@@ -93,9 +100,15 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
   }
 
   useEffect(() => {
-    let initialMonths = currentDate.getFullYear().toString() + prepending(currentDate.getMonth()+1)
-    for(let i = 0; i < 4; i ++) {
-      initialMonths = initialMonths + '%20' + currentDate.getFullYear().toString() + prepending(currentDate.getMonth()-i)
+    let initialMonths =
+      currentDate.getFullYear().toString() +
+      prepending(currentDate.getMonth() + 1)
+    for (let i = 0; i < 4; i++) {
+      initialMonths =
+        initialMonths +
+        '%20' +
+        currentDate.getFullYear().toString() +
+        prepending(currentDate.getMonth() - i)
     }
     options['month'] = initialMonths
     buildPayload(userAction, 'GET MAU', options)
@@ -139,10 +152,12 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
             color: 'black',
           }}
         >
-          <p className="label">{`${t('fields.month')} : ${label % 100}/${Math.floor(
-            label / 100,
-          )}`}</p>
-          <p className="label">{`${t('fields.monthly_active_users')} : ${payload[0].value}`}</p>
+          <p className="label">{`${t('fields.month')} : ${
+            label % 100
+          }/${Math.floor(label / 100)}`}</p>
+          <p className="label">{`${t('fields.monthly_active_users')} : ${
+            payload[0].value
+          }`}</p>
         </div>
       )
     }
@@ -162,11 +177,15 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
             color: 'black',
           }}
         >
-          <p className="label">{`${t('fields.month')} : ${label % 100}/${Math.floor(
-            label / 100,
-          )}`}</p>
-          <p className="label">{`${t('fields.authorization_code_access_token')} : ${payload[0].value}`}</p>
-          <p className="label">{`${t('fields.client_credentials_access_token')} : ${payload[1].value}`}</p>
+          <p className="label">{`${t('fields.month')} : ${
+            label % 100
+          }/${Math.floor(label / 100)}`}</p>
+          <p className="label">{`${t(
+            'fields.authorization_code_access_token',
+          )} : ${payload[0].value}`}</p>
+          <p className="label">{`${t(
+            'fields.client_credentials_access_token',
+          )} : ${payload[1].value}`}</p>
         </div>
       )
     }
@@ -181,7 +200,9 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const _handleClickRangeBox2 = (e) => {
     pickRange2.current.show()
   }
-  const handleRangeChange2 = (value, text, listIndex) => {}
+  const handleRangeChange2 = () => {
+    console.log('')
+  }
   const handleRangeDissmis2 = (value) => {
     setRangeValue2(value)
   }
@@ -194,8 +215,6 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
     }
     return (sum / length).toFixed(2)
   }
-  
-  
 
   return (
     <GluuLoader blocking={loading}>
@@ -208,7 +227,6 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
               className="d-flex flex-column justify-content-center align-items-center pt-5"
               style={{ minHeight: '400px' }}
             >
-             
               <div className="d-flex justify-content-center align-items-center mb-3">
                 <Picker
                   ref={pickRange2}
@@ -238,10 +256,15 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   {t('actions.view')}
                 </Button>
                 <Label className="h4">
-                  {t('fields.average_of_mau')}{arrAvg(Object.values(stat))}
+                  {t('fields.average_of_mau')}
+                  {arrAvg(Object.values(stat))}
                 </Label>
               </div>
-              <ResponsiveContainer className="mau-graph" width="80%" height={500}>
+              <ResponsiveContainer
+                className="mau-graph"
+                width="80%"
+                height={500}
+              >
                 <LineChart height={300} data={Object.values(stat)}>
                   <Line
                     name={t('fields.monthly_active_users')}
@@ -261,7 +284,11 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   <Legend />
                 </LineChart>
               </ResponsiveContainer>
-              <ResponsiveContainer className="token-graph" width="80%" height={500} >
+              <ResponsiveContainer
+                className="token-graph"
+                width="80%"
+                height={500}
+              >
                 <LineChart height={300} data={Object.values(stat)}>
                   {showAuthCodeATGraph && (
                     <Line
@@ -316,7 +343,9 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                     type="checkbox"
                     checked={showClientCredentialATGraph}
                     onClick={(e) => {
-                      setShowClientCredentialATGraph(!showClientCredentialATGraph)
+                      setShowClientCredentialATGraph(
+                        !showClientCredentialATGraph,
+                      )
                     }}
                   />
                   <div className="state p-primary">

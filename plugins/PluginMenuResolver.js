@@ -1,7 +1,4 @@
 import plugins from '../plugins.config'
-
-//get all metadata path
-
 export function processMenus() {
   let pluginMenus = []
   plugins
@@ -10,7 +7,7 @@ export function processMenus() {
       pluginMenus = pluginMenus.concat(require(`${path}`).default.menus)
     })
 
-    pluginMenus= sortMenu(pluginMenus)
+  pluginMenus = sortMenu(pluginMenus)
 
   return pluginMenus
 }
@@ -24,42 +21,22 @@ export function processRoutes() {
   return pluginRoutes
 }
 
-const sortMenu= (menu) => {
-  menu= sortParentMenu(menu)
-  //menu= sortChildMenu(menu)
-
+const sortMenu = (menu) => {
+  menu = sortParentMenu(menu)
   return menu
 }
 
-const sortParentMenu= (menu) => {
-
-  menu.sort( (a, b) => {
-    var titleA = a.title.toUpperCase();
-    var titleB = b.title.toUpperCase();
+const sortParentMenu = (menu) => {
+  menu.sort((a, b) => {
+    var titleA = a.title.toUpperCase()
+    var titleB = b.title.toUpperCase()
     if (titleA < titleB) {
-      return -1;
+      return -1
     }
     if (titleA > titleB) {
-      return 1;
+      return 1
     }
-    return 0;
-  });
-
-  return menu
-
-}
-
-const sortChildMenu= (menu) => {
-  
-  menu.map( item => {
-    if(item.children){
-      item.children= sortParentMenu(item.children)
-    }
-    item.children.map( subItem => {
-      if(subItem.children){
-        subItem.children= sortParentMenu(subItem.children)
-      }
-    })
+    return 0
   })
 
   return menu

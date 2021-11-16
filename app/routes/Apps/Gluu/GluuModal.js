@@ -11,10 +11,6 @@ import { useTranslation } from 'react-i18next'
 
 function GluuModal({ title, modal, handler, onAccept }) {
   const { t } = useTranslation()
-  let uri = ''
-  function savePress(e) {
-    uri = document.getElementById('uri').value
-  }
   return (
     <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
       <ModalHeader toggle={handler}>

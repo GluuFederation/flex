@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Container } from './../components'
 import GluuNotification from './../routes/Apps/Gluu/GluuNotification'
 import GluuCommitDialog from '../../app/routes/Apps/Gluu/GluuCommitDialog'
@@ -6,9 +6,6 @@ import { useTranslation } from 'react-i18next'
 
 function ViewRedirect({ backendIsUp, isLicenseValid, activateLicense, redirectUrl, islicenseCheckResultLoaded, isLicenseActivationResultLoaded }) {
   const { t } = useTranslation()
-  //const [licensePresent, setLicensePresent] = useState(isLicenseValid)
-  //const [isLoading, setIsLoading] = useState(false);
-
   function submitForm(message) {
     activateLicense(message.trim());
   }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ViewRedirect from './ViewRedirect'
 import { withRouter } from 'react-router'
-import { saveState, isValidState } from './TokenController'
+import { saveState } from './TokenController'
 import queryString from 'query-string'
 import { uuidv4 } from './Util'
 import { connect } from 'react-redux'
@@ -41,9 +41,8 @@ class AppAuthProvider extends Component {
       console.warn('Parameters to process authz code flow are missing.')
       return
     }
-    const url = `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}
+    return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}
      &redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`
-    return url
   }
   constructor() {
     super()
@@ -55,7 +54,7 @@ class AppAuthProvider extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-   if (window.location.href.indexOf('logout') > -1) {
+    if (window.location.href.indexOf('logout') > -1) {
       return { showContent: true }
     }
     if (!props.isLicenseValid) {
@@ -106,14 +105,18 @@ class AppAuthProvider extends Component {
       <React.Fragment>
         <SessionTimeout isAuthenticated={showContent} />
         {showContent && this.props.children}
-        {!showContent &&
-          <ViewRedirect backendIsUp={this.props.backendIsUp}
+        {!showContent && (
+          <ViewRedirect
+            backendIsUp={this.props.backendIsUp}
             isLicenseValid={this.props.isLicenseValid}
             activateLicense={this.props.activateLicense}
             redirectUrl={this.props.config.redirectUrl}
             islicenseCheckResultLoaded={this.props.islicenseCheckResultLoaded}
-            isLicenseActivationResultLoaded={this.props.isLicenseActivationResultLoaded}
-          />}
+            isLicenseActivationResultLoaded={
+              this.props.isLicenseActivationResultLoaded
+            }
+          />
+        )}
       </React.Fragment>
     )
   }
@@ -127,7 +130,8 @@ const mapStateToProps = ({ authReducer, licenseReducer }) => {
   const backendIsUp = authReducer.backendIsUp
   const isLicenseValid = licenseReducer.isLicenseValid
   const islicenseCheckResultLoaded = licenseReducer.islicenseCheckResultLoaded
-  const isLicenseActivationResultLoaded = licenseReducer.isLicenseActivationResultLoaded
+  const isLicenseActivationResultLoaded =
+    licenseReducer.isLicenseActivationResultLoaded
 
   return {
     config,
