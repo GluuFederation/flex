@@ -7,11 +7,7 @@ export default class LoggingApi {
   getLoggingConfig = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigLogging((error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -20,12 +16,16 @@ export default class LoggingApi {
   editLoggingConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigLogging(input, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
+  }
+
+  handleResponse(error, reject, resolve, data) {
+    if (error) {
+      reject(error)
+    } else {
+      resolve(data)
+    }
   }
 }

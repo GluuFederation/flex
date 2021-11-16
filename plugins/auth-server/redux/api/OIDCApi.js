@@ -83,11 +83,7 @@ export default class OIDCApi {
     return new Promise((resolve, reject) => {
       // data['client'] = client
       this.api.postOauthOpenidClients(data, (error, res) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(res)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -95,11 +91,7 @@ export default class OIDCApi {
   editAClient = (data) => {
     return new Promise((resolve, reject) => {
       this.api.putOauthOpenidClients(data, (error, res) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(res)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -107,12 +99,16 @@ export default class OIDCApi {
   deleteAClient = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteOauthOpenidClientsByInum(inum, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
+  }
+
+  handleResponse(error, reject, resolve, data) {
+    if (error) {
+      reject(error)
+    } else {
+      resolve(data)
+    }
   }
 }

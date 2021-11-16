@@ -47,8 +47,10 @@ export const postUserAction = async (userAction) => {
   return axios
     .post('/logging/audit', {
       headers: {
-          'Content-Type': 'application/json',
-      }, userAction})
+        'Content-Type': 'application/json',
+      },
+      userAction,
+    })
     .then((response) => response)
     .catch((e) => {
       return -1
@@ -82,12 +84,13 @@ export const checkLicensePresent = async () => {
 
 // Activate license using key
 export const activateLicense = async (licenseKey) => {
-  let data = {licenseKey: licenseKey}
+  let data = { licenseKey: licenseKey }
   return axios
     .post('/license/activateLicense', data, {
       headers: {
-          'Content-Type': 'application/json',
-      }})
+        'Content-Type': 'application/json',
+      },
+    })
     .then((response) => response.data)
     .catch((e) => {
       console.error('Error in activating license of admin-ui', e)
