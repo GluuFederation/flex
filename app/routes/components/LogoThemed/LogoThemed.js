@@ -10,7 +10,6 @@ const logos = {
 };
 
 const getLogoUrl = () => {
-  //return logos[color];
   return logos['default'];
 };
 

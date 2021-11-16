@@ -7,11 +7,7 @@ export default class CacheApi {
   getConfigCache = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCache((error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -20,11 +16,7 @@ export default class CacheApi {
   getConfigCacheInMemory = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCacheInMemory((error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -33,11 +25,7 @@ export default class CacheApi {
   getConfigCacheMemcached = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCacheMemcached((error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -46,11 +34,7 @@ export default class CacheApi {
   getConfigCacheNativePersistence = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCacheNativePersistence((error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -59,36 +43,24 @@ export default class CacheApi {
   getConfigCacheRedis = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCacheRedis((error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
-  
-    // update Cache Config
+
+  // update Cache Config
   updateCacheConfig = (input) => {
-      return new Promise((resolve, reject) => {
-        this.api.patchConfigCache(input, (error, data) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(data)
-          }
-        })
+    return new Promise((resolve, reject) => {
+      this.api.patchConfigCache(input, (error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
     })
   }
 
   updateCacheMemoryConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigCacheInMemory(input, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -96,11 +68,7 @@ export default class CacheApi {
   updateCacheMemConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigCacheMemcached(input, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -108,11 +76,7 @@ export default class CacheApi {
   updateCacheNativeConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigCacheNativePersistence(input, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -120,11 +84,7 @@ export default class CacheApi {
   updateCacheRedisConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigCacheRedis(input, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -133,12 +93,16 @@ export default class CacheApi {
   addCacheConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.postConfigCache(input, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
+  }
+
+  handleResponse(error, reject, resolve, data) {
+    if (error) {
+      reject(error)
+    } else {
+      resolve(data)
+    }
   }
 }
