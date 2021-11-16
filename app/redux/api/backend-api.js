@@ -3,7 +3,7 @@ import axios_instance from 'axios'
 
 // Get OAuth2 Configuration
 export const fetchServerConfiguration = async () => {
-  return await axios
+  return axios
     .get('/oauth2/config')
     .then((response) => response.data)
     .catch((error) => {
@@ -17,7 +17,7 @@ export const fetchServerConfiguration = async () => {
 
 // get user location and ip
 export const getUserIpAndLocation = async () => {
-  return await axios_instance
+  return axios_instance
     .get('https://geolocation-db.com/json/')
     .then((response) => response.data)
     .catch((error) => {
@@ -28,7 +28,7 @@ export const getUserIpAndLocation = async () => {
 
 // Retrieve user information
 export const fetchUserInformation = async (code) => {
-  return await axios
+  return axios
     .post('/oauth2/user-info', {
       code: code,
     })
@@ -44,7 +44,7 @@ export const fetchUserInformation = async (code) => {
 
 // post user action
 export const postUserAction = async (userAction) => {
-  return await axios
+  return axios
     .post('/logging/audit', {
       headers: {
           'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ export const postUserAction = async (userAction) => {
 
 // Get API Access Token
 export const fetchApiAccessToken = async (jwt) => {
-  return await axios
+  return axios
     .get('/oauth2/api-protection-token', { params: { ujwt: jwt } })
     .then((response) => response.data)
     .catch((error) => {
@@ -71,7 +71,7 @@ export const fetchApiAccessToken = async (jwt) => {
 
 // Check License present
 export const checkLicensePresent = async () => {
-  return await axios
+  return axios
     .get('/license/checkLicense')
     .then((response) => response.data)
     .catch((error) => {
@@ -83,7 +83,7 @@ export const checkLicensePresent = async () => {
 // Activate license using key
 export const activateLicense = async (licenseKey) => {
   let data = {licenseKey: licenseKey}
-  return await axios
+  return axios
     .post('/license/activateLicense', data, {
       headers: {
           'Content-Type': 'application/json',

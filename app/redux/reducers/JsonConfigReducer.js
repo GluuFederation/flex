@@ -4,13 +4,13 @@ import {
   PATCH_JSON_CONFIG,
   PATCH_JSONCONFIG_RESPONSE,
 } from '../actions/types'
-import reducerRegistry from './ReducerRegistry';
+import reducerRegistry from './ReducerRegistry'
 const INIT_STATE = {
   configuration: {},
   loading: false,
 }
 
-const reducerName = 'jsonConfigReducer';
+const reducerName = 'jsonConfigReducer'
 
 export default function jsonConfigReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -24,11 +24,6 @@ export default function jsonConfigReducer(state = INIT_STATE, action) {
         return {
           ...state,
           configuration: action.payload.data,
-          loading: false,
-        }
-      } else {
-        return {
-          ...state,
           loading: false,
         }
       }
@@ -45,16 +40,12 @@ export default function jsonConfigReducer(state = INIT_STATE, action) {
           configuration: action.payload.data,
           loading: false,
         }
-      } else {
-        return {
-          ...state,
-          loading: false,
-        }
       }
     default:
       return {
         ...state,
+        loading: false,
       }
   }
 }
-reducerRegistry.register(reducerName, jsonConfigReducer);
+reducerRegistry.register(reducerName, jsonConfigReducer)

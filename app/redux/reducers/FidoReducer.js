@@ -5,13 +5,13 @@ import {
   PUT_FIDO_RESPONSE,
   RESET,
 } from '../actions/types'
-import reducerRegistry from './ReducerRegistry';
+import reducerRegistry from './ReducerRegistry'
 const INIT_STATE = {
   fido: { fido2Configuration: {} },
   loading: false,
 }
 
-const reducerName = 'fidoReducer';
+const reducerName = 'fidoReducer'
 
 export default function fidoReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -27,11 +27,6 @@ export default function fidoReducer(state = INIT_STATE, action) {
           fido: action.payload.data,
           loading: false,
         }
-      } else {
-        return {
-          ...state,
-          loading: false,
-        }
       }
     case PUT_FIDO:
       return {
@@ -45,11 +40,6 @@ export default function fidoReducer(state = INIT_STATE, action) {
           fido: action.payload.data,
           loading: false,
         }
-      } else {
-        return {
-          ...state,
-          loading: false,
-        }
       }
 
     case RESET:
@@ -61,8 +51,9 @@ export default function fidoReducer(state = INIT_STATE, action) {
     default:
       return {
         ...state,
+        loading: false,
       }
   }
 }
 
-reducerRegistry.register(reducerName, fidoReducer);
+reducerRegistry.register(reducerName, fidoReducer)

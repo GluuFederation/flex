@@ -15,14 +15,14 @@ import {
   GET_SCOPE_BY_PATTERN_RESPONSE,
   SEARCH_SCOPES,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry';
+import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   item: {},
   loading: false,
 }
 
-const reducerName = 'scopeReducer';
+const reducerName = 'scopeReducer'
 
 export default function scopeReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -43,13 +43,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
           items: action.payload.data,
           loading: false,
         }
-      } else {
-        return {
-          ...state,
-          loading: false,
-        }
       }
-
     case GET_SCOPE_BY_INUM:
       return {
         ...state,
@@ -62,13 +56,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
           item: action.payload.data,
           loading: false,
         }
-      } else {
-        return {
-          ...state,
-          loading: false,
-        }
       }
-
     case GET_SCOPE_BY_PATTERN:
       return {
         ...state,
@@ -79,11 +67,6 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return {
           ...state,
           item: action.payload.data,
-          loading: false,
-        }
-      } else {
-        return {
-          ...state,
           loading: false,
         }
       }
@@ -98,11 +81,6 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return {
           ...state,
           items: [...state.items],
-          loading: false,
-        }
-      } else {
-        return {
-          ...state,
           loading: false,
         }
       }
@@ -120,13 +98,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
           items: [...state.items],
           loading: false,
         }
-      } else {
-        return {
-          ...state,
-          loading: false,
-        }
       }
-
     case DELETE_SCOPE:
       return {
         ...state,
@@ -137,11 +109,6 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return {
           ...state,
           items: state.items.filter((i) => i.inum !== action.payload.data),
-          loading: false,
-        }
-      } else {
-        return {
-          ...state,
           loading: false,
         }
       }
@@ -161,7 +128,8 @@ export default function scopeReducer(state = INIT_STATE, action) {
     default:
       return {
         ...state,
+        loading: false,
       }
   }
 }
-reducerRegistry.register(reducerName, scopeReducer);
+reducerRegistry.register(reducerName, scopeReducer)

@@ -11,7 +11,7 @@ const INIT_STATE = {
   loading: true,
 }
 
-const reducerName = 'acrReducer';
+const reducerName = 'acrReducer'
 
 export default function acrReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -25,11 +25,6 @@ export default function acrReducer(state = INIT_STATE, action) {
         return {
           ...state,
           acrs: action.payload.data,
-          loading: false,
-        }
-      } else {
-        return {
-          ...state,
           loading: false,
         }
       }
@@ -46,11 +41,6 @@ export default function acrReducer(state = INIT_STATE, action) {
           acrs: action.payload.data,
           loading: false,
         }
-      } else {
-        return {
-          ...state,
-          loading: false,
-        }
       }
     default:
       return {
@@ -58,4 +48,3 @@ export default function acrReducer(state = INIT_STATE, action) {
       }
   }
 }
-
