@@ -40,9 +40,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const myActions = []
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const [pageSize, setPageSize] = useState(
-    localStorage.getItem('paggingSize') || 10,
-  )
+  const pageSize = localStorage.getItem('paggingSize') || 10
   const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   const [selectedScripts, setSelectedScripts] = useState(scripts)
@@ -78,7 +76,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         id: 'editCustomScript' + rowData.inum,
       },
       tooltip: `${t('messages.edit_script')}`,
-      onClick: (event, rowData) => handleGoToCustomScriptEditPage(rowData),
+      onClick: (event, entry) => handleGoToCustomScriptEditPage(entry),
       disabled: false,
     }))
   }
@@ -96,7 +94,6 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       tooltip: `${t('messages.advanced_search')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => {},
     })
   }
   if (hasPermission(permissions, SCRIPT_READ)) {
@@ -120,7 +117,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
         id: 'deleteCustomScript' + rowData.inum,
       },
       tooltip: `${t('messages.delete_script')}`,
-      onClick: (event, rowData) => handleCustomScriptDelete(rowData),
+      onClick: (event, row) => handleCustomScriptDelete(row),
       disabled: false,
     }))
   }

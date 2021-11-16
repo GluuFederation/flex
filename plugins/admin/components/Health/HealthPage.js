@@ -9,7 +9,9 @@ import { useTranslation } from 'react-i18next'
 
 function HealthPage() {
   const { t } = useTranslation()
-  useEffect(() => {}, [])
+  useEffect(() => {
+    console.log('')
+  }, [])
   return (
     <Container>
       <Card className="mb-3">

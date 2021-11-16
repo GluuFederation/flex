@@ -8,8 +8,11 @@ let LABEL = 'fields.application_type'
 let NAME = 'application_type'
 let VALUE = true
 
+function handler() {
+  console.log('')
+}
+
 it('Should render a boolean select box', () => {
-  function handler() {}
   render(
     <I18nextProvider i18n={i18n}>
       <GluuInlineInput
@@ -27,9 +30,9 @@ it('Should render a boolean select box', () => {
 })
 
 it('Should render a typeahead component with array', () => {
-  const VALUE = ['Two']
+  VALUE = ['Two']
   const options = ['One', 'Two', 'Three']
-  function handler() {}
+
   render(
     <I18nextProvider i18n={i18n}>
       <GluuInlineInput
@@ -47,8 +50,7 @@ it('Should render a typeahead component with array', () => {
 })
 
 it('Should render a text input', () => {
-  const VALUE = 'Client Secret'
-  function handler() {}
+  VALUE = 'Client Secret'
   render(
     <I18nextProvider i18n={i18n}>
       <GluuInlineInput

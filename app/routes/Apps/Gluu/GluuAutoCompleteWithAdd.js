@@ -30,11 +30,10 @@ function GluuAutoCompleteWithAdd({
     }
   }
 
-  const handleChange = (name, selected) => {
-    console.log(selected)
+  const handleChange = (elementName, selected) => {
     setItems(selected)
     setOpts(selected)
-    formik.setFieldValue(name, items)
+    formik.setFieldValue(elementName, items)
   }
 
   return (
