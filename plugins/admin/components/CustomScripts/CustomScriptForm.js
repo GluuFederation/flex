@@ -39,12 +39,12 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
 
-  function getPropertiesConfig(item) {
+  function getPropertiesConfig(entry) {
     if (
-      item.configurationProperties &&
-      Array.isArray(item.configurationProperties)
+      entry.configurationProperties &&
+      Array.isArray(entry.configurationProperties)
     ) {
-      return item.configurationProperties.map((e) => ({
+      return entry.configurationProperties.map((e) => ({
         key: e.value1,
         value: e.value2,
       }))
@@ -110,12 +110,13 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       }
 
       if (
-        item.moduleProperties.filter((item) => item.value1 === 'location_type')
-          .length > 0
+        item.moduleProperties.filter(
+          (candidate) => candidate.value1 === 'location_type',
+        ).length > 0
       ) {
         item.moduleProperties.splice(
           item.moduleProperties.findIndex(
-            (item) => item.value1 === 'location_type',
+            (el) => el.value1 === 'location_type',
           ),
           1,
         )
@@ -135,13 +136,11 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       }
 
       if (
-        item.moduleProperties.filter((item) => item.value1 === 'usage_type')
+        item.moduleProperties.filter((ligne) => ligne.value1 === 'usage_type')
           .length > 0
       ) {
         item.moduleProperties.splice(
-          item.moduleProperties.findIndex(
-            (item) => item.value1 === 'usage_type',
-          ),
+          item.moduleProperties.findIndex((row) => row.value1 === 'usage_type'),
           1,
         )
       }
@@ -302,10 +301,10 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 defaultValue={
                   !!item.moduleProperties &&
                   item.moduleProperties.filter(
-                    (item) => item.value1 === 'location_type',
+                    (i) => i.value1 === 'location_type',
                   ).length > 0
                     ? item.moduleProperties.filter(
-                        (item) => item.value1 === 'location_type',
+                        (it) => it.value1 === 'location_type',
                       )[0].value2
                     : undefined
                 }

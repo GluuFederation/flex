@@ -1,7 +1,6 @@
 import React from 'react'
 import { Container, Row, Col } from '../../../../app/components'
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
