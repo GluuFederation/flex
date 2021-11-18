@@ -19,6 +19,7 @@ import jsonReducer from './redux/reducers/JsonConfigReducer'
 import jwksReducer from './redux/reducers/JwksReducer'
 import acrReducer from './redux/reducers/AcrReducer'
 import loggingReducer from './redux/reducers/LoggingReducer'
+import healthReducer from './redux/reducers/HealthReducer'
 
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
@@ -26,6 +27,7 @@ import jsonSaga from './redux/sagas/JsonConfigSaga'
 import jwksSaga from './redux/sagas/JwksSaga'
 import acrSaga from './redux/sagas/AcrsSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
+import healthSaga from './redux/sagas/HealthSaga'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -161,6 +163,7 @@ const pluginMetadata = {
     { name: 'jwksReducer', reducer: jwksReducer },
     { name: 'acrReducer', reducer: acrReducer },
     { name: 'loggingReducer', reducer: loggingReducer },
+    { name: 'healthReducer', reducer: healthReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -169,6 +172,7 @@ const pluginMetadata = {
     jwksSaga(),
     acrSaga(),
     loggingSaga(),
+    healthSaga()
   ],
 }
 
