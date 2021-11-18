@@ -30,10 +30,6 @@ export default function initReducer(state = INIT_STATE, action) {
           ...state,
           scripts: action.payload.data,
         }
-      } else {
-        return {
-          ...state,
-        }
       }
 
     case GET_CLIENTS_FOR_STAT:
@@ -45,10 +41,6 @@ export default function initReducer(state = INIT_STATE, action) {
         return {
           ...state,
           clients: action.payload.data,
-        }
-      } else {
-        return {
-          ...state,
         }
       }
 
@@ -62,10 +54,6 @@ export default function initReducer(state = INIT_STATE, action) {
           ...state,
           attributes: action.payload.data,
         }
-      } else {
-        return {
-          ...state,
-        }
       }
 
     case GET_SCOPES_FOR_STAT:
@@ -78,12 +66,7 @@ export default function initReducer(state = INIT_STATE, action) {
           ...state,
           scopes: action.payload.data,
         }
-      } else {
-        return {
-          ...state,
-        }
       }
-
     default:
       return {
         ...state,

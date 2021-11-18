@@ -6,25 +6,16 @@ export default class FidoApi {
   getFidoConfig = () => {
     return new Promise((resolve, reject) => {
       this.api.getPropertiesFido2((error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }
 
   // update fido Config
   updateFidoConfig = (input) => {
-    // console.log('*********************** Fido2 API  input = ' + input)
     return new Promise((resolve, reject) => {
       this.api.putPropertiesFido2(input, (error, data) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(data)
-        }
+        this.handleResponse(error, reject, resolve, data)
       })
     })
   }

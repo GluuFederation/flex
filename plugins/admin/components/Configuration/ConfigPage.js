@@ -1,12 +1,9 @@
 import React from 'react'
-import { FormGroup, Card, CardBody } from '../../../../app/components'
+import { Card, CardBody } from '../../../../app/components'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 
-function ConfigPage({ loading, dispatch }) {
-  const { t } = useTranslation()
-
+function ConfigPage({ loading }) {
   return (
     <GluuLoader blocking={loading}>
       <Card>

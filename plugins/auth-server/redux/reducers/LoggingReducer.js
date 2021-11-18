@@ -5,13 +5,13 @@ import {
   PUT_LOGGING_RESPONSE,
   RESET,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry';
+import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   logging: {},
   loading: false,
 }
 
-const reducerName = 'loggingReducer';
+const reducerName = 'loggingReducer'
 
 export default function loggingReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -27,11 +27,6 @@ export default function loggingReducer(state = INIT_STATE, action) {
           logging: action.payload.data,
           loading: false,
         }
-      } else {
-        return {
-          ...state,
-          loading: false,
-        }
       }
     case PUT_LOGGING:
       return {
@@ -45,11 +40,6 @@ export default function loggingReducer(state = INIT_STATE, action) {
           logging: action.payload.data,
           loading: false,
         }
-      } else {
-        return {
-          ...state,
-          loading: false,
-        }
       }
 
     case RESET:
@@ -61,7 +51,8 @@ export default function loggingReducer(state = INIT_STATE, action) {
     default:
       return {
         ...state,
+        loading: false,
       }
   }
 }
-reducerRegistry.register(reducerName, loggingReducer);
+reducerRegistry.register(reducerName, loggingReducer)
