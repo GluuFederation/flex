@@ -9,9 +9,6 @@ import {
   GET_USER_LOCATION_RESPONSE,
 } from '../actions/types'
 import reducerRegistry from './ReducerRegistry'
-/**
- * initial auth user
- */
 const INIT_STATE = {
   isAuthenticated: false,
   userinfo: null,

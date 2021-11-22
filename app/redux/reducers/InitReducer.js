@@ -21,9 +21,6 @@ const reducerName = 'initReducer'
 export default function initReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_SCRIPTS_FOR_STAT:
-      return {
-        ...state,
-      }
     case GET_SCRIPTS_FOR_STAT_RESPONSE:
       if (action.payload.data) {
         return {
@@ -33,9 +30,6 @@ export default function initReducer(state = INIT_STATE, action) {
       }
 
     case GET_CLIENTS_FOR_STAT:
-      return {
-        ...state,
-      }
     case GET_CLIENTS_FOR_STAT_RESPONSE:
       if (action.payload.data) {
         return {
@@ -45,9 +39,6 @@ export default function initReducer(state = INIT_STATE, action) {
       }
 
     case GET_ATTRIBUTES_FOR_STAT:
-      return {
-        ...state,
-      }
     case GET_ATTRIBUTES_FOR_STAT_RESPONSE:
       if (action.payload.data) {
         return {
@@ -57,9 +48,6 @@ export default function initReducer(state = INIT_STATE, action) {
       }
 
     case GET_SCOPES_FOR_STAT:
-      return {
-        ...state,
-      }
     case GET_SCOPES_FOR_STAT_RESPONSE:
       if (action.payload.data) {
         return {
