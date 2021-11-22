@@ -31,6 +31,7 @@ module.exports = {
     'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
     'prefer-const': 'error',
     'no-unused-vars': 'off',
+    "default-param-last": "off",
     //"no-use-before-define": "error",
     'react/jsx-uses-react': 'error',
     'react/jsx-uses-vars': 'error',
