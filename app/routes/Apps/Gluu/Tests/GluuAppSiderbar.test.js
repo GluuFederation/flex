@@ -7,15 +7,23 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
-import authReducer from '../../../../redux/reducers/AuthReducer'
 import Sidebar from '../../../../../app/components/Sidebar'
 
 jest.spyOn(global.console, 'log').mockImplementation(jest.fn())
 jest.spyOn(global.console, 'error').mockImplementation(jest.fn())
 
+const permissions = [
+  'https://jans.io/oauth/config/openid/clients.readonly',
+  'https://jans.io/oauth/config/openid/clients.write',
+  'https://jans.io/oauth/config/openid/clients.delete',
+]
+const INIT_STATE = {
+  permissions: permissions,
+}
+
 const store = createStore(
   combineReducers({
-    authReducer,
+    authReducer: (state = INIT_STATE) => state,
     noReducer: (state = {}) => state,
   }),
 )
@@ -37,4 +45,6 @@ const Wrapper = ({ children }) => (
 it('Should show the sidebar properly', () => {
   const scopes = []
   render(<GluuAppSidebar scopes={scopes} />, { wrapper: Wrapper })
+
+  expect(true).toBeTruthy()
 })

@@ -11,8 +11,7 @@ it('Should render a required label with internationalized text', () => {
       <GluuLabel label={labelText} required />
     </I18nextProvider>,
   )
-  screen.getByText('Application Type:')
-  screen.getByText('*')
+  expect(screen.getByText(/Application Type */)).toBeInTheDocument()
 })
 
 it('Should render the label with internationalized text', () => {
@@ -22,7 +21,7 @@ it('Should render the label with internationalized text', () => {
       <GluuLabel label={labelText} />
     </I18nextProvider>,
   )
-  screen.getByText('Application Type:')
+  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
 })
 
 it('Should render the label with internationalized text and tooltip support', () => {
@@ -36,6 +35,8 @@ it('Should render the label with internationalized text and tooltip support', ()
       />
     </I18nextProvider>,
   )
-  screen.getByText('Application Type:')
-  screen.getByText('The OpenID connect Client application type.')
+  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
+  expect(
+    screen.getByText(/The OpenID connect Client application type/),
+  ).toBeInTheDocument()
 })

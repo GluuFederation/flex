@@ -27,6 +27,11 @@ export default function jsonConfigReducer(state = INIT_STATE, action) {
           loading: false,
         }
       }
+      else {
+        return {
+          ...state,
+        }
+      }
 
     case PATCH_JSON_CONFIG:
       return {
@@ -39,6 +44,11 @@ export default function jsonConfigReducer(state = INIT_STATE, action) {
           ...state,
           configuration: action.payload.data,
           loading: false,
+        }
+      }
+      else {
+        return {
+          ...state,
         }
       }
     default:

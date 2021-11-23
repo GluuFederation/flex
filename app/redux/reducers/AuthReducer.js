@@ -35,6 +35,10 @@ export default function authReducer(state = INIT_STATE, action) {
           ...state,
           location: action.payload.location,
         }
+      } else {
+        return {
+          ...state,
+        }
       }
     case GET_OAUTH2_CONFIG:
       return {
@@ -87,6 +91,10 @@ export default function authReducer(state = INIT_STATE, action) {
           issuer: action.payload.accessToken.issuer,
           permissions: action.payload.accessToken.scopes,
           isAuthenticated: true,
+        }
+      } else {
+        return {
+          ...state,
         }
       }
 

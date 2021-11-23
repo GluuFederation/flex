@@ -23,7 +23,7 @@ it('Should show the disabled input with proper text wit sa', () => {
       />
     </I18nextProvider>,
   )
-  screen.getByText('Application Type:')
+  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
   expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
-  expect(screen.getByDisplayValue(VALUE)).toBeDisabled
+  expect(screen.getByDisplayValue(VALUE)).toBeDisabled()
 })

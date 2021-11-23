@@ -24,7 +24,7 @@ it('Should render a boolean select box', () => {
       />
     </I18nextProvider>,
   )
-  screen.getByText('Application Type:')
+  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
   fireEvent.click(screen.getByText(VALUE))
   fireEvent.click(screen.getByText(false))
 })
@@ -44,7 +44,7 @@ it('Should render a typeahead component with array', () => {
       />
     </I18nextProvider>,
   )
-  screen.getByText('Application Type:')
+  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
   fireEvent.click(screen.getByText(VALUE))
 })
 
@@ -60,6 +60,7 @@ it('Should render a text input', () => {
       />
     </I18nextProvider>,
   )
-  screen.getByText('Application Type:')
+  expect(screen.getByText(/Application Type/)).toBeInTheDocument()
+  expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
   expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
 })
