@@ -13,7 +13,7 @@ it('Check view wrapper with show', () => {
       </GluuViewWrapper>
     </I18nextProvider>,
   )
-  screen.getByText(componentText)
+  expect(screen.getByTestId('WRAPPER')).toHaveTextContent(componentText)
 })
 
 it('Check view wrapper with no show', () => {
@@ -22,5 +22,7 @@ it('Check view wrapper with no show', () => {
       <GluuViewWrapper />
     </I18nextProvider>,
   )
-  screen.getByText('Missing required permission')
+  expect(screen.getByTestId('MISSING')).toHaveTextContent(
+    'Missing required permission',
+  )
 })

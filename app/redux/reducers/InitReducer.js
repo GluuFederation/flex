@@ -21,20 +21,35 @@ const reducerName = 'initReducer'
 export default function initReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_SCRIPTS_FOR_STAT:
+      return {
+        ...state,
+      }
+
     case GET_SCRIPTS_FOR_STAT_RESPONSE:
       if (action.payload.data) {
         return {
           ...state,
           scripts: action.payload.data,
         }
+      } else {
+        return {
+          ...state,
+        }
       }
 
     case GET_CLIENTS_FOR_STAT:
+      return {
+        ...state,
+      }
     case GET_CLIENTS_FOR_STAT_RESPONSE:
       if (action.payload.data) {
         return {
           ...state,
           clients: action.payload.data,
+        }
+      } else {
+        return {
+          ...state,
         }
       }
 
@@ -45,14 +60,25 @@ export default function initReducer(state = INIT_STATE, action) {
           ...state,
           attributes: action.payload.data,
         }
+      } else {
+        return {
+          ...state,
+        }
       }
 
     case GET_SCOPES_FOR_STAT:
+      return {
+        ...state,
+      }
     case GET_SCOPES_FOR_STAT_RESPONSE:
       if (action.payload.data) {
         return {
           ...state,
           scopes: action.payload.data,
+        }
+      } else {
+        return {
+          ...state,
         }
       }
     default:

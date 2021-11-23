@@ -18,17 +18,17 @@ const LanguageMenu = () => {
   }
   return (
     <ButtonDropdown isOpen={isOpen} toggle={toggle}>
-      <DropdownToggle caret color="primary">
+      <DropdownToggle caret color="primary" data-testid="ACTIVE_LANG">
         {lang}
       </DropdownToggle>
       <DropdownMenu>
-        <DropdownItem onClick={() => changeLanguage('fr')}>
+        <DropdownItem onClick={() => changeLanguage('fr')} data-testid="FRE">
           {t('languages.french')}
         </DropdownItem>
-        <DropdownItem onClick={() => changeLanguage('pt')}>
+        <DropdownItem onClick={() => changeLanguage('pt')} data-testid="POR">
           {t('languages.portuguese')}
         </DropdownItem>
-        <DropdownItem onClick={() => changeLanguage('en')}>
+        <DropdownItem onClick={() => changeLanguage('en')} data-testid="ENG">
           {t('languages.english')}
         </DropdownItem>
       </DropdownMenu>

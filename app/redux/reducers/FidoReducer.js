@@ -27,6 +27,10 @@ export default function fidoReducer(state = INIT_STATE, action) {
           fido: action.payload.data,
           loading: false,
         }
+      } else {
+        return {
+          ...state,
+        }
       }
     case PUT_FIDO:
       return {
@@ -39,6 +43,10 @@ export default function fidoReducer(state = INIT_STATE, action) {
           ...state,
           fido: action.payload.data,
           loading: false,
+        }
+      } else {
+        return {
+          ...state,
         }
       }
 

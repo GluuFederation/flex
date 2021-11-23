@@ -25,6 +25,10 @@ export default function oidcDiscoveryReducer(state = INIT_STATE, action) {
           configuration: action.payload.configuration,
           loading: true,
         }
+      } else {
+        return {
+          ...state,
+        }
       }
 
     default:
