@@ -41,12 +41,12 @@ function GluuAppSidebar({ scopes }) {
         <SidebarMenu.Item
           icon={<i className="fa fa-fw fa-home"></i>}
           title={t('menus.home')}
-          textStyle={{fontSize:"18px", fontWeight:"800"}}
+          textStyle={{ fontSize: '18px', fontWeight: '800' }}
         >
           <SidebarMenu.Item
             title={t('menus.dashboard')}
             to="/home/dashboard"
-            textStyle={{fontSize:"18px", fontWeight:"600"}}
+            textStyle={{ fontSize: '18px', fontWeight: '600' }}
             exact
           />
         </SidebarMenu.Item>
@@ -59,7 +59,7 @@ function GluuAppSidebar({ scopes }) {
             icon={getMenuIcon(plugin.icon)}
             to={getMenuPath(plugin)}
             title={t(`${plugin.title}`)}
-            textStyle={{fontSize:"18px", fontWeight:"800"}}
+            textStyle={{ fontSize: '18px', fontWeight: '800' }}
           >
             {hasChildren(plugin) &&
               plugin.children.map((item, idx) => (
@@ -72,18 +72,18 @@ function GluuAppSidebar({ scopes }) {
                   }
                   to={getMenuPath(item)}
                   icon={getMenuIcon(item.icon)}
-                  textStyle={{fontSize:"18px", fontWeight:"600"}}
+                  textStyle={{ fontSize: '18px', fontWeight: '600' }}
                   exact
                 >
                   {hasChildren(item) &&
-                    item.children.map((sub, idx) => (
+                    item.children.map((sub, id) => (
                       <SidebarMenu.Item
-                        key={idx}
+                        key={id}
                         title={t(`${sub.title}`)}
                         to={getMenuPath(sub)}
                         isEmptyNode={!hasPermission(scopes, sub.permission)}
                         icon={getMenuIcon(sub.icon)}
-                        textStyle={{fontSize:"18px", fontWeight:"400"}}
+                        textStyle={{ fontSize: '18px', fontWeight: '400' }}
                         exact
                       ></SidebarMenu.Item>
                     ))}
@@ -98,7 +98,7 @@ function GluuAppSidebar({ scopes }) {
           icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
           title={t('menus.signout')}
           to="/logout"
-          textStyle={{fontSize:"18px", fontWeight:"800"}}
+          textStyle={{ fontSize: '18px', fontWeight: '800' }}
         />
       </SidebarMenu>
     </ErrorBoundary>

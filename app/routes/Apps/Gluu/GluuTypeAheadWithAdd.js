@@ -31,10 +31,10 @@ function GluuTypeAheadWithAdd({
     }
   }
 
-  const handleChange = (name, selected) => {
+  const handleChange = (aName, selected) => {
     setOpts(selected)
     setItems(selected)
-    formik.setFieldValue(name, selected)
+    formik.setFieldValue(aName, selected)
   }
 
   return (

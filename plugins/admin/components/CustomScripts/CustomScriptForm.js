@@ -24,7 +24,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   const [scriptTypeState, setScriptTypeState] = useState(item.scriptType)
-  const scriptTypes = [...new Set(scripts.map((item) => item.scriptType))]
+  const scriptTypes = [...new Set(scripts.map((anItem) => anItem.scriptType))]
   function activate() {
     if (!init) {
       setInit(true)
@@ -250,9 +250,9 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 }}
               >
                 <option value="">{t('options.choose')}...</option>
-                {scriptTypes.map((item, index) => (
-                  <option key={index} value={item}>
-                    {item}
+                {scriptTypes.map((itemCandidate, index) => (
+                  <option key={index} value={itemCandidate}>
+                    {itemCandidate}
                   </option>
                 ))}
               </CustomInput>
@@ -333,10 +333,10 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                   defaultValue={
                     !!item.moduleProperties &&
                     item.moduleProperties.filter(
-                      (item) => item.value1 === 'usage_type',
+                      (vItem) => vItem.value1 === 'usage_type',
                     ).length > 0
                       ? item.moduleProperties.filter(
-                          (item) => item.value1 === 'usage_type',
+                          (kItem) => kItem.value1 === 'usage_type',
                         )[0].value2
                       : undefined
                   }
