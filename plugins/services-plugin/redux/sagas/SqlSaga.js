@@ -1,5 +1,8 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError, addAdditionalData } from '../../../../app/utils/TokenController'
+import {
+  isFourZeroOneError,
+  addAdditionalData,
+} from '../../../../app/utils/TokenController'
 import {
   getSqlResponse,
   addSqlResponse,
@@ -16,7 +19,13 @@ import {
   FETCH,
 } from '../../../../app/audit/UserActionType'
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
-import { GET_SQL, PUT_SQL, SET_SQL, DELETE_SQL, TEST_SQL, ADD_SQL } from '../actions/types'
+import {
+  GET_SQL,
+  PUT_SQL,
+  DELETE_SQL,
+  TEST_SQL,
+  ADD_SQL,
+} from '../actions/types'
 import SqlApi from '../api/SqlApi'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import { getClient } from '../../../../app/redux/api/base'
@@ -118,7 +127,6 @@ export function* testSql({ payload }) {
   }
 }
 
-
 export function* watchGetSqlConfig() {
   yield takeLatest(GET_SQL, getSql)
 }
@@ -140,5 +148,11 @@ export function* watchTestSqlConfig() {
 }
 
 export default function* rootSaga() {
-  yield all([fork(watchGetSqlConfig), fork(watchAddSqlConfig), fork(watchPutSqlConfig), fork(watchDeleteSqlConfig), fork(watchTestSqlConfig)])
+  yield all([
+    fork(watchGetSqlConfig),
+    fork(watchAddSqlConfig),
+    fork(watchPutSqlConfig),
+    fork(watchDeleteSqlConfig),
+    fork(watchTestSqlConfig),
+  ])
 }

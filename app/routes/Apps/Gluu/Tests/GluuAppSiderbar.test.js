@@ -1,9 +1,8 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import GluuAppSidebar from '../GluuAppSidebar'
-import { combineReducers } from 'redux'
+import { combineReducers, createStore } from 'redux'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
@@ -45,6 +44,5 @@ const Wrapper = ({ children }) => (
 it('Should show the sidebar properly', () => {
   const scopes = []
   render(<GluuAppSidebar scopes={scopes} />, { wrapper: Wrapper })
-
   expect(true).toBeTruthy()
 })

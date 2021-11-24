@@ -3,7 +3,7 @@ import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   serverStatus: null,
   dbStatus: null,
-  loading: false
+  loading: false,
 }
 
 const reducerName = 'healthReducer'
