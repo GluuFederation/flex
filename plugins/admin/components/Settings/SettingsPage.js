@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import { SETTINGS } from '../../../../app/utils/ApiResources'
@@ -19,7 +17,6 @@ import {
 import GluuDarkModeToggle from '../../../../app/routes/Apps/Gluu/GluuDarkModeToggle'
 
 function SettingsPage() {
-  const { t } = useTranslation()
   const [paggingSize, setPaggingSize] = useState(
     localStorage.getItem('paggingSize') || 10,
   )

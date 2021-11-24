@@ -3,12 +3,9 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import _ from 'lodash'
 import classNames from 'classnames'
-
 import { withPageConfig } from './../Layout/withPageConfig'
 import Common from './../../common'
 import { MenuContext } from './MenuContext'
-import { ErrorBoundary } from 'react-error-boundary'
-import GluuErrorFallBack from '../../routes/Apps/Gluu/GluuErrorFallBack'
 
 class SidebarMenu extends React.Component {
   static propTypes = {
@@ -19,12 +16,9 @@ class SidebarMenu extends React.Component {
     pageConfig: PropTypes.object,
     disabled: PropTypes.bool,
   }
-
   containerRef = React.createRef()
-
   constructor(props) {
     super(props)
-
     this.state = {
       entries: (this.entries = {}),
     }

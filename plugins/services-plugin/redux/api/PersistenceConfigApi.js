@@ -1,4 +1,4 @@
-export default class PersistnceConfigApi {
+export default class PersistenceConfigApi {
     constructor(api) {
       this.api = api
     }

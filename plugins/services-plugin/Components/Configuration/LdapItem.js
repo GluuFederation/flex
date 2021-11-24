@@ -8,10 +8,8 @@ import {
   Badge,
 } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import { useTranslation } from 'react-i18next'
 
 function LdapItem({ ldap, index, formik }) {
-  const { t } = useTranslation()
   return (
     <Card
       style={{

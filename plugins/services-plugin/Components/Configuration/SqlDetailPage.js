@@ -9,20 +9,8 @@ import {
 } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
 
-const SqlDetailPage = ({ row, testSqlConnection }) => {
+const SqlDetailPage = ({ row }) => {
   const { t } = useTranslation()
-
-  function getBadgeTheme(status) {
-    if (status) {
-      return 'primary'
-    } else {
-      return 'warning'
-    }
-  }
-
-  function checkSqlConnection() {
-    testSqlConnection(row)
-  }
 
   return (
     <React.Fragment>
@@ -87,17 +75,13 @@ const SqlDetailPage = ({ row, testSqlConnection }) => {
           <Col sm={4}>
             <FormGroup row>
               <Label sm={6}>{t('fields.passwordEncryptionMethod')}:</Label>
-              <Label sm={6}>
-                {row.passwordEncryptionMethod}
-              </Label>
+              <Label sm={6}>{row.passwordEncryptionMethod}</Label>
             </FormGroup>
           </Col>
           <Col sm={4}>
             <FormGroup row>
               <Label sm={6}>{t('fields.serverTimezone')}:</Label>
-              <Label sm={6}>
-                {row.serverTimezone}
-              </Label>
+              <Label sm={6}>{row.serverTimezone}</Label>
             </FormGroup>
           </Col>
         </Row>

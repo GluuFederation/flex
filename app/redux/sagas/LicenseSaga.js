@@ -2,19 +2,13 @@
  * License Sagas
  */
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
-import {
-  CHECK_FOR_VALID_LICENSE,
-  ACTIVATE_LICENSE,
-} from '../actions/types'
+import { CHECK_FOR_VALID_LICENSE, ACTIVATE_LICENSE } from '../actions/types'
 import {
   checkLicensePresentResponse,
   activateLicenseResponse,
 } from '../actions'
 
-import {
-  checkLicensePresent,
-  activateLicense,
-} from '../api/backend-api'
+import { checkLicensePresent, activateLicense } from '../api/backend-api'
 
 function* checkLicensePresentWorker() {
   try {
@@ -42,7 +36,6 @@ function* activateLicenseWorker({ payload }) {
   yield put(activateLicenseResponse())
 }
 
-
 //watcher sagas
 export function* checkLicensePresentWatcher() {
   yield takeEvery(CHECK_FOR_VALID_LICENSE, checkLicensePresentWorker)
@@ -56,8 +49,5 @@ export function* activateLicenseWatcher() {
  * License Root Saga
  */
 export default function* rootSaga() {
-  yield all([
-    fork(checkLicensePresentWatcher),
-    fork(activateLicenseWatcher),
-  ])
+  yield all([fork(checkLicensePresentWatcher), fork(activateLicenseWatcher)])
 }

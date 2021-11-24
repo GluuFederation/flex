@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { FormGroup, Card, CardBody } from '../../../../app/components'
-import GluuNotification from '../../../../app/routes/Apps/Gluu/GluuNotification'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
@@ -55,14 +54,6 @@ function ConfigPage({ configuration, loading, dispatch }) {
   return (
     <GluuLoader blocking={loading}>
       <Card>
-        {false && (
-          <GluuNotification
-            type="success"
-            message={t('Json configuration change')}
-            description={t('The changes has been apply successfully.')}
-            show={true}
-          />
-        )}
         <CardBody style={{ minHeight: 500 }}>
           {Object.keys(configuration).map((propKey, idx) => (
             <PropertyBuilder

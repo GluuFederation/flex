@@ -8,7 +8,7 @@ const INIT_STATE = {
   loading: false,
 }
 
-const reducerName = 'persistenceTypeReducer';
+const reducerName = 'persistenceTypeReducer'
 
 export default function persistenceTypeReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -35,4 +35,4 @@ export default function persistenceTypeReducer(state = INIT_STATE, action) {
         ...state,
       }
   }
-}  
+}

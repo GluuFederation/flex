@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import SqlDetailPage from './SqlDetailPage'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@material-ui/lab/Alert'
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import { getPersistenceType } from '../../redux/actions/PersistenceActions'
 import {
@@ -42,7 +42,7 @@ function SqlListPage({
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
-  const [pageSize, setPageSize] = useState(localStorage.getItem('paggingSize') || 10)
+  const pageSize = localStorage.getItem('paggingSize') || 10
   const [alertObj, setAlertObj] = useState({
     severity: '',
     message: '',
@@ -109,13 +109,6 @@ function SqlListPage({
     })
   }
 
-  function getBadgeTheme(status) {
-    if (status) {
-      return 'primary'
-    } else {
-      return 'warning'
-    }
-  }
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.configId)
     dispatch(deleteSql(item.configId))
@@ -153,11 +146,14 @@ function SqlListPage({
   return (
     <React.Fragment>
       <GluuLoader blocking={persistenceTypeLoading}>
-        {persistenceType == `sql` ?
-          (<MaterialTable
+        {persistenceType == `sql` ? (
+          <MaterialTable
             columns={[
               { title: `${t('fields.name')}`, field: 'configId' },
-              { title: `${t('fields.connectionUris')}`, field: 'connectionUri' },
+              {
+                title: `${t('fields.connectionUris')}`,
+                field: 'connectionUri',
+              },
               { title: `${t('fields.schemaName')}`, field: 'schemaName' },
             ]}
             data={sqlConfigurations}
@@ -185,7 +181,12 @@ function SqlListPage({
                 />
               )
             }}
-          />) : (<Alert severity="info">The database of Authentication server is not RDBMS.</Alert>)}
+          />
+        ) : (
+          <Alert severity="info">
+            The database of Authentication server is not RDBMS.
+          </Alert>
+        )}
         <GluuAlert
           severity={alertObj.severity}
           message={alertObj.message}
@@ -210,7 +211,7 @@ const mapStateToProps = (state) => {
     permissions: state.authReducer.permissions,
     testStatus: state.sqlReducer.testStatus,
     persistenceType: state.persistenceTypeReducer.type,
-    persistenceTypeLoading: state.persistenceTypeReducer.loading
+    persistenceTypeLoading: state.persistenceTypeReducer.loading,
   }
 }
 export default connect(mapStateToProps)(SqlListPage)
