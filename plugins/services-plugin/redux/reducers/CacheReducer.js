@@ -22,7 +22,6 @@ import {
   PUT_REDIS_CACHE,
   PUT_REDIS_CACHE_RESPONSE,
   RESET,
-  SET_ITEM,
 } from '../actions/types'
 
 const INIT_STATE = {
@@ -34,7 +33,7 @@ const INIT_STATE = {
   loading: false,
 }
 
-const reducerName = 'cacheReducer';
+const reducerName = 'cacheReducer'
 
 export default function cacheReducer(state = INIT_STATE, action) {
   switch (action.type) {

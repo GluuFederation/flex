@@ -2,12 +2,11 @@ import {
   GET_SQL,
   GET_SQL_RESPONSE,
   SET_SQL,
-  SET_SQL_RESPONSE,
   PUT_SQL,
   PUT_SQL_RESPONSE,
   RESET,
   ADD_SQL,
-  ADD_SQL_RESPONSE
+  ADD_SQL_RESPONSE,
 } from '../actions/types'
 
 const INIT_STATE = {
@@ -17,7 +16,7 @@ const INIT_STATE = {
   testStatus: false,
 }
 
-const reducerName = 'sqlReducer';
+const reducerName = 'sqlReducer'
 
 export default function sqlReducer(state = INIT_STATE, action) {
   switch (action.type) {

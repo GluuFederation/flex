@@ -8,10 +8,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import {
-  hasBoth,
   buildPayload,
-  STAT_READ,
-  STAT_JANS_READ,
 } from '../../../../app/utils/PermChecker'
 import { connect } from 'react-redux'
 import { getHealthStatus } from '../../redux/actions/HealthAction'

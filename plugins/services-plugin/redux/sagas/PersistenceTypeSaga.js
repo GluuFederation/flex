@@ -1,8 +1,6 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from '../../../../app/utils/TokenController'
-import {
-  getPersistenceTypeResponse,
-} from '../actions/PersistenceActions'
+import { getPersistenceTypeResponse } from '../actions/PersistenceActions'
 import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
 import { GET_PERSISTENCE_TYPE } from '../actions/types'
 import PersistenceConfigApi from '../api/PersistenceConfigApi'
