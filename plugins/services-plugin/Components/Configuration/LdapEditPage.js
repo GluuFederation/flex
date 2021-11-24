@@ -18,12 +18,7 @@ function LdapEditPage({ item, dispatch }) {
       history.push('/config/ldap')
     }
   }
-  const defautConfigurations = {
-    maxConnections: 2,
-    useSSL: false,
-    useAnonymousBind: false,
-    enabled: false
-  }
+
   return (
     <React.Fragment>
       <Container>

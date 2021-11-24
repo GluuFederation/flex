@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { Card, CardBody } from '../../../../../../app/components'
 import { getJwks } from '../../../../redux/actions/JwksActions'
-import GluuFooter from '../../../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuLoader from '../../../../../../app/routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'
@@ -24,7 +23,6 @@ function JwksPage({ jwks, loading, dispatch }) {
             : ''}
         </CardBody>
       </Card>
-      {false && <GluuFooter hideButtons={{ save: true }} />}
     </GluuLoader>
   )
 }

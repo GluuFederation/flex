@@ -1,8 +1,8 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { 
+import {
   isFourZeroOneError,
   addAdditionalData,
- } from '../../../../app/utils/TokenController'
+} from '../../../../app/utils/TokenController'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import {
   getLdapResponse,
@@ -31,7 +31,7 @@ import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 
-function* newFunction() {  
+function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.DatabaseLDAPConfigurationApi(
@@ -62,10 +62,7 @@ export function* addLdap({ payload }) {
   try {
     addAdditionalData(audit, CREATE, LDAP, payload)
     const api = yield* newFunction()
-    const data = yield call(
-      api.addLdapConfig,
-      payload.data.action_data,
-    )
+    const data = yield call(api.addLdapConfig, payload.data.action_data)
     yield put(addLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -82,10 +79,7 @@ export function* editLdap({ payload }) {
   try {
     addAdditionalData(audit, UPDATE, LDAP, payload)
     const api = yield* newFunction()
-    const data = yield call(
-      api.updateLdapConfig,
-      payload.data.action_data,
-    )
+    const data = yield call(api.updateLdapConfig, payload.data.action_data)
     yield put(editLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {

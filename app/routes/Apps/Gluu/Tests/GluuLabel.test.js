@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, exp } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import GluuLabel from '../GluuLabel'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'

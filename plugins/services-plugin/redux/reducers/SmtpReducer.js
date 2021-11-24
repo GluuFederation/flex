@@ -16,7 +16,7 @@ const INIT_STATE = {
   testStatus: {},
 }
 
-const reducerName = 'smtpReducer';
+const reducerName = 'smtpReducer'
 
 export default function smtpReducer(state = INIT_STATE, action) {
   switch (action.type) {

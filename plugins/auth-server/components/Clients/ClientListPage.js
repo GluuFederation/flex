@@ -37,9 +37,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const options = {}
   const myActions = []
   const history = useHistory()
-  const [pageSize, setPageSize] = useState(
-    localStorage.getItem('paggingSize') || 10,
-  )
+  const pageSize = localStorage.getItem('paggingSize') || 10
   const [limit, setLimit] = useState(500)
   const [pattern, setPattern] = useState(null)
   const [item, setItem] = useState({})

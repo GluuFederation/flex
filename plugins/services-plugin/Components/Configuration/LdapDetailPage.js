@@ -11,7 +11,6 @@ import { useTranslation } from 'react-i18next'
 
 const LdapDetailPage = ({ row, testLdapConnection }) => {
   const { t } = useTranslation()
-
   function getBadgeTheme(status) {
     if (status) {
       return 'primary'

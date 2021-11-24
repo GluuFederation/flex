@@ -131,24 +131,6 @@ function JsonPropertyBuilder({
           {propKey.toUpperCase()}{' '}
         </Accordion.Header>
         <Accordion.Body>
-          {false && (
-            <FormGroup row>
-              <Col sm={11} md={11}></Col>
-              <Col sm={1} md={1}>
-                <Button
-                  color="primary"
-                  onClick={addHandler}
-                  size="sm"
-                  style={{ float: 'right' }}
-                >
-                  <i className="fa fa-plus mr-2"></i>
-                  {'  '}
-                  {t('actions.add')}
-                  {'  '}
-                </Button>
-              </Col>
-            </FormGroup>
-          )}
           {Object.keys(propValue).map((item, idx) => (
             <JsonPropertyBuilder
               key={idx}

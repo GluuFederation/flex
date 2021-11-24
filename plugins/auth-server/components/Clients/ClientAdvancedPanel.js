@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Col, Container, FormGroup} from '../../../../app/components'
+import { Col, Container, FormGroup } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
@@ -44,15 +44,9 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
     setSoftwareSection(!softwareSection)
   }
   function emailValidator(email) {
-    if (
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-        email,
-      )
-    ) {
-      return true
-    } else {
-      return false
-    }
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+      email,
+    )
   }
   return (
     <Container>

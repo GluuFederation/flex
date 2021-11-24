@@ -13,7 +13,7 @@ const INIT_STATE = {
   loading: false,
 }
 
-const reducerName = 'couchbaseReducer';
+const reducerName = 'couchbaseReducer'
 
 export default function couchbaseReducer(state = INIT_STATE, action) {
   switch (action.type) {

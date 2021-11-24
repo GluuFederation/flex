@@ -1,6 +1,3 @@
-/**
- * Attribute Sagas
- */
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
   isFourZeroOneError,
@@ -116,7 +113,7 @@ export function* deleteAttribute({ payload }) {
   try {
     addAdditionalData(audit, DELETION, PERSON_SCHEMA, payload)
     const attributeApi = yield* newFunction()
-    const data = yield call(attributeApi.deleteAnAttribute, payload.inum)
+    yield call(attributeApi.deleteAnAttribute, payload.inum)
     yield put(deleteAttributeResponse(payload.inum))
     yield call(postUserAction, audit)
   } catch (e) {

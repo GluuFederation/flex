@@ -2,7 +2,6 @@ import {
   GET_SQL,
   GET_SQL_RESPONSE,
   SET_SQL,
-  SET_SQL_RESPONSE,
   PUT_SQL,
   PUT_SQL_RESPONSE,
   DELETE_SQL,
@@ -55,11 +54,10 @@ export const setCurrentItem = (item) => ({
 
 export const testSql = (data) => ({
   type: TEST_SQL,
-  payload: {data},
+  payload: { data },
 })
 
 export const testSqlResponse = (data) => ({
   type: TEST_SQL_RESPONSE,
   payload: { data },
 })
-

@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-  hasPermission,
-  FIDO_READ,
-  FIDO_WRITE,
-} from '../../../utils/PermChecker'
+import { hasPermission, FIDO_WRITE } from '../../../utils/PermChecker'
 import {
   Form,
   FormGroup,
@@ -21,7 +17,6 @@ import GluuFooter from '../Gluu/GluuFooter'
 import GluuLoader from '../Gluu/GluuLoader'
 import GluuTypeAhead from '../Gluu/GluuTypeAhead'
 import { connect } from 'react-redux'
-import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
 import {
   getFidoConfig,
@@ -29,7 +24,7 @@ import {
 } from '../../../redux/actions/FidoActions'
 import GluuNameValuesProperty from '../Gluu/GluuNameValuesProperty'
 
-function Fido2Page({ fido, loading, permissions, dispatch }) {
+function Fido2Page({ fido,permissions, dispatch }) {
   useEffect(() => {
     dispatch(getFidoConfig())
   }, [])
@@ -37,7 +32,7 @@ function Fido2Page({ fido, loading, permissions, dispatch }) {
   const requested_parties = 'requested_parties'
   const requestedPartiesList = []
 
-  function requestedPartiesValidator(name) {
+  function requestedPartiesValidator() {
     return true
   }
 
