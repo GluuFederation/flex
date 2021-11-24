@@ -11,13 +11,11 @@ import process from '../../../plugins/PluginReducersResolver'
 const sagaMiddleware = createSagaMiddleware()
 const middlewares = [sagaMiddleware]
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-
 const persistConfig = {
   key: 'root',
   storage,
   stateReconciler: hardSet,
 }
-
 // Preserve initial state for not-yet-loaded reducers
 const combine = (reducersObjects) => {
   const reducerNames = Object.keys(reducersObjects)
@@ -28,7 +26,6 @@ const combine = (reducersObjects) => {
   })
   return combineReducers(reducersObjects)
 }
-
 const reducers = combine(reducerRegistry.getReducers())
 process()
 const persistedReducer = persistReducer(persistConfig, reducers)
@@ -39,16 +36,12 @@ export function configureStore(initialState) {
     initialState,
     composeEnhancer(applyMiddleware(...middlewares)),
   )
-
   const persistor = persistStore(store)
-
   window.dsfaStore = store
-  reducerRegistry.setChangeListener((reducers) => {
-    store.replaceReducer(combine(reducers))
+  reducerRegistry.setChangeListener((reds) => {
+    store.replaceReducer(combine(reds))
   })
-
   sagaMiddleware.run(RootSaga)
-
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
     module.hot.accept('../reducers/index', () => {
@@ -56,6 +49,5 @@ export function configureStore(initialState) {
       store.replaceReducer(nextRootReducer)
     })
   }
-
   return { store, persistor }
 }

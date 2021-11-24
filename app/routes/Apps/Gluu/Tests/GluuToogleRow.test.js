@@ -6,7 +6,9 @@ import { I18nextProvider } from 'react-i18next'
 const LABEL = 'fields.application_type'
 const NAME = 'applicationType'
 const VALUE = false
-function formikf() {}
+function formikf() {
+  console.console('=========')
+}
 
 it('Test gluutooltip', () => {
   render(

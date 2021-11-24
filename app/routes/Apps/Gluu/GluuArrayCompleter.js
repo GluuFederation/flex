@@ -37,7 +37,9 @@ function GluuArrayCompleter({
             allowNew
             emptyLabel=""
             labelKey={name}
-            onChange={(selected) => {}}
+            onChange={(selected) => {
+              console.log(selected)
+            }}
             id={name}
             name={name}
             data-testid={name}

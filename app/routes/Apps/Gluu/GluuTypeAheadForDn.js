@@ -26,8 +26,8 @@ function GluuTypeAheadForDn({
   doc_entry,
 }) {
   const { t } = useTranslation()
-  function getItemName(options, item) {
-    const data = options.filter((e) => e.dn === item)
+  function getItemName(theOptions, item) {
+    const data = theOptions.filter((e) => e.dn === item)
     return data[0].name
   }
   return (

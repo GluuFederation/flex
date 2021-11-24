@@ -34,8 +34,8 @@ function GluuNotification({ type, message, description, show }) {
     return 'fa fa-fw fa-2x ' + theType
   }
 
-  function showToast(type) {
-    switch (type) {
+  function showToast(aType) {
+    switch (aType) {
       case 'info':
         toast.info(toastContent)
         break
