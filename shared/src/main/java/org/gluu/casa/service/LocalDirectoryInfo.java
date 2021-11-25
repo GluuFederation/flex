@@ -1,7 +1,7 @@
 package org.gluu.casa.service;
 
 /**
- * Provides location information about important entities of Gluu Server in a tree directory structure.
+ * Provides location information about important entities of Jans Server
  */
 public interface LocalDirectoryInfo {
 

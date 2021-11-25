@@ -54,7 +54,7 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
                 case INITIAL:
                     //If OP response contains error query parameter we cannot proceed
                     Pair<String, ErrorObject> result = oidcFlowService.validateAuthnResponse(
-                            WebUtils.getServletRequest().getRequestURI(), flowContext.getState());
+                            WebUtils.getFullRequestURL(), flowContext.getState());
                     flowContext.setState(null);
                     ErrorObject error = result.getY();
 

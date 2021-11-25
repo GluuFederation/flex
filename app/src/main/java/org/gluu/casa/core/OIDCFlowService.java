@@ -1,6 +1,5 @@
 package org.gluu.casa.core;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.proc.BadJOSEException;
@@ -20,7 +19,6 @@ import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
 import java.io.IOException;
 
 import java.net.*;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,10 +28,12 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.core.UriBuilder;
+
 import net.minidev.json.JSONObject;
+
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OIDCSettings;
-
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
@@ -60,6 +60,7 @@ public class OIDCFlowService {
     private String authzEndpoint;
     private String tokenEndpoint;
     private String userInfoEndpoint;
+    private String endSessionEndpoint;
     private String jwksUri;
 
     public Pair<String, String> getAuthnRequestUrl(String acr) {
@@ -93,7 +94,7 @@ public class OIDCFlowService {
     }
     
     public Pair<String, ErrorObject> validateAuthnResponse(String uri, String expectedState) {
-        
+
         ErrorObject error = null;
         String code = null;
         try {
@@ -106,7 +107,7 @@ public class OIDCFlowService {
                 error = new ErrorObject("Unexpected authentication response");
 
             } else {
-                code = response.toSuccessResponse().getAuthorizationCode().toString();
+                code = response.toSuccessResponse().getAuthorizationCode().getValue();
             }
         } catch (ParseException e) {
             error = e.getErrorObject();
@@ -124,6 +125,7 @@ public class OIDCFlowService {
         ErrorObject error = null;
 
         try {
+
             AuthorizationCode acode = new AuthorizationCode(code);
             URI callback = new URI(settings.getRedirectUri());
             AuthorizationGrant codeGrant = new AuthorizationCodeGrant(acode, callback);
@@ -150,7 +152,7 @@ public class OIDCFlowService {
                 if (validationMsg != null) {
                     error = new ErrorObject("Cannot validate id_token", validationMsg);
                 } else {                    
-                    tokens = new Pair<>(accessToken.toString(), idToken.toString());
+                    tokens = new Pair<>(accessToken.toString(), idToken.getParsedString());
                 }
             }
         } catch (ParseException e) {
@@ -179,8 +181,7 @@ public class OIDCFlowService {
                 error = userInfoResponse.toErrorResponse().getErrorObject();                    
             } else {
                 UserInfo userInfo = userInfoResponse.toSuccessResponse().getUserInfo();
-                JSONObject jsonObj = userInfo.toJSONObject();
-                
+                JSONObject jsonObj = userInfo.toJSONObject();        
                 claims = jsonObj.entrySet().stream()
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             }
@@ -197,7 +198,11 @@ public class OIDCFlowService {
     }
 
     public String getLogoutUrl(String idTokenHint) {
-        return null;
+        
+        return UriBuilder.fromUri(endSessionEndpoint).queryParam("id_token_hint", idTokenHint)
+                .queryParam("post_logout_redirect_uri", settings.getPostLogoutUri())
+                .build().toString();
+        
     }
     
     private String validateIDToken(JWT idToken) {
@@ -223,9 +228,11 @@ public class OIDCFlowService {
     @PostConstruct
     private void init() {
         settings = mainSettings.getOidcSettings();
+        
         authzEndpoint = persistenceService.getAuthorizationEndpoint();
         tokenEndpoint = persistenceService.getTokenEndpoint();
         userInfoEndpoint = persistenceService.getUserInfoEndpoint();
+        endSessionEndpoint = persistenceService.getEndSessionEndpoint();
         //TODO: reformat URI: in CN internal url should be fetched differently
         jwksUri = persistenceService.getJwksUri(); 
     }

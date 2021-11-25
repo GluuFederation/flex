@@ -2,7 +2,6 @@ package org.gluu.casa.misc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 
 import javax.imageio.ImageIO;
@@ -139,6 +138,16 @@ public final class WebUtils {
         }
         return val;
 
+    }
+    
+    public static String getFullRequestURL() {
+        HttpServletRequest req = getServletRequest();
+        String query = req.getQueryString();
+        StringBuffer sb = req.getRequestURL();
+        if (query != null) {
+            sb.append("?").append(query);
+        }
+        return sb.toString();
     }
 
 }

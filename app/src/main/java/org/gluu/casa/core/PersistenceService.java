@@ -229,7 +229,8 @@ public class PersistenceService implements IPersistenceService {
 
         Person personMember = get(Person.class, getPersonDn(userId));
         return personMember != null
-                && personMember.getMemberOf().stream().anyMatch(m -> dns.stream().anyMatch(dn -> dn.equals(m)));
+                && personMember.getMemberOf().stream()
+                        .anyMatch(m -> dns.stream().anyMatch(dn -> dn.equals(m)));
 
     }
 
@@ -247,6 +248,10 @@ public class PersistenceService implements IPersistenceService {
     
     public String getUserInfoEndpoint() {
         return jsonProperty(dynamicConfig, "userInfoEndpoint");
+    }
+    
+    public String getEndSessionEndpoint() {
+        return jsonProperty(dynamicConfig, "endSessionEndpoint");
     }
     
     public String getJwksUri() {

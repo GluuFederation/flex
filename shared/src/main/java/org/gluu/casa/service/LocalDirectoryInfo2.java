@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.Map;
 
 /**
- * Provides access to extra information in the directory tree. See {@link LocalDirectoryInfo} interface.
+ * Provides access to extra information in the local database. See {@link LocalDirectoryInfo} interface.
  */
 public interface LocalDirectoryInfo2 extends LocalDirectoryInfo {
 

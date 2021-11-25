@@ -5,12 +5,7 @@ import io.jans.orm.search.filter.Filter;
 import java.util.List;
 
 /**
- * Provides CRUD access to the underlying persistence engine of you Gluu Server installation. Starting with Casa 4.0 this
- * interface is the mechanism of choice for interacting with data.
- * <p>This interface resembles older <code>ILdapService</code> so developers with previous acquaintance can start coding quickly,
- * however classes/instances passed to these methods are supposed to use the <code>oxCore</code> annotations found in package
- * <code>org.gluu.persist.annotation</code> in lieu of <code>com.unboundid.ldap.sdk.persist</code>
- * annotations of UnboundID LDAP SDK.</p>
+ * Provides CRUD access to the underlying persistence engine of your Jans Server installation.
  * <p>To obtain an instance object that implements this interface, use method
  * {@link org.gluu.casa.misc.Utils#managedBean(Class)}.</p>
  * @author jgomer
