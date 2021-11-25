@@ -30,6 +30,7 @@ import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import Picker from 'react-month-picker'
 import PropTypes from 'prop-types'
+import { Badge } from 'reactstrap'
 
 class MonthBox extends Component {
   static propTypes = {
@@ -256,9 +257,11 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   {t('actions.view')}
                 </Button>
                 <Label className="h4">
-                  {t('fields.average_of_mau')}
-                  {arrAvg(Object.values(stat))}
+                  {t('fields.average_of_mau')}&nbsp;&nbsp;&nbsp;
                 </Label>
+                <Badge className="h4" color="success">
+                  {arrAvg(Object.values(stat))}
+                </Badge>
               </div>
               <ResponsiveContainer
                 className="mau-graph"
@@ -329,6 +332,7 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 <div className="pretty p-default p-curve p-smooth">
                   <Input
                     type="checkbox"
+                    readOnly={true}
                     checked={showAuthCodeATGraph}
                     onClick={(e) => {
                       setShowAuthCodeATGraph(!showAuthCodeATGraph)
@@ -342,6 +346,7 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                   <Input
                     type="checkbox"
                     checked={showClientCredentialATGraph}
+                    readOnly={true}
                     onClick={(e) => {
                       setShowClientCredentialATGraph(
                         !showClientCredentialATGraph,
