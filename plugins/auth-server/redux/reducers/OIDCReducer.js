@@ -25,15 +25,9 @@ const reducerName = 'oidcReducer'
 export default function oidcReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_OPENID_CLIENTS:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case SEARCH_CLIENTS:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_OPENID_CLIENTS_RESPONSE:
       if (action.payload.data) {
         return {
@@ -42,17 +36,11 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case ADD_NEW_CLIENT:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case ADD_CLIENT_RESPONSE:
       if (action.payload.data) {
         return {
@@ -61,10 +49,7 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case EDIT_CLIENT:
@@ -85,17 +70,11 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case DELETE_CLIENT:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
 
     case DELETE_CLIENT_RESPONSE:
       if (action.payload.data) {
@@ -105,10 +84,7 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case SET_CLIENT_ITEM:
@@ -124,6 +100,8 @@ export default function oidcReducer(state = INIT_STATE, action) {
           view: action.payload.view,
           loading: false,
         }
+      } else {
+        return handleDefault()
       }
 
     case RESET:
@@ -133,9 +111,20 @@ export default function oidcReducer(state = INIT_STATE, action) {
         loading: INIT_STATE.loading,
       }
     default:
-      return {
-        ...state,
-      }
+      return handleDefault()
+  }
+
+  function handleDefault() {
+    return {
+      ...state,
+      loading: false,
+    }
+  }
+  function handleLoading() {
+    return {
+      ...state,
+      loading: true,
+    }
   }
 }
 reducerRegistry.register(reducerName, oidcReducer)

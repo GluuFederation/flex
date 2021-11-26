@@ -27,15 +27,9 @@ const reducerName = 'scopeReducer'
 export default function scopeReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_SCOPES:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case SEARCH_SCOPES:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_SCOPES_RESPONSE:
       if (action.payload.data) {
         return {
@@ -43,12 +37,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
           items: action.payload.data,
           loading: false,
         }
+      } else {
+        return handleDefault()
       }
     case GET_SCOPE_BY_INUM:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_SCOPE_BY_INUM_RESPONSE:
       if (action.payload.data) {
         return {
@@ -56,12 +49,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
           item: action.payload.data,
           loading: false,
         }
+      } else {
+        return handleDefault()
       }
     case GET_SCOPE_BY_PATTERN:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_SCOPE_BY_PATTERN_RESPONSE:
       if (action.payload.data) {
         return {
@@ -69,13 +61,12 @@ export default function scopeReducer(state = INIT_STATE, action) {
           item: action.payload.data,
           loading: false,
         }
+      } else {
+        return handleDefault()
       }
 
     case ADD_SCOPE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case ADD_SCOPE_RESPONSE:
       if (action.payload.data) {
         return {
@@ -83,13 +74,12 @@ export default function scopeReducer(state = INIT_STATE, action) {
           items: [...state.items],
           loading: false,
         }
+      } else {
+        return handleDefault()
       }
 
     case EDIT_SCOPE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
 
     case EDIT_SCOPE_RESPONSE:
       if (action.payload.data) {
@@ -98,12 +88,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
           items: [...state.items],
           loading: false,
         }
+      } else {
+        return handleDefault()
       }
     case DELETE_SCOPE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case DELETE_SCOPE_RESPONSE:
       if (action.payload.data) {
         return {
@@ -111,6 +100,8 @@ export default function scopeReducer(state = INIT_STATE, action) {
           items: state.items.filter((i) => i.inum !== action.payload.data),
           loading: false,
         }
+      } else {
+        return handleDefault()
       }
 
     case SET_ITEM:
@@ -126,10 +117,19 @@ export default function scopeReducer(state = INIT_STATE, action) {
         loading: INIT_STATE.loading,
       }
     default:
-      return {
-        ...state,
-        loading: false,
-      }
+      return handleDefault()
+  }
+  function handleLoading() {
+    return {
+      ...state,
+      loading: true,
+    }
+  }
+  function handleDefault() {
+    return {
+      ...state,
+      loading: false,
+    }
   }
 }
 reducerRegistry.register(reducerName, scopeReducer)

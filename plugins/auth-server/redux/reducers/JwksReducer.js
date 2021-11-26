@@ -22,6 +22,8 @@ export default function jwksReducer(state = INIT_STATE, action) {
           jwks: action.payload.data,
           loading: false,
         }
+      } else {
+        return handleDefault()
       }
     case RESET:
       return {
@@ -30,10 +32,13 @@ export default function jwksReducer(state = INIT_STATE, action) {
         loading: INIT_STATE.loading,
       }
     default:
-      return {
-        ...state,
-        loading: false,
-      }
+      return handleDefault()
+  }
+  function handleDefault() {
+    return {
+      ...state,
+      loading: false,
+    }
   }
 }
 reducerRegistry.register(reducerName, jwksReducer)
