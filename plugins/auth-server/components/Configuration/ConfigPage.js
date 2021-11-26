@@ -6,7 +6,6 @@ import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import useExitPrompt from '../../../../app/routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
-import { useTranslation } from 'react-i18next'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 import {
   getJsonConfig,
@@ -15,7 +14,6 @@ import {
 import { FETCHING_JSON_PROPERTIES } from '../../common/Constants'
 
 function ConfigPage({ configuration, loading, dispatch }) {
-  const { t } = useTranslation()
   const lSize = 6
   const userAction = {}
   const [modal, setModal] = useState(false)
