@@ -107,21 +107,23 @@ public class OIDCFlowService {
                 error = response.toErrorResponse().getErrorObject();
 
             } else if (!response.getState().toString().equals(expectedState)) {
-                error = new ErrorObject(Labels.getLabel("general.error.authn_response_unexpected"));
+                error = new ErrorObject(null, Labels.getLabel("general.error.authn_response_unexpected"));
 
             } else {
                 code = response.toSuccessResponse().getAuthorizationCode().getValue();
+
             }
-        } catch (ParseException e) {
-            error = e.getErrorObject();
-        } catch (URISyntaxException e2) {
-            logger.error(e2.getMessage());
-            error = new ErrorObject(e2.getMessage(), e2.getReason());
+        } catch (ParseException | URISyntaxException e) {
+            String msg = e.getMessage();
+            logger.error(msg, e);
+            // e.getErrorObject() evaluates null for ParseException :(
+            error = new ErrorObject(null, msg); 
         }
+
         if (error == null) {
             return code;
         } else {
-            throw new GeneralException(error);
+            throw new GeneralException(Labels.getLabel("general.error.authn_response_validation"), error);
         }
         
     }
@@ -161,13 +163,11 @@ public class OIDCFlowService {
                     tokens = new Pair<>(accessToken.toString(), idToken.getParsedString());
                 }
             }
-        } catch (ParseException e) {
-            logger.error(e.getMessage(), e);
-            error = e.getErrorObject();
-        } catch (URISyntaxException | IOException e2) {
-            String msg = e2.getMessage();
-            logger.error(msg);
-            error = new ErrorObject(msg, msg);
+        } catch (ParseException | URISyntaxException | IOException e) {
+            String msg = e.getMessage();
+            logger.error(msg, e);
+            // e.getErrorObject() evaluates null for ParseException :(
+            error = new ErrorObject(null, msg); 
         }
 
         if (error == null) {
@@ -197,13 +197,11 @@ public class OIDCFlowService {
                 claims = jsonObj.entrySet().stream()
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             }
-        } catch (ParseException e) {
-            logger.error(e.getMessage(), e);
-            error = e.getErrorObject();
-        } catch (URISyntaxException | IOException e2) {
-            String msg = e2.getMessage();
-            logger.error(msg);
-            error = new ErrorObject(msg, msg);
+        } catch (ParseException | URISyntaxException | IOException e) {
+            String msg = e.getMessage();
+            logger.error(msg, e);
+            // e.getErrorObject() evaluates null for ParseException :(
+            error = new ErrorObject(null, msg); 
         }
 
         if (error == null) {

@@ -46,7 +46,12 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
                     goForAuthorization();
                     break;
                 case INITIAL:
-                    //If OP response contains error query parameter we cannot proceed
+                    if (Utils.isEmpty(WebUtils.getQueryParam("state"))) {
+                        goForAuthorization();
+                        return;
+                    }
+
+                    //Proceed only if there is state in URL                    
                     String code = oidcFlowService.validateAuthnResponse(WebUtils.getFullRequestURL(),
                             flowContext.getState());
                     flowContext.setState(null);

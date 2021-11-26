@@ -12,7 +12,6 @@ import java.util.Map;
 /**
  * This initiator can be used for zul pages which can be publicly available. It accounts for the application to have
  * finished loaded completely
- * @author jgomer
  */
 public class CommonInitiator implements Initiator {
 
@@ -29,8 +28,6 @@ public class CommonInitiator implements Initiator {
             case FAIL:
                 setPageErrors(page, err, Labels.getLabel("general.app_not_started"));
                 break;
-            default:
-                //Added to pass the style checker :(
         }
 
     }
