@@ -42,10 +42,7 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case ADD_NEW_CLIENT:
@@ -61,10 +58,7 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case EDIT_CLIENT:
@@ -85,10 +79,7 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case DELETE_CLIENT:
@@ -105,10 +96,7 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case SET_CLIENT_ITEM:
@@ -124,6 +112,8 @@ export default function oidcReducer(state = INIT_STATE, action) {
           view: action.payload.view,
           loading: false,
         }
+      } else {
+        return handleDefault()
       }
 
     case RESET:
@@ -133,9 +123,14 @@ export default function oidcReducer(state = INIT_STATE, action) {
         loading: INIT_STATE.loading,
       }
     default:
-      return {
-        ...state,
-      }
+      return handleDefault()
+  }
+
+  function handleDefault() {
+    return {
+      ...state,
+      loading: false,
+    }
   }
 }
 reducerRegistry.register(reducerName, oidcReducer)

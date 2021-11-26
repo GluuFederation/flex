@@ -28,10 +28,7 @@ export default function loggingReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
     case PUT_LOGGING:
       return {
@@ -46,10 +43,7 @@ export default function loggingReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case RESET:
@@ -59,10 +53,14 @@ export default function loggingReducer(state = INIT_STATE, action) {
         loading: INIT_STATE.loading,
       }
     default:
-      return {
-        ...state,
-        loading: false,
-      }
+      return handleDefault()
+  }
+
+  function handleDefault() {
+    return {
+      ...state,
+      loading: false,
+    }
   }
 }
 reducerRegistry.register(reducerName, loggingReducer)

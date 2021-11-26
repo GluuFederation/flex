@@ -44,10 +44,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
     case GET_SCOPE_BY_INUM:
       return {
@@ -62,10 +59,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
     case GET_SCOPE_BY_PATTERN:
       return {
@@ -80,10 +74,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case ADD_SCOPE:
@@ -99,10 +90,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case EDIT_SCOPE:
@@ -119,10 +107,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
     case DELETE_SCOPE:
       return {
@@ -137,10 +122,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case SET_ITEM:
@@ -156,10 +138,14 @@ export default function scopeReducer(state = INIT_STATE, action) {
         loading: INIT_STATE.loading,
       }
     default:
-      return {
-        ...state,
-        loading: false,
-      }
+      return handleDefault()
+  }
+
+  function handleDefault() {
+    return {
+      ...state,
+      loading: false,
+    }
   }
 }
 reducerRegistry.register(reducerName, scopeReducer)

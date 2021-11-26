@@ -28,10 +28,7 @@ export default function acrReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case PUT_ACRS:
@@ -47,14 +44,16 @@ export default function acrReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
     default:
-      return {
-        ...state,
-      }
+      return handleDefault()
+  }
+
+  function handleDefault() {
+    return {
+      ...state,
+      loading: false,
+    }
   }
 }

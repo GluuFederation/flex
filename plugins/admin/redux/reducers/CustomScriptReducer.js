@@ -35,10 +35,7 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
     case GET_CUSTOM_SCRIPT_BY_TYPE:
       return {
@@ -53,10 +50,7 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
     case ADD_CUSTOM_SCRIPT:
       return {
@@ -71,10 +65,7 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case EDIT_CUSTOM_SCRIPT:
@@ -90,10 +81,7 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
 
     case DELETE_CUSTOM_SCRIPT:
@@ -111,10 +99,7 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
         }
       } else {
-        return {
-          ...state,
-          loading: false,
-        }
+        return handleDefault()
       }
     case SET_SCRIPT_ITEM:
       return {
@@ -129,9 +114,14 @@ export default function customScriptReducer(state = INIT_STATE, action) {
         loading: INIT_STATE.loading,
       }
     default:
-      return {
-        ...state,
-      }
+      return handleDefault()
+  }
+
+  function handleDefault() {
+    return {
+      ...state,
+      loading: false,
+    }
   }
 }
 reducerRegistry.register(reducerName, customScriptReducer)
