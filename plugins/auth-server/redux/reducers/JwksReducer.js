@@ -22,6 +22,11 @@ export default function jwksReducer(state = INIT_STATE, action) {
           jwks: action.payload.data,
           loading: false,
         }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
     case RESET:
       return {

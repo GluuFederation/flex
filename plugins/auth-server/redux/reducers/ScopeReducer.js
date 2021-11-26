@@ -43,6 +43,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
           items: action.payload.data,
           loading: false,
         }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
     case GET_SCOPE_BY_INUM:
       return {
@@ -54,6 +59,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return {
           ...state,
           item: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
           loading: false,
         }
       }
@@ -69,6 +79,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
           item: action.payload.data,
           loading: false,
         }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
 
     case ADD_SCOPE:
@@ -81,6 +96,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return {
           ...state,
           items: [...state.items],
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
           loading: false,
         }
       }
@@ -98,6 +118,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
           items: [...state.items],
           loading: false,
         }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
     case DELETE_SCOPE:
       return {
@@ -109,6 +134,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return {
           ...state,
           items: state.items.filter((i) => i.inum !== action.payload.data),
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
           loading: false,
         }
       }

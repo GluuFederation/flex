@@ -27,6 +27,11 @@ export default function loggingReducer(state = INIT_STATE, action) {
           logging: action.payload.data,
           loading: false,
         }
+      } else {
+        return {
+          ...state,
+          loading: false,
+        }
       }
     case PUT_LOGGING:
       return {
@@ -38,6 +43,11 @@ export default function loggingReducer(state = INIT_STATE, action) {
         return {
           ...state,
           logging: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return {
+          ...state,
           loading: false,
         }
       }
