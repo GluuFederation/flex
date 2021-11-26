@@ -1,8 +1,9 @@
 package org.gluu.casa.core.navigation;
 
-import com.nimbusds.oauth2.sdk.ErrorObject;
+import com.nimbusds.oauth2.sdk.GeneralException;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.gluu.casa.core.AuthFlowContext;
 import org.gluu.casa.core.ConfigurationHandler;
@@ -15,7 +16,6 @@ import org.gluu.casa.misc.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.Pair;
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.util.Initiator;
 
@@ -43,51 +43,23 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
         try {
             switch (flowContext.getStage()) {
                 case NONE:
-                    try {
-                        goForAuthorization();
-                    } catch (Exception e) {
-                        String error = "An error occurred during authorization step";
-                        setPageErrors(page, error, e.getMessage());
-                        logger.error(error, e);
-                    }
+                    goForAuthorization();
                     break;
                 case INITIAL:
                     //If OP response contains error query parameter we cannot proceed
-                    Pair<String, ErrorObject> result = oidcFlowService.validateAuthnResponse(
-                            WebUtils.getFullRequestURL(), flowContext.getState());
+                    String code = oidcFlowService.validateAuthnResponse(WebUtils.getFullRequestURL(),
+                            flowContext.getState());
                     flowContext.setState(null);
-                    ErrorObject error = result.getY();
-
-                    if (error != null) {
-                        flowContext.setStage(NONE);
-                        setPageErrors(page, error.getCode(), error.getDescription());
-                        return;
-                    }
+                    
                     //TODO: check what happens when user did not ever entered his username at IDP, and tries accessing the app again
-
-                    Pair<Pair<String, String>, ErrorObject> tokenResult = oidcFlowService.getTokens(result.getX());
-                    error = result.getY();
-
-                    if (error != null ) {
-                        //TODO: set flow stage ?
-                        setPageErrors(page, error.getCode(), error.getDescription());
-                        return;
-                    }
+                    Pair<String, String> tokenResult = oidcFlowService.getTokens(code);
                     
-                    String accessToken = tokenResult.getX().getX();
-                    String idToken = tokenResult.getX().getY();
-                    //logger.debug("Access token={}, Id token {}", accessToken, idToken);
+                    String accessToken = tokenResult.getX();
+                    String idToken = tokenResult.getY();
 
-                    Pair<Map<String, Object>, ErrorObject> claimsResult = oidcFlowService.getUserClaims(accessToken);
-                    error = result.getY();
-
-                    if (error != null) {
-                        //TODO: set flow stage ?
-                        setPageErrors(page, error.getCode(), error.getDescription());
-                        return;
-                    }
+                    Map<String, Object> claims = oidcFlowService.getUserClaims(accessToken);                    
+                    User user = Utils.managedBean(UserService.class).getUserFromClaims(claims);
                     
-                    User user = Utils.managedBean(UserService.class).getUserFromClaims(claimsResult.getX());
                     //Store in session
                     logger.debug("Adding user to session");
                     Utils.managedBean(SessionContext.class).setUser(user);
@@ -103,16 +75,20 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
                     WebUtils.execRedirect(WebUtils.USER_PAGE_URL);
                     break;
             }
-        } catch (Exception e) {
-            //TODO: is this catch needed?
-            logger.error(e.getMessage(), e);
-            setPageErrors(page, Labels.getLabel("general.error.general"), e.getMessage());
+        } catch (GeneralException e) {
+            String msg = e.getMessage();
+            logger.error(msg, e);
+            
+            String descr = Optional.ofNullable(e.getErrorObject().getCode())
+                    .map(c -> String.format("(%s) ", c)).orElse("");
+            descr += e.getErrorObject().getDescription();
+            setPageErrors(page, msg, descr);
             flowContext.setStage(NONE);
         }
 
     }
 
-    //Redirects to an authorization URL obtained with OXD
+    //Redirects to an authorization URL
     private void goForAuthorization() throws Exception {
         flowContext.setStage(INITIAL);
         logger.debug("Starting authorization flow");
@@ -122,5 +98,5 @@ public class HomeInitiator extends CommonInitiator implements Initiator {
         flowContext.setState(pair.getY());
         WebUtils.execRedirect(pair.getX());
     }
-
+    
 }

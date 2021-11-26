@@ -7,6 +7,8 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
+import com.nimbusds.oauth2.sdk.ErrorObject;
+import com.nimbusds.oauth2.sdk.GeneralException;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.openid.connect.sdk.*;
@@ -36,8 +38,8 @@ import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.conf.OIDCSettings;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
+import org.zkoss.util.resource.Labels;
 
-@Named
 @ApplicationScoped
 public class OIDCFlowService {
     
@@ -63,11 +65,11 @@ public class OIDCFlowService {
     private String endSessionEndpoint;
     private String jwksUri;
 
-    public Pair<String, String> getAuthnRequestUrl(String acr) {
+    public Pair<String, String> getAuthnRequestUrl(String acr) throws GeneralException {
         return getAuthnRequestUrl(Collections.singletonList(acr), null);
     }
     
-    public Pair<String, String> getAuthnRequestUrl(List<String> acrValues, String prompt) {
+    public Pair<String, String> getAuthnRequestUrl(List<String> acrValues, String prompt) throws GeneralException {
         
         try {
             ClientID clientID = new ClientID(settings.getClient().getClientId());
@@ -87,13 +89,14 @@ public class OIDCFlowService {
             
             return new Pair<>(request.toURI().toString(), state.toString());
         } catch (URISyntaxException e) {
-            logger.error(e.getMessage());
-            return null;
+            String msg = e.getMessage();
+            logger.error(msg);
+            throw new GeneralException(new ErrorObject(Labels.getLabel("general.error.authn_request"), msg));
         }
         
     }
     
-    public Pair<String, ErrorObject> validateAuthnResponse(String uri, String expectedState) {
+    public String validateAuthnResponse(String uri, String expectedState) throws GeneralException {
 
         ErrorObject error = null;
         String code = null;
@@ -104,7 +107,7 @@ public class OIDCFlowService {
                 error = response.toErrorResponse().getErrorObject();
 
             } else if (!response.getState().toString().equals(expectedState)) {
-                error = new ErrorObject("Unexpected authentication response");
+                error = new ErrorObject(Labels.getLabel("general.error.authn_response_unexpected"));
 
             } else {
                 code = response.toSuccessResponse().getAuthorizationCode().getValue();
@@ -115,15 +118,18 @@ public class OIDCFlowService {
             logger.error(e2.getMessage());
             error = new ErrorObject(e2.getMessage(), e2.getReason());
         }
-        return new Pair<>(code, error);
+        if (error == null) {
+            return code;
+        } else {
+            throw new GeneralException(error);
+        }
         
     }
 
-    public Pair<Pair<String, String>, ErrorObject> getTokens(String code) {
+    public Pair<String, String> getTokens(String code) throws GeneralException {
         
         Pair<String, String> tokens = null;
         ErrorObject error = null;
-
         try {
 
             AuthorizationCode acode = new AuthorizationCode(code);
@@ -150,7 +156,7 @@ public class OIDCFlowService {
                 
                 String validationMsg = validateIDToken(idToken);
                 if (validationMsg != null) {
-                    error = new ErrorObject("Cannot validate id_token", validationMsg);
+                    error = new ErrorObject(Labels.getLabel("general.error.idtoken_validation"), validationMsg);
                 } else {                    
                     tokens = new Pair<>(accessToken.toString(), idToken.getParsedString());
                 }
@@ -159,14 +165,20 @@ public class OIDCFlowService {
             logger.error(e.getMessage(), e);
             error = e.getErrorObject();
         } catch (URISyntaxException | IOException e2) {
-            logger.error(e2.getMessage());
-            error = new ErrorObject(e2.getMessage());
+            String msg = e2.getMessage();
+            logger.error(msg);
+            error = new ErrorObject(msg, msg);
         }
-        return new Pair<>(tokens, error);
+
+        if (error == null) {
+            return tokens;
+        } else {
+            throw new GeneralException(error);
+        }
 
     }
 
-    public Pair<Map<String, Object>, ErrorObject> getUserClaims(String accessToken) {
+    public Map<String, Object> getUserClaims(String accessToken) throws GeneralException {
 
         Map<String, Object> claims = null;
         ErrorObject error = null;
@@ -189,11 +201,16 @@ public class OIDCFlowService {
             logger.error(e.getMessage(), e);
             error = e.getErrorObject();
         } catch (URISyntaxException | IOException e2) {
-            logger.error(e2.getMessage());
-            error = new ErrorObject(e2.getMessage());
+            String msg = e2.getMessage();
+            logger.error(msg);
+            error = new ErrorObject(msg, msg);
         }
-        return new Pair<>(claims, error);
 
+        if (error == null) {
+            return claims;
+        } else {
+            throw new GeneralException(error);
+        }
 
     }
 
