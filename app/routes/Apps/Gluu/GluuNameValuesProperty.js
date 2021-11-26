@@ -41,7 +41,6 @@ function GluuNameValuesProperty({
         return
       }
       for (var i = 0; i < value.length; i++) {
-        var elm = value[i]
         var valueList = []
         var opts = []
         valueList = value[i].domains

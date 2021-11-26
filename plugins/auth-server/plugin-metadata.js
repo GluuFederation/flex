@@ -37,14 +37,6 @@ const pluginMetadata = {
       title: 'menus.oauthserver',
       icon: 'fa-server',
       children: [
-        
-        /**
-        {
-          title: 'menus.reports',
-          path: PLUGIN_BASE_APTH + '/reports',
-          permission: '/config/acrs.readonly',
-        },
-         */
         {
           title: 'menus.configuration',
           children: [
@@ -68,11 +60,6 @@ const pluginMetadata = {
               path: PLUGIN_BASE_APTH + '/config/logging',
               permission: '/config/properties.readonly',
             },
-            /**{
-              title: 'PW Authn',
-              path: PLUGIN_BASE_APTH + '/config/pwauthn',
-              permission: '/config/acrs.readonly',
-            },**/
           ],
         },
         {
@@ -83,7 +70,6 @@ const pluginMetadata = {
         {
           title: 'menus.health',
           path: PLUGIN_BASE_APTH + '/health',
-          //permission: '/config/properties.readonly',
           permission: '/config/acrs.readonly',
         },
         {
@@ -91,11 +77,6 @@ const pluginMetadata = {
           path: PLUGIN_BASE_APTH + '/scopes',
           permission: '/config/scopes.readonly',
         },
-        /**{
-          title: 'UMA',
-          path: PLUGIN_BASE_APTH + '/uma',
-          permission: '/config/jwks.readonly',
-        },*/
       ],
     },
   ],
@@ -172,7 +153,7 @@ const pluginMetadata = {
     jwksSaga(),
     acrSaga(),
     loggingSaga(),
-    healthSaga()
+    healthSaga(),
   ],
 }
 

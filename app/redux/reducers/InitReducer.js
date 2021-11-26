@@ -21,9 +21,7 @@ const reducerName = 'initReducer'
 export default function initReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_SCRIPTS_FOR_STAT:
-      return {
-        ...state,
-      }
+      return handleDefault()
 
     case GET_SCRIPTS_FOR_STAT_RESPONSE:
       if (action.payload.data) {
@@ -32,15 +30,11 @@ export default function initReducer(state = INIT_STATE, action) {
           scripts: action.payload.data,
         }
       } else {
-        return {
-          ...state,
-        }
+        return handleDefault()
       }
 
     case GET_CLIENTS_FOR_STAT:
-      return {
-        ...state,
-      }
+      return handleDefault()
     case GET_CLIENTS_FOR_STAT_RESPONSE:
       if (action.payload.data) {
         return {
@@ -48,9 +42,7 @@ export default function initReducer(state = INIT_STATE, action) {
           clients: action.payload.data,
         }
       } else {
-        return {
-          ...state,
-        }
+        return handleDefault()
       }
 
     case GET_ATTRIBUTES_FOR_STAT:
@@ -61,15 +53,11 @@ export default function initReducer(state = INIT_STATE, action) {
           attributes: action.payload.data,
         }
       } else {
-        return {
-          ...state,
-        }
+        return handleDefault()
       }
 
     case GET_SCOPES_FOR_STAT:
-      return {
-        ...state,
-      }
+      return handleDefault()
     case GET_SCOPES_FOR_STAT_RESPONSE:
       if (action.payload.data) {
         return {
@@ -77,14 +65,16 @@ export default function initReducer(state = INIT_STATE, action) {
           scopes: action.payload.data,
         }
       } else {
-        return {
-          ...state,
-        }
+        return handleDefault()
       }
     default:
-      return {
-        ...state,
-      }
+      return handleDefault()
+  }
+
+  function handleDefault() {
+    return {
+      ...state,
+    }
   }
 }
 reducerRegistry.register(reducerName, initReducer)

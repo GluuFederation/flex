@@ -37,7 +37,6 @@ function JsonPropertyBuilder({
     handler(patch)
     setShow(false)
   }
-  const addHandler = () => {}
 
   function isStringArray(item) {
     return (

@@ -26,9 +26,7 @@ const reducerName = 'authReducer'
 export default function authReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_USER_LOCATION:
-      return {
-        ...state,
-      }
+      return handleDefault()
     case GET_USER_LOCATION_RESPONSE:
       if (action.payload.location) {
         return {
@@ -36,14 +34,10 @@ export default function authReducer(state = INIT_STATE, action) {
           location: action.payload.location,
         }
       } else {
-        return {
-          ...state,
-        }
+        return handleDefault()
       }
     case GET_OAUTH2_CONFIG:
-      return {
-        ...state,
-      }
+      return handleDefault()
     case GET_OAUTH2_CONFIG_RESPONSE:
       if (action.payload.config && action.payload.config != -1) {
         return {
@@ -59,9 +53,7 @@ export default function authReducer(state = INIT_STATE, action) {
       }
 
     case USERINFO_REQUEST:
-      return {
-        ...state,
-      }
+      return handleDefault()
     case USERINFO_RESPONSE:
       if (action.payload.uclaims) {
         return {
@@ -79,9 +71,7 @@ export default function authReducer(state = INIT_STATE, action) {
       }
 
     case GET_API_ACCESS_TOKEN:
-      return {
-        ...state,
-      }
+      return handleDefault()
 
     case GET_API_ACCESS_TOKEN_RESPONSE:
       if (action.payload.accessToken) {
@@ -93,15 +83,17 @@ export default function authReducer(state = INIT_STATE, action) {
           isAuthenticated: true,
         }
       } else {
-        return {
-          ...state,
-        }
+        return handleDefault()
       }
 
     default:
-      return {
-        ...state,
-      }
+      return handleDefault()
+  }
+
+  function handleDefault() {
+    return {
+      ...state,
+    }
   }
 }
 reducerRegistry.register(reducerName, authReducer)

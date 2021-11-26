@@ -15,10 +15,7 @@ const reducerName = 'jsonConfigReducer'
 export default function jsonConfigReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_JSON_CONFIG:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_JSONCONFIG_RESPONSE:
       if (action.payload.data) {
         return {
@@ -26,18 +23,12 @@ export default function jsonConfigReducer(state = INIT_STATE, action) {
           configuration: action.payload.data,
           loading: false,
         }
-      }
-      else {
-        return {
-          ...state,
-        }
+      } else {
+        return handleDefault()
       }
 
     case PATCH_JSON_CONFIG:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case PATCH_JSONCONFIG_RESPONSE:
       if (action.payload.data) {
         return {
@@ -45,17 +36,25 @@ export default function jsonConfigReducer(state = INIT_STATE, action) {
           configuration: action.payload.data,
           loading: false,
         }
-      }
-      else {
-        return {
-          ...state,
-        }
+      } else {
+        return handleDefault()
       }
     default:
-      return {
-        ...state,
-        loading: false,
-      }
+      return handleDefault()
+  }
+
+  function handleLoading() {
+    return {
+      ...state,
+      loading: true,
+    }
+  }
+
+  function handleDefault() {
+    return {
+      ...state,
+      loading: false,
+    }
   }
 }
 reducerRegistry.register(reducerName, jsonConfigReducer)

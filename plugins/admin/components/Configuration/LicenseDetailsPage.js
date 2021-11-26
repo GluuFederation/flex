@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
 import { connect } from 'react-redux'
 import LicenseDetailsForm from './LicenseDetailsForm'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
@@ -13,15 +13,9 @@ import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import Alert from '@material-ui/lab/Alert'
 
 function LicenseDetailsPage({ item, loading, dispatch }) {
-  const [validityPeriod, setValidityPeriod] = useState(
-    !!item.validityPeriod ? new Date(item.validityPeriod) : new Date(),
-  )
   useEffect(() => {
     dispatch(getLicenseDetails())
   }, [])
-  useEffect(() => {
-    setValidityPeriod(new Date(item.validityPeriod))
-  }, [item.validityPeriod])
 
   function handleSubmit(data) {
     if (data) {
@@ -31,7 +25,6 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
 
   return (
     <React.Fragment>
-      {/* <Container> */}
       <GluuLabel label="fields.licenseDetails" size={8} />
       <GluuLoader blocking={loading}>
         {item.licenseEnable ? (
