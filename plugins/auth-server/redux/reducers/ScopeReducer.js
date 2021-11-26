@@ -27,15 +27,9 @@ const reducerName = 'scopeReducer'
 export default function scopeReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_SCOPES:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case SEARCH_SCOPES:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_SCOPES_RESPONSE:
       if (action.payload.data) {
         return {
@@ -47,10 +41,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case GET_SCOPE_BY_INUM:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_SCOPE_BY_INUM_RESPONSE:
       if (action.payload.data) {
         return {
@@ -62,10 +53,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case GET_SCOPE_BY_PATTERN:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_SCOPE_BY_PATTERN_RESPONSE:
       if (action.payload.data) {
         return {
@@ -78,10 +66,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
       }
 
     case ADD_SCOPE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case ADD_SCOPE_RESPONSE:
       if (action.payload.data) {
         return {
@@ -94,10 +79,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
       }
 
     case EDIT_SCOPE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
 
     case EDIT_SCOPE_RESPONSE:
       if (action.payload.data) {
@@ -110,10 +92,7 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case DELETE_SCOPE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case DELETE_SCOPE_RESPONSE:
       if (action.payload.data) {
         return {
@@ -140,7 +119,12 @@ export default function scopeReducer(state = INIT_STATE, action) {
     default:
       return handleDefault()
   }
-
+  function handleLoading() {
+    return {
+      ...state,
+      loading: true,
+    }
+  }
   function handleDefault() {
     return {
       ...state,

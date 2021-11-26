@@ -25,15 +25,9 @@ const reducerName = 'oidcReducer'
 export default function oidcReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_OPENID_CLIENTS:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case SEARCH_CLIENTS:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_OPENID_CLIENTS_RESPONSE:
       if (action.payload.data) {
         return {
@@ -46,10 +40,7 @@ export default function oidcReducer(state = INIT_STATE, action) {
       }
 
     case ADD_NEW_CLIENT:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case ADD_CLIENT_RESPONSE:
       if (action.payload.data) {
         return {
@@ -83,10 +74,7 @@ export default function oidcReducer(state = INIT_STATE, action) {
       }
 
     case DELETE_CLIENT:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
 
     case DELETE_CLIENT_RESPONSE:
       if (action.payload.data) {
@@ -130,6 +118,12 @@ export default function oidcReducer(state = INIT_STATE, action) {
     return {
       ...state,
       loading: false,
+    }
+  }
+  function handleLoading() {
+    return {
+      ...state,
+      loading: true,
     }
   }
 }
