@@ -1,9 +1,9 @@
 <?page language="xhtml"?>
 <?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
 <!-- Putting these scripts as part of extra section (see at the bottom) gives trouble in FF and Opera -->
-<?script src="/../oxauth/auth/fido2/js/base64js.js"?>
-<?script src="/../oxauth/auth/fido2/js/base64url.js"?>
-<?script src="/../oxauth/auth/fido2/js/webauthn.js"?>
+<?script src="/../jans-auth/auth/fido2/js/base64js.js"?>
+<?script src="/../jans-auth/auth/fido2/js/base64url.js"?>
+<?script src="/../jans-auth/auth/fido2/js/webauthn.js"?>
 <?import org.gluu.casa.core.pojo.FidoDevice?>
 <zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
 
