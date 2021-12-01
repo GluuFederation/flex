@@ -1,19 +1,21 @@
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import LicenseDetailsPage from './components/Configuration/LicenseDetailsPage'
-import AdminUiRole from './components/Roles/AdminUiRole'
+import UiRoleListPage from './components/Roles/UiRoleListPage'
 import MonthlyActiveUsersPage from './components/MonthlyActiveUsersPage'
-import SettingsPage from './components/Settings/SettingsPage'
-import scriptSaga from './redux/sagas/CustomScriptSaga'
-import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
-
 import ScriptListPage from './components/CustomScripts/ScriptListPage'
 import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
 import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
+import SettingsPage from './components/Settings/SettingsPage'
+
+import mauSaga from './redux/sagas/MauSaga'
+import scriptSaga from './redux/sagas/CustomScriptSaga'
+import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
 
 import mauReducer from './redux/reducers/MauReducer'
-import mauSaga from './redux/sagas/MauSaga'
 import scriptReducer from './redux/reducers/CustomScriptReducer'
+import apiRoleReducer from './redux/reducers/ApiRoleReducer'
+import apiPermissionReducer from './redux/reducers/ApiPermissionReducer'
 import licenseDetailsReducer from './redux/reducers/LicenseDetailsReducer'
 
 const PLUGIN_BASE_APTH = '/adm'
@@ -35,9 +37,24 @@ const pluginMetadata = {
           permission: '/config/acrs.readonly',
         },
         {
-          title: 'menus.roles',
-          path: PLUGIN_BASE_APTH + '/roles',
-          permission: '/config/acrs.readonly',
+          title: 'menus.config-api',
+          children: [
+            {
+              title: 'menus.api.roles',
+              path: PLUGIN_BASE_APTH + '/roles',
+              permission: '/config/acrs.readonly',
+            },
+            {
+              title: 'menus.api.permissions',
+              path: PLUGIN_BASE_APTH + '/permissions',
+              permission: '/config/acrs.readonly',
+            },
+            {
+              title: 'menus.api.mapping',
+              path: PLUGIN_BASE_APTH + '/mapping',
+              permission: '/config/acrs.readonly',
+            },
+          ],
         },
         {
           title: 'menus.scripts',
@@ -69,8 +86,18 @@ const pluginMetadata = {
       permission: '/config/acrs.readonly',
     },
     {
-      component: AdminUiRole,
+      component: UiRoleListPage,
       path: PLUGIN_BASE_APTH + '/roles',
+      permission: '/config/acrs.readonly',
+    },
+    {
+      component: UiRoleListPage,
+      path: PLUGIN_BASE_APTH + '/permissions',
+      permission: '/config/acrs.readonly',
+    },
+    {
+      component: UiRoleListPage,
+      path: PLUGIN_BASE_APTH + '/mapping',
       permission: '/config/acrs.readonly',
     },
     {
@@ -102,13 +129,11 @@ const pluginMetadata = {
   reducers: [
     { name: 'mauReducer', reducer: mauReducer },
     { name: 'scriptReducer', reducer: scriptReducer },
+    { name: 'apiRoleReducer', reducer: apiRoleReducer },
+    { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'licenseDetailsReducer', reducer: licenseDetailsReducer },
   ],
-  sagas: [
-    mauSaga(),
-    scriptSaga(),
-    licenseDetailsSaga(),
-  ],
+  sagas: [mauSaga(), scriptSaga(), licenseDetailsSaga()],
 }
 
 export default pluginMetadata
