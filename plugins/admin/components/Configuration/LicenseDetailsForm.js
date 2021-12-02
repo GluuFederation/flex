@@ -43,7 +43,6 @@ function LicenseDetailsForm({ item, handleSubmit }) {
   }
   return (
     <>
-      {/* <Container> */}
       <Accordion className="mb-2 b-primary" initialOpen>
         <Accordion.Header className="text-primary">
           {t('fields.licenseDetails').toUpperCase()}
