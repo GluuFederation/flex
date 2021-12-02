@@ -22,10 +22,7 @@ const reducerName = 'apiPermissionReducer'
 export default function apiPermissionReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_PERMISSIONS:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_PERMISSIONS_RESPONSE:
       if (action.payload.data) {
         return {
@@ -37,10 +34,7 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case GET_PERMISSION:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_PERMISSION_RESPONSE:
       if (action.payload.data) {
         return {
@@ -52,10 +46,7 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case ADD_PERMISSION:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case ADD_PERMISSION_RESPONSE:
       if (action.payload.data) {
         return {
@@ -68,10 +59,7 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
       }
 
     case EDIT_PERMISSION:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case EDIT_PERMISSION_RESPONSE:
       if (action.payload.data) {
         return {
@@ -84,10 +72,7 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
       }
 
     case DELETE_PERMISSION:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case DELETE_PERMISSION_RESPONSE:
       if (action.payload.inum) {
         return {
@@ -120,6 +105,13 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
     return {
       ...state,
       loading: false,
+    }
+  }
+
+  function handleLoading() {
+    return {
+      ...state,
+      loading: true,
     }
   }
 }

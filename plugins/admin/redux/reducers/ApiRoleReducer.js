@@ -24,10 +24,7 @@ const reducerName = 'apiRoleReducer'
 export default function apiRoleReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_ROLES:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_ROLES_RESPONSE:
       if (action.payload.data) {
         return {
@@ -39,10 +36,7 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case GET_ROLE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_ROLE_RESPONSE:
       if (action.payload.data) {
         return {
@@ -54,10 +48,7 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case ADD_ROLE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case ADD_ROLE_RESPONSE:
       if (action.payload.data) {
         return {
@@ -70,10 +61,7 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
       }
 
     case EDIT_ROLE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case EDIT_ROLE_RESPONSE:
       if (action.payload.data) {
         return {
@@ -86,10 +74,7 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
       }
 
     case DELETE_ROLE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case DELETE_ROLE_RESPONSE:
       if (action.payload.inum) {
         return {
@@ -116,6 +101,13 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
       }
     default:
       return handleDefault()
+  }
+
+  function handleLoading() {
+    return {
+      ...state,
+      loading: true,
+    }
   }
 
   function handleDefault() {
