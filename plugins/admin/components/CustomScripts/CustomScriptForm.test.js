@@ -15,7 +15,7 @@ const permissions = [
   'https://jans.io/oauth/config/attributes.delete',
 ]
 
-it('Should render the Custom Script detail page properly', () => {
+it('Should render the Custom Script form page properly', () => {
   render(<CustomScriptForm item={item} scripts={script} permissions={permissions} />, {
     wrapper: Wrapper,
   })

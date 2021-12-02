@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import LicenseDetailsForm from './LicenseDetailsForm'
-import license from "./license"
+import UiRoleDetailPage from './UiRoleDetailPage'
+import roles from "./roles"
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
 
@@ -13,12 +13,13 @@ const permissions = [
   'https://jans.io/oauth/config/attributes.write',
   'https://jans.io/oauth/config/attributes.delete',
 ]
-const item = license
+const row = roles[0]
 it('Should render the license detail page properly', () => {
-  render(<LicenseDetailsForm item={item}  permissions={permissions} />, {
+  render(<UiRoleDetailPage row={row}  permissions={permissions} />, {
     wrapper: Wrapper,
   })
-  screen.getByText(/License Valid Upto/)
-  screen.getByText(/Maximum Activations/)
-  screen.getByText(/Is License Active/)
+  const name = row.name
+  screen.getByText(/Name/)
+  screen.getByText(/Description/)
+  screen.getByText(name)
 })

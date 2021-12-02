@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import { SETTINGS } from '../../../../app/utils/ApiResources'
-
 import {
   Card,
   CardBody,
@@ -99,7 +97,4 @@ function SettingsPage() {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {}
-}
-export default connect(mapStateToProps)(SettingsPage)
+export default SettingsPage
