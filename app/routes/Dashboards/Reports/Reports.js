@@ -1,15 +1,6 @@
 import React, { useEffect } from 'react'
-import {
-  buildPayload,
-} from '../../../../app/utils/PermChecker'
-import {
-  Container,
-  Row,
-  Card,
-  CardBody,
-  CardTitle,
-  Col,
-} from './../../../components'
+import { buildPayload } from '../../../../app/utils/PermChecker'
+import { Container, Row, Col } from './../../../components'
 import { connect } from 'react-redux'
 import {
   getAttributes,
@@ -17,7 +8,7 @@ import {
   getScopes,
   getClients,
 } from '../../../redux/actions/InitActions'
-import ReportPiChartItem from './ReportPiChartItem'
+import ReportCard from './ReportCard'
 import { useTranslation } from 'react-i18next'
 
 function Reports({ attributes, clients, scopes, scripts, dispatch }) {
@@ -92,90 +83,44 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
     <Container>
       <Row>
         <Col lg={3}>
-          <Card className="mb-3">
-            <CardBody>
-              <CardTitle tag="h6" className="mb-4">
-                {t('titles.all_oidc_clients')}
-              </CardTitle>
-              <ReportPiChartItem data={clientData} />
-              <div>
-                <div className="mb-3">
-                  <h2>{clients.filter((item) => item.disabled).length}</h2>
-                </div>
-                <div>
-                  <i className="fa fa-caret-down fa-fw text-success"></i>
-                  {clients.filter((item) => !item.disabled).length}
-                </div>
-              </div>
-            </CardBody>
-          </Card>
+          <ReportCard
+            data={clientData}
+            title={t('titles.all_oidc_clients')}
+            upValue={clients.filter((item) => item.disabled).length}
+            downValue={clients.filter((item) => !item.disabled).length}
+          />
         </Col>
         <Col lg={3}>
-          <Card className="mb-3">
-            <CardBody>
-              <CardTitle tag="h6" className="mb-4">
-                {t('titles.all_attributes')}
-              </CardTitle>
-              <ReportPiChartItem data={attributeData} />
-              <div>
-                <div className="mb-3">
-                  <h2>
-                    {
-                      attributes.filter((item) => item.status === 'INACTIVE')
-                        .length
-                    }
-                  </h2>
-                </div>
-                <div>
-                  <i className="fa fa-caret-down fa-fw text-success"></i>
-                  {attributes.filter((item) => item.status === 'ACTIVE').length}
-                </div>
-              </div>
-            </CardBody>
-          </Card>
+          <ReportCard
+            data={attributeData}
+            title={t('titles.all_attributes')}
+            upValue={
+              attributes.filter((item) => item.status === 'INACTIVE').length
+            }
+            downValue={
+              attributes.filter((item) => item.status === 'ACTIVE').length
+            }
+          />
         </Col>
         <Col lg={3}>
-          <Card className="mb-3">
-            <CardBody>
-              <CardTitle tag="h6" className="mb-4">
-                {t('titles.all_scopes')}
-              </CardTitle>
-              <ReportPiChartItem data={scopeData} />
-              <div>
-                <div className="mb-3">
-                  <h2>
-                    {
-                      scopes.filter((item) => item.scopeType === 'openid')
-                        .length
-                    }
-                  </h2>
-                </div>
-                <div>
-                  <i className="fa fa-caret-down fa-fw text-success"></i>
-                  {scopes.filter((item) => item.scopeType === 'oauth').length}
-                </div>
-              </div>
-            </CardBody>
-          </Card>
+          <ReportCard
+            data={scopeData}
+            title={t('titles.all_scopes')}
+            upValue={
+              scopes.filter((item) => item.scopeType === 'openid').length
+            }
+            downValue={
+              scopes.filter((item) => item.scopeType === 'oauth').length
+            }
+          />
         </Col>
         <Col lg={3}>
-          <Card className="mb-3">
-            <CardBody>
-              <CardTitle tag="h6" className="mb-4">
-                {t('titles.all_custom_scripts')}
-              </CardTitle>
-              <ReportPiChartItem data={scriptData} />
-              <div>
-                <div className="mb-3">
-                  <h2>{scripts.filter((item) => !item.enabled).length}</h2>
-                </div>
-                <div>
-                  <i className="fa fa-caret-down fa-fw text-success"></i>
-                  {scripts.filter((item) => item.enabled).length}
-                </div>
-              </div>
-            </CardBody>
-          </Card>
+          <ReportCard
+            data={scriptData}
+            title={t('titles.all_custom_scripts')}
+            upValue={scripts.filter((item) => !item.enabled).length}
+            downValue={scripts.filter((item) => item.enabled).length}
+          />
         </Col>
       </Row>
     </Container>

@@ -1,16 +1,13 @@
-/**
- * License Sagas
- */
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
 import { GET_LICENSE_DETAILS, UPDATE_LICENSE_DETAILS } from '../actions/types'
 import {
-    getLicenseDetailsResponse,
-    updateLicenseDetailsResponse,
+  getLicenseDetailsResponse,
+  updateLicenseDetailsResponse,
 } from '../actions/LicenseDetailsActions'
 
 import {
-    getLicenseDetails,
-    updateLicenseDetails,
+  getLicenseDetails,
+  updateLicenseDetails,
 } from '../api/LicenseDetailsApi'
 
 function* getLicenseDetailsWorker() {
@@ -39,7 +36,6 @@ function* updateLicenseDetailsWorker({ payload }) {
   yield put(updateLicenseDetailsResponse())
 }
 
-//watcher sagas
 export function* getLicenseWatcher() {
   yield takeEvery(GET_LICENSE_DETAILS, getLicenseDetailsWorker)
 }
@@ -48,12 +44,6 @@ export function* updateLicenseWatcher() {
   yield takeEvery(UPDATE_LICENSE_DETAILS, updateLicenseDetailsWorker)
 }
 
-/**
- * License Root Saga
- */
 export default function* rootSaga() {
-  yield all([
-    fork(getLicenseWatcher),
-    fork(updateLicenseWatcher),
-  ])
+  yield all([fork(getLicenseWatcher), fork(updateLicenseWatcher)])
 }

@@ -237,6 +237,12 @@
   },
   "menus": {
     "adminui": "Admin",
+    "config-api": "Config-api",
+    "api": {
+      "roles": "Access roles",
+      "permissions": "Permissions",
+      "mapping":"Mapping"
+    },
     "cache": "Cache",
     "clients": "Clients",
     "configuration": "Configuration",
@@ -353,10 +359,10 @@
   "titles": {
     "acrs": "ACRs",
     "algorithmic_keys": "Algorithmic Keys",
-    "all_attributes": "All Attributes",
-    "all_custom_scripts": "All Custom Scripts",
-    "all_oidc_clients": "All OIDC Clients",
-    "all_scopes": "All Scopes",
+    "all_attributes": "Attributes/Claims",
+    "all_custom_scripts": "Custom Scripts",
+    "all_oidc_clients": "OpenID Clients",
+    "all_scopes": "OAuth/OpenID Scopes",
     "client_advanced": "Advanced",
     "client_attributes": "Client Attributes",
     "client_basic": "Basic",
@@ -798,7 +804,7 @@
       "maxIdleConnections": "The cap on the number of idle instances in the pool. If max idle is set too low on heavily loaded systems it is possible you will see objects being destroyed and almost immediately new objects being created.",
       "maxTotalConnections": "The number of maximum connection instances in the pool.",
       "connectionTimeout": "Connection time out.",
-      "soTimeout":"So timeout",
+      "soTimeout": "So timeout",
       "maxRetryAttempts": " Maximum retry attempts in case of failure.",
       "defaultCleanupBatchSize": "Default cleanup batch page size.",
       "deleteExpiredOnGetRequest": "Whether to delete on get request."
@@ -810,13 +816,12 @@
       "defaultBucket": "The default bucket for the Gluu Server.",
       "connectTimeout": "Connection time out.",
       "computationPoolSize": "Computation pool size.",
-      "useSSL":"Use this feature if the backend server allows SSL connectivity.",
+      "useSSL": "Use this feature if the backend server allows SSL connectivity.",
       "sslTrustStoreFile": "SSL truststore file.",
       "sslTrustStoreFormat": "SSL truststore format.",
       "sslTrustStorePin": "Encoded truststore pin.",
       "userName": "Database username.",
       "userPassword": "Database password."
-
     },
     "sql": {
       "config_name": "Enter the sql configuration name.",

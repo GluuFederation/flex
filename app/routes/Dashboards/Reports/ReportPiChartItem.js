@@ -2,7 +2,7 @@ import React from 'react'
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
 
 function ReportPiChartItem({ data }) {
-  const COLORS = ['#00C49F', '#0088FE']
+  const COLORS = ['#7aefc0', '#3B4371']
   const RADIAN = Math.PI / 180
   const renderCustomizedLabel = ({
     cx,
@@ -11,7 +11,6 @@ function ReportPiChartItem({ data }) {
     innerRadius,
     outerRadius,
     percent,
-    index,
   }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
     const x = cx + radius * Math.cos(-midAngle * RADIAN)
