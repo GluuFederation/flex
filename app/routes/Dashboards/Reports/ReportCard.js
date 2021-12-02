@@ -1,15 +1,14 @@
 import React from 'react'
-import { Card, CardBody, CardTitle } from './../../../components'
+import { Card, CardBody, CardTitle, Badge } from './../../../components'
 import ReportPiChartItem from './ReportPiChartItem'
-import mystyle from './style'
+import GluuRibbon from '../../Apps/Gluu/GluuRibbon'
 
 function ReportCard({ title, data, upValue, downValue }) {
-  const className = 'mb-3 gluucard'
   return (
-    <Card className={className}>
+    <Card className="mb-3">
       <CardBody>
         <CardTitle tag="h6" className="mb-4">
-          <div style={mystyle.gcard}>{title}</div>
+          <GluuRibbon title={title} fromLeft />
         </CardTitle>
         <ReportPiChartItem data={data} />
         <div>
@@ -18,7 +17,9 @@ function ReportCard({ title, data, upValue, downValue }) {
           </div>
           <div>
             <i className="fa fa-caret-down fa-fw text-success"></i>
-            {downValue}
+            <Badge pill color="primary">
+              {downValue}
+            </Badge>
           </div>
         </div>
       </CardBody>
