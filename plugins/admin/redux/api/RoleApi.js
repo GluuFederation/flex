@@ -4,30 +4,30 @@ export default class RoleApi {
   }
   getRoles = () => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('=============get roles')
     })
   }
   getRole = (options) => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('=============get role')
     })
   }
 
   addRole = (data) => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('============= add role ' + data)
     })
   }
 
   editRole = (data) => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('=============edit role ' + data)
     })
   }
 
   deleteRole = async (inum) => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('=============delete role ' + inum)
     })
   }
 

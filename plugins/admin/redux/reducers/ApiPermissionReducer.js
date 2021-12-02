@@ -25,11 +25,7 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
       return handleLoading()
     case GET_PERMISSIONS_RESPONSE:
       if (action.payload.data) {
-        return {
-          ...state,
-          items: action.payload.data,
-          loading: false,
-        }
+        return handleItems()
       } else {
         return handleDefault()
       }
@@ -37,11 +33,7 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
       return handleLoading()
     case GET_PERMISSION_RESPONSE:
       if (action.payload.data) {
-        return {
-          ...state,
-          items: action.payload.data,
-          loading: false,
-        }
+        return handleItems()
       } else {
         return handleDefault()
       }
@@ -99,6 +91,14 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
       }
     default:
       return handleDefault()
+  }
+
+  function handleItems() {
+    return {
+      ...state,
+      items: action.payload.data,
+      loading: false,
+    }
   }
 
   function handleDefault() {

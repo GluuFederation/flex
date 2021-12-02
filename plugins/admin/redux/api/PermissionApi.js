@@ -4,30 +4,30 @@ export default class PermissionApi {
   }
   getPermissions = () => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('=============get permissions')
     })
   }
   getPermission = (options) => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('============= get single permission')
     })
   }
 
   addPermission = (data) => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('============= add permission')
     })
   }
 
   editPermission = (data) => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('=============edit permission')
     })
   }
 
   deletePermission = async (inum) => {
     return new Promise((resolve, reject) => {
-      console.log('=============')
+      console.log('=============delete permission')
     })
   }
 

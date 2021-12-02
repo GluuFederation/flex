@@ -27,11 +27,7 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
       return handleLoading()
     case GET_ROLES_RESPONSE:
       if (action.payload.data) {
-        return {
-          ...state,
-          items: action.payload.data,
-          loading: false,
-        }
+        return handleItems()
       } else {
         return handleDefault()
       }
@@ -39,11 +35,7 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
       return handleLoading()
     case GET_ROLE_RESPONSE:
       if (action.payload.data) {
-        return {
-          ...state,
-          items: action.payload.data,
-          loading: false,
-        }
+        return handleItems()
       } else {
         return handleDefault()
       }
@@ -101,6 +93,14 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
       }
     default:
       return handleDefault()
+  }
+
+  function handleItems() {
+    return {
+      ...state,
+      items: action.payload.data,
+      loading: false,
+    }
   }
 
   function handleLoading() {

@@ -5,11 +5,7 @@ import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import {
-  hasPermission,
-  buildPayload,
-  SCRIPT_READ,
-} from '../../../../app/utils/PermChecker'
+import { hasPermission, SCRIPT_READ } from '../../../../app/utils/PermChecker'
 
 function UiRoleListPage({ apiRoles, permissions, loading }) {
   const { t } = useTranslation()
