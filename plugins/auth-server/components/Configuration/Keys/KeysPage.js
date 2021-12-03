@@ -9,6 +9,7 @@ import {
 } from '../../../../../app/components'
 import JwksPage from './Jwks/JwksPage'
 import { useTranslation } from 'react-i18next'
+import GluuRibbon from '../../../../../app/routes/Apps/Gluu/GluuRibbon'
 
 function KeysPage() {
   const { t } = useTranslation()
@@ -19,7 +20,7 @@ function KeysPage() {
           <Nav pills className="mb-4 flex-column flex-md-row mt-4 mt-lg-0">
             <NavItem>
               <UncontrolledTabs.NavLink tabId="jwkpanel">
-                {t('titles.public_keys')}
+                <GluuRibbon title={t('titles.public_keys')} fromLeft />
               </UncontrolledTabs.NavLink>
             </NavItem>
           </Nav>

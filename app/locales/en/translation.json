@@ -358,7 +358,9 @@
   },
   "titles": {
     "acrs": "ACRs",
+    "acrs_logging": "ACRs && Logging",
     "algorithmic_keys": "Algorithmic Keys",
+    "application_settings":"Application Settings",
     "all_attributes": "Attributes/Claims",
     "all_custom_scripts": "Custom Scripts",
     "all_oidc_clients": "OpenID Clients",
@@ -378,6 +380,7 @@
     "sql_authentication": "Sql Authentication",
     "logging": "LOGGING",
     "jwk_keys": "JWK keys",
+    "jans_json_property": "Jans Server JSON Configuration",
     "modules_properties": "Module Properties",
     "oauth_server_status_title": "OAuth server status",
     "oidc_clients": "OIDC Clients",

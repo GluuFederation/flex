@@ -8,8 +8,10 @@ import {
   Accordion,
   Card,
   CardBody,
+  FormGroup,
 } from '../../../../../app/components'
 import { getJsonConfig } from '../../../redux/actions/JsonConfigActions'
+import GluuRibbon from '../../../../../app/routes/Apps/Gluu/GluuRibbon'
 
 function DefaultConfigPage({ dispatch }) {
   const { t } = useTranslation()
@@ -20,7 +22,11 @@ function DefaultConfigPage({ dispatch }) {
     <React.Fragment>
       <Container>
         <Card>
+          <GluuRibbon title={t('titles.acrs_logging')} fromLeft />
           <CardBody>
+            <FormGroup row></FormGroup>
+            <FormGroup row></FormGroup>
+            <FormGroup row></FormGroup>
             <Accordion className="mb-2 b-primary" initialOpen>
               <Accordion.Header className="text-primary">
                 {t('titles.acrs').toUpperCase()}
