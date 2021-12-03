@@ -5,7 +5,7 @@ import GluuRibbon from '../../Apps/Gluu/GluuRibbon'
 
 function ReportCard({ title, data, upValue, downValue }) {
   return (
-    <Card className="mb-3">
+    <Card className="mb-3" style={{ borderRadius: '10px'}}>
       <CardBody>
         <CardTitle tag="h6" className="mb-4">
           <GluuRibbon title={title} fromLeft />

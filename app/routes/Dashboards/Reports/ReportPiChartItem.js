@@ -1,5 +1,6 @@
 import React from 'react'
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
+import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 
 function ReportPiChartItem({ data }) {
   const COLORS = ['#7aefc0', '#3B4371']
@@ -41,12 +42,12 @@ function ReportPiChartItem({ data }) {
         fill="#8884d8"
         dataKey="value"
       >
-        {data.map((entry, index) => (
+        {data.map((e, index) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         ))}
       </Pie>
-      <Legend />
-      <Tooltip />
+      <Legend iconType="star" />
+      <Tooltip contentStyle={applicationStyle.homeStatTooltip} />
     </PieChart>
   )
 }
