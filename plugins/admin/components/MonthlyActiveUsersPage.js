@@ -6,6 +6,7 @@ import {
   CardBody,
   Label,
   Input,
+  Badge,
 } from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
@@ -30,7 +31,6 @@ import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import Picker from 'react-month-picker'
 import PropTypes from 'prop-types'
-import { Badge } from 'reactstrap'
 
 class MonthBox extends Component {
   static propTypes = {
@@ -259,7 +259,7 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                 <Label className="h4">
                   {t('fields.average_of_mau')}&nbsp;&nbsp;&nbsp;
                 </Label>
-                <Badge className="h4" color="success">
+                <Badge color="info" pill>
                   {arrAvg(Object.values(stat))}
                 </Badge>
               </div>
