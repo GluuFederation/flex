@@ -12,7 +12,11 @@ import { MenuContext } from './MenuContext'
 const SidebarMenuItemLink = (props) =>
   props.to || props.href ? (
     props.to ? (
-      <Link to={props.to} style={props.textStyle} className={`${props.classBase}__entry__link`}>
+      <Link
+        to={props.to}
+        style={props.textStyle}
+        className={`${props.classBase}__entry__link`}
+      >
         {props.children}
       </Link>
     ) : (
@@ -42,7 +46,7 @@ SidebarMenuItemLink.propTypes = {
   onToggle: PropTypes.func,
   children: PropTypes.node,
   classBase: PropTypes.string,
-  textStyle: PropTypes.object
+  textStyle: PropTypes.object,
 }
 
 /**
@@ -68,7 +72,7 @@ export class SidebarMenuItem extends React.Component {
     href: PropTypes.string,
     exact: PropTypes.bool,
     noCaret: PropTypes.bool,
-    textStyle: PropTypes.object
+    textStyle: PropTypes.object,
   }
 
   static defaultProps = {
@@ -119,11 +123,11 @@ export class SidebarMenuItem extends React.Component {
       active: entry && entry.active,
     })
     const activeMenu = {
-      color: 'white !important',
-      backgroundColor: 'rgb(3, 169, 109)',
+      color: '#ffffff',
+      background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+      fontWeight: 'bold',
     }
-    const nonaActiveMenu = {
-    }
+    const nonaActiveMenu = {}
 
     function getStyle(itemClass) {
       if (
@@ -134,6 +138,17 @@ export class SidebarMenuItem extends React.Component {
         return activeMenu
       }
       return nonaActiveMenu
+    }
+
+    function getTextStyle(itemClass) {
+      if (
+        itemClass.includes('active', 0) &&
+        itemClass.includes('submenu__entry', 0) &&
+        !itemClass.includes('open', 0)
+      ) {
+        return { color: 'white', fontWeight: 'inherit' }
+      }
+      return null
     }
     return (
       <li
@@ -148,7 +163,7 @@ export class SidebarMenuItem extends React.Component {
             href={this.props.href || null}
             onToggle={this.toggleNode.bind(this)}
             classBase={classBase}
-            textStyle={this.props.textStyle}
+            textStyle={getTextStyle(itemClass) || this.props.textStyle}
           >
             {this.props.icon &&
               React.cloneElement(this.props.icon, {
