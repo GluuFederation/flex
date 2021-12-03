@@ -16,7 +16,7 @@ function GluuFormDetailRow({
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
       <FormGroup row>
-        <Label for={label} sm={lsize || 6}>
+        <Label for={label} style={{ fontWeight: 'bold' }} sm={lsize || 6}>
           {t(label)}:
         </Label>
         <Label for={value} sm={rsize || 6}>

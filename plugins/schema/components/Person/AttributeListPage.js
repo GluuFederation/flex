@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import { useHistory } from 'react-router-dom'
+import { Paper } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
+import { Card, CardBody, FormGroup } from '../../../../app/components'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import AttributeDetailPage from './AttributeDetailPage'
 import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
+import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import {
   hasPermission,
   ATTRIBUTE_WRITE,
@@ -153,56 +157,58 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     toggle()
   }
   return (
-    <React.Fragment>
-      <GluuViewWrapper canShow={hasPermission(permissions, ATTRIBUTE_READ)}>
-        <MaterialTable
-          columns={[
-            { title: `${t('fields.inum')}`, field: 'inum' },
-            { title: `${t('fields.displayname')}`, field: 'displayName' },
-            {
-              title: `${t('fields.status')}`,
-              field: 'status',
-              type: 'boolean',
-              render: (rowData) => (
-                <Badge color={getBadgeTheme(rowData.status)}>
-                  {rowData.status}
-                </Badge>
-              ),
-            },
-          ]}
-          data={attributes}
-          isLoading={loading}
-          title={t('fields.attributes')}
-          actions={myActions}
-          options={{
-            search: true,
-            selection: false,
-            searchFieldAlignment: 'left',
-            pageSize: pageSize,
-            headerStyle: {
-              backgroundColor: '#03a96d',
-              color: '#FFF',
-              padding: '2px',
-              textTransform: 'uppercase',
-              fontSize: '18px',
-            },
-            actionsColumnIndex: -1,
-          }}
-          detailPanel={(rowData) => {
-            return <AttributeDetailPage row={rowData} />
-          }}
-        />
-      </GluuViewWrapper>
-      {hasPermission(permissions, ATTRIBUTE_DELETE) && (
-        <GluuDialog
-          row={item}
-          handler={toggle}
-          modal={modal}
-          subject="attribute"
-          onAccept={onDeletionConfirmed}
-        />
-      )}
-    </React.Fragment>
+    <Card>
+      <GluuRibbon title={t('fields.attributes')} fromLeft />
+      <CardBody>
+        <FormGroup row />
+        <FormGroup row />
+        <GluuViewWrapper canShow={hasPermission(permissions, ATTRIBUTE_READ)}>
+          <MaterialTable
+            components={{
+              Container: (props) => <Paper {...props} elevation={0} />,
+            }}
+            columns={[
+              { title: `${t('fields.inum')}`, field: 'inum' },
+              { title: `${t('fields.displayname')}`, field: 'displayName' },
+              {
+                title: `${t('fields.status')}`,
+                field: 'status',
+                type: 'boolean',
+                render: (rowData) => (
+                  <Badge color={getBadgeTheme(rowData.status)}>
+                    {rowData.status}
+                  </Badge>
+                ),
+              },
+            ]}
+            data={attributes}
+            isLoading={loading}
+            title=""
+            actions={myActions}
+            options={{
+              search: true,
+              selection: false,
+              searchFieldAlignment: 'left',
+              pageSize: pageSize,
+              headerStyle: applicationStyle.tableHeaderStyle,
+              actionsColumnIndex: -1,
+            }}
+            detailPanel={(rowData) => {
+              return <AttributeDetailPage row={rowData} />
+            }}
+          />
+        </GluuViewWrapper>
+        {hasPermission(permissions, ATTRIBUTE_DELETE) && (
+          <GluuDialog
+            row={item}
+            handler={toggle}
+            modal={modal}
+            subject="attribute"
+            onAccept={onDeletionConfirmed}
+          />
+        )}
+      </CardBody>
+    </Card>
   )
 }
 
