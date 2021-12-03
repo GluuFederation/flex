@@ -59,7 +59,6 @@
     <modules>
         <module>app</module>
         <module>config</module>
-        <module>config-glu</module>
         <module>shared</module>
         <module>plugins/account-linking</module>
         <module>plugins/client-authorizations</module>

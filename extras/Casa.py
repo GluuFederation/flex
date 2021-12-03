@@ -1,5 +1,3 @@
-# Author: Jose Gonzalez
-
 from io.jans.as.persistence.model.configuration import GluuConfiguration
 from io.jans.as.server.security import Identity
 from io.jans.as.server.service import AuthenticationService, UserService
@@ -19,8 +17,7 @@ from java.lang import Integer
 from java.util import Collections, HashMap, HashSet, ArrayList, Arrays, Date
 from java.nio.charset import Charset
 
-# TODO: Beware! using the parallel project casa-config-glu here to workaround import issue
-from org.glu.casa.model import ApplicationConfiguration
+from org.gluu.casa.model import ApplicationConfiguration
 from org.apache.http.params import CoreConnectionPNames
 
 try:
