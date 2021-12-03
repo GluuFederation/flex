@@ -237,7 +237,7 @@
   },
   "menus": {
     "adminui": "Admin",
-    "config-api": "Config-api",
+    "config-api": "Config-API",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",
@@ -258,7 +258,7 @@
     "my_profile": "My Profile",
     "sql": "Sql",
     "logging": "Logging",
-    "mau": "MAU",
+    "mau": "Active Users",
     "oauthserver": "OAuth server",
     "persistence": "Persistence",
     "person": "Person",
