@@ -1,5 +1,5 @@
 import React from 'react'
-import mystyle from './ribbon'
+import mystyle from './styles/ribbon'
 import { useTranslation } from 'react-i18next'
 
 function GluuRibbon({ title, fromLeft, doTranslate }) {

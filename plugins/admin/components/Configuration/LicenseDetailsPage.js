@@ -135,7 +135,7 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
             ) : (
               <Alert severity="warning">
                 {!loading &&
-                  'The License Api is not enabled for this application.'}
+                  'The License API is not enabled for this application.'}
               </Alert>
             )}
           </GluuLoader>

@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { Paper } from '@material-ui/core'
 import { Badge } from 'reactstrap'
+import { Card, CardBody, FormGroup } from '../../../../app/components'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
+import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import {
   LIMIT_ID,
@@ -178,78 +182,80 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     }
   }
   return (
-    <React.Fragment>
-      <GluuViewWrapper canShow={hasPermission(permissions, CLIENT_READ)}>
-        <MaterialTable
-          columns={[
-            {
-              title: `${t('fields.inum')}`,
-              field: 'inum',
-              hidden: true,
-              sorting: true,
-              searchable: true,
-            },
-            { title: `${t('fields.client_name')}`, field: 'clientName' },
-            {
-              title: `${t('fields.application_type')}`,
-              field: 'applicationType',
-            },
-            { title: `${t('fields.subject_type')}`, field: 'subjectType' },
-            {
-              title: `${t('fields.status')}`,
-              field: 'disabled',
-              type: 'boolean',
-              render: (rowData) => (
-                <Badge color={getBadgeTheme(rowData.disabled)}>
-                  {getClientStatus(rowData.disabled)}
-                </Badge>
-              ),
-            },
-            {
-              title: `${t('fields.is_trusted_client')}`,
-              field: 'trustedClient',
-              type: 'boolean',
-              render: (rowData) => (
-                <Badge color={getTrustedTheme(rowData.trustedClient)}>
-                  {rowData.trustedClient ? t('options.yes') : t('options.no')}
-                </Badge>
-              ),
-            },
-          ]}
-          data={clients}
-          isLoading={loading}
-          title={t('titles.oidc_clients')}
-          actions={myActions}
-          options={{
-            search: true,
-            searchFieldAlignment: 'left',
-            selection: false,
-            pageSize: pageSize,
-            headerStyle: {
-              backgroundColor: '#03a96d',
-              color: '#FFF',
-              padding: '2px',
-              textTransform: 'uppercase',
-              fontSize: '18px',
-            },
-            actionsColumnIndex: -1,
-          }}
-          detailPanel={(rowData) => {
-            return <ClientDetailPage row={rowData} scopes={scopes} />
-          }}
-        />
-      </GluuViewWrapper>
-      {hasPermission(permissions, CLIENT_DELETE) && (
-        <GluuDialog
-          row={item}
-          name={item.clientName}
-          handler={toggle}
-          modal={modal}
-          subject="openid connect client"
-          onAccept={onDeletionConfirmed}
-        />
-      )}
-    </React.Fragment>
+    <Card>
+      <GluuRibbon title={t('titles.oidc_clients')} fromLeft />
+      <CardBody>
+        <FormGroup row />
+        <FormGroup row />
+        <GluuViewWrapper canShow={hasPermission(permissions, CLIENT_READ)}>
+          <MaterialTable
+            components={{
+              Container: (props) => <Paper {...props} elevation={0} />,
+            }}
+            columns={[
+              {
+                title: `${t('fields.inum')}`,
+                field: 'inum',
+                hidden: true,
+                sorting: true,
+                searchable: true,
+              },
+              { title: `${t('fields.client_name')}`, field: 'clientName' },
+              {
+                title: `${t('fields.application_type')}`,
+                field: 'applicationType',
+              },
+              { title: `${t('fields.subject_type')}`, field: 'subjectType' },
+              {
+                title: `${t('fields.status')}`,
+                field: 'disabled',
+                type: 'boolean',
+                render: (rowData) => (
+                  <Badge color={getBadgeTheme(rowData.disabled)}>
+                    {getClientStatus(rowData.disabled)}
+                  </Badge>
+                ),
+              },
+              {
+                title: `${t('fields.is_trusted_client')}`,
+                field: 'trustedClient',
+                type: 'boolean',
+                render: (rowData) => (
+                  <Badge color={getTrustedTheme(rowData.trustedClient)}>
+                    {rowData.trustedClient ? t('options.yes') : t('options.no')}
+                  </Badge>
+                ),
+              },
+            ]}
+            data={clients}
+            isLoading={loading}
+            title=""
+            actions={myActions}
+            options={{
+              search: true,
+              searchFieldAlignment: 'left',
+              selection: false,
+              pageSize: pageSize,
+              headerStyle: applicationStyle.tableHeaderStyle,
+              actionsColumnIndex: -1,
+            }}
+            detailPanel={(rowData) => {
+              return <ClientDetailPage row={rowData} scopes={scopes} />
+            }}
+          />
+        </GluuViewWrapper>
+        {hasPermission(permissions, CLIENT_DELETE) && (
+          <GluuDialog
+            row={item}
+            name={item.clientName}
+            handler={toggle}
+            modal={modal}
+            subject="openid connect client"
+            onAccept={onDeletionConfirmed}
+          />
+        )}
+      </CardBody>
+    </Card>
   )
 }
 

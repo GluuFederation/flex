@@ -3,6 +3,7 @@ import { FormGroup, Card, CardBody } from '../../../../app/components'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import useExitPrompt from '../../../../app/routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
@@ -52,7 +53,11 @@ function ConfigPage({ configuration, loading, dispatch }) {
   return (
     <GluuLoader blocking={loading}>
       <Card>
+        <GluuRibbon title="titles.jans_json_property" fromLeft doTranslate />
         <CardBody style={{ minHeight: 500 }}>
+          <FormGroup row></FormGroup>
+          <FormGroup row></FormGroup>
+          <FormGroup row></FormGroup>
           {Object.keys(configuration).map((propKey, idx) => (
             <PropertyBuilder
               key={idx}
