@@ -241,7 +241,7 @@
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",
-      "mapping":"Mapping"
+      "mapping": "Mapping"
     },
     "cache": "Cache",
     "clients": "Clients",
@@ -358,13 +358,15 @@
   },
   "titles": {
     "acrs": "ACRs",
+    "active_users": "Actives Users && Access Token Stats",
     "acrs_logging": "ACRs && Logging",
     "algorithmic_keys": "Algorithmic Keys",
-    "application_settings":"Application Settings",
+    "application_settings": "Application Settings",
     "all_attributes": "Attributes/Claims",
     "all_custom_scripts": "Custom Scripts",
     "all_oidc_clients": "OpenID Clients",
     "all_scopes": "OAuth/OpenID Scopes",
+    "couchbase_authentication": "Couchbase Authentication",
     "client_advanced": "Advanced",
     "client_attributes": "Client Attributes",
     "client_basic": "Basic",
@@ -377,6 +379,7 @@
     "detail_information": "Detailed information",
     "detail_contact": "Detail Contact",
     "ldap_authentication": "LDAP Authentication",
+    "services_health":"Services Health Status",
     "sql_authentication": "SQL Authentication",
     "logging": "LOGGING",
     "jwk_keys": "JWK keys",

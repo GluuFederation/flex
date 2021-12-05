@@ -158,9 +158,10 @@ function LdapListPage({
   return (
     <Card>
       <GluuRibbon title={t('titles.ldap_authentication')} fromLeft />
+      <FormGroup row />
+      <FormGroup row />
+      <FormGroup row />
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuLoader blocking={persistenceTypeLoading}>
           {persistenceType == `ldap` ? (
             <MaterialTable
@@ -206,7 +207,7 @@ function LdapListPage({
           ) : (
             <Alert severity="info">
               {!persistenceTypeLoading &&
-                'The database of Authentication server is not LDAP.'}
+                'The current data store provider is not LDAP based.'}
             </Alert>
           )}
           <GluuAlert

@@ -3,6 +3,7 @@ import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 import { Typeahead } from 'react-bootstrap-typeahead'
+import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 import {
   Col,
   InputGroup,
@@ -114,7 +115,12 @@ function GluuInlineInput({
       <Col sm={2}>
         {show && (
           <>
-            <Button color="primary" size="sm" onClick={onAccept}>
+            <Button
+              color="primary"
+              style={applicationStyle.buttonStyle}
+              size="sm"
+              onClick={onAccept}
+            >
               <i className="fa fa-check mr-2"></i>
             </Button>{' '}
             <Button color="danger" size="sm" onClick={onCancel}>

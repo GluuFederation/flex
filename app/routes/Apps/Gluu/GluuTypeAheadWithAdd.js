@@ -3,6 +3,7 @@ import { FormGroup, Col, Row, Button, Input } from '../../../components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTooltip from './GluuTooltip'
+import applicationStyle from './styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 
 function GluuTypeAheadWithAdd({
@@ -59,7 +60,12 @@ function GluuTypeAheadWithAdd({
                 aria-label="new_entry"
               />
             </Col>
-            <Button color="primary" type="button" onClick={addItem}>
+            <Button
+              color="primary"
+              type="button"
+              style={applicationStyle.buttonStyle}
+              onClick={addItem}
+            >
               <i className="fa fa-plus-circle mr-2"></i>
               {t('actions.add')}
             </Button>

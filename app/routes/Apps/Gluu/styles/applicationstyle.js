@@ -12,4 +12,7 @@ export default {
     padding: '0px 5px 0px 5px',
     color: 'white',
   },
+  buttonStyle: {
+    background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+  },
 }

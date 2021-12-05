@@ -42,7 +42,11 @@ function GluuProperties({
       <Accordion.Header>{t(label).toUpperCase()}</Accordion.Header>
       <Accordion.Body>
         <Button
-          style={{ float: 'right', marginTop: -40 }}
+          style={{
+            background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+            float: 'right',
+            marginTop: -40,
+          }}
           type="button"
           color="primary"
           onClick={addProperty}

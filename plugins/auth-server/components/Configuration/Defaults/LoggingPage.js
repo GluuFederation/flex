@@ -12,6 +12,7 @@ import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import { JSON_CONFIG } from '../../../../../app/utils/ApiResources'
 import GluuTooltip from '../../../../../app/routes/Apps/Gluu/GluuTooltip'
+import applicationStyle from '../../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import { connect } from 'react-redux'
 import { Formik } from 'formik'
 import {
@@ -156,7 +157,11 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
               ></GluuCheckBoxRow>
 
               {hasPermission(permissions, LOGGING_WRITE) && (
-                <Button color="primary" type="submit">
+                <Button
+                  color="primary"
+                  type="submit"
+                  style={applicationStyle.buttonStyle}
+                >
                   {t('actions.save')}
                 </Button>
               )}

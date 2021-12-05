@@ -8,6 +8,7 @@ import {
   Input,
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
+import applicationStyle from './styles/applicationstyle'
 
 function GluuModal({ title, modal, handler, onAccept }) {
   const { t } = useTranslation()
@@ -24,11 +25,19 @@ function GluuModal({ title, modal, handler, onAccept }) {
         <Input placeholder={t('placeholders.redirect_uri')} />
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={onAccept}>
+        <Button
+          color="primary"
+          style={applicationStyle.buttonStyle}
+          onClick={onAccept}
+        >
           {t('actions.add')}
         </Button>
         &nbsp;
-        <Button color="primary" onClick={handler}>
+        <Button
+          color="primary"
+          style={applicationStyle.buttonStyle}
+          onClick={handler}
+        >
           {t('ations.cancel')}
         </Button>
       </ModalFooter>

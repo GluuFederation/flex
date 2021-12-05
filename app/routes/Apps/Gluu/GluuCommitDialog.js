@@ -11,6 +11,7 @@ import {
   ModalFooter,
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
+import applicationStyle from './styles/applicationstyle'
 import ClipLoader from 'react-spinners/ClipLoader'
 
 const GluuCommitDialog = ({
@@ -44,7 +45,7 @@ const GluuCommitDialog = ({
         document.getElementById(USER_MESSAGE).value,
       )
     }
-    setLoading(true);
+    setLoading(true)
     onAccept(document.getElementById(USER_MESSAGE).value)
   }
   return (
@@ -91,12 +92,20 @@ const GluuCommitDialog = ({
       <ModalFooter>
         <ClipLoader loading={loading} size={35} />
         {active && (
-          <Button color="primary" onClick={handleAccept}>
+          <Button
+            color="primary"
+            style={applicationStyle.buttonStyle}
+            onClick={handleAccept}
+          >
             <i className="fa fa-check-circle mr-2"></i>
             {t('actions.accept')}
           </Button>
         )}{' '}
-        <Button color="danger" onClick={handler}>
+        <Button
+          color="danger"
+          style={applicationStyle.buttonStyle}
+          onClick={handler}
+        >
           <i className="fa fa-remove mr-2"></i>
           {t('actions.no')}
         </Button>

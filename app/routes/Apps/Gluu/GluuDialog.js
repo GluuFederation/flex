@@ -10,6 +10,7 @@ import {
   ModalFooter,
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
+import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
   const [active, setActive] = useState(false)
@@ -54,11 +55,19 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
         </ModalBody>
         <ModalFooter>
           {active && (
-            <Button color="primary" onClick={handleAccept}>
+            <Button
+              color="primary"
+              style={applicationStyle.buttonStyle}
+              onClick={handleAccept}
+            >
               {t('actions.yes')}
             </Button>
           )}{' '}
-          <Button color="secondary" onClick={handler}>
+          <Button
+            color="secondary"
+            style={applicationStyle.buttonStyle}
+            onClick={handler}
+          >
             {t('actions.no')}
           </Button>
         </ModalFooter>
