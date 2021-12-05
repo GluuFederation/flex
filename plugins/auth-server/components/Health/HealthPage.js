@@ -4,14 +4,14 @@ import {
   CardBody,
   Card,
   CardHeader,
+  FormGroup,
 } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
 
-import {
-  buildPayload,
-} from '../../../../app/utils/PermChecker'
+import { buildPayload } from '../../../../app/utils/PermChecker'
 import { connect } from 'react-redux'
 import { getHealthStatus } from '../../redux/actions/HealthAction'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 
 function HealthPage({ serverStatus, dbStatus, dispatch }) {
   const { t } = useTranslation()
@@ -26,6 +26,10 @@ function HealthPage({ serverStatus, dbStatus, dispatch }) {
   return (
     <Container>
       <Card className="mb-3">
+        <GluuRibbon title={t('titles.services_health')} fromLeft />
+        <FormGroup row />
+        <FormGroup row />
+        <FormGroup row />
         <CardBody>
           <Card className="mb-3">
             <CardHeader tag="h6" className="bg-success text-white">

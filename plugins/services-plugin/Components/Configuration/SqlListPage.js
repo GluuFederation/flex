@@ -150,9 +150,10 @@ function SqlListPage({
   return (
     <Card>
       <GluuRibbon title={t('titles.sql_authentication')} fromLeft />
+      <FormGroup row />
+      <FormGroup row />
+      <FormGroup row />
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuLoader blocking={persistenceTypeLoading}>
           {persistenceType == `sql` ? (
             <MaterialTable
@@ -189,7 +190,7 @@ function SqlListPage({
             />
           ) : (
             <Alert severity="info">
-              The database of Authentication server is not RDBMS.
+              The current data store provider is not RDBMS.
             </Alert>
           )}
           <GluuAlert

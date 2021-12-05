@@ -3,6 +3,7 @@ import { FormGroup, Col, Row, Button, Input } from '../../../components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTooltip from './GluuTooltip'
+import applicationStyle from './styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 
 function GluuAutoCompleteWithAdd({
@@ -53,7 +54,12 @@ function GluuAutoCompleteWithAdd({
             <Col sm={10}>
               <Input placeholder={placeholder} id={inputId} />
             </Col>
-            <Button color="primary" type="button" onClick={addItem}>
+            <Button
+              color="primary"
+              style={applicationStyle.buttonStyle}
+              type="button"
+              onClick={addItem}
+            >
               {t('actions.add')}
             </Button>
           </Row>

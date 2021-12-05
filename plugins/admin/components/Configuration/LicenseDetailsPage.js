@@ -13,6 +13,7 @@ import {
   CardBody,
   CardTitle,
   Container,
+  FormGroup,
   Row,
   Col,
 } from '../../../../app/components'
@@ -36,6 +37,8 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
         <CardBody>
           <CardTitle tag="h6" className="mb-4">
             <GluuRibbon title="fields.licenseDetails" doTranslate fromLeft />
+            <FormGroup row />
+            <FormGroup row />
           </CardTitle>
           <GluuLoader blocking={loading}>
             {item.licenseEnable ? (
