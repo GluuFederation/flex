@@ -18,8 +18,8 @@ import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.claims.ACR;
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.nimbusds.openid.connect.sdk.validators.IDTokenValidator;
-import java.io.IOException;
 
+import java.io.IOException;
 import java.net.*;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,6 +40,7 @@ import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 import org.zkoss.util.resource.Labels;
 
+@Named
 @ApplicationScoped
 public class OIDCFlowService {
     
