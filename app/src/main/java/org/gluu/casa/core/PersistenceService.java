@@ -3,7 +3,6 @@ package org.gluu.casa.core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.jans.as.persistence.model.configuration.GluuConfiguration;
 import io.jans.orm.PersistenceEntryManager;
 import io.jans.orm.PersistenceEntryManagerFactory;
 import io.jans.orm.ldap.operation.LdapOperationService;
@@ -26,9 +25,10 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.gluu.casa.model.ApplicationConfiguration;
+import org.gluu.casa.core.model.ASConfiguration;
 import org.gluu.casa.core.model.CustomScript;
 import org.gluu.casa.core.model.JansOrganization;
-import org.gluu.casa.core.model.ASConfiguration;
+import org.gluu.casa.core.model.GluuConfiguration;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.IPersistenceService;
@@ -269,7 +269,9 @@ public class PersistenceService implements IPersistenceService {
     }
 
     public DocumentStoreConfiguration getDocumentStoreConfiguration() {
-        return documentStoreConfiguration;
+        return null;
+        //TODO: remove method
+        //return documentStoreConfiguration;
     }
 
     public boolean isBackendLdapEnabled() {
@@ -342,10 +344,10 @@ public class PersistenceService implements IPersistenceService {
             loadASSettings(properties.getProperty("jansAuth_ConfigurationEntryDN"));
             rootDn = "o=jans";
             success = true;
-
-            GluuConfiguration gluuConf = get(GluuConfiguration.class, jsonProperty(staticConfig, "baseDn", "configuration"));
-            cacheConfiguration = gluuConf.getCacheConfiguration();
-            documentStoreConfiguration = gluuConf.getDocumentStoreConfiguration();
+            
+            cacheConfiguration = get(GluuConfiguration.class, 
+                jsonProperty(staticConfig, "baseDn", "configuration")).getCacheConfiguration();
+            //documentStoreConfiguration = gluuConf.getDocumentStoreConfiguration();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
