@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import MaterialTable from 'material-table'
 import { Paper } from '@material-ui/core'
 import UiRoleDetailPage from './UiRoleDetailPage'
@@ -10,15 +10,27 @@ import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import {
+  deleteRole,
+  getRoles,
+  setCurrentItem,
+} from '../../redux/actions/ApiRoleActions'
+import {
   hasPermission,
+  buildPayload,
   SCRIPT_READ,
   SCRIPT_WRITE,
 } from '../../../../app/utils/PermChecker'
 
-function UiRoleListPage({ apiRoles, permissions, loading }) {
+function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const myActions = []
+  const options = []
+  const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
+  useEffect(() => {
+    buildPayload(userAction, 'ROLES', options)
+    dispatch(getRoles(userAction))
+  }, [])
 
   if (hasPermission(permissions, SCRIPT_READ)) {
     myActions.push((rowData) => ({
@@ -69,9 +81,9 @@ function UiRoleListPage({ apiRoles, permissions, loading }) {
             columns={[
               {
                 title: `${t('fields.name')}`,
-                field: 'name',
+                field: 'role',
                 width: '20%',
-                render: (rowData) => <Badge color="info">{rowData.name}</Badge>,
+                render: (rowData) => <Badge color="info">{rowData.role}</Badge>,
               },
               { title: `${t('fields.description')}`, field: 'description' },
             ]}

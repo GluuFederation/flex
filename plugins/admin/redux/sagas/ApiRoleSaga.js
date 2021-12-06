@@ -33,7 +33,7 @@ import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.CustomScriptsApi(
+  const api = new JansConfigApi.AdminUIRoleApi(
     getClient(JansConfigApi, token, issuer),
   )
   return new RoleApi(api)

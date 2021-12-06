@@ -11,6 +11,8 @@ import SettingsPage from './components/Settings/SettingsPage'
 import mauSaga from './redux/sagas/MauSaga'
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
+import apiRoleSaga from './redux/sagas/ApiRoleSaga'
+import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 
 import mauReducer from './redux/reducers/MauReducer'
 import scriptReducer from './redux/reducers/CustomScriptReducer'
@@ -133,7 +135,13 @@ const pluginMetadata = {
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'licenseDetailsReducer', reducer: licenseDetailsReducer },
   ],
-  sagas: [mauSaga(), scriptSaga(), licenseDetailsSaga()],
+  sagas: [
+    mauSaga(),
+    scriptSaga(),
+    licenseDetailsSaga(),
+    apiRoleSaga(),
+    apiPermissionSaga(),
+  ],
 }
 
 export default pluginMetadata
