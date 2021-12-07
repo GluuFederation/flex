@@ -28,6 +28,15 @@ import jwksSaga from './redux/sagas/JwksSaga'
 import acrSaga from './redux/sagas/AcrsSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
 import healthSaga from './redux/sagas/HealthSaga'
+import {
+  ACR_READ,
+  PROPERTIES_READ,
+  CLIENT_READ,
+  SCOPE_READ,
+  CLIENT_WRITE,
+  SCOPE_WRITE,
+  JWKS_READ,
+} from '../../app/utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -43,39 +52,39 @@ const pluginMetadata = {
             {
               title: 'menus.keys',
               path: PLUGIN_BASE_APTH + '/config/keys',
-              permission: '/config/jwks.readonly',
+              permission: JWKS_READ,
             },
             {
               title: 'menus.defaults',
               path: PLUGIN_BASE_APTH + '/config/defaults',
-              permission: '/config/acrs.readonly',
+              permission: ACR_READ,
             },
             {
               title: 'menus.properties',
               path: PLUGIN_BASE_APTH + '/config/properties',
-              permission: '/config/acrs.readonly',
+              permission: PROPERTIES_READ,
             },
             {
               title: 'menus.logging',
               path: PLUGIN_BASE_APTH + '/config/logging',
-              permission: '/config/properties.readonly',
+              permission: PROPERTIES_READ,
             },
           ],
         },
         {
           title: 'menus.clients',
           path: PLUGIN_BASE_APTH + '/clients',
-          permission: '/config/openid/clients.readonly',
+          permission: CLIENT_READ,
         },
         {
           title: 'menus.health',
           path: PLUGIN_BASE_APTH + '/health',
-          permission: '/config/acrs.readonly',
+          permission: PROPERTIES_READ,
         },
         {
           title: 'menus.scopes',
           path: PLUGIN_BASE_APTH + '/scopes',
-          permission: '/config/scopes.readonly',
+          permission: SCOPE_READ,
         },
       ],
     },
@@ -84,57 +93,57 @@ const pluginMetadata = {
     {
       component: ClientListPage,
       path: PLUGIN_BASE_APTH + '/clients',
-      permission: '/config/openid/clients.readonly',
+      permission: CLIENT_READ,
     },
     {
       component: ClientAddPage,
       path: PLUGIN_BASE_APTH + '/client/new',
-      permission: '/config/openid/clients.write',
+      permission: CLIENT_WRITE,
     },
     {
       component: ClientEditPage,
       path: PLUGIN_BASE_APTH + '/client/edit:id',
-      permission: '/config/openid/clients.write',
+      permission: CLIENT_WRITE,
     },
     {
       component: ScopeListPage,
       path: PLUGIN_BASE_APTH + '/scopes',
-      permission: '/config/scopes.readonly',
+      permission: SCOPE_READ,
     },
     {
       component: ScopeAddPage,
       path: PLUGIN_BASE_APTH + '/scope/new',
-      permission: '/config/scopes.write',
+      permission: SCOPE_WRITE,
     },
     {
       component: ScopeEditPage,
       path: PLUGIN_BASE_APTH + '/scope/edit:id',
-      permission: '/config/scopes.write',
+      permission: SCOPE_WRITE,
     },
     {
       component: PropertiesPage,
       path: PLUGIN_BASE_APTH + '/config/properties',
-      permission: '/config/attributes.write',
+      permission: PROPERTIES_READ,
     },
     {
       component: KeysPage,
       path: PLUGIN_BASE_APTH + '/config/keys',
-      permission: '/config/jwks.readonly',
+      permission: JWKS_READ,
     },
     {
       component: HealthPage,
       path: PLUGIN_BASE_APTH + '/health',
-      permission: '/config/acrs.readonly',
+      permission: PROPERTIES_READ,
     },
     {
       component: ReportPage,
       path: PLUGIN_BASE_APTH + '/reports',
-      permission: '/config/acrs.readonly',
+      permission: PROPERTIES_READ,
     },
     {
       component: DefaultPage,
       path: PLUGIN_BASE_APTH + '/config/defaults',
-      permission: '/config/acrs.readonly',
+      permission: PROPERTIES_READ,
     },
   ],
   reducers: [

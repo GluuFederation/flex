@@ -117,5 +117,4 @@ const mapStateToProps = (state) => {
     permissions: state.authReducer.permissions,
   }
 }
-
 export default connect(mapStateToProps)(UiPermListPage)
