@@ -13,8 +13,8 @@ import { getPermissions } from '../../redux/actions/ApiPermissionActions'
 import {
   hasPermission,
   buildPayload,
-  SCRIPT_READ,
-  SCRIPT_WRITE,
+  PERMISSION_READ,
+  PERMISSION_WRITE,
 } from '../../../../app/utils/PermChecker'
 
 function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
@@ -28,20 +28,20 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
     dispatch(getPermissions(userAction))
   }, [])
 
-  if (hasPermission(permissions, SCRIPT_READ)) {
-    myActions.push((rowData) => ({
+  if (hasPermission(permissions, PERMISSION_READ)) {
+    myActions.push((aRow) => ({
       icon: 'visibility',
       iconProps: {
         color: 'primary',
-        id: 'viewRole' + rowData.inum,
+        id: 'viewRole' + aRow.inum,
       },
       tooltip: `${t('messages.view_role_details')}`,
-      onClick: (e, rowData) => handleGoToRoleEditPage(rowData, true),
+      onClick: (e, v) => handleGoToPermissionEditPage(v, true),
       disabled: false,
     }))
   }
 
-  if (hasPermission(permissions, SCRIPT_WRITE)) {
+  if (hasPermission(permissions, PERMISSION_WRITE)) {
     myActions.push((rowD) => ({
       icon: 'edit',
       iconProps: {
@@ -49,17 +49,17 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
         id: 'editRole' + rowD.inum,
       },
       tooltip: `${t('messages.edit_role')}`,
-      onClick: (e, entry) => handleGoToRoleEditPage(entry, false),
+      onClick: (e, entry) => handleGoToPermissionEditPage(entry, false),
       disabled: false,
     }))
   }
-  if (hasPermission(permissions, SCRIPT_WRITE)) {
+  if (hasPermission(permissions, PERMISSION_WRITE)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_role')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => handleGoToRoleAddPage(),
+      onClick: () => handleGoToPermissionAddPage(),
     })
   }
 
@@ -69,7 +69,7 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
       <CardBody>
         <FormGroup row />
         <FormGroup row />
-        <GluuViewWrapper canShow={hasPermission(permissions, SCRIPT_READ)}>
+        <GluuViewWrapper canShow={hasPermission(permissions, PERMISSION_READ)}>
           <MaterialTable
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,

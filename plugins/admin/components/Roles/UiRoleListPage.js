@@ -13,8 +13,8 @@ import { getRoles } from '../../redux/actions/ApiRoleActions'
 import {
   hasPermission,
   buildPayload,
-  SCRIPT_READ,
-  SCRIPT_WRITE,
+  ROLE_READ,
+  ROLE_WRITE,
 } from '../../../../app/utils/PermChecker'
 
 function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
@@ -28,7 +28,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
     dispatch(getRoles(userAction))
   }, [])
 
-  if (hasPermission(permissions, SCRIPT_READ)) {
+  if (hasPermission(permissions, ROLE_READ)) {
     myActions.push((rowData) => ({
       icon: 'visibility',
       iconProps: {
@@ -41,7 +41,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
     }))
   }
 
-  if (hasPermission(permissions, SCRIPT_WRITE)) {
+  if (hasPermission(permissions, ROLE_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
@@ -53,7 +53,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
       disabled: false,
     }))
   }
-  if (hasPermission(permissions, SCRIPT_WRITE)) {
+  if (hasPermission(permissions, ROLE_WRITE)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_role')}`,
@@ -69,7 +69,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
       <CardBody>
         <FormGroup row />
         <FormGroup row />
-        <GluuViewWrapper canShow={hasPermission(permissions, SCRIPT_READ)}>
+        <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
           <MaterialTable
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
