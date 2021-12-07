@@ -4,10 +4,14 @@ import {
   Card,
   CardFooter,
   CardBody,
+  FormGroup,
   Label,
   Input,
+  Badge,
 } from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
+import GluuRibbon from '../../../app/routes/Apps/Gluu/GluuRibbon'
+import applicationStyle from '../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import {
   LineChart,
@@ -30,7 +34,6 @@ import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import Picker from 'react-month-picker'
 import PropTypes from 'prop-types'
-import { Badge } from 'reactstrap'
 
 class MonthBox extends Component {
   static propTypes = {
@@ -224,6 +227,9 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
       >
         <ResponsiveContainer>
           <Card>
+            <GluuRibbon title={t('titles.active_users')} fromLeft />
+            <FormGroup row />
+            <FormGroup row />
             <CardBody
               className="d-flex flex-column justify-content-center align-items-center pt-5"
               style={{ minHeight: '400px' }}
@@ -253,13 +259,18 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
                     onClick={_handleClickRangeBox2}
                   />
                 </Picker>
-                <Button className="ml-4 mr-4" color="primary" onClick={search}>
+                <Button
+                  style={applicationStyle.buttonStyle}
+                  className="ml-4 mr-4"
+                  color="primary"
+                  onClick={search}
+                >
                   {t('actions.view')}
                 </Button>
                 <Label className="h4">
                   {t('fields.average_of_mau')}&nbsp;&nbsp;&nbsp;
                 </Label>
-                <Badge className="h4" color="success">
+                <Badge color="info" pill>
                   {arrAvg(Object.values(stat))}
                 </Badge>
               </div>

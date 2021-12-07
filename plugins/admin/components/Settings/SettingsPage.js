@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import { SETTINGS } from '../../../../app/utils/ApiResources'
 import {
   Card,
@@ -22,7 +23,11 @@ function SettingsPage() {
   return (
     <React.Fragment>
       <Card>
+        <GluuRibbon title="titles.application_settings" fromLeft doTranslate />
         <CardBody>
+          <FormGroup row> </FormGroup>
+          <FormGroup row> </FormGroup>
+          <FormGroup row> </FormGroup>
           <GluuTooltip doc_category={SETTINGS} doc_entry="pageSize">
             <FormGroup row>
               <GluuLabel label="List paging size" size={4} />

@@ -3,8 +3,9 @@ import { Formik } from 'formik'
 import CouchbaseItem from './CouchbaseItem'
 import { Form, FormGroup, Card, CardBody } from '../../../../app/components'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import { connect } from 'react-redux'
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@material-ui/lab/Alert'
 import {
   getCouchBaseConfig,
   editCouchBase,
@@ -17,9 +18,17 @@ function CouchbasePage({ couchbase, loading, dispatch, persistenceType }) {
 
   return (
     <React.Fragment>
-      {persistenceType == `couchbase` ?
-        (<GluuLoader blocking={loading}>
+      {persistenceType == `couchbase` ? (
+        <GluuLoader blocking={loading}>
           <Card>
+            <GluuRibbon
+              title="titles.couchbase_authentication"
+              fromLeft
+              doTranslate
+            />
+            <FormGroup row />
+            <FormGroup row />
+            <FormGroup row />
             <CardBody>
               <Formik
                 initialValues={couchbase}
@@ -47,7 +56,24 @@ function CouchbasePage({ couchbase, loading, dispatch, persistenceType }) {
               ></Formik>
             </CardBody>
           </Card>
-        </GluuLoader>) : (<Alert severity="info">The database of Authentication server is not Couchbase.</Alert>)}
+        </GluuLoader>
+      ) : (
+        <Card>
+          <GluuRibbon
+            title="titles.couchbase_authentication"
+            fromLeft
+            doTranslate
+          />
+          <FormGroup row />
+          <FormGroup row />
+          <FormGroup row />
+          <CardBody>
+            <Alert severity="info">
+              The current data store provider is not Couchbase.
+            </Alert>
+          </CardBody>
+        </Card>
+      )}
     </React.Fragment>
   )
 }
@@ -57,7 +83,7 @@ const mapStateToProps = (state) => {
     couchbase: state.couchbaseReducer.couchbase,
     permissions: state.authReducer.permissions,
     loading: state.couchbaseReducer.loading,
-    persistenceType: state.persistenceTypeReducer.type
+    persistenceType: state.persistenceTypeReducer.type,
   }
 }
 

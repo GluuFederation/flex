@@ -14,6 +14,7 @@ import {
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import CacheInMemory from './CacheInMemory'
 import CacheRedis from './CacheRedis'
 import CacheNative from './CacheNative'
@@ -110,6 +111,10 @@ function CachePage({
           message={t('messages.request_waiting_message')}
         >
           <Card>
+            <GluuRibbon title={t('fields.cache_configuration')} fromLeft />
+            <FormGroup row> </FormGroup>
+            <FormGroup row> </FormGroup>
+            <FormGroup row> </FormGroup>
             <CardBody>
               <Formik
                 initialValues={INITIAL_VALUES}
@@ -179,16 +184,6 @@ function CachePage({
                 {(formik) => (
                   <Form onSubmit={formik.handleSubmit}>
                     <FormGroup row>
-                      <Col
-                        xs="12"
-                        style={{
-                          fontSize: 24,
-                          fontWeight: 'bold',
-                          marginBottom: 15,
-                        }}
-                      >
-                        {t('fields.cache_configuration')}
-                      </Col>
                       <GluuLabel label="fields.cache_provider_type" size={4} />
                       <Col sm={8}>
                         {cacheData.cacheProviderType && (

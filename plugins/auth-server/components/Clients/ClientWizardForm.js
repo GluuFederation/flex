@@ -17,6 +17,8 @@ import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { hasPermission, CLIENT_WRITE } from '../../../../app/utils/PermChecker'
+import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+
 const sequence = [
   'Basic',
   'Advanced',
@@ -394,6 +396,7 @@ function ClientWizardForm({
                     <Button
                       type="button"
                       onClick={prevStep}
+                      style={applicationStyle.buttonStyle}
                       color="link"
                       className="mr-3"
                     >
@@ -406,6 +409,7 @@ function ClientWizardForm({
                       type="button"
                       color="primary"
                       onClick={nextStep}
+                      style={applicationStyle.buttonStyle}
                       className="ml-auto px-4"
                     >
                       {t('actions.next')}
@@ -420,6 +424,7 @@ function ClientWizardForm({
                         color="primary"
                         className="ml-auto px-4"
                         onClick={toggle}
+                        style={applicationStyle.buttonStyle}
                       >
                         {t('actions.apply')}
                       </Button>

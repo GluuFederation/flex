@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
 import { JSON_CONFIG } from '../../../../../app/utils/ApiResources'
 import GluuTooltip from '../../../../../app/routes/Apps/Gluu/GluuTooltip'
+import applicationStyle from '../../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import {
   hasPermission,
   ACR_READ,
@@ -76,7 +77,11 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
               </GluuTooltip>
 
               {hasPermission(permissions, ACR_WRITE) && (
-                <Button color="primary" type="submit">
+                <Button
+                  color="primary"
+                  type="submit"
+                  style={applicationStyle.buttonStyle}
+                >
                   {t('actions.save')}
                 </Button>
               )}

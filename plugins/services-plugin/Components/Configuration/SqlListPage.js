@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { Paper } from '@material-ui/core'
+import { Card, CardBody, FormGroup } from '../../../../app/components'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
+import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import SqlDetailPage from './SqlDetailPage'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
@@ -144,63 +148,66 @@ function SqlListPage({
       })
   }
   return (
-    <React.Fragment>
-      <GluuLoader blocking={persistenceTypeLoading}>
-        {persistenceType == `sql` ? (
-          <MaterialTable
-            columns={[
-              { title: `${t('fields.name')}`, field: 'configId' },
-              {
-                title: `${t('fields.connectionUris')}`,
-                field: 'connectionUri',
-              },
-              { title: `${t('fields.schemaName')}`, field: 'schemaName' },
-            ]}
-            data={sqlConfigurations}
-            isLoading={loading}
-            title={t('titles.sql_authentication')}
-            actions={myActions}
-            options={{
-              search: true,
-              selection: false,
-              pageSize: pageSize,
-              headerStyle: {
-                backgroundColor: '#03a96d',
-                color: '#FFF',
-                padding: '2px',
-                textTransform: 'uppercase',
-                fontSize: '18px',
-              },
-              actionsColumnIndex: -1,
-            }}
-            detailPanel={(rowData) => {
-              return (
-                <SqlDetailPage
-                  row={rowData}
-                  testSqlConnection={testSqlConnect}
-                />
-              )
-            }}
+    <Card>
+      <GluuRibbon title={t('titles.sql_authentication')} fromLeft />
+      <FormGroup row />
+      <FormGroup row />
+      <FormGroup row />
+      <CardBody>
+        <GluuLoader blocking={persistenceTypeLoading}>
+          {persistenceType == `sql` ? (
+            <MaterialTable
+              components={{
+                Container: (props) => <Paper {...props} elevation={0} />,
+              }}
+              columns={[
+                { title: `${t('fields.name')}`, field: 'configId' },
+                {
+                  title: `${t('fields.connectionUris')}`,
+                  field: 'connectionUri',
+                },
+                { title: `${t('fields.schemaName')}`, field: 'schemaName' },
+              ]}
+              data={sqlConfigurations}
+              isLoading={loading}
+              title=""
+              actions={myActions}
+              options={{
+                search: true,
+                selection: false,
+                pageSize: pageSize,
+                headerStyle: applicationStyle.tableHeaderStyle,
+                actionsColumnIndex: -1,
+              }}
+              detailPanel={(rowData) => {
+                return (
+                  <SqlDetailPage
+                    row={rowData}
+                    testSqlConnection={testSqlConnect}
+                  />
+                )
+              }}
+            />
+          ) : (
+            <Alert severity="info">
+              The current data store provider is not RDBMS.
+            </Alert>
+          )}
+          <GluuAlert
+            severity={alertObj.severity}
+            message={alertObj.message}
+            show={alertObj.show}
           />
-        ) : (
-          <Alert severity="info">
-            The database of Authentication server is not RDBMS.
-          </Alert>
-        )}
-        <GluuAlert
-          severity={alertObj.severity}
-          message={alertObj.message}
-          show={alertObj.show}
-        />
-        <GluuDialog
-          row={item}
-          handler={toggle}
-          modal={modal}
-          subject="sql"
-          onAccept={onDeletionConfirmed}
-        />
-      </GluuLoader>
-    </React.Fragment>
+          <GluuDialog
+            row={item}
+            handler={toggle}
+            modal={modal}
+            subject="sql"
+            onAccept={onDeletionConfirmed}
+          />
+        </GluuLoader>
+      </CardBody>
+    </Card>
   )
 }
 
