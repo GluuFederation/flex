@@ -44,10 +44,10 @@
                                    data-parent="#accordion">
                                 <div class="card-body">
                                     <dl class="mb1">
-                                        <z:div class="flex flex-wrap" visible="@load(not empty each.key.oxAuthClientURI)">
+                                        <z:div class="flex flex-wrap" visible="@load(not empty each.key.jansClntURI)">
                                             <dt class="w4">${labels.clients.authorized.homepage}</dt>
                                             <dd>
-                                                <h:a href="@load(each.key.oxAuthClientURI)" target="_blank">${each.key.oxAuthClientURI}</h:a>
+                                                <h:a href="@load(each.key.jansClntURI)" target="_blank">${each.key.jansClntURI}</h:a>
                                             </dd>
                                         </z:div>
                                         <z:div class="flex flex-wrap" visible="@load(not empty vm.getAssociatedPeopleAsCSV(each.key))">

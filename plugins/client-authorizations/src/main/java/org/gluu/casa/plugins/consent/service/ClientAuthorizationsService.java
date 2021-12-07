@@ -47,7 +47,7 @@ public class ClientAuthorizationsService {
         Set<String> scopeIds = authorizations.stream().map(ClientAuthorization::getScopes).flatMap(List::stream).collect(Collectors.toSet());
 
         //Do the analog for scopes
-        filters = scopeIds.stream().map(id -> Filter.createEqualityFilter("oxId", id))
+        filters = scopeIds.stream().map(id -> Filter.createEqualityFilter("jansId", id))
                 .collect(Collectors.toList()).toArray(new Filter[]{});
         List<Scope> scopes = persistenceService.find(Scope.class, persistenceService.getScopesDn(), Filter.createORFilter(filters));
 
