@@ -60,11 +60,11 @@
         <module>app</module>
         <module>config</module>
         <module>shared</module>
-        <module>plugins/account-linking</module>
+        <!--module>plugins/account-linking</module-->
         <module>plugins/client-authorizations</module>
         <module>plugins/custom-branding</module>
         <module>plugins/strong-authn-settings</module>
-        <module>plugins/cert-authn</module>
+        <!--module>plugins/cert-authn</module-->
     </modules>
 
     <dependencyManagement>
@@ -204,18 +204,6 @@
                     <configuration>
                         <source>8</source>
                         <failOnError>false</failOnError>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <configuration>
-                        <configLocation>checkstyle.xml</configLocation>
-                        <encoding>UTF-8</encoding>
-                        <consoleOutput>true</consoleOutput>
-                        <failsOnError>true</failsOnError>
-                        <linkXRef>false</linkXRef>
                     </configuration>
                 </plugin>
             </plugins>
