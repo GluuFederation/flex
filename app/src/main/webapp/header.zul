@@ -47,7 +47,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right f7 shadow-5 br1 mt2 bw0 miw-2r w4" aria-labelledby="dropdownMenu">
                     <li class="pv1 pl2 pr3 bg-white-70">
-                        <a class="link hover-green gray db" href="https://gluu.org/docs/casa/4.2/user-guide/" target="_blank">
+                        <a class="link hover-green gray db" href="https://gluu.org/docs/casa/4.3/user-guide/" target="_blank">
                             <i class="fas fa-question-circle" />&amp;nbsp; ${labels.general.help}
                         </a>
                     </li>
