@@ -2,6 +2,7 @@ import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import LicenseDetailsPage from './components/Configuration/LicenseDetailsPage'
 import UiRoleListPage from './components/Roles/UiRoleListPage'
+import UiPermListPage from './components/Permissions/UiPermListPage'
 import MonthlyActiveUsersPage from './components/MonthlyActiveUsersPage'
 import ScriptListPage from './components/CustomScripts/ScriptListPage'
 import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
@@ -93,7 +94,7 @@ const pluginMetadata = {
       permission: '/config/acrs.readonly',
     },
     {
-      component: UiRoleListPage,
+      component: UiPermListPage,
       path: PLUGIN_BASE_APTH + '/permissions',
       permission: '/config/acrs.readonly',
     },

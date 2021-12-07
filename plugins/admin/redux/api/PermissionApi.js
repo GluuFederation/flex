@@ -5,6 +5,9 @@ export default class PermissionApi {
   getPermissions = () => {
     return new Promise((resolve, reject) => {
       console.log('=============get permissions')
+      this.api.getAdminuiPermissions((error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
     })
   }
   getPermission = (options) => {

@@ -12,7 +12,7 @@ import {
   SET_PERMISSION_ITEM,
 } from './types'
 
-export const getPermisions = (action) => ({
+export const getPermissions = (action) => ({
   type: GET_PERMISSIONS,
   payload: { action },
 })
