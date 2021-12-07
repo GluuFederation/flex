@@ -9,11 +9,7 @@ import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
-import {
-  deletePermission,
-  getPermissions,
-  setCurrentItem,
-} from '../../redux/actions/ApiPermissionActions'
+import { getPermissions } from '../../redux/actions/ApiPermissionActions'
 import {
   hasPermission,
   buildPayload,
@@ -22,7 +18,6 @@ import {
 } from '../../../../app/utils/PermChecker'
 
 function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
-  console.log('==========' + JSON.stringify(apiPerms))
   const { t } = useTranslation()
   const myActions = []
   const options = []
@@ -47,11 +42,11 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   }
 
   if (hasPermission(permissions, SCRIPT_WRITE)) {
-    myActions.push((rowData) => ({
+    myActions.push((rowD) => ({
       icon: 'edit',
       iconProps: {
         color: 'primary',
-        id: 'editRole' + rowData.inum,
+        id: 'editRole' + rowD.inum,
       },
       tooltip: `${t('messages.edit_role')}`,
       onClick: (e, entry) => handleGoToRoleEditPage(entry, false),
@@ -83,8 +78,10 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
               {
                 title: `${t('fields.name')}`,
                 field: 'permission',
-                width: '20%',
-                render: (rowData) => <Badge color="info">{rowData.permission}</Badge>,
+                width: '50%',
+                render: (rowData) => (
+                  <Badge color="info">{rowData.permission}</Badge>
+                ),
               },
               //{ title: `${t('fields.description')}`, field: 'description' },
             ]}
@@ -103,8 +100,8 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
               headerStyle: applicationStyle.tableHeaderStyle,
               actionsColumnIndex: -1,
             }}
-            detailPanel={(rowData) => {
-              return <UiPermDetailPage row={rowData} />
+            detailPanel={(rowD) => {
+              return <UiPermDetailPage row={rowD} />
             }}
           />
         </GluuViewWrapper>

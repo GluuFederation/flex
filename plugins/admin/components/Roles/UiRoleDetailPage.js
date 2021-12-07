@@ -10,7 +10,7 @@ function UiRoleDetailPage({ row }) {
           <Col sm={3}>
             <GluuFormDetailRow
               label="fields.name"
-              value={row.name}
+              value={row.role}
               isBadge={true}
             />
           </Col>

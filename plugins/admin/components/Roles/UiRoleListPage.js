@@ -9,11 +9,7 @@ import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
-import {
-  deleteRole,
-  getRoles,
-  setCurrentItem,
-} from '../../redux/actions/ApiRoleActions'
+import { getRoles } from '../../redux/actions/ApiRoleActions'
 import {
   hasPermission,
   buildPayload,
@@ -82,10 +78,10 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
               {
                 title: `${t('fields.name')}`,
                 field: 'role',
-                width: '20%',
+                width: '40%',
                 render: (rowData) => <Badge color="info">{rowData.role}</Badge>,
               },
-              { title: `${t('fields.description')}`, field: 'description' },
+              //{ title: `${t('fields.description')}`, field: 'description' },
             ]}
             data={apiRoles}
             isLoading={loading || false}
