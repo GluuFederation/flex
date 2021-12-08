@@ -16,7 +16,7 @@ schemes:
  - https
 
 security:
-  - casa_auth: [casa.config]
+  - casa_auth: ['https://jans.io/casa.config']
   
 consumes:
   - application/json

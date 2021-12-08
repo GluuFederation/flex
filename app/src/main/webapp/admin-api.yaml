@@ -341,48 +341,6 @@ paths:
           schema:
             type: string
 
-  /oxd:
-    get:
-      description: Returns configuration details about the underlying OXD server and the registered OIDC 
-        client registered employed for authentication purposes
-      produces:
-        - application/json
-
-      responses:
-        200:
-          description: Successful operation
-          schema:
-            $ref: '#/definitions/OxdConfiguration'
-        500:
-          description: There was a failure executing the operation. Error description in response body
-          schema:
-            type: string
-            
-    put:
-      description: Replaces the current OXD configuration with the one passed in the payload. This will
-        provoke the oxd server referenced in the payload to re-register or update the OIDC client used
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        -
-          name: settings
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/OxdSettings'
-
-      responses:
-        200:
-          description: Successful operation. Client details as well as oxID is returned
-          schema:
-            $ref: '#/definitions/ClientSettings'
-        500:
-          description: There was a failure executing the operation. Error description in response body
-          schema:
-            type: string
-
 definitions:
   PluginDescriptor:
     type: object
