@@ -18,6 +18,15 @@ import ldapSaga from './redux/sagas/LdapSaga'
 import sqlSaga from './redux/sagas/SqlSaga'
 import persistenceTypeSaga from './redux/sagas/PersistenceTypeSaga'
 import smtpSaga from './redux/sagas/SmtpSaga'
+import {
+  CACHE_READ,
+  CACHE_WRITE,
+  COUCHBASE_READ,
+  LDAP_READ,
+  LDAP_WRITE,
+  SQL_READ,
+  SQL_WRITE,
+} from '../../app/utils/PermChecker'
 
 const pluginMetadata = {
   menus: [
@@ -28,7 +37,7 @@ const pluginMetadata = {
         {
           title: 'menus.cache',
           path: '/config/cache',
-          permission: '/config/cache.readonly',
+          permission: CACHE_READ,
         },
         {
           title: 'menus.persistence',
@@ -36,17 +45,17 @@ const pluginMetadata = {
             {
               title: 'menus.couchbase',
               path: '/config/couchbase',
-              permission: '/config/database/couchbase.readonly',
+              permission: COUCHBASE_READ,
             },
             {
               title: 'menus.ldap',
               path: '/config/ldap',
-              permission: '/config/database/ldap.readonly',
+              permission: LDAP_READ,
             },
             {
               title: 'menus.sql',
               path: '/config/sql',
-              permission: '/config/database/sql.readonly',
+              permission: SQL_READ,
             },
           ],
         },
@@ -57,42 +66,42 @@ const pluginMetadata = {
     {
       component: CachePage,
       path: '/config/cache',
-      permission: '/config/cache.readonly',
+      permission: CACHE_READ,
     },
     {
       component: LdapEditPage,
       path: '/config/ldap/edit:configId',
-      permission: '/config/database/ldap.readonly',
+      permission: CACHE_WRITE,
     },
     {
       component: LdapAddPage,
       path: '/config/ldap/new',
-      permission: '/config/database/ldap.readonly',
+      permission: LDAP_WRITE,
     },
     {
       component: LdapListPage,
       path: '/config/ldap',
-      permission: '/config/database/ldap.readonly',
+      permission: LDAP_READ,
     },
     {
       component: SqlEditPage,
       path: '/config/sql/edit:configId',
-      permission: '/config/database/sql.readonly',
+      permission: SQL_WRITE,
     },
     {
       component: SqlAddPage,
       path: '/config/sql/new',
-      permission: '/config/database/sql.readonly',
+      permission: SQL_WRITE,
     },
     {
       component: SqlListPage,
       path: '/config/sql',
-      permission: '/config/database/sql.readonly',
+      permission: SQL_READ,
     },
     {
       component: CouchbasePage,
       path: '/config/couchbase',
-      permission: '/config/database/couchbase.readonly',
+      permission: COUCHBASE_READ,
     },
   ],
   reducers: [
@@ -103,7 +112,14 @@ const pluginMetadata = {
     { name: 'smtpReducer', reducer: smtpReducer },
     { name: 'persistenceTypeReducer', reducer: persistenceTypeReducer },
   ],
-  sagas: [cacheSaga(), couchbaseSaga(), ldapSaga(), smtpSaga(), sqlSaga(), persistenceTypeSaga(),],
+  sagas: [
+    cacheSaga(),
+    couchbaseSaga(),
+    ldapSaga(),
+    smtpSaga(),
+    sqlSaga(),
+    persistenceTypeSaga(),
+  ],
 }
 
 export default pluginMetadata

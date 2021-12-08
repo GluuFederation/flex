@@ -30,7 +30,6 @@ import loggingSaga from './redux/sagas/LoggingSaga'
 import healthSaga from './redux/sagas/HealthSaga'
 import {
   ACR_READ,
-  PROPERTIES_READ,
   CLIENT_READ,
   SCOPE_READ,
   CLIENT_WRITE,
@@ -62,12 +61,12 @@ const pluginMetadata = {
             {
               title: 'menus.properties',
               path: PLUGIN_BASE_APTH + '/config/properties',
-              permission: PROPERTIES_READ,
+              permission: ACR_READ,
             },
             {
               title: 'menus.logging',
               path: PLUGIN_BASE_APTH + '/config/logging',
-              permission: PROPERTIES_READ,
+              permission: ACR_READ,
             },
           ],
         },
@@ -79,7 +78,7 @@ const pluginMetadata = {
         {
           title: 'menus.health',
           path: PLUGIN_BASE_APTH + '/health',
-          permission: PROPERTIES_READ,
+          permission: ACR_READ,
         },
         {
           title: 'menus.scopes',
@@ -123,7 +122,7 @@ const pluginMetadata = {
     {
       component: PropertiesPage,
       path: PLUGIN_BASE_APTH + '/config/properties',
-      permission: PROPERTIES_READ,
+      permission: ACR_READ,
     },
     {
       component: KeysPage,
@@ -133,17 +132,17 @@ const pluginMetadata = {
     {
       component: HealthPage,
       path: PLUGIN_BASE_APTH + '/health',
-      permission: PROPERTIES_READ,
+      permission: ACR_READ,
     },
     {
       component: ReportPage,
       path: PLUGIN_BASE_APTH + '/reports',
-      permission: PROPERTIES_READ,
+      permission: ACR_READ,
     },
     {
       component: DefaultPage,
       path: PLUGIN_BASE_APTH + '/config/defaults',
-      permission: PROPERTIES_READ,
+      permission: ACR_READ,
     },
   ],
   reducers: [

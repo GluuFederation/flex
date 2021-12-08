@@ -69,8 +69,6 @@ export const STAT_READ = BASE_URL + '/config/stats.readonly'
 export const STAT_JANS_READ = 'jans_stat'
 
 export const hasPermission = (scopes, scope) => {
-  console.log('============1 ' + JSON.stringify(scopes))
-  console.log('============2 ' + JSON.stringify(scope))
   if (scopes) {
     return scopes.includes(scope, 0)
   }
