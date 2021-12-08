@@ -5,6 +5,9 @@ export default class RoleApi {
   getRoles = () => {
     return new Promise((resolve, reject) => {
       console.log('=============get roles')
+      this.api.getAdminuiRoles((error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
     })
   }
   getRole = (options) => {

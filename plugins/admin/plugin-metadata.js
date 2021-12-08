@@ -2,6 +2,7 @@ import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import LicenseDetailsPage from './components/Configuration/LicenseDetailsPage'
 import UiRoleListPage from './components/Roles/UiRoleListPage'
+import UiPermListPage from './components/Permissions/UiPermListPage'
 import MonthlyActiveUsersPage from './components/MonthlyActiveUsersPage'
 import ScriptListPage from './components/CustomScripts/ScriptListPage'
 import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
@@ -11,12 +12,21 @@ import SettingsPage from './components/Settings/SettingsPage'
 import mauSaga from './redux/sagas/MauSaga'
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
+import apiRoleSaga from './redux/sagas/ApiRoleSaga'
+import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 
 import mauReducer from './redux/reducers/MauReducer'
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import apiRoleReducer from './redux/reducers/ApiRoleReducer'
 import apiPermissionReducer from './redux/reducers/ApiPermissionReducer'
 import licenseDetailsReducer from './redux/reducers/LicenseDetailsReducer'
+import {
+  ACR_READ,
+  ROLE_READ,
+  PERMISSION_READ,
+  SCRIPT_READ,
+  SCRIPT_WRITE,
+} from '../../app/utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/adm'
 
@@ -29,12 +39,12 @@ const pluginMetadata = {
         {
           title: 'menus.licenseDetails',
           path: PLUGIN_BASE_APTH + '/licenseDetails',
-          permission: '/config/acrs.readonly',
+          permission: ACR_READ,
         },
         {
           title: 'menus.mau',
           path: PLUGIN_BASE_APTH + '/mau',
-          permission: '/config/acrs.readonly',
+          permission: ACR_READ,
         },
         {
           title: 'menus.config-api',
@@ -42,29 +52,29 @@ const pluginMetadata = {
             {
               title: 'menus.api.roles',
               path: PLUGIN_BASE_APTH + '/roles',
-              permission: '/config/acrs.readonly',
+              permission: ACR_READ,
             },
             {
               title: 'menus.api.permissions',
               path: PLUGIN_BASE_APTH + '/permissions',
-              permission: '/config/acrs.readonly',
+              permission: ACR_READ,
             },
             {
               title: 'menus.api.mapping',
               path: PLUGIN_BASE_APTH + '/mapping',
-              permission: '/config/acrs.readonly',
+              permission: ACR_READ,
             },
           ],
         },
         {
           title: 'menus.scripts',
           path: PLUGIN_BASE_APTH + '/scripts',
-          permission: '/config/scripts.readonly',
+          permission: SCRIPT_READ,
         },
         {
           title: 'menus.settings',
           path: PLUGIN_BASE_APTH + '/settings',
-          permission: '/config/acrs.readonly',
+          permission: ACR_READ,
         },
       ],
     },
@@ -73,27 +83,27 @@ const pluginMetadata = {
     {
       component: HealthPage,
       path: PLUGIN_BASE_APTH + '/health',
-      permission: '/config/acrs.readonly',
+      permission: ACR_READ,
     },
     {
       component: ReportPage,
       path: PLUGIN_BASE_APTH + '/reports',
-      permission: '/config/acrs.readonly',
+      permission: ACR_READ,
     },
     {
       component: MonthlyActiveUsersPage,
       path: PLUGIN_BASE_APTH + '/mau',
-      permission: '/config/acrs.readonly',
+      permission: ACR_READ,
     },
     {
       component: UiRoleListPage,
       path: PLUGIN_BASE_APTH + '/roles',
-      permission: '/config/acrs.readonly',
+      permission: ROLE_READ,
     },
     {
-      component: UiRoleListPage,
+      component: UiPermListPage,
       path: PLUGIN_BASE_APTH + '/permissions',
-      permission: '/config/acrs.readonly',
+      permission: PERMISSION_READ,
     },
     {
       component: UiRoleListPage,
@@ -103,27 +113,27 @@ const pluginMetadata = {
     {
       component: ScriptListPage,
       path: PLUGIN_BASE_APTH + '/scripts',
-      permission: '/config/scripts.readonly',
+      permission: SCRIPT_READ,
     },
     {
       component: CustomScriptAddPage,
       path: PLUGIN_BASE_APTH + '/script/new',
-      permission: '/config/scripts.write',
+      permission: SCRIPT_WRITE,
     },
     {
       component: CustomScriptEditPage,
       path: PLUGIN_BASE_APTH + '/script/edit:id',
-      permission: '/config/scripts.write',
+      permission: SCRIPT_WRITE,
     },
     {
       component: SettingsPage,
       path: PLUGIN_BASE_APTH + '/settings',
-      permission: '/config/acrs.readonly',
+      permission: ACR_READ,
     },
     {
       component: LicenseDetailsPage,
       path: PLUGIN_BASE_APTH + '/licenseDetails',
-      permission: '/config/acrs.readonly',
+      permission: ACR_READ,
     },
   ],
   reducers: [
@@ -133,7 +143,13 @@ const pluginMetadata = {
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'licenseDetailsReducer', reducer: licenseDetailsReducer },
   ],
-  sagas: [mauSaga(), scriptSaga(), licenseDetailsSaga()],
+  sagas: [
+    mauSaga(),
+    scriptSaga(),
+    licenseDetailsSaga(),
+    apiRoleSaga(),
+    apiPermissionSaga(),
+  ],
 }
 
 export default pluginMetadata

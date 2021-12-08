@@ -13,11 +13,10 @@ import {
   RESET,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
-import roles from '../../components/Roles/roles'
 
 const INIT_STATE = {
-  items: roles,
-  loading: true,
+  items: [],
+  loading: false,
 }
 const reducerName = 'apiRoleReducer'
 
