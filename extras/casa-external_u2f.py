@@ -2,9 +2,8 @@ from io.jans.model.custom.script.type.auth import PersonAuthenticationType
 from io.jans.as.client.fido.u2f import FidoU2fClientFactory
 from io.jans.as.model.config import Constants
 from io.jans.as.server.security import Identity
-from io.jans.as.server.service import AuthenticationService, SessionIdService
-from io.jans.as.server.service import UserService
-from io.jans.as.service.fido.u2f import DeviceRegistrationService
+from io.jans.as.server.service import AuthenticationService, SessionIdService, UserService
+from io.jans.as.server.service.fido.u2f import DeviceRegistrationService
 from io.jans.as.server.util import ServerUtil
 from io.jans.service.cdi.util import CdiUtil
 from io.jans.util import StringHelper
@@ -169,7 +168,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
                 try:
                     authenticationRequestService = FidoU2fClientFactory.instance().createAuthenticationRequestService(self.metaDataConfiguration)
-                    authenticationRequest = authenticationRequestService.startAuthentication(user.getUserId(), None, u2f_application_id, session_id)
+                    authenticationRequest = authenticationRequestService.startAuthentication(user.getUserId(), None, u2f_application_id, session_id.getId())
                 except ClientErrorException, ex:
                     if (ex.getResponse().getResponseStatus() != Response.Status.NOT_FOUND):
                         print "U2F. Prepare for step 2. Failed to start authentication workflow. Exception:", sys.exc_info()[1]
@@ -177,7 +176,7 @@ class PersonAuthentication(PersonAuthenticationType):
             else:
                 print "U2F. Prepare for step 2. Call FIDO U2F in order to start registration workflow"
                 registrationRequestService = FidoU2fClientFactory.instance().createRegistrationRequestService(self.metaDataConfiguration)
-                registrationRequest = registrationRequestService.startRegistration(user.getUserId(), u2f_application_id, session_id)
+                registrationRequest = registrationRequestService.startRegistration(user.getUserId(), u2f_application_id, session_id.getId())
 
             identity.setWorkingParameter("fido_u2f_authentication_request", ServerUtil.asJson(authenticationRequest))
             identity.setWorkingParameter("fido_u2f_registration_request", ServerUtil.asJson(registrationRequest))

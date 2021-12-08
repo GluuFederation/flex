@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -84,16 +85,18 @@ public class Fido2Service extends BaseService {
 
             for (Fido2RegistrationEntry entry : list) {
             	FidoDevice device = null;
-            	if(entry.getRegistrationData().getAttenstationRequest().contains("platform") ) {
-            		 device = new PlatformAuthenticator();
+            	if (Optional.ofNullable(entry.getRegistrationData().getAttenstationRequest())
+            	       .map(ar -> ar.contains("platform")).orElse(false)) {
+            		device = new PlatformAuthenticator();
             	} else {
             		device = new SecurityKey();
             	}
             	device.setId(entry.getId());
             	device.setCreationDate(entry.getCreationDate());
             	device.setNickName(entry.getDisplayName());
-            	logger.trace("device name - "+device.getNickName());
                 devices.add(device);
+                
+            	logger.trace("device name - "+device.getNickName());
             }
             return devices.stream().sorted().collect(Collectors.toList());
         } catch (Exception e) {
