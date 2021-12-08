@@ -47,6 +47,10 @@
                     <groupId>org.jboss.resteasy</groupId>
                     <artifactId>resteasy-jaxb-provider</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.module</groupId>
+                    <artifactId>jackson-module-jaxb-annotations</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
