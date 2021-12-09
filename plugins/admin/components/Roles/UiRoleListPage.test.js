@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import UiRoleListPage from './UiRoleListPage'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
