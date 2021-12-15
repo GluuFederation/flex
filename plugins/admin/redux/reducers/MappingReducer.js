@@ -5,9 +5,9 @@ const INIT_STATE = {
   items: [],
   loading: false,
 }
-const reducerName = 'apiMappingReducer'
+const reducerName = 'mappingReducer'
 
-export default function apiMappingReducer(state = INIT_STATE, action) {
+export default function mappingReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_MAPPING:
       console.log("==================>")
@@ -51,4 +51,4 @@ export default function apiMappingReducer(state = INIT_STATE, action) {
     }
   }
 }
-reducerRegistry.register(reducerName, apiMappingReducer)
+reducerRegistry.register(reducerName, mappingReducer)

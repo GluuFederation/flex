@@ -1,5 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { getMappingResponse } from '../actions/ApiRoleMappingActions'
+import { getMappingResponse } from '../actions/MappingActions'
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
@@ -8,7 +8,7 @@ import {
   addAdditionalData,
 } from '../../../../app/utils/TokenController'
 import { GET_MAPPING } from '../actions/types'
-import RoleMappingApi from '../api/RoleMappingApi'
+import MappingApi from '../api/MappingApi'
 import { getClient } from '../../../../app/redux/api/base'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
@@ -20,15 +20,15 @@ function* newFunction() {
   const api = new JansConfigApi.AdminUIRolePermissionsMappingApi(
     getClient(JansConfigApi, token, issuer),
   )
-  return new RoleMappingApi(api)
+  return new MappingApi(api)
 }
 
-export function* getMapping({ payload }) {
+export function* fetchMapping({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, API_MAPPING, payload)
-    const roleApi = yield* newFunction()
-    const data = yield call(roleApi.getRoles)
+    const mappingApi = yield* newFunction()
+    const data = yield call(mappingApi.getMappings)
     yield put(getMappingResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -41,8 +41,7 @@ export function* getMapping({ payload }) {
 }
 
 export function* watchGetMapping() {
-  console.log("=========called")
-  yield takeLatest(GET_MAPPING, getMapping)
+  yield takeLatest(GET_MAPPING, fetchMapping)
 }
 
 export default function* rootSaga() {
