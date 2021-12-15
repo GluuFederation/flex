@@ -1,4 +1,4 @@
-export default class RoleMappingApi {
+export default class MappingApi {
   constructor(api) {
     this.api = api
   }
