@@ -7,11 +7,12 @@ import ClientAddPage from './components/Clients/ClientAddPage'
 import ClientEditPage from './components/Clients/ClientEditPage'
 
 import PropertiesPage from './components/Configuration/ConfigPage'
+import KeysPage from './components/Configuration/Keys/KeysPage'
+import DefaultPage from './components/Configuration/Defaults/DefaultConfigPage'
+import LoggingPage from './components/Configuration/Defaults/LoggingPage'
 
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
-import KeysPage from './components/Configuration/Keys/KeysPage'
-import DefaultPage from './components/Configuration/Defaults/DefaultConfigPage'
 
 import oidcReducer from './redux/reducers/OIDCReducer'
 import scopeReducer from './redux/reducers/ScopeReducer'
@@ -130,6 +131,16 @@ const pluginMetadata = {
       permission: JWKS_READ,
     },
     {
+      component: DefaultPage,
+      path: PLUGIN_BASE_APTH + '/config/defaults',
+      permission: ACR_READ,
+    },
+    {
+      component: LoggingPage,
+      path: PLUGIN_BASE_APTH + '/config/logging',
+      permission: ACR_READ,
+    },
+    {
       component: HealthPage,
       path: PLUGIN_BASE_APTH + '/health',
       permission: ACR_READ,
@@ -137,11 +148,6 @@ const pluginMetadata = {
     {
       component: ReportPage,
       path: PLUGIN_BASE_APTH + '/reports',
-      permission: ACR_READ,
-    },
-    {
-      component: DefaultPage,
-      path: PLUGIN_BASE_APTH + '/config/defaults',
       permission: ACR_READ,
     },
   ],

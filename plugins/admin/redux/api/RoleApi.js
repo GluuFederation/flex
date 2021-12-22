@@ -24,6 +24,9 @@ export default class RoleApi {
   editRole = (data) => {
     return new Promise((resolve, reject) => {
       console.log('=============edit role ' + data)
+      this.api.getAdminuiRoles((error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
     })
   }
 

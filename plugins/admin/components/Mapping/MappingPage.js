@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Card, CardBody, FormGroup } from '../../../../app/components'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import MappingItem from './MappingItem'
+import PropertyBuilder from './JsonPropertyBuilder'
 import { getMapping } from '../../redux/actions/MappingActions'
+import config from './apiconfig'
 import {
   hasPermission,
   buildPayload,
@@ -14,12 +15,22 @@ import {
 
 function MappingPage({ mapping, permissions, dispatch }) {
   const { t } = useTranslation()
+  const lSize = 6
   const options = []
+  const [patches, setPatches] = useState([])
   const userAction = {}
   useEffect(() => {
     buildPayload(userAction, 'ROLES_MAPPING', options)
     dispatch(getMapping(userAction))
   }, [])
+
+  const patchHandler = (patch) => {
+    setPatches((existingPatches) => [...existingPatches, patch])
+    const newPatches = patches
+    newPatches.push(patch)
+    setPatches(newPatches)
+  }
+
   return (
     <Card>
       <GluuRibbon title={t('titles.mapping')} fromLeft />
@@ -28,8 +39,14 @@ function MappingPage({ mapping, permissions, dispatch }) {
         <FormGroup row />
         <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
-          {mapping.map((candidate, key) => (
-            <MappingItem key={key} candidate={candidate} />
+          {Object.keys(config.rolePermissionMapping).map((propKey, idx) => (
+            <PropertyBuilder
+              key={idx}
+              propKey={propKey}
+              propValue={config.rolePermissionMapping[propKey]}
+              lSize={lSize}
+              handler={patchHandler}
+            />
           ))}
         </GluuViewWrapper>
       </CardBody>

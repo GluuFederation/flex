@@ -22,7 +22,6 @@ function ItemRow({ key, candidate, permission }) {
           </Button>
         </Col>
       </Row>
-      <FormGroup row />
     </div>
   )
 }
