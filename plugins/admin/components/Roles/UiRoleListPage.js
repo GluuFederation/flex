@@ -26,7 +26,6 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const myActions = []
   const options = []
   const userAction = {}
-  const [adding, setAdding] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
   useEffect(() => {
     doFetchList()
@@ -59,7 +58,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
                 title: `${t('fields.name')}`,
                 field: 'role',
                 width: '40%',
-                editable: adding,
+                editable: false,
                 render: (rowData) => <Badge color="info">{rowData.role}</Badge>,
               },
               { title: `${t('fields.description')}`, field: 'description' },
