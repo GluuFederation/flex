@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import MaterialTable from 'material-table'
 import { Paper } from '@material-ui/core'
 import UiRoleDetailPage from './UiRoleDetailPage'
+import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
 import { Card, CardBody, FormGroup } from '../../../../app/components'
@@ -11,6 +12,7 @@ import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import {
   getRoles,
+  addRole,
   editRole,
   deleteRole,
 } from '../../redux/actions/ApiRoleActions'
@@ -23,8 +25,11 @@ import {
 
 function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const { t } = useTranslation()
+  const [modal, setModal] = useState(false)
+  const toggle = () => setModal(!modal)
   const myActions = []
   const options = []
+  const item = {}
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
   useEffect(() => {
@@ -41,7 +46,19 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
     })
   }
 
-  function handleAddNewRole() {}
+  function handleAddNewRole() {
+    toggle()
+  }
+  function doFetchList() {
+    buildPayload(userAction, 'ROLES', options)
+    dispatch(getRoles(userAction))
+  }
+  function onAddConfirmed(roleData) {
+    buildPayload(userAction, 'message', roleData)
+    dispatch(addRole(userAction))
+    toggle()
+    doFetchList()
+  }
   return (
     <Card>
       <GluuRibbon title={t('titles.roles')} fromLeft />
@@ -99,14 +116,14 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
             }}
           />
         </GluuViewWrapper>
+        <RoleAddDialogForm
+          handler={toggle}
+          modal={modal}
+          onAccept={onAddConfirmed}
+        />
       </CardBody>
     </Card>
   )
-
-  function doFetchList() {
-    buildPayload(userAction, 'ROLES', options)
-    dispatch(getRoles(userAction))
-  }
 }
 
 const mapStateToProps = (state) => {

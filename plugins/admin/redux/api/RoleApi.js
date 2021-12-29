@@ -11,9 +11,10 @@ export default class RoleApi {
   }
 
   addRole = (data) => {
+    const options = {}
+    options['adminRole'] = data
     return new Promise((resolve, reject) => {
-      console.log('============= add role ' + data)
-      this.api.addAdminuiRole(data, (error, data) => {
+      this.api.addAdminuiRole(options, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
       })
     })
