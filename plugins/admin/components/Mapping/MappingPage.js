@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { Card, CardBody, FormGroup } from '../../../../app/components'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import MappingItem from './MappingItem'
 import { getMapping } from '../../redux/actions/MappingActions'
+import MappingItem from './MappingItem'
 import {
   hasPermission,
   buildPayload,
@@ -20,6 +20,7 @@ function MappingPage({ mapping, permissions, dispatch }) {
     buildPayload(userAction, 'ROLES_MAPPING', options)
     dispatch(getMapping(userAction))
   }, [])
+
   return (
     <Card>
       <GluuRibbon title={t('titles.mapping')} fromLeft />
@@ -28,8 +29,8 @@ function MappingPage({ mapping, permissions, dispatch }) {
         <FormGroup row />
         <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
-          {mapping.map((candidate, key) => (
-            <MappingItem key={key} candidate={candidate} />
+          {mapping.map((candidate, idx) => (
+            <MappingItem key={idx} candidate={candidate} />
           ))}
         </GluuViewWrapper>
       </CardBody>
