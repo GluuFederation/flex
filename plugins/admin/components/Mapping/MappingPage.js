@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Card, CardBody, FormGroup } from '../../../../app/components'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import PropertyBuilder from './JsonPropertyBuilder'
 import { getMapping } from '../../redux/actions/MappingActions'
 import config from './apiconfig'
 import MappingItem from './MappingItem'
@@ -16,7 +15,6 @@ import {
 
 function MappingPage({ mapping, permissions, dispatch }) {
   const { t } = useTranslation()
-  const lSize = 6
   const options = []
   const [patches, setPatches] = useState([])
   const [mappings, setMappings] = useState(
