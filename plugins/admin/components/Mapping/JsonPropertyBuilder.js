@@ -127,7 +127,8 @@ function JsonPropertyBuilder({
     return (
       <Accordion className="mb-2 b-primary" initialOpen>
         <Accordion.Header className="text-primary">
-          {propKey.toUpperCase()}{' '}
+          {propKey.toUpperCase()}
+          {' Gasmyr'}
         </Accordion.Header>
         <Accordion.Body>
           {Object.keys(propValue).map((item, idx) => (
@@ -151,7 +152,9 @@ function JsonPropertyBuilder({
         {show && (
           <Accordion className="mb-2 b-primary" initialOpen>
             <Accordion.Header className="text-primary">
-              {propKey.toUpperCase().length > 10 ? propKey.toUpperCase() : ''}
+              {propKey.toUpperCase().length > 5
+                ? propKey.toUpperCase()
+                : ''}
             </Accordion.Header>
             <Accordion.Body>
               {parentIsArray && (

@@ -7,6 +7,7 @@ import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { getMapping } from '../../redux/actions/MappingActions'
 import config from './apiconfig'
+import MappingItem from './MappingItem'
 import {
   hasPermission,
   buildPayload,
@@ -18,6 +19,9 @@ function MappingPage({ mapping, permissions, dispatch }) {
   const lSize = 6
   const options = []
   const [patches, setPatches] = useState([])
+  const [mappings, setMappings] = useState(
+    config['rolePermissionMapping'] || [],
+  )
   const userAction = {}
   useEffect(() => {
     buildPayload(userAction, 'ROLES_MAPPING', options)
@@ -39,13 +43,10 @@ function MappingPage({ mapping, permissions, dispatch }) {
         <FormGroup row />
         <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
-          {Object.keys(config.rolePermissionMapping).map((propKey, idx) => (
-            <PropertyBuilder
+          {mappings.map((candidate, idx) => (
+            <MappingItem
               key={idx}
-              propKey={propKey}
-              propValue={config.rolePermissionMapping[propKey]}
-              lSize={lSize}
-              handler={patchHandler}
+              candidate={candidate}
             />
           ))}
         </GluuViewWrapper>
