@@ -34,6 +34,7 @@ module.exports = {
     publicPath: BASE_PATH,
   },
   resolve: {
+    fallback: { "querystring": false },
     modules: ['node_modules', config.srcDir],
     alias: {
       path: require.resolve('path-browserify'),
