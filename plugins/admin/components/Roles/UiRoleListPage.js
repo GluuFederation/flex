@@ -29,7 +29,6 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const toggle = () => setModal(!modal)
   const myActions = []
   const options = []
-  const item = {}
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
   useEffect(() => {
@@ -103,15 +102,15 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Edit role', newData)
                   dispatch(editRole(userAction))
-                  doFetchList()
                   resolve()
+                  doFetchList()
                 }),
               onRowDelete: (oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'remove role', oldData)
                   dispatch(deleteRole(userAction))
-                  doFetchList()
                   resolve()
+                  doFetchList()
                 }),
             }}
           />
