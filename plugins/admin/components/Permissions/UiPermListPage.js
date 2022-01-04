@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import MaterialTable from 'material-table'
 import { Paper } from '@material-ui/core'
 import UiPermDetailPage from './UiPermDetailPage'
@@ -9,7 +9,12 @@ import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
-import { getPermissions } from '../../redux/actions/ApiPermissionActions'
+import {
+  getPermissions,
+  deletePermission,
+  editPermission,
+  addPermission,
+} from '../../redux/actions/ApiPermissionActions'
 import {
   hasPermission,
   buildPayload,
@@ -19,50 +24,39 @@ import {
 
 function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   const { t } = useTranslation()
+  const [modal, setModal] = useState(false)
+  const toggle = () => setModal(!modal)
   const myActions = []
   const options = []
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
   useEffect(() => {
-    buildPayload(userAction, 'PERMISSIONS', options)
-    dispatch(getPermissions(userAction))
+    doFetchList()
   }, [])
 
-  if (hasPermission(permissions, PERMISSION_READ)) {
-    myActions.push((aRow) => ({
-      icon: 'visibility',
-      iconProps: {
-        color: 'primary',
-        id: 'viewRole' + aRow.inum,
-      },
-      tooltip: `${t('messages.view_role_details')}`,
-      onClick: (e, v) => handleGoToPermissionEditPage(v, true),
-      disabled: false,
-    }))
-  }
-
-  if (hasPermission(permissions, PERMISSION_WRITE)) {
-    myActions.push((rowD) => ({
-      icon: 'edit',
-      iconProps: {
-        color: 'primary',
-        id: 'editRole' + rowD.inum,
-      },
-      tooltip: `${t('messages.edit_role')}`,
-      onClick: (e, entry) => handleGoToPermissionEditPage(entry, false),
-      disabled: false,
-    }))
-  }
   if (hasPermission(permissions, PERMISSION_WRITE)) {
     myActions.push({
       icon: 'add',
-      tooltip: `${t('messages.add_role')}`,
+      tooltip: `${t('messages.add_permission')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => handleGoToPermissionAddPage(),
+      onClick: () => handleAddNewPermission(),
     })
   }
 
+  function handleAddNewPermission() {
+    toggle()
+  }
+  function doFetchList() {
+    buildPayload(userAction, 'PERMISSIONS', options)
+    dispatch(getPermissions(userAction))
+  }
+  function onAddConfirmed(roleData) {
+    buildPayload(userAction, 'message', roleData)
+    dispatch(addPermission(userAction))
+    toggle()
+    doFetchList()
+  }
   return (
     <Card>
       <GluuRibbon title={t('titles.roles')} fromLeft />
@@ -78,12 +72,13 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
               {
                 title: `${t('fields.name')}`,
                 field: 'permission',
+                editable: false,
                 width: '50%',
                 render: (rowData) => (
                   <Badge color="info">{rowData.permission}</Badge>
                 ),
               },
-              //{ title: `${t('fields.description')}`, field: 'description' },
+              { title: `${t('fields.description')}`, field: 'description' },
             ]}
             data={apiPerms}
             isLoading={loading || false}
@@ -102,6 +97,22 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
             }}
             detailPanel={(rowD) => {
               return <UiPermDetailPage row={rowD} />
+            }}
+            editable={{
+              onRowUpdate: (newData, oldData) =>
+                new Promise((resolve, reject) => {
+                  buildPayload(userAction, 'Edit permision', newData)
+                  dispatch(editPermission(userAction))
+                  resolve()
+                  doFetchList()
+                }),
+              onRowDelete: (oldData) =>
+                new Promise((resolve, reject) => {
+                  buildPayload(userAction, 'Remove permission', oldData)
+                  dispatch(deletePermission(userAction))
+                  resolve()
+                  doFetchList()
+                }),
             }}
           />
         </GluuViewWrapper>
