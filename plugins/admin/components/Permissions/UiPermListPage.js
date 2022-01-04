@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import PermissionAddDialogForm from './PermissionAddDialogForm'
 import {
   getPermissions,
   deletePermission,
@@ -116,6 +117,11 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
             }}
           />
         </GluuViewWrapper>
+        <PermissionAddDialogForm
+          handler={toggle}
+          modal={modal}
+          onAccept={onAddConfirmed}
+        />
       </CardBody>
     </Card>
   )
