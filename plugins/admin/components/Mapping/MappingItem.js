@@ -1,14 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Row,
   Badge,
   Col,
+  Button,
   FormGroup,
   Accordion,
 } from '../../../../app/components'
-import ItemRow from './ItemRow'
 
 function MappingItem({ candidate, key }) {
+  const [item, setItem] = useState(candidate || {})
+  function doRemove(perm) {
+    const candidate = item
+    candidate['permissions'] = ['one', 'two']
+    setItem(candidate)
+  }
   return (
     <div key={key}>
       <FormGroup row />
@@ -17,19 +23,32 @@ function MappingItem({ candidate, key }) {
           <Accordion className="mb-12">
             <Accordion.Header className="text-info">
               <Accordion.Indicator className="mr-2" />
-              {candidate.role}
+              {item.role}
               <Badge
                 color="info"
                 style={{
                   float: 'right',
                 }}
               >
-                {candidate.permissions.length}
+                {item.permissions.length}
               </Badge>
             </Accordion.Header>
             <Accordion.Body>
-              {candidate.permissions.map((perm, id) => (
-                <ItemRow key={id} candiadate={candidate} permission={perm}></ItemRow>
+              {item.permissions.map((permission, id) => (
+                <Row key={id}>
+                  <Col sm={10}>{permission}</Col>
+                  <Col sm={2}>
+                    <Button
+                      type="button"
+                      color="danger"
+                      onClick={() => doRemove(permission)}
+                      style={{ margin: '1px', float: 'right', padding: '0px' }}
+                    >
+                      <i className="fa fa-trash mr-2"></i>
+                      Remove
+                    </Button>
+                  </Col>
+                </Row>
               ))}
             </Accordion.Body>
           </Accordion>
