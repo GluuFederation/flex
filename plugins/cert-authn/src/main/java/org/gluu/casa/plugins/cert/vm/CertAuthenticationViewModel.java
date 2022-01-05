@@ -120,7 +120,7 @@ public class CertAuthenticationViewModel {
         userCertMatch = valid ? certService.processMatch(userCert, userId, inCasaSession) : null;
 
         if (inCasaSession) {
-        	if (userCertMatch.equals(UserCertificateMatch.SUCCESS)) {
+        	if (userCertMatch != null && userCertMatch.equals(UserCertificateMatch.SUCCESS)) {
         		Utils.managedBean(SndFactorAuthenticationUtils.class).notifyEnrollment(user, CertAuthenticationExtension.ACR);
         	}
         } else {
