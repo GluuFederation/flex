@@ -5,8 +5,9 @@ import {
   UPDATE_LICENSE_DETAILS_RESPONSE,
 } from './types'
 
-export const getLicenseDetails = () => ({
+export const getLicenseDetails = (action) => ({
   type: GET_LICENSE_DETAILS,
+  payload: { action },
 })
 
 export const getLicenseDetailsResponse = (data) => ({
@@ -14,9 +15,9 @@ export const getLicenseDetailsResponse = (data) => ({
   payload: { data },
 })
 
-export const updateLicenseDetails = (data) => ({
+export const updateLicenseDetails = (action) => ({
   type: UPDATE_LICENSE_DETAILS,
-  payload: { data },
+  payload: { action },
 })
 
 export const updateLicenseDetailsResponse = (data) => ({

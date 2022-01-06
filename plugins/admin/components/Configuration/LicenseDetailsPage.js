@@ -17,17 +17,29 @@ import {
   Row,
   Col,
 } from '../../../../app/components'
+import {
+  buildPayload,
+} from '../../../../app/utils/PermChecker'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import Alert from '@material-ui/lab/Alert'
+import {
+  FETCHING_LICENSE_DETAILS,
+} from '../../common/Constants'
 
 function LicenseDetailsPage({ item, loading, dispatch }) {
+  const userAction = {}
+  const options = {}
+
   useEffect(() => {
-    dispatch(getLicenseDetails())
+    buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
+    dispatch(getLicenseDetails({}))
   }, [])
+
 
   function handleSubmit(data) {
     if (data) {
-      dispatch(updateLicenseDetails(data))
+      buildPayload(userAction, 'message', data)
+      dispatch(updateLicenseDetails(userAction))
     }
   }
 

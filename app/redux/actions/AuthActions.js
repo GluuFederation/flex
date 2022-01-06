@@ -13,8 +13,9 @@ import {
   GET_USER_LOCATION,
 } from './types'
 
-export const getOAuth2Config = () => ({
+export const getOAuth2Config = (token) => ({
   type: GET_OAUTH2_CONFIG,
+  payload: { token },
 })
 
 export const getOAuth2ConfigResponse = (config) => ({
