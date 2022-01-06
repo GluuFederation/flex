@@ -16,7 +16,6 @@ export default class LicenseDetailsApi {
     options['licenseRequest'] = data
     return new Promise((resolve, reject) => {
       this.api.editAdminuiLicense(options, (error, options) => {
-        alert(JSON.stringify(data))
         this.handleResponse(error, reject, resolve, data)
       })
     })

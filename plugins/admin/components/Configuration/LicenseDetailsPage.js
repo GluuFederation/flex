@@ -53,7 +53,7 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
             <FormGroup row />
           </CardTitle>
           <GluuLoader blocking={loading}>
-            {item.licenseEnable ? (
+            {item.licenseEnabled ? (
               <>
                 <Container style={{ backgroundColor: '#F5F5F5' }}>
                   <Row>
