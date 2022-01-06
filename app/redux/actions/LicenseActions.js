@@ -5,8 +5,9 @@ import {
     ACTIVATE_LICENSE_RESPONSE,
   } from './types'
   
-  export const checkLicensePresent = () => ({
+  export const checkLicensePresent = (token) => ({
     type: CHECK_FOR_VALID_LICENSE,
+    payload: { token },
   })
   
   export const checkLicensePresentResponse = (isLicenseValid) => ({
@@ -14,9 +15,9 @@ import {
     payload: { isLicenseValid },
   })
 
-  export const activateLicense = (licenseKey) => ({
+  export const activateLicense = (licenseKey, token) => ({
     type: ACTIVATE_LICENSE,
-    payload: { licenseKey },
+    payload: { licenseKey, token },
   })
 
   export const activateLicenseResponse = (isLicenseValid) => ({

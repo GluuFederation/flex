@@ -16,6 +16,9 @@ export const ROLE_READ = 'https://jans.io/adminui/user/role.read'
 export const ROLE_WRITE = 'https://jans.io/adminui/user/role.write'
 export const ROLE_DELETE = 'https://jans.io/adminui/user/role.delete'
 
+export const LICENSE_DETAILS_READ = BASE_URL + '/config/adminui/license.readonly'
+export const LICENSE_DETAILS_WRITE = BASE_URL + '/config/adminui/license.write'
+
 export const PERMISSION_READ = 'https://jans.io/adminui/user/permission.read'
 export const PERMISSION_WRITE = 'https://jans.io/adminui/user/permission.write'
 export const PERMISSION_DELETE =

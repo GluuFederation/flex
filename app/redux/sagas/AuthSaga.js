@@ -20,11 +20,18 @@ import {
   fetchUserInformation,
   fetchApiAccessToken,
   getUserIpAndLocation,
+  fetchApiTokenWithDefaultScopes,
 } from '../api/backend-api'
+
+function* getApiTokenWithDefaultScopes() {
+  const response = yield call(fetchApiTokenWithDefaultScopes)
+  return response.access_token
+}
 
 function* getOAuth2ConfigWorker() {
   try {
-    const response = yield call(fetchServerConfiguration)
+    const token = yield* getApiTokenWithDefaultScopes();
+    const response = yield call(fetchServerConfiguration, token)
     if (response) {
       yield put(getOAuth2ConfigResponse(response))
       return
@@ -52,6 +59,12 @@ function* getAPIAccessTokenWorker({ payload }) {
       const response = yield call(fetchApiAccessToken, payload.jwt)
       if (response) {
         yield put(getAPIAccessTokenResponse(response))
+        return
+      }
+    } else {
+      const token = yield* getApiTokenWithDefaultScopes()
+      if (token) {
+        yield put(getAPIAccessTokenWithDefaultScopesResponse(token))
         return
       }
     }
