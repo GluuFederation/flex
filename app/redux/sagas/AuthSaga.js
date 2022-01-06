@@ -61,12 +61,6 @@ function* getAPIAccessTokenWorker({ payload }) {
         yield put(getAPIAccessTokenResponse(response))
         return
       }
-    } else {
-      const token = yield* getApiTokenWithDefaultScopes()
-      if (token) {
-        yield put(getAPIAccessTokenWithDefaultScopesResponse(token))
-        return
-      }
     }
   } catch (error) {
     console.log('Problems getting API Access Token.', error)
