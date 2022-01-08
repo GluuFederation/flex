@@ -270,7 +270,6 @@ public class PersistenceService implements IPersistenceService {
 
     public DocumentStoreConfiguration getDocumentStoreConfiguration() {
         return null;
-        //TODO: remove method
         //return documentStoreConfiguration;
     }
 

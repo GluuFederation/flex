@@ -26,7 +26,7 @@ public class ReloginInitiator implements Initiator {
             logger.info("Forcing re-login");
             List<String> acrs = Collections.singletonList(ConfigurationHandler.DEFAULT_ACR);
             Pair<String, String> pair = Utils.managedBean(OIDCFlowService.class).getAuthnRequestUrl(acrs, "login");
-            //TODO: process null response
+
             Utils.managedBean(AuthFlowContext.class).setState(pair.getY());
             WebUtils.execRedirect(pair.getX());
         } catch (Exception e) {

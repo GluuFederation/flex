@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -193,7 +194,10 @@ public class OIDCFlowService {
             if (!userInfoResponse.indicatesSuccess()) {
                 error = userInfoResponse.toErrorResponse().getErrorObject();                    
             } else {
-                UserInfo userInfo = userInfoResponse.toSuccessResponse().getUserInfo();
+                
+                UserInfoSuccessResponse successResponse = userInfoResponse.toSuccessResponse();
+                UserInfo userInfo = Optional.ofNullable(successResponse.getUserInfo()).orElse(successResponse.getUserInfoJWT());
+                
                 JSONObject jsonObj = userInfo.toJSONObject();        
                 claims = jsonObj.entrySet().stream()
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -228,7 +232,6 @@ public class OIDCFlowService {
             ClientID clientID = new ClientID(settings.getClient().getClientId());
             JWSAlgorithm jwsAlg = JWSAlgorithm.RS256;
 
-            //TODO: how often the server keys change?
             URL jwkSetURL = new URL(persistenceService.getJwksUri());
             IDTokenValidator validator = new IDTokenValidator(iss, clientID, jwsAlg, jwkSetURL);
             validator.validate(idToken, null);
