@@ -196,8 +196,9 @@ public class OIDCFlowService {
             } else {
                 
                 UserInfoSuccessResponse successResponse = userInfoResponse.toSuccessResponse();
-                UserInfo userInfo = Optional.ofNullable(successResponse.getUserInfo()).orElse(successResponse.getUserInfoJWT());
-                
+                UserInfo userInfo = Optional.ofNullable(successResponse.getUserInfo())
+                    .orElse(new UserInfo(successResponse.getUserInfoJWT().getJWTClaimsSet()));
+
                 JSONObject jsonObj = userInfo.toJSONObject();        
                 claims = jsonObj.entrySet().stream()
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
