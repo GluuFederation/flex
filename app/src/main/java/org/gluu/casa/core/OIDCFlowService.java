@@ -203,10 +203,9 @@ public class OIDCFlowService {
                 claims = jsonObj.entrySet().stream()
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             }
-        } catch (ParseException | URISyntaxException | IOException e) {
+        } catch (Exception e) {
             String msg = e.getMessage();
             logger.error(msg, e);
-            // e.getErrorObject() evaluates null for ParseException :(
             error = new ErrorObject(null, msg); 
         }
 
