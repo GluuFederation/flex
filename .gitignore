@@ -6,6 +6,7 @@ node_modules
 jans_config_api
 package-lock.json
 yarn.lock
+plugins_repo
 
 
 # other
