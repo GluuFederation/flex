@@ -8,11 +8,17 @@ import {
   activateLicenseResponse,
 } from '../actions'
 
-import { checkLicensePresent, activateLicense } from '../api/backend-api'
+import { checkLicensePresent, activateLicense, fetchApiTokenWithDefaultScopes } from '../api/backend-api'
+
+function* getApiTokenWithDefaultScopes() {
+  const response = yield call(fetchApiTokenWithDefaultScopes)
+  return response.access_token
+}
 
 function* checkLicensePresentWorker() {
   try {
-    const response = yield call(checkLicensePresent)
+    const token = yield* getApiTokenWithDefaultScopes();
+    const response = yield call(checkLicensePresent, token)
     if (response) {
       yield put(checkLicensePresentResponse(response))
       return
@@ -25,7 +31,8 @@ function* checkLicensePresentWorker() {
 
 function* activateLicenseWorker({ payload }) {
   try {
-    const response = yield call(activateLicense, payload.licenseKey)
+    const token = yield* getApiTokenWithDefaultScopes();
+    const response = yield call(activateLicense, payload.licenseKey, token)
     if (response) {
       yield put(activateLicenseResponse(response))
       return

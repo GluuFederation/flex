@@ -2,9 +2,10 @@ import axios from '../api/axios'
 import axios_instance from 'axios'
 
 // Get OAuth2 Configuration
-export const fetchServerConfiguration = async () => {
+export const fetchServerConfiguration = async (token) => {
+  const headers = { Authorization: `Bearer ${token}`};
   return axios
-    .get('/oauth2/config')
+    .get('/oauth2/config', {headers})
     .then((response) => response.data)
     .catch((error) => {
       console.error(
@@ -71,10 +72,24 @@ export const fetchApiAccessToken = async (jwt) => {
     })
 }
 
-// Check License present
-export const checkLicensePresent = async () => {
+export const fetchApiTokenWithDefaultScopes = async () => {
   return axios
-    .get('/license/checkLicense')
+    .get('/oauth2/api-protection-token')
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error(
+        'Problems getting API access token in order to process api calls.',
+        error,
+      )
+      return -1
+    })
+}
+
+// Check License present
+export const checkLicensePresent = async (token) => {
+  const headers = { Authorization: `Bearer ${token}`};
+  return axios
+    .get('/license/checkLicense', {headers})
     .then((response) => response.data)
     .catch((error) => {
       console.error('Error checking license of admin-ui', error)
@@ -83,12 +98,13 @@ export const checkLicensePresent = async () => {
 }
 
 // Activate license using key
-export const activateLicense = async (licenseKey) => {
+export const activateLicense = async (licenseKey, token) => {
   let data = { licenseKey: licenseKey }
   return axios
     .post('/license/activateLicense', data, {
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
     })
     .then((response) => response.data)

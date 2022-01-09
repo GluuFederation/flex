@@ -1,26 +1,31 @@
-import axios from '../../../../app/redux/api/axios'
+export default class LicenseDetailsApi {
+  constructor(api) {
+    this.api = api
+  }
 
-// Get License Details
-export const getLicenseDetails = async () => {
-  return axios
-    .get('/license/getLicenseDetails')
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error('Problems getting license details.', error)
-      return -1
+  getLicenseDetails = () => {
+    return new Promise((resolve, reject) => {
+      this.api.getAdminuiLicense((error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
     })
-}
-//update License Details
-export const updateLicenseDetails = async (licenseDetails) => {
-  return axios
-    .put('/license/updateLicenseDetails', licenseDetails, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  }
+
+  updateLicenseDetails = (data) => {
+    const options = {}
+    options['licenseRequest'] = data
+    return new Promise((resolve, reject) => {
+      this.api.editAdminuiLicense(options, (error, options) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
     })
-    .then((response) => response)
-    .catch((error) => {
-      console.error('Problems updating license details.', error)
-      return -1
-    })
+  }
+
+  handleResponse(error, reject, resolve, data) {
+    if (error) {
+      reject(error)
+    } else {
+      resolve(data)
+    }
+  }
 }

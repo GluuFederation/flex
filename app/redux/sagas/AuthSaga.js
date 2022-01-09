@@ -20,11 +20,18 @@ import {
   fetchUserInformation,
   fetchApiAccessToken,
   getUserIpAndLocation,
+  fetchApiTokenWithDefaultScopes,
 } from '../api/backend-api'
+
+function* getApiTokenWithDefaultScopes() {
+  const response = yield call(fetchApiTokenWithDefaultScopes)
+  return response.access_token
+}
 
 function* getOAuth2ConfigWorker() {
   try {
-    const response = yield call(fetchServerConfiguration)
+    const token = yield* getApiTokenWithDefaultScopes();
+    const response = yield call(fetchServerConfiguration, token)
     if (response) {
       yield put(getOAuth2ConfigResponse(response))
       return

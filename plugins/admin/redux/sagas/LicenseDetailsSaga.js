@@ -1,42 +1,66 @@
-import { all, call, fork, put, takeEvery } from 'redux-saga/effects'
+import { all, call, fork, put, takeEvery, select } from 'redux-saga/effects'
 import { GET_LICENSE_DETAILS, UPDATE_LICENSE_DETAILS } from '../actions/types'
 import {
   getLicenseDetailsResponse,
   updateLicenseDetailsResponse,
 } from '../actions/LicenseDetailsActions'
-
+import { getClient } from '../../../../app/redux/api/base'
+import LicenseDetailsApi from '../api/LicenseDetailsApi'
+const JansConfigApi = require('jans_config_api')
+import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import {
-  getLicenseDetails,
-  updateLicenseDetails,
-} from '../api/LicenseDetailsApi'
+  isFourZeroOneError,
+  addAdditionalData,
+} from '../../../../app/utils/TokenController'
+import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
 
-function* getLicenseDetailsWorker() {
-  try {
-    const response = yield call(getLicenseDetails)
-    if (response) {
-      yield put(getLicenseDetailsResponse(response))
-      return
-    }
-  } catch (error) {
-    console.log('Error in fetching License Details.', error)
-  }
-  yield put(getLicenseDetailsResponse())
+function* newFunction() {
+  const token = yield select((state) => state.authReducer.token.access_token)
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.AdminUILicenseApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new LicenseDetailsApi(api)
 }
 
-function* updateLicenseDetailsWorker({ payload }) {
+
+export function* getLicenseDetailsWorker({ payload }) {
+  const audit = yield* initAudit()
   try {
-    const response = yield call(updateLicenseDetails, payload.data)
-    if (response) {
-      yield put(updateLicenseDetailsResponse(response))
-      return
+    //addAdditionalData(audit, FETCH, GET_LICENSE_DETAILS, payload)
+    const licenseApi = yield* newFunction()
+    const data = yield call(licenseApi.getLicenseDetails)
+    yield put(getLicenseDetailsResponse(data))
+    yield call(postUserAction, audit)
+  } catch (e) {
+    yield put(getLicenseDetailsResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
     }
-  } catch (error) {
-    console.log('Error in fetching License Details.', error)
   }
-  yield put(updateLicenseDetailsResponse())
 }
+
+export function* updateLicenseDetailsWorker({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    //addAdditionalData(audit, UPDATE, UPDATE_LICENSE_DETAILS, payload)
+    const roleApi = yield* newFunction()
+    const data = yield call(roleApi.updateLicenseDetails, payload.action.action_data)
+    yield put(updateLicenseDetailsResponse(data))
+    yield call(postUserAction, audit)
+  } catch (e) {
+    yield put(updateLicenseDetailsResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
 
 export function* getLicenseWatcher() {
+
   yield takeEvery(GET_LICENSE_DETAILS, getLicenseDetailsWorker)
 }
 

@@ -23,4 +23,5 @@ it('Should render one label and a badge', () => {
   )
   screen.getByText('Application Type:')
   screen.getByText(VALUE)
+  expect(screen.getByDisplayValue(VALUE).id).toBe(NAME)
 })

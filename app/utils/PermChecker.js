@@ -26,6 +26,10 @@ export const PERMISSION_WRITE =
 export const PERMISSION_DELETE =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete'
 
+export const LICENSE_DETAILS_READ = BASE_URL + '/config/adminui/license.readonly'
+export const LICENSE_DETAILS_WRITE = BASE_URL + '/config/adminui/license.write'
+
+
 export const SCOPE_READ = BASE_URL + '/config/scopes.readonly'
 export const SCOPE_WRITE = BASE_URL + '/config/scopes.write'
 export const SCOPE_DELETE = BASE_URL + '/config/scopes.delete'
