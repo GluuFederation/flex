@@ -25,6 +25,9 @@ export const RoutedContent = () => {
   const scopes = useSelector((state) =>
     state.token ? state.token.scopes : state.authReducer.permissions,
   )
+  console.log("###############################################")
+  console.log("#####"+JSON.stringify(scopes))
+  console.log("###############################################")
   const [pluginMenus, setPluginMenus] = useState([])
   useEffect(() => {
     setPluginMenus(processRoutes())

@@ -55,7 +55,7 @@ const pluginMetadata = {
             {
               title: 'menus.api.roles',
               path: PLUGIN_BASE_APTH + '/roles',
-              permission: ACR_READ,
+              permission: ROLE_READ,
             },
             {
               title: 'menus.api.permissions',

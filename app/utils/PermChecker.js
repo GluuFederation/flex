@@ -13,14 +13,14 @@ export const CLIENT_WRITE = BASE_URL + '/config/openid/clients.write'
 export const CLIENT_DELETE = BASE_URL + '/config/openid/clients.delete'
 
 export const ROLE_READ =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.read'
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.readonly'
 export const ROLE_WRITE =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write'
 export const ROLE_DELETE =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete'
 
 export const PERMISSION_READ =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.read'
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.readonly'
 export const PERMISSION_WRITE =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write'
 export const PERMISSION_DELETE =
