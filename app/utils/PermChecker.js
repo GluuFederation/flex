@@ -12,17 +12,23 @@ export const CLIENT_READ = BASE_URL + '/config/openid/clients.readonly'
 export const CLIENT_WRITE = BASE_URL + '/config/openid/clients.write'
 export const CLIENT_DELETE = BASE_URL + '/config/openid/clients.delete'
 
-export const ROLE_READ = 'https://jans.io/adminui/user/role.read'
-export const ROLE_WRITE = 'https://jans.io/adminui/user/role.write'
-export const ROLE_DELETE = 'https://jans.io/adminui/user/role.delete'
+export const ROLE_READ =
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.read'
+export const ROLE_WRITE =
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.write'
+export const ROLE_DELETE =
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/role.delete'
+
+export const PERMISSION_READ =
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.read'
+export const PERMISSION_WRITE =
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.write'
+export const PERMISSION_DELETE =
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete'
 
 export const LICENSE_DETAILS_READ = BASE_URL + '/config/adminui/license.readonly'
 export const LICENSE_DETAILS_WRITE = BASE_URL + '/config/adminui/license.write'
 
-export const PERMISSION_READ = 'https://jans.io/adminui/user/permission.read'
-export const PERMISSION_WRITE = 'https://jans.io/adminui/user/permission.write'
-export const PERMISSION_DELETE =
-  'https://jans.io/adminui/user/permission.delete'
 
 export const SCOPE_READ = BASE_URL + '/config/scopes.readonly'
 export const SCOPE_WRITE = BASE_URL + '/config/scopes.write'
