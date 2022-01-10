@@ -26,9 +26,16 @@ export const PERMISSION_WRITE =
 export const PERMISSION_DELETE =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/permission.delete'
 
-export const LICENSE_DETAILS_READ = BASE_URL + '/config/adminui/license.readonly'
-export const LICENSE_DETAILS_WRITE = BASE_URL + '/config/adminui/license.write'
+export const MAPPING_READ =
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.readonly'
+export const MAPPING_WRITE =
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write'
+export const MAPPING_DELETE =
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write'
 
+export const LICENSE_DETAILS_READ =
+  BASE_URL + '/config/adminui/license.readonly'
+export const LICENSE_DETAILS_WRITE = BASE_URL + '/config/adminui/license.write'
 
 export const SCOPE_READ = BASE_URL + '/config/scopes.readonly'
 export const SCOPE_WRITE = BASE_URL + '/config/scopes.write'
