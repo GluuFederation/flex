@@ -60,8 +60,8 @@
     "api-win": "del /f jans_config_api && openapi-generator-cli generate -i https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/docs/jans-config-api-swagger.yaml -g javascript -o jans_config_api && cd jans_config_api && npm install && npm run build",
     "plugin:showAll": "node ./build/plugin-cli.js --showAllPlugins",
     "plugin:showEnabled": "node ./build/plugin-cli.js --showEnabledPlugins",
-    "plugin:add": "node ./build/plugin-cli.js --enablePlugins",
-    "plugin:remove": "node ./build/plugin-cli.js --disablePlugins",
+    "plugin:enable": "node ./build/plugin-cli.js --enablePlugins",
+    "plugin:disable": "node ./build/plugin-cli.js --disablePlugins",
     "plugin:install": "node ./build/plugin-cli.js --installPlugin"
   },
   "author": "gluu inc.",
