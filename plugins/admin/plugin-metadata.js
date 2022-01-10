@@ -29,6 +29,7 @@ import {
   PERMISSION_READ,
   SCRIPT_READ,
   SCRIPT_WRITE,
+  MAPPING_READ,
 } from '../../app/utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/adm'
@@ -55,17 +56,17 @@ const pluginMetadata = {
             {
               title: 'menus.api.roles',
               path: PLUGIN_BASE_APTH + '/roles',
-              permission: ACR_READ,
+              permission: ROLE_READ,
             },
             {
               title: 'menus.api.permissions',
               path: PLUGIN_BASE_APTH + '/permissions',
-              permission: ACR_READ,
+              permission: PERMISSION_READ,
             },
             {
               title: 'menus.api.mapping',
               path: PLUGIN_BASE_APTH + '/mapping',
-              permission: ACR_READ,
+              permission: MAPPING_READ,
             },
           ],
         },
@@ -111,7 +112,7 @@ const pluginMetadata = {
     {
       component: MappingPage,
       path: PLUGIN_BASE_APTH + '/mapping',
-      permission: PERMISSION_READ,
+      permission: MAPPING_READ,
     },
     {
       component: ScriptListPage,
