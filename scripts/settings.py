@@ -12,7 +12,7 @@ LOGGING_CONFIG = {
         },
     },
     "loggers": {
-        "pygluu.containerlib": {
+        "jans.pycloudlib": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": True,
@@ -23,6 +23,11 @@ LOGGING_CONFIG = {
             "propagate": False,
         },
         "webdav": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "entrypoint": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,

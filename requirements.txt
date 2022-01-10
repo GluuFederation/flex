@@ -1,1 +1,3 @@
--e git+https://github.com/GluuFederation/pygluu-containerlib@2.2.0#egg=pygluu-containerlib
+ldif==4.1.1
+webdavclient3>=3.14.5
+git+https://github.com/JanssenProject/jans-cloud-native@f415213cfd992363f3fb85005df16e963a6ed8ff#egg=jans-pycloudlib&subdirectory=jans-pycloudlib
