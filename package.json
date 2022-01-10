@@ -61,7 +61,8 @@
     "plugin:showAll": "node ./build/plugin-cli.js --showAllPlugins",
     "plugin:showEnabled": "node ./build/plugin-cli.js --showEnabledPlugins",
     "plugin:add": "node ./build/plugin-cli.js --enablePlugins",
-    "plugin:remove": "node ./build/plugin-cli.js --disablePlugins"
+    "plugin:remove": "node ./build/plugin-cli.js --disablePlugins",
+    "plugin:install": "node ./build/plugin-cli.js --installPlugin"
   },
   "author": "gluu inc.",
   "license": "Apache",
