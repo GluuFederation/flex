@@ -57,7 +57,12 @@
     "start:prod": "node ./build/cli-tools.js --clear dist --create dist && webpack-dev-server --config ./build/webpack.config.client.prod.js",
     "lint": "eslint app/ --ext .js,jsx --fix",
     "api": "rm -rf jans_config_api && openapi-generator-cli generate -i https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/docs/jans-config-api-swagger.yaml --skip-validate-spec -g javascript -o jans_config_api && cd jans_config_api && npm install && npm run build",
-    "api-win": "del /f jans_config_api && openapi-generator-cli generate -i https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/docs/jans-config-api-swagger.yaml -g javascript -o jans_config_api && cd jans_config_api && npm install && npm run build"
+    "api-win": "del /f jans_config_api && openapi-generator-cli generate -i https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/docs/jans-config-api-swagger.yaml -g javascript -o jans_config_api && cd jans_config_api && npm install && npm run build",
+    "plugin:showAll": "node ./build/plugin-cli.js --showAllPlugins",
+    "plugin:showEnabled": "node ./build/plugin-cli.js --showEnabledPlugins",
+    "plugin:enable": "node ./build/plugin-cli.js --enablePlugins",
+    "plugin:disable": "node ./build/plugin-cli.js --disablePlugins",
+    "plugin:install": "node ./build/plugin-cli.js --installPlugin"
   },
   "author": "gluu inc.",
   "license": "Apache",
@@ -127,6 +132,7 @@
     "eslint-plugin-jest": "^25.2.2",
     "font-awesome": "^4.7.0",
     "formik": "^2.2.9",
+    "fs-extra": "^10.0.0",
     "holderjs": "^2.9.6",
     "i18next": "^19.8.4",
     "i18next-browser-languagedetector": "^6.0.1",

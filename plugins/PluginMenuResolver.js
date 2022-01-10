@@ -2,6 +2,7 @@ import plugins from '../plugins.config'
 export function processMenus() {
   let pluginMenus = []
   plugins
+    .filter(item => item.enabled)
     .map((item) => item.metadataFile)
     .forEach((path) => {
       pluginMenus = pluginMenus.concat(require(`${path}`).default.menus)
@@ -14,6 +15,7 @@ export function processMenus() {
 export function processRoutes() {
   let pluginRoutes = []
   plugins
+    .filter(item => item.enabled)
     .map((item) => item.metadataFile)
     .forEach((path) => {
       pluginRoutes = pluginRoutes.concat(require(`${path}`).default.routes)

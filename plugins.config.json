@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Services Plugin",
+    "key": "services",
+    "metadataFile": "./services/plugin-metadata",
+    "enabled": false
+  },
+  {
+    "title": "Auth Server Plugin",
+    "key": "auth-server",
+    "metadataFile": "./auth-server/plugin-metadata",
+    "enabled": false
+  },
+  {
+    "title": "Schema Plugin",
+    "key": "schema",
+    "metadataFile": "./schema/plugin-metadata",
+    "enabled": false
+  },
+  {
+    "title": "Admin Plugin",
+    "key": "admin",
+    "metadataFile": "./admin/plugin-metadata",
+    "enabled": false
+  }
+]
