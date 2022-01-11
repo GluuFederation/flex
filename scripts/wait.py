@@ -33,7 +33,6 @@ def main():
     else:
         deps.append(persistence_type)
 
-    # deps.append("oxauth")
     wait_for(manager, deps)
 
 
