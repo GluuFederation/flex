@@ -54,8 +54,8 @@ const mapStateToProps = (state) => {
   return {
     loading: state.scopeReducer.loading,
     permissions: state.authReducer.permissions,
-    scripts: state.customScriptReducer.items,
-    attributes: state.attributeReducer.items,
+    scripts: state.initReducer.scripts,
+    attributes: state.initReducer.attributes,
   }
 }
 export default connect(mapStateToProps)(ScopeAddPage)

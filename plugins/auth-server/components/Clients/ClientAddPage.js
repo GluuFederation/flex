@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom'
 import { addNewClientAction } from '../../redux/actions/OIDCActions'
 import { getOidcDiscovery } from '../../../../app/redux/actions/OidcDiscoveryActions'
 import { getScopes } from '../../redux/actions/ScopeActions'
-import { getCustomScripts } from '../../../admin/redux/actions/CustomScriptActions'
+import { getScripts } from '../../../../app/redux/actions/InitActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function ClientAddPage({
@@ -26,7 +26,7 @@ function ClientAddPage({
       dispatch(getScopes(userAction))
     }
     if (scripts.length < 1) {
-      dispatch(getCustomScripts(userAction))
+      dispatch(getScripts(userAction))
     }
     dispatch(getOidcDiscovery())
   }, [])
