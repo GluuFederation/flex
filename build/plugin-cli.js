@@ -44,7 +44,7 @@ const commands = {
         if(ele.enabled)
         fse.copySync(path.join(pluginsRepoPath, ele.key), path.join(pluginsPath, ele.key))
       });
-      console.info('Added/Removed enabled plugins successfully. The project is ready for built.');
+      console.info('Enabled/Disabled plugins successfully. The project is ready for built.');
     },
     showEnabledPlugins: function() {
       if(pluginsObj.filter(ele => ele.enabled).length == 0) {
@@ -53,6 +53,16 @@ const commands = {
       }
       pluginsObj.forEach(ele => {
         if(ele.enabled)
+          console.log('- '+ele.key)
+      });
+    },
+    showDisabledPlugins: function() {
+      if(pluginsObj.filter(ele => !ele.enabled).length == 0) {
+        console.log('- No disabled Plugin found.')
+        return;
+      }
+      pluginsObj.forEach(ele => {
+        if(!ele.enabled)
           console.log('- '+ele.key)
       });
     },
@@ -139,6 +149,7 @@ const commands = {
 
 program
     .option('-sep, --showEnabledPlugins')
+    .option('-sep, --showDisabledPlugins')
     .option('-sap, --showAllPlugins')
     .option('-ep, --enablePlugins []')
     .option('-dp, --disablePlugins []')
