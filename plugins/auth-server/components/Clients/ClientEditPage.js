@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { editClient } from '../../redux/actions/OIDCActions'
 import { getScopes } from '../../redux/actions/ScopeActions'
 import { getOidcDiscovery } from '../../../../app/redux/actions/OidcDiscoveryActions'
-import { getCustomScripts } from '../../../admin/redux/actions/CustomScriptActions'
+import { getScripts } from '../../../../app/redux/actions/InitActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
 
 function ClientEditPage({
@@ -28,7 +28,7 @@ function ClientEditPage({
       dispatch(getScopes(options))
     }
     if (scripts.length < 1) {
-      dispatch(getCustomScripts(options))
+      dispatch(getScripts(options))
     }
     dispatch(getOidcDiscovery())
   }, [])
