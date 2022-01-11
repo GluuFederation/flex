@@ -381,7 +381,7 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
 const mapStateToProps = (state) => {
   return {
     stat: state.mauReducer.stat,
-    loading: state.oidcReducer.loading,
+    loading: state.mauReducer.loading,
     permissions: state.authReducer.permissions,
   }
 }
