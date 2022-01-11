@@ -16,17 +16,21 @@ const permissions = [
 const INIT_STATE = {
   permissions: permissions,
 }
-const INIT_SCPOPES_STATE = {
+const SCPOPES_STATE = {
   items: scopes,
   item: {},
   loading: false,
 }
+const STATE = {
+  scopes: [],
+  scripts: [],
+  attributes: [],
+}
 const store = createStore(
   combineReducers({
     authReducer: (state = INIT_STATE) => state,
-    customScriptReducer: (state = INIT_SCPOPES_STATE) => state,
-    attributeReducer: (state = INIT_SCPOPES_STATE) => state,
-    scopeReducer,
+    initReducer: (state = STATE) => state,
+    scopeReducer: (state = SCPOPES_STATE) => state,
     noReducer: (state = {}) => state,
   }),
 )
@@ -38,7 +42,7 @@ const Wrapper = ({ children }) => (
 )
 
 it('Should render the scope add page properly', () => {
-  render(<ScopeAddPage/>, {
+  render(<ScopeAddPage />, {
     wrapper: Wrapper,
   })
   screen.getByText(/Display Name/)

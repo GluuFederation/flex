@@ -3,24 +3,24 @@
     "title": "Services Plugin",
     "key": "services",
     "metadataFile": "./services/plugin-metadata",
-    "enabled": false
+    "enabled": true
   },
   {
     "title": "Auth Server Plugin",
     "key": "auth-server",
     "metadataFile": "./auth-server/plugin-metadata",
-    "enabled": false
+    "enabled": true
   },
   {
     "title": "Schema Plugin",
     "key": "schema",
     "metadataFile": "./schema/plugin-metadata",
-    "enabled": false
+    "enabled": true
   },
   {
     "title": "Admin Plugin",
     "key": "admin",
     "metadataFile": "./admin/plugin-metadata",
-    "enabled": false
+    "enabled": true
   }
 ]

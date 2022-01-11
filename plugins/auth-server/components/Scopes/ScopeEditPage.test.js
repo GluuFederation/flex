@@ -5,8 +5,6 @@ import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import attributeReducer from '../../../schema/redux/reducers/AttributeReducer'
-import customScriptReducer from '../../../admin/redux/reducers/CustomScriptReducer'
 import scopes from './scopes'
 
 const permissions = [
@@ -17,17 +15,15 @@ const permissions = [
 const INIT_STATE = {
   permissions: permissions,
 }
-const INIT_SCPOPES_STATE = {
-  items: [scopes[0]],
-  item: {},
-  loading: false,
+const INIT_SHARED_STATE = {
+  scopes: [scopes[0]],
+  attributes: [],
+  scripts: [],
 }
 const store = createStore(
   combineReducers({
     authReducer: (state = INIT_STATE) => state,
-    customScriptReducer,
-    attributeReducer,
-    scopeReducer: (state = INIT_SCPOPES_STATE) => state,
+    initReducer: (state = INIT_SHARED_STATE) => state,
     noReducer: (state = {}) => state,
   }),
 )
@@ -39,7 +35,7 @@ const Wrapper = ({ children }) => (
 )
 
 it('Should render the scope edit page properly', () => {
-  render(<ScopeEditPage/>, {
+  render(<ScopeEditPage />, {
     wrapper: Wrapper,
   })
   screen.getByText(/Display Name/)
