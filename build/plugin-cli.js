@@ -4,6 +4,7 @@ const fse = require('fs-extra');
 const config = require('./../config');
 const pluginsObj = require('../plugins.config');
 const path = require('path');
+const unzipper = require('unzipper');
 
 function dirParamToPath(dirParam) {
     switch(dirParam) {
@@ -129,9 +130,9 @@ const commands = {
       }
       var lastFolder = sourcePath.split('/').filter(function(el) {
         return el.trim().length > 0;
-      }).pop();
+      }).pop().split('.').slice(0, -1).join('.');
 
-      fse.copySync(sourcePath, path.join(pluginsRepoPath, lastFolder))
+      fse.createReadStream(sourcePath).pipe(unzipper.Extract({ path: pluginsRepoPath }));
 
       pluginsObj.push(this.createPluginEntry(lastFolder));
       fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2)) 
