@@ -79,8 +79,6 @@ const commands = {
     },
     enablePlugins: function(value) {
       this.createPluginRepo();
-      console.info('Following plugins are enabled.')
-      this.showEnabledPlugins();
       var pluginsArr = value.split('_,');
       try {
         pluginsObj.forEach((ele, index) => {
@@ -88,20 +86,16 @@ const commands = {
             ele.enabled = true;
           }
           if (index == (pluginsObj.length-1)) {
-            fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2)) 
+            fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2))
             this.addEnabledPlugins();
           }
         });
       } catch (e) {
         console.error('Error in enabling plugin. Check the plugin keys entered in args.')
       }
-      console.info('Following plugins are enabled now.')
-      this.showEnabledPlugins();
     },
     disablePlugins: function(value) {
       this.createPluginRepo();
-      console.info('Following plugins are enabled.')
-      this.showEnabledPlugins();
       var pluginsArr = value.split('_,');
       try {
         pluginsObj.forEach((ele, index) => {
@@ -109,33 +103,37 @@ const commands = {
             ele.enabled = false;
           }
           if (index == (pluginsObj.length-1)) {
-              fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2)) 
+              fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2))
               this.addEnabledPlugins();
           }
         });
       } catch (e) {
         console.error('Error in enabling plugin. Check the plugin keys entered in args.')
       }
-      console.info('Following plugins are enabled now.')
-      this.showEnabledPlugins();
     },
     installPlugin: function(sourcePath) {
       const pluginsRepoPath = dirParamToPath('plugins_repo');
 
       this.createPluginRepo();
-      console.info('Following plugins are enabled.')
-      this.showEnabledPlugins();
       if (!fse.existsSync(sourcePath)) {
+        console.error('Plugin zip not found at %s', sourcePath);
         return;
       }
-      var lastFolder = sourcePath.split('/').filter(function(el) {
+      var lastFolderName = sourcePath.split('/').filter(function(el) {
         return el.trim().length > 0;
       }).pop().split('.').slice(0, -1).join('.');
-      mkdirp.sync(path.join(pluginsRepoPath, lastFolder));
-      fse.createReadStream(sourcePath).pipe(unzipper.Extract({ path: path.join(pluginsRepoPath, lastFolder) }));
 
-      pluginsObj.push(this.createPluginEntry(lastFolder));
-      fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2)) 
+      const pluginPathInRepo = path.join(pluginsRepoPath, lastFolderName);
+      if (fse.existsSync(pluginPathInRepo)) {
+        console.error('Plugin with %s name already present in plugin repo.', lastFolderName);
+        return;
+      }
+
+      mkdirp.sync(pluginPathInRepo);
+      fse.createReadStream(sourcePath).pipe(unzipper.Extract({ path: pluginPathInRepo }));
+
+      pluginsObj.push(this.createPluginEntry(lastFolderName));
+      fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2))
 
     },
     createPluginEntry: function(pluginKey) {
