@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import MaterialTable from 'material-table'
+import MaterialTable from '@material-table/core';
 import { Paper } from '@material-ui/core'
 import UiPermDetailPage from './UiPermDetailPage'
 import { Badge } from 'reactstrap'
@@ -73,7 +73,7 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
               {
                 title: `${t('fields.name')}`,
                 field: 'permission',
-                editable: false,
+                editable:false,
                 width: '50%',
                 render: (rowData) => (
                   <Badge color="info">{rowData.permission}</Badge>
