@@ -106,7 +106,7 @@
     "jest-canvas-mock": "^2.3.1",
     "mini-css-extract-plugin": "^1.6.0",
     "mkdirp": "^0.5.1",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.1",
     "postcss": "^8.3.5",
     "postcss-loader": "^4.3.0",
     "raw-loader": "^3.0.0",
@@ -115,7 +115,7 @@
     "style-loader": "^2.0.0",
     "webpack": "^5.39.1",
     "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.3.1"
+    "webpack-dev-server": "^4.7.3"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
@@ -125,7 +125,7 @@
     "@miltonbo/dashboard-style-airframe": "^0.2.0",
     "ag-grid-community": "^21.0.1",
     "ag-grid-react": "^21.0.1",
-    "axios": "^0.21.4",
+    "axios": "^0.24.0",
     "bootstrap": "^4.5.3",
     "date-fns": "^2.25.0",
     "dateformat": "^5.0.1",
