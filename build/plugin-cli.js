@@ -5,6 +5,7 @@ const config = require('./../config');
 const pluginsObj = require('../plugins.config');
 const path = require('path');
 const unzipper = require('unzipper');
+const rimraf = require('rimraf');
 
 function dirParamToPath(dirParam) {
     switch(dirParam) {
@@ -19,111 +20,46 @@ function dirParamToPath(dirParam) {
 }
 
 const commands = {
-    createPluginRepo: function() {
-        const root = dirParamToPath('rootDir');
-        const sourcePath = dirParamToPath('plugins');
-        const destPath = dirParamToPath('plugins_repo');
-        if(!fse.existsSync(destPath)) {
-            fse.renameSync(sourcePath, destPath)
-            console.info('Created plugin repo directory: %s', destPath);
-            mkdirp.sync(sourcePath);
+    
+    cleanExceptDefault: function(args) {
+      const plugins = [];
+      try {
+        plugins = args.split(',');
+      } catch(e) {
+        console.error('The args passed is invalid or undefined. All plugins will be removed.');
+      }
 
-            const fileList = fse.readdirSync(destPath).filter(ele => path.extname(ele) === '.js');
-            fileList.forEach(ele => fse.copyFileSync(path.join(destPath, ele), path.join(sourcePath, ele)))
-            console.info('Created empty plugins for processing: %s', sourcePath);
-        }
+      const pluginsDir = dirParamToPath('plugins');  
+
+      fse.readdirSync(pluginsDir)
+      .map(file => path.join(pluginsDir, file))
+      .filter(path => fse.statSync(path).isDirectory())
+      .filter(path => !plugins.includes(this.getLastFolderName(path)))
+      //.filter(path =>     fse.readdirSync(path).length === 0)
+      .map(path => rimraf.sync(path));
     },
-    addEnabledPlugins: function() {
+    resetPluginConfig: function() {
+      const pluginsDir = dirParamToPath('plugins');
+      let configJson = []
+
+      fse.readdirSync(pluginsDir)
+      .map(file => path.join(pluginsDir, file))
+      .filter(path => fse.statSync(path).isDirectory())
+      .filter(path =>     fse.readdirSync(path).length > 0)
+      .map(path => configJson.push(this.createPluginEntry(this.getLastFolderName(path))));
+      fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(configJson, null, 2));
+
+    },
+    addPlugin: function(sourcePath) {
       const pluginsPath = dirParamToPath('plugins');
-      const pluginsRepoPath = dirParamToPath('plugins_repo');
-      fse.emptyDirSync(pluginsPath)
-      
-      const fileList = fse.readdirSync(pluginsRepoPath).filter(ele => path.extname(ele) === '.js');
-      fileList.forEach(ele => fse.copyFileSync(path.join(pluginsRepoPath, ele), path.join(pluginsPath, ele)))
-  
-      pluginsObj.forEach(ele => {
-        if(ele.enabled)
-        fse.copySync(path.join(pluginsRepoPath, ele.key), path.join(pluginsPath, ele.key))
-      });
-      console.info('Enabled/Disabled plugins successfully. The project is ready for built.');
-    },
-    showEnabledPlugins: function() {
-      if(pluginsObj.filter(ele => ele.enabled).length == 0) {
-        console.log('- No Plugin enabled.')
-        return;
-      }
-      pluginsObj.forEach(ele => {
-        if(ele.enabled)
-          console.log('- '+ele.key)
-      });
-    },
-    showDisabledPlugins: function() {
-      if(pluginsObj.filter(ele => !ele.enabled).length == 0) {
-        console.log('- No disabled Plugin found.')
-        return;
-      }
-      pluginsObj.forEach(ele => {
-        if(!ele.enabled)
-          console.log('- '+ele.key)
-      });
-    },
-    showAllPlugins: function() {
-      if(pluginsObj.length == 0) {
-        console.log('- No Plugin in repo.')
-        return;
-      }
-      console.log('Following plugins are present in plugin repository.')
-      pluginsObj.forEach(ele => {
-      console.log('- '+ele.key)
-      });
-    },
-    enablePlugins: function(value) {
-      this.createPluginRepo();
-      var pluginsArr = value.split('_,');
-      try {
-        pluginsObj.forEach((ele, index) => {
-          if (pluginsArr.indexOf(ele.key) >= 0) {
-            ele.enabled = true;
-          }
-          if (index == (pluginsObj.length-1)) {
-            fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2))
-            this.addEnabledPlugins();
-          }
-        });
-      } catch (e) {
-        console.error('Error in enabling plugin. Check the plugin keys entered in args.')
-      }
-    },
-    disablePlugins: function(value) {
-      this.createPluginRepo();
-      var pluginsArr = value.split('_,');
-      try {
-        pluginsObj.forEach((ele, index) => {
-          if (pluginsArr.indexOf(ele.key) >= 0) {
-            ele.enabled = false;
-          }
-          if (index == (pluginsObj.length-1)) {
-              fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2))
-              this.addEnabledPlugins();
-          }
-        });
-      } catch (e) {
-        console.error('Error in enabling plugin. Check the plugin keys entered in args.')
-      }
-    },
-    installPlugin: function(sourcePath) {
-      const pluginsRepoPath = dirParamToPath('plugins_repo');
 
-      this.createPluginRepo();
       if (!fse.existsSync(sourcePath)) {
         console.error('Plugin zip not found at %s', sourcePath);
         return;
       }
-      var lastFolderName = sourcePath.split('/').filter(function(el) {
-        return el.trim().length > 0;
-      }).pop().split('.').slice(0, -1).join('.');
+      var lastFolderName = this.getLastFolderName(sourcePath).split('.').slice(0, -1).join('.');
 
-      const pluginPathInRepo = path.join(pluginsRepoPath, lastFolderName);
+      const pluginPathInRepo = path.join(pluginsPath, lastFolderName);
       if (fse.existsSync(pluginPathInRepo)) {
         console.error('Plugin with %s name already present in plugin repo.', lastFolderName);
         return;
@@ -136,23 +72,52 @@ const commands = {
       fse.writeFileSync(path.join(dirParamToPath('rootDir'), 'plugins.config.json'),JSON.stringify(pluginsObj, null, 2))
 
     },
+    removePlugin: function(pluginName) {
+      try {
+        const pluginsPath = dirParamToPath('plugins');
+        const pluginPathInRepo = path.join(pluginsPath, pluginName);
+
+        if (fse.existsSync(pluginPathInRepo)) {
+        rimraf.sync(pluginPathInRepo);
+        fse.writeFileSync(
+          path.join(dirParamToPath('rootDir'), 'plugins.config.json'),
+          JSON.stringify(pluginsObj
+            .filter(ele => ele.key !== pluginName)), null, 2);
+
+          }
+      } catch (e) {
+        console.error('Error in enabling plugin. Check the plugin keys entered in args.')
+      }
+    },
     createPluginEntry: function(pluginKey) {
       const pluginObj = {};
       pluginObj.key = pluginKey;
-      pluginObj.metadataFile = './' + path.join(pluginKey, 'plugin-metadata');
-      pluginObj.enabled = false;
-
+      pluginObj.metadataFile = './' + pluginKey+ '/plugin-metadata';
       return pluginObj;
+    },
+    showAllPlugins: function() {
+      if(pluginsObj.length == 0) {
+        console.log('- No Plugin in repo.')
+        return;
+      }
+      console.log('Following plugins are present.')
+      pluginsObj.forEach(ele => {
+      console.log('- '+ele.key)
+      });
+    },
+    getLastFolderName: function(path) {
+      return path.replace(/\\/g, '/').split('/').filter(function(el) {
+        return el.trim().length > 0;
+      }).pop();
     }
 };
 
 program
-    .option('-sep, --showEnabledPlugins')
-    .option('-sep, --showDisabledPlugins')
+    .option('-cpd, --cleanExceptDefault []')
+    .option('-rpc, --resetPluginConfig')
     .option('-sap, --showAllPlugins')
-    .option('-ep, --enablePlugins []')
-    .option('-dp, --disablePlugins []')
-    .option('-ip, --installPlugin []')
+    .option('-ap, --addPlugin []')
+    .option('-rp, --removePlugin []')
     .parse(process.argv);
 
 for (const commandName in commands) {

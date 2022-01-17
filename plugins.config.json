@@ -1,26 +1,18 @@
 [
   {
-    "title": "Services Plugin",
     "key": "services",
-    "metadataFile": "./services/plugin-metadata",
-    "enabled": true
+    "metadataFile": "./services/plugin-metadata"
   },
   {
-    "title": "Auth Server Plugin",
-    "key": "auth-server",
-    "metadataFile": "./auth-server/plugin-metadata",
-    "enabled": true
-  },
-  {
-    "title": "Schema Plugin",
     "key": "schema",
-    "metadataFile": "./schema/plugin-metadata",
-    "enabled": true
+    "metadataFile": "./schema/plugin-metadata"
   },
   {
-    "title": "Admin Plugin",
+    "key": "auth-server",
+    "metadataFile": "./auth-server/plugin-metadata"
+  },
+  {
     "key": "admin",
-    "metadataFile": "./admin/plugin-metadata",
-    "enabled": true
+    "metadataFile": "./admin/plugin-metadata"
   }
 ]
