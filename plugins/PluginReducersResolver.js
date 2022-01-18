@@ -3,7 +3,6 @@ import reducerRegistry from '../app/redux/reducers/ReducerRegistry'
 
 async function process() {
   const metadataFilePath = plugins
-  .filter(item => item.enabled)
   .map((item) => item.metadataFile)
   let pluginReducers = []
   await metadataFilePath.forEach(async (path) => {
