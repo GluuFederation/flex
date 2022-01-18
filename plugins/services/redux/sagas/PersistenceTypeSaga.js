@@ -20,7 +20,6 @@ export function* getPersistenceType() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getPersistenceType)
-    console.log('sql saga data: ', data)
     yield put(getPersistenceTypeResponse(data.persistenceType))
   } catch (e) {
     yield put(getPersistenceTypeResponse(null))

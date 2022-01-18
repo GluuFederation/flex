@@ -24,7 +24,6 @@ export function* getCouchbase() {
   try {
     const api = yield* newFunction()
     const data = yield call(api.getCouchBaseConfig)
-    console.log('couchbase saga data: ', data)
     yield put(getCouchBaseResponse(data))
   } catch (e) {
     yield put(getCouchBaseResponse(null))
