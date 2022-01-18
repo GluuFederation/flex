@@ -27,7 +27,6 @@ import {
 import { useTranslation } from 'react-i18next'
 
 function LoggingPage({ logging, dispatch, permissions, loading }) {
-  console.log(JSON.stringify(logging))
   const { t } = useTranslation()
   useEffect(() => {
     dispatch(getLoggingConfig())
