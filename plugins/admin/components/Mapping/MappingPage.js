@@ -22,7 +22,6 @@ import {
 } from '../../../../app/utils/PermChecker'
 
 function MappingPage({ mapping, apiRoles, permissions, dispatch }) {
-  console.log('======================Roles' + JSON.stringify(apiRoles))
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -35,7 +34,6 @@ function MappingPage({ mapping, apiRoles, permissions, dispatch }) {
 
   function onAddConfirmed(mappingData) {
     buildPayload(userAction, 'Add new mapping', mappingData)
-    //dispatch(addRole(userAction))
     toggle()
     doFetchList()
   }
