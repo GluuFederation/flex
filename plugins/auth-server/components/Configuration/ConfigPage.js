@@ -7,14 +7,18 @@ import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import useExitPrompt from '../../../../app/routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
-import { buildPayload } from '../../../../app/utils/PermChecker'
+import {
+  buildPayload,
+  hasPermission,
+  PROPERTIES_WRITE,
+} from '../../../../app/utils/PermChecker'
 import {
   getJsonConfig,
   patchJsonConfig,
 } from '../../redux/actions/JsonConfigActions'
 import { FETCHING_JSON_PROPERTIES } from '../../common/Constants'
 
-function ConfigPage({ configuration, loading, dispatch }) {
+function ConfigPage({ configuration, loading, dispatch, permissions }) {
   const lSize = 6
   const userAction = {}
   const [modal, setModal] = useState(false)
@@ -68,16 +72,20 @@ function ConfigPage({ configuration, loading, dispatch }) {
             />
           ))}
           <FormGroup row></FormGroup>
-          <GluuCommitFooter saveHandler={toggle} />
+          {hasPermission(permissions, PROPERTIES_WRITE) && (
+            <GluuCommitFooter saveHandler={toggle} />
+          )}
           <FormGroup row></FormGroup>
           <FormGroup row></FormGroup>
           <FormGroup row></FormGroup>
-          <GluuCommitDialog
-            handler={toggle}
-            modal={modal}
-            operations={patches}
-            onAccept={submitForm}
-          />
+          {hasPermission(permissions, PROPERTIES_WRITE) && (
+            <GluuCommitDialog
+              handler={toggle}
+              modal={modal}
+              operations={patches}
+              onAccept={submitForm}
+            />
+          )}
         </CardBody>
       </Card>
     </GluuLoader>

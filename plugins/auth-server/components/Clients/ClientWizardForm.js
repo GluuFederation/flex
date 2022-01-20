@@ -308,7 +308,7 @@ function ClientWizardForm({
               </CardBody>
               <CardBody className="p-5">
                 {(() => {
-                  // setClient(formik.values)
+                  setClient(formik.values)
                   switch (currentStep) {
                     case sequence[0]:
                       return (

@@ -15,4 +15,10 @@ export default {
   buttonStyle: {
     background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
   },
+  healthDown:{
+    background: 'linear-gradient(90deg, #fc575e 0%, #f7b42c 100%)'
+  },
+  healthUp:{
+    content: ''
+  }
 }

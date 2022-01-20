@@ -3,11 +3,11 @@ export default class HealthApi {
     this.api = api
   }
 
-  // Get Health Status
   getHealthStatus = () => {
     return new Promise((resolve, reject) => {
-      this.api.getConfigHealthReady( (error, data) => {
+      this.api.getAuthServerHealth((error, data) => {
         if (error) {
+          console.log(e);
           reject(error)
         } else {
           resolve(data)
