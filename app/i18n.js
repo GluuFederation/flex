@@ -26,6 +26,7 @@ i18n
     keySeparator: '.',
     react: {
       wait: true,
+      useSuspense : false
     },
   })
 export default i18n
