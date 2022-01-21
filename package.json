@@ -140,7 +140,6 @@
     "isomorphic-fetch": "^3.0.0",
     "jans_config_api": "file:jans_config_api",
     "lodash": "^4.17.21",
-    "material-table": "^1.69.3",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
     "npm-force-resolutions": "0.0.10",
