@@ -11,6 +11,7 @@ import {
 } from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuRibbon from '../../../app/routes/Apps/Gluu/GluuRibbon'
+import {addMonths, differenceInMonths } from 'date-fns'
 import applicationStyle from '../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import {
@@ -62,9 +63,6 @@ class MonthBox extends Component {
     this.props.onClick && this.props.onClick(e)
   }
 }
-function prepending(n) {
-  return n > 9 ? '' + n : '0' + n
-}
 function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const userAction = {}
@@ -104,43 +102,24 @@ function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
   }
 
   useEffect(() => {
-    let initialMonths =
-      currentDate.getFullYear().toString() +
-      prepending(currentDate.getMonth() + 1)
-    for (let i = 0; i < 4; i++) {
-      initialMonths =
-        initialMonths +
-        '%20' +
-        currentDate.getFullYear().toString() +
-        prepending(currentDate.getMonth() - i)
-    }
-    options['month'] = initialMonths
+    options['month'] = generateMonths()
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }, [])
   function search() {
-    options['month'] = makeOptions()
+    options['month'] = generateMonths()
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }
-  function makeOptions() {
-    const date = new Date()
-    date.setFullYear(rangeValue2.from.year)
-    date.setMonth(rangeValue2.from.month - 1)
-    var monthRange = date.toISOString().substr(0, 7).replace('-', '')
-    for (let i = rangeValue2.from.year; i <= rangeValue2.to.year; i++) {
-      date.setFullYear(i)
-      for (
-        let j = i == rangeValue2.from.year ? rangeValue2.from.month : 0;
-        j < (i < rangeValue2.to.year ? 12 : rangeValue2.to.month);
-        j++
-      ) {
-        date.setMonth(j)
-        const temp = date.toISOString().substr(0, 7).replace('-', '')
-        monthRange = monthRange + '%20' + temp
-      }
-    }
-    return monthRange
+  function generateMonths() {
+    return dateRange(new Date(), new Date().setMonth(new Date().getMonth() + 5))
+  }
+
+  function dateRange(startDate, endDate) {
+    const months = differenceInMonths(endDate, startDate)
+    return [...Array(months + 1).keys()]
+      .map((i) => addMonths(startDate, i))
+      .map((i) => String(i.getFullYear() + '' + i.getMonth() + 1))
   }
 
   const CustomTooltipForMAU = ({ active, payload, label }) => {

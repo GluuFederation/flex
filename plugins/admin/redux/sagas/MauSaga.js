@@ -27,41 +27,9 @@ export function* getMau({ payload }) {
     payload = payload ? payload : { action: {} }
     addAdditionalData(audit, 'FETCH', 'MAU', payload)
     const mauApi = yield* newFunction()
+    console.log("Payload=======>"+JSON.stringify(payload.action.action_data))
     const data = yield call(mauApi.getMau, payload.action.action_data)
-    let months = payload.action.action_data.month.split('%')
-    for (let i = 0; i < months.length; i++) {
-      if (months[i].length != 6) {
-        months[i] = months[i].substr(2, 6)
-      }
-    }
-    const dataType = {
-      month: 202106,
-      monthly_active_users: 0,
-      token_count_per_granttype: {
-        authorization_code: {
-          access_token: 0,
-          id_token: 0,
-        },
-        client_credentials: {
-          access_token: 0,
-        },
-      },
-    }
-    var statData = []
-    for (let i = 0; i < months.length; i++) {
-      let temp = data.filter((e) => e.month.toString() === months[i])
-      if (temp.length > 0) {
-        statData.push(temp[0])
-      } else {
-        temp = { ...dataType }
-        temp.month = parseInt(months[i])
-        statData.push(temp)
-      }
-    }
-    statData.sort((a, b) => {
-      return a.month - b.month
-    })
-    yield put(getMauResponse(statData))
+    yield put(getMauResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getMauResponse(null))
