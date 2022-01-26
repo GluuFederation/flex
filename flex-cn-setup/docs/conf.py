@@ -13,7 +13,7 @@
 import os
 import re
 import sys
-sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath('../../'))
 
 
 def find_version(*file_paths):
@@ -35,7 +35,7 @@ copyright = '2020, Gluu'
 author = 'Gluu'
 
 # The full version, including alpha/beta/rc tags
-release = find_version("../pygluu/kubernetes/__init__.py")
+release = find_version("../../pygluu/kubernetes/__init__.py")
 
 
 # -- General configuration ---------------------------------------------------

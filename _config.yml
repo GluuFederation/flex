@@ -4,9 +4,9 @@ favicon: https://www.gluu.org/wp-content/uploads/2020/01/Gluu-Green-Icon-64.png
 buttons:
   - b0:
     text: Installer
-    href: /flex
+    href: /flex/flex-cn-setup
   - b1:
     text: Instructions
-    href: /flex/pygluu/kubernetes/templates/helm
+    href: /flex/flex-cn-setup/pygluu/kubernetes/templates/helm
 gems:
   - jekyll-seo-tag
