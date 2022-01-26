@@ -1,4 +1,3 @@
-import pytest
 from pygluu.kubernetes.pycert import setup_crts
 from pathlib import Path
 import logging

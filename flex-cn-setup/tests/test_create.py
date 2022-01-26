@@ -1,8 +1,5 @@
-from pygluu.kubernetes.create import create_parser, main
+from pygluu.kubernetes.create import create_parser
 import pygluu.kubernetes.create as module0
-import argparse
-import sys
-import pytest
 
 
 def test_empty_arg():

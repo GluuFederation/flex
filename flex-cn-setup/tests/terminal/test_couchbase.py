@@ -1,5 +1,3 @@
-import pytest
-
 def test_prompt_couchbase_ip(monkeypatch, settings):
     from pygluu.kubernetes.terminal.couchbase import PromptCouchbase
     from pygluu.kubernetes.terminal.helpers import gather_ip

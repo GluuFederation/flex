@@ -137,7 +137,7 @@ def analyze_filtered_dict_return_final_dict(filtered_all_repos_tags, major_offic
     final_official_version_dict = dict()
     final_dev_version_dict = dict()
     # Gluus main values.yaml
-    gluu_values_file = Path("../pygluu/kubernetes/templates/helm/gluu/values.yaml").resolve()
+    gluu_values_file = Path("../flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/values.yaml").resolve()
     gluu_values_file_parser = Parser(gluu_values_file, True)
     dev_version = ""
 
@@ -209,7 +209,7 @@ def main():
 
     filtered_all_repos_tags = filter_all_repo_dictionary_tags(all_repos_tags, major_official_version)
     final_gluu_versions_dict = analyze_filtered_dict_return_final_dict(filtered_all_repos_tags, major_official_version)
-    update_json_file(final_gluu_versions_dict, '../pygluu/kubernetes/templates/gluu_versions.json')
+    update_json_file(final_gluu_versions_dict, '../flex-cn-setup/pygluu/kubernetes/templates/gluu_versions.json')
 
 
 if __name__ == '__main__':

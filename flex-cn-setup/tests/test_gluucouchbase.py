@@ -1,5 +1,4 @@
-import pytest
-from pygluu.kubernetes.couchbase import set_memory_for_buckets, create_server_spec_per_cb_service, extract_couchbase_tar
+from pygluu.kubernetes.couchbase import create_server_spec_per_cb_service, extract_couchbase_tar
 from pathlib import Path
 import logging
 

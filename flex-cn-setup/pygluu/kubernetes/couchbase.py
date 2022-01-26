@@ -124,7 +124,7 @@ class Couchbase(object):
         """
         if self.settings.get("installer-settings.couchbase.install"):
             couchbase_tar_pattern = "couchbase-autonomous-operator-kubernetes_*.tar.gz"
-            directory = Path('.')
+            directory = Path('')
             try:
                 couchbase_tar_file = list(directory.glob(couchbase_tar_pattern))[0]
                 if "_1." in str(couchbase_tar_file.resolve()):
@@ -147,7 +147,7 @@ class Couchbase(object):
 
             return couchbase_tar_file, couchbase_source_folder
         # Couchbase is installed.
-        return Path("."), Path(".")
+        return Path(""), Path("")
 
     def create_couchbase_gluu_cert_pass_secrets(self, encoded_ca_crt_string, encoded_cb_pass_string,
                                                 encoded_cb_super_pass_string):

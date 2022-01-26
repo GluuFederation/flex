@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import patch, mock_open
 
 
 @pytest.mark.parametrize("given, expected", [
