@@ -4,5 +4,6 @@
 # These owners will be the default owners for everything in this branch of
 # the repo. Unless a later match takes precedence
 
-* @duttarnab @pujavs
-/.github/ @moabu @ossdhaval
+/flex-cn-setup/ @moabu @iromli
+/.github/ @moabu @iromli
+/admin-ui/ @syntrydy @duttarnab
