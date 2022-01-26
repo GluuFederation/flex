@@ -1,0 +1,21 @@
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<?init class="org.gluu.casa.plugins.inwebo.InweboInitiator"?>
+<?link rel="stylesheet" type="text/css" href="/styles/jquery-ui-1.12.1.min.css"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml"
+	xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute"
+	xmlns="native">
+
+	<h:title self="@define(title)">
+		${zkService.appName} - ${labels.inwebo_title}
+	</h:title>
+
+	<z:div
+		viewModel="@('org.gluu.casa.plugins.inwebo.InweboPublicVM')">
+
+
+	</z:div>
+
+
+
+</zk:zk>

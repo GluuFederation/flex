@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="globals.js">;</script>
+    <script src="enroll.js">;</script>
+    <script src="jquery-3.3.1.min.js">;</script>
+    <script>
+		var tokenURL;
+
+		function get2FAUserData() {
+			var endpoint = endpoints_root + "/../2fa/user-info"
+			var userid = $("#get2FAUserData_userid").val()
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericGET(endpoint + "/" + userid, [{name : "Authorization", value : t}]))
+				.then(response => {
+							$("#get2FAUserData_result").val(response)
+					})
+				.catch(r => err(r))
+		}
+
+		$(document).ready(
+			() => getTokenUrl(OIDCUrl).then(url => { tokenURL = url })
+		)
+	</script>
+</head>
+<body>
+<h1>User's 2FA</h1>
+
+<hr />
+<h2>get2FAUserData</h2>
+<label>userid
+    <input id="get2FAUserData_userid" style="width:380px">
+</label>
+<input type="button" value="get2FAUserData" onClick="get2FAUserData()" />
+
+<hr />
+<label>result
+    <textarea id="get2FAUserData_result" rows="2" cols="70" readonly="readonly">
+  </textarea>
+</label>
+
+<hr />
+<br>
+<input id="manual_token" onChange="token=this.value">
+
+</body>
+</html>

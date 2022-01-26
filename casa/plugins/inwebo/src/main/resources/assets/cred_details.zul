@@ -1,0 +1,142 @@
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<?link rel="stylesheet" type="text/css" href="/styles/jquery-ui-1.12.1.min.css"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns:ca="client/attribute" xmlns="native">
+
+    <h:title self="@define(title)">${zkService.appName} - ${labels.inwebo_title}</h:title>
+
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.plugins.inwebo.InweboVM')"
+           self="@define(maincontent)">
+
+        <z:include src="/back-home.zul" />
+        <div class="ph4 mb2">
+            <div class="alert alert-success dn" id="feedback-device-edit" role="alert" />
+        </div>
+
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
+
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.inwebo_title}</h2>
+                    <p>${labels.inwebo_text}</p>
+                    <!--z:label visible="@load(not empty vm.phones)" sclass="dark-blue2" value="${labels.usr.you_added}" /-->
+                </div>
+
+                <!-- device list -->
+                <z:div children="@load(vm.devices)">
+                    <zk:template name="children">
+                        <div class="${css.panel} flex justify-between">
+                            <div class="flex items-start">
+                            	<zk:zk if="${each.credentialType == 'va'}">
+                                	<img  src="${zkService.contextPath}/pl/inwebo-plugin/images/va.png" />
+    							</zk:zk>
+    							<zk:zk if="${each.credentialType == 'ma'}">   
+                                	<img  src="${zkService.contextPath}/pl/inwebo-plugin/images/ma.png" />
+    							</zk:zk>
+                                <p class="ml3 mb0">
+                                    <z:label sclass="f5 dark-blue2" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />
+                                    <br />
+                                    
+                                </p>
+                            </div>
+                            <div class="pt2">
+                                <h:button class="${css.editButton} mb2 mr2" w:onClick="prepareAlert()" onClick="@('prepareForUpdate', each)"
+                                          data-original-title="${labels.general.edit}" data-toggle="tooltip" data-placement="top">
+                                    <i class="fas fa-pencil-alt" />
+                                </h:button>
+                                <h:button class="${css.deleteButton} mb2" w:onClick="prepareAlert()" onClick="@('delete', each)"
+                                          data-original-title="${labels.general.delete}" data-toggle="tooltip" data-placement="top">
+                                    <i class="fas fa-trash-alt" />
+                                </h:button>
+                            </div>
+
+                        </div>
+                    </zk:template>
+                </z:div>
+                
+                <div class="${css.panel} bg-near-white">
+                    <h2 class="f5 dark-blue2 pt1">${labels.inwebo_add.device.title}</h2>
+
+                    <p>${labels.inwebo_install_ready}</p>
+                    <div class="mb2">
+                        <!-- do not change id of this button, see otp-util.js -->
+                        <z:button id="readyButton" label="${labels.general.ready}" sclass="${css.primaryButton} mr2" disabled="@load(vm.uiQRShown)"
+                                  w:onClick="alertRef = $('#feedback-device'); initialize('throbber')" onClick="@('showQR')" />
+                        <z:image id="throbber" src="${assetsService.prefix}/images/throbber.gif" visible="false" />
+                    </div>
+                    <p class="dark-blue2">${labels.inwebo_download}</p>
+
+                    <div class="alert alert-success dn" id="feedback-device" role="alert" />
+
+                    
+                     <z:div sclass="ph3-ns flex flex-column " visible="@load(vm.uiQRShown)">
+                           <z:div class="f5 dark-blue2 pt1"> 
+                         	  ${labels.inwebo_do.any.one.ofthe.following}
+                           </z:div>
+                           
+                           <z:div class="f7 pl3-ns gray" >
+                                ${labels.inwebo_scan.qr.code}
+
+                            </z:div>
+
+                            <div align="center" class="mb3"> <!-- these 2 must be grouped inside a div -->
+                                <div id="container"></div>
+                                <!--  div align="center" id="progressbar" class="${css.progressBar}"></div>-->
+                            </div>
+                            
+                           <z:div sclass="pt1 mb3">
+		            			            	
+				            	<z:div class="f7 pl3-ns gray" >${labels.inwebo_copy.paste.ma}
+				            	 <z:label sclass="f7 pl3-ns gray" value="@load(vm.activationCode)" visible="@load(not empty vm.activationCode)" />
+				             	</z:div>
+				             	<br/>
+				             	<z:div class="f7 pl3-ns gray" >${labels.inwebo_browser.activate.title}
+				            		<br/>
+				            		<z:div class="f7 pl3-ns gray" >
+				          		  		<z:label  value="@load(vm.activationURL)" visible="@load(not empty vm.activationURL)" />
+				            		</z:div>
+				             	</z:div>
+				             	<br/>
+				             	<z:div class="f7 pl3-ns gray" >${labels.inwebo_click.email.text}</z:div>
+				             	                            
+		                        <z:button label="${labels.inwebo_click.email.button.label}" sclass="${css.primaryButton} mr3" w:onClick="prepareAlert()"
+		                               onClick="@('sendEmail')" />
+		                        <br/>
+				          </z:div>
+                            
+                            
+                            
+                    </z:div>
+                    
+                </div>
+
+        		<z:window title="${labels.inwebo_edit}" border="normal" mode="modal" visible="@load(not empty vm.editingId)"
+                  closable="true" onClose="@('cancelUpdate', event)" sclass="${css.modalWindow}">
+
+		            <div sclass="pt1 mb3">
+		                <span class="db f7-cust gray">${labels.general.new_nick}</span>
+		                <div class="pa1">
+		                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.newDevice.credentialName)" onOK="@('update')"/>
+		                </div>
+		            </div>
+		            <div class="w-100 flex justify-center">
+		                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.update}"
+		                          w:onClick="prepareAlert()" onClick="@('update')" />
+		                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@('cancelUpdate', event)" />
+		            </div>
+        		</z:window>
+            </section>
+        </div>
+
+       
+
+    </z:div>
+
+    <z:div self="@define(extra)">
+        <z:script src="/scripts/jquery.qrcode-0.12.0.min.js" />
+        <z:script src="/scripts/jquery-ui-1.12.1.min.js" />
+        <z:script src="/scripts/gluu/gluu-auth.js" />
+        <z:script src="/scripts/gluu/otp-util.js" />
+    </z:div>
+
+</zk:zk>

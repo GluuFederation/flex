@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<!--head>
+	<script src="globals.js">;</script>
+	<script src="enroll.js">;</script>
+	<script src="u2f-api.js">;</script>
+	<script src="jquery-3.3.1.min.js">;</script>
+	<script>
+		var register_request = null
+		var register_timeout
+
+		//Triggers the u2f once some time has passed (allowing users to plug the security key to the USB port)
+		function triggerU2fRegistration(req, timeout, wait_start) {
+			register_request = req
+			register_timeout = timeout
+			setTimeout(startRegistration, wait_start)
+		}
+
+		//Performs u2f registration: uses the google u2f object to do all registering stuff (see u2f-api.js)
+		function startRegistration() {
+			u2f.register(register_request.registerRequests, register_request.authenticateRequests,
+					function (data) {
+						$("#sendRegistrationResult_result").val(JSON.stringify(data))
+					}, Math.floor(register_timeout/1000)    //expects seconds
+			)
+		}
+
+	</script>
+	<script>
+		var tokenURL;
+
+		function getRegistrationMessage() {
+			var endpoint = endpoints_root + "/u2f/registration-message"
+			var userid = encodeURIComponent($("#getRegistrationMessage_userid").val())
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericGET(endpoint + "?userid=" + userid, [{name : "Authorization", value : t}]))
+				.then(response => { alert(response); triggerU2fRegistration(JSON.parse(response), 8000, 300) })
+				.catch(r => err(r))
+		}
+
+		function sendRegistrationResult() {
+			var userid = $("#getRegistrationMessage_userid").val()
+			var endpoint = endpoints_root + "/u2f/registration/" + userid
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericPOST(endpoint, $("#sendRegistrationResult_result").val(), [{name : "Authorization", value : t}]))
+				.then(response => {
+							result = JSON.parse(response)
+							$("#nameEnrollment_key").val(result.id)
+							$("#nameEnrollment_userid").val(userid)
+					})
+				.catch(r => err(r))
+
+		}
+
+		function nameEnrollment() {
+
+			var userid = $("#nameEnrollment_userid").val()
+
+			var endpoint = endpoints_root + "/u2f/creds/" + userid
+			var cred = { "key" : $("#nameEnrollment_key").val(),
+						 "nickName": $("#nameEnrollment_nickname").val() }
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericPOST(endpoint, JSON.stringify(cred),
+								[{name : "Authorization", value : t},
+								 {name : "Content-Type", value : "application/json"}]))
+				.catch(r => err(r))
+
+		}
+
+		$(document).ready(
+			() => getTokenUrl(OIDCUrl).then(url => { tokenURL = url })
+		)
+	</script>
+</head-->
+<body>
+<!--
+<h1>Security keys</h1>
+
+<hr />
+<h2>getRegistrationMessage</h2>
+<label>userid
+  <input id="getRegistrationMessage_userid" style="width:380px">
+</label>
+<input type="button" value="getRegistrationMessage" onClick="getRegistrationMessage()" />
+<p>
+<i>Insert a security key, then press "getRegistrationMessage" button, it will start blinking...</i>
+</p>
+
+<hr />
+<h2>sendRegistrationResult</h2>
+<label>result
+  <textarea id="sendRegistrationResult_result" rows="2" cols="70">
+  </textarea>
+</label>
+<br><br>
+<label>userid
+  <input id="sendRegistrationResult_userid" style="width:380px">
+</label>
+<input type="button" value="sendRegistrationResult" onClick="sendRegistrationResult()" />
+
+<hr />
+<h2>nameEnrollment</h2>
+<label>userid
+  <input id="nameEnrollment_userid" style="width:380px">
+</label>
+<br><br>
+<label>key
+  <input id="nameEnrollment_key" style="width:380px">
+</label>
+<label>nickName
+  <input id="nameEnrollment_nickname">
+</label>
+<input type="button" value="nameEnrollment" onClick="nameEnrollment()" />
+
+<hr />
+<br>
+<input id="manual_token" onChange="token=this.value">
+-->
+</body>
+</html>

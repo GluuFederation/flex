@@ -1,0 +1,90 @@
+<?page language="xhtml"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns:w="client" xmlns="native">
+
+    <h:title self="@define(title)">${zkService.appName} - ${labels.sociallogin.title}</h:title>
+
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.plugins.accounts.vm.AccountLinkingViewModel')"
+           self="@define(maincontent)">
+
+        <z:include src="/back-home.zul"/>
+
+        <style>
+            /* override default bootstrap styling */
+            .table td, .table th {
+                vertical-align: middle;
+            }
+        </style>
+
+        <div class="${css['sectionsWrapper']}">
+            <section class="${css.section}">
+                <div class="${css.panel}">
+                    <h2 class="f4 dark-blue2">${labels.sociallogin.title}</h2>
+                    <p>
+                        <z:label id="temp" value="${c:l(empty vm.providers ? 'sociallogin.noproviders' : 'sociallogin.text')}" />
+                    </p>
+                    <div class="alert alert-success dn" id="feedback-social" role="alert" />
+
+                    <h:div unless="${empty vm.providers}" class="pa3 pb1">
+
+                        <z:div sclass="flex items-center flex-column pt2 ph3-ns">
+                            <table class="table table-sm">
+                                <h:tbody children="@load(vm.providers)" sclass="f7 table-striped">
+                                    <zk:template name="children">
+                                        <tr>
+                                            <td>
+                                                <h:div unless="${empty each.logoImg}"><img src="${each.logoImg}" width="65" /></h:div>
+                                            </td>
+                                            <td class="f6 dark-blue2">${each.displayName}</td>
+                                            <td>
+                                                <h:span visible="@load(vm.accounts.get(each) eq null)">
+                                                    ${labels.sociallogin.link_unavailable}
+                                                </h:span>
+                                                <z:div visible="@load(vm.accounts.get(each) ne null)">
+                                                    <span>${c:l2('sociallogin.link_status', c:split(vm.accounts.get(each).getY(), ':;'))}</span>
+                                                    <h:span visible="@load(not vm.accounts.get(each).getX())" sclass="db b">
+                                                        ${labels.sociallogin.link_disabled}
+                                                    </h:span>
+                                                </z:div>
+                                            </td>
+                                            <td>
+                                                <z:div visible="@load(vm.accounts.get(each) eq null)">
+                                                    <a href="interlude.zul?provider=${c:encodeURIComponent(each.id)}"
+                                                       target="_blank" w:onClick="initiateLink('${each.id}')"
+                                                       class="${css.primaryButton} lh-tight mt1 mr2">
+                                                        ${labels.sociallogin.buttons.link}
+                                                    </a>
+                                                </z:div>
+                                                <z:div visible="@load(vm.accounts.get(each) ne null)">
+                                                    <z:div visible="@load(not vm.accounts.get(each).getX())">
+                                                        <z:button label="${labels.sociallogin.buttons.enable}"
+                                                                  sclass="${css.secondaryButton} lh-tight mt1 mr2" onClick="@('enable', each)" />
+                                                    </z:div>
+                                                    <z:button label="${labels.sociallogin.buttons.remove}"
+                                                              sclass="${css.secondaryButton} lh-tight mt1" onClick="@('remove', each)" />
+                                                </z:div>
+                                            </td>
+                                        </tr>
+                                    </zk:template>
+                                </h:tbody>
+                            </table>
+                        </z:div>
+                    </h:div>
+
+                </div>
+            </section>
+        </div>
+    </z:div>
+
+    <z:div self="@define(extra)">
+        <script>
+            alertRef = $('#feedback-social')
+
+            function initiateLink(p) {
+                var widget =  zk.$('$temp');
+                zAu.send(new zk.Event(widget, "onData", p, {toServer:true}));
+            }
+        </script>
+    </z:div>
+
+</zk:zk>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="globals.js">;</script>
+	<script src="enroll.js">;</script>
+	<script src="jquery-3.3.1.min.js">;</script>
+	<script src="jquery-qrcode-0.14.0.js">;</script>
+	<script>
+		var tokenURL;
+
+		function qrRequest() {
+			var endpoint = endpoints_root + "/super_gluu/qr-request"
+			var remoteIP = encodeURIComponent($("#qrRequest_remoteIP").val())
+			var userid = $("#qrRequest_userid").val()
+			$("#nameEnrollment_userid").val(userid)
+			userid = encodeURIComponent(userid)
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericGET(endpoint + "?remoteIP=" + remoteIP + "&userid=" + userid, [{name : "Authorization", value : t}]))
+				.then(response => {
+							response = JSON.parse(response)
+							showQR(response.request)
+							$("#enrollmentReady_key").val(response.key)
+						})
+				.catch(r => err(r))
+
+		}
+
+		function showQR(qrRequest) {
+
+			//visit https://larsjung.de/jquery-qrcode/ for more info...
+			var options = {
+				render: 'canvas',
+				minVersion: 1,
+				maxVersion: 40,
+				ecLevel: 'L',
+				left: 0,
+				top: 0,
+				size: 320,
+				fill: '#000',
+				background: null,
+				text: qrRequest,
+				radius: 0,
+				quiet: 0,
+				mode: 0,
+				mSize: 0.1,
+				mPosX: 0.5,
+				mPosY: 0.5,
+				label: null,
+				fontname: 'sans',
+				fontcolor: '#000',
+				image: null
+			}
+			$("#qr_container").html("")
+			$("#qr_container").qrcode(options)
+
+		}
+
+		function enrollmentReady() {
+			var endpoint = endpoints_root + "/super_gluu/status"
+			var key = $("#enrollmentReady_key").val()
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericGET(endpoint + "?key=" + key, [{name : "Authorization", value : t}]))
+				.then(response => {
+						result = JSON.parse(response)
+						var keys = Object.keys(result)
+						i = 0
+						for (; (i < keys.length) && (keys[i] != "code"); i++);
+						if (i < keys.length) {
+							alert(response)
+						} else {
+							$("#nameEnrollment_key").val(result.id)
+						}
+					})
+				.catch(r => err(r))
+		}
+
+		function nameEnrollment() {
+
+			var userid = $("#nameEnrollment_userid").val()
+
+			var endpoint = endpoints_root + "/super_gluu/creds/" + userid
+			var cred = { "key" : $("#nameEnrollment_key").val(),
+						 "nickName": $("#nameEnrollment_nickname").val() }
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericPOST(endpoint, JSON.stringify(cred),
+								[{name : "Authorization", value : t},
+								 {name : "Content-Type", value : "application/json"}]))
+				.catch(r => err(r))
+
+		}
+
+		$(document).ready(
+			() => getTokenUrl(OIDCUrl).then(url => { tokenURL = url })
+		)
+	</script>
+</head>
+<body>
+
+<h1>Super Gluu</h1>
+
+<hr />
+<h2>qrRequest</h2>
+<label>userid
+  <input id="qrRequest_userid" style="width:380px">
+</label>
+<label>remote IP
+  <input id="qrRequest_remoteIP" placeHolder="optional field">
+</label>
+<input type="button" value="qrRequest" onClick="qrRequest()" />
+<p>
+<i>Scan the QR code that will appear below with Super Gluu once you press "qrRequest" button</i>
+</p>
+<div align="center" id="qr_container">
+</div>
+
+<hr />
+<h2>enrollmentReady</h2>
+<label>key
+  <input id="enrollmentReady_key">
+</label>
+<input type="button" value="enrollmentReady" onClick="enrollmentReady()" />
+
+<hr />
+<h2>nameEnrollment</h2>
+<label>userid
+  <input id="nameEnrollment_userid" style="width:380px">
+</label>
+<br><br>
+<label>key
+  <input id="nameEnrollment_key">
+</label>
+<label>nickName
+  <input id="nameEnrollment_nickname">
+</label>
+<input type="button" value="nameEnrollment" onClick="nameEnrollment()" />
+
+
+<hr />
+<br>
+<input id="manual_token" onChange="token=this.value">
+</body>
+</html>

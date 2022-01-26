@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://service.inwebo.com" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://service.inwebo.com" xmlns:intf="http://service.inwebo.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://service.inwebo.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="authenticate">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:string"/>
+      <element name="serviceId" type="xsd:string"/>
+      <element name="token" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateResponse">
+    <complexType>
+     <sequence>
+      <element name="authenticateReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateWithIp">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:string"/>
+      <element name="serviceId" type="xsd:string"/>
+      <element name="token" type="xsd:string"/>
+      <element name="ip" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateWithIpResponse">
+    <complexType>
+     <sequence>
+      <element name="authenticateWithIpReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateRadius">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:string"/>
+      <element name="radius_ip" type="xsd:string"/>
+      <element name="token" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateRadiusResponse">
+    <complexType>
+     <sequence>
+      <element name="authenticateRadiusReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateExtended">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:string"/>
+      <element name="serviceId" type="xsd:string"/>
+      <element name="token" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="authenticateExtendedResponse">
+    <complexType>
+     <sequence>
+      <element name="authenticateExtendedReturn" type="impl:AuthenticationResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="AuthenticationResult">
+    <sequence>
+     <element name="err" nillable="true" type="xsd:string"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="alias" nillable="true" type="xsd:string"/>
+     <element name="version" nillable="true" type="xsd:string"/>
+     <element name="platform" nillable="true" type="xsd:string"/>
+     <element name="type" nillable="true" type="xsd:string"/>
+     <element name="timestamp" nillable="true" type="xsd:dateTime"/>
+     <element name="mime" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <element name="sealVerify">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:string"/>
+      <element name="serviceId" type="xsd:string"/>
+      <element name="token" type="xsd:string"/>
+      <element name="data" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="sealVerifyResponse">
+    <complexType>
+     <sequence>
+      <element name="sealVerifyReturn" type="impl:AuthenticationResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="sealDeferredVerify">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:string"/>
+      <element name="serviceId" type="xsd:string"/>
+      <element name="token" type="xsd:string"/>
+      <element name="data" type="xsd:string"/>
+      <element name="s_date" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="sealDeferredVerifyResponse">
+    <complexType>
+     <sequence>
+      <element name="sealDeferredVerifyReturn" type="impl:AuthenticationResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="pushAuthenticate">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:string"/>
+      <element name="serviceId" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="pushAuthenticateResponse">
+    <complexType>
+     <sequence>
+      <element name="pushAuthenticateReturn" type="impl:PushAuthenticateResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="PushAuthenticateResult">
+    <sequence>
+     <element name="err" nillable="true" type="xsd:string"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="alias" nillable="true" type="xsd:string"/>
+     <element name="version" nillable="true" type="xsd:string"/>
+     <element name="platform" nillable="true" type="xsd:string"/>
+     <element name="type" nillable="true" type="xsd:string"/>
+     <element name="timestamp" nillable="true" type="xsd:dateTime"/>
+     <element name="sessionId" nillable="true" type="xsd:string"/>
+     <element name="mime" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <element name="checkPushResult">
+    <complexType>
+     <sequence>
+      <element name="userId" type="xsd:string"/>
+      <element name="serviceId" type="xsd:string"/>
+      <element name="sessionId" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="checkPushResultResponse">
+    <complexType>
+     <sequence>
+      <element name="checkPushResultReturn" type="impl:AuthenticationResult"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="sealDeferredVerifyRequest">
+
+      <wsdl:part element="impl:sealDeferredVerify" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateWithIpResponse">
+
+      <wsdl:part element="impl:authenticateWithIpResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="pushAuthenticateRequest">
+
+      <wsdl:part element="impl:pushAuthenticate" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="checkPushResultResponse">
+
+      <wsdl:part element="impl:checkPushResultResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateResponse">
+
+      <wsdl:part element="impl:authenticateResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="sealVerifyResponse">
+
+      <wsdl:part element="impl:sealVerifyResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="pushAuthenticateResponse">
+
+      <wsdl:part element="impl:pushAuthenticateResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateRadiusResponse">
+
+      <wsdl:part element="impl:authenticateRadiusResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateExtendedRequest">
+
+      <wsdl:part element="impl:authenticateExtended" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateWithIpRequest">
+
+      <wsdl:part element="impl:authenticateWithIp" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateRequest">
+
+      <wsdl:part element="impl:authenticate" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateExtendedResponse">
+
+      <wsdl:part element="impl:authenticateExtendedResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="sealVerifyRequest">
+
+      <wsdl:part element="impl:sealVerify" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="checkPushResultRequest">
+
+      <wsdl:part element="impl:checkPushResult" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateRadiusRequest">
+
+      <wsdl:part element="impl:authenticateRadius" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="sealDeferredVerifyResponse">
+
+      <wsdl:part element="impl:sealDeferredVerifyResponse" name="parameters">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="Authentication">
+
+      <wsdl:operation name="authenticate">
+
+         <wsdl:input message="impl:authenticateRequest" name="authenticateRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:authenticateResponse" name="authenticateResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateWithIp">
+
+         <wsdl:input message="impl:authenticateWithIpRequest" name="authenticateWithIpRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:authenticateWithIpResponse" name="authenticateWithIpResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateRadius">
+
+         <wsdl:input message="impl:authenticateRadiusRequest" name="authenticateRadiusRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:authenticateRadiusResponse" name="authenticateRadiusResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateExtended">
+
+         <wsdl:input message="impl:authenticateExtendedRequest" name="authenticateExtendedRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:authenticateExtendedResponse" name="authenticateExtendedResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="sealVerify">
+
+         <wsdl:input message="impl:sealVerifyRequest" name="sealVerifyRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:sealVerifyResponse" name="sealVerifyResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="sealDeferredVerify">
+
+         <wsdl:input message="impl:sealDeferredVerifyRequest" name="sealDeferredVerifyRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:sealDeferredVerifyResponse" name="sealDeferredVerifyResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="pushAuthenticate">
+
+         <wsdl:input message="impl:pushAuthenticateRequest" name="pushAuthenticateRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:pushAuthenticateResponse" name="pushAuthenticateResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="checkPushResult">
+
+         <wsdl:input message="impl:checkPushResultRequest" name="checkPushResultRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:checkPushResultResponse" name="checkPushResultResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="AuthenticationSoapBinding" type="impl:Authentication">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="authenticate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authenticateRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authenticateResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateWithIp">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authenticateWithIpRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authenticateWithIpResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateRadius">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authenticateRadiusRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authenticateRadiusResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticateExtended">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authenticateExtendedRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authenticateExtendedResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="sealVerify">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="sealVerifyRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="sealVerifyResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="sealDeferredVerify">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="sealDeferredVerifyRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="sealDeferredVerifyResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="pushAuthenticate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="pushAuthenticateRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="pushAuthenticateResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="checkPushResult">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="checkPushResultRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="checkPushResultResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="AuthenticationService">
+
+      <wsdl:port binding="impl:AuthenticationSoapBinding" name="Authentication">
+
+         <wsdlsoap:address location="https://api.myinwebo.com/v2/services/Authentication"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

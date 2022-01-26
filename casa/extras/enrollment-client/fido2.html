@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="globals.js">;</script>
+	<script src="enroll.js">;</script>
+    <script src="base64js.js">;</script>
+    <script src="base64url.js">;</script>
+    <script src="webauthn.js">;</script>
+	<script src="jquery-3.3.1.min.js">;</script>
+	<script>
+		var register_request = null
+		var register_timeout
+
+        function triggerFido2Attestation(req){
+            //Wait half a second to start attestation
+            setTimeout(startAttestation, 500, req)
+        }
+
+        function startAttestation(request) {
+            console.log('Executing get attestation Fido2 request', JSON.stringify(request))
+            webauthn.createCredential(request)
+                .then(t => {
+                    $("#sendRegistrationResult_result").val(JSON.stringify(webauthn.responseToObject(t)))
+                    $("#sendRegistrationResult_userid").val($("#getAttestationMessage_userid").val())
+                })
+                .catch(r => err(r))
+        }
+
+
+	</script>
+	<script>
+		var tokenURL;
+
+		function getAttestationMessage() {
+			var endpoint = endpoints_root + "/fido2/attestation"
+			var userid = encodeURIComponent($("#getAttestationMessage_userid").val())
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericGET(endpoint + "?userid=" + userid, [{name : "Authorization", value : t}]))
+				.then(response => { triggerFido2Attestation(JSON.parse(response)) })
+				.catch(r => err(r))
+		}
+
+		function sendRegistrationResult() {
+			var userid = $("#sendRegistrationResult_userid").val()
+			var endpoint = endpoints_root + "/fido2/registration/" + userid
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericPOST(endpoint, $("#sendRegistrationResult_result").val(),
+				            [{name : "Authorization", value : t},
+				             {name : "Content-Type", value : "application/json"}]))
+				.then(response => {
+							result = JSON.parse(response)
+							$("#nameEnrollment_key").val(result.id)
+							$("#nameEnrollment_userid").val(userid)
+					})
+				.catch(r => err(r))
+
+		}
+
+		function nameEnrollment() {
+
+			var userid = $("#nameEnrollment_userid").val()
+
+			var endpoint = endpoints_root + "/fido2/creds/" + userid
+			var cred = { "key" : $("#nameEnrollment_key").val(),
+						 "nickName": $("#nameEnrollment_nickname").val() }
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericPOST(endpoint, JSON.stringify(cred),
+								[{name : "Authorization", value : t},
+								 {name : "Content-Type", value : "application/json"}]))
+				.catch(r => err(r))
+
+		}
+
+		$(document).ready(
+			() => getTokenUrl(OIDCUrl).then(url => { tokenURL = url })
+		)
+	</script>
+</head>
+<body>
+
+<h1>Security keys</h1>
+<h6>Account that per spec the domain requesting registration of keys must match (or be a subdomain) of the webauthn RP ID, namely the FQDN of your Gluu server</h6>
+<hr />
+<h2>getAttestationMessage</h2>
+<label>userid
+  <input id="getAttestationMessage_userid" style="width:380px">
+</label>
+<input type="button" value="getAttestationMessage" onClick="getAttestationMessage()" />
+<p>
+<i>Insert a security key, then press "getAttestationMessage" button, it will start blinking...</i>
+</p>
+
+<hr />
+<h2>sendRegistrationResult</h2>
+<label>result
+  <textarea id="sendRegistrationResult_result" rows="2" cols="70">
+  </textarea>
+</label>
+<br><br>
+<label>userid
+  <input id="sendRegistrationResult_userid" style="width:380px">
+</label>
+<input type="button" value="sendRegistrationResult" onClick="sendRegistrationResult()" />
+
+<hr />
+<h2>nameEnrollment</h2>
+<label>userid
+  <input id="nameEnrollment_userid" style="width:380px">
+</label>
+<br><br>
+<label>key
+  <input id="nameEnrollment_key" style="width:380px">
+</label>
+<label>nickName
+  <input id="nameEnrollment_nickname">
+</label>
+<input type="button" value="nameEnrollment" onClick="nameEnrollment()" />
+
+<hr />
+<br>
+<input id="manual_token" onChange="token=this.value">
+
+</body>
+</html>

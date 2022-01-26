@@ -1,0 +1,85 @@
+<?page language="xhtml"?>
+<?init class="org.gluu.casa.core.navigation.AdminProtectionInitiator"?>
+<?init class="org.zkoss.zk.ui.util.Composition" template="/general.zul"?>
+<zk:zk xmlns:z="http://www.zkoss.org/2005/zul" xmlns:h="xhtml" xmlns:zk="zk" xmlns="native">
+
+    <h:title self="@define(title)">${zkService.appName} - ${labels.clientsM.title}</h:title>
+
+    <z:div if="${empty pageScope.error}" viewModel="@('org.gluu.casa.plugins.clientmanager.ClientManagerVM')"
+           self="@define(maincontent)">
+
+        <z:include src="/back-home.zul"/>
+
+        <div class="${css['sectionsWrapper']}">
+
+            <section class="${css.section}">
+                <!-- builds an accordion by iterating through the existing clients (see ClientService#getClients) -->
+                <z:div id="accordion" class="${css.panel}" children="@load(vm.clients)">
+                    <zk:template name="children" var="client">
+                        <!-- Inside this template, the variable client correspond to an object of class Client -->
+
+                        <div class="card br0">
+                            <div class="card-header">
+                                <h:a class="dark-blue2" data-toggle="collapse" href="@load(c:cat('#', clientStatus.index))">
+                                    <!-- Here an EL expression is used instead of @load(...) . This is so because
+                                         the list of clients is static once the page is loaded -->
+                                    ${client.displayName}
+                                </h:a>
+                            </div>
+                        </div>
+
+                        <h:div id="@load(clientStatus.index)" sclass="show" data-parent="#accordion">
+                            <div class="card-body">
+
+                                <!-- Show the following message if the list of owners is empty -->
+                                <z:label visible="@load(empty client.owners)" value="${labels.clientsM.no_owners}" />
+
+                                <!-- Show the list only if the owners list is not empty -->
+                                <h:ul unless="@load(empty client.owners)" sclass="pl0" children="@load(client.owners)">
+                                    <zk:template name="children">
+                                        <!-- Inside this template, the variable each correspond to a string (DN of a person) -->
+                                        <li class="db">
+                                            <!-- show the name of the person using the Map (see ClientManagerVM#getPeople) -->
+                                            <z:label value="@load(vm.people.get(each))" />
+                                            -
+                                            <!-- To have access to the outer each (ie. a Client), we use forEachStatus.previous.each -->
+                                            <z:a onClick="@('remove', client, each)">
+                                                ${labels.clientsM.remove}
+                                            </z:a>
+                                        </li>
+                                    </zk:template>
+                                </h:ul>
+
+                                <z:button label="${labels.clientsM.add}" sclass="${css.secondaryButton}"
+                                          onClick="@('prepareForAdd', client)" />
+
+                            </div>
+                        </h:div>
+
+                    </zk:template>
+                </z:div>
+            </section>
+
+        </div>
+
+        <!-- this is a modal window used when "add users" button is pressed -->
+        <z:window title="${labels.clientsM.search}" border="normal" mode="modal" visible="@load(vm.addingTo ne null)"
+                  closable="true" onClose="@('cancelAdd')" sclass="${css.modalWindow}">
+
+            <div sclass="pt1 mb3 mw6">
+                <span class="db f7-cust gray">${labels.clientsM.search_detail}</span>
+                <div class="pa1">
+                    <z:textbox sclass="${css.textInput} w-100" value="@bind(vm.searchPattern)" onOK="@('search')"/>
+                </div>
+                <z:label sclass="red f7" value="@load(vm.searchMessage)" />
+            </div>
+            <div class="w-100 flex justify-center">
+                <z:button sclass="${css.primaryButton} mr3" label="${labels.general.search}" onClick="@('search')" />
+                <z:button sclass="${css.tertiaryButton}" label="${labels.general.cancel}" onClick="@('cancelAdd')" />
+            </div>
+
+        </z:window>
+
+    </z:div>
+
+</zk:zk>
