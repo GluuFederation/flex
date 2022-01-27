@@ -9,6 +9,7 @@ import ScriptListPage from './components/CustomScripts/ScriptListPage'
 import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
 import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
 import SettingsPage from './components/Settings/SettingsPage'
+import ActiveUsersPage from './components/ActiveUsers/ActiveUsers'
 
 import mauSaga from './redux/sagas/MauSaga'
 import scriptSaga from './redux/sagas/CustomScriptSaga'
@@ -95,7 +96,7 @@ const pluginMetadata = {
       permission: ACR_READ,
     },
     {
-      component: MonthlyActiveUsersPage,
+      component: ActiveUsersPage,
       path: PLUGIN_BASE_APTH + '/mau',
       permission: ACR_READ,
     },
