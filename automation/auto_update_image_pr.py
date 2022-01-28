@@ -1,216 +1,55 @@
 import os
-import json
-from common import update_json_file, get_logger, exec_cmd
-from yamlparser import Parser
-from pathlib import Path
 
-logger = get_logger("update-image")
+from dateutil.parser import parse
+from dockerfile_parse import DockerfileParser
+from requests_html import HTMLSession
 
 
-# Functions that work to update gluu_versions.json
+def should_update_build(last_build, new_build):
+    def as_date(text):
+        return parse(text, fuzzy_with_tokens=False)
 
-def determine_final_official_and_dev_version(tag_list):
-    """
-    Determine official version i.e 4.1.0 , 4.2.1..etc using auth-servers repo
-    @param tag_list:
-    @return:
-    """
-    # Check for the highest major.minor.patch i.e 4.2.0 vs 4.2.1
-    dev_image = ""
-    patch_list = []
-    for tag in tag_list:
-        patch_list.append(int(tag[4:5]))
-    # Remove duplicates
-    patch_list = list(set(patch_list))
-    # Sort
-    patch_list.sort()
-    highest_major_minor_patch_number = str(patch_list[-1])
-    versions_list = []
-    for tag in tag_list:
-        if "dev" in tag and tag[4:5] == highest_major_minor_patch_number:
-            dev_image = tag[0:5] + "_dev"
-        # Exclude any tag with the following
-        if "dev" not in tag and "a" not in tag and tag[4:5] == highest_major_minor_patch_number:
-            versions_list.append(int(tag[6:8]))
-    # A case were only a dev version of a new patch is available then a lower stable patch should be checked.
-    # i.e there is no 4.2.2_01 but there is 4.2.2_dev
-    if not versions_list:
-        highest_major_minor_patch_number = str(int(highest_major_minor_patch_number) - 1)
-        for tag in tag_list:
-            if not dev_image and "dev" in tag and tag[4:5] == highest_major_minor_patch_number:
-                dev_image = tag[0:5] + "_dev"
-            # Exclude any tag with the following
-            if "dev" not in tag and "a" not in tag and tag[4:5] == highest_major_minor_patch_number:
-                versions_list.append(int(tag[6:8]))
+    return as_date(new_build) > as_date(last_build)
 
 
-    # Remove duplicates
-    versions_list = list(set(versions_list))
-    # Sort
-    versions_list.sort()
-    # Return highest patch
-    highest_major_minor_patch_image_patch = str(versions_list[-1])
-    if len(highest_major_minor_patch_image_patch) == 1:
-        highest_major_minor_patch_image_patch = "0" + highest_major_minor_patch_image_patch
-
-    highest_major_minor_patch_image = ""
-    for tag in tag_list:
-        if "dev" not in tag and highest_major_minor_patch_image_patch in tag \
-                and tag[4:5] == highest_major_minor_patch_number:
-            highest_major_minor_patch_image = tag
-
-    return highest_major_minor_patch_image, dev_image
-
-
-def determine_major_version(all_repos_tags):
-    """
-    Determine official major version i.e 4.1 , 4.2..etc using auth-servers repo
-    @param all_repos_tags:
-    @return:
-    """
-    versions_list = []
-    for tag in all_repos_tags["auth-server"]:
-        # Exclude any tag with the following
-        if "dev" not in tag \
-                and "latest" not in tag \
-                and "secret" not in tag \
-                and "gluu-engine" not in tag:
-            versions_list.append(float(tag[0:3]))
-    # Remove duplicates
-    versions_list = list(set(versions_list))
-    # Sort
-    versions_list.sort()
-    # Return highest version
-    return versions_list[-1]
-
-
-def get_docker_repo_tag(org, repo):
-    """
-    Returns a dictionary of all available tags for a certain repo
-    :param org:
-    :param repo:
-    :return:
-    """
-    logger.info("Getting docker tag for repository {}.".format(repo))
-    exec_get_repo_tag_curl_command = ["curl", "-s",
-                                      "https://hub.docker.com/v2/repositories/{}/{}/tags/?page_size=100".format(org,
-                                                                                                                repo)]
-    stdout, stderr, retcode = None, None, None
+def update_image(image, source_url_env, build_date_env):
+    dfparser = DockerfileParser(f'../{image}')
+    version = dfparser.labels["version"]
     try:
-        stdout, stderr, retcode = exec_cmd(" ".join(exec_get_repo_tag_curl_command))
+        base_url = os.path.dirname(dfparser.envs[source_url_env])
+        pkg_url = os.path.basename(dfparser.envs[source_url_env])
+    except KeyError:
+        print(f'Docker image {image} does not contain any packages to update')
+        return False
+    session = HTMLSession()
+    req = session.get(base_url)
+    if not req.ok:
+        return
 
-    except (IndexError, Exception):
-        manual_curl_command = " ".join(exec_get_repo_tag_curl_command)
-        logger.error("Failed to curl\n{}".format(manual_curl_command))
-    all_tags = json.loads(stdout)["results"]
-    image_tags = []
-    for tag in all_tags:
-        image_tags.append(tag["name"])
-    image_tags_dict = dict()
-    image_tags_dict[repo] = image_tags
-    return image_tags_dict
+    new_build = req.html.xpath(
+        f"//a[contains(@href, '{pkg_url}')]/../following-sibling::td",
+        first=True,
+    ).text
 
-
-def filter_all_repo_dictionary_tags(all_repos_tags, major_official_version):
-    """
-    Analyze the dictionary containing all repos and keeps only the  list of tags and versions matching the major version
-    @param all_repos_tags:
-    @param major_official_version:
-    """
-    filtered_all_repos_tags = dict()
-
-    for repo, tag_list in all_repos_tags.items():
-        temp_filtered_tag_list = []
-        for tag in tag_list:
-            if major_official_version == tag[0:3]:
-                temp_filtered_tag_list.append(tag)
-        filtered_all_repos_tags[repo] = temp_filtered_tag_list
-    return filtered_all_repos_tags
-
-
-def analyze_filtered_dict_return_final_dict(filtered_all_repos_tags, major_official_version):
-    """
-    Analyze filtered dictionary and return the final dict with only one official version and one dev version
-    @param filtered_all_repos_tags:
-    @param major_official_version:
-    """
-    final_official_version_dict = dict()
-    final_dev_version_dict = dict()
-    # Gluus main values.yaml
-    gluu_values_file = Path("../flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/values.yaml").resolve()
-    gluu_values_file_parser = Parser(gluu_values_file, True)
-    dev_version = ""
-
-    def update_dicts_and_yamls(name, rep, tags_list, helm_name=None, janssen_repo=False):
-        final_tag, final_dev_tag = determine_final_official_and_dev_version(tags_list)
-        final_official_version_dict[name + "_IMAGE_NAME"] = "gluufederation/" + rep
-        final_dev_version_dict[name + "_IMAGE_NAME"] = "gluufederation/" + rep
-        if janssen_repo:
-            final_official_version_dict[name + "_IMAGE_NAME"] = "janssenproject/" + rep
-            final_dev_version_dict[name + "_IMAGE_NAME"] = "janssenproject/" + rep
-
-        final_official_version_dict[name + "_IMAGE_TAG"], final_dev_version_dict[name + "_IMAGE_TAG"] \
-            = final_tag, final_dev_tag
-
-    for repo, tag_list in filtered_all_repos_tags.items():
-        official_version, dev_version = determine_final_official_and_dev_version(tag_list)
-        if repo == "casa":
-            update_dicts_and_yamls("CASA", repo, tag_list)
-        elif repo == "client-api":
-            update_dicts_and_yamls("CLIENT_API", repo, tag_list)
-        elif repo == "fido2":
-            update_dicts_and_yamls("FIDO2", repo, tag_list, janssen_repo=True)
-        elif repo == "scim":
-            update_dicts_and_yamls("SCIM", repo, tag_list, janssen_repo=True)
-        elif repo == "configuration-manager":
-            update_dicts_and_yamls("CONFIG", repo, tag_list, "config", janssen_repo=True)
-        elif repo == "cr-rotate":
-            update_dicts_and_yamls("CACHE_REFRESH_ROTATE", repo, tag_list)
-        elif repo == "certmanager":
-            update_dicts_and_yamls("CERT_MANAGER", repo, tag_list, "auth-server-key-rotation", janssen_repo=True)
-        elif repo == "opendj":
-            update_dicts_and_yamls("LDAP", repo, tag_list, "opendj")
-        elif repo == "jackrabbit":
-            update_dicts_and_yamls("JACKRABBIT", repo, tag_list)
-        elif repo == "auth-server":
-            update_dicts_and_yamls("AUTH_SERVER", repo, tag_list, janssen_repo=True)
-        elif repo == "oxpassport":
-            update_dicts_and_yamls("OXPASSPORT", repo, tag_list)
-        elif repo == "oxshibboleth":
-            update_dicts_and_yamls("OXSHIBBOLETH", repo, tag_list)
-        elif repo == "persistence":
-            update_dicts_and_yamls("PERSISTENCE", repo, tag_list, janssen_repo=True)
-        elif repo == "upgrade":
-            update_dicts_and_yamls("UPGRADE", repo, tag_list)
-    gluu_versions_dict = {major_official_version: final_official_version_dict,
-                          dev_version: final_dev_version_dict}
-    gluu_values_file_parser.dump_it()
-    return gluu_versions_dict
+    if should_update_build(dfparser.envs[build_date_env], new_build):
+        print(f"Updating {image} {build_date_env} to {new_build}")
+        # update Dockerfile in-place
+        dfparser.envs[build_date_env] = new_build
+    else:
+        print(f"No updates found for {image} {build_date_env}")
 
 
 def main():
-    all_repos_tags = dict()
-    org = os.environ.get("CN_ORG_NAME", "gluufederation")
-    gluu_docker_repositories_names_used_in_cn = ["casa",
-                                                 "cr-rotate", "opendj", "jackrabbit", "oxpassport", "oxshibboleth",
-                                                 "upgrade"]
-    jans_docker_repositories_names_used_in_cn = ["fido2", "scim", "configuration-manager",
-                                                 "certmanager", "auth-server",
-                                                 "client-api", "persistence"]
+    docker_image_folders = [name for name in os.listdir("../") if
+                            os.path.isdir(os.path.join("../", name)) and "docker" in name]
 
-    for repo in gluu_docker_repositories_names_used_in_cn:
-        all_repos_tags.update(get_docker_repo_tag(org, repo))
-
-    for repo in jans_docker_repositories_names_used_in_cn:
-        org = "janssenproject"
-        all_repos_tags.update(get_docker_repo_tag(org, repo))
-
-    major_official_version = str(determine_major_version(all_repos_tags))
-
-    filtered_all_repos_tags = filter_all_repo_dictionary_tags(all_repos_tags, major_official_version)
-    final_gluu_versions_dict = analyze_filtered_dict_return_final_dict(filtered_all_repos_tags, major_official_version)
-    update_json_file(final_gluu_versions_dict, '../flex-cn-setup/pygluu/kubernetes/templates/gluu_versions.json')
+    for image in docker_image_folders:
+        try:
+            update_image(image, "CN_SOURCE_URL", "CN_BUILD_DATE")
+        except KeyError:
+            print(f'Docker image {image} does not contain any packages to update')
+            continue
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
