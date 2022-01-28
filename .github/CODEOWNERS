@@ -6,5 +6,6 @@
 
 /flex-cn-setup/ @moabu @iromli
 /.github/ @moabu @iromli
+/docker-*/ @moabu @iromli
 /admin-ui/ @syntrydy @duttarnab
 /casa/ @jgomer2001 @maduvena
