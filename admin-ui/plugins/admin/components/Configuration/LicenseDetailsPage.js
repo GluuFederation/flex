@@ -35,6 +35,16 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
     dispatch(getLicenseDetails({}))
   }, [])
 
+  function formatDate(date) {
+    if(date == undefined) {
+      return '';
+    }
+    if(date.length > 10) {
+      return date.substring(0, 10);
+    }
+    return '';
+
+  }
   return (
     <React.Fragment>
       <Card className="mb-3">
@@ -137,7 +147,7 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                     <Col sm={6}>
                       <GluuFormDetailRow
                         label="fields.validityPeriod"
-                        value={item.validityPeriod}
+                        value={formatDate(item.validityPeriod)}
                         isBadge={true}
                         lsize={3}
                         rsize={9}
