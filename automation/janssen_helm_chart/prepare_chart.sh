@@ -1,14 +1,12 @@
 #!/bin/bash
 set -e
 
-mkdir -p /home/runner/work/test
-git clone --recursive --depth 1 --branch master https://github.com/GluuFederation/flex.git /home/runner/work/test/
-temp_chart_folder="/home/runner/work/test/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/charts"
-rm /home/runner/work/test/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/openbanking-values.yaml
-rm /home/runner/work/test/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/openbanking-helm.md
-rm /home/runner/work/test/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/charts/config/templates/upgrade-ldap-101-jans.yaml
-rm /home/runner/work/test/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/charts/config/ob-secrets.yaml
-rm /home/runner/work/test/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/charts/config/admin-ui-secrets.yaml
+temp_chart_folder="charts/janssen"
+rm ${temp_chart_folder}/openbanking-values.yaml
+rm ${temp_chart_folder}/openbanking-helm.md
+rm ${temp_chart_folder}/charts/config/templates/upgrade-ldap-101-jans.yaml
+rm ${temp_chart_folder}/charts/config/ob-secrets.yaml
+rm ${temp_chart_folder}/charts/config/admin-ui-secrets.yaml
 services="casa jackrabbit oxpassport oxshibboleth admin-ui cn-istio-ingress"
 for service in $services; do
   rm -rf "${temp_chart_folder:?}/""$service"
