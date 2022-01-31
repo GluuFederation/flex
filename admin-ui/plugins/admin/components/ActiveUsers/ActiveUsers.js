@@ -1,53 +1,141 @@
-import React from 'react'
-import 'react-date-range/dist/styles.css'
-import { format, formatDistance, formatRelative, addMonths, subMonths } from 'date-fns'
-import 'react-date-range/dist/theme/default.css'
+import React, { useState, useEffect } from 'react'
+import { addMonths, subMonths, addDays } from 'date-fns'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import { getMau } from './../../redux/actions/MauActions'
+import applicationstyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import { DateRangePicker, DateRange} from 'react-date-range'
 import {
   Button,
   Card,
   CardFooter,
   CardBody,
   FormGroup,
-  Label,
-  Input,
-  Badge,
+  Col,
 } from '../../../../app/components'
+import {
+  hasBoth,
+  buildPayload,
+  STAT_READ,
+  STAT_JANS_READ,
+} from '../../../../app/utils/PermChecker'
+import {
+  LineChart,
+  XAxis,
+  YAxis,
+  Line,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-function ActiveUsers() {
+function ActiveUsers({ stat, permissions, loading, dispatch }) {
+  console.log('==========================Stat ' + JSON.stringify(stat))
   const { t } = useTranslation()
-  const selectionRange = {
-    startDate:  subMonths(new Date(),2),
-    endDate: addMonths(new Date(),3),
-    key: 'selection',
+  const userAction = {}
+  const options = {}
+  useEffect(() => {
+    options['month'] = getMonths()
+    buildPayload(userAction, 'GET MAU', options)
+    dispatch(getMau(userAction))
+  }, [])
+  function search() {
+    options['month'] = getMonths()
+    buildPayload(userAction, 'GET MAU', options)
+    dispatch(getMau(userAction))
   }
-  function handleSelect(ranges) {
-    console.log(ranges)
+  function getMonths() {
+    let month =
+      getMonth(startDate) +
+      startDate.getFullYear() +
+      '%' +
+      getMonth(endDate) +
+      endDate.getFullYear()
+    console.log('=============================' + month)
+    return month
   }
+  function getMonth(startDate) {
+    let value = String(startDate.getMonth() + 1)
+    if (value.length > 1) {
+      return value
+    } else {
+      return '0' + value
+    }
+  }
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(addMonths(new Date(), 1))
+
+  const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
+    <Button
+      color="primary"
+      outline
+      style={applicationstyle.buttonStyle}
+      className="example-custom-input"
+      onClick={onClick}
+      ref={ref}
+    >
+      {value}
+      {'  '}
+    </Button>
+  ))
+
   return (
     <Card>
       <GluuRibbon title={t('titles.active_users')} fromLeft />
       <FormGroup row />
       <FormGroup row />
-      <CardBody
-        className="d-flex flex-column justify-content-center align-items-center pt-5"
-        style={{ minHeight: '400px' }}
-      >
-        <DateRangePicker
-          ranges={[selectionRange]}
-          showSelectionPreview={false}
-          showMonthAndYearPickers={false}
-          showMonthAndYearPickers={false}
-          onChange={handleSelect}
-        />
+      <FormGroup row />
+      <CardBody>
+        <FormGroup row>
+          <Col sm={4}>
+            <GluuLabel label="Start" />
+            <DatePicker
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              selectsStart
+              isClearable
+              startDate={startDate}
+              dateFormat="MM/yyyy"
+              showMonthYearPicker
+              endDate={endDate}
+              placeholderText="Select the starting month"
+              customInput={<CustomButton />}
+            />
+          </Col>
+
+          <Col sm={4}>
+            <GluuLabel label="End" />
+            <DatePicker
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              selectsEnd
+              isClearable
+              startDate={startDate}
+              endDate={endDate}
+              dateFormat="MM/yyyy"
+              showMonthYearPicker
+              minDate={startDate}
+              customInput={<CustomButton />}
+              placeholderText="Select the end month"
+            />
+          </Col>
+          <Col sm={4}> </Col>
+        </FormGroup>
       </CardBody>
       <CardFooter className="p-4 bt-0"></CardFooter>
     </Card>
   )
 }
-
-export default ActiveUsers
+const mapStateToProps = (state) => {
+  return {
+    stat: state.mauReducer.stat,
+    loading: state.mauReducer.loading,
+    permissions: state.authReducer.permissions,
+  }
+}
+export default connect(mapStateToProps)(ActiveUsers)
