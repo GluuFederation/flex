@@ -72,7 +72,7 @@ base.download(urljoin(maven_base_url, 'admin-ui-plugin/{0}{1}/admin-ui-plugin-{0
 base.download('https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/server/src/main/resources/log4j2.xml', log4j2_path)
 base.download('https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/plugins/admin-ui-plugin/config/log4j2-adminui.xml', log4j2_adminui_path)
 base.download('https://github.com/GluuFederation/gluu-admin-ui/archive/refs/heads/{}.zip'.format(app_versions['ADMIN_UI_FRONTEND_BRANCH']), gluu_admin_ui_source_path)
-base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/flex-linux-setup/auiConfiguration.properties'.format(app_versions['SETUP_BRANCH']), admin_ui_config_properties_path)
+base.download('https://raw.githubusercontent.com/GluuFederation/flex/{}/flex-linux-setup/auiConfiguration.properties'.format(app_versions['SETUP_BRANCH']), admin_ui_config_properties_path)
 
 
 print("Installing Gluu Admin UI Frontend")
