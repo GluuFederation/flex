@@ -674,53 +674,6 @@ config-api:
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
   additionalAnnotations: { }
-# -- CacheRefreshRotation is a special container to monitor cache refresh on oxTrust containers. This may be depreciated.
-cr-rotate:
-  # -- Add custom normal and secret envs to the service
-  usrEnvs:
-    # -- Add custom normal envs to the service
-    # variable1: value1
-    normal: {}
-    # -- Add custom secret envs to the service
-    # variable1: value1
-    secret: {}
-  # -- Add custom dns policy
-  dnsPolicy: ""
-  # -- Add custom dns config
-  dnsConfig: {}
-  image:
-    # -- Image pullPolicy to use for deploying.
-    pullPolicy: IfNotPresent
-    # -- Image  to use for deploying.
-    repository: gluufederation/cr-rotate
-    # -- Image  tag to use for deploying.
-    tag: 5.0.0_dev
-    # -- Image Pull Secrets
-    pullSecrets: [ ]
-  # -- Resource specs.
-  resources:
-    limits:
-      # -- CPU limit.
-      cpu: 200m
-      # -- Memory limit.
-      memory: 200Mi
-    requests:
-      # -- CPU request.
-      cpu: 200m
-      # -- Memory request.
-      memory: 200Mi
-  service:
-    # -- Name of the cr-rotate service. Please keep it as default.
-    crRotateServiceName: cr-rotate
-  # -- Configure any additional volumes that need to be attached to the pod
-  volumes: []
-  # -- Configure any additional volumesMounts that need to be attached to the containers
-  volumeMounts: []
-
-  # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
-  additionalLabels: { }
-  # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
-  additionalAnnotations: { }
 # -- FIDO 2.0 (FIDO2) is an open authentication standard that enables leveraging common devices to authenticate to online services in both mobile and desktop environments.
 fido2:
   # -- Configure the HorizontalPodAutoscaler
@@ -949,9 +902,6 @@ global:
       configApiLogTarget: "STDOUT"
       # -- configapi.log level
       configApiLogLevel: "INFO"
-  cr-rotate:
-    # -- Boolean flag to enable/disable the cr-rotate chart.
-    enabled: false
   # -- Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services.
   fqdn: demoexample.gluu.org
   fido2:

@@ -47,7 +47,7 @@ resources:
     # -- Memory request.
     memory: 1000Mi
 service:
-  # -- The name of the oxShibboleth port within the oxPassport service. Please keep it as default.
+  # -- The name of the oxShibboleth port within the oxShibboleth service. Please keep it as default.
   port: 8080
   targetPort: 8080
   # -- Port of the oxShibboleth service. Please keep it as default.
@@ -68,7 +68,7 @@ livenessProbe:
   initialDelaySeconds: 30
   periodSeconds: 30
   timeoutSeconds: 5
-# -- Configure the readiness healthcheck for the casa if needed.
+# -- Configure the readiness healthcheck for the oxshibboleth if needed.
 readinessProbe:
   httpGet:
     # -- http liveness probe endpoint

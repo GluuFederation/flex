@@ -13,7 +13,7 @@ home: https://gluu.org/docs/gluu-server
 sources:
   - https://github.com/kubernetes/ingress-nginx
   - https://kubernetes.io/docs/concepts/services-networking/ingress/
-  - https://github.com/GluuFederation/cloud-native-edition/tree/4.3/pygluu/kubernetes/templates/helm/gluu/charts/nginx-ingress
+  - https://github.com/GluuFederation/flex/tree/main/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/charts/nginx-ingress
 maintainers:
   - name: Mohammad Abudayyeh
     email: support@gluu.org
