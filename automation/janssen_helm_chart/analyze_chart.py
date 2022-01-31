@@ -29,7 +29,7 @@ def clean_keys(values_dict: {}) -> None:
             logger.info("Key {} has been removed previously or does not exist".format(key))
 
 
-main_dir = "../gluu/"
+main_dir = "./charts/janssen/"
 
 # load original values.yaml
 yaml = ruamel.yaml.YAML()
@@ -45,7 +45,7 @@ non_janssen_yaml = ruamel.yaml.YAML()
 non_janssen_yaml.indent(mapping=4, sequence=4, offset=2)
 non_janssen_yaml.preserve_quotes = True
 # load keys to be cleaned from original values.yaml
-with open (Path("./non_janssen.yaml").resolve(), "r") as f:
+with open (Path("./automation/janssen_helm_chart/non_janssen.yaml").resolve(), "r") as f:
     non_janssen = f.read()
     non_janssen_keys = non_janssen_yaml.load(non_janssen)
 # generate janssen values yaml

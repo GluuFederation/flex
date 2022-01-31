@@ -5,8 +5,8 @@ temp_chart_folder="charts/janssen"
 rm ${temp_chart_folder}/openbanking-values.yaml
 rm ${temp_chart_folder}/openbanking-helm.md
 rm ${temp_chart_folder}/charts/config/templates/upgrade-ldap-101-jans.yaml
-rm ${temp_chart_folder}/charts/config/ob-secrets.yaml
-rm ${temp_chart_folder}/charts/config/admin-ui-secrets.yaml
+rm ${temp_chart_folder}/charts/config/templates/ob-secrets.yaml
+rm ${temp_chart_folder}/charts/config/templates/admin-ui-secrets.yaml
 services="casa jackrabbit oxpassport oxshibboleth admin-ui cn-istio-ingress"
 for service in $services; do
   rm -rf "${temp_chart_folder:?}/""$service"
@@ -36,15 +36,14 @@ remove_all() {
   | sed '/oxshibboleth/d'
 }
 
-remove_all < $temp_chart_folder/auth-server/templates/deployment.yml > tmpfile && mv tmpfile \
-$temp_chart_folder/auth-server/templates/deployment.yml
+remove_all < $temp_chart_folder/charts/auth-server/templates/deployment.yml > tmpfile && mv tmpfile \
+$temp_chart_folder/charts/auth-server/templates/deployment.yml
 
-remove_all < $temp_chart_folder/admin-ui/templates/deployment.yml > tmpfile && mv tmpfile \
-$temp_chart_folder/admin-ui/templates/deployment.yml
+remove_all < $temp_chart_folder/charts/admin-ui/templates/deployment.yml > tmpfile && mv tmpfile \
+$temp_chart_folder/charts/admin-ui/templates/deployment.yml
 
-remove_all < $temp_chart_folder/config/templates/configmaps.yaml > tmpfile && mv tmpfile \
-$temp_chart_folder/config/templates/configmaps.yaml
+remove_all < $temp_chart_folder/charts/config/templates/configmaps.yaml > tmpfile && mv tmpfile \
+$temp_chart_folder/charts/config/templates/configmaps.yaml
 
-remove_all <  $temp_chart_folder/config/values.yaml > tmpfile && mv tmpfile \
-$temp_chart_folder/config/values.yaml
-
+remove_all <  $temp_chart_folder/charts/config/values.yaml > tmpfile && mv tmpfile \
+$temp_chart_folder/charts/config/values.yaml

@@ -26,7 +26,7 @@ jobs:
       - name: analyze chart
         run: |
           mkdir -p charts/janssen
-          cp -r ./flex-cn-setup/pygluu/kubernetes/templates/helm/gluu charts/janssen
+          cp -r ./flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/* charts/janssen/*
           sudo bash automation/janssen_helm_chart/prepare_chart.sh
           sudo python3 automation/janssen_helm_chart/analyze_chart.py
           
