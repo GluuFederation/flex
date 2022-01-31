@@ -23,13 +23,6 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: casa
-    ports:
-    - protocol: TCP
-      port: 8443
-  - from:
-    - podSelector:
-        matchLabels:
           app: auth-server
     ports:
     - protocol: TCP

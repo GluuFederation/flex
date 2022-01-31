@@ -11,9 +11,9 @@ keywords:
   - API
 home: https://gluu.org/docs/oxd
 sources:
-  - https://github.com/JanssenProject/jans-client-api
-  - https://github.com/JanssenProject/docker-jans-client-api
-  - https://github.com/GluuFederation/cloud-native-edition/tree/master/pygluu/kubernetes/templates/helm/gluu/charts/client-api
+  - https://github.com/JanssenProject/jans/jans-client-api
+  - https://github.com/JanssenProject/jans/docker-jans-client-api
+  - https://github.com/GluuFederation/flex/tree/main/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/charts/client-api
 maintainers:
   - name: Mohammad Abudayyeh
     email: support@gluu.org

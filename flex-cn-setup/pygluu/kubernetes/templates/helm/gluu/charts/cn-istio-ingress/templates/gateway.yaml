@@ -15,7 +15,7 @@ spec:
   selector:
     istio: ingressgateway
   servers:
-  # oxtrust
+  # admin-ui
   - port:
       number: 80
       name: http-admin-ui
