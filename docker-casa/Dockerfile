@@ -168,20 +168,6 @@ RUN mkdir -p /etc/certs \
     /app/templates \
     /app/tmp
 
-# ===============
-# PREPARE PLUGINS
-# ===============
-
-ARG CASA_PLUGIN_DIRECTORY=/opt/jans/jetty/casa/plugins
-ARG CASA_PLUGIN_REPO=https://maven.gluu.org/maven/org/gluu/casa/plugins
-RUN wget -q ${CASA_PLUGIN_REPO}/strong-authn-settings/${GLUU_VERSION}/strong-authn-settings-${GLUU_VERSION}.jar -O ${CASA_PLUGIN_DIRECTORY}/strong-authn-settings-${GLUU_VERSION}.jar \
-    && wget -q ${CASA_PLUGIN_REPO}/authorized-clients/${GLUU_VERSION}/authorized-clients-${GLUU_VERSION}.jar -O ${CASA_PLUGIN_DIRECTORY}/authorized-clients-${GLUU_VERSION}.jar \
-    && wget -q ${CASA_PLUGIN_REPO}/custom-branding/${GLUU_VERSION}/custom-branding-${GLUU_VERSION}.jar -O ${CASA_PLUGIN_DIRECTORY}/custom-branding-${GLUU_VERSION}.jar
-    #&& wget -q ${CASA_PLUGIN_REPO}/account-linking/${GLUU_VERSION}/account-linking-${GLUU_VERSION}.jar -O ${CASA_PLUGIN_DIRECTORY}/account-linking-${GLUU_VERSION}.jar \
-    #&& wget -q ${CASA_PLUGIN_REPO}/bioid-plugin/${GLUU_VERSION}/bioid-plugin-${GLUU_VERSION}.jar -O ${CASA_PLUGIN_DIRECTORY}/bioid-plugin-${GLUU_VERSION}.jar \
-    #&& wget -q ${CASA_PLUGIN_REPO}/cert-authn/${GLUU_VERSION}/cert-authn-${GLUU_VERSION}.jar -O ${CASA_PLUGIN_DIRECTORY}/cert-authn-${GLUU_VERSION}.jar \
-    #&& wget -q ${CASA_PLUGIN_REPO}/duo-plugin/${GLUU_VERSION}/duo-plugin-${GLUU_VERSION}.jar -O ${CASA_PLUGIN_DIRECTORY}/duo-plugin-${GLUU_VERSION}.jar
-
 COPY jetty/jetty-env.xml ${JETTY_BASE}/casa/webapps/casa/WEB-INF/
 COPY jetty/log4j2.xml ${JETTY_BASE}/casa/resources/
 COPY jetty/casa_web_resources.xml ${JETTY_BASE}/casa/webapps/
