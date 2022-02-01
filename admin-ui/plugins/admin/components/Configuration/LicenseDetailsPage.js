@@ -35,14 +35,16 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
     dispatch(getLicenseDetails({}))
   }, [])
 
-
-  function handleSubmit(data) {
-    if (data) {
-      buildPayload(userAction, 'message', data)
-      dispatch(updateLicenseDetails(userAction))
+  function formatDate(date) {
+    if(date == undefined) {
+      return '';
     }
-  }
+    if(date.length > 10) {
+      return date.substring(0, 10);
+    }
+    return '';
 
+  }
   return (
     <React.Fragment>
       <Card className="mb-3">
@@ -142,10 +144,32 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                         doc_category={LICENSE}
                       />
                     </Col>
+                    <Col sm={6}>
+                      <GluuFormDetailRow
+                        label="fields.validityPeriod"
+                        value={formatDate(item.validityPeriod)}
+                        isBadge={true}
+                        lsize={3}
+                        rsize={9}
+                        doc_entry="validityPeriod"
+                        doc_category={LICENSE}
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col sm={6}>
+                      <GluuFormDetailRow
+                        label="fields.isLicenseActive"
+                        value={item.licenseActive ? 'Yes' : 'No'}
+                        isBadge={true}
+                        lsize={3}
+                        rsize={9}
+                        doc_entry="isLicenseActive"
+                        doc_category={LICENSE}
+                      />
+                    </Col>
                   </Row>
                 </Container>
-                <hr></hr>
-                <LicenseDetailsForm item={item} handleSubmit={handleSubmit} />
               </>
             ) : (
               <Alert severity="warning">
