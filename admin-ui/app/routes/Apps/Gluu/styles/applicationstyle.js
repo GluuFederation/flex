@@ -1,3 +1,5 @@
+import { white } from "@miltonbo/dashboard-style-airframe/js-modules/colors";
+
 export default {
   tableHeaderStyle: {
     backgroundColor: '#03a96d',
@@ -14,6 +16,12 @@ export default {
   },
   buttonStyle: {
     background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+  },
+  customButtonStyle: {
+    background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+    paddingRight: '40px',
+    width: '100%',
+    color: white
   },
   healthDown: {
     background: 'linear-gradient(90deg, #fc575e 0%, #f7b42c 100%)',
