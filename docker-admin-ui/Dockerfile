@@ -27,11 +27,11 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=9bd58087ddda650f009b6e38a33858051ebe5ac9
+ENV ADMIN_UI_VERSION=7513ee633a3d6ef541b960c96e2702a62325c636
 RUN mkdir -p /opt/jans \
     && cd /opt/jans \
-    && git clone https://github.com/GluuFederation/gluu-admin-ui \
-    && cd gluu-admin-ui \
+    && git clone https://github.com/GluuFederation/flex \
+    && cd flex/admin-ui \
     && git checkout ${ADMIN_UI_VERSION} \
     && npm install @openapitools/openapi-generator-cli \
     && npm run api \
