@@ -29,24 +29,24 @@ import {
   Line,
   CartesianGrid,
   Tooltip,
+  BarChart,
+  Bar,
   Legend,
   ResponsiveContainer,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-function ActiveUsers({ stat, permissions, loading, dispatch }) {
-  console.log('==========================Stat ' + JSON.stringify(stat))
+function ActiveUsers({ statData, permissions, loading, dispatch }) {
   const { t } = useTranslation()
-  const [startDate, setStartDate] = useState(subMonths(new Date(), 2))
+  const [startDate, setStartDate] = useState(subMonths(new Date(), 4))
   const [endDate, setEndDate] = useState(addMonths(new Date(), 2))
   const userAction = {}
   const options = {}
   useEffect(() => {
-    options['month'] = getMonths()
-    buildPayload(userAction, 'GET MAU', options)
-    dispatch(getMau(userAction))
+    search()
   }, [])
+
   function search() {
     options['month'] = getMonths()
     buildPayload(userAction, 'GET MAU', options)
@@ -59,7 +59,6 @@ function ActiveUsers({ stat, permissions, loading, dispatch }) {
       '%' +
       endDate.getFullYear() +
       getMonth(endDate)
-
     return month
   }
   function getMonth(startDate) {
@@ -132,30 +131,34 @@ function ActiveUsers({ stat, permissions, loading, dispatch }) {
               </Col>
             </FormGroup>
             <FormGroup row>
-              <div style={{ width: '100%', height: 300, background: 'white' }}>
+              <div style={{ width: '100%', height: 400, background: 'white' }}>
                 <ResponsiveContainer>
-                  <LineChart height={300} data={Object.values(stat)}>
+                  <LineChart height={400} data={statData}>
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
                     <Line
                       name={t('fields.monthly_active_users')}
                       type="monotone"
-                      dataKey="monthly_active_users"
+                      dataKey="mau"
                       stroke="#8884d8"
                     />
-                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                    <XAxis
-                      dataKey="month"
-                      tickFormatter={(tickItem) => {
-                        return (
-                          (tickItem % 100) + '/' + Math.floor(tickItem / 100)
-                        )
-                      }}
-                    />
-                    <YAxis />
                     <Tooltip />
                     <Legend />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
+              <FormGroup row>
+                <div
+                  style={{ width: '100%', height: 400, background: 'white' }}
+                >
+                  <ResponsiveContainer>
+                    <BarChart width={50} height={40} data={statData}>
+                      <Bar dataKey="month" fill="#eee" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </FormGroup>
             </FormGroup>
           </CardBody>
           <CardFooter className="p-4 bt-0"></CardFooter>
@@ -166,7 +169,7 @@ function ActiveUsers({ stat, permissions, loading, dispatch }) {
 }
 const mapStateToProps = (state) => {
   return {
-    stat: state.mauReducer.stat,
+    statData: state.mauReducer.stat,
     loading: state.mauReducer.loading,
     permissions: state.authReducer.permissions,
   }
