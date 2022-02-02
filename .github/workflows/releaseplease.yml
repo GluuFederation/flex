@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         simple: [ "docker-casa", "docker-admin-ui", "casa"]
     steps:
@@ -44,8 +45,11 @@ jobs:
          package-name: ${{ matrix.simple }}
          monorepo-tags: true
   release-python-pr:
+    # Wait for other jobs to finish. This limits the API rate limit issue
+    needs: release-simple-pr
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         python-projects: ["flex-cn-setup", "flex-linux-setup"]
@@ -79,10 +83,13 @@ jobs:
          package-name: ${{ matrix.python-projects }}
          monorepo-tags: true
   release-node-pr:
+    # Wait for other jobs to finish. This limits the API rate limit issue
+    needs: release-python-pr
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        max-parallel: 1
         node-projects: ["admin-ui"]
     steps:
     - name: Checkout
