@@ -87,9 +87,9 @@ jobs:
     needs: release-python-pr
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
-        max-parallel: 1
         node-projects: ["admin-ui"]
     steps:
     - name: Checkout
