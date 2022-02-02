@@ -30,8 +30,6 @@ import {
   Line,
   CartesianGrid,
   Tooltip,
-  BarChart,
-  Bar,
   Legend,
   ResponsiveContainer,
 } from 'recharts'
@@ -40,7 +38,7 @@ import { connect } from 'react-redux'
 
 function ActiveUsers({ statData, permissions, loading, dispatch }) {
   const { t } = useTranslation()
-  const [startDate, setStartDate] = useState(subMonths(new Date(), 4))
+  const [startDate, setStartDate] = useState(subMonths(new Date(), 2))
   const [endDate, setEndDate] = useState(addMonths(new Date(), 2))
   const userAction = {}
   const options = {}
@@ -54,18 +52,13 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
     dispatch(getMau(userAction))
   }
 
-  function completeData(stat) {
+  function completeData(theData) {
+    let stat = theData
     if (stat && stat.length >= 1) {
       let flattendStat = stat.map((entry) => entry['month'])
-      let aRange = generateDateRange(
-        moment(startDate),
-        moment(addMonths(endDate, 1)),
-      )
+      let aRange = generateDateRange(moment(startDate), moment(endDate))
       for (const ele of aRange) {
         const currentMonth = getYearMonth(new Date(ele))
-        console.log(
-          '=index of ' + flattendStat.indexOf(parseInt(currentMonth, 10)),
-        )
         if (flattendStat.indexOf(parseInt(currentMonth, 10)) === -1) {
           let newEntry = new Object()
           newEntry['month'] = getYearMonth(new Date(ele))
@@ -76,8 +69,11 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
           stat.push(newEntry)
         }
       }
+      return Array.from(new Set(stat)).sort(
+        (a, b) => parseInt(a, 10) - parseInt(b, 10),
+      )
     }
-    return Array.from(new Set(stat))
+    return stat
   }
   function getYearMonth(date) {
     return date.getFullYear() + getMonth(date)
@@ -165,7 +161,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
             </FormGroup>
             <FormGroup row>
               <ResponsiveContainer className="mau" width="80%" height={350}>
-                <LineChart height={400} data={completeData(statData || [])}>
+                <LineChart height={400} data={completeData(statData)}>
                   <XAxis dataKey="month" />
                   <YAxis />
                   <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
@@ -182,13 +178,28 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
             </FormGroup>
             <FormGroup row>
               <ResponsiveContainer className="bar" width="80%" height={350}>
-                <BarChart
-                  width={500}
-                  height={340}
-                  data={completeData(statData || [])}
+                <LineChart
+                  width={400}
+                  height={300}
+                  data={completeData(statData)}
                 >
-                  <Bar dataKey="cc_at" fill="#ccc" />
-                </BarChart>
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                  <Line
+                    name="Client credentials access token"
+                    type="monotone"
+                    dataKey="cc_at"
+                    stroke="#8884d8"
+                  />
+                  <Line
+                    name="Authorization code access token"
+                    type="monotone"
+                    dataKey="ac_at"
+                    stroke="#82ca9d"
+                  />
+                  <Legend />
+                </LineChart>
               </ResponsiveContainer>
             </FormGroup>
           </CardBody>
