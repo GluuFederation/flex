@@ -42,15 +42,15 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --global user.name "mo-auto"
-          git config --global user.email "54212639+mo-auto@users.noreply.github.com"
-          git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
           # open branch in jannssen
           git clone https://github.com/JanssenProject/jans
           cd jans
           git checkout -b cn-autoupdate-helm-charts
           mkdir -p charts/janssen || echo "Directories exist"
           cp -r ../charts/janssen/* charts/janssen/
+          git config user.name "mo-auto"
+          git config user.email "54212639+mo-auto@users.noreply.github.com"
+          git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
           git add -A
           git commit -S -s -m "chore: update helm package"
           git push --set-upstream origin cn-autoupdate-helm-charts
