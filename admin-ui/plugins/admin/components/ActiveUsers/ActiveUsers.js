@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { addMonths, subMonths, addDays } from 'date-fns'
+import { addMonths, subMonths } from 'date-fns'
+import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
@@ -48,26 +49,58 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
   }, [])
 
   function search() {
-    options['month'] = getMonths()
+    options['month'] = getFormattedMonth()
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }
-  function getMonths() {
-    let month =
-      startDate.getFullYear() +
-      getMonth(startDate) +
-      '%' +
-      endDate.getFullYear() +
-      getMonth(endDate)
-    return month
+
+  function completeData(stat) {
+    if (stat && stat.length >= 1) {
+      let flattendStat = stat.map((entry) => entry['month'])
+      let aRange = generateDateRange(
+        moment(startDate),
+        moment(addMonths(endDate, 1)),
+      )
+      for (const ele of aRange) {
+        const currentMonth = getYearMonth(new Date(ele))
+        console.log(
+          '=index of ' + flattendStat.indexOf(parseInt(currentMonth, 10)),
+        )
+        if (flattendStat.indexOf(parseInt(currentMonth, 10)) === -1) {
+          let newEntry = new Object()
+          newEntry['month'] = getYearMonth(new Date(ele))
+          newEntry['mau'] = 0
+          newEntry['cc_at'] = 0
+          newEntry['ac_at'] = 0
+          newEntry['ac_id'] = 0
+          stat.push(newEntry)
+        }
+      }
+    }
+    return Array.from(new Set(stat))
   }
-  function getMonth(startDate) {
-    let value = String(startDate.getMonth() + 1)
+  function getYearMonth(date) {
+    return date.getFullYear() + getMonth(date)
+  }
+  function getFormattedMonth() {
+    return getYearMonth(startDate) + '%' + getYearMonth(endDate)
+  }
+  function getMonth(aDate) {
+    let value = String(aDate.getMonth() + 1)
     if (value.length > 1) {
       return value
     } else {
       return '0' + value
     }
+  }
+
+  function generateDateRange(start, end) {
+    var result = []
+    while (start.isBefore(end)) {
+      result.push(start.format('YYYY-MM-01'))
+      start.add(1, 'month')
+    }
+    return result
   }
 
   const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
@@ -131,34 +164,32 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
               </Col>
             </FormGroup>
             <FormGroup row>
-              <div style={{ width: '100%', height: 400, background: 'white' }}>
-                <ResponsiveContainer>
-                  <LineChart height={400} data={statData}>
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                    <Line
-                      name={t('fields.monthly_active_users')}
-                      type="monotone"
-                      dataKey="mau"
-                      stroke="#8884d8"
-                    />
-                    <Tooltip />
-                    <Legend />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-              <FormGroup row>
-                <div
-                  style={{ width: '100%', height: 400, background: 'white' }}
+              <ResponsiveContainer className="mau" width="80%" height={350}>
+                <LineChart height={400} data={completeData(statData || [])}>
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                  <Line
+                    name={t('fields.monthly_active_users')}
+                    type="monotone"
+                    dataKey="mau"
+                    stroke="#8884d8"
+                  />
+                  <Tooltip />
+                  <Legend />
+                </LineChart>
+              </ResponsiveContainer>
+            </FormGroup>
+            <FormGroup row>
+              <ResponsiveContainer className="bar" width="80%" height={350}>
+                <BarChart
+                  width={500}
+                  height={340}
+                  data={completeData(statData || [])}
                 >
-                  <ResponsiveContainer>
-                    <BarChart width={50} height={40} data={statData}>
-                      <Bar dataKey="month" fill="#eee" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </FormGroup>
+                  <Bar dataKey="cc_at" fill="#ccc" />
+                </BarChart>
+              </ResponsiveContainer>
             </FormGroup>
           </CardBody>
           <CardFooter className="p-4 bt-0"></CardFooter>

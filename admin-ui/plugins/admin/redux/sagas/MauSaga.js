@@ -48,8 +48,7 @@ export default function* rootSaga() {
 }
 
 function buildData(stat) {
-  let value = stat.map((entry) => buildEntry(entry))
-  return value
+  return stat.map((entry) => buildEntry(entry))
 }
 function buildEntry(el) {
   let entry = new Object()
