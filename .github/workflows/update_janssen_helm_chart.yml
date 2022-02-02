@@ -42,8 +42,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "mo-auto"
-          git config user.email "54212639+mo-auto@users.noreply.github.com"
+          git config --global user.name "mo-auto"
+          git config --global user.email "54212639+mo-auto@users.noreply.github.com"
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
           # open branch in jannssen
           git clone https://github.com/JanssenProject/jans
