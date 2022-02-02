@@ -21,6 +21,7 @@ remove_all() {
   | sed '/{{- if index .Values "global" "admin-ui" "enabled" }}/,/{{- end }}/d' \
   | sed '/{{ if .Values.global.cnObExtSigningJwksUri/,/{{- end }}/d' \
   | sed '/{{ if .Values.ingress.adminUiEnabled/,/---/d' \
+  | sed '/CN_DISTRIBUTION/d' \
   | sed '/CN_CASA_ENABLED/d' \
   | sed '/CN_OB_EXT_SIGNING_JWKS_URI/d' \
   | sed '/CN_OB_AS_TRANSPORT_ALIAS/d' \

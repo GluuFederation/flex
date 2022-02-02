@@ -18,7 +18,6 @@ metadata:
 data:
   # Jetty header size in bytes in the auth server
   CN_JETTY_REQUEST_HEADER_SIZE: {{ .Values.configmap.cnJettyRequestHeaderSize | quote }}
-  # Distribution
   CN_DISTRIBUTION: {{ .Values.global.distribution | quote }}
   {{ if .Values.global.cnObExtSigningJwksUri }}
   CN_OB_EXT_SIGNING_JWKS_URI: {{ .Values.global.cnObExtSigningJwksUri | quote }}

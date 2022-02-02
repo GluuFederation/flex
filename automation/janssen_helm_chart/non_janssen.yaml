@@ -24,6 +24,7 @@ global:
   jackrabbit: None
   oxpassport: None
   oxshibboleth: None
+  distribution: None
 config:
   migration: None
   configmap:

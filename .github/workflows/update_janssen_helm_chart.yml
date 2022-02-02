@@ -45,19 +45,12 @@ jobs:
           git config user.name "mo-auto"
           git config user.email "54212639+mo-auto@users.noreply.github.com"
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
+          # open branch in jannssen
+          git clone https://github.com/JanssenProject/jans
+          cd jans
+          git checkout -b cn-autoupdate-helm-charts
+          mkdir -p charts/janssen || echo "Directories exist"
+          cp -r ../charts/janssen/* charts/janssen/
           git add -A
           git commit -S -s -m "chore: update helm package"
 
-      - name: Pushes to another repository
-        uses: cpina/github-action-push-to-another-repository@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.MOWORKFLOWTOKEN }}
-        with:
-          commit-message: 'feat(helm): update janssen Helm Chart'
-          source-directory: 'charts'
-          destination-github-username: 'JanssenProject'
-          destination-repository-name: 'jans'
-          target-directory: charts
-          user-name: ${{ github.actor }}
-          user-email: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          target-branch: main
