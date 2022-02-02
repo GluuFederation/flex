@@ -53,4 +53,4 @@ jobs:
           cp -r ../charts/janssen/* charts/janssen/
           git add -A
           git commit -S -s -m "chore: update helm package"
-          git push
+          git push --set-upstream origin cn-autoupdate-helm-charts
