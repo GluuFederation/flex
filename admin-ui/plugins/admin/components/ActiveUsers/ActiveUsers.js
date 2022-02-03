@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { addMonths, subMonths } from 'date-fns'
 import moment from 'moment'
+import CustomPieGraph from './CustomPieGraph'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
@@ -16,6 +17,7 @@ import {
   CardBody,
   FormGroup,
   Col,
+  Row,
 } from '../../../../app/components'
 import {
   hasBoth,
@@ -30,6 +32,8 @@ import {
   Line,
   CartesianGrid,
   Tooltip,
+  PieChart,
+  Pie,
   Legend,
   ResponsiveContainer,
 } from 'recharts'
@@ -37,9 +41,12 @@ import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
 function ActiveUsers({ statData, permissions, loading, dispatch }) {
+  console.log('=====================>' + JSON.stringify(statData))
+  statData.push({ month: 202201, mau: 5, cc_at: 68, ac_at: 785, ac_id: 567 })
   const { t } = useTranslation()
   const [startDate, setStartDate] = useState(subMonths(new Date(), 2))
   const [endDate, setEndDate] = useState(addMonths(new Date(), 2))
+  const [graphData, setGraphData] = useState(statData)
   const userAction = {}
   const options = {}
   useEffect(() => {
@@ -53,6 +60,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
   }
 
   function completeData(theData) {
+    console.log('Before=>' + JSON.stringify(theData))
     let stat = theData
     if (stat && stat.length >= 1) {
       let flattendStat = stat.map((entry) => entry['month'])
@@ -69,6 +77,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
           stat.push(newEntry)
         }
       }
+      console.log('After=>' + JSON.stringify(stat))
       return Array.from(new Set(stat)).sort(
         (a, b) => parseInt(a, 10) - parseInt(b, 10),
       )
@@ -123,10 +132,11 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
           <FormGroup row />
           <FormGroup row />
           <CardBody>
-            <FormGroup row>
-              <Col sm={4}> </Col>
-              <Col sm={4}>
-                <GluuLabel label="Start" />
+            <Row>
+              <Col sm={6}>
+                <GluuLabel label="Select a data range" size="12" />
+              </Col>
+              <Col sm={6}>
                 <DatePicker
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
@@ -139,11 +149,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
                   placeholderText="Select the starting month"
                   customInput={<CustomButton />}
                 />
-              </Col>
-              <Col sm={4}>
-                <GluuLabel label="End" />
                 <DatePicker
-                  style={{ width: '100%' }}
                   selected={endDate}
                   onChange={(date) => setEndDate(date)}
                   selectsEnd
@@ -157,11 +163,19 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
                   customInput={<CustomButton />}
                   placeholderText="Select the end month"
                 />
+                <Button
+                  style={applicationstyle.buttonStyle}
+                  className="ml-4 mr-4"
+                  color="primary"
+                  onClick={search}
+                >
+                  {t('actions.view')}
+                </Button>
               </Col>
-            </FormGroup>
+            </Row>
             <FormGroup row>
               <ResponsiveContainer className="mau" width="80%" height={350}>
-                <LineChart height={400} data={completeData(statData)}>
+                <LineChart height={400} data={completeData(graphData)}>
                   <XAxis dataKey="month" />
                   <YAxis />
                   <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
@@ -177,30 +191,53 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
               </ResponsiveContainer>
             </FormGroup>
             <FormGroup row>
-              <ResponsiveContainer className="bar" width="80%" height={350}>
-                <LineChart
-                  width={400}
-                  height={300}
-                  data={completeData(statData)}
-                >
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                  <Line
-                    name="Client credentials access token"
-                    type="monotone"
-                    dataKey="cc_at"
-                    stroke="#8884d8"
-                  />
-                  <Line
-                    name="Authorization code access token"
-                    type="monotone"
-                    dataKey="ac_at"
-                    stroke="#82ca9d"
-                  />
-                  <Legend />
-                </LineChart>
-              </ResponsiveContainer>
+              <CustomPieGraph data={graphData}/>
+            </FormGroup>
+            <FormGroup row>
+              <Col sm={6}>
+                <ResponsiveContainer className="bar" width="100%" height={350}>
+                  <LineChart
+                    width={400}
+                    height={300}
+                    data={completeData(graphData)}
+                  >
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                    <Line
+                      name="Client credentials access token"
+                      type="monotone"
+                      dataKey="cc_at"
+                      stroke="#8884d8"
+                    />
+                    <Line
+                      name="Authorization code access token"
+                      type="monotone"
+                      dataKey="ac_at"
+                      stroke="#82ca9d"
+                    />
+                    <Legend />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Col>
+              <Col sm={6}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart width={400} height={400}>
+                    <Pie
+                      dataKey="ac_at"
+                      startAngle={0}
+                      endAngle={360}
+                      data={statData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      fill="#8884d8"
+                      label
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Col>
             </FormGroup>
           </CardBody>
           <CardFooter className="p-4 bt-0"></CardFooter>
