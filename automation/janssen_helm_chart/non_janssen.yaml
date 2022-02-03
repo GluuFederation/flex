@@ -1,0 +1,56 @@
+installer-settings: None
+admin-ui: None
+casa: None
+jackrabbit: None
+oxpassport: None
+oxshibboleth: None
+global:
+  admin-ui: None
+  casa: None
+  cnJackrabbitCluster: None
+  cnObExtSigningJwksUri: None
+  cnObExtSigningJwksCrt: None
+  cnObExtSigningJwksKey: None
+  cnObExtSigningJwksKeyPassPhrase: None
+  cnObExtSigningAlias: None
+  cnObStaticSigningKeyKid: None
+  cnObTransportCrt: None
+  cnObTransportKey: None
+  cnObTransportKeyPassPhrase: None
+  cnObTransportAlias: None
+  cnObTransportTrustStore: None
+  istio:
+    ingress: None
+  jackrabbit: None
+  oxpassport: None
+  oxshibboleth: None
+  distribution: None
+config:
+  migration: None
+  configmap:
+    cnDocumentStoreType: None
+    cnJackrabbitAdminId: None
+    cnJackrabbitAdminIdFile: None
+    cnJackrabbitAdminPasswordFile: None
+    cnJackrabbitPostgresDatabaseName: None
+    cnJackrabbitPostgresHost: None
+    cnJackrabbitPostgresPasswordFile: None
+    cnJackrabbitPostgresPort: None
+    cnJackrabbitPostgresUser: None
+    cnJackrabbitSyncInterval: None
+    cnJackrabbitAdminPassFile: None
+    cnJackrabbitUrl: None
+    cnPassportEnabled: None
+    cnSamlEnabled: None
+nginx-ingress:
+  ingress:
+    adminUiEnabled: None
+    adminUiLabels: None
+    adminUiAdditionalAnnotations: None
+    authServerProtectedToken: None
+    authServerProtectedTokenLabels: None
+    authServerProtectedTokenAdditionalAnnotations: None
+    authServerProtectedRegister: None
+    authServerProtectedRegisterLabels: None
+    authServerProtectedRegisterAdditionalAnnotations: None
+

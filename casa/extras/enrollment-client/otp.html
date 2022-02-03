@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="globals.js">;</script>
+	<script src="enroll.js">;</script>
+	<script src="jquery-3.3.1.min.js">;</script>
+	<script src="jquery-qrcode-0.14.0.js">;</script>
+	<script>
+		var tokenURL;
+
+		function qrRequest() {
+			var endpoint = endpoints_root + "/otp/qr-request"
+			var displayName = encodeURIComponent($("#qrRequest_displayName").val())
+			var mode = encodeURIComponent($("#qrRequest_mode").val())
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericGET(endpoint + "?displayName=" + displayName + "&mode=" + mode, [{name : "Authorization", value : t}]))
+				.then(response => {
+							response = JSON.parse(response)
+							showQR(response.request)
+							$("#validateCode_key").val(response.key)
+						})
+				.catch(r => err(r))
+		}
+
+		function showQR(qrRequest) {
+
+			//visit https://larsjung.de/jquery-qrcode/ for more info...
+			var options = {
+				render: 'canvas',
+				minVersion: 1,
+				maxVersion: 40,
+				ecLevel: 'L',
+				left: 0,
+				top: 0,
+				size: 320,
+				fill: '#000',
+				background: null,
+				text: qrRequest,
+				radius: 0,
+				quiet: 0,
+				mode: 0,
+				mSize: 0.1,
+				mPosX: 0.5,
+				mPosY: 0.5,
+				label: null,
+				fontname: 'sans',
+				fontcolor: '#000',
+				image: null
+			}
+			$("#qr_container").html("")
+			$("#qr_container").qrcode(options)
+
+		}
+
+		function validateCode() {
+			var endpoint = endpoints_root + "/otp/validate-code"
+			var key = $("#validateCode_key").val()
+			$("#finishEnrollment_key").val(key)
+
+			var key = encodeURIComponent(key)
+			var code = encodeURIComponent($("#validateCode_code").val())
+			var mode = encodeURIComponent($("#validateCode_mode").val())
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericGET(endpoint + "?key=" + key + "&code=" + code + "&mode=" + mode, [{name : "Authorization", value : t}]))
+				.then(response => {
+							result = JSON.parse(response)
+							if (result.code == "NO_MATCH") {
+								err(result.code)
+							}
+					})
+				.catch(r => err(r))
+
+		}
+
+		function finishEnrollment() {
+			var userid = $("#finishEnrollment_userid").val()
+
+			var endpoint = endpoints_root + "/otp/creds/" + userid
+			var cred = { "key" : $("#finishEnrollment_key").val(),
+						 "nickName": $("#finishEnrollment_nickname").val() }
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericPOST(endpoint, JSON.stringify(cred),
+								[{name : "Authorization", value : t},
+								 {name : "Content-Type", value : "application/json"}]))
+				.catch(r => err(r))
+		}
+
+		$(document).ready(
+			() => getTokenUrl(OIDCUrl).then(url => { tokenURL = url })
+		)
+	</script>
+</head>
+<body>
+
+<h1>OTP (mobile app)</h1>
+
+<hr />
+<h2>qrRequest</h2>
+<label>display name
+  <input id="qrRequest_displayName">
+</label>
+<label>mode
+  <input id="qrRequest_mode" placeHolder="totp or hotp">
+</label>
+<input type="button" value="qrRequest" onClick="qrRequest()" />
+<p>
+<i>Scan the QR code that will appear below with an OTP mobile app once you press "qrRequest" button</i>
+</p>
+<div align="center" id="qr_container">
+</div>
+
+<hr />
+<h2>validateCode</h2>
+<label>code
+  <input id="validateCode_code" placeHolder="OTP shown in app">
+</label>
+<label>key
+  <input id="validateCode_key" style="width:380px">
+</label>
+<label>mode
+  <input id="validateCode_mode" placeHolder="totp or hotp">
+</label>
+<input type="button" value="validateCode" onClick="validateCode()" />
+
+<hr />
+<h2>finishEnrollment</h2>
+<label>userid
+  <input id="finishEnrollment_userid" style="width:380px">
+</label>
+<br><br>
+<label>key
+  <input id="finishEnrollment_key" style="width:380px">
+</label>
+<label>nickName
+  <input id="finishEnrollment_nickname">
+</label>
+<input type="button" value="finishEnrollment" onClick="finishEnrollment()" />
+
+<hr />
+<br>
+<input id="manual_token" onChange="token=this.value">
+
+</body>
+</html>

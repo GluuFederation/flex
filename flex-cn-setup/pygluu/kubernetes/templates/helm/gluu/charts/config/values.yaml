@@ -186,8 +186,6 @@ migration:
  # Supported data formats are ldif, couchbase+json, spanner+avro, postgresql+json, and mysql+json.
  migrationDataFormat: ldif
 
-cnOxtrustConfigGeneration: true
-
 nameOverride: ""
 fullNameOverride: ""
 

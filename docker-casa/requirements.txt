@@ -1,0 +1,4 @@
+ldif==4.1.1
+webdavclient3>=3.14.5
+libcst<0.4
+git+https://github.com/JanssenProject/jans@878bd69b3ac75f0b9455d4bac85063054189b3ad#egg=jans-pycloudlib&subdirectory=jans-pycloudlib

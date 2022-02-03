@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="globals.js">;</script>
+	<script src="enroll.js">;</script>
+	<script src="jquery-3.3.1.min.js">;</script>
+	<script>
+		var tokenURL;
+
+		function sendCode() {
+			var endpoint = endpoints_root + "/twilio_sms/send-code"
+			var userid = encodeURIComponent($("#sendCode_userid").val())
+			var number = encodeURIComponent($("#sendCode_number").val())
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericGET(endpoint + "?userid=" + userid + "&number=" + number, [{name : "Authorization", value : t}]))
+				.catch(r => err(r))
+
+		}
+
+		function validateCode() {
+			var endpoint = endpoints_root + "/twilio_sms/validate-code"
+			var userid = encodeURIComponent($("#validateCode_userid").val())
+			var code = encodeURIComponent($("#validateCode_code").val())
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericGET(endpoint + "?userid=" + userid + "&code=" + code, [{name : "Authorization", value : t}]))
+				.catch(r => err(r))
+		}
+
+		function finishEnrollment() {
+			var userid = $("#finishEnrollment_userid").val()
+
+			var endpoint = endpoints_root + "/twilio_sms/creds/" + userid
+			var cred = { "key" : $("#finishEnrollment_key").val(),
+						 "nickName": $("#finishEnrollment_nickname").val() }
+
+			getToken(tokenURL, clientId, clientSecret)
+				.then(t => genericPOST(endpoint, JSON.stringify(cred),
+								[{name : "Authorization", value : t},
+								 {name : "Content-Type", value : "application/json"}]))
+				.catch(r => err(r))
+		}
+
+		$(document).ready(
+			() => getTokenUrl(OIDCUrl).then(url => { tokenURL = url })
+		)
+	</script>
+</head>
+<body>
+<h1>Mobile phone enrollment</h1>
+
+<hr />
+<h2>sendCode</h2>
+<label>userid
+  <input id="sendCode_userid" style="width:380px">
+</label>
+<label>number
+  <input id="sendCode_number" placeHolder="+123467890">
+</label>
+<input type="button" value="sendCode" onClick="sendCode()" />
+
+<hr />
+<h2>validateCode</h2>
+<label>userid
+  <input id="validateCode_userid" style="width:380px">
+</label>
+<label>code
+  <input id="validateCode_code" placeHolder="OTP received">
+</label>
+<input type="button" value="validateCode" onClick="validateCode()" />
+
+<hr />
+<h2>finishEnrollment</h2>
+<label>userid
+  <input id="finishEnrollment_userid" style="width:380px">
+</label>
+<label>code
+  <input id="finishEnrollment_key">
+</label>
+<label>nickName
+  <input id="finishEnrollment_nickname">
+</label>
+<input type="button" value="finishEnrollment" onClick="finishEnrollment()" />
+
+
+<hr />
+<br>
+<input id="manual_token" onChange="token=this.value">
+
+</body>
+</html>

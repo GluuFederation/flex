@@ -1,0 +1,1654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://console.inwebo.com" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://console.inwebo.com" xmlns:intf="http://console.inwebo.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://console.inwebo.com" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="loginsQuery">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="offset" type="xsd:long"/>
+      <element name="nmax" type="xsd:long"/>
+      <element name="sort" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginsQueryResponse">
+    <complexType>
+     <sequence>
+      <element name="loginsQueryReturn" type="impl:LoginsQueryResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="LoginsQueryResult">
+    <sequence>
+     <element name="err" nillable="true" type="xsd:string"/>
+     <element name="count" type="xsd:long"/>
+     <element name="n" type="xsd:int"/>
+     <element name="id" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="login" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="code" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="status" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="role" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="firstname" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="name" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="mail" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="phone" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="extrafields" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="createdby" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="lastauthdate" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+    </sequence>
+   </complexType>
+   <element name="loginSearch">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginname" type="xsd:string"/>
+      <element name="exactmatch" type="xsd:long"/>
+      <element name="offset" type="xsd:long"/>
+      <element name="nmax" type="xsd:long"/>
+      <element name="sort" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginSearchResponse">
+    <complexType>
+     <sequence>
+      <element name="loginSearchReturn" type="impl:LoginSearchResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="LoginSearchResult">
+    <sequence>
+     <element name="err" nillable="true" type="xsd:string"/>
+     <element name="n" type="xsd:int"/>
+     <element name="id" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="login" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="code" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="status" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="role" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="firstname" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="name" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="mail" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="phone" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="extrafields" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="createdby" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="activation_status" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="count" type="xsd:long"/>
+    </sequence>
+   </complexType>
+   <element name="loginQuery">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginQueryResponse">
+    <complexType>
+     <sequence>
+      <element name="loginQueryReturn" type="impl:LoginQueryResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="LoginQueryResult">
+    <sequence>
+     <element name="err" nillable="true" type="xsd:string"/>
+     <element name="login" nillable="true" type="xsd:string"/>
+     <element name="code" nillable="true" type="xsd:string"/>
+     <element name="status" type="xsd:long"/>
+     <element name="role" type="xsd:long"/>
+     <element name="firstname" nillable="true" type="xsd:string"/>
+     <element name="name" nillable="true" type="xsd:string"/>
+     <element name="mail" nillable="true" type="xsd:string"/>
+     <element name="phone" nillable="true" type="xsd:string"/>
+     <element name="extrafields" nillable="true" type="xsd:string"/>
+     <element name="createdby" type="xsd:long"/>
+     <element name="lastauthdate" type="xsd:long"/>
+     <element name="nca" type="xsd:long"/>
+     <element name="caid" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="castate" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="caname" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="cault" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="caalias" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="nma" type="xsd:long"/>
+     <element name="maid" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="mastate" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="maname" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="maalias" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="mapushenabled" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="nmac" type="xsd:long"/>
+     <element name="macid" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="macstate" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="macname" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="macalias" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="macpushenabled" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="nva" type="xsd:long"/>
+     <element name="vaid" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="vastate" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="vaname" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="vaalias" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="longcode" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <element name="loginCreate">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="login" type="xsd:string"/>
+      <element name="firstname" type="xsd:string"/>
+      <element name="name" type="xsd:string"/>
+      <element name="mail" type="xsd:string"/>
+      <element name="phone" type="xsd:string"/>
+      <element name="status" type="xsd:long"/>
+      <element name="role" type="xsd:long"/>
+      <element name="access" type="xsd:long"/>
+      <element name="codetype" type="xsd:long"/>
+      <element name="lang" type="xsd:string"/>
+      <element name="extrafields" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginCreateResponse">
+    <complexType>
+     <sequence>
+      <element name="loginCreateReturn" type="impl:LoginCreateResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="LoginCreateResult">
+    <sequence>
+     <element name="err" nillable="true" type="xsd:string"/>
+     <element name="code" nillable="true" type="xsd:string"/>
+     <element name="id" type="xsd:long"/>
+    </sequence>
+   </complexType>
+   <element name="loginUpdate">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+      <element name="login" type="xsd:string"/>
+      <element name="firstname" type="xsd:string"/>
+      <element name="name" type="xsd:string"/>
+      <element name="mail" type="xsd:string"/>
+      <element name="phone" type="xsd:string"/>
+      <element name="status" type="xsd:long"/>
+      <element name="role" type="xsd:long"/>
+      <element name="extrafields" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginUpdateResponse">
+    <complexType>
+     <sequence>
+      <element name="loginUpdateReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginRestore">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginRestoreResponse">
+    <complexType>
+     <sequence>
+      <element name="loginRestoreReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginResetPwd">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginResetPwdResponse">
+    <complexType>
+     <sequence>
+      <element name="loginResetPwdReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginAddDevice">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+      <element name="codetype" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginAddDeviceResponse">
+    <complexType>
+     <sequence>
+      <element name="loginAddDeviceReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginDeleteTool">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="toolid" type="xsd:long"/>
+      <element name="tooltype" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginDeleteToolResponse">
+    <complexType>
+     <sequence>
+      <element name="loginDeleteToolReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginDelete">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginDeleteResponse">
+    <complexType>
+     <sequence>
+      <element name="loginDeleteReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginSendByMail">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginSendByMailResponse">
+    <complexType>
+     <sequence>
+      <element name="loginSendByMailReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="IWDS_check">
+    <complexType/>
+   </element>
+   <element name="IWDS_checkResponse">
+    <complexType>
+     <sequence>
+      <element name="IWDS_checkReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginGetGroups">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+      <element name="offset" type="xsd:long"/>
+      <element name="nmax" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginGetGroupsResponse">
+    <complexType>
+     <sequence>
+      <element name="loginGetGroupsReturn" type="impl:LoginGetGroupsResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="LoginGetGroupsResult">
+    <sequence>
+     <element name="err" nillable="true" type="xsd:string"/>
+     <element name="count" type="xsd:long"/>
+     <element name="n" type="xsd:int"/>
+     <element name="groupid" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="name" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="num" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="servicepolicy" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="role" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+    </sequence>
+   </complexType>
+   <element name="loginsQueryByGroup">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="groupid" type="xsd:long"/>
+      <element name="offset" type="xsd:long"/>
+      <element name="nmax" type="xsd:long"/>
+      <element name="sort" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginsQueryByGroupResponse">
+    <complexType>
+     <sequence>
+      <element name="loginsQueryByGroupReturn" type="impl:LoginsQueryResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginResetPwdExtended">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+      <element name="codetype" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginResetPwdExtendedResponse">
+    <complexType>
+     <sequence>
+      <element name="loginResetPwdExtendedReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginGetInfoFromLink">
+    <complexType>
+     <sequence>
+      <element name="code" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginGetInfoFromLinkResponse">
+    <complexType>
+     <sequence>
+      <element name="loginGetInfoFromLinkReturn" type="impl:LoginCreateResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginGetCodeFromLink">
+    <complexType>
+     <sequence>
+      <element name="code" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginGetCodeFromLinkResponse">
+    <complexType>
+     <sequence>
+      <element name="loginGetCodeFromLinkReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginActivateCode">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginActivateCodeResponse">
+    <complexType>
+     <sequence>
+      <element name="loginActivateCodeReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginResetPINErrorCounter">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="loginResetPINErrorCounterResponse">
+    <complexType>
+     <sequence>
+      <element name="loginResetPINErrorCounterReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="serviceGroupsQuery">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="serviceid" type="xsd:long"/>
+      <element name="offset" type="xsd:long"/>
+      <element name="nmax" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="serviceGroupsQueryResponse">
+    <complexType>
+     <sequence>
+      <element name="serviceGroupsQueryReturn" type="impl:ServiceGroupsQueryResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="ServiceGroupsQueryResult">
+    <sequence>
+     <element name="err" nillable="true" type="xsd:string"/>
+     <element name="count" type="xsd:long"/>
+     <element name="n" type="xsd:int"/>
+     <element name="id" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="name" nillable="true" maxOccurs="unbounded" type="xsd:string"/>
+     <element name="num" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+     <element name="servicepolicy" nillable="true" maxOccurs="unbounded" type="xsd:long"/>
+    </sequence>
+   </complexType>
+   <element name="groupAccountQuery">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="groupid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="groupAccountQueryResponse">
+    <complexType>
+     <sequence>
+      <element name="groupAccountQueryReturn" type="impl:GroupAccountQueryResult"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="GroupAccountQueryResult">
+    <sequence>
+     <element name="err" nillable="true" type="xsd:string"/>
+     <element name="roleid" type="xsd:long"/>
+     <element name="loginid" type="xsd:long"/>
+     <element name="groupid" type="xsd:long"/>
+    </sequence>
+   </complexType>
+   <element name="groupAccountCreate">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="groupid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+      <element name="role" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="groupAccountCreateResponse">
+    <complexType>
+     <sequence>
+      <element name="groupAccountCreateReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="groupAccountUpdate">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="groupid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+      <element name="role" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="groupAccountUpdateResponse">
+    <complexType>
+     <sequence>
+      <element name="groupAccountUpdateReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="groupAccountDelete">
+    <complexType>
+     <sequence>
+      <element name="userid" type="xsd:long"/>
+      <element name="groupid" type="xsd:long"/>
+      <element name="loginid" type="xsd:long"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="groupAccountDeleteResponse">
+    <complexType>
+     <sequence>
+      <element name="groupAccountDeleteReturn" type="xsd:string"/>
+     </sequence>
+    </complexType>
+   </element>
+  </schema>
+ </wsdl:types>
+
+ <wsdl:message name="loginUpdateResponse">
+
+  <wsdl:part element="impl:loginUpdateResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginRestoreResponse">
+
+  <wsdl:part element="impl:loginRestoreResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginResetPwdResponse">
+
+  <wsdl:part element="impl:loginResetPwdResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginSendByMailResponse">
+
+  <wsdl:part element="impl:loginSendByMailResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="IWDS_checkResponse">
+
+  <wsdl:part element="impl:IWDS_checkResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginSearchResponse">
+
+  <wsdl:part element="impl:loginSearchResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="serviceGroupsQueryRequest">
+
+  <wsdl:part element="impl:serviceGroupsQuery" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginGetCodeFromLinkRequest">
+
+  <wsdl:part element="impl:loginGetCodeFromLink" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="groupAccountUpdateResponse">
+
+  <wsdl:part element="impl:groupAccountUpdateResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginSearchRequest">
+
+  <wsdl:part element="impl:loginSearch" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginGetGroupsRequest">
+
+  <wsdl:part element="impl:loginGetGroups" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginsQueryByGroupRequest">
+
+  <wsdl:part element="impl:loginsQueryByGroup" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginGetInfoFromLinkResponse">
+
+  <wsdl:part element="impl:loginGetInfoFromLinkResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginCreateRequest">
+
+  <wsdl:part element="impl:loginCreate" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginResetPwdRequest">
+
+  <wsdl:part element="impl:loginResetPwd" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="groupAccountUpdateRequest">
+
+  <wsdl:part element="impl:groupAccountUpdate" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginResetPwdExtendedResponse">
+
+  <wsdl:part element="impl:loginResetPwdExtendedResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginGetCodeFromLinkResponse">
+
+  <wsdl:part element="impl:loginGetCodeFromLinkResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginsQueryRequest">
+
+  <wsdl:part element="impl:loginsQuery" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginDeleteRequest">
+
+  <wsdl:part element="impl:loginDelete" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginRestoreRequest">
+
+  <wsdl:part element="impl:loginRestore" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginSendByMailRequest">
+
+  <wsdl:part element="impl:loginSendByMail" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="groupAccountCreateRequest">
+
+  <wsdl:part element="impl:groupAccountCreate" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginDeleteToolResponse">
+
+  <wsdl:part element="impl:loginDeleteToolResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginGetGroupsResponse">
+
+  <wsdl:part element="impl:loginGetGroupsResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginDeleteResponse">
+
+  <wsdl:part element="impl:loginDeleteResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="groupAccountDeleteResponse">
+
+  <wsdl:part element="impl:groupAccountDeleteResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginActivateCodeRequest">
+
+  <wsdl:part element="impl:loginActivateCode" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginQueryResponse">
+
+  <wsdl:part element="impl:loginQueryResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginUpdateRequest">
+
+  <wsdl:part element="impl:loginUpdate" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginResetPwdExtendedRequest">
+
+  <wsdl:part element="impl:loginResetPwdExtended" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="IWDS_checkRequest">
+
+  <wsdl:part element="impl:IWDS_check" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginQueryRequest">
+
+  <wsdl:part element="impl:loginQuery" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginsQueryResponse">
+
+  <wsdl:part element="impl:loginsQueryResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="groupAccountQueryRequest">
+
+  <wsdl:part element="impl:groupAccountQuery" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginCreateResponse">
+
+  <wsdl:part element="impl:loginCreateResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginResetPINErrorCounterResponse">
+
+  <wsdl:part element="impl:loginResetPINErrorCounterResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="groupAccountDeleteRequest">
+
+  <wsdl:part element="impl:groupAccountDelete" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="groupAccountQueryResponse">
+
+  <wsdl:part element="impl:groupAccountQueryResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginAddDeviceResponse">
+
+  <wsdl:part element="impl:loginAddDeviceResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginDeleteToolRequest">
+
+  <wsdl:part element="impl:loginDeleteTool" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginGetInfoFromLinkRequest">
+
+  <wsdl:part element="impl:loginGetInfoFromLink" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="serviceGroupsQueryResponse">
+
+  <wsdl:part element="impl:serviceGroupsQueryResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="groupAccountCreateResponse">
+
+  <wsdl:part element="impl:groupAccountCreateResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginResetPINErrorCounterRequest">
+
+  <wsdl:part element="impl:loginResetPINErrorCounter" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginActivateCodeResponse">
+
+  <wsdl:part element="impl:loginActivateCodeResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginAddDeviceRequest">
+
+  <wsdl:part element="impl:loginAddDevice" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:message name="loginsQueryByGroupResponse">
+
+  <wsdl:part element="impl:loginsQueryByGroupResponse" name="parameters">
+
+  </wsdl:part>
+
+ </wsdl:message>
+
+ <wsdl:portType name="ConsoleAdmin">
+
+  <wsdl:operation name="loginsQuery">
+
+   <wsdl:input message="impl:loginsQueryRequest" name="loginsQueryRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginsQueryResponse" name="loginsQueryResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginSearch">
+
+   <wsdl:input message="impl:loginSearchRequest" name="loginSearchRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginSearchResponse" name="loginSearchResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginQuery">
+
+   <wsdl:input message="impl:loginQueryRequest" name="loginQueryRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginQueryResponse" name="loginQueryResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginCreate">
+
+   <wsdl:input message="impl:loginCreateRequest" name="loginCreateRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginCreateResponse" name="loginCreateResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginUpdate">
+
+   <wsdl:input message="impl:loginUpdateRequest" name="loginUpdateRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginUpdateResponse" name="loginUpdateResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginRestore">
+
+   <wsdl:input message="impl:loginRestoreRequest" name="loginRestoreRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginRestoreResponse" name="loginRestoreResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginResetPwd">
+
+   <wsdl:input message="impl:loginResetPwdRequest" name="loginResetPwdRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginResetPwdResponse" name="loginResetPwdResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginAddDevice">
+
+   <wsdl:input message="impl:loginAddDeviceRequest" name="loginAddDeviceRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginAddDeviceResponse" name="loginAddDeviceResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginDeleteTool">
+
+   <wsdl:input message="impl:loginDeleteToolRequest" name="loginDeleteToolRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginDeleteToolResponse" name="loginDeleteToolResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginDelete">
+
+   <wsdl:input message="impl:loginDeleteRequest" name="loginDeleteRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginDeleteResponse" name="loginDeleteResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginSendByMail">
+
+   <wsdl:input message="impl:loginSendByMailRequest" name="loginSendByMailRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginSendByMailResponse" name="loginSendByMailResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="IWDS_check">
+
+   <wsdl:input message="impl:IWDS_checkRequest" name="IWDS_checkRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:IWDS_checkResponse" name="IWDS_checkResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginGetGroups">
+
+   <wsdl:input message="impl:loginGetGroupsRequest" name="loginGetGroupsRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginGetGroupsResponse" name="loginGetGroupsResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginsQueryByGroup">
+
+   <wsdl:input message="impl:loginsQueryByGroupRequest" name="loginsQueryByGroupRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginsQueryByGroupResponse" name="loginsQueryByGroupResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginResetPwdExtended">
+
+   <wsdl:input message="impl:loginResetPwdExtendedRequest" name="loginResetPwdExtendedRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginResetPwdExtendedResponse" name="loginResetPwdExtendedResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginGetInfoFromLink">
+
+   <wsdl:input message="impl:loginGetInfoFromLinkRequest" name="loginGetInfoFromLinkRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginGetInfoFromLinkResponse" name="loginGetInfoFromLinkResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginGetCodeFromLink">
+
+   <wsdl:input message="impl:loginGetCodeFromLinkRequest" name="loginGetCodeFromLinkRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginGetCodeFromLinkResponse" name="loginGetCodeFromLinkResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginActivateCode">
+
+   <wsdl:input message="impl:loginActivateCodeRequest" name="loginActivateCodeRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginActivateCodeResponse" name="loginActivateCodeResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginResetPINErrorCounter">
+
+   <wsdl:input message="impl:loginResetPINErrorCounterRequest" name="loginResetPINErrorCounterRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:loginResetPINErrorCounterResponse" name="loginResetPINErrorCounterResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="serviceGroupsQuery">
+
+   <wsdl:input message="impl:serviceGroupsQueryRequest" name="serviceGroupsQueryRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:serviceGroupsQueryResponse" name="serviceGroupsQueryResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="groupAccountQuery">
+
+   <wsdl:input message="impl:groupAccountQueryRequest" name="groupAccountQueryRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:groupAccountQueryResponse" name="groupAccountQueryResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="groupAccountCreate">
+
+   <wsdl:input message="impl:groupAccountCreateRequest" name="groupAccountCreateRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:groupAccountCreateResponse" name="groupAccountCreateResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="groupAccountUpdate">
+
+   <wsdl:input message="impl:groupAccountUpdateRequest" name="groupAccountUpdateRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:groupAccountUpdateResponse" name="groupAccountUpdateResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="groupAccountDelete">
+
+   <wsdl:input message="impl:groupAccountDeleteRequest" name="groupAccountDeleteRequest">
+
+   </wsdl:input>
+
+   <wsdl:output message="impl:groupAccountDeleteResponse" name="groupAccountDeleteResponse">
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+ </wsdl:portType>
+
+ <wsdl:binding name="ConsoleAdminSoapBinding" type="impl:ConsoleAdmin">
+
+  <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+  <wsdl:operation name="loginsQuery">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginsQueryRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginsQueryResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginSearch">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginSearchRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginSearchResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginQuery">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginQueryRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginQueryResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginCreate">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginCreateRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginCreateResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginUpdate">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginUpdateRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginUpdateResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginRestore">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginRestoreRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginRestoreResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginResetPwd">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginResetPwdRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginResetPwdResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginAddDevice">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginAddDeviceRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginAddDeviceResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginDeleteTool">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginDeleteToolRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginDeleteToolResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginDelete">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginDeleteRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginDeleteResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginSendByMail">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginSendByMailRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginSendByMailResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="IWDS_check">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="IWDS_checkRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="IWDS_checkResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginGetGroups">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginGetGroupsRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginGetGroupsResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginsQueryByGroup">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginsQueryByGroupRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginsQueryByGroupResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginResetPwdExtended">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginResetPwdExtendedRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginResetPwdExtendedResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginGetInfoFromLink">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginGetInfoFromLinkRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginGetInfoFromLinkResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginGetCodeFromLink">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginGetCodeFromLinkRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginGetCodeFromLinkResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginActivateCode">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginActivateCodeRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginActivateCodeResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="loginResetPINErrorCounter">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="loginResetPINErrorCounterRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="loginResetPINErrorCounterResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="serviceGroupsQuery">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="serviceGroupsQueryRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="serviceGroupsQueryResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="groupAccountQuery">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="groupAccountQueryRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="groupAccountQueryResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="groupAccountCreate">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="groupAccountCreateRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="groupAccountCreateResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="groupAccountUpdate">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="groupAccountUpdateRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="groupAccountUpdateResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+  <wsdl:operation name="groupAccountDelete">
+
+   <wsdlsoap:operation soapAction=""/>
+
+   <wsdl:input name="groupAccountDeleteRequest">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:input>
+
+   <wsdl:output name="groupAccountDeleteResponse">
+
+    <wsdlsoap:body use="literal"/>
+
+   </wsdl:output>
+
+  </wsdl:operation>
+
+ </wsdl:binding>
+
+ <wsdl:service name="ConsoleAdminService">
+
+  <wsdl:port binding="impl:ConsoleAdminSoapBinding" name="ConsoleAdmin">
+
+   <wsdlsoap:address location="https://api.myinwebo.com/v2/services/ConsoleAdmin"/>
+
+  </wsdl:port>
+
+ </wsdl:service>
+
+</wsdl:definitions>

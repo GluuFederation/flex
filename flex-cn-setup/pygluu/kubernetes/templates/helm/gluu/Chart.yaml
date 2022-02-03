@@ -3,9 +3,7 @@
 kubeVersion: ">=v1.21.0-0"
 annotations:
   artifacthub.io/changes: |
-    - Gluu 5.0 Openbanking Distribution. Auth-server and config-api.
-    - Updated new images
-    - https://gluu.org/docs/openbanking
+    - Update always
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/images: |
     - name: auth-server
