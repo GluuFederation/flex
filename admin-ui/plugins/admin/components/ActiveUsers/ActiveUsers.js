@@ -32,8 +32,6 @@ import {
   Line,
   CartesianGrid,
   Tooltip,
-  PieChart,
-  Pie,
   Legend,
   ResponsiveContainer,
 } from 'recharts'
@@ -41,12 +39,11 @@ import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
 function ActiveUsers({ statData, permissions, loading, dispatch }) {
-  console.log('=====================>' + JSON.stringify(statData))
+  //console.log('=====================>' + JSON.stringify(statData))
   statData.push({ month: 202201, mau: 5, cc_at: 68, ac_at: 785, ac_id: 567 })
   const { t } = useTranslation()
   const [startDate, setStartDate] = useState(subMonths(new Date(), 2))
   const [endDate, setEndDate] = useState(addMonths(new Date(), 2))
-  const [graphData, setGraphData] = useState(statData)
   const userAction = {}
   const options = {}
   useEffect(() => {
@@ -59,9 +56,8 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
     dispatch(getMau(userAction))
   }
 
-  function completeData(theData) {
-    console.log('Before=>' + JSON.stringify(theData))
-    let stat = theData
+  function doDataAugmentation(input) {
+    let stat = input
     if (stat && stat.length >= 1) {
       let flattendStat = stat.map((entry) => entry['month'])
       let aRange = generateDateRange(moment(startDate), moment(endDate))
@@ -69,7 +65,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
         const currentMonth = getYearMonth(new Date(ele))
         if (flattendStat.indexOf(parseInt(currentMonth, 10)) === -1) {
           let newEntry = new Object()
-          newEntry['month'] = getYearMonth(new Date(ele))
+          newEntry['month'] = parseInt(getYearMonth(new Date(ele)), 10)
           newEntry['mau'] = 0
           newEntry['cc_at'] = 0
           newEntry['ac_at'] = 0
@@ -77,10 +73,10 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
           stat.push(newEntry)
         }
       }
-      console.log('After=>' + JSON.stringify(stat))
-      return Array.from(new Set(stat)).sort(
+      const response = Array.from(new Set(stat)).sort(
         (a, b) => parseInt(a, 10) - parseInt(b, 10),
       )
+      return response
     }
     return stat
   }
@@ -134,7 +130,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
           <CardBody>
             <Row>
               <Col sm={6}>
-                <GluuLabel label="Select a data range" size="12" />
+                <GluuLabel label="Select a date range" size="12" />
               </Col>
               <Col sm={6}>
                 <DatePicker
@@ -175,7 +171,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
             </Row>
             <FormGroup row>
               <ResponsiveContainer className="mau" width="80%" height={350}>
-                <LineChart height={400} data={completeData(graphData)}>
+                <LineChart height={400} data={doDataAugmentation(statData)}>
                   <XAxis dataKey="month" />
                   <YAxis />
                   <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
@@ -191,7 +187,41 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
               </ResponsiveContainer>
             </FormGroup>
             <FormGroup row>
-              <CustomPieGraph data={graphData}/>
+              <Col sm={6}>
+                <CustomPieGraph data={statData} />
+              </Col>
+              <Col sm={6}>
+                <ResponsiveContainer className="bar" width="100%" height={350}>
+                  <LineChart
+                    width={400}
+                    height={300}
+                    data={doDataAugmentation(statData)}
+                  >
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                    <Line
+                      name="Client credentials access token"
+                      type="monotone"
+                      dataKey="cc_at"
+                      stroke="#8884d8"
+                    />
+                    <Line
+                      name="Authorization code access token"
+                      type="monotone"
+                      dataKey="ac_at"
+                      stroke="#82ca9d"
+                    />
+                    <Line
+                      name="Authorization code id token"
+                      type="monotone"
+                      dataKey="ac_id"
+                      stroke="#00C9FF"
+                    />
+                    <Legend />
+                  </LineChart>
+                </ResponsiveContainer>
+              </Col>
             </FormGroup>
             <FormGroup row>
               <Col sm={6}>
@@ -199,7 +229,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
                   <LineChart
                     width={400}
                     height={300}
-                    data={completeData(graphData)}
+                    data={doDataAugmentation(statData)}
                   >
                     <XAxis dataKey="month" />
                     <YAxis />
@@ -220,24 +250,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
                   </LineChart>
                 </ResponsiveContainer>
               </Col>
-              <Col sm={6}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart width={400} height={400}>
-                    <Pie
-                      dataKey="ac_at"
-                      startAngle={0}
-                      endAngle={360}
-                      data={statData}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      fill="#8884d8"
-                      label
-                    />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </Col>
+              <Col sm={6}></Col>
             </FormGroup>
           </CardBody>
           <CardFooter className="p-4 bt-0"></CardFooter>
