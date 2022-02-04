@@ -13,7 +13,13 @@ import {
 function CustomPieGraph({ data }) {
   return (
     <ResponsiveContainer width={400} height={400}>
-      <BarChart width={400} height={400} data={data}>
+      <BarChart
+        width={400}
+        height={400}
+        data={data.sort(
+          (a, b) => parseInt(a.month, 10) - parseInt(b.month, 10),
+        )}
+      >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="month" />
         <YAxis />

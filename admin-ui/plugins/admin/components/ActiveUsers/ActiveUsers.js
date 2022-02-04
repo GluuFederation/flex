@@ -74,7 +74,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
         }
       }
       const response = Array.from(new Set(stat)).sort(
-        (a, b) => parseInt(a, 10) - parseInt(b, 10),
+        (a, b) => parseInt(a.month, 10) - parseInt(b.month, 10),
       )
       return response
     }
