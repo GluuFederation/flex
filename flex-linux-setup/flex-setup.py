@@ -29,6 +29,10 @@ from setup_app.installers.config_api import ConfigApiInstaller
 
 parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
 parser.add_argument('--setup-branch', help="Jannsen setup github branch", default='main')
+parser.add_argument('--flex-branch', help="Jannsen setup github branch", default='main')
+parser.add_argument('--jans-branch', help="Jannsen setup github branch", default='main')
+
+
 argsp = parser.parse_args()
 
 # initialize config object
@@ -41,9 +45,10 @@ collectProperties.collect()
 maven_base_url = 'https://maven.jans.io/maven/io/jans/'
 app_versions = {
   "SETUP_BRANCH": argsp.setup_branch,
+  "FLEX_BRANCH": argsp.flex_branch,
+  "JANS_BRANCH": argsp.jans_branch,
   "JANS_APP_VERSION": "1.0.0",
   "JANS_BUILD": "-SNAPSHOT", 
-  "ADMIN_UI_FRONTEND_BRANCH": "main",
   "NODE_VERSION": "v14.18.2"
 }
 
@@ -65,23 +70,23 @@ gluu_admin_ui_source_path = os.path.join(Config.distJansFolder, 'gluu-admin-ui.z
 log4j2_adminui_path = os.path.join(Config.distJansFolder, 'log4j2-adminui.xml')
 log4j2_path = os.path.join(Config.distJansFolder, 'log4j2.xml')
 admin_ui_plugin_source_path = os.path.join(Config.distJansFolder, 'admin-ui-plugin-distribution.jar')
-admin_ui_config_properties_path = os.path.join(Config.distJansFolder, 'auiConfiguration.properties')
+flex_path = os.path.join(Config.distJansFolder, 'flex.zip')
+source_dir = os.path.join(Config.outputFolder, 'admin-ui')
+flex_setup_dir = os.path.join(source_dir, 'flex-linux-setup')
+admin_ui_config_properties_path = os.path.join(flex_setup_dir, 'auiConfiguration.properties')
 
 print("Downloading components")
 base.download(urljoin(maven_base_url, 'admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), admin_ui_plugin_source_path)
-base.download('https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/server/src/main/resources/log4j2.xml', log4j2_path)
-base.download('https://raw.githubusercontent.com/JanssenProject/jans-config-api/master/plugins/admin-ui-plugin/config/log4j2-adminui.xml', log4j2_adminui_path)
-base.download('https://github.com/GluuFederation/gluu-admin-ui/archive/refs/heads/{}.zip'.format(app_versions['ADMIN_UI_FRONTEND_BRANCH']), gluu_admin_ui_source_path)
-base.download('https://raw.githubusercontent.com/GluuFederation/flex/{}/flex-linux-setup/auiConfiguration.properties'.format(app_versions['SETUP_BRANCH']), admin_ui_config_properties_path)
+base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), log4j2_path)
+base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), log4j2_adminui_path)
+base.download('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), flex_path)
 
 
 print("Installing Gluu Admin UI Frontend")
-package_zip = zipfile.ZipFile(gluu_admin_ui_source_path, "r")
-package_par_dir = package_zip.namelist()[0]
-source_dir = os.path.join(Config.outputFolder, package_par_dir)
 
-print("Extracting", gluu_admin_ui_source_path)
-package_zip.extractall(Config.outputFolder)
+print("Extracting admin-ui from", flex_path)
+base.extract_from_zip(flex_path, 'admin-ui', source_dir)
+base.extract_from_zip(flex_path, 'flex-linux-setup', flex_setup_dir)
 
 configApiInstaller.renderTemplateInOut(os.path.join(source_dir, '.env.tmp'), source_dir, source_dir)
 configApiInstaller.copyFile(os.path.join(source_dir, '.env.tmp'), os.path.join(source_dir, '.env'))
@@ -98,7 +103,8 @@ print("Copying files to", target_dir)
 configApiInstaller.copyTree(os.path.join(source_dir, 'dist'), target_dir)
 
 configApiInstaller.check_clients([('role_based_client_id', '2000.')])
-configApiInstaller.renderTemplateInOut(admin_ui_config_properties_path, Config.distJansFolder, configApiInstaller.custom_config_dir)
+
+configApiInstaller.renderTemplateInOut(admin_ui_config_properties_path, flex_setup_dir, configApiInstaller.custom_config_dir)
 admin_ui_plugin_path = os.path.join(configApiInstaller.libDir, os.path.basename(admin_ui_plugin_source_path))
 configApiInstaller.web_app_xml_fn = os.path.join(configApiInstaller.jetty_base, configApiInstaller.service_name, 'webapps/jans-config-api.xml')
 configApiInstaller.copyFile(admin_ui_plugin_source_path, configApiInstaller.libDir)
