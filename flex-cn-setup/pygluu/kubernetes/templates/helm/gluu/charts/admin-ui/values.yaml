@@ -59,7 +59,7 @@ service:
 # -- Configure the liveness healthcheck for the admin ui if needed.
 livenessProbe:
   tcpSocket:
-    port: 1636
+    port: 8080
   initialDelaySeconds: 60
   timeoutSeconds: 5
   periodSeconds: 25
@@ -67,7 +67,7 @@ livenessProbe:
 # -- Configure the readiness healthcheck for the admin ui if needed.
 readinessProbe:
   tcpSocket:
-    port: 1636
+    port: 8080
   initialDelaySeconds: 60
   timeoutSeconds: 5
   periodSeconds: 25
