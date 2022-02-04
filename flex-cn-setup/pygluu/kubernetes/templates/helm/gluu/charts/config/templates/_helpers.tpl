@@ -85,7 +85,7 @@ Create optional scopes list
 {{ $newList = append $newList ("ldap" | quote) }}
 {{- end}}
 {{- if .Values.global.casa}}
-{{ $newList = append $newList ("ldap" | quote) }}
+{{ $newList = append $newList ("casa" | quote) }}
 {{- end}}
 {{- if .Values.global.fido2.enabled}}
 {{ $newList = append $newList ("fido2" | quote) }}
