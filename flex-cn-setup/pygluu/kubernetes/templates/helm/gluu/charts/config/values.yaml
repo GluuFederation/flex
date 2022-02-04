@@ -34,8 +34,6 @@ configmap:
   cnSqldbUserPassword: Test1234#
   # -- Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` .
   cnCacheType: NATIVE_PERSISTENCE
-  # -- Enable Casa flag .
-  cnCasaEnabled: false
   # -- Client-api OAuth client admin certificate common name. This should be left to the default value client-api .
   cnClientApiAdminCertCn: client-api
   # -- Client-api OAuth client application certificate common name. This should be left to the default value client-api.

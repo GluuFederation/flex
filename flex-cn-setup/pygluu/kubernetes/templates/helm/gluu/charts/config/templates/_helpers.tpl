@@ -84,6 +84,9 @@ Create optional scopes list
 {{- if .Values.global.opendj.enabled}}
 {{ $newList = append $newList ("ldap" | quote) }}
 {{- end}}
+{{- if .Values.global.casa}}
+{{ $newList = append $newList ("ldap" | quote) }}
+{{- end}}
 {{- if .Values.global.fido2.enabled}}
 {{ $newList = append $newList ("fido2" | quote) }}
 {{- end}}

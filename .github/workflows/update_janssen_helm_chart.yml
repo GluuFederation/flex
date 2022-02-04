@@ -39,7 +39,7 @@ jobs:
           passphrase: ${{ secrets.MOAUTO_GPG_PRIVATE_KEY_PASSPHRASE }}
           git_user_signingkey: true
           git_commit_gpgsign: true
-
+      # TODO:add step to install and execute helm-docs
       - name: Configure Git
         run: |
           # open branch in jannssen
@@ -53,4 +53,5 @@ jobs:
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
           git add -A
           git commit -S -s -m "chore: update helm package"
+          # TODO: fix push
           git push --set-upstream origin cn-autoupdate-helm-charts

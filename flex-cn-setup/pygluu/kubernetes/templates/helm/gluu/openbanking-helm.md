@@ -15,7 +15,7 @@ Gluu Access and Identity Management OpenBanking distribution
 ## Source Code
 
 * <https://gluu.org/docs/gluu-server>
-* <https://github.com/GluuFederation/cloud-native-edition>
+* <https://github.com/GluuFederation/flex/flex-cn-setup>
 
 ## Requirements
 

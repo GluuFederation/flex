@@ -2,14 +2,16 @@
 set -e
 
 temp_chart_folder="charts/janssen"
-rm ${temp_chart_folder}/openbanking-values.yaml
-rm ${temp_chart_folder}/openbanking-helm.md
-rm ${temp_chart_folder}/charts/config/templates/upgrade-ldap-101-jans.yaml
-rm ${temp_chart_folder}/charts/config/templates/ob-secrets.yaml
-rm ${temp_chart_folder}/charts/config/templates/admin-ui-secrets.yaml
+rm ${temp_chart_folder}/openbanking-values.yaml || echo "file doesn't exist"
+rm ${temp_chart_folder}/openbanking-helm.md || echo "file doesn't exist"
+rm ${temp_chart_folder}/charts/config/templates/upgrade-ldap-101-jans.yaml || echo "file doesn't exist"
+rm ${temp_chart_folder}/charts/config/templates/ob-secrets.yaml || echo "file doesn't exist"
+rm ${temp_chart_folder}/charts/config/templates/admin-ui-secrets.yaml || echo "file doesn't exist"
 services="casa jackrabbit oxpassport oxshibboleth admin-ui cn-istio-ingress"
 for service in $services; do
-  rm -rf "${temp_chart_folder:?}/""$service"
+  folder="${temp_chart_folder:?}/""charts/$service"
+  echo "${folder}"
+  rm -rf "${folder}"
 done
 
 remove_all() {
@@ -40,11 +42,10 @@ remove_all() {
 remove_all < $temp_chart_folder/charts/auth-server/templates/deployment.yml > tmpfile && mv tmpfile \
 $temp_chart_folder/charts/auth-server/templates/deployment.yml
 
-remove_all < $temp_chart_folder/charts/admin-ui/templates/deployment.yml > tmpfile && mv tmpfile \
-$temp_chart_folder/charts/admin-ui/templates/deployment.yml
-
 remove_all < $temp_chart_folder/charts/config/templates/configmaps.yaml > tmpfile && mv tmpfile \
 $temp_chart_folder/charts/config/templates/configmaps.yaml
 
 remove_all <  $temp_chart_folder/charts/config/values.yaml > tmpfile && mv tmpfile \
 $temp_chart_folder/charts/config/values.yaml
+
+echo "Chart preperation is finished!"

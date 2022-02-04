@@ -156,7 +156,7 @@ data:
   # CN_JACKRABBIT_PASSWORD_FILE: {{ .Values.configmap.cnJcaPasswordFile | quote }} NOT IMPLEMENTED
   {{- end }}
   # Auto enable installation of some services
-  CN_CASA_ENABLED: {{ .Values.configmap.cnCasaEnabled | quote }}
+  CN_CASA_ENABLED: {{ .Values.global.casa.enabled | quote }}
   CN_PASSPORT_ENABLED: {{ .Values.configmap.cnPassportEnabled | quote }}
   {{- if .Values.global.oxshibboleth.enabled }}
   CN_SAML_ENABLED: {{ .Values.configmap.cnSamlEnabled | quote }}

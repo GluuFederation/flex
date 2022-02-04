@@ -444,8 +444,6 @@ config:
     cnSqldbUserPassword: Test1234#
     # -- Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` .
     cnCacheType: NATIVE_PERSISTENCE
-    # -- Enable Casa flag .
-    cnCasaEnabled: false
     # -- Client-api OAuth client admin certificate common name. This should be left to the default value client-api .
     cnClientApiAdminCertCn: client-api
     # -- Client-api OAuth client application certificate common name. This should be left to the default value client-api.
@@ -842,6 +840,8 @@ global:
   casa:
     # -- Name of the casa service. Please keep it as default.
     casaServiceName: casa
+    # -- Boolean flag to enable/disable the casachart.
+    enabled: true
   client-api:
     # -- Name of the client-api service. Please keep it as default.
     clientApiServerServiceName: client-api
@@ -1159,6 +1159,12 @@ nginx-ingress:
     authServerLabels: { }
     # -- Auth server ingress resource additional annotations.
     authServerAdditionalAnnotations: { }
+    # -- Enable casa endpoints /casa
+    casaEnabled: false
+    # -- Casa ingress resource labels. key app is taken
+    casaLabels: { }
+    # -- Casa ingress resource additional annotations.
+    casaAdditionalAnnotations: { }
     # -- Enable mTLS on Auth server endpoint /jans-auth/restv1/token
     authServerProtectedToken: false
     # -- Auth server protected token ingress resource labels. key app is taken

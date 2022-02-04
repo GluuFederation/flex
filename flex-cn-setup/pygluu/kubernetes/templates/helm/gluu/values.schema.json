@@ -103,10 +103,6 @@
                      "type":"string",
                      "pattern":"^(NATIVE_PERSISTENCE|REDIS|IN_MEMORY)$"
                   },
-                  "cnCasaEnabled":{
-                     "description":"Enable Casa. Gluu Casa is a self-service web portal for end-users to manage authentication and authorization preferences for their account in a Gluu Server.",
-                     "type":"boolean"
-                  },
                   "cnClientApiAdminCertCn":{
                      "description":"Client-api OAuth client admin certificate common name. This should be left to the default value client-api",
                      "type":"string",
@@ -419,13 +415,6 @@
 
          }
       },
-      "cr-rotate":{
-         "description":"CacheRefreshRotation is a special container to monitor cache refresh on oxTrust containers. This may be depreciated.",
-         "type":"object",
-         "properties":{
-
-         }
-      },
       "fido2":{
          "description":"FIDO 2.0 (FIDO2) is an open authentication standard that enables leveraging common devices to authenticate to online services in both mobile and desktop environments.",
          "type":"object",
@@ -681,6 +670,20 @@
                "type":"string",
                "pattern":".*google-credentials.json\\b.*"
             },
+            "casa":{
+               "type":"object",
+               "properties":{
+                  "casaServiceName":{
+                     "description":"Name of the casa service. Please keep it as default.",
+                     "type":"string",
+                     "pattern":"^[a-z0-9-]+$"
+                  },
+                  "enabled":{
+                     "description":"Boolean flag to enable/disable the casa chart.",
+                     "type":"boolean"
+                  }
+               }
+            },
             "config-api":{
                "type":"object",
                "properties":{
@@ -708,15 +711,6 @@
                            }
                   }
             }
-               }
-            },
-            "cr-rotate":{
-               "type":"object",
-               "properties":{
-                  "enabled":{
-                     "description":"Boolean flag to enable/disable the cr-rotate chart.",
-                     "type":"boolean"
-                  }
                }
             },
             "fqdn":{
@@ -1050,9 +1044,6 @@
       },
       {
          "$ref":"#/definitions/config-api-enabled"
-      },
-      {
-         "$ref":"#/definitions/cr-rotate-enabled"
       },
       {
          "$ref":"#/definitions/fido2-enabled"
@@ -1552,11 +1543,11 @@
       "casa-enabled":{
          "if":{
             "properties":{
-               "config":{
+               "global":{
                   "properties":{
-                     "configmap":{
+                     "casa":{
                         "properties":{
-                           "cnCasaEnabled":{
+                           "enabled":{
                               "const":"true"
                            }
                         }
@@ -1973,107 +1964,6 @@
                                     "pattern":"^[0-9Mi]+$"
                                  }
                               }
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-         },
-         "else":true
-      },
-      "cr-rotate-enabled":{
-         "if":{
-            "properties":{
-               "global":{
-                  "properties":{
-                     "cr-rotate":{
-                        "properties":{
-                           "enabled":{
-                              "const":"true"
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-         },
-         "then":{
-            "properties":{
-               "cr-rotate":{
-                  "properties":{
-                     "dnsPolicy":{
-                        "description":"Add custom dns policy",
-                        "type":"string",
-                        "pattern":"^(Default|ClusterFirst|ClusterFirstWithHostNet|None|)$"
-                     },
-                     "dnsConfig":{
-                        "description":"Add custom dns config",
-                        "type":"object"
-                     },
-                     "image":{
-                        "type":"object",
-                        "properties":{
-                           "pullPolicy":{
-                              "description":"Image pullPolicy to use for deploying.",
-                              "type":"string",
-                              "pattern":"^(Always|Never|IfNotPresent)$"
-                           },
-                           "repository":{
-                              "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
-                           },
-                           "tag":{
-                              "description":"Image  tag to use for deploying.",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_.]+$"
-                           }
-                        }
-                     },
-                     "resources":{
-                        "description":"Resource specs.",
-                        "type":"object",
-                        "properties":{
-                           "limits":{
-                              "type":"object",
-                              "properties":{
-                                 "cpu":{
-                                    "description":"CPU limit.",
-                                    "type":"string",
-                                    "pattern":"^[0-9m]+$"
-                                 },
-                                 "memory":{
-                                    "description":"Memory limit.",
-                                    "type":"string",
-                                    "pattern":"^[0-9Mi]+$"
-                                 }
-                              }
-                           },
-                           "requests":{
-                              "type":"object",
-                              "properties":{
-                                 "cpu":{
-                                    "description":"CPU request.",
-                                    "type":"string",
-                                    "pattern":"^[0-9m]+$"
-                                 },
-                                 "memory":{
-                                    "description":"Memory request.",
-                                    "type":"string",
-                                    "pattern":"^[0-9Mi]+$"
-                                 }
-                              }
-                           }
-                        }
-                     },
-                     "service":{
-                        "type":"object",
-                        "properties":{
-                           "crRotateServiceName":{
-                              "description":"Name of the cr-rotate service. Please keep it as default.",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-]+$"
                            }
                         }
                      }

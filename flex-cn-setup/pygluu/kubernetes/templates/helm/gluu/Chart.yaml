@@ -35,11 +35,11 @@ icon: https://gluu.org/docs/gluu-server/favicon.ico
 home: https://www.gluu.org
 sources:
   - https://gluu.org/docs/gluu-server
-  - https://github.com/GluuFederation/cloud-native-edition
+  - https://github.com/GluuFederation/flex/flex-cn-setup
 maintainers:
 - name: moabu
   email: support@gluu.org
-description: Gluu Access and Identity Management OpenBanking distribution
+description: Gluu Access and Identity Management
 name: gluu
 version: 5.0.2
 dependencies:
@@ -89,15 +89,11 @@ dependencies:
 
     - name: casa
       version: 5.0.2
-      condition: config.configmap.cnCasaEnabled
+      condition: global.casa.enabled
 
     - name: auth-server-key-rotation
       condition: global.auth-server-key-rotation.enabled
       version: 5.0.2
-
-    - name: cr-rotate
-      version: 5.0.2
-      condition: global.cr-rotate.enabled
 
     - name: client-api
       condition: global.client-api.enabled
