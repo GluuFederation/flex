@@ -11,7 +11,7 @@ import {
 } from '../../../app/components'
 import GluuLoader from '../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuRibbon from '../../../app/routes/Apps/Gluu/GluuRibbon'
-import {addMonths, differenceInMonths } from 'date-fns'
+import { addMonths, differenceInMonths } from 'date-fns'
 import applicationStyle from '../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import GluuViewWrapper from '../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import {
@@ -64,6 +64,7 @@ class MonthBox extends Component {
   }
 }
 function MonthlyActiveUsersPage({ stat, permissions, loading, dispatch }) {
+  console.log('==========================Stat ' + JSON.stringify(stat))
   const { t } = useTranslation()
   const userAction = {}
   const options = {}

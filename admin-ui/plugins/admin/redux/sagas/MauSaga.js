@@ -27,9 +27,8 @@ export function* getMau({ payload }) {
     payload = payload ? payload : { action: {} }
     addAdditionalData(audit, 'FETCH', 'MAU', payload)
     const mauApi = yield* newFunction()
-    console.log("Payload=======>"+JSON.stringify(payload.action.action_data))
     const data = yield call(mauApi.getMau, payload.action.action_data)
-    yield put(getMauResponse(data))
+    yield put(getMauResponse(buildData(data)))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(getMauResponse(null))
@@ -46,4 +45,17 @@ export function* watchGetMau() {
 
 export default function* rootSaga() {
   yield all([fork(watchGetMau)])
+}
+
+function buildData(stat) {
+  return stat.map((entry) => buildEntry(entry))
+}
+function buildEntry(el) {
+  let entry = new Object()
+  entry['month'] = el.month
+  entry['mau'] = el.monthly_active_users
+  entry['cc_at'] = el.token_count_per_granttype.client_credentials.access_token
+  entry['ac_at'] = el.token_count_per_granttype.authorization_code.access_token
+  entry['ac_id'] = el.token_count_per_granttype.authorization_code.id_token
+  return entry
 }
