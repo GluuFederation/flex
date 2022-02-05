@@ -1,7 +1,7 @@
 import { GET_MAU, GET_MAU_RESPONSE } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
-  stat: {},
+  stat: [],
   loading: true,
 }
 
