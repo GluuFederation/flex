@@ -102,20 +102,8 @@ module.exports = {
       },
       // Modular Styles
       {
-        test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              importLoaders: 1,
-            },
-          },
-          { loader: 'postcss-loader' },
-        ],
-        exclude: [path.resolve(config.srcDir, 'styles')],
-        include: [config.srcDir],
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
         test: /\.scss$/,
@@ -136,16 +124,6 @@ module.exports = {
         ],
         exclude: [path.resolve(config.srcDir, 'styles')],
         include: [config.srcDir],
-      },
-      // Global Styles
-      {
-        test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          { loader: 'css-loader' },
-          { loader: 'postcss-loader' },
-        ],
-        include: [path.resolve(config.srcDir, 'styles')],
       },
       {
         test: /\.scss$/,

@@ -15,6 +15,14 @@ export default {
   buttonStyle: {
     background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
   },
+  customButtonStyle: {
+    background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+    paddingLeft: '20px',
+    paddingRight: '30px',
+    color: 'white',
+    fontSize:'1.5em',
+    fontWeight: 'bold'
+  },
   healthDown: {
     background: 'linear-gradient(90deg, #fc575e 0%, #f7b42c 100%)',
   },
