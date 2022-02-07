@@ -17,8 +17,8 @@ def find_version(*file_paths):
 
 
 setup(
-    name="jans-flex-setup",
-    version=find_version("flex_linux_setup/__init__.py"),
+    name="flex-linux-setup",
+    version=find_version("flex_linux_setup", "version.py"),
     url="",
     license="Apache",
     author="Janssen",
@@ -41,6 +41,6 @@ setup(
     include_package_data=True,
     packages=['flex_linux_setup'],
     entry_points={
-        "console_scripts": ["jans-flex-setup=flex_linux_setup:flex_setup.main"],
+        "console_scripts": ["flex-linux-setup=flex_linux_setup.flex_setup:main"],
     },
 )
