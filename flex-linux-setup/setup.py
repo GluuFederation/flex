@@ -41,6 +41,6 @@ setup(
     include_package_data=True,
     packages=['flex_linux_setup'],
     entry_points={
-        "console_scripts": ["jans-flex-setup=flex_linux_setup:flex_setup"],
+        "console_scripts": ["jans-flex-setup=flex_linux_setup:flex_setup.main"],
     },
 )
