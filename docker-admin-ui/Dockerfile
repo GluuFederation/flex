@@ -139,12 +139,12 @@ RUN mkdir -p /opt/jans/flex/admin-ui/dist \
     && touch /run/nginx/nginx.pid
 
 # adjust ownership
-RUN chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
+RUN chown -R 1000:1000 /var/lib/nginx \
+    && chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
     && chgrp -R 0 /opt/jans/flex/admin-ui/.env && chmod -R g=u /opt/jans/flex/admin-ui/.env \
     && chgrp -R 0 /opt/jans/flex/admin-ui/dist && chmod -R g=u /opt/jans/flex/admin-ui/dist \
     && chgrp -R 0 /etc/nginx/http.d/default.conf && chmod -R g=u /etc/nginx/http.d/default.conf \
-    && chgrp -R 0 /var/lib/nginx/tmp && chmod -R g=u /var/lib/nginx/tmp \
-    && chgrp -R 0 /var/lib/nginx/html && chmod -R g=u /var/lib/nginx/html \
+    && chgrp -R 0 /var/lib/nginx && chmod -R g=u /var/lib/nginx \
     && chgrp -R 0 /var/log/nginx && chmod -R g=u /var/log/nginx \
     && chgrp -R 0 /run/nginx/nginx.pid && chmod -R g=u /run/nginx/nginx.pid
 

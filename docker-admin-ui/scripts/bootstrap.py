@@ -26,7 +26,7 @@ def render_nginx_conf(manager):
         }
         txt = fr.read() % ctx
 
-    with open("/etc/nginx/conf.d/default.conf", "w") as fw:
+    with open("/etc/nginx/http.d/default.conf", "w") as fw:
         fw.write(txt)
 
 
