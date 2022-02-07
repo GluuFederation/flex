@@ -86,7 +86,7 @@ print("Installing Gluu Admin UI Frontend")
 
 print("Extracting admin-ui from", flex_path)
 base.extract_from_zip(flex_path, 'admin-ui', source_dir)
-base.extract_from_zip(flex_path, 'flex-linux-setup', flex_setup_dir)
+base.extract_from_zip(flex_path, 'flex-linux-setup/flex_linux_setup', flex_setup_dir)
 
 configApiInstaller.renderTemplateInOut(os.path.join(source_dir, '.env.tmp'), source_dir, source_dir)
 configApiInstaller.copyFile(os.path.join(source_dir, '.env.tmp'), os.path.join(source_dir, '.env'))
