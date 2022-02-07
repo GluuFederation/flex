@@ -15,7 +15,7 @@ def render_env(manager):
     with open("/app/templates/env.tmpl") as fr:
         txt = fr.read() % ctx
 
-    with open("/opt/jans/gluu-admin-ui/.env", "w") as fw:
+    with open("/opt/jans/flex/admin-ui/.env", "w") as fw:
         fw.write(txt)
 
 

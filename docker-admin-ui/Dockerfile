@@ -1,12 +1,13 @@
-FROM nginx:1.20.1-alpine
+FROM node:14.18.2-alpine3.14
 
 # ======
 # alpine
 # ======
 
 RUN apk update \
-    && apk add --no-cache tini openssl py3-pip py3-cryptography py3-grpcio py3-psycopg2 npm \
-    && apk add --no-cache --virtual build-deps git openjdk11-jre-headless
+    && apk add --no-cache tini openssl py3-pip py3-cryptography py3-psycopg2 nginx \
+    && apk add --no-cache --virtual build-deps git openjdk11-jre-headless \
+    && apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/v3.15/community py3-grpcio
 
 # =====
 # nginx
@@ -27,7 +28,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=7513ee633a3d6ef541b960c96e2702a62325c636
+ENV ADMIN_UI_VERSION=8bd1a16a71e6940c7f7135524f69d1b64d4fcf79
 RUN mkdir -p /opt/jans \
     && cd /opt/jans \
     && git clone https://github.com/GluuFederation/flex \
@@ -110,8 +111,6 @@ ENV CN_SECRET_ADAPTER=vault \
 ENV CN_WAIT_MAX_TIME=300 \
     CN_WAIT_SLEEP_DURATION=10
 
-
-
 # ==========
 # misc stuff
 # ==========
@@ -127,21 +126,29 @@ LABEL name="Gluu Admin UI" \
 COPY templates /app/templates/
 COPY scripts /app/scripts/
 RUN chmod +x /app/scripts/entrypoint.sh
-# # create non-root user
-RUN adduser -s /bin/sh -D -G root -u 1000 web
+
+# forward logs to stdout and stderr
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+
+# add existing node user to root group
+RUN addgroup node root
 
 # make empty folders
-RUN mkdir -p /opt/jans/gluu-admin-ui/dist \
-    && touch /var/run/nginx.pid
+RUN mkdir -p /opt/jans/flex/admin-ui/dist \
+    && touch /run/nginx/nginx.pid
 
 # adjust ownership
 RUN chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
-    && chgrp -R 0 /opt/jans/gluu-admin-ui/.env && chmod -R g=u /opt/jans/gluu-admin-ui/.env \
-    && chgrp -R 0 /opt/jans/gluu-admin-ui/dist && chmod -R g=u /opt/jans/gluu-admin-ui/dist \
-    && chgrp -R 0 /etc/nginx/conf.d/default.conf && chmod -R g=u /etc/nginx/conf.d/default.conf \
-    && chgrp -R 0 /usr/share/nginx/html && chmod -R g=u /usr/share/nginx/html \
-    && chgrp -R 0 /var/cache/nginx && chmod -R g=u /var/cache/nginx \
-    && chgrp -R 0 /var/run/nginx.pid && chmod -R g=u /var/run/nginx.pid
+    && chgrp -R 0 /opt/jans/flex/admin-ui/.env && chmod -R g=u /opt/jans/flex/admin-ui/.env \
+    && chgrp -R 0 /opt/jans/flex/admin-ui/dist && chmod -R g=u /opt/jans/flex/admin-ui/dist \
+    && chgrp -R 0 /etc/nginx/http.d/default.conf && chmod -R g=u /etc/nginx/http.d/default.conf \
+    && chgrp -R 0 /var/lib/nginx/tmp && chmod -R g=u /var/lib/nginx/tmp \
+    && chgrp -R 0 /var/lib/nginx/html && chmod -R g=u /var/lib/nginx/html \
+    && chgrp -R 0 /var/log/nginx && chmod -R g=u /var/log/nginx \
+    && chgrp -R 0 /run/nginx/nginx.pid && chmod -R g=u /run/nginx/nginx.pid
 
 USER 1000
-ENTRYPOINT ["tini", "-g", "--", "sh", "/app/scripts/entrypoint.sh"]
+
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["sh", "/app/scripts/entrypoint.sh"]
