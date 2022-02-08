@@ -24,10 +24,9 @@ wget -q ${CASA_PLUGIN_REPO}/strong-authn-settings/${GLUU_VERSION}/strong-authn-s
 # ==========
 
 python3 /app/scripts/wait.py
-
 python3 /app/scripts/bootstrap.py
-
 # python3 /app/scripts/jca_sync.py &
+python3 /app/scripts/auth_conf.py
 
 # run Casa server
 cd /opt/jans/jetty/casa
