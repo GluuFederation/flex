@@ -746,6 +746,8 @@ spec:
                   number: 8080
   {{- end }}
   {{- end }}
+{{- end }}
+
 ---
 
 {{ if .Values.ingress.casaEnabled -}}
@@ -787,16 +789,18 @@ spec:
 {{- end }}
   rules:
   {{- range .Values.ingress.hosts }}
-    - host: {{ . | quote }}
+  {{- $host := . -}}
+  {{- with $ }}
+    - host: {{ $host | quote }}
       http:
         paths:
           - path: /casa
-            pathType: Prefix
+            pathType: Exact
             backend:
               service:
-                name: casa
+                name: {{ .Values.global.casa.casaServiceName }}
                 port:
                   number: 8080
   {{- end }}
-{{- end }}
+  {{- end }}
 {{- end }}
