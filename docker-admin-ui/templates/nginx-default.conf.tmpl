@@ -1,11 +1,11 @@
-server_tokens off;
+# server_tokens off;
 
 server {
     listen 8080 default_server;
     # listen [::]:8080 default_server ipv6only=on;
     server_name %(hostname)s;
 
-    root /usr/share/nginx/html;
+    root /var/lib/nginx/html;
     index index.html;
 
     location /admin {
@@ -27,14 +27,14 @@ server {
 
 #     # location / {
 #     #     # return 301 /admin;
-#     #     root /usr/share/nginx/html;
+#     #     root /var/lib/nginx/html;
 #     # }
 
 #     # location /admin {
-#     #     root /usr/share/nginx/html;
+#     #     root /var/lib/nginx/html;
 #     # }
 
-#     root /usr/share/nginx/html;
+#     root /var/lib/nginx/html;
 #     index index.html;
 
 #     location / {
