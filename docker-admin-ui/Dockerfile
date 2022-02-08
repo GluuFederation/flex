@@ -28,7 +28,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=8bd1a16a71e6940c7f7135524f69d1b64d4fcf79
+ENV ADMIN_UI_VERSION=952492e371a1fb6a3087735c19ead496d574367e
 RUN mkdir -p /opt/jans \
     && cd /opt/jans \
     && git clone https://github.com/GluuFederation/flex \
