@@ -795,7 +795,7 @@ spec:
       http:
         paths:
           - path: /casa
-            pathType: Exact
+            pathType: Prefix
             backend:
               service:
                 name: {{ .Values.global.casa.casaServiceName }}
