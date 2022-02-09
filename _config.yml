@@ -10,3 +10,4 @@ buttons:
     href: /flex/flex-cn-setup/pygluu/kubernetes/templates/helm
 gems:
   - jekyll-seo-tag
+theme: jekyll-theme-hacker
