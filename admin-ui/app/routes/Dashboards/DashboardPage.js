@@ -4,12 +4,12 @@ import moment from 'moment'
 import CustomPieGraph from './CustomPieGraph'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import { getMau } from './../../redux/actions/MauActions'
-import applicationstyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
+import GluuLoader from '../Apps/Gluu/GluuLoader'
+import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
+import { getMau } from '../../redux/actions/MauActions'
+import applicationstyle from '../Apps/Gluu/styles/applicationstyle'
+import GluuLabel from '../Apps/Gluu/GluuLabel'
+import GluuRibbon from '../Apps/Gluu/GluuRibbon'
 import {
   Button,
   Card,
@@ -18,13 +18,13 @@ import {
   FormGroup,
   Col,
   Row,
-} from '../../../../app/components'
+} from '../../../app/components'
 import {
   hasBoth,
   buildPayload,
   STAT_READ,
   STAT_JANS_READ,
-} from '../../../../app/utils/PermChecker'
+} from '../../utils/PermChecker'
 import {
   LineChart,
   XAxis,
@@ -38,8 +38,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-function ActiveUsers({ statData, permissions, loading, dispatch }) {
-  //console.log('=====================>' + JSON.stringify(statData))
+function DashboardPage({ statData, permissions, loading, dispatch }) {
   statData.push({ month: 202201, mau: 5, cc_at: 68, ac_at: 785, ac_id: 567 })
   const { t } = useTranslation()
   const [startDate, setStartDate] = useState(subMonths(new Date(), 2))
@@ -234,6 +233,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
     </GluuLoader>
   )
 }
+
 const mapStateToProps = (state) => {
   return {
     statData: state.mauReducer.stat,
@@ -241,4 +241,5 @@ const mapStateToProps = (state) => {
     permissions: state.authReducer.permissions,
   }
 }
-export default connect(mapStateToProps)(ActiveUsers)
+
+export default connect(mapStateToProps)(DashboardPage)
