@@ -1,7 +1,7 @@
 /**
  * App Reducers
  */
-
+import mauReducer from './MauReducer'
 import authReducer from './AuthReducer'
 import fidoReducer from './FidoReducer'
 import initReducer from './InitReducer'
@@ -16,6 +16,7 @@ const appReducers = {
   logoutReducer,
   licenseReducer,
   oidcDiscoveryReducer,
+  mauReducer,
 }
 
 export default appReducers

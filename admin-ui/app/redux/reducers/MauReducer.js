@@ -1,5 +1,5 @@
 import { GET_MAU, GET_MAU_RESPONSE } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from './ReducerRegistry'
 const INIT_STATE = {
   stat: [],
   loading: true,

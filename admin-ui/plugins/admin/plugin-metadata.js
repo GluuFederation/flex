@@ -4,21 +4,17 @@ import LicenseDetailsPage from './components/Configuration/LicenseDetailsPage'
 import UiRoleListPage from './components/Roles/UiRoleListPage'
 import UiPermListPage from './components/Permissions/UiPermListPage'
 import MappingPage from './components/Mapping/MappingPage'
-import MonthlyActiveUsersPage from './components/MonthlyActiveUsersPage'
 import ScriptListPage from './components/CustomScripts/ScriptListPage'
 import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
 import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
 import SettingsPage from './components/Settings/SettingsPage'
-import ActiveUsersPage from './components/ActiveUsers/ActiveUsers'
 
-import mauSaga from './redux/sagas/MauSaga'
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
 
-import mauReducer from './redux/reducers/MauReducer'
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import apiRoleReducer from './redux/reducers/ApiRoleReducer'
 import apiPermissionReducer from './redux/reducers/ApiPermissionReducer'
@@ -44,11 +40,6 @@ const pluginMetadata = {
         {
           title: 'menus.licenseDetails',
           path: PLUGIN_BASE_APTH + '/licenseDetails',
-          permission: ACR_READ,
-        },
-        {
-          title: 'menus.mau',
-          path: PLUGIN_BASE_APTH + '/mau',
           permission: ACR_READ,
         },
         {
@@ -96,11 +87,6 @@ const pluginMetadata = {
       permission: ACR_READ,
     },
     {
-      component: ActiveUsersPage,
-      path: PLUGIN_BASE_APTH + '/mau',
-      permission: ACR_READ,
-    },
-    {
       component: UiRoleListPage,
       path: PLUGIN_BASE_APTH + '/roles',
       permission: ROLE_READ,
@@ -142,7 +128,6 @@ const pluginMetadata = {
     },
   ],
   reducers: [
-    { name: 'mauReducer', reducer: mauReducer },
     { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
@@ -150,7 +135,6 @@ const pluginMetadata = {
     { name: 'mappingReducer', reducer: mappingReducer },
   ],
   sagas: [
-    mauSaga(),
     scriptSaga(),
     licenseDetailsSaga(),
     apiRoleSaga(),
