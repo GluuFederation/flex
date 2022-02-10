@@ -54,8 +54,11 @@ function buildEntry(el) {
   let entry = new Object()
   entry['month'] = el.month
   entry['mau'] = el.monthly_active_users
-  entry['cc_at'] = el.token_count_per_granttype.client_credentials.access_token
-  entry['ac_at'] = el.token_count_per_granttype.authorization_code.access_token
-  entry['ac_id'] = el.token_count_per_granttype.authorization_code.id_token
+  entry['client_credentials_access_token_count'] =
+    el.token_count_per_granttype.client_credentials.access_token
+  entry['authz_code_access_token_count'] =
+    el.token_count_per_granttype.authorization_code.access_token
+  entry['authz_code_idtoken_count'] =
+    el.token_count_per_granttype.authorization_code.id_token
   return entry
 }

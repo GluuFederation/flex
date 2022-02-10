@@ -25,9 +25,9 @@ function CustomPieGraph({ data }) {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="cc_at" fill="#00C9FF" />
-        <Bar dataKey="ac_at" fill="#82ca9d" />
-        <Bar dataKey="ac_id" fill="#92FE9D" />
+        <Bar dataKey="client_credentials_access_token_count" fill="#00C9FF" />
+        <Bar dataKey="authz_code_access_token_count" fill="#82ca9d" />
+        <Bar dataKey="authz_code_idtoken_count" fill="#92FE9D" />
       </BarChart>
     </ResponsiveContainer>
   )
