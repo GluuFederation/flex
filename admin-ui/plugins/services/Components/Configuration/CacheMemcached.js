@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Badge,
   FormGroup,
@@ -6,15 +6,15 @@ import {
   Col,
   CardBody,
   CustomInput,
-} from "../../../../app/components";
-import GluuLabel from "../../../../app/routes/Apps/Gluu/GluuLabel";
-import { CACHE } from "../../../../app/utils/ApiResources";
-import GluuTooltip from "../../../../app/routes/Apps/Gluu/GluuTooltip";
-import GluuInputRow from "../../../../app/routes/Apps/Gluu/GluuInputRow";
-import { useTranslation } from "react-i18next";
+} from '../../../../app/components'
+import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import { CACHE } from '../../../../app/utils/ApiResources'
+import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
+import { useTranslation } from 'react-i18next'
 
 function CacheMemcached({ config, formik }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <Card>
       <CardBody>
@@ -38,8 +38,8 @@ function CacheMemcached({ config, formik }) {
                 onChange={formik.handleChange}
                 data-testid="connectionFactoryType"
               >
-                <option value="DEFAULT">{t("options.default")}</option>
-                <option value="BINARY">{t("options.binary")}</option>
+                <option value="DEFAULT">{t('options.default')}</option>
+                <option value="BINARY">{t('options.binary')}</option>
               </CustomInput>
             </Col>
           </FormGroup>
@@ -76,7 +76,7 @@ function CacheMemcached({ config, formik }) {
         />
       </CardBody>
     </Card>
-  );
+  )
 }
 
-export default CacheMemcached;
+export default CacheMemcached
