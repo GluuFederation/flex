@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { subMonths } from 'date-fns'
 import moment from 'moment'
-import CustomPieGraph from './CustomPieGraph'
-import CustomLineChart from './CustomLineChart'
-import ActiveUsersGraph from './ActiveUsersGraph'
+import CustomBarGraph from './Grapths/CustomBarGraph'
+import CustomLineChart from './Grapths/CustomLineChart'
+import ActiveUsersGraph from './Grapths/ActiveUsersGraph'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
@@ -178,7 +178,7 @@ function DashboardPage({ statData, permissions, loading, dispatch }) {
             </FormGroup>
             <FormGroup row>
               <Col sm={6}>
-                <CustomPieGraph data={statData} />
+                <CustomBarGraph data={statData} />
               </Col>
               <Col sm={6}>
                 <CustomLineChart data={doDataAugmentation(statData)} />
