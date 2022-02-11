@@ -71,7 +71,7 @@ with open(main_chart_file, "r") as f:
     chart = f.read()
     chart_keys = chart_yaml.load(chart)
 
-non_janssen_charts = ["jackrabbit", "admin-ui", "oxshibboleth", "oxpassport", "casa", "cn-istio-ingress"]
+non_janssen_charts = ["admin-ui", "oxshibboleth", "oxpassport", "casa", "cn-istio-ingress"]
 chart_dependencies = []
 for chart in chart_keys["dependencies"]:
     if chart["name"] not in non_janssen_charts:

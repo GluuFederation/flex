@@ -60,17 +60,7 @@ data:
   CN_CONTAINER_METADATA: {{ .Values.configmap.containerMetadataName | quote }}
   CN_MAX_RAM_PERCENTAGE: {{ .Values.configmap.cnMaxRamPercent | quote }}
   CN_CACHE_TYPE: {{ .Values.configmap.cnCacheType | quote }}
-  {{- if not .Values.global.jackrabbit.enabled }}
-  CN_DOCUMENT_STORE_TYPE: LOCAL
-  {{- else }}
   CN_DOCUMENT_STORE_TYPE: {{ .Values.global.cnDocumentStoreType | quote }}
-  {{- end }}
-  CN_JACKRABBIT_SYNC_INTERVAL: {{ .Values.global.jackrabbit.cnJackrabbitSyncInterval | quote }}
-  {{- if .Values.global.jackrabbit.cnJackrabbitUrl }}
-  CN_JACKRABBIT_URL: {{ .Values.global.jackrabbit.cnJackrabbitUrl | quote }}
-  {{- else }}
-  CN_JACKRABBIT_URL: {{ cat "http://" ( .Values.global.jackrabbit.jackRabbitServiceName ) ":8080" | quote | nospace }}
-  {{- end }}
   DOMAIN: {{ .Values.global.fqdn | quote }}
   CN_AUTH_SERVER_BACKEND: {{ cat ( index .Values "global" "auth-server" "authServerServiceName" ) ":8080" | quote | nospace }}
   CN_AUTH_APP_LOGGERS: {{ index .Values "global" "auth-server" "appLoggers"
@@ -138,14 +128,6 @@ data:
    # must the same as the opendj service name
   CN_CERT_ALT_NAME: {{ .Values.global.opendj.ldapServiceName }} #{{ template "cn.fullname" . }}-service
   CN_PERSISTENCE_LDAP_MAPPING: {{ .Values.configmap.cnPersistenceLdapMapping | quote }}
-  {{- end }}
-  {{ if .Values.global.jackrabbit.cnJackrabbitCluster }}
-  CN_JACKRABBIT_ADMIN_ID: {{ .Values.configmap.cnJackrabbitAdminId | quote }}
-  CN_JACKRABBIT_CLUSTER: {{ .Values.global.jackrabbit.cnJackrabbitCluster | quote }}
-  CN_JACKRABBIT_POSTGRES_USER: {{ .Values.global.jackrabbit.cnJackrabbitPostgresUser | quote }}
-  CN_JACKRABBIT_POSTGRES_HOST: {{ .Values.global.jackrabbit.cnJackrabbitPostgresHost | quote }}
-  CN_JACKRABBIT_POSTGRES_PORT: {{ .Values.global.jackrabbit.cnJackrabbitPostgresPort | quote }}
-  CN_JACKRABBIT_POSTGRES_DATABASE: {{ .Values.global.jackrabbit.cnJackrabbitPostgresDatabaseName | quote }}
   {{- end }}
   # Auto enable installation of some services
   CN_CASA_ENABLED: {{ .Values.global.casa.enabled | quote }}

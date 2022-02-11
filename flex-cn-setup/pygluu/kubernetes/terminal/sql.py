@@ -2,7 +2,7 @@
 pygluu.kubernetes.terminal.sql
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains helpers to interact with user's inputs for jackrabbit terminal prompts.
+This module contains helpers to interact with user's inputs for sql terminal prompts.
 
 License terms and conditions for Gluu Cloud Native Edition:
 https://www.apache.org/licenses/LICENSE-2.0

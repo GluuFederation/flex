@@ -79,11 +79,6 @@ spec:
           {{- with .Values.volumeMounts }}
 {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.global.jackrabbit.enabled }}
-            - name: cn-jackrabbit-admin-pass
-              mountPath: /etc/gluu/conf/jackrabbit_admin_password
-              subPath: jackrabbit_admin_password
-          {{- end }}
           {{ if or (eq .Values.global.configSecretAdapter "google") (eq .Values.global.cnPersistenceType "spanner") }}
             - mountPath: {{ .Values.global.cnGoogleApplicationCredentials }}
               name: google-sa
@@ -121,12 +116,6 @@ spec:
         - name: google-sa
           secret:
             secretName: {{ .Release.Name }}-google-sa
-      {{- end }}
-
-      {{- if .Values.global.jackrabbit.enabled }}
-        - name: cn-jackrabbit-admin-pass
-          secret:
-            secretName: cn-jackrabbit-admin-pass
       {{- end }}
       {{- if or (eq .Values.global.cnPersistenceType "couchbase") (eq .Values.global.cnPersistenceType "hybrid") }}
 

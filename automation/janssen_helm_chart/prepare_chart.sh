@@ -11,7 +11,7 @@ rm ${temp_chart_folder}/charts/nginx-ingress/templates/admin-ui-ingress.yaml || 
 rm ${temp_chart_folder}/charts/nginx-ingress/templates/auth-server-protected-ingress.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/nginx-ingress/templates/casa-ingress.yaml || echo "file doesn't exist"
 
-services="casa jackrabbit oxpassport oxshibboleth admin-ui cn-istio-ingress"
+services="casa oxpassport oxshibboleth admin-ui cn-istio-ingress"
 for service in $services; do
   folder="${temp_chart_folder:?}/""charts/$service"
   echo "${folder}"
@@ -19,12 +19,7 @@ for service in $services; do
 done
 
 remove_all() {
-  sed '/{{ if .Values.global.jackrabbit.enabled/,/{{- end }}/d' \
-  | sed '/{{- if .Values.global.jackrabbit.enabled/,/{{- end }}/d' \
-  | sed '/{{- if not .Values.global.jackrabbit.enabled/,/{{- end }}/d' \
-  | sed '/{{- if .Values.global.jackrabbit.cnJackrabbitUrl/,/{{- end }}/d' \
-  | sed '/{{ if .Values.global.cnJackrabbitCluster/,/{{- end }}/d' \
-  | sed '/{{- if .Values.global.oxshibboleth.enabled/,/{{- end }}/d' \
+  sed '/{{- if .Values.global.oxshibboleth.enabled/,/{{- end }}/d' \
   | sed '/{{- if index .Values "global" "admin-ui" "enabled" }}/,/{{- end }}/d' \
   | sed '/{{ if .Values.global.cnObExtSigningJwksUri/,/{{- end }}/d' \
   | sed '/{{ if .Values.ingress.adminUiEnabled/,/---/d' \

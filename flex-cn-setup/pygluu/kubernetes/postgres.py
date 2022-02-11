@@ -22,23 +22,6 @@ class Postgres(object):
 
     def install_postgres(self):
         self.uninstall_postgres()
-        if self.settings.get("installer-settings.jackrabbit.clusterMode") == "Y":
-            self.kubernetes.create_namespace(
-                name=f'jackrabbit{self.settings.get("installer-settings.postgres.namespace")}',
-                labels={"app": "postgres"})
-            exec_cmd("helm repo add bitnami https://charts.bitnami.com/bitnami")
-            exec_cmd("helm repo update")
-            exec_cmd("helm install {} bitnami/postgresql "
-                     "--set global.postgresql.postgresqlDatabase={} "
-                     "--set global.postgresql.postgresqlPassword={} "
-                     "--set global.postgresql.postgresqlUsername={} "
-                     "--namespace=jackrabbit{}".format("postgresql",
-                                                       self.settings.get(
-                                                           "config.configmap.cnJackrabbitPostgresDatabaseName"),
-                                                       self.settings.get(
-                                                           "jackrabbit.secrets.cnJackrabbitPostgresPassword"),
-                                                       self.settings.get("config.configmap.cnJackrabbitPostgresUser"),
-                                                       self.settings.get("installer-settings.postgres.namespace")))
 
         if self.settings.get("global.cnPersistenceType") == "sql" and \
                 self.settings.get("config.configmap.cnSqlDbDialect") == "pgsql":
@@ -61,9 +44,6 @@ class Postgres(object):
     def uninstall_postgres(self):
         logger.info("Removing gluu-postgres...")
         logger.info("Removing postgres...")
-        exec_cmd("helm delete {} --namespace=jackrabbit{}".format("sql",
-                                                                  self.settings.get(
-                                                                      "installer-settings.postgres.namespace")))
         if self.settings.get("global.cnPersistenceType") == "sql" and \
                 self.settings.get("config.configmap.cnSqlDbDialect") == "pgsql":
             exec_cmd("helm delete {} --namespace={}".format("gluu",

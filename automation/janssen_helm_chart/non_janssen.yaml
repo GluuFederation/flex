@@ -1,7 +1,6 @@
 installer-settings: None
 admin-ui: None
 casa: None
-jackrabbit: None
 oxpassport: None
 oxshibboleth: None
 global:
@@ -21,7 +20,6 @@ global:
   cnObTransportTrustStore: None
   istio:
     ingress: None
-  jackrabbit: None
   oxpassport: None
   oxshibboleth: None
   distribution: None

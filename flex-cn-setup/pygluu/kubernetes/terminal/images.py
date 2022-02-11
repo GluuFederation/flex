@@ -50,8 +50,6 @@ class PromptImages:
             # LDAP
             if self.settings.get("config.configmap.cnCacheType") in ("hybrid", "ldap"):
                 prompt_and_set_setting("OpenDJ", "opendj")
-            # Jackrabbit
-            prompt_and_set_setting("jackrabbit", "jackrabbit")
             # AUTH_SERVER
             prompt_and_set_setting("Auth-Server", "auth-server")
             # CONFIG_API

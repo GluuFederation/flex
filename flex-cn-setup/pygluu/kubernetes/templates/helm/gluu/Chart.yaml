@@ -53,10 +53,6 @@ dependencies:
       condition: global.opendj.enabled
       version: 5.0.2
 
-    - name: jackrabbit
-      condition: global.jackrabbit.enabled
-      version: 5.0.2
-
     - name: auth-server
       condition: global.auth-server.enabled
       version: 5.0.2

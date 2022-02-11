@@ -59,11 +59,6 @@ to handle interaction with user-inputs.
    :private-members:
    :undoc-members:
 
-.. autoclass:: pygluu.kubernetes.terminal.jackrabbit.PromptJackrabbit
-   :members:
-   :private-members:
-   :undoc-members:
-
 .. autoclass:: pygluu.kubernetes.terminal.ldap.PromptLdap
    :members:
    :private-members:
