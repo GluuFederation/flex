@@ -84,8 +84,6 @@ configmap:
   cnLdapUrl: "opendj:1636"
   # -- Value passed to Java option -XX:MaxRAMPercentage
   cnMaxRamPercent: "75.0"
-  # -- Boolean flag to enable/disable passport chart
-  cnPassportEnabled: false
   # -- Specify data that should be saved in LDAP (one of default, user, cache, site, token, or session; default to default). Note this environment only takes effect when `global.cnPersistenceType`  is set to `hybrid`.
   cnPersistenceLdapMapping: default
   # -- Redis Sentinel Group. Often set when `config.configmap.cnRedisType` is set to `SENTINEL`. Can be used when  `config.configmap.cnCacheType` is set to `REDIS`.
@@ -98,8 +96,6 @@ configmap:
   cnRedisUrl: "redis.redis.svc.cluster.local:6379"
   # -- Boolean to use SSL in Redis. Can be used when  `config.configmap.cnCacheType` is set to `REDIS`.
   cnRedisUseSsl: false
-  # -- Enable SAML-related features; UI menu, etc.
-  cnSamlEnabled: false
   # -- Kubernetes secret name holding configuration keys. Used when global.configSecretAdapter is set to kubernetes which is the default.
   cnSecretKubernetesSecret: cn
   # -- Loadbalancer address for AWS if the FQDN is not registered.

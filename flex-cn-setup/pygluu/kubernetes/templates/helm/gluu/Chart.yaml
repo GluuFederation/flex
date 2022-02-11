@@ -79,7 +79,7 @@ dependencies:
 
     - name: oxpassport
       version: 5.0.2
-      condition: config.configmap.cnPassportEnabled
+      condition: global.oxpassport.enabled
 
     - name: casa
       version: 5.0.2

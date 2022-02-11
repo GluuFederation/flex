@@ -216,10 +216,6 @@
                      "type":"string",
                      "pattern":"^(OAUTH|TEST|UMA)$"
                   },
-                  "cnPassportEnabled":{
-                     "description":"Boolean flag to enable/disable Passport chart",
-                     "type":"boolean"
-                  },
                   "cnPersistenceLdapMapping":{
                      "description":"Specify data that should be saved in LDAP (one of default, user, cache, site, token, or session; default to default). Note this environment only takes effect when `global.cnPersistenceType`  is set to `hybrid`.",
                      "type":"string",
@@ -244,10 +240,6 @@
                   },
                   "cnRedisUseSsl":{
                      "description":"Boolean to use SSL in Redis. Can be used when  `config.configmap.cnCacheType` is set to `REDIS`.",
-                     "type":"boolean"
-                  },
-                  "cnSamlEnabled":{
-                     "description":"Enable SAML-related features; UI menu, etc.",
                      "type":"boolean"
                   },
                   "cnSecretKubernetesSecret":{
@@ -457,6 +449,21 @@
             }
                }
             },
+            "admin-ui":{
+               "type":"object",
+               "properties":{
+                  "enabled":{
+                     "description":"Boolean flag to enable/disable admin-ui chart. You should never set this to false.",
+                     "type":"boolean"
+                  },
+               "adminUiServiceName":{
+                     "description":"Name of the admin service. Please keep it as default.",
+                     "type":"string",
+                     "pattern":"^[a-z0-9-]+$"
+                           }
+               }
+            },
+
             "auth-server-key-rotation":{
                "type":"object",
                "properties":{
@@ -748,7 +755,7 @@
                "type":"object",
                "properties":{
                   "enabled":{
-                     "description":"Boolean flag to enable/disable the oxShibbboleth chart.",
+                     "description":"Boolean flag to enable/disable the oxShibbboleth chart. Not part of the openbanking distribution. Keep as default.This also enables SAML-related features; UI menu, etc. Not part of the openbanking distribution. Please leave this disabled.",
                      "type":"boolean"
                   }
                }
@@ -765,6 +772,20 @@
                      "description":"Boolean flag to enable/disable the persistence chart.",
                      "type":"boolean"
                   }
+               }
+            },
+            "oxpassport": {
+               "type": "object",
+               "properties": {
+                  "enabled": {
+                     "description": "Boolean flag to enable/disable the oxpassport chart.",
+                     "type": "boolean"
+                  },
+               "oxPassportServiceName":{
+                     "description":"Name of the oxPassport service. Please keep it as default.",
+                     "type":"string",
+                     "pattern":"^[a-z0-9-]+$"
+                           }
                }
             },
             "scim":{
@@ -2465,11 +2486,11 @@
       "oxpassport-enabled":{
          "if":{
             "properties":{
-               "config":{
+               "global":{
                   "properties":{
-                     "configmap":{
+                     "oxpassport":{
                         "properties":{
-                           "cnPassportEnabled":{
+                           "enabled":{
                               "const":"true"
                            }
                         }
