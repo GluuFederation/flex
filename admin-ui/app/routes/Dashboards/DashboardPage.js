@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { addMonths, subMonths } from 'date-fns'
+import { subMonths } from 'date-fns'
 import moment from 'moment'
-import CustomPieGraph from './CustomPieGraph'
+import CustomBarGraph from './Grapths/CustomBarGraph'
+import CustomLineChart from './Grapths/CustomLineChart'
+import ActiveUsersGraph from './Grapths/ActiveUsersGraph'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import { getMau } from './../../redux/actions/MauActions'
-import applicationstyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
+import GluuLoader from '../Apps/Gluu/GluuLoader'
+import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
+import { getMau } from '../../redux/actions/MauActions'
+import applicationstyle from '../Apps/Gluu/styles/applicationstyle'
+import GluuLabel from '../Apps/Gluu/GluuLabel'
+import GluuRibbon from '../Apps/Gluu/GluuRibbon'
 import {
   Button,
   Card,
@@ -18,32 +20,34 @@ import {
   FormGroup,
   Col,
   Row,
-} from '../../../../app/components'
+} from '../../../app/components'
 import {
   hasBoth,
   buildPayload,
   STAT_READ,
   STAT_JANS_READ,
-} from '../../../../app/utils/PermChecker'
-import {
-  LineChart,
-  XAxis,
-  YAxis,
-  Line,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts'
+} from '../../utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-function ActiveUsers({ statData, permissions, loading, dispatch }) {
-  //console.log('=====================>' + JSON.stringify(statData))
-  statData.push({ month: 202201, mau: 5, cc_at: 68, ac_at: 785, ac_id: 567 })
+function DashboardPage({ statData, permissions, loading, dispatch }) {
+  statData.push({
+    month: 202111,
+    mau: 5,
+    client_credentials_access_token_count: 68,
+    authz_code_access_token_count: 785,
+    authz_code_idtoken_count: 567,
+  })
+  statData.push({
+    month: 202112,
+    mau: 5,
+    client_credentials_access_token_count: 28,
+    authz_code_access_token_count: 75,
+    authz_code_idtoken_count: 257,
+  })
   const { t } = useTranslation()
-  const [startDate, setStartDate] = useState(subMonths(new Date(), 2))
-  const [endDate, setEndDate] = useState(addMonths(new Date(), 2))
+  const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
+  const [endDate, setEndDate] = useState(new Date())
   const userAction = {}
   const options = {}
   useEffect(() => {
@@ -67,9 +71,9 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
           let newEntry = new Object()
           newEntry['month'] = parseInt(getYearMonth(new Date(ele)), 10)
           newEntry['mau'] = 0
-          newEntry['cc_at'] = 0
-          newEntry['ac_at'] = 0
-          newEntry['ac_id'] = 0
+          newEntry['client_credentials_access_token_count'] = 0
+          newEntry['authz_code_access_token_count'] = 0
+          newEntry['authz_code_idtoken_count'] = 0
           stat.push(newEntry)
         }
       }
@@ -170,57 +174,14 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
             <FormGroup row />
             <FormGroup row />
             <FormGroup row>
-              <ResponsiveContainer className="mau" width="80%" height={350}>
-                <LineChart height={400} data={doDataAugmentation(statData)}>
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                  <Line
-                    name={t('fields.monthly_active_users')}
-                    type="monotone"
-                    dataKey="mau"
-                    stroke="#8884d8"
-                  />
-                  <Tooltip />
-                  <Legend />
-                </LineChart>
-              </ResponsiveContainer>
+              <ActiveUsersGraph data={doDataAugmentation(statData)} />
             </FormGroup>
             <FormGroup row>
               <Col sm={6}>
-                <CustomPieGraph data={statData} />
+                <CustomBarGraph data={statData} />
               </Col>
               <Col sm={6}>
-                <ResponsiveContainer className="bar" width="100%" height={400}>
-                  <LineChart
-                    width={400}
-                    height={400}
-                    data={doDataAugmentation(statData)}
-                  >
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                    <Line
-                      name="Client credentials access token"
-                      type="monotone"
-                      dataKey="cc_at"
-                      stroke="#8884d8"
-                    />
-                    <Line
-                      name="Authorization code access token"
-                      type="monotone"
-                      dataKey="ac_at"
-                      stroke="#82ca9d"
-                    />
-                    <Line
-                      name="Authorization code id token"
-                      type="monotone"
-                      dataKey="ac_id"
-                      stroke="#00C9FF"
-                    />
-                    <Legend />
-                  </LineChart>
-                </ResponsiveContainer>
+                <CustomLineChart data={doDataAugmentation(statData)} />
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -234,6 +195,7 @@ function ActiveUsers({ statData, permissions, loading, dispatch }) {
     </GluuLoader>
   )
 }
+
 const mapStateToProps = (state) => {
   return {
     statData: state.mauReducer.stat,
@@ -241,4 +203,5 @@ const mapStateToProps = (state) => {
     permissions: state.authReducer.permissions,
   }
 }
-export default connect(mapStateToProps)(ActiveUsers)
+
+export default connect(mapStateToProps)(DashboardPage)
