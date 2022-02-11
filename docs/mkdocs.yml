@@ -1,5 +1,5 @@
 # Project information
-site_name: Gluu Flex 1.0 Docs
+site_name: Gluu Flex 5.0 Docs
 site_description: Documentation for Gluu Flex
 
 # Copyright
@@ -9,7 +9,7 @@ copyright: Copyright &copy; 2022, Gluu, Inc.
 docs_dir: source
 repo_name: GluuFederation/flex
 repo_url: https://github.com/GluuFederation/flex/
-edit_uri: edit/4.3/docs/source
+edit_uri: edit/main/docs/source
 
 # Configuration
 theme:
@@ -21,7 +21,7 @@ theme:
     logo: 'gluu.jpg'
     favicon: 'favicon.ico'
 extra:
-    version: '1.0'
+    version: '5.0'
 extra_css:
   - css/tabs.css
 
