@@ -1,7 +1,6 @@
 {{- if .Values.global.upgrade.enabled }}
 {{- if or (eq .Values.global.cnPersistenceType "ldap") (eq .Values.global.cnPersistenceType "hybrid")  }}
-# License terms and conditions for Gluu Cloud Native Edition:
-# https://www.apache.org/licenses/LICENSE-2.0
+
 apiVersion: v1
 kind: ConfigMap
 metadata:

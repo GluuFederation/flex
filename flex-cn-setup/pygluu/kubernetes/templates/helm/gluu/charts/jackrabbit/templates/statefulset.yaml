@@ -1,5 +1,4 @@
-# License terms and conditions for Gluu Cloud Native Edition:
-# https://www.apache.org/licenses/LICENSE-2.0
+
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -45,7 +44,7 @@ spec:
         - name: cn-jackrabbit-admin-pass
           secret:
             secretName: cn-jackrabbit-admin-pass
-      {{- if .Values.global.cnJackrabbitCluster }}
+      {{- if .Values.global.jackrabbit.cnJackrabbitCluster }}
         - name: cn-jackrabbit-postgres-pass
           secret:
             secretName: cn-jackrabbit-postgres-pass
@@ -79,7 +78,7 @@ spec:
           - name: cn-jackrabbit-admin-pass
             mountPath: /etc/gluu/conf/jackrabbit_admin_password
             subPath: jackrabbit_admin_password
-        {{- if .Values.global.cnJackrabbitCluster }}
+        {{- if .Values.global.jackrabbit.cnJackrabbitCluster }}
           - name: cn-jackrabbit-postgres-pass
             mountPath: /etc/gluu/conf/postgres_password
             subPath: postgres_password

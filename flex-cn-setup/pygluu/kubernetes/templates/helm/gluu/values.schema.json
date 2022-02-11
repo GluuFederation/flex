@@ -89,11 +89,6 @@
                      "type":"string",
                      "pattern":"^(GMT|UTC|ECT|EET|ART|EAT|MET|NET|PLT|IST|BST|VST|CTT|JST|ACT|AET|SST|NST|MIT|HST|AST|PST|PNT|MST|CST|EST|IET|PRT|CNT|AGT|BET|CAT)$"
                   },
-                  "cnSqlPasswordFile":{
-                     "description":"SQL server password file location. This file path must end with sql_password",
-                     "type":"string",
-                     "pattern":".*sql_password\\b.*"
-                  },
                   "cnSqldbUserPassword":{
                      "description":"Password for user config.configmap.cnSqlDbUser.",
                      "$ref":"#/definitions/password"
@@ -127,11 +122,6 @@
                      "type":"string",
                      "pattern":"^[a-z]+$"
                   },
-                  "cnCouchbaseCertFile":{
-                     "description":"Location of `couchbase.crt` used by Couchbase SDK for tls termination. The file path must end with couchbase.crt. In mTLS setups this is not required.",
-                     "type":"string",
-                     "pattern":".*couchbase.crt\\b.*"
-                  },
                   "cnCouchbaseCrt":{
                      "description":"Couchbase certificate authority string. This must be encoded using base64. This can also be found in your couchbase UI Security > Root Certificate. In mTLS setups this is not required.",
                      "type":"string",
@@ -144,11 +134,6 @@
                   "cnCouchbasePass":{
                      "description":"Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol ",
                      "$ref":"#/definitions/password"
-                  },
-                  "cnCouchbasePasswordFile":{
-                     "description":"The location of the Couchbase restricted user config.configmap.cnCouchbaseUser password. The file path must end with couchbase_password",
-                     "type":"string",
-                     "pattern":".*couchbase_password\\b.*"
                   },
                   "cnCouchbaseSuperUser":{
                      "description":"The Couchbase super user (admin) user name. This user is used during initialization only.",
@@ -172,58 +157,6 @@
                      "description":"Couchbase restricted user. Used only when global.cnPersistenceType is hybrid or couchbase.",
                      "type":"string",
                      "pattern":"^[a-z]+$"
-                  },
-                  "cnDocumentStoreType":{
-                     "description":"Document store type to use for shibboleth files JCA or LOCAL. Note that if JCA is selected Apache Jackrabbit will be used. Jackrabbit also enables loading custom files across all services easily.",
-                     "type":"string",
-                     "pattern":"^(LOCAL|JCA)$"
-                  },
-                  "cnJackrabbitAdminId":{
-                     "description":"Jackrabbit admin uid.",
-                     "type":"string",
-                     "pattern":"^[a-z]+$"
-                  },
-                  "cnJackrabbitAdminIdFile":{
-                     "description":"The location of the Jackrabbit admin uid config.cnJackrabbitAdminId. The file path must end with jackrabbit_admin_id.",
-                     "type":"string",
-                     "pattern":".*jackrabbit_admin_id\\b.*"
-                  },
-                  "cnJackrabbitAdminPassFile":{
-                     "description":"The location of the Jackrabbit admin password jackrabbit.secrets.cnJackrabbitAdminPassword. The file path must end with jackrabbit_admin_password.",
-                     "type":"string",
-                     "pattern":".*jackrabbit_admin_password\\b.*"
-                  },
-                  "cnJackrabbitPostgresDatabaseName":{
-                     "description":"Jackrabbit postgres database name.",
-                     "type":"string",
-                     "pattern":"^[a-z]+$"
-                  },
-                  "cnJackrabbitPostgresHost":{
-                     "description":"Postgres url",
-                     "$ref":"#/definitions/fqdn-pattern"
-                  },
-                  "cnJackrabbitPostgresPasswordFile":{
-                     "description":"The location of the Jackrabbit postgres password file jackrabbit.secrets.cnJackrabbitPostgresPassword. The file path must end with postgres_password.",
-                     "type":"string",
-                     "pattern":".*postgres_password\\b.*"
-                  },
-                  "cnJackrabbitPostgresPort":{
-                     "description":"Jackrabbit Postgres port",
-                     "type":"integer"
-                  },
-                  "cnJackrabbitPostgresUser":{
-                     "description":"Jackrabbit Postgres uid",
-                     "type":"string",
-                     "pattern":"^[a-z]+$"
-                  },
-                  "cnJackrabbitSyncInterval":{
-                     "description":"Interval between files sync (default to 300 seconds).",
-                     "type":"integer"
-                  },
-                  "cnJackrabbitUrl":{
-                     "description":"Jackrabbit internal url. Normally left as default.",
-                     "type":"string",
-                     "pattern":"^(http:\/\/)?[a-z0-9-:]+$"
                   },
                   "cnGoogleSecretManagerServiceAccount":{
                      "description":"Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when global.configAdapterName and global.configSecretAdapter is set to google.",
@@ -586,14 +519,15 @@
                   }
                }
             },
-            "cnJackrabbitCluster":{
-               "description":"Boolean flag if enabled will enable jackrabbit in cluster mode with Postgres.",
-               "type":"boolean"
-            },
             "cnPersistenceType":{
                "description":"Persistence backend to run Gluu with ldap|couchbase|hybrid|sql|spanner.",
                "type":"string",
                "pattern":"^(ldap|couchbase|hybrid|sql|spanner)$"
+            },
+            "cnDocumentStoreType":{
+               "description":"Document store type to use for shibboleth files JCA or LOCAL. Note that if JCA is selected Apache Jackrabbit will be used. Jackrabbit also enables loading custom files across all services easily.",
+               "type":"string",
+               "pattern":"^(LOCAL|JCA)$"
             },
             "cnObExtSigningJwksUri":{
                "description":"Open banking external signing jwks uri. Used in SSA Validation.",
@@ -789,6 +723,47 @@
                   "enabled":{
                      "description":"Boolean flag to enable/disable the jackrabbit chart. For more information on how it is used inside Gluu https://gluu.org/docs/gluu-server/4.2/installation-guide/install-kubernetes/#working-with-jackrabbit. ",
                      "type":"boolean"
+                  },
+                  "cnJackrabbitCluster":{
+                     "description":"Boolean flag if enabled will enable jackrabbit in cluster mode with Postgres.",
+                     "type":"boolean"
+                  },
+                  "cnJackrabbitAdminId":{
+                     "description":"Jackrabbit admin uid.",
+                     "type":"string",
+                     "pattern":"^[a-z]+$"
+                  },
+                  "cnJackrabbitAdminPassFile":{
+                     "description":"The location of the Jackrabbit admin password jackrabbit.secrets.cnJackrabbitAdminPassword. The file path must end with jackrabbit_admin_password.",
+                     "type":"string",
+                     "pattern":".*jackrabbit_admin_password\\b.*"
+                  },
+                  "cnJackrabbitPostgresDatabaseName":{
+                     "description":"Jackrabbit postgres database name.",
+                     "type":"string",
+                     "pattern":"^[a-z]+$"
+                  },
+                  "cnJackrabbitPostgresHost":{
+                     "description":"Postgres url",
+                     "$ref":"#/definitions/fqdn-pattern"
+                  },
+                  "cnJackrabbitPostgresPort":{
+                     "description":"Jackrabbit Postgres port",
+                     "type":"integer"
+                  },
+                  "cnJackrabbitPostgresUser":{
+                     "description":"Jackrabbit Postgres uid",
+                     "type":"string",
+                     "pattern":"^[a-z]+$"
+                  },
+                  "cnJackrabbitSyncInterval":{
+                     "description":"Interval between files sync (default to 300 seconds).",
+                     "type":"integer"
+                  },
+                  "cnJackrabbitUrl":{
+                     "description":"Jackrabbit internal url. Normally left as default.",
+                     "type":"string",
+                     "pattern":"^(http:\/\/)?[a-z0-9-:]+$"
                   },
                   "jackRabbitServiceName":{
                      "description":"Name of the Jackrabbit service. Please keep it as default.",

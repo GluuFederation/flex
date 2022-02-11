@@ -102,9 +102,7 @@ config:
     cnSqlDbUser: jans
     # -- SQL database timezone.
     cnSqlDbTimezone: UTC
-    # -- SQL password file holding password from config.configmap.cnSqldbUserPassword .
-    cnSqlPasswordFile: /etc/jans/conf/sql_password
-    # -- SQL password  injected as config.configmap.cnSqlPasswordFile .
+    # -- SQL password  injected in secrets .
     cnSqldbUserPassword: Test1234#
     # -- Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` .
     cnCacheType: NATIVE_PERSISTENCE
@@ -346,8 +344,6 @@ global:
   cloud:
     # -- Boolean flag if enabled will strip resources requests and limits from all services.
     testEnviroment: false
-  # -- Boolean flag if enabled will enable jackrabbit in cluster mode with Postgres.
-  cnJackrabbitCluster: false
   # -- Persistence backend to run Gluu with ldap|couchbase|hybrid|sql|spanner.
   cnPersistenceType: sql
   # -- Open banking external signing jwks uri. Used in SSA Validation.
@@ -428,6 +424,8 @@ global:
     # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
     additionalAnnotations: { }
   jackrabbit:
+    # -- Boolean flag if enabled will enable jackrabbit in cluster mode with Postgres.
+    cnJackrabbitCluster: false
     # -- Boolean flag to enable/disable the jackrabbit chart. For more information on how it is used inside Gluu https://gluu.org/docs/gluu-server/4.2/installation-guide/install-kubernetes/#working-with-jackrabbit. If disabled oxShibboleth cannot be run.
     enabled: false
     # -- Name of the Jackrabbit service. Please keep it as default.

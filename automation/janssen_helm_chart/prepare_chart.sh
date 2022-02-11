@@ -7,6 +7,10 @@ rm ${temp_chart_folder}/openbanking-helm.md || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/config/templates/upgrade-ldap-101-jans.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/config/templates/ob-secrets.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/config/templates/admin-ui-secrets.yaml || echo "file doesn't exist"
+rm ${temp_chart_folder}/charts/nginx-ingress/templates/admin-ui-ingress.yaml || echo "file doesn't exist"
+rm ${temp_chart_folder}/charts/nginx-ingress/templates/auth-server-protected-ingress.yaml || echo "file doesn't exist"
+rm ${temp_chart_folder}/charts/nginx-ingress/templates/casa-ingress.yaml || echo "file doesn't exist"
+
 services="casa jackrabbit oxpassport oxshibboleth admin-ui cn-istio-ingress"
 for service in $services; do
   folder="${temp_chart_folder:?}/""charts/$service"
@@ -17,7 +21,8 @@ done
 remove_all() {
   sed '/{{ if .Values.global.jackrabbit.enabled/,/{{- end }}/d' \
   | sed '/{{- if .Values.global.jackrabbit.enabled/,/{{- end }}/d' \
-  | sed '/{{- if .Values.configmap.cnJackrabbitUrl/,/{{- end }}/d' \
+  | sed '/{{- if not .Values.global.jackrabbit.enabled/,/{{- end }}/d' \
+  | sed '/{{- if .Values.global.jackrabbit.cnJackrabbitUrl/,/{{- end }}/d' \
   | sed '/{{ if .Values.global.cnJackrabbitCluster/,/{{- end }}/d' \
   | sed '/{{- if .Values.global.oxshibboleth.enabled/,/{{- end }}/d' \
   | sed '/{{- if index .Values "global" "admin-ui" "enabled" }}/,/{{- end }}/d' \

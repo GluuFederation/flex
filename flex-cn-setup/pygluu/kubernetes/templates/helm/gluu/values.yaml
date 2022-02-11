@@ -438,9 +438,7 @@ config:
     cnSqlDbUser: jans
     # -- SQL database timezone.
     cnSqlDbTimezone: UTC
-    # -- SQL password file holding password from config.configmap.cnSqldbUserPassword .
-    cnSqlPasswordFile: /etc/jans/conf/sql_password
-    # -- SQL password  injected as config.configmap.cnSqlPasswordFile .
+    # -- SQL password  injected the secrets .
     cnSqldbUserPassword: Test1234#
     # -- Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` .
     cnCacheType: NATIVE_PERSISTENCE
@@ -454,48 +452,20 @@ config:
     cnConfigKubernetesConfigMap: cn
     # -- The prefix of couchbase buckets. This helps with separation in between different environments and allows for the same couchbase cluster to be used by different setups of Gluu.
     cnCouchbaseBucketPrefix: jans
-    # -- Location of `couchbase.crt` used by Couchbase SDK for tls termination. The file path must end with couchbase.crt. In mTLS setups this is not required.
-    cnCouchbaseCertFile: /etc/certs/couchbase.crt
     # -- Couchbase certificate authority string. This must be encoded using base64. This can also be found in your couchbase UI Security > Root Certificate. In mTLS setups this is not required.
     cnCouchbaseCrt: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
     # -- The number of replicas per index created. Please note that the number of index nodes must be one greater than the number of index replicas. That means if your couchbase cluster only has 2 index nodes you cannot place the number of replicas to be higher than 1.
     cnCouchbaseIndexNumReplica: 0
     # -- Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol .
     cnCouchbasePassword: P@ssw0rd
-    # -- The location of the Couchbase restricted user config.configmap.cnCouchbaseUser password. The file path must end with couchbase_password
-    cnCouchbasePasswordFile: /etc/gluu/conf/couchbase_password
     # -- The Couchbase super user (admin) user name. This user is used during initialization only.
     cnCouchbaseSuperUser: admin
     # -- Couchbase password for the super user config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol
     cnCouchbaseSuperUserPassword: Test1234#
-    # -- The location of the Couchbase restricted user config.configmap.cnCouchbaseSuperUser password. The file path must end with couchbase_superuser_password.
-    cnCouchbaseSuperUserPasswordFile: /etc/gluu/conf/couchbase_superuser_password
     # -- Couchbase URL. Used only when global.cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster
     cnCouchbaseUrl: cbgluu.default.svc.cluster.local
     # -- Couchbase restricted user. Used only when global.cnPersistenceType is hybrid or couchbase.
     cnCouchbaseUser: gluu
-    # -- Document store type to use for shibboleth files JCA or LOCAL. Note that if JCA is selected Apache Jackrabbit will be used. Jackrabbit also enables loading custom files across all services easily.
-    cnDocumentStoreType: JCA
-    # -- Jackrabbit admin uid.
-    cnJackrabbitAdminId: admin
-    # -- The location of the Jackrabbit admin uid config.cnJackrabbitAdminId. The file path must end with jackrabbit_admin_id.
-    cnJackrabbitAdminIdFile: /etc/gluu/conf/jackrabbit_admin_id
-    # -- The location of the Jackrabbit admin password jackrabbit.secrets.cnJackrabbitAdminPassword. The file path must end with jackrabbit_admin_password.
-    cnJackrabbitAdminPasswordFile: /etc/gluu/conf/jackrabbit_admin_password
-    # -- Jackrabbit postgres database name.
-    cnJackrabbitPostgresDatabaseName: jackrabbit
-    # -- Postgres url
-    cnJackrabbitPostgresHost: postgresql.postgres.svc.cluster.local
-    # -- The location of the Jackrabbit postgres password file jackrabbit.secrets.cnJackrabbitPostgresPassword. The file path must end with postgres_password.
-    cnJackrabbitPostgresPasswordFile: /etc/gluu/conf/postgres_password
-    # -- Jackrabbit Postgres port
-    cnJackrabbitPostgresPort: 5432
-    # -- Jackrabbit Postgres uid
-    cnJackrabbitPostgresUser: jackrabbit
-    # -- Interval between files sync (default to 300 seconds).
-    cnJackrabbitSyncInterval: 300
-    # -- Jackrabbit internal url. Normally left as default.
-    cnJackrabbitUrl: "http://jackrabbit:8080"
     # [google_envs] Envs related to using Google
     # -- Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
     cnGoogleSecretManagerServiceAccount: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
@@ -856,8 +826,8 @@ global:
   cloud:
     # -- Boolean flag if enabled will strip resources requests and limits from all services.
     testEnviroment: false
-  # -- Boolean flag if enabled will enable jackrabbit in cluster mode with Postgres.
-  cnJackrabbitCluster: false
+  # -- Document store type to use for shibboleth files JCA or LOCAL. Note that if JCA is selected Apache Jackrabbit will be used. Jackrabbit also enables loading custom files across all services easily.
+  cnDocumentStoreType: JCA
   # -- Persistence backend to run Gluu with ldap|couchbase|hybrid|sql|spanner.
   cnPersistenceType: sql
   # -- Open banking external signing jwks uri. Used in SSA Validation.
@@ -937,8 +907,24 @@ global:
   jackrabbit:
     # -- Boolean flag to enable/disable the jackrabbit chart. For more information on how it is used inside Gluu https://gluu.org/docs/gluu-server/4.2/installation-guide/install-kubernetes/#working-with-jackrabbit. If disabled oxShibboleth cannot be run.
     enabled: false
+    # -- Boolean flag if enabled will enable jackrabbit in cluster mode with Postgres.
+    cnJackrabbitCluster: false
     # -- Name of the Jackrabbit service. Please keep it as default.
     jackRabbitServiceName: jackrabbit
+    # -- Jackrabbit admin uid.
+    cnJackrabbitAdminId: admin
+    # -- Jackrabbit postgres database name.
+    cnJackrabbitPostgresDatabaseName: jackrabbit
+    # -- Postgres url
+    cnJackrabbitPostgresHost: postgresql.postgres.svc.cluster.local
+    # -- Jackrabbit Postgres port
+    cnJackrabbitPostgresPort: 5432
+    # -- Jackrabbit Postgres uid
+    cnJackrabbitPostgresUser: jackrabbit
+    # -- Interval between files sync (default to 300 seconds).
+    cnJackrabbitSyncInterval: 300
+    # -- Jackrabbit internal url. Normally left as default.
+    cnJackrabbitUrl: "http://jackrabbit:8080"
   # -- The Loadbalancer IP created by nginx or istio on clouds that provide static IPs. This is not needed if `global.fqdn` is globally resolvable.
   lbIp: 22.22.22.22
   nginx-ingress:
