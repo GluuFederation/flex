@@ -171,9 +171,12 @@ function DashboardPage({ statData, permissions, loading, dispatch }) {
               <Col sm={6}>
                 <ActiveUsersGraph data={doDataAugmentation(statData)} />
               </Col>
-
               <Col sm={6}>
-                <CustomPieGraph data={statData} dataKey="mau" nameKey="month" />
+                <CustomPieGraph
+                  data={statData.filter((entry) => entry.mau !== 0)}
+                  dataKey="mau"
+                  nameKey="month"
+                />
               </Col>
             </FormGroup>
             <FormGroup row>
