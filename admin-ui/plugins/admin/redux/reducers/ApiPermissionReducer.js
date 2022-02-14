@@ -54,9 +54,14 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
       return handleLoading()
     case EDIT_PERMISSION_RESPONSE:
       if (action.payload.data) {
+        let currentItems = [...state.items]
+        currentItems.filter(
+          (item) => item.permission === action.payload.data.permission,
+        )
+        currentItems.push(action.payload.data)
         return {
           ...state,
-          items: [...state.items],
+          items: currentItems,
           loading: false,
         }
       } else {

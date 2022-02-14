@@ -373,6 +373,7 @@
     "client_encryption_signing": "Encryption/Signing",
     "client_scripts": "Client Scripts",
     "config_api_roles": "Config API Roles",
+    "config_api_permissions": "Config API Permissions",
     "connectionUri": "Connection URI",
     "custom_scripts": "All Custom Scripts",
     "database_status_title": "Database status",
@@ -392,6 +393,7 @@
     "public_keys": "Public Keys",
     "profile_detail": "Profile Details",
     "roles": "Config API Roles",
+    "permissions": "Config API Permissions",
     "scopes": "OpenID/OAuth Scopes",
     "scripts": "Custom Interception Scripts",
     "schemaName": "Schema Name"

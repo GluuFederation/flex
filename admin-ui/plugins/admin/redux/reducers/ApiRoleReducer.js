@@ -55,9 +55,12 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
       return handleLoading()
     case EDIT_ROLE_RESPONSE:
       if (action.payload.data) {
+        let currentItems = [...state.items]
+        currentItems.filter((item) => item.role === action.payload.data.role)
+        currentItems.push(action.payload.data)
         return {
           ...state,
-          items: [...state.items],
+          items: currentItems,
           loading: false,
         }
       } else {
