@@ -22,6 +22,8 @@ jobs:
           sudo pip3 install -r ./automation/requirements.txt
           sudo apt-get update
           sudo apt-get install jq
+          sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew install norwoodj/tap/helm-docs
 
       - name: analyze chart
         run: |
@@ -39,8 +41,9 @@ jobs:
       - name: Configure Git
         run: |
           # open branch in jannssen
-          git clone git@github.com:JanssenProject/jans.git
+          git clone https://github.com/JanssenProject/jans.git
           cd jans
+          git remote set-url origin https://mo-auto:${{ secrets.MOWORKFLOWTOKEN }}@github.com/JanssenProject/jans.git
           git checkout -b cn-autoupdate-helm-charts
           mkdir -p charts/janssen || echo "Directories exist"
           cp -r ../charts/janssen/* charts/janssen/
@@ -49,5 +52,4 @@ jobs:
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
           git add -A
           git commit -S -s -m "chore: update helm package"
-          # TODO: fix push
           git push --set-upstream origin cn-autoupdate-helm-charts
