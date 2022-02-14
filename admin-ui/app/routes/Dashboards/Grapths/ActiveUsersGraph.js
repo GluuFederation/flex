@@ -13,9 +13,10 @@ import { useTranslation } from 'react-i18next'
 
 function ActiveUsersGraph({ data }) {
   const { t } = useTranslation()
+
   return (
-    <ResponsiveContainer className="mau" width="80%" height={350}>
-      <LineChart height={400} data={data}>
+    <ResponsiveContainer className="mau" width="98%" height={300}>
+      <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
         <XAxis dataKey="month" />
         <YAxis />
         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />

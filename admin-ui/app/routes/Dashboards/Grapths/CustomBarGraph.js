@@ -12,7 +12,7 @@ import {
 
 function CustomPieGraph({ data }) {
   return (
-    <ResponsiveContainer width={400} height={400}>
+    <ResponsiveContainer>
       <BarChart
         width={400}
         height={400}

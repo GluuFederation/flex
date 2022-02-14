@@ -6,6 +6,7 @@ import {
   Line,
   CartesianGrid,
   Legend,
+  Tooltip,
   ResponsiveContainer,
 } from 'recharts'
 function CustomLineChart({ data }) {
@@ -34,6 +35,7 @@ function CustomLineChart({ data }) {
           stroke="#00C9FF"
         />
         <Legend />
+        <Tooltip />
       </LineChart>
     </ResponsiveContainer>
   )
