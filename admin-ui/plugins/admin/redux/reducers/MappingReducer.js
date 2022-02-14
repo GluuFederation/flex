@@ -2,6 +2,7 @@ import {
   GET_MAPPING,
   GET_MAPPING_RESPONSE,
   UPDATE_MAPPING,
+  ADD_PERMISSIONS_TO_ROLE,
   RESET,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
@@ -22,7 +23,19 @@ export default function mappingReducer(state = INIT_STATE, action) {
       } else {
         return handleDefault()
       }
-
+    case ADD_PERMISSIONS_TO_ROLE:
+      const { data, userRole } = action.payload.data
+      let roleIndex = state.items.findIndex(
+        (element) => element.role == userRole,
+      )
+      let existingPermissions = state.items[roleIndex].permissions
+      let newArr = existingPermissions.concat(data)
+      let addedPermissions = state.items
+      addedPermissions[roleIndex].permissions = newArr
+      return {
+        ...state,
+        items: [...addedPermissions],
+      }
     case RESET:
       return {
         ...state,

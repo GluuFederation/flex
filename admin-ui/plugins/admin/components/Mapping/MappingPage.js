@@ -14,6 +14,7 @@ import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import { getMapping } from '../../redux/actions/MappingActions'
 import { getRoles } from '../../redux/actions/ApiRoleActions'
+import { getPermissions } from '../../redux/actions/ApiPermissionActions'
 import MappingItem from './MappingItem'
 import {
   hasPermission,
@@ -27,9 +28,16 @@ function MappingPage({ mapping, apiRoles, permissions, dispatch }) {
   const toggle = () => setModal(!modal)
   const options = []
   const userAction = {}
+
+  function doFetchPermissionsList() {
+    buildPayload(userAction, 'PERMISSIONS', options)
+    dispatch(getPermissions(userAction))
+  }
+
   useEffect(() => {
     doFetchList()
     doFetchRoles()
+    doFetchPermissionsList()
   }, [])
 
   function onAddConfirmed(mappingData) {

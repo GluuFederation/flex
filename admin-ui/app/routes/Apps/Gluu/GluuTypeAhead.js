@@ -24,6 +24,7 @@ function GluuTypeAhead({
   required,
   doc_category,
   doc_entry,
+  forwardRef = null,
 }) {
   const { t } = useTranslation()
   return (
@@ -36,6 +37,7 @@ function GluuTypeAhead({
         )}
         <Col sm={8}>
           <Typeahead
+            ref={forwardRef}
             allowNew
             emptyLabel=""
             labelKey={name}
