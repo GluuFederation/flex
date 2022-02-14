@@ -57,4 +57,5 @@ $temp_chart_folder/charts/config/templates/_helpers.tpl
 
 python3 ./automation/janssen_helm_chart/analyze_chart.py
 helm-docs ${temp_chart_folder}
+helm package ${temp_chart_folder} -f charts
 echo "Chart preperation is finished!"

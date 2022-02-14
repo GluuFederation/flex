@@ -6,6 +6,8 @@ on:
 jobs:
   createPullRequest:
     runs-on: ubuntu-latest
+    env:
+      HELM_DOCS_VERSION: "1.7.0"
     steps:
       - name: Checkout code
         uses: actions/checkout@master
@@ -22,8 +24,13 @@ jobs:
           sudo pip3 install -r ./automation/requirements.txt
           sudo apt-get update
           sudo apt-get install jq
-          sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          brew install norwoodj/tap/helm-docs
+
+      - name: install helm-docs
+        run: |
+          cd /tmp
+          wget https://github.com/norwoodj/helm-docs/releases/download/v${{env.HELM_DOCS_VERSION}}/helm-docs_${{env.HELM_DOCS_VERSION}}_Linux_x86_64.tar.gz
+          tar -xvf helm-docs_${{env.HELM_DOCS_VERSION}}_Linux_x86_64.tar.gz
+          sudo mv helm-docs /usr/local/sbin
 
       - name: analyze chart
         run: |
