@@ -64,6 +64,6 @@ jobs:
           ASSIGNEES="@moabu"
           BODY="This is an automated message propagated by a change in the parent Gluu chart. It will be automerged. Don't think about touching me before reaching out to @moabu."
           LABELS="ci,comp-charts-jans"
-      
+          gh auth login --with-token ${{ secrets.MOWORKFLOWTOKEN }}
           PR=$(gh pr create --assignee "${ASSIGNEES}" --base "prod" --body "${BODY}" --label "${LABELS}" --reviewer "${ASSIGNEES}" --title "${MESSAGE}")        
           gh pr merge --squash --auto "${PR}"
