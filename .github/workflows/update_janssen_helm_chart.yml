@@ -39,7 +39,7 @@ jobs:
       - name: Configure Git
         run: |
           # open branch in jannssen
-          git clone https://github.com/JanssenProject/jans
+          git clone git@github.com:JanssenProject/jans.git
           cd jans
           git checkout -b cn-autoupdate-helm-charts
           mkdir -p charts/janssen || echo "Directories exist"
