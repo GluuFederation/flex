@@ -21,7 +21,6 @@ import { Formik } from 'formik'
 function MappingItem({ candidate }) {
   const dispatch = useDispatch()
   const autocompleteRef = useRef(null)
-  const [init, setInit] = useState(false)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
   const [searchablePermissions, setSearchAblePermissions] = useState([])
 
@@ -47,11 +46,6 @@ function MappingItem({ candidate }) {
         role,
       }),
     )
-  }
-  function toogle() {
-    if (!init) {
-      setInit(true)
-    }
   }
 
   const initialValues = {
