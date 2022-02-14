@@ -3,6 +3,7 @@ import { subMonths } from 'date-fns'
 import moment from 'moment'
 import CustomBarGraph from './Grapths/CustomBarGraph'
 import CustomLineChart from './Grapths/CustomLineChart'
+import CustomPieGraph from './Grapths/CustomPieGraph'
 import ActiveUsersGraph from './Grapths/ActiveUsersGraph'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -31,28 +32,21 @@ import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
 function DashboardPage({ statData, permissions, loading, dispatch }) {
-  statData.push({
-    month: 202111,
-    mau: 5,
-    client_credentials_access_token_count: 68,
-    authz_code_access_token_count: 785,
-    authz_code_idtoken_count: 567,
-  })
-  statData.push({
-    month: 202112,
-    mau: 5,
-    client_credentials_access_token_count: 28,
-    authz_code_access_token_count: 75,
-    authz_code_idtoken_count: 257,
-  })
   const { t } = useTranslation()
   const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
   const [endDate, setEndDate] = useState(new Date())
   const userAction = {}
   const options = {}
   useEffect(() => {
-    search()
-  }, [])
+    let count = 0
+    const interval = setInterval(() => {
+      if (statData.length === 0 && count < 2) {
+        search()
+      }
+      count++
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [1000])
 
   function search() {
     options['month'] = getFormattedMonth()
@@ -174,7 +168,13 @@ function DashboardPage({ statData, permissions, loading, dispatch }) {
             <FormGroup row />
             <FormGroup row />
             <FormGroup row>
-              <ActiveUsersGraph data={doDataAugmentation(statData)} />
+              <Col sm={6}>
+                <ActiveUsersGraph data={doDataAugmentation(statData)} />
+              </Col>
+
+              <Col sm={6}>
+                <CustomPieGraph data={statData} dataKey="mau" nameKey="month" />
+              </Col>
             </FormGroup>
             <FormGroup row>
               <Col sm={6}>
