@@ -40,54 +40,12 @@ class Gluu(object):
                                                             user_name=user_account,
                                                             cluster_role_name="cluster-admin")
 
-    def prepare_alb(self):
-        ingress_parser = Parser("./alb/ingress.yaml", "Ingress")
-        ingress_parser["spec"]["rules"][0]["host"] = self.settings.get("global.fqdn")
-        ingress_parser["metadata"]["annotations"]["alb.ingress.kubernetes.io/certificate-arn"] = \
-            self.settings.get("installer-settings.aws.arn.arnAcmCert")
-        if not self.settings.get("installer-settings.aws.arn.enabled"):
-            del ingress_parser["metadata"]["annotations"]["alb.ingress.kubernetes.io/certificate-arn"]
-
-        for path in ingress_parser["spec"]["rules"][0]["http"]["paths"]:
-            service_name = path["backend"]["serviceName"]
-            if self.settings.get("config.configmap.cnCasaEnabled") and service_name == "casa":
-                path_index = ingress_parser["spec"]["rules"][0]["http"]["paths"].index(path)
-                del ingress_parser["spec"]["rules"][0]["http"]["paths"][path_index]
-
-            if self.settings.get("global.oxshibboleth.enabled") and service_name == "oxshibboleth":
-                path_index = ingress_parser["spec"]["rules"][0]["http"]["paths"].index(path)
-                del ingress_parser["spec"]["rules"][0]["http"]["paths"][path_index]
-
-            if self.settings.get("config.configmap.cnPassportEnabled") and service_name == "oxpassport":
-                path_index = ingress_parser["spec"]["rules"][0]["http"]["paths"].index(path)
-                del ingress_parser["spec"]["rules"][0]["http"]["paths"][path_index]
-
-            if self.settings.get("installer-settings.global.scim.enabled") and service_name == "jans-scim":
-                path_index = ingress_parser["spec"]["rules"][0]["http"]["paths"].index(path)
-                del ingress_parser["spec"]["rules"][0]["http"]["paths"][path_index]
-
-            if self.settings.get("installer-settings.config-api.enabled") and service_name == "config-api":
-                path_index = ingress_parser["spec"]["rules"][0]["http"]["paths"].index(path)
-                del ingress_parser["spec"]["rules"][0]["http"]["paths"][path_index]
-
-        ingress_parser.dump_it()
-
-    def deploy_alb(self):
-        alb_ingress = Path("./alb/ingress.yaml")
-        self.kubernetes.create_objects_from_dict(alb_ingress, self.settings.get("installer-settings.namespace"))
-        if self.settings.get("global.fqdn"):
-            prompt = input("Please input the DNS of the Application load balancer  found on AWS UI: ")
-            lb_hostname = prompt
-            while True:
-                try:
-                    if lb_hostname:
-                        break
-                    lb_hostname = self.kubernetes.read_namespaced_ingress(
-                        name="gluu", namespace="gluu").status.load_balancer.ingress[0].hostname
-                except TypeError:
-                    logger.info("Waiting for loadbalancer address..")
-                    time.sleep(10)
-            self.settings.set("config.configmap.lbAddr", lb_hostname)
+    def redeploy_gluu_to_load_alb(self):
+        prompt = input("Please input the DNS of the Application load balancer  found on AWS UI: ")
+        lb_hostname = prompt
+        self.settings.set("config.configmap.lbAddr", lb_hostname)
+        exec_cmd("helm upgrade {} -f {} ./helm/gluu --timeout 10m0s --namespace={}".format(
+            self.settings.get('GLUU_HELM_RELEASE_NAME'), self.values_file, self.settings.get("GLUU_NAMESPACE")))
 
     def wait_for_nginx_add(self):
         hostname_ip = None
@@ -119,8 +77,10 @@ class Gluu(object):
                     break
                 else:
                     hostname_ip = self.kubernetes.read_namespaced_service(
-                        name=self.settings.get('installer-settings.nginxIngress.releaseName') + "-ingress-nginx-controller",
-                        namespace=self.settings.get("installer-settings.nginxIngress.releaseName")).status.load_balancer.ingress[0].ip
+                        name=self.settings.get(
+                            'installer-settings.nginxIngress.releaseName') + "-ingress-nginx-controller",
+                        namespace=self.settings.get(
+                            "installer-settings.nginxIngress.releaseName")).status.load_balancer.ingress[0].ip
                     self.settings.set("global.lbIp", hostname_ip)
             except (TypeError, AttributeError):
                 logger.info("Waiting for address..")
@@ -212,9 +172,6 @@ class Gluu(object):
             couchbase_app = Couchbase()
             couchbase_app.install()
             self.settings = ValuesHandler()
-        if self.settings.get("installer-settings.aws.lbType") == "alb":
-            self.prepare_alb()
-            self.deploy_alb()
         if self.settings.get("installer-settings.aws.lbType") != "alb" and \
                 self.settings.get("global.istio.ingress"):
             self.check_install_nginx_ingress(install_ingress)
@@ -230,6 +187,9 @@ class Gluu(object):
             logger.error("Helm v3 is not installed. Please install it to continue "
                          "https://helm.sh/docs/intro/install/")
             raise SystemExit(1)
+        if self.settings.get("global.isFqdnRegistered"):
+            time.sleep(10)
+            self.redeploy_gluu_to_load_alb()
 
     def install_ldap_backup(self):
         values_file = Path("./helm/ldap-backup/values.yaml").resolve()
@@ -271,5 +231,6 @@ class Gluu(object):
                                                         self.settings.get("installer-settings.namespace")))
 
     def uninstall_nginx_ingress(self):
-        exec_cmd("helm delete {} --namespace={}".format(self.settings.get('installer-settings.nginxIngress.releaseName'),
-                                                        self.settings.get("installer-settings.nginxIngress.namespace")))
+        exec_cmd(
+            "helm delete {} --namespace={}".format(self.settings.get('installer-settings.nginxIngress.releaseName'),
+                                                   self.settings.get("installer-settings.nginxIngress.namespace")))
