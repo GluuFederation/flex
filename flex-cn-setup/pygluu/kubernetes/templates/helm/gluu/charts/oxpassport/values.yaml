@@ -1,5 +1,4 @@
-# License terms and conditions for Gluu Cloud Native Edition:
-# https://www.apache.org/licenses/LICENSE-2.0
+
 # -- Gluu interface to Passport.js to support social login and inbound identity.
 # -- Configure the HorizontalPodAutoscaler
 hpa:

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 // ----------- Pages Imports ---------------
 import Reports from './Dashboards/Reports'
+import DashboardPage from './Dashboards/DashboardPage'
 import NavbarOnly from './Layouts/NavbarOnly'
 import SidebarDefault from './Layouts/SidebarDefault'
 import SidebarA from './Layouts/SidebarA'
@@ -33,7 +34,7 @@ export const RoutedContent = () => {
   return (
     <Switch>
       <Redirect from="/" to="/home/dashboard" exact />
-      <Route path="/home/dashboard" exact component={Reports} />
+      <Route path="/home/dashboard" exact component={DashboardPage} />
       {/*    Layouts     */}
       <Route path="/layouts/navbar" component={NavbarOnly} />
       <Route path="/layouts/sidebar" component={SidebarDefault} />

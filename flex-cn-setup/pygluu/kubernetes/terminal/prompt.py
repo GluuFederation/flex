@@ -13,7 +13,6 @@ from pygluu.kubernetes.settings import ValuesHandler
 from pygluu.kubernetes.terminal.confirmsettings import PromptConfirmSettings
 from pygluu.kubernetes.terminal.volumes import PromptVolumes
 from pygluu.kubernetes.terminal.configuration import PromptConfiguration
-from pygluu.kubernetes.terminal.jackrabbit import PromptJackrabbit
 from pygluu.kubernetes.terminal.istio import PromptIstio
 from pygluu.kubernetes.terminal.replicas import PromptReplicas
 from pygluu.kubernetes.terminal.couchbase import PromptCouchbase
@@ -72,11 +71,6 @@ class Prompt:
         optional_services = PromptOptionalServices(self.settings)
         optional_services.prompt_optional_services()
 
-    def jackrabbit(self):
-        self.load_settings()
-        jackrabbit = PromptJackrabbit(self.settings)
-        jackrabbit.prompt_jackrabbit()
-
     def istio(self):
         self.load_settings()
         istio = PromptIstio(self.settings)
@@ -115,8 +109,7 @@ class Prompt:
     def volumes(self):
         self.load_settings()
         volumes = PromptVolumes(self.settings)
-        if self.settings.get("global.cnPersistenceType") in ("hybrid", "ldap") or \
-                self.settings.get("global.jackrabbit.enabled"):
+        if self.settings.get("global.cnPersistenceType") in ("hybrid", "ldap"):
             volumes.prompt_volumes()
         volumes.prompt_storage()
 
@@ -176,8 +169,6 @@ class Prompt:
             self.settings.set("global.fido2.enabled", False)
             self.settings.set("global.scim.enabled", False)
             self.settings.set("installer-settings.volumeProvisionStrategy", "microk8sDynamic")
-            # Jackrabbit might be enabled for this distribution later
-            self.settings.set("global.jackrabbit.enabled", False)
             ob = PromptOpenBanking(self.settings)
             ob.prompt_openbanking()
 
@@ -214,8 +205,6 @@ class Prompt:
         self.openbanking()
         self.namespace()
         self.optional_services()
-        if self.settings.get("global.distribution") != "openbanking":
-            self.jackrabbit()
         self.istio()
         self.test_enviornment()
         self.network()

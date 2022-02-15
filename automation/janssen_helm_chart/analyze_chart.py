@@ -1,5 +1,6 @@
 import fnmatch
 import os
+import json
 from pathlib import Path
 
 from helpers import get_logger
@@ -58,7 +59,6 @@ clean_keys(non_janssen_keys)
 clean_keys(non_janssen_keys["global"], parent_key="global")
 clean_keys(non_janssen_keys["global"]["istio"], parent_key="global", second_parent_key="istio")
 clean_keys(non_janssen_keys["config"], parent_key="config")
-clean_keys(non_janssen_keys["config"]["configmap"], parent_key="config", second_parent_key="configmap")
 clean_keys(non_janssen_keys["nginx-ingress"]["ingress"], parent_key="nginx-ingress", second_parent_key="ingress")
 yaml.dump(main_values_file_parser, main_values_file)
 
@@ -71,7 +71,7 @@ with open(main_chart_file, "r") as f:
     chart = f.read()
     chart_keys = chart_yaml.load(chart)
 
-non_janssen_charts = ["jackrabbit", "admin-ui", "oxshibboleth", "oxpassport", "casa", "cn-istio-ingress"]
+non_janssen_charts = ["admin-ui", "oxshibboleth", "oxpassport", "casa", "cn-istio-ingress"]
 chart_dependencies = []
 for chart in chart_keys["dependencies"]:
     if chart["name"] not in non_janssen_charts:
@@ -79,6 +79,54 @@ for chart in chart_keys["dependencies"]:
 chart_keys["dependencies"] = chart_dependencies
 chart_keys["appVersion"] = "1.0.0"
 chart_yaml.dump(chart_keys, main_chart_file)
+
+# remove keys from values.schema.json
+main_values_schema_file = Path(main_dir + "values.schema.json").resolve()
+with open(main_values_schema_file, "r") as f:
+    values_schema = json.load(f)
+# admin-ui
+del values_schema["properties"]["admin-ui"]
+del values_schema["definitions"]["admin-ui-enabled"]
+# Casa
+del values_schema["properties"]["casa"]
+del values_schema["definitions"]["casa-enabled"]
+# oxpassport
+del values_schema["properties"]["oxpassport"]
+del values_schema["definitions"]["oxpassport-enabled"]
+# oxshibboleth
+del values_schema["properties"]["oxshibboleth"]
+del values_schema["definitions"]["oxshibboleth-enabled"]
+# misc global options
+for k, v in non_janssen_keys["global"].items():
+    if k == "istio":
+        del values_schema["properties"]["global"]["properties"]["istio"]["properties"]["ingress"]
+        continue
+    try:
+        del values_schema["properties"]["global"]["properties"][k]
+        logger.info(f"Removed {k}")
+    except KeyError:
+        logger.info("Key {} has been removed previously or does not exist".format(k))
+
+del values_schema["allOf"][values_schema["allOf"].index({'$ref': '#/definitions/oxshibboleth-enabled'})]
+del values_schema["allOf"][values_schema["allOf"].index({'$ref': '#/definitions/oxpassport-enabled'})]
+del values_schema["allOf"][values_schema["allOf"].index({'$ref': '#/definitions/admin-ui-enabled'})]
+del values_schema["allOf"][values_schema["allOf"].index({'$ref': '#/definitions/casa-enabled'})]
+
+for k, v in non_janssen_keys["nginx-ingress"]["ingress"].items():
+    try:
+        del values_schema["properties"]["nginx-ingress"]["properties"]["ingress"]["properties"][k]
+        logger.info(f"Removed {k}")
+    except KeyError:
+        logger.info("Key {} has been removed previously or does not exist".format(k))
+    try:
+        del values_schema["definitions"]["nginx-ingress-enabled"]["then"]["properties"]["nginx-ingress"]["properties"]["ingress"]["properties"][k]
+        logger.info(f"Removed {k}")
+    except KeyError:
+        logger.info("Key {} has been removed previously or does not exist".format(k))
+
+
+with open(main_values_schema_file, 'w+') as file:
+    json.dump(values_schema, file, indent=2)
 
 
 def main():
@@ -98,6 +146,7 @@ def main():
     find_replace(main_dir, "gluu", "janssen", "*.*")
     find_replace(main_dir, "5.0.0", "1.0.0", "*.*")
     find_replace(main_dir, "5.0.2", "1.0.0-beta.14", "*.*")
+    find_replace(main_dir, "janssenfederation/opendj:1.0.0", "gluufederation/opendj:5.0.0", "*.*")
 
 
 if __name__ == "__main__":

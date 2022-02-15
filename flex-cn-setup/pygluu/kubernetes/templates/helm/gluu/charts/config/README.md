@@ -15,8 +15,8 @@ Configuration parameters for setup and initial configuration secret and config l
 ## Source Code
 
 * <https://gluu.org/docs/gluu-server/reference/container-configs/>
-* <https://github.com/JanssenProject/docker-jans-configurator>
-* <https://github.com/GluuFederation/cloud-native-edition/tree/master/pygluu/kubernetes/templates/helm/gluu/charts/config>
+* <https://github.com/JanssenProject/jans/docker-jans-configurator>
+* <https://github.com/GluuFederation/flex/tree/main/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/charts/config>
 
 ## Requirements
 
@@ -30,9 +30,7 @@ Kubernetes: `>=v1.21.0-0`
 | additionalLabels | object | `{}` | Additional labels that will be added across all resources definitions in the format of {mylabel: "myapp"} |
 | adminPassword | string | `"Test1234#"` | Admin password to log in to the UI. |
 | city | string | `"Austin"` | City. Used for certificate creation. |
-| cnOxtrustConfigGeneration | bool | `true` |  |
 | configmap.cnCacheType | string | `"NATIVE_PERSISTENCE"` | Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` . |
-| configmap.cnCasaEnabled | bool | `false` | Enable Casa flag . |
 | configmap.cnClientApiAdminCertCn | string | `"client-api"` | Client-api OAuth client admin certificate common name. This should be left to the default value client-api . |
 | configmap.cnClientApiApplicationCertCn | string | `"client-api"` | Client-api OAuth client application certificate common name. This should be left to the default value client-api. |
 | configmap.cnClientApiBindIpAddresses | string | `"*"` | Client-api bind address. This limits what ip ranges can access the client-api. This should be left as * and controlled by a NetworkPolicy |
@@ -40,34 +38,20 @@ Kubernetes: `>=v1.21.0-0`
 | configmap.cnConfigGoogleSecretVersionId | string | `"latest"` | Secret version to be used for configuration. Defaults to latest and should normally always stay that way. Used only when global.configAdapterName and global.configSecretAdapter is set to google. Used only when global.configAdapterName and global.configSecretAdapter is set to google. |
 | configmap.cnConfigKubernetesConfigMap | string | `"cn"` | The name of the Kubernetes ConfigMap that will hold the configuration layer |
 | configmap.cnCouchbaseBucketPrefix | string | `"jans"` | The prefix of couchbase buckets. This helps with separation in between different environments and allows for the same couchbase cluster to be used by different setups of Gluu. |
-| configmap.cnCouchbaseCertFile | string | `"/etc/certs/couchbase.crt"` | Location of `couchbase.crt` used by Couchbase SDK for tls termination. The file path must end with couchbase.crt. In mTLS setups this is not required. |
 | configmap.cnCouchbaseCrt | string | `"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="` | Couchbase certificate authority string. This must be encoded using base64. This can also be found in your couchbase UI Security > Root Certificate. In mTLS setups this is not required. |
 | configmap.cnCouchbaseIndexNumReplica | int | `0` | The number of replicas per index created. Please note that the number of index nodes must be one greater than the number of index replicas. That means if your couchbase cluster only has 2 index nodes you cannot place the number of replicas to be higher than 1. |
 | configmap.cnCouchbasePassword | string | `"P@ssw0rd"` | Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol . |
-| configmap.cnCouchbasePasswordFile | string | `"/etc/gluu/conf/couchbase_password"` | The location of the Couchbase restricted user config.configmap.cnCouchbaseUser password. The file path must end with couchbase_password |
 | configmap.cnCouchbaseSuperUser | string | `"admin"` | The Couchbase super user (admin) user name. This user is used during initialization only. |
 | configmap.cnCouchbaseSuperUserPassword | string | `"Test1234#"` | Couchbase password for the super user config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol |
-| configmap.cnCouchbaseSuperUserPasswordFile | string | `"/etc/gluu/conf/couchbase_superuser_password"` | The location of the Couchbase restricted user config.configmap.cnCouchbaseSuperUser password. The file path must end with couchbase_superuser_password. |
 | configmap.cnCouchbaseUrl | string | `"cbgluu.default.svc.cluster.local"` | Couchbase URL. Used only when global.cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster |
 | configmap.cnCouchbaseUser | string | `"gluu"` | Couchbase restricted user. Used only when global.cnPersistenceType is hybrid or couchbase. |
-| configmap.cnDocumentStoreType | string | `"JCA"` | Document store type to use for shibboleth files JCA or LOCAL. Note that if JCA is selected Apache Jackrabbit will be used. Jackrabbit also enables loading custom files across all services easily. |
 | configmap.cnGoogleProjectId | string | `"google-project-to-save-config-and-secrets-to"` | Project id of the google project the secret manager belongs to. Used only when global.configAdapterName and global.configSecretAdapter is set to google. |
 | configmap.cnGoogleSecretManagerPassPhrase | string | `"Test1234#"` | Passphrase for Gluu secret in Google Secret Manager. This is used for encrypting and decrypting data from the Google Secret Manager. Used only when global.configAdapterName and global.configSecretAdapter is set to google. |
-| configmap.cnGoogleSecretManagerServiceAccount | string | `"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="` |  |
+| configmap.cnGoogleSecretManagerServiceAccount | string | `"SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo="` | Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when global.configAdapterName and global.configSecretAdapter is set to google. |
 | configmap.cnGoogleSpannerDatabaseId | string | `""` | Google Spanner Database ID. Used only when global.cnPersistenceType is spanner. |
-| configmap.cnGoogleSpannerInstanceId | string | `""` |  |
-| configmap.cnJackrabbitAdminId | string | `"admin"` | Jackrabbit admin uid. |
-| configmap.cnJackrabbitAdminIdFile | string | `"/etc/gluu/conf/jackrabbit_admin_id"` | The location of the Jackrabbit admin uid config.cnJackrabbitAdminId. The file path must end with jackrabbit_admin_id. |
-| configmap.cnJackrabbitAdminPasswordFile | string | `"/etc/gluu/conf/jackrabbit_admin_password"` | The location of the Jackrabbit admin password jackrabbit.secrets.cnJackrabbitAdminPassword. The file path must end with jackrabbit_admin_password. |
-| configmap.cnJackrabbitPostgresDatabaseName | string | `"jackrabbit"` | Jackrabbit postgres database name. |
-| configmap.cnJackrabbitPostgresHost | string | `"postgresql.postgres.svc.cluster.local"` | Postgres url |
-| configmap.cnJackrabbitPostgresPasswordFile | string | `"/etc/gluu/conf/postgres_password"` | The location of the Jackrabbit postgres password file jackrabbit.secrets.cnJackrabbitPostgresPassword. The file path must end with postgres_password. |
-| configmap.cnJackrabbitPostgresPort | int | `5432` | Jackrabbit Postgres port |
-| configmap.cnJackrabbitPostgresUser | string | `"jackrabbit"` | Jackrabbit Postgres uid |
-| configmap.cnJackrabbitSyncInterval | int | `300` | Interval between files sync (default to 300 seconds). |
-| configmap.cnJackrabbitUrl | string | `"http://jackrabbit:8080"` | Jackrabbit internal url. Normally left as default. |
+| configmap.cnGoogleSpannerInstanceId | string | `""` | Google Spanner ID. Used only when global.cnPersistenceType is spanner. |
 | configmap.cnJettyRequestHeaderSize | int | `8192` | Jetty header size in bytes in the auth server |
-| configmap.cnLdapUrl | string | `"opendj:1636"` |  |
+| configmap.cnLdapUrl | string | `"opendj:1636"` | OpenDJ internal address. Leave as default. Used when `global.cnPersistenceType` is set to `ldap`. |
 | configmap.cnMaxRamPercent | string | `"75.0"` | Value passed to Java option -XX:MaxRAMPercentage |
 | configmap.cnPassportEnabled | bool | `false` | Boolean flag to enable/disable passport chart |
 | configmap.cnPersistenceLdapMapping | string | `"default"` | Specify data that should be saved in LDAP (one of default, user, cache, site, token, or session; default to default). Note this environment only takes effect when `global.cnPersistenceType`  is set to `hybrid`. |
@@ -78,7 +62,7 @@ Kubernetes: `>=v1.21.0-0`
 | configmap.cnRedisUseSsl | bool | `false` | Boolean to use SSL in Redis. Can be used when  `config.configmap.cnCacheType` is set to `REDIS`. |
 | configmap.cnSamlEnabled | bool | `false` | Enable SAML-related features; UI menu, etc. |
 | configmap.cnSecretGoogleSecretNamePrefix | string | `"gluu"` | Prefix for Gluu secret in Google Secret Manager. Defaults to gluu. If left gluu-secret secret will be created. Used only when global.configAdapterName and global.configSecretAdapter is set to google. |
-| configmap.cnSecretGoogleSecretVersionId | string | `"latest"` |  |
+| configmap.cnSecretGoogleSecretVersionId | string | `"latest"` | Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when global.configAdapterName and global.configSecretAdapter is set to google. |
 | configmap.cnSecretKubernetesSecret | string | `"cn"` | Kubernetes secret name holding configuration keys. Used when global.configSecretAdapter is set to kubernetes which is the default. |
 | configmap.cnSqlDbDialect | string | `"mysql"` | SQL database dialect. `mysql` or `pgsql` |
 | configmap.cnSqlDbHost | string | `"my-release-mysql.default.svc.cluster.local"` | SQL database host uri. |
@@ -86,8 +70,7 @@ Kubernetes: `>=v1.21.0-0`
 | configmap.cnSqlDbPort | int | `3306` | SQL database port. |
 | configmap.cnSqlDbTimezone | string | `"UTC"` | SQL database timezone. |
 | configmap.cnSqlDbUser | string | `"jans"` | SQL database username. |
-| configmap.cnSqlPasswordFile | string | `"/etc/jans/conf/sql_password"` | SQL password file holding password from config.configmap.cnSqldbUserPassword . |
-| configmap.cnSqldbUserPassword | string | `"Test1234#"` | SQL password  injected as config.configmap.cnSqlPasswordFile . |
+| configmap.cnSqldbUserPassword | string | `"Test1234#"` | SQL password  injected in the secrets. |
 | configmap.containerMetadataName | string | `"kubernetes"` |  |
 | configmap.lbAddr | string | `""` | Loadbalancer address for AWS if the FQDN is not registered. |
 | countryCode | string | `"US"` | Country code. Used for certificate creation. |
@@ -112,10 +95,11 @@ Kubernetes: `>=v1.21.0-0`
 | resources.requests.cpu | string | `"300m"` | CPU request. |
 | resources.requests.memory | string | `"300Mi"` | Memory request. |
 | state | string | `"TX"` | State code. Used for certificate creation. |
+| usrEnvs | object | `{"normal":{},"secret":{}}` | Add custom normal and secret envs to the service. |
 | usrEnvs.normal | object | `{}` | Add custom normal envs to the service. variable1: value1 |
 | usrEnvs.secret | object | `{}` | Add custom secret envs to the service. variable1: value1 |
 | volumeMounts | list | `[]` | Configure any additional volumesMounts that need to be attached to the containers |
 | volumes | list | `[]` | Configure any additional volumes that need to be attached to the pod |
 
 ----------------------------------------------
-Autogenerated from chart metadata using [helm-docs v1.5.0](https://github.com/norwoodj/helm-docs/releases/v1.5.0)
+Autogenerated from chart metadata using [helm-docs v1.7.0](https://github.com/norwoodj/helm-docs/releases/v1.7.0)

@@ -1,13 +1,11 @@
 installer-settings: None
 admin-ui: None
 casa: None
-jackrabbit: None
 oxpassport: None
 oxshibboleth: None
 global:
   admin-ui: None
   casa: None
-  cnJackrabbitCluster: None
   cnObExtSigningJwksUri: None
   cnObExtSigningJwksCrt: None
   cnObExtSigningJwksKey: None
@@ -21,28 +19,16 @@ global:
   cnObTransportTrustStore: None
   istio:
     ingress: None
-  jackrabbit: None
   oxpassport: None
   oxshibboleth: None
   distribution: None
 config:
   migration: None
-  configmap:
-    cnDocumentStoreType: None
-    cnJackrabbitAdminId: None
-    cnJackrabbitAdminIdFile: None
-    cnJackrabbitAdminPasswordFile: None
-    cnJackrabbitPostgresDatabaseName: None
-    cnJackrabbitPostgresHost: None
-    cnJackrabbitPostgresPasswordFile: None
-    cnJackrabbitPostgresPort: None
-    cnJackrabbitPostgresUser: None
-    cnJackrabbitSyncInterval: None
-    cnJackrabbitUrl: None
-    cnPassportEnabled: None
-    cnSamlEnabled: None
 nginx-ingress:
   ingress:
+    casaEnabled: None
+    casaLabels: None
+    casaAdditionalAnnotations: None
     adminUiEnabled: None
     adminUiLabels: None
     adminUiAdditionalAnnotations: None

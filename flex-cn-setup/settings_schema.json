@@ -37,15 +37,6 @@
     "REDIS_NODES_PER_MASTER": { "$ref": "#/definitions/emptiable-number" },
     "REDIS_NAMESPACE": { "type": "string" },
     "INSTALL_REDIS": { "$ref": "#/definitions/yes-no-string" },
-    "INSTALL_JACKRABBIT": { "$ref": "#/definitions/yes-no-string" },
-    "JACKRABBIT_STORAGE_SIZE": { "type": "string" },
-    "JACKRABBIT_URL": { "type": "string" },
-    "JACKRABBIT_ADMIN_ID": { "type": "string" },
-    "JACKRABBIT_ADMIN_PASSWORD": { "$ref": "#/definitions/password" },
-    "JACKRABBIT_CLUSTER": { "type": "string" },
-    "JACKRABBIT_PG_USER": { "type": "string" },
-    "JACKRABBIT_PG_PASSWORD": { "$ref": "#/definitions/password" },
-    "JACKRABBIT_DATABASE": { "type": "string" },
     "DEPLOYMENT_ARCH": { "type": "string", "enum": ["microk8s", "minikube", "eks", "gke", "aks", "do", "local", ""] },
     "PERSISTENCE_BACKEND": { "type": "string", "enum": ["ldap", "couchbase", "hybrid", ""] },
     "INSTALL_COUCHBASE": { "$ref": "#/definitions/yes-no-string" },
@@ -85,7 +76,6 @@
     "USING_RESOURCE_OWNER_PASSWORD_CRED_GRANT_FLOW": { "$ref": "#/definitions/yes-no-string" },
     "DEPLOY_MULTI_CLUSTER": { "type": "string" },
     "HYBRID_LDAP_HELD_DATA": { "type": "string", "enum": ["", "default", "user", "site", "cache", "token"] },
-    "LDAP_JACKRABBIT_VOLUME": { "type": "string" },
     "APP_VOLUME_TYPE": { "$ref": "#/definitions/emptiable-number" },
     "LDAP_STATIC_VOLUME_ID": { "type": "string" },
     "LDAP_STATIC_DISK_URI": { "type": "string" },
@@ -139,7 +129,6 @@
           "auth-server",
           "oxtrust",
           "persistence",
-          "jackrabbit",
           "cr-rotate",
           "auth-server-key-rotation",
           "oxpassport",
@@ -165,8 +154,6 @@
     "CERT_MANAGER_IMAGE_TAG": { "type": "string" },
     "LDAP_IMAGE_NAME": { "type": "string" },
     "LDAP_IMAGE_TAG": { "type": "string" },
-    "JACKRABBIT_IMAGE_NAME": { "type": "string" },
-    "JACKRABBIT_IMAGE_TAG": { "type": "string" },
     "AUTH_SERVER_IMAGE_NAME": { "type": "string" },
     "AUTH_SERVER_IMAGE_TAG": { "type": "string" },
     "FIDO2_IMAGE_NAME": { "type": "string" },
@@ -198,9 +185,6 @@
     { "$ref": "#/definitions/client-api-enabled" },
     { "$ref": "#/definitions/oxtrust-api-enabled" },
     { "$ref": "#/definitions/oxtrust-test-mode-enabled"},
-    { "$ref": "#/definitions/install-jackrabbit-yes" },
-    { "$ref": "#/definitions/install-jackrabbit-no" },
-    { "$ref": "#/definitions/jackrabbit-cluster-enable" },
     { "$ref": "#/definitions/istio-ingress-yes" },
     { "$ref": "#/definitions/istio-yes" },
     { "$ref": "#/definitions/test-environment" },
@@ -218,9 +202,6 @@
     { "$ref": "#/definitions/local-architecture" },
     { "$ref": "#/definitions/ldap-volume-identifier" },
     { "$ref": "#/definitions/ldap-disk-uris" },
-    { "$ref": "#/definitions/ldap-jackrabbit-volume-on-aks" },
-    { "$ref": "#/definitions/ldap-jackrabbit-volume-on-eks" },
-    { "$ref": "#/definitions/ldap-jackrabbit-volume-on-gke" },
     { "$ref": "#/definitions/ldap-storage" },
     { "$ref": "#/definitions/couchbase-multi-cluster" },
     { "$ref": "#/definitions/couchbase-persistence-backend" },
@@ -511,76 +492,6 @@
         "required": ["ENABLE_OXTRUST_TEST_MODE_BOOLEAN"]
       }
     },
-    "install-jackrabbit-yes": {
-      "if": {
-        "properties": {
-          "INSTALL_JACKRABBIT": { "const": "Y"}
-        }
-      },
-      "then": {
-        "properties": {
-          "JACKRABBIT_STORAGE_SIZE": { "type": "string", "minLength": 3, "maxLength": 3},
-          "JACKRABBIT_URL": { "type": "string", "minLength": 3, "format": "uri" },
-          "JACKRABBIT_ADMIN_ID": { "type":  "string", "minLength": 3 },
-          "JACKRABBIT_ADMIN_PASSWORD": { "$ref": "#/definitions/password-pattern" },
-          "JACKRABBIT_CLUSTER": { "type": "string", "enum": ["Y", "N"] }
-        },
-        "required": [
-          "JACKRABBIT_STORAGE_SIZE",
-          "JACKRABBIT_URL",
-          "JACKRABBIT_ADMIN_ID",
-          "JACKRABBIT_ADMIN_PASSWORD",
-          "JACKRABBIT_CLUSTER"
-        ]
-      }
-    },
-    "install-jackrabbit-no": {
-      "if": {
-        "properties": {
-          "INSTALL_JACKRABBIT": { "const": "N"}
-        }
-      },
-      "then": {
-        "properties": {
-          "JACKRABBIT_URL": { "type": "string", "minLength": 3, "format": "uri" },
-          "JACKRABBIT_ADMIN_ID": { "$ref": "#/definitions/string-cannot-empty" },
-          "JACKRABBIT_ADMIN_PASSWORD": { "$ref": "#/definitions/password-pattern" },
-          "JACKRABBIT_CLUSTER": { "type": "string", "enum": ["Y", "N"] }
-        },
-        "required": [
-          "JACKRABBIT_URL",
-          "JACKRABBIT_ADMIN_ID",
-          "JACKRABBIT_ADMIN_PASSWORD",
-          "JACKRABBIT_CLUSTER"
-        ]
-      }
-    },
-    "jackrabbit-cluster-enable": {
-      "if": {
-        "properties": {
-          "JACKRABBIT_CLUSTER": { "const": "Y"}
-        }
-      },
-      "then": {
-        "properties": {
-          "POSTGRES_NAMESPACE": { "$ref": "#/definitions/string-cannot-empty" },
-          "POSTGRES_REPLICAS": { "type":"number", "minimum": 1  },
-          "POSTGRES_URL": { "$ref": "#/definitions/string-cannot-empty" },
-          "JACKRABBIT_PG_USER": { "$ref": "#/definitions/string-cannot-empty" },
-          "JACKRABBIT_PG_PASSWORD": { "$ref": "#/definitions/password-pattern" },
-          "JACKRABBIT_DATABASE": { "$ref": "#/definitions/string-cannot-empty" }
-        },
-        "required": [
-            "POSTGRES_NAMESPACE",
-            "POSTGRES_REPLICAS",
-            "POSTGRES_URL",
-            "JACKRABBIT_PG_USER",
-            "JACKRABBIT_PG_PASSWORD",
-            "JACKRABBIT_DATABASE"
-          ]
-
-      }
-    },
     "istio-ingress-yes": {
       "if": {
         "properties": {
@@ -709,7 +620,6 @@
           {
             "properties": {
               "DEPLOYMENT_ARCH": { "const": "microk8s" },
-              "INSTALL_JACKRABBIT": { "const": "Y" },
               "APP_VOLUME_TYPE": { "not" : {"const": "" } }
             }
           }
@@ -734,7 +644,6 @@
           {
             "properties": {
               "DEPLOYMENT_ARCH": { "const": "minikube" },
-              "INSTALL_JACKRABBIT": { "const": "Y" },
               "APP_VOLUME_TYPE": { "not" : {"const": "" } }
             }
           }
@@ -759,7 +668,6 @@
           {
             "properties": {
               "DEPLOYMENT_ARCH": { "const": "eks" },
-              "INSTALL_JACKRABBIT": { "const": "Y" },
               "APP_VOLUME_TYPE": { "not" : {"const": "" } }
             }
           }
@@ -784,7 +692,6 @@
           {
             "properties": {
               "DEPLOYMENT_ARCH": { "const": "gke" },
-              "INSTALL_JACKRABBIT": { "const": "Y" },
               "APP_VOLUME_TYPE": { "not" : {"const": "" } }
             }
           }
@@ -809,7 +716,6 @@
           {
             "properties": {
               "DEPLOYMENT_ARCH": { "const": "aks" },
-              "INSTALL_JACKRABBIT": { "const": "Y" },
               "APP_VOLUME_TYPE": { "not" : {"const": "" } }
             }
           }
@@ -834,7 +740,6 @@
           {
             "properties": {
               "DEPLOYMENT_ARCH": { "const": "do" },
-              "INSTALL_JACKRABBIT": { "const": "Y" },
               "APP_VOLUME_TYPE": { "not" : {"const": "" } }
             }
           }
@@ -859,7 +764,6 @@
           {
             "properties": {
               "DEPLOYMENT_ARCH": { "const": "local" },
-              "INSTALL_JACKRABBIT": { "const": "Y" },
               "APP_VOLUME_TYPE": { "not" : {"const": "" } }
             }
           }
@@ -875,8 +779,7 @@
       "if": {
         "properties": {
           "APP_VOLUME_TYPE": { "type": "number", "enum": [8, 13] },
-          "PERSISTENCE_BACKEND": { "type": "string", "enum": ["hybrid", "ldap"]},
-          "INSTALL_JACKRABBIT": { "const": "Y" }
+          "PERSISTENCE_BACKEND": { "type": "string", "enum": ["hybrid", "ldap"]}
         }
       },
       "then": {
@@ -890,8 +793,7 @@
       "if": {
         "properties": {
           "APP_VOLUME_TYPE": { "const": 18 },
-          "PERSISTENCE_BACKEND": { "type": "string", "enum": ["hybrid", "ldap"]},
-          "INSTALL_JACKRABBIT": { "const": "Y" }
+          "PERSISTENCE_BACKEND": { "type": "string", "enum": ["hybrid", "ldap"]}
         }
       },
       "then": {
@@ -899,57 +801,6 @@
           "LDAP_STATIC_DISK_URI": { "type": "string", "minLength": 1 }
         },
         "required": ["LDAP_STATIC_DISK_URI"]
-      }
-    },
-    "ldap-jackrabbit-volume-on-aks": {
-      "if": {
-        "properties": {
-          "DEPLOYMENT_ARCH": { "const": "aks" },
-          "PERSISTENCE_BACKEND": { "enum": ["hybrid", "ldap"]},
-          "INSTALL_JACKRABBIT": { "const": "Y" }
-        }
-      },
-      "then": {
-        "properties": {
-          "LDAP_JACKRABBIT_VOLUME": {
-            "type": "string",
-            "enum": ["Standard_LRS", "Premium_LRS", "StandardSSD_LRS", "UltraSSD_LRS"] }
-        },
-        "required": ["LDAP_JACKRABBIT_VOLUME"]
-      }
-    },
-    "ldap-jackrabbit-volume-on-eks": {
-      "if": {
-        "properties": {
-          "DEPLOYMENT_ARCH": { "const": "eks" },
-          "PERSISTENCE_BACKEND": { "enum": ["hybrid", "ldap"]},
-          "INSTALL_JACKRABBIT": { "const": "Y" }
-        }
-      },
-      "then": {
-        "properties": {
-          "LDAP_JACKRABBIT_VOLUME": {
-            "type": "string",
-            "enum": ["gp2", "io1", "st1", "sc1"] }
-        },
-        "required": ["LDAP_JACKRABBIT_VOLUME"]
-      }
-    },
-    "ldap-jackrabbit-volume-on-gke": {
-      "if": {
-        "properties": {
-          "DEPLOYMENT_ARCH": { "const": "gke" },
-          "PERSISTENCE_BACKEND": { "enum": ["hybrid", "ldap"]},
-          "INSTALL_JACKRABBIT": { "const": "Y" }
-        }
-      },
-      "then": {
-        "properties": {
-          "LDAP_JACKRABBIT_VOLUME": {
-            "type": "string",
-            "enum": ["pd-standard", "pd-ssd"] }
-        },
-        "required": ["LDAP_JACKRABBIT_VOLUME"]
       }
     },
     "ldap-storage": {

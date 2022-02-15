@@ -1,5 +1,3 @@
-# License terms and conditions for Gluu Cloud Native Edition:
-# https://www.apache.org/licenses/LICENSE-2.0
 kubeVersion: ">=v1.21.0-0"
 annotations:
   artifacthub.io/changes: |
@@ -55,10 +53,6 @@ dependencies:
       condition: global.opendj.enabled
       version: 5.0.2
 
-    - name: jackrabbit
-      condition: global.jackrabbit.enabled
-      version: 5.0.2
-
     - name: auth-server
       condition: global.auth-server.enabled
       version: 5.0.2
@@ -85,7 +79,7 @@ dependencies:
 
     - name: oxpassport
       version: 5.0.2
-      condition: config.configmap.cnPassportEnabled
+      condition: global.oxpassport.enabled
 
     - name: casa
       version: 5.0.2

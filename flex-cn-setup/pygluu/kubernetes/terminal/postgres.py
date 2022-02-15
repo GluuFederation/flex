@@ -37,10 +37,6 @@ class PromptPostgres:
                               f"postgresql.{self.settings.get('installer-settings.postgres.namespace')}."
                               f"svc.cluster.local")
 
-            self.settings.set("config.configmap.cnJackrabbitPostgresHost",
-                              f"postgresql.jackrabbit{self.settings.get('installer-settings.postgres.namespace')}."
-                              f"svc.cluster.local")
-
         if not self.settings.get("config.configmap.cnSqlDbHost"):
             url = click.prompt(
                 "Please enter  postgres (remote or local) "
@@ -48,11 +44,3 @@ class PromptPostgres:
                 default=f"postgresql.{self.settings.get('installer-settings.postgres.namespace')}.svc.cluster.local",
             )
             self.settings.set("config.configmap.cnSqlDbHost", url)
-
-        if not self.settings.get("config.configmap.cnJackrabbitPostgresHost"):
-            url = click.prompt(
-                "Please enter  postgres (remote or local) "
-                "URL base name. If postgres is to be installed",
-                default=f"postgresql.jackrabbit{self.settings.get('installer-settings.postgres.namespace')}.svc.cluster.local",
-            )
-            self.settings.set("config.configmap.cnJackrabbitPostgresHost", url)

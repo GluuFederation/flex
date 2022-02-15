@@ -2,14 +2,14 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../../../app/utils/TokenController'
+} from '../../utils/TokenController'
 import { getMauResponse } from '../actions/MauActions'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
+import { getAPIAccessToken } from '../actions/AuthActions'
+import { postUserAction } from '../api/backend-api'
 import { GET_MAU } from '../actions/types'
 import MauApi from '../api/MauApi'
-import { getClient } from '../../../../app/redux/api/base'
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { getClient } from '../api/base'
+import { initAudit } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {
@@ -48,14 +48,32 @@ export default function* rootSaga() {
 }
 
 function buildData(stat) {
-  return stat.map((entry) => buildEntry(entry))
+  let result = stat.map((entry) => buildEntry(entry))
+  result.push({
+    month: 202111,
+    mau: 5,
+    client_credentials_access_token_count: 68,
+    authz_code_access_token_count: 785,
+    authz_code_idtoken_count: 567,
+  })
+  result.push({
+    month: 202112,
+    mau: 3,
+    client_credentials_access_token_count: 28,
+    authz_code_access_token_count: 75,
+    authz_code_idtoken_count: 257,
+  })
+  return result
 }
 function buildEntry(el) {
   let entry = new Object()
   entry['month'] = el.month
   entry['mau'] = el.monthly_active_users
-  entry['cc_at'] = el.token_count_per_granttype.client_credentials.access_token
-  entry['ac_at'] = el.token_count_per_granttype.authorization_code.access_token
-  entry['ac_id'] = el.token_count_per_granttype.authorization_code.id_token
+  entry['client_credentials_access_token_count'] =
+    el.token_count_per_granttype.client_credentials.access_token
+  entry['authz_code_access_token_count'] =
+    el.token_count_per_granttype.authorization_code.access_token
+  entry['authz_code_idtoken_count'] =
+    el.token_count_per_granttype.authorization_code.id_token
   return entry
 }

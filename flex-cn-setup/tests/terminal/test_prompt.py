@@ -63,16 +63,6 @@ def test_istio(monkeypatch, settings):
     check.istio()
     assert settings.get("global.istio.namespace") == "istio-system"
 
-
-def test_jackrabbit(monkeypatch, settings):
-
-    monkeypatch.setattr("click.prompt", lambda x, default: "admin")
-
-    settings.set("config.configmap.cnJackrabbitAdminId", "admin")
-    check.jackrabbit()
-    assert settings.get("config.configmap.cnJackrabbitAdminId") == "admin"
-
-
 def test_persistence_backend(monkeypatch, settings):
 
     monkeypatch.setattr("click.prompt", lambda x, default: "hybrid")

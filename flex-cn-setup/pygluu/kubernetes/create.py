@@ -77,10 +77,6 @@ def main():
             from pygluu.kubernetes.terminal.upgrade import PromptUpgrade
             # New feature in 4.2 compared to 4.1 and hence if enabled should make sure postgres is installed.
             gluu = Gluu()
-            if settings.get("installer-settings.jackrabbit.clusterMode") and \
-                    settings.get("installer-settings.postgres.install"):
-                # TODO: Make sure postgres is installed
-                logger.info("remove me after implementing TODO")
             prompt_upgrade = PromptUpgrade(settings)
             prompt_upgrade.prompt_upgrade()
             logger.info("Patching values.yaml for helm upgrade...")

@@ -6,6 +6,8 @@ on:
 jobs:
   createPullRequest:
     runs-on: ubuntu-latest
+    env:
+      HELM_DOCS_VERSION: "1.7.0"
     steps:
       - name: Checkout code
         uses: actions/checkout@master
@@ -23,13 +25,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install jq
 
+      - name: install helm-docs
+        run: |
+          cd /tmp
+          wget https://github.com/norwoodj/helm-docs/releases/download/v${{env.HELM_DOCS_VERSION}}/helm-docs_${{env.HELM_DOCS_VERSION}}_Linux_x86_64.tar.gz
+          tar -xvf helm-docs_${{env.HELM_DOCS_VERSION}}_Linux_x86_64.tar.gz
+          sudo mv helm-docs /usr/local/sbin
+
       - name: analyze chart
         run: |
-          mkdir -p charts/janssen
-          cp -r ./flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/* charts/janssen/
           sudo bash automation/janssen_helm_chart/prepare_chart.sh
-          sudo python3 automation/janssen_helm_chart/analyze_chart.py
-          
 
       - name: Import GPG key
         id: import_gpg
@@ -43,15 +48,23 @@ jobs:
       - name: Configure Git
         run: |
           # open branch in jannssen
-          git clone https://github.com/JanssenProject/jans
+          git clone https://github.com/JanssenProject/jans.git
           cd jans
+          git remote set-url origin https://mo-auto:${{ secrets.MOWORKFLOWTOKEN }}@github.com/JanssenProject/jans.git
           git checkout -b cn-autoupdate-helm-charts
           mkdir -p charts/janssen || echo "Directories exist"
-          cp -r ../charts/janssen/* charts/janssen/
+          cp -r ../charts/* charts/
           git config user.name "mo-auto"
           git config user.email "54212639+mo-auto@users.noreply.github.com"
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
           git add -A
-          git commit -S -s -m "chore: update helm package"
-          # TODO: fix push
+          git commit -S -s -m "chore(charts): update helm package"
           git push --set-upstream origin cn-autoupdate-helm-charts
+          MESSAGE="chore(charts): update helm package"
+          ASSIGNEES="@moabu"
+          BODY="This is an automated message propagated by a change in the parent Gluu chart. It will be automerged. Don't think about touching me before reaching out to @moabu."
+          LABELS="ci,comp-charts-jans"
+          echo "${{ secrets.MOWORKFLOWTOKEN }}" > token.txt
+          gh auth login --with-token < token.txt
+          PR=$(gh pr create --assignee "${ASSIGNEES}" --base "main" --body "${BODY}" --label "${LABELS}" --reviewer "${ASSIGNEES}" --title "${MESSAGE}")        
+          gh pr merge --squash --auto "${PR}"
