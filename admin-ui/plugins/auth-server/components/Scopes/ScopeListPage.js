@@ -54,7 +54,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     {
       title: `${t('fields.scope_type')}`,
       field: 'scopeType',
-      render: (rowData) => <Badge color="primary">{rowData.scopeType}</Badge>,
+      render: (rowData) => (
+        <Badge key={rowData.inum} color="primary">
+          {rowData.scopeType}
+        </Badge>
+      ),
     },
   ]
 
@@ -188,7 +192,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
-              return <ScopeDetailPage row={rowData} />
+              return <ScopeDetailPage row={rowData.rowData} />
             }}
           />
         </GluuViewWrapper>

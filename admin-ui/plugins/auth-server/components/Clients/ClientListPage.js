@@ -240,7 +240,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
-              return <ClientDetailPage row={rowData} scopes={scopes} />
+              return <ClientDetailPage row={rowData.rowData} scopes={scopes} />
             }}
           />
         </GluuViewWrapper>
