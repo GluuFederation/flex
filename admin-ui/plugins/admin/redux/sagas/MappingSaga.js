@@ -1,4 +1,12 @@
-import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
+import {
+  call,
+  all,
+  put,
+  fork,
+  takeLatest,
+  select,
+  takeEvery,
+} from 'redux-saga/effects'
 import { getMappingResponse } from '../actions/MappingActions'
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
@@ -7,7 +15,7 @@ import {
   isFourZeroOneError,
   addAdditionalData,
 } from '../../../../app/utils/TokenController'
-import { GET_MAPPING } from '../actions/types'
+import { GET_MAPPING, UPDATE_PERMISSIONS_TO_SERVER } from '../actions/types'
 import MappingApi from '../api/MappingApi'
 import { getClient } from '../../../../app/redux/api/base'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
@@ -40,8 +48,24 @@ export function* fetchMapping({ payload }) {
   }
 }
 
+export function* updateMapping({ payload }) {
+  // UPDATE_PERMISSIONS_TO_SERVER
+  try {
+    const mappingApi = yield* newFunction()
+    console.log('payload', payload.data)
+    const data = yield call(mappingApi.updateMapping(payload.data))
+  } catch (e) {
+    yield put(getMappingResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
 export function* watchGetMapping() {
   yield takeLatest(GET_MAPPING, fetchMapping)
+  yield takeEvery(UPDATE_PERMISSIONS_TO_SERVER, updateMapping)
 }
 
 export default function* rootSaga() {

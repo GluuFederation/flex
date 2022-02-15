@@ -22,6 +22,8 @@ import {
   ROLE_READ,
 } from '../../../../app/utils/PermChecker'
 
+import { updatePermissionsToServer } from '../../redux/actions/MappingActions'
+
 function MappingPage({ mapping, apiRoles, permissions, dispatch }) {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
@@ -83,6 +85,16 @@ function MappingPage({ mapping, apiRoles, permissions, dispatch }) {
             <MappingItem key={idx} candidate={candidate} />
           ))}
         </GluuViewWrapper>
+        <FormGroup row />
+        <Button
+          type="button"
+          color="primary"
+          style={applicationStyle.buttonStyle}
+          onClick={() => dispatch(updatePermissionsToServer(mapping))}
+        >
+          <i className="fa fa-plus mr-2"></i>
+          Save
+        </Button>
         <MappingAddDialogForm
           roles={apiRoles}
           handler={toggle}

@@ -48,12 +48,9 @@ function MappingItem({ candidate }) {
     )
   }
 
-  const initialValues = {
-    searchedPermissions: [],
-  }
+  const initialValues = {}
 
   const handleAddPermission = (values, { resetForm }) => {
-    // values.mappingAddPermissions
     if (values?.mappingAddPermissions?.length) {
       dispatch(
         addPermissionsToRole({
@@ -110,6 +107,7 @@ function MappingItem({ candidate }) {
                             required={false}
                             value={[]}
                             forwardRef={autocompleteRef}
+                            doc_category={'Mapping'}
                           ></GluuTypeAhead>
                         </Col>
                         <Col>

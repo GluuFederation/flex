@@ -3,6 +3,7 @@ import {
   GET_MAPPING_RESPONSE,
   UPDATE_MAPPING,
   ADD_PERMISSIONS_TO_ROLE,
+  UPDATE_PERMISSIONS_TO_SERVER,
 } from './types'
 
 export const getMapping = (action) => ({
@@ -22,5 +23,10 @@ export const updateMapping = (data) => ({
 
 export const addPermissionsToRole = (data) => ({
   type: ADD_PERMISSIONS_TO_ROLE,
+  payload: { data },
+})
+
+export const updatePermissionsToServer = (data) => ({
+  type: UPDATE_PERMISSIONS_TO_SERVER,
   payload: { data },
 })
