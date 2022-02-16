@@ -198,7 +198,7 @@ function LdapListPage({
               detailPanel={(rowData) => {
                 return (
                   <LdapDetailPage
-                    row={rowData}
+                    row={rowData.rowData}
                     testLdapConnection={testLdapConnect}
                   />
                 )

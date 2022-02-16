@@ -182,7 +182,7 @@ function SqlListPage({
               detailPanel={(rowData) => {
                 return (
                   <SqlDetailPage
-                    row={rowData}
+                    row={rowData.rowData}
                     testSqlConnection={testSqlConnect}
                   />
                 )

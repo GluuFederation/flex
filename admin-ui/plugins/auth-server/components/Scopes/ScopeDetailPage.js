@@ -5,6 +5,7 @@ import { SCOPE } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 function ScopeDetailPage({ row }) {
+  console.log("========================="+JSON.stringify(row))
   const { t } = useTranslation()
   function getBadgeTheme(status) {
     if (status) {
@@ -76,7 +77,7 @@ function ScopeDetailPage({ row }) {
         <Row>
           <Col sm={3}>{t('fields.attributes')}:</Col>
           <Col sm={9}>
-            {Object.keys(row.attributes).map((item, key) => (
+            {Object.keys(row.attributes || []).map((item, key) => (
               <GluuFormDetailRow
                 key={key}
                 label={item}

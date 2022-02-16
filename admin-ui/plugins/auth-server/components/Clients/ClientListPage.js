@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import MaterialTable from '@material-table/core';
+import MaterialTable from '@material-table/core'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
-import { Badge } from 'reactstrap'
-import { Card, CardBody, FormGroup } from '../../../../app/components'
+import { Card, CardBody, FormGroup, Badge } from '../../../../app/components'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
@@ -47,6 +46,41 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
+  const tableColumns = [
+    {
+      title: `${t('fields.inum')}`,
+      field: 'inum',
+      hidden: true,
+      sorting: true,
+      searchable: true,
+    },
+    { title: `${t('fields.client_name')}`, field: 'clientName' },
+    {
+      title: `${t('fields.application_type')}`,
+      field: 'applicationType',
+    },
+    { title: `${t('fields.subject_type')}`, field: 'subjectType' },
+    {
+      title: `${t('fields.status')}`,
+      field: 'disabled',
+      type: 'boolean',
+      render: (rowData) => (
+        <Badge color={getBadgeTheme(rowData.disabled)}>
+          {getClientStatus(rowData.disabled)}
+        </Badge>
+      ),
+    },
+    {
+      title: `${t('fields.is_trusted_client')}`,
+      field: 'trustedClient',
+      type: 'boolean',
+      render: (rowData) => (
+        <Badge color={getTrustedTheme(rowData.trustedClient)}>
+          {rowData.trustedClient ? t('options.yes') : t('options.no')}
+        </Badge>
+      ),
+    },
+  ]
   useEffect(() => {
     makeOptions()
     buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
@@ -192,41 +226,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
-            columns={[
-              {
-                title: `${t('fields.inum')}`,
-                field: 'inum',
-                hidden: true,
-                sorting: true,
-                searchable: true,
-              },
-              { title: `${t('fields.client_name')}`, field: 'clientName' },
-              {
-                title: `${t('fields.application_type')}`,
-                field: 'applicationType',
-              },
-              { title: `${t('fields.subject_type')}`, field: 'subjectType' },
-              {
-                title: `${t('fields.status')}`,
-                field: 'disabled',
-                type: 'boolean',
-                render: (rowData) => (
-                  <Badge color={getBadgeTheme(rowData.disabled)}>
-                    {getClientStatus(rowData.disabled)}
-                  </Badge>
-                ),
-              },
-              {
-                title: `${t('fields.is_trusted_client')}`,
-                field: 'trustedClient',
-                type: 'boolean',
-                render: (rowData) => (
-                  <Badge color={getTrustedTheme(rowData.trustedClient)}>
-                    {rowData.trustedClient ? t('options.yes') : t('options.no')}
-                  </Badge>
-                ),
-              },
-            ]}
+            columns={tableColumns}
             data={clients}
             isLoading={loading}
             title=""
@@ -240,7 +240,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
-              return <ClientDetailPage row={rowData} scopes={scopes} />
+              return <ClientDetailPage row={rowData.rowData} scopes={scopes} />
             }}
           />
         </GluuViewWrapper>

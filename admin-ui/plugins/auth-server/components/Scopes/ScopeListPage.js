@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import MaterialTable from '@material-table/core';
+import MaterialTable from '@material-table/core'
 import { Paper } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -46,6 +46,21 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const [limit, setLimit] = useState(500)
   const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
+
+  const tableColumns = [
+    { title: `${t('fields.inum')}`, field: 'inum' },
+    { title: `${t('fields.displayname')}`, field: 'displayName' },
+    { title: `${t('fields.description')}`, field: 'description' },
+    {
+      title: `${t('fields.scope_type')}`,
+      field: 'scopeType',
+      render: (rowData) => (
+        <Badge key={rowData.inum} color="primary">
+          {rowData.scopeType}
+        </Badge>
+      ),
+    },
+  ]
 
   useEffect(() => {
     makeOptions()
@@ -162,23 +177,13 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
-            columns={[
-              { title: `${t('fields.inum')}`, field: 'inum' },
-              { title: `${t('fields.displayname')}`, field: 'displayName' },
-              { title: `${t('fields.description')}`, field: 'description' },
-              {
-                title: `${t('fields.scope_type')}`,
-                field: 'scopeType',
-                render: (rowData) => (
-                  <Badge color="primary">{rowData.scopeType}</Badge>
-                ),
-              },
-            ]}
+            columns={tableColumns}
             data={scopes}
             isLoading={loading}
             title=""
             actions={myActions}
             options={{
+              columnsButton: true,
               search: true,
               searchFieldAlignment: 'left',
               selection: false,
@@ -187,7 +192,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
-              return <ScopeDetailPage row={rowData} />
+              return <ScopeDetailPage row={rowData.rowData} />
             }}
           />
         </GluuViewWrapper>

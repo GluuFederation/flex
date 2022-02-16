@@ -202,7 +202,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
-              return <CustomScriptDetailPage row={rowData} />
+              return <CustomScriptDetailPage row={rowData.rowData} />
             }}
           />
         </GluuViewWrapper>

@@ -194,7 +194,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
-              return <AttributeDetailPage row={rowData} />
+              return <AttributeDetailPage row={rowData.rowData} />
             }}
           />
         </GluuViewWrapper>
