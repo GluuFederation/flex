@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   updateMapping,
   addPermissionsToRole,
+  updatePermissionsToServer,
+  updatePermissionsServerResponse,
 } from '../../redux/actions/MappingActions'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
@@ -23,7 +25,7 @@ function MappingItem({ candidate }) {
   const autocompleteRef = useRef(null)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
   const [searchablePermissions, setSearchAblePermissions] = useState([])
-
+  const [serverPermissions, setServerPermissions] = useState(null)
   const getPermissionsForSearch = () => {
     const selectedPermissions = candidate.permissions
     let filteredArr = []
@@ -34,6 +36,18 @@ function MappingItem({ candidate }) {
     }
     setSearchAblePermissions(filteredArr)
   }
+
+  const revertLocalChanges = () => {
+    dispatch(updatePermissionsServerResponse(JSON.parse(serverPermissions)))
+  }
+
+  const setServerPermissionsToLocalState = () => {
+    setServerPermissions(JSON.stringify(candidate))
+  }
+
+  useEffect(() => {
+    setServerPermissionsToLocalState()
+  }, [false])
 
   useEffect(() => {
     getPermissionsForSearch()
@@ -70,23 +84,16 @@ function MappingItem({ candidate }) {
         <Col sm={12}>
           <Accordion className="mb-12">
             <Accordion.Header className="text-info">
-              <Row>
-                <Col sm={2}>
-                  <Accordion.Indicator className="mr-2" />
-                  {candidate.role}
-                </Col>
-                <Col sm={9}></Col>
-                <Col sm={1}>
-                  <Badge
-                    color="info"
-                    style={{
-                      float: 'right',
-                    }}
-                  >
-                    {candidate.permissions.length}
-                  </Badge>
-                </Col>
-              </Row>
+              <Accordion.Indicator className="mr-2" />
+              {candidate.role}
+              <Badge
+                color="info"
+                style={{
+                  float: 'right',
+                }}
+              >
+                {candidate.permissions.length}
+              </Badge>
             </Accordion.Header>
             <Accordion.Body>
               <div style={{ marginTop: 10 }}></div>
@@ -133,7 +140,11 @@ function MappingItem({ candidate }) {
                       type="button"
                       color="danger"
                       onClick={() => doRemove(id, candidate.role)}
-                      style={{ margin: '1px', float: 'right', padding: '0px' }}
+                      style={{
+                        margin: '1px',
+                        float: 'right',
+                        padding: '0px',
+                      }}
                     >
                       <i className="fa fa-trash mr-2"></i>
                       Remove
@@ -141,6 +152,36 @@ function MappingItem({ candidate }) {
                   </Col>
                 </Row>
               ))}
+              {/* Bottom Buttons  */}
+              <FormGroup row />
+              <Row>
+                <Col sm={6}>
+                  <Button
+                    type="button"
+                    color="primary"
+                    style={applicationStyle.buttonStyle}
+                    onClick={() => revertLocalChanges()}
+                  >
+                    <i className="fa fa-undo mr-2"></i>
+                    Revert
+                  </Button>
+                </Col>
+                <Col sm={6} className="text-right">
+                  <Button
+                    type="button"
+                    color="primary"
+                    style={applicationStyle.buttonStyle}
+                    onClick={() => {
+                      dispatch(updatePermissionsToServer(candidate))
+                      setServerPermissionsToLocalState()
+                    }}
+                  >
+                    <i className="fa fa-plus mr-2"></i>
+                    Save
+                  </Button>
+                </Col>
+              </Row>
+              {/* Bottom Buttons  */}
             </Accordion.Body>
           </Accordion>
         </Col>

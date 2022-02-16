@@ -3,12 +3,15 @@ import {
   GET_MAPPING_RESPONSE,
   UPDATE_MAPPING,
   ADD_PERMISSIONS_TO_ROLE,
+  UPDATE_PERMISSIONS_LOADING,
   RESET,
+  UPDATE_PERMISSIONS_SERVER_RESPONSE,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 
 const INIT_STATE = {
   items: [],
+  serverItems: [],
   loading: false,
 }
 const reducerName = 'mappingReducer'
@@ -36,11 +39,21 @@ export default function mappingReducer(state = INIT_STATE, action) {
         ...state,
         items: [...addedPermissions],
       }
-    case RESET:
+    case UPDATE_PERMISSIONS_LOADING:
       return {
         ...state,
-        items: INIT_STATE.items,
-        loading: INIT_STATE.loading,
+        loading: action.payload.data,
+      }
+    case UPDATE_PERMISSIONS_SERVER_RESPONSE:
+      let indexToUpdatePermissions = state.items.findIndex(
+        (element) => element.role == action.payload?.data?.role,
+      )
+      let changedData = state.items
+      changedData[indexToUpdatePermissions] = action.payload.data
+      return {
+        ...state,
+        items: [...changedData],
+        loading: false,
       }
     case UPDATE_MAPPING:
       const { id, role } = action.payload.data
@@ -52,6 +65,12 @@ export default function mappingReducer(state = INIT_STATE, action) {
       return {
         ...state,
         items: [...changedPermissions],
+      }
+    case RESET:
+      return {
+        ...state,
+        items: INIT_STATE.items,
+        loading: INIT_STATE.loading,
       }
     default:
       return handleDefault()

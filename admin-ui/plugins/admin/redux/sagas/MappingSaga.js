@@ -7,7 +7,11 @@ import {
   select,
   takeEvery,
 } from 'redux-saga/effects'
-import { getMappingResponse } from '../actions/MappingActions'
+import {
+  getMappingResponse,
+  updatePermissionsServerResponse,
+  updatePermissionsLoading,
+} from '../actions/MappingActions'
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
@@ -49,12 +53,13 @@ export function* fetchMapping({ payload }) {
 }
 
 export function* updateMapping({ payload }) {
-  // UPDATE_PERMISSIONS_TO_SERVER
+  yield put(updatePermissionsLoading(true))
   try {
     const mappingApi = yield* newFunction()
-    console.log('payload', payload.data)
-    const data = yield call(mappingApi.updateMapping(payload.data))
+    const data = yield call(mappingApi.updateMapping, payload.data)
+    yield put(updatePermissionsServerResponse(data))
   } catch (e) {
+    yield put(updatePermissionsLoading(false))
     yield put(getMappingResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
