@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Container, Row, Col } from '../../../../app/components'
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
 
 function UiPermDetailPage({ row }) {
+  const { rowData } = row
   return (
     <React.Fragment>
       <Container style={{ backgroundColor: '#F5F5F5' }}>
@@ -10,15 +11,17 @@ function UiPermDetailPage({ row }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.name"
-              value={row.permission}
+              value={rowData.permission}
               isBadge={true}
+              lsize={3}
+              rsize={9}
             />
           </Col>
-          {row.description && (
-            <Col sm={3}>
+          {rowData.description && (
+            <Col sm={6}>
               <GluuFormDetailRow
                 label="fields.description"
-                value={row.description}
+                value={rowData.description}
                 lsize={3}
                 rsize={9}
               />
