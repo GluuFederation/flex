@@ -28,12 +28,19 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=952492e371a1fb6a3087735c19ead496d574367e
-RUN mkdir -p /opt/jans \
-    && cd /opt/jans \
-    && git clone https://github.com/GluuFederation/flex \
-    && cd flex/admin-ui \
+ENV ADMIN_UI_VERSION=c94c1a0e77827fab7e24d1cf46ee1c91f4582383
+
+# note that as we're pulling from a monorepo (with multiple project in it)
+# we are using partial-clone and sparse-checkout to get the admin-ui code
+RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
+    && cd /tmp/flex \
+    && git sparse-checkout init --cone \
     && git checkout ${ADMIN_UI_VERSION} \
+    && git sparse-checkout set admin-ui \
+    && mkdir -p /opt/jans/flex \
+    && mv /tmp/flex/admin-ui /opt/jans/flex/admin-ui \
+    && rm -rf /tmp/flex \
+    && cd /opt/jans/flex/admin-ui \
     && npm install @openapitools/openapi-generator-cli \
     && npm run api \
     && npm install \
