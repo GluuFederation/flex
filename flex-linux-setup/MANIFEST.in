@@ -1,5 +1,5 @@
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
-include flex_linux_setup/auiConfiguration.properties
+include flex_linux_setup/templates/*
 include flex_linux_setup/flex-plugin.py
 

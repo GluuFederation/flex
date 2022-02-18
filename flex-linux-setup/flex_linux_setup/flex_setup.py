@@ -7,10 +7,7 @@ import argparse
 import time
 from urllib.parse import urljoin
 
-jans_setup_dir = '/opt/jans/jans-setup'
-sys.path.append(jans_setup_dir)
-
-if not (os.path.join(jans_setup_dir) and os.path.join('/etc/jans/conf/jans.properties')):
+if not os.path.join('/etc/jans/conf/jans.properties'):
     print("Please install Jans server then execute this script.")
     sys.exit()
 
@@ -18,10 +15,25 @@ if not os.path.exists('/opt/jans/jetty/jans-config-api/start.ini'):
     print("Please install Jans Config Api then execute this script.")
     sys.exit()
 
+import jans_setup
+sys.path.append(jans_setup.__path__[0])
+
+__STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
+logs_dir = os.path.join(__STATIC_SETUP_DIR__, 'logs')
+
+if not os.path.exists(logs_dir):
+    os.makedirs(logs_dir)
 
 from setup_app import paths
-paths.LOG_FILE = os.path.join(jans_setup_dir, 'logs/flex-setup.log')
-paths.LOG_ERROR_FILE = os.path.join(jans_setup_dir, 'logs/flex-setup-error.log')
+paths.LOG_FILE = os.path.join(logs_dir, 'flex-setup.log')
+paths.LOG_ERROR_FILE = os.path.join(logs_dir, 'flex-setup-error.log')
+print()
+print("Log Files:")
+print('\033[1m')
+print(paths.LOG_FILE)
+print(paths.LOG_ERROR_FILE)
+print('\033[0m')
+
 from setup_app import static
 from setup_app.utils import base
 
@@ -32,6 +44,10 @@ from setup_app.installers.node import NodeInstaller
 from setup_app.installers.httpd import HttpdInstaller
 from setup_app.installers.config_api import ConfigApiInstaller
 from setup_app.installers.jetty import JettyInstaller
+
+Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
+if not os.path.join(Config.outputFolder):
+    os.makedirs(Config.outputFolder)
 
 parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
 parser.add_argument('--setup-branch', help="Jannsen setup github branch", default='main')
@@ -82,7 +98,7 @@ class flex_installer(JettyInstaller):
         self.casa_war_fn = os.path.join(Config.distJansFolder, 'casa.war')
 
     def download_files(self):
-
+        return
         print("Downloading components")
         base.download(urljoin(maven_base_url, 'admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path)
         base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path)
@@ -102,7 +118,7 @@ class flex_installer(JettyInstaller):
         base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
         base.extract_from_zip(self.flex_path, 'flex-linux-setup/flex_linux_setup', self.flex_setup_dir)
 
-        print("self.source_dir", self.source_dir)
+        print("Sourve directory:", self.source_dir)
         env_tmp = os.path.join(self.source_dir, '.env.tmp')
         print("env_tmp", env_tmp)
         config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)

@@ -18,7 +18,7 @@ def find_version(*file_paths):
 
 setup(
     name="flex-linux-setup",
-    version=find_version("flex_linux_setup", "version.py"),
+    version=find_version("flex_linux_setup/__init__.py"),
     url="",
     license="Apache",
     author="Janssen",
@@ -26,17 +26,13 @@ setup(
     description="",
     long_description=__doc__,
     zip_safe=False,
-    install_requires=[],
-    #data_files=["auiConfiguration.properties"],
+    install_requires=['jans-setup @ git+https://github.com/JanssenProject/jans.git@main#egg=jans-setup&subdirectory=jans-linux-setup'],
     classifiers=[
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.6+",
     ],
     include_package_data=True,
     packages=['flex_linux_setup'],
