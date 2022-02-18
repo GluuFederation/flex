@@ -5,7 +5,7 @@ import PermissionApi from '../api/PermissionApi'
 import { getClient } from '../../../../app/redux/api/base'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import {
-  getPermissionsResponse,
+  getPermissionResponse,
   addPermissionResponse,
   editPermissionResponse,
   deletePermissionResponse,
@@ -46,10 +46,10 @@ export function* getPermissions({ payload }) {
     addAdditionalData(audit, FETCH, API_PERMISSION, payload)
     const permApi = yield* newFunction()
     const data = yield call(permApi.getPermissions)
-    yield put(getPermissionsResponse(data))
+    yield put(getPermissionResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(getPermissionsResponse(null))
+    yield put(getPermissionResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
