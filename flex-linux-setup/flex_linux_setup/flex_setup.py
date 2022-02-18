@@ -98,7 +98,6 @@ class flex_installer(JettyInstaller):
         self.casa_war_fn = os.path.join(Config.distJansFolder, 'casa.war')
 
     def download_files(self):
-        return
         print("Downloading components")
         base.download(urljoin(maven_base_url, 'admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path)
         base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path)
@@ -118,7 +117,7 @@ class flex_installer(JettyInstaller):
         base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
         base.extract_from_zip(self.flex_path, 'flex-linux-setup/flex_linux_setup', self.flex_setup_dir)
 
-        print("Sourve directory:", self.source_dir)
+        print("Source directory:", self.source_dir)
         env_tmp = os.path.join(self.source_dir, '.env.tmp')
         print("env_tmp", env_tmp)
         config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
