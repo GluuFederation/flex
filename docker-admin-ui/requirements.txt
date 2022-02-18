@@ -1,3 +1,5 @@
 ldif3==3.2.2
 libcst<0.4
-git+https://github.com/JanssenProject/jans@d19fbfd6891d03fb0c76073dfa8ba2ffc44a3b9b#egg=jans-pycloudlib&subdirectory=jans-pycloudlib
+# pinned to py3-grpcio version to avoid failure on native extension build
+grpcio==1.41.0
+git+https://github.com/JanssenProject/jans@f88095b1f52f0639221e4109ed7262099e06d0e9#egg=jans-pycloudlib&subdirectory=jans-pycloudlib

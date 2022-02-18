@@ -41,7 +41,7 @@ class AppAuthProvider extends Component {
       console.warn('Parameters to process authz code flow are missing.')
       return
     }
-    return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}
+    return `${authzBaseUrl}?response_type=${responseType}
      &redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`
   }
   constructor() {
