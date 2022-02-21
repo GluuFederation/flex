@@ -15,10 +15,19 @@ if not os.path.exists('/opt/jans/jetty/jans-config-api/start.ini'):
     print("Please install Jans Config Api then execute this script.")
     sys.exit()
 
-import jans_setup
-sys.path.append(jans_setup.__path__[0])
-
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
+
+
+try:
+    import jans_setup
+    sys.path.append(jans_setup.__path__[0])
+except ModuleNotFoundError:
+    if os.path.exists(__STATIC_SETUP_DIR__):
+        sys.path.append(__STATIC_SETUP_DIR__)
+    else:
+        print("Unable to locate jans-setup, exiting ...")
+        sys.exit()
+
 logs_dir = os.path.join(__STATIC_SETUP_DIR__, 'logs')
 
 if not os.path.exists(logs_dir):
