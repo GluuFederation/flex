@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import MaterialTable from '@material-table/core';
+import MaterialTable from '@material-table/core'
 import { useHistory } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { connect } from 'react-redux'
@@ -39,19 +39,29 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const patternId = 'searchPattern'
   const myActions = []
 
+  let memoLimit = limit
+  let memoPattern = pattern
+
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
-  function makeOptions() {
-    options['limit'] = parseInt(limit)
-    if (pattern) {
-      options['pattern'] = pattern
+
+  function handleOptionsChange(event) {
+    if (event.target.name == 'limit') {
+      memoLimit = event.target.value
+    } else if (event.target.name == 'pattern') {
+      memoPattern = event.target.value
     }
   }
-  function handleOptionsChange(i) {
-    setLimit(document.getElementById(limitId).value)
-    setPattern(document.getElementById(patternId).value)
+
+  function makeOptions() {
+    setLimit(memoLimit)
+    setPattern(memoPattern)
+    options['limit'] = parseInt(memoLimit)
+    if (memoPattern) {
+      options['pattern'] = memoPattern
+    }
   }
   function handleGoToAttributeEditPage(row) {
     dispatch(setCurrentItem(row))

@@ -41,11 +41,16 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const myActions = []
   const history = useHistory()
   const pageSize = localStorage.getItem('paggingSize') || 10
+
   const [limit, setLimit] = useState(200)
   const [pattern, setPattern] = useState(null)
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
+
+  let memoLimit = limit
+  let memoPattern = pattern
+
   const tableColumns = [
     {
       title: `${t('fields.inum')}`,
@@ -86,9 +91,12 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
     dispatch(getOpenidClients(userAction))
   }, [])
-  function handleOptionsChange() {
-    setLimit(document.getElementById(LIMIT_ID).value)
-    setPattern(document.getElementById(PATTERN_ID).value)
+  function handleOptionsChange(event) {
+    if (event.target.name == 'limit') {
+      memoLimit = event.target.value
+    } else if (event.target.name == 'pattern') {
+      memoPattern = event.target.value
+    }
   }
   function handleGoToClientEditPage(row, edition) {
     dispatch(viewOnly(edition))
@@ -104,9 +112,11 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     toggle()
   }
   function makeOptions() {
-    options[LIMIT] = limit
-    if (pattern) {
-      options[PATTERN] = pattern
+    setLimit(memoLimit)
+    setPattern(memoPattern)
+    options[LIMIT] = memoLimit
+    if (memoPattern) {
+      options[PATTERN] = memoPattern
     }
   }
   function onDeletionConfirmed(message) {
@@ -135,6 +145,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
           limitId={LIMIT_ID}
           patternId={PATTERN_ID}
           limit={limit}
+          pattern={pattern}
           handler={handleOptionsChange}
         />
       ),
@@ -151,6 +162,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
+        // setLimit(memoLimit)
+        // setPattern(memoLimit)
         makeOptions()
         buildPayload(userAction, SEARCHING_OIDC_CLIENTS, options)
         dispatch(searchClients(userAction))

@@ -47,6 +47,9 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
 
+  let memoLimit = limit
+  let memoPattern = pattern
+
   const tableColumns = [
     { title: `${t('fields.inum')}`, field: 'inum' },
     { title: `${t('fields.displayname')}`, field: 'displayName' },
@@ -67,15 +70,20 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     buildPayload(userAction, FETCHING_SCOPES, options)
     dispatch(getScopes(userAction))
   }, [])
-  function handleOptionsChange(i) {
-    setLimit(document.getElementById(LIMIT_ID).value)
-    setPattern(document.getElementById(PATTERN_ID).value)
+  function handleOptionsChange(event) {
+    if (event.target.name == 'limit') {
+      memoLimit = event.target.value
+    } else if (event.target.name == 'pattern') {
+      memoPattern = event.target.value
+    }
   }
 
   function makeOptions() {
-    options[LIMIT] = limit
-    if (pattern) {
-      options[PATTERN] = pattern
+    setLimit(memoLimit)
+    setPattern(memoPattern)
+    options[LIMIT] = memoLimit
+    if (memoPattern) {
+      options[PATTERN] = memoPattern
     }
   }
 
@@ -120,6 +128,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
           limitId={LIMIT_ID}
           patternId={PATTERN_ID}
           limit={limit}
+          pattern={pattern}
           handler={handleOptionsChange}
         />
       ),
