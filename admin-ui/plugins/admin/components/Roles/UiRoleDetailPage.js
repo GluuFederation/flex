@@ -3,6 +3,7 @@ import { Container, Row, Col } from '../../../../app/components'
 import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
 
 function UiRoleDetailPage({ row }) {
+  const { rowData } = row
   return (
     <React.Fragment>
       <Container style={{ backgroundColor: '#F5F5F5' }}>
@@ -10,14 +11,14 @@ function UiRoleDetailPage({ row }) {
           <Col sm={3}>
             <GluuFormDetailRow
               label="fields.name"
-              value={row.role}
+              value={rowData.role}
               isBadge={true}
             />
           </Col>
           <Col sm={9}>
             <GluuFormDetailRow
               label="fields.description"
-              value={row.description}
+              value={rowData.description}
               lsize={3}
               rsize={9}
             />
