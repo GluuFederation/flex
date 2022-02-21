@@ -64,7 +64,7 @@ Config.determine_version()
 collectProperties = CollectProperties()
 collectProperties.collect()
 
-maven_base_url = 'https://maven.jans.io/maven/io/jans/'
+maven_base_url = 'https://jenkins.jans.io/maven/io/jans/'
 app_versions = {
   "SETUP_BRANCH": argsp.setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
@@ -99,7 +99,7 @@ class flex_installer(JettyInstaller):
 
     def download_files(self):
         print("Downloading components")
-        base.download(urljoin(maven_base_url, 'admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path)
+        base.download(urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path)
         base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path)
         base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path)
         base.download('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path)
