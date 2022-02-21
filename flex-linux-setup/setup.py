@@ -18,7 +18,7 @@ def find_version(*file_paths):
 
 setup(
     name="flex-linux-setup",
-    version=find_version("flex_linux_setup/__init__.py"),
+    version=find_version("flex_linux_setup/version.py"),
     url="",
     license="Apache",
     author="Janssen",
