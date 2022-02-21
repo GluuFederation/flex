@@ -2,7 +2,13 @@ import React from 'react'
 import { Input, FormGroup } from './../../../components'
 import { useTranslation } from 'react-i18next'
 
-function GluuAdvancedSearch({ handler, patternId, limitId, limit }) {
+function GluuAdvancedSearch({
+  handler,
+  patternId,
+  limitId,
+  limit,
+  pattern = '',
+}) {
   const { t } = useTranslation()
   return (
     <FormGroup row style={{ marginTop: '10px' }}>
@@ -10,6 +16,7 @@ function GluuAdvancedSearch({ handler, patternId, limitId, limit }) {
         style={{ width: '100px' }}
         id={limitId}
         type="number"
+        name="limit"
         data-testid={limitId}
         defaultValue={limit}
         onChange={handler}
@@ -20,6 +27,8 @@ function GluuAdvancedSearch({ handler, patternId, limitId, limit }) {
         id={patternId}
         data-testid={patternId}
         type="text"
+        name="pattern"
+        defaultValue={pattern}
         placeholder={t('placeholders.search_pattern')}
         onChange={handler}
       />
