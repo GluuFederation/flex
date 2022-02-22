@@ -216,9 +216,9 @@ class flex_installer(JettyInstaller):
 
         self.check_clients([('casa_client_id', '3000.')])
 
-        print(Config.casa_client_id)
-        print(Config.casa_client_encoded_pw)
-        print(Config.casa_client_pw)
+        print("Casa client id", Config.casa_client_id)
+        print("Casa client password", Config.casa_client_pw)
+        print("Casa client encoded password", Config.casa_client_encoded_pw)
 
         print("Importing LDIF Files")
 
@@ -303,6 +303,7 @@ class flex_installer(JettyInstaller):
 
             https_jans_list.insert(n+1, '\n' + apache_directive_text + '\n')
             self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
+            print("Restarting Apache")
             httpd_installer.restart()
 
         self.enable()
@@ -326,8 +327,10 @@ def main():
 
     if argsp.casa_integration:
         installer_obj.install_casa()
-        config_api_installer.start('casa')
+        print("Restarting Jans Auth")
         config_api_installer.restart('jans-auth')
+        print("Starting Casa")
+        config_api_installer.start('casa')
 
     print("Restarting Janssen Config Api")
     config_api_installer.restart()
