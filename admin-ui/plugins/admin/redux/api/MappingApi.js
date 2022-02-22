@@ -20,6 +20,16 @@ export default class MappingApi {
     })
   }
 
+  addMapping = (data) => {
+    const options = {}
+    options['rolePermissionMapping'] = data
+    return new Promise((resolve, reject) => {
+      this.api.mapPermissionsToRole(options, (error, options) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+
   handleResponse(error, reject, resolve, data) {
     if (error) {
       reject(error)

@@ -13,7 +13,10 @@ import {
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
-import { getMapping } from '../../redux/actions/MappingActions'
+import {
+  getMapping,
+  addNewRolePermissions,
+} from '../../redux/actions/MappingActions'
 import { getRoles } from '../../redux/actions/ApiRoleActions'
 import { getPermissions } from '../../redux/actions/ApiPermissionActions'
 import MappingItem from './MappingItem'
@@ -50,8 +53,9 @@ function MappingPage({
 
   function onAddConfirmed(mappingData) {
     buildPayload(userAction, 'Add new mapping', mappingData)
+    dispatch(addNewRolePermissions(mappingData))
     toggle()
-    doFetchList()
+    // doFetchList()
   }
 
   function doFetchList() {
@@ -97,6 +101,7 @@ function MappingPage({
             roles={apiRoles}
             handler={toggle}
             modal={modal}
+            mapping={mapping}
             onAccept={onAddConfirmed}
           />
         </CardBody>
