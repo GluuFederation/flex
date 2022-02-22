@@ -270,6 +270,7 @@ def main():
 
     if argsp.casa_integration:
         installer_obj.install_casa()
+        config_api_installer.start('casa')
 
     sys.exit()
     print("Restarting Janssen Config Api")
