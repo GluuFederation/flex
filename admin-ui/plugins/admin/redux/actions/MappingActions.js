@@ -7,6 +7,7 @@ import {
   UPDATE_PERMISSIONS_LOADING,
   UPDATE_PERMISSIONS_SERVER_RESPONSE,
   ADD_MAPPING_ROLE_PERMISSIONS,
+  DELETE_MAPPING,
 } from './types'
 
 export const getMapping = (action) => ({
@@ -45,5 +46,10 @@ export const updatePermissionsToServer = (data) => ({
 
 export const addNewRolePermissions = (data) => ({
   type: ADD_MAPPING_ROLE_PERMISSIONS,
+  payload: { data },
+})
+
+export const deleteMapping = (data) => ({
+  type: DELETE_MAPPING,
   payload: { data },
 })

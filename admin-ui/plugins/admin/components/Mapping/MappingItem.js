@@ -14,6 +14,7 @@ import {
   addPermissionsToRole,
   updatePermissionsToServer,
   updatePermissionsServerResponse,
+  deleteMapping,
 } from '../../redux/actions/MappingActions'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
@@ -76,6 +77,14 @@ function MappingItem({ candidate }) {
     resetForm()
     autocompleteRef.current.clear()
   }
+  const handleDeleteRole = () => {
+    dispatch(
+      deleteMapping({
+        role: candidate.role,
+        permissions: candidate.permissions,
+      }),
+    )
+  }
 
   return (
     <div>
@@ -86,6 +95,20 @@ function MappingItem({ candidate }) {
             <Accordion.Header className="text-info">
               <Accordion.Indicator className="mr-2" />
               {candidate.role}
+
+              <Button
+                type="button"
+                color="danger"
+                onClick={() => handleDeleteRole()}
+                style={{
+                  margin: '1px',
+                  float: 'right',
+                  padding: '0px',
+                }}
+              >
+                <i className="fa fa-trash mr-2"></i>
+                Delete
+              </Button>
               <Badge
                 color="info"
                 style={{
