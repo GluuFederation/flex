@@ -1,0 +1,110 @@
+# Please do not attempt to edit this flow without the direct consent from the DevOps team. This file is managed centrally.
+# Contact @moabu
+# Sonar cloud https://sonarcloud.io/organizations/janssenproject/projects
+name: Code quality check
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docker-**/CHANGELOG.md'
+      - 'docker-**/version.txt'
+      - '**.md'
+
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'docker-**/CHANGELOG.md'
+      - 'docker-**/version.txt'
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  sonar-scan:
+    name: sonar scan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [admin-ui, casa, flex-cn-setup, flex-linux-setup]
+    env:
+      JVM_PROJECTS: |
+        casa
+      NON_JVM_PROJECTS: |
+        admin-ui
+        flex-cn-setup
+        flex-linux-setup
+
+    steps:
+      - name: check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of sonarqube analysis
+
+      - name: find changed directories
+        run: |
+          if [ $GITHUB_BASE_REF ]; then
+            # Pull Request
+            git fetch origin $GITHUB_BASE_REF --depth=1
+            echo "CHANGED_DIR=$( git diff --name-only ${{ github.event.before }} ${{ github.event.pull_request.head.sha }}  | cut -d/ -f1 | sort -u | sed -z 's/\n/,/g;s/^/[/;s/,$/]/;s/$/\n/')" >> ${GITHUB_ENV}
+          else
+            # Push
+            git fetch origin ${{ github.event.before }} --depth=1
+            echo "CHANGED_DIR=$( git diff --name-only ${{ github.event.before }} $GITHUB_SHA  | cut -d/ -f1 | sort -u | sed -z 's/\n/,/g;s/^/[/;s/,$/]/;s/$/\n/')" >> ${GITHUB_ENV}
+          fi
+
+      - name: check env
+        run: |
+          echo ${{ env.CHANGED_DIR }}
+          echo ${{ matrix.module }}
+
+      - name: Set up JDK 11
+        if: contains(env.CHANGED_DIR, matrix.module) && contains(env.JVM_PROJECTS, matrix.module)
+        uses: actions/setup-java@v2.5.0
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          
+      - name: Cache SonarCloud packages for JVM based project
+        if: contains(env.CHANGED_DIR, matrix.module) && contains(env.JVM_PROJECTS, matrix.module)
+        uses: actions/cache@v2.1.7
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+          
+      - name: Build and analyze JVM based project
+        if: contains(env.CHANGED_DIR, matrix.module) && contains(env.JVM_PROJECTS, matrix.module)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          cd ${{ matrix.module }}
+          case ${{ matrix.module }} in
+            "casa")
+              echo "Run Sonar analysis with test execution"
+              mvn -B install org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+            ;;
+          esac
+
+
+      - name: Convert repo org name to lowercase for non JVM projects
+        if: contains(env.CHANGED_DIR, matrix.module) && contains(env.NON_JVM_PROJECTS, matrix.module)
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: |
+          echo "REPO_ORG=${REPO_OWNER,,}" >>${GITHUB_ENV}
+
+      - name: SonarCloud Scan for non-JVM project
+        if: contains(env.CHANGED_DIR, matrix.module) && contains(env.NON_JVM_PROJECTS, matrix.module)
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.organization=${{ env.REPO_ORG }}
+            -Dsonar.projectKey=${{ github.repository_owner }}_${{ matrix.module }}
+          projectBaseDir: ${{ matrix.module }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
