@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardBody, CardTitle, Badge } from './../../../components'
+import { Card, CardBody, CardTitle, Badge } from '../../../../app/components'
 import ReportPiChartItem from './ReportPiChartItem'
 import GluuRibbon from '../../Apps/Gluu/GluuRibbon'
 

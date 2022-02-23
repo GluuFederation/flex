@@ -3,6 +3,7 @@ import { subMonths } from 'date-fns'
 import moment from 'moment'
 import CustomBarGraph from './Grapths/CustomBarGraph'
 import CustomLineChart from './Grapths/CustomLineChart'
+import CustomBadgeRow from './Grapths/CustomBadgeRow'
 import CustomPieGraph from './Grapths/CustomPieGraph'
 import ActiveUsersGraph from './Grapths/ActiveUsersGraph'
 import DatePicker from 'react-datepicker'
@@ -10,6 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
 import { getMau } from '../../redux/actions/MauActions'
+import { getClients } from '../../redux/actions/InitActions'
 import applicationstyle from '../Apps/Gluu/styles/applicationstyle'
 import GluuLabel from '../Apps/Gluu/GluuLabel'
 import GluuRibbon from '../Apps/Gluu/GluuRibbon'
@@ -31,7 +33,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-function DashboardPage({ statData, permissions, loading, dispatch }) {
+function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
   const { t } = useTranslation()
   const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
   const [endDate, setEndDate] = useState(new Date())
@@ -42,6 +44,10 @@ function DashboardPage({ statData, permissions, loading, dispatch }) {
     const interval = setInterval(() => {
       if (statData.length === 0 && count < 2) {
         search()
+      }
+      if (clients.length === 0 && count < 2) {
+        buildPayload(userAction, 'Fetch openid connect clients', {})
+        dispatch(getClients(userAction))
       }
       count++
     }, 1000)
@@ -124,6 +130,27 @@ function DashboardPage({ statData, permissions, loading, dispatch }) {
           <FormGroup row />
           <FormGroup row />
           <FormGroup row />
+          <FormGroup row />
+          <FormGroup row />
+          <FormGroup row />
+          <FormGroup row>
+            <Col sm={2}></Col>
+            <Col sm={3}>
+              <CustomBadgeRow
+                label="OIDC Clients Count"
+                value={clients.length}
+              />
+            </Col>
+            <Col sm={3}>
+              <CustomBadgeRow label="Active Users Count" value={1} />
+            </Col>
+            <Col sm={3}>
+              <CustomBadgeRow label="Token issued count" value={153} />
+            </Col>
+            <Col sm={1}></Col>
+          </FormGroup>
+          <FormGroup row />
+          <FormGroup row />
           <CardBody>
             <Row>
               <Col sm={2}></Col>
@@ -187,10 +214,6 @@ function DashboardPage({ statData, permissions, loading, dispatch }) {
                 <CustomLineChart data={doDataAugmentation(statData)} />
               </Col>
             </FormGroup>
-            <FormGroup row>
-              <Col sm={6}></Col>
-              <Col sm={6}></Col>
-            </FormGroup>
           </CardBody>
           <CardFooter className="p-4 bt-0"></CardFooter>
         </Card>
@@ -203,6 +226,7 @@ const mapStateToProps = (state) => {
   return {
     statData: state.mauReducer.stat,
     loading: state.mauReducer.loading,
+    clients: state.initReducer.clients,
     permissions: state.authReducer.permissions,
   }
 }
