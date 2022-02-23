@@ -11,5 +11,5 @@ jansConfProperty: {"value1":"u2f_app_id","value2":"https://%(hostname)s","descri
 jansScrTyp: person_authentication
 objectClass: top
 objectClass: jansCustomScr
-jansEnabled: false
+jansEnabled: true
 jansProgLng: python
