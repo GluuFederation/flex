@@ -23,6 +23,7 @@ function GluuSingleValueCompleter({
   required,
   doc_category,
   doc_entry,
+  onChange = null,
 }) {
   const { t } = useTranslation()
   return (
@@ -42,6 +43,11 @@ function GluuSingleValueCompleter({
             name={name}
             defaultSelected={value}
             options={options}
+            onChange={(e) => {
+              if (onChange) {
+                onChange(e)
+              }
+            }}
           />
           <ThemeProvider theme={theme}>
             <Typography variant="subtitle1">

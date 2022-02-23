@@ -20,11 +20,12 @@ function GluuTypeAhead({
   name,
   value,
   options,
-  formik,
+  formik = null,
   required,
   doc_category,
   doc_entry,
   forwardRef = null,
+  onChange = null,
 }) {
   const { t } = useTranslation()
   return (
@@ -42,7 +43,11 @@ function GluuTypeAhead({
             emptyLabel=""
             labelKey={name}
             onChange={(selected) => {
-              formik.setFieldValue(name, selected)
+              if (formik) {
+                formik.setFieldValue(name, selected)
+              } else if (onChange) {
+                onChange(selected)
+              }
             }}
             id={name}
             data-testid={name}

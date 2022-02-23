@@ -21,7 +21,7 @@
     "my_profile": "Mon profil",
     "sql": "Sql",
     "logging": "Enregistrement",
-    "mau":"MAU",
+    "mau": "MAU",
     "oauthserver": "Serveur OAuth",
     "persistence": "Persistance",
     "person": "Personne",
@@ -219,7 +219,8 @@
     "companyName": "Nom de la compagnie",
     "customerEmail": "Email client",
     "customerName": "Nom du client",
-    "licenseDetails": "Détails de la licence"
+    "licenseDetails": "Détails de la licence",
+    "role": "Role"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",

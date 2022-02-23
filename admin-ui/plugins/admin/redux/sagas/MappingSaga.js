@@ -11,6 +11,7 @@ import {
   getMappingResponse,
   updatePermissionsServerResponse,
   updatePermissionsLoading,
+  getMapping,
 } from '../actions/MappingActions'
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
@@ -19,7 +20,12 @@ import {
   isFourZeroOneError,
   addAdditionalData,
 } from '../../../../app/utils/TokenController'
-import { GET_MAPPING, UPDATE_PERMISSIONS_TO_SERVER } from '../actions/types'
+import {
+  GET_MAPPING,
+  UPDATE_PERMISSIONS_TO_SERVER,
+  ADD_MAPPING_ROLE_PERMISSIONS,
+  DELETE_MAPPING,
+} from '../actions/types'
 import MappingApi from '../api/MappingApi'
 import { getClient } from '../../../../app/redux/api/base'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
@@ -67,10 +73,43 @@ export function* updateMapping({ payload }) {
     }
   }
 }
+export function* addMapping({ payload }) {
+  yield put(updatePermissionsLoading(true))
+  try {
+    const mappingApi = yield* newFunction()
+    const data = yield call(mappingApi.addMapping, payload.data)
+    yield put(getMapping({}))
+  } catch (e) {
+    yield put(updatePermissionsLoading(false))
+    // yield put(getMappingResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
+export function* deleteMapping({ payload }) {
+  yield put(updatePermissionsLoading(true))
+  try {
+    const mappingApi = yield* newFunction()
+    const data = yield call(mappingApi.deleteMapping, payload.data)
+    yield put(getMapping({}))
+  } catch (e) {
+    yield put(updatePermissionsLoading(false))
+    // yield put(getMappingResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
 
 export function* watchGetMapping() {
   yield takeLatest(GET_MAPPING, fetchMapping)
   yield takeEvery(UPDATE_PERMISSIONS_TO_SERVER, updateMapping)
+  yield takeEvery(ADD_MAPPING_ROLE_PERMISSIONS, addMapping)
+  yield takeEvery(DELETE_MAPPING, deleteMapping)
 }
 
 export default function* rootSaga() {
