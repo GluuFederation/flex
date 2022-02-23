@@ -59,6 +59,9 @@ jobs:
         run: |
           echo ${{ env.CHANGED_DIR }}
           echo ${{ matrix.module }}
+          echo ${{ github.event.before }}
+          echo ${{ github.event.pull_request.head.sha }}
+          echo $GITHUB_SHA
 
       - name: Set up JDK 11
         if: contains(env.CHANGED_DIR, matrix.module) && contains(env.JVM_PROJECTS, matrix.module)
