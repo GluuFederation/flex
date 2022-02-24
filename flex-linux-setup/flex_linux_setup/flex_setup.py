@@ -114,7 +114,7 @@ class flex_installer(JettyInstaller):
         self.casa_config_fn = os.path.join(self.casa_dist_dir,'casa-config.jar')
         self.casa_script_fn = os.path.join(self.casa_dist_dir,'Casa.py')
         self.twillo_fn = os.path.join(self.casa_dist_dir,'twilio.jar')
-        self.py_lib_dir = '/opt/gluu/python/libs/'
+        self.py_lib_dir = '/opt/jans/python/libs/'
 
     def download_files(self):
         print("Downloading components")
@@ -175,7 +175,6 @@ class flex_installer(JettyInstaller):
 
     def install_casa(self):
 
-
         jans_auth_dir = os.path.join(Config.jetty_base, jansAuthInstaller.service_name)
         jans_auth_custom_lib_dir = os.path.join(jans_auth_dir, 'custom/libs')
 
@@ -199,6 +198,8 @@ class flex_installer(JettyInstaller):
         for fn in glob.glob(os.path.join(self.casa_dist_dir, 'pylib/*.py')):
             print("Copying", fn, "to", self.py_lib_dir)
             self.copyFile(fn, self.py_lib_dir)
+
+        self.run([paths.cmd_chown, '-R', '{0}:{0}'.format(Config.jetty_user), self.py_lib_dir])
 
         # prepare casa scipt ldif
         casa_auth_script_fn = os.path.join(self.templates_dir, 'casa_person_authentication_script.ldif')
@@ -281,10 +282,6 @@ class flex_installer(JettyInstaller):
         self.copyFile(self.casa_war_fn, jetty_service_webapps_dir)
         self.copyFile(self.casa_web_resources_fn, jetty_service_webapps_dir)
         self.run([paths.cmd_chown, '-R', '{0}:{0}'.format(Config.jetty_user), jetty_service_dir])
-        gluu_python_dir = '/opt/gluu/python/'
-        self.run([paths.cmd_mkdir, '-p', os.path.join(gluu_python_dir, 'libs')])
-        self.run([paths.cmd_chown, '-R', '{0}:{0}'.format(Config.jetty_user), gluu_python_dir])
-
 
         print("Updating apache configuration")
         apache_directive_template_text = self.readFile(os.path.join(self.templates_dir, 'casa_apache_directive'))
@@ -326,17 +323,18 @@ def main():
 
     installer_obj.install_gluu_admin_ui()
 
-    if argsp.casa_integration:
-        installer_obj.install_casa()
-        print("Restarting Jans Auth")
-        config_api_installer.restart('jans-auth')
-        print("Starting Casa")
-        config_api_installer.start('casa')
+    installer_obj.install_casa()
+    print("Restarting Jans Auth")
+    config_api_installer.restart('jans-auth')
+    print("Starting Casa")
+    config_api_installer.start('casa')
 
     print("Restarting Janssen Config Api")
     config_api_installer.restart()
 
-    print("Installation was completed. Browse https://{}/admin".format(Config.hostname))
+    print("Installation was completed.")
+    print("Browse https://{}/admin".format(Config.hostname))
+    print("Browse https://{}/casa".format(Config.hostname))
 
 if __name__ == "__main__":
     main()
