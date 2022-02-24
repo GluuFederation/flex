@@ -651,7 +651,33 @@
                         "pattern":"^(FATAL|ERROR|WARN|INFO|DEBUG|TRACE)$"
                            }
                   }
+            },
+                  "adminUiappLoggers":{
+                  "type":"object",
+                  "properties":{
+                     "adminUiLogTarget":{
+                        "description":"config-api admin-ui plugin log target",
+                        "type":"string",
+                        "pattern":"^(STDOUT|FILE)$"
+                                    },
+                     "adminUiLogLevel":{
+                        "description":"config-api admin-ui plugin log level",
+                        "type":"string",
+                        "pattern":"^(FATAL|ERROR|WARN|INFO|DEBUG|TRACE)$"
+                           },
+                     "adminUiAuditLogTarget":{
+                        "description":"config-api admin-ui plugin audit log target",
+                        "type":"string",
+                        "pattern":"^(STDOUT|FILE)$"
+                                    },
+                     "adminUiAuditLogLevel":{
+                        "description":"config-api admin-ui plugin audit log level",
+                        "type":"string",
+                        "pattern":"^(FATAL|ERROR|WARN|INFO|DEBUG|TRACE)$"
+                           }
+                  }
             }
+
                }
             },
             "fqdn":{

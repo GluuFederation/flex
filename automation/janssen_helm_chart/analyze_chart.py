@@ -102,6 +102,9 @@ for k, v in non_janssen_keys["global"].items():
     if k == "istio":
         del values_schema["properties"]["global"]["properties"]["istio"]["properties"]["ingress"]
         continue
+    elif k == "config-api":
+        del values_schema["properties"]["global"]["properties"]["config-api"]["properties"]["adminUiappLoggers"]
+        continue
     try:
         del values_schema["properties"]["global"]["properties"][k]
         logger.info(f"Removed {k}")
