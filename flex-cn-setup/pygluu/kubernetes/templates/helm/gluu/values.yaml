@@ -866,6 +866,31 @@ global:
       configApiLogTarget: "STDOUT"
       # -- configapi.log level
       configApiLogLevel: "INFO"
+      # -- config-api_persistence.log target
+      persistenceLogTarget: "FILE"
+      # -- jans-auth_persistence.log level
+      persistenceLogLevel: "INFO"
+      # -- config-api_persistence_duration.log target
+      persistenceDurationLogTarget: "FILE"
+      # -- config-api_persistence_duration.log level
+      persistenceDurationLogLevel: "INFO"
+      # -- config-api_persistence_ldap_statistics.log target
+      ldapStatsLogTarget: "FILE"
+      # -- config-api_persistence_ldap_statistics.log level
+      ldapStatsLogLevel: "INFO"
+      # -- config-api_script.log target
+      scriptLogTarget: "FILE"
+      # -- config-api_script.log level
+      scriptLogLevel: "INFO"
+    adminUiappLoggers:
+      # -- config-api admin-ui plugin log level
+      adminUiLogTarget: "FILE"
+      # -- config-api admin-ui plugin log target
+      adminUiLogLevel: "INFO"
+      # -- config-api admin-ui plugin audit log target
+      adminUiAuditLogTarget: "FILE"
+      # -- config-api admin-ui plugin audit log level
+      adminUiAuditLogLevel: "INFO"
   # -- Fully qualified domain name to be used for Gluu installation. This address will be used to reach Gluu services.
   fqdn: demoexample.gluu.org
   fido2:

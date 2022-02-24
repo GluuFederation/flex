@@ -58,6 +58,7 @@ with open(Path("./automation/janssen_helm_chart/non_janssen.yaml").resolve(), "r
 clean_keys(non_janssen_keys)
 clean_keys(non_janssen_keys["global"], parent_key="global")
 clean_keys(non_janssen_keys["global"]["istio"], parent_key="global", second_parent_key="istio")
+clean_keys(non_janssen_keys["global"]["config-api"], parent_key="global", second_parent_key="config-api")
 clean_keys(non_janssen_keys["config"], parent_key="config")
 clean_keys(non_janssen_keys["nginx-ingress"]["ingress"], parent_key="nginx-ingress", second_parent_key="ingress")
 yaml.dump(main_values_file_parser, main_values_file)
