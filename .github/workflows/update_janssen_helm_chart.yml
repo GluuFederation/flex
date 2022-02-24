@@ -1,8 +1,11 @@
 name: updatejanshelmchart
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 8 * * 5'
+  push:
+    branches:
+      - main
+    paths:
+      - 'flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/*'
 jobs:
   createPullRequest:
     runs-on: ubuntu-latest
