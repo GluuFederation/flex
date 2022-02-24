@@ -30,4 +30,5 @@ jansScope: inum=341A,ou=scopes,o=jans
 jansSignedRespAlg: RS256
 jansSubjectTyp: pairwise
 jansTknEndpointAuthMethod: client_secret_basic
-jansTrustedClnt: false
+jansTrustedClnt: true
+

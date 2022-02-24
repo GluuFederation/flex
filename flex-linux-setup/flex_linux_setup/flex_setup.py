@@ -64,7 +64,8 @@ parser = argparse.ArgumentParser(description="This script downloads Gluu Admin U
 parser.add_argument('--setup-branch', help="Jannsen setup github branch", default='main')
 parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
 parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
-parser.add_argument('-casa-integration', help="Install Casa Integration", action='store_true')
+parser.add_argument('--install-args', help="Arguments for Jannsen installatin application")
+parser.add_argument('--setup-args', help="Arguments for Jannsen setup")
 
 argsp = parser.parse_args()
 
