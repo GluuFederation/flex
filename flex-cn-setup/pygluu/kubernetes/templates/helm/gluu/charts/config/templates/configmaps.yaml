@@ -96,6 +96,14 @@ data:
   | toJson
   | replace "configApiLogTarget" "config_api_log_target"
   | replace "configApiLogLevel" "config_api_log_level"
+  | replace "persistenceLogTarget" "persistence_log_target"
+  | replace "persistenceLogLevel" "persistence_log_level"
+  | replace "persistenceDurationLogTarget" "persistence_duration_log_target"
+  | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
+  | replace "ldapStatsLogTarget" "ldap_stats_log_target"
+  | replace "ldapStatsLogLevel" "ldap_stats_log_level"
+  | replace "scriptLogTarget" "script_log_target"
+  | replace "scriptLogLevel" "script_log_level"
   | squote
   }}
   {{- end }}
@@ -180,6 +188,14 @@ data:
   # ADMIN-UI
   ADMIN_UI_JWKS: {{ cat "http://" ( index .Values "global" "auth-server" "authServerServiceName" ) ":8080/jans-auth/restv1/jwks" | quote | nospace }}
   CN_CONFIG_API_PLUGINS: "admin-ui,scim"
+  CN_ADMIN_UI_PLUGIN_LOGGERS: {{ index .Values "global" "config-api" "adminUiappLoggers"
+  | toJson
+  | replace "adminUiLogTarget" "admin_ui_log_target"
+  | replace "adminUiLogLevel" "admin_ui_log_level"
+  | replace "adminUiAuditLogTarget" "admin_ui_audit_log_target"
+  | replace "adminUiAuditLogLevel" "admin_ui_audit_log_level"
+  | squote
+  }}
   {{- end }}
 ---
 

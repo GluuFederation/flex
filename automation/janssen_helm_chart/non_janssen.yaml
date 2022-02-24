@@ -17,6 +17,8 @@ global:
   cnObTransportKeyPassPhrase: None
   cnObTransportAlias: None
   cnObTransportTrustStore: None
+  config-api:
+    adminUiappLoggers: None
   istio:
     ingress: None
   oxpassport: None
