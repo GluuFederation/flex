@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import MaterialTable from '@material-table/core';
+import MaterialTable from '@material-table/core'
+import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
@@ -72,7 +73,6 @@ function LdapListPage({
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
-        color: 'primary',
         id: 'editLdap' + rowData.configId,
       },
       tooltip: `${t('tooltips.edit_ldap')}`,
@@ -94,7 +94,7 @@ function LdapListPage({
   }
   if (hasPermission(permissions, LDAP_DELETE)) {
     myActions.push((rowData) => ({
-      icon: 'delete',
+      icon: () => <DeleteOutlined />,
       iconProps: {
         color: 'secondary',
         id: 'deleteLdap' + rowData.configId,

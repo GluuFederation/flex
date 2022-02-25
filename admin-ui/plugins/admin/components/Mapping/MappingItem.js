@@ -9,6 +9,7 @@ import {
   Form,
 } from '../../../../app/components'
 import { useDispatch, useSelector } from 'react-redux'
+import { DeleteOutlined } from '@material-ui/icons'
 import {
   updateMapping,
   addPermissionsToRole,
@@ -96,19 +97,13 @@ function MappingItem({ candidate }) {
               <Accordion.Indicator className="mr-2" />
               {candidate.role}
 
-              <Button
-                type="button"
-                color="danger"
+              <DeleteOutlined
                 onClick={() => handleDeleteRole()}
                 style={{
-                  margin: '1px',
                   float: 'right',
-                  padding: '0px',
+                  color: '#000',
                 }}
-              >
-                <i className="fa fa-trash mr-2"></i>
-                Delete
-              </Button>
+              />
               <Badge
                 color="info"
                 style={{
