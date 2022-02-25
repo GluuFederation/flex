@@ -6,15 +6,11 @@ import zipfile
 import argparse
 import time
 import glob
+import code
+
+from urllib import request
 from urllib.parse import urljoin
 
-if not os.path.join('/etc/jans/conf/jans.properties'):
-    print("Please install Jans server then execute this script.")
-    sys.exit()
-
-if not os.path.exists('/opt/jans/jetty/jans-config-api/start.ini'):
-    print("Please install Jans Config Api then execute this script.")
-    sys.exit()
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
@@ -22,13 +18,27 @@ try:
     import jans_setup
     sys.path.append(jans_setup.__path__[0])
 except ModuleNotFoundError:
-    if os.path.exists(__STATIC_SETUP_DIR__):
+    if os.path.exists(os.path.join(__STATIC_SETUP_DIR__, 'setup_app')):
         sys.path.append(__STATIC_SETUP_DIR__)
     else:
-        print("Unable to locate jans-setup, exiting ...")
-        sys.exit()
+        print("Unable to locate jans-setup, installing ...")
+        # split args to find jans setup branch
+        arg_list = []
+        for arg in sys.argv[1:]:
+            if '=' in arg:
+                arg_list.append(arg.split('=', maxsplit=1))
+        sys_args = dict(arg_list)
+
+        setup_branch = sys_args.get('--jans-setup-branch') or 'main'
+        install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
+        request.urlretrieve(install_url, 'install.py')
+        install_cmd = 'python3 install.py --setup-branch={} --no-setup'.format(setup_branch)
+        print("Executing", install_cmd)
+        os.system(install_cmd)
+        sys.path.append(__STATIC_SETUP_DIR__)
 
 logs_dir = os.path.join(__STATIC_SETUP_DIR__, 'logs')
+argsp = None
 
 if not os.path.exists(logs_dir):
     os.makedirs(logs_dir)
@@ -42,6 +52,26 @@ print('\033[1m')
 print(paths.LOG_FILE)
 print(paths.LOG_ERROR_FILE)
 print('\033[0m')
+
+
+parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
+parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
+parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
+parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
+parser.add_argument('-shell', help="Jannsen github branch", action='store_true')
+
+
+if not os.path.exists('/etc/jans/conf/jans.properties'):
+    parser.add_to_setup_parser = True
+    from setup_app.utils import arg_parser
+    try:
+        from jans_setup import jans_setup
+    except ImportError:
+        import jans_setup
+    jans_setup.main()
+    argsp = arg_parser.get_parser()
+
+
 
 from setup_app import static
 from setup_app.utils import base
@@ -60,25 +90,22 @@ Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
 if not os.path.join(Config.outputFolder):
     os.makedirs(Config.outputFolder)
 
-parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
-parser.add_argument('--setup-branch', help="Jannsen setup github branch", default='main')
-parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
-parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
-parser.add_argument('--install-args', help="Arguments for Jannsen installatin application")
-parser.add_argument('--setup-args', help="Arguments for Jannsen setup")
+if not argsp:
+    argsp = parser.parse_known_args()[0]
 
-argsp = parser.parse_args()
+    # initialize config object
+    Config.init(paths.INSTALL_DIR)
+    Config.determine_version()
 
-# initialize config object
-Config.init(paths.INSTALL_DIR)
-Config.determine_version()
+    collectProperties = CollectProperties()
+    collectProperties.collect()
 
-collectProperties = CollectProperties()
-collectProperties.collect()
+if os.environ.get('jans_setup_branch') and not argsp.jans_setup_branch:
+    argsp.jans_setup_branch = os.environ['jans_setup_branch']
 
 maven_base_url = 'https://jenkins.jans.io/maven/io/jans/'
 app_versions = {
-  "SETUP_BRANCH": argsp.setup_branch,
+  "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
   "JANS_APP_VERSION": "1.0.0",
@@ -116,22 +143,24 @@ class flex_installer(JettyInstaller):
         self.twillo_fn = os.path.join(self.casa_dist_dir,'twilio.jar')
         self.py_lib_dir = '/opt/jans/python/libs/'
 
+        self.dbUtils.bind(force=True)
+
     def download_files(self):
         print("Downloading components")
-        base.download(urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path)
-        base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path)
-        base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path)
-        base.download('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path)
-        base.download('https://github.com/GluuFederation/casa/raw/gluu_cloud/extras/casa_web_resources.xml', self.casa_web_resources_fn)
-        base.download('https://maven.gluu.org/maven/org/gluu/casa/{0}/casa-{0}.war'.format(app_versions['CASA_VERSION']), self.casa_war_fn)
-        base.download('https://maven.gluu.org/maven/org/gluu/casa-config/{0}/casa-config-{0}.jar'.format(app_versions['CASA_VERSION']), self.casa_config_fn)
-        base.download('https://repo1.maven.org/maven2/com/twilio/sdk/twilio/{0}/twilio-{0}.jar'.format(app_versions['TWILIO_VERSION']), self.twillo_fn)
-        base.download('https://raw.githubusercontent.com/GluuFederation/casa/gluu_cloud/extras/Casa.py', self.casa_script_fn)
-        base.download('https://raw.githubusercontent.com/GluuFederation/casa/gluu_cloud/extras/casa-external_fido2.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_fido2.py'))
-        base.download('https://raw.githubusercontent.com/GluuFederation/casa/gluu_cloud/extras/casa-external_otp.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_otp.py'))
-        base.download('https://raw.githubusercontent.com/GluuFederation/casa/gluu_cloud/extras/casa-external_super_gluu.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_super_gluu.py'))
-        base.download('https://raw.githubusercontent.com/GluuFederation/casa/gluu_cloud/extras/casa-external_twilio_sms.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_twilio_sms.py'))
-        base.download('https://raw.githubusercontent.com/GluuFederation/casa/gluu_cloud/extras/casa-external_u2f.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_u2f.py'))
+        base.download(urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path, verbose=True)
+        base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path, verbose=True)
+        base.download('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path, verbose=True)
+        base.download('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path, verbose=True)
+        base.download('https://github.com/GluuFederation/casa/raw/gluu_cloud/extras/casa_web_resources.xml', self.casa_web_resources_fn, verbose=True)
+        base.download('https://maven.gluu.org/maven/org/gluu/casa/{0}/casa-{0}.war'.format(app_versions['CASA_VERSION']), self.casa_war_fn, verbose=True)
+        base.download('https://maven.gluu.org/maven/org/gluu/casa-config/{0}/casa-config-{0}.jar'.format(app_versions['CASA_VERSION']), self.casa_config_fn, verbose=True)
+        base.download('https://repo1.maven.org/maven2/com/twilio/sdk/twilio/{0}/twilio-{0}.jar'.format(app_versions['TWILIO_VERSION']), self.twillo_fn, verbose=True)
+        base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/Casa.py', self.casa_script_fn, verbose=True)
+        base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_fido2.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_fido2.py'), verbose=True)
+        base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_otp.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_otp.py'), verbose=True)
+        base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_super_gluu.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_super_gluu.py'), verbose=True)
+        base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_twilio_sms.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_twilio_sms.py'), verbose=True)
+        base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_u2f.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_u2f.py'), verbose=True)
 
 
     def install_gluu_admin_ui(self):
@@ -313,8 +342,7 @@ def main():
         node_fn = 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION'])
         node_path = os.path.join(Config.distAppFolder, node_fn)
         if not os.path.exists(node_path):
-            print("Downloading", node_fn)
-            base.download('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), node_path)
+            base.download('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), node_path, verbose=True)
         print("Installing node")
         node_installer.install()
 
@@ -337,5 +365,9 @@ def main():
     print("Browse https://{}/casa".format(Config.hostname))
 
 if __name__ == "__main__":
-    main()
+    if argsp.shell:
+        code.interact(local=locals())
+        sys.exit()
+    else:
+        main()
 
