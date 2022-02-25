@@ -1,6 +1,7 @@
 from io.jans.as.persistence.model.configuration import GluuConfiguration
 from io.jans.as.server.security import Identity
-from io.jans.as.server.service import AuthenticationService, UserService
+from io.jans.as.server.service import AuthenticationService
+from io.jans.as.server.service import UserService
 from io.jans.as.common.service.common import EncryptionService
 from io.jans.as.server.service.custom import CustomScriptService
 from io.jans.as.server.service.net import HttpService
@@ -299,9 +300,7 @@ class PersonAuthentication(PersonAuthenticationType):
         config = GluuConfiguration()
         config = entryManager.find(config.getClass(), "ou=configuration,o=jans")
         #Pick (one) attribute where user id is stored (e.g. uid/mail)
-        # primaryKey is the primary key on the backend AD / LDAP Server
-        # localPrimaryKey is the primary key on Gluu. This attr value has been mapped with the primary key attr of the backend AD / LDAP when configuring cache refresh
-        uid_attr = config.getIdpAuthn().get(0).getConfig().findValue("localPrimaryKey").asText()
+        uid_attr = config.getIdpAuthn().get(0).getConfig().findValue("primaryKey").asText()
         print "Casa. init. uid attribute is '%s'" % uid_attr
         return uid_attr
 
@@ -311,7 +310,7 @@ class PersonAuthentication(PersonAuthenticationType):
         config = ApplicationConfiguration()
         config = entryManager.find(config.getClass(), "ou=casa,ou=configuration,o=jans")
         settings = config.getSettings()
-
+        
         if settings == None:
             print "Casa. getSettings. Failed to parse casa settings from DB"
         return settings
@@ -372,26 +371,26 @@ class PersonAuthentication(PersonAuthenticationType):
 
 
     def prepareUIParams(self, identity):
-
+        
         print "Casa. prepareUIParams. Reading UI branding params"
         cacheService = CdiUtil.bean(CacheService)
         casaAssets = cacheService.get("casa_assets")
-
+            
         if casaAssets == None:
-            #This may happen when cache type is IN_MEMORY, where actual cache is merely a local variable
+            #This may happen when cache type is IN_MEMORY, where actual cache is merely a local variable 
             #(a expiring map) living inside Casa webapp, not oxAuth webapp
-
+            
             sets = self.getSettings()
-
+            
             custPrefix = "/custom"
             logoUrl = "/images/logo.png"
             faviconUrl = "/images/favicon.ico"
             if (sets.getExtraCssSnippet() != None) or sets.isUseExternalBranding():
                 logoUrl = custPrefix + logoUrl
                 faviconUrl = custPrefix + faviconUrl
-
+            
             prefix = custPrefix if sets.isUseExternalBranding() else ""
-
+            
             casaAssets = {
                 "contextPath": "/casa",
                 "prefix" : prefix,
@@ -399,7 +398,7 @@ class PersonAuthentication(PersonAuthenticationType):
                 "extraCss": sets.getExtraCssSnippet(),
                 "logoUrl": logoUrl
             }
-
+        
         #Setting a single variable with the whole map does not work...
         identity.setWorkingParameter("casa_contextPath", casaAssets['contextPath'])
         identity.setWorkingParameter("casa_prefix", casaAssets['prefix'])
@@ -657,7 +656,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
         return None
 
-
+        
     def getLogoutExternalUrl(self, configurationAttributes, requestParameters):
         print "Get external logout URL call"
         return None

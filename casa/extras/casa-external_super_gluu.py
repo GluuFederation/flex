@@ -6,30 +6,25 @@ from com.notnoop.apns import APNS
 from io.jans.service.cdi.util import CdiUtil
 from io.jans.as.server.security import Identity
 from io.jans.model.custom.script.type.auth import PersonAuthenticationType
-from io.jans.as.model.config import ConfigurationFactory
-from io.jans.as.server.service import AuthenticationService, UserService, SessionIdService
-from io.jans.as.service.common import EncryptionService
-from io.jans.as.service.fido.u2f import DeviceRegistrationService
-from io.jans.as.service.net import HttpService
+from io.jans.as.server.model.config import ConfigurationFactory
+from io.jans.as.server.service import AuthenticationService
+from io.jans.as.server.service import UserService
+from io.jans.as.server.service import SessionIdService
+from io.jans.as.common.service.common import EncryptionService
+from io.jans.as.server.service.fido.u2f import DeviceRegistrationService
+from io.jans.as.server.service.net import HttpService
 from io.jans.as.server.util import ServerUtil
 from io.jans.util import StringHelper
 from io.jans.service import MailService
-from io.jans.as.service.push.sns import PushPlatform, PushSnsService 
-from io.jans.oxnotify.client import NotifyClientFactory
+from io.jans.as.server.service.push.sns import PushPlatform
+from io.jans.as.server.service.push.sns import PushSnsService
+from io.jans.notify.client import NotifyClientFactory
 
 from java.util import Arrays, HashMap, IdentityHashMap, Date
 from java.time import ZonedDateTime
 from java.time.format import DateTimeFormatter
 
 from org.apache.http.params import CoreConnectionPNames
-
-try:
-    from org.gluu.oxd.license.client.js import Product
-    from org.gluu.oxd.license.validator import LicenseValidator
-    has_license_api = True
-except ImportError:
-    print "Super-Gluu. Load. Failed to load licensing API"
-    has_license_api = False
 
 import datetime
 import urllib
@@ -111,32 +106,6 @@ class PersonAuthentication(PersonAuthenticationType):
                 return False
             else:
                 self.audit_attribute = configurationAttributes.get("audit_attribute").getValue2()
-
-        self.valid_license = False
-        # Removing or altering this block validation is against the terms of the license. 
-        if has_license_api and configurationAttributes.containsKey("license_file"):
-            license_file = configurationAttributes.get("license_file").getValue2()
-
-            # Load license from file
-            f = open(license_file, 'r')
-            try:
-                license = json.loads(f.read())
-            except:
-                print "Super-Gluu. Initialization. Failed to load license from file: %s" % license_file
-                return False
-            finally:
-                f.close()
-            
-            # Validate license
-            try:
-                self.license_content = LicenseValidator.validate(license["public-key"], license["public-password"], license["license-password"], license["license"],
-                                          Product.SUPER_GLUU, Date())
-                self.valid_license = self.license_content.isValid()
-            except:
-                print "Super-Gluu. Initialization. Failed to validate license. Exception: ", sys.exc_info()[1]
-                return False
-
-            print "Super-Gluu. Initialization. License status: '%s'. License metadata: '%s'" % (self.valid_license, self.license_content.getMetadata())
 
         print "Super-Gluu. Initialized successfully. oneStep: '%s', twoStep: '%s', pushNotifications: '%s', customLabel: '%s'" % (self.oneStep, self.twoStep, self.enabledPushNotifications, self.customLabel)
 
@@ -265,7 +234,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
                 if auth_method == 'authenticate':
                     user_inum = userService.getUserInum(authenticated_user)
-                    u2f_devices_list = deviceRegistrationService.findUserDeviceRegistrations(user_inum, client_redirect_uri, "oxId")
+                    u2f_devices_list = deviceRegistrationService.findUserDeviceRegistrations(user_inum, client_redirect_uri, "jansId")
                     if u2f_devices_list.size() == 0:
                         auth_method = 'enroll'
                         print "Super-Gluu. Authenticate for step 1. There is no U2F '%s' user devices associated with application '%s'. Changing auth_method to '%s'" % (user_name, client_redirect_uri, auth_method)
@@ -358,7 +327,6 @@ class PersonAuthentication(PersonAuthenticationType):
                 super_gluu_request_dictionary = {'app': client_redirect_uri,
                                    'issuer': issuer,
                                    'state': session_id,
-                                   'licensed': self.valid_license,
                                    'created': DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now().withNano(0))}
 
                 self.addGeolocationData(session_attributes, super_gluu_request_dictionary)
@@ -406,7 +374,6 @@ class PersonAuthentication(PersonAuthenticationType):
                                'issuer': issuer,
                                'method': auth_method,
                                'state': session_id,
-                               'licensed': self.valid_license,
                                'created': DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now().withNano(0))}
 
             self.addGeolocationData(session_attributes, super_gluu_request_dictionary)

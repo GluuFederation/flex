@@ -1,7 +1,9 @@
 from io.jans.model.custom.script.type.auth import PersonAuthenticationType
 from io.jans.fido2.client import Fido2ClientFactory
 from io.jans.as.server.security import Identity
-from io.jans.as.server.service import AuthenticationService, UserService, SessionIdService
+from io.jans.as.server.service import AuthenticationService
+from io.jans.as.server.service import UserService
+from io.jans.as.server.service import SessionIdService
 from io.jans.as.server.util import ServerUtil
 from io.jans.service.cdi.util import CdiUtil
 from io.jans.util import StringHelper

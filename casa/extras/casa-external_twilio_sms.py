@@ -8,11 +8,13 @@ from javax.faces.application import FacesMessage
 
 from io.jans.jsf2.message import FacesMessages
 from io.jans.as.server.security import Identity
-from io.jans.as.server.service import UserService, AuthenticationService
+from io.jans.as.server.service import AuthenticationService
+from io.jans.as.server.service import UserService
 from io.jans.as.server.util import ServerUtil
 from io.jans.model.custom.script.type.auth import PersonAuthenticationType
 from io.jans.service.cdi.util import CdiUtil
-from io.jans.util import StringHelper, ArrayHelper
+from io.jans.util import StringHelper
+from io.jans.util import ArrayHelper
 
 import random
 import sys
