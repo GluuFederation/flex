@@ -38,7 +38,6 @@ except ModuleNotFoundError:
         sys.path.append(__STATIC_SETUP_DIR__)
 
 logs_dir = os.path.join(__STATIC_SETUP_DIR__, 'logs')
-argsp = None
 
 if not os.path.exists(logs_dir):
     os.makedirs(logs_dir)
@@ -60,18 +59,22 @@ parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", de
 parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
 parser.add_argument('-shell', help="Jannsen github branch", action='store_true')
 
+from setup_app.utils import arg_parser
+
+arg_parser.add_to_me(parser)
+
+installed = False
+
 
 if not os.path.exists('/etc/jans/conf/jans.properties'):
-    parser.add_to_setup_parser = True
-    from setup_app.utils import arg_parser
+    installed = True
     try:
         from jans_setup import jans_setup
     except ImportError:
         import jans_setup
     jans_setup.main()
-    argsp = arg_parser.get_parser()
 
-
+argsp = arg_parser.get_parser()
 
 from setup_app import static
 from setup_app.utils import base
@@ -90,8 +93,7 @@ Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
 if not os.path.join(Config.outputFolder):
     os.makedirs(Config.outputFolder)
 
-if not argsp:
-    argsp = parser.parse_known_args()[0]
+if not installed:
 
     # initialize config object
     Config.init(paths.INSTALL_DIR)
@@ -99,9 +101,6 @@ if not argsp:
 
     collectProperties = CollectProperties()
     collectProperties.collect()
-
-if os.environ.get('jans_setup_branch') and not argsp.jans_setup_branch:
-    argsp.jans_setup_branch = os.environ['jans_setup_branch']
 
 maven_base_url = 'https://jenkins.jans.io/maven/io/jans/'
 app_versions = {
