@@ -1,6 +1,6 @@
 from io.jans.model.custom.script.type.auth import PersonAuthenticationType
 from io.jans.as.client.fido.u2f import FidoU2fClientFactory
-from io.jans.as.model.config import Constants
+from io.jans.as.server.model.config import Constants
 from io.jans.as.server.security import Identity
 from io.jans.as.server.service import AuthenticationService
 from io.jans.as.server.service import SessionIdService
