@@ -53,9 +53,6 @@ function MappingItem({ candidate, roles }) {
     }
     setSearchAblePermissions(filteredArr)
   }
-  useEffect(() => {
-    console.log('candidate', candidate)
-  }, [])
 
   const revertLocalChanges = () => {
     dispatch(updatePermissionsServerResponse(JSON.parse(serverPermissions)))

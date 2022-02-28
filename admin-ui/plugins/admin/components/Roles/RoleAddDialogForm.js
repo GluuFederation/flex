@@ -73,7 +73,6 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
                 type="checkbox"
                 name="deletable"
                 onChange={(e) => {
-                  console.log(e.target.checked)
                   setDeletable(e.target.checked)
                 }}
                 checked={deletable}

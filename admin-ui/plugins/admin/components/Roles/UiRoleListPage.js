@@ -45,10 +45,6 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
     })
   }
 
-  useEffect(() => {
-    console.log(apiRoles)
-  }, [apiRoles])
-
   function handleAddNewRole() {
     toggle()
   }
@@ -86,7 +82,6 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
                 title: `${t('fields.deletable')}`,
                 field: 'deletable',
                 editComponent: (rowData) => {
-                  console.log(rowData.rowData.deletable)
                   return (
                     <select
                       onChange={(e) => rowData.onChange(e.target.value)}
@@ -142,7 +137,6 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
             editable={{
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
-                  console.log(newData)
                   buildPayload(userAction, 'Edit role', newData)
                   dispatch(editRole(userAction))
                   resolve()
