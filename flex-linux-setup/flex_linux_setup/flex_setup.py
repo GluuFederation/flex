@@ -16,7 +16,8 @@ __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
 try:
     import jans_setup
-    sys.path.append(jans_setup.__path__[0])
+    path_ = list(jans_setup.__path__)
+    sys.path.append(path_[0])
 except ModuleNotFoundError:
     if os.path.exists(os.path.join(__STATIC_SETUP_DIR__, 'setup_app')):
         sys.path.append(__STATIC_SETUP_DIR__)
