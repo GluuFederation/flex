@@ -16,11 +16,11 @@ public class ASConfiguration extends Entry {
     private String jansConfStatic;
 
     public String getJansConfStatic() {
-        return jansConfDyn;
+        return jansConfStatic;
     }
 
     public String getJansConfDyn() {
-        return jansConfStatic;
+        return jansConfDyn;
     }
 
     public void setJansConfDyn(String jansConfDyn) {

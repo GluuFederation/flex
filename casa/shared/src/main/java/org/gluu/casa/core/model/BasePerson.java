@@ -6,6 +6,7 @@ import io.jans.orm.annotation.CustomObjectClass;
 import io.jans.orm.annotation.DataEntry;
 import io.jans.orm.annotation.ObjectClass;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.gluu.casa.misc.Utils;
@@ -28,12 +29,10 @@ public class BasePerson extends InumEntry {
 
     static {
         IPersistenceService ips = Utils.managedBean(IPersistenceService.class);
-        if (ips != null) {
-            Set<String> ocs = ips.getPersonOCs();
-            ocs.remove("top");
-            ocs.remove("gluuPerson");
-            setCustomObjectClasses(ocs.toArray(new String[0]));
-        }
+        Set<String> ocs = new HashSet<>(ips.getPersonOCs());
+        ocs.remove("top");
+        ocs.remove("jansPerson");
+        setCustomObjectClasses(ocs.toArray(new String[0]));
     }
 
     public String getUid() {
