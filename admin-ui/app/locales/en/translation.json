@@ -229,7 +229,8 @@
     "serverTimezone": "Server Timezone",
     "binaryAttributes": "Binary Attributes",
     "certificateAttributes": "Certificate Attributes",
-    "role": "Role"
+    "role": "Role",
+    "deletable": "Deletable"
   },
   "languages": {
     "french": "French",
