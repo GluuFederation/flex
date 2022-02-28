@@ -1,4 +1,4 @@
-import os
+# import os
 
 
 from jans.pycloudlib import get_manager
@@ -15,7 +15,7 @@ def render_env(manager):
     with open("/app/templates/env.tmpl") as fr:
         txt = fr.read() % ctx
 
-    with open("/opt/jans/flex/admin-ui/.env", "w") as fw:
+    with open("/opt/flex/admin-ui/.env", "w") as fw:
         fw.write(txt)
 
 
@@ -33,11 +33,11 @@ def render_nginx_conf(manager):
 def main():
     manager = get_manager()
 
-    if not os.path.isfile("/etc/certs/web_https.crt"):
-        manager.secret.to_file("ssl_cert", "/etc/certs/web_https.crt")
+    # if not os.path.isfile("/etc/certs/web_https.crt"):
+    #     manager.secret.to_file("ssl_cert", "/etc/certs/web_https.crt")
 
-    if not os.path.isfile("/etc/certs/web_https.key"):
-        manager.secret.to_file("ssl_key", "/etc/certs/web_https.key")
+    # if not os.path.isfile("/etc/certs/web_https.key"):
+    #     manager.secret.to_file("ssl_key", "/etc/certs/web_https.key")
 
     render_env(manager)
     render_nginx_conf(manager)

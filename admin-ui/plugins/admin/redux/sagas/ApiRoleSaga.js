@@ -1,5 +1,6 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
+  getRoles as getRolesAction,
   getRolesResponse,
   addRoleResponse,
   editRoleResponse,
@@ -77,7 +78,7 @@ export function* addRole({ payload }) {
     addAdditionalData(audit, CREATE, API_ROLE, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.addRole, payload.action.action_data)
-    yield put(addRoleResponse(data))
+    yield put(getRolesAction({}))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(addRoleResponse(null))
@@ -93,7 +94,7 @@ export function* editRole({ payload }) {
     addAdditionalData(audit, UPDATE, API_ROLE, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.editRole, payload.action.action_data)
-    yield put(editRoleResponse(data))
+    yield put(getRolesAction({}))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(editRoleResponse(null))
@@ -110,7 +111,7 @@ export function* deleteRole({ payload }) {
     addAdditionalData(audit, DELETION, API_ROLE, payload)
     const roleApi = yield* newFunction()
     yield call(roleApi.deleteRole, payload.action.action_data)
-    yield put(deleteRoleResponse(payload.action.action_data))
+    yield put(getRolesAction({}))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteRoleResponse(null))

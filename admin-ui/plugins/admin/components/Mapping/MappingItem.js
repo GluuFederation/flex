@@ -22,12 +22,28 @@ import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicatio
 
 import { Formik } from 'formik'
 
-function MappingItem({ candidate }) {
+function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
   const autocompleteRef = useRef(null)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
   const [searchablePermissions, setSearchAblePermissions] = useState([])
   const [serverPermissions, setServerPermissions] = useState(null)
+  const [isDeleteable, setIsDeleteable] = useState(false)
+
+  useEffect(() => {
+    if (roles) {
+      for (let i in roles) {
+        if (roles[i].role == candidate.role) {
+          if (roles[i].deletable) {
+            setIsDeleteable(true)
+          } else {
+            setIsDeleteable(false)
+          }
+        }
+      }
+    }
+  }, [roles])
+
   const getPermissionsForSearch = () => {
     const selectedPermissions = candidate.permissions
     let filteredArr = []
@@ -96,14 +112,15 @@ function MappingItem({ candidate }) {
             <Accordion.Header className="text-info">
               <Accordion.Indicator className="mr-2" />
               {candidate.role}
-
-              <DeleteOutlined
-                onClick={() => handleDeleteRole()}
-                style={{
-                  float: 'right',
-                  color: '#000',
-                }}
-              />
+              {isDeleteable && (
+                <DeleteOutlined
+                  onClick={() => handleDeleteRole()}
+                  style={{
+                    float: 'right',
+                    color: '#000',
+                  }}
+                />
+              )}
               <Badge
                 color="info"
                 style={{

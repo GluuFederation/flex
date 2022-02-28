@@ -220,7 +220,8 @@
     "customerEmail": "Email client",
     "customerName": "Nom du client",
     "licenseDetails": "Détails de la licence",
-    "role": "Role"
+    "role": "Role",
+    "deletable": "Deletable"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",

@@ -14,7 +14,7 @@ RUN apk update \
 # =====
 
 RUN mkdir -p /etc/certs
-RUN openssl dhparam -out /etc/certs/dhparams.pem 2048
+# RUN openssl dhparam -out /etc/certs/dhparams.pem 2048
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # Ports for nginx
@@ -28,7 +28,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=c94c1a0e77827fab7e24d1cf46ee1c91f4582383
+ENV ADMIN_UI_VERSION=c2d81b323a9dc85389e078989933682e11545b09
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -37,10 +37,10 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
     && git sparse-checkout init --cone \
     && git checkout ${ADMIN_UI_VERSION} \
     && git sparse-checkout set admin-ui \
-    && mkdir -p /opt/jans/flex \
-    && mv /tmp/flex/admin-ui /opt/jans/flex/admin-ui \
+    && mkdir -p /opt/flex \
+    && mv /tmp/flex/admin-ui /opt/flex/admin-ui \
     && rm -rf /tmp/flex \
-    && cd /opt/jans/flex/admin-ui \
+    && cd /opt/flex/admin-ui \
     && npm install @openapitools/openapi-generator-cli \
     && npm run api \
     && npm install \
@@ -142,14 +142,15 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 RUN addgroup node root
 
 # make empty folders
-RUN mkdir -p /opt/jans/flex/admin-ui/dist \
+RUN mkdir -p /opt/flex/admin-ui/dist \
     && touch /run/nginx/nginx.pid
 
 # adjust ownership
 RUN chown -R 1000:1000 /var/lib/nginx \
+    && chown 1000:1000 /run/nginx/nginx.pid \
     && chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
-    && chgrp -R 0 /opt/jans/flex/admin-ui/.env && chmod -R g=u /opt/jans/flex/admin-ui/.env \
-    && chgrp -R 0 /opt/jans/flex/admin-ui/dist && chmod -R g=u /opt/jans/flex/admin-ui/dist \
+    && chgrp -R 0 /opt/flex/admin-ui/.env && chmod -R g=u /opt/flex/admin-ui/.env \
+    && chgrp -R 0 /opt/flex/admin-ui/dist && chmod -R g=u /opt/flex/admin-ui/dist \
     && chgrp -R 0 /etc/nginx/http.d/default.conf && chmod -R g=u /etc/nginx/http.d/default.conf \
     && chgrp -R 0 /var/lib/nginx && chmod -R g=u /var/lib/nginx \
     && chgrp -R 0 /var/log/nginx && chmod -R g=u /var/log/nginx \
