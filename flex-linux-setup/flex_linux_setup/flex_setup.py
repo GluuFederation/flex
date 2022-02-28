@@ -353,10 +353,12 @@ def main():
     installer_obj.install_gluu_admin_ui()
 
     installer_obj.install_casa()
-    print("Restarting Jans Auth")
-    config_api_installer.restart('jans-auth')
+
     print("Starting Casa")
     config_api_installer.start('casa')
+
+    print("Restarting Jans Auth")
+    config_api_installer.restart('jans-auth')
 
     print("Restarting Janssen Config Api")
     config_api_installer.restart()
