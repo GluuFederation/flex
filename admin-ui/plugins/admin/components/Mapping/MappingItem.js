@@ -112,6 +112,7 @@ function MappingItem({ candidate, roles }) {
             <Accordion.Header className="text-info">
               <Accordion.Indicator className="mr-2" />
               {candidate.role}
+
               {isDeleteable && (
                 <DeleteOutlined
                   onClick={() => handleDeleteRole()}
