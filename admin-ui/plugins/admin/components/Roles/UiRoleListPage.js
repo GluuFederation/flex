@@ -45,6 +45,10 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
     })
   }
 
+  useEffect(() => {
+    console.log(apiRoles)
+  }, [apiRoles])
+
   function handleAddNewRole() {
     toggle()
   }
@@ -78,6 +82,44 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
                 render: (rowData) => <Badge color="info">{rowData.role}</Badge>,
               },
               { title: `${t('fields.description')}`, field: 'description' },
+              {
+                title: `${t('fields.deletable')}`,
+                field: 'deletable',
+                editComponent: (rowData) => {
+                  console.log(rowData.rowData.deletable)
+                  return (
+                    <select
+                      onChange={(e) => rowData.onChange(e.target.value)}
+                      className="form-control"
+                    >
+                      <option
+                        selected={
+                          String(rowData.rowData.deletable) == 'true'
+                            ? true
+                            : false
+                        }
+                        value={true}
+                      >
+                        true
+                      </option>
+                      <option
+                        selected={
+                          String(rowData.rowData.deletable) == 'false' ||
+                          !rowData.rowData.deletable
+                            ? true
+                            : false
+                        }
+                        value={false}
+                      >
+                        false
+                      </option>
+                    </select>
+                  )
+                },
+                render: (rowData) => {
+                  return <div>{rowData?.deletable ? 'Yes' : 'No'}</div>
+                },
+              },
             ]}
             data={apiRoles}
             isLoading={loading || false}
@@ -100,6 +142,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
             editable={{
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
+                  console.log(newData)
                   buildPayload(userAction, 'Edit role', newData)
                   dispatch(editRole(userAction))
                   resolve()

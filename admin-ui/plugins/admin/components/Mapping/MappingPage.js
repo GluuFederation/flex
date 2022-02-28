@@ -93,7 +93,7 @@ function MappingPage({
               </Col>
             </FormGroup>
             {mapping.map((candidate, idx) => (
-              <MappingItem key={idx} candidate={candidate} />
+              <MappingItem key={idx} candidate={candidate} roles={apiRoles} />
             ))}
           </GluuViewWrapper>
           <FormGroup row />

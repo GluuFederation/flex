@@ -14,6 +14,7 @@ import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicatio
 
 const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
   const [active, setActive] = useState(false)
+  const [deletable, setDeletable] = useState(false)
   const { t } = useTranslation()
 
   function handleStatus() {
@@ -29,6 +30,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
     const roleData = {}
     roleData['role'] = document.getElementById('api_role').value
     roleData['description'] = document.getElementById('api_description').value
+    roleData['deletable'] = deletable
     onAccept(roleData)
   }
   return (
@@ -62,6 +64,21 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
                 name="api_description"
                 defaultValue=""
               />
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <Col sm={12} className="pl-4">
+              <Input
+                id="deletable"
+                type="checkbox"
+                name="deletable"
+                onChange={(e) => {
+                  console.log(e.target.checked)
+                  setDeletable(e.target.checked)
+                }}
+                checked={deletable}
+              />{' '}
+              Deletable ?
             </Col>
           </FormGroup>
         </ModalBody>

@@ -21,12 +21,28 @@ import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicatio
 
 import { Formik } from 'formik'
 
-function MappingItem({ candidate }) {
+function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
   const autocompleteRef = useRef(null)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
   const [searchablePermissions, setSearchAblePermissions] = useState([])
   const [serverPermissions, setServerPermissions] = useState(null)
+  const [isDeleteable, setIsDeleteable] = useState(false)
+
+  useEffect(() => {
+    if (roles) {
+      for (let i in roles) {
+        if (roles[i].role == candidate.role) {
+          if (roles[i].deletable) {
+            setIsDeleteable(true)
+          } else {
+            setIsDeleteable(false)
+          }
+        }
+      }
+    }
+  }, [roles])
+
   const getPermissionsForSearch = () => {
     const selectedPermissions = candidate.permissions
     let filteredArr = []
@@ -37,6 +53,9 @@ function MappingItem({ candidate }) {
     }
     setSearchAblePermissions(filteredArr)
   }
+  useEffect(() => {
+    console.log('candidate', candidate)
+  }, [])
 
   const revertLocalChanges = () => {
     dispatch(updatePermissionsServerResponse(JSON.parse(serverPermissions)))
@@ -95,20 +114,21 @@ function MappingItem({ candidate }) {
             <Accordion.Header className="text-info">
               <Accordion.Indicator className="mr-2" />
               {candidate.role}
-
-              <Button
-                type="button"
-                color="danger"
-                onClick={() => handleDeleteRole()}
-                style={{
-                  margin: '1px',
-                  float: 'right',
-                  padding: '0px',
-                }}
-              >
-                <i className="fa fa-trash mr-2"></i>
-                Delete
-              </Button>
+              {isDeleteable && (
+                <Button
+                  type="button"
+                  color="danger"
+                  onClick={() => handleDeleteRole()}
+                  style={{
+                    margin: '1px',
+                    float: 'right',
+                    padding: '0px',
+                  }}
+                >
+                  <i className="fa fa-trash mr-2"></i>
+                  Delete
+                </Button>
+              )}
               <Badge
                 color="info"
                 style={{
