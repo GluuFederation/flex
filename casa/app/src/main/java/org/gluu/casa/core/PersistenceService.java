@@ -57,6 +57,7 @@ public class PersistenceService implements IPersistenceService {
     private LdapOperationService ldapOperationService;
 
     private String rootDn;
+    private String pythonLibLocation;
 
     private JsonNode dynamicConfig;
 
@@ -265,6 +266,10 @@ public class PersistenceService implements IPersistenceService {
         return stringEncrypter;
     }
 
+    public String getPythonLibLocation() {
+        return pythonLibLocation;
+    }
+
     public CacheConfiguration getCacheConfiguration() {
         return cacheConfiguration;
     }
@@ -342,6 +347,7 @@ public class PersistenceService implements IPersistenceService {
         boolean success = false;
         try {
             loadASSettings(properties.getProperty("jansAuth_ConfigurationEntryDN"), properties.getProperty("persistence.type"));
+            pythonLibLocation = properties.getProperty("pythonModulesDir");
             rootDn = "o=jans";
             success = true;
             

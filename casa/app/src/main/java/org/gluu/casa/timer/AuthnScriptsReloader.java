@@ -56,7 +56,6 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
     private String scriptsJobName;
     private Map<String, Long> scriptFingerPrints;
-    private String pythonLibLocation;
 
     public void init(int gap) {
         try {
@@ -87,7 +86,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
         logger.debug("AuthnScriptsReloader. Running timer job for acrs: {}", acrs.toString());
         //In Gluu, every time a single script is changed via oxTrust, all custom scripts are reloaded. This is
-        //not the case when for instance, the oxRevision attribute of a cust script is altered manually (as when developing)
+        //not the case when for instance, the jansRevision attribute of a cust script is altered manually (as when developing)
         //In the future, oxTrust should only reload the script that has changed for performance reasons.
         for (String acr : acrs) {
             script = persistenceService.getScript(acr);
@@ -169,7 +168,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                         long rev = Optional.ofNullable(script.getRevision()).map(r -> r == Long.MAX_VALUE ? 0 : r).orElse(0L);
                         script.setRevision(rev + 1);
                         if (persistenceService.modify(script)) {
-                            logger.debug("oxRevision updated for script '{}'", script.getDisplayName());
+                            logger.debug("jansRevision updated for script '{}'", script.getDisplayName());
                         }
                         break;
                     default:
@@ -186,14 +185,8 @@ public class AuthnScriptsReloader extends JobListenerSupport {
 
     @PostConstruct
     private void inited() {
-
         scriptsJobName = getClass().getSimpleName() + "_scripts";
         scriptFingerPrints = new HashMap<>();
-
-        //the following works fine in both windows dev environment, and linux VMs
-        pythonLibLocation = Utils.onWindows() ? System.getenv("PYTHON_HOME") + File.separator + "Lib" : "/opt/gluu/python/libs";
-        logger.info("Using {} as python's lib path", pythonLibLocation);
-
     }
 
     private void copyToLibsDir(CustomScript script) {
@@ -203,7 +196,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
             byte[] contents = getScriptContents(script);
 
             if (contents != null) {
-                Path destPath = Paths.get(pythonLibLocation, MessageFormat.format(FILENAME_TEMPLATE, acr));
+                Path destPath = Paths.get(persistenceService.getPythonLibLocation(), MessageFormat.format(FILENAME_TEMPLATE, acr));
                 Files.write(destPath, contents);
                 logger.trace("The script for acr '{}' has been copied to {}", acr, destPath.toString());
             } else {
