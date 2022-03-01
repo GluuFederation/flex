@@ -1,6 +1,7 @@
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import LicenseDetailsPage from './components/Configuration/LicenseDetailsPage'
+import UserList from './components/UserManagement/UserList'
 import UiRoleListPage from './components/Roles/UiRoleListPage'
 import UiPermListPage from './components/Permissions/UiPermListPage'
 import MappingPage from './components/Mapping/MappingPage'
@@ -72,6 +73,11 @@ const pluginMetadata = {
           path: PLUGIN_BASE_APTH + '/settings',
           permission: ACR_READ,
         },
+        {
+          title: 'menus.user_management',
+          path: PLUGIN_BASE_APTH + '/usermanagement',
+          permission: ACR_READ,
+        },
       ],
     },
   ],
@@ -124,6 +130,11 @@ const pluginMetadata = {
     {
       component: LicenseDetailsPage,
       path: PLUGIN_BASE_APTH + '/licenseDetails',
+      permission: ACR_READ,
+    },
+    {
+      component: UserList,
+      path: PLUGIN_BASE_APTH + '/usermanagement',
       permission: ACR_READ,
     },
   ],

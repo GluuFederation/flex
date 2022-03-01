@@ -33,7 +33,8 @@
     "scripts": "Scénarios",
     "services": "Prestations de service",
     "settings": "Paramètres",
-    "signout": "Déconnexion"
+    "signout": "Déconnexion",
+    "user_management": "User Management"
   },
   "actions": {
     "accept": "J'accepte",
