@@ -95,7 +95,7 @@
     "description": "La description",
     "disable": "Désactiver",
     "disabled": "Désactivée",
-    "disable_jdk_logger": "Désactiver l'enregistreur JSK ?",
+    "disable_jdk_logger": "Désactiver l'enregistreur JDK ?",
     "displayname": "Afficher un nom",
     "dynamic_scope_scripts": "Scripts de portées dynamiques",
     "edit_type": "Modifier le type",
