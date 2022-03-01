@@ -28,21 +28,21 @@ const GluuCommitDialog = ({
   const { t } = useTranslation()
   const [active, setActive] = useState(false)
   let [loading, setLoading] = useState(isLoading)
-  const [userMeggage, setUserMessage] = useState('')
+  const [userMessage, setUserMessage] = useState('')
   const USER_MESSAGE = 'user_action_message'
   useEffect(() => {
-    if (userMeggage.length >= 10) {
+    if (userMessage.length >= 10) {
       setActive(true)
     } else {
       setActive(false)
     }
-  }, [userMeggage])
+  }, [userMessage])
   function handleAccept() {
     if (formik) {
-      formik.setFieldValue('action_message', userMeggage)
+      formik.setFieldValue('action_message', userMessage)
     }
     setLoading(true)
-    onAccept(userMeggage)
+    onAccept(userMessage)
   }
   return (
     <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
@@ -82,9 +82,9 @@ const GluuCommitDialog = ({
               }
               defaultValue=""
             />
-            {userMeggage.length <= 10 && (
+            {userMessage.length <= 10 && (
               <span className="text-danger">
-                {10 - userMeggage.length} {userMeggage.length ? ' more' : ''}{' '}
+                {10 - userMessage.length} {userMessage.length ? ' more' : ''}{' '}
                 characters required
               </span>
             )}
