@@ -94,7 +94,7 @@
     "description": "Descrição",
     "disable": "Desabilitar",
     "disabled": "Desabilitada",
-    "disable_jdk_logger": "Desativar JSK Logger?",
+    "disable_jdk_logger": "Desativar JDK Logger?",
     "displayname": "Nome em Exibição",
     "dynamic_scope_scripts": "Scripts do Dynamics Scopes",
     "edit_type": "Editar Tipo",

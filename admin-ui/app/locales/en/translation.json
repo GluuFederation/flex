@@ -62,7 +62,7 @@
     "description": "Description",
     "disable": "Disable",
     "disabled": "Disabled",
-    "disable_jdk_logger": "Disable JSK Logger?",
+    "disable_jdk_logger": "Disable JDK Logger?",
     "displayname": "Display Name",
     "dynamic_scope_scripts": "Dynamics Scopes Scripts",
     "edit_type": "Edit Type",
