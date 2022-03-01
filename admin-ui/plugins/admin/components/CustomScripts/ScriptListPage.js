@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import MaterialTable from '@material-table/core';
+import MaterialTable from '@material-table/core'
+import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { Badge } from 'reactstrap'
@@ -76,7 +77,6 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
-        color: 'primary',
         id: 'editCustomScript' + rowData.inum,
       },
       tooltip: `${t('messages.edit_script')}`,
@@ -115,9 +115,8 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   }
   if (hasPermission(permissions, SCRIPT_DELETE)) {
     myActions.push((rowData) => ({
-      icon: 'delete',
+      icon: () => <DeleteOutlined />,
       iconProps: {
-        color: 'secondary',
         id: 'deleteCustomScript' + rowData.inum,
       },
       tooltip: `${t('messages.delete_script')}`,

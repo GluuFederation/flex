@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   FormGroup,
   Col,
@@ -28,25 +28,21 @@ const GluuCommitDialog = ({
   const { t } = useTranslation()
   const [active, setActive] = useState(false)
   let [loading, setLoading] = useState(isLoading)
+  const [userMessage, setUserMessage] = useState('')
   const USER_MESSAGE = 'user_action_message'
-  function handleStatus() {
-    var value = document.getElementById(USER_MESSAGE).value
-    if (value.length >= 10) {
+  useEffect(() => {
+    if (userMessage.length >= 10) {
       setActive(true)
     } else {
       setActive(false)
     }
-  }
-
+  }, [userMessage])
   function handleAccept() {
     if (formik) {
-      formik.setFieldValue(
-        'action_message',
-        document.getElementById(USER_MESSAGE).value,
-      )
+      formik.setFieldValue('action_message', userMessage)
     }
     setLoading(true)
-    onAccept(document.getElementById(USER_MESSAGE).value)
+    onAccept(userMessage)
   }
   return (
     <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
@@ -78,7 +74,7 @@ const GluuCommitDialog = ({
               id={USER_MESSAGE}
               type={!!inputType ? inputType : 'textarea'}
               name={USER_MESSAGE}
-              onKeyUp={handleStatus}
+              onChange={(e) => setUserMessage(e.target.value)}
               placeholder={
                 !placeholderLabel || placeholderLabel === ''
                   ? t('placeholders.action_commit_message')
@@ -86,11 +82,17 @@ const GluuCommitDialog = ({
               }
               defaultValue=""
             />
+            {userMessage.length <= 10 && (
+              <span className="text-danger">
+                {10 - userMessage.length} {userMessage.length ? ' more' : ''}{' '}
+                characters required
+              </span>
+            )}
           </Col>
         </FormGroup>
       </ModalBody>
       <ModalFooter>
-        <ClipLoader loading={loading} size={35} />
+        {/* <ClipLoader loading={loading} size={35} /> */}
         {active && (
           <Button
             color="primary"
