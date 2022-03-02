@@ -20,7 +20,7 @@ Then Admin UI can be installed by running flex-setup script. The steps are
 
 1. Download installer
 
-   `curl https://raw.githubusercontent.com/GluuFederation/flex/main/flex-linux-setup/flex_linux_setup/flex_setup.py > flex_setup.py`
+   `curl https://raw.githubusercontent.com/GluuFederation/flex/main/flex-linux-setup/setup.py > flex_setup.py`
 
 2. Execute installer
  
