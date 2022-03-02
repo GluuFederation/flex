@@ -143,7 +143,7 @@ class flex_installer(JettyInstaller):
         self.casa_config_fn = os.path.join(self.casa_dist_dir,'casa-config.jar')
         self.casa_script_fn = os.path.join(self.casa_dist_dir,'Casa.py')
         self.twillo_fn = os.path.join(self.casa_dist_dir,'twilio.jar')
-        self.py_lib_dir = '/opt/jans/python/libs/'
+        self.py_lib_dir = os.path.join(Config.jansOptPythonFolder, 'libs')
 
         self.dbUtils.bind(force=True)
 
