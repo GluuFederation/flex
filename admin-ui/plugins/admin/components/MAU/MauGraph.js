@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { subMonths } from 'date-fns'
 import moment from 'moment'
-import CustomBarGraph from './Grapths/CustomBarGraph'
-import CustomLineChart from './Grapths/CustomLineChart'
-import CustomBadgeRow from './Grapths/CustomBadgeRow'
+import CustomPieGraph from '../../../../app/routes/Dashboards/Grapths/CustomPieGraph'
+import ActiveUsersGraph from '../../../../app/routes/Dashboards/Grapths/ActiveUsersGraph'
+import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import GluuLoader from '../Apps/Gluu/GluuLoader'
-import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
-import { getMau } from '../../redux/actions/MauActions'
-import { getClients } from '../../redux/actions/InitActions'
-import applicationstyle from '../Apps/Gluu/styles/applicationstyle'
-import GluuRibbon from '../Apps/Gluu/GluuRibbon'
+import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
+import { getMau } from '../../../../app/redux/actions/MauActions'
+import { getClients } from '../../../../app/redux/actions/InitActions'
+import applicationstyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import {
   Button,
   Card,
@@ -18,17 +19,18 @@ import {
   CardBody,
   FormGroup,
   Col,
-} from '../../../app/components'
+  Row,
+} from '../../../../app/components'
 import {
   hasBoth,
   buildPayload,
   STAT_READ,
   STAT_JANS_READ,
-} from '../../utils/PermChecker'
+} from '../../../../app/utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
+function MauGraph({ statData, permissions, clients, loading, dispatch }) {
   const { t } = useTranslation()
   const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
   const [endDate, setEndDate] = useState(new Date())
@@ -121,38 +123,67 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
         <Card>
-          <GluuRibbon title={t('titles.active_users')} fromLeft />
+          <GluuRibbon title={t('fields.monthly_active_users')} fromLeft />
           <FormGroup row />
           <FormGroup row />
           <FormGroup row />
           <FormGroup row />
           <FormGroup row />
           <FormGroup row />
-          <FormGroup row>
-            <Col sm={2}></Col>
-            <Col sm={3}>
-              <CustomBadgeRow
-                label="OIDC Clients Count"
-                value={clients.length}
-              />
-            </Col>
-            <Col sm={3}>
-              <CustomBadgeRow label="Active Users Count" value={1} />
-            </Col>
-            <Col sm={3}>
-              <CustomBadgeRow label="Token issued count" value={153} />
-            </Col>
-            <Col sm={1}></Col>
-          </FormGroup>
-          <FormGroup row />
-          <FormGroup row />
+
           <CardBody>
+            <Row>
+              <Col sm={2}></Col>
+              <Col sm={10}>
+                <GluuLabel label="Select a date range" size="4" />
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  isClearable
+                  startDate={startDate}
+                  dateFormat="MM/yyyy"
+                  showMonthYearPicker
+                  endDate={endDate}
+                  customInput={<CustomButton />}
+                />
+                &nbsp;&nbsp;
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  isClearable
+                  startDate={startDate}
+                  endDate={endDate}
+                  dateFormat="MM/yyyy"
+                  showMonthYearPicker
+                  minDate={startDate}
+                  maxDate={new Date()}
+                  customInput={<CustomButton />}
+                />
+                &nbsp;&nbsp;
+                <Button
+                  style={applicationstyle.customButtonStyle}
+                  color="primary"
+                  onClick={search}
+                >
+                  <i className="fa fa-search mr-2"></i>
+                  {t('actions.view')}
+                </Button>
+              </Col>
+            </Row>
+            <FormGroup row />
+            <FormGroup row />
             <FormGroup row>
               <Col sm={6}>
-                <CustomBarGraph data={statData} />
+                <ActiveUsersGraph data={doDataAugmentation(statData)} />
               </Col>
               <Col sm={6}>
-                <CustomLineChart data={doDataAugmentation(statData)} />
+                <CustomPieGraph
+                  data={statData.filter((entry) => entry.mau !== 0)}
+                  dataKey="mau"
+                  nameKey="month"
+                />
               </Col>
             </FormGroup>
           </CardBody>
@@ -172,4 +203,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(DashboardPage)
+export default connect(mapStateToProps)(MauGraph)
