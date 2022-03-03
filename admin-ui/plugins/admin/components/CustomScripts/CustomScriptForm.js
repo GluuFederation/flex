@@ -345,9 +345,9 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                   }}
                 >
                   <option value="">{t('options.choose')}...</option>
-                  <option value="interactive">interactive</option>
-                  <option value="service">service</option>
-                  <option value="both">both</option>
+                  <option value="interactive">Web</option>
+                  <option value="service">Native</option>
+                  <option value="both">Both methods</option>
                 </CustomInput>
               </InputGroup>
             </Col>
