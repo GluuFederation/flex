@@ -4,12 +4,14 @@ import moment from 'moment'
 import CustomBarGraph from './Grapths/CustomBarGraph'
 import CustomLineChart from './Grapths/CustomLineChart'
 import CustomBadgeRow from './Grapths/CustomBadgeRow'
+import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
 import { getMau } from '../../redux/actions/MauActions'
 import { getClients } from '../../redux/actions/InitActions'
 import applicationstyle from '../Apps/Gluu/styles/applicationstyle'
+import GluuLabel from '../Apps/Gluu/GluuLabel'
 import GluuRibbon from '../Apps/Gluu/GluuRibbon'
 import {
   Button,
@@ -18,6 +20,7 @@ import {
   CardBody,
   FormGroup,
   Col,
+  Row,
 } from '../../../app/components'
 import {
   hasBoth,
@@ -147,6 +150,49 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
           <FormGroup row />
           <FormGroup row />
           <CardBody>
+            <Row>
+              <Col sm={2}></Col>
+              <Col sm={10}>
+                <GluuLabel label="Select a date range" size="4" />
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  isClearable
+                  startDate={startDate}
+                  dateFormat="MM/yyyy"
+                  showMonthYearPicker
+                  endDate={endDate}
+                  customInput={<CustomButton />}
+                />
+                &nbsp;&nbsp;
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  isClearable
+                  startDate={startDate}
+                  endDate={endDate}
+                  dateFormat="MM/yyyy"
+                  showMonthYearPicker
+                  minDate={startDate}
+                  maxDate={new Date()}
+                  customInput={<CustomButton />}
+                />
+                &nbsp;&nbsp;
+                <Button
+                  style={applicationstyle.customButtonStyle}
+                  color="primary"
+                  onClick={search}
+                >
+                  <i className="fa fa-search mr-2"></i>
+                  {t('actions.view')}
+                </Button>
+              </Col>
+            </Row>
+            <FormGroup row />
+            <FormGroup row />
+
             <FormGroup row>
               <Col sm={6}>
                 <CustomBarGraph data={statData} />

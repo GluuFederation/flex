@@ -62,6 +62,8 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
     if (stat && stat.length >= 1) {
       let flattendStat = stat.map((entry) => entry['month'])
       let aRange = generateDateRange(moment(startDate), moment(endDate))
+      console.log(moment(startDate).format())
+      console.log(moment(endDate).format())
       for (const ele of aRange) {
         const currentMonth = getYearMonth(new Date(ele))
         if (flattendStat.indexOf(parseInt(currentMonth, 10)) === -1) {
@@ -175,15 +177,8 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
             <FormGroup row />
             <FormGroup row />
             <FormGroup row>
-              <Col sm={6}>
+              <Col sm={12}>
                 <ActiveUsersGraph data={doDataAugmentation(statData)} />
-              </Col>
-              <Col sm={6}>
-                <CustomPieGraph
-                  data={statData.filter((entry) => entry.mau !== 0)}
-                  dataKey="mau"
-                  nameKey="month"
-                />
               </Col>
             </FormGroup>
           </CardBody>
