@@ -14,6 +14,14 @@ from urllib import request
 from urllib.parse import urljoin
 
 
+def get_flex_setup_parser():
+    parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
+    parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
+    parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
+    parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
+
+    return parser
+
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
 try:
@@ -24,15 +32,11 @@ except ModuleNotFoundError:
     if os.path.exists(os.path.join(__STATIC_SETUP_DIR__, 'setup_app')):
         sys.path.append(__STATIC_SETUP_DIR__)
     else:
-        print("Unable to locate jans-setup, installing ...")
-        # split args to find jans setup branch
-        arg_list = []
-        for arg in sys.argv[1:]:
-            if '=' in arg:
-                arg_list.append(arg.split('=', maxsplit=1))
-        sys_args = dict(arg_list)
+        argsp = get_flex_setup_parser().parse_known_args()[0]
 
-        setup_branch = sys_args.get('--jans-setup-branch') or 'main'
+        print("Unable to locate jans-setup, installing ...")
+
+        setup_branch = argsp.jans_setup_branch or 'main'
         install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
         request.urlretrieve(install_url, 'install.py')
         install_cmd = 'python3 install.py --setup-branch={} --no-setup'.format(setup_branch)
@@ -58,18 +62,10 @@ print(paths.LOG_ERROR_FILE)
 print('\033[0m')
 
 
-parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
-parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
-parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
-parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
-parser.add_argument('-shell', help="Jannsen github branch", action='store_true')
-
+parser = get_flex_setup_parser()
 from setup_app.utils import arg_parser
-
 arg_parser.add_to_me(parser)
-
 installed = False
-
 
 if not os.path.exists('/etc/jans/conf/jans.properties'):
     installed = True
