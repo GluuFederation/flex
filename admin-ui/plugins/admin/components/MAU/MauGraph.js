@@ -96,7 +96,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
   }
 
   function generateDateRange(startDate, endDate) {
-    const start = moment(startDate)
+    let start = moment(startDate)
     const end = moment(endDate)
     var result = []
 
