@@ -200,6 +200,7 @@
     "token_endpoint_auth_method": "Algoritm JWS Algoritm para o método de autenticação para token Endpoint Method",
     "trusted_host": "Host confiável?",
     "usage_type": "Tipo de Uso",
+    "script_path": "Caminho do script",
     "use_anonymous_bind": "Usar vinculação anônima",
     "use_ssl": "Use SSL",
     "user_info_encrypted_response_alg": "Algoritmo JWE alg para criptografar respostas userinfo",
@@ -295,7 +296,8 @@
     "smtp_user_name": "Insira o nome de usuário SMTP",
     "smtp_user_password": "Digite a senha do usuário SMTP",
     "spontaneous_client_id": "Insira o ID do cliente espontâneo",
-    "typeahead_holder_message": "Insira vários itens selecionando na lista suspensa exibida após inserir cada item."
+    "typeahead_holder_message": "Insira vários itens selecionando na lista suspensa exibida após inserir cada item.",
+    "script_path": "Digite o caminho do arquivo de script"
   },
   "titles": {
     "acrs": "ACRs",
@@ -363,5 +365,22 @@
     "true": "verdadeiro",
     "user": "DO UTILIZADOR",
     "yes": "sim"
+  },
+  "script": {
+    "inum": "Unique id identifying the script",
+    "name": "Custom script name. Should contain only letters, digits and underscores.",
+    "description": "Details describing the script.",
+    "scriptPath": "Chemin d'accès au fichier de script",
+    "script": "Actual script content.",
+    "scriptType": "Type of script.",
+    "locationType": "Where the script is located.",
+    "programmingLanguage": "Programming language of the custom script.",
+    "moduleProperties": " Module-level properties applicable to the script.",
+    "configurationProperties": "Configuration properties applicable to the script.",
+    "level": "Script level.",
+    "enabled": "boolean value indicating if script enabled.",
+    "aliases": "List of possible aliases for the custom script.",
+    "internal": "boolean value indicating if the script is internal.",
+    "revision": "Update revision number of the script."
   }
 }

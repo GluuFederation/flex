@@ -201,6 +201,7 @@
     "token_endpoint_auth_method": "JWS alg Algoritm pour la méthode d'authentification à la méthode de point de terminaison de jeton",
     "trusted_host": "Hôte de confiance ?",
     "usage_type": "Type d'utilisation",
+    "script_path": "Chemin de script",
     "use_anonymous_bind": "Utiliser la liaison anonyme",
     "use_ssl": "Utiliser SSL",
     "user_info_encrypted_response_alg": "JWE alg Algorithm pour chiffrer les réponses userinfo",
@@ -296,7 +297,8 @@
     "smtp_user_name": "Entrez le nom d'utilisateur SMTP",
     "smtp_user_password": "Entrez le mot de passe de l'utilisateur SMTP",
     "spontaneous_client_id": "Saisissez l'identifiant client spontané",
-    "typeahead_holder_message": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après avoir saisi chaque élément."
+    "typeahead_holder_message": "Saisissez plusieurs éléments en les sélectionnant dans la liste déroulante qui s'affiche après avoir saisi chaque élément.",
+    "script_path": "Entrez le chemin du fichier de script"
   },
   "titles": {
     "acrs": "ACR",
@@ -364,5 +366,22 @@
     "true": "vrai",
     "user": "UTILISATEUR",
     "yes": "Oui"
+  },
+  "script": {
+    "inum": "Unique id identifying the script",
+    "name": "Custom script name. Should contain only letters, digits and underscores.",
+    "description": "Details describing the script.",
+    "scriptPath": "Chemin d'accès au fichier de script",
+    "script": "Actual script content.",
+    "scriptType": "Type of script.",
+    "locationType": "Where the script is located.",
+    "programmingLanguage": "Programming language of the custom script.",
+    "moduleProperties": " Module-level properties applicable to the script.",
+    "configurationProperties": "Configuration properties applicable to the script.",
+    "level": "Script level.",
+    "enabled": "boolean value indicating if script enabled.",
+    "aliases": "List of possible aliases for the custom script.",
+    "internal": "boolean value indicating if the script is internal.",
+    "revision": "Update revision number of the script."
   }
 }

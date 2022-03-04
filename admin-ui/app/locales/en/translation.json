@@ -203,6 +203,7 @@
     "softwareVersion": "Software Version",
     "softwareStatement": "'Software Statement",
     "usage_type": "Usage Type",
+    "script_path": "Script Path",
     "use_anonymous_bind": "Use Anonymous Bind",
     "use_ssl": "Use SSL",
     "user_info_encrypted_response_alg": "JWE alg Algorithm for encrypting userinfo responses",
@@ -356,7 +357,8 @@
     "sql_schemaname": "Enter the schema name.",
     "sql_passwordEncryptionMethod": "Add password encryption method.",
     "sql_serverTimezone": "Enter server timezone.",
-    "activate_sql_configuration": "Activate SQL configuration."
+    "activate_sql_configuration": "Activate SQL configuration.",
+    "script_path": "Enter script file path"
   },
   "titles": {
     "acrs": "ACRs",
@@ -756,6 +758,7 @@
       "inum": "Unique id identifying the script",
       "name": "Custom script name. Should contain only letters, digits and underscores.",
       "description": "Details describing the script.",
+      "scriptPath": "Script file path",
       "script": "Actual script content.",
       "scriptType": "Type of script.",
       "locationType": "Where the script is located.",
