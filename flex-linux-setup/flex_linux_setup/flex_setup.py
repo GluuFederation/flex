@@ -7,7 +7,9 @@ import argparse
 import time
 import glob
 import code
+import configparser
 
+from pathlib import Path
 from urllib import request
 from urllib.parse import urljoin
 
@@ -90,6 +92,7 @@ from setup_app.installers.httpd import HttpdInstaller
 from setup_app.installers.config_api import ConfigApiInstaller
 from setup_app.installers.jetty import JettyInstaller
 from setup_app.installers.jans_auth import JansAuthInstaller
+from setup_app.installers.jans_cli import JansCliInstaller
 
 
 Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
@@ -121,7 +124,7 @@ node_installer = NodeInstaller()
 httpd_installer = HttpdInstaller()
 config_api_installer = ConfigApiInstaller()
 jansAuthInstaller = JansAuthInstaller()
-
+jans_cli_installer = JansCliInstaller()
 
 class flex_installer(JettyInstaller):
 
@@ -196,13 +199,31 @@ class flex_installer(JettyInstaller):
         config_api_installer.check_clients([('role_based_client_id', '2000.')])
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, os.path.join(self.flex_setup_dir, 'templates'), config_api_installer.custom_config_dir)
         admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
-        config_api_installer.web_app_xml_fn = os.path.join(config_api_installer.jetty_base, config_api_installer.service_name, 'webapps/jans-config-api.xml')
         config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir)
         config_api_installer.add_extra_class(admin_ui_plugin_path)
 
         for logfn in (self.log4j2_adminui_path, self.log4j2_path):
             config_api_installer.copyFile(logfn, config_api_installer.custom_config_dir)
 
+        cli_config = Path(jans_cli_installer.config_ini_fn)
+
+        current_plugins = []
+
+        if cli_config.exists():
+
+            config = configparser.ConfigParser()
+            config.read_file(cli_config.open())
+            current_plugins = config['DEFAULT'].get('jca_plugins', '').split(',')
+
+        plugins = config_api_installer.get_plugins()
+
+        for plugin in plugins:
+            if not plugin in current_plugins:
+                current_plugins.append(plugin)
+
+        config['DEFAULT']['jca_plugins'] = ','.join(current_plugins)
+        config.write(cli_config.open('w'))
+        cli_config.chmod(0o600)
 
     def install_casa(self):
 
@@ -216,8 +237,7 @@ class flex_installer(JettyInstaller):
             os.path.join(jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn)),
             os.path.join(jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn)),
             )
-        xml_fn = os.path.join(jans_auth_dir, 'webapps', jansAuthInstaller.service_name+'.xml')
-        jansAuthInstaller.add_extra_class(class_path, xml_fn)
+        jansAuthInstaller.add_extra_class(class_path)
 
         simple_auth_scr_inum = 'A51E-76DA'
         print("Enabling script", simple_auth_scr_inum)
