@@ -97,9 +97,8 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
 
   function generateDateRange(startDate, endDate) {
     let start = moment(startDate)
-    const end = moment(endDate)
+    let end = moment(endDate)
     var result = []
-
     while (end > start || start.format('M') === end.format('M')) {
       result.push(start.format('YYYY-MM') + '-01')
       start.add(1, 'month')
