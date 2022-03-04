@@ -131,7 +131,7 @@ class flex_installer(JettyInstaller):
         self.gluu_admin_ui_source_path = os.path.join(Config.distJansFolder, 'gluu-admin-ui.zip')
         self.log4j2_adminui_path = os.path.join(Config.distJansFolder, 'log4j2-adminui.xml')
         self.log4j2_path = os.path.join(Config.distJansFolder, 'log4j2.xml')
-        self.admin_ui_plugin_source_path = os.path.join(Config.distJansFolder, 'admin-ui-plugin-distribution.jar')
+        self.admin_ui_plugin_source_path = os.path.join(Config.distJansFolder, 'admin-ui-plugin.jar')
         self.flex_path = os.path.join(Config.distJansFolder, 'flex.zip')
         self.source_dir = os.path.join(Config.outputFolder, 'admin-ui')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
