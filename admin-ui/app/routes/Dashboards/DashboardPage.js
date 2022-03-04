@@ -98,8 +98,8 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
 
   function generateDateRange(start, end) {
     var result = []
-    while (start.isBefore(end)) {
-      result.push(start.format('YYYY-MM-01'))
+    while (end > start || start.format('M') === end.format('M')) {
+      result.push(start.format('YYYY-MM') + '-01')
       start.add(1, 'month')
     }
     return result

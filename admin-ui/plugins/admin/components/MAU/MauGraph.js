@@ -62,8 +62,6 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
     if (stat && stat.length >= 1) {
       let flattendStat = stat.map((entry) => entry['month'])
       let aRange = generateDateRange(moment(startDate), moment(endDate))
-      console.log(moment(startDate).format())
-      console.log(moment(endDate).format())
       for (const ele of aRange) {
         const currentMonth = getYearMonth(new Date(ele))
         if (flattendStat.indexOf(parseInt(currentMonth, 10)) === -1) {
@@ -99,8 +97,9 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
 
   function generateDateRange(start, end) {
     var result = []
-    while (start.isBefore(end)) {
-      result.push(start.format('YYYY-MM-01'))
+
+    while (end > start || start.format('M') === end.format('M')) {
+      result.push(start.format('YYYY-MM') + '-01')
       start.add(1, 'month')
     }
     return result
