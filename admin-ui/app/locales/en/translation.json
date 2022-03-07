@@ -273,7 +273,8 @@
     "scripts": "Scripts",
     "services": "Services",
     "settings": "Settings",
-    "signout": "Sign out"
+    "signout": "Sign out",
+    "maugraph": "MAU"
   },
   "messages": {
     "action_commit_question": "Audit log: Want to apply changes made on this page?",

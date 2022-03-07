@@ -32,7 +32,8 @@
     "scripts": "Scripts",
     "services": "Serviços",
     "settings": "Configurações",
-    "signout": "Sair"
+    "signout": "Sair",
+    "maugraph": "MAU"
   },
   "actions": {
     "accept": "Aceitar",

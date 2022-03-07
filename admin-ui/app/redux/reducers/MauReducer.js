@@ -2,7 +2,7 @@ import { GET_MAU, GET_MAU_RESPONSE } from '../actions/types'
 import reducerRegistry from './ReducerRegistry'
 const INIT_STATE = {
   stat: [],
-  loading: true,
+  loading: false,
 }
 
 const reducerName = 'mauReducer'

@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { subMonths } from 'date-fns'
 import moment from 'moment'
-import CustomLineChart from './Grapths/CustomLineChart'
-import CustomBadgeRow from './Grapths/CustomBadgeRow'
+import CustomPieGraph from '../../../../app/routes/Dashboards/Grapths/CustomPieGraph'
+import ActiveUsersGraph from '../../../../app/routes/Dashboards/Grapths/ActiveUsersGraph'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import GluuLoader from '../Apps/Gluu/GluuLoader'
-import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
-import { getMau } from '../../redux/actions/MauActions'
-import { getClients } from '../../redux/actions/InitActions'
-import applicationstyle from '../Apps/Gluu/styles/applicationstyle'
-import GluuLabel from '../Apps/Gluu/GluuLabel'
-import GluuRibbon from '../Apps/Gluu/GluuRibbon'
+import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
+import { getMau } from '../../../../app/redux/actions/MauActions'
+import { getClients } from '../../../../app/redux/actions/InitActions'
+import applicationstyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import {
   Button,
   Card,
@@ -20,17 +20,17 @@ import {
   FormGroup,
   Col,
   Row,
-} from '../../../app/components'
+} from '../../../../app/components'
 import {
   hasBoth,
   buildPayload,
   STAT_READ,
   STAT_JANS_READ,
-} from '../../utils/PermChecker'
+} from '../../../../app/utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
-function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
+function MauGraph({ statData, permissions, clients, loading, dispatch }) {
   const { t } = useTranslation()
   const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
   const [endDate, setEndDate] = useState(new Date())
@@ -61,7 +61,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
     let stat = input
     if (stat && stat.length >= 1) {
       let flattendStat = stat.map((entry) => entry['month'])
-      let aRange = generateDateRange(moment(startDate), moment(endDate))
+      let aRange = generateDateRange(startDate, endDate)
       for (const ele of aRange) {
         const currentMonth = getYearMonth(new Date(ele))
         if (flattendStat.indexOf(parseInt(currentMonth, 10)) === -1) {
@@ -95,7 +95,9 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
     }
   }
 
-  function generateDateRange(start, end) {
+  function generateDateRange(startDate, endDate) {
+    let start = moment(startDate)
+    let end = moment(endDate)
     var result = []
     while (end > start || start.format('M') === end.format('M')) {
       result.push(start.format('YYYY-MM') + '-01')
@@ -123,31 +125,14 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
         <Card>
-          <GluuRibbon title={t('titles.active_users')} fromLeft />
+          <GluuRibbon title={t('fields.monthly_active_users')} fromLeft />
           <FormGroup row />
           <FormGroup row />
           <FormGroup row />
           <FormGroup row />
           <FormGroup row />
           <FormGroup row />
-          <FormGroup row>
-            <Col sm={2}></Col>
-            <Col sm={3}>
-              <CustomBadgeRow
-                label="OIDC Clients Count"
-                value={clients.length}
-              />
-            </Col>
-            <Col sm={3}>
-              <CustomBadgeRow label="Active Users Count" value={1} />
-            </Col>
-            <Col sm={3}>
-              <CustomBadgeRow label="Token issued count" value={153} />
-            </Col>
-            <Col sm={1}></Col>
-          </FormGroup>
-          <FormGroup row />
-          <FormGroup row />
+
           <CardBody>
             <Row>
               <Col sm={2}></Col>
@@ -191,10 +176,9 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
             </Row>
             <FormGroup row />
             <FormGroup row />
-
             <FormGroup row>
               <Col sm={12}>
-                <CustomLineChart data={doDataAugmentation(statData)} />
+                <ActiveUsersGraph data={doDataAugmentation(statData)} />
               </Col>
             </FormGroup>
           </CardBody>
@@ -214,4 +198,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(DashboardPage)
+export default connect(mapStateToProps)(MauGraph)
