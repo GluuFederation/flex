@@ -18,9 +18,9 @@ This is a client-side only application (HTML+JS). Intended to be illustrative an
 ## Troubleshooting
 
 If you face errors (in the browser's developer console) when accessing endpoints such as `/.well-known/openid-configuration`
-or `/oxauth/restv1/token`, obtain a token manually and then gently add a line like `token = "token-value"` as the first statement
+or `/jans-auth/restv1/token`, obtain a token manually and then gently add a line like `token = "token-value"` as the first statement
 in the document.ready event handler for the page you are trying to visualize. The following shows how to obtain a token:
 
-`curl -k -u <clientId>:<clientSecret> -d grant_type=client_credentials https://<gluu-host-name>/oxauth/restv1/token`
+`curl -k -u <clientId>:<clientSecret> -d grant_type=client_credentials https://<gluu-host-name>/jans-auth/restv1/token`
 
 Alternatively, enrollment pages have a text field at the bottom where you can simply paste the token value.

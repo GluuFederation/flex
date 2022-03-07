@@ -34,7 +34,7 @@ import org.slf4j.Logger;
  * @author jgomer
  */
 @ApplicationScoped
-@Path("/enrollment/" + SuperGluuExtension.ACR)
+//@Path("/enrollment/" + SuperGluuExtension.ACR)
 public class SuperGluuEnrollingWS {
 
     private static final String BANNED_KEYS_PREFIX = "casa_blk_";   //Banned lookup keys

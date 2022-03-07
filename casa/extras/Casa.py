@@ -32,7 +32,6 @@ class PersonAuthentication(PersonAuthenticationType):
     def __init__(self, currentTimeMillis):
         self.currentTimeMillis = currentTimeMillis
         self.ACR_SG = "super_gluu"
-        self.ACR_U2F = "u2f"
 
         self.modulePrefix = "casa-external_"
 
@@ -58,10 +57,7 @@ class PersonAuthentication(PersonAuthenticationType):
                     print "Casa. init. Got dynamic module for acr %s" % acr
                     configAttrs = self.getConfigurationAttributes(acr, self.scriptsList)
 
-                    if acr == self.ACR_U2F:
-                        u2f_application_id = configurationAttributes.get("u2f_app_id").getValue2()
-                        configAttrs.put("u2f_application_id", SimpleCustomProperty("u2f_application_id", u2f_application_id))
-                    elif acr == self.ACR_SG:
+                    if acr == self.ACR_SG:
                         application_id = configurationAttributes.get("supergluu_app_id").getValue2()
                         configAttrs.put("application_id", SimpleCustomProperty("application_id", application_id))
 
