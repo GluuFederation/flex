@@ -8,6 +8,7 @@ import { getClient } from '../../redux/api/base'
 import LicenseDetailsApi from '../api/LicenseDetailsApi'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from '../../redux/sagas/SagaUtils'
+import { postUserAction } from '../../redux/api/backend-api'
 import {
   isFourZeroOneError,
   addAdditionalData,
