@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { subMonths } from 'date-fns'
 import moment from 'moment'
-import CustomBarGraph from './Grapths/CustomBarGraph'
 import CustomLineChart from './Grapths/CustomLineChart'
 import CustomBadgeRow from './Grapths/CustomBadgeRow'
 import DatePicker from 'react-datepicker'
@@ -194,10 +193,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
             <FormGroup row />
 
             <FormGroup row>
-              <Col sm={6}>
-                <CustomBarGraph data={statData} />
-              </Col>
-              <Col sm={6}>
+              <Col sm={12}>
                 <CustomLineChart data={doDataAugmentation(statData)} />
               </Col>
             </FormGroup>
