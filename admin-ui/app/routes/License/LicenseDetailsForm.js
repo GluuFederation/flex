@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import DatePicker from 'react-datepicker'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
-import GluuToogle from '../../../../app/routes/Apps/Gluu/GluuToogle'
-import { LICENSE } from '../../../../app/utils/ApiResources'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
+import GluuLabel from '../../routes/Apps/Gluu/GluuLabel'
+import GluuCommitFooter from '../../routes/Apps/Gluu/GluuCommitFooter'
+import GluuCommitDialog from '../../routes/Apps/Gluu/GluuCommitDialog'
+import GluuToogle from '../../routes/Apps/Gluu/GluuToogle'
+import { LICENSE } from '../../utils/ApiResources'
+import GluuTooltip from '../../routes/Apps/Gluu/GluuTooltip'
 import {
   Col,
   Form,
   FormGroup,
   CustomInput,
   Accordion,
-} from '../../../../app/components'
+} from '../../components'
 import { Formik } from 'formik'
 
 function LicenseDetailsForm({ item, handleSubmit }) {

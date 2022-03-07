@@ -1,6 +1,5 @@
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
-import LicenseDetailsPage from './components/Configuration/LicenseDetailsPage'
 import UiRoleListPage from './components/Roles/UiRoleListPage'
 import UiPermListPage from './components/Permissions/UiPermListPage'
 import MappingPage from './components/Mapping/MappingPage'
@@ -10,7 +9,6 @@ import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPag
 import SettingsPage from './components/Settings/SettingsPage'
 import MauGraph from './components/MAU/MauGraph'
 import scriptSaga from './redux/sagas/CustomScriptSaga'
-import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
@@ -18,7 +16,6 @@ import mappingSaga from './redux/sagas/MappingSaga'
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import apiRoleReducer from './redux/reducers/ApiRoleReducer'
 import apiPermissionReducer from './redux/reducers/ApiPermissionReducer'
-import licenseDetailsReducer from './redux/reducers/LicenseDetailsReducer'
 import mappingReducer from './redux/reducers/MappingReducer'
 import {
   ACR_READ,
@@ -37,11 +34,6 @@ const pluginMetadata = {
       title: 'menus.adminui',
       icon: 'fa-cubes',
       children: [
-        {
-          title: 'menus.licenseDetails',
-          path: PLUGIN_BASE_APTH + '/licenseDetails',
-          permission: ACR_READ,
-        },
         {
           title: 'menus.config-api',
           children: [
@@ -131,22 +123,15 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/settings',
       permission: ACR_READ,
     },
-    {
-      component: LicenseDetailsPage,
-      path: PLUGIN_BASE_APTH + '/licenseDetails',
-      permission: ACR_READ,
-    },
   ],
   reducers: [
     { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
-    { name: 'licenseDetailsReducer', reducer: licenseDetailsReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
   ],
   sagas: [
     scriptSaga(),
-    licenseDetailsSaga(),
     apiRoleSaga(),
     apiPermissionSaga(),
     mappingSaga(),
