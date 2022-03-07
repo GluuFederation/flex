@@ -3,8 +3,7 @@ package org.gluu.casa.core.pojo;
 import java.util.Date;
 
 /**
- * Represents a registered credential of u2f type.
- * @author jgomer
+ * Represents a fido registered credential
  */
 public class FidoDevice extends RegisteredCredential implements Comparable<FidoDevice> {
 
