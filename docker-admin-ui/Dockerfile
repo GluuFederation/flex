@@ -28,7 +28,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=51fe9e12269a9882a63f1a4d4dc1a3f537b204b6
+ENV ADMIN_UI_VERSION=11927ed4f036d7199d5340cf230100234c6aaaab
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
