@@ -16,6 +16,7 @@ export const DefaultSidebar = () => (
 
     {/* START SIDEBAR: Only for Desktop */}
     <Sidebar.HideSlim>
+      <SidebarTrigger id="navToggleBtn" color={'#00a361'} />
       <Sidebar.Section>
         <Link to="/" className="sidebar__brand">
           <LogoThemed checkBackground />
