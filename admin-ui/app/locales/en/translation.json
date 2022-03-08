@@ -62,7 +62,7 @@
     "description": "Description",
     "disable": "Disable",
     "disabled": "Disabled",
-    "disable_jdk_logger": "Disable JSK Logger?",
+    "disable_jdk_logger": "Disable JDK Logger?",
     "displayname": "Display Name",
     "dynamic_scope_scripts": "Dynamics Scopes Scripts",
     "edit_type": "Edit Type",
@@ -203,6 +203,7 @@
     "softwareVersion": "Software Version",
     "softwareStatement": "'Software Statement",
     "usage_type": "Usage Type",
+    "script_path": "Script Path",
     "use_anonymous_bind": "Use Anonymous Bind",
     "use_ssl": "Use SSL",
     "user_info_encrypted_response_alg": "JWE alg Algorithm for encrypting userinfo responses",
@@ -273,7 +274,8 @@
     "services": "Services",
     "settings": "Settings",
     "signout": "Sign out",
-    "user_management": "User Management"
+    "user_management": "User Management",
+    "maugraph": "MAU"
   },
   "messages": {
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
@@ -357,7 +359,8 @@
     "sql_schemaname": "Enter the schema name.",
     "sql_passwordEncryptionMethod": "Add password encryption method.",
     "sql_serverTimezone": "Enter server timezone.",
-    "activate_sql_configuration": "Activate SQL configuration."
+    "activate_sql_configuration": "Activate SQL configuration.",
+    "script_path": "Enter script file path"
   },
   "titles": {
     "acrs": "ACRs",
@@ -757,6 +760,7 @@
       "inum": "Unique id identifying the script",
       "name": "Custom script name. Should contain only letters, digits and underscores.",
       "description": "Details describing the script.",
+      "scriptPath": "Script file path",
       "script": "Actual script content.",
       "scriptType": "Type of script.",
       "locationType": "Where the script is located.",

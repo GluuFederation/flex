@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jans.orm.PersistenceEntryManager;
 import io.jans.orm.PersistenceEntryManagerFactory;
+import io.jans.orm.ldap.impl.LdapEntryManagerFactory;
 import io.jans.orm.ldap.operation.LdapOperationService;
 import io.jans.orm.model.PersistenceConfiguration;
 import io.jans.orm.model.SearchScope;
@@ -56,6 +57,7 @@ public class PersistenceService implements IPersistenceService {
     private LdapOperationService ldapOperationService;
 
     private String rootDn;
+    private String pythonLibLocation;
 
     private JsonNode dynamicConfig;
 
@@ -264,6 +266,10 @@ public class PersistenceService implements IPersistenceService {
         return stringEncrypter;
     }
 
+    public String getPythonLibLocation() {
+        return pythonLibLocation;
+    }
+
     public CacheConfiguration getCacheConfiguration() {
         return cacheConfiguration;
     }
@@ -340,7 +346,8 @@ public class PersistenceService implements IPersistenceService {
 
         boolean success = false;
         try {
-            loadASSettings(properties.getProperty("jansAuth_ConfigurationEntryDN"));
+            loadASSettings(properties.getProperty("jansAuth_ConfigurationEntryDN"), properties.getProperty("persistence.type"));
+            pythonLibLocation = properties.getProperty("pythonModulesDir");
             rootDn = "o=jans";
             success = true;
             
@@ -354,27 +361,31 @@ public class PersistenceService implements IPersistenceService {
 
     }
 
-    private void loadASSettings(String dn) throws Exception {
+    private void loadASSettings(String dn, String persistenceType) throws Exception {
 
         ASConfiguration conf = get(ASConfiguration.class, dn);
-        dynamicConfig = mapper.readTree(conf.getJansConfStatic());
-        staticConfig = mapper.readTree(conf.getJansConfDyn());
+        dynamicConfig = mapper.readTree(conf.getJansConfDyn());
+        staticConfig = mapper.readTree(conf.getJansConfStatic());
 
-        personCustomObjectClasses = Optional.ofNullable(dynamicConfig.get("personCustomObjectClassList"))
-                .map(node -> {
-                    try {
-                        Set<String> ocs = new HashSet<>();
-                        Iterator<JsonNode> it = node.elements();
-                        while (it.hasNext()) {
-                            ocs.add(it.next().asText());
+        if (persistenceType.equals(LdapEntryManagerFactory.PERSISTENCE_TYPE)) {
+
+            personCustomObjectClasses = Optional.ofNullable(dynamicConfig.get("personCustomObjectClassList"))
+                    .map(node -> {
+                        try {
+                            List<String> ocs = new ArrayList<>();
+                            node.elements().forEachRemaining(e -> ocs.add(e.asText()));
+                            
+                            return Set.copyOf(ocs);
+                        } catch (Exception e) {
+                            logger.error(e.getMessage());
+                            return null;
                         }
-                        return ocs;
-                    } catch (Exception e) {
-                        logger.error(e.getMessage());
-                        return null;
-                    }
-                })
-                .orElse(Collections.singleton("gluuCustomPerson"));
+                    })
+                    .orElse(Collections.singleton("jansCustomPerson"));
+        }
+        if (personCustomObjectClasses == null) {
+            personCustomObjectClasses = Collections.emptySet();
+        }
 
     }
 

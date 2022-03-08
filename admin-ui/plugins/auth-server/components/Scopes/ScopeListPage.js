@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from '@material-table/core'
+import { DeleteOutlined } from '@material-ui/icons'
 import { Paper } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -112,7 +113,6 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
-        color: 'primary',
         id: 'editScope' + rowData.inum,
       },
       tooltip: `${t('messages.edit_scope')}`,
@@ -164,7 +164,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
 
   if (hasPermission(permissions, SCOPE_DELETE)) {
     myActions.push((rowData) => ({
-      icon: 'delete',
+      icon: () => <DeleteOutlined />,
       iconProps: {
         color: 'secondary',
         id: 'deleteScope' + rowData.inum,

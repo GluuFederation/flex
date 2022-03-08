@@ -28,7 +28,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=c2d81b323a9dc85389e078989933682e11545b09
+ENV ADMIN_UI_VERSION=51fe9e12269a9882a63f1a4d4dc1a3f537b204b6
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -148,6 +148,13 @@ RUN mkdir -p /opt/flex/admin-ui/dist \
 # adjust ownership
 RUN chown -R 1000:1000 /var/lib/nginx \
     && chown 1000:1000 /run/nginx/nginx.pid \
+    && chown -R 1000:1000 /etc/certs \
+    && chown -R 1000:1000 /opt/flex/admin-ui/.env \
+    && chown -R 1000:1000 /opt/flex/admin-ui/dist \
+    && chown -R 1000:1000 /etc/nginx/http.d/default.conf \
+    && chown -R 1000:1000 /var/lib/nginx \
+    && chown -R 1000:1000 /var/log/nginx \
+    && chown -R 1000:1000 /run/nginx/nginx.pid \
     && chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
     && chgrp -R 0 /opt/flex/admin-ui/.env && chmod -R g=u /opt/flex/admin-ui/.env \
     && chgrp -R 0 /opt/flex/admin-ui/dist && chmod -R g=u /opt/flex/admin-ui/dist \

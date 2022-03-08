@@ -25,6 +25,18 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
   const [modal, setModal] = useState(false)
   const [scriptTypeState, setScriptTypeState] = useState(item.scriptType)
   const scriptTypes = [...new Set(scripts.map((anItem) => anItem.scriptType))]
+  const [scriptPath, setScriptPath] = useState(() =>
+  {
+    if (!item.moduleProperties) {
+      return false
+    }
+
+    if (item.moduleProperties.filter((i) => i.value1 === 'location_type').length > 0){
+      return (item.moduleProperties.filter((it) => it.value1 === 'location_type')[0].value2 == 'file')
+    }
+    return false
+  })
+
   function activate() {
     if (!init) {
       setInit(true)
@@ -123,6 +135,37 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       }
       item.moduleProperties.push({
         value1: 'location_type',
+        value2: value,
+        description: '',
+      })
+    }
+    if (value == 'file') {
+      setScriptPath(true)
+    } else {
+      setScriptPath(false)
+    }
+  }
+
+  function scriptPathChange(value) {
+    if (value != '') {
+      if (!item.moduleProperties) {
+        item.moduleProperties = []
+      }
+
+      if (
+        item.moduleProperties.filter(
+          (candidate) => candidate.value1 === 'location_path',
+        ).length > 0
+      ) {
+        item.moduleProperties.splice(
+          item.moduleProperties.findIndex(
+            (el) => el.value1 === 'location_path',
+          ),
+          1,
+        )
+      }
+      item.moduleProperties.push({
+        value1: 'location_path',
         value2: value,
         description: '',
       })
@@ -320,6 +363,38 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           </Col>
         </FormGroup>
       </GluuTooltip>
+      {scriptPath && 
+      (<GluuTooltip doc_category={SCRIPT} doc_entry="scriptPath">
+        <FormGroup row>
+          <GluuLabel label="fields.script_path" />
+          <Col sm={9}>
+            <InputGroup>
+              <Input
+                placeholder={t('placeholders.script_path')}
+                valid={
+                  !formik.errors.location_path &&
+                  !formik.touched.location_path &&
+                  init
+                }
+                id="location_path"
+                defaultValue={
+                  !!item.moduleProperties &&
+                  item.moduleProperties.filter(
+                    (i) => i.value1 === 'location_path',
+                  ).length > 0
+                    ? item.moduleProperties.filter(
+                        (it) => it.value1 === 'location_path',
+                      )[0].value2
+                    : undefined
+                }
+                onChange={(e) => {
+                  scriptPathChange(e.target.value)
+                }}
+              />
+            </InputGroup>
+          </Col>
+        </FormGroup>
+      </GluuTooltip>)}
       {scriptTypeState === 'PERSON_AUTHENTICATION' && (
         <GluuTooltip doc_category={SCRIPT} doc_entry="usage_type">
           <FormGroup row>
@@ -345,9 +420,9 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                   }}
                 >
                   <option value="">{t('options.choose')}...</option>
-                  <option value="interactive">interactive</option>
-                  <option value="service">service</option>
-                  <option value="both">both</option>
+                  <option value="interactive">Web</option>
+                  <option value="service">Native</option>
+                  <option value="both">Both methods</option>
                 </CustomInput>
               </InputGroup>
             </Col>
@@ -374,7 +449,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         valuePlaceholder={t('placeholders.enter_property_value')}
         options={getPropertiesConfig(item)}
       ></GluuProperties>
-      <GluuTooltip doc_category={SCRIPT} doc_entry="script">
+      {!scriptPath && 
+      (<GluuTooltip doc_category={SCRIPT} doc_entry="script">
         <FormGroup row>
           <GluuLabel label={t('Script')} size={2} required />
           {formik.errors.script && formik.touched.script ? (
@@ -393,7 +469,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
             />
           </Col>
         </FormGroup>
-      </GluuTooltip>
+      </GluuTooltip>)}
       <GluuTooltip doc_category={SCRIPT} doc_entry="enabled">
         <FormGroup row>
           <GluuLabel label="options.enabled" size={3} />

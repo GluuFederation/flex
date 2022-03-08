@@ -42,7 +42,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
     disableJdkLogger: logging.disableJdkLogger,
     enabledOAuthAuditLogging: logging.enabledOAuthAuditLogging,
   }
-  const levels = ['TRACE', 'DEBUG', 'INFO', 'ERROR']
+  const levels = ['TRACE', 'DEBUG', 'INFO', 'ERROR', 'WARN']
   const logLayouts = ['text', 'json']
   return (
     <GluuLoader blocking={loading}>

@@ -45,7 +45,7 @@ def main():
 
     for image in docker_image_folders:
         try:
-            update_image(image, "CN_SOURCE_URL", "CN_BUILD_DATE")
+            update_image(image, "GLUU_SOURCE_URL", "GLUU_BUILD_DATE")
         except KeyError:
             print(f'Docker image {image} does not contain any packages to update')
             continue

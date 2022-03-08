@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from '@material-table/core'
+import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
@@ -130,7 +131,6 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
-        color: 'primary',
         id: 'editClient' + rowData.inum,
       },
       tooltip: `${t('messages.edit_client')}`,
@@ -174,7 +174,6 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     myActions.push((rowData) => ({
       icon: 'visibility',
       iconProps: {
-        color: 'primary',
         id: 'viewClient' + rowData.inum,
       },
       tooltip: `${t('messages.view_client_details')}`,
@@ -184,7 +183,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   }
   if (hasPermission(permissions, CLIENT_DELETE)) {
     myActions.push((rowData) => ({
-      icon: 'delete',
+      icon: () => <DeleteOutlined />,
       iconProps: {
         color: 'secondary',
         id: 'deleteClient' + rowData.inum,

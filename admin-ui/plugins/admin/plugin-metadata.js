@@ -9,7 +9,7 @@ import ScriptListPage from './components/CustomScripts/ScriptListPage'
 import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
 import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
 import SettingsPage from './components/Settings/SettingsPage'
-
+import MauGraph from './components/MAU/MauGraph'
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
@@ -70,6 +70,11 @@ const pluginMetadata = {
           permission: SCRIPT_READ,
         },
         {
+          title: 'menus.maugraph',
+          path: PLUGIN_BASE_APTH + '/maugraph',
+          permission: ACR_READ,
+        },
+        {
           title: 'menus.settings',
           path: PLUGIN_BASE_APTH + '/settings',
           permission: ACR_READ,
@@ -83,6 +88,11 @@ const pluginMetadata = {
     },
   ],
   routes: [
+    {
+      component: MauGraph,
+      path: PLUGIN_BASE_APTH + '/maugraph',
+      permission: ACR_READ,
+    },
     {
       component: HealthPage,
       path: PLUGIN_BASE_APTH + '/health',

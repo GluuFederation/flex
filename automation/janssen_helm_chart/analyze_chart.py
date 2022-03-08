@@ -149,7 +149,7 @@ def main():
     find_replace(main_dir, "Gluu", "Janssen", "*.*")
     find_replace(main_dir, "gluu", "janssen", "*.*")
     find_replace(main_dir, "5.0.0", "1.0.0", "*.*")
-    find_replace(main_dir, "5.0.2", "1.0.0-beta.14", "*.*")
+    find_replace(main_dir, "5.0.2", "1.0.0-beta.15", "*.*")
     find_replace(main_dir, "janssenfederation/opendj:1.0.0", "gluufederation/opendj:5.0.0", "*.*")
 
 

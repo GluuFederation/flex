@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from '@material-table/core'
+import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { connect } from 'react-redux'
@@ -83,7 +84,6 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
-        color: 'primary',
         id: 'editAttribute' + rowData.inum,
       },
       tooltip: `${t('tooltips.edit_attribute')}`,
@@ -95,7 +95,6 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     myActions.push((rowData) => ({
       icon: 'visibility',
       iconProps: {
-        color: 'primary',
         id: 'viewAttribute' + rowData.inum,
       },
       tooltip: `${t('tooltips.view_Attribute')}`,
@@ -133,7 +132,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }
   if (hasPermission(permissions, ATTRIBUTE_DELETE)) {
     myActions.push((rowData) => ({
-      icon: 'delete',
+      icon: () => <DeleteOutlined />,
       iconProps: {
         color: 'secondary',
         id: 'deleteAttribute' + rowData.inum,
