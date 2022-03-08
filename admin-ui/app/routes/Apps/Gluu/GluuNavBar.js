@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Avatar,
@@ -20,6 +20,14 @@ import GluuErrorFallBack from './GluuErrorFallBack'
 
 function GluuNavBar({ themeColor, themeStyle, userinfo }) {
   const userInfo = userinfo ? userinfo : {}
+  const [showCollapse, setShowCollapse] = useState(
+    window.matchMedia('(max-width: 992px)').matches,
+  )
+  useEffect(() => {
+    window
+      .matchMedia('(max-width: 992px)')
+      .addEventListener('change', (e) => setShowCollapse(e.matches))
+  }, [])
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
       <NavbarThemeProvider
@@ -29,9 +37,11 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
       >
         <Navbar expand="lg" themed>
           <Nav>
-            <NavItem className="mr-3">
-              <SidebarTrigger id="navToggleBtn" />
-            </NavItem>
+            {showCollapse && (
+              <NavItem className="mr-3">
+                <SidebarTrigger id="navToggleBtn" />
+              </NavItem>
+            )}
           </Nav>
           <Nav className="ml-auto" pills>
             {/*<NavbarMessages  />*/}
