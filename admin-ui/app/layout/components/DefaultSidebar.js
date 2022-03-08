@@ -16,8 +16,8 @@ export const DefaultSidebar = () => (
 
     {/* START SIDEBAR: Only for Desktop */}
     <Sidebar.HideSlim>
-      <SidebarTrigger id="navToggleBtn" color={'#00a361'} />
       <Sidebar.Section>
+        <SidebarTrigger id="navToggleBtn" color={'#8492a5'} />
         <Link to="/" className="sidebar__brand">
           <LogoThemed checkBackground />
         </Link>
@@ -31,6 +31,11 @@ export const DefaultSidebar = () => (
     <Sidebar.MobileFluid>
       {/* <SidebarTopA /> */}
       <Sidebar.Section fluid cover>
+        <SidebarTrigger
+          id="navToggleBtn"
+          color={'#8492a5'}
+          showCollapseonly={true}
+        />
         {/* SIDEBAR: Menu */}
         <GluuAppSidebar />
       </Sidebar.Section>

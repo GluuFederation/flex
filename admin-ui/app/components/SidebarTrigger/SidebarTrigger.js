@@ -1,18 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { NavLink } from 'reactstrap'
 import PropTypes from 'prop-types'
 import { withPageConfig } from './../Layout'
 
 const SidebarTrigger = (props) => {
   const { tag: Tag, pageConfig, ...otherProps } = props
-  const [showCollapse, setShowCollapse] = useState(
-    window.matchMedia('(max-width: 992px)').matches,
-  )
-  useEffect(() => {
-    window
-      .matchMedia('(max-width: 768px)')
-      .addEventListener('change', (e) => setShowCollapse(e.matches))
-  }, [])
+
   return (
     <Tag
       onClick={() => {
@@ -31,7 +24,7 @@ const SidebarTrigger = (props) => {
           }}
         ></i>
       )}
-      {!pageConfig.sidebarCollapsed && (
+      {!pageConfig.sidebarCollapsed && !props.showCollapseonly && (
         <i
           className="fa fa-times fa-fw fa-2x"
           style={{
