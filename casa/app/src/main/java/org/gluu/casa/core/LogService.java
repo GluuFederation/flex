@@ -111,7 +111,11 @@ public class LogService {
         loggerNames.add("org.gluu.casa.timer");
 
         loggerContext = LoggerContext.getContext(false);
-        mainAppender = loggerContext.getConfiguration().getLoggerConfig(MAIN_LOGGER).getAppenders().get("LOG_FILE");
+        LoggerConfig mainLogger = loggerContext.getConfiguration().getLoggerConfig(MAIN_LOGGER);
+
+        String appenderRef = mainLogger.getAppenderRefs().get(0).getRef();
+        logger.info("Main logger's appender is {}", appenderRef);
+        mainAppender = mainLogger.getAppenders().get(appenderRef);
 
     }
 
