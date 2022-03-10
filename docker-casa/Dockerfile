@@ -7,7 +7,7 @@ FROM bellsoft/liberica-openjre-alpine:11.0.13-8
 RUN apk update \
     && apk add --no-cache py3-pip openssl tini py3-cryptography py3-lxml py3-psycopg2 \
     && apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/v3.15/community py3-grpcio \
-    && apk add --no-cache --virtual build-deps git wget \
+    && apk add --no-cache --virtual build-deps git wget zip \
     && mkdir -p /usr/java/latest \
     && ln -sf /usr/lib/jvm/jre /usr/java/latest/jre
 
@@ -35,16 +35,19 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2022-03-02 11:52'
+ENV GLUU_BUILD_DATE='2022-03-09 20:14'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
-RUN wget -q ${GLUU_SOURCE_URL} -O /tmp/casa.war \
-    && mkdir -p ${JETTY_BASE}/casa/webapps/casa \
-    && unzip -qq /tmp/casa.war -d ${JETTY_BASE}/casa/webapps/casa \
+COPY jetty/jetty-env.xml /tmp/WEB-INF/jetty-env.xml
+RUN mkdir -p ${JETTY_BASE}/casa/webapps \
+    && wget -q ${GLUU_SOURCE_URL} -O /tmp/casa.war \
+    && cd /tmp \
+    && zip -d casa.war WEB-INF/jetty-web.xml \
+    && zip -r casa.war WEB-INF/jetty-env.xml \
+    && cp casa.war ${JETTY_BASE}/casa/webapps/casa.war \
     && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/casa --add-module=server,deploy,resources,http,jsp,cdi-decorate \
-    && rm -f /tmp/casa.war \
-    && rm -f ${JETTY_BASE}/casa/webapps/casa/WEB-INF/jetty-web.xml
+    && rm -rf /tmp/casa.war /tmp/WEB-INF
 
 # ======
 # Python
@@ -65,8 +68,7 @@ RUN apk del build-deps \
 # License
 # =======
 
-RUN mkdir -p /licenses
-COPY LICENSE /licenses/
+COPY LICENSE /licenses/LICENSE
 
 # ==========
 # Config ENV
@@ -166,10 +168,9 @@ RUN mkdir -p /etc/certs \
     /opt/jans/python/libs \
     /opt/jans/jetty/casa/static \
     /opt/jans/jetty/casa/plugins \
-    /app/templates \
-    /app/tmp
+    /opt/jetty/temp
 
-COPY jetty/jetty-env.xml ${JETTY_BASE}/casa/webapps/casa/WEB-INF/
+COPY jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 COPY jetty/log4j2.xml ${JETTY_BASE}/casa/resources/
 COPY jetty/casa_web_resources.xml ${JETTY_BASE}/casa/webapps/
 COPY templates /app/templates/

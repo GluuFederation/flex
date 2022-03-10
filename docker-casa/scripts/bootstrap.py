@@ -114,9 +114,14 @@ def configure_logging():
         "casa_log_target": "LOG_FILE",
         "timer_log_target": "TIMERS_FILE",
     }
-    for key, value in file_aliases.items():
-        if config[key] == "FILE":
-            config[key] = value
+    for key, value in config.items():
+        if not key.endswith("_target"):
+            continue
+
+        if value == "STDOUT":
+            config[key] = "Console"
+        else:
+            config[key] = file_aliases[key]
 
     logfile = "/opt/jans/jetty/casa/resources/log4j2.xml"
     with open(logfile) as f:
