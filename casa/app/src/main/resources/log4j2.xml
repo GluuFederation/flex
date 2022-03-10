@@ -24,8 +24,8 @@
         <Logger name="org.gluu.casa.timer" level="INFO" additivity="false">
             <AppenderRef ref="TIMERS_FILE" />
         </Logger>
+        <!-- This logger name is required in class org.gluu.casa.core.LogService -->
         <Logger name="org.gluu.casa" level="INFO">
-            <!-- Configuration of this logger is tightly coupled with class org.gluu.casa.core.LogService -->
             <AppenderRef ref="LOG_FILE" />
         </Logger>
         <Root level="ERROR">
