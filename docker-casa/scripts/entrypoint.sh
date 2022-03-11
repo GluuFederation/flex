@@ -45,4 +45,4 @@ exec java \
     -Djava.io.tmpdir=/opt/jetty/temp \
     -Dlog4j2.configurationFile=resources/log4j2.xml \
     ${CN_JAVA_OPTIONS} \
-    -jar /opt/jetty/start.jar
+    -jar /opt/jetty/start.jar jetty.httpConfig.sendServerVersion=false jetty.deploy.scanInterval=0
