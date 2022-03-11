@@ -58,15 +58,6 @@ def modify_jetty_xml():
         f.write(updates)
 
 
-def modify_server_ini():
-    with open("/opt/jans/jetty/casa/start.d/server.ini", "a") as f:
-        updates = "\n".join([
-            # disable server version info
-            "jetty.httpConfig.sendServerVersion=false",
-        ])
-        f.write(updates)
-
-
 def configure_logging():
     # default config
     config = {
@@ -183,7 +174,6 @@ def main():
 
     modify_jetty_xml()
     modify_webdefault_xml()
-    modify_server_ini()
     configure_logging()
 
 
