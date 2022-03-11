@@ -56,7 +56,7 @@ function GluuAppSidebar({ scopes }) {
             exact
           />
           <SidebarMenu.Item
-            title={t('menus.license')}
+            title={t('menus.licenseDetails')}
             to="/home/licenseDetails"
             textStyle={{ fontSize: '18px', fontWeight: '600' }}
             exact
