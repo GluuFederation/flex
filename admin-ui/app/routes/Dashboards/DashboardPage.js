@@ -119,7 +119,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
 
   return (
     <GluuLoader blocking={loading}>
-       {!loading &&<GluuViewWrapper
+      <GluuViewWrapper
         canShow={hasBoth(permissions, STAT_READ, STAT_JANS_READ)}
       >
         <Card>
@@ -200,7 +200,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
           </CardBody>
           <CardFooter className="p-4 bt-0"></CardFooter>
         </Card>
-      </GluuViewWrapper>}
+      </GluuViewWrapper>
     </GluuLoader>
   )
 }
