@@ -6,6 +6,7 @@ const UserList = () => {
 
   useEffect(() => {
     dispatch(getUsers({}))
+    console.log('HERE')
   }, [])
   return <div></div>
 }

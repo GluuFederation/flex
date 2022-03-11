@@ -7,12 +7,6 @@ import {
   select,
   takeEvery,
 } from 'redux-saga/effects'
-import {
-  getMappingResponse,
-  updatePermissionsServerResponse,
-  updatePermissionsLoading,
-  getMapping,
-} from '../actions/MappingActions'
 import { API_USERS } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
@@ -23,10 +17,10 @@ import {
 import { UM_GET_USERS } from '../actions/types'
 import UserApi from '../api/UserApi'
 import { getClient } from '../../../../app/redux/api/base'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
-
+import { updateUserResponse } from '../actions/UserActions'
+import { postUserAction } from '../../../../app/redux/api/backend-api'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -41,10 +35,12 @@ export function* getUsersSaga({ payload }) {
   try {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
-    const data = yield call(userApi.getUsers)
+    console.log('Called')
+    const data = yield call(userApi.getUsers, payload)
+    yield put(updateUserResponse(data))
     console.log(data)
     // yield put(getMappingResponse(data))
-    // yield call(postUserAction, audit)
+    yield call(postUserAction, audit)
   } catch (e) {
     console.log(e)
     // yield put(getMappingResponse(null))
@@ -56,7 +52,7 @@ export function* getUsersSaga({ payload }) {
 }
 
 export function* watchGetUsers() {
-  yield takeLatest(UM_GET_USERS, getUsersSaga)
+  yield takeEvery(UM_GET_USERS, getUsersSaga)
 }
 
 export default function* rootSaga() {
