@@ -8,6 +8,8 @@ import { getScopes } from '../../redux/actions/ScopeActions'
 import { getOidcDiscovery } from '../../../../app/redux/actions/OidcDiscoveryActions'
 import { getScripts } from '../../../../app/redux/actions/InitActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
+import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
+import { useTranslation } from 'react-i18next'
 
 function ClientEditPage({
   clientData,
@@ -18,10 +20,15 @@ function ClientEditPage({
   permissions,
   dispatch,
   oidcConfiguration,
+  saveOperationFlag,
+  errorInSaveOperationFlag,
 }) {
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
+  const { t } = useTranslation()
+  const history = useHistory()
+
   useEffect(() => {
     buildPayload(userAction, '', options)
     if (scopes.length < 1) {
@@ -32,22 +39,30 @@ function ClientEditPage({
     }
     dispatch(getOidcDiscovery())
   }, [])
+  useEffect(() => {
+    if (saveOperationFlag && !errorInSaveOperationFlag)
+      history.push('/auth-server/clients')
+  }, [saveOperationFlag])
 
   if (!clientData.attributes) {
     clientData.attributes = {}
   }
   scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
-  const history = useHistory()
+
   function handleSubmit(data) {
     if (data) {
       buildPayload(userAction, data.action_message, data)
       dispatch(editClient(userAction))
-      history.push('/auth-server/clients')
     }
   }
 
   return (
     <GluuLoader blocking={loading}>
+      <GluuAlert
+        severity={t(titles.error)}
+        message={t(messages.error_in_saving)}
+        show={errorInSaveOperationFlag}
+      />
       <ClientWizardForm
         client_data={clientData}
         view_only={view_only}
@@ -69,6 +84,8 @@ const mapStateToProps = (state) => {
     scripts: state.initReducer.scripts,
     permissions: state.authReducer.permissions,
     oidcConfiguration: state.oidcDiscoveryReducer.configuration,
+    saveOperationFlag: state.oidcReducer.saveOperationFlag,
+    errorInSaveOperationFlag: state.oidcReducer.errorInSaveOperationFlag,
   }
 }
 export default connect(mapStateToProps)(ClientEditPage)
