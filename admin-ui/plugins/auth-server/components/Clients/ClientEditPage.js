@@ -59,8 +59,8 @@ function ClientEditPage({
   return (
     <GluuLoader blocking={loading}>
       <GluuAlert
-        severity={t(titles.error)}
-        message={t(messages.error_in_saving)}
+        severity={t('titles.error')}
+        message={t('messages.error_in_saving')}
         show={errorInSaveOperationFlag}
       />
       <ClientWizardForm
