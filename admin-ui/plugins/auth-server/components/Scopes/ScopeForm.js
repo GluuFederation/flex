@@ -32,7 +32,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     .filter((item) => item.scriptType == 'DYNAMIC_SCOPE')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
-  claims = attributes.map((item) => ({ dn: item.dn, name: item.name }))
+  claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName }))
+
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   const [showClaimsPanel, handleClaimsPanel] = useState(
