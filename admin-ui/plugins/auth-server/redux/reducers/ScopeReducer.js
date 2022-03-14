@@ -20,6 +20,8 @@ const INIT_STATE = {
   items: [],
   item: {},
   loading: false,
+  saveOperationFlag: false,
+  errorInSaveOperationFlag: false,
 }
 
 const reducerName = 'scopeReducer'
@@ -73,9 +75,16 @@ export default function scopeReducer(state = INIT_STATE, action) {
           ...state,
           items: [...state.items],
           loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: false,
         }
       } else {
-        return handleDefault()
+        return {
+          ...state,
+          loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: true,
+        }
       }
 
     case EDIT_SCOPE:
@@ -87,9 +96,16 @@ export default function scopeReducer(state = INIT_STATE, action) {
           ...state,
           items: [...state.items],
           loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: false,
         }
       } else {
-        return handleDefault()
+        return {
+          ...state,
+          loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: true,
+        }
       }
     case DELETE_SCOPE:
       return handleLoading()
@@ -123,12 +139,16 @@ export default function scopeReducer(state = INIT_STATE, action) {
     return {
       ...state,
       loading: true,
+      saveOperationFlag: false,
+      errorInSaveOperationFlag: false,
     }
   }
   function handleDefault() {
     return {
       ...state,
       loading: false,
+      saveOperationFlag: false,
+      errorInSaveOperationFlag: false,
     }
   }
 }
