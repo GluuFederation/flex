@@ -94,7 +94,7 @@ admin-ui:
     # -- Image  to use for deploying.
     repository: gluufederation/admin-ui
     # -- Image  tag to use for deploying.
-    tag: 1.0.0-beta.16
+    tag: 1.0.0-0
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -289,7 +289,7 @@ casa:
     # -- Image  to use for deploying.
     repository: gluufederation/casa
     # -- Image  tag to use for deploying.
-    tag: 5.0.0_dev
+    tag: 5.0.0-0
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
