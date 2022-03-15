@@ -20,7 +20,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
   const contacts = []
   const claimRedirectURI = []
   const requestUris = []
-  const authorizedOrigins = client.authorizedOrigins || []
+  const authorizedOrigins = []
   scripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
     .filter((item) => item.enabled)
@@ -167,12 +167,13 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         <GluuLabel label="fields.show_software_settings" size={6} />
         <Col sm={2}>
           <Toggle
-            defaultChecked={softwareSection}
-            onChange={handleSoftwareSection}
+            name="softwareSection"
+            defaultChecked={client.softwareSection}
+            onChange={formik.handleChange}
           />
         </Col>
       </FormGroup>
-      {softwareSection && (
+      {client.softwareSection && (
         <GluuInputRow
           label="fields.softwareId"
           name="softwareId"
@@ -181,7 +182,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
           doc_category={DOC_CATEGORY}
         />
       )}
-      {softwareSection && (
+      {client.softwareSection && (
         <GluuInputRow
           label="fields.softwareVersion"
           name="softwareVersion"
@@ -190,7 +191,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
           doc_category={DOC_CATEGORY}
         />
       )}
-      {softwareSection && (
+      {client.softwareSection && (
         <GluuInputRow
           label="fields.softwareStatement"
           name="softwareStatement"
@@ -202,10 +203,14 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
       <FormGroup row>
         <GluuLabel label="fields.show_ciba_settings" size={6} />
         <Col sm={6}>
-          <Toggle defaultChecked={cibaSection} onChange={handleCibaSection} />
+          <Toggle
+            name="cibaSection"
+            defaultChecked={client.cibaSection}
+            onChange={formik.handleChange}
+          />
         </Col>
       </FormGroup>
-      {cibaSection && (
+      {client.cibaSection && (
         <GluuSelectRow
           name="backchannelTokenDeliveryMode"
           label="fields.backchannelTokenDeliveryMode"
@@ -215,7 +220,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
           doc_category={DOC_CATEGORY}
         ></GluuSelectRow>
       )}
-      {cibaSection && (
+      {client.cibaSection && (
         <GluuInputRow
           label="fields.backchannelClientNotificationEndpoint"
           name="backchannelClientNotificationEndpoint"
@@ -224,7 +229,7 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
           doc_category={DOC_CATEGORY}
         />
       )}
-      {cibaSection && (
+      {client.cibaSection && (
         <GluuToogleRow
           name="backchannelUserCodeParameter"
           formik={formik}

@@ -141,12 +141,12 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         name="expirable"
         formik={formik}
         label="fields.is_expirable_client"
-        value={expirable}
+        value={client.expirable && client.expirable.length ? true : false}
         handler={handleExpirable}
         doc_category={DOC_CATEGORY}
       />
 
-      {expirable && (
+      {client.expirable && client.expirable.length && (
         <FormGroup row>
           <GluuLabel label="client_expiration_date" size={5} />
           <Col sm={7}>
@@ -156,12 +156,12 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
               showTimeSelect
               dateFormat="yyyy-MM-dd HH:mm:aa"
               timeFormat="HH:mm:aa"
-              selected={expDate}
+              selected={client.expirationDate}
               peekNextMonth
               showMonthDropdown
               showYearDropdown
               dropdownMode="select"
-              onChange={(date) => setExpDate(date)}
+              onChange={(e) => formik.setFieldValue('expirationDate', e)}
             />
           </Col>
         </FormGroup>

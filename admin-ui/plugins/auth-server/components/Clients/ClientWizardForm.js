@@ -115,7 +115,7 @@ function ClientWizardForm({
     }
     return total.filter((item) => partial.includes(item.dn)) || []
   }
-  client.description = extractDescription(client.customAttributes || [])
+  // client.description = extractDescription(client.customAttributes || [])
   client.spontaneousScopes =
     getMapping(client.attributes.spontaneousScopes, scopes) || []
   client.introspectionScripts =
@@ -133,19 +133,19 @@ function ClientWizardForm({
     getMapping(client.attributes.postAuthnScripts, postScripts) || []
   client.rptClaimsScripts =
     getMapping(client.attributes.rptClaimsScripts, rptScripts) || []
-  client.tlsClientAuthSubjectDn = client.attributes.tlsClientAuthSubjectDn
-  client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
-    client.attributes
-      .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims ||
-    false
-  client.backchannelLogoutSessionRequired =
-    client.attributes.backchannelLogoutSessionRequired || false
-  client.keepClientAuthorizationAfterExpiration =
-    client.attributes.keepClientAuthorizationAfterExpiration || false
-  client.allowSpontaneousScopes =
-    client.attributes.allowSpontaneousScopes || false
-  client.additionalAudience = client.attributes.additionalAudience || []
-  client.backchannelLogoutUri = client.attributes.backchannelLogoutUri
+  // client.tlsClientAuthSubjectDn = client.attributes.tlsClientAuthSubjectDn
+  // client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
+  //   client.attributes
+  //     .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims ||
+  //   false
+  // client.backchannelLogoutSessionRequired =
+  //   client.attributes.backchannelLogoutSessionRequired || false
+  // client.keepClientAuthorizationAfterExpiration =
+  //   client.attributes.keepClientAuthorizationAfterExpiration || false
+  // client.allowSpontaneousScopes =
+  //   client.attributes.allowSpontaneousScopes || false
+  // client.additionalAudience = client.attributes.additionalAudience || []
+  // client.backchannelLogoutUri = client.attributes.backchannelLogoutUri
 
   const initialValues = {
     inum: client.inum,
@@ -164,9 +164,13 @@ function ClientWizardForm({
     tosUri: client.tosUri,
     jwksUri: client.jwksUri,
     jwks: client.jwks,
+    expirable: [],
+    expirationDate: new Date(),
     softwareStatement: client.softwareStatement,
     softwareVersion: client.softwareVersion,
     softwareId: client.softwareId,
+    softwareSection: client.softwareSection ? client.softwareSection : false,
+    cibaSection: client.cibaSection ? client.cibaSection : false,
     idTokenSignedResponseAlg: client.idTokenSignedResponseAlg,
     idTokenEncryptedResponseAlg: client.idTokenEncryptedResponseAlg,
     tokenEndpointAuthMethod: client.tokenEndpointAuthMethod,
