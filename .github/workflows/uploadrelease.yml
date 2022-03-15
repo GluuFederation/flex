@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   publish:
-    name: Publish for ${{ matrix.os }}
+    name: Publish for ${{ matrix.asset_name }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -27,7 +27,7 @@ jobs:
             # flex linux setup on CentOS8
           - os: ubuntu-latest
             artifact_name: flex-linux-setup.pyz
-            asset_name: flex-linux-setup-centos8-amd64.pyz
+            asset_name: flex-linux-setup-centos-amd64.pyz
             asset_directory: flex-linux-setup
             python_version: 3.8
             # helm chart
@@ -44,15 +44,30 @@ jobs:
       uses: actions/setup-python@v3.0.0
       with:
         python-version: 3.8
+
+    - name: Build Helm Package
+      if: matrix.asset_name == 'helm'
+      run: |
+
+        cd ${{ matrix.asset_directory }}
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+        helm package .
+        ASSET_NAME=$(ls ${{github.workspace}}/${{ matrix.asset_directory }} | grep ".tgz" | grep -Ev "sha256sum" | sort -rn | head -1)
+        sha256sum ${ASSET_NAME} > ${ASSET_NAME}.sha256sum
+
     - name: Map outputs
       id: output
       run: |
-        echo ::set-output name=artifact_name::${{ matrix.artifact_name }}
-        echo ::set-output name=asset_name::${{ matrix.asset_name }}
-        ASSET_NAME=$(ls | grep ".tgz" | sort -rn | head -1)
-        if [[ "${{ matrix.asset_directory }}" == "flex-cn-setup/pygluu/kubernetes/templates/helm/gluu" ]]; then
+        if [[ "${{ matrix.asset_name }}" == "helm" ]]; then
+          ASSET_NAME=$(ls ${{github.workspace}}/${{ matrix.asset_directory }} | grep ".tgz" | grep -Ev "sha256sum" | sort -rn | head -1)
+          echo "Modifying helm asset name to ${ASSET_NAME}"
           echo ::set-output name=artifact_name::${ASSET_NAME}
           echo ::set-output name=asset_name::${ASSET_NAME}     
+        else
+          echo ::set-output name=artifact_name::${{ matrix.artifact_name }}
+          echo ::set-output name=asset_name::${{ matrix.asset_name }}
         fi
         echo "::set-output name=tag::$(curl https://api.github.com/repos/${{ github.repository }}/releases -s | grep "tag_name" | cut -d '"' -f 4 | grep -o '^\v.*' | head -n 1)"
 
@@ -69,63 +84,46 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Checkout code
-      uses: actions/checkout@master
-
     - name: Build Zipapp
-      if: matrix.asset_name != 'flex-linux-setup-centos8-amd64.pyz'
+      if: matrix.asset_name != 'flex-linux-setup-centos8-amd64.pyz' && matrix.asset_name != 'helm'
       run: |
         sudo apt-get update || brew install jq
         sudo apt-get install build-essential || echo "Maybe im on macos OS"
         pip3 install shiv
         cd ${{ matrix.asset_directory }}
-        if [[ "${{ matrix.asset_directory }}" == "flex-cn-setup/pygluu/kubernetes/templates/helm/gluu" ]]; then
-          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-          chmod 700 get_helm.sh
-          ./get_helm.sh
-          helm package .
-          sha256sum ${{ steps.output.outputs.artifact_name }} > ${{ steps.output.outputs.artifact_name }}.sha256sum
-        else
-          make zipapp
-          sha256sum ${{ steps.output.outputs.artifact_name }} > ${{ steps.output.outputs.artifact_name }}.sha256sum
-        fi
+        make zipapp
+        sha256sum ${{ steps.output.outputs.artifact_name }} > ${{ steps.output.outputs.artifact_name }}.sha256sum
+        ls
 
     - uses: addnab/docker-run-action@v3
       if: matrix.asset_name == 'flex-linux-setup-centos8-amd64.pyz'
       name: Build with CentOS8
       continue-on-error: true
       with:
-        image: centos:centos8
+        image: centos/python-36-centos7:latest
         options: -v ${{ github.workspace }}:/centos
         run: |
-          yum install python36u python36u-devel python36u-pip -y
-          yum install gcc openssl-devel bzip2-devel libffi-devel zlib-devel -y
-          curl https://www.python.org/ftp/python/3.6.15/Python-3.6.15.tgz --output Python-3.6.15.tgz
-          tar xzf Python-3.6.15.tgz
-          cd Python-3.6.15
-          ./configure --enable-optimizations
-          yum install make -y
-          make altinstall
-          yum -y install epel-release
-          curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
-          python3.7 get-pip.py
           echo "Building flex-linux-setup package"
           cd /centos/flex-linux-setup
           pip install shiv
           make zipapp
           sha256sum ${{ steps.output.outputs.artifact_name }} > ${{ steps.output.outputs.artifact_name }}.sha256sum
+          ls
 
     - name: Get latest tag
       id: previoustag
       run: |
         echo "::set-output name=tag::$(curl https://api.github.com/repos/${{ github.repository }}/releases -s | grep "tag_name" | cut -d '"' -f 4 | grep -o '^\v.*' | head -n 1)"
 
-    - name: Print Version
+    - name: Print outputs
       run: |
         echo "${{ steps.previoustag.outputs.tag }}"
+        echo "${{ steps.output.outputs.asset_name }}"
+        echo "${{ steps.output.outputs.artifact_name }}"
 
 
     - name: Upload binaries to release
+      continue-on-error: true
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
@@ -134,6 +132,7 @@ jobs:
         tag: ${{ steps.previoustag.outputs.tag }}
 
     - name: Upload shas to release
+      continue-on-error: true
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
