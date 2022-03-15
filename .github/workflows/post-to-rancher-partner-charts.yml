@@ -8,7 +8,7 @@ on:
 jobs:
   publish:
     name: Publish on rancher partner charts
-    runs-on: ubuntu-latest we
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@master
