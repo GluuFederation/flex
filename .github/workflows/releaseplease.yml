@@ -115,7 +115,7 @@ jobs:
          package-name: ${{ matrix.node-projects }}
          monorepo-tags: true
   mega-release-pr:
-    needs: release-python-pr
+    needs: release-node-pr
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -142,5 +142,5 @@ jobs:
     - uses: google-github-actions/release-please-action@v3.1
       id: release-please
       with:
-         token: ${{ secrets.MOAUTO3_WORKFLOW_TOKEN }}
+         token: ${{ secrets.MOWORKFLOWTOKEN }}
          release-type: simple
