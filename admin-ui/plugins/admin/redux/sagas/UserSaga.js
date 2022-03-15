@@ -19,7 +19,7 @@ import UserApi from '../api/UserApi'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
-import { updateUserResponse } from '../actions/UserActions'
+import { updateUserResponse, UMupdateUserLoading } from '../actions/UserActions'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -35,15 +35,12 @@ export function* getUsersSaga({ payload }) {
   try {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
-    console.log('Called')
-    const data = yield call(userApi.getUsers, payload)
+    const data = yield call(userApi.getUsers)
     yield put(updateUserResponse(data))
-    console.log(data)
-    // yield put(getMappingResponse(data))
+    yield put(UMupdateUserLoading(false))
     yield call(postUserAction, audit)
   } catch (e) {
-    console.log(e)
-    // yield put(getMappingResponse(null))
+    yield put(UMupdateUserLoading(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

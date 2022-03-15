@@ -231,7 +231,10 @@
     "binaryAttributes": "Binary Attributes",
     "certificateAttributes": "Certificate Attributes",
     "role": "Role",
-    "deletable": "Deletable"
+    "deletable": "Deletable",
+    "email": "Email",
+    "userName": "User Name",
+    "nickName": "Nick Name"
   },
   "languages": {
     "french": "French",
@@ -302,7 +305,8 @@
     "request_waiting_message": "Performing the request, please wait!",
     "resource_not_found_message": "The requested resource doesn't exist on this server. Please contact the site administrator or the support team.",
     "resource_not_found_title": "Resource not found",
-    "view_client_details": "View client details"
+    "view_client_details": "View client details",
+    "add_new_user": "Add User"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
@@ -402,7 +406,8 @@
     "permissions": "Config API Permissions",
     "scopes": "OpenID/OAuth Scopes",
     "scripts": "Custom Interception Scripts",
-    "schemaName": "Schema Name"
+    "schemaName": "Schema Name",
+    "user_management": "User Management"
   },
   "links": {
     "support": "https://support.gluu.org/"

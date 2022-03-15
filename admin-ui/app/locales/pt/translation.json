@@ -222,8 +222,11 @@
     "customerEmail": "Email do cliente",
     "customerName": "nome do cliente",
     "licenseDetails": "Detalhes da licença",
-    "role": "Role",
-    "deletable": "Deletable"
+    "role": "Função",
+    "deletable": "Apagável",
+    "email": "E-mail",
+    "userName": "Nome do usuário",
+    "nickName": "Apelido"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
@@ -250,7 +253,8 @@
     "request_waiting_message": "Executando a solicitação, aguarde!",
     "resource_not_found_message": "O recurso solicitado não existe neste servidor. Entre em contato com o administrador do site ou com a equipe de suporte.",
     "resource_not_found_title": "Recurso não encontrado",
-    "view_client_details": "Ver detalhes do cliente"
+    "view_client_details": "Ver detalhes do cliente",
+    "add_new_user": "Adicionar usuário"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
@@ -332,7 +336,8 @@
     "roles": "Funções AdminUI",
     "scopes": "Scopes",
     "scripts": "Scripts",
-    "schemaName": "Nome do esquema"
+    "schemaName": "Nome do esquema",
+    "user_management": "Gerenciamento de usuários"
   },
   "links": {
     "support": "https://support.gluu.org/"

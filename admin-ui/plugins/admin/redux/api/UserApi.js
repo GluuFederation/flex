@@ -5,9 +5,7 @@ export default class UserApi {
 
   getUsers = () => {
     return new Promise((resolve, reject) => {
-      this.api.getScimUsers((error, data) => {
-        console.log('API', data)
-        console.log('API', error)
+      this.api.getScimUsers({}, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
       })
     })
