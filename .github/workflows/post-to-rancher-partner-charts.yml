@@ -37,7 +37,7 @@ jobs:
         # open branch in rancher-partner
         git clone https://github.com/rancher/partner-charts.git
         cd partner-charts
-        git remote set-url origin https://mo-auto:${{ secrets.MOWORKFLOWTOKEN }}@github.com/rancher/partner-charts.git
+        git remote add origin .
         git switch -c gluu-flex-main-source origin/main-source
         cp ../automation/rancher-partner-charts/package.yaml ./packages/gluu/package.yaml
         export PACKAGE=gluu
@@ -54,7 +54,7 @@ jobs:
         make charts
         git add -A
         git commit -S -s -m "feat(gluu): chart helm package"
-        git push gluu-flex-main-source
+        git push --set-upstream origin gluu-flex-main-source
         MESSAGE="feat(gluu): update Gluu helm partner chart"
         BODY="This is an automated message propagated by a release in the parent Gluu chart."
         echo "${{ secrets.MOAUTO4_WORKFLOW_TOKEN }}" > token.txt
