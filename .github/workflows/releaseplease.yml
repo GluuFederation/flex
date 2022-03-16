@@ -11,7 +11,7 @@ jobs:
         simple: [ "docker-casa", "docker-admin-ui", "casa"]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
@@ -49,7 +49,7 @@ jobs:
         python-projects: ["flex-cn-setup", "flex-linux-setup"]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
@@ -87,7 +87,7 @@ jobs:
         node-projects: ["admin-ui"]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
