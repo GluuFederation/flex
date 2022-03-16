@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container} from '../../../../app/components'
+import { Container } from '../../../../app/components'
 import GluuBooleanSelectBox from '../../../../app/routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
