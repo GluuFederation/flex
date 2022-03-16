@@ -37,7 +37,7 @@ jobs:
         git clone  https://mo-auto:${{ secrets.MOWORKFLOWTOKEN }}@github.com/mo-auto/partner-charts.git
         git config --global user.name "mo-auto"
         git config --global user.email "54212639+mo-auto@users.noreply.github.com"
-        #git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
+        git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
         cd partner-charts
         git remote add upstream https://github.com/rancher/partner-charts.git
         git fetch upstream
