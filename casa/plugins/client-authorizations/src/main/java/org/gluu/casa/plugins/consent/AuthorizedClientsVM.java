@@ -3,7 +3,6 @@ package org.gluu.casa.plugins.consent;
 import org.gluu.casa.core.model.Client;
 import org.gluu.casa.core.model.Scope;
 import org.gluu.casa.plugins.consent.service.ClientAuthorizationsService;
-import org.gluu.casa.plugins.consent.service.ClientService;
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.service.ISessionContext;
 import org.gluu.casa.ui.UIUtils;
@@ -30,7 +29,6 @@ public class AuthorizedClientsVM {
     private ISessionContext sessionContext;
 
     private User user;
-    private ClientService clientService;
     private ClientAuthorizationsService caService;
     private Map<Client, Set<Scope>> clients;
 
@@ -43,12 +41,7 @@ public class AuthorizedClientsVM {
         logger.info("Authorized Clients ViewModel inited");
         user = sessionContext.getLoggedUser();
         caService = new ClientAuthorizationsService();
-        clientService = new ClientService();
         reloadClients();
-    }
-
-    public String getAssociatedPeopleAsCSV(Client client) {
-        return clientService.getAssociatedPeople(client).stream().collect(Collectors.joining(", "));
     }
 
     public String getContactEmailsAsCSV(Client client) {
