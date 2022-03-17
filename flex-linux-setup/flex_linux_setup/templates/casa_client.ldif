@@ -5,7 +5,7 @@ objectClass: jansClnt
 del: false
 displayName: Client for Casa
 inum: %(casa_client_id)s
-jansAccessTknAsJwt: true
+jansAccessTknAsJwt: false
 jansAccessTknSigAlg: RS256
 jansAppTyp: web
 jansClntSecret: %(casa_client_encoded_pw)s
