@@ -15,23 +15,31 @@ import GluuTooltip from '../../../../../app/routes/Apps/Gluu/GluuTooltip'
 import applicationStyle from '../../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import {
   hasPermission,
+  buildPayload,
   ACR_READ,
   ACR_WRITE,
 } from '../../../../../app/utils/PermChecker'
-import { SIMPLE_PASSWORD_AUTH } from '../../../common/Constants'
+import {
+  getScripts,
+} from '../../../../../app/redux/actions/InitActions'
+import { SIMPLE_PASSWORD_AUTH, FETCHING_SCRIPTS } from '../../../common/Constants'
 import GluuViewWrapper from '../../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
 
 function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
   const { t } = useTranslation()
+  const userAction = {}
+  const options = {}
   const authScripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
     .filter((item) => item.enabled)
     .map((item) => item.name)
   authScripts.push(SIMPLE_PASSWORD_AUTH)
   useEffect(() => {
+    buildPayload(userAction, FETCHING_SCRIPTS, options)
     dispatch(getAcrsConfig())
+    dispatch(getScripts(userAction))
   }, [])
   const initialValues = {
     defaultAcr: acrs.defaultAcr,
@@ -98,7 +106,7 @@ const mapStateToProps = (state) => {
     acrs: state.acrReducer.acrs,
     loading: state.acrReducer.loading,
     permissions: state.authReducer.permissions,
-    scripts: state.customScriptReducer.items,
+    scripts: state.initReducer.scripts,
   }
 }
 
