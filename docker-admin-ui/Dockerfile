@@ -28,7 +28,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=0b2ed93cadcf031c5f92c050192f0b0c6f1a0918
+ENV ADMIN_UI_VERSION=2a4a7fcb16554d23ea0ff599d46f86b9de292e30
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -122,7 +122,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 # misc stuff
 # ==========
 EXPOSE 8080
-LABEL name="Gluu Admin UI" \
+LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
     version="1.0.0" \
