@@ -18,13 +18,13 @@ import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
+import items from './scriptTypes'
 
 function CustomScriptForm({ item, scripts, handleSubmit }) {
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   const [scriptTypeState, setScriptTypeState] = useState(item.scriptType)
-  const scriptTypes = [...new Set(scripts.map((anItem) => anItem.scriptType))]
   const [scriptPath, setScriptPath] = useState(() =>
   {
     if (!item.moduleProperties) {
@@ -293,10 +293,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 }}
               >
                 <option value="">{t('options.choose')}...</option>
-                {scriptTypes.map((itemCandidate, index) => (
-                  <option key={index} value={itemCandidate}>
-                    {itemCandidate}
-                  </option>
+                {items.map((ele, item) => (
+                  <option key={index} value={ele.name}>{ele.name}</option>
                 ))}
               </CustomInput>
             </InputGroup>

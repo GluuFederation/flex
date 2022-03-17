@@ -92,6 +92,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
           limit={limit}
           typeId={TYPE_ID}
           patternId={PATTERN_ID}
+          scriptType={type}
           handler={handleOptionsChange}
         />
       ),
