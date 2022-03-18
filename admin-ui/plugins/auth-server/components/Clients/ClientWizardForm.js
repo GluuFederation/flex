@@ -85,36 +85,36 @@ function ClientWizardForm({
   function isComplete(stepId) {
     return sequence.indexOf(stepId) < sequence.indexOf(currentStep)
   }
-  function buildDescription(description) {
-    return {
-      name: DESCRIPTION,
-      multiValued: false,
-      values: [description],
-    }
-  }
-  function removeDecription(customAttributes) {
-    return customAttributes.filter((item) => item.name !== DESCRIPTION)
-  }
+  // function buildDescription(description) {
+  //   return {
+  //     name: DESCRIPTION,
+  //     multiValued: false,
+  //     values: [description],
+  //   }
+  // }
+  // function removeDecription(customAttributes) {
+  //   return customAttributes.filter((item) => item.name !== DESCRIPTION)
+  // }
   function submitForm(message) {
     commitMessage = message
     toggle()
     document.querySelector('button[type="submit"]').click()
   }
 
-  function extractDescription(customAttributes) {
-    var result = customAttributes.filter((item) => item.name === DESCRIPTION)
-    if (result && result.length >= 1) {
-      return result[0].values[0]
-    }
-    return ''
-  }
+  // function extractDescription(customAttributes) {
+  //   var result = customAttributes.filter((item) => item.name === DESCRIPTION)
+  //   if (result && result.length >= 1) {
+  //     return result[0].values[0]
+  //   }
+  //   return ''
+  // }
 
-  function getMapping(partial, total) {
-    if (!partial) {
-      partial = []
-    }
-    return total.filter((item) => partial.includes(item.dn)) || []
-  }
+  // function getMapping(partial, total) {
+  //   if (!partial) {
+  //     partial = []
+  //   }
+  //   return total.filter((item) => partial.includes(item.dn)) || []
+  // }
   // client.description = extractDescription(client.customAttributes || [])
   // client.spontaneousScopes =
   //   getMapping(client.attributes.spontaneousScopes, scopes) || []
@@ -216,7 +216,7 @@ function ClientWizardForm({
     defaultAcrValues: client.defaultAcrValues,
     scopes: client.scopes,
     oxAuthClaims: client.oxAuthClaims,
-    customAttributes: client.customAttributes,
+    // customAttributes: client.customAttributes,
     attributes: client.attributes,
     tlsClientAuthSubjectDn: client.attributes.tlsClientAuthSubjectDn,
     frontChannelLogoutSessionRequired: client.frontChannelLogoutSessionRequired,
@@ -237,7 +237,7 @@ function ClientWizardForm({
     rptClaimsScripts: client.attributes.rptClaimsScripts || [],
     additionalAudience: client.attributes.additionalAudience,
     backchannelLogoutUri: client.attributes.backchannelLogoutUri,
-    customObjectClasses: client.customObjectClasses,
+    customObjectClasses: client.customObjectClasses || [],
     requireAuthTime: client.requireAuthTime,
     trustedClient: client.trustedClient,
     persistClientAuthorizations: client.persistClientAuthorizations,
@@ -276,15 +276,15 @@ function ClientWizardForm({
           values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
           values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
           values[ATTRIBUTE].additionalAudience = values.additionalAudience
-          if (!values['customAttributes']) {
-            values['customAttributes'] = []
-          }
-          if (values[DESCRIPTION]) {
-            values['customAttributes'] = removeDecription(
-              values['customAttributes'],
-            )
-          }
-          values['customAttributes'].push(buildDescription(values[DESCRIPTION]))
+          // if (!values['customAttributes']) {
+          //   values['customAttributes'] = []
+          // }
+          // if (values[DESCRIPTION]) {
+          //   values['customAttributes'] = removeDecription(
+          //     values['customAttributes'],
+          //   )
+          // }
+          // values['customAttributes'].push(buildDescription(values[DESCRIPTION]))
           values['displayName'] = values['clientName']
           customOnSubmit(JSON.parse(JSON.stringify(values)))
         }}
