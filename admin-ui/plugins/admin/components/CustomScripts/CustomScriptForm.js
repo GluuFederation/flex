@@ -293,7 +293,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 }}
               >
                 <option value="">{t('options.choose')}...</option>
-                {items.map((ele, item) => (
+                {items.map((ele, index) => (
                   <option key={index} value={ele.name}>{ele.name}</option>
                 ))}
               </CustomInput>
