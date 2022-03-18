@@ -85,67 +85,11 @@ function ClientWizardForm({
   function isComplete(stepId) {
     return sequence.indexOf(stepId) < sequence.indexOf(currentStep)
   }
-  // function buildDescription(description) {
-  //   return {
-  //     name: DESCRIPTION,
-  //     multiValued: false,
-  //     values: [description],
-  //   }
-  // }
-  // function removeDecription(customAttributes) {
-  //   return customAttributes.filter((item) => item.name !== DESCRIPTION)
-  // }
   function submitForm(message) {
     commitMessage = message
     toggle()
     document.querySelector('button[type="submit"]').click()
   }
-
-  // function extractDescription(customAttributes) {
-  //   var result = customAttributes.filter((item) => item.name === DESCRIPTION)
-  //   if (result && result.length >= 1) {
-  //     return result[0].values[0]
-  //   }
-  //   return ''
-  // }
-
-  // function getMapping(partial, total) {
-  //   if (!partial) {
-  //     partial = []
-  //   }
-  //   return total.filter((item) => partial.includes(item.dn)) || []
-  // }
-  // client.description = extractDescription(client.customAttributes || [])
-  // client.spontaneousScopes =
-  //   getMapping(client.attributes.spontaneousScopes, scopes) || []
-  // client.introspectionScripts =
-  //   getMapping(client.attributes.introspectionScripts, instrospectionScripts) ||
-  //   []
-  // client.spontaneousScopeScriptDns =
-  //   getMapping(
-  //     client.attributes.spontaneousScopeScriptDns,
-  //     spontaneousScripts,
-  //   ) || []
-  // client.consentGatheringScripts =
-  //   getMapping(client.attributes.consentGatheringScripts, consentScripts) || []
-
-  // client.postAuthnScripts =
-  //   getMapping(client.attributes.postAuthnScripts, postScripts) || []
-  // client.rptClaimsScripts =
-  //   getMapping(client.attributes.rptClaimsScripts, rptScripts) || []
-  // client.tlsClientAuthSubjectDn = client.attributes.tlsClientAuthSubjectDn
-  // client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
-  //   client.attributes
-  //     .runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims ||
-  //   false
-  // client.backchannelLogoutSessionRequired =
-  //   client.attributes.backchannelLogoutSessionRequired || false
-  // client.keepClientAuthorizationAfterExpiration =
-  //   client.attributes.keepClientAuthorizationAfterExpiration || false
-  // client.allowSpontaneousScopes =
-  //   client.attributes.allowSpontaneousScopes || false
-  // client.additionalAudience = client.attributes.additionalAudience || []
-  // client.backchannelLogoutUri = client.attributes.backchannelLogoutUri
 
   const initialValues = {
     inum: client.inum,
@@ -216,7 +160,6 @@ function ClientWizardForm({
     defaultAcrValues: client.defaultAcrValues,
     scopes: client.scopes,
     oxAuthClaims: client.oxAuthClaims,
-    // customAttributes: client.customAttributes,
     attributes: client.attributes,
     tlsClientAuthSubjectDn: client.attributes.tlsClientAuthSubjectDn,
     frontChannelLogoutSessionRequired: client.frontChannelLogoutSessionRequired,
@@ -276,15 +219,6 @@ function ClientWizardForm({
           values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
           values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
           values[ATTRIBUTE].additionalAudience = values.additionalAudience
-          // if (!values['customAttributes']) {
-          //   values['customAttributes'] = []
-          // }
-          // if (values[DESCRIPTION]) {
-          //   values['customAttributes'] = removeDecription(
-          //     values['customAttributes'],
-          //   )
-          // }
-          // values['customAttributes'].push(buildDescription(values[DESCRIPTION]))
           values['displayName'] = values['clientName']
           customOnSubmit(JSON.parse(JSON.stringify(values)))
         }}
