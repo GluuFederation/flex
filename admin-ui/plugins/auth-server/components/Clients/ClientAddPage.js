@@ -64,7 +64,7 @@ function ClientAddPage({
     trustedClient: false,
     persistClientAuthorizations: false,
     customAttributes: [],
-    customObjectClasses: ['top'],
+    customObjectClasses: [],
     rptAsJwt: false,
     accessTokenAsJwt: false,
     backchannelUserCodeParameter: false,
