@@ -110,7 +110,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
                 id="clientSecret"
                 name="clientSecret"
                 type={showClientSecret ? 'text' : 'password'}
-                defaultValue={client.clientSecret}
+                value={client.clientSecret}
                 onChange={formik.handleChange}
               />
               <IconButton
@@ -137,15 +137,16 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         value={!client.disabled}
         doc_category={DOC_CATEGORY}
       />
-      <GluuToogleRow
-        name="expirable"
-        formik={formik}
-        label="fields.is_expirable_client"
-        value={client.expirable && client.expirable.length ? true : false}
-        handler={handleExpirable}
-        doc_category={DOC_CATEGORY}
-      />
-
+      {client.expirable && (
+        <GluuToogleRow
+          name="expirable"
+          formik={formik}
+          label="fields.is_expirable_client"
+          value={client.expirable && client.expirable.length ? true : false}
+          handler={handleExpirable}
+          doc_category={DOC_CATEGORY}
+        />
+      )}
       {client.expirable && client.expirable.length && (
         <FormGroup row>
           <GluuLabel label="client_expiration_date" size={5} />

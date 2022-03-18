@@ -116,23 +116,23 @@ function ClientWizardForm({
     return total.filter((item) => partial.includes(item.dn)) || []
   }
   // client.description = extractDescription(client.customAttributes || [])
-  client.spontaneousScopes =
-    getMapping(client.attributes.spontaneousScopes, scopes) || []
-  client.introspectionScripts =
-    getMapping(client.attributes.introspectionScripts, instrospectionScripts) ||
-    []
-  client.spontaneousScopeScriptDns =
-    getMapping(
-      client.attributes.spontaneousScopeScriptDns,
-      spontaneousScripts,
-    ) || []
-  client.consentGatheringScripts =
-    getMapping(client.attributes.consentGatheringScripts, consentScripts) || []
+  // client.spontaneousScopes =
+  //   getMapping(client.attributes.spontaneousScopes, scopes) || []
+  // client.introspectionScripts =
+  //   getMapping(client.attributes.introspectionScripts, instrospectionScripts) ||
+  //   []
+  // client.spontaneousScopeScriptDns =
+  //   getMapping(
+  //     client.attributes.spontaneousScopeScriptDns,
+  //     spontaneousScripts,
+  //   ) || []
+  // client.consentGatheringScripts =
+  //   getMapping(client.attributes.consentGatheringScripts, consentScripts) || []
 
-  client.postAuthnScripts =
-    getMapping(client.attributes.postAuthnScripts, postScripts) || []
-  client.rptClaimsScripts =
-    getMapping(client.attributes.rptClaimsScripts, rptScripts) || []
+  // client.postAuthnScripts =
+  //   getMapping(client.attributes.postAuthnScripts, postScripts) || []
+  // client.rptClaimsScripts =
+  //   getMapping(client.attributes.rptClaimsScripts, rptScripts) || []
   // client.tlsClientAuthSubjectDn = client.attributes.tlsClientAuthSubjectDn
   // client.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
   //   client.attributes
@@ -150,7 +150,7 @@ function ClientWizardForm({
   const initialValues = {
     inum: client.inum,
     dn: client.dn,
-    clientSecret: client.secret,
+    clientSecret: client.clientSecret,
     displayName: client.displayName,
     clientName: client.clientName,
     description: client.description,
@@ -164,13 +164,21 @@ function ClientWizardForm({
     tosUri: client.tosUri,
     jwksUri: client.jwksUri,
     jwks: client.jwks,
-    expirable: [],
+    expirable: client.expirationDate ? ['on'] : [],
     expirationDate: client.expirationDate,
     softwareStatement: client.softwareStatement,
     softwareVersion: client.softwareVersion,
     softwareId: client.softwareId,
-    softwareSection: client.softwareSection ? client.softwareSection : false,
-    cibaSection: client.cibaSection ? client.cibaSection : false,
+    softwareSection:
+      client.softwareId || client.softwareVersion || client.softwareStatement
+        ? true
+        : false,
+    cibaSection:
+      client.backchannelTokenDeliveryMode ||
+      client.backchannelClientNotificationEndpoint ||
+      client.backchannelUserCodeParameter
+        ? true
+        : false,
     idTokenSignedResponseAlg: client.idTokenSignedResponseAlg,
     idTokenEncryptedResponseAlg: client.idTokenEncryptedResponseAlg,
     tokenEndpointAuthMethod: client.tokenEndpointAuthMethod,
@@ -220,12 +228,13 @@ function ClientWizardForm({
     keepClientAuthorizationAfterExpiration:
       client.attributes.keepClientAuthorizationAfterExpiration,
     allowSpontaneousScopes: client.attributes.allowSpontaneousScopes,
-    spontaneousScopes: client.spontaneousScopes,
-    introspectionScripts: client.introspectionScripts,
-    spontaneousScopeScriptDns: client.spontaneousScopeScriptDns,
-    consentGatheringScripts: client.consentGatheringScripts,
-    postAuthnScripts: client.postAuthnScripts,
-    rptClaimsScripts: client.rptClaimsScripts,
+    spontaneousScopes: client.attributes.spontaneousScopes || [],
+    introspectionScripts: client.attributes.introspectionScripts || [],
+    spontaneousScopeScriptDns:
+      client.attributes.spontaneousScopeScriptDns || [],
+    consentGatheringScripts: client.attributes.consentGatheringScripts || [],
+    postAuthnScripts: client.attributes.postAuthnScripts || [],
+    rptClaimsScripts: client.attributes.rptClaimsScripts || [],
     additionalAudience: client.attributes.additionalAudience,
     backchannelLogoutUri: client.attributes.backchannelLogoutUri,
     customObjectClasses: client.customObjectClasses,
