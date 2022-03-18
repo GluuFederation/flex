@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2022-03-09 20:14'
+ENV GLUU_BUILD_DATE='2022-03-17 11:52'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -155,7 +155,7 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
 # misc stuff
 # ==========
 
-LABEL name="Casa" \
+LABEL name="gluufederation/casa" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
     version="5.0.0" \
