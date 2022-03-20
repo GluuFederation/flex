@@ -1,4 +1,4 @@
-FROM node:14.18.2-alpine3.14
+FROM node:14.19.1-alpine3.14
 
 # ======
 # alpine
