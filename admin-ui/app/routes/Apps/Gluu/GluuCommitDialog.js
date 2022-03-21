@@ -44,9 +44,14 @@ const GluuCommitDialog = ({
     setLoading(true)
     onAccept(userMessage)
   }
+  const closeModal = () => {
+    handler()
+    setUserMessage('')
+  }
+
   return (
-    <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
-      <ModalHeader toggle={handler}>
+    <Modal isOpen={modal} toggle={closeModal} className="modal-outline-primary">
+      <ModalHeader toggle={closeModal}>
         <i
           style={{ color: 'green' }}
           className="fa fa-2x fa-info fa-fw modal-icon mb-3"
@@ -80,9 +85,9 @@ const GluuCommitDialog = ({
                   ? t('placeholders.action_commit_message')
                   : placeholderLabel
               }
-              defaultValue=""
+              value={userMessage}
             />
-            {userMessage.length <= 10 && (
+            {userMessage.length < 10 && (
               <span className="text-danger">
                 {10 - userMessage.length} {userMessage.length ? ' more' : ''}{' '}
                 characters required
@@ -106,7 +111,7 @@ const GluuCommitDialog = ({
         <Button
           color="danger"
           style={applicationStyle.buttonStyle}
-          onClick={handler}
+          onClick={closeModal}
         >
           <i className="fa fa-remove mr-2"></i>
           {t('actions.no')}
