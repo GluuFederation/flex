@@ -196,6 +196,7 @@ function ClientWizardForm({
       keyEvent.preventDefault()
     }
   }
+
   return (
     <Container>
       <Formik
