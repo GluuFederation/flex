@@ -191,6 +191,12 @@ function ClientWizardForm({
     deletable: client.deletable,
     tokenBindingSupported: client.tokenBindingSupported,
   }
+  function onKeyDown(keyEvent) {
+    if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
+      keyEvent.preventDefault()
+    }
+  }
+
   return (
     <Container>
       <Formik
@@ -224,7 +230,7 @@ function ClientWizardForm({
         }}
       >
         {(formik) => (
-          <Form onSubmit={formik.handleSubmit}>
+          <Form onSubmit={formik.handleSubmit} onKeyDown={onKeyDown}>
             <Card>
               <CardBody className="d-flex justify-content-center pt-5">
                 <Wizard activeStep={currentStep} onStepChanged={changeStep}>
