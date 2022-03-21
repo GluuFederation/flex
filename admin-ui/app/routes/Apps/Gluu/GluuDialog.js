@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   FormGroup,
   Col,
@@ -15,23 +15,31 @@ import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
   const [active, setActive] = useState(false)
   const { t } = useTranslation()
+  const [userMessage, setUserMessage] = useState('')
 
-  function handleStatus() {
-    var value = document.getElementById('user_action_message').value
-    if (value.length >= 10) {
+  useEffect(() => {
+    if (userMessage.length >= 10) {
       setActive(true)
     } else {
       setActive(false)
     }
-  }
+  }, [userMessage])
 
   function handleAccept() {
-    onAccept(document.getElementById('user_action_message').value)
+    onAccept(userMessage)
+  }
+  const closeModal = () => {
+    handler()
+    setUserMessage('')
   }
   return (
     <>
-      <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
-        <ModalHeader toggle={handler}>
+      <Modal
+        isOpen={modal}
+        toggle={closeModal}
+        className="modal-outline-primary"
+      >
+        <ModalHeader toggle={closeModal}>
           <i
             style={{ color: 'red' }}
             className="fa fa-2x fa-warning fa-fw modal-icon mb-3"
@@ -46,10 +54,17 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
                 id="user_action_message"
                 type="textarea"
                 name="user_action_message"
-                onKeyUp={handleStatus}
+                onChange={(e) => setUserMessage(e.target.value)}
                 placeholder={t('placeholders.action_commit_message')}
                 defaultValue=""
+                value={userMessage}
               />
+              {userMessage.length < 10 && (
+                <span className="text-danger">
+                  {10 - userMessage.length} {userMessage.length ? ' more' : ''}{' '}
+                  characters required
+                </span>
+              )}
             </Col>
           </FormGroup>
         </ModalBody>
@@ -66,7 +81,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
           <Button
             color="secondary"
             style={applicationStyle.buttonStyle}
-            onClick={handler}
+            onClick={closeModal}
           >
             {t('actions.no')}
           </Button>
