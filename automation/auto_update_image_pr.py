@@ -43,16 +43,16 @@ def update_image(image, source_url_env, build_date_env):
 
 # This is a temp function until the dockerfile for the admin-ui starts using packages
 def update_git_commit():
-    dfparser = DockerfileParser(f'../docker-admin-ui')
-    repo = git.Repo("../")
+    dfparser = DockerfileParser(f'docker-admin-ui')
+    repo = git.Repo(".")
     commit = repo.head.commit
     print(commit)
     dfparser.envs["ADMIN_UI_VERSION"] = str(commit)
 
 
 def main():
-    docker_image_folders = [name for name in os.listdir("../") if
-                            os.path.isdir(os.path.join("../", name)) and "docker" in name]
+    docker_image_folders = [name for name in os.listdir(".") if
+                            (os.path.isdir(os.path.join("./", name)) and "docker" in name)]
 
     for image in docker_image_folders:
         try:
