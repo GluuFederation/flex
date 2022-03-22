@@ -46,13 +46,12 @@ def update_git_commit():
     dfparser = DockerfileParser(f'docker-admin-ui')
     repo = git.Repo(".")
     commit = repo.head.commit
-    print(commit)
     dfparser.envs["ADMIN_UI_VERSION"] = str(commit)
 
 
 def main():
-    docker_image_folders = [name for name in os.listdir(".") if
-                            (os.path.isdir(os.path.join("./", name)) and "docker" in name)]
+    docker_image_folders = [name for name in os.listdir("../") if
+                            os.path.isdir(os.path.join("../", name)) and "docker" in name]
 
     for image in docker_image_folders:
         try:
