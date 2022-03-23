@@ -2,14 +2,14 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../../../app/utils/TokenController'
+} from '../../utils/TokenController'
 import { getHealthStatusResponse } from '../actions/HealthAction'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
-import { postUserAction} from '../../../../app/redux/api/backend-api'
+import { getAPIAccessToken } from '../actions/AuthActions'
+import { postUserAction} from '../api/backend-api'
 import { GET_HEALTH } from '../actions/types'
 import HealthApi from '../api/HealthApi'
-import { getClient } from '../../../../app/redux/api/base'
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { getClient } from '../api/base'
+import { initAudit } from '../sagas/SagaUtils'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {

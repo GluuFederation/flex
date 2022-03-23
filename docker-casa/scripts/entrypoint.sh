@@ -42,6 +42,7 @@ exec java \
     -Dserver.base=/opt/jans/jetty/casa \
     -Dlog.base=/opt/jans/jetty/casa \
     -Dpython.home=/opt/jython \
+    -Djava.io.tmpdir=/opt/jetty/temp \
     -Dlog4j2.configurationFile=resources/log4j2.xml \
     ${CN_JAVA_OPTIONS} \
-    -jar /opt/jetty/start.jar
+    -jar /opt/jetty/start.jar jetty.httpConfig.sendServerVersion=false jetty.deploy.scanInterval=0

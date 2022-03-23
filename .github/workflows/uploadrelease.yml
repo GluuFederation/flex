@@ -7,28 +7,69 @@ on:
   workflow_dispatch:
 jobs:
   publish:
-    name: Publish for ${{ matrix.os }}
+    name: Publish for ${{ matrix.asset_name }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         include:
+            # pygluu kubernetes
           - os: ubuntu-latest
             artifact_name: pygluu-kubernetes.pyz
             asset_name: pygluu-kubernetes-linux-amd64.pyz
-          #- os: windows-latest
-          #  artifact_name: pygluu-kubernetes-windows
-          #  asset_name: pygluu-kubernetes-windows-amd64
-          - os: macos-latest
-            artifact_name: pygluu-kubernetes.pyz
-            asset_name: pygluu-kubernetes-macos-amd64.pyz
+            asset_directory: flex-cn-setup
+            python_version: 3.8
+            # flex linux setup
+          - os: ubuntu-latest
+            artifact_name: flex-linux-setup.pyz
+            asset_name: flex-linux-setup-ubuntu-amd64.pyz
+            asset_directory: flex-linux-setup
+            python_version: 3.8
+            # flex linux setup on CentOS8
+          - os: ubuntu-latest
+            artifact_name: flex-linux-setup.pyz
+            asset_name: flex-linux-setup-centos-amd64.pyz
+            asset_directory: flex-linux-setup
+            python_version: 3.8
+            # helm chart
+          - os: ubuntu-latest
+            artifact_name: helm # Will be changed automatically
+            asset_name: helm # Will be changed automatically
+            asset_directory: flex-cn-setup/pygluu/kubernetes/templates/helm/gluu
+            python_version: 3.8
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@master
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2.3.1
+      uses: actions/checkout@v3
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v3
       with:
-        python-version: 3.7
+        python-version: 3.8
+
+    - name: Build Helm Package
+      if: matrix.asset_name == 'helm'
+      run: |
+
+        cd ${{ matrix.asset_directory }}
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+        helm package .
+        ASSET_NAME=$(ls ${{github.workspace}}/${{ matrix.asset_directory }} | grep ".tgz" | grep -Ev "sha256sum" | sort -rn | head -1)
+        sha256sum ${ASSET_NAME} > ${ASSET_NAME}.sha256sum
+
+    - name: Map outputs
+      id: output
+      run: |
+        if [[ "${{ matrix.asset_name }}" == "helm" ]]; then
+          ASSET_NAME=$(ls ${{github.workspace}}/${{ matrix.asset_directory }} | grep ".tgz" | grep -Ev "sha256sum" | sort -rn | head -1)
+          echo "Modifying helm asset name to ${ASSET_NAME}"
+          echo ::set-output name=artifact_name::${ASSET_NAME}
+          echo ::set-output name=asset_name::${ASSET_NAME}     
+        else
+          echo ::set-output name=artifact_name::${{ matrix.artifact_name }}
+          echo ::set-output name=asset_name::${{ matrix.asset_name }}
+        fi
+        echo "::set-output name=tag::$(curl https://api.github.com/repos/${{ github.repository }}/releases -s | grep "tag_name" | cut -d '"' -f 4 | grep -o '^\v.*' | head -n 1)"
 
     - name: Install dependencies
       run: |
@@ -39,40 +80,62 @@ jobs:
       run: |
         pip3 install flake8
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Checkout code
-      uses: actions/checkout@master
-
     - name: Build Zipapp
+      if: matrix.asset_name != 'flex-linux-setup-centos8-amd64.pyz' && matrix.asset_name != 'helm'
       run: |
         sudo apt-get update || brew install jq
-        sudo apt-get install build-essential || echo "Maybe im on macor OS"
+        sudo apt-get install build-essential || echo "Maybe im on macos OS"
         pip3 install shiv
+        cd ${{ matrix.asset_directory }}
         make zipapp
+        sha256sum ${{ steps.output.outputs.artifact_name }} > ${{ steps.output.outputs.artifact_name }}.sha256sum
+        ls
 
-    - name: Get project
-      id: project
-      run: |
-        echo "::set-output name=gituser::$(python3 -c 'import os ; REPO = os.environ.get("GITHUB_REPOSITORY") ; print(str(REPO).split("/")[0])')"
-        echo "::set-output name=gitproject::$(python3 -c 'import os ; REPO = os.environ.get("GITHUB_REPOSITORY") ; print(str(REPO).split("/")[1])')"
+    - uses: addnab/docker-run-action@v3
+      if: matrix.asset_name == 'flex-linux-setup-centos8-amd64.pyz'
+      name: Build with CentOS8
+      continue-on-error: true
+      with:
+        image: centos/python-36-centos7:latest
+        options: -v ${{ github.workspace }}:/centos
+        run: |
+          echo "Building flex-linux-setup package"
+          cd /centos/flex-linux-setup
+          pip install shiv
+          make zipapp
+          sha256sum ${{ steps.output.outputs.artifact_name }} > ${{ steps.output.outputs.artifact_name }}.sha256sum
+          ls
 
     - name: Get latest tag
       id: previoustag
       run: |
-        echo "::set-output name=tag::$(curl https://api.github.com/repos/${{ steps.project.outputs.gituser }}/${{ steps.project.outputs.gitproject }}/releases/latest -s | grep "tag_name" | cut -d '"' -f 4)"
+        echo "::set-output name=tag::$(curl https://api.github.com/repos/${{ github.repository }}/releases -s | grep "tag_name" | cut -d '"' -f 4 | grep -o '^\v.*' | head -n 1)"
 
-    - name: Print Version
+    - name: Print outputs
       run: |
         echo "${{ steps.previoustag.outputs.tag }}"
+        echo "${{ steps.output.outputs.asset_name }}"
+        echo "${{ steps.output.outputs.artifact_name }}"
 
 
     - name: Upload binaries to release
+      continue-on-error: true
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
-        file: ${{ matrix.artifact_name }}
-        asset_name: ${{ matrix.asset_name }}
+        file: ${{github.workspace}}/${{ matrix.asset_directory }}/${{ steps.output.outputs.artifact_name }}
+        asset_name: ${{ steps.output.outputs.asset_name }}
+        tag: ${{ steps.previoustag.outputs.tag }}
+
+    - name: Upload shas to release
+      continue-on-error: true
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
+        file: ${{github.workspace}}/${{ matrix.asset_directory }}/${{ steps.output.outputs.artifact_name }}.sha256sum
+        asset_name: ${{ steps.output.outputs.asset_name }}.sha256sum
         tag: ${{ steps.previoustag.outputs.tag }}

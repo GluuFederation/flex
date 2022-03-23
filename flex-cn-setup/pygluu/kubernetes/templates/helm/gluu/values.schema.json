@@ -1520,8 +1520,7 @@
                   "required":[
                      "image",
                      "replicas",
-                     "resources",
-                     "service"
+                     "resources"
                   ],
                   "properties":{
                      "hpa":{
@@ -1630,16 +1629,6 @@
                                     "pattern":"^[0-9Mi]+$"
                                  }
                               }
-                           }
-                        }
-                     },
-                     "service":{
-                        "type":"object",
-                        "properties":{
-                           "casaServiceName":{
-                              "description":"Name of the casa service. Please keep it as default.",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-]+$"
                            }
                         }
                      }

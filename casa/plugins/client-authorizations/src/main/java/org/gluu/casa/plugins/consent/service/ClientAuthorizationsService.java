@@ -36,6 +36,11 @@ public class ClientAuthorizationsService {
         caSample.setUserId(userId);
         List<ClientAuthorization> authorizations = persistenceService.find(caSample);
 
+        int caEntries = authorizations.size();
+        logger.debug("{} client-authorization entries found", caEntries);
+        
+        if (caEntries == 0) return Collections.emptyMap();
+
         //Obtain client ids from all this user's client authorizations
         Set<String> clientIds = authorizations.stream().map(ClientAuthorization::getJansClntId).collect(Collectors.toSet());
 
@@ -80,7 +85,7 @@ public class ClientAuthorizationsService {
 
         logger.info("Removing client authorizations for user {}", userName);
         //Here we ignore the return value of deletion
-        persistenceService.find(caSample).forEach(auth -> persistenceService.delete(auth));
+        persistenceService.find(caSample).forEach(persistenceService::delete);
 
         Token sampleToken = new Token();
         sampleToken.setBaseDn(TOKENS_DN);

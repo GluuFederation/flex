@@ -14,9 +14,6 @@ import org.gluu.casa.misc.Utils;
 @ObjectClass("jansClnt")
 public class Client extends InumEntry {
 
-    @AttributeName(name = "associatedPerson")
-    private List<String> associatedPeople;
-
     @AttributeName
     private String displayName;
 
@@ -44,10 +41,6 @@ public class Client extends InumEntry {
 
     public void setJansClntIdIssuedAt(String jansClntIdIssuedAt) {
         this.jansClntIdIssuedAt = jansClntIdIssuedAt;
-    }
-
-    public List<String> getAssociatedPeople() {
-        return Utils.nonNullList(associatedPeople);
     }
 
     public String getDisplayName() {
@@ -81,10 +74,6 @@ public class Client extends InumEntry {
     public String getAlternativeID() {
         return Optional.ofNullable(getInum())
                 .map(str -> str.replaceAll("\\W","")).orElse (null);
-    }
-
-    public void setAssociatedPeople(List<String> associatedPeople) {
-        this.associatedPeople = associatedPeople;
     }
 
     public void setDisplayName(String displayName) {

@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import LicenseDetailsPage from './LicenseDetailsPage'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import i18n from '../../../../app/i18n'
+import i18n from '../../i18n'
 import { I18nextProvider } from 'react-i18next'
 import license from "./license"
 

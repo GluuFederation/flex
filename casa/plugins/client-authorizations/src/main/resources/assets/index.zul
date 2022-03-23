@@ -50,10 +50,6 @@
                                                 <h:a href="@load(each.key.jansClntURI)" target="_blank">${each.key.jansClntURI}</h:a>
                                             </dd>
                                         </z:div>
-                                        <z:div class="flex flex-wrap" visible="@load(not empty vm.getAssociatedPeopleAsCSV(each.key))">
-                                            <dt class="w4">${labels.clients.authorized.associated}</dt>
-                                            <dd>${vm.getAssociatedPeopleAsCSV(each.key)}</dd>
-                                        </z:div>
                                         <z:div class="flex flex-wrap" visible="@load(not empty vm.getContactEmailsAsCSV(each.key))">
                                             <dt class="w4">${labels.clients.authorized.emails}</dt>
                                             <dd>${vm.getContactEmailsAsCSV(each.key)}</dd>
@@ -67,7 +63,7 @@
                                         <z:div class="flex flex-wrap" visible="@load(not empty each.key.tosURI)">
                                             <dt class="w4">${labels.clients.authorized.tos}</dt>
                                             <dd>
-                                                <h:href href="@load(each.key.tosURI)">${each.key.tosURI}</h:href>
+                                                <h:a href="@load(each.key.tosURI)">${each.key.tosURI}</h:a>
                                             </dd>
                                         </z:div>
                                     </dl>

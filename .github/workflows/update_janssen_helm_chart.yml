@@ -13,10 +13,10 @@ jobs:
       HELM_DOCS_VERSION: "1.7.0"
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
 
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v3
         with:
           python-version: 3.7
 
@@ -64,9 +64,9 @@ jobs:
           git commit -S -s -m "chore(charts): update helm package"
           git push --set-upstream origin cn-autoupdate-helm-charts
           MESSAGE="chore(charts): update helm package"
-          ASSIGNEES="@moabu"
+          ASSIGNEES="moabu"
           BODY="This is an automated message propagated by a change in the parent Gluu chart. It will be automerged. Don't think about touching me before reaching out to @moabu."
-          LABELS="ci,comp-charts-jans"
+          LABELS="area-CI,comp-charts-jans"
           echo "${{ secrets.MOAUTO4_WORKFLOW_TOKEN }}" > token.txt
           gh auth login --with-token < token.txt
           PR=$(gh pr create --assignee "${ASSIGNEES}" --base "main" --body "${BODY}" --label "${LABELS}" --reviewer "${ASSIGNEES}" --title "${MESSAGE}")        

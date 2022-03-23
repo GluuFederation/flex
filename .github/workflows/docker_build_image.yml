@@ -44,7 +44,7 @@ jobs:
         docker-images: ["casa", "admin-ui"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -100,7 +100,7 @@ jobs:
       # UPDATE BUILD DATES INSIDE THE DOCKERFILE BEFORE BUILDING THE DEV IMAGES TRIGGERED BY JENKINS
       - name: Setup Python 3.7
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/setup-python@v2.3.1
+        uses: actions/setup-python@v3
         with:
           python-version: 3.7
 
@@ -135,7 +135,7 @@ jobs:
 
       - name: Cache Docker layers
         if: steps.build_docker_image.outputs.build && steps.prep.outputs.build
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}

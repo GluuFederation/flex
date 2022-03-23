@@ -12,7 +12,6 @@ import SettingsPage from './components/Settings/SettingsPage'
 import MauGraph from './components/MAU/MauGraph'
 
 import scriptSaga from './redux/sagas/CustomScriptSaga'
-import licenseDetailsSaga from './redux/sagas/LicenseDetailsSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
@@ -21,7 +20,6 @@ import userSaga from './redux/sagas/UserSaga'
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import apiRoleReducer from './redux/reducers/ApiRoleReducer'
 import apiPermissionReducer from './redux/reducers/ApiPermissionReducer'
-import licenseDetailsReducer from './redux/reducers/LicenseDetailsReducer'
 import mappingReducer from './redux/reducers/MappingReducer'
 import userReducer from './redux/reducers/UserReducer'
 import {
@@ -41,11 +39,6 @@ const pluginMetadata = {
       title: 'menus.adminui',
       icon: 'fa-cubes',
       children: [
-        {
-          title: 'menus.licenseDetails',
-          path: PLUGIN_BASE_APTH + '/licenseDetails',
-          permission: ACR_READ,
-        },
         {
           title: 'menus.config-api',
           children: [
@@ -155,13 +148,11 @@ const pluginMetadata = {
     { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
-    { name: 'licenseDetailsReducer', reducer: licenseDetailsReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
     { name: 'userReducer', reducer: userReducer },
   ],
   sagas: [
     scriptSaga(),
-    licenseDetailsSaga(),
     apiRoleSaga(),
     apiPermissionSaga(),
     mappingSaga(),

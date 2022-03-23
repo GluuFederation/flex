@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import LicenseDetailsForm from './LicenseDetailsForm'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
-import { LICENSE } from '../../../../app/utils/ApiResources'
+import GluuRibbon from '../../routes/Apps/Gluu/GluuRibbon'
+import GluuFormDetailRow from '../../routes/Apps/Gluu/GluuFormDetailRow'
+import { LICENSE } from '../../utils/ApiResources'
 import {
   getLicenseDetails,
   updateLicenseDetails,
@@ -16,15 +16,14 @@ import {
   FormGroup,
   Row,
   Col,
-} from '../../../../app/components'
+} from '../../components'
 import {
   buildPayload,
-} from '../../../../app/utils/PermChecker'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+} from '../../utils/PermChecker'
+import GluuLoader from '../../routes/Apps/Gluu/GluuLoader'
 import Alert from '@material-ui/lab/Alert'
-import {
-  FETCHING_LICENSE_DETAILS,
-} from '../../common/Constants'
+
+const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
 function LicenseDetailsPage({ item, loading, dispatch }) {
   const userAction = {}

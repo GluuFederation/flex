@@ -63,7 +63,7 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
-        name="rptScripts"
+        name="rptClaimsScripts"
         label="fields.rpt_scripts"
         formik={formik}
         value={client.rptClaimsScripts}

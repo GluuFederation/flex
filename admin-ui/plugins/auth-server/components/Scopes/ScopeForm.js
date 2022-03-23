@@ -32,7 +32,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     .filter((item) => item.scriptType == 'DYNAMIC_SCOPE')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
-  claims = attributes.map((item) => ({ dn: item.dn, name: item.name }))
+  claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName }))
+
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   const [showClaimsPanel, handleClaimsPanel] = useState(
@@ -47,18 +48,19 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   function enableDynamic(type) {
     return type === 'dynamic'
   }
-  function handleScopeTypeChanged() {
-    const type = document.getElementById('scopeType')
-    if (type && type.value === 'openid') {
+  function handleScopeTypeChanged(type) {
+    if (type && type === 'openid') {
       handleClaimsPanel(true)
     } else {
       handleClaimsPanel(false)
     }
-    if (type && type.value === 'dynamic') {
+    if (type && type === 'dynamic') {
       handleDynamicPanel(true)
     } else {
       handleDynamicPanel(false)
     }
+    scope.dynamicScopeScripts = ''
+    scope.claims = ''
   }
 
   function getMapping(partial, total) {
@@ -102,10 +104,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
         })}
         onSubmit={(values) => {
           const result = Object.assign(scope, values)
-          result['scopeType'] = document.getElementById('scopeType').value
+          //result[‘scopeType’] = document.getElementById(‘scopeType’).value
           result['id'] = result.displayName
-          result['attributes'].showInConfigurationEndpoint =
-            result.showInConfigurationEndpoint
+          result['attributes'].showInConfigurationEndpoint = scope.attributes.showInConfigurationEndpoint
+          result['attributes'].spontaneousClientId = scope.attributes.spontaneousClientId
+          result['attributes'].spontaneousClientScopes = scope.attributes.spontaneousClientScopes
           handleSubmit(JSON.stringify(result))
         }}
       >
@@ -176,7 +179,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       id="scopeType"
                       name="scopeType"
                       defaultValue={scope.scopeType}
-                      onChange={handleScopeTypeChanged}
+                      onChange={(e) => {
+                        handleScopeTypeChanged(e.target.value)
+                        formik.setFieldValue('scopeType', e.target.value)
+                      }}
                     >
                       <option value="">{t('actions.choose')}...</option>
                       <option value="oauth">OAuth</option>
@@ -248,7 +254,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                         id="spontaneousClientId"
                         name="spontaneousClientId"
                         defaultValue={scope.attributes.spontaneousClientId}
-                        onChange={formik.handleChange}
+                        onChange={(e) => {
+                          scope.attributes.spontaneousClientId = e.target.value
+                          formik.setFieldValue('spontaneousClientId', e.target.value)
+                        }}
                       />
                     </Col>
                   </FormGroup>
@@ -271,7 +280,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                           defaultValue={
                             scope.attributes.showInConfigurationEndpoint
                           }
-                          onChange={formik.handleChange}
+                          onChange={(e) => {
+                            scope.attributes.showInConfigurationEndpoint = e.target.value
+                            formik.setFieldValue('showInConfigurationEndpoint', e.target.value)
+                          }}
                         >
                           <option value="true">{t('options.true')}</option>
                           <option value="false">{t('options.false')}</option>

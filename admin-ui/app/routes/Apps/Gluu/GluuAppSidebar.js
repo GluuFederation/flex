@@ -49,6 +49,18 @@ function GluuAppSidebar({ scopes }) {
             textStyle={{ fontSize: '18px', fontWeight: '600' }}
             exact
           />
+          <SidebarMenu.Item
+            title={t('menus.health')}
+            to="/home/health"
+            textStyle={{ fontSize: '18px', fontWeight: '600' }}
+            exact
+          />
+          <SidebarMenu.Item
+            title={t('menus.licenseDetails')}
+            to="/home/licenseDetails"
+            textStyle={{ fontSize: '18px', fontWeight: '600' }}
+            exact
+          />
         </SidebarMenu.Item>
         <Divider />
         {/* -------- Plugins ---------*/}

@@ -8,6 +8,8 @@ import { getOidcDiscovery } from '../../../../app/redux/actions/OidcDiscoveryAct
 import { getScopes } from '../../redux/actions/ScopeActions'
 import { getScripts } from '../../../../app/redux/actions/InitActions'
 import { buildPayload } from '../../../../app/utils/PermChecker'
+import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
+import { useTranslation } from 'react-i18next'
 
 function ClientAddPage({
   permissions,
@@ -16,10 +18,14 @@ function ClientAddPage({
   loading,
   dispatch,
   oidcConfiguration,
+  saveOperationFlag,
+  errorInSaveOperationFlag,
 }) {
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
+  const history = useHistory()
+  const { t } = useTranslation()
   useEffect(() => {
     buildPayload(userAction, '', options)
     if (scopes.length < 1) {
@@ -30,7 +36,12 @@ function ClientAddPage({
     }
     dispatch(getOidcDiscovery())
   }, [])
-  const history = useHistory()
+
+  useEffect(() => {
+    if (saveOperationFlag && !errorInSaveOperationFlag)
+      history.push('/auth-server/clients')
+  }, [saveOperationFlag])
+
   scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
   function handleSubmit(data) {
     if (data) {
@@ -38,7 +49,6 @@ function ClientAddPage({
       postBody['client'] = data
       buildPayload(userAction, data.action_message, postBody)
       dispatch(addNewClientAction(userAction))
-      history.push('/auth-server/clients')
     }
   }
   const clientData = {
@@ -54,7 +64,7 @@ function ClientAddPage({
     trustedClient: false,
     persistClientAuthorizations: false,
     customAttributes: [],
-    customObjectClasses: ['top'],
+    customObjectClasses: [],
     rptAsJwt: false,
     accessTokenAsJwt: false,
     backchannelUserCodeParameter: false,
@@ -80,6 +90,11 @@ function ClientAddPage({
   }
   return (
     <GluuLoader blocking={loading}>
+      <GluuAlert
+        severity={t('titles.error')}
+        message={t('messages.error_in_saving')}
+        show={errorInSaveOperationFlag}
+      />
       <ClientWizardForm
         client_data={clientData}
         scopes={scopes}
@@ -99,6 +114,8 @@ const mapStateToProps = (state) => {
     scripts: state.initReducer.scripts,
     loading: state.oidcReducer.loading,
     oidcConfiguration: state.oidcDiscoveryReducer.configuration,
+    saveOperationFlag: state.oidcReducer.saveOperationFlag,
+    errorInSaveOperationFlag: state.oidcReducer.errorInSaveOperationFlag,
   }
 }
 export default connect(mapStateToProps)(ClientAddPage)

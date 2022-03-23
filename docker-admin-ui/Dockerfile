@@ -1,4 +1,4 @@
-FROM node:14.18.2-alpine3.14
+FROM node:14.19.1-alpine3.14
 
 # ======
 # alpine
@@ -28,7 +28,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=51fe9e12269a9882a63f1a4d4dc1a3f537b204b6
+ENV ADMIN_UI_VERSION=7e31ec6f083d0d95e327e2a23c190730227fb212
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -122,7 +122,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 # misc stuff
 # ==========
 EXPOSE 8080
-LABEL name="Gluu Admin UI" \
+LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
     version="1.0.0" \

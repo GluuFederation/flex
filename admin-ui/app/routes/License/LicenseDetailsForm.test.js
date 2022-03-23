@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import LicenseDetailsForm from './LicenseDetailsForm'
 import license from "./license"
-import i18n from '../../../../app/i18n'
+import i18n from '../../i18n'
 import { I18nextProvider } from 'react-i18next'
 
 const Wrapper = ({ children }) => (
@@ -18,6 +18,7 @@ it('Should render the license detail page properly', () => {
   render(<LicenseDetailsForm item={item}  permissions={permissions} />, {
     wrapper: Wrapper,
   })
+  expect(screen.getByText(/License Valid Upto/)).toBeInTheDocument()
   screen.getByText(/License Valid Upto/)
   screen.getByText(/Maximum Activations/)
   screen.getByText(/Is License Active/)

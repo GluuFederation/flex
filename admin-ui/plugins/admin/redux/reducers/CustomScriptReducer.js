@@ -16,6 +16,8 @@ import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   loading: true,
+  saveOperationFlag: false,
+  errorInSaveOperationFlag: false,
 }
 
 const reducerName = 'customScriptReducer'
@@ -23,10 +25,7 @@ const reducerName = 'customScriptReducer'
 export default function customScriptReducer(state = INIT_STATE, action) {
   switch (action.type) {
     case GET_CUSTOM_SCRIPT:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_CUSTOM_SCRIPT_RESPONSE:
       if (action.payload.data) {
         return {
@@ -38,10 +37,7 @@ export default function customScriptReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case GET_CUSTOM_SCRIPT_BY_TYPE:
-      return {
-        ...state,
-        loading: true,
-      }
+      return handleLoading()
     case GET_CUSTOM_SCRIPT_BY_TYPE_RESPONSE:
       if (action.payload.data) {
         return {
@@ -56,6 +52,8 @@ export default function customScriptReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        saveOperationFlag: false,
+        errorInSaveOperationFlag: false,
       }
     case ADD_CUSTOM_SCRIPT_RESPONSE:
       if (action.payload.data) {
@@ -63,15 +61,24 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           ...state,
           items: [...state.items, action.payload.data],
           loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: false,
         }
       } else {
-        return handleDefault()
+        return {
+          ...state,
+          loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: true,
+        }
       }
 
     case EDIT_CUSTOM_SCRIPT:
       return {
         ...state,
         loading: true,
+        saveOperationFlag: false,
+        errorInSaveOperationFlag: false,
       }
     case EDIT_CUSTOM_SCRIPT_RESPONSE:
       if (action.payload.data) {
@@ -79,9 +86,16 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           ...state,
           items: [...state.items],
           loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: false,
         }
       } else {
-        return handleDefault()
+        return {
+          ...state,
+          loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: true,
+        }
       }
 
     case DELETE_CUSTOM_SCRIPT:
@@ -121,6 +135,17 @@ export default function customScriptReducer(state = INIT_STATE, action) {
     return {
       ...state,
       loading: false,
+      saveOperationFlag: false,
+      errorInSaveOperationFlag: false,
+    }
+  }
+
+  function handleLoading() {
+    return {
+      ...state,
+      loading: true,
+      saveOperationFlag: false,
+      errorInSaveOperationFlag: false,
     }
   }
 }

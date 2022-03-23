@@ -6,13 +6,13 @@ import {
   Badge,
   CardHeader,
   FormGroup,
-} from '../../../../app/components'
+} from '../../components'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
-import { buildPayload } from '../../../../app/utils/PermChecker'
+import applicationStyle from '../../routes/Apps/Gluu/styles/applicationstyle'
+import { buildPayload } from '../../utils/PermChecker'
 import { connect } from 'react-redux'
 import { getHealthStatus } from '../../redux/actions/HealthAction'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
+import GluuRibbon from '../../routes/Apps/Gluu/GluuRibbon'
 
 function HealthPage({ serverStatus, dbStatus, dispatch }) {
   const { t } = useTranslation()

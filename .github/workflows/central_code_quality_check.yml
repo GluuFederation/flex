@@ -12,6 +12,7 @@ on:
       - 'docker-**/version.txt'
       - '**.md'
 
+  # TODO: Optimize so that workflow is only triggered for `opened` and `synchronize` actions
   pull_request:
     branches:
       - main
@@ -39,7 +40,7 @@ jobs:
 
     steps:
       - name: check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of sonarqube analysis
 
@@ -47,32 +48,44 @@ jobs:
         run: |
           if [ $GITHUB_BASE_REF ]; then
             # Pull Request
+            echo "Triggerring event: pull request"
+            echo Pull request base ref: $GITHUB_BASE_REF
             git fetch origin $GITHUB_BASE_REF --depth=1
-            echo "CHANGED_DIR=$( git diff --name-only ${{ github.event.before }} ${{ github.event.pull_request.head.sha }}  | cut -d/ -f1 | sort -u | sed -z 's/\n/,/g;s/^/[/;s/,$/]/;s/$/\n/')" >> ${GITHUB_ENV}
+            if [ ${{ github.event.action }} = "opened" ]; then
+              echo "Triggerring action: opened"
+              echo "CHANGED_DIR=$( git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}  | cut -d/ -f1 | sort -u | sed -z 's/\n/,/g;s/^/[/;s/,$/]/;s/$/\n/')" >> ${GITHUB_ENV}
+            fi
+            if [ ${{ github.event.action }} = "synchronize" ]; then
+              echo "Triggerring action: synchronize"
+              echo "CHANGED_DIR=$( git diff --name-only ${{ github.event.before }} ${{ github.event.pull_request.head.sha }}  | cut -d/ -f1 | sort -u | sed -z 's/\n/,/g;s/^/[/;s/,$/]/;s/$/\n/')" >>${GITHUB_ENV}
+            fi
           else
             # Push
+            echo "Triggerring event: push"
             git fetch origin ${{ github.event.before }} --depth=1
             echo "CHANGED_DIR=$( git diff --name-only ${{ github.event.before }} $GITHUB_SHA  | cut -d/ -f1 | sort -u | sed -z 's/\n/,/g;s/^/[/;s/,$/]/;s/$/\n/')" >> ${GITHUB_ENV}
           fi
 
       - name: check env
         run: |
-          echo ${{ env.CHANGED_DIR }}
-          echo ${{ matrix.module }}
-          echo ${{ github.event.before }}
-          echo ${{ github.event.pull_request.head.sha }}
-          echo $GITHUB_SHA
+          echo changed dir list: ${{ env.CHANGED_DIR }}
+          echo Matrix module: ${{ matrix.module }}
+          echo GH event action: ${{ github.event.action }}
+          echo PR base sha: ${{ github.event.pull_request.base.sha }} 
+          echo PR head sha: ${{ github.event.pull_request.head.sha }}
+          echo event before: ${{ github.event.before }}
+          echo GH sha: $GITHUB_SHA
 
       - name: Set up JDK 11
         if: contains(env.CHANGED_DIR, matrix.module) && contains(env.JVM_PROJECTS, matrix.module)
-        uses: actions/setup-java@v2.5.0
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'adopt'
           
       - name: Cache SonarCloud packages for JVM based project
         if: contains(env.CHANGED_DIR, matrix.module) && contains(env.JVM_PROJECTS, matrix.module)
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="ERROR">
     <Appenders>
-        <Console name="STDOUT" target="SYSTEM_OUT">
+        <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{dd-MM HH:mm:ss.SSS} %-5p %C{4} %F:%L- %m%n" />
         </Console>
         <RollingFile name="LOG_FILE" fileName="${sys:log.base}/logs/casa.log" filePattern="${sys:log.base}/logs/casa-%d{yyyy-MM-dd}-%i.log">
@@ -24,12 +24,12 @@
         <Logger name="org.gluu.casa.timer" level="$timer_log_level" additivity="false">
             <AppenderRef ref="$timer_log_target" />
         </Logger>
-        <Logger name="org.gluu.casa" level="$casa_log_level">
+        <Logger name="org.gluu.casa" level="$casa_log_level" additivity="false">
             <!-- Configuration of this logger is tightly coupled with class org.gluu.casa.core.LogService -->
             <AppenderRef ref="$casa_log_target" />
         </Logger>
         <Root level="ERROR">
-            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="Console" />
         </Root>
     </Loggers>
 

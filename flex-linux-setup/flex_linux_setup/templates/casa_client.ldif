@@ -5,7 +5,7 @@ objectClass: jansClnt
 del: false
 displayName: Client for Casa
 inum: %(casa_client_id)s
-jansAccessTknAsJwt: true
+jansAccessTknAsJwt: false
 jansAccessTknSigAlg: RS256
 jansAppTyp: web
 jansClntSecret: %(casa_client_encoded_pw)s
@@ -18,7 +18,7 @@ jansInclClaimsInIdTkn: false
 jansLogoutSessRequired: false
 jansPersistClntAuthzs: true
 jansRedirectURI: %(casa_redirect_uri)s
-jansRedirectURI: %(casa_redirect_logout_uri)s
+jansPostLogoutRedirectURI: %(casa_redirect_logout_uri)s
 jansLogoutURI: %(casa_frontchannel_logout_uri)s
 jansRequireAuthTime: false
 jansRespTyp: code
@@ -30,4 +30,5 @@ jansScope: inum=341A,ou=scopes,o=jans
 jansSignedRespAlg: RS256
 jansSubjectTyp: pairwise
 jansTknEndpointAuthMethod: client_secret_basic
-jansTrustedClnt: false
+jansTrustedClnt: true
+

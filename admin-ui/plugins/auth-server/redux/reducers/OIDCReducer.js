@@ -13,11 +13,14 @@ import {
   SET_VIEW,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+
 const INIT_STATE = {
   items: [],
   item: {},
   view: false,
   loading: false,
+  saveOperationFlag: false,
+  errorInSaveOperationFlag: false,
 }
 
 const reducerName = 'oidcReducer'
@@ -40,16 +43,28 @@ export default function oidcReducer(state = INIT_STATE, action) {
       }
 
     case ADD_NEW_CLIENT:
-      return handleLoading()
+      return {
+        ...state,
+        loading: true,
+        saveOperationFlag: false,
+        errorInSaveOperationFlag: false,
+      }
     case ADD_CLIENT_RESPONSE:
       if (action.payload.data) {
         return {
           ...state,
           items: [...state.items],
           loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: false,
         }
       } else {
-        return handleDefault()
+        return {
+          ...state,
+          loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: true,
+        }
       }
 
     case EDIT_CLIENT:
@@ -57,6 +72,8 @@ export default function oidcReducer(state = INIT_STATE, action) {
         ...state,
         loading: true,
         items: [],
+        saveOperationFlag: false,
+        errorInSaveOperationFlag: false,
       }
     case EDIT_CLIENT_RESPONSE:
       if (action.payload.data) {
@@ -68,9 +85,16 @@ export default function oidcReducer(state = INIT_STATE, action) {
           ...state,
           items: [action.payload.data, ...clients],
           loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: false,
         }
       } else {
-        return handleDefault()
+        return {
+          ...state,
+          loading: false,
+          saveOperationFlag: true,
+          errorInSaveOperationFlag: true,
+        }
       }
 
     case DELETE_CLIENT:
@@ -118,12 +142,16 @@ export default function oidcReducer(state = INIT_STATE, action) {
     return {
       ...state,
       loading: false,
+      saveOperationFlag: false,
+      errorInSaveOperationFlag: false,
     }
   }
   function handleLoading() {
     return {
       ...state,
       loading: true,
+      saveOperationFlag: false,
+      errorInSaveOperationFlag: false,
     }
   }
 }
