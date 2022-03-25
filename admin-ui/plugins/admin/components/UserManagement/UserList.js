@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import { useHistory } from 'react-router-dom'
 import {
   hasPermission,
   buildPayload,
@@ -36,6 +37,11 @@ function UserList(props) {
   const options = []
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
+  const history = useHistory()
+
+  function handleGoToUserAddPage() {
+    return history.push('/adm/usermanagement/add')
+  }
 
   if (hasPermission(permissions, ROLE_WRITE)) {
     myActions.push({
@@ -43,7 +49,7 @@ function UserList(props) {
       tooltip: `${t('messages.add_role')}`,
       iconProps: { color: 'primary' },
       isFreeAction: true,
-      onClick: () => console.log('HELLO'),
+      onClick: () => handleGoToUserAddPage(),
     })
   }
 
@@ -60,6 +66,7 @@ function UserList(props) {
   //   toggle()
   //   doFetchList()
   // }
+
   return (
     <Card>
       <GluuRibbon title={t('titles.user_management')} fromLeft />
