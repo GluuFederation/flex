@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Formik, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import {
@@ -24,7 +24,7 @@ import { useTranslation } from 'react-i18next'
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const { t } = useTranslation()
   let dynamicScopeScripts = []
-  let spontaneousClientScopes = []
+  let spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
   let claims = []
   scripts = scripts || []
   attributes = attributes || []
@@ -106,9 +106,12 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           const result = Object.assign(scope, values)
           //result[‘scopeType’] = document.getElementById(‘scopeType’).value
           result['id'] = result.displayName
-          result['attributes'].showInConfigurationEndpoint = scope.attributes.showInConfigurationEndpoint
-          result['attributes'].spontaneousClientId = scope.attributes.spontaneousClientId
-          result['attributes'].spontaneousClientScopes = scope.attributes.spontaneousClientScopes
+          result['attributes'].showInConfigurationEndpoint =
+            scope.attributes.showInConfigurationEndpoint
+          result['attributes'].spontaneousClientId =
+            scope.attributes.spontaneousClientId
+          result['attributes'].spontaneousClientScopes =
+            scope.spontaneousClientScopes
           handleSubmit(JSON.stringify(result))
         }}
       >
@@ -256,7 +259,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                         defaultValue={scope.attributes.spontaneousClientId}
                         onChange={(e) => {
                           scope.attributes.spontaneousClientId = e.target.value
-                          formik.setFieldValue('spontaneousClientId', e.target.value)
+                          formik.setFieldValue(
+                            'spontaneousClientId',
+                            e.target.value,
+                          )
                         }}
                       />
                     </Col>
@@ -281,8 +287,12 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                             scope.attributes.showInConfigurationEndpoint
                           }
                           onChange={(e) => {
-                            scope.attributes.showInConfigurationEndpoint = e.target.value
-                            formik.setFieldValue('showInConfigurationEndpoint', e.target.value)
+                            scope.attributes.showInConfigurationEndpoint =
+                              e.target.value
+                            formik.setFieldValue(
+                              'showInConfigurationEndpoint',
+                              e.target.value,
+                            )
                           }}
                         >
                           <option value="true">{t('options.true')}</option>
@@ -297,10 +307,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   label="fields.spontaneous_client_scopes"
                   formik={formik}
                   value={getMapping(
-                    scope.attributes.spontaneousClientScopes,
                     spontaneousClientScopes,
+                    scope.attributes.spontaneousClientScopes.map((item) => ({ dn: item || "", name: item || ""})),
                   )}
-                  options={spontaneousClientScopes}
+                  allowNew={true}
+                  options={spontaneousClientScopes.map((item) => ({ dn: item || "", name: item || "" }))}
                   doc_category={SCOPE}
                 />
               </Accordion.Body>
