@@ -1,8 +1,8 @@
 export const BASE_URL = 'https://jans.io/oauth'
 
-export const PROPERTIES_READ = BASE_URL + '/config/properties.readonly'
-export const PROPERTIES_WRITE = BASE_URL + '/config/properties.write'
-export const PROPERTIES_DELETE = BASE_URL + '/config/properties.delete'
+export const PROPERTIES_READ = BASE_URL + '/jans-auth-server/config/properties.readonly'
+export const PROPERTIES_WRITE = BASE_URL + '/jans-auth-server/config/properties.write'
+export const PROPERTIES_DELETE = BASE_URL + '/jans-auth-server/config/properties.delete'
 
 export const ATTRIBUTE_READ = BASE_URL + '/config/attributes.readonly'
 export const ATTRIBUTE_WRITE = BASE_URL + '/config/attributes.write'
