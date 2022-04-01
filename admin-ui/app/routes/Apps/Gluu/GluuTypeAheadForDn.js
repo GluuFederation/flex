@@ -24,6 +24,7 @@ function GluuTypeAheadForDn({
   required,
   doc_category,
   doc_entry,
+  allowNew = false,
 }) {
   const { t } = useTranslation()
   function getItemName(theOptions, item) {
@@ -40,12 +41,13 @@ function GluuTypeAheadForDn({
             onChange={(selected) => {
               formik.setFieldValue(
                 name,
-                selected.map((item) => item.dn),
+                selected.map((item) => (item.customOption ? item.label : item.dn)),
               )
             }}
             id={name}
             data-testid={name}
             name={name}
+            allowNew={allowNew}
             multiple={true}
             defaultSelected={value}
             options={options}
