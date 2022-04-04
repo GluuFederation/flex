@@ -49,6 +49,7 @@ jobs:
         git reset --hard upstream/main-source
         # take care, this will delete all changes on the forked main-source
         git push origin main-source --force
+        mkdir ./packages/gluu || echo "directory exists!"
         cp ../automation/rancher-partner-charts/package.yaml ./packages/gluu/package.yaml
         export PACKAGE=gluu
         make prepare
