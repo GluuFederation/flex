@@ -488,13 +488,6 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               onChange={formik.handleChange}
               defaultChecked={item.enabled}
             />
-            {/* <Input
-              id="enabled"
-              name="enabled"
-              onChange={formik.handleChange}
-              type="checkbox"
-              defaultChecked={item.enabled}
-            /> */}
           </Col>
         </FormGroup>
       </GluuTooltip>
