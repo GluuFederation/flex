@@ -111,7 +111,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           result['attributes'].spontaneousClientId =
             scope.attributes.spontaneousClientId
           result['attributes'].spontaneousClientScopes =
-            scope.spontaneousClientScopes
+            scope.spontaneousClientScopes ||
+            scope.attributes.spontaneousClientScopes
           handleSubmit(JSON.stringify(result))
         }}
       >
@@ -308,10 +309,16 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   formik={formik}
                   value={getMapping(
                     spontaneousClientScopes,
-                    scope.attributes.spontaneousClientScopes.map((item) => ({ dn: item || "", name: item || ""})),
+                    scope?.attributes?.spontaneousClientScopes?.map((item) => ({
+                      dn: item || '',
+                      name: item || '',
+                    })),
                   )}
                   allowNew={true}
-                  options={spontaneousClientScopes.map((item) => ({ dn: item || "", name: item || "" }))}
+                  options={spontaneousClientScopes?.map((item) => ({
+                    dn: item || '',
+                    name: item || '',
+                  }))}
                   doc_category={SCOPE}
                 />
               </Accordion.Body>
