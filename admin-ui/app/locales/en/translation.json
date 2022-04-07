@@ -769,7 +769,7 @@
       "moduleProperties": " Module-level properties applicable to the script.",
       "configurationProperties": "Configuration properties applicable to the script.",
       "level": "Script level.",
-      "enabled": "boolean value indicating if script enabled.",
+      "enabled": "Specifies whether script is enabled.",
       "aliases": "List of possible aliases for the custom script.",
       "internal": "boolean value indicating if the script is internal.",
       "revision": "Update revision number of the script.",
