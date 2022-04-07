@@ -15,7 +15,7 @@ import scriptSaga from './redux/sagas/CustomScriptSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
-import userSaga from './redux/sagas/UserSaga'
+// import userSaga from './redux/sagas/UserSaga'
 
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import apiRoleReducer from './redux/reducers/ApiRoleReducer'
@@ -156,7 +156,7 @@ const pluginMetadata = {
     apiRoleSaga(),
     apiPermissionSaga(),
     mappingSaga(),
-    userSaga(),
+    // userSaga(),
   ],
 }
 

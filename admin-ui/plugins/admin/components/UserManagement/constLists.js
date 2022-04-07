@@ -386,3 +386,218 @@ export const timezones = [
   'Pacific/Wallis',
   'WET',
 ]
+
+export const initialClaims = [
+  {
+    type: 'input',
+    name: 'Birthday',
+    attributes: [
+      {
+        type: 'date',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'CIBA Device Registration Token',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'CIBA User Code',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Country',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Enrollment Code',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'select',
+    name: 'Gender',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+        values: ['Male', 'Female'],
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'IMAP Data',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Organization',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Open ID Connect JSON formatted address',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'select',
+    name: 'Phone Number Verified',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+        values: ['true', 'false'],
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Picture URL',
+    attributes: [
+      {
+        type: 'url',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Preferred language',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Preferred username',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Profile URL',
+    attributes: [
+      {
+        type: 'url',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Secret Question',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Secret Answer',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'Time Zone info',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'input',
+    name: 'TransientId',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'textarea',
+    name: 'User Certificate',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'text',
+    name: 'User Permission',
+    attributes: [
+      {
+        type: 'text',
+        class: 'form-control',
+      },
+    ],
+  },
+  {
+    type: 'text',
+    name: 'Website URL',
+    attributes: [
+      {
+        type: 'url',
+        class: 'form-control',
+      },
+    ],
+  },
+]

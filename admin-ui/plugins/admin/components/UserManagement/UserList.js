@@ -4,7 +4,7 @@ import { Paper } from '@material-ui/core'
 import UserDetailViewPage from './UserDetailViewPage'
 // import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
-import { getUsers } from '../../redux/actions/UserActions'
+// import { getUsers } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody, FormGroup } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
@@ -22,10 +22,10 @@ import {
 function UserList(props) {
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch(getUsers({}))
-    console.log('HERE')
-  }, [])
+  // useEffect(() => {
+  //   dispatch(getUsers({}))
+  //   console.log('HERE')
+  // }, [])
 
   const usersList = useSelector((state) => state.userReducer.items)
   const loading = useSelector((state) => state.userReducer.loading)

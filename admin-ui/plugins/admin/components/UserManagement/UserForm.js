@@ -18,11 +18,20 @@ import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT, USERS } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { timezones } from './Timezones'
+import { timezones, initialClaims } from './constLists'
 function UserForm() {
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
+  const [searchClaims, setSearchClaims] = useState('')
+  const [selectedClaims, setSelectedClaims] = useState([])
+  const [claims, setClaims] = useState(initialClaims)
+
+  const setSelectedClaimsToState = (data) => {
+    let tempList = [...selectedClaims]
+    tempList.push(data)
+    setSelectedClaims(tempList)
+  }
 
   return (
     <Form>
@@ -147,18 +156,54 @@ function UserForm() {
               />
             </Col>
           </FormGroup>
+          {selectedClaims.map((data, key) => {
+            return (
+              <FormGroup row key={key}>
+                <Col sm={3}>
+                  <GluuLabel label={data.name} size={12} />
+                </Col>
+                <Col sm={8}>
+                  <Input {...data.attributes} />
+                </Col>
+                <Col sm={1}>X</Col>
+              </FormGroup>
+            )
+          })}
         </Col>
         <Col sm={4}>
           <div className="border border-light ">
             <div className="bg-light text-bold p-2">Available Claims</div>
+            <input
+              type="search"
+              className="form-control mb-2"
+              placeholder="Search Claims Here "
+              onChange={(e) => setSearchClaims(e.target.value)}
+              value={searchClaims}
+            />
             <ul className="list-group">
-              <li className="list-group-item">Birthday</li>
-              <li className="list-group-item">
-                CIBA Device Registration Token
-              </li>
-              <li className="list-group-item">CIBA User Code</li>
-              <li className="list-group-item">Country</li>
-              <li className="list-group-item">Enrollment Code</li>
+              {claims.map((data, key) => {
+                let name = data.name.toLowerCase()
+                const alreadyAddedClaim = selectedClaims.some(
+                  (el) => el.name === data.name,
+                )
+                if (
+                  (name.includes(searchClaims.toLowerCase()) ||
+                    searchClaims == '') &&
+                  !alreadyAddedClaim
+                ) {
+                  return (
+                    <li
+                      className="list-group-item"
+                      key={'list' + key}
+                      title="Click to add to the form"
+                    >
+                      <a onClick={() => setSelectedClaimsToState(data)}>
+                        {data.name}
+                      </a>
+                    </li>
+                  )
+                }
+              })}
             </ul>
           </div>
         </Col>
