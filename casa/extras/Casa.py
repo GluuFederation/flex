@@ -320,7 +320,7 @@ class PersonAuthentication(PersonAuthenticationType):
         mapping = {}
         cmConfigs = self.getSettings()
 
-        if cmConfigs != None:
+        if cmConfigs != None and cmConfigs.getAcrPluginMap() != None:
             mapping = cmConfigs.getAcrPluginMap().keySet()
 
         for m in mapping:
