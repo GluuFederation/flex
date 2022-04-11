@@ -2,15 +2,14 @@ Flex Linux Setup
 =======================
 
 Scripts and templates to automate deployment Gluu Flex components on Janssen server.
-Currenlty Gluu Flex has two components: Admin UI and Casa
+Currently Gluu Flex has three components: Admin UI, Janssen and Casa.
 
 Installing Gluu Flex
 -----------------------
 
-We tested installation on CentOS 8 and Ubuntu 20.
+Currently, installation is supported on CentOS 8 and Ubuntu 20.
 
-If you installed Janssen server before, the script will just install Gluu Flex Components, otherwise
-it first installs Janssen server, then install Gluu Flex Components
+If you installed Janssen server before, the script will install additional Gluu Flex Components. If Janssen isn't already installed, the script will do so.
 
 1. Download installer
 
@@ -23,7 +22,7 @@ it first installs Janssen server, then install Gluu Flex Components
 Add/Remove Admin UI plugins
 --------------------------------------
 
-To add/remove Admin UI on vm execute -
+To add/remove Admin UI, on vm execute -
 
 1. Download script
 
