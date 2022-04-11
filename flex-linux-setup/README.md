@@ -1,22 +1,15 @@
 Flex Linux Setup
 =======================
 
-Scripts and templates to automate deployment Gluu Flex components on Janssen server,
+Scripts and templates to automate deployment Gluu Flex components on Janssen server.
+Currently Gluu Flex has three components: Admin UI, Janssen and Casa.
 
-Installing Admin UI
+Installing Gluu Flex
 -----------------------
 
-We tested installation on CentOS 8, Ubuntu 18 and Ubuntu 20.
-First we need to install Janssen Server by following below two steps:
-1. Download installer
+Currently, installation is supported on CentOS 8 and Ubuntu 20.
 
-   `curl https://raw.githubusercontent.com/JanssenProject/jans/main/jans-linux-setup/install.py > install.py`
-
-2. Execute installer
-
-   `python3 install.py`
-
-Then Admin UI can be installed by running flex-setup script. The steps are
+If you installed Janssen server before, the script will install additional Gluu Flex Components. If Janssen isn't already installed, the script will do so.
 
 1. Download installer
 
@@ -29,6 +22,11 @@ Then Admin UI can be installed by running flex-setup script. The steps are
 Add/Remove Admin UI plugins
 --------------------------------------
 
-To add/remove Admin UI on vm execute -
+To add/remove Admin UI, on vm execute -
 
-`python3 /opt/jans/jans-setup/static/scripts/admin_ui_plugin.py`
+1. Download script
+
+   `curl https://raw.githubusercontent.com/GluuFederation/flex/main/flex-linux-setup/flex_linux_setup/flex-plugin.py -O /opt/jans/jans-setup/static/scripts/admin_ui_plugin.py`
+
+2. Execute
+    `python3 /opt/jans/jans-setup/static/scripts/admin_ui_plugin.py`
