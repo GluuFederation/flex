@@ -33,6 +33,12 @@ function UserForm() {
     setSelectedClaims(tempList)
   }
 
+  const removeSelectedClaimsFromState = (id) => {
+    let tempList = [...selectedClaims]
+    let newList = tempList.filter((drink, index) => index !== id)
+    setSelectedClaims(newList)
+  }
+
   return (
     <Form>
       <FormGroup row>
@@ -157,17 +163,57 @@ function UserForm() {
             </Col>
           </FormGroup>
           {selectedClaims.map((data, key) => {
-            return (
-              <FormGroup row key={key}>
-                <Col sm={3}>
-                  <GluuLabel label={data.name} size={12} />
-                </Col>
-                <Col sm={8}>
-                  <Input {...data.attributes} />
-                </Col>
-                <Col sm={1}>X</Col>
-              </FormGroup>
-            )
+            if (data.type == 'input') {
+              return (
+                <FormGroup row key={key}>
+                  <Col sm={3}>
+                    <GluuLabel label={data.name} size={12} />
+                  </Col>
+                  <Col sm={8}>
+                    <Input {...data.attributes} />
+                  </Col>
+                  <Col
+                    sm={1}
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => removeSelectedClaimsFromState(key)}
+                  >
+                    <i className={'fa fa-fw fa-close'}></i>
+                  </Col>
+                </FormGroup>
+              )
+            } else if (data.type == 'select') {
+              return (
+                <FormGroup row key={key}>
+                  <Col sm={3}>
+                    <GluuLabel label={data.name} size={12} />
+                  </Col>
+                  <Col sm={8}>
+                    <Input {...data.attributes}>
+                      {data.attributes.values.map((val, key) => (
+                        <option value={val} key={'option' + key}>
+                          {val}
+                        </option>
+                      ))}
+                    </Input>
+                  </Col>
+                  <Col
+                    sm={1}
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => removeSelectedClaimsFromState(key)}
+                  >
+                    <i className={'fa fa-fw fa-close'}></i>
+                  </Col>
+                </FormGroup>
+              )
+            }
           })}
         </Col>
         <Col sm={4}>
@@ -197,7 +243,10 @@ function UserForm() {
                       key={'list' + key}
                       title="Click to add to the form"
                     >
-                      <a onClick={() => setSelectedClaimsToState(data)}>
+                      <a
+                        onClick={() => setSelectedClaimsToState(data)}
+                        style={{ cursor: 'pointer' }}
+                      >
                         {data.name}
                       </a>
                     </li>
