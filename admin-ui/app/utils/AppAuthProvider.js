@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ViewRedirect from './ViewRedirect'
+import ApiKeyRedirect from './ApiKeyRedirect'
 import { withRouter } from 'react-router'
 import { saveState } from './TokenController'
 import queryString from 'query-string'
@@ -100,12 +101,13 @@ class AppAuthProvider extends Component {
   }
   render() {
     const { showContent } = this.state
+    console.log(showContent)
     return (
       <React.Fragment>
         <SessionTimeout isAuthenticated={showContent} />
         {showContent && this.props.children}
         {!showContent && (
-          <ViewRedirect
+          <ApiKeyRedirect
             backendIsUp={this.props.backendIsUp}
             isLicenseValid={this.props.isLicenseValid}
             activateLicense={this.props.activateLicense}

@@ -8,7 +8,11 @@ import {
   activateLicenseResponse,
 } from '../actions'
 
-import { checkLicensePresent, activateLicense, fetchApiTokenWithDefaultScopes } from '../api/backend-api'
+import {
+  checkLicensePresent,
+  activateLicense,
+  fetchApiTokenWithDefaultScopes,
+} from '../api/backend-api'
 
 function* getApiTokenWithDefaultScopes() {
   const response = yield call(fetchApiTokenWithDefaultScopes)
@@ -17,12 +21,14 @@ function* getApiTokenWithDefaultScopes() {
 
 function* checkLicensePresentWorker() {
   try {
-    const token = yield* getApiTokenWithDefaultScopes();
+    // const issuer = yield select((state) => state.authReducer.issuer)
+    const token = yield* getApiTokenWithDefaultScopes()
     const response = yield call(checkLicensePresent, token)
-    if (response) {
-      yield put(checkLicensePresentResponse(response))
-      return
-    }
+    // if (response) {
+    //   yield put(checkLicensePresentResponse(response))
+    //   return
+    // }
+    yield put(checkLicensePresentResponse(false))
   } catch (error) {
     console.log('Error in checking License present.', error)
   }
@@ -31,7 +37,7 @@ function* checkLicensePresentWorker() {
 
 function* activateLicenseWorker({ payload }) {
   try {
-    const token = yield* getApiTokenWithDefaultScopes();
+    const token = yield* getApiTokenWithDefaultScopes()
     const response = yield call(activateLicense, payload.licenseKey, token)
     if (response) {
       yield put(activateLicenseResponse(response))
