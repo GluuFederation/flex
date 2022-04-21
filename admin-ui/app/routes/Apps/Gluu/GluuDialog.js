@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   FormGroup,
   Col,
@@ -8,30 +8,30 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from 'reactstrap'
-import { useTranslation } from 'react-i18next'
-import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
+} from 'reactstrap';
+import { useTranslation } from 'react-i18next';
+import applicationStyle from '../../Apps/Gluu/styles/applicationstyle';
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
-  const [active, setActive] = useState(false)
-  const { t } = useTranslation()
-  const [userMessage, setUserMessage] = useState('')
+  const [active, setActive] = useState(false);
+  const { t } = useTranslation();
+  const [userMessage, setUserMessage] = useState('');
 
   useEffect(() => {
     if (userMessage.length >= 10) {
-      setActive(true)
+      setActive(true);
     } else {
-      setActive(false)
+      setActive(false);
     }
-  }, [userMessage])
+  }, [userMessage]);
 
   function handleAccept() {
-    onAccept(userMessage)
+    onAccept(userMessage);
   }
   const closeModal = () => {
-    handler()
-    setUserMessage('')
-  }
+    handler();
+    setUserMessage('');
+  };
   return (
     <>
       <Modal
@@ -88,7 +88,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
         </ModalFooter>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default GluuDialog
+export default GluuDialog;

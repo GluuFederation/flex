@@ -8,10 +8,10 @@ import {
   AvatarAddOn
 } from './../../../components';
 import { randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const ProfileHeader = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       { /* START Header */}
@@ -48,6 +48,6 @@ const ProfileHeader = () => {
       { /* END Header */}
     </React.Fragment>
   );
-}
+};
 
 export { ProfileHeader };

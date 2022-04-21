@@ -25,10 +25,10 @@ import { NavbarNavigation } from './NavbarNavigation';
 import { DropdownProfile } from './../Dropdowns/DropdownProfile';
 
 import { randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const NavbarExample = ({ themeColor, themeStyle, navStyle }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <NavbarThemeProvider style={ themeStyle } color={ themeColor } className="shadow-sm">
       <Navbar expand="lg" themed>

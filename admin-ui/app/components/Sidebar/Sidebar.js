@@ -23,8 +23,8 @@ const Sidebar = (props) => {
         <SidebarContent { ...props } />
       </OuterClick>
     </React.Fragment>
-  )
-}
+  );
+};
 
 Sidebar.propTypes = {
   children: PropTypes.node,

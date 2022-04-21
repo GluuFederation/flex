@@ -4,10 +4,10 @@ import {
   DropdownMenu,
   DropdownItem
 } from './../../../components';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const SwitchVersion = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       <DropdownMenu>
@@ -57,6 +57,6 @@ const SwitchVersion = () => {
       </DropdownMenu>
     </React.Fragment>
   );
-}
+};
 
 export { SwitchVersion };

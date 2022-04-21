@@ -19,7 +19,7 @@ import {
 } from './../../../components';
 
 import { randomArray, randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const badgesColors = [
   "secondary"
@@ -52,7 +52,7 @@ const prioStatus = [
 ];
 
 const TasksCardGrid = (props) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       { /* START Card */}
@@ -191,7 +191,7 @@ const TasksCardGrid = (props) => {
       { /* END Card */}
     </React.Fragment>
   );
-}
+};
 
 TasksCardGrid.propTypes = {
   id: PropTypes.node

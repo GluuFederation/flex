@@ -1,9 +1,9 @@
-import React from 'react'
-import ReactTooltip from 'react-tooltip'
-import { useTranslation } from 'react-i18next'
+import React from 'react';
+import ReactTooltip from 'react-tooltip';
+import { useTranslation } from 'react-i18next';
 
 function GluuTooltip(props) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <div data-tip data-for={props.doc_entry}>
       {props.children}
@@ -11,7 +11,7 @@ function GluuTooltip(props) {
         {t('documentation.' + props.doc_category + '.' + props.doc_entry)}
       </ReactTooltip>
     </div>
-  )
+  );
 }
 
-export default GluuTooltip
+export default GluuTooltip;

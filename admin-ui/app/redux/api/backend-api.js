@@ -1,20 +1,20 @@
-import axios from '../api/axios'
-import axios_instance from 'axios'
+import axios from '../api/axios';
+import axios_instance from 'axios';
 
 // Get OAuth2 Configuration
 export const fetchServerConfiguration = async (token) => {
-  const headers = { Authorization: `Bearer ${token}`};
+  const headers = { Authorization: `Bearer ${token}` };
   return axios
-    .get('/oauth2/config', {headers})
+    .get('/oauth2/config', { headers })
     .then((response) => response.data)
     .catch((error) => {
       console.error(
         'Problems getting OAuth2 configuration in order to process authz code flow.',
         error,
-      )
-      return -1
-    })
-}
+      );
+      return -1;
+    });
+};
 
 // get user location and ip
 export const getUserIpAndLocation = async () => {
@@ -22,10 +22,10 @@ export const getUserIpAndLocation = async () => {
     .get('https://geolocation-db.com/json/')
     .then((response) => response.data)
     .catch((error) => {
-      console.error('Error fetching user location and ip address', error)
-      return -1
-    })
-}
+      console.error('Error fetching user location and ip address', error);
+      return -1;
+    });
+};
 
 // Retrieve user information
 export const fetchUserInformation = async (code) => {
@@ -38,10 +38,10 @@ export const fetchUserInformation = async (code) => {
       console.error(
         'Problems fetching user information with the provided code.',
         error,
-      )
-      return -1
-    })
-}
+      );
+      return -1;
+    });
+};
 
 // post user action
 export const postUserAction = async (userAction) => {
@@ -54,9 +54,9 @@ export const postUserAction = async (userAction) => {
     })
     .then((response) => response)
     .catch((e) => {
-      return -1
-    })
-}
+      return -1;
+    });
+};
 
 // Get API Access Token
 export const fetchApiAccessToken = async (jwt) => {
@@ -67,10 +67,10 @@ export const fetchApiAccessToken = async (jwt) => {
       console.error(
         'Problems getting API access token in order to process api calls.',
         error,
-      )
-      return -1
-    })
-}
+      );
+      return -1;
+    });
+};
 
 export const fetchApiTokenWithDefaultScopes = async () => {
   return axios
@@ -80,26 +80,26 @@ export const fetchApiTokenWithDefaultScopes = async () => {
       console.error(
         'Problems getting API access token in order to process api calls.',
         error,
-      )
-      return -1
-    })
-}
+      );
+      return -1;
+    });
+};
 
 // Check License present
 export const checkLicensePresent = async (token) => {
-  const headers = { Authorization: `Bearer ${token}`};
+  const headers = { Authorization: `Bearer ${token}` };
   return axios
-    .get('/license/checkLicense', {headers})
+    .get('/license/checkLicense', { headers })
     .then((response) => response.data)
     .catch((error) => {
-      console.error('Error checking license of admin-ui', error)
-      return false
-    })
-}
+      console.error('Error checking license of admin-ui', error);
+      return false;
+    });
+};
 
 // Activate license using key
 export const activateLicense = async (licenseKey, token) => {
-  let data = { licenseKey: licenseKey }
+  const data = { licenseKey: licenseKey };
   return axios
     .post('/license/activateLicense', data, {
       headers: {
@@ -109,7 +109,7 @@ export const activateLicense = async (licenseKey, token) => {
     })
     .then((response) => response.data)
     .catch((e) => {
-      console.error('Error in activating license of admin-ui', e)
-      return false
-    })
-}
+      console.error('Error in activating license of admin-ui', e);
+      return false;
+    });
+};

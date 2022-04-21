@@ -1,6 +1,6 @@
-import React from 'react'
-import { FormGroup, Col, Input, Button } from '../../../components'
-import { useTranslation } from 'react-i18next'
+import React from 'react';
+import { FormGroup, Col, Input, Button } from '../../../components';
+import { useTranslation } from 'react-i18next';
 
 function GluuPropertyItem({
   property,
@@ -10,7 +10,7 @@ function GluuPropertyItem({
   onPropertyChange,
   onPropertyRemove,
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <FormGroup row>
       <Col sm={4}>
@@ -48,7 +48,7 @@ function GluuPropertyItem({
         </Button>
       </Col>
     </FormGroup>
-  )
+  );
 }
 
-export default GluuPropertyItem
+export default GluuPropertyItem;

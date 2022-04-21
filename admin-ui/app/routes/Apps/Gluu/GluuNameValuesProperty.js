@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { Typeahead } from 'react-bootstrap-typeahead'
-import { FormGroup, Col, Row, Input } from '../../../components'
-import GluuLabel from '../Gluu/GluuLabel'
-import Typography from '@material-ui/core/Typography'
-import { createTheme, ThemeProvider } from '@material-ui/core/styles'
+import React, { useState } from 'react';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import { FormGroup, Col, Row, Input } from '../../../components';
+import GluuLabel from '../Gluu/GluuLabel';
+import Typography from '@material-ui/core/Typography';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 
 function GluuNameValuesProperty({
   formik,
@@ -21,74 +21,74 @@ function GluuNameValuesProperty({
   items,
   dataArr,
 }) {
-  const [dataArray, setDataArray] = useState(dataArr)
+  const [dataArray, setDataArray] = useState(dataArr);
   const theme = createTheme({
     typography: {
       subtitle1: {
         fontSize: 12,
       },
     },
-  })
-  setValues()
+  });
+  setValues();
 
   const addClick = () => {
-    setDataArray([...dataArray, { name: '', domains: [] }])
-  }
+    setDataArray([...dataArray, { name: '', domains: [] }]);
+  };
   const setValues = () => {
-    var dataArr2 = dataArray
+    const dataArr2 = dataArray;
     if (value != null && value.length) {
       if (value.length == 0) {
-        return
+        return;
       }
-      for (var i = 0; i < value.length; i++) {
-        var valueList = []
-        var opts = []
-        valueList = value[i].domains
+      for (let i = 0; i < value.length; i++) {
+        let valueList = [];
+        const opts = [];
+        valueList = value[i].domains;
         if (valueList != null) {
-          for (var j = 0; j < valueList.length; j++) {
-            var obj = valueList[j]
-            opts.push(obj)
+          for (let j = 0; j < valueList.length; j++) {
+            const obj = valueList[j];
+            opts.push(obj);
           }
         }
-        console.log(' opts = ' + opts)
-        dataArr2[i] = { name: value[i].name, domains: opts }
+        console.log(' opts = ' + opts);
+        dataArr2[i] = { name: value[i].name, domains: opts };
       }
 
-      setDataArray(dataArr2)
+      setDataArray(dataArr2);
     }
-  }
+  };
 
   const handleChangeValue = (i, selected, name) => (e) => {
-    var dataLength = selected.length
-    var obj = JSON.stringify(selected[dataLength - 1])
-    var jsonObj = JSON.parse(obj)
-    var obj_text = jsonObj[name]
-    let newDataArr = [...dataArray]
-    var modEle = newDataArr[e]
-    modEle.domains.push(obj_text)
-    newDataArr[e] = { ...newDataArr[e], domains: modEle.domains }
-    setDataArray(newDataArr)
+    const dataLength = selected.length;
+    const obj = JSON.stringify(selected[dataLength - 1]);
+    const jsonObj = JSON.parse(obj);
+    const obj_text = jsonObj[name];
+    const newDataArr = [...dataArray];
+    const modEle = newDataArr[e];
+    modEle.domains.push(obj_text);
+    newDataArr[e] = { ...newDataArr[e], domains: modEle.domains };
+    setDataArray(newDataArr);
 
-    formik.setFieldValue(name, newDataArr)
-  }
+    formik.setFieldValue(name, newDataArr);
+  };
 
   const handleChange = (i) => (e) => {
-    const { name, value } = e.target
-    let newDataArr = [...dataArray]
-    newDataArr[i] = { ...newDataArr[i], [name]: value }
-    setDataArray(newDataArr)
-    formik.setFieldValue(name, newDataArr)
-  }
+    const { name, value } = e.target;
+    const newDataArr = [...dataArray];
+    newDataArr[i] = { ...newDataArr[i], [name]: value };
+    setDataArray(newDataArr);
+    formik.setFieldValue(name, newDataArr);
+  };
 
   const removeClick = (i) => {
-    let newDataArr = [...dataArray]
-    newDataArr.splice(i, 1)
-    setDataArray(newDataArr)
-  }
+    const newDataArr = [...dataArray];
+    newDataArr.splice(i, 1);
+    setDataArray(newDataArr);
+  };
 
   const handleInputChange = (input) => (e) => {
-    console.log('value', input)
-  }
+    console.log('value', input);
+  };
 
   return (
     <Row>
@@ -118,7 +118,7 @@ function GluuNameValuesProperty({
                 placeholder={placeholder2}
                 onInputChange={handleInputChange}
                 onChange={(selected) => {
-                  handleChangeValue(index, selected, name2)
+                  handleChangeValue(index, selected, name2);
                 }}
                 id={name2}
                 name={name2}
@@ -143,7 +143,7 @@ function GluuNameValuesProperty({
         </div>
       ))}
     </Row>
-  )
+  );
 }
 
-export default GluuNameValuesProperty
+export default GluuNameValuesProperty;

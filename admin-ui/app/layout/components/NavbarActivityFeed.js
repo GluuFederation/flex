@@ -45,7 +45,7 @@ const NavbarActivityFeed = props => (
           </Badge>
         }
       >
-        <i className="fa fa-bell-o fa-fw" style={{color: 'white'}} />
+        <i className="fa fa-bell-o fa-fw" style={{ color: 'white' }} />
       </IconWithBadge>
     </DropdownToggle>
     <ExtendedDropdown right>

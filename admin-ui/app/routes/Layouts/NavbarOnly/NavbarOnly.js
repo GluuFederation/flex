@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withPageConfig } from
-  './../../../components/Layout/withPageConfig';
+'./../../../components/Layout/withPageConfig';
 import {
   Container,
 } from './../../../components';

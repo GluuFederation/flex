@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { hasPermission, FIDO_WRITE } from '../../../utils/PermChecker'
+import React, { useEffect, useState } from 'react';
+import { hasPermission, FIDO_WRITE } from '../../../utils/PermChecker';
 import {
   Form,
   FormGroup,
@@ -11,29 +11,29 @@ import {
   Input,
   InputGroup,
   CardBody,
-} from './../../../components'
-import GluuLabel from '../Gluu/GluuLabel'
-import GluuFooter from '../Gluu/GluuFooter'
-import GluuLoader from '../Gluu/GluuLoader'
-import GluuTypeAhead from '../Gluu/GluuTypeAhead'
-import { connect } from 'react-redux'
-import { Formik } from 'formik'
+} from './../../../components';
+import GluuLabel from '../Gluu/GluuLabel';
+import GluuFooter from '../Gluu/GluuFooter';
+import GluuLoader from '../Gluu/GluuLoader';
+import GluuTypeAhead from '../Gluu/GluuTypeAhead';
+import { connect } from 'react-redux';
+import { Formik } from 'formik';
 import {
   getFidoConfig,
   editFidoConfig,
-} from '../../../redux/actions/FidoActions'
-import GluuNameValuesProperty from '../Gluu/GluuNameValuesProperty'
+} from '../../../redux/actions/FidoActions';
+import GluuNameValuesProperty from '../Gluu/GluuNameValuesProperty';
 
-function Fido2Page({ fido,permissions, dispatch }) {
+function Fido2Page({ fido, permissions, dispatch }) {
   useEffect(() => {
-    dispatch(getFidoConfig())
-  }, [])
-  const [init, setInit] = useState(false)
-  const requested_parties = 'requested_parties'
-  const requestedPartiesList = []
+    dispatch(getFidoConfig());
+  }, []);
+  const [init, setInit] = useState(false);
+  const requested_parties = 'requested_parties';
+  const requestedPartiesList = [];
 
   function requestedPartiesValidator() {
-    return true
+    return true;
   }
 
   const initialValues = {
@@ -51,11 +51,11 @@ function Fido2Page({ fido,permissions, dispatch }) {
     metricReporterEnabled: fido.metricReporterEnabled,
     personCustomObjectClassList: fido.personCustomObjectClassList,
     fido2Configuration: fido.fido2Configuration,
-  }
+  };
 
   function toogle() {
     if (!init) {
-      setInit(true)
+      setInit(true);
     }
   }
 
@@ -67,10 +67,10 @@ function Fido2Page({ fido,permissions, dispatch }) {
             <Formik
               initialValues={initialValues}
               onSubmit={(values) => {
-                const result = Object.assign(fido, values)
-                const opts = {}
-                opts['jansFido2DynConfiguration'] = result
-                dispatch(editFidoConfig(opts))
+                const result = Object.assign(fido, values);
+                const opts = {};
+                opts['jansFido2DynConfiguration'] = result;
+                dispatch(editFidoConfig(opts));
               }}
             >
               {(formik) => (
@@ -446,13 +446,13 @@ function Fido2Page({ fido,permissions, dispatch }) {
         </Card>
       </Container>
     </GluuLoader>
-  )
+  );
 }
 const mapStateToProps = (state) => {
   return {
     fido: state.fidoReducer.fido,
     loading: state.fidoReducer.loading,
     permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(Fido2Page)
+  };
+};
+export default connect(mapStateToProps)(Fido2Page);

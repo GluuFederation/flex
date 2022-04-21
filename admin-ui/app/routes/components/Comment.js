@@ -7,7 +7,7 @@ import {
   UncontrolledTooltip 
 } from './../../components';
 import { randomArray, randomAvatar } from './../../utilities';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const status = [
   "success",
@@ -17,7 +17,7 @@ const status = [
 ];
 
 const Comment = (props) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
 
     <Media className={ `mb-4 ${ props.mediaClassName }` }>
@@ -81,7 +81,7 @@ const Comment = (props) => {
     </Media>
 
   );
-}
+};
 Comment.propTypes = {
   mediaClassName: PropTypes.node
 };

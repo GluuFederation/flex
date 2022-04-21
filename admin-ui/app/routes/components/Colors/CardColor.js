@@ -8,10 +8,10 @@ import {
 } from './../../../components';
 
 import { InfoPopover } from './InfoPopover';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const CardColor = (props) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <Card className={ `mb-3 ${ props.cardClass }` }>
       <CardHeader className={ `bg-${ props.color }` } style={{ height: '120px' }} />
@@ -48,7 +48,7 @@ const CardColor = (props) => {
     </Card>
 
   );
-}
+};
 CardColor.propTypes = {
   cardClass: PropTypes.node,
   color: PropTypes.node,

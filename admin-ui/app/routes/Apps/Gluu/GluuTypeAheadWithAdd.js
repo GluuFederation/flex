@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { FormGroup, Col, Row, Button, Input } from '../../../components'
-import { Typeahead } from 'react-bootstrap-typeahead'
-import GluuLabel from '../Gluu/GluuLabel'
-import GluuTooltip from './GluuTooltip'
-import applicationStyle from './styles/applicationstyle'
-import { useTranslation } from 'react-i18next'
+import React, { useState } from 'react';
+import { FormGroup, Col, Row, Button, Input } from '../../../components';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import GluuLabel from '../Gluu/GluuLabel';
+import GluuTooltip from './GluuTooltip';
+import applicationStyle from './styles/applicationstyle';
+import { useTranslation } from 'react-i18next';
 
 function GluuTypeAheadWithAdd({
   label,
@@ -17,26 +17,26 @@ function GluuTypeAheadWithAdd({
   inputId,
   doc_category,
 }) {
-  const [items, setItems] = useState(value)
-  const [opts, setOpts] = useState(options)
-  const { t } = useTranslation()
+  const [items, setItems] = useState(value);
+  const [opts, setOpts] = useState(options);
+  const { t } = useTranslation();
 
   const addItem = () => {
-    const newItem = document.getElementById(inputId).value
-    document.getElementById(inputId).value = ''
+    const newItem = document.getElementById(inputId).value;
+    document.getElementById(inputId).value = '';
     if (validator(newItem)) {
-      items.push(newItem)
-      opts.push(newItem)
-      setItems(items)
-      formik.setFieldValue(name, items)
+      items.push(newItem);
+      opts.push(newItem);
+      setItems(items);
+      formik.setFieldValue(name, items);
     }
-  }
+  };
 
   const handleChange = (aName, selected) => {
-    setOpts(selected)
-    setItems(selected)
-    formik.setFieldValue(aName, selected)
-  }
+    setOpts(selected);
+    setItems(selected);
+    formik.setFieldValue(aName, selected);
+  };
 
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
@@ -75,7 +75,7 @@ function GluuTypeAheadWithAdd({
             emptyLabel=""
             labelKey={name}
             onChange={(selected) => {
-              handleChange(name, selected)
+              handleChange(name, selected);
             }}
             id={name}
             name={name}
@@ -88,7 +88,7 @@ function GluuTypeAheadWithAdd({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  )
+  );
 }
 
-export default GluuTypeAheadWithAdd
+export default GluuTypeAheadWithAdd;

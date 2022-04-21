@@ -42,7 +42,7 @@ const Attachment = (props) => {
     </Media>
 
   );
-}
+};
 Attachment.propTypes = {
   mediaClassName: PropTypes.node,
   icon: PropTypes.node,

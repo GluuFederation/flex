@@ -1,15 +1,15 @@
-import React from 'react'
-import { Label } from './../../../components'
-import ReactTooltip from 'react-tooltip'
-import { useTranslation } from 'react-i18next'
+import React from 'react';
+import { Label } from './../../../components';
+import ReactTooltip from 'react-tooltip';
+import { useTranslation } from 'react-i18next';
 
 function GluuLabel({ label, required, size, doc_category, doc_entry }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   function getSize() {
     if (size != null) {
-      return size
+      return size;
     }
-    return 3
+    return 3;
   }
   return (
     <Label for={label} sm={getSize()} data-tip data-for={label}>
@@ -29,7 +29,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry }) {
         </ReactTooltip>
       )}
     </Label>
-  )
+  );
 }
 
-export default GluuLabel
+export default GluuLabel;

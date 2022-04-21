@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import {
   Container,
 } from './../../../components';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 export const SidebarA = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <Container>
       <h1 className="display-4 mb-4 mt-2">{t("Sidebar A")}</h1>
@@ -91,4 +91,4 @@ export const SidebarA = () => {
       </section>
     </Container>
   );
-}
+};

@@ -1,37 +1,37 @@
-import React, { useState, useEffect } from 'react'
-import { SidebarMenu, Divider } from './../../../components'
-import { connect } from 'react-redux'
-import { hasPermission } from '../../../utils/PermChecker'
-import { ErrorBoundary } from 'react-error-boundary'
-import GluuErrorFallBack from './GluuErrorFallBack'
-import { processMenus } from '../../../../plugins/PluginMenuResolver'
-import { useTranslation } from 'react-i18next'
+import React, { useState, useEffect } from 'react';
+import { SidebarMenu, Divider } from './../../../components';
+import { connect } from 'react-redux';
+import { hasPermission } from '../../../utils/PermChecker';
+import { ErrorBoundary } from 'react-error-boundary';
+import GluuErrorFallBack from './GluuErrorFallBack';
+import { processMenus } from '../../../../plugins/PluginMenuResolver';
+import { useTranslation } from 'react-i18next';
 
 function GluuAppSidebar({ scopes }) {
-  const [pluginMenus, setPluginMenus] = useState([])
-  const { t } = useTranslation()
+  const [pluginMenus, setPluginMenus] = useState([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    setPluginMenus(processMenus())
-  }, [])
+    setPluginMenus(processMenus());
+  }, []);
 
   function getMenuIcon(name) {
-    let fullName = ''
+    let fullName = '';
     if (name) {
-      fullName = 'fa fa-fw ' + name
-      return <i className={fullName}></i>
+      fullName = 'fa fa-fw ' + name;
+      return <i className={fullName}></i>;
     }
-    return null
+    return null;
   }
 
   function getMenuPath(menu) {
     if (menu.children) {
-      return null
+      return null;
     }
-    return menu.path
+    return menu.path;
   }
   function hasChildren(plugin) {
-    return typeof plugin.children !== 'undefined' && plugin.children.length
+    return typeof plugin.children !== 'undefined' && plugin.children.length;
   }
 
   return (
@@ -114,16 +114,16 @@ function GluuAppSidebar({ scopes }) {
         />
       </SidebarMenu>
     </ErrorBoundary>
-  )
+  );
 }
 
 const mapStateToProps = ({ authReducer }) => {
   const scopes = authReducer.token
     ? authReducer.token.scopes
-    : authReducer.permissions
+    : authReducer.permissions;
   return {
     scopes,
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps)(GluuAppSidebar)
+export default connect(mapStateToProps)(GluuAppSidebar);

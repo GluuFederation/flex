@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { randomArray } from "./../../../utilities";
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const hour = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
@@ -12,7 +12,7 @@ const min = ["00", "15", "20", "25", "30", "35", "40", "45", "50"];
 const amPm = ["am", "pm"];
 
 const TimelineDefault = props => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       {/* START TIMELINE Default */}
@@ -73,7 +73,7 @@ const TimelineDefault = props => {
       {/* END TIMELINE Default */}
     </React.Fragment>
   );
-}
+};
 
 TimelineDefault.propTypes = {
   showPillDate: PropTypes.bool,

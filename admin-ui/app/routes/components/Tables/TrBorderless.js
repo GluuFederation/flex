@@ -43,6 +43,6 @@ const TrBorderless = () => {
       { /* END TR */}
     </React.Fragment>
   );
-}
+};
 
 export { TrBorderless };

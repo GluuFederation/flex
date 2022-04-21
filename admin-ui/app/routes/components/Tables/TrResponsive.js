@@ -65,6 +65,6 @@ const TrResponsive = () => {
       { /* END TR */}
     </React.Fragment>
   );
-}
+};
 
 export { TrResponsive };

@@ -8,10 +8,10 @@ import {
 } from './../../../components';
 
 import { randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const TrTableInvoices = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       {
@@ -73,6 +73,6 @@ const TrTableInvoices = () => {
       }
     </React.Fragment>
   );
-}
+};
 
 export { TrTableInvoices };

@@ -1,7 +1,7 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { FormGroup, Label, Badge } from '../../../components'
-import GluuTooltip from './GluuTooltip'
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { FormGroup, Label, Badge } from '../../../components';
+import GluuTooltip from './GluuTooltip';
 function GluuFormDetailRow({
   label,
   value,
@@ -12,7 +12,7 @@ function GluuFormDetailRow({
   doc_category,
   doc_entry,
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
       <FormGroup row>
@@ -28,6 +28,6 @@ function GluuFormDetailRow({
         </Label>
       </FormGroup>
     </GluuTooltip>
-  )
+  );
 }
-export default GluuFormDetailRow
+export default GluuFormDetailRow;

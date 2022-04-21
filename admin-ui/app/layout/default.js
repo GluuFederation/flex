@@ -58,7 +58,7 @@ const AppLayout = (prop) => {
       </Layout>
     </ThemeProvider>
   );
-}
+};
 AppLayout.prop = {
   children: PropTypes.node.isRequired,
 };

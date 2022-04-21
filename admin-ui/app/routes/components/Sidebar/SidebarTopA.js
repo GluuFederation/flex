@@ -12,12 +12,12 @@ import {
   DropdownItem
 } from './../../../components';
 import { randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const avatarImg = randomAvatar();
 
 const SidebarTopA = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       { /* START: Sidebar Default */ }
@@ -98,6 +98,6 @@ const SidebarTopA = () => {
       { /* END: Sidebar Slim */ }
     </React.Fragment>
   );
-}
+};
 
 export { SidebarTopA };

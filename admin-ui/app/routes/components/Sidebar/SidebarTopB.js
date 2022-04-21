@@ -7,10 +7,10 @@ import {
 } from './../../../components';
 
 import { VersionSelector } from '../VersionSelector';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const SidebarTopB = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       { /* START Sidebar TOP: B */ }
@@ -61,6 +61,6 @@ const SidebarTopB = () => {
       { /* END Sidebar TOP: B */ }
     </React.Fragment>
   );
-}
+};
 
 export { SidebarTopB };
