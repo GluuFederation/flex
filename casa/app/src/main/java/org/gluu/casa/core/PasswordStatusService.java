@@ -5,9 +5,9 @@ import org.gluu.casa.core.model.IdentityPerson;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 

@@ -7,10 +7,10 @@ import org.jboss.resteasy.spi.Registry;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -82,7 +82,7 @@ public class RSRegistryHandler {
         boolean added = false;
         try {
             Class<?> cls = clsLoader.loadClass(binaryName);
-            javax.ws.rs.Path pathAnnotation = cls.getAnnotation(javax.ws.rs.Path.class);
+            jakarta.ws.rs.Path pathAnnotation = cls.getAnnotation(javax.ws.rs.Path.class);
 
             if (pathAnnotation != null) {
                 logger.info("Found class '{}' annotated with @Path", binaryName);

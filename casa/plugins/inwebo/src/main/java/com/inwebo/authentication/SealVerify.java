@@ -4,9 +4,9 @@ import com.inwebo.support.Util;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
+import jakarta.net.ssl.HttpsURLConnection;
+import jakarta.net.ssl.SSLContext;
+import jakarta.net.ssl.SSLSocketFactory;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;

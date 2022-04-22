@@ -3,7 +3,7 @@ package org.gluu.casa.core.plugin;
 import org.gluu.casa.service.settings.IPluginSettingsHandler;
 import org.gluu.casa.service.settings.IPluginSettingsHandlerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.HashMap;
 import java.util.Map;
 

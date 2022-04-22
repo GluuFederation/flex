@@ -1,10 +1,10 @@
 package org.gluu.casa.rest;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.UserService;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.gluu.casa.rest.SecondFactorUserData.StatusCode.*;
-import static javax.ws.rs.core.Response.Status.*;
+import static jakarta.ws.rs.core.Response.Status.*;
 
 @ApplicationScoped
 @ProtectedApi( scopes = "https://jans.io/casa.2fa" )

@@ -2,7 +2,7 @@ package org.gluu.casa.rest;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 
-import javax.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientBuilder;
 
 public final class RSUtils {
 
