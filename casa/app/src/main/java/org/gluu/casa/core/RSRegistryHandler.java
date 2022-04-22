@@ -82,7 +82,7 @@ public class RSRegistryHandler {
         boolean added = false;
         try {
             Class<?> cls = clsLoader.loadClass(binaryName);
-            jakarta.ws.rs.Path pathAnnotation = cls.getAnnotation(javax.ws.rs.Path.class);
+            jakarta.ws.rs.Path pathAnnotation = cls.getAnnotation(jakarta.ws.rs.Path.class);
 
             if (pathAnnotation != null) {
                 logger.info("Found class '{}' annotated with @Path", binaryName);
