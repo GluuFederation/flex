@@ -1,8 +1,8 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Sidebar, SidebarTrigger, Divider } from './../../components'
-import { LogoThemed } from '../../routes/components/LogoThemed/LogoThemed'
-import GluuAppSidebar from '../../routes/Apps/Gluu/GluuAppSidebar'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Sidebar, SidebarTrigger, Divider } from './../../components';
+import { LogoThemed } from '../../routes/components/LogoThemed/LogoThemed';
+import GluuAppSidebar from '../../routes/Apps/Gluu/GluuAppSidebar';
 
 export const DefaultSidebar = () => (
   <Sidebar>
@@ -44,4 +44,4 @@ export const DefaultSidebar = () => (
     </Sidebar.MobileFluid>
     {/* END SIDEBAR: Only for Mobile */}
   </Sidebar>
-)
+);

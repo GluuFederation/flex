@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   XAxis,
   YAxis,
@@ -8,11 +8,11 @@ import {
   Legend,
   CartesianGrid,
   ResponsiveContainer,
-} from 'recharts'
-import { useTranslation } from 'react-i18next'
+} from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 function ActiveUsersGraph({ data }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
     <ResponsiveContainer className="mau" width="98%" height={300}>
@@ -30,7 +30,7 @@ function ActiveUsersGraph({ data }) {
         <Legend />
       </LineChart>
     </ResponsiveContainer>
-  )
+  );
 }
 
-export default ActiveUsersGraph
+export default ActiveUsersGraph;

@@ -1,8 +1,8 @@
-import React from 'react'
-import { Col, FormGroup} from '../../../components'
-import GluuLabel from './GluuLabel'
-import GluuTooltip from './GluuTooltip'
-import GluuToogle from './GluuToogle'
+import React from 'react';
+import { Col, FormGroup } from '../../../components';
+import GluuLabel from './GluuLabel';
+import GluuTooltip from './GluuTooltip';
+import GluuToogle from './GluuToogle';
 
 function GluuToogleRow({
   label,
@@ -30,11 +30,11 @@ function GluuToogleRow({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  )
+  );
 }
 GluuToogleRow.defaultProps = {
   lsize: 3,
   rsize: 9,
-}
+};
 
-export default GluuToogleRow
+export default GluuToogleRow;

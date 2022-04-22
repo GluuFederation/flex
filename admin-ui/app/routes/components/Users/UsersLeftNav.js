@@ -6,10 +6,10 @@ import {
   NavLink,
   Badge
 } from './../../../components';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const UsersLeftNav = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       { /* START Left Nav  */}
@@ -95,6 +95,6 @@ const UsersLeftNav = () => {
       { /* END Left Nav  */}
     </React.Fragment>
   );
-}
+};
 
 export { UsersLeftNav };

@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import classNames from 'classnames'
+import React from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 export const WizardStep = (props) => {
   const stepClass = classNames(
@@ -11,7 +11,7 @@ export const WizardStep = (props) => {
     },
     'wizard-step',
     props.className,
-  )
+  );
 
   return (
     <a
@@ -24,13 +24,13 @@ export const WizardStep = (props) => {
       </div>
       <div className="wizard-step__content">{props.children}</div>
     </a>
-  )
-}
+  );
+};
 
 WizardStep.defaultProps = {
   successIcon: <i className="fa fa-check fa-fw"></i>,
   onClick: () => {},
-}
+};
 
 WizardStep.propTypes = {
   active: PropTypes.bool,
@@ -42,4 +42,4 @@ WizardStep.propTypes = {
   icon: PropTypes.node,
   successIcon: PropTypes.node,
   children: PropTypes.node,
-}
+};

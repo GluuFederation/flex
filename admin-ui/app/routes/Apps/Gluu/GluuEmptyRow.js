@@ -1,7 +1,7 @@
-import React from 'react'
-import { FormGroup } from '../../../components'
+import React from 'react';
+import { FormGroup } from '../../../components';
 function GluuEmptyRow() {
-  return <FormGroup row></FormGroup>
+  return <FormGroup row></FormGroup>;
 }
 
-export default GluuEmptyRow
+export default GluuEmptyRow;

@@ -66,11 +66,11 @@ class OuterClick extends React.Component {
     }
 
     openSidebar(path){
-      const exists= path.some(item => item.id === "navToggleBtn")
+      const exists= path.some(item => item.id === "navToggleBtn");
       if(exists)
-        return false
+        return false;
 
-      return true
+      return true;
     }
 
     render() {

@@ -13,10 +13,10 @@ import {
   DropdownItem,
   NestedDropdown
 } from './../../../components';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <Nav navbar accent={ accent } pills={ pills } { ...navbarProps }>
       <NavItem>
@@ -152,7 +152,7 @@ const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {
       </UncontrolledDropdown>
     </Nav>
   );
-}
+};
 NavbarNavigation.propTypes = {
   pills: PropTypes.bool,
   accent: PropTypes.bool,

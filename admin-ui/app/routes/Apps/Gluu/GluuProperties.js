@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { FormGroup, Col, Button } from '../../../components'
-import { Accordion } from '../../../../app/components'
-import GluuPropertyItem from './GluuPropertyItem'
-import { useTranslation } from 'react-i18next'
+import React, { useState } from 'react';
+import { FormGroup, Col, Button } from '../../../components';
+import { Accordion } from '../../../../app/components';
+import GluuPropertyItem from './GluuPropertyItem';
+import { useTranslation } from 'react-i18next';
 
 function GluuProperties({
   compName,
@@ -12,30 +12,30 @@ function GluuProperties({
   valuePlaceholder,
   options,
 }) {
-  const [properties, setProperties] = useState(options)
-  const { t } = useTranslation()
+  const [properties, setProperties] = useState(options);
+  const { t } = useTranslation();
 
   const addProperty = () => {
-    const item = { key: '', value: '' }
-    setProperties((prev) => [...prev, item])
-  }
+    const item = { key: '', value: '' };
+    setProperties((prev) => [...prev, item]);
+  };
   const changeProperty = (position) => (e) => {
-    const { name, value } = e.target
-    const newDataArr = [...properties]
-    newDataArr[position] = { ...newDataArr[position], [name]: value }
-    setProperties(newDataArr)
-    formik.setFieldValue(compName, newDataArr)
-  }
+    const { name, value } = e.target;
+    const newDataArr = [...properties];
+    newDataArr[position] = { ...newDataArr[position], [name]: value };
+    setProperties(newDataArr);
+    formik.setFieldValue(compName, newDataArr);
+  };
   const removeProperty = (position) => {
-    let data = [...properties]
-    delete data[position]
-    data = data.filter((element) => element != null)
-    setProperties(data)
+    let data = [...properties];
+    delete data[position];
+    data = data.filter((element) => element != null);
+    setProperties(data);
     formik.setFieldValue(
       compName,
       data.filter((element) => element != null),
-    )
-  }
+    );
+  };
 
   return (
     <Accordion className="mb-2 b-primary" initialOpen>
@@ -76,7 +76,7 @@ function GluuProperties({
         </FormGroup>
       </Accordion.Body>
     </Accordion>
-  )
+  );
 }
 
-export default GluuProperties
+export default GluuProperties;

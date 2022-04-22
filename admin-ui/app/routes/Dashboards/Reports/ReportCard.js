@@ -1,7 +1,7 @@
-import React from 'react'
-import { Card, CardBody, CardTitle, Badge } from '../../../../app/components'
-import ReportPiChartItem from './ReportPiChartItem'
-import GluuRibbon from '../../Apps/Gluu/GluuRibbon'
+import React from 'react';
+import { Card, CardBody, CardTitle, Badge } from '../../../../app/components';
+import ReportPiChartItem from './ReportPiChartItem';
+import GluuRibbon from '../../Apps/Gluu/GluuRibbon';
 
 function ReportCard({ title, data, upValue, downValue }) {
   return (
@@ -24,7 +24,7 @@ function ReportCard({ title, data, upValue, downValue }) {
         </div>
       </CardBody>
     </Card>
-  )
+  );
 }
 
-export default ReportCard
+export default ReportCard;

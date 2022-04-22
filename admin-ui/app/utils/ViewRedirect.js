@@ -1,17 +1,17 @@
-import React from 'react'
-import { Container } from './../components'
-import GluuNotification from './../routes/Apps/Gluu/GluuNotification'
-import GluuCommitDialog from '../../app/routes/Apps/Gluu/GluuCommitDialog'
-import { useTranslation } from 'react-i18next'
+import React from 'react';
+import { Container } from './../components';
+import GluuNotification from './../routes/Apps/Gluu/GluuNotification';
+import GluuCommitDialog from '../../app/routes/Apps/Gluu/GluuCommitDialog';
+import { useTranslation } from 'react-i18next';
 
 function ViewRedirect({ backendIsUp, isLicenseValid, activateLicense, redirectUrl, islicenseCheckResultLoaded, isLicenseActivationResultLoaded }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   function submitForm(message) {
     activateLicense(message.trim());
   }
 
   function toggle() {
-   window.location.href = redirectUrl;
+    window.location.href = redirectUrl;
   }
 
   return (
@@ -56,6 +56,6 @@ function ViewRedirect({ backendIsUp, isLicenseValid, activateLicense, redirectUr
         </div>
       </Container>
     </React.Fragment>
-  )
+  );
 }
-export default ViewRedirect
+export default ViewRedirect;

@@ -1,7 +1,7 @@
-import React from 'react'
-import { Col, FormGroup, Input } from '../../../components'
-import GluuLabel from './GluuLabel'
-import GluuTooltip from './GluuTooltip'
+import React from 'react';
+import { Col, FormGroup, Input } from '../../../components';
+import GluuLabel from './GluuLabel';
+import GluuTooltip from './GluuTooltip';
 function GluuInputRow({
   label,
   name,
@@ -29,7 +29,7 @@ function GluuInputRow({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  )
+  );
 }
 
 GluuInputRow.defaultProps = {
@@ -37,6 +37,6 @@ GluuInputRow.defaultProps = {
   lsize: 3,
   rsize: 9,
   required: false,
-}
+};
 
-export default GluuInputRow
+export default GluuInputRow;

@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import { subMonths } from 'date-fns'
-import moment from 'moment'
-import CustomLineChart from './Grapths/CustomLineChart'
-import CustomBadgeRow from './Grapths/CustomBadgeRow'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import GluuLoader from '../Apps/Gluu/GluuLoader'
-import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
-import { getMau } from '../../redux/actions/MauActions'
-import { getClients } from '../../redux/actions/InitActions'
-import applicationstyle from '../Apps/Gluu/styles/applicationstyle'
-import GluuLabel from '../Apps/Gluu/GluuLabel'
-import GluuRibbon from '../Apps/Gluu/GluuRibbon'
+import React, { useState, useEffect } from 'react';
+import { subMonths } from 'date-fns';
+import moment from 'moment';
+import CustomLineChart from './Grapths/CustomLineChart';
+import CustomBadgeRow from './Grapths/CustomBadgeRow';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import GluuLoader from '../Apps/Gluu/GluuLoader';
+import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper';
+import { getMau } from '../../redux/actions/MauActions';
+import { getClients } from '../../redux/actions/InitActions';
+import applicationstyle from '../Apps/Gluu/styles/applicationstyle';
+import GluuLabel from '../Apps/Gluu/GluuLabel';
+import GluuRibbon from '../Apps/Gluu/GluuRibbon';
 import {
   Button,
   Card,
@@ -20,88 +20,88 @@ import {
   FormGroup,
   Col,
   Row,
-} from '../../../app/components'
+} from '../../../app/components';
 import {
   hasBoth,
   buildPayload,
   STAT_READ,
   STAT_JANS_READ,
-} from '../../utils/PermChecker'
-import { useTranslation } from 'react-i18next'
-import { connect } from 'react-redux'
+} from '../../utils/PermChecker';
+import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 
 function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
-  const { t } = useTranslation()
-  const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
-  const [endDate, setEndDate] = useState(new Date())
-  const userAction = {}
-  const options = {}
+  const { t } = useTranslation();
+  const [startDate, setStartDate] = useState(subMonths(new Date(), 3));
+  const [endDate, setEndDate] = useState(new Date());
+  const userAction = {};
+  const options = {};
   useEffect(() => {
-    let count = 0
+    let count = 0;
     const interval = setInterval(() => {
       if (statData.length === 0 && count < 2) {
-        search()
+        search();
       }
       if (clients.length === 0 && count < 2) {
-        buildPayload(userAction, 'Fetch openid connect clients', {})
-        dispatch(getClients(userAction))
+        buildPayload(userAction, 'Fetch openid connect clients', {});
+        dispatch(getClients(userAction));
       }
-      count++
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [1000])
+      count++;
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [1000]);
 
   function search() {
-    options['month'] = getFormattedMonth()
-    buildPayload(userAction, 'GET MAU', options)
-    dispatch(getMau(userAction))
+    options['month'] = getFormattedMonth();
+    buildPayload(userAction, 'GET MAU', options);
+    dispatch(getMau(userAction));
   }
 
   function doDataAugmentation(input) {
-    let stat = input
+    const stat = input;
     if (stat && stat.length >= 1) {
-      let flattendStat = stat.map((entry) => entry['month'])
-      let aRange = generateDateRange(moment(startDate), moment(endDate))
+      const flattendStat = stat.map((entry) => entry['month']);
+      const aRange = generateDateRange(moment(startDate), moment(endDate));
       for (const ele of aRange) {
-        const currentMonth = getYearMonth(new Date(ele))
+        const currentMonth = getYearMonth(new Date(ele));
         if (flattendStat.indexOf(parseInt(currentMonth, 10)) === -1) {
-          let newEntry = new Object()
-          newEntry['month'] = parseInt(getYearMonth(new Date(ele)), 10)
-          newEntry['mau'] = 0
-          newEntry['client_credentials_access_token_count'] = 0
-          newEntry['authz_code_access_token_count'] = 0
-          newEntry['authz_code_idtoken_count'] = 0
-          stat.push(newEntry)
+          const newEntry = new Object();
+          newEntry['month'] = parseInt(getYearMonth(new Date(ele)), 10);
+          newEntry['mau'] = 0;
+          newEntry['client_credentials_access_token_count'] = 0;
+          newEntry['authz_code_access_token_count'] = 0;
+          newEntry['authz_code_idtoken_count'] = 0;
+          stat.push(newEntry);
         }
       }
       return Array.from(new Set(stat)).sort(
         (a, b) => parseInt(a.month, 10) - parseInt(b.month, 10),
-      )
+      );
     }
-    return stat
+    return stat;
   }
   function getYearMonth(date) {
-    return date.getFullYear() + getMonth(date)
+    return date.getFullYear() + getMonth(date);
   }
   function getFormattedMonth() {
-    return getYearMonth(startDate) + '%' + getYearMonth(endDate)
+    return getYearMonth(startDate) + '%' + getYearMonth(endDate);
   }
   function getMonth(aDate) {
-    let value = String(aDate.getMonth() + 1)
+    const value = String(aDate.getMonth() + 1);
     if (value.length > 1) {
-      return value
+      return value;
     } else {
-      return '0' + value
+      return '0' + value;
     }
   }
 
   function generateDateRange(start, end) {
-    var result = []
+    const result = [];
     while (end > start || start.format('M') === end.format('M')) {
-      result.push(start.format('YYYY-MM') + '-01')
-      start.add(1, 'month')
+      result.push(start.format('YYYY-MM') + '-01');
+      start.add(1, 'month');
     }
-    return result
+    return result;
   }
 
   const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
@@ -115,7 +115,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
     >
       {value}
     </Button>
-  ))
+  ));
 
   return (
     <GluuLoader blocking={loading}>
@@ -202,7 +202,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
         </Card>
       </GluuViewWrapper>
     </GluuLoader>
-  )
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -211,7 +211,7 @@ const mapStateToProps = (state) => {
     loading: state.mauReducer.loading,
     clients: state.initReducer.clients,
     permissions: state.authReducer.permissions,
-  }
-}
+  };
+};
 
-export default connect(mapStateToProps)(DashboardPage)
+export default connect(mapStateToProps)(DashboardPage);

@@ -5,10 +5,10 @@ import {
   NavItem,
   NavLink
 } from './../../../components';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const ProfileLeftNav = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       { /* START Left Nav  */}
@@ -44,6 +44,6 @@ const ProfileLeftNav = () => {
       { /* END Left Nav  */}
     </React.Fragment>
   );
-}
+};
 
 export { ProfileLeftNav };

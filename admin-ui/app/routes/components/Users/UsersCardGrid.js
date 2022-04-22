@@ -17,10 +17,10 @@ import {
 import {
   Profile
 } from "./../Profile";
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const UsersCardGrid = (props) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       { /* START Card */}
@@ -85,7 +85,7 @@ const UsersCardGrid = (props) => {
       { /* END Card */}
     </React.Fragment>
   );
-}
+};
 UsersCardGrid.propTypes = {
   id: PropTypes.node
 };

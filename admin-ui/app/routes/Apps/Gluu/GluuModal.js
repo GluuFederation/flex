@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Button,
   Modal,
@@ -6,12 +6,12 @@ import {
   ModalBody,
   ModalFooter,
   Input,
-} from 'reactstrap'
-import { useTranslation } from 'react-i18next'
-import applicationStyle from './styles/applicationstyle'
+} from 'reactstrap';
+import { useTranslation } from 'react-i18next';
+import applicationStyle from './styles/applicationstyle';
 
 function GluuModal({ title, modal, handler, onAccept }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
       <ModalHeader toggle={handler}>
@@ -42,7 +42,7 @@ function GluuModal({ title, modal, handler, onAccept }) {
         </Button>
       </ModalFooter>
     </Modal>
-  )
+  );
 }
 
-export default GluuModal
+export default GluuModal;

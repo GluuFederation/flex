@@ -1,6 +1,6 @@
-import React from 'react'
-import Toggle from 'react-toggle'
-function GluuToogle({ name, formik, value, handler}) {
+import React from 'react';
+import Toggle from 'react-toggle';
+function GluuToogle({ name, formik, value, handler }) {
   return (
     <Toggle
       name={name}
@@ -9,7 +9,7 @@ function GluuToogle({ name, formik, value, handler}) {
       onClick={handler}
       onChange={formik.handleChange}
     />
-  )
+  );
 }
 
-export default GluuToogle
+export default GluuToogle;

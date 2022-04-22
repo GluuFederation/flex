@@ -26,7 +26,7 @@ const LogoThemed = ({ checkBackground, className, ...otherProps }) => (
   <ThemeConsumer>
     {
       ({ style, color }) => (
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <img style={{ width:'130px', height:'51px' }}
             src={
               checkBackground ?

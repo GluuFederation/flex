@@ -13,10 +13,10 @@ import {
 
 import { HeaderAuth } from "../../components/Pages/HeaderAuth";
 import { FooterAuth } from "../../components/Pages/FooterAuth";
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const LockScreen = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <EmptyLayout>
       <EmptyLayout.Section center>
@@ -60,6 +60,6 @@ const LockScreen = () => {
       </EmptyLayout.Section>
     </EmptyLayout>
   );
-}
+};
 
 export default LockScreen;

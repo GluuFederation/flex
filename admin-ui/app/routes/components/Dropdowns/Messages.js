@@ -6,7 +6,7 @@ import {
   Media
 } from './../../../components';
 import { randomArray, randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const status = [
   "success",
@@ -16,7 +16,7 @@ const status = [
 ];
 
 const Messages = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       <Media>
@@ -58,6 +58,6 @@ const Messages = () => {
     </React.Fragment>
 
   );
-}
+};
 
 export { Messages };

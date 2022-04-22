@@ -16,7 +16,7 @@ import {
 } from './../../../components';
 
 import { randomArray, randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 const status = [
   "success",
@@ -29,7 +29,7 @@ const badges = [
 ];
 
 const GalleryCard = (props) => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       { /* START Card */}
@@ -109,7 +109,7 @@ const GalleryCard = (props) => {
       { /* END Card */}
     </React.Fragment>
   );
-}
+};
 GalleryCard.propTypes = {
   id: PropTypes.node
 };

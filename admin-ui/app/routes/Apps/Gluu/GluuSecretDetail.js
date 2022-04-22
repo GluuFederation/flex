@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
-import { FormGroup, Label, Col } from '../../../components'
-import Toggle from 'react-toggle'
-import GluuTooltip from './GluuTooltip'
-import { useTranslation } from 'react-i18next'
+import React, { useState } from 'react';
+import { FormGroup, Label, Col } from '../../../components';
+import Toggle from 'react-toggle';
+import GluuTooltip from './GluuTooltip';
+import { useTranslation } from 'react-i18next';
 
 function GluuSecretDetail({ label, value, doc_category, doc_entry }) {
-  const { t } = useTranslation()
-  const [up, setUp] = useState(false)
+  const { t } = useTranslation();
+  const [up, setUp] = useState(false);
   function handleSecret() {
-    setUp(!up)
+    setUp(!up);
   }
 
   return (
@@ -31,7 +31,7 @@ function GluuSecretDetail({ label, value, doc_category, doc_entry }) {
         )}
       </FormGroup>
     </GluuTooltip>
-  )
+  );
 }
 
-export default GluuSecretDetail
+export default GluuSecretDetail;

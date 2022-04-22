@@ -1,46 +1,46 @@
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import DatePicker from 'react-datepicker'
-import GluuLabel from '../../routes/Apps/Gluu/GluuLabel'
-import GluuCommitFooter from '../../routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from '../../routes/Apps/Gluu/GluuCommitDialog'
-import GluuToogle from '../../routes/Apps/Gluu/GluuToogle'
-import { LICENSE } from '../../utils/ApiResources'
-import GluuTooltip from '../../routes/Apps/Gluu/GluuTooltip'
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import DatePicker from 'react-datepicker';
+import GluuLabel from '../../routes/Apps/Gluu/GluuLabel';
+import GluuCommitFooter from '../../routes/Apps/Gluu/GluuCommitFooter';
+import GluuCommitDialog from '../../routes/Apps/Gluu/GluuCommitDialog';
+import GluuToogle from '../../routes/Apps/Gluu/GluuToogle';
+import { LICENSE } from '../../utils/ApiResources';
+import GluuTooltip from '../../routes/Apps/Gluu/GluuTooltip';
 import {
   Col,
   Form,
   FormGroup,
   CustomInput,
   Accordion,
-} from '../../components'
-import { Formik } from 'formik'
+} from '../../components';
+import { Formik } from 'formik';
 
 function LicenseDetailsForm({ item, handleSubmit }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [validityPeriod, setValidityPeriod] = useState(
-    !!item.validityPeriod ? new Date(item.validityPeriod) : new Date(),
-  )
-  const [modal, setModal] = useState(false)
+    item.validityPeriod ? new Date(item.validityPeriod) : new Date(),
+  );
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
-    setValidityPeriod(new Date(item.validityPeriod))
-  }, [item.validityPeriod])
+    setValidityPeriod(new Date(item.validityPeriod));
+  }, [item.validityPeriod]);
 
   function toggle() {
-    setModal(!modal)
+    setModal(!modal);
   }
 
   function submitForm() {
-    toggle()
-    document.getElementsByClassName('UserActionSubmitButton')[0].click()
+    toggle();
+    document.getElementsByClassName('UserActionSubmitButton')[0].click();
   }
 
   const initialValues = {
     maxActivations: item.maxActivations,
     licenseActive: item.licenseActive,
     validityPeriod: item.validityPeriod,
-  }
+  };
   return (
     <>
       <Accordion className="mb-2 b-primary" initialOpen>
@@ -51,8 +51,8 @@ function LicenseDetailsForm({ item, handleSubmit }) {
           <Formik
             initialValues={initialValues}
             onSubmit={(values) => {
-              values.validityPeriod = validityPeriod
-              handleSubmit(values)
+              values.validityPeriod = validityPeriod;
+              handleSubmit(values);
             }}
           >
             {(formik) => (
@@ -114,7 +114,7 @@ function LicenseDetailsForm({ item, handleSubmit }) {
         </Accordion.Body>
       </Accordion>
     </>
-  )
+  );
 }
 
-export default LicenseDetailsForm
+export default LicenseDetailsForm;

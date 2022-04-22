@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 
 class Counter extends React.Component {
-  state = { counter: !!this.props.counter ?  this.props.counter : 0 };
+  state = { counter: this.props.counter ? this.props.counter : 0 };
 
   handleIncrement = async () => {
     await this.setState(state => ({ counter: state.counter + 1 }));

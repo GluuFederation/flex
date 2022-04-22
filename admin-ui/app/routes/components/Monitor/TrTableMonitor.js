@@ -5,7 +5,7 @@ import {
   Badge,
   Progress
 } from './../../../components';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 /*eslint-disable */
 const status = [
@@ -27,7 +27,7 @@ const tasksCompleted = [
 /*eslint-enable */
 
 const TrTableMonitor = () => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <React.Fragment>
       {
@@ -51,6 +51,6 @@ const TrTableMonitor = () => {
       }
     </React.Fragment>
   );
-}
+};
 
 export { TrTableMonitor };
