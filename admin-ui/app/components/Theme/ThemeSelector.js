@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import map from 'lodash/map';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -83,7 +83,7 @@ class ThemeSelector extends React.Component {
                   Nav Color
                 </span>
                 {
-                  _.map(this.props.colorOptions, (option, index) => (
+                  map(this.props.colorOptions, (option, index) => (
                     <CustomInput
                       key={ index }
                       type="radio"
@@ -113,7 +113,7 @@ class ThemeSelector extends React.Component {
                   Nav Style
                 </span>
                 {
-                  _.map(this.props.styleOptions, (option, index) => (
+                  map(this.props.styleOptions, (option, index) => (
                     <CustomInput
                       key={ index }
                       type="radio"

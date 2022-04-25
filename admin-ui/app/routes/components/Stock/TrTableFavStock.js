@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import times from 'lodash/times';
 import { randomArray } from './../../../utilities';
 import {
   Badge
@@ -34,7 +34,7 @@ const TrTableFavStock = () => {
   return (
     <React.Fragment>
       {
-        _.times(5, (index) => (
+        times(5, (index) => (
           <tr key={ index }>
             <td className="align-middle">
               {t( randomArray(name) )}
