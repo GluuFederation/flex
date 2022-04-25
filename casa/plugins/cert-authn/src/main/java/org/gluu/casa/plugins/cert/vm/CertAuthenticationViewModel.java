@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.security.cert.X509Certificate;
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.misc.Utils;

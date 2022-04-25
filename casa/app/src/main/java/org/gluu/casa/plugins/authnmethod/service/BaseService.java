@@ -3,8 +3,8 @@ package org.gluu.casa.plugins.authnmethod.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gluu.casa.core.PersistenceService;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 

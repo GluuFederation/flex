@@ -15,7 +15,7 @@ import java.util.Arrays;
  */
 public class CustomClassLoader implements ContextClassLoaderFactory {
 
-    private static final String[] DEFAULT_PACKAGES = {"org.zkoss", "java", "javax"};
+    private static final String[] DEFAULT_PACKAGES = {"org.zkoss", "java", "jakarta"};
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private ExtensionsManager extManager;

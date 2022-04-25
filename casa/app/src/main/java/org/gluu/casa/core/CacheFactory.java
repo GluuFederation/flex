@@ -1,9 +1,9 @@
 package org.gluu.casa.core;
 
 import java.util.Optional;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 import io.jans.service.cache.*;
 import io.jans.util.security.StringEncrypter;

@@ -5,8 +5,8 @@ import org.gluu.casa.core.pojo.User;
 import org.gluu.casa.misc.Utils;
 import org.gluu.casa.service.ISessionContext;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 import java.io.Serializable;
 import java.time.ZoneOffset;
 import java.util.Optional;

@@ -2,7 +2,7 @@ package org.gluu.casa.core.filter;
 
 import java.util.Locale;
 import java.util.Set;
-import javax.servlet.ServletRequest;
+import jakarta.servlet.ServletRequest;
 
 import io.jans.util.StringHelper;
 

@@ -1,6 +1,6 @@
 package org.gluu.casa.rest;
 
-import javax.ws.rs.NameBinding;
+import jakarta.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,8 +11,8 @@ import java.lang.annotation.Target;
  * must pass a valid OAuth bearer token (with proper scopes) in the request header to have access. Example:
  * <pre>
  *
- * import javax.ws.rs.GET;
- * import javax.ws.rs.Path;
+ * import jakarta.ws.rs.GET;
+ * import jakarta.ws.rs.Path;
  *
  * {@literal @}Path("/library")
  * public class LibraryRestService {

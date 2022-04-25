@@ -4,7 +4,7 @@ import com.twilio.rest.api.v2010.account.Message as TwMessage
 from com.twilio.type import PhoneNumber
 
 from java.util import Arrays
-from javax.faces.application import FacesMessage
+from jakarta.faces.application import FacesMessage
 
 from io.jans.jsf2.message import FacesMessages
 from io.jans.as.server.security import Identity
