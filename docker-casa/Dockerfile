@@ -1,13 +1,13 @@
-FROM bellsoft/liberica-openjre-alpine:11.0.13-8
+FROM bellsoft/liberica-openjre-alpine:11.0.15
 
 # ===============
 # Alpine packages
 # ===============
 
 RUN apk update \
-    && apk add --no-cache py3-pip openssl tini py3-cryptography py3-lxml py3-psycopg2 \
-    && apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/v3.15/community py3-grpcio \
-    && apk add --no-cache --virtual build-deps git wget zip \
+    && apk upgrade \
+    && apk add --no-cache python3 openssl tini py3-cryptography py3-lxml py3-psycopg2 py3-grpcio \
+    && apk add --no-cache --virtual .build-deps git wget zip \
     && mkdir -p /usr/java/latest \
     && ln -sf /usr/lib/jvm/jre /usr/java/latest/jre
 
@@ -15,7 +15,7 @@ RUN apk update \
 # Jetty
 # =====
 
-ARG JETTY_VERSION=10.0.6
+ARG JETTY_VERSION=11.0.8
 ARG JETTY_HOME=/opt/jetty
 ARG JETTY_BASE=/opt/jans/jetty
 ARG JETTY_USER_HOME_LIB=/home/jetty/lib
@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2022-03-17 11:52'
+ENV GLUU_BUILD_DATE='2022-04-29 12:53'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -54,14 +54,16 @@ RUN mkdir -p ${JETTY_BASE}/casa/webapps \
 # ======
 
 COPY requirements.txt /app/requirements.txt
-RUN pip3 install -U pip wheel \
-    && pip3 install -r /app/requirements.txt --no-cache-dir
+RUN python3 -m ensurepip \
+    && pip3 install --no-cache-dir -U pip wheel \
+    && pip3 install --no-cache-dir -r /app/requirements.txt \
+    && pip3 uninstall -y pip wheel
 
 # =======
 # Cleanup
 # =======
 
-RUN apk del build-deps \
+RUN apk del .build-deps \
     && rm -rf /var/cache/apk/*
 
 # =======
