@@ -7,55 +7,15 @@ import ApiKey from './LicenseScreens/ApiKey'
 function ApiKeyRedirect({
   backendIsUp,
   isLicenseValid,
-  activateLicense,
-  redirectUrl,
   islicenseCheckResultLoaded,
   isLicenseActivationResultLoaded,
 }) {
   const { t } = useTranslation()
-  function submitForm(message) {
-    activateLicense(message.trim())
-  }
-
-  function toggle() {
-    window.location.href = redirectUrl
-  }
 
   return (
     <React.Fragment>
       <Container>
-        {/* <div
-            style={{
-              backgroundColor: 'white',
-              margin: 'auto',
-              marginTop: '20%',
-            }}
-          >
-            <img
-              style={{
-                display: 'block',
-                marginLeft: 'auto',
-                marginTop: 'auto',
-                marginRight: 'auto',
-                width: '100%',
-                height: '100%',
-              }}
-              src={require('../images/gif/npe-redirecting.gif')}
-              alt="loading..."
-            />
-          </div> */}
         {!isLicenseValid && islicenseCheckResultLoaded && <ApiKey />}
-        {/* <GluuCommitDialog
-          handler={toggle}
-          modal={!isLicenseValid && islicenseCheckResultLoaded}
-          onAccept={submitForm}
-          isLoading={false}
-          label={t(
-            'License key required to access Gluu Admin UI. Please enter license key.',
-          )}
-          placeholderLabel={t('Enter license key')}
-          inputType={'text'}
-        /> */}
         {!backendIsUp && (
           <GluuNotification
             type="error"

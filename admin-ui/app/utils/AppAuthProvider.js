@@ -12,7 +12,6 @@ import {
   getAPIAccessToken,
   getUserLocation,
   checkLicensePresent,
-  activateLicense,
 } from '../redux/actions'
 import SessionTimeout from '../routes/Apps/Gluu/GluuSessionTimeout'
 
@@ -101,7 +100,6 @@ class AppAuthProvider extends Component {
   }
   render() {
     const { showContent } = this.state
-    console.log(showContent)
     return (
       <React.Fragment>
         <SessionTimeout isAuthenticated={showContent} />
@@ -110,7 +108,6 @@ class AppAuthProvider extends Component {
           <ApiKeyRedirect
             backendIsUp={this.props.backendIsUp}
             isLicenseValid={this.props.isLicenseValid}
-            activateLicense={this.props.activateLicense}
             redirectUrl={this.props.config.redirectUrl}
             islicenseCheckResultLoaded={this.props.islicenseCheckResultLoaded}
             isLicenseActivationResultLoaded={
@@ -154,6 +151,5 @@ export default withRouter(
     getAPIAccessToken,
     getUserLocation,
     checkLicensePresent,
-    activateLicense,
   })(AppAuthProvider),
 )

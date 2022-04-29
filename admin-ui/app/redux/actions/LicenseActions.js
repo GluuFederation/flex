@@ -1,8 +1,6 @@
 import {
   CHECK_FOR_VALID_LICENSE,
   CHECK_FOR_VALID_LICENSE_RESPONSE,
-  ACTIVATE_LICENSE,
-  ACTIVATE_LICENSE_RESPONSE,
   ACTIVATE_CHECK_USER_API,
   ACTIVATE_CHECK_LICENCE_API_VALID,
   ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE,
@@ -33,15 +31,5 @@ export const checkUserLicenseKeyResponse = (payload) => ({
 })
 export const checkLicensePresentResponse = (isLicenseValid) => ({
   type: CHECK_FOR_VALID_LICENSE_RESPONSE,
-  payload: { isLicenseValid },
-})
-
-export const activateLicense = (licenseKey, token) => ({
-  type: ACTIVATE_LICENSE,
-  payload: { licenseKey, token },
-})
-
-export const activateLicenseResponse = (isLicenseValid) => ({
-  type: ACTIVATE_LICENSE_RESPONSE,
   payload: { isLicenseValid },
 })

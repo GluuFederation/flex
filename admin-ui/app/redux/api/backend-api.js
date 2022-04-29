@@ -3,7 +3,6 @@ import axios_instance from 'axios'
 const JansConfigApi = require('jans_config_api')
 import { useSelector } from 'react-redux'
 // Get OAuth2 Configuration
-const licenceApi = new JansConfigApi.AdminUILicenseApi()
 
 export const fetchServerConfiguration = async (token) => {
   const headers = { Authorization: `Bearer ${token}` }
@@ -85,54 +84,5 @@ export const fetchApiTokenWithDefaultScopes = async () => {
         error,
       )
       return -1
-    })
-}
-
-// Check License present
-
-export const checkLicensePresent = async (token) => {
-  console.log('checkLicensePresentcheckLicensePresent')
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers':
-      'Origin, X-Requested-With, Content-Type, Accept',
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Credentials': true,
-    // issuer: token,
-    Authorization: `Bearer ${token}`,
-  }
-  console.log('HEADERS', headers)
-  licenceApi
-    .isLicenseActive({ headers })
-    .then((data) => {
-      console.log('data', data)
-    })
-    .catch((err) => {
-      console.log('err', err)
-    })
-  return false
-  // return axios
-  //   .get('/license/checkLicense', { headers })
-  //   .then((response) => response.data)
-  //   .catch((error) => {
-  //     console.error('Error checking license of admin-ui', error)
-  //     return false
-  //   })
-}
-
-// Activate license using key
-export const activateLicense = async (licenseKey, token) => {
-  let data = { licenseKey: licenseKey }
-  return axios
-    .post('/license/activateLicense', data, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => response.data)
-    .catch((e) => {
-      console.error('Error in activating license of admin-ui', e)
-      return false
     })
 }

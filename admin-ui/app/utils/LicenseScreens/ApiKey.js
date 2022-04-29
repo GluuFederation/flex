@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { checkUserApi, checkUserLicenceKey } from '../../redux/actions'
 import logo from './../../images/logos/logo192.png'
 import { useDispatch, useSelector } from 'react-redux'
+import './style.css'
+
 function ApiKey() {
   const dispatch = useDispatch()
   const serverError = useSelector((state) => state.licenseReducer.error)
@@ -76,6 +78,11 @@ function ApiKey() {
 
   return (
     <div>
+      {isLoading && (
+        <div className="loader-outer">
+          <div className="loader"></div>
+        </div>
+      )}
       <div className="container text-dark">
         <div className="row">
           <div className="col-md-12 text-center my-5">
@@ -96,6 +103,7 @@ function ApiKey() {
             {serverError}
           </div>
         </div>
+
         {!isLicenceAPIkeyValid ? (
           <div className="row">
             <div className="col-md-8 mx-auto">

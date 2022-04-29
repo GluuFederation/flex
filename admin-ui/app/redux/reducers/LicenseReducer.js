@@ -1,8 +1,6 @@
 import {
   CHECK_FOR_VALID_LICENSE,
   CHECK_FOR_VALID_LICENSE_RESPONSE,
-  ACTIVATE_LICENSE,
-  ACTIVATE_LICENSE_RESPONSE,
   ACTIVATE_CHECK_USER_API,
   ACTIVATE_CHECK_LICENCE_API_VALID,
   ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE,
@@ -81,24 +79,6 @@ export default function licenseReducer(state = INIT_STATE, action) {
         return {
           ...state,
           islicenseCheckResultLoaded: true,
-        }
-      }
-    case ACTIVATE_LICENSE:
-      return {
-        ...state,
-        isLicenseActivationResultLoaded: false,
-      }
-    case ACTIVATE_LICENSE_RESPONSE:
-      if (action.payload.isLicenseValid) {
-        return {
-          ...state,
-          isLicenseValid: action.payload.isLicenseValid,
-          isLicenseActivationResultLoaded: true,
-        }
-      } else {
-        return {
-          ...state,
-          isLicenseActivationResultLoaded: true,
         }
       }
 
