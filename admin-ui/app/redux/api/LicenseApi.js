@@ -12,7 +12,7 @@ export default class LicenseApi {
 
   submitApiKey = (data) => {
     const options = {}
-    options['licenseSpringCredentials'] = data
+    options['licenseSpringCredentials'] = data.payload
     return new Promise((resolve, reject) => {
       this.api.saveLicenseApiCredentials(options, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
@@ -21,7 +21,7 @@ export default class LicenseApi {
   }
   submitLicenseKey = (data) => {
     const options = {}
-    options['licenseApiRequest'] = data
+    options['licenseApiRequest'] = data.payload
     return new Promise((resolve, reject) => {
       this.api.activateAdminuiLicense(options, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
