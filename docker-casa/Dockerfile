@@ -59,12 +59,60 @@ RUN python3 -m ensurepip \
     && pip3 install --no-cache-dir -r /app/requirements.txt \
     && pip3 uninstall -y pip wheel
 
+# =====================
+# jans-linux-setup sync
+# =====================
+
+ENV JANS_LINUX_SETUP_VERSION=eb113d09421b95671fe1ab4eaa5c4bafc2aed6af
+ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
+
+# note that as we're pulling from a monorepo (with multiple project in it)
+# we are using partial-clone and sparse-checkout to get the jans-linux-setup code
+RUN git clone --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
+    && cd /tmp/jans \
+    && git sparse-checkout init --cone \
+    && git checkout ${JANS_LINUX_SETUP_VERSION} \
+    && git sparse-checkout set ${JANS_SETUP_DIR}
+
+RUN mkdir -p /app/static/rdbm /app/schema
+
+# sync static files from linux-setup
+RUN cd /tmp/jans \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/sql_data_types.json /app/static/rdbm/ \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/ldap_sql_data_type_mapping.json /app/static/rdbm/ \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/opendj_attributes_syntax.json /app/static/rdbm/ \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/sub_tables.json /app/static/rdbm/ \
+    && cp ${JANS_SETUP_DIR}/schema/jans_schema.json /app/schema/ \
+    && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
+    && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
+
+# ===============
+# flex setup sync
+# ===============
+
+ENV FLEX_VERSION=a8251496ff2ade9dd8101873b45f4c490ae9c64e
+ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
+ARG CASA_EXTRAS_DIR=casa/extras
+
+RUN mkdir -p /app/templates /app/static/extension/person_authentication
+
+RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex.git /tmp/flex \
+    && cd /tmp/flex \
+    && git sparse-checkout init --cone \
+    && git checkout ${FLEX_VERSION} \
+    && git sparse-checkout add ${FLEX_SETUP_DIR} \
+    && cp ${FLEX_SETUP_DIR}/templates/casa_*.ldif /app/templates \
+    && git sparse-checkout add ${CASA_EXTRAS_DIR} \
+    && cp ${CASA_EXTRAS_DIR}/Casa.py /app/static/extension/person_authentication/
+
 # =======
 # Cleanup
 # =======
 
 RUN apk del .build-deps \
-    && rm -rf /var/cache/apk/*
+    && rm -rf /var/cache/apk/* \
+    && rm -rf /tmp/jans \
+    && rm -rf /tmp/flex
 
 # =======
 # License
@@ -175,7 +223,7 @@ RUN mkdir -p /etc/certs \
 COPY jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 COPY jetty/log4j2.xml ${JETTY_BASE}/casa/resources/
 COPY jetty/casa_web_resources.xml ${JETTY_BASE}/casa/webapps/
-COPY templates /app/templates/
+COPY conf/*.tmpl /app/templates/
 COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh
 
