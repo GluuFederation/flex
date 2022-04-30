@@ -220,7 +220,7 @@ class flex_installer(JettyInstaller):
         plugins = config_api_installer.get_plugins()
 
         for plugin in plugins:
-            if not plugin in current_plugins:
+            if plugin not in current_plugins:
                 current_plugins.append(plugin)
 
         config['DEFAULT']['jca_plugins'] = ','.join(current_plugins)
@@ -343,7 +343,7 @@ class flex_installer(JettyInstaller):
 
         https_jans_text = self.readFile(httpd_installer.https_jans_fn)
 
-        if not '<Location /casa>' in https_jans_text:
+        if '<Location /casa>' not in https_jans_text:
 
             https_jans_list = https_jans_text.splitlines()
             n = 0
