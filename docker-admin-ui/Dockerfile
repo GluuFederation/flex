@@ -1,19 +1,19 @@
-FROM node:14.19.1-alpine3.14
+FROM node:14.19.1-alpine3.15
 
 # ======
 # alpine
 # ======
 
 RUN apk update \
-    && apk add --no-cache tini openssl py3-pip py3-cryptography py3-psycopg2 nginx \
-    && apk add --no-cache --virtual build-deps git openjdk11-jre-headless \
-    && apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/v3.15/community py3-grpcio
+    && apk upgrade \
+    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
+    && apk add --no-cache --virtual .build-deps git openjdk11-jre-headless
 
 # =====
 # nginx
 # =====
 
-RUN mkdir -p /etc/certs
+# RUN mkdir -p /etc/certs
 # RUN openssl dhparam -out /etc/certs/dhparams.pem 2048
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
@@ -51,22 +51,23 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
 # ======
 
 COPY requirements.txt /app/requirements.txt
-RUN pip3 install -U pip wheel \
-    && pip3 install --no-cache-dir -r /app/requirements.txt
+RUN python3 -m ensurepip \
+    && pip3 install --no-cache-dir -U pip wheel \
+    && pip3 install --no-cache-dir -r /app/requirements.txt \
+    && pip3 uninstall -y pip wheel
 
 # =======
 # Cleanup
 # =======
 
-RUN apk del build-deps \
+RUN apk del .build-deps \
     && rm -rf /var/cache/apk/*
 
 # =======
 # License
 # =======
 
-RUN mkdir -p /licenses
-COPY LICENSE /licenses/
+COPY LICENSE /licenses/LICENSE
 
 # ==========
 # Config ENV
@@ -145,17 +146,18 @@ RUN addgroup node root
 RUN mkdir -p /opt/flex/admin-ui/dist \
     && touch /run/nginx/nginx.pid
 
+# && chown -R 1000:1000 /etc/certs \
+# && chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
+
 # adjust ownership
 RUN chown -R 1000:1000 /var/lib/nginx \
     && chown 1000:1000 /run/nginx/nginx.pid \
-    && chown -R 1000:1000 /etc/certs \
     && chown -R 1000:1000 /opt/flex/admin-ui/.env \
     && chown -R 1000:1000 /opt/flex/admin-ui/dist \
     && chown -R 1000:1000 /etc/nginx/http.d/default.conf \
     && chown -R 1000:1000 /var/lib/nginx \
     && chown -R 1000:1000 /var/log/nginx \
     && chown -R 1000:1000 /run/nginx/nginx.pid \
-    && chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
     && chgrp -R 0 /opt/flex/admin-ui/.env && chmod -R g=u /opt/flex/admin-ui/.env \
     && chgrp -R 0 /opt/flex/admin-ui/dist && chmod -R g=u /opt/flex/admin-ui/dist \
     && chgrp -R 0 /etc/nginx/http.d/default.conf && chmod -R g=u /etc/nginx/http.d/default.conf \
