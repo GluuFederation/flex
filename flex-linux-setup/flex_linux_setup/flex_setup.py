@@ -80,6 +80,17 @@ argsp = arg_parser.get_parser()
 from setup_app import static
 from setup_app.utils import base
 
+profile_fn = os.path.join(base.par_dir, 'profile')
+if os.path.exists(profile_fn):
+    with open(profile_fn) as f:
+        profile = f.read().strip()
+else:
+    profile = 'jans'
+
+os.environ['JANS_PROFILE'] = profile
+base.current_app.profile = profile
+
+
 if 'SETUP_BRANCH' not in base.current_app.app_info:
     base.current_app.app_info['SETUP_BRANCH'] = argsp.jans_setup_branch
 
