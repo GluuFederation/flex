@@ -39,7 +39,7 @@ except ModuleNotFoundError:
         setup_branch = argsp.jans_setup_branch or 'main'
         install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
         request.urlretrieve(install_url, 'install.py')
-        install_cmd = 'python3 install.py --setup-branch={} --no-setup'.format(setup_branch)
+        install_cmd = 'python3 install.py --setup-branch={}'.format(setup_branch)
         if '-yes' in sys.argv:
             install_cmd += ' -yes'
         print("Executing", install_cmd)
