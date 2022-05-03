@@ -107,7 +107,7 @@ function ApiKey() {
         {!isLicenceAPIkeyValid ? (
           <div className="row">
             <div className="col-md-8 mx-auto">
-              <label>Api Keys*</label>
+              <label>Api Key*</label>
               <input
                 type="text"
                 className={
@@ -177,7 +177,7 @@ function ApiKey() {
         ) : (
           <div className="row">
             <div className="col-md-8 mx-auto">
-              <label>License Keys*</label>
+              <label>License Key*</label>
               <input
                 type="text"
                 className={
