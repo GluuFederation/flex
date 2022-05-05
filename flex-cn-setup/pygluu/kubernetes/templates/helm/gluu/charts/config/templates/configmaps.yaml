@@ -138,7 +138,6 @@ data:
   CN_PERSISTENCE_LDAP_MAPPING: {{ .Values.configmap.cnPersistenceLdapMapping | quote }}
   {{- end }}
   # Auto enable installation of some services
-  CN_CASA_ENABLED: {{ .Values.global.casa.enabled | quote }}
   CN_PASSPORT_ENABLED: {{ .Values.global.oxpassport.enabled | quote }}
   {{- if .Values.global.oxshibboleth.enabled }}
   CN_SAML_ENABLED: {{ .Values.global.oxshibboleth.enabled | quote }}
