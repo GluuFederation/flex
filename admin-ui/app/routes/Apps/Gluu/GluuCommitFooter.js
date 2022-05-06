@@ -1,7 +1,7 @@
-import React from 'react';
-import { Col, Button, FormGroup, Divider } from './../../../components';
-import { useTranslation } from 'react-i18next';
-import applicationStyle from '../../Apps/Gluu/styles/applicationstyle';
+import React from 'react'
+import { Col, Button, FormGroup, Divider } from './../../../components'
+import { useTranslation } from 'react-i18next'
+import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 
 function GluuCommitFooter({
   extraOnClick,
@@ -9,9 +9,9 @@ function GluuCommitFooter({
   extraLabel,
   hideButtons,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   function goBack() {
-    window.history.back();
+    window.history.back()
   }
   return (
     <>
@@ -70,7 +70,7 @@ function GluuCommitFooter({
         )}
       </FormGroup>
     </>
-  );
+  )
 }
 
-export default GluuCommitFooter;
+export default GluuCommitFooter

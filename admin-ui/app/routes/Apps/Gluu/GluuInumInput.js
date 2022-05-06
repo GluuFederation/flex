@@ -1,7 +1,7 @@
-import React from 'react';
-import { Col, FormGroup, Input } from '../../../components';
-import GluuLabel from './GluuLabel';
-import GluuTooltip from './GluuTooltip';
+import React from 'react'
+import { Col, FormGroup, Input } from '../../../components'
+import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
 
 function GluuInumInput({ label, name, value, lsize, rsize, doc_category }) {
   return (
@@ -20,11 +20,11 @@ function GluuInumInput({ label, name, value, lsize, rsize, doc_category }) {
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 GluuInumInput.defaultProps = {
   lsize: 4,
   rsize: 8,
-};
+}
 
-export default GluuInumInput;
+export default GluuInumInput

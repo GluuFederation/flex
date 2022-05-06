@@ -1,9 +1,9 @@
-import React from 'react';
-import BlockUi from 'react-block-ui';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import BlockUi from 'react-block-ui'
+import { useTranslation } from 'react-i18next'
 
 function GluuLoader(props) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       <BlockUi
@@ -16,7 +16,7 @@ function GluuLoader(props) {
         {props.children}
       </BlockUi>
     </React.Fragment>
-  );
+  )
 }
 
-export default GluuLoader;
+export default GluuLoader

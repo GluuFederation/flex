@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 import {
   Avatar,
@@ -16,19 +16,19 @@ import {
   NavbarToggler,
   UncontrolledCollapse,
   UncontrolledDropdown,
-} from './../../../components';
+} from './../../../components'
 
-import { NavbarActivityFeed } from './../../../layout/components/NavbarActivityFeed';
-import { NavbarMessages } from './../../../layout/components/NavbarMessages';
-import { NavbarUser } from './../../../layout/components/NavbarUser';
-import { NavbarNavigation } from './NavbarNavigation';
-import { DropdownProfile } from './../Dropdowns/DropdownProfile';
+import { NavbarActivityFeed } from './../../../layout/components/NavbarActivityFeed'
+import { NavbarMessages } from './../../../layout/components/NavbarMessages'
+import { NavbarUser } from './../../../layout/components/NavbarUser'
+import { NavbarNavigation } from './NavbarNavigation'
+import { DropdownProfile } from './../Dropdowns/DropdownProfile'
 
-import { randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next';
+import { randomAvatar } from './../../../utilities'
+import { useTranslation } from 'react-i18next'
 
 const NavbarExample = ({ themeColor, themeStyle, navStyle }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <NavbarThemeProvider style={ themeStyle } color={ themeColor } className="shadow-sm">
       <Navbar expand="lg" themed>
@@ -99,18 +99,18 @@ const NavbarExample = ({ themeColor, themeStyle, navStyle }) => {
         </Button>
       </Navbar>
     </NavbarThemeProvider>
-  );
-};
+  )
+}
 
 NavbarExample.propTypes = {
   navStyle: PropTypes.oneOf(['pills', 'accent', 'default']),
   themeStyle: PropTypes.string,
   themeColor: PropTypes.string,
-};
+}
 NavbarExample.defaultProps = {
   navStyle: 'default',
   themeStyle: 'dark',
   themeColor: 'primary'
-};
+}
 
-export { NavbarExample };
+export { NavbarExample }

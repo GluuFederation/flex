@@ -1,8 +1,8 @@
-import React from 'react';
-import GluuLabel from './GluuLabel';
-import GluuTooltip from './GluuTooltip';
-import { Col, FormGroup, CustomInput, InputGroup } from '../../../components';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
+import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
+import { useTranslation } from 'react-i18next'
 
 function GluuBooleanSelectBox({
   label,
@@ -13,7 +13,7 @@ function GluuBooleanSelectBox({
   rsize,
   doc_category,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
@@ -35,7 +35,7 @@ function GluuBooleanSelectBox({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 
-export default GluuBooleanSelectBox;
+export default GluuBooleanSelectBox

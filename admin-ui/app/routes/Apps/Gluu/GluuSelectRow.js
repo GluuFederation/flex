@@ -1,8 +1,8 @@
-import React from 'react';
-import GluuLabel from './GluuLabel';
-import { Col, FormGroup, CustomInput, InputGroup } from '../../../components';
-import { useTranslation } from 'react-i18next';
-import GluuTooltip from './GluuTooltip';
+import React from 'react'
+import GluuLabel from './GluuLabel'
+import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
+import { useTranslation } from 'react-i18next'
+import GluuTooltip from './GluuTooltip'
 
 function GluuSelectRow({
   label,
@@ -14,7 +14,7 @@ function GluuSelectRow({
   rsize,
   doc_category,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
@@ -40,13 +40,13 @@ function GluuSelectRow({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 
 GluuSelectRow.defaultProps = {
   values: [],
   lsize: 3,
   rsize: 9,
-};
+}
 
-export default GluuSelectRow;
+export default GluuSelectRow

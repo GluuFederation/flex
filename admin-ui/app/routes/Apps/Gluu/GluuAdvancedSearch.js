@@ -1,6 +1,6 @@
-import React from 'react';
-import { Input, FormGroup } from './../../../components';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import { Input, FormGroup } from './../../../components'
+import { useTranslation } from 'react-i18next'
 
 function GluuAdvancedSearch({
   handler,
@@ -9,7 +9,7 @@ function GluuAdvancedSearch({
   limit,
   pattern = '',
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <FormGroup row style={{ marginTop: '10px' }}>
       <Input
@@ -33,7 +33,7 @@ function GluuAdvancedSearch({
         onChange={handler}
       />
     </FormGroup>
-  );
+  )
 }
 
-export default GluuAdvancedSearch;
+export default GluuAdvancedSearch

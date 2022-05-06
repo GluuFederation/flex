@@ -1,23 +1,23 @@
-import React from 'react';
-import _ from 'lodash';
-import { randomArray } from './../../../utilities';
+import React from 'react'
+import _ from 'lodash'
+import { randomArray } from './../../../utilities'
 import {
   Badge
-} from './../../../components';
-import { useTranslation } from 'react-i18next';
+} from './../../../components'
+import { useTranslation } from 'react-i18next'
 
 const name = [
   "Action Score",
   "Quality Score",
   "Value Score",
   "Growth Score"
-];
+]
 const badge = [
   "a",
   "q",
   "v",
   "g"
-];
+]
 const value = [
   "23",
   "67",
@@ -27,10 +27,10 @@ const value = [
   "10",
   "43",
   "98"
-];
+]
 
 const TrTableFavStock = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       {
@@ -60,7 +60,7 @@ const TrTableFavStock = () => {
           </tr>
         ))
       }
-    </React.Fragment>);
-};
+    </React.Fragment>)
+}
 
-export { TrTableFavStock };
+export { TrTableFavStock }

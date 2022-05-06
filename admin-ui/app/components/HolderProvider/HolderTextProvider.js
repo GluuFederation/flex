@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import uid from 'uuid/v4';
-import qs from 'query-string';
+import React from 'react'
+import PropTypes from 'prop-types'
+import _ from 'lodash'
+import uid from 'uuid/v4'
+import qs from 'query-string'
 
-import colors from './../../colors';
+import colors from './../../colors'
 
 class HolderTextProvider extends React.Component {
     static propTypes = {
@@ -33,21 +33,21 @@ class HolderTextProvider extends React.Component {
     }
 
     constructor(props) {
-      super(props);
+      super(props)
 
-      this.domId = `holderjs--${uid()}`;
+      this.domId = `holderjs--${uid()}`
     }
 
     componentDidMount() {
-      this.initPlaceholder();
+      this.initPlaceholder()
 
       if (typeof window !== 'undefined') {
-        window.onload = this.initPlaceholder.bind(this);
+        window.onload = this.initPlaceholder.bind(this)
       }
     }
 
     componentDidUpdate() {
-      this.initPlaceholder();
+      this.initPlaceholder()
     }
 
     initPlaceholder() {
@@ -56,8 +56,8 @@ class HolderTextProvider extends React.Component {
             typeof document !== 'undefined' &&
             document.readyState === 'complete'
       ) {
-        const Holder = require('holderjs');
-        const domElement = document.getElementById(this.domId);
+        const Holder = require('holderjs')
+        const domElement = document.getElementById(this.domId)
 
         if (domElement) {
           Holder.run({
@@ -66,26 +66,26 @@ class HolderTextProvider extends React.Component {
             object: null,
             bgnodes: null,
             stylenodes: null
-          });
+          })
 
-          return true;
+          return true
         }
       }
 
-      return false;
+      return false
     }
 
     render() {
-      const onlyChild = React.Children.only(this.props.children);
+      const onlyChild = React.Children.only(this.props.children)
 
-      const phProps = _.omit(this.props, ['children', 'width', 'height']);
-      const phPropsQuery = qs.stringify(phProps);
+      const phProps = _.omit(this.props, ['children', 'width', 'height'])
+      const phPropsQuery = qs.stringify(phProps)
 
       return React.cloneElement(onlyChild, {
         'id': this.domId,
         'data-src': `holder.js/${this.props.width}x${this.props.height}?${phPropsQuery}`
-      });
+      })
     }
 }
 
-export { HolderTextProvider };
+export { HolderTextProvider }

@@ -1,11 +1,11 @@
-import React from 'react';
-import { FormGroup, Col } from '../../../components';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import GluuLabel from '../Gluu/GluuLabel';
-import GluuTooltip from './GluuTooltip';
-import Typography from '@material-ui/core/Typography';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import { FormGroup, Col } from '../../../components'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import GluuLabel from '../Gluu/GluuLabel'
+import GluuTooltip from './GluuTooltip'
+import Typography from '@material-ui/core/Typography'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 
 const theme = createTheme({
   typography: {
@@ -13,7 +13,7 @@ const theme = createTheme({
       fontSize: 12,
     },
   },
-});
+})
 
 function GluuArrayCompleter({
   label,
@@ -23,7 +23,7 @@ function GluuArrayCompleter({
   required,
   doc_category,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
@@ -38,7 +38,7 @@ function GluuArrayCompleter({
             emptyLabel=""
             labelKey={name}
             onChange={(selected) => {
-              console.log(selected);
+              console.log(selected)
             }}
             id={name}
             name={name}
@@ -57,7 +57,7 @@ function GluuArrayCompleter({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 
-export default GluuArrayCompleter;
+export default GluuArrayCompleter

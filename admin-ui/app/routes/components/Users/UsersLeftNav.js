@@ -1,15 +1,15 @@
-import React from 'react';
+import React from 'react'
 
 import { 
   Nav,
   NavItem,
   NavLink,
   Badge
-} from './../../../components';
-import { useTranslation } from 'react-i18next';
+} from './../../../components'
+import { useTranslation } from 'react-i18next'
 
 const UsersLeftNav = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       { /* START Left Nav  */}
@@ -94,7 +94,7 @@ const UsersLeftNav = () => {
       </div>
       { /* END Left Nav  */}
     </React.Fragment>
-  );
-};
+  )
+}
 
-export { UsersLeftNav };
+export { UsersLeftNav }

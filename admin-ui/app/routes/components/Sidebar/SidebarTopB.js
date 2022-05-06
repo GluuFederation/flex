@@ -1,16 +1,16 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 import {
   Sidebar,
   UncontrolledTooltip
-} from './../../../components';
+} from './../../../components'
 
-import { VersionSelector } from '../VersionSelector';
-import { useTranslation } from 'react-i18next';
+import { VersionSelector } from '../VersionSelector'
+import { useTranslation } from 'react-i18next'
 
 const SidebarTopB = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       { /* START Sidebar TOP: B */ }
@@ -60,7 +60,7 @@ const SidebarTopB = () => {
       { /* END SLIM Only View  */ }
       { /* END Sidebar TOP: B */ }
     </React.Fragment>
-  );
-};
+  )
+}
 
-export { SidebarTopB };
+export { SidebarTopB }

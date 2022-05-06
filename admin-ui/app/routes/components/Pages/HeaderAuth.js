@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
-import { LogoThemed } from './../LogoThemed/LogoThemed';
+import { LogoThemed } from './../LogoThemed/LogoThemed'
 
 const HeaderAuth = (props) => (
   <div className="mb-4">
@@ -24,17 +24,17 @@ const HeaderAuth = (props) => (
       { props.text }
     </p>
   </div>
-);
+)
 HeaderAuth.propTypes = {
   icon: PropTypes.node,
   iconClassName: PropTypes.node,
   title: PropTypes.node,
   text: PropTypes.node,
-};
+}
 HeaderAuth.defaultProps = {
   title: "Waiting for Data...",
   text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure voluptas aperiam odit, reiciendis dicta nihil.",
   iconClassName: "text-theme"
-};
+}
 
-export { HeaderAuth };
+export { HeaderAuth }

@@ -1,25 +1,25 @@
-import React from 'react';
-import _ from 'lodash';
+import React from 'react'
+import _ from 'lodash'
 
-import { randomArray } from './../../../utilities';
+import { randomArray } from './../../../utilities'
 
 import {
   TinyAreaChart
-} from "./TinyAreaChart";
+} from "./TinyAreaChart"
 
 const channel = [
   "Organic Search",
   "Display",
   "Direct",
   "Paid Search"
-];
+]
 
 const change = [
   "75,0% ",
   "34,4% ",
   "12,9%",
   "23,0%"
-];
+]
 
 const TrTableTrafficChannels = () => (
   <React.Fragment>
@@ -45,6 +45,6 @@ const TrTableTrafficChannels = () => (
       ))
     }
   </React.Fragment>
-);
+)
 
-export { TrTableTrafficChannels };
+export { TrTableTrafficChannels }

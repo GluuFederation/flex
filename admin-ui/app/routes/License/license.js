@@ -11,5 +11,5 @@ export const license = {
   productCode: "adminui001",
   productName: "Gluu Admin UI",
   validityPeriod: "2022-10-01T00:00Z",
-};
-export default license;
+}
+export default license

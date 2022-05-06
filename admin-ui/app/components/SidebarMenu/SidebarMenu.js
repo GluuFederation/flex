@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
-import _ from 'lodash';
-import classNames from 'classnames';
-import { withPageConfig } from './../Layout/withPageConfig';
-import Common from './../../common';
-import { MenuContext } from './MenuContext';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import _ from 'lodash'
+import classNames from 'classnames'
+import { withPageConfig } from './../Layout/withPageConfig'
+import Common from './../../common'
+import { MenuContext } from './MenuContext'
 
 class SidebarMenu extends React.Component {
   static propTypes = {
@@ -18,10 +18,10 @@ class SidebarMenu extends React.Component {
   }
   containerRef = React.createRef()
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       entries: (this.entries = {}),
-    };
+    }
   }
 
   addEntry(entry) {
@@ -34,7 +34,7 @@ class SidebarMenu extends React.Component {
           ...entry,
         },
       }),
-    });
+    })
   }
 
   updateEntry(id, stateMods) {
@@ -46,76 +46,76 @@ class SidebarMenu extends React.Component {
           ...stateMods,
         },
       }),
-    });
+    })
   }
 
   removeEntry(id) {
     // eslint-disable-next-line no-unused-vars
-    const { [id]: toRemove, ...rest } = this.state.entries;
-    this.setState({ entries: (this.entries = rest) });
+    const { [id]: toRemove, ...rest } = this.state.entries
+    this.setState({ entries: (this.entries = rest) })
   }
 
   setActiveEntries(openActive = false) {
     const activeId = (childEntry, entries, previous = []) => {
       if (childEntry.parentId) {
-        const parentEntry = entries[childEntry.parentId];
-        const activeIds = [...previous, parentEntry.id];
-        return activeId(parentEntry, entries, activeIds);
+        const parentEntry = entries[childEntry.parentId]
+        const activeIds = [...previous, parentEntry.id]
+        return activeId(parentEntry, entries, activeIds)
       }
-      return previous;
-    };
+      return previous
+    }
 
     const activeChild = _.find(this.state.entries, (entry) => {
-      const { pathname } = this.props.location;
+      const { pathname } = this.props.location
 
       const noTailSlashLocation =
         pathname[pathname.length - 1] === '/' && pathname.length > 1
           ? pathname.replace(/\/$/, '')
-          : pathname;
+          : pathname
 
       return entry.exact
         ? entry.url === noTailSlashLocation
-        : _.includes(noTailSlashLocation, entry.url);
-    });
+        : _.includes(noTailSlashLocation, entry.url)
+    })
 
     if (activeChild) {
       const activeEntries = [
         ...activeId(activeChild, this.entries),
         activeChild.id,
-      ];
+      ]
 
       this.setState({
         entries: (this.entries = _.mapValues(this.entries, (entry) => {
-          const isActive = _.includes(activeEntries, entry.id);
+          const isActive = _.includes(activeEntries, entry.id)
 
           return {
             ...entry,
             active: isActive,
             open: openActive ? !entry.url && isActive : entry.open,
-          };
+          }
         })),
-      });
+      })
     }
   }
 
   componentDidMount() {
-    this.sidebarAnimation = new Common.SideMenuAnimate();
-    this.sidebarAnimation.assignParentElement(this.containerRef.current);
+    this.sidebarAnimation = new Common.SideMenuAnimate()
+    this.sidebarAnimation.assignParentElement(this.containerRef.current)
 
     setTimeout(() => {
-      this.setActiveEntries(true);
-    }, 0);
+      this.setActiveEntries(true)
+    }, 0)
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
-      this.setActiveEntries();
+      this.setActiveEntries()
     }
   }
 
   componentWillUnmount() {
     if (this.sidebarAnimation) {
-      this.sidebarAnimation.destroy();
+      this.sidebarAnimation.destroy()
     }
   }
 
@@ -125,11 +125,11 @@ class SidebarMenu extends React.Component {
       (this.props.pageConfig.sidebarSlim &&
         this.props.pageConfig.sidebarCollapsed &&
         (this.props.pageConfig.screenSize === 'lg' ||
-          this.props.pageConfig.screenSize === 'xl'));
+          this.props.pageConfig.screenSize === 'xl'))
     const sidebarMenuClass = classNames('sidebar-menu', {
       'sidebar-menu--slim': isSlim,
       'sidebar-menu--disabled': this.props.disabled,
-    });
+    })
 
     return (
       <MenuContext.Provider
@@ -154,10 +154,10 @@ class SidebarMenu extends React.Component {
           ))}
         </ul>
       </MenuContext.Provider>
-    );
+    )
   }
 }
 
-const RouterSidebarMenu = withPageConfig(withRouter(SidebarMenu));
+const RouterSidebarMenu = withPageConfig(withRouter(SidebarMenu))
 
-export { RouterSidebarMenu as SidebarMenu };
+export { RouterSidebarMenu as SidebarMenu }

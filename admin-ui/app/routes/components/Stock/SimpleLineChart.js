@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Line,
   CartesianGrid,
@@ -9,9 +9,9 @@ import {
   Legend,
   LineChart,
   Dot,
-} from './../../../components/recharts';
+} from './../../../components/recharts'
 
-import colors from './../../../colors';
+import colors from './../../../colors'
 
 const data = [
   { name: "Mar '11", uv: 4000, pv: 2400 },
@@ -21,7 +21,7 @@ const data = [
   { name: "May '14", uv: 1890, pv: 4800 },
   { name: "Feb '15", uv: 2390, pv: 3800 },
   { name: "Dec '15", uv: 3490, pv: 4300 },
-];
+]
 
 // eslint-disable-next-line
 const generateDot = ({ stroke, ...other }) => (
@@ -32,11 +32,11 @@ const generateDot = ({ stroke, ...other }) => (
     r={4}
     strokeWidth={2}
   />
-);
+)
 
 const generateActiveDot = (props) => (
   <Dot {...props} stroke={colors['white']} r={7} />
-);
+)
 
 const SimpleLineChart = () => (
   <ResponsiveContainer width="100%" aspect={6.0 / 3.0}>
@@ -62,6 +62,6 @@ const SimpleLineChart = () => (
       />
     </LineChart>
   </ResponsiveContainer>
-);
+)
 
-export { SimpleLineChart };
+export { SimpleLineChart }

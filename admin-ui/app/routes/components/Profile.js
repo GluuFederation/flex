@@ -1,8 +1,8 @@
-import React from "react";
+import React from "react"
 
-import { Avatar, Badge } from "./../../components";
+import { Avatar, Badge } from "./../../components"
 
-import { randomAvatar } from "./../../utilities";
+import { randomAvatar } from "./../../utilities"
 
 const Profile = ({ userinfo }) => {
   return (
@@ -19,7 +19,7 @@ const Profile = ({ userinfo }) => {
         </div>
       </div>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export { Profile };
+export { Profile }

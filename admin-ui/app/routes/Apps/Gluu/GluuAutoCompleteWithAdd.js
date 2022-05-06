@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { FormGroup, Col, Row, Button, Input } from '../../../components';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import GluuLabel from '../Gluu/GluuLabel';
-import GluuTooltip from './GluuTooltip';
-import applicationStyle from './styles/applicationstyle';
-import { useTranslation } from 'react-i18next';
+import React, { useState } from 'react'
+import { FormGroup, Col, Row, Button, Input } from '../../../components'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import GluuLabel from '../Gluu/GluuLabel'
+import GluuTooltip from './GluuTooltip'
+import applicationStyle from './styles/applicationstyle'
+import { useTranslation } from 'react-i18next'
 
 function GluuAutoCompleteWithAdd({
   label,
@@ -17,25 +17,25 @@ function GluuAutoCompleteWithAdd({
   placeholder,
   doc_category,
 }) {
-  const [items, setItems] = useState(value);
-  const [opts, setOpts] = useState(options);
-  const { t } = useTranslation();
+  const [items, setItems] = useState(value)
+  const [opts, setOpts] = useState(options)
+  const { t } = useTranslation()
 
   const addItem = () => {
-    const newItem = document.getElementById(inputId).value;
-    document.getElementById(inputId).value = '';
+    const newItem = document.getElementById(inputId).value
+    document.getElementById(inputId).value = ''
     if (validator(newItem)) {
-      setItems((currItems) => [...currItems, newItem]);
-      setOpts((currOpts) => [...currOpts, newItem]);
-      formik.setFieldValue(name, items);
+      setItems((currItems) => [...currItems, newItem])
+      setOpts((currOpts) => [...currOpts, newItem])
+      formik.setFieldValue(name, items)
     }
-  };
+  }
 
   const handleChange = (elementName, selected) => {
-    setItems(selected);
-    setOpts(selected);
-    formik.setFieldValue(elementName, items);
-  };
+    setItems(selected)
+    setOpts(selected)
+    formik.setFieldValue(elementName, items)
+  }
 
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
@@ -68,7 +68,7 @@ function GluuAutoCompleteWithAdd({
             emptyLabel=""
             labelKey={name}
             onChange={(selected) => {
-              handleChange(name, selected);
+              handleChange(name, selected)
             }}
             id={name}
             name={name}
@@ -81,7 +81,7 @@ function GluuAutoCompleteWithAdd({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 
-export default GluuAutoCompleteWithAdd;
+export default GluuAutoCompleteWithAdd

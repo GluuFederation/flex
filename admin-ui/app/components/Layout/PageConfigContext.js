@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
-const PageConfigContext = React.createContext();
+const PageConfigContext = React.createContext()
 
 export {
   PageConfigContext
-};
+}

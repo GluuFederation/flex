@@ -1,13 +1,13 @@
-import React from 'react';
-import { Col, Button, FormGroup, Divider } from './../../../components';
-import { useTranslation } from 'react-i18next';
-import applicationStyle from '../../Apps/Gluu/styles/applicationstyle';
+import React from 'react'
+import { Col, Button, FormGroup, Divider } from './../../../components'
+import { useTranslation } from 'react-i18next'
+import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 
 function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   function goBack() {
-    window.history.back();
+    window.history.back()
   }
   return (
     <>
@@ -56,7 +56,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         )}
       </FormGroup>
     </>
-  );
+  )
 }
 
-export default GluuFooter;
+export default GluuFooter

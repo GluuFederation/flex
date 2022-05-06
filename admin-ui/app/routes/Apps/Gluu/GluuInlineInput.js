@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import GluuLabel from './GluuLabel';
-import GluuTooltip from './GluuTooltip';
-import { useTranslation } from 'react-i18next';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import applicationStyle from '../../Apps/Gluu/styles/applicationstyle';
+import React, { useState } from 'react'
+import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
+import { useTranslation } from 'react-i18next'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 import {
   Col,
   InputGroup,
@@ -11,7 +11,7 @@ import {
   FormGroup,
   Input,
   Button,
-} from '../../../components';
+} from '../../../components'
 
 function GluuInlineInput({
   label,
@@ -27,36 +27,36 @@ function GluuInlineInput({
   options,
   path,
 }) {
-  const { t } = useTranslation();
-  const VALUE = 'value';
-  const PATH = 'path';
-  const [show, setShow] = useState(false);
-  const [correctValue, setCorrectValue] = useState([]);
-  const [data, setData] = useState(value);
+  const { t } = useTranslation()
+  const VALUE = 'value'
+  const PATH = 'path'
+  const [show, setShow] = useState(false)
+  const [correctValue, setCorrectValue] = useState([])
+  const [data, setData] = useState(value)
   const onValueChanged = () => {
-    setShow(true);
-  };
+    setShow(true)
+  }
   const handleTypeAheadChange = (selectedOptions) => {
-    setCorrectValue(selectedOptions);
-    setShow(true);
-  };
+    setCorrectValue(selectedOptions)
+    setShow(true)
+  }
   const onAccept = () => {
-    const patch = {};
-    patch[PATH] = path;
+    const patch = {}
+    patch[PATH] = path
     if (isArray) {
-      patch[VALUE] = correctValue;
+      patch[VALUE] = correctValue
     } else {
-      patch[VALUE] = document.getElementById(name).value;
+      patch[VALUE] = document.getElementById(name).value
     }
-    patch['op'] = 'replace';
-    handler(patch);
-    setShow(!show);
-    setData(document.getElementById(name).value);
-  };
+    patch['op'] = 'replace'
+    handler(patch)
+    setShow(!show)
+    setData(document.getElementById(name).value)
+  }
   const onCancel = () => {
-    setCorrectValue([]);
-    setShow(!show);
-  };
+    setCorrectValue([])
+    setShow(!show)
+  }
   return (
     <FormGroup row>
       <Col sm={10}>
@@ -130,7 +130,7 @@ function GluuInlineInput({
         )}
       </Col>
     </FormGroup>
-  );
+  )
 }
 
 GluuInlineInput.defaultProps = {
@@ -138,6 +138,6 @@ GluuInlineInput.defaultProps = {
   lsize: 3,
   rsize: 9,
   required: false,
-};
+}
 
-export default GluuInlineInput;
+export default GluuInlineInput

@@ -79,6 +79,6 @@ function ViewRedirect({
         </div>
       </Container>
     </React.Fragment>
-  );
+  )
 }
-export default ViewRedirect;
+export default ViewRedirect

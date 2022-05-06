@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 import {
   Button,
   DropdownToggle,
@@ -12,25 +12,25 @@ import {
   NavbarToggler,
   UncontrolledDropdown,
   ThemeConsumer,
-} from './../../../../components';
-import { randomAvatar } from './../../../../utilities';
+} from './../../../../components'
+import { randomAvatar } from './../../../../utilities'
 
 import { NavbarActivityFeed } from
-'./../../../../layout/components/NavbarActivityFeed';
+'./../../../../layout/components/NavbarActivityFeed'
 import { NavbarMessages } from
-'./../../../../layout/components/NavbarMessages';
+'./../../../../layout/components/NavbarMessages'
 import { NavbarUser } from
-'./../../../../layout/components/NavbarUser';
+'./../../../../layout/components/NavbarUser'
 import { DropdownProfile } from
-'./../../../components/Dropdowns/DropdownProfile';
+'./../../../components/Dropdowns/DropdownProfile'
 import { NavbarNavigation } from
-'./../../../components/Navbars/NavbarNavigation';
+'./../../../components/Navbars/NavbarNavigation'
 import { LogoThemed } from
-'./../../../components/LogoThemed/LogoThemed';
-import { useTranslation } from 'react-i18next';
+'./../../../components/LogoThemed/LogoThemed'
+import { useTranslation } from 'react-i18next'
 
 export const LayoutNavbar = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       <Navbar light expand="lg" themed>
@@ -100,5 +100,5 @@ export const LayoutNavbar = () => {
         </ThemeConsumer>
       </Navbar>
     </React.Fragment>
-  );
-};
+  )
+}

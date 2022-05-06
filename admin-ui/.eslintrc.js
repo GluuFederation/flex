@@ -26,7 +26,7 @@ module.exports = {
   ],
   rules: {
     'no-var': 'error',
-    semi: 'error',
+    semi: ['error', 'never'],
     'no-multi-spaces': 'error',
     'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
     'prefer-const': 'error',

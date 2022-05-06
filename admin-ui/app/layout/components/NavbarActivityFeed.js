@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import _ from "lodash";
-import PropTypes from "prop-types";
+import React from "react"
+import { Link } from "react-router-dom"
+import _ from "lodash"
+import PropTypes from "prop-types"
 
 import {
   UncontrolledDropdown,
@@ -12,7 +12,7 @@ import {
   ListGroup,
   ListGroupItem,
   Media
-} from "./../../components";
+} from "./../../components"
 
 /*eslint-disable */
 const activityFeedIcons = [
@@ -86,10 +86,10 @@ const NavbarActivityFeed = props => (
       </ExtendedDropdown.Section>
     </ExtendedDropdown>
   </UncontrolledDropdown>
-);
+)
 NavbarActivityFeed.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object
-};
+}
 
-export { NavbarActivityFeed };
+export { NavbarActivityFeed }

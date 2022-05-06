@@ -27,7 +27,7 @@ class AppAuthProvider extends Component {
       redirectUrl,
       responseType,
       acrValues,
-    } = config;
+    } = config
     if (
       !authzBaseUrl ||
       !clientId ||
@@ -38,68 +38,68 @@ class AppAuthProvider extends Component {
       !state ||
       !nonce
     ) {
-      console.warn('Parameters to process authz code flow are missing.');
-      return;
+      console.warn('Parameters to process authz code flow are missing.')
+      return
     }
-    return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}&redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`;
+    return `${authzBaseUrl}?acr_values=${acrValues}&response_type=${responseType}&redirect_uri=${redirectUrl}&client_id=${clientId}&scope=${scope}&state=${state}&nonce=${nonce}`
   }
   constructor() {
-    super();
+    super()
   }
 
   componentDidMount() {
-    this.props.getOAuth2Config();
-    this.props.checkLicensePresent();
+    this.props.getOAuth2Config()
+    this.props.checkLicensePresent()
   }
 
   static getDerivedStateFromProps(props) {
     if (window.location.href.indexOf('logout') > -1) {
-      return { showContent: true };
+      return { showContent: true }
     }
     if (!props.isLicenseValid) {
-      return { showContent: false };
+      return { showContent: false }
     }
     if (!props.showContent) {
       if (!props.userinfo) {
-        const params = queryString.parse(props.location.search);
-        let showContent = false;
+        const params = queryString.parse(props.location.search)
+        let showContent = false
         if (params.code && params.scope && params.state) {
-          props.getUserInfo(params.code);
+          props.getUserInfo(params.code)
         } else {
-          showContent = !!props.config;
+          showContent = !!props.config
           if (showContent && props.config != -1) {
-            const state = uuidv4();
-            saveState(state);
+            const state = uuidv4()
+            saveState(state)
             const authzUrl = AppAuthProvider.buildAuthzUrl(
               props.config,
               state,
               uuidv4(),
-            );
+            )
             if (authzUrl) {
-              window.location.href = authzUrl;
-              return null;
+              window.location.href = authzUrl
+              return null
             }
           } else {
-            props.getOAuth2Config();
+            props.getOAuth2Config()
           }
         }
         return {
           showContent: false,
-        };
+        }
       } else {
         if (!props.token) {
-          props.getAPIAccessToken(props.jwt);
+          props.getAPIAccessToken(props.jwt)
         }
         return {
           showContent: true,
-        };
+        }
       }
     } else {
-      return { showContent: true };
+      return { showContent: true }
     }
   }
   render() {
-    const { showContent } = this.state;
+    const { showContent } = this.state
     return (
       <React.Fragment>
         <SessionTimeout isAuthenticated={showContent} />
@@ -116,20 +116,20 @@ class AppAuthProvider extends Component {
           />
         )}
       </React.Fragment>
-    );
+    )
   }
 }
 const mapStateToProps = ({ authReducer, licenseReducer }) => {
-  const config = authReducer.config;
-  const userinfo = authReducer.userinfo;
-  const jwt = authReducer.userinfo_jwt;
-  const token = authReducer.token;
-  const permissions = authReducer.permissions;
-  const backendIsUp = authReducer.backendIsUp;
-  const isLicenseValid = licenseReducer.isLicenseValid;
-  const islicenseCheckResultLoaded = licenseReducer.islicenseCheckResultLoaded;
+  const config = authReducer.config
+  const userinfo = authReducer.userinfo
+  const jwt = authReducer.userinfo_jwt
+  const token = authReducer.token
+  const permissions = authReducer.permissions
+  const backendIsUp = authReducer.backendIsUp
+  const isLicenseValid = licenseReducer.isLicenseValid
+  const islicenseCheckResultLoaded = licenseReducer.islicenseCheckResultLoaded
   const isLicenseActivationResultLoaded =
-    licenseReducer.isLicenseActivationResultLoaded;
+    licenseReducer.isLicenseActivationResultLoaded
 
   return {
     config,
@@ -141,8 +141,8 @@ const mapStateToProps = ({ authReducer, licenseReducer }) => {
     isLicenseValid,
     islicenseCheckResultLoaded,
     isLicenseActivationResultLoaded,
-  };
-};
+  }
+}
 
 export default withRouter(
   connect(mapStateToProps, {
@@ -152,4 +152,4 @@ export default withRouter(
     getUserLocation,
     checkLicensePresent,
   })(AppAuthProvider),
-);
+)

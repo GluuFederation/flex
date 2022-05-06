@@ -1,5 +1,5 @@
-import React from 'react';
-import { getNewColor } from '../../../utils/Util';
+import React from 'react'
+import { getNewColor } from '../../../utils/Util'
 import {
   PieChart,
   Pie,
@@ -7,10 +7,10 @@ import {
   Tooltip,
   Cell,
   ResponsiveContainer,
-} from 'recharts';
+} from 'recharts'
 
 function CustomPieGraph({ data, dataKey, nameKey }) {
-  const RADIAN = Math.PI / 180;
+  const RADIAN = Math.PI / 180
   const renderCustomizedLabel = ({
     cx,
     cy,
@@ -20,9 +20,9 @@ function CustomPieGraph({ data, dataKey, nameKey }) {
     percent,
     index,
   }) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+    const x = cx + radius * Math.cos(-midAngle * RADIAN)
+    const y = cy + radius * Math.sin(-midAngle * RADIAN)
 
     return (
       <text
@@ -34,8 +34,8 @@ function CustomPieGraph({ data, dataKey, nameKey }) {
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
-    );
-  };
+    )
+  }
 
   return (
     <ResponsiveContainer className="mau" width="98%" height={300}>
@@ -59,7 +59,7 @@ function CustomPieGraph({ data, dataKey, nameKey }) {
         <Tooltip />
       </PieChart>
     </ResponsiveContainer>
-  );
+  )
 }
 
-export default CustomPieGraph;
+export default CustomPieGraph

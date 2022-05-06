@@ -1,6 +1,6 @@
-import { PolarGrid } from 'recharts';
+import { PolarGrid } from 'recharts'
 
-import styleConfig from './config';
+import styleConfig from './config'
 
 class CustomPolarGrid extends PolarGrid {
     static defaultProps = {
@@ -9,4 +9,4 @@ class CustomPolarGrid extends PolarGrid {
     }
 }
 
-export { CustomPolarGrid as PolarGrid };
+export { CustomPolarGrid as PolarGrid }

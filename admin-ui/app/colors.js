@@ -1,6 +1,6 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
-import colors from './colors.scss';
+import colors from './colors.scss'
 
 const colorKeys = _
   .chain(colors)
@@ -9,6 +9,6 @@ const colorKeys = _
     colorKey.indexOf('bg-') === -1 &&
         colorKey.indexOf('fg-') === -1
   ))
-  .value();
+  .value()
 
-export default _.pick(colors, colorKeys);
+export default _.pick(colors, colorKeys)

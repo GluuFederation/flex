@@ -27,4 +27,4 @@ export default {
     textAlign: 'center',
     boxShadow: '4px 4px 15px rgba(26, 35, 126, 0.2)',
   },
-};
+}

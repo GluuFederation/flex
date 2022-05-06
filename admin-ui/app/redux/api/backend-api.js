@@ -13,10 +13,10 @@ export const fetchServerConfiguration = async (token) => {
       console.error(
         'Problems getting OAuth2 configuration in order to process authz code flow.',
         error,
-      );
-      return -1;
-    });
-};
+      )
+      return -1
+    })
+}
 
 // get user location and ip
 export const getUserIpAndLocation = async () => {
@@ -24,10 +24,10 @@ export const getUserIpAndLocation = async () => {
     .get('https://geolocation-db.com/json/')
     .then((response) => response.data)
     .catch((error) => {
-      console.error('Error fetching user location and ip address', error);
-      return -1;
-    });
-};
+      console.error('Error fetching user location and ip address', error)
+      return -1
+    })
+}
 
 // Retrieve user information
 export const fetchUserInformation = async (code) => {
@@ -40,10 +40,10 @@ export const fetchUserInformation = async (code) => {
       console.error(
         'Problems fetching user information with the provided code.',
         error,
-      );
-      return -1;
-    });
-};
+      )
+      return -1
+    })
+}
 
 // post user action
 export const postUserAction = async (userAction) => {
@@ -56,9 +56,9 @@ export const postUserAction = async (userAction) => {
     })
     .then((response) => response)
     .catch((e) => {
-      return -1;
-    });
-};
+      return -1
+    })
+}
 
 // Get API Access Token
 export const fetchApiAccessToken = async (jwt) => {
@@ -69,10 +69,10 @@ export const fetchApiAccessToken = async (jwt) => {
       console.error(
         'Problems getting API access token in order to process api calls.',
         error,
-      );
-      return -1;
-    });
-};
+      )
+      return -1
+    })
+}
 
 export const fetchApiTokenWithDefaultScopes = async () => {
   return axios

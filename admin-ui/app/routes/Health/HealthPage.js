@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from 'react'
 import {
   Container,
   CardBody,
@@ -6,30 +6,30 @@ import {
   Badge,
   CardHeader,
   FormGroup,
-} from '../../components';
-import { useTranslation } from 'react-i18next';
-import applicationStyle from '../../routes/Apps/Gluu/styles/applicationstyle';
-import { buildPayload } from '../../utils/PermChecker';
-import { connect } from 'react-redux';
-import { getHealthStatus } from '../../redux/actions/HealthAction';
-import GluuRibbon from '../../routes/Apps/Gluu/GluuRibbon';
+} from '../../components'
+import { useTranslation } from 'react-i18next'
+import applicationStyle from '../../routes/Apps/Gluu/styles/applicationstyle'
+import { buildPayload } from '../../utils/PermChecker'
+import { connect } from 'react-redux'
+import { getHealthStatus } from '../../redux/actions/HealthAction'
+import GluuRibbon from '../../routes/Apps/Gluu/GluuRibbon'
 
 function HealthPage({ serverStatus, dbStatus, dispatch }) {
-  const { t } = useTranslation();
-  const userAction = {};
-  const options = {};
+  const { t } = useTranslation()
+  const userAction = {}
+  const options = {}
 
   useEffect(() => {
-    fetchHealthInfo(userAction, options, dispatch);
-  }, []);
+    fetchHealthInfo(userAction, options, dispatch)
+  }, [])
 
   function fetchHealthInfo() {
-    buildPayload(userAction, 'GET Health Status', options);
-    dispatch(getHealthStatus(userAction));
+    buildPayload(userAction, 'GET Health Status', options)
+    dispatch(getHealthStatus(userAction))
   }
 
   function getColor(status) {
-    return isUp(status) ? 'primary' : 'danger';
+    return isUp(status) ? 'primary' : 'danger'
   }
 
   function isUp(status) {
@@ -37,9 +37,9 @@ function HealthPage({ serverStatus, dbStatus, dispatch }) {
       return (
         status.toUpperCase() === 'ONLINE'.toUpperCase() ||
         status.toUpperCase() === 'RUNNING'.toUpperCase()
-      );
+      )
     }
-    return false;
+    return false
   }
 
   return (
@@ -83,7 +83,7 @@ function HealthPage({ serverStatus, dbStatus, dispatch }) {
         </CardBody>
       </Card>
     </Container>
-  );
+  )
 }
 
 const mapStateToProps = (state) => {
@@ -92,6 +92,6 @@ const mapStateToProps = (state) => {
     dbStatus: state.healthReducer.dbStatus,
     loading: state.healthReducer.loading,
     permissions: state.authReducer.permissions,
-  };
-};
-export default connect(mapStateToProps)(HealthPage);
+  }
+}
+export default connect(mapStateToProps)(HealthPage)

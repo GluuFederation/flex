@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 import { withPageConfig } from
-'./../../../components/Layout/withPageConfig';
+'./../../../components/Layout/withPageConfig'
 import {
   Container,
-} from './../../../components';
+} from './../../../components'
 
 class NavbarOnly extends React.Component {
     static propTypes = {
@@ -13,19 +13,19 @@ class NavbarOnly extends React.Component {
     };
 
     componentDidMount() {
-      const { pageConfig } = this.props;
+      const { pageConfig } = this.props
         
       pageConfig.setElementsVisibility({
         sidebarHidden: true
-      });
+      })
     }
 
     componentWillUnmount() {
-      const { pageConfig } = this.props;
+      const { pageConfig } = this.props
 
       pageConfig.setElementsVisibility({
         sidebarHidden: false
-      });
+      })
     }
 
     render() {
@@ -112,12 +112,12 @@ class NavbarOnly extends React.Component {
             </p>
           </section>
         </Container>
-      );
+      )
     }
 }
 
-const ExtendedNavbarOnly = withPageConfig(NavbarOnly);
+const ExtendedNavbarOnly = withPageConfig(NavbarOnly)
 
 export {
   ExtendedNavbarOnly as NavbarOnly
-};
+}

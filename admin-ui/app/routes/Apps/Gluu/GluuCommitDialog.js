@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
   FormGroup,
   Col,
@@ -9,10 +9,10 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from 'reactstrap';
-import { useTranslation } from 'react-i18next';
-import applicationStyle from './styles/applicationstyle';
-import ClipLoader from 'react-spinners/ClipLoader';
+} from 'reactstrap'
+import { useTranslation } from 'react-i18next'
+import applicationStyle from './styles/applicationstyle'
+import ClipLoader from 'react-spinners/ClipLoader'
 
 const GluuCommitDialog = ({
   handler,
@@ -25,29 +25,29 @@ const GluuCommitDialog = ({
   inputType,
   isLoading,
 }) => {
-  const { t } = useTranslation();
-  const [active, setActive] = useState(false);
-  const [loading, setLoading] = useState(isLoading);
-  const [userMessage, setUserMessage] = useState('');
-  const USER_MESSAGE = 'user_action_message';
+  const { t } = useTranslation()
+  const [active, setActive] = useState(false)
+  const [loading, setLoading] = useState(isLoading)
+  const [userMessage, setUserMessage] = useState('')
+  const USER_MESSAGE = 'user_action_message'
   useEffect(() => {
     if (userMessage.length >= 10) {
-      setActive(true);
+      setActive(true)
     } else {
-      setActive(false);
+      setActive(false)
     }
-  }, [userMessage]);
+  }, [userMessage])
   function handleAccept() {
     if (formik) {
-      formik.setFieldValue('action_message', userMessage);
+      formik.setFieldValue('action_message', userMessage)
     }
-    setLoading(true);
-    onAccept(userMessage);
+    setLoading(true)
+    onAccept(userMessage)
   }
   const closeModal = () => {
-    handler();
-    setUserMessage('');
-  };
+    handler()
+    setUserMessage('')
+  }
 
   return (
     <Modal isOpen={modal} toggle={closeModal} className="modal-outline-primary">
@@ -118,7 +118,7 @@ const GluuCommitDialog = ({
         </Button>
       </ModalFooter>
     </Modal>
-  );
-};
+  )
+}
 
-export default GluuCommitDialog;
+export default GluuCommitDialog

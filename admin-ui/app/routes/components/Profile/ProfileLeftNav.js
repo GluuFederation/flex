@@ -1,14 +1,14 @@
-import React from 'react';
-import { NavLink as RouterNavLink } from 'react-router-dom';
+import React from 'react'
+import { NavLink as RouterNavLink } from 'react-router-dom'
 import { 
   Nav,
   NavItem,
   NavLink
-} from './../../../components';
-import { useTranslation } from 'react-i18next';
+} from './../../../components'
+import { useTranslation } from 'react-i18next'
 
 const ProfileLeftNav = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       { /* START Left Nav  */}
@@ -43,7 +43,7 @@ const ProfileLeftNav = () => {
       </div>
       { /* END Left Nav  */}
     </React.Fragment>
-  );
-};
+  )
+}
 
-export { ProfileLeftNav };
+export { ProfileLeftNav }

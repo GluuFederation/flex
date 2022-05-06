@@ -1,9 +1,9 @@
-import React from 'react';
-import _ from 'lodash';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import _ from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 const TrTableRecentFundings = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       {
@@ -25,7 +25,7 @@ const TrTableRecentFundings = () => {
         ))
       }
     </React.Fragment>
-  );
-};
+  )
+}
 
-export { TrTableRecentFundings };
+export { TrTableRecentFundings }

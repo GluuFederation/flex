@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import _ from 'lodash'
+import classNames from 'classnames'
 
-import { Col as BootstrapCol } from 'reactstrap';
+import { Col as BootstrapCol } from 'reactstrap'
 
 // Twice Smaller than Bootstrap breakpoints
 const breakPoints = [
@@ -12,20 +12,20 @@ const breakPoints = [
   { id: 'md', min: 384, max: 496 },
   { id: 'sm', min: 288, max: 384 },
   { id: 'xs', max: 288 }
-];
+]
 
 const getCurrentbreakPoint = (width, breakPoints) => {
-  let output = 'xl';
+  let output = 'xl'
   for (const bp of breakPoints) {
     if (
       (_.isUndefined(bp.min) || bp.min <= width) &&
             (_.isUndefined(bp.max) || bp.max > width)
     ) {
-      output = bp.id;
+      output = bp.id
     }
   }
-  return output;
-};
+  return output
+}
 
 export class Col extends React.Component {
     static propTypes = {
@@ -65,13 +65,13 @@ export class Col extends React.Component {
     }
 
     render() {
-      const { active, children, className, trueSize } = this.props;
-      const bsColumnProps = _.pick(this.props, ['xl', 'lg', 'md', 'sm', 'xs']);
+      const { active, children, className, trueSize } = this.props
+      const bsColumnProps = _.pick(this.props, ['xl', 'lg', 'md', 'sm', 'xs'])
       const otherProps = _.omit(this.props, [..._.keys(Col.propTypes),
-        'minW', 'maxW', 'minH', 'maxH', 'moved', 'static', 'isDraggable', 'isResizable']);
-      const floatColBpId = trueSize ? getCurrentbreakPoint(trueSize.wPx, breakPoints) : 'xl';
+        'minW', 'maxW', 'minH', 'maxH', 'moved', 'static', 'isDraggable', 'isResizable'])
+      const floatColBpId = trueSize ? getCurrentbreakPoint(trueSize.wPx, breakPoints) : 'xl'
       const floatColClasses = classNames(className, 'float-col',
-        'float-column', `float-column--size-${floatColBpId}`);
+        'float-column', `float-column--size-${floatColBpId}`)
 
       return active ? (
         <div { ...otherProps } className={ floatColClasses }>
@@ -84,6 +84,6 @@ export class Col extends React.Component {
         >
           { children }
         </BootstrapCol>
-      );
+      )
     }
 }

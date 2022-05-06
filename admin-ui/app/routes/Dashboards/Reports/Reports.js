@@ -1,18 +1,18 @@
-import React, { useEffect } from 'react';
-import { buildPayload } from '../../../../app/utils/PermChecker';
-import { Container, Row, Col } from './../../../components';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react'
+import { buildPayload } from '../../../../app/utils/PermChecker'
+import { Container, Row, Col } from './../../../components'
+import { connect } from 'react-redux'
 import {
   getAttributes,
   getScripts,
   getScopes,
   getClients,
-} from '../../../redux/actions/InitActions';
-import ReportCard from './ReportCard';
-import { useTranslation } from 'react-i18next';
+} from '../../../redux/actions/InitActions'
+import ReportCard from './ReportCard'
+import { useTranslation } from 'react-i18next'
 
 function Reports({ attributes, clients, scopes, scripts, dispatch }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const attributeData = [
     {
@@ -23,7 +23,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
       name: `${t('fields.inactive')}`,
       value: attributes.filter((item) => item.status === 'INACTIVE').length,
     },
-  ];
+  ]
   const clientData = [
     {
       name: `${t('fields.enabled')}`,
@@ -33,7 +33,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
       name: `${t('fields.disabled')}`,
       value: clients.filter((item) => item.disabled).length,
     },
-  ];
+  ]
   const scopeData = [
     {
       name: `${t('fields.oauth')}`,
@@ -43,7 +43,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
       name: `${t('fields.openid')}`,
       value: scopes.filter((item) => item.scopeType === 'openid').length,
     },
-  ];
+  ]
   const scriptData = [
     {
       name: `${t('fields.enabled')}`,
@@ -53,31 +53,31 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
       name: `${t('fields.disabled')}`,
       value: scripts.filter((item) => !item.enabled).length,
     },
-  ];
-  const userAction = {};
+  ]
+  const userAction = {}
   useEffect(() => {
-    let count = 0;
+    let count = 0
     const interval = setInterval(() => {
       if (attributes.length === 0 && count < 2) {
-        buildPayload(userAction, 'Fetch attributes', {});
-        dispatch(getAttributes(userAction));
+        buildPayload(userAction, 'Fetch attributes', {})
+        dispatch(getAttributes(userAction))
       }
       if (clients.length === 0 && count < 2) {
-        buildPayload(userAction, 'Fetch openid connect clients', {});
-        dispatch(getClients(userAction));
+        buildPayload(userAction, 'Fetch openid connect clients', {})
+        dispatch(getClients(userAction))
       }
       if (scopes.length === 0 && count < 2) {
-        buildPayload(userAction, 'Fetch scopes', {});
-        dispatch(getScopes(userAction));
+        buildPayload(userAction, 'Fetch scopes', {})
+        dispatch(getScopes(userAction))
       }
       if (scripts.length === 0 && count < 2) {
-        buildPayload(userAction, 'Fetch custom scripts', {});
-        dispatch(getScripts(userAction));
+        buildPayload(userAction, 'Fetch custom scripts', {})
+        dispatch(getScripts(userAction))
       }
-      count++;
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [1000]);
+      count++
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [1000])
 
   return (
     <Container>
@@ -124,7 +124,7 @@ function Reports({ attributes, clients, scopes, scripts, dispatch }) {
         </Col>
       </Row>
     </Container>
-  );
+  )
 }
 const mapStateToProps = (state) => {
   return {
@@ -132,7 +132,7 @@ const mapStateToProps = (state) => {
     clients: state.initReducer.clients,
     scopes: state.initReducer.scopes,
     scripts: state.initReducer.scripts,
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps)(Reports);
+export default connect(mapStateToProps)(Reports)

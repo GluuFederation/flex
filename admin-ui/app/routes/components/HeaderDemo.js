@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Media } from 'reactstrap';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Media } from 'reactstrap'
 
 const HeaderDemo = (props) => (
   <Media className={ `mb-3 ${ props.className }` }>
@@ -16,7 +16,7 @@ const HeaderDemo = (props) => (
       <p>{props.children || props.subTitle}</p>
     </Media>
   </Media>
-);
+)
 HeaderDemo.propTypes = {
   no: PropTypes.oneOfType([
     PropTypes.string,
@@ -26,11 +26,11 @@ HeaderDemo.propTypes = {
   subTitle: PropTypes.string,
   children: PropTypes.node,
   className: PropTypes.string
-};
+}
 HeaderDemo.defaultProps = {
   no: 0,
   title: "Waiting for Data...",
   subTitle: "Waiting for Data..."
-};
+}
 
-export { HeaderDemo };
+export { HeaderDemo }

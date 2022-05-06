@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import OuterClick from './../OuterClick';
-import { withPageConfig } from './../Layout';
-import { SidebarContent } from './SidebarContent';
+import OuterClick from './../OuterClick'
+import { withPageConfig } from './../Layout'
+import { SidebarContent } from './SidebarContent'
 
 const Sidebar = (props) => {
 
@@ -23,8 +23,8 @@ const Sidebar = (props) => {
         <SidebarContent { ...props } />
       </OuterClick>
     </React.Fragment>
-  );
-};
+  )
+}
 
 Sidebar.propTypes = {
   children: PropTypes.node,
@@ -32,10 +32,10 @@ Sidebar.propTypes = {
   collapsed: PropTypes.bool,
   animationsDisabled: PropTypes.bool,
   pageConfig: PropTypes.object
-};
+}
 
-const cfgSidebar = withPageConfig(Sidebar);
+const cfgSidebar = withPageConfig(Sidebar)
 
 export {
   cfgSidebar as Sidebar
-};
+}

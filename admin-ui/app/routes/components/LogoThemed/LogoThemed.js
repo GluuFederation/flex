@@ -1,26 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import { ThemeConsumer } from '../../../components/Theme';
+import { ThemeConsumer } from '../../../components/Theme'
 
 const logos = {
   'default': require('./../../../images/logos/logo192.png'),
   'primary': require('./../../../images/logos/logo192.png')
-};
+}
 
 const getLogoUrl = () => {
-  return logos['default'];
-};
+  return logos['default']
+}
 
 // Check for background
 const getLogoUrlBackground = (style, color) => {
   if (style === 'color') {
-    return logos['default'];
+    return logos['default']
   } else {
-    return getLogoUrl();
+    return getLogoUrl()
   }
-};
+}
 
 const LogoThemed = ({ checkBackground, className, ...otherProps }) => (
   <ThemeConsumer>
@@ -41,10 +41,10 @@ const LogoThemed = ({ checkBackground, className, ...otherProps }) => (
       )
     }
   </ThemeConsumer>
-);
+)
 LogoThemed.propTypes = {
   checkBackground: PropTypes.bool,
   className: PropTypes.string,
-};
+}
 
-export { LogoThemed };
+export { LogoThemed }

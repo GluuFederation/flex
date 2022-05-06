@@ -1,13 +1,13 @@
-import React from 'react';
+import React from 'react'
 
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
-import { DropdownMenu, DropdownItem } from './../../../components';
-import { useTranslation } from 'react-i18next';
+import { DropdownMenu, DropdownItem } from './../../../components'
+import { useTranslation } from 'react-i18next'
 
 const DropdownProfile = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       <DropdownMenu right={props.right}>
@@ -25,14 +25,14 @@ const DropdownProfile = (props) => {
         </DropdownItem>
       </DropdownMenu>
     </React.Fragment>
-  );
-};
+  )
+}
 DropdownProfile.propTypes = {
   position: PropTypes.string,
   right: PropTypes.bool,
-};
+}
 DropdownProfile.defaultProps = {
   position: '',
-};
+}
 
-export { DropdownProfile };
+export { DropdownProfile }

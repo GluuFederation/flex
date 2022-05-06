@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 import {
   Progress,
@@ -7,7 +7,7 @@ import {
   InputGroupText,
   Input,
   InputGroup,
-} from './../../../components';
+} from './../../../components'
 
 const MetricVsTarget = (props) => {
   return (
@@ -27,21 +27,21 @@ const MetricVsTarget = (props) => {
         <Input placeholder="Enter..." />
       </InputGroup>
     </React.Fragment>
-  );
-};
+  )
+}
 MetricVsTarget.propTypes = {
   title: PropTypes.node,
   value: PropTypes.node,
   progressbarValue: PropTypes.string,
   progressbarColor: PropTypes.node,
   targetValue: PropTypes.node,
-};
+}
 MetricVsTarget.defaultProps = {
   title: 'Title',
   value: '000.000',
   progressbarValue: '24',
   progressbarColor: 'secondary',
   targetValue: '000.000',
-};
+}
 
-export { MetricVsTarget };
+export { MetricVsTarget }

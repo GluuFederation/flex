@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Container,
   Row,
@@ -10,16 +10,16 @@ import {
   Nav,
   NavItem,
   UncontrolledTabs,
-} from '../../../components';
-import { HeaderMain } from '../../components/HeaderMain';
-import { ErrorBoundary } from 'react-error-boundary';
-import GluuErrorFallBack from '../Gluu/GluuErrorFallBack';
-import { Profile } from '../../components/Profile';
-import { connect } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+} from '../../../components'
+import { HeaderMain } from '../../components/HeaderMain'
+import { ErrorBoundary } from 'react-error-boundary'
+import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
+import { Profile } from '../../components/Profile'
+import { connect } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 
 const ProfileDetails = ({ userinfo }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -115,14 +115,14 @@ const ProfileDetails = ({ userinfo }) => {
         </Container>
       </ErrorBoundary>
     </React.Fragment>
-  );
-};
+  )
+}
 
 const mapStateToProps = ({ authReducer }) => {
-  const userinfo = authReducer.userinfo;
+  const userinfo = authReducer.userinfo
   return {
     userinfo,
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps)(ProfileDetails);
+export default connect(mapStateToProps)(ProfileDetails)

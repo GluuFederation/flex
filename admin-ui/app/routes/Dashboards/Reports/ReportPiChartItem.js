@@ -1,10 +1,10 @@
-import React from 'react';
-import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
-import applicationStyle from '../../Apps/Gluu/styles/applicationstyle';
+import React from 'react'
+import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts'
+import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
 
 function ReportPiChartItem({ data }) {
-  const COLORS = ['#7aefc0', '#3B4371'];
-  const RADIAN = Math.PI / 180;
+  const COLORS = ['#7aefc0', '#3B4371']
+  const RADIAN = Math.PI / 180
   const renderCustomizedLabel = ({
     cx,
     cy,
@@ -13,9 +13,9 @@ function ReportPiChartItem({ data }) {
     outerRadius,
     percent,
   }) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5
+    const x = cx + radius * Math.cos(-midAngle * RADIAN)
+    const y = cy + radius * Math.sin(-midAngle * RADIAN)
 
     return (
       <text
@@ -27,8 +27,8 @@ function ReportPiChartItem({ data }) {
       >
         {`${(percent * 100).toFixed(0)}%`}
       </text>
-    );
-  };
+    )
+  }
 
   return (
     <PieChart width={200} height={200}>
@@ -49,7 +49,7 @@ function ReportPiChartItem({ data }) {
       <Legend iconType="star" />
       <Tooltip contentStyle={applicationStyle.homeStatTooltip} />
     </PieChart>
-  );
+  )
 }
 
-export default ReportPiChartItem;
+export default ReportPiChartItem

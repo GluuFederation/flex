@@ -1,15 +1,15 @@
-import { CartesianGrid } from './Recharts/CartesianGrid';
-import { PolarGrid } from './Recharts/PolarGrid';
-import { XAxis } from './Recharts/XAxis';
-import { YAxis } from './Recharts/YAxis';
-import { ZAxis } from './Recharts/ZAxis';
-import { PolarRadiusAxis } from './Recharts/PolarRadiusAxis';
-import { PolarAngleAxis } from './Recharts/PolarAngleAxis';
-import { ValueLabel } from './Recharts/ValueLabel';
-import { DefAreaValueColor } from './Recharts/DefAreaValueColor';
-import { PieValueLabel } from './Recharts/PieValueLabel';
-import { Tooltip } from './Recharts/Tooltip';
-import { Legend } from './Recharts/Legend';
+import { CartesianGrid } from './Recharts/CartesianGrid'
+import { PolarGrid } from './Recharts/PolarGrid'
+import { XAxis } from './Recharts/XAxis'
+import { YAxis } from './Recharts/YAxis'
+import { ZAxis } from './Recharts/ZAxis'
+import { PolarRadiusAxis } from './Recharts/PolarRadiusAxis'
+import { PolarAngleAxis } from './Recharts/PolarAngleAxis'
+import { ValueLabel } from './Recharts/ValueLabel'
+import { DefAreaValueColor } from './Recharts/DefAreaValueColor'
+import { PieValueLabel } from './Recharts/PieValueLabel'
+import { Tooltip } from './Recharts/Tooltip'
+import { Legend } from './Recharts/Legend'
 
 export {
   CartesianGrid,
@@ -24,7 +24,7 @@ export {
   PolarAngleAxis,
   PieValueLabel,
   Tooltip
-};
+}
 
 export {
   Area,
@@ -59,4 +59,4 @@ export {
   Sector,
   Text,
   Treemap
-} from 'recharts';
+} from 'recharts'

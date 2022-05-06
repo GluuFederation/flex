@@ -1,6 +1,6 @@
-import React from 'react';
-import _ from 'lodash';
-import { randomArray } from './../../../utilities';
+import React from 'react'
+import _ from 'lodash'
+import { randomArray } from './../../../utilities'
 
 const name = [
   <React.Fragment key="name-1">
@@ -18,34 +18,34 @@ const name = [
   <React.Fragment key="name-5">
     <span className="text-inverse">Samsung Electronics</span> <small>(0593xq)</small>
   </React.Fragment>
-];
+]
 
 const percentForPrice = [
   "34.18",
   "21.34",
   "19.12",
   "67.82"
-];
+]
 const score = [
   "87",
   "11",
   "12"
-];
+]
 const q = [
   "35",
   "98",
   "56"
-];
+]
 const v = [
   "17",
   "38",
   "23"
-];
+]
 const g = [
   "45",
   "15",
   "16"
-];
+]
 
 const price = [
   <React.Fragment key="price1">
@@ -58,7 +58,7 @@ const price = [
       <i className="fa fa-caret-down mr-1"></i> { randomArray(percentForPrice) }%
     </span>
   </React.Fragment>
-];
+]
 
 const TrTableStock = () => {
   return (
@@ -87,7 +87,7 @@ const TrTableStock = () => {
           </tr>
         ))
       }
-    </React.Fragment>);
-};
+    </React.Fragment>)
+}
 
-export { TrTableStock };
+export { TrTableStock }

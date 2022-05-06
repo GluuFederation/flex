@@ -1,3 +1,3 @@
-import { OuterClick } from './OuterClick';
+import { OuterClick } from './OuterClick'
 
-export default OuterClick;
+export default OuterClick

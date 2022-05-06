@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
 import { 
   Card,
@@ -13,23 +13,23 @@ import {
   AvatarAddOn,
   Badge,
   CardBody
-} from './../../../components';
+} from './../../../components'
 
-import { randomArray, randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next';
+import { randomArray, randomAvatar } from './../../../utilities'
+import { useTranslation } from 'react-i18next'
 
 const status = [
   "success",
   "danger",
   "warning",
   "secondary"
-];
+]
 const badges = [
   "secondary"
-];
+]
 
 const GalleryCard = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       { /* START Card */}
@@ -108,13 +108,13 @@ const GalleryCard = (props) => {
       </Card>
       { /* END Card */}
     </React.Fragment>
-  );
-};
+  )
+}
 GalleryCard.propTypes = {
   id: PropTypes.node
-};
+}
 GalleryCard.defaultProps = {
   id: "1"
-};
+}
 
-export { GalleryCard };
+export { GalleryCard }

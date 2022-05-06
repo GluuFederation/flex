@@ -41,9 +41,9 @@ function* checkLicensePresentWorker() {
     }
     yield put(checkLicensePresentResponse(false))
   } catch (error) {
-    console.log('Error in checking License present.', error);
+    console.log('Error in checking License present.', error)
   }
-  yield put(checkLicensePresentResponse());
+  yield put(checkLicensePresentResponse())
 }
 
 function* activateCheckUserApi({ payload }) {

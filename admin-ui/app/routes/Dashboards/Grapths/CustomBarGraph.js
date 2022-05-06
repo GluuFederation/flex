@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   BarChart,
   Bar,
@@ -8,7 +8,7 @@ import {
   Legend,
   CartesianGrid,
   ResponsiveContainer,
-} from 'recharts';
+} from 'recharts'
 
 function CustomPieGraph({ data }) {
   return (
@@ -30,7 +30,7 @@ function CustomPieGraph({ data }) {
         <Bar dataKey="authz_code_idtoken_count" fill="#92FE9D" />
       </BarChart>
     </ResponsiveContainer>
-  );
+  )
 }
 
-export default CustomPieGraph;
+export default CustomPieGraph

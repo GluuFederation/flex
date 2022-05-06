@@ -1,37 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Switch, Redirect } from 'react-router';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react'
+import { Route, Switch, Redirect } from 'react-router'
+import { useSelector } from 'react-redux'
 
 // ----------- Pages Imports ---------------
-import Reports from './Dashboards/Reports';
-import DashboardPage from './Dashboards/DashboardPage';
-import HealthPage from './Health/HealthPage';
-import LicenseDetailsPage from './License/LicenseDetailsPage';
-import NavbarOnly from './Layouts/NavbarOnly';
-import SidebarDefault from './Layouts/SidebarDefault';
-import SidebarA from './Layouts/SidebarA';
-import SidebarWithNavbar from './Layouts/SidebarWithNavbar';
+import Reports from './Dashboards/Reports'
+import DashboardPage from './Dashboards/DashboardPage'
+import HealthPage from './Health/HealthPage'
+import LicenseDetailsPage from './License/LicenseDetailsPage'
+import NavbarOnly from './Layouts/NavbarOnly'
+import SidebarDefault from './Layouts/SidebarDefault'
+import SidebarA from './Layouts/SidebarA'
+import SidebarWithNavbar from './Layouts/SidebarWithNavbar'
 
-import ProfilePage from './Apps/Profile/ProfilePage';
+import ProfilePage from './Apps/Profile/ProfilePage'
 // ----------- Layout Imports ---------------
-import { DefaultSidebar } from './../layout/components/DefaultSidebar';
-import ByeBye from './Pages/ByeBye';
+import { DefaultSidebar } from './../layout/components/DefaultSidebar'
+import ByeBye from './Pages/ByeBye'
 
-import Gluu404Error from './Apps/Gluu/Gluu404Error';
-import GluuNavBar from './Apps/Gluu/GluuNavBar';
-import { processRoutes } from '../../plugins/PluginMenuResolver';
-import { hasPermission } from '../utils/PermChecker';
+import Gluu404Error from './Apps/Gluu/Gluu404Error'
+import GluuNavBar from './Apps/Gluu/GluuNavBar'
+import { processRoutes } from '../../plugins/PluginMenuResolver'
+import { hasPermission } from '../utils/PermChecker'
 
 //------ Route Definitions --------
 // eslint-disable-next-line no-unused-vars
 export const RoutedContent = () => {
   const scopes = useSelector((state) =>
     state.token ? state.token.scopes : state.authReducer.permissions,
-  );
-  const [pluginMenus, setPluginMenus] = useState([]);
+  )
+  const [pluginMenus, setPluginMenus] = useState([])
   useEffect(() => {
-    setPluginMenus(processRoutes());
-  }, []);
+    setPluginMenus(processRoutes())
+  }, [])
 
   return (
     <Switch>
@@ -63,8 +63,8 @@ export const RoutedContent = () => {
       {/*    404    */}
       <Redirect to="/error-404" />
     </Switch>
-  );
-};
+  )
+}
 
 //------ Custom Layout Parts --------
 export const RoutedNavbars = () => (
@@ -75,10 +75,10 @@ export const RoutedNavbars = () => (
       )}
     />
   </Switch>
-);
+)
 
 export const RoutedSidebars = () => (
   <Switch>
     <Route component={DefaultSidebar} />
   </Switch>
-);
+)

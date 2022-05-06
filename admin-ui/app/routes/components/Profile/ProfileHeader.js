@@ -1,17 +1,17 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 import { 
   Badge,
   Media,
   Avatar,
   AvatarAddOn
-} from './../../../components';
-import { randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next';
+} from './../../../components'
+import { randomAvatar } from './../../../utilities'
+import { useTranslation } from 'react-i18next'
 
 const ProfileHeader = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       { /* START Header */}
@@ -47,7 +47,7 @@ const ProfileHeader = () => {
       </Media>
       { /* END Header */}
     </React.Fragment>
-  );
-};
+  )
+}
 
-export { ProfileHeader };
+export { ProfileHeader }

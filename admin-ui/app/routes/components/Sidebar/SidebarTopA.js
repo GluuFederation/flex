@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 import { 
   Sidebar,
@@ -10,14 +10,14 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem
-} from './../../../components';
-import { randomAvatar } from './../../../utilities';
-import { useTranslation } from 'react-i18next';
+} from './../../../components'
+import { randomAvatar } from './../../../utilities'
+import { useTranslation } from 'react-i18next'
 
-const avatarImg = randomAvatar();
+const avatarImg = randomAvatar()
 
 const SidebarTopA = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <React.Fragment>
       { /* START: Sidebar Default */ }
@@ -97,7 +97,7 @@ const SidebarTopA = () => {
       </Sidebar.ShowSlim>
       { /* END: Sidebar Slim */ }
     </React.Fragment>
-  );
-};
+  )
+}
 
-export { SidebarTopA };
+export { SidebarTopA }

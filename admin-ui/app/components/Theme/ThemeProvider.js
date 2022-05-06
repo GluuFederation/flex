@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { Provider } from './ThemeContext';
+import { Provider } from './ThemeContext'
 
 export class ThemeProvider extends React.Component {
     static propTypes = {
@@ -11,31 +11,31 @@ export class ThemeProvider extends React.Component {
     };
 
     constructor(props) {
-      super(props);
+      super(props)
 
       this.state = {
         style: 'light',
         color: 'primary',
-      };
+      }
     }
 
     componentDidMount() {
-      const { initialStyle, initialColor } = this.props;
+      const { initialStyle, initialColor } = this.props
 
       if (initialStyle) {
-        this.setState({ style: initialStyle });
+        this.setState({ style: initialStyle })
       }
       if (initialColor) {
-        this.setState({ color: initialColor });
+        this.setState({ color: initialColor })
       }
     }
 
     onChangeTheme(themeState) {
-      this.setState(themeState);
+      this.setState(themeState)
     }
     
     render() {
-      const { children } = this.props;
+      const { children } = this.props
         
       return (
         <Provider
@@ -46,6 +46,6 @@ export class ThemeProvider extends React.Component {
         >
           { children }
         </Provider>
-      );
+      )
     }
 }

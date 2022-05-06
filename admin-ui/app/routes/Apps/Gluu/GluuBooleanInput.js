@@ -1,11 +1,11 @@
-import React from 'react';
-import GluuLabel from './GluuLabel';
-import GluuTooltip from './GluuTooltip';
-import { Col, FormGroup, CustomInput, InputGroup } from '../../../components';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
+import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
+import { useTranslation } from 'react-i18next'
 
 function GluuBooleanInput({ label, name, value, lsize, rsize, doc_category }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
@@ -26,7 +26,7 @@ function GluuBooleanInput({ label, name, value, lsize, rsize, doc_category }) {
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 
-export default GluuBooleanInput;
+export default GluuBooleanInput

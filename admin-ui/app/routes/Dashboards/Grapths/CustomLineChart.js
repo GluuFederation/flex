@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   LineChart,
   XAxis,
@@ -8,7 +8,7 @@ import {
   Legend,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
+} from 'recharts'
 function CustomLineChart({ data }) {
   return (
     <ResponsiveContainer className="bar" width="100%" height={400}>
@@ -38,7 +38,7 @@ function CustomLineChart({ data }) {
         <Tooltip />
       </LineChart>
     </ResponsiveContainer>
-  );
+  )
 }
 
-export default CustomLineChart;
+export default CustomLineChart

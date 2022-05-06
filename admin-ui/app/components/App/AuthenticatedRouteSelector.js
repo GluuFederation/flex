@@ -1,8 +1,8 @@
-import React from 'react';
-import AppLayout from '../../layout/default';
-import { RoutedContent } from '../../routes';
-import ByeBye from '../../routes/Pages/ByeBye';
-import AppAuthProvider from '../../utils/AppAuthProvider';
+import React from 'react'
+import AppLayout from '../../layout/default'
+import { RoutedContent } from '../../routes'
+import ByeBye from '../../routes/Pages/ByeBye'
+import AppAuthProvider from '../../utils/AppAuthProvider'
 
 export default function AuthenticatedRouteSelector() {
   const selectedComponents =
@@ -14,7 +14,7 @@ export default function AuthenticatedRouteSelector() {
           <RoutedContent />
         </AppLayout>
       </AppAuthProvider>
-    );
+    )
 
-  return <div>{selectedComponents}</div>;
+  return <div>{selectedComponents}</div>
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   Dialog,
   DialogTitle,
@@ -8,9 +8,9 @@ import {
   Typography,
   makeStyles,
   Slide
-} from "@material-ui/core";
-import clsx from "clsx";
-import red from "@material-ui/core/colors/red";
+} from "@material-ui/core"
+import clsx from "clsx"
+import red from "@material-ui/core/colors/red"
 
 const useStyles = makeStyles(() => ({
   dialog: {
@@ -31,14 +31,14 @@ const useStyles = makeStyles(() => ({
   countdown: {
     color: "red[700]"
   }
-}));
+}))
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+  return <Slide direction="up" ref={ref} {...props} />
+})
 
 const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Dialog
@@ -74,7 +74,7 @@ const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default SessionTimeoutDialog;
+export default SessionTimeoutDialog

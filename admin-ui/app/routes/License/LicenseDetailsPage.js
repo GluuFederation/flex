@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import LicenseDetailsForm from './LicenseDetailsForm';
-import GluuRibbon from '../../routes/Apps/Gluu/GluuRibbon';
-import GluuFormDetailRow from '../../routes/Apps/Gluu/GluuFormDetailRow';
-import { LICENSE } from '../../utils/ApiResources';
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
+import LicenseDetailsForm from './LicenseDetailsForm'
+import GluuRibbon from '../../routes/Apps/Gluu/GluuRibbon'
+import GluuFormDetailRow from '../../routes/Apps/Gluu/GluuFormDetailRow'
+import { LICENSE } from '../../utils/ApiResources'
 import {
   getLicenseDetails,
   updateLicenseDetails,
-} from '../../redux/actions/LicenseDetailsActions';
+} from '../../redux/actions/LicenseDetailsActions'
 import {
   Card,
   CardBody,
@@ -16,32 +16,32 @@ import {
   FormGroup,
   Row,
   Col,
-} from '../../components';
+} from '../../components'
 import {
   buildPayload,
-} from '../../utils/PermChecker';
-import GluuLoader from '../../routes/Apps/Gluu/GluuLoader';
-import Alert from '@material-ui/lab/Alert';
+} from '../../utils/PermChecker'
+import GluuLoader from '../../routes/Apps/Gluu/GluuLoader'
+import Alert from '@material-ui/lab/Alert'
 
-const FETCHING_LICENSE_DETAILS = 'Fetch license details';
+const FETCHING_LICENSE_DETAILS = 'Fetch license details'
 
 function LicenseDetailsPage({ item, loading, dispatch }) {
-  const userAction = {};
-  const options = {};
+  const userAction = {}
+  const options = {}
 
   useEffect(() => {
-    buildPayload(userAction, FETCHING_LICENSE_DETAILS, options);
-    dispatch(getLicenseDetails({}));
-  }, []);
+    buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
+    dispatch(getLicenseDetails({}))
+  }, [])
 
   function formatDate(date) {
     if(date == undefined) {
-      return '';
+      return ''
     }
     if(date.length > 10) {
-      return date.substring(0, 10);
+      return date.substring(0, 10)
     }
-    return '';
+    return ''
 
   }
   return (
@@ -180,13 +180,13 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
         </CardBody>
       </Card>
     </React.Fragment>
-  );
+  )
 }
 
 const mapStateToProps = (state) => {
   return {
     item: state.licenseDetailsReducer.item,
     loading: state.licenseDetailsReducer.loading,
-  };
-};
-export default connect(mapStateToProps)(LicenseDetailsPage);
+  }
+}
+export default connect(mapStateToProps)(LicenseDetailsPage)

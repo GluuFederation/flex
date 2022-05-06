@@ -1,7 +1,7 @@
-import React from 'react';
-import { Col, FormGroup, Input } from '../../../components';
-import GluuLabel from './GluuLabel';
-import GluuTooltip from './GluuTooltip';
+import React from 'react'
+import { Col, FormGroup, Input } from '../../../components'
+import GluuLabel from './GluuLabel'
+import GluuTooltip from './GluuTooltip'
 
 function GluuCheckBoxRow({
   label,
@@ -29,7 +29,7 @@ function GluuCheckBoxRow({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 
 GluuCheckBoxRow.defaultProps = {
@@ -37,5 +37,5 @@ GluuCheckBoxRow.defaultProps = {
   lsize: 3,
   rsize: 9,
   required: false,
-};
-export default GluuCheckBoxRow;
+}
+export default GluuCheckBoxRow

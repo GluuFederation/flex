@@ -1,13 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 import {
   Container,
-} from './../../../components';
-import { useTranslation } from 'react-i18next';
+} from './../../../components'
+import { useTranslation } from 'react-i18next'
 
 export const SidebarWithNavbar = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <Container>
       <p className="mb-4 mt-3">
@@ -91,5 +91,5 @@ export const SidebarWithNavbar = () => {
         </p>
       </section>
     </Container>
-  );
-};
+  )
+}

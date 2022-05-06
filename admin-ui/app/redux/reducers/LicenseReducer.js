@@ -25,86 +25,67 @@ export default function licenseReducer(state = INIT_STATE, action) {
     return {
       ...state,
       islicenseCheckResultLoaded: false,
-    };
+    }
+  case ACTIVATE_CHECK_USER_API:
+    return {
+      ...state,
+      isLoading: true,
+      error: '',
+    }
+  case ACTIVATE_CHECK_USER_LICENSE_KEY:
+    return {
+      ...state,
+      isLoading: true,
+      error: '',
+    }
+  case ACTIVATE_CHECK_LICENCE_API_VALID:
+    if (action.payload.apiResult) {
+      return {
+        ...state,
+        isLicenceAPIkeyValid: action.payload,
+        error: '',
+        isLoading: false,
+      }
+    } else {
+      return {
+        ...state,
+        error: action.payload.responseMessage,
+        isLoading: false,
+      }
+    }
+  case ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE:
+    if (action.payload.apiResult) {
+      return {
+        ...state,
+        isLicenseValid: action.payload.apiResult,
+        error: '',
+        isLoading: false,
+      }
+    } else {
+      return {
+        ...state,
+        error: action.payload.responseMessage,
+        isLoading: false,
+      }
+    }
   case CHECK_FOR_VALID_LICENSE_RESPONSE:
     if (action.payload.isLicenseValid) {
       return {
         ...state,
-        islicenseCheckResultLoaded: false,
-      }
-    case ACTIVATE_CHECK_USER_API:
-      return {
-        ...state,
-        isLoading: true,
-        error: '',
-      }
-    case ACTIVATE_CHECK_USER_LICENSE_KEY:
-      return {
-        ...state,
-        isLoading: true,
-        error: '',
-      }
-    case ACTIVATE_CHECK_LICENCE_API_VALID:
-      if (action.payload.apiResult) {
-        return {
-          ...state,
-          isLicenceAPIkeyValid: action.payload,
-          error: '',
-          isLoading: false,
-        }
-      } else {
-        return {
-          ...state,
-          error: action.payload.responseMessage,
-          isLoading: false,
-        }
-      }
-    case ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE:
-      if (action.payload.apiResult) {
-        return {
-          ...state,
-          isLicenseValid: action.payload.apiResult,
-          error: '',
-          isLoading: false,
-        }
-      } else {
-        return {
-          ...state,
-          error: action.payload.responseMessage,
-          isLoading: false,
-        }
-      }
-    case CHECK_FOR_VALID_LICENSE_RESPONSE:
-      if (action.payload.isLicenseValid) {
-        return {
-          ...state,
-          isLicenseValid: action.payload.isLicenseValid,
-          islicenseCheckResultLoaded: true,
-        }
-      } else {
-        return {
-          ...state,
-          islicenseCheckResultLoaded: true,
-        }
-      }
-
-    default:
-      return {
-        ...state,
         isLicenseValid: action.payload.isLicenseValid,
-        isLicenseActivationResultLoaded: true,
-      };
+        islicenseCheckResultLoaded: true,
+      }
     } else {
       return {
         ...state,
-        isLicenseActivationResultLoaded: true,
-      };
+        islicenseCheckResultLoaded: true,
+      }
     }
 
   default:
     return {
       ...state,
-    };
+    }
   }
 }
 reducerRegistry.register(reducerName, licenseReducer)

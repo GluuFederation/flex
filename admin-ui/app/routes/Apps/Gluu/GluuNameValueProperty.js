@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { FormGroup, Col, Input, Button } from '../../../components';
-import { Accordion } from '../../../../app/components';
-import { useTranslation } from 'react-i18next';
+import React, { useState } from 'react'
+import { FormGroup, Col, Input, Button } from '../../../components'
+import { Accordion } from '../../../../app/components'
+import { useTranslation } from 'react-i18next'
 
 function GluuNameValueProperty({
   nameValueLabel,
@@ -15,26 +15,26 @@ function GluuNameValueProperty({
   valuePlaceholder,
   dataArr = [],
 }) {
-  const [dataArray, setDataArray] = useState(dataArr);
-  const { t } = useTranslation();
+  const [dataArray, setDataArray] = useState(dataArr)
+  const { t } = useTranslation()
   const addClick = () => {
-    setDataArray((prevDataArray) => [...prevDataArray, { key: '', value: '' }]);
-  };
+    setDataArray((prevDataArray) => [...prevDataArray, { key: '', value: '' }])
+  }
 
   const handleChange = (i) => (e) => {
-    const { name, value } = e.target;
-    const newDataArr = [...dataArray];
-    newDataArr[i] = { ...newDataArr[i], [name]: value };
-    setDataArray(newDataArr);
-    formik.setFieldValue(componentName, newDataArr);
-  };
+    const { name, value } = e.target
+    const newDataArr = [...dataArray]
+    newDataArr[i] = { ...newDataArr[i], [name]: value }
+    setDataArray(newDataArr)
+    formik.setFieldValue(componentName, newDataArr)
+  }
 
   const removeClick = (i) => {
-    const newDataArray = [...dataArray];
-    newDataArray.splice(i, 1);
-    setDataArray(newDataArray);
-    formik.setFieldValue(componentName, newDataArray);
-  };
+    const newDataArray = [...dataArray]
+    newDataArray.splice(i, 1)
+    setDataArray(newDataArray)
+    formik.setFieldValue(componentName, newDataArray)
+  }
 
   return (
     <Accordion className="mb-2 b-primary" initialOpen>
@@ -95,7 +95,7 @@ function GluuNameValueProperty({
         </FormGroup>
       </Accordion.Body>
     </Accordion>
-  );
+  )
 }
 
-export default GluuNameValueProperty;
+export default GluuNameValueProperty

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 import {
   Form,
@@ -9,14 +9,14 @@ import {
   Label,
   EmptyLayout,
   ThemeConsumer
-} from './../../../components';
+} from './../../../components'
 
-import { HeaderAuth } from "../../components/Pages/HeaderAuth";
-import { FooterAuth } from "../../components/Pages/FooterAuth";
-import { useTranslation } from 'react-i18next';
+import { HeaderAuth } from "../../components/Pages/HeaderAuth"
+import { FooterAuth } from "../../components/Pages/FooterAuth"
+import { useTranslation } from 'react-i18next'
 
 const LockScreen = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <EmptyLayout>
       <EmptyLayout.Section center>
@@ -59,7 +59,7 @@ const LockScreen = () => {
         { /* END Footer */}
       </EmptyLayout.Section>
     </EmptyLayout>
-  );
-};
+  )
+}
 
-export default LockScreen;
+export default LockScreen

@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import { 
   Media, 
   Button 
-} from 'reactstrap';
+} from 'reactstrap'
 
 const Attachment = (props) => {
   return (
@@ -41,21 +41,21 @@ const Attachment = (props) => {
       </Media>
     </Media>
 
-  );
-};
+  )
+}
 Attachment.propTypes = {
   mediaClassName: PropTypes.node,
   icon: PropTypes.node,
   iconClassName: PropTypes.node,
   BgIcon: PropTypes.node,
   BgIconClassName: PropTypes.node
-};
+}
 Attachment.defaultProps = {
   mediaClassName: "",
   icon: "question",
   iconClassName: "text-white",
   BgIcon: "square",
   BgIconClassName: "text-muted"
-};
+}
 
-export { Attachment };
+export { Attachment }

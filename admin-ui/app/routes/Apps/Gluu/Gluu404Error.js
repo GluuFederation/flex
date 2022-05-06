@@ -1,12 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { EmptyLayout } from './../../../components';
-import { HeaderAuth } from '../../components/Pages/HeaderAuth';
-import { FooterAuth } from '../../components/Pages/FooterAuth';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { EmptyLayout } from './../../../components'
+import { HeaderAuth } from '../../components/Pages/HeaderAuth'
+import { FooterAuth } from '../../components/Pages/FooterAuth'
+import { useTranslation } from 'react-i18next'
 
 function Gluu404Error() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <EmptyLayout>
       <EmptyLayout.Section center>
@@ -23,7 +23,7 @@ function Gluu404Error() {
         <FooterAuth />
       </EmptyLayout.Section>
     </EmptyLayout>
-  );
+  )
 }
 
-export default Gluu404Error;
+export default Gluu404Error

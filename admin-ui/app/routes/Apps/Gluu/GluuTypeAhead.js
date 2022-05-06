@@ -1,11 +1,11 @@
-import React from 'react';
-import { FormGroup, Col } from '../../../components';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import GluuLabel from '../Gluu/GluuLabel';
-import GluuTooltip from './GluuTooltip';
-import Typography from '@material-ui/core/Typography';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import { FormGroup, Col } from '../../../components'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import GluuLabel from '../Gluu/GluuLabel'
+import GluuTooltip from './GluuTooltip'
+import Typography from '@material-ui/core/Typography'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 
 const theme = createTheme({
   typography: {
@@ -13,7 +13,7 @@ const theme = createTheme({
       fontSize: 12,
     },
   },
-});
+})
 
 function GluuTypeAhead({
   label,
@@ -27,7 +27,7 @@ function GluuTypeAhead({
   forwardRef = null,
   onChange = null,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
       <FormGroup row>
@@ -44,9 +44,9 @@ function GluuTypeAhead({
             labelKey={name}
             onChange={(selected) => {
               if (formik) {
-                formik.setFieldValue(name, selected);
+                formik.setFieldValue(name, selected)
               } else if (onChange) {
-                onChange(selected);
+                onChange(selected)
               }
             }}
             id={name}
@@ -64,7 +64,7 @@ function GluuTypeAhead({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 
-export default GluuTypeAhead;
+export default GluuTypeAhead

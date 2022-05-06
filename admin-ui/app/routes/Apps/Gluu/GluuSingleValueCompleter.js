@@ -1,11 +1,11 @@
-import React from 'react';
-import { FormGroup, Col } from '../../../components';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import GluuLabel from '../Gluu/GluuLabel';
-import GluuTooltip from './GluuTooltip';
-import Typography from '@material-ui/core/Typography';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import { FormGroup, Col } from '../../../components'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import GluuLabel from '../Gluu/GluuLabel'
+import GluuTooltip from './GluuTooltip'
+import Typography from '@material-ui/core/Typography'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 
 const theme = createTheme({
   typography: {
@@ -13,7 +13,7 @@ const theme = createTheme({
       fontSize: 12,
     },
   },
-});
+})
 
 function GluuSingleValueCompleter({
   label,
@@ -25,7 +25,7 @@ function GluuSingleValueCompleter({
   doc_entry,
   onChange = null,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
       <FormGroup row>
@@ -45,7 +45,7 @@ function GluuSingleValueCompleter({
             options={options}
             onChange={(e) => {
               if (onChange) {
-                onChange(e);
+                onChange(e)
               }
             }}
           />
@@ -57,7 +57,7 @@ function GluuSingleValueCompleter({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 
-export default GluuSingleValueCompleter;
+export default GluuSingleValueCompleter

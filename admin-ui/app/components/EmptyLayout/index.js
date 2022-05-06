@@ -1,6 +1,6 @@
-import { EmptyLayout } from './EmptyLayout';
-import { EmptyLayoutSection } from './EmptyLayoutSection';
+import { EmptyLayout } from './EmptyLayout'
+import { EmptyLayoutSection } from './EmptyLayoutSection'
 
-EmptyLayout.Section = EmptyLayoutSection;
+EmptyLayout.Section = EmptyLayoutSection
 
-export default EmptyLayout;
+export default EmptyLayout

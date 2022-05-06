@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 function GluuBlockUI(blocking) {
   if (blocking) {
     return (
@@ -14,14 +14,14 @@ function GluuBlockUI(blocking) {
           </div>
         </div>
       </div>
-    );
+    )
   } else {
-    return '';
+    return ''
   }
 }
 
 GluuBlockUI.defaultProps = {
   blocking: false,
-};
+}
 
-export default GluuBlockUI;
+export default GluuBlockUI

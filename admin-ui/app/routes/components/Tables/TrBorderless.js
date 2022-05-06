@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'
 
 import { 
   Badge,
   UncontrolledTooltip
-} from './../../../components';
+} from './../../../components'
 
 const TrBorderless = () => {
   return (
@@ -42,7 +42,7 @@ const TrBorderless = () => {
       </tr>
       { /* END TR */}
     </React.Fragment>
-  );
-};
+  )
+}
 
-export { TrBorderless };
+export { TrBorderless }

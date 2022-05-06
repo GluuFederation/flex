@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import classNames from 'classnames';
-import uuid from 'uuid/v4';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import classNames from 'classnames'
+import uuid from 'uuid/v4'
 
-import { MenuContext } from './MenuContext';
+import { MenuContext } from './MenuContext'
 
 /**
  * Renders a collapse trigger or a ReactRouter Link
@@ -38,7 +38,7 @@ const SidebarMenuItemLink = (props) =>
     >
       {props.children}
     </a>
-  );
+  )
 SidebarMenuItemLink.propTypes = {
   to: PropTypes.string,
   href: PropTypes.string,
@@ -47,7 +47,7 @@ SidebarMenuItemLink.propTypes = {
   children: PropTypes.node,
   classBase: PropTypes.string,
   textStyle: PropTypes.object,
-};
+}
 
 /**
  * The main menu entry component
@@ -81,9 +81,9 @@ export class SidebarMenuItem extends React.Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.id = uuid();
+    this.id = uuid()
   }
 
   componentDidMount() {
@@ -91,43 +91,43 @@ export class SidebarMenuItem extends React.Component {
       id: this.id,
       parentId: this.props.parentId,
       exact: !!this.props.exact,
-    };
-
-    if (this.props.to) {
-      entry.url = this.props.to;
     }
 
-    this.props.addEntry(entry);
+    if (this.props.to) {
+      entry.url = this.props.to
+    }
+
+    this.props.addEntry(entry)
   }
 
   componentWillUnmount() {
-    this.props.removeEntry(this.id);
+    this.props.removeEntry(this.id)
   }
 
   getEntry() {
-    return this.props.entries[this.id];
+    return this.props.entries[this.id]
   }
 
   toggleNode() {
-    const entry = this.getEntry();
+    const entry = this.getEntry()
 
-    this.props.updateEntry(this.id, { open: !entry.open });
+    this.props.updateEntry(this.id, { open: !entry.open })
   }
 
   render() {
-    const entry = this.getEntry();
-    const classBase = this.props.isSubNode ? 'sidebar-submenu' : 'sidebar-menu';
+    const entry = this.getEntry()
+    const classBase = this.props.isSubNode ? 'sidebar-submenu' : 'sidebar-menu'
     const itemClass = classNames(`${classBase}__entry`, {
       [`${classBase}__entry--nested`]: !!this.props.children,
       open: entry && entry.open,
       active: entry && entry.active,
-    });
+    })
     const activeMenu = {
       color: '#ffffff',
       background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
       fontWeight: 'bold',
-    };
-    const nonaActiveMenu = {};
+    }
+    const nonaActiveMenu = {}
 
     function getStyle(itemClass) {
       if (
@@ -135,9 +135,9 @@ export class SidebarMenuItem extends React.Component {
         itemClass.includes('submenu__entry', 0) &&
         !itemClass.includes('open', 0)
       ) {
-        return activeMenu;
+        return activeMenu
       }
-      return nonaActiveMenu;
+      return nonaActiveMenu
     }
 
     function getTextStyle(itemClass) {
@@ -146,9 +146,9 @@ export class SidebarMenuItem extends React.Component {
         itemClass.includes('submenu__entry', 0) &&
         !itemClass.includes('open', 0)
       ) {
-        return { color: 'white', fontWeight: 'bold' };
+        return { color: 'white', fontWeight: 'bold' }
       }
-      return null;
+      return null
     }
     return (
       <li
@@ -197,6 +197,6 @@ export class SidebarMenuItem extends React.Component {
           </ul>
         )}
       </li>
-    );
+    )
   }
 }

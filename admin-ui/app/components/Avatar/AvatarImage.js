@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import _ from 'lodash';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import _ from 'lodash'
 
-import { Avatar } from './Avatar';
-import { AvatarFont } from './AvatarFont';
+import { Avatar } from './Avatar'
+import { AvatarFont } from './AvatarFont'
 
 class AvatarImage extends React.PureComponent {
     static propTypes = {
@@ -20,18 +20,18 @@ class AvatarImage extends React.PureComponent {
     }
 
     constructor(props) {
-      super(props);
+      super(props)
         
       this.state = {
         imgLoaded: false
-      };
+      }
     }
 
     render() {
-      const { src, placeholder, alt, className, ...avatarProps } = this.props;
+      const { src, placeholder, alt, className, ...avatarProps } = this.props
       const parentClass = classNames('avatar-image', {
         'avatar-image--loaded': this.state.imgLoaded
-      }, className);
+      }, className)
 
       return (
         <div className={ parentClass }>
@@ -39,7 +39,7 @@ class AvatarImage extends React.PureComponent {
             <img
               src={ src }
               alt={ alt }
-              onLoad={ () => { this.setState({ imgLoaded: true }); } }
+              onLoad={ () => { this.setState({ imgLoaded: true }) } }
             />
           </Avatar>
           {
@@ -50,8 +50,8 @@ class AvatarImage extends React.PureComponent {
             )
           }
         </div>
-      );
+      )
     }
 }
 
-export { AvatarImage };
+export { AvatarImage }

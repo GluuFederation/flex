@@ -11,7 +11,7 @@ function ApiKey() {
   const isLicenceAPIkeyValid = useSelector(
     (state) => state.licenseReducer.isLicenceAPIkeyValid,
   )
-  let params = {
+  const params = {
     apiKey: '',
     productCode: '',
     sharedKey: '',
@@ -36,7 +36,7 @@ function ApiKey() {
   }, [JSON.stringify(values)])
   const checkForError = () => {
     let err = false
-    for (let i in values) {
+    for (const i in values) {
       if (values[i] == '') {
         err = true
         setError((prevState) => ({

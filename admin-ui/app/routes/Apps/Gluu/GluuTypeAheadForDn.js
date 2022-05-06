@@ -1,11 +1,11 @@
-import React from 'react';
-import { FormGroup, Col } from '../../../components';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import GluuLabel from '../Gluu/GluuLabel';
-import GluuTooltip from './GluuTooltip';
-import Typography from '@material-ui/core/Typography';
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
-import { useTranslation } from 'react-i18next';
+import React from 'react'
+import { FormGroup, Col } from '../../../components'
+import { Typeahead } from 'react-bootstrap-typeahead'
+import GluuLabel from '../Gluu/GluuLabel'
+import GluuTooltip from './GluuTooltip'
+import Typography from '@material-ui/core/Typography'
+import { createTheme, ThemeProvider } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 
 const theme = createTheme({
   typography: {
@@ -13,7 +13,7 @@ const theme = createTheme({
       fontSize: 12,
     },
   },
-});
+})
 
 function GluuTypeAheadForDn({
   label,
@@ -26,10 +26,10 @@ function GluuTypeAheadForDn({
   doc_entry,
   allowNew = false,
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   function getItemName(theOptions, item) {
-    const data = theOptions.filter((e) => e.dn === item);
-    return data[0].name;
+    const data = theOptions.filter((e) => e.dn === item)
+    return data[0].name
   }
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
@@ -42,7 +42,7 @@ function GluuTypeAheadForDn({
               formik.setFieldValue(
                 name,
                 selected.map((item) => (item.customOption ? item.label : item.dn)),
-              );
+              )
             }}
             id={name}
             data-testid={name}
@@ -60,7 +60,7 @@ function GluuTypeAheadForDn({
         </Col>
       </FormGroup>
     </GluuTooltip>
-  );
+  )
 }
 
-export default GluuTypeAheadForDn;
+export default GluuTypeAheadForDn

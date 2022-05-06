@@ -1,5 +1,5 @@
-import React from 'react';
-import { SidebarMenu, Divider } from './../../components';
+import React from 'react'
+import { SidebarMenu, Divider } from './../../components'
 
 export const SidebarMiddleNav = () => (
   <SidebarMenu>
@@ -73,4 +73,4 @@ export const SidebarMiddleNav = () => (
       to="/logout"
     />
   </SidebarMenu>
-);
+)
