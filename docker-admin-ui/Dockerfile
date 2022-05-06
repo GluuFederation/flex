@@ -1,13 +1,13 @@
-FROM node:14.19.1-alpine3.14
+FROM node:14.19.1-alpine3.15
 
 # ======
 # alpine
 # ======
 
 RUN apk update \
-    && apk add --no-cache tini openssl py3-pip py3-cryptography py3-psycopg2 nginx \
-    && apk add --no-cache --virtual build-deps git openjdk11-jre-headless \
-    && apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/v3.15/community py3-grpcio
+    && apk upgrade \
+    && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
+    && apk add --no-cache --virtual .build-deps git openjdk11-jre-headless
 
 # =====
 # nginx
@@ -21,6 +21,43 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # EXPOSE 80
 # EXPOSE 443
 
+# ======
+# Python
+# ======
+
+COPY requirements.txt /app/requirements.txt
+RUN python3 -m ensurepip \
+    && pip3 install --no-cache-dir -U pip wheel \
+    && pip3 install --no-cache-dir -r /app/requirements.txt \
+    && pip3 uninstall -y pip wheel
+
+# =====================
+# jans-linux-setup sync
+# =====================
+
+ENV JANS_LINUX_SETUP_VERSION=eb113d09421b95671fe1ab4eaa5c4bafc2aed6af
+ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
+
+# note that as we're pulling from a monorepo (with multiple project in it)
+# we are using partial-clone and sparse-checkout to get the jans-linux-setup code
+RUN git clone --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
+    && cd /tmp/jans \
+    && git sparse-checkout init --cone \
+    && git checkout ${JANS_LINUX_SETUP_VERSION} \
+    && git sparse-checkout set ${JANS_SETUP_DIR}
+
+RUN mkdir -p /app/static/rdbm /app/schema
+
+# sync static files from linux-setup
+RUN cd /tmp/jans \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/sql_data_types.json /app/static/rdbm/ \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/ldap_sql_data_type_mapping.json /app/static/rdbm/ \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/opendj_attributes_syntax.json /app/static/rdbm/ \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/sub_tables.json /app/static/rdbm/ \
+    && cp ${JANS_SETUP_DIR}/schema/jans_schema.json /app/schema/ \
+    && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
+    && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
+
 # ========
 # Admin UI
 # ========
@@ -28,7 +65,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=7e31ec6f083d0d95e327e2a23c190730227fb212
+ENV ADMIN_UI_VERSION=a4c185f2880941e583d2eba5a950fb4021c0f930
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -39,34 +76,26 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
     && git sparse-checkout set admin-ui \
     && mkdir -p /opt/flex \
     && mv /tmp/flex/admin-ui /opt/flex/admin-ui \
-    && rm -rf /tmp/flex \
     && cd /opt/flex/admin-ui \
     && npm install @openapitools/openapi-generator-cli \
     && npm run api \
     && npm install \
     && rm -rf $HOME/.npm
 
-# ======
-# Python
-# ======
-
-COPY requirements.txt /app/requirements.txt
-RUN pip3 install -U pip wheel \
-    && pip3 install --no-cache-dir -r /app/requirements.txt
-
 # =======
 # Cleanup
 # =======
 
-RUN apk del build-deps \
-    && rm -rf /var/cache/apk/*
+RUN apk del .build-deps \
+    && rm -rf /var/cache/apk/* \
+    && rm -rf /tmp/jans \
+    && rm -rf /tmp/flex
 
 # =======
 # License
 # =======
 
-RUN mkdir -p /licenses
-COPY LICENSE /licenses/
+COPY LICENSE /licenses/LICENSE
 
 # ==========
 # Config ENV
@@ -133,6 +162,7 @@ LABEL name="gluufederation/admin-ui" \
 COPY templates /app/templates/
 COPY scripts /app/scripts/
 RUN chmod +x /app/scripts/entrypoint.sh
+RUN mkdir -p /etc/jans/conf
 
 # forward logs to stdout and stderr
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
@@ -145,23 +175,25 @@ RUN addgroup node root
 RUN mkdir -p /opt/flex/admin-ui/dist \
     && touch /run/nginx/nginx.pid
 
+# && chown -R 1000:1000 /etc/certs \
+# && chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
+
 # adjust ownership
 RUN chown -R 1000:1000 /var/lib/nginx \
     && chown 1000:1000 /run/nginx/nginx.pid \
-    && chown -R 1000:1000 /etc/certs \
     && chown -R 1000:1000 /opt/flex/admin-ui/.env \
     && chown -R 1000:1000 /opt/flex/admin-ui/dist \
     && chown -R 1000:1000 /etc/nginx/http.d/default.conf \
     && chown -R 1000:1000 /var/lib/nginx \
     && chown -R 1000:1000 /var/log/nginx \
     && chown -R 1000:1000 /run/nginx/nginx.pid \
-    && chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
     && chgrp -R 0 /opt/flex/admin-ui/.env && chmod -R g=u /opt/flex/admin-ui/.env \
     && chgrp -R 0 /opt/flex/admin-ui/dist && chmod -R g=u /opt/flex/admin-ui/dist \
     && chgrp -R 0 /etc/nginx/http.d/default.conf && chmod -R g=u /etc/nginx/http.d/default.conf \
     && chgrp -R 0 /var/lib/nginx && chmod -R g=u /var/lib/nginx \
     && chgrp -R 0 /var/log/nginx && chmod -R g=u /var/log/nginx \
-    && chgrp -R 0 /run/nginx/nginx.pid && chmod -R g=u /run/nginx/nginx.pid
+    && chgrp -R 0 /run/nginx/nginx.pid && chmod -R g=u /run/nginx/nginx.pid \
+    && chgrp -R 0 /etc/jans && chmod -R g=u /etc/jans
 
 USER 1000
 
