@@ -1,5 +1,4 @@
-import chain from 'lodash/chain';
-import pick from 'lodash/pick';
+import { chain, pick } from 'lodash';
 
 import colors from './colors.scss';
 

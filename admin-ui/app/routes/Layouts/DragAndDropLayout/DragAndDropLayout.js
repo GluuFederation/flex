@@ -1,8 +1,10 @@
 import React from 'react';
 import v4 from 'uuid/v4';
-import chain from 'lodash/chain';
-import random from 'lodash/random';
-import mapValues from 'lodash/mapValues';
+import {
+  chain,
+  random,
+  mapValues
+} from 'lodash';
 
 import {
   Container,
