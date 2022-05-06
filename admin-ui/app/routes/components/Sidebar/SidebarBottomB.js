@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 import {
   Button,
@@ -10,12 +10,12 @@ import {
   Media,
   Avatar,
   AvatarAddOn
-} from './../../../components';
-import { randomAvatar } from './../../../utilities';
+} from './../../../components'
+import { randomAvatar } from './../../../utilities'
 
-import { DropdownProfile } from '../Dropdowns/DropdownProfile';
-import { FooterAuth } from '../Pages/FooterAuth';
-import { FooterText } from '../FooterText';
+import { DropdownProfile } from '../Dropdowns/DropdownProfile'
+import { FooterAuth } from '../Pages/FooterAuth'
+import { FooterText } from '../FooterText'
 
 const SidebarBottomB = () => (
   <React.Fragment>
@@ -111,6 +111,6 @@ const SidebarBottomB = () => (
     </Sidebar.Section>
     { /* END Sidebar BOTTOM: B */ }
   </React.Fragment>
-);
+)
 
-export { SidebarBottomB };
+export { SidebarBottomB }

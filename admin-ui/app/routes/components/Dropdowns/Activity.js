@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 import { 
   Media, 
-} from './../../../components';
+} from './../../../components'
 
 const Activity = (props) => (
   <React.Fragment>
@@ -28,18 +28,18 @@ const Activity = (props) => (
     </Media>
   </React.Fragment>
 
-);
+)
 Activity.propTypes = {
   iconColorBelow: PropTypes.node,
   iconBelow: PropTypes.node,
   iconColor: PropTypes.node,
   icon: PropTypes.node
-};
+}
 Activity.defaultProps = {
   iconColorBelow: "muted",
   iconBelow: "circle",
   iconColor: "white",
   icon: "question",
-};
+}
 
-export { Activity };
+export { Activity }

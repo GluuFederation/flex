@@ -1,6 +1,6 @@
 import React from 'react'
 import GluuTypeAheadWithAdd from '../GluuTypeAheadWithAdd'
-import { render, screen} from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
 

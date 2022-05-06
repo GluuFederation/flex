@@ -28,7 +28,7 @@ function GluuCustomScriptSearch({
       />
       &nbsp;
       <InputGroup style={{ width: '210px' }}>
-        <CustomInput type="select"   data-testid={typeId}  id={typeId} defaultValue={scriptType} onChange={handler}>
+        <CustomInput type="select" data-testid={typeId} id={typeId} defaultValue={scriptType} onChange={handler}>
           <option>PERSON_AUTHENTICATION</option>
           <option>INTROSPECTION</option>
           <option>RESOURCE_OWNER_PASSWORD_CREDENTIALS</option>

@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import config from './config';
+import config from './config'
 
 export const ValueLabel = (props) =>
   <text
@@ -11,10 +11,10 @@ export const ValueLabel = (props) =>
     { ...config.label }
   >
     { props.value }
-  </text>;
+  </text>
 
 ValueLabel.propTypes = {
   value: PropTypes.number,
   x: PropTypes.number,
   y: PropTypes.number
-};
+}

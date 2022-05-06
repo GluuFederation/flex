@@ -1,6 +1,6 @@
-import { PolarRadiusAxis as RCPolarRadiusAxis } from 'recharts';
+import { PolarRadiusAxis as RCPolarRadiusAxis } from 'recharts'
 
-import styleConfig from './config';
+import styleConfig from './config'
 
 export class PolarRadiusAxis extends RCPolarRadiusAxis {
     static defaultProps = {

@@ -29,7 +29,7 @@ function GluuSingleValueCompleter({
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
       <FormGroup row>
-        {!!required ? (
+        {required ? (
           <GluuLabel label={label} size={4} required />
         ) : (
           <GluuLabel label={label} size={4} />

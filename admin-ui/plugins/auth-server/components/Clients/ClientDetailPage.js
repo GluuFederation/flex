@@ -53,7 +53,7 @@ function ClientDetailPage({ row, scopes }) {
               label="fields.name"
               value={row.clientName || row.displayName || '-'}
               doc_category={DOC_CATEGORY}
-              doc_entry="clientName"
+              doc_entry="displayName"
             />
           </Col>
           <Col sm={6}>

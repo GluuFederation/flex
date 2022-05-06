@@ -7,9 +7,9 @@ export function uuidv4() {
 }
 
 export function getNewColor() {
-  let colorsIngredients = '0123456789ABCDEF'
+  const colorsIngredients = '0123456789ABCDEF'
   let color = '#'
-  for (var counter = 0; counter < 6; counter++) {
+  for (let counter = 0; counter < 6; counter++) {
     color = color + colorsIngredients[Math.floor(Math.random() * 16)]
   }
   return color

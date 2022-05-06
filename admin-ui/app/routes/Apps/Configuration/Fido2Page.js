@@ -24,7 +24,7 @@ import {
 } from '../../../redux/actions/FidoActions'
 import GluuNameValuesProperty from '../Gluu/GluuNameValuesProperty'
 
-function Fido2Page({ fido,permissions, dispatch }) {
+function Fido2Page({ fido, permissions, dispatch }) {
   useEffect(() => {
     dispatch(getFidoConfig())
   }, [])

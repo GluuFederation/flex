@@ -1,3 +1,3 @@
-import LockScreen from './LockScreen';
+import LockScreen from './LockScreen'
 
-export default LockScreen;
+export default LockScreen

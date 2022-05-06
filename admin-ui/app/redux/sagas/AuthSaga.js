@@ -30,7 +30,7 @@ function* getApiTokenWithDefaultScopes() {
 
 function* getOAuth2ConfigWorker() {
   try {
-    const token = yield* getApiTokenWithDefaultScopes();
+    const token = yield* getApiTokenWithDefaultScopes()
     const response = yield call(fetchServerConfiguration, token)
     if (response) {
       yield put(getOAuth2ConfigResponse(response))

@@ -1,36 +1,36 @@
-import Accordion from './Accordion';
-import Avatar, { AvatarAddOn } from './Avatar';
-import Card from './Card';
-import CardHeader from './CardHeader';
-import CustomInput from './CustomInput';
-import Divider from './Divider';
-import EmptyLayout from './EmptyLayout';
-import ExtendedDropdown from './ExtendedDropdown';
-import FloatGrid from './FloatGrid';
-import HolderProvider from './HolderProvider';
-import IconWithBadge from './IconWithBadge';
-import InputGroupAddon from './InputGroupAddon';
+import Accordion from './Accordion'
+import Avatar, { AvatarAddOn } from './Avatar'
+import Card from './Card'
+import CardHeader from './CardHeader'
+import CustomInput from './CustomInput'
+import Divider from './Divider'
+import EmptyLayout from './EmptyLayout'
+import ExtendedDropdown from './ExtendedDropdown'
+import FloatGrid from './FloatGrid'
+import HolderProvider from './HolderProvider'
+import IconWithBadge from './IconWithBadge'
+import InputGroupAddon from './InputGroupAddon'
 import Layout, {
   withPageConfig,
   setupPage
-} from './Layout';
-import Nav from './Nav';
-import Navbar from './Navbar';
-import NavbarThemeProvider from './NavbarThemeProvider';
-import NestedDropdown from './NestedDropdown';
-import OuterClick from './OuterClick';
-import Progress from './Progress';
-import Sidebar from './Sidebar';
-import SidebarMenu from './SidebarMenu';
-import SidebarTrigger from './SidebarTrigger';
+} from './Layout'
+import Nav from './Nav'
+import Navbar from './Navbar'
+import NavbarThemeProvider from './NavbarThemeProvider'
+import NestedDropdown from './NestedDropdown'
+import OuterClick from './OuterClick'
+import Progress from './Progress'
+import Sidebar from './Sidebar'
+import SidebarMenu from './SidebarMenu'
+import SidebarTrigger from './SidebarTrigger'
 import {
   ThemeClass,
   ThemeProvider,
   ThemeSelector,
   ThemeConsumer,
-} from './Theme';
-import UncontrolledTabs from './UncontrolledTabs';
-import Wizard from './Wizard';
+} from './Theme'
+import UncontrolledTabs from './UncontrolledTabs'
+import Wizard from './Wizard'
 // Export non overriden Reactstrap components
 export {
   Alert,
@@ -104,7 +104,7 @@ export {
   UncontrolledDropdown,
   UncontrolledCollapse,
   UncontrolledTooltip
-} from 'reactstrap';
+} from 'reactstrap'
 export {
   Accordion,
   Avatar,
@@ -137,4 +137,4 @@ export {
   ThemeSelector,
   UncontrolledTabs,
   Wizard
-};
+}

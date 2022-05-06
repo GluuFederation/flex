@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   UncontrolledPopover,
   PopoverHeader,
   PopoverBody
-} from './../../../components';
+} from './../../../components'
 import { useTranslation } from 'react-i18next'
 
 export const POPOVER_BODY_PARTS = [
@@ -18,7 +18,7 @@ export const POPOVER_BODY_PARTS = [
   '.by-',
   '.bx-',
   '.btn-'
-];
+]
 
 export const InfoPopover = ({ colorId, children, className, tag: Tag, ...otherProps }) => {
   const { t } = useTranslation()
@@ -43,7 +43,7 @@ export const InfoPopover = ({ colorId, children, className, tag: Tag, ...otherPr
         </PopoverBody>
       </UncontrolledPopover>
     </React.Fragment>
-  );
+  )
 }
 InfoPopover.propTypes = {
   colorId: PropTypes.string,
@@ -53,7 +53,7 @@ InfoPopover.propTypes = {
     PropTypes.string,
     PropTypes.func
   ])
-};
+}
 InfoPopover.defaultProps = {
   tag: 'a'
-};
+}

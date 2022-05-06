@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 const DlRowContacts = (props) => {
@@ -21,15 +21,15 @@ const DlRowContacts = (props) => {
         <dd className={ `col-sm-9 ${ props.rightSideClassName }` }><a href="#">t.herald</a></dd>
       </dl>
     </React.Fragment>
-  );
+  )
 }
 DlRowContacts.propTypes = {
   leftSideClassName: PropTypes.node,
   rightSideClassName: PropTypes.node
-};
+}
 DlRowContacts.defaultProps = {
   leftSideClassName: "text-right",
   rightSideClassName: "text-left"
-};
+}
 
-export { DlRowContacts };
+export { DlRowContacts }

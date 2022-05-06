@@ -1,13 +1,13 @@
-import React from 'react';
-import _ from 'lodash';
+import React from 'react'
+import times from 'lodash/times'
 
 import {  
   Media, 
   Avatar,
   AvatarAddOn
-} from './../../../components';
+} from './../../../components'
 
-import { randomAvatar } from './../../../utilities';
+import { randomAvatar } from './../../../utilities'
 import { useTranslation } from 'react-i18next'
 
 const TrTableInvoices = () => {
@@ -15,7 +15,7 @@ const TrTableInvoices = () => {
   return (
     <React.Fragment>
       {
-        _.times(6, (index) => (
+        times(6, (index) => (
           <tr key={ index }>
             <td className="align-middle">
               <span className="text-inverse">{ 'faker.company.companyName()' }</span><br />
@@ -72,7 +72,7 @@ const TrTableInvoices = () => {
         ))
       }
     </React.Fragment>
-  );
+  )
 }
 
-export { TrTableInvoices };
+export { TrTableInvoices }

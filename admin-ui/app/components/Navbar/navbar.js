@@ -1,7 +1,7 @@
-import React from "react";
-import classNames from "classnames";
-import PropTypes from "prop-types";
-import { Navbar as BSNavbar, Container } from "reactstrap";
+import React from "react"
+import classNames from "classnames"
+import PropTypes from "prop-types"
+import { Navbar as BSNavbar, Container } from "reactstrap"
 
 const Navbar = ({
   themed,
@@ -21,7 +21,7 @@ const Navbar = ({
     },
     "navbar-multi-collapse",
     className
-  );
+  )
 
   // When a combination of light or dark is present
   // with a color - use a custom class instead of bootstrap's
@@ -29,7 +29,7 @@ const Navbar = ({
     navbarClass = classNames(
       navbarClass,
       `navbar-${light ? "light" : ""}${dark ? "dark" : ""}-${color}`
-    );
+    )
   }
 
   return (
@@ -49,8 +49,8 @@ const Navbar = ({
         </Container>
       }
     </BSNavbar>
-  );
-};
+  )
+}
 Navbar.propTypes = {
   themed: PropTypes.bool,
   fluid: PropTypes.bool,
@@ -60,10 +60,10 @@ Navbar.propTypes = {
   color: PropTypes.string,
   dark: PropTypes.bool,
   light: PropTypes.bool
-};
+}
 Navbar.defaultProps = {
   fluid: false,
   themed: false
-};
+}
 
-export { Navbar };
+export { Navbar }

@@ -48,7 +48,7 @@ export default function* rootSaga() {
 }
 
 function buildData(stat) {
-  let result = stat.map((entry) => buildEntry(entry))
+  const result = stat.map((entry) => buildEntry(entry))
   result.push({
     month: 202111,
     mau: 5,
@@ -66,7 +66,7 @@ function buildData(stat) {
   return result
 }
 function buildEntry(el) {
-  let entry = new Object()
+  const entry = new Object()
   entry['month'] = el.month
   entry['mau'] = el.monthly_active_users
   entry['client_credentials_access_token_count'] =

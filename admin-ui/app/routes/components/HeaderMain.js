@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const HeaderMain = (props) => (
   <React.Fragment>
@@ -11,16 +11,16 @@ const HeaderMain = (props) => (
     </div>
     { /* END H1 Header */}
   </React.Fragment>
-);
+)
 HeaderMain.propTypes = {
   title: PropTypes.string,
   subTitle: PropTypes.node,
   className: PropTypes.string
-};
+}
 HeaderMain.defaultProps = {
   title: "Waiting for Data...",
   subTitle: "Waiting for Data...",
   className: "my-4"
-};
+}
 
-export { HeaderMain };
+export { HeaderMain }

@@ -1,5 +1,5 @@
-import React from 'react';
-import { map } from 'lodash';
+import React from 'react'
+import { map } from 'lodash'
 import { 
   AreaChart, 
   CartesianGrid, 
@@ -11,9 +11,9 @@ import {
   Dot,
   Rectangle,
   Polygon
-} from './../../../components/recharts';
+} from './../../../components/recharts'
 
-import colors from './../../../colors';
+import colors from './../../../colors'
 
 const generateDot = ({ diameter, fill, stroke }) =>
 /* eslint-disable */
@@ -51,13 +51,13 @@ const generateSquare = ({ height, fill, stroke }) =>
 const generateTriangle = ({ height, fill, stroke }) =>
 // eslint-disable-next-line react/prop-types
   ({ cx, cy }) => {
-    const halfSide = height / Math.sqrt(3);
+    const halfSide = height / Math.sqrt(3)
     const points = [
       { x: 0, y: -(height * 2 / 3) },
       { x: -halfSide, y: height / 3 },
       { x: halfSide, y: height / 3 }
-    ];
-    const vertices = map(points, ({ x, y }) => ({ x: cx + x, y: cy + y }));
+    ]
+    const vertices = map(points, ({ x, y }) => ({ x: cx + x, y: cy + y }))
 
     return (
       <Polygon
@@ -67,8 +67,8 @@ const generateTriangle = ({ height, fill, stroke }) =>
         stroke={ stroke }
         strokeWidth={ 2 }
       />
-    );
-  };
+    )
+  }
 
 const data = [
   { name: 'Mon', uv: 4000, pv: 2400, amt: 2400 },
@@ -78,7 +78,7 @@ const data = [
   { name: 'Fri', uv: 1890, pv: 4800, amt: 2181 },
   { name: 'Sat', uv: 2390, pv: 3800, amt: 2500 },
   { name: 'Sun', uv: 3490, pv: 4300, amt: 2100 },
-];
+]
 
 const StackedAreaChart = () => (
   <ResponsiveContainer width='100%' aspect={6.0/3.0}>
@@ -114,6 +114,6 @@ const StackedAreaChart = () => (
     </AreaChart>
   </ResponsiveContainer>
 
-);
+)
 
-export { StackedAreaChart };
+export { StackedAreaChart }

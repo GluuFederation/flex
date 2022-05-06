@@ -60,7 +60,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       sorting: true,
       searchable: true,
     },
-    { title: `${t('fields.client_name')}`, field: 'clientName' },
+    { title: `${t('fields.client_name')}`, field: 'displayName' },
     {
       title: `${t('fields.application_type')}`,
       field: 'applicationType',

@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const SessionsByDevice = (props) => (
   <React.Fragment>
@@ -13,7 +13,7 @@ const SessionsByDevice = (props) => (
       { props.value }
     </div>
   </React.Fragment>
-);
+)
 SessionsByDevice.propTypes = {
   title: PropTypes.node,
   titlePercentColor: PropTypes.node,
@@ -21,7 +21,7 @@ SessionsByDevice.propTypes = {
   valuePercentColor: PropTypes.node,
   value: PropTypes.node,
   valueColor: PropTypes.node
-};
+}
 SessionsByDevice.defaultProps = {
   title: "Title",
   titlePercentColor: "text-inverse",
@@ -29,6 +29,6 @@ SessionsByDevice.defaultProps = {
   valuePercentColor: "text-muted",
   value: "000,000",
   valueColor: "text-muted"
-};
+}
 
-export { SessionsByDevice };
+export { SessionsByDevice }

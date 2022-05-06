@@ -1,6 +1,6 @@
-import { SidebarMenu } from './SidebarMenu';
-import { SidebarMenuItem } from './SidebarMenuItem';
+import { SidebarMenu } from './SidebarMenu'
+import { SidebarMenuItem } from './SidebarMenuItem'
 
-SidebarMenu.Item = SidebarMenuItem;
+SidebarMenu.Item = SidebarMenuItem
 
-export default SidebarMenu;
+export default SidebarMenu

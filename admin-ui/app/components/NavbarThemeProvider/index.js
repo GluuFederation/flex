@@ -1,3 +1,3 @@
-import { NavbarThemeProvider } from './NavbarThemeProvider';
+import { NavbarThemeProvider } from './NavbarThemeProvider'
 
-export default NavbarThemeProvider;
+export default NavbarThemeProvider

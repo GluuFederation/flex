@@ -36,12 +36,12 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
 
   function formatDate(date) {
     if(date == undefined) {
-      return '';
+      return ''
     }
     if(date.length > 10) {
-      return date.substring(0, 10);
+      return date.substring(0, 10)
     }
-    return '';
+    return ''
 
   }
   return (

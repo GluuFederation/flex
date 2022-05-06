@@ -1,34 +1,42 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
-import _ from 'lodash';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import { Helmet } from 'react-helmet'
+import { withRouter } from 'react-router-dom'
+import {
+  filter,
+  forOwn,
+  isUndefined,
+  compact,
+  differenceBy,
+  pick,
+  map 
+} from 'lodash'
 
-import { LayoutContent } from './LayoutContent';
-import { LayoutNavbar } from './LayoutNavbar';
-import { LayoutSidebar } from './LayoutSidebar';
-import { PageConfigContext } from './PageConfigContext';
-import { ThemeClass } from './../Theme';
+import { LayoutContent } from './LayoutContent'
+import { LayoutNavbar } from './LayoutNavbar'
+import { LayoutSidebar } from './LayoutSidebar'
+import { PageConfigContext } from './PageConfigContext'
+import { ThemeClass } from './../Theme'
 
-import config from './../../../config';
+import config from './../../../config'
 
 const findChildByType = (children, targetType) => {
-  let result;
+  let result
 
   React.Children.forEach(children, (child) => {
     if (child.type.layoutPartName === targetType.layoutPartName) {
-      result = child;
+      result = child
     }
-  });
+  })
 
-  return result;
-};
+  return result
+}
 const findChildrenByType = (children, targetType) => {
-  return _.filter(React.Children.toArray(children), (child) =>
-    child.type.layoutPartName === targetType.layoutPartName);
-};
+  return filter(React.Children.toArray(children), (child) =>
+    child.type.layoutPartName === targetType.layoutPartName)
+}
 
 const responsiveBreakpoints = {
   'xs': { max: 575.8 },
@@ -36,7 +44,7 @@ const responsiveBreakpoints = {
   'md': { min: 768, max: 991.8 },
   'lg': { min: 992, max: 1199.8 },
   'xl': { min: 1200 }
-};
+}
 
 class Layout extends React.Component {
     static propTypes = {
@@ -47,7 +55,7 @@ class Layout extends React.Component {
     }
 
     constructor(props) {
-      super(props);
+      super(props)
 
       this.state = {
         sidebarHidden: false,
@@ -60,53 +68,53 @@ class Layout extends React.Component {
         pageTitle: null,
         pageDescription: config.siteDescription,
         pageKeywords: config.siteKeywords
-      };
+      }
 
-      this.lastLgSidebarCollapsed = false;
-      this.containerRef = React.createRef();
+      this.lastLgSidebarCollapsed = false
+      this.containerRef = React.createRef()
     }
 
     componentDidMount() {
       // Determine the current window size
       // and set it up in the context state
       const layoutAdjuster = () => {
-        const { screenSize } = this.state;
-        let currentScreenSize;
+        const { screenSize } = this.state
+        let currentScreenSize
 
-        _.forOwn(responsiveBreakpoints, (value, key) => {
+        forOwn(responsiveBreakpoints, (value, key) => {
           const queryParts = [
-            `${ _.isUndefined(value.min) ? '' : `(min-width: ${value.min}px)` }`,
-            `${ _.isUndefined(value.max) ? '' : `(max-width: ${value.max}px)`}`
-          ];
-          const query = _.compact(queryParts).join(' and ');
+            `${ isUndefined(value.min) ? '' : `(min-width: ${value.min}px)` }`,
+            `${ isUndefined(value.max) ? '' : `(max-width: ${value.max}px)`}`
+          ]
+          const query = compact(queryParts).join(' and ')
 
           if (window.matchMedia(query).matches) {
-            currentScreenSize = key;
+            currentScreenSize = key
           }
-        });
+        })
 
         if (screenSize !== currentScreenSize) {
-          this.setState({ screenSize: currentScreenSize });
-          this.updateLayoutOnScreenSize(currentScreenSize);
+          this.setState({ screenSize: currentScreenSize })
+          this.updateLayoutOnScreenSize(currentScreenSize)
         }
-      };
+      }
 
       // Add window initialization
       if (typeof window !== 'undefined') {
         window.addEventListener('resize', () => {
-          setTimeout(layoutAdjuster.bind(this), 0);
-        });
+          setTimeout(layoutAdjuster.bind(this), 0)
+        })
             
-        layoutAdjuster();
+        layoutAdjuster()
 
         window.requestAnimationFrame(() => {
-          this.setState({ animationsDisabled: false });
-        });
+          this.setState({ animationsDisabled: false })
+        })
       }
       // Add document initialization
       if (typeof document !== 'undefined') {
-        this.bodyElement = document.body;
-        this.documentElement = document.documentElement;
+        this.bodyElement = document.body
+        this.documentElement = document.documentElement
       }
     }
 
@@ -127,9 +135,9 @@ class Layout extends React.Component {
           }: {
             overflowY: 'hidden',
             touchAction: 'none'
-          };
-          Object.assign(this.bodyElement.style, styleUpdate);
-          Object.assign(this.documentElement.style, styleUpdate);
+          }
+          Object.assign(this.bodyElement.style, styleUpdate)
+          Object.assign(this.documentElement.style, styleUpdate)
         }
       }
 
@@ -137,7 +145,7 @@ class Layout extends React.Component {
       if (prevProps.location.pathname !== this.props.location.pathname) {
         // Scroll to top
         if (this.bodyElement && this.documentElement) {
-          this.documentElement.scrollTop = this.bodyElement.scrollTop = 0;
+          this.documentElement.scrollTop = this.bodyElement.scrollTop = 0
         }
 
         // Hide the sidebar when in overlay mode
@@ -150,13 +158,13 @@ class Layout extends React.Component {
         ) {
           // Add some time to prevent jank while the dom is updating
           setTimeout(() => {
-            this.setState({ sidebarCollapsed: true });
-          }, 100);
+            this.setState({ sidebarCollapsed: true })
+          }, 100)
         }
       }
 
       // Update positions of STICKY navbars
-      this.updateNavbarsPositions();
+      this.updateNavbarsPositions()
     }
 
     updateLayoutOnScreenSize(screenSize) {
@@ -166,45 +174,45 @@ class Layout extends React.Component {
             screenSize === 'xs'
       ) {
         // Save for recovering to lg later
-        this.lastLgSidebarCollapsed = this.state.sidebarCollapsed;
-        this.setState({ sidebarCollapsed: true });
+        this.lastLgSidebarCollapsed = this.state.sidebarCollapsed
+        this.setState({ sidebarCollapsed: true })
       } else {
-        this.setState({ sidebarCollapsed: this.lastLgSidebarCollapsed });
+        this.setState({ sidebarCollapsed: this.lastLgSidebarCollapsed })
       }
     }
 
     updateNavbarsPositions() {
       // eslint-disable-next-line react/no-find-dom-node
-      const containerElement = ReactDOM.findDOMNode(this.containerRef.current);
+      const containerElement = ReactDOM.findDOMNode(this.containerRef.current)
       if (containerElement) {
-        const navbarElements = containerElement.querySelectorAll(":scope .layout__navbar");
+        const navbarElements = containerElement.querySelectorAll(":scope .layout__navbar")
         
         // Calculate and update style.top of each navbar
-        let totalNavbarsHeight = 0;
+        let totalNavbarsHeight = 0
         navbarElements.forEach((navbarElement) => {
-          const navbarBox = navbarElement.getBoundingClientRect();
-          navbarElement.style.top = `${totalNavbarsHeight}px`;
-          totalNavbarsHeight += navbarBox.height;
-        });
+          const navbarBox = navbarElement.getBoundingClientRect()
+          navbarElement.style.top = `${totalNavbarsHeight}px`
+          totalNavbarsHeight += navbarBox.height
+        })
       }
     }
 
     toggleSidebar() {
       this.setState({
         sidebarCollapsed: !this.state.sidebarCollapsed
-      });
+      })
     }
 
     setElementsVisibility(elements) {
-      this.setState(_.pick(elements, ['sidebarHidden', 'navbarHidden', 'footerHidden']));
+      this.setState(pick(elements, ['sidebarHidden', 'navbarHidden', 'footerHidden']))
     }
 
     render() {
-      const { children, favIcons } = this.props;
-      const sidebar = findChildByType(children, LayoutSidebar);
-      const navbars = findChildrenByType(children, LayoutNavbar);
-      const content = findChildByType(children, LayoutContent);
-      const otherChildren = _.differenceBy(
+      const { children, favIcons } = this.props
+      const sidebar = findChildByType(children, LayoutSidebar)
+      const navbars = findChildrenByType(children, LayoutNavbar)
+      const content = findChildByType(children, LayoutContent)
+      const otherChildren = differenceBy(
         React.Children.toArray(children),
         [
           sidebar,
@@ -212,10 +220,10 @@ class Layout extends React.Component {
           content
         ],
         'type'
-      );
+      )
       const layoutClass = classNames('layout', 'layout--animations-enabled', {
         //'layout--only-navbar': this.state.sidebarHidden && !this.state.navbarHidden
-      });
+      })
 
       return (
         <PageConfigContext.Provider
@@ -228,7 +236,7 @@ class Layout extends React.Component {
 
             toggleSidebar: this.toggleSidebar.bind(this),
             setElementsVisibility: this.setElementsVisibility.bind(this),
-            changeMeta: (metaData) => { this.setState(metaData); }
+            changeMeta: (metaData) => { this.setState(metaData) }
           }}
         >
           <Helmet>
@@ -237,7 +245,7 @@ class Layout extends React.Component {
             <link rel="canonical" href={ config.siteCannonicalUrl } />
             <meta name="description" content={ this.state.pageDescription } />
             {
-              _.map(favIcons, (favIcon, index) => (
+              map(favIcons, (favIcon, index) => (
                 <link { ...favIcon } key={ index } />
               ))
             }
@@ -266,10 +274,10 @@ class Layout extends React.Component {
             )}
           </ThemeClass>
         </PageConfigContext.Provider>
-      );
+      )
     }
 }
 
-const routedLayout = withRouter(Layout);
+const routedLayout = withRouter(Layout)
 
-export { routedLayout as Layout };
+export { routedLayout as Layout }

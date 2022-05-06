@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 import { 
   Card,
@@ -16,21 +16,21 @@ import {
   DropdownItem,
   DropdownMenu,
   AvatarAddOn
-} from './../../../components';
+} from './../../../components'
 
-import { randomArray, randomAvatar } from './../../../utilities';
+import { randomArray, randomAvatar } from './../../../utilities'
 import { useTranslation } from 'react-i18next'
 
 const badgesColors = [
   "secondary"
-];
+]
 
 const avatarStatus = [
   "secondary",
   "warning",
   "danger",
   "success"
-];
+]
 
 const prioStatus = [
   <React.Fragment key="1">
@@ -49,7 +49,7 @@ const prioStatus = [
     <i className="fa fa-circle text-danger mr-2"></i>
     Big<i className="fa fa-angle-down ml-2" />
   </React.Fragment>
-];
+]
 
 const TasksCardGrid = (props) => {
   const { t } = useTranslation()
@@ -190,14 +190,14 @@ const TasksCardGrid = (props) => {
       </Card>
       { /* END Card */}
     </React.Fragment>
-  );
+  )
 }
 
 TasksCardGrid.propTypes = {
   id: PropTypes.node
-};
+}
 TasksCardGrid.defaultProps = {
   id: "1"
-};
+}
 
-export { TasksCardGrid };
+export { TasksCardGrid }

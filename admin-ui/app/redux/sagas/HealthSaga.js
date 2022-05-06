@@ -5,7 +5,7 @@ import {
 } from '../../utils/TokenController'
 import { getHealthStatusResponse } from '../actions/HealthAction'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import { postUserAction} from '../api/backend-api'
+import { postUserAction } from '../api/backend-api'
 import { GET_HEALTH } from '../actions/types'
 import HealthApi from '../api/HealthApi'
 import { getClient } from '../api/base'

@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import CardHeader from './../CardHeader';
+import CardHeader from './../CardHeader'
 
-import { Consumer } from './context';
-import classes from './AccordionHeader.scss';
+import { Consumer } from './context'
+import classes from './AccordionHeader.scss'
 
 export const AccordionHeader = (props) => (
   <Consumer>
@@ -25,9 +25,9 @@ export const AccordionHeader = (props) => (
       )   
     }
   </Consumer>
-);
+)
 AccordionHeader.propTypes = {
   children: PropTypes.node,
   onClick: PropTypes.func,
   className: PropTypes.string
-};
+}

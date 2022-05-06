@@ -1,8 +1,8 @@
-import { ExtendedDropdown } from './ExtendedDropdown';
-import { ExtendedDropdownSection } from './ExtendedDropdownSection';
-import { ExtendedDropdownLink } from './ExtendedDropdownLink';
+import { ExtendedDropdown } from './ExtendedDropdown'
+import { ExtendedDropdownSection } from './ExtendedDropdownSection'
+import { ExtendedDropdownLink } from './ExtendedDropdownLink'
 
-ExtendedDropdown.Section = ExtendedDropdownSection;
-ExtendedDropdown.Link = ExtendedDropdownLink;
+ExtendedDropdown.Section = ExtendedDropdownSection
+ExtendedDropdown.Link = ExtendedDropdownLink
 
-export default ExtendedDropdown;
+export default ExtendedDropdown

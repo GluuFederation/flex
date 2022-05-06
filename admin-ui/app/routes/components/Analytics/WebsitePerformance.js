@@ -1,15 +1,15 @@
-import React from 'react';
+import React from 'react'
 
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
 import { 
   Row,
   Col
-} from './../../../components';
+} from './../../../components'
 
 import {
   TinyAreaChart
-} from "./../../Graphs/ReCharts/components/TinyAreaChart";
+} from "./../../Graphs/ReCharts/components/TinyAreaChart"
 
 const WebsitePerformance = (props) => (
   <React.Fragment>
@@ -34,20 +34,20 @@ const WebsitePerformance = (props) => (
       </Col>
     </Row>
   </React.Fragment>
-);
+)
 WebsitePerformance.propTypes = {
   title: PropTypes.node,
   value: PropTypes.node,
   valuePercentColor: PropTypes.node,
   valuePercentIcon: PropTypes.node,
   valuePercent: PropTypes.node
-};
+}
 WebsitePerformance.defaultProps = {
   title: "Title",
   value: "00.000",
   valuePercentColor: "text-muted",
   valuePercentIcon: "caret-down",
   valuePercent: "00,00"
-};
+}
 
-export { WebsitePerformance };
+export { WebsitePerformance }

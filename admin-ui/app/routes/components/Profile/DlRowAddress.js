@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 const DlRowAddress = (props) => {
@@ -17,15 +17,15 @@ const DlRowAddress = (props) => {
         <dd className={ `col-sm-9 ${ props.rightSideClassName }` }>87032</dd>
       </dl>
     </React.Fragment>
-  );
+  )
 }
 DlRowAddress.propTypes = {
   leftSideClassName: PropTypes.node,
   rightSideClassName: PropTypes.node
-};
+}
 DlRowAddress.defaultProps = {
   leftSideClassName: "",
   rightSideClassName: ""
-};
+}
 
-export { DlRowAddress };
+export { DlRowAddress }

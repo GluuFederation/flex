@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
 import { 
   Avatar, 
   AvatarAddOn,
   Media
-} from './../../../components';
-import { randomArray, randomAvatar } from './../../../utilities';
+} from './../../../components'
+import { randomArray, randomAvatar } from './../../../utilities'
 import { useTranslation } from 'react-i18next'
 
 const status = [
@@ -13,7 +13,7 @@ const status = [
   "danger",
   "warning",
   "secondary"
-];
+]
 
 const Messages = () => {
   const { t } = useTranslation()
@@ -57,7 +57,7 @@ const Messages = () => {
       </Media>
     </React.Fragment>
 
-  );
+  )
 }
 
-export { Messages };
+export { Messages }

@@ -1,10 +1,10 @@
-import React from 'react';
-import _ from 'lodash';
+import React from 'react'
+import times from 'lodash/times'
 
 import { 
   Badge,
   Progress
-} from './../../../components';
+} from './../../../components'
 import { useTranslation } from 'react-i18next'
 
 /*eslint-disable */
@@ -31,7 +31,7 @@ const TrTableMonitor = () => {
   return (
     <React.Fragment>
       {
-        _.times(14, (index) => (
+        times(14, (index) => (
           <tr key={ index } className="text-nowrap">
             <td className="align-middle">
               <span className="text-inverse">HDD1</span> <span className="small">(ada0)</span>
@@ -50,7 +50,7 @@ const TrTableMonitor = () => {
         ))
       }
     </React.Fragment>
-  );
+  )
 }
 
-export { TrTableMonitor };
+export { TrTableMonitor }

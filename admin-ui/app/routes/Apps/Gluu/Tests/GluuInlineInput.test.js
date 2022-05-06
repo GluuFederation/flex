@@ -4,8 +4,8 @@ import GluuInlineInput from '../GluuInlineInput'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
 
-let LABEL = 'fields.application_type'
-let NAME = 'application_type'
+const LABEL = 'fields.application_type'
+const NAME = 'application_type'
 let VALUE = true
 
 function handler() {

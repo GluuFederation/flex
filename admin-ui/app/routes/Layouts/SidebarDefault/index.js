@@ -1,3 +1,3 @@
-import { SidebarDefault } from './SidebarDefault';
+import { SidebarDefault } from './SidebarDefault'
 
-export default SidebarDefault;
+export default SidebarDefault
