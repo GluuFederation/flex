@@ -7,7 +7,6 @@ cp -r ./flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/* ${temp_chart_folde
 rm ${temp_chart_folder}/openbanking-values.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/config/templates/upgrade-ldap-101-jans.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/config/templates/ob-secrets.yaml || echo "file doesn't exist"
-rm ${temp_chart_folder}/charts/config/templates/admin-ui-secrets.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/nginx-ingress/templates/admin-ui-ingress.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/nginx-ingress/templates/auth-server-protected-ingress.yaml || echo "file doesn't exist"
 rm ${temp_chart_folder}/charts/nginx-ingress/templates/casa-ingress.yaml || echo "file doesn't exist"
