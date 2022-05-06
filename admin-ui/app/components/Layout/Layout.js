@@ -4,7 +4,15 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
-import _ from 'lodash';
+import {
+  filter,
+  forOwn,
+  isUndefined,
+  compact,
+  differenceBy,
+  pick,
+  map 
+} from 'lodash';
 
 import { LayoutContent } from './LayoutContent';
 import { LayoutNavbar } from './LayoutNavbar';
@@ -26,7 +34,7 @@ const findChildByType = (children, targetType) => {
   return result;
 };
 const findChildrenByType = (children, targetType) => {
-  return _.filter(React.Children.toArray(children), (child) =>
+  return filter(React.Children.toArray(children), (child) =>
     child.type.layoutPartName === targetType.layoutPartName);
 };
 
@@ -73,12 +81,12 @@ class Layout extends React.Component {
         const { screenSize } = this.state;
         let currentScreenSize;
 
-        _.forOwn(responsiveBreakpoints, (value, key) => {
+        forOwn(responsiveBreakpoints, (value, key) => {
           const queryParts = [
-            `${ _.isUndefined(value.min) ? '' : `(min-width: ${value.min}px)` }`,
-            `${ _.isUndefined(value.max) ? '' : `(max-width: ${value.max}px)`}`
+            `${ isUndefined(value.min) ? '' : `(min-width: ${value.min}px)` }`,
+            `${ isUndefined(value.max) ? '' : `(max-width: ${value.max}px)`}`
           ];
-          const query = _.compact(queryParts).join(' and ');
+          const query = compact(queryParts).join(' and ');
 
           if (window.matchMedia(query).matches) {
             currentScreenSize = key;
@@ -196,7 +204,7 @@ class Layout extends React.Component {
     }
 
     setElementsVisibility(elements) {
-      this.setState(_.pick(elements, ['sidebarHidden', 'navbarHidden', 'footerHidden']));
+      this.setState(pick(elements, ['sidebarHidden', 'navbarHidden', 'footerHidden']));
     }
 
     render() {
@@ -204,7 +212,7 @@ class Layout extends React.Component {
       const sidebar = findChildByType(children, LayoutSidebar);
       const navbars = findChildrenByType(children, LayoutNavbar);
       const content = findChildByType(children, LayoutContent);
-      const otherChildren = _.differenceBy(
+      const otherChildren = differenceBy(
         React.Children.toArray(children),
         [
           sidebar,
@@ -237,7 +245,7 @@ class Layout extends React.Component {
             <link rel="canonical" href={ config.siteCannonicalUrl } />
             <meta name="description" content={ this.state.pageDescription } />
             {
-              _.map(favIcons, (favIcon, index) => (
+              map(favIcons, (favIcon, index) => (
                 <link { ...favIcon } key={ index } />
               ))
             }

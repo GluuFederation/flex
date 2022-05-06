@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
+import some from 'lodash/some';
 
 // Safely gets the browser document object,
 // returns a simple mock for server rendering purposes
@@ -54,7 +54,7 @@ class OuterClick extends React.Component {
           // eslint-disable-next-line react/no-find-dom-node
           const domElement = ReactDOM.findDOMNode(this.elementRef);
   
-          const isExcluded = _.some(this.props.excludedElements,
+          const isExcluded = some(this.props.excludedElements,
             // eslint-disable-next-line react/no-find-dom-node
             (element) => element && ReactDOM.findDOMNode(element).contains(evt.target));
   

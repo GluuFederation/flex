@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import times from 'lodash/times';
 import { 
   Card, 
   CardBody, 
@@ -14,7 +14,7 @@ import { InfoPopover } from './InfoPopover';
 const CardRgbaColor = (props) => (
   <Card className={ `mb-3 ${ props.cardClass }` }>
     {
-      _.times(9, (index) => {
+      times(9, (index) => {
         let Tag = CardFooter;
         Tag = index === 0 ? CardHeader : CardBody;
         Tag = index === 8 ? CardFooter : CardBody;

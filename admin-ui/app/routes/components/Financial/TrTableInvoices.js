@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import times from 'lodash/times';
 
 import {  
   Media, 
@@ -15,7 +15,7 @@ const TrTableInvoices = () => {
   return (
     <React.Fragment>
       {
-        _.times(6, (index) => (
+        times(6, (index) => (
           <tr key={ index }>
             <td className="align-middle">
               <span className="text-inverse">{ 'faker.company.companyName()' }</span><br />

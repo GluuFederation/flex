@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import uid from 'uuid/v4';
 import qs from 'query-string';
 
@@ -78,7 +78,7 @@ class HolderTextProvider extends React.Component {
     render() {
       const onlyChild = React.Children.only(this.props.children);
 
-      const phProps = _.omit(this.props, ['children', 'width', 'height']);
+      const phProps = omit(this.props, ['children', 'width', 'height']);
       const phPropsQuery = qs.stringify(phProps);
 
       return React.cloneElement(onlyChild, {
