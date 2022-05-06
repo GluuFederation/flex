@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
+import times from 'lodash/times'
 import {  
   ResponsiveContainer,
   AreaChart, 
@@ -9,7 +9,7 @@ import {
 
 import colors from './../../../colors'
 
-const data = _.times(20, () => ({ pv: Math.random() * 100 }))
+const data = times(20, () => ({ pv: Math.random() * 100 }))
 
 const TinyAreaChart = ({ height }) => (
   <ResponsiveContainer width='100%' height={ height }>

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
+import { isUndefined, omit, pick, keys, extend } from 'lodash'
 import classNames from 'classnames'
 
 import { Col as BootstrapCol } from 'reactstrap'
@@ -18,8 +18,8 @@ const getCurrentbreakPoint = (width, breakPoints) => {
   let output = 'xl'
   for (const bp of breakPoints) {
     if (
-      (_.isUndefined(bp.min) || bp.min <= width) &&
-            (_.isUndefined(bp.max) || bp.max > width)
+      (isUndefined(bp.min) || bp.min <= width) &&
+            (isUndefined(bp.max) || bp.max > width)
     ) {
       output = bp.id
     }
@@ -66,8 +66,8 @@ export class Col extends React.Component {
 
     render() {
       const { active, children, className, trueSize } = this.props
-      const bsColumnProps = _.pick(this.props, ['xl', 'lg', 'md', 'sm', 'xs'])
-      const otherProps = _.omit(this.props, [..._.keys(Col.propTypes),
+      const bsColumnProps = pick(this.props, ['xl', 'lg', 'md', 'sm', 'xs'])
+      const otherProps = omit(this.props, [...keys(Col.propTypes),
         'minW', 'maxW', 'minH', 'maxH', 'moved', 'static', 'isDraggable', 'isResizable'])
       const floatColBpId = trueSize ? getCurrentbreakPoint(trueSize.wPx, breakPoints) : 'xl'
       const floatColClasses = classNames(className, 'float-col',
@@ -79,7 +79,7 @@ export class Col extends React.Component {
         </div>
       ) : (
         <BootstrapCol
-          { ...(_.extend(bsColumnProps, otherProps)) }
+          { ...(extend(bsColumnProps, otherProps)) }
           className={ classNames(className, 'pb-3') }
         >
           { children }

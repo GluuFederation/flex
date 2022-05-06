@@ -1,7 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import _ from 'lodash'
+import filter from 'lodash/filter'
+import find from 'lodash/find'
+import reduce from 'lodash/reduce'
+import isEmpty from 'lodash/isEmpty'
+import first from 'lodash/first'
 
 const Avatar = (props) => {
   const avatarClass = classNames(
@@ -10,11 +14,11 @@ const Avatar = (props) => {
     props.className
   )
   const addOnsdArr = React.Children.toArray(props.addOns)
-  const badge = _.find(addOnsdArr, (avatarAddOn) =>
+  const badge = find(addOnsdArr, (avatarAddOn) =>
     avatarAddOn.type.addOnId === "avatar--badge")
-  const icons = _.filter(addOnsdArr, (avatarAddOn) =>
+  const icons = filter(addOnsdArr, (avatarAddOn) =>
     avatarAddOn.type.addOnId === "avatar--icon")
-  const isNested = _.reduce(addOnsdArr, (acc, avatarAddOn) =>
+  const isNested = reduce(addOnsdArr, (acc, avatarAddOn) =>
     acc || !!avatarAddOn.props.small, false)
 
   return (
@@ -27,12 +31,12 @@ const Avatar = (props) => {
         )
       }
       {
-        !_.isEmpty(icons) && (() => {
+        !isEmpty(icons) && (() => {
           switch(icons.length) {
           case 1:
             return (
               <div className="avatar__icon">
-                { _.first(icons) }
+                { first(icons) }
               </div>
             )
           default:

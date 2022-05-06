@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import _ from 'lodash'
+import omit from 'lodash/omit'
 
 import { Avatar } from './Avatar'
 import { AvatarFont } from './AvatarFont'
@@ -12,7 +12,7 @@ class AvatarImage extends React.PureComponent {
       placeholder: PropTypes.node,
       alt: PropTypes.string,
       className: PropTypes.string,
-      ..._.omit(Avatar.propTypes, ['children'])
+      ...omit(Avatar.propTypes, ['children'])
     };
 
     static defaultProps = {

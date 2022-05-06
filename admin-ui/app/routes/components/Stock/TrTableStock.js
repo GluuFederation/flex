@@ -1,5 +1,5 @@
 import React from 'react'
-import _ from 'lodash'
+import times from 'lodash/times'
 import { randomArray } from './../../../utilities'
 
 const name = [
@@ -64,7 +64,7 @@ const TrTableStock = () => {
   return (
     <React.Fragment>
       {
-        _.times(5, (index) => (
+        times(5, (index) => (
           <tr key={ index }>
             <td className="align-middle">
               { randomArray(name) }

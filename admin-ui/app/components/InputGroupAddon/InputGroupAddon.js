@@ -1,5 +1,6 @@
 import React from 'react'
-import _ from 'lodash'
+import some from 'lodash/some'
+import includes from 'lodash/includes'
 
 import {
   InputGroupAddon as BsInputGroupAddon
@@ -8,9 +9,9 @@ import {
 const InputGroupAddon = (props) => {
   const { children, ...otherProps } = props
   const childArr = React.Children.toArray(children)
-  const isFa = _.some(childArr, (child) =>
-    React.isValidElement(child) && child.props.className && _.includes(child.props.className, 'fa'))
-  const isCheckRadio = _.some(childArr, (child) =>
+  const isFa = some(childArr, (child) =>
+    React.isValidElement(child) && child.props.className && includes(child.props.className, 'fa'))
+  const isCheckRadio = some(childArr, (child) =>
     React.isValidElement(child) && (child.props.type === 'radio' || child.props.type === 'checkbox'))
 
   const child = isFa || isCheckRadio ? (

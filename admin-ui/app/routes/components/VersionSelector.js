@@ -1,7 +1,7 @@
 import React from 'react'
 import fetch from 'node-fetch'
 import classNames from 'classnames'
-import _ from 'lodash'
+import { filter, find, isEmpty, map } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import {
@@ -42,7 +42,7 @@ export class VersionSelector extends React.Component {
       } catch(exc) {
         this.setState({ isError: true })
       }
-      const targetVersions = _.filter(versions, { dashboardName: dashboard })
+      const targetVersions = filter(versions, { dashboardName: dashboard })
         
       this.setState({ versions: targetVersions })
     }
@@ -60,12 +60,12 @@ export class VersionSelector extends React.Component {
     render() {
       const { down, render, className, sidebar } = this.props
       const { versions } = this.state
-      const currentVersion = _.find(versions, { label: "React" })
+      const currentVersion = find(versions, { label: "React" })
 
       return (
         <UncontrolledButtonDropdown direction={ down ? "down" : "up" } className={ className }>
           <DropdownToggle
-            disabled={ _.isEmpty(versions) }
+            disabled={ isEmpty(versions) }
             tag="a"
             href="javascript:;"
             className={classNames(
@@ -92,13 +92,13 @@ export class VersionSelector extends React.Component {
             }
           </DropdownToggle>
           {
-            (!_.isEmpty(versions)) && (
+            (!isEmpty(versions)) && (
               <DropdownMenu>
                 <DropdownItem header>
                   Bootstrap 4 Versions:
                 </DropdownItem>
                 {
-                  _.map(versions, (version, index) => (
+                  map(versions, (version, index) => (
                     <DropdownItem
                       key={ index }
                       href={ version.demoUrl }

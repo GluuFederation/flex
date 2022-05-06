@@ -1,6 +1,10 @@
 import React from 'react'
 import v4 from 'uuid/v4'
-import _ from 'lodash'
+import {
+  chain,
+  random,
+  mapValues
+} from 'lodash'
 
 import {
   Container,
@@ -147,7 +151,7 @@ export class DragAndDropLayout extends React.Component {
             rowHeight={ 55 }
           >
             {
-              _.chain(this.state.layouts)
+              chain(this.state.layouts)
                 .keys()
                 .map((layoutKey) => (
                   <Grid.Col {...applyColumn(layoutKey, this.state.layouts)} key={ layoutKey }>
@@ -178,7 +182,7 @@ export class DragAndDropLayout extends React.Component {
         let availableRow = TOTAL_ROWS
         while (availableRow > 0) {
           const newCol = availableRow < TOTAL_ROWS ? availableRow : 
-            _.random(3, 9)
+            random(3, 9)
 
           availableRow -= newCol
           output = {
@@ -192,7 +196,7 @@ export class DragAndDropLayout extends React.Component {
     }
 
     _generateTexts = (layouts) =>
-      _.mapValues(layouts, () => ({
+      mapValues(layouts, () => ({
         title: 'faker.commerce.productName()',
         desc: 'faker.lorem.paragraph()'
       }))

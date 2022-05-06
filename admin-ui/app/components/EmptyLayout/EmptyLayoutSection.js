@@ -1,5 +1,5 @@
 import React from 'react'
-import _ from 'lodash'
+import isNumber from 'lodash'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
@@ -7,7 +7,7 @@ const EmptyLayoutSection = (props) => {
   const sectionClass = classNames(props.className, 'fullscreen__section', {
     'fullscreen__section--center': props.center
   })
-  const maxWidth = _.isNumber(props.width) ? `${props.width}px` : props.width
+  const maxWidth = isNumber(props.width) ? `${props.width}px` : props.width
   return (
     <div className={ sectionClass }>
       {

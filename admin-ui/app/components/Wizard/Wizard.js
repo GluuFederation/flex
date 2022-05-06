@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
+import isUndefined from 'lodash/isUndefined'
+import map from 'lodash/map'
 
 import './../../styles/components/wizard.scss'
 
@@ -40,7 +41,7 @@ export class Wizard extends React.Component {
 
     getActiveStep() {
       const { activeStep, onStepChanged } = this.props
-      if (_.isUndefined(activeStep) || _.isUndefined(onStepChanged)) {
+      if (isUndefined(activeStep) || isUndefined(onStepChanged)) {
         return this.state.activeStep
       }
       return this.props.activeStep
@@ -53,7 +54,7 @@ export class Wizard extends React.Component {
       return (
         <div className='wizard'>
           {
-            _.map(children, (child, index) => (
+            map(children, (child, index) => (
               React.cloneElement(child, {
                 onClick: () => {this.stepClick(child.props.id || '')},
                 active: child.props.id === activeStep,
