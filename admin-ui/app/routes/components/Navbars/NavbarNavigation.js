@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { NavLink as Link } from 'react-router-dom';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { NavLink as Link } from 'react-router-dom'
+import classNames from 'classnames'
 
 import { 
   Nav,
@@ -12,7 +12,7 @@ import {
   DropdownMenu,
   DropdownItem,
   NestedDropdown
-} from './../../../components';
+} from './../../../components'
 import { useTranslation } from 'react-i18next'
 
 const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {
@@ -151,11 +151,11 @@ const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {
         </DropdownMenu>
       </UncontrolledDropdown>
     </Nav>
-  );
+  )
 }
 NavbarNavigation.propTypes = {
   pills: PropTypes.bool,
   accent: PropTypes.bool,
-};
+}
 
-export { NavbarNavigation };
+export { NavbarNavigation }

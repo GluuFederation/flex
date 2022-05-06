@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { HolderTextProvider } from './HolderTextProvider';
+import { HolderTextProvider } from './HolderTextProvider'
 
 const HolderIconProvider = (props) => {
-  const { iconChar, children, ...otherProps } = props;
+  const { iconChar, children, ...otherProps } = props
   return (
     <HolderTextProvider
       font='FontAwesome'
@@ -13,11 +13,11 @@ const HolderIconProvider = (props) => {
     >
       { children }
     </HolderTextProvider>
-  );
-};
+  )
+}
 HolderIconProvider.propTypes = {
   iconChar: PropTypes.string.isRequired,
   children: PropTypes.node
-};
+}
 
-export { HolderIconProvider };
+export { HolderIconProvider }

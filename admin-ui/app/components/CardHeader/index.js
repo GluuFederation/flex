@@ -1,3 +1,3 @@
-import { CardHeader } from './CardHeader';
+import { CardHeader } from './CardHeader'
 
-export default CardHeader;
+export default CardHeader

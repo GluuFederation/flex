@@ -15,7 +15,7 @@ import oidcDiscoverySaga from './OidcDiscoverySaga'
 import process from '../../../plugins/PluginSagasResolver'
 
 export default function* rootSaga() {
-  let pluginSagaArr = process()
+  const pluginSagaArr = process()
   yield all(
     [].concat(
       [

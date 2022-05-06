@@ -1,6 +1,6 @@
-import React from 'react';
-import times from 'lodash/times';
-import { randomArray } from './../../../utilities';
+import React from 'react'
+import times from 'lodash/times'
+import { randomArray } from './../../../utilities'
 
 const name = [
   "PE",
@@ -9,18 +9,18 @@ const name = [
   "EV/EBITDA",
   "P/FCF",
   "ROA"
-];
+]
 
 const tr2013 = [
   "33*4%",
   "10*4",
   "2*5"
-];
+]
 
 const ttm = [
   "28*3%",
   "16*5"
-];
+]
 
 const TrTableSummary = () => (
   <React.Fragment>
@@ -43,6 +43,6 @@ const TrTableSummary = () => (
       ))
     }
   </React.Fragment>
-);
+)
 
-export { TrTableSummary };
+export { TrTableSummary }

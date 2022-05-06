@@ -24,7 +24,6 @@ function* newFunction() {
   return new LicenseDetailsApi(api)
 }
 
-
 export function* getLicenseDetailsWorker({ payload }) {
   const audit = yield* initAudit()
   try {
@@ -58,7 +57,6 @@ export function* updateLicenseDetailsWorker({ payload }) {
     }
   }
 }
-
 
 export function* getLicenseWatcher() {
 

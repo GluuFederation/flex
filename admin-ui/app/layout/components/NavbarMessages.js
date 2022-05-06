@@ -1,6 +1,6 @@
-import React from "react";
-import _ from "lodash";
-import PropTypes from "prop-types";
+import React from "react"
+import _ from "lodash"
+import PropTypes from "prop-types"
 
 import {
   Avatar,
@@ -16,9 +16,9 @@ import {
   Input,
   InputGroupAddon,
   Button
-} from "./../../components";
+} from "./../../components"
 
-const messagesColors = ["text-success", "text-danger", "text-warning"];
+const messagesColors = ["text-success", "text-danger", "text-warning"]
 
 const NavbarMessages = props => (
   <UncontrolledDropdown nav inNavbar {...props}>
@@ -30,7 +30,7 @@ const NavbarMessages = props => (
           </Badge>
         }
       >
-        <i className="fa fa-envelope-o fa-fw" style={{color: 'white'}} />
+        <i className="fa fa-envelope-o fa-fw" style={{ color: 'white' }} />
       </IconWithBadge>
     </DropdownToggle>
     <ExtendedDropdown right>
@@ -92,10 +92,10 @@ const NavbarMessages = props => (
       </ExtendedDropdown.Section>
     </ExtendedDropdown>
   </UncontrolledDropdown>
-);
+)
 NavbarMessages.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object
-};
+}
 
-export { NavbarMessages };
+export { NavbarMessages }

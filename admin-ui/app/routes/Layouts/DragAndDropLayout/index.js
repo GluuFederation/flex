@@ -1,3 +1,3 @@
-import { DragAndDropLayout } from './DragAndDropLayout';
+import { DragAndDropLayout } from './DragAndDropLayout'
 
-export default DragAndDropLayout;
+export default DragAndDropLayout

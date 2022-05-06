@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 import {
   Container,
-} from './../../../components';
+} from './../../../components'
 import { useTranslation } from 'react-i18next'
 
 export const SidebarWithNavbar = () => {
@@ -91,5 +91,5 @@ export const SidebarWithNavbar = () => {
         </p>
       </section>
     </Container>
-  );
+  )
 }

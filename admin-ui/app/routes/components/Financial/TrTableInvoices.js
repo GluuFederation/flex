@@ -1,13 +1,13 @@
-import React from 'react';
-import times from 'lodash/times';
+import React from 'react'
+import times from 'lodash/times'
 
 import {  
   Media, 
   Avatar,
   AvatarAddOn
-} from './../../../components';
+} from './../../../components'
 
-import { randomAvatar } from './../../../utilities';
+import { randomAvatar } from './../../../utilities'
 import { useTranslation } from 'react-i18next'
 
 const TrTableInvoices = () => {
@@ -72,7 +72,7 @@ const TrTableInvoices = () => {
         ))
       }
     </React.Fragment>
-  );
+  )
 }
 
-export { TrTableInvoices };
+export { TrTableInvoices }

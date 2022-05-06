@@ -1,6 +1,6 @@
-import { chain, pick } from 'lodash';
+import { chain, pick } from 'lodash'
 
-import colors from './colors.scss';
+import colors from './colors.scss'
 
 const colorKeys = chain(colors)
   .keys()
@@ -8,6 +8,6 @@ const colorKeys = chain(colors)
     colorKey.indexOf('bg-') === -1 &&
         colorKey.indexOf('fg-') === -1
   ))
-  .value();
+  .value()
 
-export default pick(colors, colorKeys);
+export default pick(colors, colorKeys)

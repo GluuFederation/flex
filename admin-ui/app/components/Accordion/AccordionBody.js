@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { Collapse, CardBody } from 'reactstrap';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import { Collapse, CardBody } from 'reactstrap'
 
-import { Consumer } from './context';
+import { Consumer } from './context'
 
 export const AccordionBody = (props) => (
   <Consumer>
@@ -17,8 +17,8 @@ export const AccordionBody = (props) => (
       )
     }
   </Consumer>
-);
+)
 AccordionBody.propTypes = {
   children: PropTypes.node,
   className: PropTypes.string
-};
+}

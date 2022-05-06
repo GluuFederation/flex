@@ -1,13 +1,13 @@
-import React from 'react';
-import isNumber from 'lodash';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import isNumber from 'lodash'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 const EmptyLayoutSection = (props) => {
   const sectionClass = classNames(props.className, 'fullscreen__section', {
     'fullscreen__section--center': props.center
-  });
-  const maxWidth = isNumber(props.width) ? `${props.width}px` : props.width;
+  })
+  const maxWidth = isNumber(props.width) ? `${props.width}px` : props.width
   return (
     <div className={ sectionClass }>
       {
@@ -17,16 +17,16 @@ const EmptyLayoutSection = (props) => {
           </div> : props.children
       }
     </div>
-  );
-};
+  )
+}
 EmptyLayoutSection.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
   center: PropTypes.bool,
   width: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-};
+}
 EmptyLayoutSection.defaultProps = {
   width: '420px'
-};
+}
 
-export { EmptyLayoutSection };
+export { EmptyLayoutSection }

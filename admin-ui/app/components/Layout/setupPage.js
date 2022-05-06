@@ -1,7 +1,7 @@
-import React from 'react';
-import pick from 'lodash/pick';
-import PropTypes from 'prop-types';
-import { withPageConfig } from './withPageConfig';
+import React from 'react'
+import pick from 'lodash/pick'
+import PropTypes from 'prop-types'
+import { withPageConfig } from './withPageConfig'
 
 export const setupPage = (startupConfig) => 
   (Component) => {
@@ -11,20 +11,20 @@ export const setupPage = (startupConfig) =>
             }
             componentDidMount() {
               this.prevConfig = pick(this.props.pageConfig,
-                ['pageTitle', 'pageDescription', 'pageKeywords']);
-              this.props.pageConfig.changeMeta(startupConfig);
+                ['pageTitle', 'pageDescription', 'pageKeywords'])
+              this.props.pageConfig.changeMeta(startupConfig)
             }
 
             componentWillUnmount() {
-              this.props.pageConfig.changeMeta(this.prevConfig);
+              this.props.pageConfig.changeMeta(this.prevConfig)
             }
 
             render() {
               return (
                 <Component { ...this.props } />
-              );
+              )
             }
     }
 
-    return withPageConfig(PageSetupWrap);
-  };
+    return withPageConfig(PageSetupWrap)
+  }

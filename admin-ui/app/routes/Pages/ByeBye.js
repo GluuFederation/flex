@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 function ByeBye({ config, dispatch }) {
   const { t } = useTranslation()
   useEffect(() => {
-    if (!!config) {
+    if (config) {
       const state = uuidv4()
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
       window.location.href = sessionEndpoint

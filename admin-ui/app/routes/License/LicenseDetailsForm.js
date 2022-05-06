@@ -19,7 +19,7 @@ import { Formik } from 'formik'
 function LicenseDetailsForm({ item, handleSubmit }) {
   const { t } = useTranslation()
   const [validityPeriod, setValidityPeriod] = useState(
-    !!item.validityPeriod ? new Date(item.validityPeriod) : new Date(),
+    item.validityPeriod ? new Date(item.validityPeriod) : new Date(),
   )
   const [modal, setModal] = useState(false)
 

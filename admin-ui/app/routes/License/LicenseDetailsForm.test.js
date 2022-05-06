@@ -15,7 +15,7 @@ const permissions = [
 ]
 const item = license
 it('Should render the license detail page properly', () => {
-  render(<LicenseDetailsForm item={item}  permissions={permissions} />, {
+  render(<LicenseDetailsForm item={item} permissions={permissions} />, {
     wrapper: Wrapper,
   })
   expect(screen.getByText(/License Valid Upto/)).toBeInTheDocument()

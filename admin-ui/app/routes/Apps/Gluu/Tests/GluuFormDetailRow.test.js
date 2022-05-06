@@ -1,15 +1,15 @@
 import React from 'react'
-import { render, screen} from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import GluuFormDetailRow from '../GluuFormDetailRow'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
-let LABEL = 'fields.application_type'
-let NAME = 'application_type'
-let VALUE = 'openid'
+const LABEL = 'fields.application_type'
+const NAME = 'application_type'
+const VALUE = 'openid'
 
 it('Should render one label and a badge', () => {
   function handler() {
-    console.log("========");
+    console.log("========")
   }
   render(
     <I18nextProvider i18n={i18n}>

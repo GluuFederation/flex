@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 export const SidebarShowSlim = ({ children }) => {
   return React.Children.map(children, (child) =>
@@ -10,9 +10,9 @@ export const SidebarShowSlim = ({ children }) => {
         'sidebar__show-slim'
       )  
     })
-  );
-};
+  )
+}
 
 SidebarShowSlim.propTypes = {
   children: PropTypes.node,
-};
+}

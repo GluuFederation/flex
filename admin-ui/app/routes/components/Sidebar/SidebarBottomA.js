@@ -1,15 +1,15 @@
-import React from "react";
+import React from "react"
 
 import {
   Button,
   Sidebar,
   UncontrolledPopover,
   PopoverBody
-} from "./../../../components";
+} from "./../../../components"
 
-import { FooterAuth } from "../Pages/FooterAuth";
-import { FooterText } from "../FooterText";
-import { VersionSelector } from "../VersionSelector";
+import { FooterAuth } from "../Pages/FooterAuth"
+import { FooterText } from "../FooterText"
+import { VersionSelector } from "../VersionSelector"
 
 const SidebarBottomA = () => (
   <React.Fragment>
@@ -55,6 +55,6 @@ const SidebarBottomA = () => (
     </Sidebar.ShowSlim>
     {/* END Slim Only */}
   </React.Fragment>
-);
+)
 
-export { SidebarBottomA };
+export { SidebarBottomA }

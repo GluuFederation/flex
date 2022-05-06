@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { Provider } from './context';
+import { Provider } from './context'
 
 class UncontrolledTabs extends React.Component {
     static propTypes = {
@@ -10,23 +10,23 @@ class UncontrolledTabs extends React.Component {
     };
 
     constructor(props) {
-      super(props);
+      super(props)
 
       this.state = {
         activeTabId: this.props.initialActiveTabId || null
-      };
+      }
     }
 
     render() {
       return (
         <Provider value={{
-          setActiveTabId: (tabId) => { this.setState({ activeTabId: tabId }); },
+          setActiveTabId: (tabId) => { this.setState({ activeTabId: tabId }) },
           activeTabId: this.state.activeTabId
         }}>
           { this.props.children }
         </Provider> 
-      );        
+      )        
     }
 }
 
-export { UncontrolledTabs };
+export { UncontrolledTabs }

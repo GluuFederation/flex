@@ -1,17 +1,17 @@
-import React from 'react';
-import map from 'lodash/map';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
+import React from 'react'
+import map from 'lodash/map'
+import classNames from 'classnames'
+import PropTypes from 'prop-types'
 import {
   Card,
   CardBody,
   Button,
   FormGroup,
   CustomInput
-} from 'reactstrap';
+} from 'reactstrap'
 
-import './../../styles/components/theme-selector.scss';
-import { Consumer } from './ThemeContext';
+import './../../styles/components/theme-selector.scss'
+import { Consumer } from './ThemeContext'
 
 class ThemeSelector extends React.Component {
     static propTypes = {
@@ -42,33 +42,33 @@ class ThemeSelector extends React.Component {
     };
 
     constructor(props) {
-      super(props);
+      super(props)
 
       this.state = {
         isActive: false,
         initialStyle: '',
         initialColor: '',
-      };
+      }
     }
 
     componentDidMount() {
       this.setState({
         initialColor: this.props.color,
         initialStyle: this.props.style
-      });
+      })
     }
 
     render() {
       const rootClass = classNames('theme-config', {
         'theme-config--active': this.state.isActive,
-      });
+      })
 
       return (
         <div className={ rootClass }>
           <Button
             color="primary"
             className="theme-config__trigger"
-            onClick={() => { this.setState({ isActive: !this.state.isActive }); }}
+            onClick={() => { this.setState({ isActive: !this.state.isActive }) }}
           >
             <i className="fa fa-paint-brush fa-fw"></i>
           </Button>
@@ -95,7 +95,7 @@ class ThemeSelector extends React.Component {
                         if (ev.target.checked) {
                           this.props.onChangeTheme({
                             color: option.value
-                          });
+                          })
                         }
                       }}
                       label={(
@@ -126,7 +126,7 @@ class ThemeSelector extends React.Component {
                         if (ev.target.checked) {
                           this.props.onChangeTheme({
                             style: option.value
-                          });
+                          })
                         }
                       }}
                       label={ option.name }
@@ -143,7 +143,7 @@ class ThemeSelector extends React.Component {
                     this.props.onChangeTheme({
                       color: this.state.initialColor,
                       style: this.state.initialStyle
-                    });
+                    })
                   }}
                 >
                   Reset Options
@@ -152,7 +152,7 @@ class ThemeSelector extends React.Component {
             </CardBody>
           </Card>
         </div>
-      );
+      )
     }
 }
 
@@ -161,6 +161,6 @@ const ContextThemeSelector = (props) =>
     {
       (themeState) => <ThemeSelector { ...themeState } { ...props } />
     }
-  </Consumer>;
+  </Consumer>
 
-export { ContextThemeSelector as ThemeSelector };
+export { ContextThemeSelector as ThemeSelector }

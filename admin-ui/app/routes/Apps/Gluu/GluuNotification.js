@@ -36,21 +36,21 @@ function GluuNotification({ type, message, description, show }) {
 
   function showToast(aType) {
     switch (aType) {
-      case 'info':
-        toast.info(toastContent)
-        break
-      case 'success':
-        toast.success(toastContent)
-        break
-      case 'warning':
-        toast.warning(toastContent)
-        break
-      case 'error':
-        toast.error(toastContent)
-        break
-      default:
-        toast(toastContent)
-        break
+    case 'info':
+      toast.info(toastContent)
+      break
+    case 'success':
+      toast.success(toastContent)
+      break
+    case 'warning':
+      toast.warning(toastContent)
+      break
+    case 'error':
+      toast.error(toastContent)
+      break
+    default:
+      toast(toastContent)
+      break
     }
   }
 

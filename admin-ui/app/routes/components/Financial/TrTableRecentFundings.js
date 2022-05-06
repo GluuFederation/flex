@@ -1,5 +1,5 @@
-import React from 'react';
-import times from 'lodash/times';
+import React from 'react'
+import times from 'lodash/times'
 import { useTranslation } from 'react-i18next'
 
 const TrTableRecentFundings = () => {
@@ -25,7 +25,7 @@ const TrTableRecentFundings = () => {
         ))
       }
     </React.Fragment>
-  );
+  )
 }
 
-export { TrTableRecentFundings };
+export { TrTableRecentFundings }

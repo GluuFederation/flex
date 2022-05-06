@@ -1,10 +1,10 @@
-import React from 'react';
-import times from 'lodash/times';
+import React from 'react'
+import times from 'lodash/times'
 
 import { 
   Badge,
   Progress
-} from './../../../components';
+} from './../../../components'
 import { useTranslation } from 'react-i18next'
 
 /*eslint-disable */
@@ -50,7 +50,7 @@ const TrTableMonitor = () => {
         ))
       }
     </React.Fragment>
-  );
+  )
 }
 
-export { TrTableMonitor };
+export { TrTableMonitor }

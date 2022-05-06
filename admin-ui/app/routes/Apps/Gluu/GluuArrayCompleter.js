@@ -27,7 +27,7 @@ function GluuArrayCompleter({
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
-        {!!required ? (
+        {required ? (
           <GluuLabel label={label} size={6} required />
         ) : (
           <GluuLabel label={label} size={6} />

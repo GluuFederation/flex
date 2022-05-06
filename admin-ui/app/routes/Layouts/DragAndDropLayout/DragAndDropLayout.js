@@ -1,10 +1,10 @@
-import React from 'react';
-import v4 from 'uuid/v4';
+import React from 'react'
+import v4 from 'uuid/v4'
 import {
   chain,
   random,
   mapValues
-} from 'lodash';
+} from 'lodash'
 
 import {
   Container,
@@ -17,54 +17,54 @@ import {
   DropdownMenu,
   DropdownToggle,
   DropdownItem
-} from './../../../components';
-import { applyColumn } from './../../../components/FloatGrid';
+} from './../../../components'
+import { applyColumn } from './../../../components/FloatGrid'
 import {
   HeaderMain
-} from './../../components/HeaderMain';
+} from './../../components/HeaderMain'
 
 export class DragAndDropLayout extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this._lastLayout = this._generateLayout();
+    this._lastLayout = this._generateLayout()
 
     this.state = {
       layouts: this._lastLayout,
       compactType: 'vertical',
       fluid: false,
       texts: this._generateTexts(this._lastLayout)
-    };
+    }
 
-    this.generateLayoutHandler = this.generateLayoutHandler.bind(this);
-    this.resetLayoutHandler = this.resetLayoutHandler.bind(this);
+    this.generateLayoutHandler = this.generateLayoutHandler.bind(this)
+    this.resetLayoutHandler = this.resetLayoutHandler.bind(this)
   }
 
   generateLayoutHandler() {
-    this._lastLayout = this._generateLayout();
+    this._lastLayout = this._generateLayout()
 
     this.setState({
       layouts: this._lastLayout,
       texts: this._generateTexts(this._lastLayout)
-    });
+    })
   }
 
   resetLayoutHandler() {
     this.setState({
       layouts: this._lastLayout
-    });
+    })
   }
 
   selectCompactType(compactType) {
-    this.setState({ compactType });
+    this.setState({ compactType })
   }
 
   selectFluid(fluid) {
-    this.setState({ fluid });
+    this.setState({ fluid })
   }
 
   render() {
-    const { compactType, fluid, texts } = this.state;
+    const { compactType, fluid, texts } = this.state
 
     return (
       <React.Fragment>
@@ -170,29 +170,29 @@ export class DragAndDropLayout extends React.Component {
           </Grid.Row>
         </Grid>
       </React.Fragment>
-    );
+    )
   }
 
     _generateLayout = (rowsCount = 3) => {
-      const TOTAL_ROWS = 12;
-      const HEIGHT = 5;
-      let output = {};
+      const TOTAL_ROWS = 12
+      const HEIGHT = 5
+      let output = {}
 
       for (let i = 0; i < rowsCount; i++) {
-        let availableRow = TOTAL_ROWS;
+        let availableRow = TOTAL_ROWS
         while (availableRow > 0) {
           const newCol = availableRow < TOTAL_ROWS ? availableRow : 
-            random(3, 9);
+            random(3, 9)
 
-          availableRow -= newCol;
+          availableRow -= newCol
           output = {
             ...output,
             [v4()]: { md: newCol, h: HEIGHT }
-          };
+          }
         }
       }
 
-      return output;
+      return output
     }
 
     _generateTexts = (layouts) =>

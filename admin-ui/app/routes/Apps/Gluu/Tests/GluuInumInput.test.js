@@ -10,7 +10,7 @@ const VALUE = 'Public'
 
 it('Should show the disabled input with proper text wit sa', () => {
   function handler() {
-    console.log("========");
+    console.log("========")
   }
   render(
     <I18nextProvider i18n={i18n}>

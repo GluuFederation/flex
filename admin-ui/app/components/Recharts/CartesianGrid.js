@@ -1,6 +1,6 @@
-import { CartesianGrid } from 'recharts';
+import { CartesianGrid } from 'recharts'
 
-import styleConfig from './config';
+import styleConfig from './config'
 
 class CustomCartesianGrid extends CartesianGrid {
     static defaultProps = {
@@ -9,4 +9,4 @@ class CustomCartesianGrid extends CartesianGrid {
     }
 }
 
-export { CustomCartesianGrid as CartesianGrid };
+export { CustomCartesianGrid as CartesianGrid }
