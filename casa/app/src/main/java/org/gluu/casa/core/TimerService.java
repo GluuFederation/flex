@@ -6,9 +6,9 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.KeyMatcher;
 import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import java.util.Date;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;

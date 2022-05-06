@@ -1,19 +1,19 @@
-import React, { Component } from 'react';
-import ViewRedirect from './ViewRedirect';
-import { withRouter } from 'react-router';
-import { saveState } from './TokenController';
-import queryString from 'query-string';
-import { uuidv4 } from './Util';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import ViewRedirect from './ViewRedirect'
+import ApiKeyRedirect from './ApiKeyRedirect'
+import { withRouter } from 'react-router'
+import { saveState } from './TokenController'
+import queryString from 'query-string'
+import { uuidv4 } from './Util'
+import { connect } from 'react-redux'
 import {
   getOAuth2Config,
   getUserInfo,
   getAPIAccessToken,
   getUserLocation,
   checkLicensePresent,
-  activateLicense,
-} from '../redux/actions';
-import SessionTimeout from '../routes/Apps/Gluu/GluuSessionTimeout';
+} from '../redux/actions'
+import SessionTimeout from '../routes/Apps/Gluu/GluuSessionTimeout'
 
 class AppAuthProvider extends Component {
   state = {
@@ -105,10 +105,9 @@ class AppAuthProvider extends Component {
         <SessionTimeout isAuthenticated={showContent} />
         {showContent && this.props.children}
         {!showContent && (
-          <ViewRedirect
+          <ApiKeyRedirect
             backendIsUp={this.props.backendIsUp}
             isLicenseValid={this.props.isLicenseValid}
-            activateLicense={this.props.activateLicense}
             redirectUrl={this.props.config.redirectUrl}
             islicenseCheckResultLoaded={this.props.islicenseCheckResultLoaded}
             isLicenseActivationResultLoaded={
@@ -152,6 +151,5 @@ export default withRouter(
     getAPIAccessToken,
     getUserLocation,
     checkLicensePresent,
-    activateLicense,
   })(AppAuthProvider),
 );

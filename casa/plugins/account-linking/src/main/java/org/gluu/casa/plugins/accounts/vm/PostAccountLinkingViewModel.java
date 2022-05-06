@@ -15,7 +15,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 import java.util.Optional;
 
 /**

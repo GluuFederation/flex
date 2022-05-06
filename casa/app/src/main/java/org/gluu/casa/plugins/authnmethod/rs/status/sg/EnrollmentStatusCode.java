@@ -3,8 +3,8 @@ package org.gluu.casa.plugins.authnmethod.rs.status.sg;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.gluu.casa.misc.Utils;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;

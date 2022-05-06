@@ -2,10 +2,10 @@ package org.gluu.casa.plugins.authnmethod.rs.status.otp;
 
 import org.gluu.casa.misc.Utils;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import java.util.Collections;
 
-import static javax.ws.rs.core.Response.Status.*;
+import static jakarta.ws.rs.core.Response.Status.*;
 
 /**
  * @author jgomer

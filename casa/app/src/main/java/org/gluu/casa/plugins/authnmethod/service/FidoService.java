@@ -11,7 +11,7 @@ import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

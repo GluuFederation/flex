@@ -10,8 +10,8 @@ import org.gluu.casa.plugins.authnmethod.conf.otp.HOTPConfig;
 import org.slf4j.Logger;
 import org.zkoss.util.Pair;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
 

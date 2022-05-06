@@ -225,7 +225,6 @@ function ClientWizardForm({
           values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
           values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
           values[ATTRIBUTE].additionalAudience = values.additionalAudience
-          values['displayName'] = values['clientName']
           customOnSubmit(JSON.parse(JSON.stringify(values)))
         }}
       >

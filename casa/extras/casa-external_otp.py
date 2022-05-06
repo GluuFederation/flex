@@ -30,7 +30,7 @@ from io.jans.util import StringHelper
 from java.security import SecureRandom
 from java.util import Arrays
 from java.util.concurrent import TimeUnit
-from javax.faces.application import FacesMessage
+from jakarta.faces.application import FacesMessage
 
 import jarray
 import json

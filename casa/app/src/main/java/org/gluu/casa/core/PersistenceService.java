@@ -21,9 +21,9 @@ import io.jans.util.security.StringEncrypter;
 import java.io.FileReader;
 import java.io.Reader;
 import java.util.*;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 
 import org.gluu.casa.model.ApplicationConfiguration;
 import org.gluu.casa.core.model.ASConfiguration;

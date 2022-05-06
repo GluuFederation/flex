@@ -39,7 +39,7 @@ except ModuleNotFoundError:
         setup_branch = argsp.jans_setup_branch or 'main'
         install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
         request.urlretrieve(install_url, 'install.py')
-        install_cmd = 'python3 install.py --setup-branch={} --no-setup'.format(setup_branch)
+        install_cmd = 'python3 install.py --setup-branch={}'.format(setup_branch)
         if '-yes' in sys.argv:
             install_cmd += ' -yes'
         print("Executing", install_cmd)
@@ -80,6 +80,25 @@ argsp = arg_parser.get_parser()
 from setup_app import static
 from setup_app.utils import base
 
+profile_fn = os.path.join(base.par_dir, 'profile')
+if os.path.exists(profile_fn):
+    with open(profile_fn) as f:
+        profile = f.read().strip()
+else:
+    profile = 'jans'
+
+os.environ['JANS_PROFILE'] = profile
+base.current_app.profile = profile
+
+
+if 'SETUP_BRANCH' not in base.current_app.app_info:
+    base.current_app.app_info['SETUP_BRANCH'] = argsp.jans_setup_branch
+
+base.current_app.app_info['ox_version'] = base.current_app.app_info['JANS_APP_VERSION'] + base.current_app.app_info['JANS_BUILD']
+
+sys.path.insert(0, base.pylib_dir)
+sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
+
 from setup_app.utils.package_utils import packageUtils
 from setup_app.config import Config
 from setup_app.utils.collect_properties import CollectProperties
@@ -99,7 +118,6 @@ if not installed:
 
     # initialize config object
     Config.init(paths.INSTALL_DIR)
-    Config.determine_version()
 
     collectProperties = CollectProperties()
     collectProperties.collect()
@@ -127,16 +145,16 @@ class flex_installer(JettyInstaller):
 
     def __init__(self):
 
-        self.gluu_admin_ui_source_path = os.path.join(Config.distJansFolder, 'gluu-admin-ui.zip')
-        self.log4j2_adminui_path = os.path.join(Config.distJansFolder, 'log4j2-adminui.xml')
-        self.log4j2_path = os.path.join(Config.distJansFolder, 'log4j2.xml')
-        self.admin_ui_plugin_source_path = os.path.join(Config.distJansFolder, 'admin-ui-plugin.jar')
-        self.flex_path = os.path.join(Config.distJansFolder, 'flex.zip')
+        self.gluu_admin_ui_source_path = os.path.join(Config.dist_jans_dir, 'gluu-admin-ui.zip')
+        self.log4j2_adminui_path = os.path.join(Config.dist_jans_dir, 'log4j2-adminui.xml')
+        self.log4j2_path = os.path.join(Config.dist_jans_dir, 'log4j2.xml')
+        self.admin_ui_plugin_source_path = os.path.join(Config.dist_jans_dir, 'admin-ui-plugin.jar')
+        self.flex_path = os.path.join(Config.dist_jans_dir, 'flex.zip')
         self.source_dir = os.path.join(Config.outputFolder, 'admin-ui')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.properties')
-        self.casa_dist_dir = os.path.join(Config.distJansFolder, 'gluu-casa')
+        self.casa_dist_dir = os.path.join(Config.dist_jans_dir, 'gluu-casa')
         self.casa_web_resources_fn = os.path.join(self.casa_dist_dir, 'casa_web_resources.xml')
         self.casa_war_fn = os.path.join(self.casa_dist_dir, 'casa.war')
         self.casa_config_fn = os.path.join(self.casa_dist_dir,'casa-config.jar')
@@ -189,7 +207,7 @@ class flex_installer(JettyInstaller):
         target_dir = os.path.join(httpd_installer.server_root, 'admin')
 
         print("Copying files to", target_dir)
-        config_api_installer.copyTree(os.path.join(self.source_dir, 'dist'), target_dir)
+        config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'), target_dir)
 
         config_api_installer.check_clients([('role_based_client_id', '2000.')])
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, os.path.join(self.flex_setup_dir, 'templates'), config_api_installer.custom_config_dir)
@@ -213,7 +231,7 @@ class flex_installer(JettyInstaller):
         plugins = config_api_installer.get_plugins()
 
         for plugin in plugins:
-            if not plugin in current_plugins:
+            if plugin not in current_plugins:
                 current_plugins.append(plugin)
 
         config['DEFAULT']['jca_plugins'] = ','.join(current_plugins)
@@ -336,7 +354,7 @@ class flex_installer(JettyInstaller):
 
         https_jans_text = self.readFile(httpd_installer.https_jans_fn)
 
-        if not '<Location /casa>' in https_jans_text:
+        if '<Location /casa>' not in https_jans_text:
 
             https_jans_list = https_jans_text.splitlines()
             n = 0
@@ -357,7 +375,7 @@ def main():
 
     if not node_installer.installed():
         node_fn = 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION'])
-        node_path = os.path.join(Config.distAppFolder, node_fn)
+        node_path = os.path.join(Config.dist_app_dir, node_fn)
         if not os.path.exists(node_path):
             base.download('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), node_path, verbose=True)
         print("Installing node")

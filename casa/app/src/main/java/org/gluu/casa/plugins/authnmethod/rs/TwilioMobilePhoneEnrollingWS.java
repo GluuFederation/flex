@@ -3,10 +3,10 @@ package org.gluu.casa.plugins.authnmethod.rs;
 import org.gluu.casa.plugins.authnmethod.OTPTwilioExtension;
 import org.gluu.casa.plugins.authnmethod.service.TwilioMobilePhoneService;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.*;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
 
 /**
  * @author Stefan Andersson

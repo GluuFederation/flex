@@ -14,10 +14,10 @@ import org.gluu.casa.plugins.authnmethod.service.otp.IOTPAlgorithm;
 import org.gluu.casa.plugins.authnmethod.service.otp.TOTPAlgorithmService;
 import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

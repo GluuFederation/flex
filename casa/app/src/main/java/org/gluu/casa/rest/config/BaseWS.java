@@ -4,8 +4,8 @@ import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.PersistenceService;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 class BaseWS {
