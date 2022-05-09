@@ -64,10 +64,14 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   }
 
   function getMapping(partial, total) {
+    let mappings = []
     if (!partial) {
       partial = []
     }
-    return total.filter((item) => partial.includes(item.dn))
+    if (partial && total) {
+      mappings = total.filter((item) => partial.includes(item.dn))
+    }
+    return mappings
   }
 
   function activate() {
