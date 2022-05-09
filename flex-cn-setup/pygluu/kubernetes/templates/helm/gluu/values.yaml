@@ -734,23 +734,6 @@ global:
     enabled: false
     # -- Name of the admin-ui service. Please keep it as default.
     adminUiServiceName: admin-ui
-    # License parameters
-    # -- Admin UI license API key.
-    adminUiApiKey: xxxxxxxxxxx
-    # -- Admin UI license API key mount location.
-    adminUiApiKeyFile: /etc/jans/conf/admin_ui_api_key
-    # -- Admin UI license product code.
-    adminUiProductCode: xxxxxxxxxxx
-    # -- Admin UI license product code mount location.
-    adminUiProductCodeFile: /etc/jans/conf/admin_ui_product_code
-    # -- Admin UI license shared key.
-    adminUiSharedKey: xxxxxxxxxxx
-    # -- Admin UI license shared key mount location.
-    adminUiSharedKeyFile: /etc/jans/conf/admin_ui_shared_key
-    # -- Admin UI license management key.
-    adminUiManagementKey: xxxxxxxxxxx
-    # -- Admin UI license management key mount location.
-    adminUiManagementKeyFile: /etc/jans/conf/admin_ui_management_key
 
   auth-server:
     # -- Name of the auth-server service. Please keep it as default.

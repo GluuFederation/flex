@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
 import { Card, CardBody, FormGroup, Badge } from '../../../../app/components'
+import { getScopes } from '../../redux/actions/ScopeActions'
 import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
@@ -34,6 +35,7 @@ import {
   CLIENT_READ,
   CLIENT_DELETE,
 } from '../../../../app/utils/PermChecker'
+import ClientShowScopes from './ClientShowScopes'
 
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const { t } = useTranslation()
@@ -43,6 +45,10 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const history = useHistory()
   const pageSize = localStorage.getItem('paggingSize') || 10
 
+  const [scopesModal, setScopesModal] = useState({
+    data: [],
+    show: false,
+  })
   const [limit, setLimit] = useState(200)
   const [pattern, setPattern] = useState(null)
   const [item, setItem] = useState({})
@@ -52,6 +58,18 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   let memoLimit = limit
   let memoPattern = pattern
 
+  const handler = () => {
+    setScopesModal({
+      data: [],
+      show: false,
+    })
+  }
+  const setScopeData = (data) => {
+    setScopesModal({
+      data: data,
+      show: true,
+    })
+  }
   const tableColumns = [
     {
       title: `${t('fields.inum')}`,
@@ -60,21 +78,35 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       sorting: true,
       searchable: true,
     },
+    { title: `${t('fields.client_id')}`, field: 'inum' },
     { title: `${t('fields.client_name')}`, field: 'displayName' },
     {
-      title: `${t('fields.application_type')}`,
-      field: 'applicationType',
+      title: `${t('fields.grant_types')}`,
+      field: 'grantTypes',
+      render: (rowData) => {
+        return rowData.grantTypes.map((data) => {
+          return (
+            <div style={{ maxWidth: 120, overflow: 'auto' }}>
+              <Badge color="primary">{data}</Badge>
+            </div>
+          )
+        })
+      },
     },
-    { title: `${t('fields.subject_type')}`, field: 'subjectType' },
     {
-      title: `${t('fields.status')}`,
-      field: 'disabled',
-      type: 'boolean',
-      render: (rowData) => (
-        <Badge color={getBadgeTheme(rowData.disabled)}>
-          {getClientStatus(rowData.disabled)}
-        </Badge>
-      ),
+      title: `${t('fields.scopes')}`,
+      field: 'scopes',
+      render: (rowData) => {
+        return (
+          <Badge
+            color="primary"
+            role={'button'}
+            onClick={() => setScopeData(rowData.scopes)}
+          >
+            {rowData.scopes?.length || '0'}
+          </Badge>
+        )
+      },
     },
     {
       title: `${t('fields.is_trusted_client')}`,
@@ -91,6 +123,10 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     makeOptions()
     buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
     dispatch(getOpenidClients(userAction))
+  }, [])
+  useEffect(() => {
+    buildPayload(userAction, '', options)
+    dispatch(getScopes(userAction))
   }, [])
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
@@ -162,8 +198,6 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       iconProps: { color: 'primary' },
       isFreeAction: true,
       onClick: () => {
-        // setLimit(memoLimit)
-        // setPattern(memoLimit)
         makeOptions()
         buildPayload(userAction, SEARCHING_OIDC_CLIENTS, options)
         dispatch(searchClients(userAction))
@@ -204,7 +238,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       onClick: () => handleGoToClientAddPage(),
     })
   }
-
+  //ToDo to be deleted
   function getBadgeTheme(status) {
     if (!status) {
       return 'primary'
@@ -220,6 +254,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       return 'info'
     }
   }
+  //ToDo to be deleted
   function getClientStatus(status) {
     if (!status) {
       return t('options.enabled')
@@ -227,8 +262,14 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       return t('options.disabled')
     }
   }
+
   return (
     <Card>
+      <ClientShowScopes
+        handler={handler}
+        isOpen={scopesModal.show}
+        data={scopesModal.data}
+      />
       <GluuRibbon title={t('titles.oidc_clients')} fromLeft />
       <CardBody>
         <FormGroup row />
