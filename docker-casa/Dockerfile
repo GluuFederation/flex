@@ -90,7 +90,7 @@ RUN cd /tmp/jans \
 # flex setup sync
 # ===============
 
-ENV FLEX_VERSION=a8251496ff2ade9dd8101873b45f4c490ae9c64e
+ENV FLEX_VERSION=e042a9de63fba051535782b242f38843d39f5afd
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 ARG CASA_EXTRAS_DIR=casa/extras
 

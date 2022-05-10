@@ -65,7 +65,7 @@ RUN cd /tmp/jans \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=a4c185f2880941e583d2eba5a950fb4021c0f930
+ENV ADMIN_UI_VERSION=e042a9de63fba051535782b242f38843d39f5afd
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
