@@ -42,7 +42,7 @@ function ViewRedirect({
               width: '100%',
               height: '100%',
             }}
-            src={require('../images/gif/npe-redirecting.gif')}
+            src={require('Images/gif/npe-redirecting.gif')}
             alt="loading..."
           />
           {!backendIsUp && (

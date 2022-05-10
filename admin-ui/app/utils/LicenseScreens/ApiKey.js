@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { checkUserApi, checkUserLicenceKey } from '../../redux/actions'
-import logo from './../../images/logos/logo192.png'
+import logo from 'Images/logos/logo192.png'
 import { useDispatch, useSelector } from 'react-redux'
 import './style.css'
 

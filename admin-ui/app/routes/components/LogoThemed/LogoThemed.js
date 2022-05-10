@@ -5,8 +5,8 @@ import classNames from 'classnames'
 import { ThemeConsumer } from 'Components/Theme'
 
 const logos = {
-  'default': require('./../../../images/logos/logo192.png'),
-  'primary': require('./../../../images/logos/logo192.png')
+  'default': require('Images/logos/logo192.png'),
+  'primary': require('Images/logos/logo192.png')
 }
 
 const getLogoUrl = () => {
