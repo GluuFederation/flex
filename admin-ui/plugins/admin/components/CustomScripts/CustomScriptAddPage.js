@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from '../../../../app/components'
+import { Container, CardBody, Card } from 'Components'
 import CustomScriptForm from './CustomScriptForm'
-import { addCustomScript } from '../../redux/actions/CustomScriptActions'
-import { buildPayload } from '../../../../app/utils/PermChecker'
-import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
+import { addCustomScript } from 'Plugins/admin/redux/actions/CustomScriptActions'
+import { buildPayload } from 'Utils/PermChecker'
+import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 
 function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSaveOperationFlag }) {
@@ -18,10 +18,9 @@ function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSave
       history.push('/adm/scripts')
   }, [saveOperationFlag])
 
-
   function handleSubmit(data) {
     if (data) {
-      let message = data.customScript.action_message
+      const message = data.customScript.action_message
       delete data.customScript.action_message
       buildPayload(userAction, message, data)
       dispatch(addCustomScript(userAction))

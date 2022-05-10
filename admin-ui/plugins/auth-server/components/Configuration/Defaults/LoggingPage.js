@@ -7,26 +7,26 @@ import {
   CardBody,
   Col,
   CustomInput,
-} from '../../../../../app/components'
-import GluuLabel from '../../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuCheckBoxRow from '../../../../../app/routes/Apps/Gluu/GluuCheckBoxRow'
-import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
-import GluuViewWrapper from '../../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import { JSON_CONFIG } from '../../../../../app/utils/ApiResources'
-import GluuTooltip from '../../../../../app/routes/Apps/Gluu/GluuTooltip'
-import GluuRibbon from '../../../../../app/routes/Apps/Gluu/GluuRibbon'
-import applicationStyle from '../../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+} from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuCheckBoxRow from 'Routes/Apps/Gluu/GluuCheckBoxRow'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import { JSON_CONFIG } from 'Utils/ApiResources'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { connect } from 'react-redux'
 import { Formik } from 'formik'
 import {
   getLoggingConfig,
   editLoggingConfig,
-} from '../../../redux/actions/LoggingActions'
+} from 'Plugins/auth-server/redux/actions/LoggingActions'
 import {
   hasPermission,
   LOGGING_READ,
   LOGGING_WRITE,
-} from '../../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 
 function LoggingPage({ logging, dispatch, permissions, loading }) {

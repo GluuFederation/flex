@@ -10,7 +10,7 @@ import {
   deleteSqlResponse,
   testSqlResponse,
 } from '../actions/SqlActions'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { SQL } from '../audit/Resources'
 import {
   CREATE,
@@ -18,7 +18,7 @@ import {
   DELETION,
   FETCH,
 } from '../../../../app/audit/UserActionType'
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { initAudit } from 'Redux/sagas/SagaUtils'
 import {
   GET_SQL,
   PUT_SQL,
@@ -27,8 +27,8 @@ import {
   ADD_SQL,
 } from '../actions/types'
 import SqlApi from '../api/SqlApi'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
-import { getClient } from '../../../../app/redux/api/base'
+import { postUserAction } from 'Redux/api/backend-api'
+import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {

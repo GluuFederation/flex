@@ -12,7 +12,7 @@ import {
   DELETE_CUSTOM_SCRIPT_RESPONSE,
   RESET,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   loading: true,

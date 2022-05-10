@@ -5,10 +5,10 @@ import {
   editSmtpResponse,
   testSmtpResponse,
 } from '../actions/SmtpActions'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { GET_SMTP, PUT_SMTP, TEST_SMTP } from '../actions/types'
 import SmtpApi from '../api/SmtpApi'
-import { getClient } from '../../../../app/redux/api/base'
+import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {

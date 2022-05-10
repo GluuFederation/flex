@@ -1,9 +1,9 @@
 import plugins from '../plugins.config'
-import reducerRegistry from '../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 async function process() {
   const metadataFilePath = plugins
-  .map((item) => item.metadataFile)
+    .map((item) => item.metadataFile)
   let pluginReducers = []
   await metadataFilePath.forEach(async (path) => {
     pluginReducers = await [

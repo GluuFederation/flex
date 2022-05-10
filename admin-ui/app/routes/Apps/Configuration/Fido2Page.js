@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { hasPermission, FIDO_WRITE } from '../../../utils/PermChecker'
+import { hasPermission, FIDO_WRITE } from 'Utils/PermChecker'
 import {
   Form,
   FormGroup,
@@ -21,7 +21,7 @@ import { Formik } from 'formik'
 import {
   getFidoConfig,
   editFidoConfig,
-} from '../../../redux/actions/FidoActions'
+} from 'Redux/actions/FidoActions'
 import GluuNameValuesProperty from '../Gluu/GluuNameValuesProperty'
 
 function Fido2Page({ fido, permissions, dispatch }) {

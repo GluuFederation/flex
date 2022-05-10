@@ -7,7 +7,7 @@ import {
   getScripts,
   getScopes,
   getClients,
-} from '../../../redux/actions/InitActions'
+} from 'Redux/actions/InitActions'
 import ReportCard from './ReportCard'
 import { useTranslation } from 'react-i18next'
 

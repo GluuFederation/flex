@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from '../../../../app/components'
+import { Container, CardBody, Card } from 'Components'
 import ScopeForm from './ScopeForm'
-import { addScope } from '../../redux/actions/ScopeActions'
-import { buildPayload } from '../../../../app/utils/PermChecker'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import { addScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { buildPayload } from 'Utils/PermChecker'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import {
   getAttributes,
   getScripts
-} from '../../../../app//redux/actions/InitActions'
-import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
+} from 'Redux/actions/InitActions'
+import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 
 function ScopeAddPage({ scripts, dispatch, attributes, loading, saveOperationFlag, errorInSaveOperationFlag }) {
@@ -37,7 +37,7 @@ function ScopeAddPage({ scripts, dispatch, attributes, loading, saveOperationFla
     if (data) {
       const postBody = {}
       data = JSON.parse(data)
-      let message = data.action_message
+      const message = data.action_message
       delete data.action_message
       postBody['scope'] = data
       buildPayload(userAction, message, postBody)

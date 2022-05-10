@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { checkUserApi, checkUserLicenceKey } from '../../redux/actions'
+import { checkUserApi, checkUserLicenceKey } from 'Redux/actions'
 import logo from 'Images/logos/logo192.png'
 import { useDispatch, useSelector } from 'react-redux'
 import './style.css'

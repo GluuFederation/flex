@@ -2,8 +2,8 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../../../app/utils/TokenController'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
+} from 'Utils/TokenController'
+import { postUserAction } from 'Redux/api/backend-api'
 import {
   getLdapResponse,
   editLdapResponse,
@@ -11,7 +11,7 @@ import {
   deleteLdapResponse,
   testLdapResponse,
 } from '../actions/LdapActions'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { LDAP } from '../audit/Resources'
 import {
   CREATE,
@@ -27,9 +27,9 @@ import {
   TEST_LDAP,
 } from '../actions/types'
 import LdapApi from '../api/LdapApi'
-import { getClient } from '../../../../app/redux/api/base'
+import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { initAudit } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)

@@ -9,8 +9,8 @@ import {
   editAttributeResponse,
   deleteAttributeResponse,
 } from '../actions/AttributeActions'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import { postUserAction } from 'Redux/api/backend-api'
 import {
   GET_ATTRIBUTES,
   SEARCH_ATTRIBUTES,
@@ -25,8 +25,8 @@ import {
   FETCH,
 } from '../../../../app/audit/UserActionType'
 import AttributeApi from '../api/AttributeApi'
-import { getClient } from '../../../../app/redux/api/base'
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { getClient } from 'Redux/api/base'
+import { initAudit } from 'Redux/sagas/SagaUtils'
 
 const PERSON_SCHEMA = 'person schema'
 

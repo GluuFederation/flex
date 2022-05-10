@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import MappingAddDialogForm from './MappingAddDialogForm'
 import {
   Card,
@@ -9,22 +9,22 @@ import {
   CardBody,
   FormGroup,
   Button,
-} from '../../../../app/components'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+} from 'Components'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import {
   getMapping,
   addNewRolePermissions,
-} from '../../redux/actions/MappingActions'
-import { getRoles } from '../../redux/actions/ApiRoleActions'
-import { getPermissions } from '../../redux/actions/ApiPermissionActions'
+} from 'Plugins/admin/redux/actions/MappingActions'
+import { getRoles } from 'Plugins/admin/redux/actions/ApiRoleActions'
+import { getPermissions } from 'Plugins/admin/redux/actions/ApiPermissionActions'
 import MappingItem from './MappingItem'
 import {
   hasPermission,
   buildPayload,
   ROLE_READ,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 
 function MappingPage({
   mapping,

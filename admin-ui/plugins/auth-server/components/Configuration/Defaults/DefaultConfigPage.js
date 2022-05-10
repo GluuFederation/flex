@@ -9,9 +9,9 @@ import {
   Card,
   CardBody,
   FormGroup,
-} from '../../../../../app/components'
-import { getJsonConfig } from '../../../redux/actions/JsonConfigActions'
-import GluuRibbon from '../../../../../app/routes/Apps/Gluu/GluuRibbon'
+} from 'Components'
+import { getJsonConfig } from 'Plugins/auth-server/redux/actions/JsonConfigActions'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 
 function DefaultConfigPage({ dispatch }) {
   const { t } = useTranslation()

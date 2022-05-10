@@ -7,7 +7,7 @@ import {
   FormGroup,
   Accordion,
   Form,
-} from '../../../../app/components'
+} from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
 import { DeleteOutlined } from '@material-ui/icons'
 import {
@@ -16,9 +16,9 @@ import {
   updatePermissionsToServer,
   updatePermissionsServerResponse,
   deleteMapping,
-} from '../../redux/actions/MappingActions'
-import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+} from 'Plugins/admin/redux/actions/MappingActions'
+import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 import { Formik } from 'formik'
 

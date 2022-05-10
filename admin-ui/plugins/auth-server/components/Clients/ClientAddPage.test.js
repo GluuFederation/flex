@@ -6,9 +6,9 @@ import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import initReducer from '../../../../app/redux/reducers/InitReducer'
-import oidcDiscoveryReducer from '../../../../app/redux/reducers/OidcDiscoveryReducer'
-import scopeReducer from '../../redux/reducers/ScopeReducer'
+import initReducer from 'Redux/reducers/InitReducer'
+import oidcDiscoveryReducer from 'Redux/reducers/OidcDiscoveryReducer'
+import scopeReducer from 'Plugins/auth-server/redux/reducers/ScopeReducer'
 const permissions = [
   'https://jans.io/oauth/config/openid/clients.readonly',
   'https://jans.io/oauth/config/openid/clients.write',

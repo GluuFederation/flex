@@ -4,14 +4,14 @@ import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
-import { Card, CardBody, FormGroup, Badge } from '../../../../app/components'
-import { getScopes } from '../../redux/actions/ScopeActions'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
+import { Card, CardBody, FormGroup, Badge } from 'Components'
+import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
-import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import {
   LIMIT_ID,
@@ -20,21 +20,21 @@ import {
   PATTERN_ID,
   SEARCHING_OIDC_CLIENTS,
   FETCHING_OIDC_CLIENTS,
-} from '../../common/Constants'
+} from 'Plugins/auth-server/common/Constants'
 import {
   getOpenidClients,
   searchClients,
   setCurrentItem,
   deleteClient,
   viewOnly,
-} from '../../redux/actions/OIDCActions'
+} from 'Plugins/auth-server/redux/actions/OIDCActions'
 import {
   hasPermission,
   buildPayload,
   CLIENT_WRITE,
   CLIENT_READ,
   CLIENT_DELETE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import ClientShowScopes from './ClientShowScopes'
 
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
