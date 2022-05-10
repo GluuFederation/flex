@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { FormGroup, Card, CardBody } from '../../../../app/components'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
-import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import useExitPrompt from '../../../../app/routes/Apps/Gluu/useExitPrompt'
+import { FormGroup, Card, CardBody } from 'Components'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import useExitPrompt from 'Routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
 import {
   buildPayload,
   hasPermission,
   PROPERTIES_WRITE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import {
   getJsonConfig,
   patchJsonConfig,
-} from '../../redux/actions/JsonConfigActions'
-import { FETCHING_JSON_PROPERTIES } from '../../common/Constants'
+} from 'Plugins/auth-server/redux/actions/JsonConfigActions'
+import { FETCHING_JSON_PROPERTIES } from 'Plugins/auth-server/common/Constants'
 
 function ConfigPage({ configuration, loading, dispatch, permissions }) {
   const lSize = 6

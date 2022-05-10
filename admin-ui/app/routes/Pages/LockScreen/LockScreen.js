@@ -9,10 +9,10 @@ import {
   Label,
   EmptyLayout,
   ThemeConsumer
-} from './../../../components'
+} from 'Components'
 
-import { HeaderAuth } from "../../components/Pages/HeaderAuth"
-import { FooterAuth } from "../../components/Pages/FooterAuth"
+import { HeaderAuth } from "Routes/components/Pages/HeaderAuth"
+import { FooterAuth } from "Routes/components/Pages/FooterAuth"
 import { useTranslation } from 'react-i18next'
 
 const LockScreen = () => {

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import {
   Sidebar,
   UncontrolledTooltip
-} from './../../../components'
+} from 'Components'
 
 import { VersionSelector } from '../VersionSelector'
 import { useTranslation } from 'react-i18next'

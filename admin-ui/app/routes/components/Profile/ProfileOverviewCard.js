@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { 
   CardTitle,
   Badge
-} from './../../../components'
+} from 'Components'
 
 const ProfileOverviewCard = (props) => (
   <React.Fragment>

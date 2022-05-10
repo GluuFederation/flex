@@ -3,7 +3,7 @@ import React from 'react'
 import { 
   DropdownMenu,
   DropdownItem
-} from './../../../components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 const SwitchVersion = () => {

@@ -7,7 +7,7 @@ import {
   RESET,
   UPDATE_PERMISSIONS_SERVER_RESPONSE,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 const INIT_STATE = {
   items: [],

@@ -5,7 +5,7 @@ import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import scopeReducer from '../../redux/reducers/ScopeReducer'
+import scopeReducer from 'Plugins/auth-server/redux/reducers/ScopeReducer'
 import scopes from './scopes'
 
 const permissions = [

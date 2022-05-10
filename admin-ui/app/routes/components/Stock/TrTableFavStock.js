@@ -3,7 +3,7 @@ import times from 'lodash/times'
 import { randomArray } from './../../../utilities'
 import {
   Badge
-} from './../../../components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 const name = [

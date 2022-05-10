@@ -3,7 +3,7 @@ import {
   isFourZeroOneError,
   addAdditionalData,
 } from '../../../../app/utils/TokenController'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
+import { postUserAction } from 'Redux/api/backend-api'
 import {
   getOpenidClientsResponse,
   addClientResponse,
@@ -26,9 +26,9 @@ import {
   SEARCH_CLIENTS,
 } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
-import { getClient } from '../../../../app/redux/api/base'
+import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { initAudit } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
   const wholeToken = yield select((state) => state.authReducer.token)

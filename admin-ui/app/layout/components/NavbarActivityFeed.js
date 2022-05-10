@@ -12,7 +12,7 @@ import {
   ListGroup,
   ListGroupItem,
   Media
-} from "./../../components"
+} from "Components"
 
 /*eslint-disable */
 const activityFeedIcons = [

@@ -1,5 +1,5 @@
 import { GET_LICENSE_DETAILS, GET_LICENSE_DETAILS_RESPONSE, UPDATE_LICENSE_DETAILS, UPDATE_LICENSE_DETAILS_RESPONSE } from '../actions/types'
-import reducerRegistry from '../../redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   item: {},
   loading: true,

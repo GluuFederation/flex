@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 import {
   Container,
-} from './../../../components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 export const SidebarA = () => {

@@ -12,7 +12,7 @@ import {
   NavbarToggler,
   UncontrolledDropdown,
   ThemeConsumer,
-} from './../../../../components'
+} from 'Components'
 import { randomAvatar } from './../../../../utilities'
 
 import { NavbarActivityFeed } from
@@ -21,12 +21,9 @@ import { NavbarMessages } from
 './../../../../layout/components/NavbarMessages'
 import { NavbarUser } from
 './../../../../layout/components/NavbarUser'
-import { DropdownProfile } from
-'./../../../components/Dropdowns/DropdownProfile'
-import { NavbarNavigation } from
-'./../../../components/Navbars/NavbarNavigation'
-import { LogoThemed } from
-'./../../../components/LogoThemed/LogoThemed'
+import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
+import { NavbarNavigation } from 'Routes/components/Navbars/NavbarNavigation'
+import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import { useTranslation } from 'react-i18next'
 
 export const LayoutNavbar = () => {

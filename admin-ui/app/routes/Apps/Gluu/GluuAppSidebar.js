@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { SidebarMenu, Divider } from './../../../components'
+import { SidebarMenu, Divider } from 'Components'
 import { connect } from 'react-redux'
-import { hasPermission } from '../../../utils/PermChecker'
+import { hasPermission } from 'Utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
-import { processMenus } from '../../../../plugins/PluginMenuResolver'
+import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
 
 function GluuAppSidebar({ scopes }) {

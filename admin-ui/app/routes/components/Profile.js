@@ -1,6 +1,6 @@
 import React from "react"
 
-import { Avatar, Badge } from "./../../components"
+import { Avatar, Badge } from "Components"
 
 import { randomAvatar } from "./../../utilities"
 

@@ -12,7 +12,7 @@ import {
   CustomInput,
   ButtonGroup,
   DropdownItem
-} from './../../../components'
+} from 'Components'
 
 import {
   Profile

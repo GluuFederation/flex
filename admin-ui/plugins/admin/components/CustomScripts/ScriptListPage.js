@@ -5,26 +5,26 @@ import { useHistory } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
-import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
-import { Card, CardBody, FormGroup } from '../../../../app/components'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import { Card, CardBody, FormGroup } from 'Components'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import CustomScriptDetailPage from './CustomScriptDetailPage'
-import GluuCustomScriptSearch from '../../../../app/routes/Apps/Gluu/GluuCustomScriptSearch'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuCustomScriptSearch from 'Routes/Apps/Gluu/GluuCustomScriptSearch'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   deleteCustomScript,
   getCustomScriptByType,
   setCurrentItem,
   getCustomScripts,
-} from '../../redux/actions/CustomScriptActions'
+} from 'Plugins/admin/redux/actions/CustomScriptActions'
 import {
   hasPermission,
   buildPayload,
   SCRIPT_READ,
   SCRIPT_WRITE,
   SCRIPT_DELETE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import {
   LIMIT_ID,
   LIMIT,

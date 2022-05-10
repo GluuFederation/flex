@@ -1,7 +1,7 @@
 import React from 'react'
-import { Col, Button, FormGroup, Divider } from './../../../components'
+import { Col, Button, FormGroup, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function GluuCommitFooter({
   extraOnClick,

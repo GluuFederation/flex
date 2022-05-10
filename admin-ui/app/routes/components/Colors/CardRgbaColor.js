@@ -7,7 +7,7 @@ import {
   CardFooter,
   Button,
   CardHeader
-} from './../../../components'
+} from 'Components'
 
 import { InfoPopover } from './InfoPopover'
 

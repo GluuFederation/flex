@@ -1,39 +1,39 @@
 import React from "react"
 import PropTypes from "prop-types"
 import useDarkMode from 'use-dark-mode'
-import { Layout, ThemeProvider } from "./../components"
+import { Layout, ThemeProvider } from "Components"
 
-import "./../styles/bootstrap.scss"
-import "./../styles/main.scss"
-import "./../styles/plugins/plugins.scss"
-import "./../styles/plugins/plugins.css"
+import "Styles/bootstrap.scss"
+import "Styles/main.scss"
+import "Styles/plugins/plugins.scss"
+import "Styles/plugins/plugins.css"
 
-import { RoutedNavbars, RoutedSidebars } from "./../routes"
+import { RoutedNavbars, RoutedSidebars } from "Routes"
 
 const favIcons = [
   {
     rel: "icon",
     type: "image/x-icon",
-    href: require("./../images/favicons/favicon.ico"),
+    href: require("Images/favicons/favicon.ico"),
   },
 
   {
     rel: "apple-touch-icon",
     sizes: "180x180",
-    href: require("./../images/favicons/apple-touch-icon.png"),
+    href: require("Images/favicons/apple-touch-icon.png"),
   },
 
   {
     rel: "icon",
     type: "image/png",
     sizes: "32x32",
-    href: require("./../images/favicons/favicon-32x32.png"),
+    href: require("Images/favicons/favicon-32x32.png"),
   },
   {
     rel: "icon",
     type: "image/png",
     sizes: "16x16",
-    href: require("./../images/favicons/favicon-16x16.png"),
+    href: require("Images/favicons/favicon-16x16.png"),
   },
 ]
 

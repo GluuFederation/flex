@@ -1,14 +1,14 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from '../../../../app/utils/TokenController'
+import { isFourZeroOneError } from 'Utils/TokenController'
 import {
   getCouchBaseResponse,
   addCouchBaseResponse,
   editCouchBaseResponse,
 } from '../actions/CouchbaseActions'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { GET_COUCHBASE, PUT_COUCHBASE, SET_COUCHBASE } from '../actions/types'
 import CouchbaseApi from '../api/CouchbaseApi'
-import { getClient } from '../../../../app/redux/api/base'
+import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {

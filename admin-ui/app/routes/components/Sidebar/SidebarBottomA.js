@@ -5,7 +5,7 @@ import {
   Sidebar,
   UncontrolledPopover,
   PopoverBody
-} from "./../../../components"
+} from "Components"
 
 import { FooterAuth } from "../Pages/FooterAuth"
 import { FooterText } from "../FooterText"

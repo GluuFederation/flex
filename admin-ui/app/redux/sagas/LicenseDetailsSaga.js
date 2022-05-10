@@ -4,16 +4,13 @@ import {
   getLicenseDetailsResponse,
   updateLicenseDetailsResponse,
 } from '../actions/LicenseDetailsActions'
-import { getClient } from '../../redux/api/base'
+import { getClient } from 'Redux/api/base'
 import LicenseDetailsApi from '../api/LicenseDetailsApi'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from '../../redux/sagas/SagaUtils'
-import { postUserAction } from '../../redux/api/backend-api'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from '../../utils/TokenController'
-import { getAPIAccessToken } from '../../redux/actions/AuthActions'
+import { initAudit } from 'Redux/sagas/SagaUtils'
+import { postUserAction } from 'Redux/api/backend-api'
+import { isFourZeroOneError } from '../../utils/TokenController'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)

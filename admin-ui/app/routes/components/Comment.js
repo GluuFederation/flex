@@ -5,7 +5,7 @@ import {
   Media,
   AvatarAddOn,
   UncontrolledTooltip 
-} from './../../components'
+} from 'Components'
 import { randomArray, randomAvatar } from './../../utilities'
 import { useTranslation } from 'react-i18next'
 

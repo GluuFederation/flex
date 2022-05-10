@@ -13,11 +13,11 @@ import {
   DELETION,
   FETCH,
 } from '../../../../app/audit/UserActionType'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../../../app/utils/TokenController'
+} from 'Utils/TokenController'
 import {
   GET_ROLES,
   GET_ROLE,
@@ -26,10 +26,10 @@ import {
   DELETE_ROLE,
 } from '../actions/types'
 import RoleApi from '../api/RoleApi'
-import { getClient } from '../../../../app/redux/api/base'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
+import { getClient } from 'Redux/api/base'
+import { postUserAction } from 'Redux/api/backend-api'
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { initAudit } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)

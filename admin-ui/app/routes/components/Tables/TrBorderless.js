@@ -3,7 +3,7 @@ import React from 'react'
 import { 
   Badge,
   UncontrolledTooltip
-} from './../../../components'
+} from 'Components'
 
 const TrBorderless = () => {
   return (

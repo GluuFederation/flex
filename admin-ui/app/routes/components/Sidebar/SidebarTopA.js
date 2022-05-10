@@ -10,7 +10,7 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem
-} from './../../../components'
+} from 'Components'
 import { randomAvatar } from './../../../utilities'
 import { useTranslation } from 'react-i18next'
 

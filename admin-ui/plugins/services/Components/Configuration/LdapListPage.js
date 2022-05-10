@@ -5,28 +5,28 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Paper } from '@material-ui/core'
-import { Card, CardBody, FormGroup } from '../../../../app/components'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
-import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
+import { Card, CardBody, FormGroup } from 'Components'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import LdapDetailPage from './LdapDetailPage'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@material-ui/lab/Alert'
-import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
+import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import {
   hasPermission,
   buildPayload,
   LDAP_READ,
   LDAP_WRITE,
   LDAP_DELETE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import {
   getLdapConfig,
   setCurrentItem,
   deleteLdap,
   testLdap,
-} from '../../redux/actions/LdapActions'
-import { getPersistenceType } from '../../redux/actions/PersistenceActions'
+} from 'Plugins/services/redux/actions/LdapActions'
+import { getPersistenceType } from 'Plugins/services/redux/actions/PersistenceActions'
 import { useTranslation } from 'react-i18next'
 
 function LdapListPage({

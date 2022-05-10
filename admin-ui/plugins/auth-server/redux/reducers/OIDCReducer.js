@@ -12,7 +12,7 @@ import {
   SEARCH_CLIENTS,
   SET_VIEW,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 const INIT_STATE = {
   items: [],

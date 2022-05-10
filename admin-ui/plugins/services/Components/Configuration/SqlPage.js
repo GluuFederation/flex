@@ -1,25 +1,24 @@
-import React, { useEffect } from 'react';
-import BlockUi from 'react-block-ui';
-import { Formik } from 'formik';
+import React, { useEffect } from 'react'
+import BlockUi from 'react-block-ui'
+import { Formik } from 'formik'
 import {
   Form,
   Container,
   Card,
   CardBody,
-
-} from '../../../../app/components';
-import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter';
-import LdapItem from './LdapItem';
-import { connect } from 'react-redux';
-import { getLdapConfig, editLdap } from '../../redux/actions/LdapActions';
+} from 'Components'
+import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
+import LdapItem from './LdapItem'
+import { connect } from 'react-redux'
+import { getLdapConfig, editLdap } from 'Plugins/services/redux/actions/LdapActions'
 import { useTranslation } from 'react-i18next'
 
 function SqlPage({ ldap, loading, dispatch }) {
   const { t } = useTranslation()
 
   useEffect(() => {
-    dispatch(getLdapConfig());
-  }, []);
+    dispatch(getLdapConfig())
+  }, [])
 
   return (
     <React.Fragment>
@@ -29,32 +28,31 @@ function SqlPage({ ldap, loading, dispatch }) {
           blocking={loading}
           keepInView={true}
           renderChildren={true}
-        message={t("messages.request_waiting_message")}
+          message={t("messages.request_waiting_message")}
         >
           <Card>
-              <CardBody>
-                  <Formik
-                    initialValues={ldap}
-                    onSubmit={(values) => {
-                      dispatch(editLdap(JSON.stringify(values)));
-                    }}
-                  >
-                    {(formik) => (
-                      <Form onSubmit={formik.handleSubmit}>
-                        { ldap.map((dap, index) => (
-                          <LdapItem key={index} ldap={dap} formik={formik} index={index}></LdapItem>
-                        ))}
-                        <GluuFooter />
-                      </Form>
-                    )}
-                  </Formik>
-
-                </CardBody>
-            </Card>
+            <CardBody>
+              <Formik
+                initialValues={ldap}
+                onSubmit={(values) => {
+                  dispatch(editLdap(JSON.stringify(values)))
+                }}
+              >
+                {(formik) => (
+                  <Form onSubmit={formik.handleSubmit}>
+                    { ldap.map((dap, index) => (
+                      <LdapItem key={index} ldap={dap} formik={formik} index={index}></LdapItem>
+                    ))}
+                    <GluuFooter />
+                  </Form>
+                )}
+              </Formik>
+            </CardBody>
+          </Card>
         </BlockUi>
       </Container>
     </React.Fragment>
-  );
+  )
 }
 
 const mapStateToProps = (state) => {
@@ -62,7 +60,7 @@ const mapStateToProps = (state) => {
     ldap: state.ldapReducer.ldap,
     permissions: state.authReducer.permissions,
     loading: state.ldapReducer.loading,
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps)(SqlPage);
+export default connect(mapStateToProps)(SqlPage)

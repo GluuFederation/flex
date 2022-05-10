@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { 
   Row,
   Col
-} from './../../../components'
+} from 'Components'
 
 import {
   TinyAreaChart

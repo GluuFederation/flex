@@ -5,12 +5,12 @@ import { Paper } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
-import { Card, CardBody, FormGroup } from '../../../../app/components'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
-import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import { Card, CardBody, FormGroup } from 'Components'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { useTranslation } from 'react-i18next'
 import {
@@ -18,14 +18,14 @@ import {
   searchScopes,
   deleteScope,
   setCurrentItem,
-} from '../../redux/actions/ScopeActions'
+} from 'Plugins/auth-server/redux/actions/ScopeActions'
 import {
   hasPermission,
   buildPayload,
   SCOPE_READ,
   SCOPE_WRITE,
   SCOPE_DELETE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import {
   LIMIT_ID,
   LIMIT,
@@ -33,7 +33,7 @@ import {
   PATTERN_ID,
   SEARCHING_SCOPES,
   FETCHING_SCOPES,
-} from '../../common/Constants'
+} from 'Plugins/auth-server/common/Constants'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const { t } = useTranslation()

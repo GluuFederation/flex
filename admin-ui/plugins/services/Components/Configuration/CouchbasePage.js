@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
 import { Formik } from 'formik'
 import CouchbaseItem from './CouchbaseItem'
-import { Form, FormGroup, Card, CardBody } from '../../../../app/components'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
+import { Form, FormGroup, Card, CardBody } from 'Components'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import { connect } from 'react-redux'
 import Alert from '@material-ui/lab/Alert'
 import {
   getCouchBaseConfig,
   editCouchBase,
-} from '../../redux/actions/CouchbaseActions'
+} from 'Plugins/services/redux/actions/CouchbaseActions'
 
 function CouchbasePage({ couchbase, loading, dispatch, persistenceType }) {
   useEffect(() => {

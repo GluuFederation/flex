@@ -7,8 +7,8 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
-import { getMau } from '../../redux/actions/MauActions'
-import { getClients } from '../../redux/actions/InitActions'
+import { getMau } from 'Redux/actions/MauActions'
+import { getClients } from 'Redux/actions/InitActions'
 import applicationstyle from '../Apps/Gluu/styles/applicationstyle'
 import GluuLabel from '../Apps/Gluu/GluuLabel'
 import GluuRibbon from '../Apps/Gluu/GluuRibbon'
@@ -20,13 +20,13 @@ import {
   FormGroup,
   Col,
   Row,
-} from '../../../app/components'
+} from 'Components'
 import {
   hasBoth,
   buildPayload,
   STAT_READ,
   STAT_JANS_READ,
-} from '../../utils/PermChecker'
+} from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 

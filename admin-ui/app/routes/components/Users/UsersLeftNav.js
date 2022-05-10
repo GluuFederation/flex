@@ -5,7 +5,7 @@ import {
   NavItem,
   NavLink,
   Badge
-} from './../../../components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 const UsersLeftNav = () => {

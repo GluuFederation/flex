@@ -12,7 +12,7 @@ import {
   DropdownMenu,
   DropdownItem,
   NestedDropdown
-} from './../../../components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {

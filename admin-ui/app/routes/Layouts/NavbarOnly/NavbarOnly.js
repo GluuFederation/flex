@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { withPageConfig } from
-'./../../../components/Layout/withPageConfig'
+'Components/Layout/withPageConfig'
 import {
   Container,
-} from './../../../components'
+} from 'Components'
 
 class NavbarOnly extends React.Component {
     static propTypes = {

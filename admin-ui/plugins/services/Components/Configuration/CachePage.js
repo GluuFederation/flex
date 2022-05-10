@@ -10,11 +10,11 @@ import {
   CardBody,
   InputGroup,
   CustomInput,
-} from '../../../../app/components'
-import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
+} from 'Components'
+import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import CacheInMemory from './CacheInMemory'
 import CacheRedis from './CacheRedis'
 import CacheNative from './CacheNative'
@@ -31,9 +31,9 @@ import {
   editNativeCache,
   editRedisCache,
   editMemCache,
-} from '../../redux/actions/CacheActions'
-import { CACHE } from '../../../../app/utils/ApiResources'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+} from 'Plugins/services/redux/actions/CacheActions'
+import { CACHE } from 'Utils/ApiResources'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 
 function CachePage({

@@ -1,9 +1,9 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { API_PERMISSION } from '../audit/Resources'
 import PermissionApi from '../api/PermissionApi'
-import { getClient } from '../../../../app/redux/api/base'
-import { postUserAction } from '../../../../app/redux/api/backend-api'
+import { getClient } from 'Redux/api/base'
+import { postUserAction } from 'Redux/api/backend-api'
 import {
   getPermissionResponse,
   addPermissionResponse,
@@ -29,7 +29,7 @@ import {
 } from '../actions/types'
 
 const JansConfigApi = require('jans_config_api')
-import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
+import { initAudit } from 'Redux/sagas/SagaUtils'
 
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)

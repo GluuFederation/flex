@@ -1,13 +1,9 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import LicenseDetailsForm from './LicenseDetailsForm'
-import GluuRibbon from '../../routes/Apps/Gluu/GluuRibbon'
-import GluuFormDetailRow from '../../routes/Apps/Gluu/GluuFormDetailRow'
-import { LICENSE } from '../../utils/ApiResources'
-import {
-  getLicenseDetails,
-  updateLicenseDetails,
-} from '../../redux/actions/LicenseDetailsActions'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
+import { LICENSE } from 'Utils/ApiResources'
+import { getLicenseDetails } from 'Redux/actions/LicenseDetailsActions'
 import {
   Card,
   CardBody,
@@ -16,11 +12,11 @@ import {
   FormGroup,
   Row,
   Col,
-} from '../../components'
+} from 'Components'
 import {
   buildPayload,
-} from '../../utils/PermChecker'
-import GluuLoader from '../../routes/Apps/Gluu/GluuLoader'
+} from 'Utils/PermChecker'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import Alert from '@material-ui/lab/Alert'
 
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'

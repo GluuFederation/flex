@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { CardText } from './../../components'
+import { CardText } from 'Components'
 import { useTranslation } from 'react-i18next'
 
 const CardTextDemo = (props) => {

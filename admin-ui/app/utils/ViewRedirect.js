@@ -1,9 +1,9 @@
 //ToDo :: Delete This page once auth things works fine
 
 import React from 'react'
-import { Container } from './../components'
-import GluuNotification from './../routes/Apps/Gluu/GluuNotification'
-import GluuCommitDialog from '../../app/routes/Apps/Gluu/GluuCommitDialog'
+import { Container } from 'Components'
+import GluuNotification from 'Routes/Apps/Gluu/GluuNotification'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 
 function ViewRedirect({
@@ -42,7 +42,7 @@ function ViewRedirect({
               width: '100%',
               height: '100%',
             }}
-            src={require('../images/gif/npe-redirecting.gif')}
+            src={require('Images/gif/npe-redirecting.gif')}
             alt="loading..."
           />
           {!backendIsUp && (
