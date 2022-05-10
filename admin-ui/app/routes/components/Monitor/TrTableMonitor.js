@@ -4,7 +4,7 @@ import times from 'lodash/times'
 import { 
   Badge,
   Progress
-} from './../../../components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 /*eslint-disable */

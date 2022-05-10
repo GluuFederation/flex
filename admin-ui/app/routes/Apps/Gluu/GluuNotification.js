@@ -1,6 +1,6 @@
 import React from 'react'
 import { ToastContainer, toast } from 'react-toastify'
-import { Media } from '../../../components'
+import { Media } from 'Components'
 
 function GluuNotification({ type, message, description, show }) {
   let typeIcon = 'fa-question'

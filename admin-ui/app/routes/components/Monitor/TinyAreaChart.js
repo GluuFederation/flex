@@ -4,7 +4,7 @@ import {
   ResponsiveContainer,
   AreaChart,
   Area,
-} from "./../../../components/recharts"
+} from "Components/recharts"
 
 import colors from "./../../../colors"
 

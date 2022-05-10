@@ -5,7 +5,7 @@ import {
   CardTitle, 
   CardBody, 
   CardHeader
-} from './../../../components'
+} from 'Components'
 
 import { InfoPopover } from './InfoPopover'
 import { useTranslation } from 'react-i18next'

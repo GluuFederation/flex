@@ -16,7 +16,7 @@ import {
   NavbarToggler,
   UncontrolledCollapse,
   UncontrolledDropdown,
-} from './../../../components'
+} from 'Components'
 
 import { NavbarActivityFeed } from './../../../layout/components/NavbarActivityFeed'
 import { NavbarMessages } from './../../../layout/components/NavbarMessages'

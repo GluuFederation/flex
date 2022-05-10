@@ -9,7 +9,7 @@ import {
   Legend,
   LineChart,
   Dot,
-} from './../../../components/recharts'
+} from 'Components/recharts'
 
 import colors from './../../../colors'
 

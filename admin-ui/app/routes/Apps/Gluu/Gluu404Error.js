@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { EmptyLayout } from './../../../components'
-import { HeaderAuth } from '../../components/Pages/HeaderAuth'
-import { FooterAuth } from '../../components/Pages/FooterAuth'
+import { EmptyLayout } from 'Components'
+import { HeaderAuth } from 'Routes/components/Pages/HeaderAuth'
+import { FooterAuth } from 'Routes/components/Pages/FooterAuth'
 import { useTranslation } from 'react-i18next'
 
 function Gluu404Error() {

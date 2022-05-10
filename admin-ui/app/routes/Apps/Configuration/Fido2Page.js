@@ -11,7 +11,7 @@ import {
   Input,
   InputGroup,
   CardBody,
-} from './../../../components'
+} from 'Components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
 import GluuLoader from '../Gluu/GluuLoader'

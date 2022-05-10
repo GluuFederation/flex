@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { 
   Badge
-} from './../../../components'
+} from 'Components'
 
 const TimelineMini = (props) => (
   <React.Fragment>

@@ -10,10 +10,10 @@ import {
   NavItem,
   SidebarTrigger,
   UncontrolledDropdown,
-} from '../../../components'
+} from 'Components'
 import { LanguageMenu } from './LanguageMenu'
 import { connect } from 'react-redux'
-import { DropdownProfile } from '../../../routes/components/Dropdowns/DropdownProfile'
+import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
 import { randomAvatar } from '../../../utilities'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'

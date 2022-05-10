@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FormGroup, Label, Col } from '../../../components'
+import { FormGroup, Label, Col } from 'Components'
 import Toggle from 'react-toggle'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'

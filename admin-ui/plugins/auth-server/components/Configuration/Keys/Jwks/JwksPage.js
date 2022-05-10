@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Card, CardBody } from '../../../../../../app/components'
+import { Card, CardBody } from 'Components'
 import { getJwks } from '../../../../redux/actions/JwksActions'
 import GluuLabel from '../../../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuLoader from '../../../../../../app/routes/Apps/Gluu/GluuLoader'
@@ -18,8 +18,8 @@ function JwksPage({ jwks, loading, dispatch }) {
         <CardBody>
           {Object.keys(jwks).length
             ? Array.from(jwks['keys']).map((item, index) => (
-                <JwkItem key={index} item={item} index={index}></JwkItem>
-              ))
+              <JwkItem key={index} item={item} index={index} />
+            ))
             : ''}
         </CardBody>
       </Card>

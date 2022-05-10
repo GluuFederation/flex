@@ -9,7 +9,7 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownToggle
-} from './../../components'
+} from 'Components'
 
 const SERVICE_URL = "http://dashboards.webkom.co:8000"
 

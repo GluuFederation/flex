@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { FormGroup, Col, Button } from '../../../components'
-import { Accordion } from '../../../../app/components'
+import { FormGroup, Col, Button } from 'Components'
+import { Accordion } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
 

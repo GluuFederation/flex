@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { FormGroup, Label, Badge } from '../../../components'
+import { FormGroup, Label, Badge } from 'Components'
 import GluuTooltip from './GluuTooltip'
 function GluuFormDetailRow({
   label,

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { buildPayload } from '../../../../app/utils/PermChecker'
-import { Container, Row, Col } from './../../../components'
+import { Container, Row, Col } from 'Components'
 import { connect } from 'react-redux'
 import {
   getAttributes,

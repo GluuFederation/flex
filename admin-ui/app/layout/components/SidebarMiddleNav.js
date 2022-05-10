@@ -1,5 +1,5 @@
 import React from 'react'
-import { SidebarMenu, Divider } from './../../components'
+import { SidebarMenu, Divider } from 'Components'
 
 export const SidebarMiddleNav = () => (
   <SidebarMenu>

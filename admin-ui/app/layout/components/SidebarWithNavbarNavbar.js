@@ -10,12 +10,12 @@ import {
   UncontrolledCollapse,
   SidebarTrigger,
   ThemeConsumer
-} from './../../components'
+} from 'Components'
 
 import { NavbarActivityFeed } from './NavbarActivityFeed'
 import { NavbarMessages } from './NavbarMessages'
 import { NavbarUser } from './NavbarUser'
-import { LogoThemed } from './../../routes/components/LogoThemed/LogoThemed'
+import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 
 export const SidebarWithNavbarNavbar = () => (
   <ThemeConsumer>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormGroup, Col, Input, Button } from '../../../components'
+import { FormGroup, Col, Input, Button } from 'Components'
 import { useTranslation } from 'react-i18next'
 
 function GluuPropertyItem({

@@ -5,7 +5,7 @@ import {
   Media, 
   Avatar,
   AvatarAddOn
-} from './../../../components'
+} from 'Components'
 
 import { randomAvatar } from './../../../utilities'
 import { useTranslation } from 'react-i18next'

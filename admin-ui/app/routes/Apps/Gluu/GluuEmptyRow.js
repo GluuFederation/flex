@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormGroup } from '../../../components'
+import { FormGroup } from 'Components'
 function GluuEmptyRow() {
   return <FormGroup row></FormGroup>
 }

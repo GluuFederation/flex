@@ -4,7 +4,7 @@ import {
   UncontrolledPopover,
   PopoverHeader,
   PopoverBody
-} from './../../../components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 export const POPOVER_BODY_PARTS = [

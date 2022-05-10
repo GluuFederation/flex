@@ -1,7 +1,7 @@
 import React from 'react'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
-import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
+import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 
 function GluuBooleanInput({ label, name, value, lsize, rsize, doc_category }) {

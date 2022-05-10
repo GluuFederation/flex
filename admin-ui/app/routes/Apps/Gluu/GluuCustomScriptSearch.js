@@ -4,7 +4,7 @@ import {
   InputGroup,
   CustomInput,
   FormGroup,
-} from './../../../components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 function GluuCustomScriptSearch({

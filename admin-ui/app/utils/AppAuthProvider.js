@@ -12,8 +12,8 @@ import {
   getAPIAccessToken,
   getUserLocation,
   checkLicensePresent,
-} from '../redux/actions'
-import SessionTimeout from '../routes/Apps/Gluu/GluuSessionTimeout'
+} from 'Redux/actions'
+import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
 
 class AppAuthProvider extends Component {
   state = {

@@ -10,7 +10,7 @@ import {
   Media,
   Avatar,
   AvatarAddOn
-} from './../../../components'
+} from 'Components'
 import { randomAvatar } from './../../../utilities'
 
 import { DropdownProfile } from '../Dropdowns/DropdownProfile'

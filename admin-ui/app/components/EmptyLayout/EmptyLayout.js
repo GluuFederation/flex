@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import {
   withPageConfig
-} from './../../components/Layout'
+} from 'Components/Layout'
 
 class EmptyLayout extends React.Component {
   static propTypes = {

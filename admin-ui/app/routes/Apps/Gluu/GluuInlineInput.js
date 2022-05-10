@@ -3,7 +3,7 @@ import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   Col,
   InputGroup,
@@ -11,7 +11,7 @@ import {
   FormGroup,
   Input,
   Button,
-} from '../../../components'
+} from 'Components'
 
 function GluuInlineInput({
   label,

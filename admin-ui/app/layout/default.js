@@ -1,14 +1,14 @@
 import React from "react"
 import PropTypes from "prop-types"
 import useDarkMode from 'use-dark-mode'
-import { Layout, ThemeProvider } from "./../components"
+import { Layout, ThemeProvider } from "Components"
 
-import "./../styles/bootstrap.scss"
-import "./../styles/main.scss"
-import "./../styles/plugins/plugins.scss"
-import "./../styles/plugins/plugins.css"
+import "Styles/bootstrap.scss"
+import "Styles/main.scss"
+import "Styles/plugins/plugins.scss"
+import "Styles/plugins/plugins.css"
 
-import { RoutedNavbars, RoutedSidebars } from "./../routes"
+import { RoutedNavbars, RoutedSidebars } from "Routes"
 
 const favIcons = [
   {

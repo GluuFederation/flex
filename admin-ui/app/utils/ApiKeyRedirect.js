@@ -1,7 +1,6 @@
 import React from 'react'
-import { Container } from './../components'
-import GluuNotification from './../routes/Apps/Gluu/GluuNotification'
-import GluuCommitDialog from '../../app/routes/Apps/Gluu/GluuCommitDialog'
+import { Container } from 'Components'
+import GluuNotification from 'Routes/Apps/Gluu/GluuNotification'
 import { useTranslation } from 'react-i18next'
 import ApiKey from './LicenseScreens/ApiKey'
 function ApiKeyRedirect({

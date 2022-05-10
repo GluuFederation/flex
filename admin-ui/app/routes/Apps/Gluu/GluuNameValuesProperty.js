@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { FormGroup, Col, Row, Input } from '../../../components'
+import { FormGroup, Col, Row, Input } from 'Components'
 import GluuLabel from '../Gluu/GluuLabel'
 import Typography from '@material-ui/core/Typography'
 import { createTheme, ThemeProvider } from '@material-ui/core/styles'

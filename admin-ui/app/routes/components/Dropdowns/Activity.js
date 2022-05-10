@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { 
   Media, 
-} from './../../../components'
+} from 'Components'
 
 const Activity = (props) => (
   <React.Fragment>

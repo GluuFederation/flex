@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import {
   NavItem,
   NavLink
-} from './../../components'
+} from 'Components'
 
 const NavbarUser = (props) => (
   <NavItem { ...props }>

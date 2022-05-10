@@ -4,7 +4,7 @@ import {
   Nav,
   NavItem,
   NavLink
-} from './../../../components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 const ProfileLeftNav = () => {

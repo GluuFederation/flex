@@ -11,7 +11,7 @@ import {
   Dot,
   Rectangle,
   Polygon
-} from './../../../components/recharts'
+} from 'Ccomponents/recharts'
 
 import colors from './../../../colors'
 

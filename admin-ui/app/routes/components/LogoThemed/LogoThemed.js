@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import { ThemeConsumer } from '../../../components/Theme'
+import { ThemeConsumer } from 'Components/Theme'
 
 const logos = {
   'default': require('./../../../images/logos/logo192.png'),

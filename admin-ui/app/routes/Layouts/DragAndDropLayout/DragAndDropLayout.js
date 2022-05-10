@@ -17,11 +17,11 @@ import {
   DropdownMenu,
   DropdownToggle,
   DropdownItem
-} from './../../../components'
-import { applyColumn } from './../../../components/FloatGrid'
+} from 'Components'
+import { applyColumn } from 'Components/FloatGrid'
 import {
   HeaderMain
-} from './../../components/HeaderMain'
+} from 'Routes/components/HeaderMain'
 
 export class DragAndDropLayout extends React.Component {
   constructor(props) {

@@ -3,7 +3,7 @@ import React from 'react'
 import { 
   Media,
   UncontrolledTooltip
-} from './../../../components'
+} from 'Components'
 
 const TrResponsive = () => {
   return (

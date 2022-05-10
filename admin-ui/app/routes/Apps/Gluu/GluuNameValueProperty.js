@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { FormGroup, Col, Input, Button } from '../../../components'
-import { Accordion } from '../../../../app/components'
+import { FormGroup, Col, Input, Button } from 'Components'
+import { Accordion } from 'Components'
 import { useTranslation } from 'react-i18next'
 
 function GluuNameValueProperty({
