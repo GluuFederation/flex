@@ -84,7 +84,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       title: `${t('fields.grant_types')}`,
       field: 'grantTypes',
       render: (rowData) => {
-        return rowData.grantTypes.map((data) => {
+        return rowData?.grantTypes?.map((data) => {
           return (
             <div style={{ maxWidth: 120, overflow: 'auto' }}>
               <Badge color="primary">{data}</Badge>
