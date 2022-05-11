@@ -186,6 +186,7 @@ RUN chown -R 1000:1000 /var/lib/nginx \
     && chown -R 1000:1000 /etc/nginx/http.d/default.conf \
     && chown -R 1000:1000 /var/lib/nginx \
     && chown -R 1000:1000 /var/log/nginx \
+    && chown -R 1000:1000 /etc/jans \
     && chown -R 1000:1000 /run/nginx/nginx.pid \
     && chgrp -R 0 /opt/flex/admin-ui/.env && chmod -R g=u /opt/flex/admin-ui/.env \
     && chgrp -R 0 /opt/flex/admin-ui/dist && chmod -R g=u /opt/flex/admin-ui/dist \
