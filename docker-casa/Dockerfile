@@ -200,7 +200,7 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     CN_SSL_CERT_FROM_SECRETS=false \
     GOOGLE_PROJECT_ID="" \
     GOOGLE_APPLICATION_CREDENTIALS=/etc/jans/conf/google-credentials.json \
-    CN_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable
+    GLUU_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable
 
 # ==========
 # misc stuff

@@ -44,6 +44,6 @@ exec java \
     -Dpython.home=/opt/jython \
     -Djava.io.tmpdir=/tmp \
     -Dlog4j2.configurationFile=resources/log4j2.xml \
-    -Dadmin.lock=${CN_CASA_ADMIN_LOCK_FILE} \
+    -Dadmin.lock=${GLUU_CASA_ADMIN_LOCK_FILE} \
     ${CN_JAVA_OPTIONS} \
     -jar /opt/jetty/start.jar jetty.httpConfig.sendServerVersion=false jetty.deploy.scanInterval=0
