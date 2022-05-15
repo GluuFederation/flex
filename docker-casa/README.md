@@ -71,6 +71,7 @@ The following environment variables are supported by the container:
 - `GOOGLE_APPLICATION_CREDENTIALS`: Path to Google credentials JSON file (default to `/etc/jans/conf/google-credentials.json`).
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string).
 - `GLUU_CASA_APP_LOGGERS`: Custom logging configuration in JSON-string format with hash type (see [Configure app loggers](#configure-app-loggers) section for details).
+- `GLUU_CASA_ADMIN_LOCK_FILE`: Path to lock file to enable/disable administration feature (default to `/opt/jans/jetty/casa/resources/.administrable`). If file is not exist, the feature is disabled.
 
 ### Configure app loggers
 
