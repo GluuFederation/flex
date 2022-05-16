@@ -67,6 +67,13 @@ module.exports = {
     modules: ['node_modules', config.srcDir],
     alias: {
       path: require.resolve('path-browserify'),
+      Components: path.resolve(__dirname, '../app/components'),
+      Images: path.resolve(__dirname, '../app/images'),
+      Plugins: path.resolve(__dirname, '../plugins'),
+      Redux: path.resolve(__dirname, '../app/redux'),
+      Routes: path.resolve(__dirname, '../app/routes'),
+      Styles: path.resolve(__dirname, '../app/styles'),
+      Utils: path.resolve(__dirname, '../app/utils'),
     },
   },
   plugins: [

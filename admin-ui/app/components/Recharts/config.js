@@ -1,5 +1,5 @@
 // ReCharts styling configuration
-import colors from './../../colors';
+import colors from './../../colors'
 
 export default {
   grid: {
@@ -58,4 +58,4 @@ export default {
       color: colors['white']
     }
   }
-};
+}

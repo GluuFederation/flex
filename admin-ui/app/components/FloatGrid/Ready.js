@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { FloatGridContext } from './floatGridContext';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { FloatGridContext } from './floatGridContext'
 
 export const Ready = ({ children }) => (
   <FloatGridContext.Consumer>
@@ -8,7 +8,7 @@ export const Ready = ({ children }) => (
       ({ gridReady }) => gridReady ? children : null
     }
   </FloatGridContext.Consumer>
-);
+)
 Ready.propTypes = {
   children: PropTypes.node
-};
+}

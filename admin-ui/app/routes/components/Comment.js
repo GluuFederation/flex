@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import { 
   Avatar,
   Media,
   AvatarAddOn,
   UncontrolledTooltip 
-} from './../../components';
-import { randomArray, randomAvatar } from './../../utilities';
+} from 'Components'
+import { randomArray, randomAvatar } from './../../utilities'
 import { useTranslation } from 'react-i18next'
 
 const status = [
@@ -14,7 +14,7 @@ const status = [
   "danger",
   "warning",
   "secondary"
-];
+]
 
 const Comment = (props) => {
   const { t } = useTranslation()
@@ -80,13 +80,13 @@ const Comment = (props) => {
       </Media>
     </Media>
 
-  );
+  )
 }
 Comment.propTypes = {
   mediaClassName: PropTypes.node
-};
+}
 Comment.defaultProps = {
   mediaClassName: "text-empty"
-};
+}
 
-export { Comment };
+export { Comment }

@@ -10,11 +10,11 @@ import {
   Nav,
   NavItem,
   UncontrolledTabs,
-} from '../../../components'
-import { HeaderMain } from '../../components/HeaderMain'
+} from 'Components'
+import { HeaderMain } from 'Routes/components/HeaderMain'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
-import { Profile } from '../../components/Profile'
+import { Profile } from 'Routes/components/Profile'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 

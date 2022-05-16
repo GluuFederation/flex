@@ -4,24 +4,24 @@ import { Paper } from '@material-ui/core'
 import UiPermDetailPage from './UiPermDetailPage'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
-import { Card, CardBody, FormGroup } from '../../../../app/components'
+import { Card, CardBody, FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import PermissionAddDialogForm from './PermissionAddDialogForm'
 import {
   getPermissions,
   deletePermission,
   editPermission,
   addPermission,
-} from '../../redux/actions/ApiPermissionActions'
+} from 'Plugins/admin/redux/actions/ApiPermissionActions'
 import {
   hasPermission,
   buildPayload,
   PERMISSION_READ,
   PERMISSION_WRITE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 
 function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   const { t } = useTranslation()

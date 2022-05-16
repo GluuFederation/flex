@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormGroup, Col } from '../../../components'
+import { FormGroup, Col } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTooltip from './GluuTooltip'
@@ -24,6 +24,7 @@ function GluuTypeAheadForDn({
   required,
   doc_category,
   doc_entry,
+  allowNew = false,
 }) {
   const { t } = useTranslation()
   function getItemName(theOptions, item) {
@@ -40,12 +41,13 @@ function GluuTypeAheadForDn({
             onChange={(selected) => {
               formik.setFieldValue(
                 name,
-                selected.map((item) => item.dn),
+                selected.map((item) => (item.customOption ? item.label : item.dn)),
               )
             }}
             id={name}
             data-testid={name}
             name={name}
+            allowNew={allowNew}
             multiple={true}
             defaultSelected={value}
             options={options}

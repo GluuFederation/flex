@@ -12,7 +12,7 @@ import {
   SET_PERMISSION_ITEM,
   RESET,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   loading: true,

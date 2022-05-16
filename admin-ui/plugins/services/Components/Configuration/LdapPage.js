@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import BlockUi from 'react-block-ui'
 import { Formik } from 'formik'
-import { Form, Container, Card, CardBody } from '../../../../app/components'
-import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
+import { Form, Container, Card, CardBody } from 'Components'
+import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
 import LdapItem from './LdapItem'
 import { connect } from 'react-redux'
-import { getLdapConfig, editLdap } from '../../redux/actions/LdapActions'
+import { getLdapConfig, editLdap } from 'Plugins/services/redux/actions/LdapActions'
 import { useTranslation } from 'react-i18next'
 
 function LdapPage({ ldap, loading, dispatch }) {

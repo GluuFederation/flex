@@ -1,7 +1,7 @@
 export default class OidcDiscoveryApi {
-    constructor(api) {
-      this.api = api
-    }
+  constructor(api) {
+    this.api = api
+  }
   
     // Get OIDC Discovery
     getOidcDiscovery = () => {
@@ -15,4 +15,4 @@ export default class OidcDiscoveryApi {
         })
       })
     }
-  }
+}

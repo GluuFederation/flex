@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import { 
   Card, 
   CardTitle, 
   CardBody, 
   CardHeader
-} from './../../../components';
+} from 'Components'
 
-import { InfoPopover } from './InfoPopover';
+import { InfoPopover } from './InfoPopover'
 import { useTranslation } from 'react-i18next'
 
 const CardColor = (props) => {
@@ -47,7 +47,7 @@ const CardColor = (props) => {
       </CardBody>
     </Card>
 
-  );
+  )
 }
 CardColor.propTypes = {
   cardClass: PropTypes.node,
@@ -56,7 +56,7 @@ CardColor.propTypes = {
   rgba: PropTypes.node,
   cmyk: PropTypes.node,
   scss: PropTypes.node
-};
+}
 CardColor.defaultProps = {
   cardClass: "",
   color: "Waiting for Data...",
@@ -64,6 +64,6 @@ CardColor.defaultProps = {
   rgba: "Waiting for Data...",
   cmyk: "Waiting for Data...",
   scss: "Waiting for Data...",
-};
+}
 
-export { CardColor };
+export { CardColor }

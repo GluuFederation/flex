@@ -5,26 +5,26 @@ import {
   FormGroup,
   Col,
   CustomInput,
-} from '../../../../../app/components'
+} from 'Components'
 import { Formik } from 'formik'
-import GluuLabel from '../../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { connect } from 'react-redux'
-import { getAcrsConfig, editAcrs } from '../../../redux/actions/AcrsActions'
-import { JSON_CONFIG } from '../../../../../app/utils/ApiResources'
-import GluuTooltip from '../../../../../app/routes/Apps/Gluu/GluuTooltip'
-import applicationStyle from '../../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/actions/AcrsActions'
+import { JSON_CONFIG } from 'Utils/ApiResources'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   hasPermission,
   buildPayload,
   ACR_READ,
   ACR_WRITE,
-} from '../../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import {
   getScripts,
-} from '../../../../../app/redux/actions/InitActions'
-import { SIMPLE_PASSWORD_AUTH, FETCHING_SCRIPTS } from '../../../common/Constants'
-import GluuViewWrapper from '../../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import GluuLoader from '../../../../../app/routes/Apps/Gluu/GluuLoader'
+} from 'Redux/actions/InitActions'
+import { SIMPLE_PASSWORD_AUTH, FETCHING_SCRIPTS } from 'Plugins/auth-server/common/Constants'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
 
 function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {

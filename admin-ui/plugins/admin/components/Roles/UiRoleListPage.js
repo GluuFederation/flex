@@ -5,23 +5,23 @@ import UiRoleDetailPage from './UiRoleDetailPage'
 import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
-import { Card, CardBody, FormGroup } from '../../../../app/components'
+import { Card, CardBody, FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   getRoles,
   addRole,
   editRole,
   deleteRole,
-} from '../../redux/actions/ApiRoleActions'
+} from 'Plugins/admin/redux/actions/ApiRoleActions'
 import {
   hasPermission,
   buildPayload,
   ROLE_READ,
   ROLE_WRITE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 
 function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const { t } = useTranslation()

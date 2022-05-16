@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { hasPermission, FIDO_WRITE } from '../../../utils/PermChecker'
+import { hasPermission, FIDO_WRITE } from 'Utils/PermChecker'
 import {
   Form,
   FormGroup,
@@ -11,7 +11,7 @@ import {
   Input,
   InputGroup,
   CardBody,
-} from './../../../components'
+} from 'Components'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuFooter from '../Gluu/GluuFooter'
 import GluuLoader from '../Gluu/GluuLoader'
@@ -21,10 +21,10 @@ import { Formik } from 'formik'
 import {
   getFidoConfig,
   editFidoConfig,
-} from '../../../redux/actions/FidoActions'
+} from 'Redux/actions/FidoActions'
 import GluuNameValuesProperty from '../Gluu/GluuNameValuesProperty'
 
-function Fido2Page({ fido,permissions, dispatch }) {
+function Fido2Page({ fido, permissions, dispatch }) {
   useEffect(() => {
     dispatch(getFidoConfig())
   }, [])

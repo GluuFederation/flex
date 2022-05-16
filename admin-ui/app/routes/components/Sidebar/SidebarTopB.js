@@ -1,12 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 import {
   Sidebar,
   UncontrolledTooltip
-} from './../../../components';
+} from 'Components'
 
-import { VersionSelector } from '../VersionSelector';
+import { VersionSelector } from '../VersionSelector'
 import { useTranslation } from 'react-i18next'
 
 const SidebarTopB = () => {
@@ -60,7 +60,7 @@ const SidebarTopB = () => {
       { /* END SLIM Only View  */ }
       { /* END Sidebar TOP: B */ }
     </React.Fragment>
-  );
+  )
 }
 
-export { SidebarTopB };
+export { SidebarTopB }

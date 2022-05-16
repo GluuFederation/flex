@@ -1,13 +1,13 @@
-FROM bellsoft/liberica-openjre-alpine:11.0.13-8
+FROM bellsoft/liberica-openjre-alpine:11.0.15
 
 # ===============
 # Alpine packages
 # ===============
 
 RUN apk update \
-    && apk add --no-cache py3-pip openssl tini py3-cryptography py3-lxml py3-psycopg2 \
-    && apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/v3.15/community py3-grpcio \
-    && apk add --no-cache --virtual build-deps git wget zip \
+    && apk upgrade \
+    && apk add --no-cache python3 openssl tini py3-cryptography py3-lxml py3-psycopg2 py3-grpcio \
+    && apk add --no-cache --virtual .build-deps git wget zip \
     && mkdir -p /usr/java/latest \
     && ln -sf /usr/lib/jvm/jre /usr/java/latest/jre
 
@@ -15,7 +15,7 @@ RUN apk update \
 # Jetty
 # =====
 
-ARG JETTY_VERSION=10.0.6
+ARG JETTY_VERSION=11.0.8
 ARG JETTY_HOME=/opt/jetty
 ARG JETTY_BASE=/opt/jans/jetty
 ARG JETTY_USER_HOME_LIB=/home/jetty/lib
@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2022-03-17 11:52'
+ENV GLUU_BUILD_DATE='2022-04-29 12:53'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -54,15 +54,65 @@ RUN mkdir -p ${JETTY_BASE}/casa/webapps \
 # ======
 
 COPY requirements.txt /app/requirements.txt
-RUN pip3 install -U pip wheel \
-    && pip3 install -r /app/requirements.txt --no-cache-dir
+RUN python3 -m ensurepip \
+    && pip3 install --no-cache-dir -U pip wheel \
+    && pip3 install --no-cache-dir -r /app/requirements.txt \
+    && pip3 uninstall -y pip wheel
+
+# =====================
+# jans-linux-setup sync
+# =====================
+
+ENV JANS_LINUX_SETUP_VERSION=eb113d09421b95671fe1ab4eaa5c4bafc2aed6af
+ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
+
+# note that as we're pulling from a monorepo (with multiple project in it)
+# we are using partial-clone and sparse-checkout to get the jans-linux-setup code
+RUN git clone --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
+    && cd /tmp/jans \
+    && git sparse-checkout init --cone \
+    && git checkout ${JANS_LINUX_SETUP_VERSION} \
+    && git sparse-checkout set ${JANS_SETUP_DIR}
+
+RUN mkdir -p /app/static/rdbm /app/schema
+
+# sync static files from linux-setup
+RUN cd /tmp/jans \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/sql_data_types.json /app/static/rdbm/ \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/ldap_sql_data_type_mapping.json /app/static/rdbm/ \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/opendj_attributes_syntax.json /app/static/rdbm/ \
+    && cp -R ${JANS_SETUP_DIR}/static/rdbm/sub_tables.json /app/static/rdbm/ \
+    && cp ${JANS_SETUP_DIR}/schema/jans_schema.json /app/schema/ \
+    && cp ${JANS_SETUP_DIR}/schema/custom_schema.json /app/schema/ \
+    && cp ${JANS_SETUP_DIR}/schema/opendj_types.json /app/schema/
+
+# ===============
+# flex setup sync
+# ===============
+
+ENV FLEX_VERSION=e042a9de63fba051535782b242f38843d39f5afd
+ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
+ARG CASA_EXTRAS_DIR=casa/extras
+
+RUN mkdir -p /app/templates /app/static/extension/person_authentication
+
+RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex.git /tmp/flex \
+    && cd /tmp/flex \
+    && git sparse-checkout init --cone \
+    && git checkout ${FLEX_VERSION} \
+    && git sparse-checkout add ${FLEX_SETUP_DIR} \
+    && cp ${FLEX_SETUP_DIR}/templates/casa_*.ldif /app/templates \
+    && git sparse-checkout add ${CASA_EXTRAS_DIR} \
+    && cp ${CASA_EXTRAS_DIR}/Casa.py /app/static/extension/person_authentication/
 
 # =======
 # Cleanup
 # =======
 
-RUN apk del build-deps \
-    && rm -rf /var/cache/apk/*
+RUN apk del .build-deps \
+    && rm -rf /var/cache/apk/* \
+    && rm -rf /tmp/jans \
+    && rm -rf /tmp/flex
 
 # =======
 # License
@@ -173,7 +223,7 @@ RUN mkdir -p /etc/certs \
 COPY jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 COPY jetty/log4j2.xml ${JETTY_BASE}/casa/resources/
 COPY jetty/casa_web_resources.xml ${JETTY_BASE}/casa/webapps/
-COPY templates /app/templates/
+COPY conf/*.tmpl /app/templates/
 COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh
 

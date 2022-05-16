@@ -9,8 +9,8 @@ from org.gluu.service.cdi.util import CdiUtil
 from java.net import URLEncoder
 from java.util import Arrays
 
-from javax.faces.context import FacesContext
-from javax.faces.application import FacesMessage
+from jakarta.faces.context import FacesContext
+from jakarta.faces.application import FacesMessage
 
 import uuid
 import sys

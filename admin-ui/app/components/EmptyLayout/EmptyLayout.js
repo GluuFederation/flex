@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 import {
   withPageConfig
-} from './../../components/Layout';
+} from 'Components/Layout'
 
 class EmptyLayout extends React.Component {
   static propTypes = {
@@ -17,7 +17,7 @@ class EmptyLayout extends React.Component {
       navbarHidden: true,
       sidebarHidden: true,
       footerHidden: true
-    });
+    })
   }
 
   componentWillUnmount() {
@@ -25,22 +25,22 @@ class EmptyLayout extends React.Component {
       navbarHidden: false,
       sidebarHidden: false,
       footerHidden: false
-    });
+    })
   }
 
   render() {
-    const emptyLayoutClass = classNames('fullscreen', this.props.className);
+    const emptyLayoutClass = classNames('fullscreen', this.props.className)
 
     return (
       <div className={emptyLayoutClass}>
         { this.props.children}
       </div>
-    );
+    )
   }
 }
 
-const PageConfigEmptyLayout = withPageConfig(EmptyLayout);
+const PageConfigEmptyLayout = withPageConfig(EmptyLayout)
 
 export {
   PageConfigEmptyLayout as EmptyLayout
-};
+}

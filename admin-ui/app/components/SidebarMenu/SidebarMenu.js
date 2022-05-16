@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
-import _ from 'lodash'
+import find from 'lodash/find'
+import includes from 'lodash/includes'
+import mapValues from 'lodash/mapValues'
 import classNames from 'classnames'
 import { withPageConfig } from './../Layout/withPageConfig'
 import Common from './../../common'
@@ -65,7 +67,7 @@ class SidebarMenu extends React.Component {
       return previous
     }
 
-    const activeChild = _.find(this.state.entries, (entry) => {
+    const activeChild = find(this.state.entries, (entry) => {
       const { pathname } = this.props.location
 
       const noTailSlashLocation =
@@ -75,7 +77,7 @@ class SidebarMenu extends React.Component {
 
       return entry.exact
         ? entry.url === noTailSlashLocation
-        : _.includes(noTailSlashLocation, entry.url)
+        : includes(noTailSlashLocation, entry.url)
     })
 
     if (activeChild) {
@@ -85,8 +87,8 @@ class SidebarMenu extends React.Component {
       ]
 
       this.setState({
-        entries: (this.entries = _.mapValues(this.entries, (entry) => {
-          const isActive = _.includes(activeEntries, entry.id)
+        entries: (this.entries = mapValues(this.entries, (entry) => {
+          const isActive = includes(activeEntries, entry.id)
 
           return {
             ...entry,

@@ -1,17 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from '../../../../app/components'
+import { Container, CardBody, Card } from 'Components'
 import SqlForm from './SqlForm'
-import { addSql } from '../../redux/actions/SqlActions'
-import { buildPayload } from '../../../../app/utils/PermChecker'
+import { addSql } from 'Plugins/services/redux/actions/SqlActions'
+import { buildPayload } from 'Utils/PermChecker'
 
 function SqlAddPage({ dispatch }) {
   const userAction = {}
   const history = useHistory()
   function handleSubmit(data) {
     if (data) {
-      let message = data.sql.action_message
+      const message = data.sql.action_message
       delete data.sql.action_message
       buildPayload(userAction, message, data)
       dispatch(addSql(userAction))

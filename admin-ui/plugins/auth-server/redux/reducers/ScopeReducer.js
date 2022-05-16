@@ -15,7 +15,7 @@ import {
   GET_SCOPE_BY_PATTERN_RESPONSE,
   SEARCH_SCOPES,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   item: {},

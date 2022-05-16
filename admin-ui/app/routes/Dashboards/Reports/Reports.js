@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { buildPayload } from '../../../../app/utils/PermChecker'
-import { Container, Row, Col } from './../../../components'
+import { Container, Row, Col } from 'Components'
 import { connect } from 'react-redux'
 import {
   getAttributes,
   getScripts,
   getScopes,
   getClients,
-} from '../../../redux/actions/InitActions'
+} from 'Redux/actions/InitActions'
 import ReportCard from './ReportCard'
 import { useTranslation } from 'react-i18next'
 

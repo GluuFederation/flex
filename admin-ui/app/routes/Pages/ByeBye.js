@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { uuidv4 } from '../../utils/Util'
-import { EmptyLayout, Label } from '../../../app/components'
-import { logoutUser } from '../../redux/actions/LogoutActions'
+import { uuidv4 } from 'Utils/Util'
+import { EmptyLayout, Label } from 'Components'
+import { logoutUser } from 'Redux/actions/LogoutActions'
 import { useTranslation } from 'react-i18next'
 
 function ByeBye({ config, dispatch }) {
   const { t } = useTranslation()
   useEffect(() => {
-    if (!!config) {
+    if (config) {
       const state = uuidv4()
       const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
       window.location.href = sessionEndpoint

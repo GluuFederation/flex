@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 import { 
   CardTitle,
   Badge
-} from './../../../components';
+} from 'Components'
 
 const ProfileOverviewCard = (props) => (
   <React.Fragment>
@@ -32,7 +32,7 @@ const ProfileOverviewCard = (props) => (
       </span>
     </div>
   </React.Fragment>
-);
+)
 ProfileOverviewCard.propTypes = {
   title: PropTypes.node,
   badgeColor: PropTypes.node,
@@ -43,7 +43,7 @@ ProfileOverviewCard.propTypes = {
   footerTitleClassName: PropTypes.node,
   footerIcon: PropTypes.node,
   footerValue: PropTypes.node
-};
+}
 ProfileOverviewCard.defaultProps = {
   title: "Waiting",
   badgeColor: "secondary",
@@ -54,6 +54,6 @@ ProfileOverviewCard.defaultProps = {
   footerTitleClassName: "text-muted",
   footerIcon: "caret-down",
   footerValue: "0.00%"
-};
+}
 
-export { ProfileOverviewCard };
+export { ProfileOverviewCard }

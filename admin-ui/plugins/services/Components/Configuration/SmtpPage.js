@@ -8,20 +8,20 @@ import {
   Input,
   Card,
   CardBody,
-} from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+} from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'
 import {
   getSmtpConfig,
   editSmtp,
   testSmtp,
-} from '../../redux/actions/SmtpActions'
+} from 'Plugins/services/redux/actions/SmtpActions'
 import {
   hasPermission,
   SMTP_WRITE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 
 function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {

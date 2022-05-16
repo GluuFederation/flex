@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, FormGroup } from './../../../components'
+import { Input, FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 
 function GluuAdvancedSearch({

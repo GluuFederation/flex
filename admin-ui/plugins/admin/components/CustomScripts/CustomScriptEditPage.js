@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { CardBody, Card } from '../../../../app/components'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import { CardBody, Card } from 'Components'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import CustomScriptForm from './CustomScriptForm'
-import { editCustomScript } from '../../redux/actions/CustomScriptActions'
-import { buildPayload } from '../../../../app/utils/PermChecker'
-import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
+import { editCustomScript } from 'Plugins/admin/redux/actions/CustomScriptActions'
+import { buildPayload } from 'Utils/PermChecker'
+import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 
 function CustomScriptEditPage({ item, scripts, loading, dispatch, saveOperationFlag, errorInSaveOperationFlag }) {

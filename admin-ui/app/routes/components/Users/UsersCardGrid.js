@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 import { 
   Card,
   CardBody,
@@ -12,11 +12,11 @@ import {
   CustomInput,
   ButtonGroup,
   DropdownItem
-} from './../../../components';
+} from 'Components'
 
 import {
   Profile
-} from "./../Profile";
+} from "./../Profile"
 import { useTranslation } from 'react-i18next'
 
 const UsersCardGrid = (props) => {
@@ -84,13 +84,13 @@ const UsersCardGrid = (props) => {
       </Card>
       { /* END Card */}
     </React.Fragment>
-  );
+  )
 }
 UsersCardGrid.propTypes = {
   id: PropTypes.node
-};
+}
 UsersCardGrid.defaultProps = {
   id: "1"
-};
+}
 
-export { UsersCardGrid };
+export { UsersCardGrid }

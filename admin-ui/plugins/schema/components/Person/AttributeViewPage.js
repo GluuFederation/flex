@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { CardBody, Card } from '../../../../app/components'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import { CardBody, Card } from 'Components'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import AttributeForm from './AttributeForm'
-import { editAttribute } from '../../redux/actions/AttributeActions'
+import { editAttribute } from 'Plugins/schema/redux/actions/AttributeActions'
 
 function AttributeEditPage({ item, loading, dispatch }) {
   if (!item.attributeValidation) {

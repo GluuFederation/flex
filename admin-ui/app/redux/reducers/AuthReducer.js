@@ -40,9 +40,12 @@ export default function authReducer(state = INIT_STATE, action) {
       return handleDefault()
     case GET_OAUTH2_CONFIG_RESPONSE:
       if (action.payload.config && action.payload.config != -1) {
+        let newDataConfigObject = Object.assign(state.config, {
+          ...action.payload.config,
+        })
         return {
           ...state,
-          config: action.payload.config,
+          ...newDataConfigObject,
           backendIsUp: true,
         }
       } else {

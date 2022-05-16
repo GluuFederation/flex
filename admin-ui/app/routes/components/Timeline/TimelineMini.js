@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 import { 
   Badge
-} from './../../../components';
+} from 'Components'
 
 const TimelineMini = (props) => (
   <React.Fragment>
@@ -49,7 +49,7 @@ const TimelineMini = (props) => (
     </div>
     { /* END Timeline Position */}
   </React.Fragment>
-);
+)
 
 TimelineMini.propTypes = {
   showPillDate: PropTypes.bool,
@@ -58,7 +58,7 @@ TimelineMini.propTypes = {
   iconClassName: PropTypes.string,
   badgeColor: PropTypes.string,
   badgeTitle: PropTypes.string
-};
+}
 
 TimelineMini.defaultProps = {
   showPillDate: false,
@@ -67,6 +67,6 @@ TimelineMini.defaultProps = {
   iconClassName: "text-secondary",
   badgeColor: "secondary",
   badgeTitle: "Waiting"
-};
+}
 
-export { TimelineMini };
+export { TimelineMini }

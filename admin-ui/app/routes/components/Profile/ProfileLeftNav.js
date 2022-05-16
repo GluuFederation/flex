@@ -1,10 +1,10 @@
-import React from 'react';
-import { NavLink as RouterNavLink } from 'react-router-dom';
+import React from 'react'
+import { NavLink as RouterNavLink } from 'react-router-dom'
 import { 
   Nav,
   NavItem,
   NavLink
-} from './../../../components';
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 const ProfileLeftNav = () => {
@@ -43,7 +43,7 @@ const ProfileLeftNav = () => {
       </div>
       { /* END Left Nav  */}
     </React.Fragment>
-  );
+  )
 }
 
-export { ProfileLeftNav };
+export { ProfileLeftNav }

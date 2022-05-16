@@ -16,7 +16,7 @@ import {
   editNativeCacheResponse,
   editRedisCacheResponse,
 } from '../actions/CacheActions'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import {
   GET_CACHE,
   GET_MEMORY_CACHE,
@@ -31,7 +31,7 @@ import {
   SET_CACHE,
 } from '../actions/types'
 import CacheApi from '../api/CacheApi'
-import { getClient } from '../../../../app/redux/api/base'
+import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunctionForRedisCache() {

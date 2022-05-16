@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 import {
   Button,
   DropdownToggle,
@@ -12,21 +12,18 @@ import {
   NavbarToggler,
   UncontrolledDropdown,
   ThemeConsumer,
-} from './../../../../components';
-import { randomAvatar } from './../../../../utilities';
+} from 'Components'
+import { randomAvatar } from './../../../../utilities'
 
 import { NavbarActivityFeed } from
-  './../../../../layout/components/NavbarActivityFeed';
+'./../../../../layout/components/NavbarActivityFeed'
 import { NavbarMessages } from
-  './../../../../layout/components/NavbarMessages';
+'./../../../../layout/components/NavbarMessages'
 import { NavbarUser } from
-  './../../../../layout/components/NavbarUser';
-import { DropdownProfile } from
-  './../../../components/Dropdowns/DropdownProfile';
-import { NavbarNavigation } from
-  './../../../components/Navbars/NavbarNavigation';
-import { LogoThemed } from
-  './../../../components/LogoThemed/LogoThemed';
+'./../../../../layout/components/NavbarUser'
+import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
+import { NavbarNavigation } from 'Routes/components/Navbars/NavbarNavigation'
+import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import { useTranslation } from 'react-i18next'
 
 export const LayoutNavbar = () => {
@@ -100,6 +97,5 @@ export const LayoutNavbar = () => {
         </ThemeConsumer>
       </Navbar>
     </React.Fragment>
-  );
+  )
 }
-

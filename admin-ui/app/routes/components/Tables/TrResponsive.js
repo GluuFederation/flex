@@ -1,9 +1,9 @@
-import React from 'react';
+import React from 'react'
 
 import { 
   Media,
   UncontrolledTooltip
-} from './../../../components';
+} from 'Components'
 
 const TrResponsive = () => {
   return (
@@ -64,7 +64,7 @@ const TrResponsive = () => {
       </tr>
       { /* END TR */}
     </React.Fragment>
-  );
+  )
 }
 
-export { TrResponsive };
+export { TrResponsive }

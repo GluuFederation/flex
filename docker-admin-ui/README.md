@@ -46,3 +46,10 @@ The following environment variables are supported by the container:
 - `CN_WAIT_SLEEP_DURATION`: Delay between startup "health checks" (default to `10` seconds).
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string). Used when `CN_CONFIG_ADAPTER` or `CN_SECRET_ADAPTER` set to `google`.
 - `GOOGLE_APPLICATION_CREDENTIALS`: Path to Google credentials JSON file (default to `/etc/jans/conf/google-credentials.json`). Used when `CN_CONFIG_ADAPTER` or `CN_SECRET_ADAPTER` set to `google`.
+- `CN_TOKEN_SERVER_BASE_HOSTNAME`: Hostname of token server (default to `localhost`).
+- `CN_TOKEN_SERVER_AUTHZ_ENDPOINT`: Authorization endpoint at token server (default to `/jans-auth/authorize.htm`).
+- `CN_TOKEN_SERVER_TOKEN_ENDPOINT`: Token endpoint at token server (default to `/jans-auth/restv1/token`).
+- `CN_TOKEN_SERVER_INTROSPECTION_ENDPOINT`: Introspection endpoint at token server (default to `/jans-auth/restv1/introspection`).
+- `CN_TOKEN_SERVER_USERINFO_ENDPOINT`: User info endpoint at token server (default to `/jans-auth/restv1/userinfo`).
+- `CN_TOKEN_SERVER_CLIENT_ID`: Client ID registered at token server.
+- `CN_TOKEN_SERVER_CERT_FILE`: Path to token server certificate (default to `/etc/certs/token_server.crt`).

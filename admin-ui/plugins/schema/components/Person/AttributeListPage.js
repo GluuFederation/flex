@@ -5,25 +5,25 @@ import { useHistory } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
-import { Card, CardBody, FormGroup } from '../../../../app/components'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
+import { Card, CardBody, FormGroup } from 'Components'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import AttributeDetailPage from './AttributeDetailPage'
-import GluuAdvancedSearch from '../../../../app/routes/Apps/Gluu/GluuAdvancedSearch'
-import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
+import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   hasPermission,
   ATTRIBUTE_WRITE,
   ATTRIBUTE_READ,
   ATTRIBUTE_DELETE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import {
   getAttributes,
   searchAttributes,
   setCurrentItem,
   deleteAttribute,
-} from '../../redux/actions/AttributeActions'
+} from 'Plugins/schema/redux/actions/AttributeActions'
 import { useTranslation } from 'react-i18next'
 
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {

@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from '../../../../app/components'
+import { Container, CardBody, Card } from 'Components'
 import LdapForm from './LdapForm'
-import { addLdap } from '../../redux/actions/LdapActions'
-import { buildPayload } from '../../../../app/utils/PermChecker'
+import { addLdap } from 'Plugins/services/redux/actions/LdapActions'
+import { buildPayload } from 'Utils/PermChecker'
 
 function LdapAddPage({ dispatch }) {
   const userAction = {}

@@ -7,7 +7,7 @@ import {
   InputGroupText,
   Input,
   InputGroup,
-} from './../../../components'
+} from 'Components'
 
 const MetricVsTarget = (props) => {
   return (

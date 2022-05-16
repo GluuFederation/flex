@@ -4,7 +4,7 @@ import {
   PATCH_JSON_CONFIG,
   PATCH_JSONCONFIG_RESPONSE,
 } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   configuration: {},
   loading: false,

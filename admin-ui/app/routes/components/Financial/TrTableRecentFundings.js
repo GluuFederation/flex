@@ -1,5 +1,5 @@
-import React from 'react';
-import _ from 'lodash';
+import React from 'react'
+import times from 'lodash/times'
 import { useTranslation } from 'react-i18next'
 
 const TrTableRecentFundings = () => {
@@ -7,7 +7,7 @@ const TrTableRecentFundings = () => {
   return (
     <React.Fragment>
       {
-        _.times(6, (index) => (
+        times(6, (index) => (
           <tr key={ index }>
             <td className="align-middle">
               <span className="text-inverse">{ 'faker.company.companyName()' }</span>
@@ -25,7 +25,7 @@ const TrTableRecentFundings = () => {
         ))
       }
     </React.Fragment>
-  );
+  )
 }
 
-export { TrTableRecentFundings };
+export { TrTableRecentFundings }

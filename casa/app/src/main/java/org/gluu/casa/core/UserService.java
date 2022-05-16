@@ -7,9 +7,9 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import javax.management.AttributeNotFoundException;
 
 import org.gluu.casa.conf.MainSettings;
@@ -32,8 +32,7 @@ import org.zkoss.util.resource.Labels;
 public class UserService implements SndFactorAuthenticationUtils {
 
     private static final String PREFERRED_METHOD_ATTR = "jansPreferredMethod";
-    private static final String ADMIN_LOCK_FILE = ".administrable";
-    private static final String BASE_PATH = System.getProperty("server.base");
+    private static final String ADMIN_LOCK_FILE = System.getProperty("admin.lock");
 
     @Inject
     private Logger logger;
@@ -295,7 +294,7 @@ public class UserService implements SndFactorAuthenticationUtils {
      * @return boolean value
      */
     private boolean administrationAllowed() {
-        return Files.isReadable(Paths.get(BASE_PATH, ADMIN_LOCK_FILE));
+        return Files.isReadable(Paths.get(ADMIN_LOCK_FILE));
     }
 
 }

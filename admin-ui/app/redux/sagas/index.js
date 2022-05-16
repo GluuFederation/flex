@@ -12,10 +12,10 @@ import initSaga from './InitSaga'
 import licenseSaga from './LicenseSaga'
 import licenseDetailsSaga from './LicenseDetailsSaga'
 import oidcDiscoverySaga from './OidcDiscoverySaga'
-import process from '../../../plugins/PluginSagasResolver'
+import process from 'Plugins/PluginSagasResolver'
 
 export default function* rootSaga() {
-  let pluginSagaArr = process()
+  const pluginSagaArr = process()
   yield all(
     [].concat(
       [

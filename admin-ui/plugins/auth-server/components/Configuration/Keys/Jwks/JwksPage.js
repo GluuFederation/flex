@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
-import { Card, CardBody } from '../../../../../../app/components'
-import { getJwks } from '../../../../redux/actions/JwksActions'
-import GluuLabel from '../../../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuLoader from '../../../../../../app/routes/Apps/Gluu/GluuLoader'
+import { Card, CardBody } from 'Components'
+import { getJwks } from 'Plugins/auth-server/redux/actions/JwksActions'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'
 import JwkItem from './JwkItem'
 
@@ -18,8 +18,8 @@ function JwksPage({ jwks, loading, dispatch }) {
         <CardBody>
           {Object.keys(jwks).length
             ? Array.from(jwks['keys']).map((item, index) => (
-                <JwkItem key={index} item={item} index={index}></JwkItem>
-              ))
+              <JwkItem key={index} item={item} index={index} />
+            ))
             : ''}
         </CardBody>
       </Card>

@@ -2,13 +2,13 @@ package org.gluu.casa.plugins.authnmethod.rs.status.otp;
 
 import org.gluu.casa.misc.Utils;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.OK;
+import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
+import static jakarta.ws.rs.core.Response.Status.OK;
 
 /**
  * @author jgomer

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Col, FormGroup, Input } from '../../../components'
+import { Col, FormGroup, Input } from 'Components'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 function GluuInputRow({

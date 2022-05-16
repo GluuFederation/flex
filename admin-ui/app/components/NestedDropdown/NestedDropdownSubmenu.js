@@ -1,13 +1,13 @@
-import React from 'react';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import uuid from 'uuid/v4';
+import React from 'react'
+import classNames from 'classnames'
+import PropTypes from 'prop-types'
+import uuid from 'uuid/v4'
 
-import { Consumer } from './context';
+import { Consumer } from './context'
 
 class NestedDropdownSubmenu extends React.Component {
   componentDidMount() {
-    this.id = uuid();
+    this.id = uuid()
   }
 
   render() {
@@ -19,18 +19,18 @@ class NestedDropdownSubmenu extends React.Component {
       className,
       openId,
       onOpen
-    } = this.props;
+    } = this.props
     const itemClass = classNames(className, 'nested-dropdown__submenu-item', {
       'nested-dropdown__submenu-item--open': openId === this.id
-    });
-    const linkClass = classNames('nested-dropdown__submenu-item__link', 'dropdown-item');
+    })
+    const linkClass = classNames('nested-dropdown__submenu-item__link', 'dropdown-item')
         
     return (
       <Tag className={ itemClass }>
         <a
           href="#"
           className={ linkClass }
-          onClick={ () => { onOpen(this.id); } }
+          onClick={ () => { onOpen(this.id) } }
         >
           { title }
         </a>
@@ -40,7 +40,7 @@ class NestedDropdownSubmenu extends React.Component {
           </SubMenuTag>
         </div>
       </Tag>
-    );
+    )
   }
 }
 NestedDropdownSubmenu.propTypes = {
@@ -61,11 +61,11 @@ NestedDropdownSubmenu.propTypes = {
   // Context Provided:
   openId: PropTypes.string,
   onOpen: PropTypes.func.isRequired
-};
+}
 NestedDropdownSubmenu.defaultProps = {
   tag: "div",
   subMenuTag: "div"
-};
+}
 
 const ContextNestedDropdownSubmenu = (props) => (
   <Consumer>
@@ -75,8 +75,8 @@ const ContextNestedDropdownSubmenu = (props) => (
       )   
     }
   </Consumer>
-);
+)
 
 export {
   ContextNestedDropdownSubmenu as NestedDropdownSubmenu
-};
+}

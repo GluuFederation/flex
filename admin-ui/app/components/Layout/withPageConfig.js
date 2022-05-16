@@ -1,5 +1,5 @@
-import React from 'react';
-import { PageConfigContext } from './PageConfigContext';
+import React from 'react'
+import { PageConfigContext } from './PageConfigContext'
 
 export const withPageConfig = (Component) => {
   const WithPageConfig = (props) => (
@@ -8,6 +8,6 @@ export const withPageConfig = (Component) => {
         (pageConfig) => <Component pageConfig={ pageConfig } { ...props } />   
       }
     </PageConfigContext.Consumer>
-  );
-  return WithPageConfig;
-};
+  )
+  return WithPageConfig
+}

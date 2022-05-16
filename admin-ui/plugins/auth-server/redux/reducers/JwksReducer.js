@@ -1,5 +1,5 @@
 import { GET_JWKS, GET_JWKS_RESPONSE, RESET } from '../actions/types'
-import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
+import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 const INIT_STATE = {
   jwks: {},

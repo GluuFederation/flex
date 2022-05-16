@@ -1,14 +1,14 @@
-import React from "react";
-import _ from "lodash";
+import React from "react"
+import _ from "lodash"
 import {
   ResponsiveContainer,
   AreaChart,
   Area,
-} from "./../../../components/recharts";
+} from "Components/recharts"
 
-import colors from "./../../../colors";
+import colors from "./../../../colors"
 
-const data = _.times(20, () => ({ pv: Math.random() * 100 }));
+const data = _.times(20, () => ({ pv: Math.random() * 100 }))
 
 const TinyAreaChart = () => (
   <ResponsiveContainer width="100%" height={40}>
@@ -20,6 +20,6 @@ const TinyAreaChart = () => (
       />
     </AreaChart>
   </ResponsiveContainer>
-);
+)
 
-export { TinyAreaChart };
+export { TinyAreaChart }

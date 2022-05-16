@@ -30,16 +30,13 @@
                         <div class="${css.panel} flex justify-between">
                             <div class="flex items-start">
                                
-                                <zk if="${FidoDevice.isPlatformAuthenticator(each) == true}">
-								     <img src="${zkService.contextPath}${assetsService.prefix}/images/touchid.png" />
-								</zk>
-								 <zk if="${FidoDevice.isPlatformAuthenticator(each) == false}">
+                                <zk:zk if="${FidoDevice.isPlatformAuthenticator(each)}">
+								    <img src="${zkService.contextPath}${assetsService.prefix}/images/touchid.png" />
+								</zk:zk>
+								<zk:zk unless="${FidoDevice.isPlatformAuthenticator(each)}">
 								    <img src="${zkService.contextPath}${assetsService.prefix}/images/u2fkey.png" />
-								</zk>
-                                
-                               <h:p unless="${empty vm.fido2SupportMessage}">${vm.fido2SupportMessage}</h:p>
-                               
-                                
+								</zk:zk>
+
                                 <p class="ml3 mb0">
                                     <z:label sclass="f5 dark-blue2" value="@load(empty each.nickName ? c:l('general.no_named') : each.nickName)" />
                                     <br />

@@ -1,3 +1,3 @@
-import { IconWithBadge } from './IconWithBadge';
+import { IconWithBadge } from './IconWithBadge'
 
-export default IconWithBadge;
+export default IconWithBadge

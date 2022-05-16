@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FormGroup, Col, Row, Button, Input } from '../../../components'
+import { FormGroup, Col, Row, Button, Input } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTooltip from './GluuTooltip'

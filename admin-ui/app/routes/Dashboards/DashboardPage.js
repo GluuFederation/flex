@@ -7,8 +7,8 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
 import GluuViewWrapper from '../Apps/Gluu/GluuViewWrapper'
-import { getMau } from '../../redux/actions/MauActions'
-import { getClients } from '../../redux/actions/InitActions'
+import { getMau } from 'Redux/actions/MauActions'
+import { getClients } from 'Redux/actions/InitActions'
 import applicationstyle from '../Apps/Gluu/styles/applicationstyle'
 import GluuLabel from '../Apps/Gluu/GluuLabel'
 import GluuRibbon from '../Apps/Gluu/GluuRibbon'
@@ -20,13 +20,13 @@ import {
   FormGroup,
   Col,
   Row,
-} from '../../../app/components'
+} from 'Components'
 import {
   hasBoth,
   buildPayload,
   STAT_READ,
   STAT_JANS_READ,
-} from '../../utils/PermChecker'
+} from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 
@@ -58,14 +58,14 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
   }
 
   function doDataAugmentation(input) {
-    let stat = input
+    const stat = input
     if (stat && stat.length >= 1) {
-      let flattendStat = stat.map((entry) => entry['month'])
-      let aRange = generateDateRange(moment(startDate), moment(endDate))
+      const flattendStat = stat.map((entry) => entry['month'])
+      const aRange = generateDateRange(moment(startDate), moment(endDate))
       for (const ele of aRange) {
         const currentMonth = getYearMonth(new Date(ele))
         if (flattendStat.indexOf(parseInt(currentMonth, 10)) === -1) {
-          let newEntry = new Object()
+          const newEntry = new Object()
           newEntry['month'] = parseInt(getYearMonth(new Date(ele)), 10)
           newEntry['mau'] = 0
           newEntry['client_credentials_access_token_count'] = 0
@@ -87,7 +87,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
     return getYearMonth(startDate) + '%' + getYearMonth(endDate)
   }
   function getMonth(aDate) {
-    let value = String(aDate.getMonth() + 1)
+    const value = String(aDate.getMonth() + 1)
     if (value.length > 1) {
       return value
     } else {
@@ -96,7 +96,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
   }
 
   function generateDateRange(start, end) {
-    var result = []
+    const result = []
     while (end > start || start.format('M') === end.format('M')) {
       result.push(start.format('YYYY-MM') + '-01')
       start.add(1, 'month')

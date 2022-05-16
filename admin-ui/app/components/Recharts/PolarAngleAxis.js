@@ -1,6 +1,6 @@
-import { PolarAngleAxis as RCPolarAngleAxis } from 'recharts';
+import { PolarAngleAxis as RCPolarAngleAxis } from 'recharts'
 
-import styleConfig from './config';
+import styleConfig from './config'
 
 export class PolarAngleAxis extends RCPolarAngleAxis {
     static defaultProps = {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Typeahead } from 'react-bootstrap-typeahead'
-import { FormGroup, Col, Row, Input } from '../../../components'
+import { FormGroup, Col, Row, Input } from 'Components'
 import GluuLabel from '../Gluu/GluuLabel'
 import Typography from '@material-ui/core/Typography'
 import { createTheme, ThemeProvider } from '@material-ui/core/styles'
@@ -35,18 +35,18 @@ function GluuNameValuesProperty({
     setDataArray([...dataArray, { name: '', domains: [] }])
   }
   const setValues = () => {
-    var dataArr2 = dataArray
+    const dataArr2 = dataArray
     if (value != null && value.length) {
       if (value.length == 0) {
         return
       }
-      for (var i = 0; i < value.length; i++) {
-        var valueList = []
-        var opts = []
+      for (let i = 0; i < value.length; i++) {
+        let valueList = []
+        const opts = []
         valueList = value[i].domains
         if (valueList != null) {
-          for (var j = 0; j < valueList.length; j++) {
-            var obj = valueList[j]
+          for (let j = 0; j < valueList.length; j++) {
+            const obj = valueList[j]
             opts.push(obj)
           }
         }
@@ -59,12 +59,12 @@ function GluuNameValuesProperty({
   }
 
   const handleChangeValue = (i, selected, name) => (e) => {
-    var dataLength = selected.length
-    var obj = JSON.stringify(selected[dataLength - 1])
-    var jsonObj = JSON.parse(obj)
-    var obj_text = jsonObj[name]
-    let newDataArr = [...dataArray]
-    var modEle = newDataArr[e]
+    const dataLength = selected.length
+    const obj = JSON.stringify(selected[dataLength - 1])
+    const jsonObj = JSON.parse(obj)
+    const obj_text = jsonObj[name]
+    const newDataArr = [...dataArray]
+    const modEle = newDataArr[e]
     modEle.domains.push(obj_text)
     newDataArr[e] = { ...newDataArr[e], domains: modEle.domains }
     setDataArray(newDataArr)
@@ -74,14 +74,14 @@ function GluuNameValuesProperty({
 
   const handleChange = (i) => (e) => {
     const { name, value } = e.target
-    let newDataArr = [...dataArray]
+    const newDataArr = [...dataArray]
     newDataArr[i] = { ...newDataArr[i], [name]: value }
     setDataArray(newDataArr)
     formik.setFieldValue(name, newDataArr)
   }
 
   const removeClick = (i) => {
-    let newDataArr = [...dataArray]
+    const newDataArr = [...dataArray]
     newDataArr.splice(i, 1)
     setDataArray(newDataArr)
   }

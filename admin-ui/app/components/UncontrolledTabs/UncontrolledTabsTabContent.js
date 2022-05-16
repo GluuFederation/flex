@@ -1,7 +1,7 @@
-import React from 'react';
-import { TabContent } from 'reactstrap';
+import React from 'react'
+import { TabContent } from 'reactstrap'
 
-import { Consumer } from './context';
+import { Consumer } from './context'
 
 const UncontrolledTabsTabContent = (props) => (
   <Consumer>
@@ -11,6 +11,6 @@ const UncontrolledTabsTabContent = (props) => (
       )
     }
   </Consumer>
-);
+)
 
-export { UncontrolledTabsTabContent };
+export { UncontrolledTabsTabContent }

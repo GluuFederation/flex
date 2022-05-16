@@ -5,7 +5,7 @@ import {
   DropdownMenu,
   DropdownItem,
   ButtonDropdown,
-} from '../../../components'
+} from 'Components'
 
 const LanguageMenu = () => {
   const [isOpen, setOpen] = useState(false)

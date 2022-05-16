@@ -6,7 +6,7 @@ import org.gluu.casa.core.pojo.VerifiedMobile;
 import org.gluu.casa.misc.Utils;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Label } from './../../../components'
+import { Label } from 'Components'
 import ReactTooltip from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 

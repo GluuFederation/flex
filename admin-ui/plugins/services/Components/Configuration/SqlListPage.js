@@ -4,28 +4,28 @@ import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
-import { Card, CardBody, FormGroup } from '../../../../app/components'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import { Card, CardBody, FormGroup } from 'Components'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import SqlDetailPage from './SqlDetailPage'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
-import GluuDialog from '../../../../app/routes/Apps/Gluu/GluuDialog'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import Alert from '@material-ui/lab/Alert'
-import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
-import { getPersistenceType } from '../../redux/actions/PersistenceActions'
+import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
+import { getPersistenceType } from 'Plugins/services/redux/actions/PersistenceActions'
 import {
   hasPermission,
   buildPayload,
   SQL_READ,
   SQL_WRITE,
   SQL_DELETE,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import {
   getSqlConfig,
   setCurrentItem,
   deleteSql,
   testSql,
-} from '../../redux/actions/SqlActions'
+} from 'Plugins/services/redux/actions/SqlActions'
 import { useTranslation } from 'react-i18next'
 
 function SqlListPage({

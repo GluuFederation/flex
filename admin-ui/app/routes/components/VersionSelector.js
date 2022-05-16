@@ -1,17 +1,17 @@
-import React from 'react';
-import fetch from 'node-fetch';
-import classNames from 'classnames';
-import _ from 'lodash';
-import moment from 'moment';
-import PropTypes from 'prop-types';
+import React from 'react'
+import fetch from 'node-fetch'
+import classNames from 'classnames'
+import { filter, find, isEmpty, map } from 'lodash'
+import moment from 'moment'
+import PropTypes from 'prop-types'
 import {
   UncontrolledButtonDropdown,
   DropdownMenu,
   DropdownItem,
   DropdownToggle
-} from './../../components';
+} from 'Components'
 
-const SERVICE_URL = "http://dashboards.webkom.co:8000";
+const SERVICE_URL = "http://dashboards.webkom.co:8000"
 
 export class VersionSelector extends React.Component {
     static propTypes = {
@@ -24,48 +24,48 @@ export class VersionSelector extends React.Component {
     }
 
     constructor(props) {
-      super(props);
+      super(props)
 
       this.state = {
         versions: [],
         isError: false,
         render: null
-      };
+      }
     }
 
     async fetchVersions() {
-      const { dashboard } = this.props;
-      let versions;
+      const { dashboard } = this.props
+      let versions
       try {
         versions = await fetch(`${SERVICE_URL}/dashboards/versions`)
-          .then(response => response.json());
+          .then(response => response.json())
       } catch(exc) {
-        this.setState({ isError: true });
+        this.setState({ isError: true })
       }
-      const targetVersions = _.filter(versions, { dashboardName: dashboard });
+      const targetVersions = filter(versions, { dashboardName: dashboard })
         
-      this.setState({ versions: targetVersions });
+      this.setState({ versions: targetVersions })
     }
 
     componentDidMount() {
-      this.fetchVersions();
+      this.fetchVersions()
     }
 
     componentDidUpdate(prevProps) {
       if (prevProps.dashboard !== this.props.dashboard) {
-        this.fetchVersions();
+        this.fetchVersions()
       }
     }
 
     render() {
-      const { down, render, className, sidebar } = this.props;
-      const { versions } = this.state;
-      const currentVersion = _.find(versions, { label: "React" });
+      const { down, render, className, sidebar } = this.props
+      const { versions } = this.state
+      const currentVersion = find(versions, { label: "React" })
 
       return (
         <UncontrolledButtonDropdown direction={ down ? "down" : "up" } className={ className }>
           <DropdownToggle
-            disabled={ _.isEmpty(versions) }
+            disabled={ isEmpty(versions) }
             tag="a"
             href="javascript:;"
             className={classNames(
@@ -92,13 +92,13 @@ export class VersionSelector extends React.Component {
             }
           </DropdownToggle>
           {
-            (!_.isEmpty(versions)) && (
+            (!isEmpty(versions)) && (
               <DropdownMenu>
                 <DropdownItem header>
                   Bootstrap 4 Versions:
                 </DropdownItem>
                 {
-                  _.map(versions, (version, index) => (
+                  map(versions, (version, index) => (
                     <DropdownItem
                       key={ index }
                       href={ version.demoUrl }
@@ -124,6 +124,6 @@ export class VersionSelector extends React.Component {
             )
           }
         </UncontrolledButtonDropdown>
-      );
+      )
     }
 }

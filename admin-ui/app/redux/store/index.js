@@ -6,7 +6,7 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
 import reducerRegistry from '../reducers/ReducerRegistry'
-import process from '../../../plugins/PluginReducersResolver'
+import process from 'Plugins/PluginReducersResolver'
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware()
 const middlewares = [sagaMiddleware]

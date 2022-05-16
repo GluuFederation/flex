@@ -19,7 +19,7 @@ import ByeBye from './Pages/ByeBye'
 
 import Gluu404Error from './Apps/Gluu/Gluu404Error'
 import GluuNavBar from './Apps/Gluu/GluuNavBar'
-import { processRoutes } from '../../plugins/PluginMenuResolver'
+import { processRoutes } from 'Plugins/PluginMenuResolver'
 import { hasPermission } from '../utils/PermChecker'
 
 //------ Route Definitions --------

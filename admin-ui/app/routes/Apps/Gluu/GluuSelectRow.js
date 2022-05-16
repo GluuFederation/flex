@@ -1,6 +1,6 @@
 import React from 'react'
 import GluuLabel from './GluuLabel'
-import { Col, FormGroup, CustomInput, InputGroup } from '../../../components'
+import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuTooltip from './GluuTooltip'
 

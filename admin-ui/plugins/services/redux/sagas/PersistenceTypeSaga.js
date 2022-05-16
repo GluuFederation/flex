@@ -1,10 +1,10 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import { isFourZeroOneError } from '../../../../app/utils/TokenController'
+import { isFourZeroOneError } from 'Utils/TokenController'
 import { getPersistenceTypeResponse } from '../actions/PersistenceActions'
-import { getAPIAccessToken } from '../../../../app/redux/actions/AuthActions'
+import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { GET_PERSISTENCE_TYPE } from '../actions/types'
 import PersistenceConfigApi from '../api/PersistenceConfigApi'
-import { getClient } from '../../../../app/redux/api/base'
+import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
 
 function* newFunction() {

@@ -1,28 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { UncontrolledDropdown } from 'reactstrap';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import { UncontrolledDropdown } from 'reactstrap'
 
-import { Provider } from './context';
+import { Provider } from './context'
 
 export class NestedDropdown extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       openId: null
-    };
+    }
   }
 
   handleOpen(targetId) {
     this.setState({
       openId: targetId
-    });
+    })
   }
 
   render() {
-    const { tag: Tag, className, children, ...otherProps } = this.props;
-    const dropdownClass = classNames(className, 'nested-dropdown');
+    const { tag: Tag, className, children, ...otherProps } = this.props
+    const dropdownClass = classNames(className, 'nested-dropdown')
 
     return (
       <Tag { ...otherProps } className={ dropdownClass } >
@@ -35,7 +35,7 @@ export class NestedDropdown extends React.Component {
           { children }
         </Provider>
       </Tag>
-    );
+    )
   }
 }
 
@@ -46,7 +46,7 @@ NestedDropdown.propTypes = {
   ]),
   className: PropTypes.string,
   children: PropTypes.node
-};
+}
 NestedDropdown.defaultProps = {
   tag: UncontrolledDropdown
-};
+}

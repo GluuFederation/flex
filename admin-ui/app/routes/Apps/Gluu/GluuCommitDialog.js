@@ -27,7 +27,7 @@ const GluuCommitDialog = ({
 }) => {
   const { t } = useTranslation()
   const [active, setActive] = useState(false)
-  let [loading, setLoading] = useState(isLoading)
+  const [loading, setLoading] = useState(isLoading)
   const [userMessage, setUserMessage] = useState('')
   const USER_MESSAGE = 'user_action_message'
   useEffect(() => {
@@ -77,7 +77,7 @@ const GluuCommitDialog = ({
           <Col sm={12}>
             <Input
               id={USER_MESSAGE}
-              type={!!inputType ? inputType : 'textarea'}
+              type={inputType ? inputType : 'textarea'}
               name={USER_MESSAGE}
               onChange={(e) => setUserMessage(e.target.value)}
               placeholder={
