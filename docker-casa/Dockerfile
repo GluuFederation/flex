@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2022-04-29 12:53'
+ENV GLUU_BUILD_DATE='2022-05-12 11:53'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -199,7 +199,8 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     CN_JAVA_OPTIONS="" \
     CN_SSL_CERT_FROM_SECRETS=false \
     GOOGLE_PROJECT_ID="" \
-    GOOGLE_APPLICATION_CREDENTIALS=/etc/jans/conf/google-credentials.json
+    GOOGLE_APPLICATION_CREDENTIALS=/etc/jans/conf/google-credentials.json \
+    GLUU_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable
 
 # ==========
 # misc stuff
@@ -218,7 +219,7 @@ RUN mkdir -p /etc/certs \
     /opt/jans/python/libs \
     /opt/jans/jetty/casa/static \
     /opt/jans/jetty/casa/plugins \
-    /opt/jetty/temp
+    /opt/jans/jetty/casa/logs
 
 COPY jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 COPY jetty/log4j2.xml ${JETTY_BASE}/casa/resources/
@@ -231,15 +232,13 @@ RUN chmod +x /app/scripts/entrypoint.sh
 RUN adduser -s /bin/sh -D -G root -u 1000 jetty
 
 # adjust ownership
-RUN chown -R 1000:1000 /opt/jans/jetty \
-    && chown -R 1000:1000 /opt/jetty \
-    && chown -R 1000:1000 /tmp \
-    && chgrp -R 0 /opt/jans/jetty && chmod -R g=u /opt/jans/jetty \
-    && chgrp -R 0 /opt/jetty && chmod -R g=u /opt/jetty \
-    && chgrp -R 0 /tmp && chmod -R g=u /tmp \
-    && chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
-    && chgrp -R 0 /etc/jans && chmod -R g=u /etc/jans \
-    && chmod -R +w /usr/java/latest/jre/lib/security/cacerts && chgrp -R 0 /usr/java/latest/jre/lib/security/cacerts && chmod -R g=u /usr/java/latest/jre/lib/security/cacerts \
+RUN chmod -R g=u ${JETTY_BASE}/casa/static \
+    && chmod -R g=u ${JETTY_BASE}/casa/plugins \
+    && chmod -R g=u ${JETTY_BASE}/casa/resources \
+    && chmod -R g=u ${JETTY_BASE}/casa/logs \
+    && chmod -R g=u /etc/certs \
+    && chmod -R g=u /etc/jans \
+    && chmod 664 /usr/java/latest/jre/lib/security/cacerts \
     && chmod 664 /opt/jetty/etc/jetty.xml \
     && chmod 664 /opt/jetty/etc/webdefault.xml
 
