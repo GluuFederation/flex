@@ -18,21 +18,15 @@ const UserDetailViewPage = ({ row }) => {
           </Col>
           <Col sm={4}>
             <GluuFormDetailRow
-              label="fields.nickName"
-              value={rowData.nickName}
+              label="fields.givenName"
+              value={rowData.givenName}
             />
           </Col>
           <Col sm={4}>
-            <GluuFormDetailRow
-              label="fields.userName"
-              value={rowData.userName}
-            />
+            <GluuFormDetailRow label="fields.userName" value={rowData.userId} />
           </Col>
           <Col sm={6}>
-            <GluuFormDetailRow
-              label="fields.email"
-              value={rowData?.emails[0].value}
-            />
+            <GluuFormDetailRow label="fields.email" value={rowData?.mail} />
           </Col>
         </Row>
       </Container>

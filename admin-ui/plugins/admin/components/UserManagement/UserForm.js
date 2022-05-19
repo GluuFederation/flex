@@ -1,25 +1,11 @@
 import React, { useState } from 'react'
-import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import {
-  Col,
-  InputGroup,
-  CustomInput,
-  Form,
-  FormGroup,
-  Input,
-} from '../../../../app/components'
+import { Col, Form, FormGroup, Input } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuInumInput from '../../../../app/routes/Apps/Gluu/GluuInumInput'
-import GluuProperties from '../../../../app/routes/Apps/Gluu/GluuProperties'
-import Counter from '../../../../app/components/Widgets/GroupedButtons/Counter'
-import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import { SCRIPT, USERS } from '../../../../app/utils/ApiResources'
 import { useTranslation } from 'react-i18next'
-import { timezones, initialClaims } from './constLists'
-function UserForm() {
+import { initialClaims } from './constLists'
+
+function UserForm({ formik }) {
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
@@ -40,40 +26,34 @@ function UserForm() {
   }
 
   return (
-    <Form>
+    <Form onSubmit={formik.handleSubmit}>
       <FormGroup row>
         <Col sm={8}>
           <FormGroup row>
             <Col sm={3}>
-              <GluuLabel label="User Name" size={12} />
+              <GluuLabel label="User Id" size={12} />
             </Col>
             <Col sm={9}>
-              <Input placeholder={'User Name'} id="userName" name="userName" />
+              <Input
+                placeholder={'User Id'}
+                id="userId"
+                name="userId"
+                onChange={formik.handleChange}
+                value={formik.values.userId || ''}
+              />
             </Col>
           </FormGroup>
           <FormGroup row>
             <Col sm={3}>
-              <GluuLabel label="Full Name" size={12} />
+              <GluuLabel label="Given Name" size={12} />
             </Col>
-            <Col sm={3}>
+            <Col sm={9}>
               <Input
                 placeholder={'Given Name'}
                 id="givenName"
                 name="givenName"
-              />
-            </Col>
-            <Col sm={3}>
-              <Input
-                placeholder={'Middle Name'}
-                id="middleName"
-                name="middleName"
-              />
-            </Col>
-            <Col sm={3}>
-              <Input
-                placeholder={'Family Name'}
-                id="familyName"
-                name="familyName"
+                onChange={formik.handleChange}
+                value={formik.values.givenName || ''}
               />
             </Col>
           </FormGroup>
@@ -86,66 +66,41 @@ function UserForm() {
                 placeholder={'Display Name'}
                 id="displayName"
                 name="displayName"
+                onChange={formik.handleChange}
+                value={formik.values.displayName || ''}
               />
             </Col>
           </FormGroup>
           <FormGroup row>
             <Col sm={3}>
-              <GluuLabel label="Nick Name" size={12} />
+              <GluuLabel label="Email" size={12} />
             </Col>
             <Col sm={9}>
-              <Input placeholder={'Nick Name'} id="nickName" name="nickName" />
+              <Input
+                type="email"
+                placeholder={'Enter your email'}
+                id="mail"
+                name="mail"
+                onChange={formik.handleChange}
+                value={formik.values.mail || ''}
+              />
             </Col>
           </FormGroup>
           <FormGroup row>
             <Col sm={3}>
-              <GluuLabel label="Title" size={12} />
-            </Col>
-            <Col sm={9}>
-              <Input placeholder={'Title'} id="title" name="title" />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col sm={3}>
-              <GluuLabel label="User Type" size={12} />
-            </Col>
-            <Col sm={9}>
-              <Input placeholder={'User Type'} id="userType" name="userType" />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col sm={3}>
-              <GluuLabel label="Preffered Language" size={12} />
+              <GluuLabel label="Status" size={12} />
             </Col>
             <Col sm={9}>
               <Input
                 type="select"
-                name="preferredLanguage"
-                id="preferredLanguage"
+                name="jansStatus"
+                id="jansStatus"
                 multiple={false}
+                onChange={formik.handleChange}
+                value={formik.values.jansStatus || ''}
               >
-                <option value="en">en</option>
-                <option value="fr">fr</option>
-                <option value="pt">pt</option>
-              </Input>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col sm={3}>
-              <GluuLabel label="Timezone" size={12} />
-            </Col>
-            <Col sm={9}>
-              <Input
-                type="select"
-                name="timezone"
-                id="timezone"
-                multiple={false}
-              >
-                {timezones.map((data, key) => (
-                  <option value={data} key={key}>
-                    {data}
-                  </option>
-                ))}
+                <option value="en">active</option>
+                <option value="fr">inactive</option>
               </Input>
             </Col>
           </FormGroup>
@@ -157,8 +112,10 @@ function UserForm() {
               <Input
                 type="password"
                 placeholder={'Password'}
-                id="password"
-                name="password"
+                id="userPassword"
+                name="userPassword"
+                onChange={formik.handleChange}
+                value={formik.values.userPassword || ''}
               />
             </Col>
           </FormGroup>
@@ -170,7 +127,13 @@ function UserForm() {
                     <GluuLabel label={data.name} size={12} />
                   </Col>
                   <Col sm={8}>
-                    <Input {...data.attributes} />
+                    <Input
+                      {...data.attributes}
+                      name={data.id}
+                      id={data.id}
+                      onChange={formik.handleChange}
+                      value={formik.values[data.id] || ''}
+                    />
                   </Col>
                   <Col
                     sm={1}
@@ -192,7 +155,13 @@ function UserForm() {
                     <GluuLabel label={data.name} size={12} />
                   </Col>
                   <Col sm={8}>
-                    <Input {...data.attributes}>
+                    <Input
+                      {...data.attributes}
+                      name={data.id}
+                      id={data.id}
+                      onChange={formik.handleChange}
+                      value={formik.values[data.id] || ''}
+                    >
                       {data.attributes.values.map((val, key) => (
                         <option value={val} key={'option' + key}>
                           {val}
@@ -215,6 +184,11 @@ function UserForm() {
               )
             }
           })}
+          <FormGroup>
+            <Col sm={12}>
+              <button type="submit">Submit</button>
+            </Col>
+          </FormGroup>
         </Col>
         <Col sm={4}>
           <div className="border border-light ">

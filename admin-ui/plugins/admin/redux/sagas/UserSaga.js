@@ -14,7 +14,7 @@ import {
   isFourZeroOneError,
   addAdditionalData,
 } from '../../../../app/utils/TokenController'
-import { UM_GET_USERS } from '../actions/types'
+import { UM_GET_USERS, UM_CREATE_NEW_USER } from '../actions/types'
 import UserApi from '../api/UserApi'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -24,10 +24,26 @@ import { postUserAction } from '../../../../app/redux/api/backend-api'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.SCIMUserManagementApi(
+  const api = new JansConfigApi.ConfigurationUserManagementApi(
     getClient(JansConfigApi, token, issuer),
   )
   return new UserApi(api)
+}
+
+export function* createNewUserSaga({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, API_USERS, payload)
+    const userApi = yield* newFunction()
+    const data = yield call(userApi.createUsers, payload)
+    console.log(data)
+  } catch (e) {
+    yield put(UMupdateUserLoading(false))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
 }
 
 export function* getUsersSaga({ payload }) {
@@ -36,6 +52,7 @@ export function* getUsersSaga({ payload }) {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
     const data = yield call(userApi.getUsers)
+    console.log(data)
     yield put(updateUserResponse(data))
     yield put(UMupdateUserLoading(false))
     yield call(postUserAction, audit)
@@ -52,6 +69,10 @@ export function* watchGetUsers() {
   yield takeEvery(UM_GET_USERS, getUsersSaga)
 }
 
+export function* watchCreateUser() {
+  yield takeLatest(UM_CREATE_NEW_USER, createNewUserSaga)
+}
+
 export default function* rootSaga() {
-  yield all([fork(watchGetUsers)])
+  yield all([fork(watchGetUsers), fork(watchCreateUser)])
 }

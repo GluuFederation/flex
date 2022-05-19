@@ -24,10 +24,11 @@ export default function userReducer(state = INIT_STATE, action) {
         loading: action.payload,
       }
     case UM_UPDATE_USERS_RESPONSE:
+      console.log('USERS', action.payload)
       return {
         ...state,
         loading: false,
-        items: action.payload?.action?.Resources,
+        items: action.payload?.action,
       }
     default:
       return handleDefault()

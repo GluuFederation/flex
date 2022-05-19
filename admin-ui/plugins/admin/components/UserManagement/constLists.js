@@ -390,11 +390,59 @@ export const timezones = [
 export const initialClaims = [
   {
     type: 'input',
+    name: 'Nick Name',
+    attributes: {
+      type: 'text',
+      class: 'form-control',
+    },
+    id: 'nickName',
+  },
+  {
+    type: 'input',
+    name: 'Title',
+    attributes: {
+      type: 'text',
+      class: 'form-control',
+    },
+    id: 'title',
+  },
+  {
+    type: 'input',
+    name: 'User Type',
+    attributes: {
+      type: 'text',
+      class: 'form-control',
+    },
+    id: 'userType',
+  },
+  {
+    type: 'select',
+    name: 'Preffered Language',
+    attributes: {
+      type: 'select',
+      class: 'form-control',
+      values: ['en', 'fr', 'pt'],
+    },
+    id: 'preferredLanguage',
+  },
+  {
+    type: 'select',
+    name: 'Timezone',
+    attributes: {
+      type: 'select',
+      class: 'form-control',
+      values: timezones,
+    },
+    id: 'timezone',
+  },
+  {
+    type: 'input',
     name: 'Birthday',
     attributes: {
       type: 'date',
       class: 'form-control',
     },
+    id: 'birthday',
   },
   {
     type: 'input',
@@ -403,6 +451,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'cibaDeviceRegistrationToken',
   },
   {
     type: 'input',
@@ -411,6 +460,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'cibaUserCode',
   },
   {
     type: 'input',
@@ -419,6 +469,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'country',
   },
   {
     type: 'input',
@@ -427,6 +478,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'enrollmentCode',
   },
   {
     type: 'select',
@@ -436,6 +488,7 @@ export const initialClaims = [
       class: 'form-control',
       values: ['Male', 'Female'],
     },
+    id: 'gender',
   },
   {
     type: 'input',
@@ -444,6 +497,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'impaData',
   },
   {
     type: 'input',
@@ -452,6 +506,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'organization',
   },
   {
     type: 'input',
@@ -460,6 +515,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'openIdConnectJsonFormattedAddress',
   },
   {
     type: 'select',
@@ -469,6 +525,7 @@ export const initialClaims = [
       class: 'form-control',
       values: ['true', 'false'],
     },
+    id: 'phoneNumberVerified',
   },
   {
     type: 'input',
@@ -477,14 +534,7 @@ export const initialClaims = [
       type: 'url',
       class: 'form-control',
     },
-  },
-  {
-    type: 'input',
-    name: 'Preferred language',
-    attributes: {
-      type: 'text',
-      class: 'form-control',
-    },
+    id: 'pictureUrl',
   },
   {
     type: 'input',
@@ -493,6 +543,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'preferredUsername',
   },
   {
     type: 'input',
@@ -501,6 +552,7 @@ export const initialClaims = [
       type: 'url',
       class: 'form-control',
     },
+    id: 'profileUrl',
   },
   {
     type: 'input',
@@ -509,6 +561,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'secretQuestion',
   },
   {
     type: 'input',
@@ -517,6 +570,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'secretAnswer',
   },
   {
     type: 'input',
@@ -525,6 +579,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'timeZoneInfo',
   },
   {
     type: 'input',
@@ -533,6 +588,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'transientId',
   },
   {
     type: 'textarea',
@@ -541,6 +597,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'userCertificate',
   },
   {
     type: 'text',
@@ -549,6 +606,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
+    id: 'userPermission',
   },
   {
     type: 'text',
@@ -557,5 +615,6 @@ export const initialClaims = [
       type: 'url',
       class: 'form-control',
     },
+    id: 'websiteUrl',
   },
 ]

@@ -5,7 +5,18 @@ export default class UserApi {
 
   getUsers = () => {
     return new Promise((resolve, reject) => {
-      this.api.getScimUsers({}, (error, data) => {
+      this.api.getUser({}, (error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
+  createUsers = (data) => {
+    // customUser
+    console.log(data)
+    const options = {}
+    options['customUser'] = data
+    return new Promise((resolve, reject) => {
+      this.api.postUser(options, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
       })
     })
