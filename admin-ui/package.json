@@ -123,7 +123,7 @@
     "@miltonbo/dashboard-style-airframe": "^0.2.0",
     "ag-grid-community": "^21.0.1",
     "ag-grid-react": "^21.0.1",
-    "axios": "^0.24.0",
+    "axios": "^0.27.2",
     "bootstrap": "^4.5.3",
     "date-fns": "^2.25.0",
     "dateformat": "^5.0.1",
