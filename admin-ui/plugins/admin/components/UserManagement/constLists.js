@@ -413,7 +413,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
-    id: 'userType',
+    id: 'employeeType',
   },
   {
     type: 'select',
@@ -425,16 +425,16 @@ export const initialClaims = [
     },
     id: 'preferredLanguage',
   },
-  {
-    type: 'select',
-    name: 'Timezone',
-    attributes: {
-      type: 'select',
-      class: 'form-control',
-      values: timezones,
-    },
-    id: 'timezone',
-  },
+  // {
+  //   type: 'select',
+  //   name: 'Timezone',
+  //   attributes: {
+  //     type: 'select',
+  //     class: 'form-control',
+  //     values: timezones,
+  //   },
+  //   id: 'timezone',
+  // },
   {
     type: 'input',
     name: 'Birthday',
@@ -442,34 +442,34 @@ export const initialClaims = [
       type: 'date',
       class: 'form-control',
     },
-    id: 'birthday',
+    id: 'birthdate',
   },
   {
     type: 'input',
-    name: 'CIBA Device Registration Token',
+    name: 'IMAP Data',
     attributes: {
       type: 'text',
       class: 'form-control',
     },
-    id: 'cibaDeviceRegistrationToken',
+    id: 'jansIMAPData',
   },
   {
     type: 'input',
-    name: 'CIBA User Code',
+    name: 'Associated Clnt',
     attributes: {
       type: 'text',
       class: 'form-control',
     },
-    id: 'cibaUserCode',
+    id: 'jansAssociatedClnt',
   },
   {
     type: 'input',
-    name: 'Country',
+    name: 'Address',
     attributes: {
       type: 'text',
       class: 'form-control',
     },
-    id: 'country',
+    id: 'jansAddres',
   },
   {
     type: 'input',
@@ -478,7 +478,7 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
-    id: 'enrollmentCode',
+    id: 'jansEnrollmentCode',
   },
   {
     type: 'select',
@@ -497,25 +497,25 @@ export const initialClaims = [
       type: 'text',
       class: 'form-control',
     },
-    id: 'impaData',
+    id: 'jansIMAPData',
   },
   {
     type: 'input',
-    name: 'Organization',
+    name: 'Organizations',
     attributes: {
       type: 'text',
       class: 'form-control',
     },
-    id: 'organization',
+    id: 'jansManagedOrganizations',
   },
   {
     type: 'input',
-    name: 'Open ID Connect JSON formatted address',
+    name: 'Postal Address',
     attributes: {
       type: 'text',
       class: 'form-control',
     },
-    id: 'openIdConnectJsonFormattedAddress',
+    id: 'homePostalAddress',
   },
   {
     type: 'select',
@@ -534,17 +534,17 @@ export const initialClaims = [
       type: 'url',
       class: 'form-control',
     },
-    id: 'pictureUrl',
+    id: 'picture',
   },
-  {
-    type: 'input',
-    name: 'Preferred username',
-    attributes: {
-      type: 'text',
-      class: 'form-control',
-    },
-    id: 'preferredUsername',
-  },
+  // {
+  //   type: 'input',
+  //   name: 'Preferred username',
+  //   attributes: {
+  //     type: 'text',
+  //     class: 'form-control',
+  //   },
+  //   id: 'preferredUsername',
+  // },
   {
     type: 'input',
     name: 'Profile URL',
@@ -552,7 +552,7 @@ export const initialClaims = [
       type: 'url',
       class: 'form-control',
     },
-    id: 'profileUrl',
+    id: 'jansProfileURL',
   },
   {
     type: 'input',
@@ -574,12 +574,12 @@ export const initialClaims = [
   },
   {
     type: 'input',
-    name: 'Time Zone info',
+    name: 'Zone info',
     attributes: {
       type: 'text',
       class: 'form-control',
     },
-    id: 'timeZoneInfo',
+    id: 'zoneinfo',
   },
   {
     type: 'input',
@@ -599,15 +599,15 @@ export const initialClaims = [
     },
     id: 'userCertificate',
   },
-  {
-    type: 'text',
-    name: 'User Permission',
-    attributes: {
-      type: 'text',
-      class: 'form-control',
-    },
-    id: 'userPermission',
-  },
+  // {
+  //   type: 'text',
+  //   name: 'User Permission',
+  //   attributes: {
+  //     type: 'text',
+  //     class: 'form-control',
+  //   },
+  //   id: 'userPermission',
+  // },
   {
     type: 'text',
     name: 'Website URL',
@@ -615,6 +615,6 @@ export const initialClaims = [
       type: 'url',
       class: 'form-control',
     },
-    id: 'websiteUrl',
+    id: 'website',
   },
 ]
