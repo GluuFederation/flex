@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import * as Yup from 'yup'
-import { Col, Form, FormGroup, Input } from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+import { Col, Form, FormGroup } from '../../../../app/components'
+import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
+import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import { useTranslation } from 'react-i18next'
 import { initialClaims } from './constLists'
+import UserClaimEntry from './UserClaimEntry'
 
 function UserForm({ formik }) {
   const { t } = useTranslation()
@@ -29,166 +31,67 @@ function UserForm({ formik }) {
     <Form onSubmit={formik.handleSubmit}>
       <FormGroup row>
         <Col sm={8}>
-          <FormGroup row>
-            <Col sm={3}>
-              <GluuLabel label="User Id" size={12} />
-            </Col>
-            <Col sm={9}>
-              <Input
-                placeholder={'User Id'}
-                id="userId"
-                name="userId"
-                onChange={formik.handleChange}
-                value={formik.values.userId || ''}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col sm={3}>
-              <GluuLabel label="Given Name" size={12} />
-            </Col>
-            <Col sm={9}>
-              <Input
-                placeholder={'Given Name'}
-                id="givenName"
-                name="givenName"
-                onChange={formik.handleChange}
-                value={formik.values.givenName || ''}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col sm={3}>
-              <GluuLabel label="Display Name" size={12} />
-            </Col>
-            <Col sm={9}>
-              <Input
-                placeholder={'Display Name'}
-                id="displayName"
-                name="displayName"
-                onChange={formik.handleChange}
-                value={formik.values.displayName || ''}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col sm={3}>
-              <GluuLabel label="Email" size={12} />
-            </Col>
-            <Col sm={9}>
-              <Input
-                type="email"
-                placeholder={'Enter your email'}
-                id="mail"
-                name="mail"
-                onChange={formik.handleChange}
-                value={formik.values.mail || ''}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col sm={3}>
-              <GluuLabel label="Status" size={12} />
-            </Col>
-            <Col sm={9}>
-              <Input
-                type="select"
-                name="jansStatus"
-                id="jansStatus"
-                multiple={false}
-                onChange={formik.handleChange}
-                value={formik.values.jansStatus || ''}
-              >
-                <option value="en">active</option>
-                <option value="fr">inactive</option>
-              </Input>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col sm={3}>
-              <GluuLabel label="Password" size={12} />
-            </Col>
-            <Col sm={9}>
-              <Input
-                type="password"
-                placeholder={'Password'}
-                id="userPassword"
-                name="userPassword"
-                onChange={formik.handleChange}
-                value={formik.values.userPassword || ''}
-              />
-            </Col>
-          </FormGroup>
-          {selectedClaims.map((data, key) => {
-            if (data.type == 'input') {
-              return (
-                <FormGroup row key={key}>
-                  <Col sm={3}>
-                    <GluuLabel label={data.name} size={12} />
-                  </Col>
-                  <Col sm={8}>
-                    <Input
-                      {...data.attributes}
-                      name={data.id}
-                      id={data.id}
-                      onChange={formik.handleChange}
-                      value={formik.values[data.id] || ''}
-                    />
-                  </Col>
-                  <Col
-                    sm={1}
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => removeSelectedClaimsFromState(key)}
-                  >
-                    <i className={'fa fa-fw fa-close'}></i>
-                  </Col>
-                </FormGroup>
-              )
-            } else if (data.type == 'select') {
-              return (
-                <FormGroup row key={key}>
-                  <Col sm={3}>
-                    <GluuLabel label={data.name} size={12} />
-                  </Col>
-                  <Col sm={8}>
-                    <Input
-                      {...data.attributes}
-                      name={data.id}
-                      id={data.id}
-                      onChange={formik.handleChange}
-                      value={formik.values[data.id] || ''}
-                    >
-                      {data.attributes.values.map((val, key) => (
-                        <option value={val} key={'option' + key}>
-                          {val}
-                        </option>
-                      ))}
-                    </Input>
-                  </Col>
-                  <Col
-                    sm={1}
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => removeSelectedClaimsFromState(key)}
-                  >
-                    <i className={'fa fa-fw fa-close'}></i>
-                  </Col>
-                </FormGroup>
-              )
-            }
-          })}
-          <FormGroup>
-            <Col sm={12}>
-              <button type="submit">Submit</button>
-            </Col>
-          </FormGroup>
+          <GluuInputRow
+            label="User Id"
+            name="userId"
+            value={formik.values.userId || ''}
+            formik={formik}
+            required
+            lsize={3}
+            rsize={9}
+          />
+          <GluuInputRow
+            label="Given Name"
+            name="givenName"
+            value={formik.values.givenName || ''}
+            formik={formik}
+            lsize={3}
+            rsize={9}
+          />
+          <GluuInputRow
+            label="Display Name"
+            name="displayName"
+            value={formik.values.displayName || ''}
+            formik={formik}
+            lsize={3}
+            rsize={9}
+          />
+          <GluuInputRow
+            label="Email"
+            name="mail"
+            type="email"
+            value={formik.values.mail || ''}
+            formik={formik}
+            lsize={3}
+            rsize={9}
+          />
+          <GluuSelectRow
+            label="Status"
+            name="jansStatus"
+            value={formik.values.jansStatus || ''}
+            values={['active', 'inactive']}
+            formik={formik}
+            lsize={3}
+            rsize={9}
+          />
+          <GluuInputRow
+            label="Password"
+            name="userPassword"
+            type="password"
+            value={formik.values.userPassword || ''}
+            formik={formik}
+            lsize={3}
+            rsize={9}
+          />
+          {selectedClaims.map((data, key) => (
+            <UserClaimEntry
+              key={key}
+              data={data}
+              formik={formik}
+              isInput={true}
+            />
+          ))}
+          <GluuFooter />
         </Col>
         <Col sm={4}>
           <div className="border border-light ">

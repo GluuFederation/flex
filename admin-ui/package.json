@@ -45,7 +45,6 @@
   ],
   "main": "index.js",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "test": "NODE_ENV=test jest",
     "test:watch": "npm test -- --watch",
     "start": "export $(cat .env | xargs) && npm run start:dev",
