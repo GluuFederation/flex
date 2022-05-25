@@ -22,6 +22,7 @@ function UserForm({ formik }) {
   }
 
   const removeSelectedClaimsFromState = (id) => {
+    console.log('=================key: ' + id)
     let tempList = [...selectedClaims]
     let newList = tempList.filter((drink, index) => index !== id)
     setSelectedClaims(newList)
@@ -88,7 +89,8 @@ function UserForm({ formik }) {
               key={key}
               data={data}
               formik={formik}
-              isInput={true}
+              handler={removeSelectedClaimsFromState}
+              type={data.type}
             />
           ))}
           <GluuFooter />

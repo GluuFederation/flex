@@ -1,48 +1,47 @@
 import React from 'react'
-import { Col, FormGroup } from '../../../../app/components'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
-function UserClaimEntry({ data, isInput, key, formik }) {
+function UserClaimEntry({ data, type, key, formik, handler }) {
   return (
     <div key={key}>
-      {isInput && (
-        <Col sm={10}>
-          <GluuInputRow
-            label={data.name}
-            name={data.id}
-            value={formik.values[data.id] || ''}
-            formik={formik}
-            lsize={4}
-            rsize={8}
-          />
-        </Col>
+      {type === 'input' && (
+        <GluuInputRow
+          label={data.name}
+          name={data.id}
+          value={formik.values[data.id] || ''}
+          formik={formik}
+          lsize={3}
+          rsize={9}
+        />
       )}
-      {!isInput && (
-        <Col sm={10}>
-          <GluuSelectRow
-            label={data.name}
-            name={data.id}
-            value={formik.values[data.id] || ''}
-            values={data.attributes.values}
-            formik={formik}
-            required
-            lsize={3}
-            rsize={9}
-          />
-        </Col>
+      {type === 'select' && (
+        <GluuSelectRow
+          label={data.name}
+          name={data.id}
+          value={formik.values[data.id] || ''}
+          values={data.attributes.values}
+          formik={formik}
+          required
+          lsize={3}
+          rsize={9}
+        />
       )}
 
-      <Col
-        sm={1}
+      <div
         style={{
+          float: 'right',
           justifyContent: 'center',
-          alignItems: 'center',
           cursor: 'pointer',
+          padding: '5px',
+          width: '25px',
+          height: '25px',
+          marginTop: '-60px',
+          marginRight: '-25px',
         }}
-        onClick={() => removeSelectedClaimsFromState(key)}
+        onClick={handler}
       >
         <i className={'fa fa-fw fa-close'}></i>
-      </Col>
+      </div>
     </div>
   )
 }

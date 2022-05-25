@@ -11,7 +11,7 @@ function GluuInputRow({
   required,
   lsize,
   rsize,
-  doc_category
+  doc_category,
 }) {
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
