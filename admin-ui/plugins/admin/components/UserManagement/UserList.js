@@ -4,7 +4,7 @@ import { Paper } from '@material-ui/core'
 import UserDetailViewPage from './UserDetailViewPage'
 // import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
-import { getUsers } from '../../redux/actions/UserActions'
+import { getUsers, setSelectedUserData } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody, FormGroup } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
@@ -42,6 +42,11 @@ function UserList(props) {
   function handleGoToUserAddPage() {
     return history.push('/adm/usermanagement/add')
   }
+  function handleGoToUserEditPage(row) {
+    console.log('edit data', row)
+    dispatch(setSelectedUserData(row))
+    return history.push(`/adm/usermanagement/edit:` + row.tableData.uuid)
+  }
 
   if (hasPermission(permissions, ROLE_WRITE)) {
     myActions.push({
@@ -51,6 +56,16 @@ function UserList(props) {
       isFreeAction: true,
       onClick: () => handleGoToUserAddPage(),
     })
+  }
+  if (hasPermission(permissions, ROLE_WRITE)) {
+    myActions.push((rowData) => ({
+      icon: 'edit',
+      iconProps: {
+        id: 'editScope' + rowData.inum,
+      },
+      onClick: (event, rowData) => handleGoToUserEditPage(rowData),
+      disabled: !hasPermission(permissions, ROLE_WRITE),
+    }))
   }
 
   // function handleAddNewRole() {

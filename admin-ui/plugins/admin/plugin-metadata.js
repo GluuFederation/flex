@@ -2,6 +2,7 @@ import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
 import UserList from './components/UserManagement/UserList'
 import UserAddPage from './components/UserManagement/UserAddPage'
+import UserEditPage from './components/UserManagement/UserEditPage'
 import UiRoleListPage from './components/Roles/UiRoleListPage'
 import UiPermListPage from './components/Permissions/UiPermListPage'
 import MappingPage from './components/Mapping/MappingPage'
@@ -142,6 +143,11 @@ const pluginMetadata = {
       component: UserAddPage,
       path: PLUGIN_BASE_APTH + '/usermanagement/add',
       permission: ACR_READ,
+    },
+    {
+      component: UserEditPage,
+      path: PLUGIN_BASE_APTH + '/usermanagement/edit:id',
+      permission: SCRIPT_WRITE,
     },
   ],
   reducers: [
