@@ -18,17 +18,18 @@ import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
-import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
 
 /**
  * This is the ViewModel of page otp-detail.zul. It controls the CRUD of HOTP/TOTP devices
@@ -282,9 +283,12 @@ public class OTPViewModel extends UserViewModel {
     }
 
     @NotifyChange({"editingId", "newDevice"})
-    public void cancelUpdate() {
+    public void cancelUpdate(Event event) {
         newDevice.setNickName(null);
         editingId = 0;
+        if (event != null && event.getName().equals(Events.ON_CLOSE)) {
+            event.stopPropagation();
+        }
     }
 
     @NotifyChange({"devices", "editingId", "newDevice"})
@@ -297,7 +301,7 @@ public class OTPViewModel extends UserViewModel {
             OTPDevice dev = devices.get(i);
             //Updates its nickname
             dev.setNickName(nick);
-            cancelUpdate();     //This doesn't undo anything we already did (just controls UI aspects)
+            cancelUpdate(null);     //This doesn't undo anything we already did (just controls UI aspects)
 
             try {
                 otpService.updateDevicesAdd(user.getId(), devices, null);
