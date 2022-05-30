@@ -858,6 +858,16 @@
       "certificateAttributes": "Certificate attributes.",
       "activate": "Activate SQL configuration.",
       "connectionUri": "Connection URI of database."
+    },
+    "user": {
+      "userId": "User Id",
+      "userName": "User Name",
+      "givenName": "Given Name",
+      "displayName": "Display Name",
+      "mail": "Email",
+      "jansStatus": "Status",
+      "gender": "Gender",
+      "userPassword": "User password"
     }
   }
 }

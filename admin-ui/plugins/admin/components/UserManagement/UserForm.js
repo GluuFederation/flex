@@ -9,8 +9,7 @@ import UserClaimEntry from './UserClaimEntry'
 
 function UserForm({ formik }) {
   const { t } = useTranslation()
-  const [init, setInit] = useState(false)
-  const [modal, setModal] = useState(false)
+  const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
   const [selectedClaims, setSelectedClaims] = useState([])
   const [claims, setClaims] = useState(initialClaims)
@@ -22,7 +21,6 @@ function UserForm({ formik }) {
   }
 
   const removeSelectedClaimsFromState = (id) => {
-    console.log('=================key: ' + id)
     let tempList = [...selectedClaims]
     let newList = tempList.filter((drink, index) => index !== id)
     setSelectedClaims(newList)
@@ -33,6 +31,7 @@ function UserForm({ formik }) {
       <FormGroup row>
         <Col sm={8}>
           <GluuInputRow
+            doc_category={DOC_SECTION}
             label="User Id"
             name="userId"
             value={formik.values.userId || ''}
@@ -42,6 +41,7 @@ function UserForm({ formik }) {
             rsize={9}
           />
           <GluuInputRow
+            doc_category={DOC_SECTION}
             label="Given Name"
             name="givenName"
             value={formik.values.givenName || ''}
@@ -50,6 +50,7 @@ function UserForm({ formik }) {
             rsize={9}
           />
           <GluuInputRow
+            doc_category={DOC_SECTION}
             label="Display Name"
             name="displayName"
             value={formik.values.displayName || ''}
@@ -58,6 +59,7 @@ function UserForm({ formik }) {
             rsize={9}
           />
           <GluuInputRow
+            doc_category={DOC_SECTION}
             label="Email"
             name="mail"
             type="email"
@@ -67,6 +69,7 @@ function UserForm({ formik }) {
             rsize={9}
           />
           <GluuSelectRow
+            doc_category={DOC_SECTION}
             label="Status"
             name="jansStatus"
             value={formik.values.jansStatus || ''}
@@ -76,6 +79,7 @@ function UserForm({ formik }) {
             rsize={9}
           />
           <GluuInputRow
+            doc_category={DOC_SECTION}
             label="Password"
             name="userPassword"
             type="password"
@@ -86,7 +90,7 @@ function UserForm({ formik }) {
           />
           {selectedClaims.map((data, key) => (
             <UserClaimEntry
-              key={key}
+              entry={key}
               data={data}
               formik={formik}
               handler={removeSelectedClaimsFromState}
