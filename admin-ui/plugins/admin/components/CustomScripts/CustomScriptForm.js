@@ -12,6 +12,7 @@ import {
 } from '../../../../app/components'
 import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from '../../../../app/routes/Apps/Gluu/GluuInumInput'
+import GluuInputEditor from '../../../../app/routes/Apps/Gluu/GluuInputEditor'
 import GluuProperties from '../../../../app/routes/Apps/Gluu/GluuProperties'
 import Counter from '../../../../app/components/Widgets/GroupedButtons/Counter'
 import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
@@ -456,6 +457,16 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         valuePlaceholder={t('placeholders.enter_property_value')}
         options={getPropertiesConfig(item)}
       ></GluuProperties>
+      <GluuInputEditor
+        name="name"
+        label="fields.script"
+        lsize={2}
+        rsize={10}
+        formik={formik}
+        value={item.script}
+        required
+      ></GluuInputEditor>
+
       {!scriptPath && (
         <GluuTooltip doc_category={SCRIPT} doc_entry="script">
           <FormGroup row>
