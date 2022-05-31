@@ -328,6 +328,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 <option value="">{t('Choose')}...</option>
                 <option>PYTHON</option>
                 <option>JAVASCRIPT</option>
+                <option>JAVA</option>
               </CustomInput>
             </InputGroup>
             {formik.errors.programmingLanguage &&
@@ -439,7 +440,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       )}
       <GluuTooltip doc_category={SCRIPT} doc_entry="level">
         <FormGroup row>
-          <GluuLabel label="fields.level" />
+          <GluuLabel doc_category={SCRIPT}  label="fields.level" />
           <Col sm={9}>
             <Counter
               counter={item.level}
@@ -457,37 +458,18 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         valuePlaceholder={t('placeholders.enter_property_value')}
         options={getPropertiesConfig(item)}
       ></GluuProperties>
-      <GluuInputEditor
-        name="name"
-        label="fields.script"
-        lsize={2}
-        rsize={10}
-        formik={formik}
-        value={item.script}
-        required
-      ></GluuInputEditor>
-
       {!scriptPath && (
-        <GluuTooltip doc_category={SCRIPT} doc_entry="script">
-          <FormGroup row>
-            <GluuLabel label={t('Script')} size={2} required />
-            {formik.errors.script && formik.touched.script ? (
-              <div style={{ color: 'red' }}>{formik.errors.script}</div>
-            ) : null}
-            <Col sm={10}>
-              <Input
-                placeholder={t('Script')}
-                valid={!formik.errors.script && !formik.touched.script && init}
-                type="textarea"
-                rows={20}
-                id="script"
-                name="script"
-                defaultValue={item.script}
-                onChange={formik.handleChange}
-              />
-            </Col>
-          </FormGroup>
-        </GluuTooltip>
+        <GluuInputEditor
+          doc_category={SCRIPT}
+          name="script"
+          language={item.programmingLanguage.toLowerCase()}
+          label="script"
+          lsize={2}
+          rsize={10}
+          formik={formik}
+          value={item.script}
+          required
+        ></GluuInputEditor>
       )}
       <GluuTooltip doc_category={SCRIPT} doc_entry="enabled">
         <FormGroup row>

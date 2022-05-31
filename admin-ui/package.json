@@ -120,7 +120,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@miltonbo/dashboard-style-airframe": "^0.2.0",
-    "ace-builds": "^1.5.2",
+    "ace-builds": "^1.5.3",
     "ag-grid-community": "^21.0.1",
     "ag-grid-react": "^21.0.1",
     "axios": "^0.24.0",
