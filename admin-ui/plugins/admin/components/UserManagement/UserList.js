@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import MaterialTable from '@material-table/core'
+import { DeleteOutlined } from '@material-ui/icons'
 import { Paper } from '@material-ui/core'
 import UserDetailViewPage from './UserDetailViewPage'
 // import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
-import { getUsers, setSelectedUserData } from '../../redux/actions/UserActions'
+import {
+  getUsers,
+  setSelectedUserData,
+  redirectToListPage,
+  deleteExistingUser,
+} from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody, FormGroup } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
@@ -24,10 +30,12 @@ function UserList(props) {
 
   useEffect(() => {
     dispatch(getUsers({}))
-    console.log('HERE')
   }, [])
 
   const usersList = useSelector((state) => state.userReducer.items)
+  const redirectToUserListPage = useSelector(
+    (state) => state.userReducer.redirectToUserListPage,
+  )
   const loading = useSelector((state) => state.userReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
   const { t } = useTranslation()
@@ -40,12 +48,27 @@ function UserList(props) {
   const history = useHistory()
 
   function handleGoToUserAddPage() {
+    dispatch(setSelectedUserData(null))
     return history.push('/adm/usermanagement/add')
   }
   function handleGoToUserEditPage(row) {
-    console.log('edit data', row)
     dispatch(setSelectedUserData(row))
     return history.push(`/adm/usermanagement/edit:` + row.tableData.uuid)
+  }
+
+  useEffect(() => {
+    if (redirectToUserListPage) {
+      dispatch(redirectToListPage(false))
+    }
+  }, [redirectToUserListPage])
+
+  function handleUserDelete(row) {
+    // Todo replace with inum param in api
+    let dn = row.dn
+    let arr1 = dn.split(',')
+    let arr2 = arr1[0].split('=')
+    let inum = arr2[1]
+    dispatch(deleteExistingUser(inum))
   }
 
   if (hasPermission(permissions, ROLE_WRITE)) {
@@ -65,6 +88,17 @@ function UserList(props) {
       },
       onClick: (event, rowData) => handleGoToUserEditPage(rowData),
       disabled: !hasPermission(permissions, ROLE_WRITE),
+    }))
+  }
+  if (hasPermission(permissions, ROLE_WRITE)) {
+    myActions.push((rowData) => ({
+      icon: () => <DeleteOutlined />,
+      iconProps: {
+        color: 'secondary',
+        id: 'deleteClient' + rowData.inum,
+      },
+      onClick: (event, rowData) => handleUserDelete(rowData),
+      disabled: false,
     }))
   }
 

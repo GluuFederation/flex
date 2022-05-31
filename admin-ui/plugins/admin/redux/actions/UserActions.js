@@ -4,6 +4,9 @@ import {
   UM_UPDATE_LOADING,
   UM_CREATE_NEW_USER,
   UM_SELECTED_USER_DATA,
+  UM_UPDATE_EXISTING_USER,
+  UM_REDIRECT_TO_LIST,
+  UM_DELETE_EXISTING_USER,
 } from './types'
 
 export const getUsers = (action) => ({
@@ -26,9 +29,29 @@ export const UMupdateUserLoading = (action) => ({
 })
 
 export const createNewUser = (action) => {
-  console.log('HERE')
   return {
     type: UM_CREATE_NEW_USER,
     payload: action,
+  }
+}
+
+export const redirectToListPage = (action) => {
+  return {
+    type: UM_REDIRECT_TO_LIST,
+    payload: action,
+  }
+}
+
+export const updateExistingUser = (action) => {
+  return {
+    type: UM_UPDATE_EXISTING_USER,
+    payload: action,
+  }
+}
+
+export const deleteExistingUser = (inum) => {
+  return {
+    type: UM_DELETE_EXISTING_USER,
+    payload: inum,
   }
 }

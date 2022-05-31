@@ -390,12 +390,12 @@ export const timezones = [
 export const initialClaims = [
   {
     type: 'input',
-    name: 'Nick Name',
+    name: 'First Name',
     attributes: {
       type: 'text',
       class: 'form-control',
     },
-    id: 'nickName',
+    id: 'nickname',
   },
   {
     type: 'input',

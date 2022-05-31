@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Container, CardBody, Card } from '../../../../app/components'
 import UserForm from './UserForm'
@@ -6,7 +6,7 @@ import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { initialClaims } from './constLists'
-import { createNewUser } from '../../redux/actions/UserActions'
+import { updateExistingUser } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -14,6 +14,14 @@ function UserEditPage() {
   const history = useHistory()
   const { t } = useTranslation()
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
+  const redirectToUserListPage = useSelector(
+    (state) => state.userReducer.redirectToUserListPage,
+  )
+  useEffect(() => {
+    if (redirectToUserListPage) {
+      history.push('/adm/usersmanagement')
+    }
+  }, [redirectToUserListPage])
   const createCustomAttributes = (values) => {
     let customAttributes = []
     if (values) {
@@ -31,14 +39,22 @@ function UserEditPage() {
           customAttributes.push(obj)
         }
       }
-      // console.log(values);
       return customAttributes
     }
   }
 
   const submitData = (values) => {
     let customAttributes = createCustomAttributes(values)
+
+    //Todo Need to dete this and get inum directly as param
+    let dn = userDetails.dn
+    let arr1 = dn.split(',')
+    let arr2 = arr1[0].split('=')
+    let inum = arr2[1]
+    // -- end Todo Need to dete this and get inum directly as param
+
     let submitableValues = {
+      inum: inum,
       userId: values.userId || '',
       mail: values.mail,
       displayName: values.displayName || '',
@@ -47,8 +63,7 @@ function UserEditPage() {
       givenName: values.givenName || '',
       customAttributes: customAttributes,
     }
-    dispatch(createNewUser(submitableValues))
-    // console.log(submitableValues)
+    dispatch(updateExistingUser(submitableValues))
   }
 
   const initialValues = {
@@ -57,12 +72,15 @@ function UserEditPage() {
     mail: userDetails.mail,
     userId: userDetails.userId,
   }
-
+  for (let i in userDetails.customAttributes) {
+    initialValues[userDetails.customAttributes[i].name] =
+      userDetails.customAttributes[i].values[0]
+  }
   const formik = useFormik({
     initialValues: initialValues,
     onSubmit: (values) => {
-      //   submitData(values)
-      alert(JSON.stringify(values, null, 2))
+      submitData(values)
+      // alert(JSON.stringify(values, null, 2))
     },
   })
   return (

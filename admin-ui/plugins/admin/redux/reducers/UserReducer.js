@@ -3,6 +3,10 @@ import {
   UM_UPDATE_LOADING,
   UM_GET_USERS,
   UM_SELECTED_USER_DATA,
+  UM_REDIRECT_TO_LIST,
+  UM_CREATE_NEW_USER,
+  UM_UPDATE_EXISTING_USER,
+  UM_DELETE_EXISTING_USER,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 
@@ -10,6 +14,7 @@ const INIT_STATE = {
   items: [],
   selectedUserData: null,
   loading: false,
+  redirectToUserListPage: false,
 }
 const reducerName = 'userReducer'
 
@@ -19,6 +24,26 @@ export default function userReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+      }
+    case UM_CREATE_NEW_USER:
+      return {
+        ...state,
+        loading: true,
+      }
+    case UM_UPDATE_EXISTING_USER:
+      return {
+        ...state,
+        loading: true,
+      }
+    case UM_DELETE_EXISTING_USER:
+      return {
+        ...state,
+        loading: true,
+      }
+    case UM_REDIRECT_TO_LIST:
+      return {
+        ...state,
+        redirectToUserListPage: action.payload,
       }
     case UM_UPDATE_LOADING:
       return {
@@ -31,7 +56,6 @@ export default function userReducer(state = INIT_STATE, action) {
         selectedUserData: action.payload,
       }
     case UM_UPDATE_USERS_RESPONSE:
-      console.log('USERS', action.payload)
       return {
         ...state,
         loading: false,

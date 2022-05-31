@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Container, CardBody, Card } from '../../../../app/components'
 import UserForm from './UserForm'
@@ -6,12 +6,18 @@ import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { initialClaims } from './constLists'
-import { createNewUser } from '../../redux/actions/UserActions'
-import { useDispatch } from 'react-redux'
+import {
+  createNewUser,
+  redirectToListPage,
+} from '../../redux/actions/UserActions'
+import { useDispatch, useSelector } from 'react-redux'
 function UserAddPage() {
   const dispatch = useDispatch()
   const userAction = {}
   const history = useHistory()
+  const redirectToUserListPage = useSelector(
+    (state) => state.userReducer.redirectToUserListPage,
+  )
   const { t } = useTranslation()
 
   const createCustomAttributes = (values) => {
@@ -31,7 +37,6 @@ function UserAddPage() {
           customAttributes.push(obj)
         }
       }
-      // console.log(values);
       return customAttributes
     }
   }
@@ -48,9 +53,13 @@ function UserAddPage() {
       customAttributes: customAttributes,
     }
     dispatch(createNewUser(submitableValues))
-    // console.log(submitableValues)
   }
 
+  useEffect(() => {
+    if (redirectToUserListPage) {
+      history.push('/adm/usersmanagement')
+    }
+  }, [redirectToUserListPage])
   const formik = useFormik({
     initialValues: {},
     onSubmit: (values) => {
