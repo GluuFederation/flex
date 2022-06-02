@@ -19,12 +19,12 @@ function UserAddPage() {
     (state) => state.userReducer.redirectToUserListPage,
   )
   const { t } = useTranslation()
-
+  const personAttributes = useSelector((state) => state.attributeReducer.items)
   const createCustomAttributes = (values) => {
     let customAttributes = []
     if (values) {
       for (let key in values) {
-        if (initialClaims.some((e) => e.id == key)) {
+        if (personAttributes.some((e) => e.claimName == key)) {
           let val = []
           val.push(values[key])
           let obj = {

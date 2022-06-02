@@ -14,6 +14,7 @@ function UserEditPage() {
   const history = useHistory()
   const { t } = useTranslation()
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
+  const personAttributes = useSelector((state) => state.attributeReducer.items)
   const redirectToUserListPage = useSelector(
     (state) => state.userReducer.redirectToUserListPage,
   )
@@ -26,7 +27,7 @@ function UserEditPage() {
     let customAttributes = []
     if (values) {
       for (let key in values) {
-        if (initialClaims.some((e) => e.id == key)) {
+        if (personAttributes.some((e) => e.claimName == key)) {
           let val = []
           val.push(values[key])
           let obj = {
@@ -45,13 +46,7 @@ function UserEditPage() {
 
   const submitData = (values) => {
     let customAttributes = createCustomAttributes(values)
-
-    //Todo Need to dete this and get inum directly as param
-    let dn = userDetails.dn
-    let arr1 = dn.split(',')
-    let arr2 = arr1[0].split('=')
-    let inum = arr2[1]
-    // -- end Todo Need to dete this and get inum directly as param
+    let inum = userDetails.inum
 
     let submitableValues = {
       inum: inum,

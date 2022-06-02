@@ -11,6 +11,8 @@ import {
   redirectToListPage,
   deleteExistingUser,
 } from '../../redux/actions/UserActions'
+
+import { getAttributes } from '../../../schema/redux/actions/AttributeActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody, FormGroup } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
@@ -30,6 +32,7 @@ function UserList(props) {
 
   useEffect(() => {
     dispatch(getUsers({}))
+    dispatch(getAttributes({}))
   }, [])
 
   const usersList = useSelector((state) => state.userReducer.items)
@@ -63,12 +66,7 @@ function UserList(props) {
   }, [redirectToUserListPage])
 
   function handleUserDelete(row) {
-    // Todo replace with inum param in api
-    let dn = row.dn
-    let arr1 = dn.split(',')
-    let arr2 = arr1[0].split('=')
-    let inum = arr2[1]
-    dispatch(deleteExistingUser(inum))
+    dispatch(deleteExistingUser(row.inum))
   }
 
   if (hasPermission(permissions, ROLE_WRITE)) {

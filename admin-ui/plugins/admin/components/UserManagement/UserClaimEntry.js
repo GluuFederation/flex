@@ -2,17 +2,16 @@ import React from 'react'
 import GluuRemovableInputRow from '../../../../app/routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from '../../../../app/routes/Apps/Gluu/GluuRemovableSelectRow'
 function UserClaimEntry({ data, type, entry, formik, handler }) {
-
   const doHandle = () => {
-   handler(data.id)
+    handler(data.claimName)
   }
   return (
     <div key={entry}>
       {type === 'input' && (
         <GluuRemovableInputRow
-          label={data.name}
-          name={data.id}
-          value={formik.values[data.id] || ''}
+          label={data.displayName}
+          name={data.claimName}
+          value={formik.values[data.claimName] || ''}
           formik={formik}
           handler={doHandle}
           lsize={3}
@@ -21,9 +20,9 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
       )}
       {type === 'select' && (
         <GluuRemovableSelectRow
-          label={data.name}
-          name={data.id}
-          value={formik.values[data.id] || ''}
+          label={data.displayName}
+          name={data.claimName}
+          value={formik.values[data.claimName] || ''}
           values={data.attributes.values}
           formik={formik}
           required

@@ -17,6 +17,7 @@ function UserForm({ formik }) {
   const [claims, setClaims] = useState(initialClaims)
 
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
+  const personAttributes = useSelector((state) => state.attributeReducer.items)
   const loading = useSelector((state) => state.userReducer.loading)
   const setSelectedClaimsToState = (data) => {
     let tempList = [...selectedClaims]
@@ -51,11 +52,13 @@ function UserForm({ formik }) {
     } else {
       setSelectedClaims([])
     }
+    console.log('ABCD', personAttributes)
   }, [userDetails])
 
   const removeSelectedClaimsFromState = (id) => {
+    console.log(id)
     let tempList = [...selectedClaims]
-    let newList = tempList.filter((data, index) => data.id !== id)
+    let newList = tempList.filter((data, index) => data.claimName !== id)
     setSelectedClaims(newList)
   }
 
@@ -132,7 +135,7 @@ function UserForm({ formik }) {
                 data={data}
                 formik={formik}
                 handler={removeSelectedClaimsFromState}
-                type={data.type}
+                type="input"
               />
             ))}
             <GluuFooter />
@@ -148,30 +151,32 @@ function UserForm({ formik }) {
                 value={searchClaims}
               />
               <ul className="list-group">
-                {claims.map((data, key) => {
-                  let name = data.name.toLowerCase()
+                {personAttributes.map((data, key) => {
+                  let claimName = data.claimName.toLowerCase()
                   const alreadyAddedClaim = selectedClaims.some(
-                    (el) => el.name === data.name,
+                    (el) => el.claimName === data.claimName,
                   )
-                  if (
-                    (name.includes(searchClaims.toLowerCase()) ||
-                      searchClaims == '') &&
-                    !alreadyAddedClaim
-                  ) {
-                    return (
-                      <li
-                        className="list-group-item"
-                        key={'list' + key}
-                        title="Click to add to the form"
-                      >
-                        <a
-                          onClick={() => setSelectedClaimsToState(data)}
-                          style={{ cursor: 'pointer' }}
+                  if (data.status == 'ACTIVE') {
+                    if (
+                      (claimName.includes(searchClaims.toLowerCase()) ||
+                        searchClaims == '') &&
+                      !alreadyAddedClaim
+                    ) {
+                      return (
+                        <li
+                          className="list-group-item"
+                          key={'list' + key}
+                          title="Click to add to the form"
                         >
-                          {data.name}
-                        </a>
-                      </li>
-                    )
+                          <a
+                            onClick={() => setSelectedClaimsToState(data)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            {data.displayName}
+                          </a>
+                        </li>
+                      )
+                    }
                   }
                 })}
               </ul>
