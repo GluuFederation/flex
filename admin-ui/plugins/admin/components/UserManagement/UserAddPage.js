@@ -24,7 +24,7 @@ function UserAddPage() {
     let customAttributes = []
     if (values) {
       for (let key in values) {
-        if (personAttributes.some((e) => e.claimName == key)) {
+        if (personAttributes.some((e) => e.name == key)) {
           let val = []
           val.push(values[key])
           let obj = {

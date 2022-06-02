@@ -24,7 +24,15 @@ function UserForm({ formik }) {
     tempList.push(data)
     setSelectedClaims(tempList)
   }
-
+  const usedClaimes = [
+    'userId',
+    'displayName',
+    'mail',
+    'jansStatus',
+    'userPassword',
+    'givenName',
+    'sn',
+  ]
   const getCustomAttributeById = (id) => {
     let claimData = null
     for (let i in initialClaims) {
@@ -58,7 +66,7 @@ function UserForm({ formik }) {
   const removeSelectedClaimsFromState = (id) => {
     console.log(id)
     let tempList = [...selectedClaims]
-    let newList = tempList.filter((data, index) => data.claimName !== id)
+    let newList = tempList.filter((data, index) => data.name !== id)
     setSelectedClaims(newList)
   }
 
@@ -69,20 +77,30 @@ function UserForm({ formik }) {
           <Col sm={8}>
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label="User Id"
-              name="userId"
-              value={formik.values.userId || ''}
+              label="First Name"
+              name="givenName"
+              value={formik.values.givenName || ''}
               formik={formik}
-              required
+              lsize={3}
+              rsize={9}
+            />
+
+            <GluuInputRow
+              doc_category={DOC_SECTION}
+              label="Last Name"
+              name="sn"
+              value={formik.values.sn || ''}
+              formik={formik}
               lsize={3}
               rsize={9}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label="Given Name"
-              name="givenName"
-              value={formik.values.givenName || ''}
+              label="User Id"
+              name="userId"
+              value={formik.values.userId || ''}
               formik={formik}
+              required
               lsize={3}
               rsize={9}
             />
@@ -152,13 +170,16 @@ function UserForm({ formik }) {
               />
               <ul className="list-group">
                 {personAttributes.map((data, key) => {
-                  let claimName = data.claimName.toLowerCase()
+                  let name = data.name.toLowerCase()
                   const alreadyAddedClaim = selectedClaims.some(
-                    (el) => el.claimName === data.claimName,
+                    (el) => el.name === data.name,
                   )
-                  if (data.status == 'ACTIVE') {
+                  if (
+                    data.status == 'ACTIVE' &&
+                    !usedClaimes.includes(data.name)
+                  ) {
                     if (
-                      (claimName.includes(searchClaims.toLowerCase()) ||
+                      (name.includes(searchClaims.toLowerCase()) ||
                         searchClaims == '') &&
                       !alreadyAddedClaim
                     ) {
