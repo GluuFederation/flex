@@ -135,6 +135,10 @@
     font-size: .8rem; /* f7-cust */
 }
 
+.z-messagebox-window {
+    width: 360px;
+}
+
 .z-messagebox-buttons {
     display: flex; /* flex */
     justify-content: center; /* justify-center */
@@ -149,6 +153,10 @@
     color: #fff; /* white */
     cursor: pointer; /* pointer */
     background-color: #28a745;
+}
+
+.z-messagebox-viewport {
+    margin-bottom: 1rem;
 }
 
 .z-hlayout-inner {

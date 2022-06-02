@@ -1,7 +1,7 @@
 
 apiVersion: v2
 name: oxshibboleth
-version: 5.0.3
+version: 5.0.4
 kubeVersion: ">=v1.21.0-0"
 description: Shibboleth project for the Gluu Server's SAML IDP functionality.
 type: application

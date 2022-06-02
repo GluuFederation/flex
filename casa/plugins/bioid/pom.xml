@@ -15,7 +15,6 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<plugin.id>bioid-plugin</plugin.id>
 		<plugin.version>5.0.0-SNAPSHOT</plugin.version>
-        <ox.version>5.0.0-SNAPSHOT</ox.version>
 	</properties>
 
 	<repositories>

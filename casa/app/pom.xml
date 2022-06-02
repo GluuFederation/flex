@@ -226,7 +226,7 @@
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
-            <version>8.27.0</version>
+            <version>8.29.1</version>
         </dependency>
 
         <!-- OTP -->
@@ -294,7 +294,7 @@
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>oauth2-oidc-sdk</artifactId>
-            <version>9.19</version>
+            <version>9.32</version>
         </dependency>
     </dependencies>
 
