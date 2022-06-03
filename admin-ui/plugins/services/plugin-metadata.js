@@ -26,7 +26,7 @@ import {
   LDAP_WRITE,
   SQL_READ,
   SQL_WRITE,
-} from '../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 
 const pluginMetadata = {
   menus: [

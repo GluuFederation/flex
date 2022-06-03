@@ -2,7 +2,7 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../utils/TokenController'
+} from 'Utils/TokenController'
 import {
   getAttributesResponse,
   getScriptsResponse,

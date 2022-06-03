@@ -2,7 +2,7 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../utils/TokenController'
+} from 'Utils/TokenController'
 import { getHealthStatusResponse } from '../actions/HealthAction'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { postUserAction } from '../api/backend-api'

@@ -19,7 +19,7 @@ import {
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../../../app/utils/TokenController'
+} from 'Utils/TokenController'
 import {
   GET_PERMISSIONS,
   ADD_PERMISSION,

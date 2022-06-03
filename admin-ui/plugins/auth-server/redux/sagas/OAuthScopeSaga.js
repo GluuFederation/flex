@@ -36,7 +36,7 @@ import { getClient } from 'Redux/api/base'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../../../app/utils/TokenController'
+} from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
