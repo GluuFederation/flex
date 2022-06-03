@@ -19,13 +19,13 @@ import {
   FormGroup,
   Col,
   Row,
-} from '../../../../app/components'
+} from 'Components'
 import {
   hasBoth,
   buildPayload,
   STAT_READ,
   STAT_JANS_READ,
-} from '../../../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 

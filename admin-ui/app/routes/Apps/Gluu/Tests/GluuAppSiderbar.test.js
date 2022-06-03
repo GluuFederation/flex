@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import i18n from '../../../../i18n'
 import { I18nextProvider } from 'react-i18next'
-import Sidebar from '../../../../../app/components/Sidebar'
+import Sidebar from 'Components/Sidebar'
 
 jest.spyOn(global.console, 'log').mockImplementation(jest.fn())
 jest.spyOn(global.console, 'error').mockImplementation(jest.fn())

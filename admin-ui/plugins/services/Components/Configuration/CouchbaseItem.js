@@ -6,10 +6,10 @@ import {
   Card,
   CardBody,
   Badge,
-} from '../../../../app/components'
-import { COUCHBASE } from '../../../../app/utils/ApiResources'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+} from 'Components'
+import { COUCHBASE } from 'Utils/ApiResources'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
 
 function CouchbaseItem({ couchbase, index, formik }) {

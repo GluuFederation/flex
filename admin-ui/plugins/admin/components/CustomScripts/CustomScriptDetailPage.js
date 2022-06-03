@@ -1,7 +1,7 @@
 import React from 'react'
-import { Container, Row, Col } from '../../../../app/components'
-import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
-import { SCRIPT } from '../../../../app/utils/ApiResources'
+import { Container, Row, Col } from 'Components'
+import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
+import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 const CustomScriptDetailPage = ({ row }) => {

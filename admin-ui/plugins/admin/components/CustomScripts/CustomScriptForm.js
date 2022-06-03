@@ -9,15 +9,15 @@ import {
   Form,
   FormGroup,
   Input,
-} from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuInumInput from '../../../../app/routes/Apps/Gluu/GluuInumInput'
-import GluuProperties from '../../../../app/routes/Apps/Gluu/GluuProperties'
-import Counter from '../../../../app/components/Widgets/GroupedButtons/Counter'
-import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import { SCRIPT } from '../../../../app/utils/ApiResources'
+} from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import Counter from 'Components/Widgets/GroupedButtons/Counter'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import items from './scriptTypes'
 
@@ -98,6 +98,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     onSubmit: (values) => {
       values.level = item.level
       values.moduleProperties = item.moduleProperties
+      // eslint-disable-next-line no-extra-boolean-cast
       if (!!values.configurationProperties) {
         values.configurationProperties = values.configurationProperties
           .filter((e) => e != null)

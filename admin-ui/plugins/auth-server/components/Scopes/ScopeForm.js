@@ -10,21 +10,21 @@ import {
   FormGroup,
   Input,
   Accordion,
-} from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuInumInput from '../../../../app/routes/Apps/Gluu/GluuInumInput'
-import GluuToogleRow from '../../../../app/routes/Apps/Gluu/GluuToogleRow'
-import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
-import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import { SCOPE } from '../../../../app/utils/ApiResources'
+} from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const { t } = useTranslation()
   let dynamicScopeScripts = []
-  let spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
+  const spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
   let claims = []
   scripts = scripts || []
   attributes = attributes || []

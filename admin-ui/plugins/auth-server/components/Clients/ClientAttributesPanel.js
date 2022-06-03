@@ -1,8 +1,8 @@
 import React from 'react'
-import { Container } from '../../../../app/components'
-import GluuBooleanSelectBox from '../../../../app/routes/Apps/Gluu/GluuBooleanSelectBox'
-import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-import GluuTypeAheadWithAdd from '../../../../app/routes/Apps/Gluu/GluuTypeAheadWithAdd'
+import { Container } from 'Components'
+import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 

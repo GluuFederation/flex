@@ -1,7 +1,7 @@
 import React from 'react'
-import { Col, Container, FormGroup} from '../../../../app/components'
-import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
+import { Col, Container, FormGroup } from 'Components'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientEncryptionPanel({ client, formik, oidcConfiguration }) {

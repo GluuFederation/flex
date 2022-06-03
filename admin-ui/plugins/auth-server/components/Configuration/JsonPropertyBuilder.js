@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Accordion, FormGroup, Col, Button } from '../../../../app/components'
-import GluuInlineInput from '../../../../app/routes/Apps/Gluu/GluuInlineInput'
+import { Accordion, FormGroup, Col, Button } from 'Components'
+import GluuInlineInput from 'Routes/Apps/Gluu/GluuInlineInput'
 import { useTranslation } from 'react-i18next'
 
 function JsonPropertyBuilder({

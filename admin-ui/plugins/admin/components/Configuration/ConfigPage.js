@@ -1,6 +1,6 @@
 import React from 'react'
-import { Card, CardBody } from '../../../../app/components'
-import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import { Card, CardBody } from 'Components'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'
 
 function ConfigPage({ loading }) {
