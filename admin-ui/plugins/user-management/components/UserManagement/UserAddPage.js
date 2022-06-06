@@ -57,7 +57,7 @@ function UserAddPage() {
 
   useEffect(() => {
     if (redirectToUserListPage) {
-      history.push('/adm/usersmanagement')
+      history.push('/user/usersmanagement')
     }
   }, [redirectToUserListPage])
   const formik = useFormik({

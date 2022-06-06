@@ -4,7 +4,6 @@ import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import { useTranslation } from 'react-i18next'
-import { initialClaims } from './constLists'
 import UserClaimEntry from './UserClaimEntry'
 import { useSelector } from 'react-redux'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
@@ -14,7 +13,8 @@ function UserForm({ formik }) {
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
   const [selectedClaims, setSelectedClaims] = useState([])
-  const [claims, setClaims] = useState(initialClaims)
+  const [passwordError, setPasswordError] = useState('')
+  const [showButtons, setShowButtons] = useState(false)
 
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
   const personAttributes = useSelector((state) => state.attributeReducer.items)
@@ -24,6 +24,21 @@ function UserForm({ formik }) {
     tempList.push(data)
     setSelectedClaims(tempList)
   }
+
+  useEffect(() => {
+    if (formik.values.userConfirmPassword && formik.values.userPassword) {
+      if (formik.values.userConfirmPassword != formik.values.userPassword) {
+        setPasswordError('Confirm password should be same as password entered.')
+        setShowButtons(false)
+      } else {
+        setPasswordError('')
+        setShowButtons(true)
+      }
+    } else {
+      setPasswordError('')
+    }
+  }, [formik.values.userConfirmPassword, formik.values.userPassword])
+
   const usedClaimes = [
     'userId',
     'displayName',
@@ -35,9 +50,9 @@ function UserForm({ formik }) {
   ]
   const getCustomAttributeById = (id) => {
     let claimData = null
-    for (let i in initialClaims) {
-      if (initialClaims[i].id == id) {
-        claimData = initialClaims[i]
+    for (let i in personAttributes) {
+      if (personAttributes[i].name == id) {
+        claimData = personAttributes[i]
       }
     }
     return claimData
@@ -47,7 +62,7 @@ function UserForm({ formik }) {
     let tempList = [...selectedClaims]
     for (let i in userDetails.customAttributes) {
       let data = getCustomAttributeById(userDetails.customAttributes[i].name)
-      if (data) {
+      if (data && !usedClaimes.includes(userDetails.customAttributes[i].name)) {
         tempList.push(data)
       }
     }
@@ -60,11 +75,9 @@ function UserForm({ formik }) {
     } else {
       setSelectedClaims([])
     }
-    console.log('ABCD', personAttributes)
   }, [userDetails])
 
   const removeSelectedClaimsFromState = (id) => {
-    console.log(id)
     let tempList = [...selectedClaims]
     let newList = tempList.filter((data, index) => data.name !== id)
     setSelectedClaims(newList)
@@ -147,6 +160,21 @@ function UserForm({ formik }) {
                 rsize={9}
               />
             )}
+            {!userDetails && (
+              <GluuInputRow
+                doc_category={DOC_SECTION}
+                label="Confirm Password"
+                name="userConfirmPassword"
+                type="password"
+                value={formik.values.userConfirmPassword || ''}
+                formik={formik}
+                lsize={3}
+                rsize={9}
+              />
+            )}
+            {passwordError != '' && (
+              <span className="text-danger">{passwordError}</span>
+            )}
             {selectedClaims.map((data, key) => (
               <UserClaimEntry
                 entry={key}
@@ -156,7 +184,7 @@ function UserForm({ formik }) {
                 type="input"
               />
             ))}
-            <GluuFooter />
+            {showButtons && <GluuFooter />}
           </Col>
           <Col sm={4}>
             <div className="border border-light ">

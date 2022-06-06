@@ -278,7 +278,9 @@
     "settings": "Settings",
     "signout": "Sign out",
     "user_management": "User Management",
-    "maugraph": "MAU"
+    "maugraph": "MAU",
+    "users": "Users",
+    "user-management": "User Management"
   },
   "messages": {
     "action_commit_question": "Audit log: Want to apply changes made on this page?",

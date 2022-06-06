@@ -35,7 +35,9 @@
     "settings": "Paramètres",
     "signout": "Déconnexion",
     "user_management": "User Management",
-    "maugraph": "MAU"
+    "maugraph": "MAU",
+    "users": "Users",
+    "user-management": "User Management"
   },
   "actions": {
     "accept": "J'accepte",

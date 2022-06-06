@@ -1,8 +1,5 @@
 import HealthPage from './components/Health/HealthPage'
 import ReportPage from './components/Reports/ReportPage'
-import UserList from './components/UserManagement/UserList'
-import UserAddPage from './components/UserManagement/UserAddPage'
-import UserEditPage from './components/UserManagement/UserEditPage'
 import UiRoleListPage from './components/Roles/UiRoleListPage'
 import UiPermListPage from './components/Permissions/UiPermListPage'
 import MappingPage from './components/Mapping/MappingPage'
@@ -16,13 +13,11 @@ import scriptSaga from './redux/sagas/CustomScriptSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
 import mappingSaga from './redux/sagas/MappingSaga'
-import userSaga from './redux/sagas/UserSaga'
 
 import scriptReducer from './redux/reducers/CustomScriptReducer'
 import apiRoleReducer from './redux/reducers/ApiRoleReducer'
 import apiPermissionReducer from './redux/reducers/ApiPermissionReducer'
 import mappingReducer from './redux/reducers/MappingReducer'
-import userReducer from './redux/reducers/UserReducer'
 import {
   ACR_READ,
   ROLE_READ,
@@ -73,11 +68,6 @@ const pluginMetadata = {
         {
           title: 'menus.settings',
           path: PLUGIN_BASE_APTH + '/settings',
-          permission: ACR_READ,
-        },
-        {
-          title: 'menus.user_management',
-          path: PLUGIN_BASE_APTH + '/usersmanagement',
           permission: ACR_READ,
         },
       ],
@@ -134,36 +124,14 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/settings',
       permission: ACR_READ,
     },
-    {
-      component: UserList,
-      path: PLUGIN_BASE_APTH + '/usersmanagement',
-      permission: ACR_READ,
-    },
-    {
-      component: UserAddPage,
-      path: PLUGIN_BASE_APTH + '/usermanagement/add',
-      permission: ACR_READ,
-    },
-    {
-      component: UserEditPage,
-      path: PLUGIN_BASE_APTH + '/usermanagement/edit:id',
-      permission: SCRIPT_WRITE,
-    },
   ],
   reducers: [
     { name: 'scriptReducer', reducer: scriptReducer },
     { name: 'apiRoleReducer', reducer: apiRoleReducer },
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
-    { name: 'userReducer', reducer: userReducer },
   ],
-  sagas: [
-    scriptSaga(),
-    apiRoleSaga(),
-    apiPermissionSaga(),
-    mappingSaga(),
-    userSaga(),
-  ],
+  sagas: [scriptSaga(), apiRoleSaga(), apiPermissionSaga(), mappingSaga()],
 }
 
 export default pluginMetadata

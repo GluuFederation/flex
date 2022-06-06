@@ -12,7 +12,6 @@ export default class UserApi {
   }
   createUsers = (data) => {
     // customUser
-    console.log(data)
     const options = {}
     options['customUser'] = data
     return new Promise((resolve, reject) => {
@@ -42,10 +41,8 @@ export default class UserApi {
 
   handleResponse(error, reject, resolve, data) {
     if (error) {
-      console.log(error)
       reject(error)
     } else {
-      console.log('DATA', data)
       resolve(data)
     }
   }

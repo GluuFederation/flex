@@ -52,11 +52,11 @@ function UserList(props) {
 
   function handleGoToUserAddPage() {
     dispatch(setSelectedUserData(null))
-    return history.push('/adm/usermanagement/add')
+    return history.push('/user/usermanagement/add')
   }
   function handleGoToUserEditPage(row) {
     dispatch(setSelectedUserData(row))
-    return history.push(`/adm/usermanagement/edit:` + row.tableData.uuid)
+    return history.push(`/user/usermanagement/edit:` + row.tableData.uuid)
   }
 
   useEffect(() => {
@@ -132,25 +132,9 @@ function UserList(props) {
               },
               { title: `${t('fields.userName')}`, field: 'userId' },
               { title: `${t('fields.email')}`, field: 'mail' },
-              // {
-              //   title: `${t('fields.email')}`,
-              //   field: 'emails',
-              //   render: (rowData) => {
-              //     return rowData.emails.map((data, key) => {
-              //       return (
-              //         <Badge
-              //           color={data.primary ? 'primary' : 'info'}
-              //           key={'UL_email_' + key}
-              //         >
-              //           {data.value}
-              //         </Badge>
-              //       )
-              //     })
-              //   },
-              // },
             ]}
             data={usersList}
-            isLoading={loading || false}
+            isLoading={loading}
             title=""
             actions={myActions}
             options={{

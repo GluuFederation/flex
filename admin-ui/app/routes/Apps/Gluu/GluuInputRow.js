@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Col, FormGroup, Input } from 'Components'
+import { Visibility, VisibilityOff } from '@material-ui/icons'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 function GluuInputRow({
@@ -13,6 +14,15 @@ function GluuInputRow({
   rsize,
   doc_category,
 }) {
+  const [customType, setCustomType] = useState(null)
+
+  const setVisivility = () => {
+    if (customType) {
+      setCustomType(null)
+    } else {
+      setCustomType('text')
+    }
+  }
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
@@ -21,11 +31,20 @@ function GluuInputRow({
           <Input
             id={name}
             data-testid={name}
-            type={type}
+            type={customType || type}
             name={name}
             defaultValue={value}
             onChange={formik.handleChange}
           />
+          {type == 'password' && (
+            <div style={{ position: 'absolute', right: 20, top: 7 }}>
+              {customType == 'text' ? (
+                <Visibility onClick={() => setVisivility()} />
+              ) : (
+                <VisibilityOff onClick={() => setVisivility()} />
+              )}
+            </div>
+          )}
         </Col>
       </FormGroup>
     </GluuTooltip>

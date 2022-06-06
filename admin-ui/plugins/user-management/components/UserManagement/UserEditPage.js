@@ -20,7 +20,7 @@ function UserEditPage() {
   )
   useEffect(() => {
     if (redirectToUserListPage) {
-      history.push('/adm/usersmanagement')
+      history.push('/user/usersmanagement')
     }
   }, [redirectToUserListPage])
   const createCustomAttributes = (values) => {
