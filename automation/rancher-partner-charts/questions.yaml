@@ -305,8 +305,8 @@ questions:
   label: OpenDJ remote URL
   description: "OpenDJ remote URL. This must be resolvable by the pods"
   show_if: "global.opendj.enabled=false&&global.cnPersistenceType=ldap||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnPersistenceLdapMapping
-  default: "default"
+- variable: config.configmap.cnPersistenceHybridMapping
+  default: "{}"
   required: false
   type: enum
   group: "Persistence"
