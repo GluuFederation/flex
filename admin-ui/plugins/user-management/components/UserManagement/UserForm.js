@@ -72,6 +72,7 @@ function UserForm({ formik }) {
   useEffect(() => {
     if (userDetails) {
       setAttributes()
+      setShowButtons(true)
     } else {
       setSelectedClaims([])
     }
