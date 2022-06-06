@@ -3,7 +3,6 @@ import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { Paper } from '@material-ui/core'
 import UserDetailViewPage from './UserDetailViewPage'
-// import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
 import {
   getUsers,
@@ -139,11 +138,6 @@ function UserList(props) {
             }}
           />
         </GluuViewWrapper>
-        {/* <RoleAddDialogForm
-          handler={toggle}
-          modal={modal}
-          onAccept={onAddConfirmed}
-        /> */}
       </CardBody>
     </Card>
   )

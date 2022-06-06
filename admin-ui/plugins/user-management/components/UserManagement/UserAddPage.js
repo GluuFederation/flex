@@ -5,7 +5,6 @@ import UserForm from './UserForm'
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { initialClaims } from './constLists'
 import {
   createNewUser,
   redirectToListPage,
@@ -64,12 +63,10 @@ function UserAddPage() {
     initialValues: {},
     onSubmit: (values) => {
       submitData(values)
-      // alert(JSON.stringify(values, null, 2))
     },
   })
   return (
     <React.Fragment>
-      {/* <GluuRibbon title={t('titles.user_management')} fromLeft /> */}
       <GluuAlert
         severity={t('titles.error')}
         message={t('messages.error_in_saving')}
