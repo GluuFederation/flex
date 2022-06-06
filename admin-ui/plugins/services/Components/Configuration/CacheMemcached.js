@@ -6,11 +6,11 @@ import {
   Col,
   CardBody,
   CustomInput,
-} from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import { CACHE } from '../../../../app/utils/ApiResources'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
+} from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import { CACHE } from 'Utils/ApiResources'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import { useTranslation } from 'react-i18next'
 
 function CacheMemcached({ config, formik }) {

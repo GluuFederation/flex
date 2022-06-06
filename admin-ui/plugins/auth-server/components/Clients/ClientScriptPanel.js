@@ -1,6 +1,6 @@
 import React from 'react'
-import { Container } from '../../../../app/components'
-import GluuTypeAheadForDn from '../../../../app/routes/Apps/Gluu/GluuTypeAheadForDn'
+import { Container } from 'Components'
+import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientScriptPanel({ client, scopes, scripts, formik }) {

@@ -1,6 +1,6 @@
 import React from 'react'
-import { Card, CardBody, CardTitle, Badge } from '../../../../app/components'
-import GluuRibbon from '../../Apps/Gluu/GluuRibbon'
+import { Card, CardBody, CardTitle, Badge } from 'Components'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 
 function CustomBadgeRow({ label, value }) {
   return (

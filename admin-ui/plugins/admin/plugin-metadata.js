@@ -24,7 +24,7 @@ import {
   SCRIPT_READ,
   SCRIPT_WRITE,
   MAPPING_READ,
-} from '../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/adm'
 

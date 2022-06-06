@@ -1,5 +1,5 @@
 import React from 'react'
-import { getNewColor } from '../../../utils/Util'
+import { getNewColor } from 'Utils/Util'
 import {
   PieChart,
   Pie,

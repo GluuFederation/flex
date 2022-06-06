@@ -7,12 +7,12 @@ import {
   CardBody,
   InputGroup,
   CustomInput,
-} from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-import GluuToogleRow from '../../../../app/routes/Apps/Gluu/GluuToogleRow'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import { CACHE } from '../../../../app/utils/ApiResources'
+} from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 function CacheRedis({ config, formik }) {

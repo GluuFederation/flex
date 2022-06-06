@@ -4,7 +4,7 @@ import {
   CardBody,
   Card,
   CardHeader,
-} from '../../../../app/components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 function HealthPage() {

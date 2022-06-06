@@ -9,7 +9,7 @@ import LicenseDetailsApi from '../api/LicenseDetailsApi'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from 'Redux/sagas/SagaUtils'
 import { postUserAction } from 'Redux/api/backend-api'
-import { isFourZeroOneError } from '../../utils/TokenController'
+import { isFourZeroOneError } from 'Utils/TokenController'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 
 function* newFunction() {

@@ -6,7 +6,7 @@ import {
   Col,
   FormGroup,
   Label,
-} from '../../../../app/components'
+} from 'Components'
 import { useTranslation } from 'react-i18next'
 
 const AttributeDetailPage = ({ row }) => {

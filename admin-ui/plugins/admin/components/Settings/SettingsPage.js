@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
-import { SETTINGS } from '../../../../app/utils/ApiResources'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import { SETTINGS } from 'Utils/ApiResources'
 import {
   Card,
   CardBody,
@@ -12,8 +12,8 @@ import {
   Badge,
   InputGroup,
   CustomInput,
-} from '../../../../app/components'
-import GluuDarkModeToggle from '../../../../app/routes/Apps/Gluu/GluuDarkModeToggle'
+} from 'Components'
+import GluuDarkModeToggle from 'Routes/Apps/Gluu/GluuDarkModeToggle'
 
 function SettingsPage() {
   const [paggingSize, setPaggingSize] = useState(
@@ -45,7 +45,7 @@ function SettingsPage() {
                       ]
                     }
                     onChange={(value) => {
-                      let size = levels[value.target.options.selectedIndex]
+                      const size = levels[value.target.options.selectedIndex]
                       setPaggingSize(size)
                       localStorage.setItem('paggingSize', size)
                     }}

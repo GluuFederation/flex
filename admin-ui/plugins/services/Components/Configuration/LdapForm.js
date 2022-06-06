@@ -7,15 +7,15 @@ import {
   Form,
   FormGroup,
   Input,
-} from '../../../../app/components'
-import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+} from 'Components'
+import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 
-import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
-import { LDAP } from '../../../../app/utils/ApiResources'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
+import { LDAP } from 'Utils/ApiResources'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 
 function LdapForm({ item, handleSubmit }) {
   const { t } = useTranslation()

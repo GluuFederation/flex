@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { Badge } from '../../../../app/components'
+import { Badge } from 'Components'
 import { useSelector } from 'react-redux'
 
 function ClientShowScopes({ handler, data, isOpen }) {
@@ -14,8 +14,8 @@ function ClientShowScopes({ handler, data, isOpen }) {
       <ModalBody>
         {clientScopes.map((scope, key) => {
           return (
-            <div>
-              <Badge color="primary" key={key}>
+            <div key={key}>
+              <Badge color="primary">
                 {scope}
               </Badge>
             </div>

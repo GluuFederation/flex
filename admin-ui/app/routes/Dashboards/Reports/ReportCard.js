@@ -1,7 +1,7 @@
 import React from 'react'
-import { Card, CardBody, CardTitle, Badge } from '../../../../app/components'
+import { Card, CardBody, CardTitle, Badge } from 'Components'
 import ReportPiChartItem from './ReportPiChartItem'
-import GluuRibbon from '../../Apps/Gluu/GluuRibbon'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 
 function ReportCard({ title, data, upValue, downValue }) {
   return (

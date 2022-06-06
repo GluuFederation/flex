@@ -4,7 +4,7 @@ import AttributeEditPage from './components/Person/AttributeEditPage'
 import AttributeViewPage from './components/Person/AttributeViewPage'
 import attributeReducer from './redux/reducers/AttributeReducer'
 import attributeSaga from './redux/sagas/AttributeSaga'
-import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from '../../app/utils//PermChecker'
+import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils//PermChecker'
 
 const pluginMetadata = {
   menus: [
