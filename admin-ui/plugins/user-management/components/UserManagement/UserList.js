@@ -100,20 +100,6 @@ function UserList(props) {
     }))
   }
 
-  // function handleAddNewRole() {
-  //   toggle()
-  // }
-  // function doFetchList() {
-  //   buildPayload(userAction, 'ROLES', options)
-  //   dispatch(getRoles(userAction))
-  // }
-  // function onAddConfirmed(roleData) {
-  //   buildPayload(userAction, 'message', roleData)
-  //   dispatch(addRole(userAction))
-  //   toggle()
-  //   doFetchList()
-  // }
-
   return (
     <Card>
       <GluuRibbon title={t('titles.user_management')} fromLeft />

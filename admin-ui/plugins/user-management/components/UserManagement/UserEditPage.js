@@ -75,12 +75,10 @@ function UserEditPage() {
     initialValues: initialValues,
     onSubmit: (values) => {
       submitData(values)
-      // alert(JSON.stringify(values, null, 2))
     },
   })
   return (
     <React.Fragment>
-      {/* <GluuRibbon title={t('titles.user_management')} fromLeft /> */}
       <GluuAlert
         severity={t('titles.error')}
         message={t('messages.error_in_saving')}
