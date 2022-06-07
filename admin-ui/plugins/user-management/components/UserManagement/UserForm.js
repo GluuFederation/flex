@@ -110,7 +110,7 @@ function UserForm({ formik }) {
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
-              label="User Id"
+              label="User Name"
               name="userId"
               value={formik.values.userId || ''}
               formik={formik}

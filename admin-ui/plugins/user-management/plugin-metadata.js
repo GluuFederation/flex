@@ -18,14 +18,9 @@ const pluginMetadata = {
   menus: [
     {
       title: 'menus.users',
-      icon: 'fa-cubes',
-      children: [
-        {
-          title: 'menus.user-management',
-          path: PLUGIN_BASE_APTH + '/usersmanagement',
-          permission: SCRIPT_READ,
-        },
-      ],
+      icon: 'fa-users',
+      path: PLUGIN_BASE_APTH + '/usersmanagement',
+      permission: SCRIPT_READ,
     },
   ],
   routes: [
