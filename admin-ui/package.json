@@ -121,6 +121,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@miltonbo/dashboard-style-airframe": "^0.2.0",
+    "@reduxjs/toolkit": "^1.8.2",
     "ag-grid-community": "^21.0.1",
     "ag-grid-react": "^21.0.1",
     "axios": "^0.27.2",
