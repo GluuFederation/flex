@@ -10,6 +10,7 @@ from jans.pycloudlib.persistence import CouchbaseClient
 from jans.pycloudlib.persistence import LdapClient
 from jans.pycloudlib.persistence import SpannerClient
 from jans.pycloudlib.persistence import SqlClient
+from jans.pycloudlib.persistence.utils import PersistenceMapper
 
 from settings import LOGGING_CONFIG
 
@@ -82,16 +83,8 @@ class PersistenceSetup:
         }
 
         # determine persistence type
-        self.persistence_type = os.environ.get("CN_PERSISTENCE_TYPE", "ldap")
-        ldap_mapping = os.environ.get("CN_PERSISTENCE_LDAP_MAPPING", "default")
-
-        if self.persistence_type == "hybrid":
-            if ldap_mapping == "default":
-                client_cls = LdapClient
-                self.persistence_type = "ldap"
-            else:
-                client_cls = CouchbaseClient
-                self.persistence_type = "couchbase"
+        mapper = PersistenceMapper()
+        self.persistence_type = mapper.mapping["default"]
 
         # determine persistence client
         client_cls = client_classes.get(self.persistence_type)
