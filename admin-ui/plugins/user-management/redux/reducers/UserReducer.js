@@ -13,7 +13,7 @@ import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   selectedUserData: null,
-  loading: false,
+  loading: true,
   redirectToUserListPage: false,
 }
 const reducerName = 'userReducer'
@@ -68,7 +68,6 @@ export default function userReducer(state = INIT_STATE, action) {
   function handleDefault() {
     return {
       ...state,
-      loading: false,
     }
   }
 }

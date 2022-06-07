@@ -28,10 +28,11 @@ import {
 
 function UserList(props) {
   const dispatch = useDispatch()
-
+  let opt = {}
   useEffect(() => {
+    opt['limit'] = 0
     dispatch(getUsers({}))
-    dispatch(getAttributes({}))
+    dispatch(getAttributes(opt))
   }, [])
 
   const usersList = useSelector((state) => state.userReducer.items)
@@ -48,6 +49,10 @@ function UserList(props) {
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
   const history = useHistory()
+
+  useEffect(() => {
+    console.log('Loading', loading)
+  }, [loading])
 
   function handleGoToUserAddPage() {
     dispatch(setSelectedUserData(null))
