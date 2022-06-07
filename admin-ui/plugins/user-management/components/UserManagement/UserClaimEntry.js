@@ -14,6 +14,7 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
           value={formik.values[data.name] || ''}
           formik={formik}
           handler={doHandle}
+          doc_category={data.description}
           lsize={3}
           rsize={9}
         />
