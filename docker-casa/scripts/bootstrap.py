@@ -23,6 +23,7 @@ from jans.pycloudlib.persistence import SpannerClient
 from jans.pycloudlib.persistence import SqlClient
 from jans.pycloudlib.persistence import doc_id_from_dn
 from jans.pycloudlib.persistence import id_from_dn
+from jans.pycloudlib.persistence.utils import PersistenceMapper
 from jans.pycloudlib.utils import cert_to_truststore
 from jans.pycloudlib.utils import get_random_chars
 from jans.pycloudlib.utils import encode_text
@@ -141,7 +142,13 @@ def main():
     render_salt(manager, "/app/templates/salt.tmpl", "/etc/jans/conf/salt")
     render_base_properties("/app/templates/jans.properties.tmpl", "/etc/jans/conf/jans.properties")
 
-    if persistence_type in ("ldap", "hybrid"):
+    mapper = PersistenceMapper()
+    persistence_groups = mapper.groups()
+
+    if persistence_type == "hybrid":
+        render_hybrid_properties("/etc/jans/conf/jans-hybrid.properties")
+
+    if "ldap" in persistence_groups:
         render_ldap_properties(
             manager,
             "/app/templates/jans-ldap.properties.tmpl",
@@ -149,7 +156,7 @@ def main():
         )
         sync_ldap_truststore(manager)
 
-    if persistence_type in ("couchbase", "hybrid"):
+    if "couchbase" in persistence_groups:
         render_couchbase_properties(
             manager,
             "/app/templates/jans-couchbase.properties.tmpl",
@@ -157,17 +164,14 @@ def main():
         )
         sync_couchbase_truststore(manager)
 
-    if persistence_type == "hybrid":
-        render_hybrid_properties("/etc/jans/conf/jans-hybrid.properties")
-
-    if persistence_type == "sql":
+    if "sql" in persistence_groups:
         render_sql_properties(
             manager,
             "/app/templates/jans-sql.properties.tmpl",
             "/etc/jans/conf/jans-sql.properties",
         )
 
-    if persistence_type == "spanner":
+    if "spanner" in persistence_groups:
         render_spanner_properties(
             manager,
             "/app/templates/jans-spanner.properties.tmpl",
@@ -204,16 +208,8 @@ class PersistenceSetup:
         }
 
         # determine persistence type
-        self.persistence_type = os.environ.get("CN_PERSISTENCE_TYPE", "ldap")
-        ldap_mapping = os.environ.get("CN_PERSISTENCE_LDAP_MAPPING", "default")
-
-        if self.persistence_type == "hybrid":
-            if ldap_mapping == "default":
-                client_cls = LdapClient
-                self.persistence_type = "ldap"
-            else:
-                client_cls = CouchbaseClient
-                self.persistence_type = "couchbase"
+        mapper = PersistenceMapper()
+        self.persistence_type = mapper.mapping["default"]
 
         # determine persistence client
         client_cls = client_classes.get(self.persistence_type)
