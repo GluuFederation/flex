@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2022-05-12 11:53'
+ENV GLUU_BUILD_DATE='2022-05-26 13:57'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -63,7 +63,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_LINUX_SETUP_VERSION=eb113d09421b95671fe1ab4eaa5c4bafc2aed6af
+ENV JANS_LINUX_SETUP_VERSION=afc539d63a70cda21e990fecd470224a4f94e9d6
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -90,7 +90,7 @@ RUN cd /tmp/jans \
 # flex setup sync
 # ===============
 
-ENV FLEX_VERSION=e042a9de63fba051535782b242f38843d39f5afd
+ENV FLEX_VERSION=9de53ada7bd2ca576e8b64b09fa51b002223e84e
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 ARG CASA_EXTRAS_DIR=casa/extras
 
@@ -168,7 +168,7 @@ ENV CN_SECRET_ADAPTER=vault \
 # ===============
 
 ENV CN_PERSISTENCE_TYPE=ldap \
-    CN_PERSISTENCE_LDAP_MAPPING=default \
+    CN_HYBRID_MAPPING="{}" \
     CN_LDAP_URL=localhost:1636 \
     CN_LDAP_USE_SSL=true \
     CN_COUCHBASE_URL=localhost \

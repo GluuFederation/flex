@@ -1,4 +1,5 @@
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
+import { combineReducers } from 'redux'
+import { configureStore } from '@reduxjs/toolkit'
 import createSagaMiddleware from 'redux-saga'
 import appReducers from '../reducers'
 import RootSaga from '../sagas'
@@ -10,7 +11,6 @@ import process from 'Plugins/PluginReducersResolver'
 // create the saga middleware
 const sagaMiddleware = createSagaMiddleware()
 const middlewares = [sagaMiddleware]
-const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const persistConfig = {
   key: 'root',
   storage,
@@ -30,12 +30,12 @@ const reducers = combine(reducerRegistry.getReducers())
 process()
 const persistedReducer = persistReducer(persistConfig, reducers)
 
-export function configureStore(initialState) {
-  const store = createStore(
-    persistedReducer,
+export function configStore(initialState) {
+  const store = configureStore({
+    middleware: middlewares,
+    reducer: persistedReducer,
     initialState,
-    composeEnhancer(applyMiddleware(...middlewares)),
-  )
+  })
   const persistor = persistStore(store)
   window.dsfaStore = store
   reducerRegistry.setChangeListener((reds) => {
