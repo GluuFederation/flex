@@ -18,3 +18,4 @@ plugins_repo
 .vs
 .idea/
 .env.production
+.husky/
