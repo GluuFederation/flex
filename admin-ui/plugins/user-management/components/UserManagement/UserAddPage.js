@@ -10,6 +10,7 @@ import {
   redirectToListPage,
 } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
 function UserAddPage() {
   const dispatch = useDispatch()
   const userAction = {}
@@ -23,15 +24,39 @@ function UserAddPage() {
     let customAttributes = []
     if (values) {
       for (let key in values) {
+        let customAttribute = personAttributes.filter((e) => e.name == key)
         if (personAttributes.some((e) => e.name == key)) {
-          let val = []
-          val.push(values[key])
-          let obj = {
-            name: key,
-            multiValued: false,
-            values: val,
-            value: values[key],
-            displayValue: values[key],
+          let obj = {}
+          if (!customAttribute[0]?.oxMultiValuedAttribute) {
+            let val = []
+            let value = values[key]
+            if (key != 'birthdate') {
+              val.push(values[key])
+            } else {
+              val.push(moment(values[key], 'YYYY-MM-DD').toISOString())
+              value = moment(values[key], 'YYYY-MM-DD').toISOString()
+            }
+            obj = {
+              name: key,
+              multiValued: false,
+              values: val,
+              value: value,
+              displayValue: value,
+            }
+          } else {
+            let val = []
+            if (values[key]) {
+              for (let i in values[key]) {
+                val.push(values[key][i][key])
+              }
+            }
+            obj = {
+              name: key,
+              multiValued: true,
+              values: val,
+              value: val,
+              displayValue: val,
+            }
           }
           customAttributes.push(obj)
         }

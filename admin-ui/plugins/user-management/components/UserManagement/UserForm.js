@@ -61,8 +61,11 @@ function UserForm({ formik }) {
   const setAttributes = () => {
     let tempList = [...selectedClaims]
     for (let i in userDetails.customAttributes) {
+      console.log('This is it', userDetails.customAttributes[i])
       let data = getCustomAttributeById(userDetails.customAttributes[i].name)
       if (data && !usedClaimes.includes(userDetails.customAttributes[i].name)) {
+        console.log('JMS', data)
+        data.options = userDetails.customAttributes[i].values
         tempList.push(data)
       }
     }
