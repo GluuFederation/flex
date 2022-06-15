@@ -19,7 +19,7 @@ import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../../../app/utils/TokenController'
+} from 'Utils/TokenController'
 import {
   GET_MAPPING,
   UPDATE_PERMISSIONS_TO_SERVER,

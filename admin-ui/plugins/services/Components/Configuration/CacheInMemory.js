@@ -1,7 +1,7 @@
 import React from 'react'
-import { FormGroup, Card, Col, CardBody } from '../../../../app/components'
-import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-import { CACHE } from '../../../../app/utils/ApiResources'
+import { FormGroup, Card, Col, CardBody } from 'Components'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import { CACHE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 function CacheInMemory({ config, formik }) {

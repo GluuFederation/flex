@@ -29,7 +29,7 @@ class PromptLdap:
             6: "session",
         }
 
-        if self.settings.get("config.configmap.cnPersistenceLdapMapping") not in hybrid_ldap_map.values():
+        if self.settings.get("config.configmap.cnPersistenceHybridMapping") not in hybrid_ldap_map.values():
             print("|------------------------------------------------------------------|")
             print("|                     Hybrid [OpenDJ + Couchbase]                 |")
             print("|------------------------------------------------------------------|")
@@ -42,4 +42,4 @@ class PromptLdap:
             print("|------------------------------------------------------------------|")
 
             choice = click.prompt("Cache layer", default=1)
-            self.settings.set("config.configmap.cnPersistenceLdapMapping", hybrid_ldap_map.get(choice, "default"))
+            self.settings.set("config.configmap.cnPersistenceHybridMapping", hybrid_ldap_map.get(choice, "default"))

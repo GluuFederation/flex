@@ -6,9 +6,9 @@ import {
   Col,
   FormGroup,
   Label,
-} from '../../../../app/components'
-import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
-import GluuSecretDetail from '../../../../app/routes/Apps/Gluu/GluuSecretDetail'
+} from 'Components'
+import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
+import GluuSecretDetail from 'Routes/Apps/Gluu/GluuSecretDetail'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
@@ -19,7 +19,7 @@ function ClientDetailPage({ row, scopes }) {
     .filter((item) => scopesDns.includes(item.dn, 0))
     .map((item) => item.id)
   function extractDescription(customAttributes) {
-    var result = customAttributes.filter((item) => item.name === 'description')
+    const result = customAttributes.filter((item) => item.name === 'description')
     if (result && result.length >= 1) {
       return result[0].values
     }

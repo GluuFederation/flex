@@ -6,9 +6,9 @@ import {
   Card,
   CardBody,
   Accordion,
-} from '../../../../../../app/components'
+} from 'Components'
 import moment from 'moment'
-import GluuLabel from '../../../../../../app/routes/Apps/Gluu/GluuLabel'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 function JwkItem({ item, index }) {
 
   return (

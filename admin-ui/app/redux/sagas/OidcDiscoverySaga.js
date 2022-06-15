@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest, select } from 'redux-saga/effects'
 import { GET_OIDC_DISCOVERY } from '../actions/types'
 import { getOidcDiscoveryResponse } from '../actions'
-import { isFourZeroOneError } from '../../utils/TokenController'
+import { isFourZeroOneError } from 'Utils/TokenController'
 import OidcDiscoveryApi from '../api/OidcDiscoveryApi'
 import { getClient } from '../api/base'
 import { getAPIAccessToken } from '../actions/AuthActions'

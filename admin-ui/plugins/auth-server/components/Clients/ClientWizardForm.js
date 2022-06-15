@@ -7,17 +7,17 @@ import {
   CardBody,
   Form,
   Button,
-} from '../../../../app/components'
+} from 'Components'
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
 import ClientEncryption from './ClientEncryptionPanel'
 import ClientAttributes from './ClientAttributesPanel'
 import ClientScript from './ClientScriptPanel'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
-import { hasPermission, CLIENT_WRITE } from '../../../../app/utils/PermChecker'
-import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import { hasPermission, CLIENT_WRITE } from 'Utils/PermChecker'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 const sequence = [
   'Basic',
@@ -144,8 +144,6 @@ function ClientWizardForm({
     backchannelClientNotificationEndpoint:
       client.backchannelClientNotificationEndpoint,
     frontChannelLogoutUri: client.frontChannelLogoutUri,
-
-    backchannelUserCodeParameter: client.backchannelUserCodeParameter,
     policyUri: client.policyUri,
     logoURI: client.logoURI,
     sectorIdentifierUri: client.sectorIdentifierUri,

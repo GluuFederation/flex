@@ -34,7 +34,7 @@ import {
   CLIENT_WRITE,
   SCOPE_WRITE,
   JWKS_READ,
-} from '../../app/utils/PermChecker'
+} from 'Utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 

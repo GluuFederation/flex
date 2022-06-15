@@ -16,7 +16,7 @@ import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import {
   isFourZeroOneError,
   addAdditionalData,
-} from '../../../../app/utils/TokenController'
+} from 'Utils/TokenController'
 import {
   GET_CUSTOM_SCRIPT,
   GET_CUSTOM_SCRIPT_BY_TYPE,

@@ -1,6 +1,6 @@
 import React from 'react'
-import { Container, Row, Col } from '../../../../app/components'
-import GluuFormDetailRow from '../../../../app/routes/Apps/Gluu/GluuFormDetailRow'
+import { Container, Row, Col } from 'Components'
+import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 
 function UiPermDetailPage({ row }) {
   const { rowData } = row

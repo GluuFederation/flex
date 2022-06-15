@@ -191,16 +191,11 @@ questions:
   description: "Middleware API to help application developers call an OAuth, OpenID or UMA server. You may wonder why this is necessary. It makes it easier for client developers to use OpenID signing and encryption features, without becoming crypto experts. This API provides some high level endpoints to do some of the heavy lifting."
   show_subquestion_if: true
   subquestions:
-  - variable: config.configmap.cnClientApiApplicationCertCn
+  - variable: config.configmap.cnClientApiCertCn
     default: "client-api"
-    description: "Client API application keystore name"
+    description: "Client API CommonName value for certificate subject"
     type: string
-    label: Client API application keystore name
-  - variable: config.configmap.cnClientApiAdminCertCn
-    default: "client-api"
-    description: "Client API admin keystore name"
-    type: string
-    label: Client API admin keystore name
+    label: Client API certificate CommonName (CN)
 - variable: global.jackrabbit.enabled
   default: false
   type: boolean
@@ -305,8 +300,8 @@ questions:
   label: OpenDJ remote URL
   description: "OpenDJ remote URL. This must be resolvable by the pods"
   show_if: "global.opendj.enabled=false&&global.cnPersistenceType=ldap||global.cnPersistenceType=hybrid"
-- variable: config.configmap.cnPersistenceLdapMapping
-  default: "default"
+- variable: config.configmap.cnPersistenceHybridMapping
+  default: "{}"
   required: false
   type: enum
   group: "Persistence"

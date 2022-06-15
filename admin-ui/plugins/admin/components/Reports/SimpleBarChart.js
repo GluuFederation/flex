@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   Legend,
   Bar,
-} from '../../../../app/components/recharts'
+} from 'Components/recharts'
 
 import colors from '../../../../app/colors'
 

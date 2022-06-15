@@ -6,8 +6,8 @@ import {
   Card,
   CardBody,
   Badge,
-} from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
+} from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 
 function LdapItem({ ldap, index, formik }) {
   return (

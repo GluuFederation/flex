@@ -2,7 +2,7 @@ import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import {
   isFourZeroOneError,
   hasApiToken,
-} from '../../../../app/utils/TokenController'
+} from 'Utils/TokenController'
 import {
   getCacheResponse,
   getMemoryCacheResponse,

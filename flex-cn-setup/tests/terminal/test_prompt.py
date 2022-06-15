@@ -150,10 +150,10 @@ def test_ldap(monkeypatch, settings):
 
     monkeypatch.setattr("click.prompt", lambda x, default: "default")
 
-    settings.set("config.configmap.cnPersistenceLdapMapping", "default")
+    settings.set("config.configmap.cnPersistenceHybridMapping", "default")
     settings.set("global.cnPersistenceType", "hybrid")
     check.ldap()
-    assert settings.get("config.configmap.cnPersistenceLdapMapping") == "default"
+    assert settings.get("config.configmap.cnPersistenceHybridMapping") == "default"
 
 
 def test_volume(settings, monkeypatch):

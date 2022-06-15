@@ -59,11 +59,8 @@ class PromptOptionalServices:
             self.settings.set("global.client-api.enabled", click.confirm("Deploy Client API"))
 
         if self.settings.get("global.client-api.enabled"):
-            if self.settings.get("config.configmap.cnClientApiApplicationCertCn") in (None, ''):
-                self.settings.set("config.configmap.cnClientApiApplicationCertCn",
+            if self.settings.get("config.configmap.cnClientApiCertCn") in (None, ''):
+                self.settings.set("config.configmap.cnClientApiCertCn",
                                   click.prompt("Client API application keystore name",
                                                default="client-api"))
-            if self.settings.get("config.configmap.cnClientApiAdminCertCn") in (None, ''):
-                self.settings.set("config.configmap.cnClientApiAdminCertCn",
-                                  click.prompt("Client API admin keystore name",
-                                               default="client-api"))
+

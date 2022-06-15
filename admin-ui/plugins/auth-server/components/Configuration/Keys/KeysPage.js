@@ -6,10 +6,10 @@ import {
   TabPane,
   Card,
   CardBody,
-} from '../../../../../app/components'
+} from 'Components'
 import JwksPage from './Jwks/JwksPage'
 import { useTranslation } from 'react-i18next'
-import GluuRibbon from '../../../../../app/routes/Apps/Gluu/GluuRibbon'
+import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 
 function KeysPage() {
   const { t } = useTranslation()

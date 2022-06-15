@@ -8,14 +8,14 @@ import {
   Form,
   FormGroup,
   Input,
-} from '../../../../app/components'
-import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuInumInput from '../../../../app/routes/Apps/Gluu/GluuInumInput'
-import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
-import GluuToogleRow from '../../../../app/routes/Apps/Gluu/GluuToogleRow'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import { ATTRIBUTE } from '../../../../app/utils/ApiResources'
+} from 'Components'
+import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import { ATTRIBUTE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 
 function AttributeForm({ item, customOnSubmit, hideButtons }) {

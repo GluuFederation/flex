@@ -7,13 +7,13 @@ import {
   Form,
   FormGroup,
   Input,
-} from '../../../../app/components'
-import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import { SQL } from '../../../../app/utils/ApiResources'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+} from 'Components'
+import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import { SQL } from 'Utils/ApiResources'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 
 function SqlForm({ item, handleSubmit }) {
