@@ -9,16 +9,16 @@ import {
   Form,
   FormGroup,
   Input,
-} from '../../../../app/components'
-import GluuLabel from '../../../../app/routes/Apps/Gluu/GluuLabel'
-import GluuInumInput from '../../../../app/routes/Apps/Gluu/GluuInumInput'
-import GluuInputEditor from '../../../../app/routes/Apps/Gluu/GluuInputEditor'
-import GluuProperties from '../../../../app/routes/Apps/Gluu/GluuProperties'
-import Counter from '../../../../app/components/Widgets/GroupedButtons/Counter'
-import GluuCommitFooter from '../../../../app/routes/Apps/Gluu/GluuCommitFooter'
-import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
-import GluuTooltip from '../../../../app/routes/Apps/Gluu/GluuTooltip'
-import { SCRIPT } from '../../../../app/utils/ApiResources'
+} from 'Components'
+import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
+import GluuInputEditor from 'Routes/Apps/Gluu/GluuInputEditor'
+import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
+import Counter from 'Components/Widgets/GroupedButtons/Counter'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
+import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
+import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import items from './scriptTypes'
 
