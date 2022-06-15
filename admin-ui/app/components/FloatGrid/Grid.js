@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import { Container } from 'reactstrap'
 import { FloatGridContext } from './floatGridContext'
-import 'Styles/components/float-grid.scss'
+import './../../styles/components/float-grid.scss'
 
 export class Grid extends React.Component {
     static propTypes = {
