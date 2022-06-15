@@ -43,6 +43,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     }
     return false
   })
+  const [selectedLanguage, setSelectedLanguage] = useState()
 
   function activate() {
     if (!init) {
@@ -99,6 +100,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     onSubmit: (values) => {
       values.level = item.level
       values.moduleProperties = item.moduleProperties
+      // eslint-disable-next-line no-extra-boolean-cast
       if (!!values.configurationProperties) {
         values.configurationProperties = values.configurationProperties
           .filter((e) => e != null)
@@ -323,20 +325,22 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 id="programmingLanguage"
                 name="programmingLanguage"
                 defaultValue={item.programmingLanguage}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  formik.handleChange('programmingLanguage')
+                  setSelectedLanguage(e.target.value)
+                }}
               >
                 <option value="">{t('Choose')}...</option>
-                <option>PYTHON</option>
-                <option>JAVASCRIPT</option>
-                <option>JAVA</option>
+                <option value="java">Java</option>
+                <option value="python">Jython</option>
               </CustomInput>
             </InputGroup>
             {formik.errors.programmingLanguage &&
-            formik.touched.programmingLanguage ? (
+            formik.touched.programmingLanguage && (
               <div style={{ color: 'red' }}>
                 {formik.errors.programmingLanguage}
               </div>
-            ) : null}
+            )}
           </Col>
         </FormGroup>
       </GluuTooltip>
@@ -355,8 +359,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                     (i) => i.value1 === 'location_type',
                   ).length > 0
                     ? item.moduleProperties.filter(
-                        (it) => it.value1 === 'location_type',
-                      )[0].value2
+                      (it) => it.value1 === 'location_type',
+                    )[0].value2
                     : undefined
                 }
                 onChange={(e) => {
@@ -391,8 +395,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                       (i) => i.value1 === 'location_path',
                     ).length > 0
                       ? item.moduleProperties.filter(
-                          (it) => it.value1 === 'location_path',
-                        )[0].value2
+                        (it) => it.value1 === 'location_path',
+                      )[0].value2
                       : undefined
                   }
                   onChange={(e) => {
@@ -420,8 +424,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                       (vItem) => vItem.value1 === 'usage_type',
                     ).length > 0
                       ? item.moduleProperties.filter(
-                          (kItem) => kItem.value1 === 'usage_type',
-                        )[0].value2
+                        (kItem) => kItem.value1 === 'usage_type',
+                      )[0].value2
                       : undefined
                   }
                   onChange={(e) => {
@@ -440,7 +444,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       )}
       <GluuTooltip doc_category={SCRIPT} doc_entry="level">
         <FormGroup row>
-          <GluuLabel doc_category={SCRIPT}  label="fields.level" />
+          <GluuLabel doc_category={SCRIPT} label="fields.level" />
           <Col sm={9}>
             <Counter
               counter={item.level}
@@ -462,7 +466,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         <GluuInputEditor
           doc_category={SCRIPT}
           name="script"
-          language={item.programmingLanguage.toLowerCase()}
+          language={selectedLanguage}
           label="script"
           lsize={2}
           rsize={10}
