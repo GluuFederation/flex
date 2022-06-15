@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import isUndefined from 'lodash/isUndefined'
 import map from 'lodash/map'
 
-import 'Styles/components/wizard.scss'
+import './../../styles/components/wizard.scss'
 
 export class Wizard extends React.Component {
     static propTypes = {

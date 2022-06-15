@@ -10,7 +10,7 @@ import {
   CustomInput
 } from 'reactstrap'
 
-import 'Styles/components/theme-selector.scss'
+import './../../styles/components/theme-selector.scss'
 import { Consumer } from './ThemeContext'
 
 class ThemeSelector extends React.Component {
