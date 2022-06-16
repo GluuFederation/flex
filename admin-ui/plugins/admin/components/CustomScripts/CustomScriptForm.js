@@ -43,7 +43,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     }
     return false
   })
-  const [selectedLanguage, setSelectedLanguage] = useState()
+  const [selectedLanguage, setSelectedLanguage] = useState(item.programmingLanguage)
 
   function activate() {
     if (!init) {
@@ -331,8 +331,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 }}
               >
                 <option value="">{t('Choose')}...</option>
-                <option value="java">Java</option>
-                <option value="python">Jython</option>
+                <option value="JAVA">Java</option>
+                <option value="PYTHON">Jython</option>
               </CustomInput>
             </InputGroup>
             {formik.errors.programmingLanguage &&
@@ -466,7 +466,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         <GluuInputEditor
           doc_category={SCRIPT}
           name="script"
-          language={selectedLanguage}
+          language={selectedLanguage?.toLowerCase()}
           label="script"
           lsize={2}
           rsize={10}
