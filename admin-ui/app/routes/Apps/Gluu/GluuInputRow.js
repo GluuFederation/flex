@@ -13,6 +13,7 @@ function GluuInputRow({
   lsize,
   rsize,
   doc_category,
+  disabled = false,
 }) {
   const [customType, setCustomType] = useState(null)
 
@@ -35,6 +36,7 @@ function GluuInputRow({
             name={name}
             defaultValue={value}
             onChange={formik.handleChange}
+            disabled={disabled}
           />
           {type == 'password' && (
             <div style={{ position: 'absolute', right: 20, top: 7 }}>

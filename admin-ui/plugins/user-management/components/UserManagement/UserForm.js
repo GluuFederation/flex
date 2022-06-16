@@ -46,6 +46,7 @@ function UserForm({ formik }) {
     'jansStatus',
     'userPassword',
     'givenName',
+    'middleName',
     'sn',
   ]
   const getCustomAttributeById = (id) => {
@@ -92,11 +93,32 @@ function UserForm({ formik }) {
       <Form onSubmit={formik.handleSubmit}>
         <FormGroup row>
           <Col sm={8}>
+            {userDetails && (
+              <GluuInputRow
+                label="INUM"
+                name="INUM"
+                value={userDetails.inum || ''}
+                lsize={3}
+                rsize={9}
+                formik={formik}
+                disabled={true}
+              />
+            )}
             <GluuInputRow
               doc_category={DOC_SECTION}
               label="First Name"
               name="givenName"
               value={formik.values.givenName || ''}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+            />
+
+            <GluuInputRow
+              doc_category={DOC_SECTION}
+              label="Middle Name"
+              name="middleName"
+              value={formik.values.middleName || ''}
               formik={formik}
               lsize={3}
               rsize={9}
