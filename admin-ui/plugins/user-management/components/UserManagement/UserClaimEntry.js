@@ -2,6 +2,7 @@ import React from 'react'
 import GluuRemovableInputRow from '../../../../app/routes/Apps/Gluu/GluuRemovableInputRow'
 import GluuRemovableSelectRow from '../../../../app/routes/Apps/Gluu/GluuRemovableSelectRow'
 import GluuRemovableTypeAhead from '../../../../app/routes/Apps/Gluu/GluuRemovableTypeAhead'
+import { countries } from '../../common/countries'
 function UserClaimEntry({ data, type, entry, formik, handler }) {
   const doHandle = () => {
     handler(data.name)
@@ -22,7 +23,7 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
           rsize={9}
         />
       )}
-      {type === 'input' && !data.oxMultiValuedAttribute && (
+      {data.name != 'c' && !data.oxMultiValuedAttribute && (
         <GluuRemovableInputRow
           label={data.displayName}
           name={data.name}
@@ -34,12 +35,12 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
           rsize={9}
         />
       )}
-      {type === 'select' && !data.oxMultiValuedAttribute && (
+      {data.name == 'c' && !data.oxMultiValuedAttribute && (
         <GluuRemovableSelectRow
           label={data.displayName}
           name={data.name}
           value={formik.values[data.name] || ''}
-          values={data.attributes.values}
+          values={countries}
           formik={formik}
           required
           handler={doHandle}
