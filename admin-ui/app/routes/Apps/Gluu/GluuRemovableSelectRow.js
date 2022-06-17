@@ -32,8 +32,8 @@ function GluuRemovableSelectRow({
             >
               <option value="">{t('actions.choose')}...</option>
               {values.map((item, key) => (
-                <option value={item} key={key}>
-                  {item}
+                <option value={item.cca2} key={key}>
+                  {item.name}
                 </option>
               ))}
             </CustomInput>
@@ -52,7 +52,7 @@ function GluuRemovableSelectRow({
           }}
           onClick={handler}
         >
-         <i className={'fa fa-fw fa-close'} style={{color:"red"}}></i>
+          <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>
