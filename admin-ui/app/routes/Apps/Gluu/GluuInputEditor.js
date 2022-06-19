@@ -17,6 +17,10 @@ function GluuInputEditor({
   rsize,
   doc_category,
 }) {
+  const handleChange = (scripts) => {
+    formik.handleChange(name)(scripts)
+  }
+
   return (
     <FormGroup row>
       <GluuLabel
@@ -37,9 +41,7 @@ function GluuInputEditor({
           fontSize={16}
           width="95%"
           height="300px"
-          onChange={() => {
-            formik.onChange
-          }}
+          onChange={(e) => handleChange(e)}
           name={name}
           defaultValue={value}
           editorProps={{ $blockScrolling: true }}
