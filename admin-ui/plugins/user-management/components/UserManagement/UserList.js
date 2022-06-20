@@ -25,6 +25,7 @@ import {
   ROLE_READ,
   ROLE_WRITE,
 } from '../../../../app/utils/PermChecker'
+import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 
 function UserList(props) {
   const dispatch = useDispatch()
@@ -43,16 +44,18 @@ function UserList(props) {
   const permissions = useSelector((state) => state.authReducer.permissions)
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
+  const [deleteData, setDeleteData] = useState(null)
   const toggle = () => setModal(!modal)
+  const submitForm = () => {
+    toggle()
+    handleUserDelete(deleteData)
+  }
+
   const myActions = []
   const options = []
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
   const history = useHistory()
-
-  useEffect(() => {
-    console.log('Loading', loading)
-  }, [loading])
 
   function handleGoToUserAddPage() {
     dispatch(setSelectedUserData(null))
@@ -99,7 +102,10 @@ function UserList(props) {
         color: 'secondary',
         id: 'deleteClient' + rowData.inum,
       },
-      onClick: (event, rowData) => handleUserDelete(rowData),
+      onClick: (event, rowData) => {
+        setDeleteData(rowData)
+        toggle()
+      },
       disabled: false,
     }))
   }
@@ -144,6 +150,7 @@ function UserList(props) {
           />
         </GluuViewWrapper>
       </CardBody>
+      <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
     </Card>
   )
 }

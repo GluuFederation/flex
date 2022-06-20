@@ -43,6 +43,9 @@ const GluuCommitDialog = ({
     }
     setLoading(true)
     onAccept(userMessage)
+    setTimeout(() => {
+      setUserMessage('')
+    }, 300)
   }
   const closeModal = () => {
     handler()

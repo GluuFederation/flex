@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import UserClaimEntry from './UserClaimEntry'
 import { useSelector } from 'react-redux'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
+import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 
 function UserForm({ formik }) {
   const { t } = useTranslation()
@@ -15,6 +16,16 @@ function UserForm({ formik }) {
   const [selectedClaims, setSelectedClaims] = useState([])
   const [passwordError, setPasswordError] = useState('')
   const [showButtons, setShowButtons] = useState(false)
+  const [modal, setModal] = useState(false)
+
+  const toggle = () => {
+    setModal(!modal)
+  }
+
+  const submitForm = () => {
+    toggle()
+    formik.handleSubmit()
+  }
 
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
   const personAttributes = useSelector((state) => state.attributeReducer.items)
@@ -91,7 +102,12 @@ function UserForm({ formik }) {
 
   return (
     <GluuLoader blocking={loading}>
-      <Form onSubmit={formik.handleSubmit}>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault()
+          toggle()
+        }}
+      >
         <FormGroup row>
           <Col sm={8}>
             {userDetails && (
@@ -259,6 +275,12 @@ function UserForm({ formik }) {
             </div>
           </Col>
         </FormGroup>
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={submitForm}
+          formik={formik}
+        />
       </Form>
     </GluuLoader>
   )
