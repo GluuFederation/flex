@@ -7,7 +7,6 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
   const doHandle = () => {
     handler(data.name)
   }
-  console.log(data.name, formik.values[data.name])
   return (
     <div key={entry}>
       {data.oxMultiValuedAttribute && (
