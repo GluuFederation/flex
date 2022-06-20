@@ -77,9 +77,9 @@ function UserEditPage() {
       mail: values.mail,
       displayName: values.displayName || '',
       jansStatus: values.jansStatus || '',
-      userPassword: values.userPassword || '',
       givenName: values.givenName || '',
       customAttributes: customAttributes,
+      dn: userDetails.dn,
     }
     dispatch(updateExistingUser(submitableValues))
   }
@@ -89,6 +89,7 @@ function UserEditPage() {
     givenName: userDetails.givenName,
     mail: userDetails.mail,
     userId: userDetails.userId,
+    jansStatus: userDetails.jansStatus || '',
   }
   for (let i in userDetails.customAttributes) {
     if (userDetails.customAttributes[i].multiValued) {

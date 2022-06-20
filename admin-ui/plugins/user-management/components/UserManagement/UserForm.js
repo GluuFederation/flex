@@ -162,18 +162,18 @@ function UserForm({ formik }) {
               lsize={3}
               rsize={9}
             />
-            {!userDetails && (
-              <GluuSelectRow
-                doc_category={DOC_SECTION}
-                label="Status"
-                name="jansStatus"
-                value={formik.values.jansStatus || ''}
-                values={['active', 'inactive']}
-                formik={formik}
-                lsize={3}
-                rsize={9}
-              />
-            )}
+
+            <GluuSelectRow
+              doc_category={DOC_SECTION}
+              label="Status"
+              name="jansStatus"
+              value={formik.values.jansStatus || ''}
+              values={['active', 'inactive']}
+              formik={formik}
+              lsize={3}
+              rsize={9}
+            />
+
             {!userDetails && (
               <GluuInputRow
                 doc_category={DOC_SECTION}
