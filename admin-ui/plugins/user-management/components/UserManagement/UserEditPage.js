@@ -26,15 +26,39 @@ function UserEditPage() {
     let customAttributes = []
     if (values) {
       for (let key in values) {
+        let customAttribute = personAttributes.filter((e) => e.name == key)
         if (personAttributes.some((e) => e.name == key)) {
-          let val = []
-          val.push(values[key])
-          let obj = {
-            name: key,
-            multiValued: false,
-            values: val,
-            value: values[key],
-            displayValue: values[key],
+          let obj = {}
+          if (!customAttribute[0]?.oxMultiValuedAttribute) {
+            let val = []
+            let value = values[key]
+            if (key != 'birthdate') {
+              val.push(values[key])
+            } else {
+              val.push(moment(values[key], 'YYYY-MM-DD').toISOString())
+              value = moment(values[key], 'YYYY-MM-DD').toISOString()
+            }
+            obj = {
+              name: key,
+              multiValued: false,
+              values: val,
+            }
+          } else {
+            let valE = []
+            if (values[key]) {
+              for (let i in values[key]) {
+                if (typeof values[key][i] == 'object') {
+                  valE.push(values[key][i][key])
+                } else {
+                  valE.push(values[key][i])
+                }
+              }
+            }
+            obj = {
+              name: key,
+              multiValued: true,
+              values: valE,
+            }
           }
           customAttributes.push(obj)
         }
@@ -67,8 +91,13 @@ function UserEditPage() {
     userId: userDetails.userId,
   }
   for (let i in userDetails.customAttributes) {
-    initialValues[userDetails.customAttributes[i].name] =
-      userDetails.customAttributes[i].values[0]
+    if (userDetails.customAttributes[i].multiValued) {
+      initialValues[userDetails.customAttributes[i].name] =
+        userDetails.customAttributes[i].values
+    } else {
+      initialValues[userDetails.customAttributes[i].name] =
+        userDetails.customAttributes[i].values[0]
+    }
   }
   const formik = useFormik({
     initialValues: initialValues,

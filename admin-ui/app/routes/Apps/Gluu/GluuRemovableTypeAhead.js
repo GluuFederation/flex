@@ -29,6 +29,7 @@ function GluuRemovableTypeAhead({
               emptyLabel=""
               labelKey={name}
               onChange={(selected) => {
+                console.log('SELECTED', selected)
                 if (formik) {
                   formik.setFieldValue(name, selected)
                 }

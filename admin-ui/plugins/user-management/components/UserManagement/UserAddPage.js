@@ -40,22 +40,18 @@ function UserAddPage() {
               name: key,
               multiValued: false,
               values: val,
-              value: value,
-              displayValue: value,
             }
           } else {
-            let val = []
+            let valE = []
             if (values[key]) {
               for (let i in values[key]) {
-                val.push(values[key][i][key])
+                valE.push(values[key][i][key])
               }
             }
             obj = {
               name: key,
               multiValued: true,
-              values: val,
-              value: val,
-              displayValue: val,
+              values: valE,
             }
           }
           customAttributes.push(obj)

@@ -23,6 +23,13 @@ export default class UserApi {
   updateUsers = (data) => {
     // customUser
 
+    // const options = {}
+    // options['customUser'] = data
+    // return new Promise((resolve, reject) => {
+    //   this.api.putUser(data.inum, options, (error, data) => {
+    //     this.handleResponse(error, reject, resolve, data)
+    //   })
+    // })
     const options = {}
     options['userPatchRequest'] = data
     return new Promise((resolve, reject) => {

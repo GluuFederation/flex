@@ -14,9 +14,9 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
         <GluuRemovableTypeAhead
           label={data.displayName}
           name={data.name}
-          value={[]}
+          value={formik.values[data.name] || []}
           formik={formik}
-          options={data.options || []}
+          options={formik.values[data.name] || []}
           handler={doHandle}
           doc_category={data.description}
           lsize={3}
