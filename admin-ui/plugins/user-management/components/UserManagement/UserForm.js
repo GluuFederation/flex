@@ -84,6 +84,7 @@ function UserForm({ formik }) {
 
   const removeSelectedClaimsFromState = (id) => {
     let tempList = [...selectedClaims]
+    formik.setFieldValue(id)
     let newList = tempList.filter((data, index) => data.name !== id)
     setSelectedClaims(newList)
   }
