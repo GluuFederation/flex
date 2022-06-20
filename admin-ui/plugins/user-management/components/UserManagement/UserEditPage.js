@@ -105,6 +105,9 @@ function UserEditPage() {
     onSubmit: (values) => {
       submitData(values)
     },
+    setFieldValue: (field) => {
+      delete values[field]
+    },
   })
   return (
     <React.Fragment>
