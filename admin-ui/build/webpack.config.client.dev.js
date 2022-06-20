@@ -34,7 +34,7 @@ module.exports = {
     publicPath: BASE_PATH,
   },
   resolve: {
-    fallback: { "querystring": false },
+    fallback: { querystring: false },
     modules: ['node_modules', config.srcDir],
     alias: {
       path: require.resolve('path-browserify'),
@@ -79,7 +79,7 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader", "postcss-loader"],
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
       {
         test: /\.scss$/,

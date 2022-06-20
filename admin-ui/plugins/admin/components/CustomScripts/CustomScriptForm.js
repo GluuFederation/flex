@@ -12,6 +12,7 @@ import {
 } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
+import GluuInputEditor from 'Routes/Apps/Gluu/GluuInputEditor'
 import GluuProperties from 'Routes/Apps/Gluu/GluuProperties'
 import Counter from 'Components/Widgets/GroupedButtons/Counter'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
@@ -42,6 +43,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     }
     return false
   })
+  const [selectedLanguage, setSelectedLanguage] = useState(item.programmingLanguage)
 
   function activate() {
     if (!init) {
@@ -323,19 +325,22 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 id="programmingLanguage"
                 name="programmingLanguage"
                 defaultValue={item.programmingLanguage}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  formik.handleChange('programmingLanguage')
+                  setSelectedLanguage(e.target.value)
+                }}
               >
                 <option value="">{t('Choose')}...</option>
-                <option>PYTHON</option>
-                <option>JAVASCRIPT</option>
+                <option value="JAVA">Java</option>
+                <option value="PYTHON">Jython</option>
               </CustomInput>
             </InputGroup>
             {formik.errors.programmingLanguage &&
-            formik.touched.programmingLanguage ? (
+            formik.touched.programmingLanguage && (
               <div style={{ color: 'red' }}>
                 {formik.errors.programmingLanguage}
               </div>
-            ) : null}
+            )}
           </Col>
         </FormGroup>
       </GluuTooltip>
@@ -354,8 +359,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                     (i) => i.value1 === 'location_type',
                   ).length > 0
                     ? item.moduleProperties.filter(
-                        (it) => it.value1 === 'location_type',
-                      )[0].value2
+                      (it) => it.value1 === 'location_type',
+                    )[0].value2
                     : undefined
                 }
                 onChange={(e) => {
@@ -390,8 +395,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                       (i) => i.value1 === 'location_path',
                     ).length > 0
                       ? item.moduleProperties.filter(
-                          (it) => it.value1 === 'location_path',
-                        )[0].value2
+                        (it) => it.value1 === 'location_path',
+                      )[0].value2
                       : undefined
                   }
                   onChange={(e) => {
@@ -419,8 +424,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                       (vItem) => vItem.value1 === 'usage_type',
                     ).length > 0
                       ? item.moduleProperties.filter(
-                          (kItem) => kItem.value1 === 'usage_type',
-                        )[0].value2
+                        (kItem) => kItem.value1 === 'usage_type',
+                      )[0].value2
                       : undefined
                   }
                   onChange={(e) => {
@@ -439,7 +444,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
       )}
       <GluuTooltip doc_category={SCRIPT} doc_entry="level">
         <FormGroup row>
-          <GluuLabel label="fields.level" />
+          <GluuLabel doc_category={SCRIPT} label="fields.level" />
           <Col sm={9}>
             <Counter
               counter={item.level}
@@ -458,26 +463,17 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         options={getPropertiesConfig(item)}
       ></GluuProperties>
       {!scriptPath && (
-        <GluuTooltip doc_category={SCRIPT} doc_entry="script">
-          <FormGroup row>
-            <GluuLabel label={t('Script')} size={2} required />
-            {formik.errors.script && formik.touched.script ? (
-              <div style={{ color: 'red' }}>{formik.errors.script}</div>
-            ) : null}
-            <Col sm={10}>
-              <Input
-                placeholder={t('Script')}
-                valid={!formik.errors.script && !formik.touched.script && init}
-                type="textarea"
-                rows={20}
-                id="script"
-                name="script"
-                defaultValue={item.script}
-                onChange={formik.handleChange}
-              />
-            </Col>
-          </FormGroup>
-        </GluuTooltip>
+        <GluuInputEditor
+          doc_category={SCRIPT}
+          name="script"
+          language={selectedLanguage?.toLowerCase()}
+          label="script"
+          lsize={2}
+          rsize={10}
+          formik={formik}
+          value={item.script}
+          required
+        ></GluuInputEditor>
       )}
       <GluuTooltip doc_category={SCRIPT} doc_entry="enabled">
         <FormGroup row>
