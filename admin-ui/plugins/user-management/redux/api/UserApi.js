@@ -27,7 +27,7 @@ export default class UserApi {
     const options = {}
     options['customUser'] = data
     return new Promise((resolve, reject) => {
-      this.api.putUser(data.inum, options, (error, data) => {
+      this.api.putUser(options, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
       })
     })
