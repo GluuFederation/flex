@@ -80,6 +80,7 @@ function UserEditPage() {
       givenName: values.givenName || '',
       customAttributes: customAttributes,
       dn: userDetails.dn,
+      customObjectClasses: ['top', 'jansPerson', 'jansCustomPerson'],
     }
     dispatch(updateExistingUser(submitableValues))
   }

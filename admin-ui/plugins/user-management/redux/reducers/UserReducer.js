@@ -7,6 +7,7 @@ import {
   UM_CREATE_NEW_USER,
   UM_UPDATE_EXISTING_USER,
   UM_DELETE_EXISTING_USER,
+  UM_UPDATE_PASSWORD,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 
@@ -26,6 +27,11 @@ export default function userReducer(state = INIT_STATE, action) {
         loading: true,
       }
     case UM_CREATE_NEW_USER:
+      return {
+        ...state,
+        loading: true,
+      }
+    case UM_UPDATE_PASSWORD:
       return {
         ...state,
         loading: true,

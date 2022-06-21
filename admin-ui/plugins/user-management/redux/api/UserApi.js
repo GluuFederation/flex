@@ -21,9 +21,6 @@ export default class UserApi {
     })
   }
   updateUsers = (data) => {
-    // customUser
-
-    //CODE WITH PUT
     const options = {}
     options['customUser'] = data
     return new Promise((resolve, reject) => {
@@ -31,15 +28,16 @@ export default class UserApi {
         this.handleResponse(error, reject, resolve, data)
       })
     })
+  }
 
-    //Code with PATCH
-    // const options = {}
-    // options['userPatchRequest'] = data
-    // return new Promise((resolve, reject) => {
-    //   this.api.patchUserByInum(data.inum, options, (error, data) => {
-    //     this.handleResponse(error, reject, resolve, data)
-    //   })
-    // })
+  updateUserPassword = (data) => {
+    const options = {}
+    options['userPatchRequest'] = data
+    return new Promise((resolve, reject) => {
+      this.api.patchUserByInum(data.inum, options, (error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
+    })
   }
   deleteUser = (inum) => {
     return new Promise((resolve, reject) => {

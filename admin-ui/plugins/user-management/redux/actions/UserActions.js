@@ -7,6 +7,7 @@ import {
   UM_UPDATE_EXISTING_USER,
   UM_REDIRECT_TO_LIST,
   UM_DELETE_EXISTING_USER,
+  UM_UPDATE_PASSWORD,
 } from './types'
 
 export const getUsers = (action) => ({
@@ -45,6 +46,12 @@ export const redirectToListPage = (action) => {
 export const updateExistingUser = (action) => {
   return {
     type: UM_UPDATE_EXISTING_USER,
+    payload: action,
+  }
+}
+export const updateUserPassword = (action) => {
+  return {
+    type: UM_UPDATE_PASSWORD,
     payload: action,
   }
 }

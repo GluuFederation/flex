@@ -20,7 +20,8 @@
     "remove": "Remove",
     "test": "Test",
     "view": "View",
-    "yes": "Yes"
+    "yes": "Yes",
+    "change_password": "Change Password"
   },
   "fields": {
     "access_token_signing_alg": "Access Token Signing Algorithm",

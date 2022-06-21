@@ -19,6 +19,7 @@ import {
   UM_CREATE_NEW_USER,
   UM_UPDATE_EXISTING_USER,
   UM_DELETE_EXISTING_USER,
+  UM_UPDATE_PASSWORD,
 } from '../actions/types'
 import UserApi from '../api/UserApi'
 import { getClient } from '../../../../app/redux/api/base'
@@ -77,6 +78,22 @@ export function* updateExistingUserSaga({ payload }) {
   }
 }
 
+export function* updateUserPasswordSaga({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, API_USERS, payload)
+    const userApi = yield* newFunction()
+    yield call(userApi.updateUserPassword, payload)
+    yield put(UMupdateUserLoading(false))
+  } catch (e) {
+    yield put(UMupdateUserLoading(false))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
 export function* getUsersSaga({ payload }) {
   const audit = yield* initAudit()
   try {
@@ -125,6 +142,9 @@ export function* watchUpdateUser() {
 export function* deleteUser() {
   yield takeLatest(UM_DELETE_EXISTING_USER, deleteUserSaga)
 }
+export function* updateUserPassword() {
+  yield takeLatest(UM_UPDATE_PASSWORD, updateUserPasswordSaga)
+}
 
 export default function* rootSaga() {
   yield all([
@@ -132,5 +152,6 @@ export default function* rootSaga() {
     fork(watchCreateUser),
     fork(watchUpdateUser),
     fork(deleteUser),
+    fork(updateUserPassword),
   ])
 }

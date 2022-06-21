@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Col, Form, FormGroup } from '../../../../app/components'
+import { Button, Col, Form, FormGroup } from '../../../../app/components'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
 import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import { useTranslation } from 'react-i18next'
 import UserClaimEntry from './UserClaimEntry'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
-
+import applicationstyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { updateUserPassword } from '../../redux/actions/UserActions'
 function UserForm({ formik }) {
+  const dispatch = useDispatch()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
   const [searchClaims, setSearchClaims] = useState('')
@@ -17,9 +20,19 @@ function UserForm({ formik }) {
   const [passwordError, setPasswordError] = useState('')
   const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
+  const [changePasswordModal, setChangePasswordModal] = useState(false)
 
   const toggle = () => {
     setModal(!modal)
+  }
+
+  const submitChangePassword = () => {
+    let submitableValue = {
+      userPassword: formik.values.userPassword,
+      inum: userDetails.inum,
+    }
+    dispatch(updateUserPassword(submitableValue))
+    toggleChangePasswordModal()
   }
 
   const submitForm = () => {
@@ -100,8 +113,78 @@ function UserForm({ formik }) {
     setSelectedClaims(newList)
   }
 
+  function goBack() {
+    window.history.back()
+  }
+
+  const toggleChangePasswordModal = () => {
+    setChangePasswordModal(!changePasswordModal)
+    formik.setFieldValue('userPassword')
+    formik.setFieldValue('userConfirmPassword')
+    setShowButtons(true)
+  }
+
   return (
     <GluuLoader blocking={loading}>
+      <Modal
+        isOpen={changePasswordModal}
+        toggle={toggleChangePasswordModal}
+        className="modal-outline-primary"
+      >
+        <ModalHeader>Change Password</ModalHeader>
+        <ModalBody>
+          <FormGroup row>
+            <Col>
+              <GluuInputRow
+                doc_category={DOC_SECTION}
+                label="Password"
+                name="userPassword"
+                type="password"
+                value={formik.values.userPassword || ''}
+                formik={formik}
+                lsize={3}
+                rsize={9}
+              />
+              <GluuInputRow
+                doc_category={DOC_SECTION}
+                label="Confirm Password"
+                name="userConfirmPassword"
+                type="password"
+                value={formik.values.userConfirmPassword || ''}
+                formik={formik}
+                lsize={3}
+                rsize={9}
+              />
+
+              {passwordError != '' && (
+                <span className="text-danger">{passwordError}</span>
+              )}
+            </Col>
+          </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+          {formik.values?.userPassword?.length > 3 &&
+            formik.values?.userPassword ==
+              formik.values.userConfirmPassword && (
+              <Button
+                color="primary"
+                style={applicationstyle.buttonStyle}
+                type="button"
+                onClick={() => submitChangePassword()}
+              >
+                {t('actions.change_password')}
+              </Button>
+            )}
+          &nbsp;
+          <Button
+            color="primary"
+            style={applicationstyle.buttonStyle}
+            onClick={toggleChangePasswordModal}
+          >
+            {t('actions.cancel')}
+          </Button>
+        </ModalFooter>
+      </Modal>
       <Form
         onSubmit={(e) => {
           e.preventDefault()
@@ -215,7 +298,7 @@ function UserForm({ formik }) {
                 rsize={9}
               />
             )}
-            {passwordError != '' && (
+            {passwordError != '' && !changePasswordModal && (
               <span className="text-danger">{passwordError}</span>
             )}
             {selectedClaims.map((data, key) => (
@@ -227,7 +310,44 @@ function UserForm({ formik }) {
                 type="input"
               />
             ))}
-            {showButtons && <GluuFooter />}
+            {showButtons && (
+              <FormGroup row>
+                <Col md={4}>
+                  {userDetails && (
+                    <Button
+                      color="secondary"
+                      onClick={() => setChangePasswordModal(true)}
+                      style={applicationstyle.buttonStyle}
+                    >
+                      <i className="fa fa-key mr-2"></i>
+                      {t('actions.change_password')}
+                    </Button>
+                  )}
+                </Col>
+                <Col md={8} className="text-right">
+                  <Button
+                    color="secondary"
+                    type="button"
+                    onClick={goBack}
+                    style={applicationstyle.buttonStyle}
+                  >
+                    <i className="fa fa-arrow-circle-left mr-2"></i>
+                    {t('actions.cancel')}
+                  </Button>
+                  {/* For Space in buttons */}
+                  &nbsp; &nbsp; &nbsp;
+                  {/* For Space in buttons */}
+                  <Button
+                    color="primary"
+                    type="submit"
+                    style={applicationstyle.buttonStyle}
+                  >
+                    <i className="fa fa-check-circle mr-2"></i>
+                    {t('actions.save')}
+                  </Button>
+                </Col>
+              </FormGroup>
+            )}
           </Col>
           <Col sm={4}>
             <div className="border border-light ">
