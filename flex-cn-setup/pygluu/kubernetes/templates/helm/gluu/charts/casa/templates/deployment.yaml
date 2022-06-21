@@ -64,6 +64,10 @@ spec:
             - name: {{ .Values.service.name }}
               containerPort: {{ .Values.service.port}}
               protocol: TCP
+            {{ if .Values.global.cnPrometheusPort }}
+            - name: prometheus-port
+              containerPort: {{ .Values.global.cnPrometheusPort }}
+            {{- end }}
           envFrom:
             - configMapRef: 
                 name: {{ .Release.Name }}-config-cm

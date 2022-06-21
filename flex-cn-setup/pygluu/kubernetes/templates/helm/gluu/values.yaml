@@ -823,6 +823,8 @@ global:
   cloud:
     # -- Boolean flag if enabled will strip resources requests and limits from all services.
     testEnviroment: false
+  # -- Port used by Prometheus JMX agent (default to empty string). To enable Prometheus JMX agent, set the value to a number.
+  cnPrometheusPort: ""
   # -- Document store type to use for shibboleth files LOCAL.
   cnDocumentStoreType: LOCAL
   # -- Persistence backend to run Gluu with ldap|couchbase|hybrid|sql|spanner.

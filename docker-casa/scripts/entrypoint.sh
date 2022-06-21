@@ -1,6 +1,10 @@
 #!/bin/sh
 set -e
 
+# =========
+# FUNCTIONS
+# =========
+
 get_casa_plugins(){
     # ===============
     # PREPARE PLUGINS
@@ -16,9 +20,16 @@ get_casa_plugins(){
     #&& wget -q ${CASA_PLUGIN_REPO}/duo-plugin/${GLUU_VERSION}/duo-plugin-${GLUU_VERSION}.jar -O ${CASA_PLUGIN_DIRECTORY}/duo-plugin-${GLUU_VERSION}.jar
 }
 
-# =========
-# FUNCTIONS
-# =========
+get_prometheus_opt() {
+    prom_opt=""
+
+    if [ -n "${CN_PROMETHEUS_PORT}" ]; then
+        prom_opt="
+            -javaagent:/opt/prometheus/jmx_prometheus_javaagent.jar=${CN_PROMETHEUS_PORT}:/opt/prometheus/prometheus-config.yaml
+        "
+    fi
+    echo "${prom_opt}"
+}
 
 # ==========
 # ENTRYPOINT
@@ -45,5 +56,6 @@ exec java \
     -Djava.io.tmpdir=/tmp \
     -Dlog4j2.configurationFile=resources/log4j2.xml \
     -Dadmin.lock=${GLUU_CASA_ADMIN_LOCK_FILE} \
+    $(get_prometheus_opt) \
     ${CN_JAVA_OPTIONS} \
     -jar /opt/jetty/start.jar jetty.httpConfig.sendServerVersion=false jetty.deploy.scanInterval=0
