@@ -72,6 +72,7 @@ The following environment variables are supported by the container:
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string).
 - `GLUU_CASA_APP_LOGGERS`: Custom logging configuration in JSON-string format with hash type (see [Configure app loggers](#configure-app-loggers) section for details).
 - `GLUU_CASA_ADMIN_LOCK_FILE`: Path to lock file to enable/disable administration feature (default to `/opt/jans/jetty/casa/resources/.administrable`). If file is not exist, the feature is disabled.
+- `CN_PROMETHEUS_PORT`: Port used by Prometheus JMX agent (default to empty string). To enable Prometheus JMX agent, set the value to a number. See [Exposing metrics](#exposing-metrics) for details.
 
 ### Configure app loggers
 
@@ -102,6 +103,16 @@ The following key-value pairs are the defaults:
     "timer_log_level": "INFO"
 }
 ```
+
+### Exposing metrics
+
+As per v1.0.1, certain metrics can be exposed via Prometheus JMX exporter.
+To expose the metrics, set the `CN_PROMETHEUS_PORT` environment variable, i.e. `CN_PROMETHEUS_PORT=9093`.
+Afterwards, metrics can be scraped by Prometheus or accessed manually by making request to `/metrics` URL,
+i.e. `http://container:9093/metrics`.
+
+Note that Prometheus JMX exporter uses pre-defined config file (see `conf/prometheus-config.yaml`).
+To customize the config, mount custom config file to `/opt/prometheus/prometheus-config.yaml` inside the container.
 
 ### Hybrid mapping
 
