@@ -12,7 +12,6 @@ function GluuProperties({
   valuePlaceholder,
   options,
 }) {
-  console.log(options)
   const [properties, setProperties] = useState(options)
   const { t } = useTranslation()
 
