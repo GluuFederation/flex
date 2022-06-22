@@ -235,7 +235,8 @@
     "deletable": "Deletable",
     "email": "Email",
     "userName": "User Name",
-    "nickName": "Nick Name"
+    "nickName": "Nick Name",
+    "givenName": "Given Name"
   },
   "languages": {
     "french": "French",
