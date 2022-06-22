@@ -93,7 +93,10 @@ function UserEditPage() {
     jansStatus: userDetails.jansStatus || '',
   }
   for (let i in userDetails.customAttributes) {
-    if (userDetails.customAttributes[i].multiValued) {
+    let customAttribute = personAttributes.filter(
+      (e) => e.name == userDetails.customAttributes[i].name,
+    )
+    if (customAttribute[0].oxMultiValuedAttribute) {
       initialValues[userDetails.customAttributes[i].name] =
         userDetails.customAttributes[i].values
     } else {
