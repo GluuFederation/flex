@@ -34,7 +34,10 @@
     "services": "Prestations de service",
     "settings": "Paramètres",
     "signout": "Déconnexion",
-    "maugraph": "MAU"
+    "user_management": "User Management",
+    "maugraph": "MAU",
+    "users": "Users",
+    "user-management": "User Management"
   },
   "actions": {
     "accept": "J'accepte",
@@ -222,8 +225,11 @@
     "customerEmail": "Email client",
     "customerName": "Nom du client",
     "licenseDetails": "Détails de la licence",
-    "role": "Role",
-    "deletable": "Deletable"
+    "role": "Rôle",
+    "deletable": "Supprimable",
+    "email": "E-mail",
+    "userName": "Nom d'utilisateur",
+    "nickName": "Surnom"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
@@ -250,7 +256,8 @@
     "request_waiting_message": "Exécution de la demande, veuillez patienter !",
     "resource_not_found_message": "La ressource demandée n'existe pas sur ce serveur. Veuillez contacter l'administrateur du site ou l'équipe d'assistance.",
     "resource_not_found_title": "Ressource introuvable",
-    "view_client_details": "Afficher les détails du client"
+    "view_client_details": "Afficher les détails du client",
+    "add_new_user": "Ajouter un utilisateur"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",
@@ -332,7 +339,8 @@
     "roles": "Rôles AdminUI",
     "scopes": "Portées",
     "scripts": "Scénarios",
-    "schemaName": "Nom du schéma"
+    "schemaName": "Nom du schéma",
+    "user_management": "Gestion des utilisateurs"
   },
   "links": {
     "support": "https://support.gluu.org/"

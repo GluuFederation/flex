@@ -8,6 +8,7 @@ import CustomScriptAddPage from './components/CustomScripts/CustomScriptAddPage'
 import CustomScriptEditPage from './components/CustomScripts/CustomScriptEditPage'
 import SettingsPage from './components/Settings/SettingsPage'
 import MauGraph from './components/MAU/MauGraph'
+
 import scriptSaga from './redux/sagas/CustomScriptSaga'
 import apiRoleSaga from './redux/sagas/ApiRoleSaga'
 import apiPermissionSaga from './redux/sagas/ApiPermissionSaga'
@@ -130,12 +131,7 @@ const pluginMetadata = {
     { name: 'apiPermissionReducer', reducer: apiPermissionReducer },
     { name: 'mappingReducer', reducer: mappingReducer },
   ],
-  sagas: [
-    scriptSaga(),
-    apiRoleSaga(),
-    apiPermissionSaga(),
-    mappingSaga(),
-  ],
+  sagas: [scriptSaga(), apiRoleSaga(), apiPermissionSaga(), mappingSaga()],
 }
 
 export default pluginMetadata

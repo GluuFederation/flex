@@ -1,8 +1,11 @@
 export const BASE_URL = 'https://jans.io/oauth'
 
-export const PROPERTIES_READ = BASE_URL + '/jans-auth-server/config/properties.readonly'
-export const PROPERTIES_WRITE = BASE_URL + '/jans-auth-server/config/properties.write'
-export const PROPERTIES_DELETE = BASE_URL + '/jans-auth-server/config/properties.delete'
+export const PROPERTIES_READ =
+  BASE_URL + '/jans-auth-server/config/properties.readonly'
+export const PROPERTIES_WRITE =
+  BASE_URL + '/jans-auth-server/config/properties.write'
+export const PROPERTIES_DELETE =
+  BASE_URL + '/jans-auth-server/config/properties.delete'
 
 export const ATTRIBUTE_READ = BASE_URL + '/config/attributes.readonly'
 export const ATTRIBUTE_WRITE = BASE_URL + '/config/attributes.write'
@@ -83,6 +86,9 @@ export const SQL_DELETE = BASE_URL + '/config/database/sql.delete'
 
 export const STAT_READ = BASE_URL + '/config/stats.readonly'
 export const STAT_JANS_READ = 'jans_stat'
+
+export const USER_READ = BASE_URL + '/config/user.readonly'
+export const USER_WRITE = BASE_URL + '/config/user.write'
 
 export const hasPermission = (scopes, scope) => {
   if (scopes) {

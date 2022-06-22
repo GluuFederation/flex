@@ -43,6 +43,7 @@ const GluuCommitDialog = ({
     }
     setLoading(true)
     onAccept(userMessage)
+    setUserMessage('')
   }
   const closeModal = () => {
     handler()

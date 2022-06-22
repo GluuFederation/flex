@@ -14,5 +14,9 @@
   {
     "key": "admin",
     "metadataFile": "./admin/plugin-metadata"
+  },
+  {
+    "key": "users",
+    "metadataFile": "./user-management/plugin-metadata"
   }
 ]
