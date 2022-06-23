@@ -1,5 +1,5 @@
 import React from 'react'
-import { SidebarMenu, Divider } from 'Components'
+import { SidebarMenu } from 'Components'
 
 export const SidebarMiddleNav = () => (
   <SidebarMenu>
@@ -45,8 +45,6 @@ export const SidebarMiddleNav = () => (
     {/* -------- Scopes ---------*/}
     {/* -------- Plugins ---------*/}
 
-    <Divider />
-    <Divider />
     {/* -------- Configuration ---------*/}
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-gears"></i>}
@@ -61,7 +59,6 @@ export const SidebarMiddleNav = () => (
       <SidebarMenu.Item title="Logging" to="/config/logging" exact />
       <SidebarMenu.Item title="Jwks" to="/config/jwks" exact />
     </SidebarMenu.Item>
-    <Divider />
     <SidebarMenu.Item
       icon={<i className="fa fa-fw fa-wrench"></i>}
       title="Settings"

@@ -42,7 +42,7 @@ const pluginMetadata = {
   menus: [
     {
       title: 'menus.oauthserver',
-      icon: 'fa-server',
+      icon: 'oauthserver',
       children: [
         {
           title: 'menus.configuration',

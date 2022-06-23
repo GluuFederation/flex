@@ -1,0 +1,44 @@
+.custom-sidebar-container {
+  background-color: #FCFCFC;
+  border-radius: 20px;
+
+  .sidebar-menu__entry__link {
+    color: #323b47;
+  }
+
+  .sidebar-submenu__entry__link {
+    color: #323b47;
+  }
+
+  .sidebar-menu__entry__link:hover {
+    color: #323b47;
+  }
+  .sidebar-submenu__entry__link:hover {
+    color: #323b47;
+  }
+
+  .sidebar-menu__entry:hover {
+    i {
+      color: #323b47;
+    }
+    a {
+      color: #323b47;
+    }
+  }
+
+  .sidebar-menu__entry__icon {
+    color: #323b47;
+  }
+}
+
+.menu-icon {
+  height: 28px;
+  width: 28px;
+  margin-right: 10px;
+  position: relative;
+  top: -5px;
+}
+
+.sidebar-menu__entry.active:not(.open) > .sidebar-menu__entry__link {
+  color: #323b47;
+}

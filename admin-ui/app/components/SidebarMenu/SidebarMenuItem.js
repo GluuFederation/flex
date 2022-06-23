@@ -123,9 +123,7 @@ export class SidebarMenuItem extends React.Component {
       active: entry && entry.active,
     })
     const activeMenu = {
-      color: '#ffffff',
-      background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
-      fontWeight: 'bold',
+      color: '#323b47',
     }
     const nonaActiveMenu = {}
 
@@ -155,6 +153,7 @@ export class SidebarMenuItem extends React.Component {
         style={getStyle(itemClass)}
         className={classNames(itemClass, {
           'sidebar-menu__entry--no-caret': this.props.noCaret,
+          'mb-20': !!this.props.children && !!this.props.icon,
         })}
       >
         {!this.props.isEmptyNode && (

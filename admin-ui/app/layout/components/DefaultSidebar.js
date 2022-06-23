@@ -17,15 +17,10 @@ export const DefaultSidebar = () => (
     {/* START SIDEBAR: Only for Desktop */}
     <Sidebar.HideSlim>
       <Sidebar.Section>
-        <div style={{ textAlign: 'center' }}>
-          <SidebarTrigger id="navToggleBtn" color={'#8492a5'} />
-        </div>
         <Link to="/" className="sidebar__brand">
           <LogoThemed checkBackground />
         </Link>
       </Sidebar.Section>
-      <Divider />
-      <Divider />
     </Sidebar.HideSlim>
     {/* END SIDEBAR: Only for Desktop */}
 
