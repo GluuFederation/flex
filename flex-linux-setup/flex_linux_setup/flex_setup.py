@@ -145,6 +145,9 @@ class flex_installer(JettyInstaller):
 
     def __init__(self):
 
+        self.jans_auth_dir = os.path.join(Config.jetty_base, jansAuthInstaller.service_name)
+        self.jans_auth_custom_lib_dir = os.path.join(self.jans_auth_dir, 'custom/libs')
+
         self.gluu_admin_ui_source_path = os.path.join(Config.dist_jans_dir, 'gluu-admin-ui.zip')
         self.log4j2_adminui_path = os.path.join(Config.dist_jans_dir, 'log4j2-adminui.xml')
         self.log4j2_path = os.path.join(Config.dist_jans_dir, 'log4j2.xml')
@@ -161,7 +164,7 @@ class flex_installer(JettyInstaller):
         self.casa_script_fn = os.path.join(self.casa_dist_dir,'Casa.py')
         self.twillo_fn = os.path.join(self.casa_dist_dir,'twilio.jar')
         self.py_lib_dir = os.path.join(Config.jansOptPythonFolder, 'libs')
-
+        self.fido2_client_jar_fn = os.path.join(Config.dist_jans_dir, 'jans-fido2-client.jar')
         self.dbUtils.bind(force=True)
 
     def download_files(self):
@@ -179,7 +182,7 @@ class flex_installer(JettyInstaller):
         base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_otp.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_otp.py'), verbose=True)
         base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_super_gluu.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_super_gluu.py'), verbose=True)
         base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_twilio_sms.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_twilio_sms.py'), verbose=True)
-
+        base.download('https://maven.jans.io/maven/io/jans/jans-fido2-client/{0}{1}/jans-fido2-client-{0}{1}.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD']), self.fido2_client_jar_fn, verbose=True)
 
     def install_gluu_admin_ui(self):
 
@@ -240,17 +243,21 @@ class flex_installer(JettyInstaller):
 
     def install_casa(self):
 
-        jans_auth_dir = os.path.join(Config.jetty_base, jansAuthInstaller.service_name)
-        jans_auth_custom_lib_dir = os.path.join(jans_auth_dir, 'custom/libs')
-
         print("Adding twillo and casa config to jans-auth")
-        self.copyFile(self.casa_config_fn, jans_auth_custom_lib_dir)
-        self.copyFile(self.twillo_fn, jans_auth_custom_lib_dir)
+        self.copyFile(self.casa_config_fn, self.jans_auth_custom_lib_dir)
+        self.copyFile(self.twillo_fn, self.jans_auth_custom_lib_dir)
         class_path = '{},{}'.format(
-            os.path.join(jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn)),
-            os.path.join(jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn)),
+            os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn)),
+            os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn)),
             )
         jansAuthInstaller.add_extra_class(class_path)
+
+
+        print("Adding Fido2 Client lib to jans-auth")
+        self.copyFile(self.fido2_client_jar_fn, self.jans_auth_custom_lib_dir)
+        class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.fido2_client_jar_fn))
+        jansAuthInstaller.add_extra_class(class_path)
+
 
         simple_auth_scr_inum = 'A51E-76DA'
         print("Enabling script", simple_auth_scr_inum)
@@ -340,12 +347,12 @@ class flex_installer(JettyInstaller):
         jetty_service_dir = os.path.join(Config.jetty_base, self.service_name)
         jetty_service_webapps_dir = os.path.join(jetty_service_dir, 'webapps')
 
-
         self.run([paths.cmd_mkdir, '-p', os.path.join(jetty_service_dir, 'static')])
         self.run([paths.cmd_mkdir, '-p', os.path.join(jetty_service_dir, 'plugins')])
         self.copyFile(self.casa_war_fn, jetty_service_webapps_dir)
         self.copyFile(self.casa_web_resources_fn, jetty_service_webapps_dir)
-        self.run([paths.cmd_chown, '-R', '{0}:{0}'.format(Config.jetty_user), jetty_service_dir])
+        jansAuthInstaller.chown(jetty_service_dir, Config.jetty_user, Config.jetty_group, recursive=True)
+        jansAuthInstaller.chown(self.jans_auth_custom_lib_dir, Config.jetty_user, Config.jetty_group, recursive=True)
 
         print("Updating apache configuration")
         apache_directive_template_text = self.readFile(os.path.join(self.templates_dir, 'casa_apache_directive'))
@@ -367,6 +374,8 @@ class flex_installer(JettyInstaller):
             self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
             print("Restarting Apache")
             httpd_installer.restart()
+
+
 
         self.enable()
 
