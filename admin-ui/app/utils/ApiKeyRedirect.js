@@ -19,9 +19,9 @@ function ApiKeyRedirect({
         ) : (
           <div
             style={{
-              backgroundColor: 'white',
+              backgroundColor: 'transparent',
               margin: 'auto',
-              marginTop: '20%',
+              marginTop: '25%',
             }}
           >
             <img
@@ -30,12 +30,15 @@ function ApiKeyRedirect({
                 marginLeft: 'auto',
                 marginTop: 'auto',
                 marginRight: 'auto',
-                width: '100%',
-                height: '100%',
+                width: '260px',
+                height: 'auto',
               }}
-              src={require('Images/gif/npe-redirecting.gif')}
+              src={require('Images/gif/loader.gif')}
               alt="loading..."
             />
+            <div className="initial-loader__row">
+              AdminUI is loading...
+            </div>
           </div>
         )}
 
