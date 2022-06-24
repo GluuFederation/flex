@@ -11,10 +11,15 @@ function GluuFormDetailRow({
   rsize,
   doc_category,
   doc_entry,
+  isDirect = false,
 }) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || label}>
+    <GluuTooltip
+      doc_category={doc_category}
+      isDirect={isDirect}
+      doc_entry={doc_entry || label}
+    >
       <FormGroup row>
         <Label for={label} style={{ fontWeight: 'bold' }} sm={lsize || 6}>
           {t(label)}:

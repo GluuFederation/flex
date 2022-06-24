@@ -15,6 +15,7 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
           name={data.name}
           value={formik.values[data.name] || []}
           formik={formik}
+          isDirect={true}
           options={formik.values[data.name] || []}
           handler={doHandle}
           doc_category={data.description}
@@ -26,6 +27,7 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
         <GluuRemovableInputRow
           label={data.displayName}
           name={data.name}
+          isDirect={true}
           value={formik.values[data.name] || ''}
           formik={formik}
           handler={doHandle}
@@ -38,6 +40,8 @@ function UserClaimEntry({ data, type, entry, formik, handler }) {
         <GluuRemovableSelectRow
           label={data.displayName}
           name={data.name}
+          doc_category={data.description}
+          isDirect={true}
           value={formik.values[data.name] || ''}
           values={countries}
           formik={formik}

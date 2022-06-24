@@ -14,10 +14,15 @@ function GluuRemovableSelectRow({
   rsize,
   handler,
   doc_category,
+  isDirect,
 }) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
+    <GluuTooltip
+      doc_category={doc_category}
+      isDirect={isDirect}
+      doc_entry={name}
+    >
       <FormGroup row>
         <GluuLabel label={label} size={lsize} />
         <Col sm={rsize - 1}>

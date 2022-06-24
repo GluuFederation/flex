@@ -195,6 +195,7 @@ function UserForm({ formik }) {
               <GluuInputRow
                 label="INUM"
                 name="INUM"
+                doc_category={DOC_SECTION}
                 value={userDetails.inum || ''}
                 lsize={3}
                 rsize={9}

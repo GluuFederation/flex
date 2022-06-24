@@ -13,9 +13,14 @@ function GluuRemovableInputRow({
   rsize,
   handler,
   doc_category,
+  isDirect,
 }) {
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
+    <GluuTooltip
+      doc_category={doc_category}
+      isDirect={isDirect}
+      doc_entry={name}
+    >
       <FormGroup row>
         <GluuLabel label={label} size={lsize} required={required} />
         <Col sm={rsize - 1}>
@@ -41,7 +46,7 @@ function GluuRemovableInputRow({
           }}
           onClick={handler}
         >
-          <i className={'fa fa-fw fa-close'} style={{color:"red"}}></i>
+          <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>
         </div>
       </FormGroup>
     </GluuTooltip>

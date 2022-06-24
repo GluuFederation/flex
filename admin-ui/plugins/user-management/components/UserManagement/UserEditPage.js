@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
 import { updateExistingUser } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
+import moment from 'moment'
+import { getPersistenceType } from '../../../services/redux/actions/PersistenceActions'
+
 function UserEditPage() {
   const dispatch = useDispatch()
   const userAction = {}
@@ -17,6 +20,15 @@ function UserEditPage() {
   const redirectToUserListPage = useSelector(
     (state) => state.userReducer.redirectToUserListPage,
   )
+
+  useEffect(() => {
+    dispatch(getPersistenceType())
+  }, [])
+
+  const persistenceType = useSelector(
+    (state) => state.persistenceTypeReducer.type,
+  )
+
   useEffect(() => {
     if (redirectToUserListPage) {
       history.push('/user/usersmanagement')
@@ -35,8 +47,8 @@ function UserEditPage() {
             if (key != 'birthdate') {
               val.push(values[key])
             } else {
-              val.push(moment(values[key], 'YYYY-MM-DD').toISOString())
-              value = moment(values[key], 'YYYY-MM-DD').toISOString()
+              val.push(moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD'))
+              value = moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
             }
             obj = {
               name: key,
@@ -80,8 +92,15 @@ function UserEditPage() {
       givenName: values.givenName || '',
       customAttributes: customAttributes,
       dn: userDetails.dn,
-      customObjectClasses: ['top', 'jansPerson', 'jansCustomPerson'],
     }
+    if (persistenceType == 'ldap') {
+      submitableValues['customObjectClasses'] = [
+        'top',
+        'jansPerson',
+        'jansCustomPerson',
+      ]
+    }
+
     dispatch(updateExistingUser(submitableValues))
   }
 
@@ -96,12 +115,18 @@ function UserEditPage() {
     let customAttribute = personAttributes.filter(
       (e) => e.name == userDetails.customAttributes[i].name,
     )
-    if (customAttribute[0].oxMultiValuedAttribute) {
-      initialValues[userDetails.customAttributes[i].name] =
-        userDetails.customAttributes[i].values
+    if (userDetails.customAttributes[i].name == 'birthdate') {
+      initialValues[userDetails.customAttributes[i].name] = moment(
+        userDetails.customAttributes[i].values[0],
+      ).format('YYYY-MM-DD')
     } else {
-      initialValues[userDetails.customAttributes[i].name] =
-        userDetails.customAttributes[i].values[0]
+      if (customAttribute[0].oxMultiValuedAttribute) {
+        initialValues[userDetails.customAttributes[i].name] =
+          userDetails.customAttributes[i].values
+      } else {
+        initialValues[userDetails.customAttributes[i].name] =
+          userDetails.customAttributes[i].values[0]
+      }
     }
   }
   const formik = useFormik({

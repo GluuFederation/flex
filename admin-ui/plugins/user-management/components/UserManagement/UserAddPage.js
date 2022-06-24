@@ -33,8 +33,8 @@ function UserAddPage() {
             if (key != 'birthdate') {
               val.push(values[key])
             } else {
-              val.push(moment(values[key], 'YYYY-MM-DD').toISOString())
-              value = moment(values[key], 'YYYY-MM-DD').toISOString()
+              val.push(moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD'))
+              value = moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
             }
             obj = {
               name: key,
