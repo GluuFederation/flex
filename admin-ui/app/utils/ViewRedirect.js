@@ -46,7 +46,7 @@ function ViewRedirect({
             alt="loading..."
           />
           <div className="initial-loader__row">
-            AdminUI is loading...
+            Redirecting...
           </div>
           {!backendIsUp && (
             <GluuNotification

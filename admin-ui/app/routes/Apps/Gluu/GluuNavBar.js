@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import Box from '@material-ui/core/Box'
 import {
   Avatar,
   AvatarAddOn,
@@ -44,33 +45,36 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
               </NavItem>
             )}
           </Nav>
-          <Nav className="ml-auto" pills>
-            {/*<NavbarMessages  />*/}
-            {/*<NavbarActivityFeed />*/}
-            <NavSearch />
-            <LanguageMenu />
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav>
-                <Avatar.Image
-                  size="md"
-                  src={randomAvatar()}
-                  addOns={[
-                    <AvatarAddOn.Icon
-                      className="fa fa-circle"
-                      color="white"
-                      key="avatar-icon-bg"
-                    />,
-                    <AvatarAddOn.Icon
-                      className="fa fa-circle"
-                      color="success"
-                      key="avatar-icon-fg"
-                    />,
-                  ]}
-                />
-              </DropdownToggle>
-              <DropdownProfile right userinfo={userInfo} />
-            </UncontrolledDropdown>
-          </Nav>
+          <Box display="flex" justifyContent="space-between" width="100%">
+            <h3 className="page-title">Dashboard</h3>
+            <Nav className="ml-auto" pills>
+              {/*<NavbarMessages  />*/}
+              {/*<NavbarActivityFeed />*/}
+              <NavSearch />
+              <LanguageMenu />
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav>
+                  <Avatar.Image
+                    size="md"
+                    src={randomAvatar()}
+                    addOns={[
+                      <AvatarAddOn.Icon
+                        className="fa fa-circle"
+                        color="white"
+                        key="avatar-icon-bg"
+                      />,
+                      <AvatarAddOn.Icon
+                        className="fa fa-circle"
+                        color="success"
+                        key="avatar-icon-fg"
+                      />,
+                    ]}
+                  />
+                </DropdownToggle>
+                <DropdownProfile right userinfo={userInfo} />
+              </UncontrolledDropdown>
+            </Nav>
+          </Box>
         </Navbar>
       </NavbarThemeProvider>
     </ErrorBoundary>

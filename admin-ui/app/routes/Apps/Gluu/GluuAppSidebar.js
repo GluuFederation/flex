@@ -121,7 +121,7 @@ function GluuAppSidebar({ scopes }) {
 
         {/* -------- Plugins ---------*/}
         <SidebarMenu.Item
-          icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
+          icon={<i className="fa fa-fw fa-sign-out mr-2" style={{ fontSize: 28 }}></i>}
           title={t('menus.signout')}
           to="/logout"
           textStyle={{ fontSize: '18px' }}

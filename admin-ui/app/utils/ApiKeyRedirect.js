@@ -37,7 +37,7 @@ function ApiKeyRedirect({
               alt="loading..."
             />
             <div className="initial-loader__row">
-              AdminUI is loading...
+              Redirecting...
             </div>
           </div>
         )}
