@@ -392,5 +392,19 @@
     "aliases": "List of possible aliases for the custom script.",
     "internal": "boolean value indicating if the script is internal.",
     "revision": "Update revision number of the script."
+  },
+  "user": {
+    "userId": "Sed rutrum sapien id",
+    "userName": "User Nomen",
+    "givenName": "Nomen dedisse",
+    "displayName": "Propono Nomen",
+    "mail": "Email",
+    "jansStatus": "Status",
+    "gender": "Le genre",
+    "userPassword": "Mot de passe de l'utilisateur",
+    "INUM": "INUM",
+    "middleName": "Deuxième nom",
+    "sn": "Nom de famille",
+    "userConfirmPassword": "Confirmez le mot de passe"
   }
 }

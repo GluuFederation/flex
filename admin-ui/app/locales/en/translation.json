@@ -871,7 +871,11 @@
       "mail": "Email",
       "jansStatus": "Status",
       "gender": "Gender",
-      "userPassword": "User password"
+      "userPassword": "User password",
+      "INUM": "INUM",
+      "middleName": "Middle Name",
+      "sn": "Last Name",
+      "userConfirmPassword": "Confirm Password"
     }
   }
 }

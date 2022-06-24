@@ -391,5 +391,19 @@
     "aliases": "List of possible aliases for the custom script.",
     "internal": "boolean value indicating if the script is internal.",
     "revision": "Update revision number of the script."
+  },
+  "user": {
+    "userId": "ID do usuário",
+    "userName": "Nome de usuário",
+    "givenName": "Nome dado",
+    "displayName": "Nome em Exibição",
+    "mail": "Email",
+    "jansStatus": "Status",
+    "gender": "Gênero",
+    "userPassword": "Senha do usuário",
+    "INUM": "INUM",
+    "middleName": "Nome do meio",
+    "sn": "Sobrenome",
+    "userConfirmPassword": "Confirme a Senha"
   }
 }

@@ -62,7 +62,6 @@ export default function AppAuthProvider(props) {
   }
 
   const getDerivedStateFromProps = () => {
-    console.log('Called')
     if (window.location.href.indexOf('logout') > -1) {
       setShowContent(true)
       return null
