@@ -117,7 +117,7 @@ export class SidebarMenuItem extends React.Component {
   render() {
     const entry = this.getEntry()
     const classBase = this.props.isSubNode ? 'sidebar-submenu' : 'sidebar-menu'
-    const itemClass = classNames(`${classBase}__entry`, {
+    const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
       [`${classBase}__entry--nested`]: !!this.props.children,
       open: entry && entry.open,
       active: entry && entry.active,

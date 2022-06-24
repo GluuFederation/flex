@@ -16,6 +16,7 @@ import Layout, {
 } from './Layout'
 import Nav from './Nav'
 import Navbar from './Navbar'
+import NavSearch from './NavSearch'
 import NavbarThemeProvider from './NavbarThemeProvider'
 import NestedDropdown from './NestedDropdown'
 import OuterClick from './OuterClick'
@@ -122,6 +123,7 @@ export {
   Layout,
   Nav,
   Navbar,
+  NavSearch,
   NavbarThemeProvider,
   NestedDropdown,
   withPageConfig,

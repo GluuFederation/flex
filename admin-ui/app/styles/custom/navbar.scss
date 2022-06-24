@@ -1,0 +1,29 @@
+.navbar {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  background-color: #323b47!important;
+}
+
+.btn-transparent {
+  background-color: transparent;
+  border: 1px solid #9a9a9a;
+  width: 44px;
+  height: 36px;
+  padding: 5px 10px 10px 10px;
+  position: relative;
+  top: 10px;
+}
+
+.avatar-image {
+  width: 45px;
+  height: 45px;
+
+  .avatar__content {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.navbar-collapse-wrap {
+  max-width: none;
+}

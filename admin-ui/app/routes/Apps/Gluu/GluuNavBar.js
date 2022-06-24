@@ -8,6 +8,7 @@ import {
   Navbar,
   Nav,
   NavItem,
+  NavSearch,
   SidebarTrigger,
   UncontrolledDropdown,
 } from 'Components'
@@ -46,11 +47,12 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
           <Nav className="ml-auto" pills>
             {/*<NavbarMessages  />*/}
             {/*<NavbarActivityFeed />*/}
+            <NavSearch />
             <LanguageMenu />
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav>
                 <Avatar.Image
-                  size="sm"
+                  size="md"
                   src={randomAvatar()}
                   addOns={[
                     <AvatarAddOn.Icon
