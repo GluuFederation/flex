@@ -20,7 +20,8 @@
     "remove": "Remove",
     "test": "Test",
     "view": "View",
-    "yes": "Yes"
+    "yes": "Yes",
+    "change_password": "Change Password"
   },
   "fields": {
     "access_token_signing_alg": "Access Token Signing Algorithm",
@@ -231,7 +232,11 @@
     "binaryAttributes": "Binary Attributes",
     "certificateAttributes": "Certificate Attributes",
     "role": "Role",
-    "deletable": "Deletable"
+    "deletable": "Deletable",
+    "email": "Email",
+    "userName": "User Name",
+    "nickName": "Nick Name",
+    "givenName": "Given Name"
   },
   "languages": {
     "french": "French",
@@ -274,7 +279,10 @@
     "services": "Services",
     "settings": "Settings",
     "signout": "Sign out",
-    "maugraph": "MAU"
+    "user_management": "User Management",
+    "maugraph": "MAU",
+    "users": "Users",
+    "user-management": "User Management"
   },
   "messages": {
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
@@ -302,6 +310,7 @@
     "resource_not_found_message": "The requested resource doesn't exist on this server. Please contact the site administrator or the support team.",
     "resource_not_found_title": "Resource not found",
     "view_client_details": "View client details",
+    "add_new_user": "Add User",
     "error_in_saving": "Error in saving."
   },
   "tooltips": {
@@ -403,6 +412,7 @@
     "scopes": "OpenID/OAuth Scopes",
     "scripts": "Custom Interception Scripts",
     "schemaName": "Schema Name",
+    "user_management": "User Management",
     "error": "error"
   },
   "links": {
@@ -852,6 +862,20 @@
       "certificateAttributes": "Certificate attributes.",
       "activate": "Activate SQL configuration.",
       "connectionUri": "Connection URI of database."
+    },
+    "user": {
+      "userId": "User Id",
+      "userName": "User Name",
+      "givenName": "Given Name",
+      "displayName": "Display Name",
+      "mail": "Email",
+      "jansStatus": "Status",
+      "gender": "Gender",
+      "userPassword": "User password",
+      "INUM": "INUM",
+      "middleName": "Middle Name",
+      "sn": "Last Name",
+      "userConfirmPassword": "Confirm Password"
     }
   }
 }

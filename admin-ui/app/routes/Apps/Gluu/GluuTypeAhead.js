@@ -26,17 +26,19 @@ function GluuTypeAhead({
   doc_entry,
   forwardRef = null,
   onChange = null,
+  lsize = 4,
+  rsize = 8,
 }) {
   const { t } = useTranslation()
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
       <FormGroup row>
         {required ? (
-          <GluuLabel label={label} size={4} required />
+          <GluuLabel label={label} size={lsize} required />
         ) : (
-          <GluuLabel label={label} size={4} />
+          <GluuLabel label={label} size={lsize} />
         )}
-        <Col sm={8}>
+        <Col sm={rsize}>
           <Typeahead
             allowNew
             ref={forwardRef}
