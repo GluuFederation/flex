@@ -112,20 +112,22 @@ function UserEditPage() {
     jansStatus: userDetails.jansStatus || '',
   }
   for (let i in userDetails.customAttributes) {
-    let customAttribute = personAttributes.filter(
-      (e) => e.name == userDetails.customAttributes[i].name,
-    )
-    if (userDetails.customAttributes[i].name == 'birthdate') {
-      initialValues[userDetails.customAttributes[i].name] = moment(
-        userDetails.customAttributes[i].values[0],
-      ).format('YYYY-MM-DD')
-    } else {
-      if (customAttribute[0].oxMultiValuedAttribute) {
-        initialValues[userDetails.customAttributes[i].name] =
-          userDetails.customAttributes[i].values
+    if (userDetails.customAttributes[i].values) {
+      let customAttribute = personAttributes.filter(
+        (e) => e.name == userDetails.customAttributes[i].name,
+      )
+      if (userDetails.customAttributes[i].name == 'birthdate') {
+        initialValues[userDetails.customAttributes[i].name] = moment(
+          userDetails.customAttributes[i].values[0],
+        ).format('YYYY-MM-DD')
       } else {
-        initialValues[userDetails.customAttributes[i].name] =
-          userDetails.customAttributes[i].values[0]
+        if (customAttribute[0].oxMultiValuedAttribute) {
+          initialValues[userDetails.customAttributes[i].name] =
+            userDetails.customAttributes[i].values
+        } else {
+          initialValues[userDetails.customAttributes[i].name] =
+            userDetails.customAttributes[i].values[0]
+        }
       }
     }
   }
