@@ -8,6 +8,7 @@ import time
 import glob
 import code
 import configparser
+import shlex
 
 from pathlib import Path
 from urllib import request
@@ -19,7 +20,6 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
     parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
-    parser.add_argument('--jans-installer-args', help="Arguments to be passed for Janssen Installer")
 
     return parser
 
@@ -33,7 +33,7 @@ except ModuleNotFoundError:
     if os.path.exists(os.path.join(__STATIC_SETUP_DIR__, 'setup_app')):
         sys.path.append(__STATIC_SETUP_DIR__)
     else:
-        argsp = get_flex_setup_parser().parse_known_args()[0]
+        argsp, nargs = get_flex_setup_parser().parse_known_args()
 
         print("Unable to locate jans-setup, installing ...")
 
@@ -41,12 +41,9 @@ except ModuleNotFoundError:
         install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
         request.urlretrieve(install_url, 'install.py')
         install_cmd = 'python3 install.py --setup-branch={}'.format(setup_branch)
-        if argsp.jans_installer_args:
-            install_cmd += ' --args="{}"'.format(argsp.jans_installer_args)
-        if '-yes' in sys.argv:
-            install_cmd += ' -yes'
+        if nargs:
+            install_cmd += ' --args="{}"'.format(shlex.join(nargs))
         print("Executing", install_cmd)
-
         os.system(install_cmd)
         sys.path.append(__STATIC_SETUP_DIR__)
 
@@ -143,6 +140,7 @@ httpd_installer = HttpdInstaller()
 config_api_installer = ConfigApiInstaller()
 jansAuthInstaller = JansAuthInstaller()
 jans_cli_installer = JansCliInstaller()
+setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
 
 class flex_installer(JettyInstaller):
 
@@ -291,10 +289,16 @@ class flex_installer(JettyInstaller):
         self.casa_config_fn = os.path.join(self.source_dir, 'templates/casa_config.ldif')
         self.service_name = 'casa'
 
+        for casa_prop in ('casa_client_id', 'casa_client_pw'):
+            if casa_prop in setup_properties:
+                setattr(Config, casa_prop, setup_properties[casa_prop])
+
         self.check_clients([('casa_client_id', '3000.')])
 
+        if not Config.get('casa_client_encoded_pw'):
+            Config.casa_client_encoded_pw = jansAuthInstaller.obscure(Config.casa_client_pw)
+
         print("Casa client id", Config.casa_client_id)
-        print("Casa client password", Config.casa_client_pw)
         print("Casa client encoded password", Config.casa_client_encoded_pw)
 
         print("Importing LDIF Files")
