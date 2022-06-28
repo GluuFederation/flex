@@ -11,6 +11,7 @@ import AdministratorIcon from "Components/SVG/menu/Administrator"
 import OAuthIcon from "Components/SVG/menu/OAuth"
 import SchemaIcon from "Components/SVG/menu/Schema"
 import ServicesIcon from "Components/SVG/menu/Services"
+import UsersIcon from "Components/SVG/menu/Users"
 
 function GluuAppSidebar({ scopes }) {
   const [pluginMenus, setPluginMenus] = useState([])
@@ -33,6 +34,9 @@ function GluuAppSidebar({ scopes }) {
 
     case 'schema':
       return <SchemaIcon className="menu-icon" />
+
+    case 'usersmanagement':
+      return <UsersIcon className="menu-icon" style={{ top: '-2px' }} />
   
     default:
       return null
