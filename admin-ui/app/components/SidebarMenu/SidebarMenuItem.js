@@ -144,7 +144,7 @@ export class SidebarMenuItem extends React.Component {
         itemClass.includes('submenu__entry', 0) &&
         !itemClass.includes('open', 0)
       ) {
-        return { color: 'white', fontWeight: 'bold' }
+        return { fontWeight: 'bold' }
       }
       return null
     }
