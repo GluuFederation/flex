@@ -19,6 +19,25 @@ If you installed Janssen server before, the script will install additional Gluu 
  
    `python3 flex_setup.py`
 
+    If you have `setup.properties` file and want to automate installation, you can pass properties file as
+    `python3 flex_setup.py -f /path/to/setup.properties -n -c`
+
+    Minimal example setup.properties file:
+    ```
+    ip=10.146.197.201
+    hostname=flex.gluu.org
+    orgName=Gluu
+    admin_email=flex@gluu.org
+    city=Austing
+    state=Texas
+    countryCode=US
+    installLdap=True
+    admin_password=MyAdminPassword
+    ldapPass=MyLdapPassword
+    casa_client_id=3000.7986c837-2a8f-4c31-9c63-1bd2f6abce77
+    casa_client_pw=MyCasaClientSecret
+    ```
+
 Add/Remove Admin UI plugins
 --------------------------------------
 

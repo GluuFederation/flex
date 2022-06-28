@@ -8,6 +8,7 @@ import time
 import glob
 import code
 import configparser
+import shlex
 
 from pathlib import Path
 from urllib import request
@@ -19,7 +20,6 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
     parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
-    parser.add_argument('--jans-installer-args', help="Arguments to be passed for Janssen Installer")
 
     return parser
 
@@ -33,7 +33,7 @@ except ModuleNotFoundError:
     if os.path.exists(os.path.join(__STATIC_SETUP_DIR__, 'setup_app')):
         sys.path.append(__STATIC_SETUP_DIR__)
     else:
-        argsp = get_flex_setup_parser().parse_known_args()[0]
+        argsp, nargs = get_flex_setup_parser().parse_known_args()
 
         print("Unable to locate jans-setup, installing ...")
 
@@ -41,12 +41,9 @@ except ModuleNotFoundError:
         install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
         request.urlretrieve(install_url, 'install.py')
         install_cmd = 'python3 install.py --setup-branch={}'.format(setup_branch)
-        if argsp.jans_installer_args:
-            install_cmd += ' --args="{}"'.format(argsp.jans_installer_args)
-        if '-yes' in sys.argv:
-            install_cmd += ' -yes'
+        if nargs:
+            install_cmd += ' --args="{}"'.format(shlex.join(nargs))
         print("Executing", install_cmd)
-
         os.system(install_cmd)
         sys.path.append(__STATIC_SETUP_DIR__)
 
@@ -103,6 +100,7 @@ base.current_app.app_info['ox_version'] = base.current_app.app_info['JANS_APP_VE
 sys.path.insert(0, base.pylib_dir)
 sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
 
+from setup_app.pylib.jproperties import Properties
 from setup_app.utils.package_utils import packageUtils
 from setup_app.config import Config
 from setup_app.utils.collect_properties import CollectProperties
@@ -112,7 +110,7 @@ from setup_app.installers.config_api import ConfigApiInstaller
 from setup_app.installers.jetty import JettyInstaller
 from setup_app.installers.jans_auth import JansAuthInstaller
 from setup_app.installers.jans_cli import JansCliInstaller
-
+from setup_app.utils.properties_utils import propertiesUtils
 
 Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
 if not os.path.join(Config.outputFolder):
@@ -143,6 +141,7 @@ httpd_installer = HttpdInstaller()
 config_api_installer = ConfigApiInstaller()
 jansAuthInstaller = JansAuthInstaller()
 jans_cli_installer = JansCliInstaller()
+setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
 
 class flex_installer(JettyInstaller):
 
@@ -291,10 +290,16 @@ class flex_installer(JettyInstaller):
         self.casa_config_fn = os.path.join(self.source_dir, 'templates/casa_config.ldif')
         self.service_name = 'casa'
 
+        for casa_prop in ('casa_client_id', 'casa_client_pw'):
+            if casa_prop in setup_properties:
+                setattr(Config, casa_prop, setup_properties[casa_prop])
+
         self.check_clients([('casa_client_id', '3000.')])
 
+        if not Config.get('casa_client_encoded_pw'):
+            Config.casa_client_encoded_pw = jansAuthInstaller.obscure(Config.casa_client_pw)
+
         print("Casa client id", Config.casa_client_id)
-        print("Casa client password", Config.casa_client_pw)
         print("Casa client encoded password", Config.casa_client_encoded_pw)
 
         print("Importing LDIF Files")
@@ -379,9 +384,22 @@ class flex_installer(JettyInstaller):
             print("Restarting Apache")
             httpd_installer.restart()
 
-
-
         self.enable()
+
+
+    def save_properties(self):
+        fn = Config.savedProperties
+        print("Saving properties", fn)
+        if os.path.exists(fn):
+            p = Properties()
+            with open(fn, 'rb') as f:
+                p.load(f, 'utf-8')
+            for prop in ('casa_client_id', 'casa_client_pw', 'casa_client_encoded_pw'):
+                p[prop] = Config.get(prop)
+            with open(fn, 'wb') as f:
+                p.store(f, encoding="utf-8")
+        else:
+            propertiesUtils.save_properties()
 
 
 def main():
@@ -396,10 +414,9 @@ def main():
 
     installer_obj = flex_installer()
     installer_obj.download_files()
-
     installer_obj.install_gluu_admin_ui()
-
     installer_obj.install_casa()
+    installer_obj.save_properties()
 
     print("Starting Casa")
     config_api_installer.start('casa')
