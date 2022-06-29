@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { subMonths } from 'date-fns'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
+import Box from '@material-ui/core/Box'
 import { useMediaQuery } from 'react-responsive'
 import { makeStyles } from '@material-ui/core/styles'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -183,6 +184,7 @@ const useStyles = makeStyles(() => ({
   statusContainer: {
     borderRadius: 24,
     height: 180,
+    minWidth: 300,
     background: '#FFF',
     color: '#303641',
     display: 'block',
@@ -191,6 +193,8 @@ const useStyles = makeStyles(() => ({
   statusText: {
     fontSize: 18,
     marginBottom: 28,
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   iconCheck: {
     width: 22,
@@ -257,6 +261,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
   const [endDate, setEndDate] = useState(new Date())
   const [mobileChartStyle, setMobileChartStyle] = useState({})
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
+  const isSmallDesktop = useMediaQuery({ query: '(max-width: 1469px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const classes = useStyles()
   const userAction = {}
@@ -350,31 +355,41 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
 
   const StatusCard = () => {
     return (
-      <Grid xs={isTabletOrMobile ? isMobile ? 12 : 6 : 3}>
+      <Grid xs={isTabletOrMobile ? isMobile ? 12 : 6 : isSmallDesktop ? 4 : 3}>
         <Paper className={`${classes.statusContainer} ${!isTabletOrMobile ? 'mt-40 ml-20' : 'mt-20 ml-20'}`} elevation={3}>
-          <div>
-            <div className={classes.userInfoText}>
-              <div className={classes.statusText}>
+          <div className={classes.userInfoText}>
+            <div className={classes.statusText}>
+              <Box display="flex" justifyContent="flex-start">
                 <span>OAuth server status</span>
                 <span>
                   <img src={CheckIcon} className={classes.iconCheck} alt="check" />
                 </span>
+              </Box>
+              <Box display="flex" justifyContent="flex-end">
                 <span className={classes.checkText}>Runing</span>
-              </div>
-              <div className={classes.statusText}>
+              </Box>
+            </div>
+            <div className={classes.statusText}>
+              <Box display="flex" justifyContent="flex-start">
                 <span>Database status</span>
                 <span>
                   <img src={CheckIcon} className={classes.iconCheck} alt="check" />
                 </span>
+              </Box>
+              <Box display="flex" justifyContent="flex-end">
                 <span className={classes.checkText}>Online</span>
-              </div>
-              <div className={classes.statusText}>
+              </Box>
+            </div>
+            <div className={classes.statusText}>
+              <Box display="flex" justifyContent="flex-start">
                 <span>Server status</span>
                 <span>
                   <img src={CrossIcon} className={classes.iconCross} alt="cross" />
                 </span>
+              </Box>
+              <Box display="flex" justifyContent="flex-end">
                 <span className={classes.crossText}>Offline</span>
-              </div>
+              </Box>
             </div>
           </div>
         </Paper>
@@ -507,7 +522,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
             {(isTabletOrMobile && !isMobile) && <StatusCard />}
           </Grid>
           <Grid container className={`${classes.flex} px-40 top-minus-40`}>
-            <Grid xs={isTabletOrMobile ? 12 : 9}>
+            <Grid xs={isTabletOrMobile ? 12 : isSmallDesktop ? 8 : 9}>
               <Grid xs={12} item className={`${isMobile ? classes.block : classes.flex} mt-20`}>
                 {isMobile && <StatusCard />}
                 <ul className="mr-40">
