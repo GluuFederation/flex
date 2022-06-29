@@ -46,3 +46,8 @@
 .sidebar-submenu__entry.active:not(.open) > .sidebar-submenu__entry__link {
   color: #323b47!important;
 }
+
+.sidebar-menu {
+  height: 60vh;
+  overflow-y: scroll;
+}
