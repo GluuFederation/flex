@@ -1,4 +1,4 @@
-FROM node:14.19.1-alpine3.15
+FROM node:14.19.3-alpine3.16
 
 # ======
 # alpine
@@ -35,7 +35,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_LINUX_SETUP_VERSION=afc539d63a70cda21e990fecd470224a4f94e9d6
+ENV JANS_LINUX_SETUP_VERSION=b3b3d22d93beb9d248c005b618e998c55ae007d5
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -65,7 +65,7 @@ RUN cd /tmp/jans \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=9de53ada7bd2ca576e8b64b09fa51b002223e84e
+ENV ADMIN_UI_VERSION=01b472b7936bc7d67fbb6b100b827f5428356ad2
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -215,7 +215,8 @@ RUN chown -R 1000:1000 /var/lib/nginx \
     && chgrp -R 0 /var/lib/nginx && chmod -R g=u /var/lib/nginx \
     && chgrp -R 0 /var/log/nginx && chmod -R g=u /var/log/nginx \
     && chgrp -R 0 /run/nginx/nginx.pid && chmod -R g=u /run/nginx/nginx.pid \
-    && chgrp -R 0 /etc/jans && chmod -R g=u /etc/jans
+    && chgrp -R 0 /etc/jans && chmod -R g=u /etc/jans \
+    && chown 1000:0 /opt/flex/admin-ui/plugins.config.json
 
 USER 1000
 
