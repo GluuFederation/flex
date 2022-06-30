@@ -11,6 +11,7 @@ import {
   NavItem,
   NavSearch,
   SidebarTrigger,
+  ThemeSetting,
   UncontrolledDropdown,
 } from 'Components'
 import { LanguageMenu } from './LanguageMenu'
@@ -52,6 +53,7 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
               {/*<NavbarActivityFeed />*/}
               <NavSearch />
               <LanguageMenu />
+              <ThemeSetting />
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav>
                   <Avatar.Image

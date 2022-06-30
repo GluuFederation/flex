@@ -30,6 +30,7 @@ import {
   ThemeSelector,
   ThemeConsumer,
 } from './Theme'
+import ThemeSetting from './ThemeSetting'
 import UncontrolledTabs from './UncontrolledTabs'
 import Wizard from './Wizard'
 // Export non overriden Reactstrap components
@@ -137,6 +138,7 @@ export {
   ThemeConsumer,
   ThemeProvider,
   ThemeSelector,
+  ThemeSetting,
   UncontrolledTabs,
   Wizard
 }

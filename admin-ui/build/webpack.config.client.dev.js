@@ -39,6 +39,7 @@ module.exports = {
     alias: {
       path: require.resolve('path-browserify'),
       Components: path.resolve(__dirname, '../app/components'),
+      Context: path.resolve(__dirname, '../app/context'),
       Images: path.resolve(__dirname, '../app/images'),
       Plugins: path.resolve(__dirname, '../plugins'),
       Redux: path.resolve(__dirname, '../app/redux'),
