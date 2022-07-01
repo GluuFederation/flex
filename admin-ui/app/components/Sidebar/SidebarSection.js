@@ -7,22 +7,23 @@ import Wave from "Components/SVG/SidebarWave"
 const useStyles = makeStyles(() => ({
   waveContainer: {
     position: 'absolute',
-    bottom: 0,
-    height: 190,
-    width: 226,
+    bottom: 93,
+    left: 0,
+    height: 70,
+    width: 250,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
   wave: {
     width: 250,
     position: 'relative',
-    top: -72
+    top: -80
   },
   powered: {
     color: '#fff',
     textAlign: 'center',
     position: 'relative',
-    top: 20,
+    top: -130,
     fontWeight: 500,
   }
 }))
@@ -37,7 +38,7 @@ const SidebarSection = (props) => {
   return (
     <div className={ sectionClass }>
       { props.children }
-      <div className={classes.waveContainer} style={{ background: '#323b47' }}>
+      <div className={classes.waveContainer}>
         <Wave className={classes.wave} fill={'#323b47'} />
         <div className={classes.powered}>
           Powered by Gluu
