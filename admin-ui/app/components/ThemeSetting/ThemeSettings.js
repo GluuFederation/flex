@@ -4,13 +4,13 @@ import { useMediaQuery } from 'react-responsive'
 import { makeStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import Button from '@material-ui/core/Button'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import PaletteIcon from '@material-ui/icons/Palette'
+import Box from '@material-ui/core/Box'
 import SettingsIcon from '@material-ui/icons/Settings'
 import { ThemeContext } from "Context/theme/themeContext"
+import darkBlackThumbnail from 'Images/theme-thumbnail/darkBlack.jpg'
+import darkBlueThumbnail from 'Images/theme-thumbnail/darkBlue.jpg'
+import lightBlueThumbnail from 'Images/theme-thumbnail/lightBlue.jpg'
+import lightGreenThumbnail from 'Images/theme-thumbnail/lightGreen.jpg'
 
 const useStyles = makeStyles({
   list: {
@@ -23,6 +23,25 @@ const useStyles = makeStyles({
     color: '#FFFFFF',
     position: 'relative',
   },
+  selectContainer: {
+    textAlign: 'center',
+    marginTop: '30%'
+  },
+  selectItem: {
+    marginBottom: 20,
+    cursor: 'pointer',
+    paddingTop: 16,
+  },
+  selectedItem: {
+    background: '#eaeaea',
+  },
+  selectImage: {
+    width: '75%',
+  },
+  selectTitle: {
+    fontSize: 16,
+    fontWeight: '600'
+  }
 })
 
 export function ThemeSettings() {
@@ -36,10 +55,10 @@ export function ThemeSettings() {
   }
 
   const themeList = [
-    { value: 'darkBlack', text: 'Dark Black' }, 
-    { value: 'darkBlue', text: 'Dark Blue' }, 
-    { value: 'lightBlue', text: 'Light Blue' }, 
-    { value: 'lightGreen', text: 'Light Green' },
+    { value: 'darkBlack', thumbnail: darkBlackThumbnail, text: 'Dark Black' }, 
+    { value: 'darkBlue', thumbnail: darkBlueThumbnail, text: 'Dark Blue' }, 
+    { value: 'lightBlue', thumbnail: lightBlueThumbnail, text: 'Light Blue' }, 
+    { value: 'lightGreen', thumbnail: lightGreenThumbnail, text: 'Light Green' },
   ]
 
   const toggleDrawer = (open) => (event) => {
@@ -59,25 +78,29 @@ export function ThemeSettings() {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <List>
-        {themeList.map((text, index) => (
-          <ListItem button onClick={() => onChangeTheme(text.value)} key={text.value}>
-            <ListItemIcon>
-              <PaletteIcon />
-            </ListItemIcon>
-            <ListItemText primary={text.text} />
-          </ListItem>
+      <Box className={classes.selectContainer}>
+        {themeList.map(text => (
+          <Box 
+            className={clsx(classes.selectItem, {
+              [classes.selectedItem]: theme.state.theme === text.value
+            })} 
+            onClick={() => onChangeTheme(text.value)} 
+            key={text.value}
+          >
+            <img className={classes.selectImage} src={text.thumbnail} alt={`thumbnail-${text.value}`} />
+            <div className={classes.selectTitle}>{text.text}</div>
+          </Box>
         ))}
-      </List>
+      </Box>
     </div>
   )
 
   return (
     <React.Fragment>
-      <Button onClick={toggleDrawer(true)} className={classes.whiteColor} style={!isTabletOrMobile ? { top: -7 } : {}}>
+      <Button onClick={toggleDrawer(true)} className={classes.whiteColor}>
         <SettingsIcon />
       </Button>
-      <Drawer anchor={'right'} open={open} onClose={toggleDrawer(false)}>
+      <Drawer className={classes.drawerContainer} anchor={'right'} open={open} onClose={toggleDrawer(false)}>
         {list('right')}
       </Drawer>
     </React.Fragment>
