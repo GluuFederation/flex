@@ -47,13 +47,43 @@
   cursor: pointer;
 }
 
-.sidebar-menu-active {
-  background: #323b47!important;
+.sidebar-menu-active-darkBlack {
+  background: #323C46!important;
   color: #FFF!important;
 }
 
-.sidebar-menu-active:hover {
-  background: #323b47!important;
+.sidebar-menu-active-darkBlack:hover {
+  background: #323C46!important;
+  color: #FFF!important;
+}
+
+.sidebar-menu-active-darkBlue {
+  background: #323C46!important;
+  color: #FFF!important;
+}
+
+.sidebar-menu-active-darkBlue:hover {
+  background: #323C46!important;
+  color: #FFF!important;
+}
+
+.sidebar-menu-active-lightBlue {
+  background: #274561!important;
+  color: #FFF!important;
+}
+
+.sidebar-menu-active-lightBlue:hover {
+  background: #274561!important;
+  color: #FFF!important;
+}
+
+.sidebar-menu-active-lightGreen {
+  background: #02B774!important;
+  color: #FFF!important;
+}
+
+.sidebar-menu-active-lightGreen:hover {
+  background: #02B774!important;
   color: #FFF!important;
 }
 

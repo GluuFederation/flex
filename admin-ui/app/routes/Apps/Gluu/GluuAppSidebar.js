@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { SidebarMenu } from 'Components'
 import { connect } from 'react-redux'
 import { hasPermission } from 'Utils/PermChecker'
@@ -12,10 +12,14 @@ import OAuthIcon from "Components/SVG/menu/OAuth"
 import SchemaIcon from "Components/SVG/menu/Schema"
 import ServicesIcon from "Components/SVG/menu/Services"
 import UsersIcon from "Components/SVG/menu/Users"
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuAppSidebar({ scopes }) {
   const [pluginMenus, setPluginMenus] = useState([])
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`
 
   useEffect(() => {
     setPluginMenus(processMenus())
@@ -62,7 +66,7 @@ function GluuAppSidebar({ scopes }) {
           icon={<HomeIcon className="menu-icon" />}
           title={t('menus.home')}
           textStyle={{ fontSize: '18px' }}
-          firstParent
+          sidebarMenuActiveClass={sidebarMenuActiveClass}
         >
           <SidebarMenu.Item
             title={t('menus.dashboard')}
@@ -92,7 +96,7 @@ function GluuAppSidebar({ scopes }) {
             to={getMenuPath(plugin)}
             title={t(`${plugin.title}`)}
             textStyle={{ fontSize: '18px' }}
-            firstParent
+            sidebarMenuActiveClass={sidebarMenuActiveClass}
           >
             {hasChildren(plugin) &&
               plugin.children.map((item, idx) => (

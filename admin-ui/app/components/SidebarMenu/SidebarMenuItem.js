@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import uuid from 'uuid/v4'
-
 import { MenuContext } from './MenuContext'
 
 /**
@@ -74,7 +73,7 @@ export class SidebarMenuItem extends React.Component {
     exact: PropTypes.bool,
     noCaret: PropTypes.bool,
     textStyle: PropTypes.object,
-    firstParent: PropTypes.bool
+    sidebarMenuActiveClass: PropTypes.string
   }
 
   static defaultProps = {
@@ -118,7 +117,7 @@ export class SidebarMenuItem extends React.Component {
 
   render() {
     const entry = this.getEntry()
-    const sidebarMenuActive = entry && entry.active && this.props.firstParent ? 'sidebar-menu-active' : ''
+    const sidebarMenuActive = entry && entry.active && this.props.sidebarMenuActiveClass ? this.props.sidebarMenuActiveClass : ''
     const classBase = this.props.isSubNode ? 'sidebar-submenu' : `sidebar-menu`
     const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
       [`${classBase}__entry--nested`]: !!this.props.children,
