@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { subMonths } from 'date-fns'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
@@ -25,6 +25,8 @@ import CheckIcon from '../../images/svg/check.svg'
 import CrossIcon from '../../images/svg/cross.svg'
 import Logo from '../../images/gluu-white-logo.png'
 import DetailReport from '../../images/detail-report.png'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -147,7 +149,6 @@ const useStyles = makeStyles(() => ({
   supportCard: {
     borderRadius: 14,
     color: '#FFF',
-    background: '#274560',
     padding: 20,
     width: '100%',
     maxWidth: 140,
@@ -165,7 +166,6 @@ const useStyles = makeStyles(() => ({
   verticalTextContainer: {
     borderRadius: 14,
     color: '#FFF',
-    background: '#274560',
     padding: '20px 10px',
     width: '100%',
     maxWidth: 140,
@@ -263,9 +263,12 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const isSmallDesktop = useMediaQuery({ query: '(max-width: 1469px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
-  const classes = useStyles()
   const userAction = {}
   const options = {}
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const classes = useStyles()
 
   useEffect(() => {
     setMobileChartStyle({
@@ -312,8 +315,6 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
       return '0' + value
     }
   }
-
-  console.log('statData', statData)
 
   const summaryData = [
     {
@@ -502,7 +503,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
             </Grid>
             <Grid lg={3} xs={isTabletOrMobile ? 5 : 3} className={`${classes.bannerContainer} top-minus-40`}>
               <Grid item xs={12} className={classes.supportContainer}>
-                <Paper className={`${classes.supportCard}`}>
+                <Paper className={`${classes.supportCard}`} style={{ background: themeColors.dashboard.supportCard }}>
                   <div style={{ zIndex: 2 }}>
                     <img src={Logo} alt="logo" className={classes.supportLogo} />
                     <div className="mt-40">Gluu Services</div>
@@ -510,7 +511,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
                     <div className="mt-40">FAQ</div>
                   </div>
                 </Paper>
-                <Paper className={`${classes.verticalTextContainer}`}>
+                <Paper className={`${classes.verticalTextContainer}`} style={{ background: themeColors.dashboard.supportCard }}>
                   <div style={{ zIndex: 4, display: 'flex', justifyContent: 'space-between' }}>
                     <div className={classes.textVertical}>WORLD</div>
                     <div className={`${classes.textVertical} text-center`}>WIDE</div>

@@ -32,7 +32,7 @@ const SidebarMenuItemLink = (props) =>
     )
   ) : (
     <a
-      className={`${props.classBase}__entry__link`}
+      className={`${props.classBase}__entry__link ${props.sidebarMenuActive}`}
       onClick={() => props.onToggle()}
       style={props.textStyle}
     >
@@ -47,6 +47,7 @@ SidebarMenuItemLink.propTypes = {
   children: PropTypes.node,
   classBase: PropTypes.string,
   textStyle: PropTypes.object,
+  sidebarMenuActive: PropTypes.string
 }
 
 /**
@@ -73,6 +74,7 @@ export class SidebarMenuItem extends React.Component {
     exact: PropTypes.bool,
     noCaret: PropTypes.bool,
     textStyle: PropTypes.object,
+    firstParent: PropTypes.bool
   }
 
   static defaultProps = {
@@ -116,7 +118,8 @@ export class SidebarMenuItem extends React.Component {
 
   render() {
     const entry = this.getEntry()
-    const classBase = this.props.isSubNode ? 'sidebar-submenu' : 'sidebar-menu'
+    const sidebarMenuActive = entry && entry.active && this.props.firstParent ? 'sidebar-menu-active' : ''
+    const classBase = this.props.isSubNode ? 'sidebar-submenu' : `sidebar-menu`
     const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
       [`${classBase}__entry--nested`]: !!this.props.children,
       open: entry && entry.open,
@@ -141,8 +144,7 @@ export class SidebarMenuItem extends React.Component {
     function getTextStyle(itemClass) {
       if (
         itemClass.includes('active', 0) &&
-        itemClass.includes('submenu__entry', 0) &&
-        !itemClass.includes('open', 0)
+        itemClass.includes('submenu__entry', 0)
       ) {
         return { fontWeight: 'bold' }
       }
@@ -163,13 +165,15 @@ export class SidebarMenuItem extends React.Component {
             onToggle={this.toggleNode.bind(this)}
             classBase={classBase}
             textStyle={getTextStyle(itemClass) || this.props.textStyle}
+            sidebarMenuActive={sidebarMenuActive}
           >
             {this.props.icon &&
               React.cloneElement(this.props.icon, {
                 className: classNames(
                   this.props.icon.props.className,
-                  `${classBase}__entry__icon`,
+                  `${classBase}__entry__icon`
                 ),
+                fill: sidebarMenuActive ? '#FFF' : '#323b47'
               })}
             {typeof this.props.title === 'string' ? (
               <span style={this.props.textStyle}>{this.props.title}</span>

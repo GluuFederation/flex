@@ -5,6 +5,9 @@ export const themeConfig = {
     menu: {
       background: '#323C46',
       color: '#FFFFFF',
+    },
+    dashboard: {
+      supportCard: '#274560'
     }
   },
   darkBlue: {
@@ -13,6 +16,9 @@ export const themeConfig = {
     menu: {
       background: '#323C46',
       color: '#FFFFFF',
+    },
+    dashboard: {
+      supportCard: '#9DBDE2'
     }
   },
   lightBlue: {
@@ -21,6 +27,9 @@ export const themeConfig = {
     menu: {
       background: '#274561',
       color: '#FFFFFF',
+    },
+    dashboard: {
+      supportCard: '#274560'
     }
   },
   lightGreen: {
@@ -29,6 +38,9 @@ export const themeConfig = {
     menu: {
       background: '#02B774',
       color: '#FFFFFF',
+    },
+    dashboard: {
+      supportCard: '#274560'
     }
   }
 }

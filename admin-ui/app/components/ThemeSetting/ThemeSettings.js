@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import clsx from 'clsx'
-import { useMediaQuery } from 'react-responsive'
 import { makeStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import Button from '@material-ui/core/Button'
@@ -23,9 +22,16 @@ const useStyles = makeStyles({
     color: '#FFFFFF',
     position: 'relative',
   },
+  selectInfo: {
+    textAlign: 'left',
+    marginLeft: 30,
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 10,
+  },
   selectContainer: {
     textAlign: 'center',
-    marginTop: '30%'
+    marginTop: '25%'
   },
   selectItem: {
     marginBottom: 20,
@@ -48,10 +54,10 @@ export function ThemeSettings() {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
   const theme = useContext(ThemeContext)
-  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
 
   const onChangeTheme = (value) => {
     theme.dispatch({ type: value })
+    return
   }
 
   const themeList = [
@@ -79,6 +85,7 @@ export function ThemeSettings() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <Box className={classes.selectContainer}>
+        <Box className={classes.selectInfo}>Choose Theme: </Box>
         {themeList.map(text => (
           <Box 
             className={clsx(classes.selectItem, {

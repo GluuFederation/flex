@@ -16,7 +16,6 @@ const Navbar = ({
 }) => {
   let navbarClass = classNames(
     {
-      "navbar-themed": themed || !!color,
       "navbar-shadow": shadow
     },
     "navbar-multi-collapse",

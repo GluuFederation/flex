@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { makeStyles } from '@material-ui/core/styles'
-import Wave from "Components/SVG/SidebarWave"
+import Wave from 'Components/SVG/SidebarWave'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 const useStyles = makeStyles(() => ({
   waveContainer: {
@@ -34,12 +36,15 @@ const SidebarSection = (props) => {
     'sidebar__section--cover': props.cover
   }, props.className)
   const classes = useStyles()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
 
   return (
     <div className={ sectionClass }>
       { props.children }
       <div className={classes.waveContainer}>
-        <Wave className={classes.wave} fill={'#323b47'} />
+        <Wave className={classes.wave} fill={themeColors.menu.background} />
         <div className={classes.powered}>
           Powered by Gluu
         </div>

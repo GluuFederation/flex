@@ -62,6 +62,7 @@ function GluuAppSidebar({ scopes }) {
           icon={<HomeIcon className="menu-icon" />}
           title={t('menus.home')}
           textStyle={{ fontSize: '18px' }}
+          firstParent
         >
           <SidebarMenu.Item
             title={t('menus.dashboard')}
@@ -91,6 +92,7 @@ function GluuAppSidebar({ scopes }) {
             to={getMenuPath(plugin)}
             title={t(`${plugin.title}`)}
             textStyle={{ fontSize: '18px' }}
+            firstParent
           >
             {hasChildren(plugin) &&
               plugin.children.map((item, idx) => (
