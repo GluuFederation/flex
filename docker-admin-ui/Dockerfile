@@ -1,3 +1,33 @@
+FROM node:14.19.3-alpine3.16 AS builder
+
+RUN apk update \
+    && apk upgrade \
+    && apk add --no-cache git openjdk11-jre-headless
+
+# TODO:
+# - use NODE_ENV=production
+# - download build package (not git clone)
+ENV ADMIN_UI_VERSION=01b472b7936bc7d67fbb6b100b827f5428356ad2
+
+# note that as we're pulling from a monorepo (with multiple project in it)
+# we are using partial-clone and sparse-checkout to get the admin-ui code
+RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
+    && cd /tmp/flex \
+    && git sparse-checkout init --cone \
+    && git checkout ${ADMIN_UI_VERSION} \
+    && git sparse-checkout set admin-ui \
+    && mkdir -p /opt/flex \
+    && mv /tmp/flex/admin-ui /opt/flex/admin-ui \
+    && cd /opt/flex/admin-ui \
+    && npm install @openapitools/openapi-generator-cli \
+    && npm run api \
+    && npm install \
+    && rm -rf $HOME/.npm
+
+# ===========
+# Application
+# ===========
+
 FROM node:14.19.3-alpine3.16
 
 # ======
@@ -7,7 +37,7 @@ FROM node:14.19.3-alpine3.16
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
-    && apk add --no-cache --virtual .build-deps git openjdk11-jre-headless
+    && apk add --no-cache --virtual .build-deps git
 
 # =====
 # nginx
@@ -62,25 +92,7 @@ RUN cd /tmp/jans \
 # Admin UI
 # ========
 
-# TODO:
-# - use NODE_ENV=production
-# - download build package (not git clone)
-ENV ADMIN_UI_VERSION=01b472b7936bc7d67fbb6b100b827f5428356ad2
-
-# note that as we're pulling from a monorepo (with multiple project in it)
-# we are using partial-clone and sparse-checkout to get the admin-ui code
-RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
-    && cd /tmp/flex \
-    && git sparse-checkout init --cone \
-    && git checkout ${ADMIN_UI_VERSION} \
-    && git sparse-checkout set admin-ui \
-    && mkdir -p /opt/flex \
-    && mv /tmp/flex/admin-ui /opt/flex/admin-ui \
-    && cd /opt/flex/admin-ui \
-    && npm install @openapitools/openapi-generator-cli \
-    && npm run api \
-    && npm install \
-    && rm -rf $HOME/.npm
+COPY --from=builder /opt/flex/admin-ui /opt/flex/admin-ui
 
 # =======
 # Cleanup
