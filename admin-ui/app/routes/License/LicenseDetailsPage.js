@@ -8,9 +8,7 @@ import { getLicenseDetails } from 'Redux/actions/LicenseDetailsActions'
 import {
   Card,
   CardBody,
-  CardTitle,
   Container,
-  FormGroup,
   Row,
   Col,
 } from 'Components'
