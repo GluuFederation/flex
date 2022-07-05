@@ -27,6 +27,7 @@ import Logo from '../../images/gluu-white-logo.png'
 import DetailReport from '../../images/detail-report.png'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import SetTitle from 'Utils/SetTitle'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -269,6 +270,7 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const classes = useStyles()
+  SetTitle(t('menus.dashboard'))
 
   useEffect(() => {
     setMobileChartStyle({
