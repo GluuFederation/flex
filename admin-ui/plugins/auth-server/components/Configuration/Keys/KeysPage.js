@@ -1,29 +1,23 @@
 import React from 'react'
 import {
   UncontrolledTabs,
-  NavItem,
-  Nav,
   TabPane,
   Card,
   CardBody,
 } from 'Components'
 import JwksPage from './Jwks/JwksPage'
 import { useTranslation } from 'react-i18next'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import SetTitle from 'Utils/SetTitle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function KeysPage() {
   const { t } = useTranslation()
+  SetTitle(t('titles.public_keys'))
+
   return (
-    <Card>
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
         <UncontrolledTabs initialActiveTabId="jwkpanel">
-          <Nav pills className="mb-4 flex-column flex-md-row mt-4 mt-lg-0">
-            <NavItem>
-              <UncontrolledTabs.NavLink tabId="jwkpanel">
-                <GluuRibbon title={t('titles.public_keys')} fromLeft />
-              </UncontrolledTabs.NavLink>
-            </NavItem>
-          </Nav>
           <UncontrolledTabs.TabContent>
             <TabPane tabId="jwkpanel">
               <JwksPage />

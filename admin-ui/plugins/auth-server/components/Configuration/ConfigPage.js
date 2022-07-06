@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FormGroup, Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import useExitPrompt from 'Routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
@@ -17,13 +17,18 @@ import {
   patchJsonConfig,
 } from 'Plugins/auth-server/redux/actions/JsonConfigActions'
 import { FETCHING_JSON_PROPERTIES } from 'Plugins/auth-server/common/Constants'
+import SetTitle from 'Utils/SetTitle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function ConfigPage({ configuration, loading, dispatch, permissions }) {
+  const { t } = useTranslation()
   const lSize = 6
   const userAction = {}
   const [modal, setModal] = useState(false)
   const [patches, setPatches] = useState([])
   const [showExitPrompt, setShowExitPrompt] = useExitPrompt(true)
+  SetTitle(t('titles.jans_json_property'))
+
   useEffect(() => {
     buildPayload(userAction, FETCHING_JSON_PROPERTIES, {})
     dispatch(getJsonConfig())
@@ -56,12 +61,8 @@ function ConfigPage({ configuration, loading, dispatch, permissions }) {
   }
   return (
     <GluuLoader blocking={loading}>
-      <Card>
-        <GluuRibbon title="titles.jans_json_property" fromLeft doTranslate />
+      <Card style={applicationStyle.mainCard}>
         <CardBody style={{ minHeight: 500 }}>
-          <FormGroup row></FormGroup>
-          <FormGroup row></FormGroup>
-          <FormGroup row></FormGroup>
           {Object.keys(configuration).map((propKey, idx) => (
             <PropertyBuilder
               key={idx}

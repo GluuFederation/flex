@@ -6,7 +6,6 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Card, CardBody, FormGroup } from 'Components'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -34,6 +33,7 @@ import {
   SEARCHING_SCOPES,
   FETCHING_SCOPES,
 } from 'Plugins/auth-server/common/Constants'
+import SetTitle from 'Utils/SetTitle'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -47,6 +47,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const [limit, setLimit] = useState(500)
   const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
+  SetTitle(t('titles.scopes'))
 
   let memoLimit = limit
   let memoPattern = pattern
@@ -176,11 +177,8 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   }
 
   return (
-    <Card>
-      <GluuRibbon title={t('titles.scopes')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, SCOPE_READ)}>
           <MaterialTable
             components={{

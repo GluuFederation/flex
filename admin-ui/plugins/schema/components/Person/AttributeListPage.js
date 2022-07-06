@@ -6,7 +6,6 @@ import { Paper } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Card, CardBody, FormGroup } from 'Components'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import AttributeDetailPage from './AttributeDetailPage'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
@@ -25,6 +24,7 @@ import {
   deleteAttribute,
 } from 'Plugins/schema/redux/actions/AttributeActions'
 import { useTranslation } from 'react-i18next'
+import SetTitle from 'Utils/SetTitle'
 
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -39,6 +39,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
   const myActions = []
+  SetTitle(t('fields.attributes'))
 
   let memoLimit = limit
   let memoPattern = pattern
@@ -166,11 +167,8 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     toggle()
   }
   return (
-    <Card>
-      <GluuRibbon title={t('fields.attributes')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, ATTRIBUTE_READ)}>
           <MaterialTable
             components={{

@@ -22,6 +22,7 @@ import {
   ROLE_READ,
   ROLE_WRITE,
 } from 'Utils/PermChecker'
+import SetTitle from 'Utils/SetTitle'
 
 function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -34,6 +35,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   useEffect(() => {
     doFetchList()
   }, [])
+  SetTitle(t('titles.roles'))
 
   if (hasPermission(permissions, ROLE_WRITE)) {
     myActions.push({
@@ -59,11 +61,8 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
     doFetchList()
   }
   return (
-    <Card>
-      <GluuRibbon title={t('titles.roles')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
           <MaterialTable
             components={{

@@ -26,6 +26,7 @@ import { SIMPLE_PASSWORD_AUTH, FETCHING_SCRIPTS } from 'Plugins/auth-server/comm
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
+import SetTitle from 'Utils/SetTitle'
 
 function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -36,14 +37,18 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
     .filter((item) => item.enabled)
     .map((item) => item.name)
   authScripts.push(SIMPLE_PASSWORD_AUTH)
+  SetTitle(t('titles.public_keys'))
+
   useEffect(() => {
     buildPayload(userAction, FETCHING_SCRIPTS, options)
     dispatch(getAcrsConfig())
     dispatch(getScripts(userAction))
   }, [])
+
   const initialValues = {
     defaultAcr: acrs.defaultAcr,
   }
+
   return (
     <GluuLoader blocking={loading}>
       <GluuViewWrapper canShow={hasPermission(permissions, ACR_READ)}>

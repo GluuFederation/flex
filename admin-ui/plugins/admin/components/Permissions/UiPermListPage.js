@@ -4,10 +4,9 @@ import { Paper } from '@material-ui/core'
 import UiPermDetailPage from './UiPermDetailPage'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
-import { Card, CardBody, FormGroup } from 'Components'
+import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import PermissionAddDialogForm from './PermissionAddDialogForm'
 import {
@@ -22,6 +21,7 @@ import {
   PERMISSION_READ,
   PERMISSION_WRITE,
 } from 'Utils/PermChecker'
+import SetTitle from 'Utils/SetTitle'
 
 function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -34,6 +34,7 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   useEffect(() => {
     doFetchList()
   }, [])
+  SetTitle(t('titles.permissions'))
 
   if (hasPermission(permissions, PERMISSION_WRITE)) {
     myActions.push({
@@ -59,11 +60,8 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
     doFetchList()
   }
   return (
-    <Card>
-      <GluuRibbon title={t('titles.permissions')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, PERMISSION_READ)}>
           <MaterialTable
             components={{
