@@ -200,7 +200,7 @@ data:
   {{- if index .Values "global" "admin-ui" "enabled" }}
   # ADMIN-UI
   ADMIN_UI_JWKS: {{ cat "http://" ( index .Values "global" "auth-server" "authServerServiceName" ) ":8080/jans-auth/restv1/jwks" | quote | nospace }}
-  CN_CONFIG_API_PLUGINS: "admin-ui,scim"
+  CN_CONFIG_API_PLUGINS: "admin-ui,scim,fido2,user-mgt"
   CN_ADMIN_UI_PLUGIN_LOGGERS: {{ index .Values "global" "config-api" "adminUiappLoggers"
   | toJson
   | replace "adminUiLogTarget" "admin_ui_log_target"
