@@ -15,19 +15,19 @@ import {
   addAdditionalData,
 } from '../../../../app/utils/TokenController'
 import {
-  UM_GET_USERS,
-  UM_CREATE_NEW_USER,
-  UM_UPDATE_EXISTING_USER,
-  UM_DELETE_EXISTING_USER,
-  UM_UPDATE_PASSWORD,
+  GET_USERS,
+  CREATE_NEW_USER,
+  UPDATE_USER,
+  DELETE_USER,
+  CHANGE_USERS_PASSWORD,
 } from '../actions/types'
 import UserApi from '../api/UserApi'
 import { getClient } from '../../../../app/redux/api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import {
-  updateUserResponse,
-  UMupdateUserLoading,
+  getUserResponse,
+  usersLoading,
   redirectToListPage,
   getUsers,
 } from '../actions/UserActions'
@@ -41,7 +41,7 @@ function* newFunction() {
   return new UserApi(api)
 }
 
-export function* createNewUserSaga({ payload }) {
+export function* createUserSaga({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, API_USERS, payload)
@@ -50,16 +50,16 @@ export function* createNewUserSaga({ payload }) {
     if (data) {
       yield put(redirectToListPage(true))
     }
-    yield put(UMupdateUserLoading(false))
+    yield put(usersLoading(false))
   } catch (e) {
-    yield put(UMupdateUserLoading(false))
+    yield put(usersLoading(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
     }
   }
 }
-export function* updateExistingUserSaga({ payload }) {
+export function* updateUserSaga({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, API_USERS, payload)
@@ -68,9 +68,9 @@ export function* updateExistingUserSaga({ payload }) {
     if (data) {
       yield put(redirectToListPage(true))
     }
-    yield put(UMupdateUserLoading(false))
+    yield put(usersLoading(false))
   } catch (e) {
-    yield put(UMupdateUserLoading(false))
+    yield put(usersLoading(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -78,15 +78,15 @@ export function* updateExistingUserSaga({ payload }) {
   }
 }
 
-export function* updateUserPasswordSaga({ payload }) {
+export function* changeUserPasswordSaga({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
-    yield call(userApi.updateUserPassword, payload)
-    yield put(UMupdateUserLoading(false))
+    yield call(userApi.changeUserPassword, payload)
+    yield put(usersLoading(false))
   } catch (e) {
-    yield put(UMupdateUserLoading(false))
+    yield put(usersLoading(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -100,11 +100,11 @@ export function* getUsersSaga({ payload }) {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
     const data = yield call(userApi.getUsers)
-    yield put(updateUserResponse(data))
-    yield put(UMupdateUserLoading(false))
+    yield put(getUserResponse(data))
+    yield put(usersLoading(false))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(UMupdateUserLoading(false))
+    yield put(usersLoading(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -119,9 +119,9 @@ export function* deleteUserSaga({ payload }) {
     const userApi = yield* newFunction()
     yield call(userApi.deleteUser, payload)
     yield put(getUsers({}))
-    yield put(UMupdateUserLoading(false))
+    yield put(usersLoading(false))
   } catch (e) {
-    yield put(UMupdateUserLoading(false))
+    yield put(usersLoading(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -130,20 +130,20 @@ export function* deleteUserSaga({ payload }) {
 }
 
 export function* watchGetUsers() {
-  yield takeEvery(UM_GET_USERS, getUsersSaga)
+  yield takeEvery(GET_USERS, getUsersSaga)
 }
 
 export function* watchCreateUser() {
-  yield takeLatest(UM_CREATE_NEW_USER, createNewUserSaga)
+  yield takeLatest(CREATE_NEW_USER, createUserSaga)
 }
 export function* watchUpdateUser() {
-  yield takeLatest(UM_UPDATE_EXISTING_USER, updateExistingUserSaga)
+  yield takeLatest(UPDATE_USER, updateUserSaga)
 }
 export function* deleteUser() {
-  yield takeLatest(UM_DELETE_EXISTING_USER, deleteUserSaga)
+  yield takeLatest(DELETE_USER, deleteUserSaga)
 }
-export function* updateUserPassword() {
-  yield takeLatest(UM_UPDATE_PASSWORD, updateUserPasswordSaga)
+export function* changeUserPassword() {
+  yield takeLatest(CHANGE_USERS_PASSWORD, changeUserPasswordSaga)
 }
 
 export default function* rootSaga() {
@@ -152,6 +152,6 @@ export default function* rootSaga() {
     fork(watchCreateUser),
     fork(watchUpdateUser),
     fork(deleteUser),
-    fork(updateUserPassword),
+    fork(changeUserPassword),
   ])
 }

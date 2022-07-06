@@ -8,7 +8,7 @@ import {
   getUsers,
   setSelectedUserData,
   redirectToListPage,
-  deleteExistingUser,
+  deleteUser,
 } from '../../redux/actions/UserActions'
 
 import { getAttributes } from '../../../schema/redux/actions/AttributeActions'
@@ -73,7 +73,7 @@ function UserList(props) {
   }, [redirectToUserListPage])
 
   function handleUserDelete(row) {
-    dispatch(deleteExistingUser(row.inum))
+    dispatch(deleteUser(row.inum))
   }
 
   if (hasPermission(permissions, ROLE_WRITE)) {

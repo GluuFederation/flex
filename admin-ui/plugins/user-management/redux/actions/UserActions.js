@@ -1,64 +1,64 @@
 import {
-  UM_GET_USERS,
-  UM_UPDATE_USERS_RESPONSE,
-  UM_UPDATE_LOADING,
-  UM_CREATE_NEW_USER,
-  UM_SELECTED_USER_DATA,
-  UM_UPDATE_EXISTING_USER,
-  UM_REDIRECT_TO_LIST,
-  UM_DELETE_EXISTING_USER,
-  UM_UPDATE_PASSWORD,
+  GET_USERS,
+  GET_USERS_RESPONSE,
+  USERS_LOADING,
+  CREATE_NEW_USER,
+  SELECTED_USER_DATA,
+  UPDATE_USER,
+  REDIRECT_TO_USERS_LIST,
+  DELETE_USER,
+  CHANGE_USERS_PASSWORD,
 } from './types'
 
 export const getUsers = (action) => ({
-  type: UM_GET_USERS,
+  type: GET_USERS,
   payload: { action },
 })
 
 export const setSelectedUserData = (action) => ({
-  type: UM_SELECTED_USER_DATA,
+  type: SELECTED_USER_DATA,
   payload: action,
 })
 
-export const updateUserResponse = (action) => ({
-  type: UM_UPDATE_USERS_RESPONSE,
+export const getUserResponse = (action) => ({
+  type: GET_USERS_RESPONSE,
   payload: { action },
 })
-export const UMupdateUserLoading = (action) => ({
-  type: UM_UPDATE_LOADING,
+export const usersLoading = (action) => ({
+  type: USERS_LOADING,
   payload: action,
 })
 
-export const createNewUser = (action) => {
+export const createUser = (action) => {
   return {
-    type: UM_CREATE_NEW_USER,
+    type: CREATE_NEW_USER,
     payload: action,
   }
 }
 
 export const redirectToListPage = (action) => {
   return {
-    type: UM_REDIRECT_TO_LIST,
+    type: REDIRECT_TO_USERS_LIST,
     payload: action,
   }
 }
 
-export const updateExistingUser = (action) => {
+export const updateUser = (action) => {
   return {
-    type: UM_UPDATE_EXISTING_USER,
+    type: UPDATE_USER,
     payload: action,
   }
 }
-export const updateUserPassword = (action) => {
+export const changeUserPassword = (action) => {
   return {
-    type: UM_UPDATE_PASSWORD,
+    type: CHANGE_USERS_PASSWORD,
     payload: action,
   }
 }
 
-export const deleteExistingUser = (inum) => {
+export const deleteUser = (inum) => {
   return {
-    type: UM_DELETE_EXISTING_USER,
+    type: DELETE_USER,
     payload: inum,
   }
 }
