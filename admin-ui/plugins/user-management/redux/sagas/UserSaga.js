@@ -27,8 +27,10 @@ const JansConfigApi = require('jans_config_api')
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import {
   getUserResponse,
-  usersLoading,
-  redirectToListPage,
+  updateUserResponse,
+  deleteUserResponse,
+  changeUserPasswordResponse,
+  createUserResponse,
   getUsers,
 } from '../actions/UserActions'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
@@ -47,12 +49,9 @@ export function* createUserSaga({ payload }) {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
     const data = yield call(userApi.createUsers, payload)
-    if (data) {
-      yield put(redirectToListPage(true))
-    }
-    yield put(usersLoading(false))
+    yield put(createUserResponse(data))
   } catch (e) {
-    yield put(usersLoading(false))
+    yield put(createUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -65,12 +64,9 @@ export function* updateUserSaga({ payload }) {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
     const data = yield call(userApi.updateUsers, payload)
-    if (data) {
-      yield put(redirectToListPage(true))
-    }
-    yield put(usersLoading(false))
+    yield put(updateUserResponse(data))
   } catch (e) {
-    yield put(usersLoading(false))
+    yield put(updateUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -83,10 +79,10 @@ export function* changeUserPasswordSaga({ payload }) {
   try {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
-    yield call(userApi.changeUserPassword, payload)
-    yield put(usersLoading(false))
+    const data = yield call(userApi.changeUserPassword, payload)
+    yield put(changeUserPasswordResponse(data))
   } catch (e) {
-    yield put(usersLoading(false))
+    yield put(changeUserPasswordResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -101,10 +97,9 @@ export function* getUsersSaga({ payload }) {
     const userApi = yield* newFunction()
     const data = yield call(userApi.getUsers)
     yield put(getUserResponse(data))
-    yield put(usersLoading(false))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(usersLoading(false))
+    yield put(getUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -117,11 +112,11 @@ export function* deleteUserSaga({ payload }) {
   try {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
-    yield call(userApi.deleteUser, payload)
+    const data = yield call(userApi.deleteUser, payload)
     yield put(getUsers({}))
-    yield put(usersLoading(false))
+    yield put(deleteUserResponse(data))
   } catch (e) {
-    yield put(usersLoading(false))
+    yield put(deleteUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

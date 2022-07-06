@@ -5,7 +5,7 @@ import UserForm from './UserForm'
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import { createUser, redirectToListPage } from '../../redux/actions/UserActions'
+import { createUser } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
 function UserAddPage() {

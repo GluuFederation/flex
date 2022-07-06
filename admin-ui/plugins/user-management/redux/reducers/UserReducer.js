@@ -1,13 +1,15 @@
 import {
   GET_USERS_RESPONSE,
-  USERS_LOADING,
   GET_USERS,
   SELECTED_USER_DATA,
-  REDIRECT_TO_USERS_LIST,
   CREATE_NEW_USER,
+  CREATE_NEW_USER_RESPONSE,
   UPDATE_USER,
   DELETE_USER,
   CHANGE_USERS_PASSWORD,
+  CHANGE_USERS_PASSWORD_RESPONSE,
+  UPDATE_USER_RESPONSE,
+  DELETE_USER_RESPONSE,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 
@@ -25,13 +27,25 @@ export default function userReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        redirectToUserListPage: false,
       }
     case CREATE_NEW_USER:
       return {
         ...state,
         loading: true,
       }
+    case CREATE_NEW_USER_RESPONSE:
+      return {
+        ...state,
+        loading: false,
+        redirectToUserListPage: action.payload ? true : false,
+      }
     case CHANGE_USERS_PASSWORD:
+      return {
+        ...state,
+        loading: true,
+      }
+    case CHANGE_USERS_PASSWORD_RESPONSE:
       return {
         ...state,
         loading: true,
@@ -41,20 +55,21 @@ export default function userReducer(state = INIT_STATE, action) {
         ...state,
         loading: true,
       }
+    case UPDATE_USER_RESPONSE:
+      return {
+        ...state,
+        loading: false,
+        redirectToUserListPage: action.payload ? true : false,
+      }
     case DELETE_USER:
       return {
         ...state,
         loading: true,
       }
-    case REDIRECT_TO_USERS_LIST:
+    case DELETE_USER_RESPONSE:
       return {
         ...state,
-        redirectToUserListPage: action.payload,
-      }
-    case USERS_LOADING:
-      return {
-        ...state,
-        loading: action.payload,
+        loading: true,
       }
     case SELECTED_USER_DATA:
       return {
@@ -65,7 +80,7 @@ export default function userReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: false,
-        items: action.payload?.action,
+        items: action.payload ? action.payload : [],
       }
     default:
       return handleDefault()

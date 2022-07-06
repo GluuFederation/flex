@@ -1,13 +1,15 @@
 import {
   GET_USERS,
   GET_USERS_RESPONSE,
-  USERS_LOADING,
   CREATE_NEW_USER,
+  CREATE_NEW_USER_RESPONSE,
   SELECTED_USER_DATA,
   UPDATE_USER,
-  REDIRECT_TO_USERS_LIST,
+  UPDATE_USER_RESPONSE,
   DELETE_USER,
+  DELETE_USER_RESPONSE,
   CHANGE_USERS_PASSWORD,
+  CHANGE_USERS_PASSWORD_RESPONSE,
 } from './types'
 
 export const getUsers = (action) => ({
@@ -22,10 +24,6 @@ export const setSelectedUserData = (action) => ({
 
 export const getUserResponse = (action) => ({
   type: GET_USERS_RESPONSE,
-  payload: { action },
-})
-export const usersLoading = (action) => ({
-  type: USERS_LOADING,
   payload: action,
 })
 
@@ -36,9 +34,9 @@ export const createUser = (action) => {
   }
 }
 
-export const redirectToListPage = (action) => {
+export const createUserResponse = (action) => {
   return {
-    type: REDIRECT_TO_USERS_LIST,
+    type: CREATE_NEW_USER_RESPONSE,
     payload: action,
   }
 }
@@ -49,9 +47,23 @@ export const updateUser = (action) => {
     payload: action,
   }
 }
+
+export const updateUserResponse = (action) => {
+  return {
+    type: UPDATE_USER_RESPONSE,
+    payload: action,
+  }
+}
 export const changeUserPassword = (action) => {
   return {
     type: CHANGE_USERS_PASSWORD,
+    payload: action,
+  }
+}
+
+export const changeUserPasswordResponse = (action) => {
+  return {
+    type: CHANGE_USERS_PASSWORD_RESPONSE,
     payload: action,
   }
 }
@@ -60,5 +72,12 @@ export const deleteUser = (inum) => {
   return {
     type: DELETE_USER,
     payload: inum,
+  }
+}
+
+export const deleteUserResponse = (action) => {
+  return {
+    type: DELETE_USER_RESPONSE,
+    payload: action,
   }
 }

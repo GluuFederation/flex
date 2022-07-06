@@ -7,7 +7,6 @@ import { Badge } from 'reactstrap'
 import {
   getUsers,
   setSelectedUserData,
-  redirectToListPage,
   deleteUser,
 } from '../../redux/actions/UserActions'
 
@@ -65,12 +64,6 @@ function UserList(props) {
     dispatch(setSelectedUserData(row))
     return history.push(`/user/usermanagement/edit:` + row.tableData.uuid)
   }
-
-  useEffect(() => {
-    if (redirectToUserListPage) {
-      dispatch(redirectToListPage(false))
-    }
-  }, [redirectToUserListPage])
 
   function handleUserDelete(row) {
     dispatch(deleteUser(row.inum))
