@@ -25,7 +25,7 @@ import {
   ROLE_WRITE,
 } from '../../../../app/utils/PermChecker'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
-
+import { getRoles } from '../../../admin/redux/actions/ApiRoleActions'
 function UserList(props) {
   const dispatch = useDispatch()
   let opt = {}
@@ -33,6 +33,7 @@ function UserList(props) {
     opt['limit'] = 0
     dispatch(getUsers({}))
     dispatch(getAttributes(opt))
+    dispatch(getRoles())
   }, [])
 
   const usersList = useSelector((state) => state.userReducer.items)
