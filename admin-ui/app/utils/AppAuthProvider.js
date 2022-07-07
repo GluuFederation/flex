@@ -17,6 +17,7 @@ export default function AppAuthProvider(props) {
   const dispatch = useDispatch()
   const location = useLocation()
   const [showContent, setShowContent] = useState(false)
+  const [roleNotFound, setRoleNotFound] = useState(false)
 
   const { config, userinfo, userinfo_jwt, token, backendIsUp } = useSelector(
     (state) => state.authReducer,
@@ -91,6 +92,15 @@ export default function AppAuthProvider(props) {
         setShowContent(false)
         return null
       } else {
+        if (userinfo.jansAdminUIRole || userinfo.length === 0) {
+          setShowContent(false)
+          setRoleNotFound(true)
+          alert('The logged-in user do not have valid role. Logging out of Admin UI')
+          const state = uuidv4()
+          const sessionEndpoint = `${config.endSessionEndpoint}?state=${state}&post_logout_redirect_uri=${config.postLogoutRedirectUri}`
+          window.location.href = sessionEndpoint
+          return null
+        }
         if (!token) {
           dispatch(getAPIAccessToken(userinfo_jwt))
         }
