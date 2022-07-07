@@ -45,7 +45,11 @@ function UserAddPage() {
             let valE = []
             if (values[key]) {
               for (let i in values[key]) {
-                valE.push(values[key][i][key])
+                if (typeof values[key][i] == 'object') {
+                  valE.push(values[key][i][key])
+                } else {
+                  valE.push(values[key][i])
+                }
               }
             }
             obj = {

@@ -3,20 +3,30 @@ import GluuRemovableInputRow from '../../../../app/routes/Apps/Gluu/GluuRemovabl
 import GluuRemovableSelectRow from '../../../../app/routes/Apps/Gluu/GluuRemovableSelectRow'
 import GluuRemovableTypeAhead from '../../../../app/routes/Apps/Gluu/GluuRemovableTypeAhead'
 import { countries } from '../../common/countries'
+import { useSelector } from 'react-redux'
+
 function UserClaimEntry({ data, type, entry, formik, handler }) {
   const doHandle = () => {
     handler(data.name)
   }
+  const roles = useSelector((state) => state.apiRoleReducer.items)
+  const rolesToBeShown = roles.map((data) => data.role)
+
   return (
     <div key={entry}>
       {data.oxMultiValuedAttribute && (
         <GluuRemovableTypeAhead
           label={data.displayName}
           name={data.name}
+          allowNew={data.name != 'jansAdminUIRole'}
           value={formik.values[data.name] || []}
           formik={formik}
           isDirect={true}
-          options={formik.values[data.name] || []}
+          options={
+            data.name == 'jansAdminUIRole'
+              ? rolesToBeShown
+              : formik.values[data.name] || []
+          }
           handler={doHandle}
           doc_category={data.description}
           lsize={3}
