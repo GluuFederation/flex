@@ -187,6 +187,26 @@ class flex_installer(JettyInstaller):
         base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_twilio_sms.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_twilio_sms.py'), verbose=True)
         base.download('https://maven.jans.io/maven/io/jans/jans-fido2-client/{0}{1}/jans-fido2-client-{0}{1}.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD']), self.fido2_client_jar_fn, verbose=True)
 
+
+    def add_apache_directive(self, check_str, template):
+        print("Updating apache configuration")
+        apache_directive_template_text = self.readFile(os.path.join(self.templates_dir, template))
+        apache_directive_text = self.fomatWithDict(apache_directive_template_text, Config.templateRenderingDict)
+
+        https_jans_text = self.readFile(httpd_installer.https_jans_fn)
+
+        if check_str not in https_jans_text:
+
+            https_jans_list = https_jans_text.splitlines()
+            n = 0
+    
+            for i, l in enumerate(https_jans_list):
+                if l.strip() == '</LocationMatch>':
+                    n = i
+
+            https_jans_list.insert(n+1, '\n' + apache_directive_text + '\n')
+            self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
+
     def install_gluu_admin_ui(self):
 
         print("Installing Gluu Admin UI Frontend")
@@ -210,10 +230,12 @@ class flex_installer(JettyInstaller):
             run_cmd = '{} {}'.format(cmd_path, cmd)
             config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)
 
-        target_dir = os.path.join(httpd_installer.server_root, 'admin')
+        Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
 
-        print("Copying files to", target_dir)
-        config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'), target_dir)
+        self.add_apache_directive(Config.templateRenderingDict['admin_ui_apache_root'], 'admin_ui_apache_directive')
+
+        print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
+        config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
         config_api_installer.check_clients([('role_based_client_id', '2000.')])
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, os.path.join(self.flex_setup_dir, 'templates'), config_api_installer.custom_config_dir)
@@ -363,29 +385,9 @@ class flex_installer(JettyInstaller):
         jansAuthInstaller.chown(jetty_service_dir, Config.jetty_user, Config.jetty_group, recursive=True)
         jansAuthInstaller.chown(self.jans_auth_custom_lib_dir, Config.jetty_user, Config.jetty_group, recursive=True)
 
-        print("Updating apache configuration")
-        apache_directive_template_text = self.readFile(os.path.join(self.templates_dir, 'casa_apache_directive'))
-
-        apache_directive_text = self.fomatWithDict(apache_directive_template_text, Config.templateRenderingDict)
-
-        https_jans_text = self.readFile(httpd_installer.https_jans_fn)
-
-        if '<Location /casa>' not in https_jans_text:
-
-            https_jans_list = https_jans_text.splitlines()
-            n = 0
-    
-            for i, l in enumerate(https_jans_list):
-                if l.strip() == '</LocationMatch>':
-                    n = i
-
-            https_jans_list.insert(n+1, '\n' + apache_directive_text + '\n')
-            self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
-            print("Restarting Apache")
-            httpd_installer.restart()
+        self.add_apache_directive('<Location /casa>', 'casa_apache_directive')
 
         self.enable()
-
 
     def save_properties(self):
         fn = Config.savedProperties
@@ -417,6 +419,9 @@ def main():
     installer_obj.install_gluu_admin_ui()
     installer_obj.install_casa()
     installer_obj.save_properties()
+
+    print("Restarting Apache")
+    httpd_installer.restart()
 
     print("Starting Casa")
     config_api_installer.start('casa')

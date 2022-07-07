@@ -1,0 +1,12 @@
+    <Directory "%(admin_ui_apache_root)s">
+        Options FollowSymLinks Indexes
+        DirectoryIndex index.html
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+        Options -MultiViews
+        RewriteEngine On
+        RewriteBase /admin
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^ index.html [QSA,L]
+    </Directory>
