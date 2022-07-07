@@ -92,7 +92,7 @@ export default function AppAuthProvider(props) {
         setShowContent(false)
         return null
       } else {
-        if (userinfo.jansAdminUIRole || userinfo.length === 0) {
+        if (!userinfo.jansAdminUIRole || userinfo.jansAdminUIRole.length == 0) {
           setShowContent(false)
           setRoleNotFound(true)
           alert('The logged-in user do not have valid role. Logging out of Admin UI')
