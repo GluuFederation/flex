@@ -433,7 +433,6 @@ def prompt_for_installation():
         if prompt_casa_install and not prompt_casa_install.lower().startswith('y'):
             install_components['casa'] = False
     else:
-        casa_dir = os.path.join(Config.jetty_base, 'casa')
         print("Casa is allready installed on this system")
         install_components['casa'] = False
 
