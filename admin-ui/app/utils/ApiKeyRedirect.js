@@ -8,6 +8,7 @@ function ApiKeyRedirect({
   isLicenseValid,
   islicenseCheckResultLoaded,
   isLicenseActivationResultLoaded,
+  roleNotFound,
 }) {
   const { t } = useTranslation()
 
@@ -42,16 +43,24 @@ function ApiKeyRedirect({
           </div>
         )}
 
-        {!backendIsUp && (
-          <GluuNotification
-            type="error"
-            message={t('The UI backend service is down')}
-            description={t(
-              'Please contact the side administrator or make sure it is up and running.',
-            )}
-            show={true}
-          />
-        )}
+        <GluuNotification
+          type="error"
+          message={t('The UI backend service is down')}
+          description={t(
+            'Please contact the side administrator or make sure it is up and running.',
+          )}
+          show={!backendIsUp}
+        />
+
+        <GluuNotification
+          type="error"
+          message={t('Unauthorized User')}
+          description={t(
+            'The logged-in user do not have valid role. Logging out of Admin UI',
+          )}
+          show={roleNotFound}
+        />
+        
         {isLicenseActivationResultLoaded && !isLicenseValid && (
           <GluuNotification
             type="error"

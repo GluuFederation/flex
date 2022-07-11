@@ -5,10 +5,7 @@ import UserForm from './UserForm'
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import { useFormik } from 'formik'
-import {
-  createNewUser,
-  redirectToListPage,
-} from '../../redux/actions/UserActions'
+import { createUser } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
 function UserAddPage() {
@@ -45,7 +42,11 @@ function UserAddPage() {
             let valE = []
             if (values[key]) {
               for (let i in values[key]) {
-                valE.push(values[key][i][key])
+                if (typeof values[key][i] == 'object') {
+                  valE.push(values[key][i][key])
+                } else {
+                  valE.push(values[key][i])
+                }
               }
             }
             obj = {
@@ -72,7 +73,7 @@ function UserAddPage() {
       givenName: values.givenName || '',
       customAttributes: customAttributes,
     }
-    dispatch(createNewUser(submitableValues))
+    dispatch(createUser(submitableValues))
   }
 
   useEffect(() => {

@@ -48,7 +48,6 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
-
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
       memoLimit = event.target.value
@@ -109,6 +108,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
         <GluuAdvancedSearch
           limitId={limitId}
           limit={limit}
+          pattern={pattern}
           patternId={patternId}
           handler={handleOptionsChange}
         />

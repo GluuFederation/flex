@@ -6,8 +6,7 @@ import UserDetailViewPage from './UserDetailViewPage'
 import {
   getUsers,
   setSelectedUserData,
-  redirectToListPage,
-  deleteExistingUser,
+  deleteUser,
 } from '../../redux/actions/UserActions'
 
 import { getAttributes } from '../../../schema/redux/actions/AttributeActions'
@@ -24,6 +23,7 @@ import {
 } from '../../../../app/utils/PermChecker'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
+import { getRoles } from '../../../admin/redux/actions/ApiRoleActions'
 
 function UserList(props) {
   const dispatch = useDispatch()
@@ -32,6 +32,7 @@ function UserList(props) {
     opt['limit'] = 0
     dispatch(getUsers({}))
     dispatch(getAttributes(opt))
+    dispatch(getRoles())
   }, [])
 
   const usersList = useSelector((state) => state.userReducer.items)
@@ -65,14 +66,8 @@ function UserList(props) {
     return history.push(`/user/usermanagement/edit:` + row.tableData.uuid)
   }
 
-  useEffect(() => {
-    if (redirectToUserListPage) {
-      dispatch(redirectToListPage(false))
-    }
-  }, [redirectToUserListPage])
-
   function handleUserDelete(row) {
-    dispatch(deleteExistingUser(row.inum))
+    dispatch(deleteUser(row.inum))
   }
 
   if (hasPermission(permissions, ROLE_WRITE)) {

@@ -30,7 +30,7 @@ export default class UserApi {
     })
   }
 
-  updateUserPassword = (data) => {
+  changeUserPassword = (data) => {
     const options = {}
     options['userPatchRequest'] = data
     return new Promise((resolve, reject) => {

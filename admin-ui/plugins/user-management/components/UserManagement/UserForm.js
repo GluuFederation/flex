@@ -10,7 +10,7 @@ import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import applicationstyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
-import { updateUserPassword } from '../../redux/actions/UserActions'
+import { changeUserPassword } from '../../redux/actions/UserActions'
 function UserForm({ formik }) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -31,7 +31,7 @@ function UserForm({ formik }) {
       userPassword: formik.values.userPassword,
       inum: userDetails.inum,
     }
-    dispatch(updateUserPassword(submitableValue))
+    dispatch(changeUserPassword(submitableValue))
     toggleChangePasswordModal()
   }
 
