@@ -28,7 +28,7 @@ export function* getUsersSaga({ payload }) {
   try {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
-    const data = yield call(userApi.getUsers)
+    const data = yield call(userApi.getUsers, payload.action)
     yield put(updateUserResponse(data))
     yield put(UMupdateUserLoading(false))
     yield call(postUserAction, audit)

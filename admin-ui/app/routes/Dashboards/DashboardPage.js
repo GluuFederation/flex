@@ -256,7 +256,14 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
+function DashboardPage({
+  statData,
+  permissions,
+  clients,
+  loading,
+  users,
+  dispatch,
+}) {
   const { t } = useTranslation()
   const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
   const [endDate, setEndDate] = useState(new Date())
@@ -280,8 +287,16 @@ function DashboardPage({ statData, permissions, clients, loading, dispatch }) {
   }, [isMobile])
 
   useEffect(() => {
-    dispatch(getUsers())
+    let userOptions = {
+      limit: 3,
+    }
+    setTimeout(() => {
+      dispatch(getUsers(userOptions))
+    }, 1000)
   }, [])
+  useEffect(() => {
+    console.log('abcd', users)
+  }, [users])
 
   useEffect(() => {
     let count = 0
@@ -659,6 +674,7 @@ const mapStateToProps = (state) => {
     loading: state.mauReducer.loading,
     clients: state.initReducer.clients,
     permissions: state.authReducer.permissions,
+    users: state.userReducer.items,
   }
 }
 

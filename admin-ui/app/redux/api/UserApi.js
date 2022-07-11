@@ -3,9 +3,9 @@ export default class UserApi {
     this.api = api
   }
 
-  getUsers = () => {
+  getUsers = (opts) => {
     return new Promise((resolve, reject) => {
-      this.api.getUser({}, (error, data) => {
+      this.api.getUser(opts, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
       })
     })
