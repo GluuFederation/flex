@@ -310,29 +310,31 @@ function DashboardPage({
       dispatch(getUsers(userOptions))
     }, 1000)
   }, [])
-  useEffect(() => {
-    console.log('abcd', users)
-  }, [users])
 
   useEffect(() => {
     let count = 0
-    const interval = setInterval(() => {
-      if (statData.length === 0 && count < 2) {
-        search()
-      }
-      if (clients.length === 0 && count < 2) {
-        buildPayload(userAction, 'Fetch openid connect clients', {})
-        dispatch(getClients(userAction))
-      }
-      if (Object.keys(license).length === 0 && count < 2) {
-        getLicense()
-      }
-      if (count < 2) {
-        getServerStatus()
-      }
-      count++
-    }, 1000)
-    return () => clearInterval(interval)
+    const interval = () => {
+      console.log(count)
+      setTimeout(() => {
+        if (statData.length === 0 && count < 2) {
+          search()
+        }
+        if (clients.length === 0 && count < 2) {
+          buildPayload(userAction, 'Fetch openid connect clients', {})
+          dispatch(getClients(userAction))
+        }
+        if (Object.keys(license).length === 0 && count < 2) {
+          getLicense()
+        }
+        if (count < 2) {
+          getServerStatus()
+          interval()
+        }
+        count++
+      }, 1000)
+    }
+    interval()
+    return () => {}
   }, [1000])
 
   function search() {

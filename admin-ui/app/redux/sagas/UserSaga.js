@@ -4,12 +4,12 @@ import {
   isFourZeroOneError,
   addAdditionalData,
 } from '../../utils/TokenController'
-import { UM_GET_USERS } from '../actions/types'
+import { GET_USERS } from '../actions/types'
 import UserApi from '../api/UserApi'
 import { getClient } from '../api/base'
 const JansConfigApi = require('jans_config_api')
 import { initAudit } from './SagaUtils'
-import { updateUserResponse, UMupdateUserLoading } from '../actions/UserActions'
+import { getUserResponse } from '../actions/UserActions'
 import { postUserAction } from '../api/backend-api'
 import { getAPIAccessToken } from '../actions'
 const API_USERS = 'api-users'
@@ -29,11 +29,9 @@ export function* getUsersSaga({ payload }) {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
     const data = yield call(userApi.getUsers, payload.action)
-    yield put(updateUserResponse(data))
-    yield put(UMupdateUserLoading(false))
+    yield put(getUserResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(UMupdateUserLoading(false))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -42,7 +40,7 @@ export function* getUsersSaga({ payload }) {
 }
 
 export function* watchGetUsers() {
-  yield takeEvery(UM_GET_USERS, getUsersSaga)
+  yield takeEvery(GET_USERS, getUsersSaga)
 }
 
 export default function* rootSaga() {

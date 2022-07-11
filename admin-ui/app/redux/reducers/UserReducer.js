@@ -1,4 +1,4 @@
-import { UM_UPDATE_LOADING, UM_GET_USERS } from '../actions/types'
+import { GET_USERS, GET_USERS_RESPONSE } from '../actions/types'
 import reducerRegistry from './ReducerRegistry'
 
 const INIT_STATE = {
@@ -11,15 +11,16 @@ const reducerName = 'userReducer'
 
 export default function userReducer(state = INIT_STATE, action) {
   switch (action.type) {
-    case UM_GET_USERS:
+    case GET_USERS:
       return {
         ...state,
         loading: true,
       }
-    case UM_UPDATE_LOADING:
+    case GET_USERS_RESPONSE:
       return {
         ...state,
-        loading: action.payload,
+        loading: false,
+        items: action.payload ? action.payload : [],
       }
     default:
       return handleDefault()
