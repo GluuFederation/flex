@@ -2,9 +2,9 @@ export default {
   tableHeaderStyle: {
     backgroundColor: '#03a96d',
     color: '#FFF',
-    padding: '2px',
+    padding: '12px',
     textTransform: 'uppercase',
-    fontSize: '18px',
+    fontSize: '16px',
   },
   homeStatTooltip: {
     backgroundColor: '#00C9FF',
