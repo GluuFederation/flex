@@ -5,8 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Paper } from '@material-ui/core'
-import { Card, CardBody, FormGroup } from 'Components'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import { Card, CardBody } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import LdapDetailPage from './LdapDetailPage'
@@ -28,6 +27,7 @@ import {
 } from 'Plugins/services/redux/actions/LdapActions'
 import { getPersistenceType } from 'Plugins/services/redux/actions/PersistenceActions'
 import { useTranslation } from 'react-i18next'
+import SetTitle from 'Utils/SetTitle'
 
 function LdapListPage({
   ldapConfigurations,
@@ -54,6 +54,7 @@ function LdapListPage({
     message: '',
     show: false,
   })
+  SetTitle(t('titles.ldap_authentication'))
   const toggle = () => setModal(!modal)
 
   function handleGoToLdapEditPage(row) {
@@ -156,11 +157,7 @@ function LdapListPage({
       })
   }
   return (
-    <Card>
-      <GluuRibbon title={t('titles.ldap_authentication')} fromLeft />
-      <FormGroup row />
-      <FormGroup row />
-      <FormGroup row />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuLoader blocking={persistenceTypeLoading}>
           {persistenceType == `ldap` ? (

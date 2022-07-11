@@ -17,6 +17,7 @@ function GluuRemovableTypeAhead({
   doc_category,
   options,
   isDirect,
+  allowNew = true,
 }) {
   const { t } = useTranslation()
   return (
@@ -30,11 +31,10 @@ function GluuRemovableTypeAhead({
         <Col sm={rsize - 1}>
           <InputGroup>
             <Typeahead
-              allowNew
+              allowNew={allowNew}
               emptyLabel=""
               labelKey={name}
               onChange={(selected) => {
-                console.log('SELECTED', selected)
                 if (formik) {
                   formik.setFieldValue(name, selected)
                 }

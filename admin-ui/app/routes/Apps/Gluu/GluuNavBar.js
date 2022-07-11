@@ -47,7 +47,7 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
             )}
           </Nav>
           <Box display="flex" justifyContent="space-between" width="100%">
-            <h3 className="page-title">Dashboard</h3>
+            <h3 className="page-title" id="page-title">Dashboard</h3>
             <Nav className="ml-auto" pills>
               {/*<NavbarMessages  />*/}
               {/*<NavbarActivityFeed />*/}

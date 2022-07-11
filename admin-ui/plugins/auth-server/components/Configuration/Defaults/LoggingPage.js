@@ -28,6 +28,7 @@ import {
   LOGGING_WRITE,
 } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
+import SetTitle from 'Utils/SetTitle'
 
 function LoggingPage({ logging, dispatch, permissions, loading }) {
   const { t } = useTranslation()
@@ -44,14 +45,12 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
   }
   const levels = ['TRACE', 'DEBUG', 'INFO', 'ERROR', 'WARN']
   const logLayouts = ['text', 'json']
+  SetTitle('Logging')
+
   return (
     <GluuLoader blocking={loading}>
-      <Card>
-        <GluuRibbon title="Logging" fromLeft doTranslate />
+      <Card style={applicationStyle.mainCard}>
         <CardBody style={{ minHeight: 500 }}>
-          <FormGroup row></FormGroup>
-          <FormGroup row></FormGroup>
-          <FormGroup row></FormGroup>
           <GluuViewWrapper canShow={hasPermission(permissions, LOGGING_READ)}>
             <Formik
               initialValues={initialValues}

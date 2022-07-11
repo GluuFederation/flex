@@ -291,3 +291,11 @@ body {
     content: ""; }
   .month-picker .tab.btn.next:before {
     content: ""; }
+
+.MuiTableCell-head:first-of-type{
+  border-top-left-radius: 16px;
+}
+
+.MuiTableCell-head:last-of-type{
+  border-top-right-radius: 16px;
+}

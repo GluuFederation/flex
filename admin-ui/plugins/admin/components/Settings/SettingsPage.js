@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import { SETTINGS } from 'Utils/ApiResources'
 import {
   Card,
@@ -14,20 +14,21 @@ import {
   CustomInput,
 } from 'Components'
 import GluuDarkModeToggle from 'Routes/Apps/Gluu/GluuDarkModeToggle'
+import SetTitle from 'Utils/SetTitle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function SettingsPage() {
+  const { t } = useTranslation()
   const [paggingSize, setPaggingSize] = useState(
     localStorage.getItem('paggingSize') || 10,
   )
   const levels = [1, 5, 10, 20]
+  SetTitle(t('titles.application_settings'))
+
   return (
     <React.Fragment>
-      <Card>
-        <GluuRibbon title="titles.application_settings" fromLeft doTranslate />
+      <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <FormGroup row> </FormGroup>
-          <FormGroup row> </FormGroup>
-          <FormGroup row> </FormGroup>
           <GluuTooltip doc_category={SETTINGS} doc_entry="pageSize">
             <FormGroup row>
               <GluuLabel label="List paging size" size={4} />

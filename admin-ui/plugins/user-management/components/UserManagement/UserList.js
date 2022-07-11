@@ -3,37 +3,36 @@ import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { Paper } from '@material-ui/core'
 import UserDetailViewPage from './UserDetailViewPage'
-import { Badge } from 'reactstrap'
 import {
   getUsers,
   setSelectedUserData,
-  redirectToListPage,
-  deleteExistingUser,
+  deleteUser,
 } from '../../redux/actions/UserActions'
 
 import { getAttributes } from '../../../schema/redux/actions/AttributeActions'
 import { useDispatch, useSelector } from 'react-redux'
-import { Card, CardBody, FormGroup } from '../../../../app/components'
+import { Card, CardBody } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
-import GluuRibbon from '../../../../app/routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import { useHistory } from 'react-router-dom'
 import {
   hasPermission,
-  buildPayload,
   ROLE_READ,
   ROLE_WRITE,
 } from '../../../../app/utils/PermChecker'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
+import SetTitle from 'Utils/SetTitle'
+import { getRoles } from '../../../admin/redux/actions/ApiRoleActions'
 
 function UserList(props) {
   const dispatch = useDispatch()
-  let opt = {}
+  const opt = {}
   useEffect(() => {
     opt['limit'] = 0
     dispatch(getUsers({}))
     dispatch(getAttributes(opt))
+    dispatch(getRoles())
   }, [])
 
   const usersList = useSelector((state) => state.userReducer.items)
@@ -50,6 +49,7 @@ function UserList(props) {
     toggle()
     handleUserDelete(deleteData)
   }
+  SetTitle(t('titles.user_management'))
 
   const myActions = []
   const options = []
@@ -66,14 +66,8 @@ function UserList(props) {
     return history.push(`/user/usermanagement/edit:` + row.tableData.uuid)
   }
 
-  useEffect(() => {
-    if (redirectToUserListPage) {
-      dispatch(redirectToListPage(false))
-    }
-  }, [redirectToUserListPage])
-
   function handleUserDelete(row) {
-    dispatch(deleteExistingUser(row.inum))
+    dispatch(deleteUser(row.inum))
   }
 
   if (hasPermission(permissions, ROLE_WRITE)) {
@@ -111,11 +105,8 @@ function UserList(props) {
   }
 
   return (
-    <Card>
-      <GluuRibbon title={t('titles.user_management')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
           <MaterialTable
             components={{

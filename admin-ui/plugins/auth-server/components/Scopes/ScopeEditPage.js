@@ -12,6 +12,7 @@ import {
 } from 'Redux/actions/InitActions'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function ScopeEditPage({ scope, loading, dispatch, scripts, attributes, saveOperationFlag, errorInSaveOperationFlag }) {
   const userAction = {}
@@ -58,7 +59,7 @@ function ScopeEditPage({ scope, loading, dispatch, scripts, attributes, saveOper
         message={t('messages.error_in_saving')}
         show={errorInSaveOperationFlag}
       />
-      <Card className="mb-3">
+      <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <ScopeForm
             scope={scope}

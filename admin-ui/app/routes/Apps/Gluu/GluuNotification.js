@@ -60,7 +60,7 @@ function GluuNotification({ type, message, description, show }) {
       <ToastContainer
         style={{ width: '98%' }}
         position="top-left"
-        autoClose={10000}
+        autoClose={100000}
         closeOnClick
         newestOnTop
         draggable={false}

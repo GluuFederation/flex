@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from 'Components'
+import { CardBody, Card } from 'Components'
 import CustomScriptForm from './CustomScriptForm'
 import { addCustomScript } from 'Plugins/admin/redux/actions/CustomScriptActions'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSaveOperationFlag }) {
   const userAction = {}
@@ -33,17 +34,15 @@ function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSave
         message={t('messages.error_in_saving')}
         show={errorInSaveOperationFlag}
       />
-      <Container>
-        <Card className="mb-3">
-          <CardBody>
-            <CustomScriptForm
-              item={new Object()}
-              scripts={scripts}
-              handleSubmit={handleSubmit}
-            />
-          </CardBody>
-        </Card>
-      </Container>
+      <Card className="mb-3" style={applicationStyle.mainCard}>
+        <CardBody>
+          <CustomScriptForm
+            item={new Object()}
+            scripts={scripts}
+            handleSubmit={handleSubmit}
+          />
+        </CardBody>
+      </Card>
     </React.Fragment>
   )
 }

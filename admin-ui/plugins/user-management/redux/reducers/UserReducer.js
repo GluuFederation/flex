@@ -1,13 +1,15 @@
 import {
-  UM_UPDATE_USERS_RESPONSE,
-  UM_UPDATE_LOADING,
-  UM_GET_USERS,
-  UM_SELECTED_USER_DATA,
-  UM_REDIRECT_TO_LIST,
-  UM_CREATE_NEW_USER,
-  UM_UPDATE_EXISTING_USER,
-  UM_DELETE_EXISTING_USER,
-  UM_UPDATE_PASSWORD,
+  GET_USERS_RESPONSE,
+  GET_USERS,
+  SELECTED_USER_DATA,
+  CREATE_NEW_USER,
+  CREATE_NEW_USER_RESPONSE,
+  UPDATE_USER,
+  DELETE_USER,
+  CHANGE_USERS_PASSWORD,
+  CHANGE_USERS_PASSWORD_RESPONSE,
+  UPDATE_USER_RESPONSE,
+  DELETE_USER_RESPONSE,
 } from '../actions/types'
 import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 
@@ -21,51 +23,64 @@ const reducerName = 'userReducer'
 
 export default function userReducer(state = INIT_STATE, action) {
   switch (action.type) {
-    case UM_GET_USERS:
+    case GET_USERS:
+      return {
+        ...state,
+        loading: true,
+        redirectToUserListPage: false,
+      }
+    case CREATE_NEW_USER:
       return {
         ...state,
         loading: true,
       }
-    case UM_CREATE_NEW_USER:
+    case CREATE_NEW_USER_RESPONSE:
+      return {
+        ...state,
+        loading: false,
+        redirectToUserListPage: action.payload ? true : false,
+      }
+    case CHANGE_USERS_PASSWORD:
       return {
         ...state,
         loading: true,
       }
-    case UM_UPDATE_PASSWORD:
+    case CHANGE_USERS_PASSWORD_RESPONSE:
       return {
         ...state,
         loading: true,
       }
-    case UM_UPDATE_EXISTING_USER:
+    case UPDATE_USER:
       return {
         ...state,
         loading: true,
       }
-    case UM_DELETE_EXISTING_USER:
+    case UPDATE_USER_RESPONSE:
+      return {
+        ...state,
+        loading: false,
+        redirectToUserListPage: action.payload ? true : false,
+      }
+    case DELETE_USER:
       return {
         ...state,
         loading: true,
       }
-    case UM_REDIRECT_TO_LIST:
+    case DELETE_USER_RESPONSE:
       return {
         ...state,
-        redirectToUserListPage: action.payload,
+        loading: true,
       }
-    case UM_UPDATE_LOADING:
-      return {
-        ...state,
-        loading: action.payload,
-      }
-    case UM_SELECTED_USER_DATA:
+    case SELECTED_USER_DATA:
       return {
         ...state,
         selectedUserData: action.payload,
       }
-    case UM_UPDATE_USERS_RESPONSE:
+    case GET_USERS_RESPONSE:
       return {
         ...state,
         loading: false,
-        items: action.payload?.action,
+        items: action.payload ? action.payload : [],
       }
     default:
       return handleDefault()

@@ -6,8 +6,7 @@ import { Paper } from '@material-ui/core'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import { Card, CardBody, FormGroup } from 'Components'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import { Card, CardBody } from 'Components'
 import CustomScriptDetailPage from './CustomScriptDetailPage'
 import GluuCustomScriptSearch from 'Routes/Apps/Gluu/GluuCustomScriptSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -36,6 +35,7 @@ import {
   SEARCHING_SCRIPTS,
 } from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
+import SetTitle from 'Utils/SetTitle'
 
 function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const { t } = useTranslation()
@@ -51,6 +51,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const [selectedScripts, setSelectedScripts] = useState(scripts)
   const [type, setType] = useState('PERSON_AUTHENTICATION')
   const toggle = () => setModal(!modal)
+  SetTitle(t('titles.scripts'))
 
   function makeOptions() {
     options[LIMIT] = parseInt(limit)
@@ -162,11 +163,8 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     toggle()
   }
   return (
-    <Card>
-      <GluuRibbon title={t('titles.scripts')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, SCRIPT_READ)}>
           <MaterialTable
             components={{

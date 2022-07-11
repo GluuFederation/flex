@@ -18,6 +18,8 @@ import {
 } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
+import { getLicenseDetails } from 'Redux/actions/LicenseDetailsActions'
+import { getHealthStatus } from 'Redux/actions/HealthAction'
 import DashboardChart from './Chart/DashboardChart'
 import DashboardTable from './Table/DashboardTable'
 import DateRange from './DateRange'
@@ -28,6 +30,7 @@ import DetailReport from '../../images/detail-report.png'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { getUsers } from '../../redux/actions'
+import SetTitle from 'Utils/SetTitle'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -245,6 +248,13 @@ const useStyles = makeStyles(() => ({
     paddingLeft: 5,
     paddingRight: 5,
   },
+  redBlock: {
+    background: '#c30909',
+    color: '#FFF',
+    borderRadius: 10,
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
   bannerContainer: {
     marginTop: 35,
   },
@@ -260,6 +270,9 @@ function DashboardPage({
   statData,
   permissions,
   clients,
+  license,
+  serverStatus,
+  dbStatus,
   loading,
   users,
   dispatch,
@@ -277,6 +290,9 @@ function DashboardPage({
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const classes = useStyles()
+  const FETCHING_LICENSE_DETAILS = 'Fetch license details'
+
+  SetTitle(t('menus.dashboard'))
 
   useEffect(() => {
     setMobileChartStyle({
@@ -308,6 +324,12 @@ function DashboardPage({
         buildPayload(userAction, 'Fetch openid connect clients', {})
         dispatch(getClients(userAction))
       }
+      if (Object.keys(license).length === 0 && count < 2) {
+        getLicense()
+      }
+      if (count < 2) {
+        getServerStatus()
+      }
       count++
     }, 1000)
     return () => clearInterval(interval)
@@ -317,6 +339,26 @@ function DashboardPage({
     options['month'] = getFormattedMonth()
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
+  }
+
+  function getLicense() {
+    buildPayload(userAction, FETCHING_LICENSE_DETAILS, options)
+    dispatch(getLicenseDetails({}))
+  }
+
+  function isUp(status) {
+    if (status) {
+      return (
+        status.toUpperCase() === 'ONLINE'.toUpperCase() ||
+        status.toUpperCase() === 'RUNNING'.toUpperCase()
+      )
+    }
+    return false
+  }
+
+  function getServerStatus() {
+    buildPayload(userAction, 'GET Health Status', options)
+    dispatch(getHealthStatus(userAction))
   }
 
   function getYearMonth(date) {
@@ -354,23 +396,23 @@ function DashboardPage({
   const userInfo = [
     {
       text: 'Product name',
-      value: 'Gluu Admin UI',
+      value: license?.productName,
     },
     {
       text: 'License Type',
-      value: 'TIME_LIMITED',
+      value: license?.licenseType,
     },
     {
       text: 'Customer Email',
-      value: 'sample@sample.com',
+      value: license?.customerEmail,
     },
     {
       text: 'Company Name',
-      value: 'Sample Co.',
+      value: `${license?.customerFirstName} ${license?.customerLastName}`,
     },
     {
       text: 'License Status',
-      value: 'active',
+      value: license?.licenseActive ? 'active' : 'inactive',
     },
   ]
 
@@ -391,14 +433,24 @@ function DashboardPage({
                 <span>OAuth server status</span>
                 <span>
                   <img
-                    src={CheckIcon}
-                    className={classes.iconCheck}
-                    alt="check"
+                    src={isUp(serverStatus) ? CheckIcon : CrossIcon}
+                    className={
+                      isUp(serverStatus) ? classes.iconCheck : classes.iconCross
+                    }
+                    alt="oauth server"
                   />
                 </span>
               </Box>
               <Box display="flex" justifyContent="flex-end">
-                <span className={classes.checkText}>Runing</span>
+                <span className={classes.checkText}>
+                  <span
+                    className={
+                      isUp(serverStatus) ? classes.checkText : classes.crossText
+                    }
+                  >
+                    {isUp(serverStatus) ? 'Running' : 'Down'}
+                  </span>
+                </span>
               </Box>
             </div>
             <div className={classes.statusText}>
@@ -406,14 +458,22 @@ function DashboardPage({
                 <span>Database status</span>
                 <span>
                   <img
-                    src={CheckIcon}
-                    className={classes.iconCheck}
-                    alt="check"
+                    src={isUp(dbStatus) ? CheckIcon : CrossIcon}
+                    className={
+                      isUp(dbStatus) ? classes.iconCheck : classes.iconCross
+                    }
+                    alt="database"
                   />
                 </span>
               </Box>
               <Box display="flex" justifyContent="flex-end">
-                <span className={classes.checkText}>Online</span>
+                <span
+                  className={
+                    isUp(dbStatus) ? classes.checkText : classes.crossText
+                  }
+                >
+                  {isUp(dbStatus) ? 'Online' : 'Offline'}
+                </span>
               </Box>
             </div>
             <div className={classes.statusText}>
@@ -421,14 +481,22 @@ function DashboardPage({
                 <span>Server status</span>
                 <span>
                   <img
-                    src={CrossIcon}
-                    className={classes.iconCross}
-                    alt="cross"
+                    src={isUp(serverStatus) ? CheckIcon : CrossIcon}
+                    className={
+                      isUp(serverStatus) ? classes.iconCheck : classes.iconCross
+                    }
+                    alt="server"
                   />
                 </span>
               </Box>
               <Box display="flex" justifyContent="flex-end">
-                <span className={classes.crossText}>Offline</span>
+                <span
+                  className={
+                    isUp(serverStatus) ? classes.checkText : classes.crossText
+                  }
+                >
+                  {isUp(serverStatus) ? 'Online' : 'Offline'}
+                </span>
               </Box>
             </div>
           </div>
@@ -529,8 +597,14 @@ function DashboardPage({
                         {userInfo.map((info, key) => (
                           <div className={classes.userInfoText} key={key}>
                             {info.text}:{' '}
-                            {info.value === 'active' ? (
-                              <span className={classes.greenBlock}>
+                            {info.text === 'License Status' ? (
+                              <span
+                                className={
+                                  info.value === 'active'
+                                    ? classes.greenBlock
+                                    : classes.redBlock
+                                }
+                              >
                                 {info.value}
                               </span>
                             ) : (
@@ -673,6 +747,9 @@ const mapStateToProps = (state) => {
     statData: state.mauReducer.stat,
     loading: state.mauReducer.loading,
     clients: state.initReducer.clients,
+    license: state.licenseDetailsReducer.item,
+    serverStatus: state.healthReducer.serverStatus,
+    dbStatus: state.healthReducer.dbStatus,
     permissions: state.authReducer.permissions,
     users: state.userReducer.items,
   }
