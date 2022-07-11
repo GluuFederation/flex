@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from 'Components'
+import { CardBody, Card } from 'Components'
 import ScopeForm from './ScopeForm'
 import { addScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import { buildPayload } from 'Utils/PermChecker'
@@ -12,6 +12,7 @@ import {
 } from 'Redux/actions/InitActions'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function ScopeAddPage({ scripts, dispatch, attributes, loading, saveOperationFlag, errorInSaveOperationFlag }) {
   const userAction = {}
@@ -63,18 +64,16 @@ function ScopeAddPage({ scripts, dispatch, attributes, loading, saveOperationFla
         message={t('messages.error_in_saving')}
         show={errorInSaveOperationFlag}
       />
-      <Container>
-        <Card className="mb-3">
-          <CardBody>
-            <ScopeForm
-              scope={scope}
-              scripts={scripts}
-              attributes={attributes}
-              handleSubmit={handleSubmit}
-            />
-          </CardBody>
-        </Card>
-      </Container>
+      <Card className="mb-3" style={applicationStyle.mainCard}>
+        <CardBody>
+          <ScopeForm
+            scope={scope}
+            scripts={scripts}
+            attributes={attributes}
+            handleSubmit={handleSubmit}
+          />
+        </CardBody>
+      </Card>
     </GluuLoader>
   )
 }

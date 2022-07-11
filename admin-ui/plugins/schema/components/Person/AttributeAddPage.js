@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import AttributeForm from './AttributeForm'
 import { addAttribute } from 'Plugins/schema/redux/actions/AttributeActions'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+
 function AttributeAddPage({ dispatch }) {
   const history = useHistory()
   function onSubmit(data) {
@@ -23,13 +25,11 @@ function AttributeAddPage({ dispatch }) {
   }
   return (
     <React.Fragment>
-      <Container>
-        <Card className="mb-3">
-          <CardBody>
-            <AttributeForm item={defautAttribute} customOnSubmit={onSubmit} />
-          </CardBody>
-        </Card>
-      </Container>
+      <Card className="mb-3" style={applicationStyle.mainCard}>
+        <CardBody>
+          <AttributeForm item={defautAttribute} customOnSubmit={onSubmit} />
+        </CardBody>
+      </Card>
     </React.Fragment>
   )
 }

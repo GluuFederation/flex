@@ -8,6 +8,7 @@ import { editCustomScript } from 'Plugins/admin/redux/actions/CustomScriptAction
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function CustomScriptEditPage({ item, scripts, loading, dispatch, saveOperationFlag, errorInSaveOperationFlag }) {
   const userAction = {}
@@ -21,12 +22,13 @@ function CustomScriptEditPage({ item, scripts, loading, dispatch, saveOperationF
 
   function handleSubmit(data) {
     if (data) {
-      let message = data.customScript.action_message
+      const message = data.customScript.action_message
       delete data.customScript.action_message
       buildPayload(userAction, message, data)
       dispatch(editCustomScript(userAction))
     }
   }
+
   return (
     <GluuLoader blocking={loading}>
       <GluuAlert
@@ -34,7 +36,7 @@ function CustomScriptEditPage({ item, scripts, loading, dispatch, saveOperationF
         message={t('messages.error_in_saving')}
         show={errorInSaveOperationFlag}
       />
-      <Card className="mb-3">
+      <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <CustomScriptForm
             item={item}
