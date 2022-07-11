@@ -9,6 +9,7 @@ import glob
 import code
 import configparser
 import shlex
+import shutil
 
 from pathlib import Path
 from urllib import request
@@ -214,13 +215,40 @@ class flex_installer(JettyInstaller):
 
             https_jans_list = https_jans_text.splitlines()
             n = 0
-    
+
             for i, l in enumerate(https_jans_list):
                 if l.strip() == '</LocationMatch>':
                     n = i
 
             https_jans_list.insert(n+1, '\n' + apache_directive_text + '\n')
             self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
+
+        # Enable mod_dir for apache
+
+        cmd_a2enmod = shutil.which('a2enmod')
+
+        if base.clone_type == 'deb':
+            httpd_installer.run([cmd_a2enmod, 'dir'])
+
+        elif base.os_type == 'suse':
+            httpd_installer.run([cmd_a2enmod, 'dir'])
+            cmd_a2enflag = shutil.which('a2enflag')
+            httpd_installer.run([cmd_a2enflag, 'SSL'])
+
+        else:
+            base_mod_path = Path('/etc/httpd/conf.modules.d/00-base.conf')
+            mod_load_content = base_mod_path.read_text().splitlines()
+            modified = False
+
+            for i, l in enumerate(mod_load_content[:]):
+                ls = l.strip()
+                if ls.startswith('#') and ls.endswith('mod_dir.so'):
+                    mod_load_content[i] = ls.lstrip('#')
+                    modified = True
+
+            if modified:
+                base_mod_path.write_text('\n'.join(mod_load_content))
+
 
     def install_gluu_admin_ui(self):
 
