@@ -130,6 +130,7 @@ const useStyles = makeStyles(() => ({
     color: '#303641',
     display: 'block',
     padding: '20px',
+    minWidth: 350,
   },
   userInfoTitle: {
     fontWeight: 'bold',
@@ -187,7 +188,7 @@ const useStyles = makeStyles(() => ({
   statusContainer: {
     borderRadius: 24,
     height: 180,
-    minWidth: 300,
+    minWidth: 320,
     background: '#FFF',
     color: '#303641',
     display: 'block',
@@ -544,7 +545,7 @@ function DashboardPage({
           </Grid>
           <Grid container className={`px-40`}>
             <Grid lg={9} xs={12} className="top-minus-40">
-              <h3>Access Tokens Graph</h3>
+              <h3 className="text-white">Access Tokens Graph</h3>
               {isTabletOrMobile ? (
                 <Grid container className={`${classes.whiteBg}`}>
                   <Grid xs={12} item style={{ marginLeft: 40, marginBottom: 40 }}>
