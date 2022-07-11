@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
@@ -28,6 +28,8 @@ import {
 import { getPersistenceType } from 'Plugins/services/redux/actions/PersistenceActions'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function LdapListPage({
   ldapConfigurations,
@@ -54,6 +56,10 @@ function LdapListPage({
     message: '',
     show: false,
   })
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.ldap_authentication'))
   const toggle = () => setModal(!modal)
 
@@ -189,7 +195,7 @@ function LdapListPage({
                 search: true,
                 selection: false,
                 pageSize: pageSize,
-                headerStyle: applicationStyle.tableHeaderStyle,
+                headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
                 actionsColumnIndex: -1,
               }}
               detailPanel={(rowData) => {

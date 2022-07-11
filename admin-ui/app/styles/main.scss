@@ -300,6 +300,10 @@ body {
   border-top-right-radius: 16px;
 }
 
+.MuiTableCell-head .MuiTableSortLabel-root:hover {
+  color: #ddd;
+}
+
 .nav-item > a.nav-link {
   background: transparent!important;
 }

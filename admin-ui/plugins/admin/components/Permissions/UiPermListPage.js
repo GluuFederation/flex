@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@material-ui/core'
 import UiPermDetailPage from './UiPermDetailPage'
@@ -22,6 +22,8 @@ import {
   PERMISSION_WRITE,
 } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -31,9 +33,15 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   const options = []
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
   useEffect(() => {
     doFetchList()
   }, [])
+
   SetTitle(t('titles.permissions'))
 
   if (hasPermission(permissions, PERMISSION_WRITE)) {
@@ -91,7 +99,7 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
               rowStyle: (rowData) => ({
                 backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
               }),
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowD) => {

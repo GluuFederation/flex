@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { Paper } from '@material-ui/core'
@@ -24,6 +24,8 @@ import {
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
 import { getRoles } from '../../../admin/redux/actions/ApiRoleActions'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function UserList(props) {
   const dispatch = useDispatch()
@@ -49,6 +51,10 @@ function UserList(props) {
     toggle()
     handleUserDelete(deleteData)
   }
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.user_management'))
 
   const myActions = []
@@ -132,7 +138,7 @@ function UserList(props) {
               rowStyle: (rowData) => ({
                 backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
               }),
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

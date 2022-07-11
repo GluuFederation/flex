@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
@@ -36,6 +36,8 @@ import {
 } from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const { t } = useTranslation()
@@ -51,6 +53,10 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const [selectedScripts, setSelectedScripts] = useState(scripts)
   const [type, setType] = useState('PERSON_AUTHENTICATION')
   const toggle = () => setModal(!modal)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
   SetTitle(t('titles.scripts'))
 
   function makeOptions() {
@@ -196,7 +202,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
               rowStyle: (rowData) => ({
                 backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
               }),
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

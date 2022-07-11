@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
@@ -36,6 +36,8 @@ import {
 } from 'Utils/PermChecker'
 import ClientShowScopes from './ClientShowScopes'
 import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const { t } = useTranslation()
@@ -44,6 +46,11 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const myActions = []
   const history = useHistory()
   const pageSize = localStorage.getItem('paggingSize') || 10
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
   SetTitle(t('titles.oidc_clients'))
 
   const [scopesModal, setScopesModal] = useState({
@@ -288,7 +295,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

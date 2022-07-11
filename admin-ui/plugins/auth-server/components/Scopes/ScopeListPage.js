@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { Paper } from '@material-ui/core'
@@ -34,6 +34,8 @@ import {
   FETCHING_SCOPES,
 } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -47,6 +49,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const [limit, setLimit] = useState(500)
   const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
   SetTitle(t('titles.scopes'))
 
   let memoLimit = limit
@@ -195,7 +202,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

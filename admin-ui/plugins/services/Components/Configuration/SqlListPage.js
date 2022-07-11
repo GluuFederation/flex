@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
@@ -27,6 +27,8 @@ import {
 } from 'Plugins/services/redux/actions/SqlActions'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function SqlListPage({
   sqlConfigurations,
@@ -53,6 +55,10 @@ function SqlListPage({
     message: '',
     show: false,
   })
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
   const toggle = () => setModal(!modal)
   SetTitle(t('titles.sql_authentication'))
 
@@ -173,7 +179,7 @@ function SqlListPage({
                 search: true,
                 selection: false,
                 pageSize: pageSize,
-                headerStyle: applicationStyle.tableHeaderStyle,
+                headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
                 actionsColumnIndex: -1,
               }}
               detailPanel={(rowData) => {

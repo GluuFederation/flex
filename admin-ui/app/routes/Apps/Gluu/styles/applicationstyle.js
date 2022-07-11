@@ -1,6 +1,6 @@
 export default {
   tableHeaderStyle: {
-    backgroundColor: '#03a96d',
+    backgroundColor: 'rgb(48, 54, 65)',
     color: '#FFF',
     padding: '12px',
     textTransform: 'uppercase',
