@@ -299,3 +299,11 @@ body {
 .MuiTableCell-head:last-of-type{
   border-top-right-radius: 16px;
 }
+
+.nav-item > a.nav-link {
+  background: transparent!important;
+}
+
+.block-ui-overlay {
+  border-radius: 12px;
+}
