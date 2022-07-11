@@ -223,6 +223,10 @@ class flex_installer(JettyInstaller):
             https_jans_list.insert(n+1, '\n' + apache_directive_text + '\n')
             self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
 
+        self.enable_apache_mod_dir()
+
+    def enable_apache_mod_dir(self):
+
         # Enable mod_dir for apache
 
         cmd_a2enmod = shutil.which('a2enmod')
