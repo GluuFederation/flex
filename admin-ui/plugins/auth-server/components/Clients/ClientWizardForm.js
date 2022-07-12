@@ -196,82 +196,83 @@ function ClientWizardForm({
   }
 
   return (
-    <Container>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={(values) => {
-          values['action_message'] = commitMessage
-          values[ATTRIBUTE].tlsClientAuthSubjectDn =
-            values.tlsClientAuthSubjectDn
-          values[
-            ATTRIBUTE
-          ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
-            values.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
-          values[ATTRIBUTE].keepClientAuthorizationAfterExpiration =
-            values.keepClientAuthorizationAfterExpiration
-          values[ATTRIBUTE].allowSpontaneousScopes =
-            values.allowSpontaneousScopes
-          values[ATTRIBUTE].backchannelLogoutSessionRequired =
-            values.backchannelLogoutSessionRequired
-          values[ATTRIBUTE].spontaneousScopes = values.spontaneousScopes
-          values[ATTRIBUTE].introspectionScripts = values.introspectionScripts
-          values[ATTRIBUTE].spontaneousScopeScriptDns =
-            values.spontaneousScopeScriptDns
-          values[ATTRIBUTE].consentGatheringScripts =
-            values.consentGatheringScripts
-          values[ATTRIBUTE].rptClaimsScripts = values.rptClaimsScripts
-          values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
-          values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
-          values[ATTRIBUTE].additionalAudience = values.additionalAudience
-          customOnSubmit(JSON.parse(JSON.stringify(values)))
-        }}
-      >
-        {(formik) => (
-          <Form onSubmit={formik.handleSubmit} onKeyDown={onKeyDown}>
-            <Card>
-              <CardBody className="d-flex justify-content-center pt-5">
-                <Wizard activeStep={currentStep} onStepChanged={changeStep}>
-                  <Wizard.Step
-                    id={setId(0)}
-                    icon={<i className="fa fa-shopping-basket fa-fw"></i>}
-                    complete={isComplete(sequence[0])}
-                  >
-                    {t('titles.client_basic')}
-                  </Wizard.Step>
-                  <Wizard.Step
-                    id={setId(1)}
-                    icon={<i className="fa fa-cube fa-fw"></i>}
-                    complete={isComplete(sequence[1])}
-                  >
-                    {t('titles.client_advanced')}
-                  </Wizard.Step>
-                  <Wizard.Step
-                    id={setId(2)}
-                    icon={<i className="fa fa-credit-card fa-fw"></i>}
-                    complete={isComplete(sequence[2])}
-                  >
-                    {t('titles.client_encryption_signing')}
-                  </Wizard.Step>
-                  <Wizard.Step
-                    id={setId(3)}
-                    icon={<i className="fa fa-credit-card fa-fw"></i>}
-                    complete={isComplete(sequence[3])}
-                  >
-                    {t('titles.client_attributes')}
-                  </Wizard.Step>
-                  <Wizard.Step
-                    id={setId(4)}
-                    icon={<i className="fa fa-credit-card fa-fw"></i>}
-                    complete={isComplete(sequence[4])}
-                  >
-                    {t('titles.client_scripts')}
-                  </Wizard.Step>
-                </Wizard>
-              </CardBody>
-              <CardBody className="p-5">
-                {(() => {
-                  setClient(formik.values)
-                  switch (currentStep) {
+    <React.Fragment>
+      <Card style={applicationStyle.mainCard}>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={(values) => {
+            values['action_message'] = commitMessage
+            values[ATTRIBUTE].tlsClientAuthSubjectDn =
+              values.tlsClientAuthSubjectDn
+            values[
+              ATTRIBUTE
+            ].runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims =
+              values.runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims
+            values[ATTRIBUTE].keepClientAuthorizationAfterExpiration =
+              values.keepClientAuthorizationAfterExpiration
+            values[ATTRIBUTE].allowSpontaneousScopes =
+              values.allowSpontaneousScopes
+            values[ATTRIBUTE].backchannelLogoutSessionRequired =
+              values.backchannelLogoutSessionRequired
+            values[ATTRIBUTE].spontaneousScopes = values.spontaneousScopes
+            values[ATTRIBUTE].introspectionScripts = values.introspectionScripts
+            values[ATTRIBUTE].spontaneousScopeScriptDns =
+              values.spontaneousScopeScriptDns
+            values[ATTRIBUTE].consentGatheringScripts =
+              values.consentGatheringScripts
+            values[ATTRIBUTE].rptClaimsScripts = values.rptClaimsScripts
+            values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
+            values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
+            values[ATTRIBUTE].additionalAudience = values.additionalAudience
+            customOnSubmit(JSON.parse(JSON.stringify(values)))
+          }}
+        >
+          {(formik) => (
+            <Form onSubmit={formik.handleSubmit} onKeyDown={onKeyDown}>
+              <Card>
+                <CardBody className="d-flex justify-content-center pt-5">
+                  <Wizard activeStep={currentStep} onStepChanged={changeStep}>
+                    <Wizard.Step
+                      id={setId(0)}
+                      icon={<i className="fa fa-shopping-basket fa-fw"></i>}
+                      complete={isComplete(sequence[0])}
+                    >
+                      {t('titles.client_basic')}
+                    </Wizard.Step>
+                    <Wizard.Step
+                      id={setId(1)}
+                      icon={<i className="fa fa-cube fa-fw"></i>}
+                      complete={isComplete(sequence[1])}
+                    >
+                      {t('titles.client_advanced')}
+                    </Wizard.Step>
+                    <Wizard.Step
+                      id={setId(2)}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
+                      complete={isComplete(sequence[2])}
+                    >
+                      {t('titles.client_encryption_signing')}
+                    </Wizard.Step>
+                    <Wizard.Step
+                      id={setId(3)}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
+                      complete={isComplete(sequence[3])}
+                    >
+                      {t('titles.client_attributes')}
+                    </Wizard.Step>
+                    <Wizard.Step
+                      id={setId(4)}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
+                      complete={isComplete(sequence[4])}
+                    >
+                      {t('titles.client_scripts')}
+                    </Wizard.Step>
+                  </Wizard>
+                </CardBody>
+                <CardBody className="p-5">
+                  {(() => {
+                    setClient(formik.values)
+                    switch (currentStep) {
                     case sequence[0]:
                       return (
                         <div
@@ -349,63 +350,64 @@ function ClientWizardForm({
                           />
                         </div>
                       )
-                  }
-                })()}
-              </CardBody>
-              <CardFooter className="p-4 bt-0">
-                <div className="d-flex">
-                  {currentStep !== sequence[0] && (
-                    <Button
-                      type="button"
-                      onClick={prevStep}
-                      style={applicationStyle.buttonStyle}
-                      color="link"
-                      className="mr-3"
-                    >
-                      <i className="fa fa-angle-left mr-2"></i>
-                      {t('actions.previous')}
-                    </Button>
-                  )}
-                  {currentStep !== sequence[sequence.length - 1] && (
-                    <Button
-                      type="button"
-                      color="primary"
-                      onClick={nextStep}
-                      style={applicationStyle.buttonStyle}
-                      className="ml-auto px-4"
-                    >
-                      {t('actions.next')}
-                      <i className="fa fa-angle-right ml-2"></i>
-                    </Button>
-                  )}
-                  {currentStep === sequence[sequence.length - 1] &&
-                    !view_only &&
-                    hasPermission(permissions, CLIENT_WRITE) && (
+                    }
+                  })()}
+                </CardBody>
+                <CardFooter className="p-4 bt-0">
+                  <div className="d-flex">
+                    {currentStep !== sequence[0] && (
+                      <Button
+                        type="button"
+                        onClick={prevStep}
+                        style={applicationStyle.buttonStyle}
+                        color="link"
+                        className="mr-3"
+                      >
+                        <i className="fa fa-angle-left mr-2"></i>
+                        {t('actions.previous')}
+                      </Button>
+                    )}
+                    {currentStep !== sequence[sequence.length - 1] && (
                       <Button
                         type="button"
                         color="primary"
-                        className="ml-auto px-4"
-                        onClick={toggle}
+                        onClick={nextStep}
                         style={applicationStyle.buttonStyle}
+                        className="ml-auto px-4"
                       >
-                        {t('actions.apply')}
+                        {t('actions.next')}
+                        <i className="fa fa-angle-right ml-2"></i>
                       </Button>
                     )}
-                </div>
-              </CardFooter>
-              <Button
-                type="submit"
-                color="primary"
-                style={{ visibility: 'hidden' }}
-              >
-                {t('actions.submit')}
-              </Button>
-            </Card>
-          </Form>
-        )}
-      </Formik>
+                    {currentStep === sequence[sequence.length - 1] &&
+                      !view_only &&
+                      hasPermission(permissions, CLIENT_WRITE) && (
+                        <Button
+                          type="button"
+                          color="primary"
+                          className="ml-auto px-4"
+                          onClick={toggle}
+                          style={applicationStyle.buttonStyle}
+                        >
+                          {t('actions.apply')}
+                        </Button>
+                    )}
+                  </div>
+                </CardFooter>
+                <Button
+                  type="submit"
+                  color="primary"
+                  style={{ visibility: 'hidden' }}
+                >
+                  {t('actions.submit')}
+                </Button>
+              </Card>
+            </Form>
+          )}
+        </Formik>
+      </Card>
       <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
-    </Container>
+    </React.Fragment>
   )
 }
 
