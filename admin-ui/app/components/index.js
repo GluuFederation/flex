@@ -19,6 +19,7 @@ import Navbar from './Navbar'
 import NavSearch from './NavSearch'
 import NavbarThemeProvider from './NavbarThemeProvider'
 import NestedDropdown from './NestedDropdown'
+import Notifications from './Notifications'
 import OuterClick from './OuterClick'
 import Progress from './Progress'
 import Sidebar from './Sidebar'
@@ -127,6 +128,7 @@ export {
   NavSearch,
   NavbarThemeProvider,
   NestedDropdown,
+  Notifications,
   withPageConfig,
   setupPage,
   OuterClick,

@@ -10,6 +10,7 @@ import {
   Nav,
   NavItem,
   NavSearch,
+  Notifications,
   SidebarTrigger,
   ThemeSetting,
   UncontrolledDropdown,
@@ -52,6 +53,7 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
               {/*<NavbarMessages  />*/}
               {/*<NavbarActivityFeed />*/}
               <NavSearch />
+              <Notifications />
               <LanguageMenu />
               <ThemeSetting />
               <UncontrolledDropdown nav inNavbar>
