@@ -13,7 +13,7 @@ import licenseSaga from './LicenseSaga'
 import licenseDetailsSaga from './LicenseDetailsSaga'
 import oidcDiscoverySaga from './OidcDiscoverySaga'
 import process from 'Plugins/PluginSagasResolver'
-
+import userSaga from './UserSaga'
 export default function* rootSaga() {
   const pluginSagaArr = process()
   yield all(
@@ -27,6 +27,7 @@ export default function* rootSaga() {
         mauSaga(),
         healthSaga(),
         licenseDetailsSaga(),
+        userSaga(),
       ],
       pluginSagaArr,
     ),
