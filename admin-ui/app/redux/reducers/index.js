@@ -10,7 +10,7 @@ import logoutReducer from './LogoutReducer'
 import licenseReducer from './LicenseReducer'
 import licenseDetailsReducer from './LicenseDetailsReducer'
 import oidcDiscoveryReducer from './OidcDiscoveryReducer'
-
+import userReducer from './UserReducer'
 const appReducers = {
   authReducer,
   fidoReducer,
@@ -21,6 +21,7 @@ const appReducers = {
   mauReducer,
   healthReducer,
   licenseDetailsReducer,
+  userReducer,
 }
 
 export default appReducers
