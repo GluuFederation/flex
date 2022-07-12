@@ -303,18 +303,11 @@ function DashboardPage({
   }, [isMobile])
 
   useEffect(() => {
+    let count = 0
     let userOptions = {
       limit: 3,
     }
-    setTimeout(() => {
-      dispatch(getUsers(userOptions))
-    }, 1000)
-  }, [])
-
-  useEffect(() => {
-    let count = 0
     const interval = () => {
-      console.log(count)
       setTimeout(() => {
         if (statData.length === 0 && count < 2) {
           search()
@@ -322,6 +315,7 @@ function DashboardPage({
         if (clients.length === 0 && count < 2) {
           buildPayload(userAction, 'Fetch openid connect clients', {})
           dispatch(getClients(userAction))
+          dispatch(getUsers(userOptions))
         }
         if (Object.keys(license).length === 0 && count < 2) {
           getLicense()
