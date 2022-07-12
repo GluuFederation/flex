@@ -72,7 +72,9 @@ export default function BasicTable() {
                 <TableCell
                   align="left"
                   className={
-                    key % 2 !== 0 ? classes.standardText : classes.whiteText
+                    key % 2 !== 0
+                      ? `${classes.standardText} ${classes.roundedLeft}`
+                      : classes.whiteText
                   }
                 >
                   {row?.displayName || ''}
