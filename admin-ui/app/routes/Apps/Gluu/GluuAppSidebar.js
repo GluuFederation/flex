@@ -13,34 +13,9 @@ import SchemaIcon from "Components/SVG/menu/Schema"
 import ServicesIcon from "Components/SVG/menu/Services"
 import UsersIcon from "Components/SVG/menu/Users"
 import { ThemeContext } from 'Context/theme/themeContext'
-import { makeStyles } from '@material-ui/core/styles'
 import Wave from 'Components/SVG/SidebarWave'
 import getThemeColor from 'Context/theme/config'
-
-const useStyles = makeStyles(() => ({
-  waveContainer: {
-    position: 'relative',
-    bottom: 93,
-    left: 0,
-    top: 140,
-    height: 70,
-    width: 250,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  wave: {
-    width: 250,
-    position: 'relative',
-    top: -75
-  },
-  powered: {
-    color: '#fff',
-    textAlign: 'center',
-    position: 'relative',
-    top: -130,
-    fontWeight: 500,
-  }
-}))
+import styles from './styles/GluuAppSidebar.style'
 
 function GluuAppSidebar({ scopes }) {
   const [pluginMenus, setPluginMenus] = useState([])
@@ -48,7 +23,7 @@ function GluuAppSidebar({ scopes }) {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`
-  const classes = useStyles()
+  const classes = styles()
   const themeColors = getThemeColor(selectedTheme)
 
   useEffect(() => {

@@ -7,32 +7,11 @@ import Popper from '@material-ui/core/Popper'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import { makeStyles } from '@material-ui/core/styles'
 import NotificationsIcon from '@material-ui/icons/Notifications'
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  whiteColor: {
-    color: '#FFFFFF',
-  },
-  paper: {
-    marginRight: theme.spacing(2),
-  },
-  btnContainer: {
-    position: 'relative',
-    top: 8,
-    textTransform: 'none',
-    color: '#FFFFFF',
-  },
-  topElm: {
-    zIndex: 9999
-  }
-}))
+import styles from './styles'
 
 export default function Lang() {
-  const classes = useStyles()
+  const classes = styles()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
 

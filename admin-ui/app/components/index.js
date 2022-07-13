@@ -28,7 +28,6 @@ import SidebarTrigger from './SidebarTrigger'
 import {
   ThemeClass,
   ThemeProvider,
-  ThemeSelector,
   ThemeConsumer,
 } from './Theme'
 import ThemeSetting from './ThemeSetting'
@@ -139,7 +138,6 @@ export {
   ThemeClass,
   ThemeConsumer,
   ThemeProvider,
-  ThemeSelector,
   ThemeSetting,
   UncontrolledTabs,
   Wizard

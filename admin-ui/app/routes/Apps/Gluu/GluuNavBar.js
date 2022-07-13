@@ -22,7 +22,7 @@ import { randomAvatar } from '../../../utilities'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 
-function GluuNavBar({ themeColor, themeStyle, userinfo }) {
+function GluuNavBar({ userinfo }) {
   const userInfo = userinfo ? userinfo : {}
   const [showCollapse, setShowCollapse] = useState(
     window.matchMedia('(max-width: 992px)').matches,
@@ -34,66 +34,57 @@ function GluuNavBar({ themeColor, themeStyle, userinfo }) {
   }, [])
   return (
     <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
-      <NavbarThemeProvider
-        style={themeStyle}
-        color={themeColor}
-        className="shadow-sm"
-      >
-        <Navbar expand="lg" themed>
-          <Nav>
-            {showCollapse && (
-              <NavItem className="mr-3">
-                <SidebarTrigger id="navToggleBtn" />
-              </NavItem>
-            )}
+      <Navbar expand="lg" themed>
+        <Nav>
+          {showCollapse && (
+            <NavItem className="mr-3">
+              <SidebarTrigger id="navToggleBtn" />
+            </NavItem>
+          )}
+        </Nav>
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <h3 className="page-title" id="page-title">Dashboard</h3>
+          <Nav className="ml-auto" pills>
+            {/*<NavbarMessages  />*/}
+            {/*<NavbarActivityFeed />*/}
+            <NavSearch />
+            <Notifications />
+            <LanguageMenu />
+            <ThemeSetting />
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav>
+                <Avatar.Image
+                  size="md"
+                  src={randomAvatar()}
+                  addOns={[
+                    <AvatarAddOn.Icon
+                      className="fa fa-circle"
+                      color="white"
+                      key="avatar-icon-bg"
+                    />,
+                    <AvatarAddOn.Icon
+                      className="fa fa-circle"
+                      color="success"
+                      key="avatar-icon-fg"
+                    />,
+                  ]}
+                />
+              </DropdownToggle>
+              <DropdownProfile right userinfo={userInfo} />
+            </UncontrolledDropdown>
           </Nav>
-          <Box display="flex" justifyContent="space-between" width="100%">
-            <h3 className="page-title" id="page-title">Dashboard</h3>
-            <Nav className="ml-auto" pills>
-              {/*<NavbarMessages  />*/}
-              {/*<NavbarActivityFeed />*/}
-              <NavSearch />
-              <Notifications />
-              <LanguageMenu />
-              <ThemeSetting />
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav>
-                  <Avatar.Image
-                    size="md"
-                    src={randomAvatar()}
-                    addOns={[
-                      <AvatarAddOn.Icon
-                        className="fa fa-circle"
-                        color="white"
-                        key="avatar-icon-bg"
-                      />,
-                      <AvatarAddOn.Icon
-                        className="fa fa-circle"
-                        color="success"
-                        key="avatar-icon-fg"
-                      />,
-                    ]}
-                  />
-                </DropdownToggle>
-                <DropdownProfile right userinfo={userInfo} />
-              </UncontrolledDropdown>
-            </Nav>
-          </Box>
-        </Navbar>
-      </NavbarThemeProvider>
+        </Box>
+      </Navbar>
     </ErrorBoundary>
   )
 }
 
 GluuNavBar.propTypes = {
-  navStyle: PropTypes.oneOf(['pills', 'accent', 'default']),
-  themeStyle: PropTypes.string,
-  themeColor: PropTypes.string,
+  userinfo: PropTypes.object,
 }
+
 GluuNavBar.defaultProps = {
-  navStyle: 'default',
-  themeStyle: 'dark',
-  themeColor: 'primary',
+  navStyle: {},
 }
 
 const mapStateToProps = ({ authReducer }) => {

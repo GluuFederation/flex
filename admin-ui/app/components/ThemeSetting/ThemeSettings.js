@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import clsx from 'clsx'
-import { makeStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
@@ -10,48 +9,10 @@ import darkBlackThumbnail from 'Images/theme-thumbnail/darkBlack.jpg'
 import darkBlueThumbnail from 'Images/theme-thumbnail/darkBlue.jpg'
 import lightBlueThumbnail from 'Images/theme-thumbnail/lightBlue.jpg'
 import lightGreenThumbnail from 'Images/theme-thumbnail/lightGreen.jpg'
-
-const useStyles = makeStyles({
-  list: {
-    width: 250,
-  },
-  fullList: {
-    width: 'auto',
-  },
-  whiteColor: {
-    color: '#FFFFFF',
-    position: 'relative',
-  },
-  selectInfo: {
-    textAlign: 'left',
-    marginLeft: 30,
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 10,
-  },
-  selectContainer: {
-    textAlign: 'center',
-    marginTop: '25%'
-  },
-  selectItem: {
-    marginBottom: 20,
-    cursor: 'pointer',
-    paddingTop: 16,
-  },
-  selectedItem: {
-    background: '#eaeaea',
-  },
-  selectImage: {
-    width: '75%',
-  },
-  selectTitle: {
-    fontSize: 16,
-    fontWeight: '600'
-  }
-})
+import styles from './styles'
 
 export function ThemeSettings() {
-  const classes = useStyles()
+  const classes = styles()
   const [open, setOpen] = React.useState(false)
   const theme = useContext(ThemeContext)
 
