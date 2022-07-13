@@ -1,8 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { getMauResponse } from '../actions/MauActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { postUserAction } from '../api/backend-api'
@@ -27,7 +24,9 @@ export function* getMau({ payload }) {
     payload = payload ? payload : { action: {} }
     addAdditionalData(audit, 'FETCH', 'MAU', payload)
     const mauApi = yield* newFunction()
+    console.log('HRE1')
     const data = yield call(mauApi.getMau, payload.action.action_data)
+    console.log('HRE1', data)
     yield put(getMauResponse(buildData(data)))
     yield call(postUserAction, audit)
   } catch (e) {
