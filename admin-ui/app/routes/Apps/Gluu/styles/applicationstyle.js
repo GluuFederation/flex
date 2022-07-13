@@ -30,9 +30,8 @@ export default {
     content: '',
   },
   mainCard: {
-    height: '85vh',
+    minHeight: '70vh',
     borderRadius: 24,
     padding: 12,
-    overflowY: 'auto',
   }
 }
