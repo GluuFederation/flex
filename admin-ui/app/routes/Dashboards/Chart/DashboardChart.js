@@ -60,9 +60,9 @@ const DashboardChart = () => {
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip />
         <Legend wrapperStyle={{ color: '#fff' }} />
-        <Bar dataKey="authz_code_access_token_count" fill={'#303641'} />
-        <Bar dataKey="authz_code_idtoken_count" fill={'#303641'} />
-        <Bar dataKey="client_credentials_access_token_count" fill={'#303641'} />
+        <Bar dataKey="authz_code_access_token_count" fill={'#9CBEE0'} />
+        <Bar dataKey="authz_code_idtoken_count" fill={'#8D9460'} />
+        <Bar dataKey="client_credentials_access_token_count" fill={'#FE9F01'} />
       </BarChart>
     </ResponsiveContainer>
   )
