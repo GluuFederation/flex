@@ -325,7 +325,7 @@ function DashboardPage({
                 ))}
               </div>
             </Grid>
-            <Grid item lg={4} md={12} style={{ width: '100%' }}>
+            <Grid item lg={4} md={6} xs={12} style={{ width: '100%' }}>
               <Paper
                 className={`${classes.dashboardCard} top-minus-40`}
                 elevation={0}
@@ -368,12 +368,12 @@ function DashboardPage({
                 </Grid>
               </Paper>
             </Grid>
-            <Grid item lg={4} md={12} style={{ width: '100%' }}>
-              {!isTabletOrMobile && <StatusCard />}
+            <Grid item lg={4} md={6} xs={12} style={{ width: '100%' }}>
+              <StatusCard />
             </Grid>
           </Grid>
           <Grid container className={`px-40`}>
-            <Grid lg={12} xs={12} className="top-minus-40">
+            <Grid lg={12} xs={12}>
               <h3 className="text-white">Access Tokens Graph</h3>
               {isTabletOrMobile ? (
                 <Grid container className={`${classes.whiteBg}`}>
@@ -426,7 +426,7 @@ function DashboardPage({
             </Grid>
             {isTabletOrMobile && !isMobile && <StatusCard />} */}
           </Grid>
-          <Grid container className={`${classes.flex} px-40 top-minus-40`}>
+          <Grid container className={`${classes.flex} px-40`}>
             <Grid xs={12}>
               <Grid
                 xs={12}
