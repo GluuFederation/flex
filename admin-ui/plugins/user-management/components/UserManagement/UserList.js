@@ -114,37 +114,42 @@ function UserList(props) {
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
-          <MaterialTable
-            components={{
-              Container: (props) => <Paper {...props} elevation={0} />,
-            }}
-            columns={[
-              {
-                title: `${t('fields.name')}`,
-                field: 'displayName',
-              },
-              { title: `${t('fields.userName')}`, field: 'userId' },
-              { title: `${t('fields.email')}`, field: 'mail' },
-            ]}
-            data={usersList}
-            isLoading={loading}
-            title=""
-            actions={myActions}
-            options={{
-              search: true,
-              searchFieldAlignment: 'left',
-              selection: false,
-              pageSize: pageSize,
-              rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
-              }),
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
-              actionsColumnIndex: -1,
-            }}
-            detailPanel={(rowData) => {
-              return <UserDetailViewPage row={rowData} />
-            }}
-          />
+          {usersList.length > 0 && (
+            <MaterialTable
+              components={{
+                Container: (props) => <Paper {...props} elevation={0} />,
+              }}
+              columns={[
+                {
+                  title: `${t('fields.name')}`,
+                  field: 'displayName',
+                },
+                { title: `${t('fields.userName')}`, field: 'userId' },
+                { title: `${t('fields.email')}`, field: 'mail' },
+              ]}
+              data={usersList}
+              isLoading={loading}
+              title=""
+              actions={myActions}
+              options={{
+                search: true,
+                searchFieldAlignment: 'left',
+                selection: false,
+                pageSize: pageSize,
+                rowStyle: (rowData) => ({
+                  backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                }),
+                headerStyle: {
+                  ...applicationStyle.tableHeaderStyle,
+                  ...bgThemeColor,
+                },
+                actionsColumnIndex: -1,
+              }}
+              detailPanel={(rowData) => {
+                return <UserDetailViewPage row={rowData} />
+              }}
+            />
+          )}
         </GluuViewWrapper>
       </CardBody>
       <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
