@@ -1,4 +1,34 @@
-FROM node:14.19.1-alpine3.15
+FROM node:14.19.3-alpine3.16 AS builder
+
+RUN apk update \
+    && apk upgrade \
+    && apk add --no-cache git openjdk11-jre-headless
+
+# TODO:
+# - use NODE_ENV=production
+# - download build package (not git clone)
+ENV ADMIN_UI_VERSION=01b472b7936bc7d67fbb6b100b827f5428356ad2
+
+# note that as we're pulling from a monorepo (with multiple project in it)
+# we are using partial-clone and sparse-checkout to get the admin-ui code
+RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
+    && cd /tmp/flex \
+    && git sparse-checkout init --cone \
+    && git checkout ${ADMIN_UI_VERSION} \
+    && git sparse-checkout set admin-ui \
+    && mkdir -p /opt/flex \
+    && mv /tmp/flex/admin-ui /opt/flex/admin-ui \
+    && cd /opt/flex/admin-ui \
+    && npm install @openapitools/openapi-generator-cli \
+    && npm run api \
+    && npm install \
+    && rm -rf $HOME/.npm
+
+# ===========
+# Application
+# ===========
+
+FROM node:14.19.3-alpine3.16
 
 # ======
 # alpine
@@ -7,7 +37,7 @@ FROM node:14.19.1-alpine3.15
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
-    && apk add --no-cache --virtual .build-deps git openjdk11-jre-headless
+    && apk add --no-cache --virtual .build-deps git
 
 # =====
 # nginx
@@ -35,7 +65,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_LINUX_SETUP_VERSION=afc539d63a70cda21e990fecd470224a4f94e9d6
+ENV JANS_LINUX_SETUP_VERSION=b3b3d22d93beb9d248c005b618e998c55ae007d5
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -62,25 +92,7 @@ RUN cd /tmp/jans \
 # Admin UI
 # ========
 
-# TODO:
-# - use NODE_ENV=production
-# - download build package (not git clone)
-ENV ADMIN_UI_VERSION=9de53ada7bd2ca576e8b64b09fa51b002223e84e
-
-# note that as we're pulling from a monorepo (with multiple project in it)
-# we are using partial-clone and sparse-checkout to get the admin-ui code
-RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation/flex /tmp/flex \
-    && cd /tmp/flex \
-    && git sparse-checkout init --cone \
-    && git checkout ${ADMIN_UI_VERSION} \
-    && git sparse-checkout set admin-ui \
-    && mkdir -p /opt/flex \
-    && mv /tmp/flex/admin-ui /opt/flex/admin-ui \
-    && cd /opt/flex/admin-ui \
-    && npm install @openapitools/openapi-generator-cli \
-    && npm run api \
-    && npm install \
-    && rm -rf $HOME/.npm
+COPY --from=builder /opt/flex/admin-ui /opt/flex/admin-ui
 
 # =======
 # Cleanup
@@ -215,7 +227,8 @@ RUN chown -R 1000:1000 /var/lib/nginx \
     && chgrp -R 0 /var/lib/nginx && chmod -R g=u /var/lib/nginx \
     && chgrp -R 0 /var/log/nginx && chmod -R g=u /var/log/nginx \
     && chgrp -R 0 /run/nginx/nginx.pid && chmod -R g=u /run/nginx/nginx.pid \
-    && chgrp -R 0 /etc/jans && chmod -R g=u /etc/jans
+    && chgrp -R 0 /etc/jans && chmod -R g=u /etc/jans \
+    && chown 1000:0 /opt/flex/admin-ui/plugins.config.json
 
 USER 1000
 
