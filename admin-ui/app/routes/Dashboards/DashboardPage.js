@@ -98,7 +98,8 @@ function DashboardPage({
   }, [1000])
 
   function search() {
-    options['month'] = getFormattedMonth()
+    options['startMonth'] = getYearMonth(startDate)
+    options['endMonth'] = getYearMonth(endDate)
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }

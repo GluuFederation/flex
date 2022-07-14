@@ -5,7 +5,7 @@ export default class MauApi {
   getMau = (opts) => {
     opts['format'] = 'json'
     return new Promise((resolve, reject) => {
-      this.api.getStat(opts['month'], opts, (error, data) => {
+      this.api.getStat('', opts, (error, data) => {
         if (error) {
           reject(error)
         } else {
