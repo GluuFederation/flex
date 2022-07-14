@@ -24,9 +24,7 @@ export function* getMau({ payload }) {
     payload = payload ? payload : { action: {} }
     addAdditionalData(audit, 'FETCH', 'MAU', payload)
     const mauApi = yield* newFunction()
-    console.log('HRE1')
     const data = yield call(mauApi.getMau, payload.action.action_data)
-    console.log('HRE1', data)
     yield put(getMauResponse(buildData(data)))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -48,20 +46,20 @@ export default function* rootSaga() {
 
 function buildData(stat) {
   const result = stat.map((entry) => buildEntry(entry))
-  result.push({
-    month: 202111,
-    mau: 5,
-    client_credentials_access_token_count: 68,
-    authz_code_access_token_count: 785,
-    authz_code_idtoken_count: 567,
-  })
-  result.push({
-    month: 202112,
-    mau: 3,
-    client_credentials_access_token_count: 28,
-    authz_code_access_token_count: 75,
-    authz_code_idtoken_count: 257,
-  })
+  // result.push({
+  //   month: 202111,
+  //   mau: 5,
+  //   client_credentials_access_token_count: 68,
+  //   authz_code_access_token_count: 785,
+  //   authz_code_idtoken_count: 567,
+  // })
+  // result.push({
+  //   month: 202112,
+  //   mau: 3,
+  //   client_credentials_access_token_count: 28,
+  //   authz_code_access_token_count: 75,
+  //   authz_code_idtoken_count: 257,
+  // })
   return result
 }
 function buildEntry(el) {

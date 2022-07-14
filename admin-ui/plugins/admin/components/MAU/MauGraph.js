@@ -57,7 +57,6 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
     options['startMonth'] = getYearMonth(startDate)
     options['endMonth'] = getYearMonth(endDate)
     buildPayload(userAction, 'GET MAU', options)
-    console.log('HRE', userAction)
     dispatch(getMau(userAction))
   }
 
