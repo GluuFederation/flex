@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   XAxis,
   YAxis,
@@ -8,25 +8,33 @@ import {
   Legend,
 } from 'recharts'
 import './styles.css'
+import { useSelector } from 'react-redux'
 
-const data = [
-  { name: 'Sample A', height: 40 },
-  { name: 'Sample B', height: 30 },
-  { name: 'Sample C', height: 20 },
-  { name: 'Sample D', height: 27 },
-  { name: 'Sample E', height: 18 },
-  { name: 'Sample F', height: 23 },
-  { name: 'Sample G', height: 34 },
-  { name: 'Sample G', height: 23 },
-  { name: 'Sample G', height: 29 },
-]
+const data = [{ name: 'Sample A', height: 40 }]
 
 const DashboardChart = () => {
+  const statData = useSelector((state) => state.mauReducer.stat)
+  const [graphData, setGraphData] = useState([{ name: 'Sample A', height: 40 }])
+  useEffect(() => {
+    console.log('Stats Data', statData)
+    let data = []
+    for (let i in statData) {
+      let obj = {
+        name: statData[i].month,
+        height: statData[i].authz_code_access_token_count,
+      }
+      data.push(obj)
+    }
+    let temp = [...graphData]
+    temp = data
+    setGraphData(temp)
+  }, [statData])
+
   return (
     <ResponsiveContainer width="100%" aspect={6.0 / 2.4}>
-      <BarChart data={data} margin={{ top: 5, right: 30, bottom: 5 }}>
+      <BarChart data={graphData} margin={{ top: 5, right: 30, bottom: 5 }}>
         <XAxis dataKey="name" />
-        <YAxis />
+        <YAxis dataKey="height" />
         <Legend wrapperStyle={{ color: '#fff' }} />
         <Bar dataKey="height" fill={'#4C5B66'} barSize={20} />
       </BarChart>
