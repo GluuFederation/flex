@@ -115,7 +115,7 @@ jobs:
           GLUU_VERSION=${{ github.event.inputs.gluu_version }}
           if [ ! -z "GLUU_VERSION" ]
           then
-            python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./${{ matrix.docker-images }}') ; dfparser.envs['GLUU_VERSION'] = '${{ github.event.inputs.gluu_version }}'"
+            python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-${{ matrix.docker-images }}') ; dfparser.envs['GLUU_VERSION'] = '${{ github.event.inputs.gluu_version }}'"
             echo "War vesrion has been modified."
           else
             echo "$GLUU_VERSION"
