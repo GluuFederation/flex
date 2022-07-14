@@ -70,7 +70,7 @@ function DashboardPage({
 
   useEffect(() => {
     let count = 0
-    let userOptions = {
+    const userOptions = {
       limit: 3,
     }
     const interval = () => {
@@ -142,7 +142,7 @@ function DashboardPage({
 
   const summaryData = [
     {
-      text: 'OIDC Clinets Count',
+      text: 'OIDC Clients Count',
       value: clients?.length,
     },
     {
@@ -180,13 +180,9 @@ function DashboardPage({
 
   const StatusCard = () => {
     return (
-      <Grid
-        xs={isTabletOrMobile ? (isMobile ? 12 : 6) : isSmallDesktop ? 4 : 3}
-      >
+      <Grid xs={12}>
         <Paper
-          className={`${classes.statusContainer} ${
-            !isTabletOrMobile ? 'mt-40 ml-20' : 'mt-20 ml-20'
-          }`}
+          className={`${classes.statusContainer} ml-20`}
           elevation={3}
         >
           <div className={classes.userInfoText}>
@@ -267,6 +263,48 @@ function DashboardPage({
     )
   }
 
+  const SupportCard = () => {
+    return (
+      <Grid item xs={12} className={classes.supportContainer}>
+        <Paper
+          className={`${classes.supportCard}`}
+          style={{ background: themeColors.dashboard.supportCard }}
+        >
+          <div style={{ zIndex: 2 }}>
+            <img
+              src={Logo}
+              alt="logo"
+              className={classes.supportLogo}
+            />
+            <div className="mt-40">Gluu Services</div>
+            <div className="mt-40">Community Support</div>
+            <div className="mt-40">FAQ</div>
+          </div>
+        </Paper>
+        <Paper
+          className={`${classes.verticalTextContainer}`}
+          style={{ background: themeColors.dashboard.supportCard }}
+        >
+          <div
+            style={{
+              zIndex: 4,
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div className={classes.textVertical}>WORLD</div>
+            <div className={`${classes.textVertical} text-center`}>
+              WIDE
+            </div>
+            <div className={`${classes.textVertical} text-right`}>
+              SU<span className={`${classes.redText}`}>PP</span>ORT
+            </div>
+          </div>
+        </Paper>
+      </Grid>
+    )
+  }
+
   return (
     <GluuLoader blocking={loading}>
       <GluuViewWrapper
@@ -274,7 +312,7 @@ function DashboardPage({
       >
         <div className={classes.root}>
           <Grid container className="px-40">
-            <Grid item lg={5} md={12}>
+            <Grid item lg={4} md={12}>
               <h3 className="txt-white">
                 Actives Users &amp; Access Token Stats
               </h3>
@@ -287,66 +325,16 @@ function DashboardPage({
                 ))}
               </div>
             </Grid>
-            <Grid item lg={7} md={12} style={{ width: '100%' }}>
+            <Grid item lg={4} md={12} style={{ width: '100%' }}>
               <Paper
                 className={`${classes.dashboardCard} top-minus-40`}
                 elevation={0}
                 spacing={2}
               >
                 <Grid className={classes.flex} container>
-                  <Grid item md={6} xs={isMobile ? 12 : 6}>
-                    <Grid container className={classes.slider}>
-                      <Grid item md={6} xs={isMobile ? 12 : 6}>
-                        <div>
-                          <div>Infinite Scale</div>
-                          <div>Complete Privacy</div>
-                          <div>Gluu.com</div>
-                        </div>
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={12} className={classes.flex}>
-                      <Grid item md={4} xs={12} className="mt-20">
-                        <Paper
-                          className={`${classes.news}`}
-                          elevation={3}
-                          style={
-                            isTabletOrMobile ? { paddingBottom: '10px' } : {}
-                          }
-                        >
-                          <img src={Logo} alt="logo" className={classes.logo} />
-                          <div className={classes.newsTitle}>Gluu News</div>
-                        </Paper>
-                      </Grid>
-                      <Grid item md={8} xs={12} className="mt-20">
-                        <Paper
-                          className={classes.reports}
-                          elevation={3}
-                          style={
-                            isTabletOrMobile
-                              ? {
-                                  display: 'block',
-                                  textAlign: 'center',
-                                  paddingBottom: '10px',
-                                }
-                              : {}
-                          }
-                        >
-                          <img
-                            src={DetailReport}
-                            alt="report"
-                            className={classes.detailReportImg}
-                          />
-                          <div className={classes.reportTitle}>
-                            Detailed Reports
-                          </div>
-                        </Paper>
-                      </Grid>
-                    </Grid>
-                  </Grid>
                   <Grid
                     item
-                    md={6}
-                    xs={isMobile ? 12 : 6}
+                    xs={12}
                     className={isMobile ? 'mt-20' : ''}
                   >
                     <Paper
@@ -380,9 +368,12 @@ function DashboardPage({
                 </Grid>
               </Paper>
             </Grid>
+            <Grid item lg={4} md={12} style={{ width: '100%' }}>
+              {!isTabletOrMobile && <StatusCard />}
+            </Grid>
           </Grid>
           <Grid container className={`px-40`}>
-            <Grid lg={9} xs={12} className="top-minus-40">
+            <Grid lg={12} xs={12} className="top-minus-40">
               <h3 className="text-white">Access Tokens Graph</h3>
               {isTabletOrMobile ? (
                 <Grid container className={`${classes.whiteBg}`}>
@@ -425,53 +416,18 @@ function DashboardPage({
                 </Grid>
               )}
             </Grid>
-            <Grid
+            {/* TODO: Implement support Card later */}
+            {/* <Grid
               lg={3}
               xs={isTabletOrMobile ? 5 : 3}
               className={`${classes.bannerContainer} top-minus-40`}
             >
-              <Grid item xs={12} className={classes.supportContainer}>
-                <Paper
-                  className={`${classes.supportCard}`}
-                  style={{ background: themeColors.dashboard.supportCard }}
-                >
-                  <div style={{ zIndex: 2 }}>
-                    <img
-                      src={Logo}
-                      alt="logo"
-                      className={classes.supportLogo}
-                    />
-                    <div className="mt-40">Gluu Services</div>
-                    <div className="mt-40">Community Support</div>
-                    <div className="mt-40">FAQ</div>
-                  </div>
-                </Paper>
-                <Paper
-                  className={`${classes.verticalTextContainer}`}
-                  style={{ background: themeColors.dashboard.supportCard }}
-                >
-                  <div
-                    style={{
-                      zIndex: 4,
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <div className={classes.textVertical}>WORLD</div>
-                    <div className={`${classes.textVertical} text-center`}>
-                      WIDE
-                    </div>
-                    <div className={`${classes.textVertical} text-right`}>
-                      SU<span className={`${classes.redText}`}>PP</span>ORT
-                    </div>
-                  </div>
-                </Paper>
-              </Grid>
+              <SupportCard />
             </Grid>
-            {isTabletOrMobile && !isMobile && <StatusCard />}
+            {isTabletOrMobile && !isMobile && <StatusCard />} */}
           </Grid>
           <Grid container className={`${classes.flex} px-40 top-minus-40`}>
-            <Grid xs={isTabletOrMobile ? 12 : isSmallDesktop ? 8 : 9}>
+            <Grid xs={12}>
               <Grid
                 xs={12}
                 item
@@ -496,7 +452,6 @@ function DashboardPage({
               </Grid>
               <DashboardTable />
             </Grid>
-            {!isTabletOrMobile && <StatusCard />}
           </Grid>
         </div>
       </GluuViewWrapper>

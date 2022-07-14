@@ -156,7 +156,7 @@ const styles = makeStyles(() => ({
   },
   statusContainer: {
     borderRadius: 24,
-    height: 180,
+    height: 280,
     minWidth: 320,
     background: '#FFF',
     color: '#303641',
@@ -205,7 +205,7 @@ const styles = makeStyles(() => ({
     paddingBottom: 20,
     color: '#303641',
     borderRadius: 20,
-    height: 370,
+    height: 430,
   },
   redText: {
     color: '#F22222',
@@ -228,7 +228,7 @@ const styles = makeStyles(() => ({
     marginTop: 35,
   },
   desktopChartStyle: {
-    maxWidth: 760,
+    maxWidth: '100%',
     overflowX: 'scroll',
     overflowY: 'hidden',
     scrollBehavior: 'smooth',
