@@ -776,7 +776,7 @@ questions:
 - variable: admin-ui.image.tag
   required: true
   type: string
-  default: "1.0.0-0"
+  default: "1.0.0-1"
   description: "The AdminUI Image tag"
   label: AdminUI image tag
   group: "Images"
@@ -834,7 +834,7 @@ questions:
 - variable: casa.image.tag
   required: true
   type: string
-  default: "5.0.0-0"
+  default: "5.0.0-1"
   description: "The Casa Image tag"
   label: Casa image tag
   group: "Images"
