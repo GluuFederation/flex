@@ -11,6 +11,7 @@ import {
 } from 'recharts'
 import './styles.css'
 import { useSelector } from 'react-redux'
+import TooltipDesign from './TooltipDesign'
 import moment from 'moment'
 
 const DashboardChart = () => {
@@ -58,7 +59,7 @@ const DashboardChart = () => {
         <XAxis dataKey={'month'} />
         <YAxis />
         <CartesianGrid strokeDasharray="3 3" />
-        <Tooltip />
+        <Tooltip content={<TooltipDesign />} />
         <Legend wrapperStyle={{ color: '#fff' }} />
         <Bar dataKey="client_credentials_access_token_count" fill={'#FE9F01'} />
         <Bar dataKey="authz_code_access_token_count" fill={'#9CBEE0'} />
