@@ -339,7 +339,7 @@ function DashboardPage({
                   >
                     <Paper
                       className={classes.userInfo}
-                      style={isMobile ? { marginLeft: 0 } : {}}
+                      style={isTabletOrMobile ? { marginLeft: 0 } : {}}
                       elevation={3}
                     >
                       <div className={classes.userInfoTitle}>User Info</div>
@@ -380,7 +380,7 @@ function DashboardPage({
                   <Grid
                     xs={12}
                     item
-                    style={{ marginLeft: 40, marginBottom: 40 }}
+                    style={isTabletOrMobile ? { marginLeft: 40 } : { marginLeft: 40, marginBottom: 40 }}
                   >
                     <div>Select a date range</div>
                     <DateRange />
@@ -391,7 +391,7 @@ function DashboardPage({
                     style={isMobile ? mobileChartStyle : {}}
                     item
                   >
-                    <div className={classes.chartContainer}>
+                    <div className={isTabletOrMobile ? classes.chartContainerTable : classes.chartContainer}>
                       <DashboardChart />
                     </div>
                   </Grid>

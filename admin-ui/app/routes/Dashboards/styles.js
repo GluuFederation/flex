@@ -115,6 +115,11 @@ const styles = makeStyles(() => ({
     maxWidth: '40vw',
     height: 'max-content',
   },
+  chartContainerTable: {
+    width: 780,
+    maxWidth: '63vw',
+    height: 'max-content',
+  },
   supportContainer: {
     display: 'flex',
     marginLeft: 20,
