@@ -10,7 +10,7 @@ const pluginMetadata = {
   menus: [
     {
       title: 'menus.schema',
-      icon: 'fa-database',
+      icon: 'schema',
       children: [
         {
           title: 'menus.person',

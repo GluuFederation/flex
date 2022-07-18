@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { FormGroup, Col, Input, Button } from 'Components'
 import { Accordion } from 'Components'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuNameValueProperty({
   nameValueLabel,
@@ -17,6 +18,8 @@ function GluuNameValueProperty({
 }) {
   const [dataArray, setDataArray] = useState(dataArr)
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const addClick = () => {
     setDataArray((prevDataArray) => [...prevDataArray, { key: '', value: '' }])
   }
@@ -43,7 +46,7 @@ function GluuNameValueProperty({
         <Button
           style={{ float: 'right', marginTop: -30 }}
           type="button"
-          color="primary"
+          color={`primary-${selectedTheme}`}
           onClick={addClick}
         >
           <i className="fa fa-fw fa-plus mr-2"></i>

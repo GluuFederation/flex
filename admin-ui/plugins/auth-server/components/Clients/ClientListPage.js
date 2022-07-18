@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
-import { Card, CardBody, FormGroup, Badge } from 'Components'
+import { Card, CardBody, Badge } from 'Components'
 import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
@@ -36,6 +35,9 @@ import {
   CLIENT_DELETE,
 } from 'Utils/PermChecker'
 import ClientShowScopes from './ClientShowScopes'
+import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const { t } = useTranslation()
@@ -44,6 +46,12 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const myActions = []
   const history = useHistory()
   const pageSize = localStorage.getItem('paggingSize') || 10
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
+  SetTitle(t('titles.oidc_clients'))
 
   const [scopesModal, setScopesModal] = useState({
     data: [],
@@ -86,8 +94,9 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       render: (rowData) => {
         return rowData?.grantTypes?.map((data) => {
           return (
+            // eslint-disable-next-line react/jsx-key
             <div style={{ maxWidth: 120, overflow: 'auto' }}>
-              <Badge color="primary">{data}</Badge>
+              <Badge color={`primary-${selectedTheme}`}>{data}</Badge>
             </div>
           )
         })
@@ -99,7 +108,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       render: (rowData) => {
         return (
           <Badge
-            color="primary"
+            color={`primary-${selectedTheme}`}
             role={'button'}
             onClick={() => setScopeData(rowData.scopes)}
           >
@@ -249,9 +258,9 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
 
   function getTrustedTheme(status) {
     if (status) {
-      return 'success'
+      return `primary-${selectedTheme}`
     } else {
-      return 'info'
+      return 'dimmed'
     }
   }
   //ToDo to be deleted
@@ -264,16 +273,13 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   }
 
   return (
-    <Card>
+    <Card style={applicationStyle.mainCard}>
       <ClientShowScopes
         handler={handler}
         isOpen={scopesModal.show}
         data={scopesModal.data}
       />
-      <GluuRibbon title={t('titles.oidc_clients')} fromLeft />
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, CLIENT_READ)}>
           <MaterialTable
             components={{
@@ -289,7 +295,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

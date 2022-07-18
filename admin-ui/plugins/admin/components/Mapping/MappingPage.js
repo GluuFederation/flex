@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -10,8 +10,8 @@ import {
   FormGroup,
   Button,
 } from 'Components'
+import Box from '@material-ui/core/Box'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import {
   getMapping,
@@ -25,6 +25,8 @@ import {
   buildPayload,
   ROLE_READ,
 } from 'Utils/PermChecker'
+import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function MappingPage({
   mapping,
@@ -39,6 +41,9 @@ function MappingPage({
   const toggle = () => setModal(!modal)
   const options = []
   const userAction = {}
+  SetTitle(t('titles.mapping'))
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   function doFetchPermissionsList() {
     buildPayload(userAction, 'PERMISSIONS', options)
@@ -72,24 +77,23 @@ function MappingPage({
   }
   return (
     <GluuLoader blocking={loading || permissionLoading}>
-      <Card>
-        <GluuRibbon title={t('titles.mapping')} fromLeft />
+      <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <FormGroup row />
-          <FormGroup row />
           <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
             <FormGroup row>
               <Col sm={10}></Col>
               <Col sm={2}>
-                <Button
-                  type="button"
-                  color="primary"
-                  style={applicationStyle.buttonStyle}
-                  onClick={showMappingDialog}
-                >
-                  <i className="fa fa-plus mr-2"></i>
-                  Add Mapping
-                </Button>
+                <Box display="flex" justifyContent="flex-end">
+                  <Button
+                    type="button"
+                    color={`primary-${selectedTheme}`}
+                    style={applicationStyle.buttonStyle}
+                    onClick={showMappingDialog}
+                  >
+                    <i className="fa fa-plus mr-2"></i>
+                    Add Mapping
+                  </Button>
+                </Box>
               </Col>
             </FormGroup>
             {mapping.map((candidate, idx) => (

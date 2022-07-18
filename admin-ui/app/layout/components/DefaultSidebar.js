@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Sidebar, SidebarTrigger, Divider } from 'Components'
+import { Sidebar, SidebarTrigger } from 'Components'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'
 import GluuAppSidebar from 'Routes/Apps/Gluu/GluuAppSidebar'
 
@@ -17,15 +17,10 @@ export const DefaultSidebar = () => (
     {/* START SIDEBAR: Only for Desktop */}
     <Sidebar.HideSlim>
       <Sidebar.Section>
-        <div style={{ textAlign: 'center' }}>
-          <SidebarTrigger id="navToggleBtn" color={'#8492a5'} />
-        </div>
         <Link to="/" className="sidebar__brand">
           <LogoThemed checkBackground />
         </Link>
       </Sidebar.Section>
-      <Divider />
-      <Divider />
     </Sidebar.HideSlim>
     {/* END SIDEBAR: Only for Desktop */}
 
@@ -33,11 +28,6 @@ export const DefaultSidebar = () => (
     <Sidebar.MobileFluid>
       {/* <SidebarTopA /> */}
       <Sidebar.Section fluid cover>
-        <SidebarTrigger
-          id="navToggleBtn"
-          color={'#8492a5'}
-          showCollapseonly={true}
-        />
         {/* SIDEBAR: Menu */}
         <GluuAppSidebar />
       </Sidebar.Section>

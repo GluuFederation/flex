@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Col, Button, FormGroup, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   function goBack() {
     window.history.back()
@@ -17,9 +19,8 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         <Col sm={4} md={2}>
           {extraLabel && extraOnClick && (
             <Button
-              color="primary"
+              color={`primary-${selectedTheme}`}
               onClick={extraOnClick}
-              style={applicationStyle.buttonStyle}
             >
               {t(extraLabel)}
             </Button>
@@ -28,9 +29,8 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         {!hideButtons || !hideButtons['back'] ? (
           <Col sm={4} md={2}>
             <Button
-              color="secondary"
+              color={`primary-${selectedTheme}`}
               onClick={goBack}
-              style={applicationStyle.buttonStyle}
             >
               <i className="fa fa-arrow-circle-left mr-2"></i>
               {t('actions.cancel')}
@@ -43,9 +43,8 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
         {!hideButtons || !hideButtons['save'] ? (
           <Col sm={4} md={2}>
             <Button
-              color="primary"
+              color={`primary-${selectedTheme}`}
               type="submit"
-              style={applicationStyle.buttonStyle}
             >
               <i className="fa fa-check-circle mr-2"></i>
               {t('actions.save')}

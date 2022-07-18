@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Paper } from '@material-ui/core'
-import { Card, CardBody, FormGroup } from 'Components'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import { Card, CardBody } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import LdapDetailPage from './LdapDetailPage'
@@ -28,6 +27,9 @@ import {
 } from 'Plugins/services/redux/actions/LdapActions'
 import { getPersistenceType } from 'Plugins/services/redux/actions/PersistenceActions'
 import { useTranslation } from 'react-i18next'
+import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function LdapListPage({
   ldapConfigurations,
@@ -54,6 +56,11 @@ function LdapListPage({
     message: '',
     show: false,
   })
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+  SetTitle(t('titles.ldap_authentication'))
   const toggle = () => setModal(!modal)
 
   function handleGoToLdapEditPage(row) {
@@ -116,7 +123,7 @@ function LdapListPage({
 
   function getBadgeTheme(status) {
     if (status) {
-      return 'primary'
+      return `primary-${selectedTheme}`
     } else {
       return 'warning'
     }
@@ -156,11 +163,7 @@ function LdapListPage({
       })
   }
   return (
-    <Card>
-      <GluuRibbon title={t('titles.ldap_authentication')} fromLeft />
-      <FormGroup row />
-      <FormGroup row />
-      <FormGroup row />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuLoader blocking={persistenceTypeLoading}>
           {persistenceType == `ldap` ? (
@@ -192,7 +195,7 @@ function LdapListPage({
                 search: true,
                 selection: false,
                 pageSize: pageSize,
-                headerStyle: applicationStyle.tableHeaderStyle,
+                headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
                 actionsColumnIndex: -1,
               }}
               detailPanel={(rowData) => {

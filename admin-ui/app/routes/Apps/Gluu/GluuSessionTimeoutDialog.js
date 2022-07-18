@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import {
   Dialog,
   DialogTitle,
@@ -6,39 +6,20 @@ import {
   DialogActions,
   Button,
   Typography,
-  makeStyles,
   Slide
 } from "@material-ui/core"
 import clsx from "clsx"
-import red from "@material-ui/core/colors/red"
-
-const useStyles = makeStyles(() => ({
-  dialog: {
-    borderRadius: 0
-  },
-  button: {
-    borderRadius: 0,
-    textTransform: "none",
-    padding: 5
-  },
-  logout: {
-    color: "#fff",
-    backgroundColor: "#03A96D",
-    "&:hover": {
-      backgroundColor: red[700]
-    }
-  },
-  countdown: {
-    color: "red[700]"
-  }
-}))
+import styles from "./styles/GluuSessionTimeoutDialog.style"
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
 const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
-  const classes = useStyles()
+  const classes = styles()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   return (
     <Dialog
@@ -66,7 +47,7 @@ const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
         </Button>
         <Button
           onClick={onContinue}
-          color="primary"
+          color={`primary-${selectedTheme}`}
           variant="contained"
           className={classes.button}
         >

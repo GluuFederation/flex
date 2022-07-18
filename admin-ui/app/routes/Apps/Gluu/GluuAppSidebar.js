@@ -1,27 +1,56 @@
-import React, { useState, useEffect } from 'react'
-import { SidebarMenu, Divider } from 'Components'
+import React, { useState, useEffect, useContext } from 'react'
+import { SidebarMenu } from 'Components'
 import { connect } from 'react-redux'
 import { hasPermission } from 'Utils/PermChecker'
 import { ErrorBoundary } from 'react-error-boundary'
 import GluuErrorFallBack from './GluuErrorFallBack'
 import { processMenus } from 'Plugins/PluginMenuResolver'
 import { useTranslation } from 'react-i18next'
+import HomeIcon from "Components/SVG/menu/Home"
+import AdministratorIcon from "Components/SVG/menu/Administrator"
+import OAuthIcon from "Components/SVG/menu/OAuth"
+import SchemaIcon from "Components/SVG/menu/Schema"
+import ServicesIcon from "Components/SVG/menu/Services"
+import UsersIcon from "Components/SVG/menu/Users"
+import { ThemeContext } from 'Context/theme/themeContext'
+import Wave from 'Components/SVG/SidebarWave'
+import getThemeColor from 'Context/theme/config'
+import styles from './styles/GluuAppSidebar.style'
 
 function GluuAppSidebar({ scopes }) {
   const [pluginMenus, setPluginMenus] = useState([])
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`
+  const classes = styles()
+  const themeColors = getThemeColor(selectedTheme)
 
   useEffect(() => {
     setPluginMenus(processMenus())
   }, [])
 
   function getMenuIcon(name) {
-    let fullName = ''
-    if (name) {
-      fullName = 'fa fa-fw ' + name
-      return <i className={fullName}></i>
+    switch (name) {
+    case 'admin':
+      return <AdministratorIcon className="menu-icon" />
+
+    case 'oauthserver':
+      return <OAuthIcon className="menu-icon" />
+
+    case 'services':
+      return <ServicesIcon className="menu-icon" />
+
+    case 'schema':
+      return <SchemaIcon className="menu-icon" />
+
+    case 'usersmanagement':
+      return <UsersIcon className="menu-icon" style={{ top: '-2px' }} />
+  
+    default:
+      return null
     }
-    return null
+
   }
 
   function getMenuPath(menu) {
@@ -39,30 +68,30 @@ function GluuAppSidebar({ scopes }) {
       <SidebarMenu>
         {/* -------- Home ---------*/}
         <SidebarMenu.Item
-          icon={<i className="fa fa-fw fa-home"></i>}
+          icon={<HomeIcon className="menu-icon" />}
           title={t('menus.home')}
-          textStyle={{ fontSize: '18px', fontWeight: '800' }}
+          textStyle={{ fontSize: '18px' }}
+          sidebarMenuActiveClass={sidebarMenuActiveClass}
         >
           <SidebarMenu.Item
             title={t('menus.dashboard')}
             to="/home/dashboard"
-            textStyle={{ fontSize: '18px', fontWeight: '600' }}
+            textStyle={{ fontSize: '15px', color: '#323b47' }}
             exact
           />
           <SidebarMenu.Item
             title={t('menus.health')}
             to="/home/health"
-            textStyle={{ fontSize: '18px', fontWeight: '600' }}
+            textStyle={{ fontSize: '15px' }}
             exact
           />
           <SidebarMenu.Item
             title={t('menus.licenseDetails')}
             to="/home/licenseDetails"
-            textStyle={{ fontSize: '18px', fontWeight: '600' }}
+            textStyle={{ fontSize: '15px' }}
             exact
           />
         </SidebarMenu.Item>
-        <Divider />
         {/* -------- Plugins ---------*/}
 
         {pluginMenus.map((plugin, key) => (
@@ -71,7 +100,8 @@ function GluuAppSidebar({ scopes }) {
             icon={getMenuIcon(plugin.icon)}
             to={getMenuPath(plugin)}
             title={t(`${plugin.title}`)}
-            textStyle={{ fontSize: '18px', fontWeight: '800' }}
+            textStyle={{ fontSize: '18px' }}
+            sidebarMenuActiveClass={sidebarMenuActiveClass}
           >
             {hasChildren(plugin) &&
               plugin.children.map((item, idx) => (
@@ -84,7 +114,7 @@ function GluuAppSidebar({ scopes }) {
                   }
                   to={getMenuPath(item)}
                   icon={getMenuIcon(item.icon)}
-                  textStyle={{ fontSize: '18px', fontWeight: '600' }}
+                  textStyle={{ fontSize: '15px' }}
                   exact
                 >
                   {hasChildren(item) &&
@@ -95,7 +125,7 @@ function GluuAppSidebar({ scopes }) {
                         to={getMenuPath(sub)}
                         isEmptyNode={!hasPermission(scopes, sub.permission)}
                         icon={getMenuIcon(sub.icon)}
-                        textStyle={{ fontSize: '18px', fontWeight: '400' }}
+                        textStyle={{ fontSize: '15px', fontWeight: '400' }}
                         exact
                       ></SidebarMenu.Item>
                     ))}
@@ -105,13 +135,18 @@ function GluuAppSidebar({ scopes }) {
         ))}
 
         {/* -------- Plugins ---------*/}
-        <Divider />
         <SidebarMenu.Item
-          icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
+          icon={<i className="fa fa-fw fa-sign-out mr-2" style={{ fontSize: 28 }}></i>}
           title={t('menus.signout')}
           to="/logout"
-          textStyle={{ fontSize: '18px', fontWeight: '800' }}
+          textStyle={{ fontSize: '18px' }}
         />
+        <div className={classes.waveContainer}>
+          <Wave className={classes.wave} fill={themeColors.menu.background} />
+          <div className={classes.powered}>
+            Powered by Gluu
+          </div>
+        </div>
       </SidebarMenu>
     </ErrorBoundary>
   )

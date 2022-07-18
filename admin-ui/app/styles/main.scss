@@ -1,5 +1,17 @@
 @import '~@miltonbo/dashboard-style-airframe/scss/style';
 @import '~pretty-checkbox/src/pretty-checkbox.scss';
+@import './custom/layout.scss';
+@import './custom/navbar.scss';
+@import './custom/sidebar.scss';
+@import './custom/spacing.scss';
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .mau-graph {
   margin-top: 50px;
@@ -10,13 +22,6 @@
 }
 .pretty {
   margin: 5px;
-}
-
-.sidebar-menu__entry__link:hover {
-  color: black;
-}
-.sidebar-submenu__entry__link:hover {
-  color: black;
 }
 
 .month-picker {
@@ -286,3 +291,23 @@
     content: ""; }
   .month-picker .tab.btn.next:before {
     content: ""; }
+
+.MuiTableCell-head:first-of-type{
+  border-top-left-radius: 16px;
+}
+
+.MuiTableCell-head:last-of-type{
+  border-top-right-radius: 16px;
+}
+
+.MuiTableCell-head .MuiTableSortLabel-root:hover {
+  color: #ddd;
+}
+
+.nav-item > a.nav-link {
+  background: transparent!important;
+}
+
+.block-ui-overlay {
+  border-radius: 12px;
+}

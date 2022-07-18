@@ -18,7 +18,7 @@ const LanguageMenu = () => {
   }
   return (
     <ButtonDropdown isOpen={isOpen} toggle={toggle}>
-      <DropdownToggle caret color="primary" data-testid="ACTIVE_LANG">
+      <DropdownToggle caret color="transparent" data-testid="ACTIVE_LANG">
         {lang}
       </DropdownToggle>
       <DropdownMenu>

@@ -22,7 +22,7 @@
     "sql": "Sql",
     "logging": "Enregistrement",
     "mau": "MAU",
-    "oauthserver": "Serveur OAuth",
+    "oauthserver": "Serveur Auth",
     "persistence": "Persistance",
     "person": "Personne",
     "properties": "Propriétés",

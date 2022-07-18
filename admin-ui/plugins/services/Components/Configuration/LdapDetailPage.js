@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Container,
   Badge,
@@ -8,12 +8,16 @@ import {
   Label,
 } from 'Components'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const LdapDetailPage = ({ row, testLdapConnection }) => {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   function getBadgeTheme(status) {
     if (status) {
-      return 'primary'
+      return `primary-${selectedTheme}`
     } else {
       return 'warning'
     }
@@ -68,7 +72,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
               <Label sm={6}>
                 {row.servers &&
                   row.servers.map((server, index) => (
-                    <Badge key={index} color="primary">
+                    <Badge key={index} color={`primary-${selectedTheme}`}>
                       {server}
                     </Badge>
                   ))}
@@ -100,7 +104,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
               <Label sm={6}>
                 {row.baseDNs &&
                   row.baseDNs.map((baseDN, index) => (
-                    <Badge key={baseDN} color="primary">
+                    <Badge key={baseDN} color={`primary-${selectedTheme}`}>
                       {baseDN}
                     </Badge>
                   ))}
@@ -133,7 +137,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
             <button
               onClick={checkLdapConnection}
               type="button"
-              className="btn btn-primary text-center"
+              className={`btn btn-primary-${selectedTheme} text-center`}
             >
               {t('fields.test_connection')}
             </button>

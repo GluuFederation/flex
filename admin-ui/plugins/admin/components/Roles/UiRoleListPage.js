@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@material-ui/core'
 import UiRoleDetailPage from './UiRoleDetailPage'
 import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
-import { Card, CardBody, FormGroup } from 'Components'
+import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   getRoles,
@@ -22,6 +21,9 @@ import {
   ROLE_READ,
   ROLE_WRITE,
 } from 'Utils/PermChecker'
+import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -31,9 +33,16 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const options = []
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
   useEffect(() => {
     doFetchList()
   }, [])
+
+  SetTitle(t('titles.roles'))
 
   if (hasPermission(permissions, ROLE_WRITE)) {
     myActions.push({
@@ -59,11 +68,8 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
     doFetchList()
   }
   return (
-    <Card>
-      <GluuRibbon title={t('titles.roles')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
           <MaterialTable
             components={{
@@ -75,7 +81,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
                 field: 'role',
                 width: '40%',
                 editable: false,
-                render: (rowData) => <Badge color="info">{rowData.role}</Badge>,
+                render: (rowData) => <Badge color={`primary-${selectedTheme}`}>{rowData.role}</Badge>,
               },
               { title: `${t('fields.description')}`, field: 'description' },
               {
@@ -128,7 +134,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
               rowStyle: (rowData) => ({
                 backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
               }),
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

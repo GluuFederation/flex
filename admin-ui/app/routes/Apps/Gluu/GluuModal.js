@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Button,
   Modal,
@@ -9,9 +9,13 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuModal({ title, modal, handler, onAccept }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   return (
     <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
       <ModalHeader toggle={handler}>
@@ -26,7 +30,7 @@ function GluuModal({ title, modal, handler, onAccept }) {
       </ModalBody>
       <ModalFooter>
         <Button
-          color="primary"
+          color={`primary-${selectedTheme}`}
           style={applicationStyle.buttonStyle}
           onClick={onAccept}
         >
@@ -34,7 +38,7 @@ function GluuModal({ title, modal, handler, onAccept }) {
         </Button>
         &nbsp;
         <Button
-          color="primary"
+          color={`primary-${selectedTheme}`}
           style={applicationStyle.buttonStyle}
           onClick={handler}
         >

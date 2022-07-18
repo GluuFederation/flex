@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { useTranslation } from 'react-i18next'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import { SETTINGS } from 'Utils/ApiResources'
 import {
   Card,
@@ -14,20 +14,24 @@ import {
   CustomInput,
 } from 'Components'
 import GluuDarkModeToggle from 'Routes/Apps/Gluu/GluuDarkModeToggle'
+import SetTitle from 'Utils/SetTitle'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function SettingsPage() {
+  const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const [paggingSize, setPaggingSize] = useState(
     localStorage.getItem('paggingSize') || 10,
   )
   const levels = [1, 5, 10, 20]
+  SetTitle(t('titles.application_settings'))
+
   return (
     <React.Fragment>
-      <Card>
-        <GluuRibbon title="titles.application_settings" fromLeft doTranslate />
+      <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <FormGroup row> </FormGroup>
-          <FormGroup row> </FormGroup>
-          <FormGroup row> </FormGroup>
           <GluuTooltip doc_category={SETTINGS} doc_entry="pageSize">
             <FormGroup row>
               <GluuLabel label="List paging size" size={4} />
@@ -89,7 +93,7 @@ function SettingsPage() {
                 }}
               >
                 <h3>
-                  <Badge color={'primary'}>
+                  <Badge color={`primary-${selectedTheme}`}>
                     {process.env.CONFIG_API_BASE_URL}
                   </Badge>
                 </h3>

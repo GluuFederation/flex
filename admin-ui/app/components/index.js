@@ -16,8 +16,10 @@ import Layout, {
 } from './Layout'
 import Nav from './Nav'
 import Navbar from './Navbar'
+import NavSearch from './NavSearch'
 import NavbarThemeProvider from './NavbarThemeProvider'
 import NestedDropdown from './NestedDropdown'
+import Notifications from './Notifications'
 import OuterClick from './OuterClick'
 import Progress from './Progress'
 import Sidebar from './Sidebar'
@@ -26,9 +28,9 @@ import SidebarTrigger from './SidebarTrigger'
 import {
   ThemeClass,
   ThemeProvider,
-  ThemeSelector,
   ThemeConsumer,
 } from './Theme'
+import ThemeSetting from './ThemeSetting'
 import UncontrolledTabs from './UncontrolledTabs'
 import Wizard from './Wizard'
 // Export non overriden Reactstrap components
@@ -122,8 +124,10 @@ export {
   Layout,
   Nav,
   Navbar,
+  NavSearch,
   NavbarThemeProvider,
   NestedDropdown,
+  Notifications,
   withPageConfig,
   setupPage,
   OuterClick,
@@ -134,7 +138,7 @@ export {
   ThemeClass,
   ThemeConsumer,
   ThemeProvider,
-  ThemeSelector,
+  ThemeSetting,
   UncontrolledTabs,
   Wizard
 }

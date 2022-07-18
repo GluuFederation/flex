@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import {
   Row,
   Badge,
@@ -19,8 +19,8 @@ import {
 } from 'Plugins/admin/redux/actions/MappingActions'
 import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
-
 import { Formik } from 'formik'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
@@ -29,10 +29,12 @@ function MappingItem({ candidate, roles }) {
   const [searchablePermissions, setSearchAblePermissions] = useState([])
   const [serverPermissions, setServerPermissions] = useState(null)
   const [isDeleteable, setIsDeleteable] = useState(false)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   useEffect(() => {
     if (roles) {
-      for (let i in roles) {
+      for (const i in roles) {
         if (roles[i].role == candidate.role) {
           if (roles[i].deletable) {
             setIsDeleteable(true)
@@ -46,8 +48,8 @@ function MappingItem({ candidate, roles }) {
 
   const getPermissionsForSearch = () => {
     const selectedPermissions = candidate.permissions
-    let filteredArr = []
-    for (let i in permissions) {
+    const filteredArr = []
+    for (const i in permissions) {
       if (!selectedPermissions.includes(permissions[i].permission)) {
         filteredArr.push(permissions[i].permission)
       }
@@ -123,7 +125,7 @@ function MappingItem({ candidate, roles }) {
                 />
               )}
               <Badge
-                color="info"
+                color={`primary-${selectedTheme}`}
                 style={{
                   float: 'right',
                 }}
@@ -156,7 +158,7 @@ function MappingItem({ candidate, roles }) {
                         <Col>
                           <Button
                             type="submit"
-                            color="primary"
+                            color={`primary-${selectedTheme}`}
                             style={applicationStyle.buttonStyle}
                           >
                             <i className="fa fa-plus mr-2"></i>
@@ -194,7 +196,7 @@ function MappingItem({ candidate, roles }) {
                 <Col sm={6}>
                   <Button
                     type="button"
-                    color="primary"
+                    color={`primary-${selectedTheme}`}
                     style={applicationStyle.buttonStyle}
                     onClick={() => revertLocalChanges()}
                   >
@@ -205,7 +207,7 @@ function MappingItem({ candidate, roles }) {
                 <Col sm={6} className="text-right">
                   <Button
                     type="button"
-                    color="primary"
+                    color={`primary-${selectedTheme}`}
                     style={applicationStyle.buttonStyle}
                     onClick={() => {
                       dispatch(updatePermissionsToServer(candidate))

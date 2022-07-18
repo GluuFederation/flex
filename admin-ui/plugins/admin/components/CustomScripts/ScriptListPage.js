@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
@@ -6,8 +6,7 @@ import { Paper } from '@material-ui/core'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import { Card, CardBody, FormGroup } from 'Components'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import { Card, CardBody } from 'Components'
 import CustomScriptDetailPage from './CustomScriptDetailPage'
 import GluuCustomScriptSearch from 'Routes/Apps/Gluu/GluuCustomScriptSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -36,6 +35,9 @@ import {
   SEARCHING_SCRIPTS,
 } from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
+import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const { t } = useTranslation()
@@ -51,6 +53,11 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const [selectedScripts, setSelectedScripts] = useState(scripts)
   const [type, setType] = useState('PERSON_AUTHENTICATION')
   const toggle = () => setModal(!modal)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+  SetTitle(t('titles.scripts'))
 
   function makeOptions() {
     options[LIMIT] = parseInt(limit)
@@ -162,11 +169,8 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     toggle()
   }
   return (
-    <Card>
-      <GluuRibbon title={t('titles.scripts')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, SCRIPT_READ)}>
           <MaterialTable
             components={{
@@ -180,7 +184,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
                 field: 'enabled',
                 type: 'boolean',
                 render: (rowData) => (
-                  <Badge color={rowData.enabled == 'true' ? 'primary' : 'info'}>
+                  <Badge color={rowData.enabled == true ? `primary-${selectedTheme}` : 'dimmed'}>
                     {rowData.enabled ? 'true' : 'false'}
                   </Badge>
                 ),
@@ -196,9 +200,9 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
               selection: false,
               pageSize: pageSize,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                backgroundColor: rowData.enabled ? themeColors.background : '#FFF',
               }),
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

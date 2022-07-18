@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { Paper } from '@material-ui/core'
 import UiPermDetailPage from './UiPermDetailPage'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
-import { Card, CardBody, FormGroup } from 'Components'
+import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import PermissionAddDialogForm from './PermissionAddDialogForm'
 import {
@@ -22,6 +21,9 @@ import {
   PERMISSION_READ,
   PERMISSION_WRITE,
 } from 'Utils/PermChecker'
+import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -31,9 +33,16 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   const options = []
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
   useEffect(() => {
     doFetchList()
   }, [])
+
+  SetTitle(t('titles.permissions'))
 
   if (hasPermission(permissions, PERMISSION_WRITE)) {
     myActions.push({
@@ -59,11 +68,8 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
     doFetchList()
   }
   return (
-    <Card>
-      <GluuRibbon title={t('titles.permissions')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, PERMISSION_READ)}>
           <MaterialTable
             components={{
@@ -76,7 +82,7 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
                 editable: false,
                 width: '50%',
                 render: (rowData) => (
-                  <Badge color="info">{rowData.permission}</Badge>
+                  <Badge color={`primary-${selectedTheme}`}>{rowData.permission}</Badge>
                 ),
               },
               { title: `${t('fields.description')}`, field: 'description' },
@@ -93,7 +99,7 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
               rowStyle: (rowData) => ({
                 backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
               }),
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowD) => {

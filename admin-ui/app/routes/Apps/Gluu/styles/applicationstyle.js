@@ -1,10 +1,10 @@
 export default {
   tableHeaderStyle: {
-    backgroundColor: '#03a96d',
+    backgroundColor: 'rgb(48, 54, 65)',
     color: '#FFF',
-    padding: '2px',
+    padding: '12px',
     textTransform: 'uppercase',
-    fontSize: '18px',
+    fontSize: '16px',
   },
   homeStatTooltip: {
     backgroundColor: '#00C9FF',
@@ -13,10 +13,10 @@ export default {
     color: 'white',
   },
   buttonStyle: {
-    background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+    background: '#00a260',
   },
   customButtonStyle: {
-    background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
+    background: '#00a260',
     paddingLeft: '20px',
     paddingRight: '30px',
     color: 'white',
@@ -24,9 +24,14 @@ export default {
     fontWeight: 'bold'
   },
   healthDown: {
-    background: 'linear-gradient(90deg, #fc575e 0%, #f7b42c 100%)',
+    background: 'rgb(241 35 32)',
   },
   healthUp: {
     content: '',
   },
+  mainCard: {
+    minHeight: '70vh',
+    borderRadius: 24,
+    padding: 12,
+  }
 }

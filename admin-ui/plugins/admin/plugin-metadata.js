@@ -33,7 +33,7 @@ const pluginMetadata = {
   menus: [
     {
       title: 'menus.adminui',
-      icon: 'fa-cubes',
+      icon: 'admin',
       children: [
         {
           title: 'menus.config-api',

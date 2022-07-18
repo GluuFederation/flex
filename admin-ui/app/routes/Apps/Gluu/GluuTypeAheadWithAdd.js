@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { FormGroup, Col, Row, Button, Input } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTooltip from './GluuTooltip'
 import applicationStyle from './styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuTypeAheadWithAdd({
   label,
@@ -20,6 +21,8 @@ function GluuTypeAheadWithAdd({
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   const addItem = () => {
     const newItem = document.getElementById(inputId).value
@@ -61,7 +64,7 @@ function GluuTypeAheadWithAdd({
               />
             </Col>
             <Button
-              color="primary"
+              color={`primary-${selectedTheme}`}
               type="button"
               style={applicationStyle.buttonStyle}
               onClick={addItem}

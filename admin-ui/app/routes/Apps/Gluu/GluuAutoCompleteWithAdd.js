@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { FormGroup, Col, Row, Button, Input } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTooltip from './GluuTooltip'
 import applicationStyle from './styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuAutoCompleteWithAdd({
   label,
@@ -20,6 +21,8 @@ function GluuAutoCompleteWithAdd({
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   const addItem = () => {
     const newItem = document.getElementById(inputId).value
@@ -55,8 +58,7 @@ function GluuAutoCompleteWithAdd({
               <Input placeholder={placeholder} id={inputId} />
             </Col>
             <Button
-              color="primary"
-              style={applicationStyle.buttonStyle}
+              color={`primary-${selectedTheme}`}
               type="button"
               onClick={addItem}
             >

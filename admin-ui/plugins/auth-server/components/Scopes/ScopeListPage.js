@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { Paper } from '@material-ui/core'
@@ -6,7 +6,6 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Card, CardBody, FormGroup } from 'Components'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -34,6 +33,9 @@ import {
   SEARCHING_SCOPES,
   FETCHING_SCOPES,
 } from 'Plugins/auth-server/common/Constants'
+import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -47,6 +49,12 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const [limit, setLimit] = useState(500)
   const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
+  SetTitle(t('titles.scopes'))
 
   let memoLimit = limit
   let memoPattern = pattern
@@ -59,7 +67,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
       title: `${t('fields.scope_type')}`,
       field: 'scopeType',
       render: (rowData) => (
-        <Badge key={rowData.inum} color="primary">
+        <Badge key={rowData.inum} color={`primary-${selectedTheme}`}>
           {rowData.scopeType}
         </Badge>
       ),
@@ -176,11 +184,8 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   }
 
   return (
-    <Card>
-      <GluuRibbon title={t('titles.scopes')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, SCOPE_READ)}>
           <MaterialTable
             components={{
@@ -197,7 +202,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

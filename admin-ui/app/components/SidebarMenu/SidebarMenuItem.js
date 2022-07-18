@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import uuid from 'uuid/v4'
-
 import { MenuContext } from './MenuContext'
 
 /**
@@ -32,7 +31,7 @@ const SidebarMenuItemLink = (props) =>
     )
   ) : (
     <a
-      className={`${props.classBase}__entry__link`}
+      className={`${props.classBase}__entry__link ${props.sidebarMenuActive}`}
       onClick={() => props.onToggle()}
       style={props.textStyle}
     >
@@ -47,6 +46,7 @@ SidebarMenuItemLink.propTypes = {
   children: PropTypes.node,
   classBase: PropTypes.string,
   textStyle: PropTypes.object,
+  sidebarMenuActive: PropTypes.string
 }
 
 /**
@@ -73,6 +73,7 @@ export class SidebarMenuItem extends React.Component {
     exact: PropTypes.bool,
     noCaret: PropTypes.bool,
     textStyle: PropTypes.object,
+    sidebarMenuActiveClass: PropTypes.string
   }
 
   static defaultProps = {
@@ -116,16 +117,15 @@ export class SidebarMenuItem extends React.Component {
 
   render() {
     const entry = this.getEntry()
-    const classBase = this.props.isSubNode ? 'sidebar-submenu' : 'sidebar-menu'
-    const itemClass = classNames(`${classBase}__entry`, {
+    const sidebarMenuActive = entry && entry.active && this.props.sidebarMenuActiveClass ? this.props.sidebarMenuActiveClass : ''
+    const classBase = this.props.isSubNode ? 'sidebar-submenu' : `sidebar-menu`
+    const itemClass = classNames(`${classBase}__entry cursor-pointer`, {
       [`${classBase}__entry--nested`]: !!this.props.children,
       open: entry && entry.open,
       active: entry && entry.active,
     })
     const activeMenu = {
-      color: '#ffffff',
-      background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
-      fontWeight: 'bold',
+      color: '#323b47',
     }
     const nonaActiveMenu = {}
 
@@ -143,10 +143,9 @@ export class SidebarMenuItem extends React.Component {
     function getTextStyle(itemClass) {
       if (
         itemClass.includes('active', 0) &&
-        itemClass.includes('submenu__entry', 0) &&
-        !itemClass.includes('open', 0)
+        itemClass.includes('submenu__entry', 0)
       ) {
-        return { color: 'white', fontWeight: 'bold' }
+        return { fontWeight: 'bold' }
       }
       return null
     }
@@ -155,6 +154,7 @@ export class SidebarMenuItem extends React.Component {
         style={getStyle(itemClass)}
         className={classNames(itemClass, {
           'sidebar-menu__entry--no-caret': this.props.noCaret,
+          'mb-20': !!this.props.icon,
         })}
       >
         {!this.props.isEmptyNode && (
@@ -164,13 +164,15 @@ export class SidebarMenuItem extends React.Component {
             onToggle={this.toggleNode.bind(this)}
             classBase={classBase}
             textStyle={getTextStyle(itemClass) || this.props.textStyle}
+            sidebarMenuActive={sidebarMenuActive}
           >
             {this.props.icon &&
               React.cloneElement(this.props.icon, {
                 className: classNames(
                   this.props.icon.props.className,
-                  `${classBase}__entry__icon`,
+                  `${classBase}__entry__icon`
                 ),
+                fill: sidebarMenuActive ? '#FFF' : '#323b47'
               })}
             {typeof this.props.title === 'string' ? (
               <span style={this.props.textStyle}>{this.props.title}</span>

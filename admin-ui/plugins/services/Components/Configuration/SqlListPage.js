@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
 import { Card, CardBody, FormGroup } from 'Components'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import SqlDetailPage from './SqlDetailPage'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
@@ -27,6 +26,9 @@ import {
   testSql,
 } from 'Plugins/services/redux/actions/SqlActions'
 import { useTranslation } from 'react-i18next'
+import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function SqlListPage({
   sqlConfigurations,
@@ -53,7 +55,12 @@ function SqlListPage({
     message: '',
     show: false,
   })
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
   const toggle = () => setModal(!modal)
+  SetTitle(t('titles.sql_authentication'))
 
   function handleGoToSqlEditPage(row) {
     dispatch(setCurrentItem(row))
@@ -148,11 +155,7 @@ function SqlListPage({
       })
   }
   return (
-    <Card>
-      <GluuRibbon title={t('titles.sql_authentication')} fromLeft />
-      <FormGroup row />
-      <FormGroup row />
-      <FormGroup row />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuLoader blocking={persistenceTypeLoading}>
           {persistenceType == `sql` ? (
@@ -176,7 +179,7 @@ function SqlListPage({
                 search: true,
                 selection: false,
                 pageSize: pageSize,
-                headerStyle: applicationStyle.tableHeaderStyle,
+                headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
                 actionsColumnIndex: -1,
               }}
               detailPanel={(rowData) => {

@@ -1,0 +1,54 @@
+.layout__navbar {
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+}
+
+.btn-transparent {
+  background-color: transparent;
+  border: 1px solid #9a9a9a;
+  color: #fff;
+  width: 44px;
+  height: 36px;
+  padding: 5px 10px 10px 10px;
+  position: relative;
+  top: 10px;
+}
+
+.avatar-image {
+  width: 45px;
+  height: 45px;
+
+  .avatar__content {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.navbar-collapse-wrap {
+  max-width: none;
+}
+
+.page-title {
+  color: #fff;
+  position: relative;
+  top: 14px;
+}
+
+.sidebar-menu__entry--nested.open .sidebar-menu__entry__link::after {
+  color: #323b47!important;
+}
+
+.sidebar-menu__entry--nested .sidebar-menu__entry__link::after {
+  color: #323b47!important;
+}
+
+.sidebar-submenu__entry.active:not(.open) > .sidebar-submenu__entry__link {
+  color: #323b47!important;
+}
+
+.sidebar-menu {
+  height: 87vh;
+  overflow-y: scroll;
+  margin-bottom: 0;
+  margin-top: 20px;
+}

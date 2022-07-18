@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useHistory } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
-import { Card, CardBody, FormGroup } from 'Components'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
+import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import AttributeDetailPage from './AttributeDetailPage'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
@@ -25,6 +24,9 @@ import {
   deleteAttribute,
 } from 'Plugins/schema/redux/actions/AttributeActions'
 import { useTranslation } from 'react-i18next'
+import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
+import getThemeColor from 'Context/theme/config'
 
 function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -32,6 +34,11 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const pageSize = localStorage.getItem('paggingSize') || 10
   const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(selectedTheme)
+  const bgThemeColor = { background: themeColors.background }
+
   useEffect(() => {
     makeOptions()
     dispatch(getAttributes(options))
@@ -39,6 +46,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
   const myActions = []
+  SetTitle(t('fields.attributes'))
 
   let memoLimit = limit
   let memoPattern = pattern
@@ -155,7 +163,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
 
   function getBadgeTheme(status) {
     if (status === 'ACTIVE') {
-      return 'primary'
+      return `primary-${selectedTheme}`
     } else {
       return 'warning'
     }
@@ -166,11 +174,8 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     toggle()
   }
   return (
-    <Card>
-      <GluuRibbon title={t('fields.attributes')} fromLeft />
+    <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <FormGroup row />
-        <FormGroup row />
         <GluuViewWrapper canShow={hasPermission(permissions, ATTRIBUTE_READ)}>
           <MaterialTable
             components={{
@@ -199,7 +204,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
               selection: false,
               searchFieldAlignment: 'left',
               pageSize: pageSize,
-              headerStyle: applicationStyle.tableHeaderStyle,
+              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

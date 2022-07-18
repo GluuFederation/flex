@@ -5,6 +5,7 @@ import { CardBody, Card } from 'Components'
 import AttributeForm from './AttributeForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { editAttribute } from 'Plugins/schema/redux/actions/AttributeActions'
+import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function AttributeEditPage({ item, loading, dispatch }) {
   if (!item.attributeValidation) {
@@ -23,7 +24,7 @@ function AttributeEditPage({ item, loading, dispatch }) {
   }
   return (
     <GluuLoader blocking={loading}>
-      <Card className="mb-3">
+      <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           <AttributeForm item={item} customOnSubmit={customHandleSubmit} />
         </CardBody>

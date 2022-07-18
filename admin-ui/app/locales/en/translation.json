@@ -267,7 +267,7 @@
     "sql": "Sql",
     "logging": "Logging",
     "mau": "Active Users",
-    "oauthserver": "OAuth server",
+    "oauthserver": "Auth server",
     "persistence": "Persistence",
     "person": "Person",
     "properties": "Properties",

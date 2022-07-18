@@ -11,7 +11,7 @@ const pluginMetadata = {
   menus: [
     {
       title: 'menus.users',
-      icon: 'fa-users',
+      icon: 'usersmanagement',
       path: PLUGIN_BASE_APTH + '/usersmanagement',
       permission: USER_READ,
     },

@@ -32,7 +32,7 @@ const pluginMetadata = {
   menus: [
     {
       title: 'menus.services',
-      icon: 'fa-gears',
+      icon: 'services',
       children: [
         {
           title: 'menus.cache',

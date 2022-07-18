@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import ReactTooltip from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuTooltip(props) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   return (
     <div data-tip data-for={props.doc_entry}>
       {props.children}
@@ -11,6 +15,7 @@ function GluuTooltip(props) {
         html
         type="success"
         id={props.doc_entry}
+        className={`type-${selectedTheme}`}
         data-testid={props.doc_entry}
         place="bottom"
       >

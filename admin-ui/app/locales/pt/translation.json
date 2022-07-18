@@ -21,7 +21,7 @@
     "sql": "Sql",
     "logging": "Exploração madeireira",
     "mau": "MAU",
-    "oauthserver": "Servidor OAuth",
+    "oauthserver": "Servidor Auth",
     "persistence": "Persistência",
     "person": "Pessoa",
     "properties": "Propriedades",

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Col,
   FormGroup,
@@ -11,9 +11,13 @@ import { COUCHBASE } from 'Utils/ApiResources'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function CouchbaseItem({ couchbase, index, formik }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   return (
     <Card
       style={{
@@ -54,7 +58,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               <Col sm={8}>
                 {couchbase.servers.length &&
                   couchbase.servers.map((server, index) => (
-                    <Badge key={index} color="primary" className="ml-1">
+                    <Badge key={index} color={`primary-${selectedTheme}`} className="ml-1">
                       {server}
                     </Badge>
                   ))}
@@ -69,7 +73,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               <Col sm={8}>
                 {couchbase.buckets.length &&
                   couchbase.buckets.map((bucket, index) => (
-                    <Badge key={index} color="primary" className="ml-1">
+                    <Badge key={index} color={`primary-${selectedTheme}`} className="ml-1">
                       {bucket}
                     </Badge>
                   ))}
