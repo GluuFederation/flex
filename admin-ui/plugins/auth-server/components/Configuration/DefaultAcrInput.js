@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ import {
   FormGroup,
   Button,
 } from 'Components'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function DefaultAcrInput({
   label,
@@ -24,6 +25,8 @@ function DefaultAcrInput({
   path,
 }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const VALUE = 'value'
   const PATH = 'path'
   const [show, setShow] = useState(false)
@@ -92,7 +95,7 @@ function DefaultAcrInput({
         {show && (
           <>
             <Button
-              color="primary"
+              color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
               size="sm"
               onClick={onAccept}
