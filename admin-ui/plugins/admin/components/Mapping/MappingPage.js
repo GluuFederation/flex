@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -26,6 +26,7 @@ import {
   ROLE_READ,
 } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function MappingPage({
   mapping,
@@ -41,6 +42,8 @@ function MappingPage({
   const options = []
   const userAction = {}
   SetTitle(t('titles.mapping'))
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   function doFetchPermissionsList() {
     buildPayload(userAction, 'PERMISSIONS', options)
@@ -83,7 +86,7 @@ function MappingPage({
                 <Box display="flex" justifyContent="flex-end">
                   <Button
                     type="button"
-                    color="primary"
+                    color={`primary-${selectedTheme}`}
                     style={applicationStyle.buttonStyle}
                     onClick={showMappingDialog}
                   >

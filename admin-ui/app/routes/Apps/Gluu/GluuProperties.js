@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { FormGroup, Col, Button } from 'Components'
 import { Accordion } from 'Components'
 import GluuPropertyItem from './GluuPropertyItem'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuProperties({
   compName,
@@ -14,6 +15,8 @@ function GluuProperties({
 }) {
   const [properties, setProperties] = useState(options)
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   const addProperty = () => {
     const item = { key: '', value: '' }
@@ -43,12 +46,11 @@ function GluuProperties({
       <Accordion.Body>
         <Button
           style={{
-            background: 'linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%)',
             float: 'right',
             marginTop: -40,
           }}
           type="button"
-          color="primary"
+          color={`primary-${selectedTheme}`}
           onClick={addProperty}
         >
           <i className="fa fa-fw fa-plus mr-2"></i>

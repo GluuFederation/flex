@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   FormGroup,
   Col,
@@ -12,7 +12,7 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
-import ClipLoader from 'react-spinners/ClipLoader'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const GluuCommitDialog = ({
   handler,
@@ -26,6 +26,8 @@ const GluuCommitDialog = ({
   isLoading,
 }) => {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const [active, setActive] = useState(false)
   const [loading, setLoading] = useState(isLoading)
   const [userMessage, setUserMessage] = useState('')
@@ -66,11 +68,11 @@ const GluuCommitDialog = ({
             <FormGroup row key={key}>
               <Col sm={1}>Set</Col>
               <Col sm={7}>
-                <Badge color="primary">{item.path}</Badge>
+                <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
               </Col>
               <Col sm={1}>to</Col>
               <Col sm={3}>
-                <Badge color="primary">{String(item.value)}</Badge>
+                <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
               </Col>
             </FormGroup>
           ))}
@@ -101,8 +103,7 @@ const GluuCommitDialog = ({
         {/* <ClipLoader loading={loading} size={35} /> */}
         {active && (
           <Button
-            color="primary"
-            style={applicationStyle.buttonStyle}
+            color={`primary-${selectedTheme}`}
             onClick={handleAccept}
           >
             <i className="fa fa-check-circle mr-2"></i>

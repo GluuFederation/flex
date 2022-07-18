@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import {
   FormGroup,
   Col,
@@ -11,14 +11,17 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
   const [active, setActive] = useState(false)
   const [deletable, setDeletable] = useState(false)
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   function handleStatus() {
-    var value = document.getElementById('api_role').value
+    const value = document.getElementById('api_role').value
     if (value.length >= 5) {
       setActive(true)
     } else {
@@ -84,7 +87,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
         <ModalFooter>
           {active && (
             <Button
-              color="primary"
+              color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
               onClick={handleAccept}
             >
@@ -92,7 +95,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
             </Button>
           )}{' '}
           <Button
-            color="secondary"
+            color={`primary-${selectedTheme}`}
             style={applicationStyle.buttonStyle}
             onClick={handler}
           >

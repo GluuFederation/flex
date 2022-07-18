@@ -137,7 +137,7 @@ const LdapDetailPage = ({ row, testLdapConnection }) => {
             <button
               onClick={checkLdapConnection}
               type="button"
-              className="btn btn-primary text-center"
+              className={`btn btn-primary-${selectedTheme} text-center`}
             >
               {t('fields.test_connection')}
             </button>

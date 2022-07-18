@@ -1,8 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import {
-  FormGroup,
-  Col,
-  Input,
   Button,
   Modal,
   ModalHeader,
@@ -14,6 +11,8 @@ import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicatio
 import GluuSingleValueCompleter from '../../../../app/routes/Apps/Gluu/GluuSingleValueCompleter'
 import GluuTypeAhead from '../../../../app/routes/Apps/Gluu/GluuTypeAhead'
 import { useSelector } from 'react-redux'
+import { ThemeContext } from 'Context/theme/themeContext'
+
 const DOC_CATEGORY = 'openid_client'
 
 const MappingAddDialogForm = ({
@@ -31,10 +30,12 @@ const MappingAddDialogForm = ({
   const autocompleteRef = useRef(null)
   const { t } = useTranslation()
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   const getPermissionsForSearch = () => {
-    let filteredArr = []
-    for (let i in permissions) {
+    const filteredArr = []
+    for (const i in permissions) {
       filteredArr.push(permissions[i].permission)
     }
     setSearchAblePermissions(filteredArr)
@@ -52,13 +53,13 @@ const MappingAddDialogForm = ({
   }, [apiRole, selectedPermissions])
 
   useEffect(() => {
-    let addedRoles = []
-    for (let i in mapping) {
+    const addedRoles = []
+    for (const i in mapping) {
       addedRoles.push(mapping[i].role)
     }
 
-    let rolesArr = []
-    for (let i in roles) {
+    const rolesArr = []
+    for (const i in roles) {
       if (!addedRoles.includes(roles[i].role)) {
         rolesArr.push(roles[i].role)
       }
@@ -114,7 +115,7 @@ const MappingAddDialogForm = ({
         <ModalFooter>
           {active && (
             <Button
-              color="primary"
+              color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
               onClick={handleAccept}
             >
@@ -122,7 +123,7 @@ const MappingAddDialogForm = ({
             </Button>
           )}{' '}
           <Button
-            color="secondary"
+            color={`primary-${selectedTheme}`}
             style={applicationStyle.buttonStyle}
             onClick={handler}
           >

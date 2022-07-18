@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 
 import { 
@@ -9,9 +9,13 @@ import {
 } from 'Components'
 import { randomAvatar } from './../../../utilities'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const ProfileHeader = () => {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   return (
     <React.Fragment>
       { /* START Header */}
@@ -41,7 +45,7 @@ const ProfileHeader = () => {
               { 'faker.name.firstName()' } { 'faker.name.lastName()' }
             </Link> <span className="text-muted mx-1"> / </span> {t("Profile Edit")}
           </h5>
-          <Badge color="primary" pill className="mr-2">{t("Premium")}</Badge> 
+          <Badge color={`primary-${selectedTheme}`} pill className="mr-2">{t("Premium")}</Badge> 
           <span className="text-muted">{t("Edit Your Name, Avatar, etc.")}</span>
         </Media>
       </Media>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +12,7 @@ import {
   Input,
   Button,
 } from 'Components'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuInlineInput({
   label,
@@ -28,6 +29,8 @@ function GluuInlineInput({
   path,
 }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const VALUE = 'value'
   const PATH = 'path'
   const [show, setShow] = useState(false)
@@ -116,7 +119,7 @@ function GluuInlineInput({
         {show && (
           <>
             <Button
-              color="primary"
+              color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
               size="sm"
               onClick={onAccept}

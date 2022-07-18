@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { subMonths } from 'date-fns'
 import moment from 'moment'
 import ActiveUsersGraph from 'Routes/Dashboards/Grapths/ActiveUsersGraph'
@@ -29,9 +29,12 @@ import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function MauGraph({ statData, permissions, clients, loading, dispatch }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
   const [endDate, setEndDate] = useState(new Date())
   const userAction = {}
@@ -111,7 +114,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
 
   const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
     <Button
-      color="primary"
+      color={`primary-${selectedTheme}`}
       outline
       style={applicationstyle.customButtonStyle}
       className="example-custom-input"
@@ -161,7 +164,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
                 &nbsp;&nbsp;
                 <Button
                   style={applicationstyle.customButtonStyle}
-                  color="primary"
+                  color={`primary-${selectedTheme}`}
                   onClick={search}
                 >
                   <i className="fa fa-search mr-2"></i>

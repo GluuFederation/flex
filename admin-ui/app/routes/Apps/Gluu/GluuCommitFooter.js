@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Col, Button, FormGroup, Divider } from 'Components'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function GluuCommitFooter({
   extraOnClick,
@@ -10,6 +11,9 @@ function GluuCommitFooter({
   hideButtons,
 }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   function goBack() {
     window.history.back()
   }
@@ -22,7 +26,7 @@ function GluuCommitFooter({
         {!hideButtons || !hideButtons['back'] ? (
           <Col sm={2} md={1}>
             <Button
-              color="secondary"
+              color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
               type="button"
               onClick={goBack}
@@ -37,7 +41,7 @@ function GluuCommitFooter({
         <Col sm={0} md={7}>
           {extraLabel && extraOnClick && (
             <Button
-              color="primary"
+              color={`primary-${selectedTheme}`}
               type="button"
               style={applicationStyle.buttonStyle}
               onClick={extraOnClick}
@@ -47,7 +51,7 @@ function GluuCommitFooter({
           )}
           <Button
             type="submit"
-            color="primary"
+            color={`primary-${selectedTheme}`}
             className="UserActionSubmitButton"
             style={{ visibility: 'hidden' }}
           >
@@ -57,7 +61,7 @@ function GluuCommitFooter({
         {!hideButtons || !hideButtons['save'] ? (
           <Button
             type="button"
-            color="primary"
+            color={`primary-${selectedTheme}`}
             style={applicationStyle.buttonStyle}
             className="ml-auto px-4"
             onClick={saveHandler}

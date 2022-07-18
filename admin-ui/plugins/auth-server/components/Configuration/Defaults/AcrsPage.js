@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import {
   Form,
   Button,
@@ -12,7 +12,6 @@ import { connect } from 'react-redux'
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/actions/AcrsActions'
 import { JSON_CONFIG } from 'Utils/ApiResources'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
-import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   hasPermission,
   buildPayload,
@@ -27,9 +26,12 @@ import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const userAction = {}
   const options = {}
   const authScripts = scripts
@@ -91,9 +93,8 @@ function AcrsPage({ acrs, scripts, permissions, loading, dispatch }) {
 
               {hasPermission(permissions, ACR_WRITE) && (
                 <Button
-                  color="primary"
+                  color={`primary-${selectedTheme}`}
                   type="submit"
-                  style={applicationStyle.buttonStyle}
                 >
                   {t('actions.save')}
                 </Button>

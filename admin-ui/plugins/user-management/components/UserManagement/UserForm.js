@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Button, Col, Form, FormGroup } from '../../../../app/components'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from '../../../../app/routes/Apps/Gluu/GluuSelectRow'
-import GluuFooter from '../../../../app/routes/Apps/Gluu/GluuFooter'
 import { useTranslation } from 'react-i18next'
 import UserClaimEntry from './UserClaimEntry'
 import { useSelector, useDispatch } from 'react-redux'
 import GluuLoader from '../../../../app/routes/Apps/Gluu/GluuLoader'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
-import applicationstyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { changeUserPassword } from '../../redux/actions/UserActions'
+import { ThemeContext } from 'Context/theme/themeContext'
+
 function UserForm({ formik }) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
@@ -21,13 +21,15 @@ function UserForm({ formik }) {
   const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   const toggle = () => {
     setModal(!modal)
   }
 
   const submitChangePassword = () => {
-    let submitableValue = {
+    const submitableValue = {
       userPassword: formik.values.userPassword,
       inum: userDetails.inum,
     }
@@ -44,7 +46,7 @@ function UserForm({ formik }) {
   const personAttributes = useSelector((state) => state.attributeReducer.items)
   const loading = useSelector((state) => state.userReducer.loading)
   const setSelectedClaimsToState = (data) => {
-    let tempList = [...selectedClaims]
+    const tempList = [...selectedClaims]
     tempList.push(data)
     setSelectedClaims(tempList)
   }
@@ -75,7 +77,7 @@ function UserForm({ formik }) {
   ]
   const getCustomAttributeById = (id) => {
     let claimData = null
-    for (let i in personAttributes) {
+    for (const i in personAttributes) {
       if (personAttributes[i].name == id) {
         claimData = personAttributes[i]
       }
@@ -84,10 +86,10 @@ function UserForm({ formik }) {
   }
 
   const setAttributes = () => {
-    let tempList = [...selectedClaims]
-    for (let i in userDetails.customAttributes) {
+    const tempList = [...selectedClaims]
+    for (const i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
-        let data = getCustomAttributeById(userDetails.customAttributes[i].name)
+        const data = getCustomAttributeById(userDetails.customAttributes[i].name)
         if (
           data &&
           !usedClaimes.includes(userDetails.customAttributes[i].name)
@@ -110,9 +112,9 @@ function UserForm({ formik }) {
   }, [userDetails])
 
   const removeSelectedClaimsFromState = (id) => {
-    let tempList = [...selectedClaims]
+    const tempList = [...selectedClaims]
     formik.setFieldValue(id)
-    let newList = tempList.filter((data, index) => data.name !== id)
+    const newList = tempList.filter((data, index) => data.name !== id)
     setSelectedClaims(newList)
   }
 
@@ -167,21 +169,19 @@ function UserForm({ formik }) {
         </ModalBody>
         <ModalFooter>
           {formik.values?.userPassword?.length > 3 &&
-            formik.values?.userPassword ==
-              formik.values.userConfirmPassword && (
-              <Button
-                color="primary"
-                style={applicationstyle.buttonStyle}
-                type="button"
-                onClick={() => submitChangePassword()}
-              >
-                {t('actions.change_password')}
-              </Button>
-            )}
+          formik.values?.userPassword ==
+            formik.values.userConfirmPassword && (
+            <Button
+              color={`primary-${selectedTheme}`}
+              type="button"
+              onClick={() => submitChangePassword()}
+            >
+              {t('actions.change_password')}
+            </Button>
+          )}
           &nbsp;
           <Button
-            color="primary"
-            style={applicationstyle.buttonStyle}
+            color={`primary-${selectedTheme}`}
             onClick={toggleChangePasswordModal}
           >
             {t('actions.cancel')}
@@ -307,6 +307,7 @@ function UserForm({ formik }) {
             )}
             {selectedClaims.map((data, key) => (
               <UserClaimEntry
+                key={key}
                 entry={key}
                 data={data}
                 formik={formik}
@@ -319,9 +320,8 @@ function UserForm({ formik }) {
                 <Col md={4}>
                   {userDetails && (
                     <Button
-                      color="secondary"
+                      color={`primary-${selectedTheme}`}
                       onClick={() => setChangePasswordModal(true)}
-                      style={applicationstyle.buttonStyle}
                     >
                       <i className="fa fa-key mr-2"></i>
                       {t('actions.change_password')}
@@ -330,10 +330,9 @@ function UserForm({ formik }) {
                 </Col>
                 <Col md={8} className="text-right">
                   <Button
-                    color="secondary"
+                    color={`primary-${selectedTheme}`}
                     type="button"
                     onClick={goBack}
-                    style={applicationstyle.buttonStyle}
                   >
                     <i className="fa fa-arrow-circle-left mr-2"></i>
                     {t('actions.cancel')}
@@ -342,9 +341,8 @@ function UserForm({ formik }) {
                   &nbsp; &nbsp; &nbsp;
                   {/* For Space in buttons */}
                   <Button
-                    color="primary"
+                    color={`primary-${selectedTheme}`}
                     type="submit"
-                    style={applicationstyle.buttonStyle}
                   >
                     <i className="fa fa-check-circle mr-2"></i>
                     {t('actions.save')}
@@ -365,7 +363,7 @@ function UserForm({ formik }) {
               />
               <ul className="list-group">
                 {personAttributes.map((data, key) => {
-                  let name = data.name.toLowerCase()
+                  const name = data.name.toLowerCase()
                   const alreadyAddedClaim = selectedClaims.some(
                     (el) => el.name === data.name,
                   )

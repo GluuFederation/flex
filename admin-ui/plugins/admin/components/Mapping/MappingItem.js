@@ -158,7 +158,7 @@ function MappingItem({ candidate, roles }) {
                         <Col>
                           <Button
                             type="submit"
-                            color="primary"
+                            color={`primary-${selectedTheme}`}
                             style={applicationStyle.buttonStyle}
                           >
                             <i className="fa fa-plus mr-2"></i>
@@ -196,7 +196,7 @@ function MappingItem({ candidate, roles }) {
                 <Col sm={6}>
                   <Button
                     type="button"
-                    color="primary"
+                    color={`primary-${selectedTheme}`}
                     style={applicationStyle.buttonStyle}
                     onClick={() => revertLocalChanges()}
                   >
@@ -207,7 +207,7 @@ function MappingItem({ candidate, roles }) {
                 <Col sm={6} className="text-right">
                   <Button
                     type="button"
-                    color="primary"
+                    color={`primary-${selectedTheme}`}
                     style={applicationStyle.buttonStyle}
                     onClick={() => {
                       dispatch(updatePermissionsToServer(candidate))

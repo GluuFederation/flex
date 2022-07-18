@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import {
   Form,
   Button,
@@ -14,7 +14,6 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { JSON_CONFIG } from 'Utils/ApiResources'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { connect } from 'react-redux'
 import { Formik } from 'formik'
@@ -29,9 +28,12 @@ import {
 } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function LoggingPage({ logging, dispatch, permissions, loading }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   useEffect(() => {
     dispatch(getLoggingConfig())
   }, [])
@@ -177,9 +179,8 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
 
                   {hasPermission(permissions, LOGGING_WRITE) && (
                     <Button
-                      color="primary"
+                      color={`primary-${selectedTheme}`}
                       type="submit"
-                      style={applicationStyle.buttonStyle}
                     >
                       <i className="fa fa-check-circle mr-2"></i>
                       {t('actions.save')}

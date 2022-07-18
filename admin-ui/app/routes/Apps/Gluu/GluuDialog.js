@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import {
   FormGroup,
   Col,
@@ -11,11 +11,14 @@ import {
 } from 'reactstrap'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from '../../Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
   const [active, setActive] = useState(false)
   const { t } = useTranslation()
   const [userMessage, setUserMessage] = useState('')
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   useEffect(() => {
     if (userMessage.length >= 10) {
@@ -71,7 +74,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
         <ModalFooter>
           {active && (
             <Button
-              color="primary"
+              color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
               onClick={handleAccept}
             >
@@ -79,7 +82,7 @@ const GluuDialog = ({ row, handler, modal, onAccept, subject, name }) => {
             </Button>
           )}{' '}
           <Button
-            color="secondary"
+            color={`primary-${selectedTheme}`}
             style={applicationStyle.buttonStyle}
             onClick={closeModal}
           >

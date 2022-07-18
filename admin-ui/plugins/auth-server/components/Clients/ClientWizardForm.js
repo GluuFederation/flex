@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import {
-  Container,
   Wizard,
   Card,
   CardFooter,
@@ -18,6 +17,7 @@ import { Formik } from 'formik'
 import { useTranslation } from 'react-i18next'
 import { hasPermission, CLIENT_WRITE } from 'Utils/PermChecker'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const sequence = [
   'Basic',
@@ -39,6 +39,8 @@ function ClientWizardForm({
   oidcConfiguration,
 }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const [modal, setModal] = useState(false)
   const [client, setClient] = useState(client_data)
   const [currentStep, setCurrentStep] = useState(sequence[0])
@@ -372,7 +374,7 @@ function ClientWizardForm({
                     {currentStep !== sequence[sequence.length - 1] && (
                       <Button
                         type="button"
-                        color="primary"
+                        color={`primary-${selectedTheme}`}
                         onClick={nextStep}
                         style={applicationStyle.buttonStyle}
                         className="ml-auto px-4"
@@ -386,7 +388,7 @@ function ClientWizardForm({
                       hasPermission(permissions, CLIENT_WRITE) && (
                         <Button
                           type="button"
-                          color="primary"
+                          color={`primary-${selectedTheme}`}
                           className="ml-auto px-4"
                           onClick={toggle}
                           style={applicationStyle.buttonStyle}
@@ -398,7 +400,7 @@ function ClientWizardForm({
                 </CardFooter>
                 <Button
                   type="submit"
-                  color="primary"
+                  color={`primary-${selectedTheme}`}
                   className="UserActionSubmitButton"
                   style={{ visibility: 'hidden' }}
                 >

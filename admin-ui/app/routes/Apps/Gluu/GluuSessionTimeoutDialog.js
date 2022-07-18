@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import {
   Dialog,
   DialogTitle,
@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core"
 import clsx from "clsx"
 import styles from "./styles/GluuSessionTimeoutDialog.style"
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -17,6 +18,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
   const classes = styles()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   return (
     <Dialog
@@ -44,7 +47,7 @@ const SessionTimeoutDialog = ({ open, countdown, onLogout, onContinue }) => {
         </Button>
         <Button
           onClick={onContinue}
-          color="primary"
+          color={`primary-${selectedTheme}`}
           variant="contained"
           className={classes.button}
         >
