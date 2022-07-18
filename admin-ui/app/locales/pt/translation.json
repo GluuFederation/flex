@@ -89,7 +89,7 @@
     "consent_gathering_scripts": "Scripts de coleta de consentimento",
     "custom_properties": "Propriedades personalizadas (chave / valores)",
     "data_type": "Tipo de dados",
-    "default_acr": "Método de autenticação padrão (Acr)",
+    "default_acr": "Método de autenticação padrão (ACR)",
     "default_bucket": "Bucket padrão",
     "default_cleanup_batch_size": "Tamanho de lote de limpeza padrão",
     "default_put_expiration": "Expiração de venda padrão",
