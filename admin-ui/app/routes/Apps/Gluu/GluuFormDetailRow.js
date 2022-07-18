@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FormGroup, Label, Badge } from 'Components'
 import GluuTooltip from './GluuTooltip'
+import { ThemeContext } from 'Context/theme/themeContext'
+
 function GluuFormDetailRow({
   label,
   value,
@@ -14,6 +16,9 @@ function GluuFormDetailRow({
   isDirect = false,
 }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   return (
     <GluuTooltip
       doc_category={doc_category}
@@ -28,7 +33,7 @@ function GluuFormDetailRow({
           {!isBadge ? (
             value
           ) : (
-            <Badge color={badgeColor ? badgeColor : 'primary'}>{value}</Badge>
+            <Badge color={badgeColor ? badgeColor : `primary-${selectedTheme}`}>{value}</Badge>
           )}
         </Label>
       </FormGroup>

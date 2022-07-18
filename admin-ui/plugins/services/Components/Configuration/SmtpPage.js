@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Formik } from 'formik'
 import {
   Badge,
@@ -23,9 +23,13 @@ import {
   SMTP_WRITE,
 } from 'Utils/PermChecker'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   useEffect(() => {
     dispatch(getSmtpConfig())
   }, [])
@@ -63,7 +67,7 @@ function SmtpPage({ smtp, testStatus, permissions, loading, dispatch }) {
                   <FormGroup row>
                     <GluuLabel label="fields.smtp_test_status" size={4} />
                     <Col sm={8}>
-                      <Badge color="primary">
+                      <Badge color={`primary-${selectedTheme}`}>
                         {testStatus.service} {testStatus.status}
                       </Badge>
                     </Col>

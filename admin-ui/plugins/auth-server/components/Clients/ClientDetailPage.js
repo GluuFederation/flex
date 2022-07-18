@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Container,
   Badge,
@@ -10,10 +10,15 @@ import {
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuSecretDetail from 'Routes/Apps/Gluu/GluuSecretDetail'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
+
 const DOC_CATEGORY = 'openid_client'
 
 function ClientDetailPage({ row, scopes }) {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   const scopesDns = row.scopes || []
   const clientScopes = scopes
     .filter((item) => scopesDns.includes(item.dn, 0))
@@ -89,7 +94,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={6}>{t('fields.is_trusted_client')}:</Label>
               <Label sm={6}>
                 {row.trustedClient ? (
-                  <Badge color="primary">{t('options.yes')}</Badge>
+                  <Badge color={`primary-${selectedTheme}`}>{t('options.yes')}</Badge>
                 ) : (
                   <Badge color="danger">{t('options.no')}</Badge>
                 )}
@@ -101,7 +106,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={6}>{t('fields.status')}:</Label>
               <Label sm={6}>
                 {!row.disabled ? (
-                  <Badge color="primary">{t('options.enabled')}</Badge>
+                  <Badge color={`primary-${selectedTheme}`}>{t('options.enabled')}</Badge>
                 ) : (
                   <Badge color="danger">{t('options.disabled')}</Badge>
                 )}
@@ -117,7 +122,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={8}>
                 {clientScopes &&
                   clientScopes.map((item, key) => (
-                    <Badge key={key} color="primary">
+                    <Badge key={key} color={`primary-${selectedTheme}`}>
                       {item}
                     </Badge>
                   ))}
@@ -130,7 +135,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={8}>
                 {row.grantTypes &&
                   row.grantTypes.map((item, key) => (
-                    <Badge key={key} color="primary">
+                    <Badge key={key} color={`primary-${selectedTheme}`}>
                       {item}
                     </Badge>
                   ))}
@@ -145,7 +150,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={8}>
                 {row.responseTypes &&
                   row.responseTypes.map((item, key) => (
-                    <Badge key={key} color="primary">
+                    <Badge key={key} color={`primary-${selectedTheme}`}>
                       {item}
                     </Badge>
                   ))}
@@ -158,7 +163,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={8}>
                 {row.redirectUris &&
                   row.redirectUris.map((item, key) => (
-                    <Badge key={key} color="primary">
+                    <Badge key={key} color={`primary-${selectedTheme}`}>
                       {item}
                     </Badge>
                   ))}
@@ -173,7 +178,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={8}>
                 {row.postLogoutRedirectUris &&
                   row.postLogoutRedirectUris.map((item, key) => (
-                    <Badge key={key} color="primary">
+                    <Badge key={key} color={`primary-${selectedTheme}`}>
                       {item}
                     </Badge>
                   ))}
@@ -185,7 +190,7 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={6}>{t('fields.authentication_method')}:</Label>
               <Label sm={6}>
                 {row.authenticationMethod && (
-                  <Badge color="primary">{row.authenticationMethod}</Badge>
+                  <Badge color={`primary-${selectedTheme}`}>{row.authenticationMethod}</Badge>
                 )}
               </Label>
             </FormGroup>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Col,
   FormGroup,
@@ -8,8 +8,12 @@ import {
   Badge,
 } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function LdapItem({ ldap, index, formik }) {
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   return (
     <Card
       style={{
@@ -57,7 +61,7 @@ function LdapItem({ ldap, index, formik }) {
           <Col sm={8}>
             {ldap.servers &&
               ldap.servers.map((server, index) => (
-                <Badge key={index} color="primary">
+                <Badge key={index} color={`primary-${selectedTheme}`}>
                   {server}
                 </Badge>
               ))}
@@ -68,7 +72,7 @@ function LdapItem({ ldap, index, formik }) {
           <Col sm={8}>
             {ldap.baseDNs &&
               ldap.baseDNs.map((dn, index) => (
-                <Badge key={index} color="primary">
+                <Badge key={index} color={`primary-${selectedTheme}`}>
                   {dn}
                 </Badge>
               ))}

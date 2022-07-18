@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
-import { Card, CardBody, FormGroup } from 'Components'
+import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import AttributeDetailPage from './AttributeDetailPage'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
@@ -163,7 +163,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
 
   function getBadgeTheme(status) {
     if (status === 'ACTIVE') {
-      return 'primary'
+      return `primary-${selectedTheme}`
     } else {
       return 'warning'
     }

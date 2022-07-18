@@ -7,3 +7,88 @@
 .txt-white {
   color: #FFFFFF;
 }
+
+.badge {
+  padding: 5px 8px;
+}
+
+.badge-primary-darkBlack {
+  background-color: #303641;
+  color: #FFFFFF;
+}
+
+.badge-primary-darkBlue {
+  background-color: #284461;
+  color: #FFFFFF;
+}
+
+.badge-primary-lightBlue {
+  background-color: #9DBDE2;
+  color: #FFFFFF;
+}
+
+.badge-primary-lightGreen {
+  background-color: #3BC391;
+  color: #FFFFFF;
+}
+
+// Button
+
+.btn-primary-darkBlack {
+  background-color: #303641;
+  color: #FFFFFF;
+}
+
+.btn-primary-darkBlue {
+  background-color: #284461;
+  color: #FFFFFF;
+}
+
+.btn-primary-lightBlue {
+  background-color: #9DBDE2;
+  color: #FFFFFF;
+}
+
+.btn-primary-lightGreen {
+  background-color: #3BC391;
+  color: #FFFFFF;
+}
+
+// Tooltip
+
+.type-darkBlack {
+  background-color: #303641!important;
+  color: #FFFFFF!important;
+  &::after {
+    border-bottom-color: #303641!important;
+  }
+}
+
+.type-darkBlue {
+  background-color: #284461!important;
+  color: #FFFFFF!important;
+  &::after {
+    border-bottom-color: #284461!important;
+  }
+}
+
+.type-lightBlue {
+  background-color: #9DBDE2!important;
+  color: #FFFFFF!important;
+  &::after {
+    border-bottom-color: #9DBDE2!important;
+  }
+}
+
+.type-lightGreen {
+  background-color: #3BC391!important;
+  color: #FFFFFF!important;
+  &::after {
+    border-bottom-color: #3BC391!important;
+  }
+}
+
+.badge-dimmed {
+  background-color: #777;
+  color: #FFFFFF;
+}

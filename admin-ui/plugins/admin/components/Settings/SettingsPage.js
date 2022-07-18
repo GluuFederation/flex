@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
@@ -16,9 +16,12 @@ import {
 import GluuDarkModeToggle from 'Routes/Apps/Gluu/GluuDarkModeToggle'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function SettingsPage() {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const [paggingSize, setPaggingSize] = useState(
     localStorage.getItem('paggingSize') || 10,
   )
@@ -90,7 +93,7 @@ function SettingsPage() {
                 }}
               >
                 <h3>
-                  <Badge color={'primary'}>
+                  <Badge color={`primary-${selectedTheme}`}>
                     {process.env.CONFIG_API_BASE_URL}
                   </Badge>
                 </h3>

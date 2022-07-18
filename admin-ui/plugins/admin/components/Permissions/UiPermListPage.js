@@ -82,7 +82,7 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
                 editable: false,
                 width: '50%',
                 render: (rowData) => (
-                  <Badge color="info">{rowData.permission}</Badge>
+                  <Badge color={`primary-${selectedTheme}`}>{rowData.permission}</Badge>
                 ),
               },
               { title: `${t('fields.description')}`, field: 'description' },

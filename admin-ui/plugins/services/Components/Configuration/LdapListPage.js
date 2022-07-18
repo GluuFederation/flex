@@ -123,7 +123,7 @@ function LdapListPage({
 
   function getBadgeTheme(status) {
     if (status) {
-      return 'primary'
+      return `primary-${selectedTheme}`
     } else {
       return 'warning'
     }

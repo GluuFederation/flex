@@ -5,10 +5,9 @@ import UiRoleDetailPage from './UiRoleDetailPage'
 import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
-import { Card, CardBody, FormGroup } from 'Components'
+import { Card, CardBody } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
-import GluuRibbon from 'Routes/Apps/Gluu/GluuRibbon'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   getRoles,
@@ -82,7 +81,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
                 field: 'role',
                 width: '40%',
                 editable: false,
-                render: (rowData) => <Badge color="info">{rowData.role}</Badge>,
+                render: (rowData) => <Badge color={`primary-${selectedTheme}`}>{rowData.role}</Badge>,
               },
               { title: `${t('fields.description')}`, field: 'description' },
               {

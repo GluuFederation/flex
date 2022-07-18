@@ -67,7 +67,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
       title: `${t('fields.scope_type')}`,
       field: 'scopeType',
       render: (rowData) => (
-        <Badge key={rowData.inum} color="primary">
+        <Badge key={rowData.inum} color={`primary-${selectedTheme}`}>
           {rowData.scopeType}
         </Badge>
       ),

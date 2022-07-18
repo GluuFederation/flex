@@ -184,7 +184,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
                 field: 'enabled',
                 type: 'boolean',
                 render: (rowData) => (
-                  <Badge color={rowData.enabled == 'true' ? 'primary' : 'info'}>
+                  <Badge color={rowData.enabled == true ? `primary-${selectedTheme}` : 'dimmed'}>
                     {rowData.enabled ? 'true' : 'false'}
                   </Badge>
                 ),
@@ -200,7 +200,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
               selection: false,
               pageSize: pageSize,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
+                backgroundColor: rowData.enabled ? themeColors.background : '#FFF',
               }),
               headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,

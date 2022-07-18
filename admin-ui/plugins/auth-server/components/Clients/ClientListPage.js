@@ -96,7 +96,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
           return (
             // eslint-disable-next-line react/jsx-key
             <div style={{ maxWidth: 120, overflow: 'auto' }}>
-              <Badge color="primary">{data}</Badge>
+              <Badge color={`primary-${selectedTheme}`}>{data}</Badge>
             </div>
           )
         })
@@ -108,7 +108,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       render: (rowData) => {
         return (
           <Badge
-            color="primary"
+            color={`primary-${selectedTheme}`}
             role={'button'}
             onClick={() => setScopeData(rowData.scopes)}
           >
@@ -258,9 +258,9 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
 
   function getTrustedTheme(status) {
     if (status) {
-      return 'success'
+      return `primary-${selectedTheme}`
     } else {
-      return 'info'
+      return 'dimmed'
     }
   }
   //ToDo to be deleted

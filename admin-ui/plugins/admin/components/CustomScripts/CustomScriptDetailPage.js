@@ -1,16 +1,20 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Container, Row, Col } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const CustomScriptDetailPage = ({ row }) => {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   function getBadgeTheme(status) {
     if (status) {
-      return 'primary'
+      return `primary-${selectedTheme}`
     } else {
-      return 'info'
+      return 'dimmed'
     }
   }
 

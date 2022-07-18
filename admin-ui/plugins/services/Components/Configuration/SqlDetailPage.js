@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Container,
   Badge,
@@ -8,9 +8,12 @@ import {
   Label,
 } from 'Components'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const SqlDetailPage = ({ row }) => {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   return (
     <React.Fragment>
@@ -44,7 +47,7 @@ const SqlDetailPage = ({ row }) => {
               <Label sm={6}>
                 {row.connectionUri &&
                   row.connectionUri.map((ele, index) => (
-                    <Badge key={index} color="primary">
+                    <Badge key={index} color={`primary-${selectedTheme}`}>
                       {ele}
                     </Badge>
                   ))}
@@ -57,7 +60,7 @@ const SqlDetailPage = ({ row }) => {
               <Label sm={6}>
                 {row.binaryAttributes &&
                   row.binaryAttributes.map((attr, index) => (
-                    <Badge key={index} color="primary">
+                    <Badge key={index} color={`primary-${selectedTheme}`}>
                       {attr}
                     </Badge>
                   ))}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Container,
   Badge,
@@ -8,9 +8,13 @@ import {
   Label,
 } from 'Components'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 const AttributeDetailPage = ({ row }) => {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+
   return (
     <React.Fragment>
       <Container style={{ backgroundColor: '#F5F5F5' }}>
@@ -48,7 +52,7 @@ const AttributeDetailPage = ({ row }) => {
               <Label sm={6}>{t('fields.status')}:</Label>
 
               <Label sm={6}>
-                <Badge color="primary">{row.status}</Badge>
+                <Badge color={`primary-${selectedTheme}`}>{row.status}</Badge>
               </Label>
             </FormGroup>
           </Col>
@@ -59,7 +63,7 @@ const AttributeDetailPage = ({ row }) => {
           </Col>
           <Col sm={3}>
             {Array.from(row.editType).map((item, index) => (
-              <Badge key={index} color="primary">
+              <Badge key={index} color={`primary-${selectedTheme}`}>
                 {item}
               </Badge>
             ))}
@@ -69,7 +73,7 @@ const AttributeDetailPage = ({ row }) => {
           </Col>
           <Col sm={3}>
             {Array.from(row.viewType).map((item, index) => (
-              <Badge key={index} color="primary">
+              <Badge key={index} color={`primary-${selectedTheme}`}>
                 {item}
               </Badge>
             ))}
