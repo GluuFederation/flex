@@ -8,7 +8,6 @@ import ClientEditPage from './components/Clients/ClientEditPage'
 
 import PropertiesPage from './components/Configuration/ConfigPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
-import DefaultPage from './components/Configuration/Defaults/DefaultConfigPage'
 import LoggingPage from './components/Configuration/Defaults/LoggingPage'
 
 import ReportPage from './components/Reports/ReportPage'
@@ -51,11 +50,6 @@ const pluginMetadata = {
               title: 'menus.keys',
               path: PLUGIN_BASE_APTH + '/config/keys',
               permission: JWKS_READ,
-            },
-            {
-              title: 'menus.defaults',
-              path: PLUGIN_BASE_APTH + '/config/defaults',
-              permission: ACR_READ,
             },
             {
               title: 'menus.properties',
@@ -122,11 +116,6 @@ const pluginMetadata = {
       component: KeysPage,
       path: PLUGIN_BASE_APTH + '/config/keys',
       permission: JWKS_READ,
-    },
-    {
-      component: DefaultPage,
-      path: PLUGIN_BASE_APTH + '/config/defaults',
-      permission: ACR_READ,
     },
     {
       component: LoggingPage,
