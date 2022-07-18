@@ -1,16 +1,40 @@
 import 'date-fns'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Grid from '@material-ui/core/Grid'
 import DateFnsUtils from '@date-io/date-fns'
+import { buildPayload } from 'Utils/PermChecker'
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from '@material-ui/pickers'
+import moment from 'moment'
+import { useDispatch } from 'react-redux'
+import { getMau } from 'Redux/actions/MauActions'
 
 export default function MaterialUIPickers() {
+  const dispatch = useDispatch()
   // The first commit of Material-UI
-  const [startDate, setStartDate] = React.useState(new Date('2022-05-18T21:11:54'))
-  const [endDate, setEndDate] = React.useState(new Date('2022-05-19T21:11:54'))
+  const [startDate, setStartDate] = React.useState(
+    moment().subtract(3, 'months'),
+  )
+  const [endDate, setEndDate] = React.useState(moment())
+  const userAction = {}
+  const options = {}
+
+  useEffect(() => {
+    options['startMonth'] = startDate.format('YYYYMM')
+    options['endMonth'] = endDate.format('YYYYMM')
+    buildPayload(userAction, 'GET MAU', options)
+    dispatch(getMau(userAction))
+  }, [startDate, endDate])
+
+  const setDate = (val, type) => {
+    if (type == 'start') {
+      setStartDate(moment(val))
+    } else {
+      setEndDate(moment(val))
+    }
+  }
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -23,10 +47,11 @@ export default function MaterialUIPickers() {
           id="date-picker-inline"
           label="Start Date"
           value={startDate}
-          onChange={setStartDate}
+          onChange={(val) => setDate(val, 'start')}
           KeyboardButtonProps={{
             'aria-label': 'change date',
           }}
+          autoOk={true}
         />
         <KeyboardDatePicker
           disableToolbar
@@ -36,10 +61,11 @@ export default function MaterialUIPickers() {
           id="date-picker-inline"
           label="Start Date"
           value={endDate}
-          onChange={setEndDate}
+          onChange={(val) => setDate(val, 'end')}
           KeyboardButtonProps={{
             'aria-label': 'change date',
           }}
+          autoOk={true}
         />
       </Grid>
     </MuiPickersUtilsProvider>

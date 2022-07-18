@@ -53,7 +53,9 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
   SetTitle(t('fields.monthly_active_users'))
 
   function search() {
-    options['month'] = getFormattedMonth()
+    // options['month'] = getFormattedMonth()
+    options['startMonth'] = getYearMonth(startDate)
+    options['endMonth'] = getYearMonth(endDate)
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }

@@ -1,8 +1,5 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { getMauResponse } from '../actions/MauActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { postUserAction } from '../api/backend-api'
@@ -49,20 +46,6 @@ export default function* rootSaga() {
 
 function buildData(stat) {
   const result = stat.map((entry) => buildEntry(entry))
-  result.push({
-    month: 202111,
-    mau: 5,
-    client_credentials_access_token_count: 68,
-    authz_code_access_token_count: 785,
-    authz_code_idtoken_count: 567,
-  })
-  result.push({
-    month: 202112,
-    mau: 3,
-    client_credentials_access_token_count: 28,
-    authz_code_access_token_count: 75,
-    authz_code_idtoken_count: 257,
-  })
   return result
 }
 function buildEntry(el) {
