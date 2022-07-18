@@ -200,7 +200,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
               selection: false,
               pageSize: pageSize,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? themeColors.background : '#FFF',
+                backgroundColor: rowData.enabled ? themeColors.lightBackground : '#FFF',
               }),
               headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
               actionsColumnIndex: -1,

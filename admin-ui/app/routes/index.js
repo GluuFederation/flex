@@ -33,8 +33,6 @@ export const RoutedContent = () => {
     setPluginMenus(processRoutes())
   }, [])
 
-  console.log('pluginMenus', pluginMenus)
-
   return (
     <Switch>
       <Redirect from="/" to="/home/dashboard" exact />
