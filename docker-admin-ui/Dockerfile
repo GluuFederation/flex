@@ -205,7 +205,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 RUN addgroup node root
 
 # make empty folders
-RUN mkdir -p /opt/flex/admin-ui/dist \
+RUN mkdir -p /opt/flex/admin-ui/dist /app/plugins \
     && touch /run/nginx/nginx.pid
 
 # && chown -R 1000:1000 /etc/certs \
@@ -228,7 +228,9 @@ RUN chown -R 1000:1000 /var/lib/nginx \
     && chgrp -R 0 /var/log/nginx && chmod -R g=u /var/log/nginx \
     && chgrp -R 0 /run/nginx/nginx.pid && chmod -R g=u /run/nginx/nginx.pid \
     && chgrp -R 0 /etc/jans && chmod -R g=u /etc/jans \
-    && chown 1000:0 /opt/flex/admin-ui/plugins.config.json
+    && chown 1000:0 /opt/flex/admin-ui/plugins.config.json \
+    && chown -R 1000:0 /opt/flex/admin-ui/plugins \
+    && chown -R 1000:0 /app/plugins
 
 USER 1000
 

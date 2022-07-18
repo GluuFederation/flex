@@ -81,6 +81,7 @@ The following environment variables are supported by the container:
 - `GOOGLE_APPLICATION_CREDENTIALS`: Path to Google credentials JSON file (default to `/etc/jans/conf/google-credentials.json`). Used when `CN_CONFIG_ADAPTER` or `CN_SECRET_ADAPTER` set to `google`.
 - `CN_GOOGLE_SPANNER_INSTANCE_ID`: Google Spanner instance ID.
 - `CN_GOOGLE_SPANNER_DATABASE_ID`: Google Spanner database ID.
+- `GLUU_ADMIN_UI_PLUGINS`: Comma-separated additional plugins to be enabled (default to empty string). See [Adding plugins](#adding-plugins) for details.
 
 ### Hybrid mapping
 
@@ -113,3 +114,10 @@ Hybrid persistence supports all available persistence types. To configure hybrid
         "session": "spanner",
     }
     ```
+
+### Adding plugins
+
+To add plugins to AdminUI, for example `myplugin.zip`
+
+1. Set the name of the plugin (without the extension name) in environment variable `GLUU_ADMIN_UI_PLUGINS`, for example: `GLUU_ADMIN_UI_PLUGINS=myplugin`.
+1. Mount `myplugin.zip` to `/app/plugins/myplugin.zip` inside the pod/container. Note that if `/app/plugins/myplugin.zip` is not exist, plugin will be ignored.
