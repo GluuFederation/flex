@@ -130,6 +130,13 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         value={client.description}
         doc_category={DOC_CATEGORY}
       />
+      <GluuInputRow
+        label="fields.redirect_regex"
+        name="redirect_regex"
+        formik={formik}
+        value={client.redirect_regex}
+        doc_category={DOC_CATEGORY}
+      />
       <GluuToogleRow
         name="disabled"
         formik={formik}
@@ -137,7 +144,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         value={!client.disabled}
         doc_category={DOC_CATEGORY}
       />
-      {client.expirable && (
+      {/* {client.expirable && (
         <GluuToogleRow
           name="expirable"
           formik={formik}
@@ -146,8 +153,8 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
           handler={handleExpirable}
           doc_category={DOC_CATEGORY}
         />
-      )}
-      {client.expirable && client.expirable.length && (
+      )} */}
+      {/* {client.expirable && client.expirable.length && (
         <FormGroup row>
           <GluuLabel label="client_expiration_date" size={5} />
           <Col sm={7}>
@@ -166,29 +173,29 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
             />
           </Col>
         </FormGroup>
-      )}
+      )} */}
 
-      <GluuInputRow
+      {/* <GluuInputRow
         label="fields.policy_uri"
         name="policyUri"
         formik={formik}
         value={client.policyUri}
         doc_category={DOC_CATEGORY}
-      />
-      <GluuInputRow
+      /> */}
+      {/* <GluuInputRow
         label="fields.logo_uri"
         name="logoUri"
         formik={formik}
         value={client.logoUri}
         doc_category={DOC_CATEGORY}
-      />
-      <GluuInputRow
+      /> */}
+      {/* <GluuInputRow
         label="fields.sector_uri"
         name="sectorIdentifierUri"
         formik={formik}
         value={client.sectorIdentifierUri}
         doc_category={DOC_CATEGORY}
-      />
+      /> */}
       <FormGroup row>
         <GluuLabel label="fields.application_type" />
         <Col sm={3}>
@@ -247,7 +254,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         options={scopes}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
-      <GluuTypeAheadWithAdd
+      {/* <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"
         label="fields.post_logout_redirect_uris"
         formik={formik}
@@ -257,7 +264,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         validator={postUriValidator}
         inputId={post_uri_id}
         doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadWithAdd>
+      ></GluuTypeAheadWithAdd> */}
 
       <GluuTypeAheadWithAdd
         name="redirectUris"
@@ -272,7 +279,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
       ></GluuTypeAheadWithAdd>
 
       <FormGroup row>
-        <Col sm={6}>
+        {/* <Col sm={6}>
           <GluuToogleRow
             name="persistClientAuthorizations"
             lsize={9}
@@ -282,7 +289,7 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
             value={client.persistClientAuthorizations}
             doc_category={DOC_CATEGORY}
           />
-        </Col>
+        </Col> */}
         <Col sm={6}>
           <GluuToogleRow
             name="trustedClient"

@@ -72,7 +72,8 @@
     "enable_custom_validation_for_this_attribute": "Enable custom validation for this attribute?",
     "enabled_oAuth_audit_logging": "Enable Oauth Audit Logging?",
     "enter_the_attribute_inum": "Enter the attribute inum",
-    "grant_types": "Grant Types",
+    "grant_types": "Grants",
+    "redirect_regex": "Redirect Regex",
     "host_name": "Host Name",
     "hide_on_discovery": "Hide On Discovery?",
     "http_logging_enabled": "Enable HTTP Logging",
@@ -383,7 +384,7 @@
     "all_oidc_clients": "OpenID Clients",
     "all_scopes": "OAuth/OpenID Scopes",
     "couchbase_authentication": "Couchbase Authentication",
-    "client_advanced": "Advanced",
+    "client_advanced": "Advanced Client Properties",
     "client_attributes": "Client Attributes",
     "client_basic": "Basic",
     "client_encryption_signing": "Encryption/Signing",
@@ -414,7 +415,12 @@
     "scripts": "Custom Interception Scripts",
     "schemaName": "Schema Name",
     "user_management": "User Management",
-    "error": "error"
+    "error": "error",
+    "token": "Tokens",
+    "log_out": "Logout",
+    "software_info": "Software Info",
+    "CIBA_PAR_UMA": "CIBA / PAR / UMA",
+    "encryption_signing": "Encription / Signing"
   },
   "links": {
     "support": "https://support.gluu.org/"
