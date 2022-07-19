@@ -53,7 +53,7 @@ function ScopeAddPage({ scripts, dispatch, attributes, loading, saveOperationFla
     attributes: {
       spontaneousClientId: null,
       spontaneousClientScopes: [],
-      showInConfigurationEndpoint: 'false',
+      showInConfigurationEndpoint: false,
     },
   }
 

@@ -42,11 +42,18 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const [showDynamicPanel, handleDynamicPanel] = useState(
     enableDynamic(scope.scopeType),
   )
+  const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
+    enableSpontaneous(scope.scopeType),
+  )
+
   function enableClaims(type) {
     return type === 'openid'
   }
   function enableDynamic(type) {
     return type === 'dynamic'
+  }
+  function enableSpontaneous(type) {
+    return type === 'spontaneous'
   }
   function handleScopeTypeChanged(type) {
     if (type && type === 'openid') {
@@ -59,8 +66,15 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     } else {
       handleDynamicPanel(false)
     }
+    if (type && type === 'spontaneous') {
+      handleShowSpontaneousPanel(true)
+    } else {
+      handleShowSpontaneousPanel(false)
+    }
     scope.dynamicScopeScripts = ''
     scope.claims = ''
+    scope.attributes.spontaneousClientId = ''
+    scope.attributes.spontaneousClientScopes = []
   }
 
   function getMapping(partial, total) {
@@ -105,11 +119,13 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           displayName: Yup.string()
             .min(2, 'displayName 2 characters')
             .required('Required!'),
+          id: Yup.string()
+            .min(2, 'id 2 characters')
+            .required('Required!'),
         })}
         onSubmit={(values) => {
           const result = Object.assign(scope, values)
-          //result[‘scopeType’] = document.getElementById(‘scopeType’).value
-          result['id'] = result.displayName
+          result['id'] = result.id
           result['attributes'].showInConfigurationEndpoint =
             scope.attributes.showInConfigurationEndpoint
           result['attributes'].spontaneousClientId =
@@ -122,6 +138,30 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
       >
         {(formik) => (
           <Form onSubmit={formik.handleSubmit}>
+
+            <GluuTooltip doc_category={SCOPE} doc_entry="id">
+              <FormGroup row>
+                <GluuLabel label="fields.id" size={4} required />
+                <Col sm={8}>
+                  <Input
+                    placeholder={t('placeholders.id')}
+                    id="id"
+                    valid={
+                      !formik.errors.id &&
+                      !formik.touched.id &&
+                      init
+                    }
+                    name="id"
+                    defaultValue={scope.id}
+                    onKeyUp={activate}
+                    onChange={formik.handleChange}
+                  />
+                </Col>
+                <ErrorMessage name="id">
+                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                </ErrorMessage>
+              </FormGroup>
+            </GluuTooltip>
             {scope.inum && (
               <GluuInumInput
                 label="fields.inum"
@@ -170,11 +210,18 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 </Col>
               </FormGroup>
             </GluuTooltip>
-            <GluuToogleRow
+            { <GluuToogleRow
               label="fields.default_scope"
               name="defaultScope"
               formik={formik}
               value={scope.defaultScope}
+              doc_category={SCOPE}
+            />}
+            <GluuToogleRow
+              label="fields.show_in_configuration_endpoint"
+              name="attributes.showInConfigurationEndpoint"
+              formik={formik}
+              value={scope.attributes.showInConfigurationEndpoint}
               doc_category={SCOPE}
             />
             <GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
@@ -206,27 +253,19 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </FormGroup>
             </GluuTooltip>
             {showDynamicPanel && (
-              <Accordion className="mb-2 b-primary" initialOpen>
-                <Accordion.Header className="text-primary">
-                  {t('fields.dynamic_scope_scripts').toUpperCase()}
-                </Accordion.Header>
-                <Accordion.Body>
-                  <FormGroup row> </FormGroup>
-                  <GluuTypeAheadForDn
-                    name="dynamicScopeScripts"
-                    label="fields.dynamic_scope_scripts"
-                    formik={formik}
-                    value={getMapping(
-                      scope.dynamicScopeScripts,
-                      dynamicScopeScripts,
-                    )}
-                    options={dynamicScopeScripts}
-                    doc_category={SCOPE}
-                  />
-                </Accordion.Body>
-              </Accordion>
+              <GluuTypeAheadForDn
+                name="dynamicScopeScripts"
+                label="fields.dynamic_scope_scripts"
+                formik={formik}
+                value={getMapping(
+                  scope.dynamicScopeScripts,
+                  dynamicScopeScripts,
+                )}
+                options={dynamicScopeScripts}
+                doc_category={SCOPE}
+              />
             )}
-            {showClaimsPanel && (
+            {(showClaimsPanel || showDynamicPanel) && (
               <Accordion className="mb-2 b-primary" initialOpen>
                 <Accordion.Header className="text-primary">
                   {t('fields.claims').toUpperCase()}
@@ -244,89 +283,58 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 </Accordion.Body>
               </Accordion>
             )}
-            <Accordion className="mb-2 b-primary" initialOpen>
-              <Accordion.Header className="text-primary">
-                {t('fields.ox_attributes').toUpperCase()}
-              </Accordion.Header>
-              <Accordion.Body>
-                <FormGroup row> </FormGroup>
-                <GluuTooltip
-                  doc_category={SCOPE}
-                  doc_entry="spontaneousClientId"
-                >
-                  <FormGroup row>
-                    <GluuLabel label="fields.spontaneous_client_id" size={4} />
-                    <Col sm={8}>
-                      <Input
-                        placeholder={t('placeholders.spontaneous_client_id')}
-                        id="spontaneousClientId"
-                        name="spontaneousClientId"
-                        defaultValue={scope.attributes.spontaneousClientId}
-                        onChange={(e) => {
-                          scope.attributes.spontaneousClientId = e.target.value
-                          formik.setFieldValue(
-                            'spontaneousClientId',
-                            e.target.value,
-                          )
-                        }}
-                      />
-                    </Col>
-                  </FormGroup>
-                </GluuTooltip>
-                <GluuTooltip
-                  doc_category={SCOPE}
-                  doc_entry="showInConfigurationEndpoint"
-                >
-                  <FormGroup row>
-                    <GluuLabel
-                      label="fields.show_in_onfiguration_endpoint"
-                      size={4}
-                    />
-                    <Col sm={8}>
-                      <InputGroup>
-                        <CustomInput
-                          type="select"
-                          id="showInConfigurationEndpoint"
-                          name="showInConfigurationEndpoint"
-                          defaultValue={
-                            scope.attributes.showInConfigurationEndpoint
-                          }
+            {showSpontaneousPanel && (
+              <Accordion className="mb-2 b-primary" initialOpen>
+                <Accordion.Header className="text-primary">
+                  {t('fields.spontaneous_scopes').toUpperCase()}
+                </Accordion.Header>
+                <Accordion.Body>
+                  <FormGroup row> </FormGroup>
+                  <GluuTooltip
+                    doc_category={SCOPE}
+                    doc_entry="spontaneousClientId"
+                  >
+                    <FormGroup row>
+                      <GluuLabel label="fields.spontaneous_client_id" size={4} />
+                      <Col sm={8}>
+                        <Input
+                          placeholder={t('placeholders.spontaneous_client_id')}
+                          id="attributes.spontaneousClientId"
+                          name="attributes.spontaneousClientId"
+                          defaultValue={scope.attributes.spontaneousClientId}
                           onChange={(e) => {
-                            scope.attributes.showInConfigurationEndpoint =
-                              e.target.value
+                            scope.attributes.spontaneousClientId = e.target.value
                             formik.setFieldValue(
-                              'showInConfigurationEndpoint',
+                              'attributes.spontaneousClientId',
                               e.target.value,
                             )
                           }}
-                        >
-                          <option value="true">{t('options.true')}</option>
-                          <option value="false">{t('options.false')}</option>
-                        </CustomInput>
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-                </GluuTooltip>
-                <GluuTypeAheadForDn
-                  name="spontaneousClientScopes"
-                  label="fields.spontaneous_client_scopes"
-                  formik={formik}
-                  value={getMapping(
-                    spontaneousClientScopes,
-                    scope?.attributes?.spontaneousClientScopes?.map((item) => ({
+                        />
+                      </Col>
+                    </FormGroup>
+                  </GluuTooltip>
+
+                  <GluuTypeAheadForDn
+                    name="attributes.spontaneousClientScopes"
+                    label="fields.spontaneous_client_scopes"
+                    formik={formik}
+                    value={getMapping(
+                      spontaneousClientScopes,
+                      scope?.attributes?.spontaneousClientScopes?.map((item) => ({
+                        dn: item || '',
+                        name: item || '',
+                      })),
+                    )}
+                    allowNew={true}
+                    options={spontaneousClientScopes?.map((item) => ({
                       dn: item || '',
                       name: item || '',
-                    })),
-                  )}
-                  allowNew={true}
-                  options={spontaneousClientScopes?.map((item) => ({
-                    dn: item || '',
-                    name: item || '',
-                  }))}
-                  doc_category={SCOPE}
-                />
-              </Accordion.Body>
-            </Accordion>
+                    }))}
+                    doc_category={SCOPE}
+                  />
+                </Accordion.Body>
+              </Accordion>
+            )}
             <FormGroup row></FormGroup>
             <GluuCommitFooter saveHandler={toggle} />
             <GluuCommitDialog
@@ -338,7 +346,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           </Form>
         )}
       </Formik>
-    </Container>
+    </Container >
   )
 }
 
