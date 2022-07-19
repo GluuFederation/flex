@@ -119,6 +119,9 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           displayName: Yup.string()
             .min(2, 'displayName 2 characters')
             .required('Required!'),
+          id: Yup.string()
+            .min(2, 'id 2 characters')
+            .required('Required!'),
         })}
         onSubmit={(values) => {
           const result = Object.assign(scope, values)
