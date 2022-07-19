@@ -54,7 +54,7 @@
     "consent_gathering_scripts": "Consent Gathering Scripts",
     "custom_properties": "Custom Properties (key/values)",
     "data_type": "Data Type",
-    "default_acr": "Default Authentication Method(Acr)",
+    "default_acr": "Default Authentication Method (ACR)",
     "default_bucket": "Default Bucket",
     "default_cleanup_batch_size": "Default Cleanup Batch Size",
     "default_put_expiration": "Default Put Expiration",
@@ -327,6 +327,7 @@
     "add_sql": "Add SQL"
   },
   "placeholders": {
+    "id": "Enter id",
     "action_commit_message": "Provide the reason of this change",
     "activate_ldap_configuration": "Activate ldap configuration",
     "client_description": "Enter the client description",

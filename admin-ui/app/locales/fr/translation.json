@@ -90,7 +90,7 @@
     "consent_gathering_scripts": "Scripts de collecte de consentement",
     "custom_properties": "Propriétés personnalisées (clé/valeurs)",
     "data_type": "Type de données",
-    "default_acr": "Méthode d'authentification par défaut (Acr)",
+    "default_acr": "Méthode d'authentification par défaut (ACR)",
     "default_bucket": "Seau par défaut",
     "default_cleanup_batch_size": "Taille du lot de nettoyage par défaut",
     "default_put_expiration": "Expiration de vente par défaut",
@@ -271,6 +271,7 @@
     "view_attribute": "Afficher l'attribut"
   },
   "placeholders": {
+    "id": "Enter id",
     "action_commit_message": "Fournir la raison de ce changement",
     "activate_ldap_configuration": "Activer la configuration LDAP",
     "client_description": "Entrez la description du client",

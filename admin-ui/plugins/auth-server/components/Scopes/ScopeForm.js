@@ -124,7 +124,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           const result = Object.assign(scope, values)
           result['id'] = result.id
           result['attributes'].showInConfigurationEndpoint =
-          scope.attributes.showInConfigurationEndpoint
+            scope.attributes.showInConfigurationEndpoint
           result['attributes'].spontaneousClientId =
             scope.attributes.spontaneousClientId
           result['attributes'].spontaneousClientScopes =
@@ -213,7 +213,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               formik={formik}
               value={scope.defaultScope}
               doc_category={SCOPE}
-            /> }
+            />}
             <GluuToogleRow
               label="fields.show_in_configuration_endpoint"
               name="attributes.showInConfigurationEndpoint"
@@ -250,27 +250,19 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </FormGroup>
             </GluuTooltip>
             {showDynamicPanel && (
-              <Accordion className="mb-2 b-primary" initialOpen>
-                <Accordion.Header className="text-primary">
-                  {t('fields.claims').toUpperCase()}
-                </Accordion.Header>
-                <Accordion.Body>
-                  <FormGroup row> </FormGroup>
-                  <GluuTypeAheadForDn
-                    name="dynamicScopeScripts"
-                    label="fields.dynamic_scope_scripts"
-                    formik={formik}
-                    value={getMapping(
-                      scope.dynamicScopeScripts,
-                      dynamicScopeScripts,
-                    )}
-                    options={dynamicScopeScripts}
-                    doc_category={SCOPE}
-                  />
-                </Accordion.Body>
-              </Accordion>
+              <GluuTypeAheadForDn
+                name="dynamicScopeScripts"
+                label="fields.dynamic_scope_scripts"
+                formik={formik}
+                value={getMapping(
+                  scope.dynamicScopeScripts,
+                  dynamicScopeScripts,
+                )}
+                options={dynamicScopeScripts}
+                doc_category={SCOPE}
+              />
             )}
-            {showClaimsPanel && (
+            {(showClaimsPanel || showDynamicPanel) && (
               <Accordion className="mb-2 b-primary" initialOpen>
                 <Accordion.Header className="text-primary">
                   {t('fields.claims').toUpperCase()}
@@ -351,7 +343,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
           </Form>
         )}
       </Formik>
-    </Container>
+    </Container >
   )
 }
 
