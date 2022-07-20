@@ -11,13 +11,20 @@ import { useTranslation } from 'react-i18next'
 import { hasPermission, CLIENT_WRITE } from 'Utils/PermChecker'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import ClientTokensPanel from './ClientTokensPanel'
+import ClientLogoutPanel from './ClientLogoutPanel'
+import ClientSoftwarePanel from './ClientSoftwarePanel'
+import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
 
 const sequence = [
   'Basic',
-  'Advanced',
-  'EncryptionSigning',
-  'ClientAttributes',
-  'CustomScripts',
+  'Tokens',
+  'Logout',
+  'SoftwareInfo',
+  'CIBA/PAR/UMA',
+  'Encryption/Signing',
+  'AdvancedClientProperties',
+  'ClientScripts',
 ]
 const ATTRIBUTE = 'attributes'
 const DESCRIPTION = 'description'
@@ -236,44 +243,44 @@ function ClientWizardForm({
                       {t('titles.client_basic')}
                     </Wizard.Step>
                     <Wizard.Step
-                      id={setId(0)}
+                      id={setId(1)}
                       icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[0])}
+                      complete={isComplete(sequence[1])}
                     >
                       {t('titles.token')}
                     </Wizard.Step>
                     <Wizard.Step
-                      id={setId(0)}
+                      id={setId(2)}
                       icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[0])}
+                      complete={isComplete(sequence[2])}
                     >
                       {t('titles.log_out')}
                     </Wizard.Step>
                     <Wizard.Step
-                      id={setId(0)}
+                      id={setId(3)}
                       icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[0])}
+                      complete={isComplete(sequence[3])}
                     >
                       {t('titles.software_info')}
                     </Wizard.Step>
                     <Wizard.Step
-                      id={setId(0)}
+                      id={setId(4)}
                       icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[0])}
+                      complete={isComplete(sequence[4])}
                     >
                       {t('titles.CIBA_PAR_UMA')}
                     </Wizard.Step>
                     <Wizard.Step
-                      id={setId(0)}
+                      id={setId(5)}
                       icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[0])}
+                      complete={isComplete(sequence[5])}
                     >
                       {t('titles.encryption_signing')}
                     </Wizard.Step>
                     <Wizard.Step
-                      id={setId(1)}
+                      id={setId(6)}
                       icon={<i className="fa fa-cube fa-fw"></i>}
-                      complete={isComplete(sequence[1])}
+                      complete={isComplete(sequence[6])}
                     >
                       {t('titles.client_advanced')}
                     </Wizard.Step>
@@ -292,9 +299,9 @@ function ClientWizardForm({
                       {t('titles.client_attributes')}
                     </Wizard.Step> */}
                     <Wizard.Step
-                      id={setId(4)}
+                      id={setId(7)}
                       icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[4])}
+                      complete={isComplete(sequence[7])}
                     >
                       {t('titles.client_scripts')}
                     </Wizard.Step>
@@ -329,11 +336,16 @@ function ClientWizardForm({
                                 : {}
                             }
                           >
-                            <ClientAdvanced
+                            <ClientTokensPanel
                               client={client}
                               scripts={scripts}
                               formik={formik}
                             />
+                            {/* <ClientAdvanced
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            /> */}
                           </div>
                         )
                       case sequence[2]:
@@ -345,11 +357,16 @@ function ClientWizardForm({
                                 : {}
                             }
                           >
-                            <ClientEncryption
+                            <ClientLogoutPanel
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            />
+                            {/* <ClientEncryption
                               client={client}
                               formik={formik}
                               oidcConfiguration={oidcConfiguration}
-                            />
+                            /> */}
                           </div>
                         )
                       case sequence[3]:
@@ -361,7 +378,12 @@ function ClientWizardForm({
                                 : {}
                             }
                           >
-                            <ClientAttributes client={client} formik={formik} />
+                            <ClientSoftwarePanel
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            />
+                            {/* <ClientAttributes client={client} formik={formik} /> */}
                           </div>
                         )
                       case sequence[4]:
@@ -373,12 +395,17 @@ function ClientWizardForm({
                                 : {}
                             }
                           >
-                            <ClientScript
+                            <ClientCibaParUmaPanel
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            />
+                            {/* <ClientScript
                               client={client}
                               formik={formik}
                               scripts={scripts}
                               scopes={scopes}
-                            />
+                            /> */}
                           </div>
                         )
                     }
