@@ -4,6 +4,28 @@
     "english": "English",
     "portuguese": "Português"
   },
+  "dashboard": {
+    "summary_title": "Estatísticas de usuários ativos e token de acesso",
+    "oidc_clients_count": "Contagem de Clientes OIDC",
+    "active_users_count": "Contagem de usuários ativos",
+    "token_issued_count": "Contagem de Tokens Emitidos",
+    "user_info": "Informações do usuário",
+    "product_name": "Nome do produto",
+    "license_type": "Tipo de licença",
+    "customer_email": "E-mail do cliente",
+    "company_name": "Nome da empresa",
+    "license_status": "Status da licença",
+    "oauth_server_status": "Status do servidor OAuth",
+    "database_status": "Status do banco de dados",
+    "server_status": "Status do servidor",
+    "access_tokens_graph": "Gráfico de Tokens de Acesso",
+    "select_date_range": "Selecione um intervalo de datas",
+    "client_credentials_access_token": "Token de acesso de credenciais do cliente",
+    "authorization_code_access_token": "Token de acesso ao código de autorização",
+    "authorization_code_id_token": "Token de ID do código de autorização",
+    "start_date": "Data de início",
+    "end_date": "Data final"
+  },
   "menus": {
     "adminui": "Admin",
     "cache": "Cache",

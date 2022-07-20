@@ -2,8 +2,13 @@ import React, { useState, useEffect, useContext } from 'react'
 import { subMonths } from 'date-fns'
 import moment from 'moment'
 import ActiveUsersGraph from 'Routes/Dashboards/Grapths/ActiveUsersGraph'
-import DatePicker from 'react-datepicker'
+import Grid from '@material-ui/core/Grid'
 import 'react-datepicker/dist/react-datepicker.css'
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getMau } from 'Redux/actions/MauActions'
@@ -133,37 +138,44 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
         <Card style={applicationStyle.mainCard}>
           <CardBody>
             <Row>
-              <Col sm={2}></Col>
-              <Col sm={10}>
-                <GluuLabel label="Select a date range" size="4" />
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => setStartDate(date)}
-                  selectsStart
-                  isClearable
-                  startDate={startDate}
-                  dateFormat="MM/yyyy"
-                  showMonthYearPicker
-                  endDate={endDate}
-                  customInput={<CustomButton />}
-                />
-                &nbsp;&nbsp;
-                <DatePicker
-                  selected={endDate}
-                  onChange={(date) => setEndDate(date)}
-                  selectsEnd
-                  isClearable
-                  startDate={startDate}
-                  endDate={endDate}
-                  dateFormat="MM/yyyy"
-                  showMonthYearPicker
-                  minDate={startDate}
-                  maxDate={new Date()}
-                  customInput={<CustomButton />}
-                />
-                &nbsp;&nbsp;
+              <Col sm={5}>
+                <GluuLabel label="Select a date range" size="4" style={{ minWidth: '200px' }} />
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <Grid container justifyContent="space-around">
+                    <KeyboardDatePicker
+                      disableToolbar
+                      variant="inline"
+                      format="MM/dd/yyyy"
+                      margin="normal"
+                      id="date-picker-inline"
+                      label="Start Date"
+                      value={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                      autoOk={true}
+                    />
+                    <KeyboardDatePicker
+                      disableToolbar
+                      variant="inline"
+                      format="MM/dd/yyyy"
+                      margin="normal"
+                      id="date-picker-inline"
+                      label="End Date"
+                      value={endDate}
+                      onChange={(date) => setEndDate(date)}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                      autoOk={true}
+                    />
+                  </Grid>
+                </MuiPickersUtilsProvider>
+              </Col>
+              <Col sm={2}>
                 <Button
-                  style={applicationstyle.customButtonStyle}
+                  style={{ position: 'relative', top: '55px', ...applicationstyle.customButtonStyle }}
                   color={`primary-${selectedTheme}`}
                   onClick={search}
                 >

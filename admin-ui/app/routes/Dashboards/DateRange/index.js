@@ -10,9 +10,11 @@ import {
 import moment from 'moment'
 import { useDispatch } from 'react-redux'
 import { getMau } from 'Redux/actions/MauActions'
+import { useTranslation } from 'react-i18next'
 
 export default function MaterialUIPickers() {
   const dispatch = useDispatch()
+  const { t } = useTranslation()
   // The first commit of Material-UI
   const [startDate, setStartDate] = React.useState(
     moment().subtract(3, 'months'),
@@ -38,14 +40,14 @@ export default function MaterialUIPickers() {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Grid container justifyContent="space-around">
+      <Grid container>
         <KeyboardDatePicker
           disableToolbar
           variant="inline"
           format="MM/dd/yyyy"
           margin="normal"
           id="date-picker-inline"
-          label="Start Date"
+          label={t('dashboard.start_date')}
           value={startDate}
           onChange={(val) => setDate(val, 'start')}
           KeyboardButtonProps={{
@@ -59,7 +61,7 @@ export default function MaterialUIPickers() {
           format="MM/dd/yyyy"
           margin="normal"
           id="date-picker-inline"
-          label="Start Date"
+          label={t('dashboard.end_date')}
           value={endDate}
           onChange={(val) => setDate(val, 'end')}
           KeyboardButtonProps={{

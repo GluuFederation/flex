@@ -1,6 +1,7 @@
 export const themeConfig = {
   darkBlack: {
     background: '#303641',
+    lightBackground: '#989ea7',
     fontColor: '#FFFFFF',
     menu: {
       background: '#323C46',
@@ -12,6 +13,7 @@ export const themeConfig = {
   },
   darkBlue: {
     background: '#284461',
+    lightBackground: '#81a8d0',
     fontColor: '#FFFFFF',
     menu: {
       background: '#323C46',
@@ -23,6 +25,7 @@ export const themeConfig = {
   },
   lightBlue: {
     background: '#9DBDE2',
+    lightBackground: '#c9def6',
     fontColor: '#303641',
     menu: {
       background: '#274561',
@@ -34,6 +37,7 @@ export const themeConfig = {
   },
   lightGreen: {
     background: '#3BC391',
+    lightBackground: '#abebd4',
     fontColor: '#303641',
     menu: {
       background: '#02B774',

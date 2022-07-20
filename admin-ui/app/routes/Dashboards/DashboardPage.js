@@ -142,38 +142,38 @@ function DashboardPage({
 
   const summaryData = [
     {
-      text: 'OIDC Clients Count',
+      text: t('dashboard.oidc_clients_count'),
       value: clients?.length,
     },
     {
-      text: 'Active Users Count',
+      text: t('dashboard.active_users_count'),
       value: 1,
     },
     {
-      text: 'Token Issued Count',
+      text: t('dashboard.token_issued_count'),
       value: 150,
     },
   ]
 
   const userInfo = [
     {
-      text: 'Product name',
+      text: t('dashboard.product_name'),
       value: license?.productName,
     },
     {
-      text: 'License Type',
+      text: t('dashboard.license_type'),
       value: license?.licenseType,
     },
     {
-      text: 'Customer Email',
+      text: t('dashboard.customer_email'),
       value: license?.customerEmail,
     },
     {
-      text: 'Company Name',
+      text: t('dashboard.company_name'),
       value: `${license?.customerFirstName} ${license?.customerLastName}`,
     },
     {
-      text: 'License Status',
+      text: t('dashboard.license_status'),
       value: license?.licenseActive ? 'active' : 'inactive',
     },
   ]
@@ -188,7 +188,7 @@ function DashboardPage({
           <div className={classes.userInfoText}>
             <div className={classes.statusText}>
               <Box display="flex" justifyContent="flex-start">
-                <span>OAuth server status</span>
+                <span>{t('dashboard.oauth_server_status')}</span>
                 <span>
                   <img
                     src={isUp(serverStatus) ? CheckIcon : CrossIcon}
@@ -213,7 +213,7 @@ function DashboardPage({
             </div>
             <div className={classes.statusText}>
               <Box display="flex" justifyContent="flex-start">
-                <span>Database status</span>
+                <span>{t('dashboard.database_status')}</span>
                 <span>
                   <img
                     src={isUp(dbStatus) ? CheckIcon : CrossIcon}
@@ -236,7 +236,7 @@ function DashboardPage({
             </div>
             <div className={classes.statusText}>
               <Box display="flex" justifyContent="flex-start">
-                <span>Server status</span>
+                <span>{t('dashboard.server_status')}</span>
                 <span>
                   <img
                     src={isUp(serverStatus) ? CheckIcon : CrossIcon}
@@ -314,7 +314,7 @@ function DashboardPage({
           <Grid container className="px-40">
             <Grid item lg={4} md={12}>
               <h3 className="txt-white">
-                Actives Users &amp; Access Token Stats
+                {t('dashboard.summary_title')}
               </h3>
               <div className="mt-20">
                 {summaryData.map((data, key) => (
@@ -342,7 +342,9 @@ function DashboardPage({
                       style={isTabletOrMobile ? { marginLeft: 0 } : {}}
                       elevation={3}
                     >
-                      <div className={classes.userInfoTitle}>User Info</div>
+                      <div className={classes.userInfoTitle}>
+                        {t('dashboard.user_info')}
+                      </div>
                       <div>
                         {userInfo.map((info, key) => (
                           <div className={classes.userInfoText} key={key}>
@@ -374,7 +376,7 @@ function DashboardPage({
           </Grid>
           <Grid container className={`px-40`}>
             <Grid lg={12} xs={12}>
-              <h3 className="text-white">Access Tokens Graph</h3>
+              <h3 className="text-white">{t('dashboard.access_tokens_graph')}</h3>
               {isTabletOrMobile ? (
                 <Grid container className={`${classes.whiteBg}`}>
                   <Grid
@@ -382,7 +384,7 @@ function DashboardPage({
                     item
                     style={isTabletOrMobile ? { marginLeft: 40 } : { marginLeft: 40, marginBottom: 40 }}
                   >
-                    <div>Select a date range</div>
+                    <div>{t('dashboard.select_date_range')}</div>
                     <DateRange />
                   </Grid>
                   <Grid
@@ -410,7 +412,7 @@ function DashboardPage({
                     <DashboardChart />
                   </Grid>
                   <Grid md={3} xs={6} item>
-                    <div>Select a date range</div>
+                    <div>{t('dashboard.select_date_range')}</div>
                     <DateRange />
                   </Grid>
                 </Grid>
@@ -436,17 +438,17 @@ function DashboardPage({
                 {isMobile && <StatusCard />}
                 <ul className="mr-40">
                   <li className={classes.orange}>
-                    Client credentials access token
+                    {t('dashboard.client_credentials_access_token')}
                   </li>
                 </ul>
                 <ul className="mr-40">
                   <li className={classes.lightBlue}>
-                    Authorization code access token
+                    {t('dashboard.authorization_code_access_token')}
                   </li>
                 </ul>
                 <ul>
                   <li className={classes.lightGreen}>
-                    Authorization code ID token
+                    {t('dashboard.authorization_code_id_token')}
                   </li>
                 </ul>
               </Grid>

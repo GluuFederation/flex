@@ -21,14 +21,14 @@ const DashboardChart = () => {
 
   function doDataAugmentation(stat) {
     if (startMonth && endMonth) {
-      var dateStart = moment(startMonth, 'YYYYMM')
-      var dateEnd = moment(endMonth, 'YYYYMM')
-      var prepareStat = []
+      const dateStart = moment(startMonth, 'YYYYMM')
+      const dateEnd = moment(endMonth, 'YYYYMM')
+      const prepareStat = []
       while (
         dateEnd > dateStart ||
         dateStart.format('M') === dateEnd.format('M')
       ) {
-        let available = stat.filter((obj) => {
+        const available = stat.filter((obj) => {
           return obj.month == dateStart.format('YYYYMM')
         })
         if (available.length) {
