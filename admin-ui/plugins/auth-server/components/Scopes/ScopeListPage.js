@@ -60,8 +60,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   let memoPattern = pattern
 
   const tableColumns = [
-    { title: `${t('fields.inum')}`, field: 'inum' },
-    { title: `${t('fields.displayname')}`, field: 'displayName' },
+    { title: `${t('fields.id')}`, field: 'id' },
     { title: `${t('fields.description')}`, field: 'description' },
     {
       title: `${t('fields.scope_type')}`,
