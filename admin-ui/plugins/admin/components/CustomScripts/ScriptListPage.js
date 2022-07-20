@@ -177,8 +177,8 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             columns={[
-              { title: `${t('fields.inum')}`, field: 'inum' },
               { title: `${t('fields.name')}`, field: 'name' },
+              { title: `${t('fields.description')}`, field: 'description' },
               {
                 title: `${t('options.enabled')}`,
                 field: 'enabled',
@@ -188,6 +188,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
                     {rowData.enabled ? 'true' : 'false'}
                   </Badge>
                 ),
+                defaultSort: 'desc'
               },
             ]}
             data={selectedScripts}
