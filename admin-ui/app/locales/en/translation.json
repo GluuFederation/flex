@@ -730,7 +730,7 @@
       "frontChannelLogoutSessionRequired": "Front Channel Logout Session Required"
     },
     "scope": {
-      "inum": "Unique id identifying the scope",
+      "inum": "Inum",
       "displayName": "A human-readable name of the scope.",
       "description": "A human-readable string describing the scope.",
       "scopeType": "The scopes type associated with Access Tokens determine what resources will.",
