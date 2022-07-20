@@ -162,7 +162,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
                       format="MM/dd/yyyy"
                       margin="normal"
                       id="date-picker-inline"
-                      label="Start Date"
+                      label="End Date"
                       value={endDate}
                       onChange={(date) => setEndDate(date)}
                       KeyboardButtonProps={{

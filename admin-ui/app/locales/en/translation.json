@@ -23,6 +23,28 @@
     "yes": "Yes",
     "change_password": "Change Password"
   },
+  "dashboard": {
+    "summary_title": "Actives Users & Access Token Stats",
+    "oidc_clients_count": "OIDC Clients Count",
+    "active_users_count": "Active Users Count",
+    "token_issued_count": "Token Issued Count",
+    "user_info": "User Info",
+    "product_name": "Product name",
+    "license_type": "License Type",
+    "customer_email": "Customer Email",
+    "company_name": "Company Name",
+    "license_status": "License Status",
+    "oauth_server_status": "OAuth server status",
+    "database_status": "Database status",
+    "server_status": "Server status",
+    "access_tokens_graph": "Access Tokens Graph",
+    "select_date_range": "Select a date range",
+    "client_credentials_access_token": "Client credentials access token",
+    "authorization_code_access_token": "Authorization code access token",
+    "authorization_code_id_token": "Authorization code ID token",
+    "start_date": "Start Date",
+    "end_date": "End Date"
+  },
   "fields": {
     "access_token_signing_alg": "Access Token Signing Algorithm",
     "activate": "Activate",

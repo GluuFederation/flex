@@ -4,6 +4,28 @@
     "english": "English",
     "portuguese": "Português"
   },
+  "dashboard": {
+    "summary_title": "Statistiques des utilisateurs actifs et des jetons d'accès",
+    "oidc_clients_count": "Compte de clients OIDC",
+    "active_users_count": "Nombre d'utilisateurs actifs",
+    "token_issued_count": "Nombre de jetons émis",
+    "user_info": "Informations utilisateur",
+    "product_name": "Nom du produit",
+    "type_licence": "Type de licence",
+    "customer_email": "Courriel du client",
+    "company_name": "Nom de l'entreprise",
+    "license_status": "Statut de la licence",
+    "oauth_server_status": "État du serveur OAuth",
+    "database_status": "Statut de la base de données",
+    "server_status": "État du serveur",
+    "access_tokens_graph": "Graphique des jetons d'accès",
+    "select_date_range": "Sélectionnez une plage de dates",
+    "client_credentials_access_token": "Jeton d'accès aux informations d'identification du client",
+    "authorization_code_access_token": "Jeton d'accès au code d'autorisation",
+    "authorization_code_id_token": "Jeton d'identification du code d'autorisation",
+    "start_date": "Date de début",
+    "end_date": "Date de fin"
+  },
   "menus": {
     "adminui": "Administratrice",
     "cache": "Cacher",
