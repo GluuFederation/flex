@@ -3,7 +3,7 @@ import { Label } from 'Components'
 import ReactTooltip from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 
-function GluuLabel({ label, required, size, doc_category, doc_entry }) {
+function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
   const { t } = useTranslation()
   function getSize() {
     if (size != null) {
@@ -12,7 +12,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry }) {
     return 3
   }
   return (
-    <Label for={label} sm={getSize()} data-tip data-for={label}>
+    <Label for={label} sm={getSize()} data-tip data-for={label} style={style}>
       <h5>
         {t(label)}
         {required && <span style={{ color: 'red', fontSize: '22px' }}> *</span>}
