@@ -1,4 +1,4 @@
-FROM node:14.20-alpine3.16 AS builder
+FROM node:14.20.0-alpine3.16 AS builder
 
 RUN apk update \
     && apk upgrade \
@@ -28,14 +28,14 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
 # Application
 # ===========
 
-FROM node:14.20-alpine3.16
+FROM node:14.20.0-alpine3.16
 
 # ======
 # alpine
 # ======
 
 RUN apk update \
-    && apk upgrade \
+    && apk upgrade --available \
     && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
     && apk add --no-cache --virtual .build-deps git
 
