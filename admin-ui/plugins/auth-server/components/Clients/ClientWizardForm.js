@@ -2,8 +2,6 @@ import React, { useState, useContext } from 'react'
 import { Wizard, Card, CardFooter, CardBody, Form, Button } from 'Components'
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
-import ClientEncryption from './ClientEncryptionPanel'
-import ClientAttributes from './ClientAttributesPanel'
 import ClientScript from './ClientScriptPanel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
@@ -15,6 +13,7 @@ import ClientTokensPanel from './ClientTokensPanel'
 import ClientLogoutPanel from './ClientLogoutPanel'
 import ClientSoftwarePanel from './ClientSoftwarePanel'
 import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
+import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
 
 const sequence = [
   'Basic',
@@ -324,6 +323,7 @@ function ClientWizardForm({
                               client={client}
                               scopes={scopes}
                               formik={formik}
+                              oidcConfiguration={oidcConfiguration}
                             />
                           </div>
                         )
@@ -406,6 +406,61 @@ function ClientWizardForm({
                               scripts={scripts}
                               scopes={scopes}
                             /> */}
+                          </div>
+                        )
+                      case sequence[5]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientEncryptionSigningPanel
+                              client={client}
+                              formik={formik}
+                              oidcConfiguration={oidcConfiguration}
+                            />
+                            {/* <ClientScript
+                              client={client}
+                              formik={formik}
+                              scripts={scripts}
+                              scopes={scopes}
+                            /> */}
+                          </div>
+                        )
+                      case sequence[6]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientAdvanced
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            />
+                          </div>
+                        )
+                      case sequence[7]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientScript
+                              client={client}
+                              formik={formik}
+                              scripts={scripts}
+                              scopes={scopes}
+                            />
                           </div>
                         )
                     }

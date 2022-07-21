@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { Col, Container, FormGroup } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
-import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
-import Toggle from 'react-toggle'
 import { useTranslation } from 'react-i18next'
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 const DOC_CATEGORY = 'openid_client'
@@ -14,14 +12,11 @@ const DOC_CATEGORY = 'openid_client'
 function ClientCibaParUmaPanel({ client, scripts, formik }) {
   const { t } = useTranslation()
   const claim_uri_id = 'claim_uri_id'
-  const request_uri_id = 'request_uri_id'
-  const origin_uri_id = 'origin_uri_id'
-  const contact_uri_id = 'contact_uri_id'
+
   const cibaDeliveryModes = ['poll', 'push', 'ping']
-  const contacts = []
+
   const claimRedirectURI = []
-  const requestUris = []
-  const authorizedOrigins = []
+
   scripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
     .filter((item) => item.enabled)
@@ -117,15 +112,6 @@ function ClientCibaParUmaPanel({ client, scripts, formik }) {
           </RadioGroup>
         </Col>
       </FormGroup>
-      {/* <GluuToogleRow
-        name="rptAsJwt"
-        lsize={9}
-        rsize={3}
-        formik={formik}
-        label="fields.rptAsJwt"
-        value={client.rptAsJwt}
-        doc_category={DOC_CATEGORY}
-      /> */}
 
       <GluuTypeAheadWithAdd
         name="claimRedirectURIs"

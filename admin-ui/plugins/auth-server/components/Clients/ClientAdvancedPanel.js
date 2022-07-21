@@ -1,26 +1,27 @@
 import React, { useState } from 'react'
-import { Col, Container, FormGroup } from 'Components'
+import { Col, Container, FormGroup, InputGroup, CustomInput } from 'Components'
+import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
-import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
-import Toggle from 'react-toggle'
 import { useTranslation } from 'react-i18next'
+import DatePicker from 'react-datepicker'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientAdvancedPanel({ client, scripts, formik }) {
   const { t } = useTranslation()
-  const claim_uri_id = 'claim_uri_id'
   const request_uri_id = 'request_uri_id'
-  const origin_uri_id = 'origin_uri_id'
-  const contact_uri_id = 'contact_uri_id'
-  const cibaDeliveryModes = ['poll', 'push', 'ping']
-  const contacts = []
-  const claimRedirectURI = []
   const requestUris = []
-  const authorizedOrigins = []
+
+  const [expirable, setExpirable] = useState(
+    client.expirationDate ? client.expirationDate : false,
+  )
+  function handleExpirable() {
+    setExpirable(!expirable)
+  }
+
   scripts = scripts
     .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
     .filter((item) => item.enabled)
@@ -51,70 +52,53 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
   return (
     <Container>
       <FormGroup row>
-        <Col sm={4}>
-          <GluuToogleRow
-            name="accessTokenAsJwt"
-            lsize={9}
-            rsize={3}
-            formik={formik}
-            label="fields.accessTokenAsJwt"
-            value={client.accessTokenAsJwt}
-            doc_category={DOC_CATEGORY}
-          />
-        </Col>
-        <Col sm={4}>
-          <GluuToogleRow
-            name="requireAuthTime"
-            lsize={9}
-            rsize={3}
-            formik={formik}
-            label="fields.requireAuthTime"
-            value={client.requireAuthTime}
-            doc_category={DOC_CATEGORY}
-          />
-        </Col>
-        <Col sm={4}>
-          <GluuToogleRow
-            name="rptAsJwt"
-            lsize={9}
-            rsize={3}
-            formik={formik}
-            label="fields.rptAsJwt"
-            value={client.rptAsJwt}
-            doc_category={DOC_CATEGORY}
-          />
-        </Col>
-      </FormGroup>
-
-      <FormGroup row>
-        <Col sm={6}>
-          <GluuToogleRow
-            name="includeClaimsInIdToken"
-            lsize={9}
-            rsize={3}
-            formik={formik}
-            label="fields.includeClaimsInIdToken"
-            value={client.includeClaimsInIdToken}
-            doc_category={DOC_CATEGORY}
-          />
-        </Col>
-        <Col sm={6}>
-          <GluuToogleRow
-            name="frontChannelLogoutSessionRequired"
-            lsize={9}
-            rsize={3}
-            formik={formik}
-            label="fields.frontChannelLogoutSessionRequired"
-            value={client.frontChannelLogoutSessionRequired}
-            doc_category={DOC_CATEGORY}
-          />
+        <GluuLabel label="fields.subject_type" />
+        <Col sm={9}>
+          <InputGroup>
+            <CustomInput
+              type="select"
+              id="subjectType"
+              name="subjectType"
+              defaultValue={client.subjectType}
+              onChange={formik.handleChange}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              <option>pairwise</option>
+              <option>public</option>
+            </CustomInput>
+          </InputGroup>
         </Col>
       </FormGroup>
       <GluuInputRow
-        label="fields.clientUri"
-        name="clientUri"
+        label="fields.sector_uri"
+        name="sectorIdentifierUri"
         formik={formik}
-        value={client.clientUri}
+        value={client.sectorIdentifierUri}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuToogleRow
+        name="persistClientAuthorizations"
+        lsize={9}
+        rsize={3}
+        formik={formik}
+        label="fields.persist_client_authorizations"
+        value={client.persistClientAuthorizations}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuBooleanSelectBox
+        name="allowSpontaneousScopes"
+        label="fields.allow_spontaneous_scopes"
+        value={client.allowSpontaneousScopes}
+        formik={formik}
+        lsize={8}
+        rsize={4}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.spontaneousScopes"
+        name="spontaneousScopes"
+        formik={formik}
+        value={client.spontaneousScopes}
         doc_category={DOC_CATEGORY}
       />
       <GluuInputRow
@@ -124,149 +108,6 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         value={client.initiateLoginUri}
         doc_category={DOC_CATEGORY}
       />
-      <GluuInputRow
-        label="fields.tosUri"
-        name="tosUri"
-        formik={formik}
-        value={client.tosUri}
-        doc_category={DOC_CATEGORY}
-      />
-      <GluuInputRow
-        label="fields.idTokenTokenBindingCnf"
-        name="idTokenTokenBindingCnf"
-        formik={formik}
-        value={client.idTokenTokenBindingCnf}
-        doc_category={DOC_CATEGORY}
-      />
-      <GluuInputRow
-        label="fields.refreshTokenLifetime"
-        name="refreshTokenLifetime"
-        formik={formik}
-        type="number"
-        value={client.refreshTokenLifetime}
-        doc_category={DOC_CATEGORY}
-      />
-      <GluuInputRow
-        label="fields.defaultMaxAge"
-        name="defaultMaxAge"
-        formik={formik}
-        type="number"
-        value={client.defaultMaxAge}
-        doc_category={DOC_CATEGORY}
-      />
-      <GluuInputRow
-        label="fields.accessTokenLifetime"
-        name="accessTokenLifetime"
-        formik={formik}
-        type="number"
-        value={client.accessTokenLifetime}
-        doc_category={DOC_CATEGORY}
-      />
-
-      <FormGroup row>
-        <GluuLabel label="fields.show_software_settings" size={6} />
-        <Col sm={2}>
-          <Toggle
-            name="softwareSection"
-            defaultChecked={client.softwareSection}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      {client.softwareSection && (
-        <GluuInputRow
-          label="fields.softwareId"
-          name="softwareId"
-          formik={formik}
-          value={client.softwareId}
-          doc_category={DOC_CATEGORY}
-        />
-      )}
-      {client.softwareSection && (
-        <GluuInputRow
-          label="fields.softwareVersion"
-          name="softwareVersion"
-          formik={formik}
-          value={client.softwareVersion}
-          doc_category={DOC_CATEGORY}
-        />
-      )}
-      {client.softwareSection && (
-        <GluuInputRow
-          label="fields.softwareStatement"
-          name="softwareStatement"
-          formik={formik}
-          value={client.softwareStatement}
-          doc_category={DOC_CATEGORY}
-        />
-      )}
-      <FormGroup row>
-        <GluuLabel label="fields.show_ciba_settings" size={6} />
-        <Col sm={6}>
-          <Toggle
-            name="cibaSection"
-            defaultChecked={client.cibaSection}
-            onChange={formik.handleChange}
-          />
-        </Col>
-      </FormGroup>
-      {client.cibaSection && (
-        <GluuSelectRow
-          name="backchannelTokenDeliveryMode"
-          label="fields.backchannelTokenDeliveryMode"
-          formik={formik}
-          value={client.backchannelTokenDeliveryMode}
-          values={cibaDeliveryModes}
-          doc_category={DOC_CATEGORY}
-        ></GluuSelectRow>
-      )}
-      {client.cibaSection && (
-        <GluuInputRow
-          label="fields.backchannelClientNotificationEndpoint"
-          name="backchannelClientNotificationEndpoint"
-          formik={formik}
-          value={client.backchannelClientNotificationEndpoint}
-          doc_category={DOC_CATEGORY}
-        />
-      )}
-      {client.cibaSection && (
-        <GluuToogleRow
-          name="backchannelUserCodeParameter"
-          formik={formik}
-          label="fields.backchannelUserCodeParameter"
-          value={client.backchannelUserCodeParameter}
-          doc_category={DOC_CATEGORY}
-        />
-      )}
-      <GluuInputRow
-        label="fields.frontChannelLogoutUri"
-        name="frontChannelLogoutUri"
-        formik={formik}
-        value={client.frontChannelLogoutUri}
-        doc_category={DOC_CATEGORY}
-      />
-      <GluuTypeAheadWithAdd
-        name="contacts"
-        label="fields.contacts"
-        formik={formik}
-        placeholder="Eg. sample@org.com"
-        value={client.contacts || []}
-        options={contacts}
-        validator={emailValidator}
-        inputId={contact_uri_id}
-        doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadWithAdd>
-      <GluuTypeAheadWithAdd
-        name="claimRedirectURIs"
-        label="fields.claimRedirectURIs"
-        formik={formik}
-        placeholder={t('Enter a valid claim uri eg') + ' https://...'}
-        value={client.claimRedirectUris || []}
-        options={claimRedirectURI}
-        validator={uriValidator}
-        inputId={claim_uri_id}
-        doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="requestUris"
         label="fields.requestUris"
@@ -278,18 +119,6 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         inputId={request_uri_id}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadWithAdd>
-      {'  '}
-      <GluuTypeAheadWithAdd
-        name="authorizedOrigins"
-        label="fields.authorizedOrigins"
-        formik={formik}
-        placeholder={t('Enter a valid origin uri eg') + ' https://...'}
-        value={client.authorizedOrigins || []}
-        options={authorizedOrigins}
-        validator={uriValidator}
-        inputId={origin_uri_id}
-        doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadWithAdd>
       <GluuTypeAheadForDn
         name="defaultAcrValues"
         label="fields.defaultAcrValues"
@@ -298,6 +127,58 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         options={scripts}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
+      <GluuInputRow
+        label="fields.authorizedAcrValues"
+        name="authorizedAcrValues"
+        formik={formik}
+        value={client.authorizedAcrValues}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.defaultPromptLogin"
+        name="defaultPromptLogin"
+        formik={formik}
+        value={client.defaultPromptLogin}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuInputRow
+        label="fields.tls_client_auth_subject_dn"
+        name="tlsClientAuthSubjectDn"
+        formik={formik}
+        value={client.tlsClientAuthSubjectDn}
+        doc_category={DOC_CATEGORY}
+      />
+
+      {client.expirable && (
+        <GluuToogleRow
+          name="expirable"
+          formik={formik}
+          label="fields.is_expirable_client"
+          value={client.expirable && client.expirable.length ? true : false}
+          handler={handleExpirable}
+          doc_category={DOC_CATEGORY}
+        />
+      )}
+      {client.expirable && client.expirable.length && (
+        <FormGroup row>
+          <GluuLabel label="client_expiration_date" size={5} />
+          <Col sm={7}>
+            <DatePicker
+              id="expirationDate"
+              name="expirationDate"
+              showTimeSelect
+              dateFormat="yyyy-MM-dd HH:mm:aa"
+              timeFormat="HH:mm:aa"
+              selected={client.expirationDate}
+              peekNextMonth
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              onChange={(e) => formik.setFieldValue('expirationDate', e)}
+            />
+          </Col>
+        </FormGroup>
+      )}
     </Container>
   )
 }

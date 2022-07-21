@@ -17,11 +17,11 @@ import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
-import DatePicker from 'react-datepicker'
+import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
-const ClientBasicPanel = ({ client, scopes, formik }) => {
+const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration }) => {
   const { t } = useTranslation()
   const uri_id = 'redirect_uri'
   const post_uri_id = 'post_uri_id'
@@ -33,6 +33,9 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
     'password',
     'urn:ietf:params:oauth:grant-type:uma-ticket',
   ]
+  const tokenEndpointAuthMethod = !!oidcConfiguration.tokenEndpointAuthMethodsSupported
+    ? oidcConfiguration.tokenEndpointAuthMethodsSupported
+    : []
   const responseTypes = ['code', 'token', 'id_token']
   const postLogoutRedirectUris = []
   const redirectUris = []
@@ -130,91 +133,20 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         value={client.description}
         doc_category={DOC_CATEGORY}
       />
-      <GluuInputRow
-        label="fields.redirect_regex"
-        name="redirect_regex"
+      <GluuSelectRow
+        label="fields.token_endpoint_auth_method"
         formik={formik}
-        value={client.redirect_regex}
+        value={client.tokenEndpointAuthMethod}
+        values={tokenEndpointAuthMethod}
+        lsize={6}
+        rsize={6}
+        name="tokenEndpointAuthMethod"
         doc_category={DOC_CATEGORY}
       />
-      <GluuToogleRow
-        name="disabled"
-        formik={formik}
-        label="fields.is_active"
-        value={!client.disabled}
-        doc_category={DOC_CATEGORY}
-      />
-      {/* {client.expirable && (
-        <GluuToogleRow
-          name="expirable"
-          formik={formik}
-          label="fields.is_expirable_client"
-          value={client.expirable && client.expirable.length ? true : false}
-          handler={handleExpirable}
-          doc_category={DOC_CATEGORY}
-        />
-      )} */}
-      {/* {client.expirable && client.expirable.length && (
-        <FormGroup row>
-          <GluuLabel label="client_expiration_date" size={5} />
-          <Col sm={7}>
-            <DatePicker
-              id="expirationDate"
-              name="expirationDate"
-              showTimeSelect
-              dateFormat="yyyy-MM-dd HH:mm:aa"
-              timeFormat="HH:mm:aa"
-              selected={client.expirationDate}
-              peekNextMonth
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              onChange={(e) => formik.setFieldValue('expirationDate', e)}
-            />
-          </Col>
-        </FormGroup>
-      )} */}
 
-      {/* <GluuInputRow
-        label="fields.policy_uri"
-        name="policyUri"
-        formik={formik}
-        value={client.policyUri}
-        doc_category={DOC_CATEGORY}
-      /> */}
-      {/* <GluuInputRow
-        label="fields.logo_uri"
-        name="logoUri"
-        formik={formik}
-        value={client.logoUri}
-        doc_category={DOC_CATEGORY}
-      /> */}
-      {/* <GluuInputRow
-        label="fields.sector_uri"
-        name="sectorIdentifierUri"
-        formik={formik}
-        value={client.sectorIdentifierUri}
-        doc_category={DOC_CATEGORY}
-      /> */}
       <FormGroup row>
-        <GluuLabel label="fields.application_type" />
-        <Col sm={3}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id="applicationType"
-              name="applicationType"
-              defaultValue={client.applicationType}
-              onChange={formik.handleChange}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              <option>web</option>
-              <option>native</option>
-            </CustomInput>
-          </InputGroup>
-        </Col>
-        <GluuLabel label="fields.subject_type" />
-        <Col sm={3}>
+        <GluuLabel label="fields.subject_type_basic" />
+        <Col sm={9}>
           <InputGroup>
             <CustomInput
               type="select"
@@ -246,50 +178,18 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
         options={responseTypes}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAhead>
-      <GluuTypeAheadForDn
-        name="scopes"
-        label="fields.scopes"
-        formik={formik}
-        value={getScopeMapping(client.scopes, scopes)}
-        options={scopes}
-        doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadForDn>
-      {/* <GluuTypeAheadWithAdd
-        name="postLogoutRedirectUris"
-        label="fields.post_logout_redirect_uris"
-        formik={formik}
-        placeholder={t('placeholders.post_logout_redirect_uris')}
-        value={client.postLogoutRedirectUris || []}
-        options={postLogoutRedirectUris}
-        validator={postUriValidator}
-        inputId={post_uri_id}
-        doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadWithAdd> */}
-
-      <GluuTypeAheadWithAdd
-        name="redirectUris"
-        label="fields.redirect_uris"
-        formik={formik}
-        placeholder={t('placeholders.redirect_uris')}
-        value={client.redirectUris || []}
-        options={redirectUris}
-        validator={uriValidator}
-        inputId={uri_id}
-        doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadWithAdd>
-
       <FormGroup row>
-        {/* <Col sm={6}>
+        <Col sm={6}>
           <GluuToogleRow
-            name="persistClientAuthorizations"
+            name="disabled"
+            formik={formik}
+            label="fields.is_active"
+            value={!client.disabled}
+            doc_category={DOC_CATEGORY}
             lsize={9}
             rsize={3}
-            formik={formik}
-            label="fields.persist_client_authorizations"
-            value={client.persistClientAuthorizations}
-            doc_category={DOC_CATEGORY}
           />
-        </Col> */}
+        </Col>
         <Col sm={6}>
           <GluuToogleRow
             name="trustedClient"
@@ -302,6 +202,51 @@ const ClientBasicPanel = ({ client, scopes, formik }) => {
           />
         </Col>
       </FormGroup>
+      <FormGroup row>
+        <GluuLabel label="fields.application_type" />
+        <Col sm={9}>
+          <InputGroup>
+            <CustomInput
+              type="select"
+              id="applicationType"
+              name="applicationType"
+              defaultValue={client.applicationType}
+              onChange={formik.handleChange}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              <option>web</option>
+              <option>native</option>
+            </CustomInput>
+          </InputGroup>
+        </Col>
+      </FormGroup>
+      <GluuTypeAheadWithAdd
+        name="redirectUris"
+        label="fields.redirect_uris"
+        formik={formik}
+        placeholder={t('placeholders.redirect_uris')}
+        value={client.redirectUris || []}
+        options={redirectUris}
+        validator={uriValidator}
+        inputId={uri_id}
+        doc_category={DOC_CATEGORY}
+      ></GluuTypeAheadWithAdd>
+
+      <GluuInputRow
+        label="fields.redirectUrisRegex"
+        name="redirectUrisRegex"
+        formik={formik}
+        value={client.redirectUrisRegex}
+        doc_category={DOC_CATEGORY}
+      />
+      <GluuTypeAheadForDn
+        name="scopes"
+        label="fields.scopes"
+        formik={formik}
+        value={getScopeMapping(client.scopes, scopes)}
+        options={scopes}
+        doc_category={DOC_CATEGORY}
+      ></GluuTypeAheadForDn>
     </Container>
   )
 }

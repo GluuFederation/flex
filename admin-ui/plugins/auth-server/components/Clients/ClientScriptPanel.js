@@ -1,6 +1,8 @@
 import React from 'react'
 import { Container } from 'Components'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
+import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
+
 const DOC_CATEGORY = 'openid_client'
 
 function ClientScriptPanel({ client, scopes, scripts, formik }) {
@@ -31,27 +33,28 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
   return (
     <Container>
       <GluuTypeAheadForDn
+        name="spontaneousScopes"
+        label="fields.spontaneous_scopes"
+        formik={formik}
+        value={client.spontaneousScopes}
+        options={scopes}
+        doc_category={DOC_CATEGORY}
+      ></GluuTypeAheadForDn>
+      <GluuInputRow
+        label="fields.updateTokenScriptDns"
+        name="updateTokenScriptDns"
+        formik={formik}
+        value={client.updateTokenScriptDns}
+        doc_category={DOC_CATEGORY}
+        lsize={4}
+        rsize={8}
+      />
+      <GluuTypeAheadForDn
         name="postAuthnScripts"
         label="fields.post_authn_scripts"
         formik={formik}
         value={client.postAuthnScripts}
         options={postScripts}
-        doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadForDn>
-      <GluuTypeAheadForDn
-        name="consentGatheringScripts"
-        label="fields.consent_gathering_scripts"
-        formik={formik}
-        value={client.consentGatheringScripts}
-        options={consentScripts}
-        doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadForDn>
-      <GluuTypeAheadForDn
-        name="spontaneousScopeScriptDns"
-        label="fields.spontaneous_scope_script_dns"
-        formik={formik}
-        value={client.spontaneousScopeScriptDns}
-        options={spontaneousScripts}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
@@ -62,6 +65,24 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         options={instrospectionScripts}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
+      <GluuInputRow
+        label="fields.ropcScripts"
+        name="ropcScripts"
+        formik={formik}
+        value={client.ropcScripts}
+        doc_category={DOC_CATEGORY}
+        lsize={4}
+        rsize={8}
+      />
+      <GluuTypeAheadForDn
+        name="consentGatheringScripts"
+        label="fields.consent_gathering_scripts"
+        formik={formik}
+        value={client.consentGatheringScripts}
+        options={consentScripts}
+        doc_category={DOC_CATEGORY}
+      ></GluuTypeAheadForDn>
+
       <GluuTypeAheadForDn
         name="rptClaimsScripts"
         label="fields.rpt_scripts"
@@ -70,14 +91,6 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         options={rptScripts}
         doc_category={DOC_CATEGORY}
         doc_entry="rptClaimsScripts"
-      ></GluuTypeAheadForDn>
-      <GluuTypeAheadForDn
-        name="spontaneousScopes"
-        label="fields.spontaneous_scopes"
-        formik={formik}
-        value={client.spontaneousScopes}
-        options={scopes}
-        doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
     </Container>
   )
