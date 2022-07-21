@@ -5,8 +5,8 @@ FROM bellsoft/liberica-openjre-alpine:11.0.15
 # ===============
 
 RUN apk update \
-    && apk upgrade \
-    && apk add --no-cache python3 openssl tini py3-cryptography py3-lxml py3-psycopg2 py3-grpcio \
+    && apk upgrade --available \
+    && apk add --no-cache python3 openssl tini py3-cryptography py3-psycopg2 py3-grpcio \
     && apk add --no-cache --virtual .build-deps git wget zip \
     && mkdir -p /usr/java/latest \
     && ln -sf /usr/lib/jvm/jre /usr/java/latest/jre

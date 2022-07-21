@@ -113,7 +113,7 @@ jobs:
           fi
           # If the user passed a war version to build off ,change this war version.
           GLUU_VERSION=${{ github.event.inputs.gluu_version }}
-          if [ ! -z "GLUU_VERSION" ]
+          if [ ! -z "$GLUU_VERSION" ]
           then
             python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-${{ matrix.docker-images }}') ; dfparser.envs['GLUU_VERSION'] = '${{ github.event.inputs.gluu_version }}'"
             echo "War vesrion has been modified."
