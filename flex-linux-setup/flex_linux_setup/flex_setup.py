@@ -9,7 +9,6 @@ import glob
 import code
 import configparser
 import shlex
-import shutil
 
 from pathlib import Path
 from urllib import request
@@ -21,6 +20,7 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
     parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
+    parser.add_argument('-remove', help="Remove Flex components", choices=['admin-ui', 'casa'])
 
     return parser
 
@@ -174,6 +174,9 @@ class flex_installer(JettyInstaller):
         self.fido2_client_jar_fn = os.path.join(Config.dist_jans_dir, 'jans-fido2-client.jar')
         self.dbUtils.bind(force=True)
 
+        Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
+        self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
+
         if os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir+'-'+time.ctime().replace(' ', '_'))
 
@@ -223,35 +226,17 @@ class flex_installer(JettyInstaller):
             https_jans_list.insert(n+1, '\n' + apache_directive_text + '\n')
             self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
 
-        self.enable_apache_mod_dir()
+    def cli_plugins(self):
+        cli_config = Path(jans_cli_installer.config_ini_fn)
 
-    def enable_apache_mod_dir(self):
-
-        # Enable mod_dir for apache
-
-        cmd_a2enmod = shutil.which('a2enmod')
-
-        if base.clone_type == 'deb':
-            httpd_installer.run([cmd_a2enmod, 'dir'])
-
-        elif base.os_type == 'suse':
-            httpd_installer.run([cmd_a2enmod, 'dir'])
-            cmd_a2enflag = shutil.which('a2enflag')
-            httpd_installer.run([cmd_a2enflag, 'SSL'])
-
-        else:
-            base_mod_path = Path('/etc/httpd/conf.modules.d/00-base.conf')
-            mod_load_content = base_mod_path.read_text().splitlines()
-            modified = False
-
-            for i, l in enumerate(mod_load_content[:]):
-                ls = l.strip()
-                if ls.startswith('#') and ls.endswith('mod_dir.so'):
-                    mod_load_content[i] = ls.lstrip('#')
-                    modified = True
-
-            if modified:
-                base_mod_path.write_text('\n'.join(mod_load_content))
+        if cli_config.exists():
+            config = configparser.ConfigParser()
+            config.read_file(cli_config.open())
+            plugins = config_api_installer.get_plugins()
+            print(plugins)
+            config['DEFAULT']['jca_plugins'] = ','.join(plugins)
+            config.write(cli_config.open('w'))
+            cli_config.chmod(0o600)
 
 
     def install_gluu_admin_ui(self):
@@ -275,8 +260,6 @@ class flex_installer(JettyInstaller):
             run_cmd = '{} {}'.format(cmd_path, cmd)
             config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)
 
-        Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
-
         self.add_apache_directive(Config.templateRenderingDict['admin_ui_apache_root'], 'admin_ui_apache_directive')
 
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
@@ -284,32 +267,13 @@ class flex_installer(JettyInstaller):
 
         config_api_installer.check_clients([('role_based_client_id', '2000.')])
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, os.path.join(self.flex_setup_dir, 'templates'), config_api_installer.custom_config_dir)
-        admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
         config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir)
-        config_api_installer.add_extra_class(admin_ui_plugin_path)
+        config_api_installer.add_extra_class(self.admin_ui_plugin_path)
 
         for logfn in (self.log4j2_adminui_path, self.log4j2_path):
             config_api_installer.copyFile(logfn, config_api_installer.custom_config_dir)
 
-        cli_config = Path(jans_cli_installer.config_ini_fn)
-
-        current_plugins = []
-
-        if cli_config.exists():
-
-            config = configparser.ConfigParser()
-            config.read_file(cli_config.open())
-            current_plugins = config['DEFAULT'].get('jca_plugins', '').split(',')
-
-        plugins = config_api_installer.get_plugins()
-
-        for plugin in plugins:
-            if plugin not in current_plugins:
-                current_plugins.append(plugin)
-
-        config['DEFAULT']['jca_plugins'] = ','.join(current_plugins)
-        config.write(cli_config.open('w'))
-        cli_config.chmod(0o600)
+        self.cli_plugins()
 
     def install_casa(self):
 
@@ -450,6 +414,21 @@ class flex_installer(JettyInstaller):
             propertiesUtils.save_properties()
 
 
+    def remove_admin_ui(self):
+        if not os.path.exists(Config.templateRenderingDict['admin_ui_apache_root']):
+            print("Admin UI is not installed on this system")
+            return
+
+        print("Removing Admin UI")
+        config_api_installer.removeDirs(Config.templateRenderingDict['admin_ui_apache_root'])
+        print(self.admin_ui_plugin_path)
+        if os.path.exists(self.admin_ui_plugin_path):
+            config_api_installer.removeFile(self.admin_ui_plugin_path)
+        self.cli_plugins()
+
+    def remove_casa(self):
+        print("Removing casa")
+
 def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
@@ -472,9 +451,21 @@ def prompt_for_installation():
         print("Nothing to install. Exiting ...")
         sys.exit()
 
-
+def remove_components():
+    if argsp.remove == 'admin-ui':
+        installer_obj.remove_admin_ui()
 
 def main():
+
+    installer_obj = flex_installer()
+
+    if argsp.remove == 'admin-ui':
+        installer_obj.remove_admin_ui()
+        return
+
+    if argsp.remove == 'casa':
+        installer_obj.remove_casa()
+        return
 
     prompt_for_installation()
 
@@ -486,7 +477,6 @@ def main():
         print("Installing node")
         node_installer.install()
 
-    installer_obj = flex_installer()
     installer_obj.download_files()
 
     if install_components['admin_ui']:
