@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import DatePicker from 'react-datepicker'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientAdvancedPanel({ client, scripts, formik }) {
+function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
   const { t } = useTranslation()
   const request_uri_id = 'request_uri_id'
   const requestUris = []
@@ -48,6 +48,12 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
     return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
       email,
     )
+  }
+  function getScopeMapping(exitingScopes, scopes) {
+    if (!exitingScopes) {
+      exitingScopes = []
+    }
+    return scopes.filter((item) => exitingScopes.includes(item.dn))
   }
   return (
     <Container>
@@ -94,13 +100,15 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         rsize={4}
         doc_category={DOC_CATEGORY}
       />
-      <GluuInputRow
-        label="fields.spontaneousScopes"
+      <GluuTypeAheadForDn
         name="spontaneousScopes"
+        label="fields.spontaneousScopes"
         formik={formik}
-        value={client.spontaneousScopes}
+        value={getScopeMapping(client.spontaneousScopes, scopes)}
+        options={scopes}
         doc_category={DOC_CATEGORY}
-      />
+      ></GluuTypeAheadForDn>
+
       <GluuInputRow
         label="fields.initiateLoginUri"
         name="initiateLoginUri"
@@ -127,17 +135,20 @@ function ClientAdvancedPanel({ client, scripts, formik }) {
         options={scripts}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
-      <GluuInputRow
-        label="fields.authorizedAcrValues"
+      <GluuTypeAheadForDn
         name="authorizedAcrValues"
+        label="fields.authorizedAcrValues"
         formik={formik}
-        value={client.authorizedAcrValues}
+        value={getMapping(client.authorizedAcrValues, scripts)}
+        options={scripts}
         doc_category={DOC_CATEGORY}
-      />
-      <GluuInputRow
-        label="fields.defaultPromptLogin"
+      ></GluuTypeAheadForDn>
+      <GluuToogleRow
         name="defaultPromptLogin"
+        lsize={9}
+        rsize={3}
         formik={formik}
+        label="fields.defaultPromptLogin"
         value={client.defaultPromptLogin}
         doc_category={DOC_CATEGORY}
       />

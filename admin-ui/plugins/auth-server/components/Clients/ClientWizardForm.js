@@ -176,10 +176,23 @@ function ClientWizardForm({
     spontaneousScopeScriptDns:
       client.attributes.spontaneousScopeScriptDns || [],
     consentGatheringScripts: client.attributes.consentGatheringScripts || [],
+    redirectUrisRegex: client.attributes.redirectUrisRegex || '',
+    parLifetime: client.attributes.parLifetime || '',
+    requirePar: client.attributes.requirePar || false,
+    updateTokenScriptDns: client.attributes.updateTokenScriptDns || [],
+    ropcScripts: client.attributes.ropcScripts || [],
+    authorizationSignedResponseAlg:
+      client.attributes.authorizationSignedResponseAlg || '',
+    authorizationEncryptedResponseAlg:
+      client.attributes.authorizationEncryptedResponseAlg || '',
+    authorizationEncryptedResponseEnc:
+      client.attributes.authorizationEncryptedResponseEnc || '',
     postAuthnScripts: client.attributes.postAuthnScripts || [],
     rptClaimsScripts: client.attributes.rptClaimsScripts || [],
     additionalAudience: client.attributes.additionalAudience,
     backchannelLogoutUri: client.attributes.backchannelLogoutUri,
+    defaultPromptLogin: client.attributes.defaultPromptLogin || false,
+    authorizedAcrValues: client.attributes.authorizedAcrValues || [],
     customObjectClasses: client.customObjectClasses || [],
     requireAuthTime: client.requireAuthTime,
     trustedClient: client.trustedClient,
@@ -226,6 +239,19 @@ function ClientWizardForm({
             values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
             values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
             values[ATTRIBUTE].additionalAudience = values.additionalAudience
+            values[ATTRIBUTE].redirectUrisRegex = values.redirectUrisRegex
+            values[ATTRIBUTE].parLifetime = values.parLifetime
+            values[ATTRIBUTE].requirePar = values.requirePar
+            values[ATTRIBUTE].defaultPromptLogin = values.defaultPromptLogin
+            values[ATTRIBUTE].authorizedAcrValues = values.authorizedAcrValues
+            values[ATTRIBUTE].updateTokenScriptDns = values.updateTokenScriptDns
+            values[ATTRIBUTE].ropcScripts = values.ropcScripts
+            values[ATTRIBUTE].authorizationSignedResponseAlg =
+              values.authorizationSignedResponseAlg
+            values[ATTRIBUTE].authorizationEncryptedResponseAlg =
+              values.authorizationEncryptedResponseAlg
+            values[ATTRIBUTE].authorizationEncryptedResponseEnc =
+              values.authorizationEncryptedResponseEnc
             customOnSubmit(JSON.parse(JSON.stringify(values)))
           }}
         >
@@ -443,6 +469,7 @@ function ClientWizardForm({
                               client={client}
                               scripts={scripts}
                               formik={formik}
+                              scopes={scopes}
                             />
                           </div>
                         )

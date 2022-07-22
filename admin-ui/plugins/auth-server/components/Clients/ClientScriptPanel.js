@@ -29,6 +29,14 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
     .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
+  const ropcScripts = scripts
+    .filter((item) => item.scriptType == 'RESOURCE_OWNER_PASSWORD_CREDENTIALS')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
+  const updateTokenScriptDns = scripts
+    .filter((item) => item.scriptType == 'UPDATE_TOKEN')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
 
   return (
     <Container>
@@ -40,15 +48,14 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         options={scopes}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
-      <GluuInputRow
-        label="fields.updateTokenScriptDns"
+      <GluuTypeAheadForDn
         name="updateTokenScriptDns"
+        label="fields.updateTokenScriptDns"
         formik={formik}
         value={client.updateTokenScriptDns}
+        options={updateTokenScriptDns}
         doc_category={DOC_CATEGORY}
-        lsize={4}
-        rsize={8}
-      />
+      ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="postAuthnScripts"
         label="fields.post_authn_scripts"
@@ -65,15 +72,14 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
         options={instrospectionScripts}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
-      <GluuInputRow
-        label="fields.ropcScripts"
+      <GluuTypeAheadForDn
         name="ropcScripts"
+        label="fields.ropcScripts"
         formik={formik}
         value={client.ropcScripts}
+        options={ropcScripts}
         doc_category={DOC_CATEGORY}
-        lsize={4}
-        rsize={8}
-      />
+      ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="consentGatheringScripts"
         label="fields.consent_gathering_scripts"
