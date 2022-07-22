@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
 import { Formik, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import {
@@ -10,21 +12,38 @@ import {
   FormGroup,
   Input,
   Accordion,
+  Badge,
 } from 'Components'
+import {
+  searchClients,
+  viewOnly,
+  setCurrentItem,
+} from 'Plugins/auth-server/redux/actions/OIDCActions'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInumInput from 'Routes/Apps/Gluu/GluuInumInput'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
+import IconButton from '@material-ui/core/IconButton'
+import Visibility from '@material-ui/icons/Visibility'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
+import {
+  LIMIT,
+  PATTERN,
+} from 'Plugins/auth-server/common/Constants'
 
-function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
+function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch }) {
   const { t } = useTranslation()
   let dynamicScopeScripts = []
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const history = useHistory()
   const spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
+  const options = {}
   let claims = []
   scripts = scripts || []
   attributes = attributes || []
@@ -45,6 +64,17 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
     enableSpontaneous(scope.scopeType),
   )
+
+  useEffect(() => {
+    if (showSpontaneousPanel)
+      makeOptions(1, scope.attributes.spontaneousClientId)
+    dispatch(searchClients({ "action_data": options }))
+  }, [showClaimsPanel])
+
+  function makeOptions(limit, client_id) {
+    options[LIMIT] = limit
+    options[PATTERN] = client_id
+  }
 
   function enableClaims(type) {
     return type === 'openid'
@@ -100,6 +130,12 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   function submitForm() {
     toggle()
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
+  }
+
+  function goToClientViewPage(client_id) {
+    dispatch(viewOnly(true))
+    dispatch(setCurrentItem(client[0]))
+    return history.push(`/auth-server/client/edit:` + client_id.substring(0, 4))
   }
 
   return (
@@ -210,48 +246,58 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 </Col>
               </FormGroup>
             </GluuTooltip>
-            { <GluuToogleRow
+            {!showSpontaneousPanel && (<div><GluuToogleRow
               label="fields.default_scope"
               name="defaultScope"
               formik={formik}
               value={scope.defaultScope}
               doc_category={SCOPE}
-            />}
-            <GluuToogleRow
-              label="fields.show_in_configuration_endpoint"
-              name="attributes.showInConfigurationEndpoint"
-              formik={formik}
-              value={scope.attributes.showInConfigurationEndpoint}
-              doc_category={SCOPE}
             />
-            <GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
-              <FormGroup row>
-                <GluuLabel label="fields.scope_type" size={4} />
-                <Col sm={8}>
-                  <InputGroup>
-                    <CustomInput
-                      type="select"
-                      id="scopeType"
-                      name="scopeType"
-                      defaultValue={scope.scopeType}
-                      onChange={(e) => {
-                        handleScopeTypeChanged(e.target.value)
-                        formik.setFieldValue('scopeType', e.target.value)
-                      }}
-                    >
-                      <option value="">{t('actions.choose')}...</option>
-                      <option value="oauth">OAuth</option>
-                      <option value="openid">OpenID</option>
-                      <option value="dynamic">Dynamic</option>
-                      <option value="spontaneous">Spontaneous</option>
-                    </CustomInput>
-                  </InputGroup>
-                </Col>
-                <ErrorMessage name="scopeType">
-                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-                </ErrorMessage>
-              </FormGroup>
-            </GluuTooltip>
+              <GluuToogleRow
+                label="fields.show_in_configuration_endpoint"
+                name="attributes.showInConfigurationEndpoint"
+                formik={formik}
+                value={scope.attributes.showInConfigurationEndpoint}
+                doc_category={SCOPE}
+              /></div>)}
+            {showSpontaneousPanel ?
+              (<GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
+                <FormGroup row>
+                  <GluuLabel label="fields.scope_type" size={4} />
+                  <Col sm={8}>
+                    <Badge key={scope.inum} color={`primary-${selectedTheme}`}>
+                      {scope.scopeType}
+                    </Badge>
+                  </Col>
+                </FormGroup>
+              </GluuTooltip>) :
+              (<GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
+                <FormGroup row>
+                  <GluuLabel label="fields.scope_type" size={4} />
+                  <Col sm={8}>
+                    <InputGroup>
+                      <CustomInput
+                        type="select"
+                        id="scopeType"
+                        name="scopeType"
+                        defaultValue={scope.scopeType}
+                        onChange={(e) => {
+                          handleScopeTypeChanged(e.target.value)
+                          formik.setFieldValue('scopeType', e.target.value)
+                        }}
+                      >
+                        <option value="">{t('actions.choose')}...</option>
+                        <option value="oauth">OAuth</option>
+                        <option value="openid">OpenID</option>
+                        <option value="dynamic">Dynamic</option>
+                      </CustomInput>
+                    </InputGroup>
+                  </Col>
+                  <ErrorMessage name="scopeType">
+                    {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+                  </ErrorMessage>
+                </FormGroup>
+              </GluuTooltip>)}
             {showDynamicPanel && (
               <GluuTypeAheadForDn
                 name="dynamicScopeScripts"
@@ -297,46 +343,39 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     <FormGroup row>
                       <GluuLabel label="fields.spontaneous_client_id" size={4} />
                       <Col sm={8}>
-                        <Input
-                          placeholder={t('placeholders.spontaneous_client_id')}
-                          id="attributes.spontaneousClientId"
-                          name="attributes.spontaneousClientId"
-                          defaultValue={scope.attributes.spontaneousClientId}
-                          onChange={(e) => {
-                            scope.attributes.spontaneousClientId = e.target.value
-                            formik.setFieldValue(
-                              'attributes.spontaneousClientId',
-                              e.target.value,
-                            )
-                          }}
-                        />
+                        <div>
+                          {scope.attributes.spontaneousClientId}
+                          <IconButton onClick={() => goToClientViewPage(scope.attributes.spontaneousClientId)}>
+                            <Visibility />
+                          </IconButton>
+                        </div>
                       </Col>
                     </FormGroup>
                   </GluuTooltip>
 
-                  <GluuTypeAheadForDn
-                    name="attributes.spontaneousClientScopes"
-                    label="fields.spontaneous_client_scopes"
-                    formik={formik}
-                    value={getMapping(
-                      spontaneousClientScopes,
-                      scope?.attributes?.spontaneousClientScopes?.map((item) => ({
-                        dn: item || '',
-                        name: item || '',
-                      })),
-                    )}
-                    allowNew={true}
-                    options={spontaneousClientScopes?.map((item) => ({
-                      dn: item || '',
-                      name: item || '',
-                    }))}
+                  <GluuTooltip
                     doc_category={SCOPE}
-                  />
+                    doc_entry="spontaneousClientId"
+                  >
+                    <FormGroup row>
+                      <GluuLabel label="fields.spontaneous_client_id" size={4} />
+                      <Col sm={8}>
+                        {scope?.attributes?.spontaneousClientScopes?.map((item, key) => (
+                          <div style={{ maxWidth: 120, overflow: 'auto' }}>
+                            <Badge key={key} color={`primary-${selectedTheme}`}>
+                              {item}
+                            </Badge>
+                          </div>
+                        ))}
+                      </Col>
+                    </FormGroup>
+                  </GluuTooltip>
                 </Accordion.Body>
               </Accordion>
             )}
             <FormGroup row></FormGroup>
-            <GluuCommitFooter saveHandler={toggle} />
+            {!showSpontaneousPanel &&
+              (<GluuCommitFooter saveHandler={toggle} />)}
             <GluuCommitDialog
               handler={toggle}
               modal={modal}
@@ -349,5 +388,9 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     </Container >
   )
 }
-
-export default ScopeForm
+const mapStateToProps = (state) => {
+  return {
+    client: state.oidcReducer.items,
+  }
+}
+export default connect(mapStateToProps)(ScopeForm)
