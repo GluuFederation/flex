@@ -21,13 +21,15 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
     parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
-
+    parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
+    parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
+    parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     return parser
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
-install_components = {'admin_ui': True, 'casa': True}
 installed_components = {'admin_ui': False, 'casa': False}
+argsp = None
 
 try:
     import jans_setup
@@ -50,6 +52,15 @@ except ModuleNotFoundError:
         print("Executing", install_cmd)
         os.system(install_cmd)
         sys.path.append(__STATIC_SETUP_DIR__)
+
+if not argsp:
+    argsp, nargs = get_flex_setup_parser().parse_known_args()
+
+install_components = {
+        'admin_ui': argsp.install_admin_ui,
+        'casa': argsp.install_casa
+    }
+
 
 logs_dir = os.path.join(__STATIC_SETUP_DIR__, 'logs')
 
@@ -454,16 +465,16 @@ def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
-        if prompt_admin_ui_install and not prompt_admin_ui_install.lower().startswith('y'):
-            install_components['admin_ui'] = False
+        if prompt_admin_ui_install and prompt_admin_ui_install.lower().startswith('y'):
+            install_components['admin_ui'] = True
     else:
         print("Admin UI is allready installed on this system")
         install_components['admin_ui'] = False
 
     if not os.path.exists(os.path.join(Config.jetty_base, 'casa')):
         prompt_casa_install = input("Install Casa [Y/n]: ")
-        if prompt_casa_install and not prompt_casa_install.lower().startswith('y'):
-            install_components['casa'] = False
+        if prompt_casa_install and prompt_casa_install.lower().startswith('y'):
+            install_components['casa'] = True
     else:
         print("Casa is allready installed on this system")
         install_components['casa'] = False
@@ -476,7 +487,8 @@ def prompt_for_installation():
 
 def main():
 
-    prompt_for_installation()
+    if not argsp.flex_non_interactive:
+        prompt_for_installation()
 
     if install_components['admin_ui'] and not node_installer.installed():
         node_fn = 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION'])
