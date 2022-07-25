@@ -184,7 +184,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
           )}
         </Col>
         <Col sm={6}>
-          {client.expirable && client.expirable.length && (
+          {client.expirable && client.expirable.length ? (
             <FormGroup row>
               <Col sm={12}>
                 <DatePicker
@@ -202,7 +202,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
                 />
               </Col>
             </FormGroup>
-          )}
+          ) : null}
         </Col>
       </FormGroup>
     </Container>
