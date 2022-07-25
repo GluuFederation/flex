@@ -47,7 +47,6 @@ function DashboardPage({
   const [endDate, setEndDate] = useState(new Date())
   const [mobileChartStyle, setMobileChartStyle] = useState({})
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
-  const isSmallDesktop = useMediaQuery({ query: '(max-width: 1469px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const userAction = {}
   const options = {}
@@ -56,6 +55,8 @@ function DashboardPage({
   const themeColors = getThemeColor(selectedTheme)
   const classes = styles()
   const FETCHING_LICENSE_DETAILS = 'Fetch license details'
+  const [mauCount, setMauCount] = useState(null)
+  const [tokenCount, setTokenCount] = useState(null)
 
   SetTitle(t('menus.dashboard'))
 
@@ -66,6 +67,24 @@ function DashboardPage({
       scrollBehavior: 'smooth',
     })
   }, [isMobile])
+
+  useEffect(() => {
+    const date = new Date()
+    const currentYear = date.getFullYear()
+    const currentMonth = date.getMonth() + 1
+    const formattedMonth = currentMonth > 9 ? currentMonth : `0${currentMonth}`
+    const yearMonth = `${currentYear}${formattedMonth}`
+    const currentMonthData = statData.find(({ month }) => month === yearMonth)
+
+    const mau = currentMonthData?.monthly_active_users
+    const token = currentMonthData?.token_count_per_granttype?.authorization_code?.access_token + currentMonthData?.token_count_per_granttype?.client_credentials?.access_token
+    if (mau) {
+      setMauCount(mau)
+    }
+    if(token) {
+      setTokenCount(token)
+    }
+  }, [statData])
 
   useEffect(() => {
     let count = 0
@@ -127,10 +146,6 @@ function DashboardPage({
     return date.getFullYear() + getMonth(date)
   }
 
-  function getFormattedMonth() {
-    return getYearMonth(startDate) + '%' + getYearMonth(endDate)
-  }
-
   function getMonth(aDate) {
     const value = String(aDate.getMonth() + 1)
     if (value.length > 1) {
@@ -147,11 +162,11 @@ function DashboardPage({
     },
     {
       text: t('dashboard.active_users_count'),
-      value: 1,
+      value: mauCount,
     },
     {
       text: t('dashboard.token_issued_count'),
-      value: 150,
+      value: tokenCount,
     },
   ]
 
