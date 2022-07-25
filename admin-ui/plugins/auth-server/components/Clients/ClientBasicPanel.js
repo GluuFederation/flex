@@ -138,8 +138,8 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration }) => {
         formik={formik}
         value={client.tokenEndpointAuthMethod}
         values={tokenEndpointAuthMethod}
-        lsize={6}
-        rsize={6}
+        lsize={3}
+        rsize={9}
         name="tokenEndpointAuthMethod"
         doc_category={DOC_CATEGORY}
       />
@@ -169,6 +169,8 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration }) => {
         value={client.grantTypes}
         options={grantTypes}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAhead>
       <GluuTypeAhead
         name="responseTypes"
@@ -177,6 +179,8 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration }) => {
         value={client.responseTypes}
         options={responseTypes}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAhead>
       <FormGroup row>
         <Col sm={6}>
@@ -230,6 +234,8 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration }) => {
         validator={uriValidator}
         inputId={uri_id}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAheadWithAdd>
 
       <GluuInputRow
@@ -246,6 +252,8 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration }) => {
         value={getScopeMapping(client.scopes, scopes)}
         options={scopes}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAheadForDn>
     </Container>
   )

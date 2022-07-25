@@ -65,6 +65,8 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         validator={emailValidator}
         inputId={contact_uri_id}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="authorizedOrigins"
@@ -76,6 +78,8 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         validator={uriValidator}
         inputId={origin_uri_id}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAheadWithAdd>
 
       <GluuInputRow

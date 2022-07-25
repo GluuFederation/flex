@@ -17,6 +17,8 @@ function GluuTypeAheadWithAdd({
   validator,
   inputId,
   doc_category,
+  lsize = 4,
+  rsize = 8,
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
@@ -44,9 +46,9 @@ function GluuTypeAheadWithAdd({
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
-        <GluuLabel label={label} size={4} />
+        <GluuLabel label={label} size={lsize} />
         <Col
-          sm={8}
+          sm={rsize}
           style={{
             borderStyle: 'solid',
             borderRadius: '5px',

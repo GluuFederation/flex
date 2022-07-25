@@ -49,8 +49,8 @@ function ClientTokensPanel({ client, scripts, formik }) {
       <FormGroup row>
         <Col sm={12}>
           <FormGroup row>
-            <GluuLabel label="fields.accessTokenAsJwt" size={6} />
-            <Col sm={6}>
+            <GluuLabel label="fields.accessTokenAsJwt" size={4} />
+            <Col sm={8}>
               <RadioGroup
                 row
                 name="accessTokenAsJwt"
@@ -78,22 +78,22 @@ function ClientTokensPanel({ client, scripts, formik }) {
             </Col>
           </FormGroup>
         </Col>
-        <Col sm={6}>
+        <Col sm={12}>
           <GluuToogleRow
             name="includeClaimsInIdToken"
-            lsize={9}
-            rsize={3}
+            lsize={4}
+            rsize={8}
             formik={formik}
             label="fields.includeClaimsInIdToken"
             value={client.includeClaimsInIdToken}
             doc_category={DOC_CATEGORY}
           />
         </Col>
-        <Col sm={6}>
+        <Col sm={12}>
           <GluuToogleRow
             name="requireAuthTime"
-            lsize={9}
-            rsize={3}
+            lsize={4}
+            rsize={8}
             formik={formik}
             label="fields.requireAuthTime"
             value={client.requireAuthTime}
@@ -119,6 +119,8 @@ function ClientTokensPanel({ client, scripts, formik }) {
         formik={formik}
         value={client.idTokenTokenBindingCnf}
         doc_category={DOC_CATEGORY}
+        lsize={4}
+        rsize={8}
       />
       <GluuTypeAheadWithAdd
         name="additionalAudience"
@@ -138,6 +140,8 @@ function ClientTokensPanel({ client, scripts, formik }) {
         type="number"
         value={client.accessTokenLifetime}
         doc_category={DOC_CATEGORY}
+        lsize={4}
+        rsize={8}
       />
       <GluuInputRow
         label="fields.refreshTokenLifetime"
@@ -146,6 +150,8 @@ function ClientTokensPanel({ client, scripts, formik }) {
         type="number"
         value={client.refreshTokenLifetime}
         doc_category={DOC_CATEGORY}
+        lsize={4}
+        rsize={8}
       />
       <GluuInputRow
         label="fields.defaultMaxAge"
@@ -154,6 +160,8 @@ function ClientTokensPanel({ client, scripts, formik }) {
         type="number"
         value={client.defaultMaxAge}
         doc_category={DOC_CATEGORY}
+        lsize={4}
+        rsize={8}
       />
     </Container>
   )

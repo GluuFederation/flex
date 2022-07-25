@@ -38,6 +38,8 @@ function ClientLogoutPanel({ client, scripts, formik }) {
         formik={formik}
         value={client.frontChannelLogoutUri}
         doc_category={DOC_CATEGORY}
+        lsize={4}
+        rsize={8}
       />
       <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"
@@ -67,15 +69,15 @@ function ClientLogoutPanel({ client, scripts, formik }) {
         label="fields.backchannelLogoutSessionRequired"
         value={client.backchannelLogoutSessionRequired}
         formik={formik}
-        lsize={8}
-        rsize={4}
+        lsize={4}
+        rsize={8}
         doc_category={DOC_CATEGORY}
       />
 
       <GluuToogleRow
         name="frontChannelLogoutSessionRequired"
-        lsize={9}
-        rsize={3}
+        lsize={4}
+        rsize={8}
         formik={formik}
         label="fields.frontChannelLogoutSessionRequired"
         value={client.frontChannelLogoutSessionRequired}

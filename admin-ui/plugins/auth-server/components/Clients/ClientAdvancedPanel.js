@@ -96,8 +96,8 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         label="fields.allow_spontaneous_scopes"
         value={client.allowSpontaneousScopes}
         formik={formik}
-        lsize={8}
-        rsize={4}
+        lsize={3}
+        rsize={9}
         doc_category={DOC_CATEGORY}
       />
       <GluuTypeAheadForDn
@@ -107,6 +107,8 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         value={getScopeMapping(client.spontaneousScopes, scopes)}
         options={scopes}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAheadForDn>
 
       <GluuInputRow
@@ -126,6 +128,8 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         validator={uriValidator}
         inputId={request_uri_id}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadForDn
         name="defaultAcrValues"
@@ -134,6 +138,8 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         value={getMapping(client.defaultAcrValues, scripts)}
         options={scripts}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="authorizedAcrValues"
@@ -142,11 +148,13 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         value={getMapping(client.authorizedAcrValues, scripts)}
         options={scripts}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAheadForDn>
       <GluuToogleRow
         name="defaultPromptLogin"
-        lsize={9}
-        rsize={3}
+        lsize={3}
+        rsize={9}
         formik={formik}
         label="fields.defaultPromptLogin"
         value={client.defaultPromptLogin}
@@ -160,36 +168,43 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         doc_category={DOC_CATEGORY}
       />
 
-      {client.expirable && (
-        <GluuToogleRow
-          name="expirable"
-          formik={formik}
-          label="fields.is_expirable_client"
-          value={client.expirable && client.expirable.length ? true : false}
-          handler={handleExpirable}
-          doc_category={DOC_CATEGORY}
-        />
-      )}
-      {client.expirable && client.expirable.length && (
-        <FormGroup row>
-          <GluuLabel label="client_expiration_date" size={5} />
-          <Col sm={7}>
-            <DatePicker
-              id="expirationDate"
-              name="expirationDate"
-              showTimeSelect
-              dateFormat="yyyy-MM-dd HH:mm:aa"
-              timeFormat="HH:mm:aa"
-              selected={client.expirationDate}
-              peekNextMonth
-              showMonthDropdown
-              showYearDropdown
-              dropdownMode="select"
-              onChange={(e) => formik.setFieldValue('expirationDate', e)}
+      <FormGroup row>
+        <Col sm={6}>
+          {client.expirable && (
+            <GluuToogleRow
+              name="expirable"
+              formik={formik}
+              label="fields.is_expirable_client"
+              value={client.expirable && client.expirable.length ? true : false}
+              handler={handleExpirable}
+              doc_category={DOC_CATEGORY}
+              lsize={6}
+              rsize={6}
             />
-          </Col>
-        </FormGroup>
-      )}
+          )}
+        </Col>
+        <Col sm={6}>
+          {client.expirable && client.expirable.length && (
+            <FormGroup row>
+              <Col sm={12}>
+                <DatePicker
+                  id="expirationDate"
+                  name="expirationDate"
+                  showTimeSelect
+                  dateFormat="yyyy-MM-dd HH:mm:aa"
+                  timeFormat="HH:mm:aa"
+                  selected={client.expirationDate}
+                  peekNextMonth
+                  showMonthDropdown
+                  showYearDropdown
+                  dropdownMode="select"
+                  onChange={(e) => formik.setFieldValue('expirationDate', e)}
+                />
+              </Col>
+            </FormGroup>
+          )}
+        </Col>
+      </FormGroup>
     </Container>
   )
 }

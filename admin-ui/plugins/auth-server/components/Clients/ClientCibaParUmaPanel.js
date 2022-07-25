@@ -123,6 +123,8 @@ function ClientCibaParUmaPanel({ client, scripts, formik }) {
         validator={uriValidator}
         inputId={claim_uri_id}
         doc_category={DOC_CATEGORY}
+        lsize={3}
+        rsize={9}
       ></GluuTypeAheadWithAdd>
     </Container>
   )
