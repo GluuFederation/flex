@@ -43,7 +43,7 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
   const selectedTheme = theme.state.theme
   const history = useHistory()
   const spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
-  const options = {}
+  const [options, setOptions] = useState();
   let claims = []
   scripts = scripts || []
   attributes = attributes || []
@@ -66,26 +66,29 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
   )
 
   useEffect(() => {
-    if (showSpontaneousPanel)
+    if (showSpontaneousPanel) {
       makeOptions(1, scope.attributes.spontaneousClientId)
-    dispatch(searchClients({ "action_data": options }))
+      dispatch(searchClients({ "action_data": options }))
+    }
   }, [showClaimsPanel])
 
-  function makeOptions(limit, client_id) {
-    options[LIMIT] = limit
-    options[PATTERN] = client_id
+  const makeOptions = (limit, client_id) => {
+    let obj = {}
+    obj[LIMIT] = limit
+    obj[PATTERN] = client_id
+    setOptions(obj);
   }
 
-  function enableClaims(type) {
+  const enableClaims = (type) => {
     return type === 'openid'
   }
-  function enableDynamic(type) {
+  const enableDynamic = (type) => {
     return type === 'dynamic'
   }
-  function enableSpontaneous(type) {
+  const enableSpontaneous = (type) => {
     return type === 'spontaneous'
   }
-  function handleScopeTypeChanged(type) {
+  const handleScopeTypeChanged = (type) => {
     if (type && type === 'openid') {
       handleClaimsPanel(true)
     } else {
@@ -107,7 +110,7 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
     scope.attributes.spontaneousClientScopes = []
   }
 
-  function getMapping(partial, total) {
+  const getMapping = (partial, total) => {
     let mappings = []
     if (!partial) {
       partial = []
@@ -118,21 +121,21 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
     return mappings
   }
 
-  function activate() {
+  const activate = () => {
     if (!init) {
       setInit(true)
     }
   }
-  function toggle() {
+  const toggle = () => {
     setModal(!modal)
   }
 
-  function submitForm() {
+  const submitForm = () => {
     toggle()
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
 
-  function goToClientViewPage(client_id) {
+  const goToClientViewPage = (client_id) => {
     dispatch(viewOnly(true))
     dispatch(setCurrentItem(client[0]))
     return history.push(`/auth-server/client/edit:` + client_id.substring(0, 4))
@@ -246,20 +249,24 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
                 </Col>
               </FormGroup>
             </GluuTooltip>
-            {!showSpontaneousPanel && (<div><GluuToogleRow
-              label="fields.default_scope"
-              name="defaultScope"
-              formik={formik}
-              value={scope.defaultScope}
-              doc_category={SCOPE}
-            />
-              <GluuToogleRow
-                label="fields.show_in_configuration_endpoint"
-                name="attributes.showInConfigurationEndpoint"
-                formik={formik}
-                value={scope.attributes.showInConfigurationEndpoint}
-                doc_category={SCOPE}
-              /></div>)}
+            {!showSpontaneousPanel && (
+              <div>
+                <GluuToogleRow
+                  label="fields.default_scope"
+                  name="defaultScope"
+                  formik={formik}
+                  value={scope.defaultScope}
+                  doc_category={SCOPE}
+                />
+                <GluuToogleRow
+                  label="fields.show_in_configuration_endpoint"
+                  name="attributes.showInConfigurationEndpoint"
+                  formik={formik}
+                  value={scope.attributes.showInConfigurationEndpoint}
+                  doc_category={SCOPE}
+                />
+              </div>
+            )}
             {showSpontaneousPanel ?
               (<GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
                 <FormGroup row>
