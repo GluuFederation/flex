@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Formik, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import {
@@ -36,7 +36,7 @@ import {
   PATTERN,
 } from 'Plugins/auth-server/common/Constants'
 
-function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch }) {
+function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
   const { t } = useTranslation()
   let dynamicScopeScripts = []
   const theme = useContext(ThemeContext)
@@ -44,6 +44,8 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
   const history = useHistory()
   const spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
   const [options, setOptions] = useState();
+   const dispatch = useDispatch()
+   const client = useSelector((state) => state.oidcReducer.items)
   let claims = []
   scripts = scripts || []
   attributes = attributes || []
@@ -55,15 +57,9 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
 
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
-  const [showClaimsPanel, handleClaimsPanel] = useState(
-    enableClaims(scope.scopeType),
-  )
-  const [showDynamicPanel, handleDynamicPanel] = useState(
-    enableDynamic(scope.scopeType),
-  )
-  const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
-    enableSpontaneous(scope.scopeType),
-  )
+  const [showClaimsPanel, handleClaimsPanel] = useState(scope.scopeType === 'openid')
+  const [showDynamicPanel, handleDynamicPanel] = useState(scope.scopeType === 'dynamic')
+  const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(scope.scopeType === 'spontaneous')
 
   useEffect(() => {
     if (showSpontaneousPanel) {
@@ -79,15 +75,6 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
     setOptions(obj);
   }
 
-  const enableClaims = (type) => {
-    return type === 'openid'
-  }
-  const enableDynamic = (type) => {
-    return type === 'dynamic'
-  }
-  const enableSpontaneous = (type) => {
-    return type === 'spontaneous'
-  }
   const handleScopeTypeChanged = (type) => {
     if (type && type === 'openid') {
       handleClaimsPanel(true)
