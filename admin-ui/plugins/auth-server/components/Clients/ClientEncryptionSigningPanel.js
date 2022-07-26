@@ -2,9 +2,11 @@ import React from 'react'
 import { Col, Container, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
+import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
+  const { t } = useTranslation()
   const accessTokenSigningAlg = !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
     ? oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
     : []
@@ -65,7 +67,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
         value={client.jwks}
         doc_category={DOC_CATEGORY}
       />
-      <h2>id_token</h2>
+      <h2>{t(`titles.id_token`)}</h2>
       <FormGroup row>
         <Col sm={6}>
           <GluuSelectRow
@@ -104,7 +106,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
           />
         </Col>
       </FormGroup>
-      <h2>Access token</h2>
+      <h2>{t(`titles.access_token`)}</h2>
       <FormGroup row>
         <Col sm={6}>
           <GluuSelectRow
@@ -119,7 +121,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
           />
         </Col>
       </FormGroup>
-      <h2>Userinfo</h2>
+      <h2>{t(`titles.userinfo`)}</h2>
       <FormGroup row>
         <Col sm={6}>
           <GluuSelectRow
@@ -158,7 +160,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
           />
         </Col>
       </FormGroup>
-      <h2>JARM</h2>
+      <h2>{t(`titles.JARM`)}</h2>
       <FormGroup row>
         <Col sm={6}>
           <GluuSelectRow
@@ -197,7 +199,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
           />
         </Col>
       </FormGroup>
-      <h2>Request Object</h2>
+      <h2>{t(`titles.request_object`)}</h2>
       <FormGroup row>
         <Col sm={6}>
           <GluuSelectRow

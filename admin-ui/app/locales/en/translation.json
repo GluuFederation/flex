@@ -432,7 +432,15 @@
     "log_out": "Logout",
     "software_info": "Software Info",
     "CIBA_PAR_UMA": "CIBA / PAR / UMA",
-    "encryption_signing": "Encription / Signing"
+    "encryption_signing": "Encription / Signing",
+    "CIBA": "CIBA",
+    "PAR": "PAR",
+    "UMA": "UMA",
+    "id_token": "id_token",
+    "access_token": "Access token",
+    "userinfo": "Userinfo",
+    "JARM": "JARM",
+    "request_object": "Request Object"
   },
   "links": {
     "support": "https://support.gluu.org/"

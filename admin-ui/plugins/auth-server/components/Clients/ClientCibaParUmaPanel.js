@@ -46,7 +46,7 @@ function ClientCibaParUmaPanel({ client, scripts, formik }) {
   }
   return (
     <Container>
-      <h2>CIBA</h2>
+      <h2>{t(`titles.CIBA`)}</h2>
       <GluuSelectRow
         name="backchannelTokenDeliveryMode"
         label="fields.backchannelTokenDeliveryMode"
@@ -70,7 +70,7 @@ function ClientCibaParUmaPanel({ client, scripts, formik }) {
         value={client.backchannelUserCodeParameter}
         doc_category={DOC_CATEGORY}
       />
-      <h2>PAR</h2>
+      <h2>{t(`titles.PAR`)}</h2>
       <GluuInputRow
         label="fields.parLifetime"
         name="parLifetime"
@@ -85,7 +85,7 @@ function ClientCibaParUmaPanel({ client, scripts, formik }) {
         value={client.requirePar}
         doc_category={DOC_CATEGORY}
       />
-      <h2>UMA</h2>
+      <h2>{t(`titles.UMA`)}</h2>
       <FormGroup row>
         <GluuLabel label="fields.rptAsJwt" size={6} />
         <Col sm={6}>
