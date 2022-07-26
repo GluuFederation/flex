@@ -349,10 +349,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
 
                   <GluuTooltip
                     doc_category={SCOPE}
-                    doc_entry="spontaneousClientId"
+                    doc_entry="spontaneousClientScopes"
                   >
                     <FormGroup row>
-                      <GluuLabel label="fields.spontaneous_client_id" size={4} />
+                      <GluuLabel label="fields.spontaneous_client_scopes" size={4} />
                       <Col sm={8}>
                         {scope?.attributes?.spontaneousClientScopes?.map((item, key) => (
                           <div style={{ maxWidth: 120, overflow: 'auto' }}>
