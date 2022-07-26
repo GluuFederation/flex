@@ -72,7 +72,9 @@ const GluuCommitDialog = ({
               </Col>
               <Col sm={1}>to</Col>
               <Col sm={3}>
-                <Badge color={`primary-${selectedTheme}`}>{String(item.value)}</Badge>
+                <Badge color={`primary-${selectedTheme}`}>
+                  {String(item.value)}
+                </Badge>
               </Col>
             </FormGroup>
           ))}
@@ -102,19 +104,12 @@ const GluuCommitDialog = ({
       <ModalFooter>
         {/* <ClipLoader loading={loading} size={35} /> */}
         {active && (
-          <Button
-            color={`primary-${selectedTheme}`}
-            onClick={handleAccept}
-          >
+          <Button color={`primary-${selectedTheme}`} onClick={handleAccept}>
             <i className="fa fa-check-circle mr-2"></i>
             {t('actions.accept')}
           </Button>
         )}{' '}
-        <Button
-          color="danger"
-          style={applicationStyle.buttonStyle}
-          onClick={closeModal}
-        >
+        <Button style={applicationStyle.buttonStyle} onClick={closeModal}>
           <i className="fa fa-remove mr-2"></i>
           {t('actions.no')}
         </Button>
