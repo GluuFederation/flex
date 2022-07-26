@@ -382,9 +382,5 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
     </Container >
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    client: state.oidcReducer.items,
-  }
-}
-export default connect(mapStateToProps)(ScopeForm)
+
+export default ScopeForm
