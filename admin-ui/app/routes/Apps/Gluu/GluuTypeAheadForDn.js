@@ -25,6 +25,8 @@ function GluuTypeAheadForDn({
   doc_category,
   doc_entry,
   allowNew = false,
+  lsize = 4,
+  rsize = 8,
 }) {
   const { t } = useTranslation()
   function getItemName(theOptions, item) {
@@ -34,14 +36,16 @@ function GluuTypeAheadForDn({
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
       <FormGroup row>
-        <GluuLabel label={label} size={4} required={required} />
-        <Col sm={8}>
+        <GluuLabel label={label} size={lsize} required={required} />
+        <Col sm={rsize}>
           <Typeahead
             labelKey={(opt) => `${opt.name || getItemName(options, opt)}`}
             onChange={(selected) => {
               formik.setFieldValue(
                 name,
-                selected.map((item) => (item.customOption ? item.label : item.dn)),
+                selected.map((item) =>
+                  item.customOption ? item.label : item.dn,
+                ),
               )
             }}
             id={name}

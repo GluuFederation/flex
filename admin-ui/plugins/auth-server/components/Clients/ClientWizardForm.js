@@ -1,16 +1,7 @@
 import React, { useState, useContext } from 'react'
-import {
-  Wizard,
-  Card,
-  CardFooter,
-  CardBody,
-  Form,
-  Button,
-} from 'Components'
+import { Wizard, Card, CardFooter, CardBody, Form, Button } from 'Components'
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
-import ClientEncryption from './ClientEncryptionPanel'
-import ClientAttributes from './ClientAttributesPanel'
 import ClientScript from './ClientScriptPanel'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { Formik } from 'formik'
@@ -18,13 +9,21 @@ import { useTranslation } from 'react-i18next'
 import { hasPermission, CLIENT_WRITE } from 'Utils/PermChecker'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import ClientTokensPanel from './ClientTokensPanel'
+import ClientLogoutPanel from './ClientLogoutPanel'
+import ClientSoftwarePanel from './ClientSoftwarePanel'
+import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
+import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
 
 const sequence = [
   'Basic',
-  'Advanced',
-  'EncryptionSigning',
-  'ClientAttributes',
-  'CustomScripts',
+  'Tokens',
+  'Logout',
+  'SoftwareInfo',
+  'CIBA/PAR/UMA',
+  'Encryption/Signing',
+  'AdvancedClientProperties',
+  'ClientScripts',
 ]
 const ATTRIBUTE = 'attributes'
 const DESCRIPTION = 'description'
@@ -92,7 +91,6 @@ function ClientWizardForm({
     toggle()
     //document.querySelector('button[type="submit"]').click()
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
-
   }
 
   const initialValues = {
@@ -178,10 +176,23 @@ function ClientWizardForm({
     spontaneousScopeScriptDns:
       client.attributes.spontaneousScopeScriptDns || [],
     consentGatheringScripts: client.attributes.consentGatheringScripts || [],
+    redirectUrisRegex: client.attributes.redirectUrisRegex || '',
+    parLifetime: client.attributes.parLifetime || '',
+    requirePar: client.attributes.requirePar || false,
+    updateTokenScriptDns: client.attributes.updateTokenScriptDns || [],
+    ropcScripts: client.attributes.ropcScripts || [],
+    authorizationSignedResponseAlg:
+      client.attributes.authorizationSignedResponseAlg || '',
+    authorizationEncryptedResponseAlg:
+      client.attributes.authorizationEncryptedResponseAlg || '',
+    authorizationEncryptedResponseEnc:
+      client.attributes.authorizationEncryptedResponseEnc || '',
     postAuthnScripts: client.attributes.postAuthnScripts || [],
     rptClaimsScripts: client.attributes.rptClaimsScripts || [],
     additionalAudience: client.attributes.additionalAudience,
     backchannelLogoutUri: client.attributes.backchannelLogoutUri,
+    defaultPromptLogin: client.attributes.defaultPromptLogin || false,
+    authorizedAcrValues: client.attributes.authorizedAcrValues || [],
     customObjectClasses: client.customObjectClasses || [],
     requireAuthTime: client.requireAuthTime,
     trustedClient: client.trustedClient,
@@ -228,6 +239,19 @@ function ClientWizardForm({
             values[ATTRIBUTE].backchannelLogoutUri = values.backchannelLogoutUri
             values[ATTRIBUTE].postAuthnScripts = values.postAuthnScripts
             values[ATTRIBUTE].additionalAudience = values.additionalAudience
+            values[ATTRIBUTE].redirectUrisRegex = values.redirectUrisRegex
+            values[ATTRIBUTE].parLifetime = values.parLifetime
+            values[ATTRIBUTE].requirePar = values.requirePar
+            values[ATTRIBUTE].defaultPromptLogin = values.defaultPromptLogin
+            values[ATTRIBUTE].authorizedAcrValues = values.authorizedAcrValues
+            values[ATTRIBUTE].updateTokenScriptDns = values.updateTokenScriptDns
+            values[ATTRIBUTE].ropcScripts = values.ropcScripts
+            values[ATTRIBUTE].authorizationSignedResponseAlg =
+              values.authorizationSignedResponseAlg
+            values[ATTRIBUTE].authorizationEncryptedResponseAlg =
+              values.authorizationEncryptedResponseAlg
+            values[ATTRIBUTE].authorizationEncryptedResponseEnc =
+              values.authorizationEncryptedResponseEnc
             customOnSubmit(JSON.parse(JSON.stringify(values)))
           }}
         >
@@ -245,12 +269,47 @@ function ClientWizardForm({
                     </Wizard.Step>
                     <Wizard.Step
                       id={setId(1)}
-                      icon={<i className="fa fa-cube fa-fw"></i>}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
                       complete={isComplete(sequence[1])}
+                    >
+                      {t('titles.token')}
+                    </Wizard.Step>
+                    <Wizard.Step
+                      id={setId(2)}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
+                      complete={isComplete(sequence[2])}
+                    >
+                      {t('titles.log_out')}
+                    </Wizard.Step>
+                    <Wizard.Step
+                      id={setId(3)}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
+                      complete={isComplete(sequence[3])}
+                    >
+                      {t('titles.software_info')}
+                    </Wizard.Step>
+                    <Wizard.Step
+                      id={setId(4)}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
+                      complete={isComplete(sequence[4])}
+                    >
+                      {t('titles.CIBA_PAR_UMA')}
+                    </Wizard.Step>
+                    <Wizard.Step
+                      id={setId(5)}
+                      icon={<i className="fa fa-credit-card fa-fw"></i>}
+                      complete={isComplete(sequence[5])}
+                    >
+                      {t('titles.encryption_signing')}
+                    </Wizard.Step>
+                    <Wizard.Step
+                      id={setId(6)}
+                      icon={<i className="fa fa-cube fa-fw"></i>}
+                      complete={isComplete(sequence[6])}
                     >
                       {t('titles.client_advanced')}
                     </Wizard.Step>
-                    <Wizard.Step
+                    {/* <Wizard.Step
                       id={setId(2)}
                       icon={<i className="fa fa-credit-card fa-fw"></i>}
                       complete={isComplete(sequence[2])}
@@ -263,11 +322,11 @@ function ClientWizardForm({
                       complete={isComplete(sequence[3])}
                     >
                       {t('titles.client_attributes')}
-                    </Wizard.Step>
+                    </Wizard.Step> */}
                     <Wizard.Step
-                      id={setId(4)}
+                      id={setId(7)}
                       icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[4])}
+                      complete={isComplete(sequence[7])}
                     >
                       {t('titles.client_scripts')}
                     </Wizard.Step>
@@ -277,83 +336,160 @@ function ClientWizardForm({
                   {(() => {
                     setClient(formik.values)
                     switch (currentStep) {
-                    case sequence[0]:
-                      return (
-                        <div
-                          style={
-                            view_only
-                              ? { pointerEvents: 'none', opacity: '0.99' }
-                              : {}
-                          }
-                        >
-                          <ClientBasic
-                            client={client}
-                            scopes={scopes}
-                            formik={formik}
-                          />
-                        </div>
-                      )
-                    case sequence[1]:
-                      return (
-                        <div
-                          style={
-                            view_only
-                              ? { pointerEvents: 'none', opacity: '0.99' }
-                              : {}
-                          }
-                        >
-                          <ClientAdvanced
-                            client={client}
-                            scripts={scripts}
-                            formik={formik}
-                          />
-                        </div>
-                      )
-                    case sequence[2]:
-                      return (
-                        <div
-                          style={
-                            view_only
-                              ? { pointerEvents: 'none', opacity: '0.99' }
-                              : {}
-                          }
-                        >
-                          <ClientEncryption
-                            client={client}
-                            formik={formik}
-                            oidcConfiguration={oidcConfiguration}
-                          />
-                        </div>
-                      )
-                    case sequence[3]:
-                      return (
-                        <div
-                          style={
-                            view_only
-                              ? { pointerEvents: 'none', opacity: '0.99' }
-                              : {}
-                          }
-                        >
-                          <ClientAttributes client={client} formik={formik} />
-                        </div>
-                      )
-                    case sequence[4]:
-                      return (
-                        <div
-                          style={
-                            view_only
-                              ? { pointerEvents: 'none', opacity: '0.99' }
-                              : {}
-                          }
-                        >
-                          <ClientScript
-                            client={client}
-                            formik={formik}
-                            scripts={scripts}
-                            scopes={scopes}
-                          />
-                        </div>
-                      )
+                      case sequence[0]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientBasic
+                              client={client}
+                              scopes={scopes}
+                              formik={formik}
+                              oidcConfiguration={oidcConfiguration}
+                            />
+                          </div>
+                        )
+                      case sequence[1]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientTokensPanel
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            />
+                            {/* <ClientAdvanced
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            /> */}
+                          </div>
+                        )
+                      case sequence[2]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientLogoutPanel
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            />
+                            {/* <ClientEncryption
+                              client={client}
+                              formik={formik}
+                              oidcConfiguration={oidcConfiguration}
+                            /> */}
+                          </div>
+                        )
+                      case sequence[3]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientSoftwarePanel
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            />
+                            {/* <ClientAttributes client={client} formik={formik} /> */}
+                          </div>
+                        )
+                      case sequence[4]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientCibaParUmaPanel
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                            />
+                            {/* <ClientScript
+                              client={client}
+                              formik={formik}
+                              scripts={scripts}
+                              scopes={scopes}
+                            /> */}
+                          </div>
+                        )
+                      case sequence[5]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientEncryptionSigningPanel
+                              client={client}
+                              formik={formik}
+                              oidcConfiguration={oidcConfiguration}
+                            />
+                            {/* <ClientScript
+                              client={client}
+                              formik={formik}
+                              scripts={scripts}
+                              scopes={scopes}
+                            /> */}
+                          </div>
+                        )
+                      case sequence[6]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientAdvanced
+                              client={client}
+                              scripts={scripts}
+                              formik={formik}
+                              scopes={scopes}
+                            />
+                          </div>
+                        )
+                      case sequence[7]:
+                        return (
+                          <div
+                            style={
+                              view_only
+                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                : {}
+                            }
+                          >
+                            <ClientScript
+                              client={client}
+                              formik={formik}
+                              scripts={scripts}
+                              scopes={scopes}
+                            />
+                          </div>
+                        )
                     }
                   })()}
                 </CardBody>
@@ -395,7 +531,7 @@ function ClientWizardForm({
                         >
                           {t('actions.apply')}
                         </Button>
-                    )}
+                      )}
                   </div>
                 </CardFooter>
                 <Button
