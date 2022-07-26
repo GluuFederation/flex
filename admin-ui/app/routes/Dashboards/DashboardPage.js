@@ -43,8 +43,8 @@ function DashboardPage({
   dispatch,
 }) {
   const { t } = useTranslation()
-  const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
-  const [endDate, setEndDate] = useState(new Date())
+  const [startDate] = useState(subMonths(new Date(), 3))
+  const [endDate] = useState(new Date())
   const [mobileChartStyle, setMobileChartStyle] = useState({})
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
@@ -74,10 +74,10 @@ function DashboardPage({
     const currentMonth = date.getMonth() + 1
     const formattedMonth = currentMonth > 9 ? currentMonth : `0${currentMonth}`
     const yearMonth = `${currentYear}${formattedMonth}`
-    const currentMonthData = statData.find(({ month }) => month === yearMonth)
+    const currentMonthData = statData.find(({ month }) => month.toString() === yearMonth)
 
-    const mau = currentMonthData?.monthly_active_users
-    const token = currentMonthData?.token_count_per_granttype?.authorization_code?.access_token + currentMonthData?.token_count_per_granttype?.client_credentials?.access_token
+    const mau = currentMonthData?.mau
+    const token = currentMonthData?.authz_code_access_token_count + currentMonthData?.client_credentials_access_token_count
     if (mau) {
       setMauCount(mau)
     }
