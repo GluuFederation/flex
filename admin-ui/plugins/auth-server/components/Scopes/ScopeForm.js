@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Formik, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import {
@@ -36,14 +36,15 @@ import {
   PATTERN,
 } from 'Plugins/auth-server/common/Constants'
 
-function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch }) {
+function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
   const { t } = useTranslation()
   let dynamicScopeScripts = []
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const history = useHistory()
   const spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
-  const [options, setOptions] = useState();
+   const dispatch = useDispatch()
+   const client = useSelector((state) => state.oidcReducer.items)
   let claims = []
   scripts = scripts || []
   attributes = attributes || []
@@ -55,20 +56,13 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
 
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
-  const [showClaimsPanel, handleClaimsPanel] = useState(
-    enableClaims(scope.scopeType),
-  )
-  const [showDynamicPanel, handleDynamicPanel] = useState(
-    enableDynamic(scope.scopeType),
-  )
-  const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
-    enableSpontaneous(scope.scopeType),
-  )
+  const [showClaimsPanel, handleClaimsPanel] = useState(scope.scopeType === 'openid')
+  const [showDynamicPanel, handleDynamicPanel] = useState(scope.scopeType === 'dynamic')
+  const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(scope.scopeType === 'spontaneous')
 
   useEffect(() => {
     if (showSpontaneousPanel) {
-      makeOptions(1, scope.attributes.spontaneousClientId)
-      dispatch(searchClients({ "action_data": options }))
+      dispatch(searchClients({ "action_data": makeOptions(1, scope.attributes.spontaneousClientId) }))
     }
   }, [showClaimsPanel])
 
@@ -76,18 +70,9 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
     let obj = {}
     obj[LIMIT] = limit
     obj[PATTERN] = client_id
-    setOptions(obj);
+    return obj
   }
 
-  const enableClaims = (type) => {
-    return type === 'openid'
-  }
-  const enableDynamic = (type) => {
-    return type === 'dynamic'
-  }
-  const enableSpontaneous = (type) => {
-    return type === 'spontaneous'
-  }
   const handleScopeTypeChanged = (type) => {
     if (type && type === 'openid') {
       handleClaimsPanel(true)
@@ -355,17 +340,17 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
                           <IconButton onClick={() => goToClientViewPage(scope.attributes.spontaneousClientId)}>
                             <Visibility />
                           </IconButton>
-                        </div>
+                       </div>
                       </Col>
                     </FormGroup>
                   </GluuTooltip>
 
                   <GluuTooltip
                     doc_category={SCOPE}
-                    doc_entry="spontaneousClientId"
+                    doc_entry="spontaneousClientScopes"
                   >
                     <FormGroup row>
-                      <GluuLabel label="fields.spontaneous_client_id" size={4} />
+                      <GluuLabel label="fields.spontaneous_client_scopes" size={4} />
                       <Col sm={8}>
                         {scope?.attributes?.spontaneousClientScopes?.map((item, key) => (
                           <div style={{ maxWidth: 120, overflow: 'auto' }}>
@@ -395,9 +380,5 @@ function ScopeForm({ client, scope, scripts, attributes, handleSubmit, dispatch 
     </Container >
   )
 }
-const mapStateToProps = (state) => {
-  return {
-    client: state.oidcReducer.items,
-  }
-}
-export default connect(mapStateToProps)(ScopeForm)
+
+export default ScopeForm
