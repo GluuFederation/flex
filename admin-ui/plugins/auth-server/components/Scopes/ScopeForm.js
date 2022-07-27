@@ -43,7 +43,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
   const selectedTheme = theme.state.theme
   const history = useHistory()
   const spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
-  const [options, setOptions] = useState();
    const dispatch = useDispatch()
    const client = useSelector((state) => state.oidcReducer.items)
   let claims = []
@@ -63,8 +62,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
 
   useEffect(() => {
     if (showSpontaneousPanel) {
-      makeOptions(1, scope.attributes.spontaneousClientId)
-      dispatch(searchClients({ "action_data": options }))
+      dispatch(searchClients({ "action_data": makeOptions(1, scope.attributes.spontaneousClientId) }))
     }
   }, [showClaimsPanel])
 
@@ -72,7 +70,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
     let obj = {}
     obj[LIMIT] = limit
     obj[PATTERN] = client_id
-    setOptions(obj);
+    return obj
   }
 
   const handleScopeTypeChanged = (type) => {
@@ -342,7 +340,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
                           <IconButton onClick={() => goToClientViewPage(scope.attributes.spontaneousClientId)}>
                             <Visibility />
                           </IconButton>
-                        </div>
+                       </div>
                       </Col>
                     </FormGroup>
                   </GluuTooltip>
