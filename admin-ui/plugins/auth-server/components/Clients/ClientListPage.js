@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
 import { Card, CardBody, Badge } from 'Components'
@@ -45,6 +45,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const options = {}
   const myActions = []
   const history = useHistory()
+  const { search } = useLocation();
   const pageSize = localStorage.getItem('paggingSize') || 10
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -136,6 +137,14 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   useEffect(() => {
     buildPayload(userAction, '', options)
     dispatch(getScopes(userAction))
+  }, [])
+  useEffect(() => {
+    if (search.indexOf('?inum=') > -1) {
+      const inumParam = search.replace('?inum=', '')
+      const searchInput = document.getElementsByClassName('MuiInputBase-inputAdornedStart')[0]
+
+      searchInput.value = inumParam
+    }
   }, [])
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {

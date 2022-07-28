@@ -5,7 +5,8 @@ import { Paper } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
-import { Card, CardBody, FormGroup } from 'Components'
+import { Link } from 'react-router-dom'
+import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -18,6 +19,9 @@ import {
   deleteScope,
   setCurrentItem,
 } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import {
+  getOpenidClients,
+} from 'Plugins/auth-server/redux/actions/OIDCActions'
 import {
   hasPermission,
   buildPayload,
@@ -32,15 +36,17 @@ import {
   PATTERN_ID,
   SEARCHING_SCOPES,
   FETCHING_SCOPES,
+  FETCHING_OIDC_CLIENTS,
 } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 
-function ScopeListPage({ scopes, permissions, loading, dispatch }) {
+function ScopeListPage({ scopes, permissions, loading, dispatch, clients }) {
   const { t } = useTranslation()
   const userAction = {}
   const options = {}
+  const clientOptions = {}
   const myActions = []
   const history = useHistory()
   const [item, setItem] = useState({})
@@ -61,6 +67,22 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
 
   const tableColumns = [
     { title: `${t('fields.id')}`, field: 'id' },
+    {
+      title: `${t('fields.openid')}`,
+      field: 'dn',
+      render: (rowData) => {
+        if (clients.length !== 0) {
+          const countClient = clients?.filter(({ scopes }) => scopes?.some(inum => inum === rowData.dn)).length
+          return (
+            <Link to={`/auth-server/clients?inum=${rowData.dn}`} style={{ color: '#3f51b5' }}>
+              {countClient}
+            </Link>
+          )
+        }
+
+        return null
+      },
+    },
     { title: `${t('fields.description')}`, field: 'description' },
     {
       title: `${t('fields.scope_type')}`,
@@ -77,7 +99,12 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     makeOptions()
     buildPayload(userAction, FETCHING_SCOPES, options)
     dispatch(getScopes(userAction))
+
+    makeClientOptions()
+    buildPayload(userAction, FETCHING_OIDC_CLIENTS, clientOptions)
+    dispatch(getOpenidClients(userAction))
   }, [])
+
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
       memoLimit = event.target.value
@@ -93,6 +120,10 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     if (memoPattern) {
       options[PATTERN] = memoPattern
     }
+  }
+
+  function makeClientOptions() {
+    clientOptions[LIMIT] = 200
   }
 
   function handleGoToScopeAddPage() {
@@ -227,6 +258,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
 const mapStateToProps = (state) => {
   return {
     scopes: state.scopeReducer.items,
+    clients: state.oidcReducer.items,
     loading: state.scopeReducer.loading,
     permissions: state.authReducer.permissions,
   }
