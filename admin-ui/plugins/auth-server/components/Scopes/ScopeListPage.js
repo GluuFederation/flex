@@ -20,9 +20,6 @@ import {
   setCurrentItem,
 } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import {
-  getOpenidClients,
-} from 'Plugins/auth-server/redux/actions/OIDCActions'
-import {
   hasPermission,
   buildPayload,
   SCOPE_READ,
@@ -36,13 +33,13 @@ import {
   PATTERN_ID,
   SEARCHING_SCOPES,
   FETCHING_SCOPES,
-  FETCHING_OIDC_CLIENTS,
+  WITH_ASSOCIATED_CLIENTS,
 } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 
-function ScopeListPage({ scopes, permissions, loading, dispatch, clients }) {
+function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const userAction = {}
   const options = {}
@@ -71,16 +68,14 @@ function ScopeListPage({ scopes, permissions, loading, dispatch, clients }) {
       title: `${t('fields.openid')}`,
       field: 'dn',
       render: (rowData) => {
-        if (clients.length !== 0) {
-          const countClient = clients?.filter(({ scopes }) => scopes?.some(inum => inum === rowData.dn)).length
-          return (
-            <Link to={`/auth-server/clients?inum=${rowData.dn}`} style={{ color: '#3f51b5' }}>
-              {countClient}
-            </Link>
-          )
+        if (!rowData.clients) {
+          return 0
         }
-
-        return null
+        return (
+          <Link to={`/auth-server/clients?inum=${rowData.inum}`} style={{ color: '#3f51b5' }}>
+            {rowData.clients?.length}
+          </Link>
+        )
       },
     },
     { title: `${t('fields.description')}`, field: 'description' },
@@ -99,10 +94,6 @@ function ScopeListPage({ scopes, permissions, loading, dispatch, clients }) {
     makeOptions()
     buildPayload(userAction, FETCHING_SCOPES, options)
     dispatch(getScopes(userAction))
-
-    makeClientOptions()
-    buildPayload(userAction, FETCHING_OIDC_CLIENTS, clientOptions)
-    dispatch(getOpenidClients(userAction))
   }, [])
 
   function handleOptionsChange(event) {
@@ -117,6 +108,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch, clients }) {
     setLimit(memoLimit)
     setPattern(memoPattern)
     options[LIMIT] = memoLimit
+    options[WITH_ASSOCIATED_CLIENTS] = true
     if (memoPattern) {
       options[PATTERN] = memoPattern
     }
@@ -258,7 +250,6 @@ function ScopeListPage({ scopes, permissions, loading, dispatch, clients }) {
 const mapStateToProps = (state) => {
   return {
     scopes: state.scopeReducer.items,
-    clients: state.oidcReducer.items,
     loading: state.scopeReducer.loading,
     permissions: state.authReducer.permissions,
   }
