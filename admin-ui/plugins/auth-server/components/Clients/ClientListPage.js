@@ -51,6 +51,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const [scopeClients, setScopeClients] = useState()
+  const [haveINUMParam] = useState(search.indexOf('?inum=') > -1)
 
   SetTitle(t('titles.oidc_clients'))
 
@@ -129,23 +131,25 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       ),
     },
   ]
-  useEffect(() => {
-    makeOptions()
-    buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
-    dispatch(getOpenidClients(userAction))
-  }, [])
-  useEffect(() => {
-    buildPayload(userAction, '', options)
-    dispatch(getScopes(userAction))
-  }, [])
-  useEffect(() => {
-    if (search.indexOf('?inum=') > -1) {
-      const inumParam = search.replace('?inum=', '')
-      const searchInput = document.getElementsByClassName('MuiInputBase-inputAdornedStart')[0]
 
-      searchInput.value = inumParam
+  useEffect(() => {
+    if (haveINUMParam) {
+      const inumParam = search.replace('?inum=', '')
+      
+      if (inumParam.length > 0) {
+        const clientsScope = scopes.find(({ inum }) => inum === inumParam)?.clients || []
+        setScopeClients(clientsScope)
+      }
+    } else {
+      makeOptions()
+      buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
+      dispatch(getOpenidClients(userAction))
+
+      buildPayload(userAction, '', options)
+      dispatch(getScopes(userAction))
     }
-  }, [])
+  }, [haveINUMParam])
+
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
       memoLimit = event.target.value
@@ -256,28 +260,12 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       onClick: () => handleGoToClientAddPage(),
     })
   }
-  //ToDo to be deleted
-  function getBadgeTheme(status) {
-    if (!status) {
-      return 'primary'
-    } else {
-      return 'warning'
-    }
-  }
 
   function getTrustedTheme(status) {
     if (status) {
       return `primary-${selectedTheme}`
     } else {
       return 'dimmed'
-    }
-  }
-  //ToDo to be deleted
-  function getClientStatus(status) {
-    if (!status) {
-      return t('options.enabled')
-    } else {
-      return t('options.disabled')
     }
   }
 
@@ -295,7 +283,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             columns={tableColumns}
-            data={clients}
+            data={haveINUMParam ? scopeClients : clients}
             isLoading={loading}
             title=""
             actions={myActions}
