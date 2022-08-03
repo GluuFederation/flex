@@ -5,7 +5,8 @@ import { Paper } from '@material-ui/core'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
-import { Card, CardBody, FormGroup } from 'Components'
+import { Link } from 'react-router-dom'
+import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -32,6 +33,7 @@ import {
   PATTERN_ID,
   SEARCHING_SCOPES,
   FETCHING_SCOPES,
+  WITH_ASSOCIATED_CLIENTS,
 } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -41,6 +43,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
   const userAction = {}
   const options = {}
+  const clientOptions = {}
   const myActions = []
   const history = useHistory()
   const [item, setItem] = useState({})
@@ -61,6 +64,20 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
 
   const tableColumns = [
     { title: `${t('fields.id')}`, field: 'id' },
+    {
+      title: `${t('fields.openid')}`,
+      field: 'dn',
+      render: (rowData) => {
+        if (!rowData.clients) {
+          return 0
+        }
+        return (
+          <Link to={`/auth-server/clients?inum=${rowData.inum}`} style={{ color: '#3f51b5' }}>
+            {rowData.clients?.length}
+          </Link>
+        )
+      },
+    },
     { title: `${t('fields.description')}`, field: 'description' },
     {
       title: `${t('fields.scope_type')}`,
@@ -78,6 +95,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     buildPayload(userAction, FETCHING_SCOPES, options)
     dispatch(getScopes(userAction))
   }, [])
+
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
       memoLimit = event.target.value
@@ -90,9 +108,14 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     setLimit(memoLimit)
     setPattern(memoPattern)
     options[LIMIT] = memoLimit
+    options[WITH_ASSOCIATED_CLIENTS] = true
     if (memoPattern) {
       options[PATTERN] = memoPattern
     }
+  }
+
+  function makeClientOptions() {
+    clientOptions[LIMIT] = 200
   }
 
   function handleGoToScopeAddPage() {

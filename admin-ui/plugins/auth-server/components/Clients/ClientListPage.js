@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
 import { Card, CardBody, Badge } from 'Components'
@@ -45,11 +45,14 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const options = {}
   const myActions = []
   const history = useHistory()
+  const { search } = useLocation();
   const pageSize = localStorage.getItem('paggingSize') || 10
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const [scopeClients, setScopeClients] = useState()
+  const [haveINUMParam] = useState(search.indexOf('?inum=') > -1)
 
   SetTitle(t('titles.oidc_clients'))
 
@@ -128,15 +131,25 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       ),
     },
   ]
+
   useEffect(() => {
-    makeOptions()
-    buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
-    dispatch(getOpenidClients(userAction))
-  }, [])
-  useEffect(() => {
-    buildPayload(userAction, '', options)
-    dispatch(getScopes(userAction))
-  }, [])
+    if (haveINUMParam) {
+      const inumParam = search.replace('?inum=', '')
+      
+      if (inumParam.length > 0) {
+        const clientsScope = scopes.find(({ inum }) => inum === inumParam)?.clients || []
+        setScopeClients(clientsScope)
+      }
+    } else {
+      makeOptions()
+      buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
+      dispatch(getOpenidClients(userAction))
+
+      buildPayload(userAction, '', options)
+      dispatch(getScopes(userAction))
+    }
+  }, [haveINUMParam])
+
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
       memoLimit = event.target.value
@@ -247,28 +260,12 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       onClick: () => handleGoToClientAddPage(),
     })
   }
-  //ToDo to be deleted
-  function getBadgeTheme(status) {
-    if (!status) {
-      return 'primary'
-    } else {
-      return 'warning'
-    }
-  }
 
   function getTrustedTheme(status) {
     if (status) {
       return `primary-${selectedTheme}`
     } else {
       return 'dimmed'
-    }
-  }
-  //ToDo to be deleted
-  function getClientStatus(status) {
-    if (!status) {
-      return t('options.enabled')
-    } else {
-      return t('options.disabled')
     }
   }
 
@@ -286,7 +283,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             columns={tableColumns}
-            data={clients}
+            data={haveINUMParam ? scopeClients : clients}
             isLoading={loading}
             title=""
             actions={myActions}
