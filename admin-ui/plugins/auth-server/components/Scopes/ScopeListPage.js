@@ -79,7 +79,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
           )
         }
         return (
-          <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`} style={{ color: '#3f51b5', textDecoration: 'underline' }}>
+          <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`}>
             <Badge
               color={`primary-${selectedTheme}`}
               role={'button'}
