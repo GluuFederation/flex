@@ -47,6 +47,19 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
     ? oidcConfiguration.userInfoEncryptionEncValuesSupported
     : []
 
+  // authorization
+  const jansAuthSignedRespAlg = !!oidcConfiguration.authorizationSigningAlgValuesSupported
+    ? oidcConfiguration.authorizationSigningAlgValuesSupported
+    : []
+
+  const jansAuthEncRespAlg = !!oidcConfiguration.authorizationEncryptionAlgValuesSupported
+    ? oidcConfiguration.authorizationEncryptionAlgValuesSupported
+    : []
+
+  const jansAuthEncRespEnc = !!oidcConfiguration.authorizationEncryptionEncValuesSupported
+    ? oidcConfiguration.authorizationEncryptionEncValuesSupported
+    : []
+
   const tokenEndpointAuthMethod = !!oidcConfiguration.tokenEndpointAuthMethodsSupported
     ? oidcConfiguration.tokenEndpointAuthMethodsSupported
     : []
@@ -166,11 +179,11 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
           <GluuSelectRow
             label="fields.authorizationSignedResponseAlg"
             formik={formik}
-            value={client.authorizationSignedResponseAlg}
+            value={client.jansAuthSignedRespAlg}
             values={idTokenSignedResponseAlg}
             lsize={6}
             rsize={6}
-            name="authorizationSignedResponseAlg"
+            name="jansAuthSignedRespAlg"
             doc_category={DOC_CATEGORY}
           />
         </Col>
@@ -180,9 +193,9 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
             formik={formik}
             lsize={6}
             rsize={6}
-            value={client.authorizationEncryptedResponseAlg}
+            value={client.jansAuthEncRespAlg}
             values={idTokenEncryptedResponseAlg}
-            name="authorizationEncryptedResponseAlg"
+            name="jansAuthEncRespAlg"
             doc_category={DOC_CATEGORY}
           />
         </Col>
@@ -190,11 +203,11 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration }) {
           <GluuSelectRow
             label="fields.authorizationEncryptedResponseEnc"
             formik={formik}
-            value={client.authorizationEncryptedResponseEnc}
+            value={client.jansAuthEncRespEnc}
             values={idTokenEncryptedResponseEnc}
             lsize={6}
             rsize={6}
-            name="authorizationEncryptedResponseEnc"
+            name="jansAuthEncRespEnc"
             doc_category={DOC_CATEGORY}
           />
         </Col>
