@@ -278,7 +278,8 @@
     "resource_not_found_message": "O recurso solicitado não existe neste servidor. Entre em contato com o administrador do site ou com a equipe de suporte.",
     "resource_not_found_title": "Recurso não encontrado",
     "view_client_details": "Ver detalhes do cliente",
-    "add_new_user": "Adicionar usuário"
+    "add_new_user": "Adicionar usuário",
+    "no_scope_in_client": "Sem dados de Escopo para este Cliente"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",

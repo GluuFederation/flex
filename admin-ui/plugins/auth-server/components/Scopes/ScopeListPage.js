@@ -38,6 +38,7 @@ import {
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import styles from './styles'
 
 function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -56,6 +57,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const classes = styles()
 
   SetTitle(t('titles.scopes'))
 
@@ -69,23 +71,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
       field: 'dn',
       render: (rowData) => {
         if (!rowData.clients) {
-          return (
-            <Badge
-              color={`primary-${selectedTheme}`}
-              role={'button'}
-            >
-              0
-            </Badge>
-          )
+          return 0
         }
         return (
-          <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`}>
-            <Badge
-              color={`primary-${selectedTheme}`}
-              role={'button'}
-            >
-              {rowData.clients?.length}
-            </Badge>
+          <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`} className={classes.link}>
+            {rowData.clients?.length}
           </Link>
         )
       },
