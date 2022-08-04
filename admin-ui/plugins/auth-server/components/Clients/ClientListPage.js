@@ -53,6 +53,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const bgThemeColor = { background: themeColors.background }
   const [scopeClients, setScopeClients] = useState()
   const [haveScopeINUMParam] = useState(search.indexOf('?scopeInum=') > -1)
+  const [isPageLoading, setIsPageLoading] = useState(loading)
 
   SetTitle(t('titles.oidc_clients'))
 
@@ -141,12 +142,17 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         setScopeClients(clientsScope)
       }
     } else {
+      setIsPageLoading(true)
       makeOptions()
       buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
       dispatch(getOpenidClients(userAction))
 
       buildPayload(userAction, '', options)
       dispatch(getScopes(userAction))
+
+      setTimeout(() => {
+        setIsPageLoading(false)
+      }, 3000);
     }
   }, [haveScopeINUMParam])
 
@@ -284,7 +290,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
             }}
             columns={tableColumns}
             data={haveScopeINUMParam ? scopeClients : clients}
-            isLoading={loading}
+            isLoading={isPageLoading}
             title=""
             actions={myActions}
             options={{

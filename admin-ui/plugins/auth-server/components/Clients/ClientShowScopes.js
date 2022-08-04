@@ -27,7 +27,7 @@ function ClientShowScopes({ handler, data, isOpen }) {
             </div>
           )
         }) : (
-          <div>{t('message.no_scope_in_client')}</div>
+          <div>{t('messages.no_scope_in_client')}</div>
         )}
       </ModalBody>
       <ModalFooter>
