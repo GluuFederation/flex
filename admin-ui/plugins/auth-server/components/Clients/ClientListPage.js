@@ -52,7 +52,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
   const [scopeClients, setScopeClients] = useState()
-  const [haveINUMParam] = useState(search.indexOf('?inum=') > -1)
+  const [haveScopeINUMParam] = useState(search.indexOf('?scopeInum=') > -1)
 
   SetTitle(t('titles.oidc_clients'))
 
@@ -133,11 +133,11 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   ]
 
   useEffect(() => {
-    if (haveINUMParam) {
-      const inumParam = search.replace('?inum=', '')
+    if (haveScopeINUMParam) {
+      const scopeInumParam = search.replace('?scopeInum=', '')
       
-      if (inumParam.length > 0) {
-        const clientsScope = scopes.find(({ inum }) => inum === inumParam)?.clients || []
+      if (scopeInumParam.length > 0) {
+        const clientsScope = scopes.find(({ inum }) => inum === scopeInumParam)?.clients || []
         setScopeClients(clientsScope)
       }
     } else {
@@ -148,7 +148,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       buildPayload(userAction, '', options)
       dispatch(getScopes(userAction))
     }
-  }, [haveINUMParam])
+  }, [haveScopeINUMParam])
 
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
@@ -283,7 +283,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
             columns={tableColumns}
-            data={haveINUMParam ? scopeClients : clients}
+            data={haveScopeINUMParam ? scopeClients : clients}
             isLoading={loading}
             title=""
             actions={myActions}

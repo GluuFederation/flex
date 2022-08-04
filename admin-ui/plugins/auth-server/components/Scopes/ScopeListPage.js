@@ -65,15 +65,27 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const tableColumns = [
     { title: `${t('fields.id')}`, field: 'id' },
     {
-      title: `${t('fields.openid')}`,
+      title: `${t('menus.clients')}`,
       field: 'dn',
       render: (rowData) => {
         if (!rowData.clients) {
-          return 0
+          return (
+            <Badge
+              color={`primary-${selectedTheme}`}
+              role={'button'}
+            >
+              0
+            </Badge>
+          )
         }
         return (
-          <Link to={`/auth-server/clients?inum=${rowData.inum}`} style={{ color: '#3f51b5' }}>
-            {rowData.clients?.length}
+          <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`} style={{ color: '#3f51b5', textDecoration: 'underline' }}>
+            <Badge
+              color={`primary-${selectedTheme}`}
+              role={'button'}
+            >
+              {rowData.clients?.length}
+            </Badge>
           </Link>
         )
       },
