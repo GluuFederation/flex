@@ -13,6 +13,8 @@ import {
   GET_SCOPE_BY_PATTERN,
   GET_SCOPE_BY_PATTERN_RESPONSE,
   SEARCH_SCOPES,
+  GET_UMA_RESOURCES,
+  GET_UMA_RESOURCES_RESPONSE,
 } from './types'
 
 export const getScopes = (action) => ({
@@ -83,4 +85,12 @@ export const deleteScopeResponse = (data) => ({
 export const setCurrentItem = (item) => ({
   type: SET_ITEM,
   payload: { item },
+})
+export const getUMAResources = (item) => ({
+  type: GET_UMA_RESOURCES,
+  payload: { item },
+})
+export const getUMAResourcesResponse = (data) => ({
+  type: GET_UMA_RESOURCES_RESPONSE,
+  payload: { data },
 })

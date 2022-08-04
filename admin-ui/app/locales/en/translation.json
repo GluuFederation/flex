@@ -169,6 +169,9 @@
     "saml1_uri": "Saml1 URI",
     "saml2_uri": "Saml2 URI",
     "scope_type": "Scope type",
+    "umaAuthorizationPolicies": "Authorization Policies",
+    "umaResourcesScript": "Associated Clients",
+    "iconUrl": "Icon URL",
     "scopes:": "Scopes",
     "scripts": "Scripts",
     "script_type": "Script Type",
@@ -405,7 +408,8 @@
     "sql_passwordEncryptionMethod": "Add password encryption method.",
     "sql_serverTimezone": "Enter server timezone.",
     "activate_sql_configuration": "Activate SQL configuration.",
-    "script_path": "Enter script file path"
+    "script_path": "Enter script file path",
+    "iconUrl": "Icon URL"
   },
   "titles": {
     "acrs": "ACRs",

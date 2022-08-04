@@ -14,6 +14,7 @@ import {
   GET_SCOPE_BY_PATTERN,
   GET_SCOPE_BY_PATTERN_RESPONSE,
   SEARCH_SCOPES,
+  GET_UMA_RESOURCES_RESPONSE,
 } from '../actions/types'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
@@ -22,6 +23,7 @@ const INIT_STATE = {
   loading: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
+  umaResources: [],
 }
 
 const reducerName = 'scopeReducer'
@@ -41,6 +43,12 @@ export default function scopeReducer(state = INIT_STATE, action) {
         }
       } else {
         return handleDefault()
+      }
+    case GET_UMA_RESOURCES_RESPONSE:
+      return {
+        ...state,
+        umaResources: action.payload.data,
+        loading: false,
       }
     case GET_SCOPE_BY_INUM:
       return handleLoading()

@@ -31,20 +31,23 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
-import {
-  LIMIT,
-  PATTERN,
-} from 'Plugins/auth-server/common/Constants'
+import { LIMIT, PATTERN } from 'Plugins/auth-server/common/Constants'
+import { getUMAResources } from '../../redux/actions/ScopeActions'
 
-function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
+function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const { t } = useTranslation()
   let dynamicScopeScripts = []
+  let umaResourcesScript = []
+  let umaAuthorizationPolicies = []
+
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const history = useHistory()
   const spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
-   const dispatch = useDispatch()
-   const client = useSelector((state) => state.oidcReducer.items)
+  const dispatch = useDispatch()
+  const client = useSelector((state) => state.oidcReducer.items)
+  const umaResources = useSelector((state) => state.scopeReducer.umaResources)
+  // const scripts = useSelector((state) => state.customScriptReducer.items)
   let claims = []
   scripts = scripts || []
   attributes = attributes || []
@@ -52,17 +55,43 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
     .filter((item) => item.scriptType == 'DYNAMIC_SCOPE')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
+
+  umaAuthorizationPolicies = scripts
+    .filter((item) => item.scriptType == 'UMA_RPT_POLICY')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
+
+  umaResourcesScript = umaResources.map((item) => ({
+    dn: item.dn,
+    name: item.id,
+  }))
+
+  useEffect(() => {
+    dispatch(getUMAResources({ pattern: 'scope' }))
+  }, [])
+
   claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName }))
 
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
-  const [showClaimsPanel, handleClaimsPanel] = useState(scope.scopeType === 'openid')
-  const [showDynamicPanel, handleDynamicPanel] = useState(scope.scopeType === 'dynamic')
-  const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(scope.scopeType === 'spontaneous')
+  const [showClaimsPanel, handleClaimsPanel] = useState(
+    scope.scopeType === 'openid',
+  )
+  const [showDynamicPanel, handleDynamicPanel] = useState(
+    scope.scopeType === 'dynamic',
+  )
+  const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
+    scope.scopeType === 'spontaneous',
+  )
+  const [showUmaPanel, handleShowUmaPanel] = useState(scope.scopeType === 'UMA')
 
   useEffect(() => {
     if (showSpontaneousPanel) {
-      dispatch(searchClients({ "action_data": makeOptions(1, scope.attributes.spontaneousClientId) }))
+      dispatch(
+        searchClients({
+          action_data: makeOptions(1, scope.attributes.spontaneousClientId),
+        }),
+      )
     }
   }, [showClaimsPanel])
 
@@ -88,6 +117,11 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
       handleShowSpontaneousPanel(true)
     } else {
       handleShowSpontaneousPanel(false)
+    }
+    if (type && type === 'UMA') {
+      handleShowUmaPanel(true)
+    } else {
+      handleShowUmaPanel(false)
     }
     scope.dynamicScopeScripts = ''
     scope.claims = ''
@@ -143,9 +177,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
           displayName: Yup.string()
             .min(2, 'displayName 2 characters')
             .required('Required!'),
-          id: Yup.string()
-            .min(2, 'id 2 characters')
-            .required('Required!'),
+          id: Yup.string().min(2, 'id 2 characters').required('Required!'),
         })}
         onSubmit={(values) => {
           const result = Object.assign(scope, values)
@@ -162,7 +194,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
       >
         {(formik) => (
           <Form onSubmit={formik.handleSubmit}>
-
             <GluuTooltip doc_category={SCOPE} doc_entry="id">
               <FormGroup row>
                 <GluuLabel label="fields.id" size={4} required />
@@ -170,11 +201,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
                   <Input
                     placeholder={t('placeholders.id')}
                     id="id"
-                    valid={
-                      !formik.errors.id &&
-                      !formik.touched.id &&
-                      init
-                    }
+                    valid={!formik.errors.id && !formik.touched.id && init}
                     name="id"
                     defaultValue={scope.id}
                     onKeyUp={activate}
@@ -252,8 +279,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
                 />
               </div>
             )}
-            {showSpontaneousPanel ?
-              (<GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
+            {showSpontaneousPanel ? (
+              <GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
                 <FormGroup row>
                   <GluuLabel label="fields.scope_type" size={4} />
                   <Col sm={8}>
@@ -262,8 +289,9 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
                     </Badge>
                   </Col>
                 </FormGroup>
-              </GluuTooltip>) :
-              (<GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
+              </GluuTooltip>
+            ) : (
+              <GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
                 <FormGroup row>
                   <GluuLabel label="fields.scope_type" size={4} />
                   <Col sm={8}>
@@ -282,6 +310,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
                         <option value="oauth">OAuth</option>
                         <option value="openid">OpenID</option>
                         <option value="dynamic">Dynamic</option>
+                        <option value="UMA">UMA</option>
                       </CustomInput>
                     </InputGroup>
                   </Col>
@@ -289,7 +318,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
                     {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
                   </ErrorMessage>
                 </FormGroup>
-              </GluuTooltip>)}
+              </GluuTooltip>
+            )}
             {showDynamicPanel && (
               <GluuTypeAheadForDn
                 name="dynamicScopeScripts"
@@ -321,6 +351,63 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
                 </Accordion.Body>
               </Accordion>
             )}
+            {showUmaPanel && (
+              <>
+                <FormGroup row>
+                  <GluuLabel label="fields.iconUrl" size={4} />
+                  <Col sm={8}>
+                    <Input
+                      placeholder={t('placeholders.iconUrl')}
+                      id="iconUrl"
+                      name="iconUrl"
+                      defaultValue={scope.iconUrl}
+                      onChange={formik.handleChange}
+                      disabled={scope.inum ? true : false}
+                    />
+                  </Col>
+                </FormGroup>
+                <Accordion className="mb-2 b-primary" initialOpen>
+                  <Accordion.Header className="text-primary">
+                    {t('fields.umaAuthorizationPolicies').toUpperCase()}
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <FormGroup row> </FormGroup>
+                    <GluuTypeAheadForDn
+                      name="umaAuthorizationPolicies"
+                      label="fields.umaAuthorizationPolicies"
+                      formik={formik}
+                      value={getMapping(
+                        scope.umaAuthorizationPolicies,
+                        umaAuthorizationPolicies,
+                      )}
+                      disabled={scope.inum ? true : false}
+                      options={umaAuthorizationPolicies}
+                      doc_category={SCOPE}
+                    />
+                  </Accordion.Body>
+                </Accordion>
+                <Accordion className="mb-2 b-primary" initialOpen>
+                  <Accordion.Header className="text-primary">
+                    {t('fields.umaResourcesScript').toUpperCase()}
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    <FormGroup row> </FormGroup>
+                    <GluuTypeAheadForDn
+                      name="umaResourcesScript"
+                      label="fields.umaResourcesScript"
+                      formik={formik}
+                      value={getMapping(
+                        scope.umaResourcesScript,
+                        umaResourcesScript,
+                      )}
+                      disabled={scope.inum ? true : false}
+                      options={umaResourcesScript}
+                      doc_category={SCOPE}
+                    />
+                  </Accordion.Body>
+                </Accordion>
+              </>
+            )}
             {showSpontaneousPanel && (
               <Accordion className="mb-2 b-primary" initialOpen>
                 <Accordion.Header className="text-primary">
@@ -333,14 +420,23 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
                     doc_entry="spontaneousClientId"
                   >
                     <FormGroup row>
-                      <GluuLabel label="fields.spontaneous_client_id" size={4} />
+                      <GluuLabel
+                        label="fields.spontaneous_client_id"
+                        size={4}
+                      />
                       <Col sm={8}>
                         <div>
                           {scope.attributes.spontaneousClientId}
-                          <IconButton onClick={() => goToClientViewPage(scope.attributes.spontaneousClientId)}>
+                          <IconButton
+                            onClick={() =>
+                              goToClientViewPage(
+                                scope.attributes.spontaneousClientId,
+                              )
+                            }
+                          >
                             <Visibility />
                           </IconButton>
-                       </div>
+                        </div>
                       </Col>
                     </FormGroup>
                   </GluuTooltip>
@@ -350,15 +446,23 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
                     doc_entry="spontaneousClientScopes"
                   >
                     <FormGroup row>
-                      <GluuLabel label="fields.spontaneous_client_scopes" size={4} />
+                      <GluuLabel
+                        label="fields.spontaneous_client_scopes"
+                        size={4}
+                      />
                       <Col sm={8}>
-                        {scope?.attributes?.spontaneousClientScopes?.map((item, key) => (
-                          <div style={{ maxWidth: 120, overflow: 'auto' }}>
-                            <Badge key={key} color={`primary-${selectedTheme}`}>
-                              {item}
-                            </Badge>
-                          </div>
-                        ))}
+                        {scope?.attributes?.spontaneousClientScopes?.map(
+                          (item, key) => (
+                            <div style={{ maxWidth: 120, overflow: 'auto' }}>
+                              <Badge
+                                key={key}
+                                color={`primary-${selectedTheme}`}
+                              >
+                                {item}
+                              </Badge>
+                            </div>
+                          ),
+                        )}
                       </Col>
                     </FormGroup>
                   </GluuTooltip>
@@ -366,8 +470,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
               </Accordion>
             )}
             <FormGroup row></FormGroup>
-            {!showSpontaneousPanel &&
-              (<GluuCommitFooter saveHandler={toggle} />)}
+            {!showSpontaneousPanel && <GluuCommitFooter saveHandler={toggle} />}
             <GluuCommitDialog
               handler={toggle}
               modal={modal}
@@ -377,7 +480,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit}) {
           </Form>
         )}
       </Formik>
-    </Container >
+    </Container>
   )
 }
 

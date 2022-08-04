@@ -24,6 +24,7 @@ function GluuTypeAheadForDn({
   required,
   doc_category,
   doc_entry,
+  disabled = false,
   allowNew = false,
   lsize = 4,
   rsize = 8,
@@ -48,6 +49,7 @@ function GluuTypeAheadForDn({
                 ),
               )
             }}
+            disabled={disabled}
             id={name}
             data-testid={name}
             name={name}
