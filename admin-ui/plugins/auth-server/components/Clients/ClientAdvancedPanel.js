@@ -152,12 +152,12 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         rsize={9}
       ></GluuTypeAheadForDn>
       <GluuToogleRow
-        name="defaultPromptLogin"
+        name="jansDefaultPromptLogin"
         lsize={3}
         rsize={9}
         formik={formik}
         label="fields.defaultPromptLogin"
-        value={client.defaultPromptLogin}
+        value={client.jansDefaultPromptLogin}
         doc_category={DOC_CATEGORY}
       />
       <GluuInputRow
