@@ -58,7 +58,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
 
   umaAuthorizationPolicies = scripts
     .filter((item) => item.scriptType == 'UMA_RPT_POLICY')
-    .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   umaResourcesScript = umaResources.map((item) => ({
@@ -83,7 +82,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const [showSpontaneousPanel, handleShowSpontaneousPanel] = useState(
     scope.scopeType === 'spontaneous',
   )
-  const [showUmaPanel, handleShowUmaPanel] = useState(scope.scopeType === 'UMA')
+  const [showUmaPanel, handleShowUmaPanel] = useState(scope.scopeType === 'uma')
 
   useEffect(() => {
     if (showSpontaneousPanel) {
@@ -118,7 +117,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     } else {
       handleShowSpontaneousPanel(false)
     }
-    if (type && type === 'UMA') {
+    if (type && type === 'uma') {
       handleShowUmaPanel(true)
     } else {
       handleShowUmaPanel(false)
@@ -159,6 +158,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     dispatch(setCurrentItem(client[0]))
     return history.push(`/auth-server/client/edit:` + client_id.substring(0, 4))
   }
+
+  useEffect(() => {
+    console.log('THE SCOPE', scope)
+  }, [scope])
 
   return (
     <Container>
@@ -310,7 +313,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                         <option value="oauth">OAuth</option>
                         <option value="openid">OpenID</option>
                         <option value="dynamic">Dynamic</option>
-                        <option value="UMA">UMA</option>
+                        <option value="uma">UMA</option>
                       </CustomInput>
                     </InputGroup>
                   </Col>
