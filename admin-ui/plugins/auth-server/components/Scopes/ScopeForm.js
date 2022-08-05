@@ -15,7 +15,6 @@ import {
   Badge,
 } from 'Components'
 import {
-  searchClients,
   viewOnly,
   setCurrentItem,
 } from 'Plugins/auth-server/redux/actions/OIDCActions'
@@ -32,7 +31,6 @@ import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { LIMIT, PATTERN } from 'Plugins/auth-server/common/Constants'
-import { getUMAResources } from '../../redux/actions/ScopeActions'
 
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const { t } = useTranslation()
@@ -45,7 +43,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const history = useHistory()
   const spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
   const dispatch = useDispatch()
-  const client = useSelector((state) => state.oidcReducer.items)
+  const client = scope.clients || []
+
   const umaResources = useSelector((state) => state.scopeReducer.umaResources)
   // const scripts = useSelector((state) => state.customScriptReducer.items)
   let claims = []
@@ -60,14 +59,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     .filter((item) => item.scriptType == 'UMA_RPT_POLICY')
     .map((item) => ({ dn: item.dn, name: item.name }))
 
-  umaResourcesScript = umaResources.map((item) => ({
-    dn: item.dn,
-    name: item.id,
-  }))
-
-  useEffect(() => {
-    dispatch(getUMAResources({ pattern: 'scope' }))
-  }, [])
+  umaResourcesScript = []
 
   claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName }))
 
@@ -83,16 +75,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     scope.scopeType === 'spontaneous',
   )
   const [showUmaPanel, handleShowUmaPanel] = useState(scope.scopeType === 'uma')
-
-  useEffect(() => {
-    if (showSpontaneousPanel) {
-      dispatch(
-        searchClients({
-          action_data: makeOptions(1, scope.attributes.spontaneousClientId),
-        }),
-      )
-    }
-  }, [showClaimsPanel])
 
   const makeOptions = (limit, client_id) => {
     let obj = {}

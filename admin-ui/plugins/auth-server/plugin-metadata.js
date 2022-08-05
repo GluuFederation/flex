@@ -25,7 +25,6 @@ import jsonSaga from './redux/sagas/JsonConfigSaga'
 import jwksSaga from './redux/sagas/JwksSaga'
 import acrSaga from './redux/sagas/AcrsSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
-import umaResourceSaga from './redux/sagas/UMAResourcesSaga'
 
 import {
   ACR_READ,
@@ -144,7 +143,6 @@ const pluginMetadata = {
     jwksSaga(),
     acrSaga(),
     loggingSaga(),
-    umaResourceSaga(),
   ],
 }
 
