@@ -4,6 +4,7 @@ export const TYPE_ID = 'typeId'
 export const LIMIT = 'limit'
 export const TYPE = 'type'
 export const PATTERN = 'pattern'
+export const WITH_ASSOCIATED_CLIENTS = 'withAssociatedClients'
 
 export const SEARCHING_OIDC_CLIENTS = 'Search openid connect clients'
 export const FETCHING_OIDC_CLIENTS = 'Fetch openid connect clients'

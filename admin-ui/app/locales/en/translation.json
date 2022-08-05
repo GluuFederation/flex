@@ -349,7 +349,8 @@
     "resource_not_found_title": "Resource not found",
     "view_client_details": "View client details",
     "add_new_user": "Add User",
-    "error_in_saving": "Error in saving."
+    "error_in_saving": "Error in saving.",
+    "no_scope_in_client": "No Scope data for this Client"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
