@@ -165,7 +165,7 @@
     "required_ssl": "Required SSL",
     "response_types": "Response types",
     "revision": "Revision",
-    "rpt_scripts": "UMA RPT Claims",
+    "rpt_scripts": "RPT Modification Script",
     "saml1_uri": "Saml1 URI",
     "saml2_uri": "Saml2 URI",
     "scope_type": "Scope type",
@@ -271,7 +271,8 @@
     "email": "Email",
     "userName": "User Name",
     "nickName": "Nick Name",
-    "givenName": "Given Name"
+    "givenName": "Given Name",
+    "resources": "Resources"
   },
   "languages": {
     "french": "French",

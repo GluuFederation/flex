@@ -7,6 +7,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
+import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientCibaParUmaPanel({ client, scripts, formik }) {
@@ -32,6 +33,11 @@ function ClientCibaParUmaPanel({ client, scripts, formik }) {
   }
   const [softwareSection, setSoftwareSection] = useState(false)
   const [cibaSection, setCibaSection] = useState(false)
+
+  const rptScripts = scripts
+    .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
+    .filter((item) => item.enabled)
+    .map((item) => ({ dn: item.dn, name: item.name }))
 
   function handleCibaSection() {
     setCibaSection(!cibaSection)
@@ -126,6 +132,16 @@ function ClientCibaParUmaPanel({ client, scripts, formik }) {
         lsize={3}
         rsize={9}
       ></GluuTypeAheadWithAdd>
+      <GluuTypeAheadForDn
+        name="rptClaimsScripts"
+        label="fields.rpt_scripts"
+        formik={formik}
+        value={client.rptClaimsScripts}
+        options={rptScripts}
+        doc_category={DOC_CATEGORY}
+        doc_entry="rptClaimsScripts"
+        lsize={3}
+      ></GluuTypeAheadForDn>
     </Container>
   )
 }

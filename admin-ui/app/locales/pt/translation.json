@@ -193,7 +193,7 @@
     "required_ssl": "SSL obrigatório",
     "response_types": "Tipos de Resposta",
     "revision": "Revisão",
-    "rpt_scripts": "Rpt Scripts",
+    "rpt_scripts": "Script de Modificação RPT",
     "saml1_uri": "Saml1 Uri",
     "saml2_uri": "Saml2 Uri",
     "scope_type": "Tipo de Escopo",
@@ -250,7 +250,8 @@
     "deletable": "Apagável",
     "email": "E-mail",
     "userName": "Nome do usuário",
-    "nickName": "Apelido"
+    "nickName": "Apelido",
+    "resources": "Recursos"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
