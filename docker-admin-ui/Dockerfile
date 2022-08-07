@@ -1,7 +1,7 @@
-FROM node:14.20.0-alpine3.16 AS builder
+FROM node:14.20-alpine3.16 AS builder
 
 RUN apk update \
-    && apk upgrade \
+    && apk upgrade --available \
     && apk add --no-cache git openjdk11-jre-headless
 
 # TODO:
@@ -22,13 +22,14 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
     && npm install @openapitools/openapi-generator-cli \
     && npm run api \
     && npm install \
+    && npm uninstall @openapitools/openapi-generator-cli \
     && rm -rf $HOME/.npm
 
 # ===========
 # Application
 # ===========
 
-FROM node:14.20.0-alpine3.16
+FROM node:14.20-alpine3.16
 
 # ======
 # alpine

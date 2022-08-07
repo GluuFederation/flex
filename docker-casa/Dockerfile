@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjre-alpine:11.0.15
+FROM bellsoft/liberica-openjre-alpine:11.0.16
 
 # ===============
 # Alpine packages
@@ -15,7 +15,7 @@ RUN apk update \
 # Jetty
 # =====
 
-ARG JETTY_VERSION=11.0.8
+ARG JETTY_VERSION=11.0.11
 ARG JETTY_HOME=/opt/jetty
 ARG JETTY_BASE=/opt/jans/jetty
 ARG JETTY_USER_HOME_LIB=/home/jetty/lib
