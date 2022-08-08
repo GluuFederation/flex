@@ -24,6 +24,7 @@ import {
   EDIT_CLIENT,
   DELETE_CLIENT,
   SEARCH_CLIENTS,
+  GET_UMA_RESOURCES
 } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from 'Redux/api/base'
@@ -122,6 +123,23 @@ export function* deleteAClient({ payload }) {
   }
 }
 
+export function* getUMAResourcesByClient(inum) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, GET_UMA_RESOURCES, {})
+    const api = yield* newFunction()
+    const data = yield call(api.getOauthUmaResourcesByClientid, inum)
+    yield put(deleteClientResponse(data))
+    yield call(postUserAction, audit)
+  } catch (e) {
+    yield put(deleteClientResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
 export function* getOpenidClientsWatcher() {
   yield takeLatest(GET_OPENID_CLIENTS, getOauthOpenidClients)
 }
@@ -140,6 +158,9 @@ export function* editClientWatcher() {
 export function* deleteClientWatcher() {
   yield takeLatest(DELETE_CLIENT, deleteAClient)
 }
+export function* getUMAResourcesByClientWatcher() {
+  yield takeLatest(GET_UMA_RESOURCES, getUMAResourcesByClient)
+}
 
 export default function* rootSaga() {
   yield all([
@@ -148,5 +169,6 @@ export default function* rootSaga() {
     fork(addClientWatcher),
     fork(editClientWatcher),
     fork(deleteClientWatcher),
+    fork(getUMAResourcesByClientWatcher),
   ])
 }

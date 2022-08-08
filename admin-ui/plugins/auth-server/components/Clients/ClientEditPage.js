@@ -3,13 +3,14 @@ import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { editClient } from 'Plugins/auth-server/redux/actions/OIDCActions'
+import { editClient, getUMAResourcesByClient } from 'Plugins/auth-server/redux/actions/OIDCActions'
 import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
 import { getScripts } from 'Redux/actions/InitActions'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
+import isEmpty from 'lodash/isEmpty'
 
 function ClientEditPage({
   clientData,
@@ -22,6 +23,7 @@ function ClientEditPage({
   oidcConfiguration,
   saveOperationFlag,
   errorInSaveOperationFlag,
+  umaResources,
 }) {
   const userAction = {}
   const options = {}
@@ -36,6 +38,10 @@ function ClientEditPage({
     }
     if (scripts.length < 1) {
       dispatch(getScripts(options))
+    }
+    console.log('umaResources', umaResources)
+    if (isEmpty(umaResources)) {
+      dispatch(getUMAResourcesByClient(clientData?.inum))
     }
     dispatch(getOidcDiscovery())
   }, [])
@@ -86,6 +92,7 @@ const mapStateToProps = (state) => {
     oidcConfiguration: state.oidcDiscoveryReducer.configuration,
     saveOperationFlag: state.oidcReducer.saveOperationFlag,
     errorInSaveOperationFlag: state.oidcReducer.errorInSaveOperationFlag,
+    umaResources: state.oidcReducer.umaResources,
   }
 }
 export default connect(mapStateToProps)(ClientEditPage)

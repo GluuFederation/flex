@@ -37,6 +37,7 @@ export const DELETE_CLIENT = 'DELETE_CLIENT'
 export const DELETE_CLIENT_RESPONSE = 'DELETE_CLIENT_RESPONSE'
 export const SET_CLIENT_ITEM = 'SET_CLIENT_ITEM'
 export const SET_VIEW = 'SET_VIEW'
+export const GET_UMA_RESOURCES = 'GET_UMA_RESOURCES'
 
 // Attributes types
 export const GET_ATTRIBUTES = 'GET_ATTRIBUTES'
