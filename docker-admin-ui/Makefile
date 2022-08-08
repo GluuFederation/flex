@@ -11,7 +11,7 @@ build-dev:
 
 trivy-scan:
 	@echo "[I] Scanning Docker image ${IMAGE_NAME}:${GLUU_VERSION}_${UNSTABLE_VERSION} using trivy"
-	@trivy -d image ${IMAGE_NAME}:${GLUU_VERSION}_${UNSTABLE_VERSION}
+	@trivy image --security-checks vuln ${IMAGE_NAME}:${GLUU_VERSION}_${UNSTABLE_VERSION}
 
 grype-scan:
 	@echo "[I] Scanning Docker image ${IMAGE_NAME}:${GLUU_VERSION}_${UNSTABLE_VERSION} using grype"
