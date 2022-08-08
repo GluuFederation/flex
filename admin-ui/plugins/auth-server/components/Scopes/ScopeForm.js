@@ -35,7 +35,7 @@ import { LIMIT, PATTERN } from 'Plugins/auth-server/common/Constants'
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const { t } = useTranslation()
   let dynamicScopeScripts = []
-  let umaResourcesScript = []
+  let associatedClients = []
   let umaAuthorizationPolicies = []
 
   const theme = useContext(ThemeContext)
@@ -45,7 +45,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const dispatch = useDispatch()
   const client = scope.clients || []
 
-  const umaResources = useSelector((state) => state.scopeReducer.umaResources)
   // const scripts = useSelector((state) => state.customScriptReducer.items)
   let claims = []
   scripts = scripts || []
@@ -59,7 +58,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     .filter((item) => item.scriptType == 'UMA_RPT_POLICY')
     .map((item) => ({ dn: item.dn, name: item.name }))
 
-  umaResourcesScript = []
+  associatedClients = client.map((item) => ({ dn: item.dn, name: item.inum }))
 
   claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName }))
 
@@ -140,10 +139,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     dispatch(setCurrentItem(client[0]))
     return history.push(`/auth-server/client/edit:` + client_id.substring(0, 4))
   }
-
-  useEffect(() => {
-    console.log('THE SCOPE', scope)
-  }, [scope])
 
   return (
     <Container>
@@ -373,20 +368,20 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 </Accordion>
                 <Accordion className="mb-2 b-primary" initialOpen>
                   <Accordion.Header className="text-primary">
-                    {t('fields.umaResourcesScript').toUpperCase()}
+                    {t('fields.associatedClients').toUpperCase()}
                   </Accordion.Header>
                   <Accordion.Body>
                     <FormGroup row> </FormGroup>
                     <GluuTypeAheadForDn
-                      name="umaResourcesScript"
-                      label="fields.umaResourcesScript"
+                      name="associatedClients"
+                      label="fields.associatedClients"
                       formik={formik}
                       value={getMapping(
-                        scope.umaResourcesScript,
-                        umaResourcesScript,
+                        scope.associatedClients,
+                        associatedClients,
                       )}
                       disabled={scope.inum ? true : false}
-                      options={umaResourcesScript}
+                      options={associatedClients}
                       doc_category={SCOPE}
                     />
                   </Accordion.Body>
@@ -455,7 +450,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </Accordion>
             )}
             <FormGroup row></FormGroup>
-            {!showSpontaneousPanel && <GluuCommitFooter saveHandler={toggle} />}
+            {!showSpontaneousPanel && !showUmaPanel && (
+              <GluuCommitFooter saveHandler={toggle} />
+            )}
+
             <GluuCommitDialog
               handler={toggle}
               modal={modal}

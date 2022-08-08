@@ -170,7 +170,7 @@
     "saml2_uri": "Saml2 URI",
     "scope_type": "Scope type",
     "umaAuthorizationPolicies": "Authorization Policies",
-    "umaResourcesScript": "Associated Clients",
+    "associatedClients": "Associated Clients",
     "iconUrl": "Icon URL",
     "scopes:": "Scopes",
     "scripts": "Scripts",
