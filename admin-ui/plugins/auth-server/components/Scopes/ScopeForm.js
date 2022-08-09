@@ -59,7 +59,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
 
   associatedClients = client.map((item) => ({ dn: item.dn, name: item.inum }))
   associatedClientsSelectedValues = client.map((item) => item.dn)
-  console.log(associatedClients, associatedClientsSelectedValues)
   claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName }))
 
   const [init, setInit] = useState(false)
@@ -134,10 +133,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
 
-  const goToClientViewPage = (client_id) => {
+  const goToClientViewPage = (client_id, client_data = {}) => {
     dispatch(viewOnly(true))
-    dispatch(setCurrentItem(client[0]))
-    return history.push(`/auth-server/client/edit:` + client_id.substring(0, 4))
+    dispatch(setCurrentItem(client_data))
+    return history.push(`/auth-server/client/edit:` + client_id)
   }
 
   return (
@@ -370,26 +369,26 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 </Accordion>
                 {scope.inum && (
                   <>
-                    <Accordion className="mb-2 b-primary" initialOpen>
-                      <Accordion.Header className="text-primary">
-                        {t('fields.associatedClients').toUpperCase()}
-                      </Accordion.Header>
-                      <Accordion.Body>
-                        <FormGroup row> </FormGroup>
-                        <GluuTypeAheadForDn
-                          name="associatedClients"
-                          label="fields.associatedClients"
-                          formik={formik}
-                          value={getMapping(
-                            associatedClientsSelectedValues,
-                            associatedClients,
-                          )}
-                          disabled={scope.inum ? true : false}
-                          options={associatedClients}
-                          doc_category={SCOPE}
-                        />
-                      </Accordion.Body>
-                    </Accordion>
+                    <FormGroup row>
+                      <GluuLabel label="fields.associatedClients" size={4} />
+                      <Col sm={8}>
+                        {client.map((item) => (
+                          <div>
+                            <a
+                              onClick={() =>
+                                goToClientViewPage(item.inum, item)
+                              }
+                              style={{
+                                textDecoration: 'underline',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              {item.inum}
+                            </a>
+                          </div>
+                        ))}
+                      </Col>
+                    </FormGroup>
                     <FormGroup row>
                       <GluuLabel label="fields.creationDate" size={4} />
                       <Col sm={8}>
@@ -476,6 +475,35 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       </Col>
                     </FormGroup>
                   </GluuTooltip>
+                  <FormGroup row>
+                    <GluuLabel label="fields.associatedClients" size={4} />
+                    <Col sm={8}>
+                      {client.map((item) => (
+                        <div>
+                          <a
+                            onClick={() => goToClientViewPage(item.inum, item)}
+                            style={{
+                              textDecoration: 'underline',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {item.inum}
+                          </a>
+                        </div>
+                      ))}
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <GluuLabel label="fields.creationDate" size={4} />
+                    <Col sm={8}>
+                      <Input
+                        defaultValue={moment(scope.creationDate).format(
+                          'YYYY-MM-DD HH:mm:ss',
+                        )}
+                        disabled={true}
+                      />
+                    </Col>
+                  </FormGroup>
                 </Accordion.Body>
               </Accordion>
             )}
