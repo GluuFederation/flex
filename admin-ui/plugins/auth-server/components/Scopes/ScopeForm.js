@@ -372,8 +372,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     <FormGroup row>
                       <GluuLabel label="fields.associatedClients" size={4} />
                       <Col sm={8}>
-                        {client.map((item) => (
-                          <div>
+                        {client.map((item, key) => (
+                          <div key={'uma-client' + key}>
                             <a
                               onClick={() =>
                                 goToClientViewPage(item.inum, item)
@@ -383,7 +383,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                                 cursor: 'pointer',
                               }}
                             >
-                              {item.inum}
+                              {item.displayName ? item.displayName : item.inum}
                             </a>
                           </div>
                         ))}
@@ -434,18 +434,21 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                         size={4}
                       />
                       <Col sm={8}>
-                        <div>
-                          {scope.attributes.spontaneousClientId}
-                          <IconButton
-                            onClick={() =>
-                              goToClientViewPage(
-                                scope.attributes.spontaneousClientId,
-                              )
-                            }
-                          >
-                            <Visibility />
-                          </IconButton>
-                        </div>
+                        {client.map((item, key) => (
+                          <div key={'spontaneous-client' + key}>
+                            <a
+                              onClick={() =>
+                                goToClientViewPage(item.inum, item)
+                              }
+                              style={{
+                                textDecoration: 'underline',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              {item.displayName ? item.displayName : item.inum}
+                            </a>
+                          </div>
+                        ))}
                       </Col>
                     </FormGroup>
                   </GluuTooltip>
@@ -475,24 +478,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       </Col>
                     </FormGroup>
                   </GluuTooltip>
-                  <FormGroup row>
-                    <GluuLabel label="fields.associatedClients" size={4} />
-                    <Col sm={8}>
-                      {client.map((item) => (
-                        <div>
-                          <a
-                            onClick={() => goToClientViewPage(item.inum, item)}
-                            style={{
-                              textDecoration: 'underline',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            {item.inum}
-                          </a>
-                        </div>
-                      ))}
-                    </Col>
-                  </FormGroup>
+
                   <FormGroup row>
                     <GluuLabel label="fields.creationDate" size={4} />
                     <Col sm={8}>
