@@ -31,21 +31,20 @@ import { SCOPE } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { LIMIT, PATTERN } from 'Plugins/auth-server/common/Constants'
-
+import moment from 'moment'
 function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const { t } = useTranslation()
   let dynamicScopeScripts = []
   let associatedClients = []
   let umaAuthorizationPolicies = []
-
+  let associatedClientsSelectedValues = []
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const history = useHistory()
-  const spontaneousClientScopes = scope.attributes.spontaneousClientScopes || []
   const dispatch = useDispatch()
   const client = scope.clients || []
 
-  // const scripts = useSelector((state) => state.customScriptReducer.items)
+  const authReducer = useSelector((state) => state.authReducer)
   let claims = []
   scripts = scripts || []
   attributes = attributes || []
@@ -59,7 +58,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   associatedClients = client.map((item) => ({ dn: item.dn, name: item.inum }))
-
+  associatedClientsSelectedValues = client.map((item) => item.dn)
+  console.log(associatedClients, associatedClientsSelectedValues)
   claims = attributes.map((item) => ({ dn: item.dn, name: item.displayName }))
 
   const [init, setInit] = useState(false)
@@ -162,6 +162,8 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
         onSubmit={(values) => {
           const result = Object.assign(scope, values)
           result['id'] = result.id
+          result['creatorType'] = 'USER'
+          result['creatorId'] = authReducer.userinfo.inum
           result['attributes'].showInConfigurationEndpoint =
             scope.attributes.showInConfigurationEndpoint
           result['attributes'].spontaneousClientId =
@@ -366,26 +368,54 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     />
                   </Accordion.Body>
                 </Accordion>
-                <Accordion className="mb-2 b-primary" initialOpen>
-                  <Accordion.Header className="text-primary">
-                    {t('fields.associatedClients').toUpperCase()}
-                  </Accordion.Header>
-                  <Accordion.Body>
-                    <FormGroup row> </FormGroup>
-                    <GluuTypeAheadForDn
-                      name="associatedClients"
-                      label="fields.associatedClients"
-                      formik={formik}
-                      value={getMapping(
-                        scope.associatedClients,
-                        associatedClients,
-                      )}
-                      disabled={scope.inum ? true : false}
-                      options={associatedClients}
-                      doc_category={SCOPE}
-                    />
-                  </Accordion.Body>
-                </Accordion>
+                {scope.inum && (
+                  <>
+                    <Accordion className="mb-2 b-primary" initialOpen>
+                      <Accordion.Header className="text-primary">
+                        {t('fields.associatedClients').toUpperCase()}
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <FormGroup row> </FormGroup>
+                        <GluuTypeAheadForDn
+                          name="associatedClients"
+                          label="fields.associatedClients"
+                          formik={formik}
+                          value={getMapping(
+                            associatedClientsSelectedValues,
+                            associatedClients,
+                          )}
+                          disabled={scope.inum ? true : false}
+                          options={associatedClients}
+                          doc_category={SCOPE}
+                        />
+                      </Accordion.Body>
+                    </Accordion>
+                    <FormGroup row>
+                      <GluuLabel label="fields.creationDate" size={4} />
+                      <Col sm={8}>
+                        <Input
+                          defaultValue={moment(scope.creationDate).format(
+                            'YYYY-MM-DD HH:mm:ss',
+                          )}
+                          disabled={true}
+                        />
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <GluuLabel label="fields.creatorType" size={4} />
+                      <Col sm={8}>
+                        <Input
+                          defaultValue={
+                            ['CLIENT', 'USER'].includes(scope.creatorType)
+                              ? scope.creatorId || ''
+                              : scope.creatorType
+                          }
+                          disabled={true}
+                        />
+                      </Col>
+                    </FormGroup>
+                  </>
+                )}
               </>
             )}
             {showSpontaneousPanel && (
@@ -450,7 +480,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </Accordion>
             )}
             <FormGroup row></FormGroup>
-            {!showSpontaneousPanel && !showUmaPanel && (
+            {scope.inum ? (
+              !showSpontaneousPanel &&
+              !showUmaPanel && <GluuCommitFooter saveHandler={toggle} />
+            ) : (
               <GluuCommitFooter saveHandler={toggle} />
             )}
 

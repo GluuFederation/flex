@@ -171,6 +171,8 @@
     "scope_type": "Scope type",
     "umaAuthorizationPolicies": "Authorization Policies",
     "associatedClients": "Associated Clients",
+    "creationDate": "Creation Time",
+    "creatorType": "Creator",
     "iconUrl": "Icon URL",
     "scopes:": "Scopes",
     "scripts": "Scripts",
