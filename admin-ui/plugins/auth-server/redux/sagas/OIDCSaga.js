@@ -142,12 +142,12 @@ export function* deleteAClient({ payload }) {
 export function* getUMAResourcesByClient({ payload }) {
   const audit = yield* initAudit()
   try {
-    payload = payload ? payload : { action: {} }
+    payload = payload ? payload : {}
     addAdditionalData(audit, FETCH, GET_UMA_RESOURCES, payload)
     const openIdApi = yield* newUMAFunction()
     const data = yield call(
       openIdApi.getUMAResources,
-      payload.action.inum,
+      payload.inum,
     )
     yield put(getUMAResourcesByClientResponse(data))
     yield call(postUserAction, audit)
