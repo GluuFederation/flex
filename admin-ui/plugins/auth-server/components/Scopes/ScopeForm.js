@@ -133,10 +133,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
 
-  const goToClientViewPage = (client_id, client_data = {}) => {
+  const goToClientViewPage = (clientId, clientData = {}) => {
     dispatch(viewOnly(true))
-    dispatch(setCurrentItem(client_data))
-    return history.push(`/auth-server/client/edit:` + client_id)
+    dispatch(setCurrentItem(clientData))
+    return history.push(`/auth-server/client/edit:` + clientId)
   }
 
   return (
@@ -406,7 +406,10 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                         <Input
                           defaultValue={
                             ['CLIENT', 'USER'].includes(scope.creatorType)
-                              ? scope.creatorId || ''
+                              ? scope.creatorType +
+                                  '(' +
+                                  scope.creatorId +
+                                  ')' || ''
                               : scope.creatorType
                           }
                           disabled={true}
