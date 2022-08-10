@@ -4,6 +4,7 @@ export default class ScopeApi {
   }
 
   getAllScopes = (options) => {
+    options['withAssociatedClients'] = true
     return new Promise((resolve, reject) => {
       this.api.getOauthScopes(options, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
