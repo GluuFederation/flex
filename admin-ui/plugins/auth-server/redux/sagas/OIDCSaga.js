@@ -9,6 +9,7 @@ import {
   addClientResponse,
   editClientResponse,
   deleteClientResponse,
+  getUMAResourcesByClientResponse,
 } from '../actions/OIDCActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { OIDC } from '../audit/Resources'
@@ -41,6 +42,21 @@ function* newFunction() {
   }
   const issuer = yield select((state) => state.authReducer.issuer)
   const api = new JansConfigApi.OAuthOpenIDConnectClientsApi(
+    getClient(JansConfigApi, token, issuer),
+  )
+  return new OIDCApi(api)
+}
+
+function* newUMAFunction() {
+  const wholeToken = yield select((state) => state.authReducer.token)
+  let token = null
+  if (wholeToken) {
+    token = yield select((state) => state.authReducer.token.access_token)
+  } else {
+    token = null
+  }
+  const issuer = yield select((state) => state.authReducer.issuer)
+  const api = new JansConfigApi.OAuthUMAResourcesApi(
     getClient(JansConfigApi, token, issuer),
   )
   return new OIDCApi(api)
@@ -123,16 +139,21 @@ export function* deleteAClient({ payload }) {
   }
 }
 
-export function* getUMAResourcesByClient(inum) {
+export function* getUMAResourcesByClient({ payload }) {
   const audit = yield* initAudit()
   try {
-    addAdditionalData(audit, FETCH, GET_UMA_RESOURCES, {})
-    const api = yield* newFunction()
-    const data = yield call(api.getOauthUmaResourcesByClientid, inum)
-    yield put(deleteClientResponse(data))
+    payload = payload ? payload : { action: {} }
+    addAdditionalData(audit, FETCH, GET_UMA_RESOURCES, payload)
+    const openIdApi = yield* newUMAFunction()
+    const data = yield call(
+      openIdApi.getUMAResources,
+      payload.action.inum,
+    )
+    yield put(getUMAResourcesByClientResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(deleteClientResponse(null))
+    console.log(e)
+    yield put(getUMAResourcesByClientResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))

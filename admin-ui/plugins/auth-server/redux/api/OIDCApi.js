@@ -37,7 +37,7 @@ export default class OIDCApi {
 
   getUMAResources = async (clientId) => {
     return new Promise((resolve, reject) => {
-      this.api.getUMAResourcesByClient(clientId, (error, data) => {
+      this.api.getOauthUmaResourcesByClientid(clientId, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
       })
     })
