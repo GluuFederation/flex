@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import Box from '@material-ui/core/Box'
+import { Link } from 'react-router-dom'
 import { Col, Container, FormGroup } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -10,7 +12,7 @@ import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientCibaParUmaPanel({ client, scripts, formik }) {
+function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
   const { t } = useTranslation()
   const claim_uri_id = 'claim_uri_id'
 
@@ -142,6 +144,24 @@ function ClientCibaParUmaPanel({ client, scripts, formik }) {
         doc_entry="rptClaimsScripts"
         lsize={3}
       ></GluuTypeAheadForDn>
+      <FormGroup row>
+        <GluuLabel label={'Resources'} size={3} />
+        <Col sm={9}>
+          {umaResources.length > 0 && umaResources?.map(uma => {
+            return (
+              <Box key={uma.id}>
+                <Box display="flex">
+                  <Box>
+                    <Link to={`/auth-server/client/uma/${uma.id}`} className="common-link">
+                      {uma.id}
+                    </Link>
+                  </Box>
+                </Box>
+              </Box>
+            )
+          })}
+        </Col>
+      </FormGroup>
     </Container>
   )
 }

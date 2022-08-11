@@ -36,6 +36,7 @@ function ClientWizardForm({
   permissions,
   customOnSubmit,
   oidcConfiguration,
+  umaResources,
 }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -423,6 +424,7 @@ function ClientWizardForm({
                           >
                             <ClientCibaParUmaPanel
                               client={client}
+                              umaResources={umaResources}
                               scripts={scripts}
                               formik={formik}
                             />

@@ -39,6 +39,7 @@ function ClientEditPage({
     if (scripts.length < 1) {
       dispatch(getScripts(options))
     }
+    console.log('umaResources', umaResources)
     if (isEmpty(umaResources)) {
       dispatch(getUMAResourcesByClient(clientData?.inum))
     }
@@ -76,6 +77,7 @@ function ClientEditPage({
         permissions={permissions}
         oidcConfiguration={oidcConfiguration}
         customOnSubmit={handleSubmit}
+        umaResources={umaResources}
       />
     </GluuLoader>
   )

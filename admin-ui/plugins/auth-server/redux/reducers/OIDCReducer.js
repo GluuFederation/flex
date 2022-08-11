@@ -135,6 +135,7 @@ export default function oidcReducer(state = INIT_STATE, action) {
 
     case GET_UMA_RESOURCES_RESPONSE: 
       if (action.payload.data) {
+        console.log('action', action)
         return {
           ...state,
           umaResources: action.payload.data,
