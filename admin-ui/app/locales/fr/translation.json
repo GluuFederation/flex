@@ -252,7 +252,13 @@
     "email": "E-mail",
     "userName": "Nom d'utilisateur",
     "nickName": "Surnom",
-    "resources": "Ressources"
+    "resources": "Ressources",
+    "resourceId": "Identifiant de la ressource",
+    "iconUrl": "URL de l'icône",
+    "scopeSelection": "Sélection de la portée",
+    "scopeOrExpression": "Portée (ou Expression)",
+    "associatedClient": "Client associé",
+    "creationTime": "Heure de création"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",

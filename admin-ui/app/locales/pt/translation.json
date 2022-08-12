@@ -251,7 +251,13 @@
     "email": "E-mail",
     "userName": "Nome do usuário",
     "nickName": "Apelido",
-    "resources": "Recursos"
+    "resources": "Recursos",
+    "resourceId": "ID do recurso",
+    "iconUrl": "URL do ícone",
+    "scopeSelection": "Seleção de Escopo",
+    "scopeOrExpression": "Escopo (ou Expressão)",
+    "associatedClient": "Cliente Associado",
+    "creationTime": "Tempo de Criação"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",

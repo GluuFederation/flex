@@ -5,6 +5,7 @@ import ScopeEditPage from './components/Scopes/ScopeEditPage'
 import ClientListPage from './components/Clients/ClientListPage'
 import ClientAddPage from './components/Clients/ClientAddPage'
 import ClientEditPage from './components/Clients/ClientEditPage'
+import ClientUMADetailPage from './components/Clients/ClientUMADetailPage'
 
 import PropertiesPage from './components/Configuration/ConfigPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
@@ -90,6 +91,11 @@ const pluginMetadata = {
     {
       component: ClientEditPage,
       path: PLUGIN_BASE_APTH + '/client/edit:id',
+      permission: CLIENT_WRITE,
+    },
+    {
+      component: ClientUMADetailPage,
+      path: PLUGIN_BASE_APTH + '/client/uma/:id',
       permission: CLIENT_WRITE,
     },
     {

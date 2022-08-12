@@ -533,7 +533,7 @@ function ClientWizardForm({
                         >
                           {t('actions.apply')}
                         </Button>
-                      )}
+                    )}
                   </div>
                 </CardFooter>
                 <Button

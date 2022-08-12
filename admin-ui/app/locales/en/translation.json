@@ -272,7 +272,13 @@
     "userName": "User Name",
     "nickName": "Nick Name",
     "givenName": "Given Name",
-    "resources": "Resources"
+    "resources": "Resources",
+    "resourceId": "Resource id",
+    "iconUrl": "Icon URL",
+    "scopeSelection": "Scope Selection",
+    "scopeOrExpression": "Scope (or Expression)",
+    "associatedClient": "Associated Client",
+    "creationTime": "Creation Time"
   },
   "languages": {
     "french": "French",
