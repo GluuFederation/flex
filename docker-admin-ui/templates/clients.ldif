@@ -17,7 +17,6 @@ jansIdTknSignedRespAlg: RS256
 jansInclClaimsInIdTkn: false
 jansLogoutSessRequired: false
 jansPersistClntAuthzs: true
-jansRequireAuthTime: false
 jansRespTyp: code
 jansRptAsJwt: false
 jansPostLogoutRedirectURI: https://%(hostname)s/admin
@@ -53,7 +52,6 @@ jansPersistClntAuthzs: true
 jansLogoutSessRequired: false
 jansPostLogoutRedirectURI: https://%(hostname)s/admin/logout
 jansRedirectURI: https://%(hostname)s/admin
-jansRequireAuthTime: false
 jansRespTyp: code
 jansRptAsJwt: false
 jansScope: inum=F0C4,ou=scopes,o=jans

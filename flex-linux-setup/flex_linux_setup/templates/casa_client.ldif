@@ -20,7 +20,6 @@ jansPersistClntAuthzs: true
 jansRedirectURI: %(casa_redirect_uri)s
 jansPostLogoutRedirectURI: %(casa_redirect_logout_uri)s
 jansLogoutURI: %(casa_frontchannel_logout_uri)s
-jansRequireAuthTime: false
 jansRespTyp: code
 jansRptAsJwt: false
 jansScope: inum=F0C4,ou=scopes,o=jans
@@ -31,4 +30,3 @@ jansSignedRespAlg: RS256
 jansSubjectTyp: pairwise
 jansTknEndpointAuthMethod: client_secret_basic
 jansTrustedClnt: true
-
