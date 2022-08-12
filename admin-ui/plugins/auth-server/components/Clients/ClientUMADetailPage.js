@@ -79,20 +79,19 @@ function ClientUMADetailPage({
             <Col sm={9}>
               <RadioGroup
                 row
-                name="accessTokenAsJwt"
+                name="scopeSelection"
                 value={true}
-                onChange={(e) => console.log(e)}
               >
                 <FormControlLabel
                   value={true}
                   control={<Radio color="primary" />}
-                  label="Scope"
+                  label={t('field.scope')}
                   checked={true}
                 />
                 <FormControlLabel
                   value={false}
                   control={<Radio color="primary" />}
-                  label="Scope Expression"
+                  label={t('field.scopeExpression')}
                   checked={false}
                 />
               </RadioGroup>

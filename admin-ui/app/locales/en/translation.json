@@ -278,7 +278,9 @@
     "scopeSelection": "Scope Selection",
     "scopeOrExpression": "Scope (or Expression)",
     "associatedClient": "Associated Client",
-    "creationTime": "Creation Time"
+    "creationTime": "Creation Time",
+    "scope": "Scope",
+    "scopeExpression": "Scope Expression"
   },
   "languages": {
     "french": "French",

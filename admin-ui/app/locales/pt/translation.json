@@ -257,7 +257,9 @@
     "scopeSelection": "Seleção de Escopo",
     "scopeOrExpression": "Escopo (ou Expressão)",
     "associatedClient": "Cliente Associado",
-    "creationTime": "Tempo de Criação"
+    "creationTime": "Tempo de Criação",
+    "escopo": "Escopo",
+    "scopeExpression": "Expressão de escopo"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",

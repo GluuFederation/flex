@@ -258,7 +258,9 @@
     "scopeSelection": "Sélection de la portée",
     "scopeOrExpression": "Portée (ou Expression)",
     "associatedClient": "Client associé",
-    "creationTime": "Heure de création"
+    "creationTime": "Heure de création",
+    "portée": "Portée",
+    "scopeExpression": "Expression d'étendue"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
