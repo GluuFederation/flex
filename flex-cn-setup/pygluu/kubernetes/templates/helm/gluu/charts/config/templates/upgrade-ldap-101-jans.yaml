@@ -496,11 +496,6 @@ data:
       SUBSTR caseIgnoreSubstringsMatch
       SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
       X-ORIGIN 'Jans created attribute' )
-    attributeTypes: ( 1.3.6.1.4.1.48710.1.3.81 NAME 'jansRequireAuthTime'
-      DESC 'jans Require Authn Time'
-      EQUALITY booleanMatch
-      SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
-      X-ORIGIN 'Jans created attribute' )
     attributeTypes: ( 1.3.6.1.4.1.48710.1.3.82 NAME 'jansRespTyp'
       DESC 'jans Resp Typ'
       EQUALITY caseIgnoreMatch
@@ -1627,7 +1622,7 @@ data:
       SUP ( top )
       STRUCTURAL
       MUST ( objectclass )
-      MAY ( displayName $ description $ inum $ jansAppTyp $ jansClntIdIssuedAt $ jansClntSecret $ jansClntSecretExpAt $ exp $ del $ jansClntURI $ jansContact $ jansDefAcrValues $ jansDefMaxAge $ jansGrantTyp $ jansIdTknEncRespAlg $ jansIdTknEncRespEnc $ jansIdTknSignedRespAlg $ jansInitiateLoginURI $ jansJwksURI $ jansJwks $ jansLogoURI $ jansPolicyURI $ jansPostLogoutRedirectURI $ jansRedirectURI $ jansRegistrationAccessTkn $ jansReqObjSigAlg $ jansReqObjEncAlg $ jansReqObjEncEnc $ jansReqURI $ jansRequireAuthTime $ jansRespTyp $ jansScope $ jansClaim $ jansSectorIdentifierURI $ jansSignedRespAlg $ jansSubjectTyp $ jansTknEndpointAuthMethod $ jansTknEndpointAuthSigAlg $ jansTosURI $ jansTrustedClnt $ jansUsrInfEncRespAlg $ jansUsrInfEncRespEnc $ jansExtraConf $ jansClaimRedirectURI $ jansLastAccessTime $ jansLastLogonTime $ jansPersistClntAuthzs $ jansInclClaimsInIdTkn $ jansRefreshTknLife $ jansDisabled $ jansLogoutURI $ jansLogoutSessRequired $ jansdId $ jansAuthorizedOrigins $ tknBndCnf $ jansAccessTknAsJwt $ jansAccessTknSigAlg $ jansAccessTknLife $ jansSoftId $ jansSoftVer $ jansSoftStatement $ jansRptAsJwt $ jansAttrs $ jansBackchannelTknDeliveryMode $ jansBackchannelClntNotificationEndpoint $ jansBackchannelAuthnReqSigAlg $ jansBackchannelUsrCodeParameter )
+      MAY ( displayName $ description $ inum $ jansAppTyp $ jansClntIdIssuedAt $ jansClntSecret $ jansClntSecretExpAt $ exp $ del $ jansClntURI $ jansContact $ jansDefAcrValues $ jansDefMaxAge $ jansGrantTyp $ jansIdTknEncRespAlg $ jansIdTknEncRespEnc $ jansIdTknSignedRespAlg $ jansInitiateLoginURI $ jansJwksURI $ jansJwks $ jansLogoURI $ jansPolicyURI $ jansPostLogoutRedirectURI $ jansRedirectURI $ jansRegistrationAccessTkn $ jansReqObjSigAlg $ jansReqObjEncAlg $ jansReqObjEncEnc $ jansReqURI $ jansRespTyp $ jansScope $ jansClaim $ jansSectorIdentifierURI $ jansSignedRespAlg $ jansSubjectTyp $ jansTknEndpointAuthMethod $ jansTknEndpointAuthSigAlg $ jansTosURI $ jansTrustedClnt $ jansUsrInfEncRespAlg $ jansUsrInfEncRespEnc $ jansExtraConf $ jansClaimRedirectURI $ jansLastAccessTime $ jansLastLogonTime $ jansPersistClntAuthzs $ jansInclClaimsInIdTkn $ jansRefreshTknLife $ jansDisabled $ jansLogoutURI $ jansLogoutSessRequired $ jansdId $ jansAuthorizedOrigins $ tknBndCnf $ jansAccessTknAsJwt $ jansAccessTknSigAlg $ jansAccessTknLife $ jansSoftId $ jansSoftVer $ jansSoftStatement $ jansRptAsJwt $ jansAttrs $ jansBackchannelTknDeliveryMode $ jansBackchannelClntNotificationEndpoint $ jansBackchannelAuthnReqSigAlg $ jansBackchannelUsrCodeParameter )
       X-ORIGIN 'Jans created objectclass' )
     objectClasses: ( 1.3.6.1.4.1.48710.1.4.10 NAME 'jansScope'
       SUP ( top )
