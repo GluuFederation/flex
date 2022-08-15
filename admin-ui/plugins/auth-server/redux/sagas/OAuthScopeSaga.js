@@ -14,6 +14,7 @@ import {
   addScopeResponse,
   editScopeResponse,
   deleteScopeResponse,
+  getScopeByCreatorResponse,
 } from '../actions/ScopeActions'
 import {
   GET_SCOPES,
@@ -23,6 +24,7 @@ import {
   EDIT_SCOPE,
   DELETE_SCOPE,
   GET_SCOPE_BY_PATTERN,
+  GET_SCOPE_BY_CREATOR,
 } from '../actions/types'
 import { SCOPE } from '../audit/Resources'
 import {
@@ -33,10 +35,7 @@ import {
 } from '../../../../app/audit/UserActionType'
 import ScopeApi from '../api/ScopeApi'
 import { getClient } from 'Redux/api/base'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 
 const JansConfigApi = require('jans_config_api')
@@ -61,6 +60,21 @@ export function* getScopeByInum() {
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteScopeResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+export function* getScopeByCreator({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, SCOPE, {})
+    const scopeApi = yield* newFunction()
+    const data = yield call(scopeApi.getScopeByCreator, payload.item.inum)
+    yield put(getScopeByCreatorResponse(data))
+    yield call(postUserAction, audit)
+  } catch (e) {
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -155,6 +169,9 @@ export function* deleteAnScope({ payload }) {
 export function* watchGetScopeByInum() {
   yield takeEvery(GET_SCOPE_BY_INUM, getScopeByInum)
 }
+export function* watchGetScopeByCreator() {
+  yield takeEvery(GET_SCOPE_BY_CREATOR, getScopeByCreator)
+}
 export function* watchGetScopes() {
   yield takeLatest(GET_SCOPES, getScopes)
 }
@@ -183,5 +200,6 @@ export default function* rootSaga() {
     fork(watchAddScope),
     fork(watchEditScope),
     fork(watchDeleteScope),
+    fork(watchGetScopeByCreator),
   ])
 }

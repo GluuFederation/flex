@@ -104,6 +104,7 @@
     "id_token_encrypted_response_enc": "JWS enc for encryption",
     "id_token_signed_response_alg": "JWS alg for signing",
     "spontaneousScopes": "Spontaneous scopes",
+    "spontaneousScopesREGEX": "Spontaneous scope validation regex",
     "inactive": "InActive",
     "include_in_scim_extension": "Include In SCIM Extension?",
     "in_memory_configuration": "inMemoryConfiguration",
@@ -352,7 +353,8 @@
     "view_client_details": "View client details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
-    "no_scope_in_client": "No Scope data for this Client"
+    "no_scope_in_client": "No Scope data for this Client",
+    "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client"
   },
   "tooltips": {
     "add_attribute": "Add attribute",

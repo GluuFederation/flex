@@ -4,7 +4,10 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { editClient } from 'Plugins/auth-server/redux/actions/OIDCActions'
-import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import {
+  getScopes,
+  getScopeByCreator,
+} from 'Plugins/auth-server/redux/actions/ScopeActions'
 import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
 import { getScripts } from 'Redux/actions/InitActions'
 import { buildPayload } from 'Utils/PermChecker'
@@ -30,6 +33,7 @@ function ClientEditPage({
   const history = useHistory()
 
   useEffect(() => {
+    dispatch(getScopeByCreator({ inum: clientData.inum }))
     buildPayload(userAction, '', options)
     if (scopes.length < 1) {
       dispatch(getScopes(options))

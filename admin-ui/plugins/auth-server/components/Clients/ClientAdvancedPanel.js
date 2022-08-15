@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Container, FormGroup, InputGroup, CustomInput } from 'Components'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -8,6 +8,8 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
 import DatePicker from 'react-datepicker'
+import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
+import { useSelector } from 'react-redux'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
@@ -18,6 +20,26 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
   const [expirable, setExpirable] = useState(
     client.expirationDate ? client.expirationDate : false,
   )
+  const [scopesModal, setScopesModal] = useState(false)
+  const reduxScopes = useSelector((state) => state.scopeReducer.items)
+  const getPrintableScopes = () => {
+    let newScopes = []
+    for (let i in reduxScopes) {
+      if (reduxScopes[i].attributes.spontaneousClientScopes) {
+        let obj = {
+          id: reduxScopes[i].dn,
+          name: reduxScopes[i].attributes.spontaneousClientScopes[0],
+        }
+        newScopes.push(obj)
+      }
+    }
+    return newScopes
+  }
+
+  const handler = () => {
+    setScopesModal(!scopesModal)
+  }
+
   function handleExpirable() {
     setExpirable(!expirable)
   }
@@ -57,6 +79,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
   }
   return (
     <Container>
+      <ClientShowSpontaneousScopes handler={handler} isOpen={scopesModal} />
       <FormGroup row>
         <GluuLabel label="fields.subject_type" />
         <Col sm={9}>
@@ -75,13 +98,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
           </InputGroup>
         </Col>
       </FormGroup>
-      <GluuInputRow
-        label="fields.sector_uri"
-        name="sectorIdentifierUri"
-        formik={formik}
-        value={client.sectorIdentifierUri}
-        doc_category={DOC_CATEGORY}
-      />
+
       <GluuToogleRow
         name="persistClientAuthorizations"
         lsize={9}
@@ -102,15 +119,22 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
       />
       <GluuTypeAheadForDn
         name="spontaneousScopes"
-        label="fields.spontaneousScopes"
+        label="fields.spontaneousScopesREGEX"
         formik={formik}
-        value={getScopeMapping(client.spontaneousScopes, scopes)}
-        options={scopes}
+        value={getScopeMapping(client.spontaneousScopes, getPrintableScopes())}
+        options={getPrintableScopes()}
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
       ></GluuTypeAheadForDn>
-
+      {client.inum && (
+        <FormGroup row>
+          <GluuLabel label="fields.subject_type" />
+          <Col sm={9}>
+            <a onClick={handler}>View Current</a>
+          </Col>
+        </FormGroup>
+      )}
       <GluuInputRow
         label="fields.initiateLoginUri"
         name="initiateLoginUri"
