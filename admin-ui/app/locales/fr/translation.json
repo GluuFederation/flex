@@ -79,7 +79,8 @@
     "remove": "Supprimer",
     "test": "Test",
     "view": "Vue",
-    "yes": "Oui"
+    "yes": "Oui",
+    "close": "Fermer"
   },
   "fields": {
     "access_token_signing_alg": "Algorithme de signature de jeton d'accès",

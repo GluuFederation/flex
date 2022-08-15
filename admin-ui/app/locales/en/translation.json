@@ -21,7 +21,8 @@
     "test": "Test",
     "view": "View",
     "yes": "Yes",
-    "change_password": "Change Password"
+    "change_password": "Change Password",
+    "close": "Close"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
