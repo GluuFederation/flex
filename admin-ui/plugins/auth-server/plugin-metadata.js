@@ -18,6 +18,7 @@ import jsonReducer from './redux/reducers/JsonConfigReducer'
 import jwksReducer from './redux/reducers/JwksReducer'
 import acrReducer from './redux/reducers/AcrReducer'
 import loggingReducer from './redux/reducers/LoggingReducer'
+import umaResourceReducer from './redux/reducers/UMAResourceReducer'
 
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
@@ -25,6 +26,7 @@ import jsonSaga from './redux/sagas/JsonConfigSaga'
 import jwksSaga from './redux/sagas/JwksSaga'
 import acrSaga from './redux/sagas/AcrsSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
+import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 
 import {
   ACR_READ,
@@ -135,6 +137,7 @@ const pluginMetadata = {
     { name: 'jwksReducer', reducer: jwksReducer },
     { name: 'acrReducer', reducer: acrReducer },
     { name: 'loggingReducer', reducer: loggingReducer },
+    { name: 'umaResourceReducer', reducer: umaResourceReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -143,6 +146,7 @@ const pluginMetadata = {
     jwksSaga(),
     acrSaga(),
     loggingSaga(),
+    umaResourceSaga(),
   ],
 }
 

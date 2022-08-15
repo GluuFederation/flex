@@ -58,7 +58,10 @@ function ClientCibaParUmaPanel({ client, dispatch, scope, umaResources, scripts,
     if (!isEmpty(uma)) {
       setSelectedUMA(uma)
       setScopeExpression(JSON.parse(uma.scopeExpression)?.data)
-      dispatch(getScope(uma.inum))
+      console.log('uma', uma)
+      const getClientInum = uma?.clients[0].split(',')[0]
+      const inum = getClientInum.split('=')[1]
+      dispatch(getScope(inum))
     }
     
     setOpen(true)
@@ -284,7 +287,6 @@ const mapStateToProps = (state) => {
     clientData: state.oidcReducer.item,
     loading: state.oidcReducer.loading,
     scope: state.scopeReducer.item,
-    umaResources: state.oidcReducer.umaResources,
   }
 }
 export default connect(mapStateToProps)(ClientCibaParUmaPanel)

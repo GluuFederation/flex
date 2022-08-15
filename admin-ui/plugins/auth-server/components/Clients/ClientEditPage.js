@@ -3,7 +3,8 @@ import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { editClient, getUMAResourcesByClient } from 'Plugins/auth-server/redux/actions/OIDCActions'
+import { editClient } from 'Plugins/auth-server/redux/actions/OIDCActions'
+import { getUMAResourcesByClient } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
 import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
 import { getScripts } from 'Redux/actions/InitActions'
@@ -92,7 +93,7 @@ const mapStateToProps = (state) => {
     oidcConfiguration: state.oidcDiscoveryReducer.configuration,
     saveOperationFlag: state.oidcReducer.saveOperationFlag,
     errorInSaveOperationFlag: state.oidcReducer.errorInSaveOperationFlag,
-    umaResources: state.oidcReducer.umaResources,
+    umaResources: state.umaResourceReducer.items,
   }
 }
 export default connect(mapStateToProps)(ClientEditPage)

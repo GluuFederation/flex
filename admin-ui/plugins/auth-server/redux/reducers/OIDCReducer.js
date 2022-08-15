@@ -11,8 +11,6 @@ import {
   RESET,
   SEARCH_CLIENTS,
   SET_VIEW,
-  GET_UMA_RESOURCES,
-  GET_UMA_RESOURCES_RESPONSE
 } from '../actions/types'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
@@ -23,7 +21,6 @@ const INIT_STATE = {
   loading: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
-  umaResources: {},
 }
 
 const reducerName = 'oidcReducer'
@@ -125,19 +122,6 @@ export default function oidcReducer(state = INIT_STATE, action) {
         return {
           ...state,
           view: action.payload.view,
-          loading: false,
-        }
-      } else {
-        return handleDefault()
-      }
-    case GET_UMA_RESOURCES: 
-      return handleLoading()
-
-    case GET_UMA_RESOURCES_RESPONSE: 
-      if (action.payload.data) {
-        return {
-          ...state,
-          umaResources: action.payload.data,
           loading: false,
         }
       } else {

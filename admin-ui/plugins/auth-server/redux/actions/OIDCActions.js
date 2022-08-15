@@ -9,9 +9,7 @@ import {
   DELETE_CLIENT_RESPONSE,
   SET_CLIENT_ITEM,
   SET_VIEW,
-  SEARCH_CLIENTS,
-  GET_UMA_RESOURCES,
-  GET_UMA_RESOURCES_RESPONSE
+  SEARCH_CLIENTS
 } from './types'
 
 export const getOpenidClients = (action) => ({
@@ -66,14 +64,4 @@ export const setCurrentItem = (item) => ({
 export const viewOnly = (view) => ({
   type: SET_VIEW,
   payload: { view },
-})
-
-export const getUMAResourcesByClient = (inum) => ({
-  type: GET_UMA_RESOURCES,
-  payload: { inum },
-})
-
-export const getUMAResourcesByClientResponse = (data) => ({
-  type: GET_UMA_RESOURCES_RESPONSE,
-  payload: { data },
 })
