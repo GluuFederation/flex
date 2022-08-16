@@ -32,6 +32,7 @@ function ClientWizardForm({
   client_data,
   view_only,
   scopes,
+  scope,
   scripts,
   permissions,
   customOnSubmit,
@@ -425,6 +426,7 @@ function ClientWizardForm({
                             <ClientCibaParUmaPanel
                               client={client}
                               umaResources={umaResources}
+                              scope={scope}
                               scripts={scripts}
                               formik={formik}
                             />

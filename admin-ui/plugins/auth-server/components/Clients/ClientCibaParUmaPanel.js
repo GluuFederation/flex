@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Box from '@material-ui/core/Box'
 import { Link } from 'react-router-dom'
 import {
@@ -25,14 +25,12 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientCibaParUmaPanel({ client, dispatch, scope, umaResources, scripts, formik }) {
+function ClientCibaParUmaPanel({ client, scope, umaResources, scripts, formik }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const claim_uri_id = 'claim_uri_id'
-
   const cibaDeliveryModes = ['poll', 'push', 'ping']
-
   const claimRedirectURI = []
 
   scripts = scripts
@@ -42,9 +40,7 @@ function ClientCibaParUmaPanel({ client, dispatch, scope, umaResources, scripts,
   function uriValidator(uri) {
     return uri
   }
-  
-  const [softwareSection, setSoftwareSection] = useState(false)
-  const [cibaSection, setCibaSection] = useState(false)
+
   const [open, setOpen] = useState(false)
   const [selectedUMA, setSelectedUMA] = useState()
   const [scopeExpression, setScopeExpression] = useState()
@@ -58,14 +54,12 @@ function ClientCibaParUmaPanel({ client, dispatch, scope, umaResources, scripts,
     if (!isEmpty(uma)) {
       setSelectedUMA(uma)
       setScopeExpression(JSON.parse(uma.scopeExpression)?.data)
-      console.log('uma', uma)
-      const getClientInum = uma?.clients[0].split(',')[0]
-      const inum = getClientInum.split('=')[1]
-      dispatch(getScope(inum))
     }
     
     setOpen(true)
   }
+
+  console.log('scope', scope)
 
   return (
     <Container>
@@ -186,7 +180,6 @@ function ClientCibaParUmaPanel({ client, dispatch, scope, umaResources, scripts,
         </ModalHeader>
         <ModalBody>
           <Card style={applicationStyle.mainCard}>
-            <h2>UMA Resource Detail</h2>
             <FormGroup row>
               <GluuLabel label={t('fields.resourceId')} size={3} />
               <Col sm={9} className="top-5">
@@ -286,7 +279,6 @@ const mapStateToProps = (state) => {
   return {
     clientData: state.oidcReducer.item,
     loading: state.oidcReducer.loading,
-    scope: state.scopeReducer.item,
   }
 }
 export default connect(mapStateToProps)(ClientCibaParUmaPanel)
