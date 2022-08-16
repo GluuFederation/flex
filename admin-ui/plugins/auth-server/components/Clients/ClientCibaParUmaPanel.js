@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState } from 'react'
 import Box from '@material-ui/core/Box'
 import { Link } from 'react-router-dom'
 import {
@@ -20,14 +20,14 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
-import { ThemeContext } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { deleteUMAResource } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import { buildPayload } from 'Utils/PermChecker'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
+function ClientCibaParUmaPanel({ client, dispatch, umaResources, scripts, formik }) {
   const { t } = useTranslation()
-  const theme = useContext(ThemeContext)
-  const selectedTheme = theme.state.theme
   const claim_uri_id = 'claim_uri_id'
   const cibaDeliveryModes = ['poll', 'push', 'ping']
   const claimRedirectURI = []
@@ -44,6 +44,7 @@ function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
   const [selectedUMA, setSelectedUMA] = useState()
   const [scopeExpression, setScopeExpression] = useState()
   const [showScopeSection, setShowScopeSection] = useState('scope')
+  const [confirmModal, setConfirmModal] = useState(false)
 
   const rptScripts = scripts
     .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
@@ -53,10 +54,23 @@ function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
   const handleUMADetail = (uma) => {
     if (!isEmpty(uma)) {
       setSelectedUMA(uma)
-      setScopeExpression(JSON.parse(uma.scopeExpression)?.data)
+      if (!isEmpty(uma.scopeExpression)) {
+        setScopeExpression(JSON.parse(uma.scopeExpression)?.data)
+      }
     }
     
     setOpen(true)
+  }
+
+  const handleDeleteUMA = (uma) => {
+    setSelectedUMA(uma)
+    setConfirmModal(true)
+  }
+
+  const onDeletionConfirmed = (message) => {
+    buildPayload({}, message, selectedUMA.id)
+    dispatch(deleteUMAResource(selectedUMA.id))
+    setConfirmModal(false)
   }
 
   return (
@@ -156,10 +170,24 @@ function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
         <Col sm={9}>
           {umaResources.length > 0 && umaResources?.map(uma => {
             return (
-              <Box key={uma.id}>
+              <Box key={uma.id} className="mb-2">
                 <Box display="flex">
-                  <Box className="common-link cursor-pointer" onClick={() => handleUMADetail(uma)}>
-                    {uma.id}
+                  <Box width="40%">
+                    <a href="javascript:;" className="common-link cursor-pointer" onClick={() => handleUMADetail(uma)}>
+                      {uma.id}
+                    </a>
+                  </Box>
+                  <Box width="50%" className="text-dark">
+                    {uma.name}
+                  </Box>
+                  <Box width="10%">
+                    <Button
+                      color="danger"
+                      size="sm"
+                      onClick={() => handleDeleteUMA(uma)}
+                    >
+                      <span className="font-weight-bold">X</span>
+                    </Button>
                   </Box>
                 </Box>
               </Box>
@@ -247,7 +275,7 @@ function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
-                    {!isEmpty(scopeExpression) && scopeExpression.map((expression, key) => (
+                    {!isEmpty(scopeExpression) ? scopeExpression.map((expression, key) => (
                       <Box key={key}>
                         <Box display="flex">
                           <a href={expression} target="_blank" alt="scope expression" className="common-link" rel="noreferrer">
@@ -255,7 +283,7 @@ function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
                           </a>
                         </Box>
                       </Box>
-                    ))}
+                    )) : '-'}
                   </React.Fragment>
                 )}
               </Col>
@@ -289,14 +317,23 @@ function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
         </ModalBody>
         <ModalFooter>
           <Button
-            color={`primary-${selectedTheme}`}
-            style={applicationStyle.buttonStyle}
-            onClick={() => setOpen(!open)}
+            color="danger"
+            onClick={() => handleDeleteUMA(selectedUMA)}
           >
-            {t('actions.close')}
+            {t('actions.delete')}
           </Button>
         </ModalFooter>
       </Modal>
+      {selectedUMA && (
+        <GluuDialog
+          row={selectedUMA}
+          name={selectedUMA?.name}
+          handler={() => setConfirmModal(!confirmModal)}
+          modal={confirmModal}
+          subject="uma resources"
+          onAccept={onDeletionConfirmed}
+        />
+      )}
     </Container>
   )
 }
@@ -308,5 +345,5 @@ const mapStateToProps = (state) => {
     scope: state.scopeReducer.item,
   }
 }
-export default connect(mapStateToProps)(ClientCibaParUmaPanel)
 
+export default connect(mapStateToProps)(ClientCibaParUmaPanel)

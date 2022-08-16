@@ -79,7 +79,8 @@
     "test": "Teste",
     "view": "Visualizar",
     "yes": "Sim",
-    "close": "Fechar"
+    "close": "Fechar",
+    "delete": "Deletar"
   },
   "fields": {
     "access_token_signing_alg": "Algoritmo de assinatura de token de acesso",

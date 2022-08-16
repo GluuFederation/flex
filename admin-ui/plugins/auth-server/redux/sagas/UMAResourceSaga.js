@@ -4,11 +4,11 @@ import {
   addAdditionalData,
 } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
-import { getUMAResourcesByClientResponse } from '../actions/UMAResourceActions'
+import { getUMAResourcesByClientResponse, deleteUMAResourceResponse } from '../actions/UMAResourceActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { UMA } from '../audit/Resources'
-import { FETCH } from '../../../../app/audit/UserActionType'
-import { GET_UMA_RESOURCES } from '../actions/types'
+import { FETCH, DELETION } from '../../../../app/audit/UserActionType'
+import { DELETE_UMA_RESOURCE, GET_UMA_RESOURCES } from '../actions/types'
 import UMAResourceApi from '../api/UMAResourceApi'
 import { getClient } from 'Redux/api/base'
 const JansConfigApi = require('jans_config_api')
@@ -51,12 +51,34 @@ export function* getUMAResourcesByClient({ payload }) {
   }
 }
 
+export function* deleteUMAResourceById({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, DELETION, UMA, payload)
+    const api = yield* newFunction()
+    yield call(api.deleteUMAResourceById, payload.action.action_data)
+    yield put(deleteUMAResourceResponse(payload.action.action_data))
+    yield call(postUserAction, audit)
+  } catch (e) {
+    yield put(deleteUMAResourceResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
 export function* getUMAResourcesByClientWatcher() {
   yield takeLatest(GET_UMA_RESOURCES, getUMAResourcesByClient)
+}
+
+export function* deleteUMAResourceByIdWatcher() {
+  yield takeLatest(DELETE_UMA_RESOURCE, deleteUMAResourceById)
 }
 
 export default function* rootSaga() {
   yield all([
     fork(getUMAResourcesByClientWatcher),
+    fork(deleteUMAResourceByIdWatcher),
   ])
 }

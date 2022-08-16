@@ -80,7 +80,8 @@
     "test": "Test",
     "view": "Vue",
     "yes": "Oui",
-    "close": "Fermer"
+    "close": "Fermer",
+    "delete": "Supprimez"
   },
   "fields": {
     "access_token_signing_alg": "Algorithme de signature de jeton d'accès",

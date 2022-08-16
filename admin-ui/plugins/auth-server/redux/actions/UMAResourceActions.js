@@ -1,6 +1,8 @@
 import {
   GET_UMA_RESOURCES,
-  GET_UMA_RESOURCES_RESPONSE
+  GET_UMA_RESOURCES_RESPONSE,
+  DELETE_UMA_RESOURCE,
+  DELETE_UMA_RESOURCE_RESPONSE
 } from './types'
 
 export const getUMAResourcesByClient = (inum) => ({
@@ -10,5 +12,15 @@ export const getUMAResourcesByClient = (inum) => ({
 
 export const getUMAResourcesByClientResponse = (data) => ({
   type: GET_UMA_RESOURCES_RESPONSE,
+  payload: { data },
+})
+
+export const deleteUMAResource = (action) => ({
+  type: DELETE_UMA_RESOURCE,
+  payload: { action },
+})
+
+export const deleteUMAResourceResponse = (data) => ({
+  type: DELETE_UMA_RESOURCE_RESPONSE,
   payload: { data },
 })

@@ -1,7 +1,9 @@
 import {
   RESET,
   GET_UMA_RESOURCES,
-  GET_UMA_RESOURCES_RESPONSE
+  GET_UMA_RESOURCES_RESPONSE,
+  DELETE_UMA_RESOURCE,
+  DELETE_UMA_RESOURCE_RESPONSE,
 } from '../actions/types'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
@@ -28,6 +30,19 @@ export default function UMAResourceReducer(state = INIT_STATE, action) {
       } else {
         return handleDefault()
       }
+
+    case DELETE_UMA_RESOURCE:
+      return handleLoading()
+
+    case DELETE_UMA_RESOURCE_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: state.items.filter(({ id }) => id !== action.payload.data),
+          loading: false,
+        }
+      }
+      return handleDefault()
 
     case RESET:
       return {
