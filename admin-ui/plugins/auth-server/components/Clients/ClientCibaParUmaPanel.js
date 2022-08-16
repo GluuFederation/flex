@@ -263,15 +263,20 @@ function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
             <FormGroup row>
               <GluuLabel label={t('fields.associatedClient')} size={3} />
               <Col sm={9} className="top-5">
-                {!isEmpty(selectedUMA) && selectedUMA.clients?.map((client, key) => (
-                  <Box key={key}>
-                    <Box display="flex">
-                      <Link to={`/auth-server/client/edit:${client.substring(0, 4)}`} className="common-link">
-                        {client}
-                      </Link>
+                {!isEmpty(selectedUMA) && selectedUMA.clients?.map((client, key) => {
+                  const getInum = client.split(',')[0]
+                  const inum = getInum.length > 0 ? getInum.split('=')[1] : null
+
+                  return (
+                    <Box key={key}>
+                      <Box display="flex">
+                        <Link to={`/auth-server/client/edit:${inum}`} className="common-link">
+                          {client}
+                        </Link>
+                      </Box>
                     </Box>
-                  </Box>
-                ))}
+                  )}
+                )}
               </Col>
             </FormGroup>
             <FormGroup row>
