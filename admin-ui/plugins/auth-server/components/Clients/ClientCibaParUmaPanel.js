@@ -18,14 +18,13 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
-import { getScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import { ThemeContext } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientCibaParUmaPanel({ client, scope, umaResources, scripts, formik }) {
+function ClientCibaParUmaPanel({ client, umaResources, scripts, formik }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -44,6 +43,7 @@ function ClientCibaParUmaPanel({ client, scope, umaResources, scripts, formik })
   const [open, setOpen] = useState(false)
   const [selectedUMA, setSelectedUMA] = useState()
   const [scopeExpression, setScopeExpression] = useState()
+  const [showScopeSection, setShowScopeSection] = useState('scope')
 
   const rptScripts = scripts
     .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
@@ -58,8 +58,6 @@ function ClientCibaParUmaPanel({ client, scope, umaResources, scripts, formik })
     
     setOpen(true)
   }
-
-  console.log('scope', scope)
 
   return (
     <Container>
@@ -195,11 +193,9 @@ function ClientCibaParUmaPanel({ client, scope, umaResources, scripts, formik })
             <FormGroup row>
               <GluuLabel label={t('fields.iconUrl')} size={3} />
               <Col sm={9} className="top-5">
-                {!isEmpty(scope) && (
-                  <a href={scope?.iconUrl} target="_blank" alt="iconUrl" className="common-link" rel="noreferrer">
-                    {scope?.iconUrl}
-                  </a>
-                )}
+                <a href={selectedUMA?.iconUri} target="_blank" alt="iconUrl" className="common-link" rel="noreferrer">
+                  {selectedUMA?.iconUri || '-'}
+                </a>
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -208,45 +204,70 @@ function ClientCibaParUmaPanel({ client, scope, umaResources, scripts, formik })
                 <RadioGroup
                   row
                   name="scopeSelection"
-                  value={true}
+                  value={showScopeSection}
+                  onChange={(e) => setShowScopeSection(e.target.value)}
                 >
                   <FormControlLabel
-                    value={true}
+                    value={'scope'}
                     control={<Radio color="primary" />}
                     label={t('fields.scope')}
-                    checked={true}
+                    checked={showScopeSection === 'scope'}
                   />
                   <FormControlLabel
-                    value={false}
+                    value={'expression'}
                     control={<Radio color="primary" />}
                     label={t('fields.scopeExpression')}
-                    checked={false}
+                    checked={showScopeSection === 'expression'}
                   />
                 </RadioGroup>
               </Col>
             </FormGroup>
             <FormGroup row>
-              <GluuLabel label={t('fields.scopeSelection')} size={3} />
+              <GluuLabel label={t('fields.scopeOrExpression')} size={3} />
               <Col sm={9} className="top-5">
-                {!isEmpty(scopeExpression) && scopeExpression.map((expression, key) => (
-                  <Box key={key}>
-                    <Box display="flex">
-                      <a href={expression} target="_blank" alt="scope expression" className="common-link" rel="noreferrer">
-                        {expression}
-                      </a>
-                    </Box>
-                  </Box>
-                ))}
+                {showScopeSection === 'scope' ? (
+                  <React.Fragment>
+                    {!isEmpty(selectedUMA) && selectedUMA?.scopes?.map((scope, key) => {
+                      const getInum = scope.split(',')[0]
+                      const inum = getInum.length > 0 ? getInum.split('=')[1] : null
+
+                      if (inum) {
+                        return (
+                          <Box key={key}>
+                            <Box display="flex">
+                              <Link to={`/auth-server/scope/edit:${inum}`} className="common-link">
+                                {scope}
+                              </Link>
+                            </Box>
+                          </Box>
+                        )
+                      }
+                      return '-'
+                    })}
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    {!isEmpty(scopeExpression) && scopeExpression.map((expression, key) => (
+                      <Box key={key}>
+                        <Box display="flex">
+                          <a href={expression} target="_blank" alt="scope expression" className="common-link" rel="noreferrer">
+                            {expression}
+                          </a>
+                        </Box>
+                      </Box>
+                    ))}
+                  </React.Fragment>
+                )}
               </Col>
             </FormGroup>
             <FormGroup row>
               <GluuLabel label={t('fields.associatedClient')} size={3} />
               <Col sm={9} className="top-5">
-                {!isEmpty(scope) && scope.clients?.map((client, key) => (
+                {!isEmpty(selectedUMA) && selectedUMA.clients?.map((client, key) => (
                   <Box key={key}>
                     <Box display="flex">
-                      <Link to={`/auth-server/client/edit:${client.inum.substring(0, 4)}`} className="common-link">
-                        {client.inum}
+                      <Link to={`/auth-server/client/edit:${client.substring(0, 4)}`} className="common-link">
+                        {client}
                       </Link>
                     </Box>
                   </Box>
@@ -279,6 +300,7 @@ const mapStateToProps = (state) => {
   return {
     clientData: state.oidcReducer.item,
     loading: state.oidcReducer.loading,
+    scope: state.scopeReducer.item,
   }
 }
 export default connect(mapStateToProps)(ClientCibaParUmaPanel)

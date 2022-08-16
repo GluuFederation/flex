@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { editClient } from 'Plugins/auth-server/redux/actions/OIDCActions'
 import { getUMAResourcesByClient } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
-import { getScopes, getScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
 import { getScripts } from 'Redux/actions/InitActions'
 import { buildPayload } from 'Utils/PermChecker'
@@ -17,7 +17,6 @@ function ClientEditPage({
   clientData,
   view_only,
   scopes,
-  scope,
   scripts,
   loading,
   permissions,
@@ -43,9 +42,6 @@ function ClientEditPage({
     }
     if (isEmpty(umaResources)) {
       dispatch(getUMAResourcesByClient(clientData?.inum))
-    }
-    if (isEmpty(scope)) {
-      dispatch(getScope(clientData?.inum))
     }
     dispatch(getOidcDiscovery())
   }, [])
@@ -77,7 +73,6 @@ function ClientEditPage({
         client_data={clientData}
         view_only={view_only}
         scopes={scopes}
-        scope={scope}
         scripts={scripts}
         permissions={permissions}
         oidcConfiguration={oidcConfiguration}
@@ -93,7 +88,6 @@ const mapStateToProps = (state) => {
     view_only: state.oidcReducer.view,
     loading: state.oidcReducer.loading,
     scopes: state.scopeReducer.items,
-    scope: state.scopeReducer.item,
     scripts: state.initReducer.scripts,
     permissions: state.authReducer.permissions,
     oidcConfiguration: state.oidcDiscoveryReducer.configuration,
