@@ -181,12 +181,9 @@ function ClientWizardForm({
     requirePar: client.attributes.requirePar || false,
     updateTokenScriptDns: client.attributes.updateTokenScriptDns || [],
     ropcScripts: client.attributes.ropcScripts || [],
-    jansAuthSignedRespAlg:
-      client.attributes.jansAuthSignedRespAlg || '',
-    jansAuthEncRespAlg:
-      client.attributes.jansAuthEncRespAlg || '',
-    jansAuthEncRespEnc:
-      client.attributes.jansAuthEncRespEnc || '',
+    jansAuthSignedRespAlg: client.attributes.jansAuthSignedRespAlg || '',
+    jansAuthEncRespAlg: client.attributes.jansAuthEncRespAlg || '',
+    jansAuthEncRespEnc: client.attributes.jansAuthEncRespEnc || '',
     postAuthnScripts: client.attributes.postAuthnScripts || [],
     rptClaimsScripts: client.attributes.rptClaimsScripts || [],
     additionalAudience: client.attributes.additionalAudience,
@@ -242,16 +239,15 @@ function ClientWizardForm({
             values[ATTRIBUTE].redirectUrisRegex = values.redirectUrisRegex
             values[ATTRIBUTE].parLifetime = values.parLifetime
             values[ATTRIBUTE].requirePar = values.requirePar
-            values[ATTRIBUTE].jansDefaultPromptLogin = values.jansDefaultPromptLogin
+            values[ATTRIBUTE].jansDefaultPromptLogin =
+              values.jansDefaultPromptLogin
             values[ATTRIBUTE].authorizedAcrValues = values.authorizedAcrValues
             values[ATTRIBUTE].updateTokenScriptDns = values.updateTokenScriptDns
             values[ATTRIBUTE].ropcScripts = values.ropcScripts
             values[ATTRIBUTE].jansAuthSignedRespAlg =
               values.jansAuthSignedRespAlg
-            values[ATTRIBUTE].jansAuthEncRespAlg =
-              values.jansAuthEncRespAlg
-            values[ATTRIBUTE].jansAuthEncRespEnc =
-              values.jansAuthEncRespEnc
+            values[ATTRIBUTE].jansAuthEncRespAlg = values.jansAuthEncRespAlg
+            values[ATTRIBUTE].jansAuthEncRespEnc = values.jansAuthEncRespEnc
             customOnSubmit(JSON.parse(JSON.stringify(values)))
           }}
         >

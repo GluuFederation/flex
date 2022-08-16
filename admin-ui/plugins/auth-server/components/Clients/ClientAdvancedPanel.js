@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Col, Container, FormGroup, InputGroup, CustomInput } from 'Components'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
@@ -21,20 +21,6 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
     client.expirationDate ? client.expirationDate : false,
   )
   const [scopesModal, setScopesModal] = useState(false)
-  const reduxScopes = useSelector((state) => state.scopeReducer.items)
-  const getPrintableScopes = () => {
-    let newScopes = []
-    for (let i in reduxScopes) {
-      if (reduxScopes[i].attributes.spontaneousClientScopes) {
-        let obj = {
-          id: reduxScopes[i].dn,
-          name: reduxScopes[i].attributes.spontaneousClientScopes[0],
-        }
-        newScopes.push(obj)
-      }
-    }
-    return newScopes
-  }
 
   const handler = () => {
     setScopesModal(!scopesModal)
@@ -121,17 +107,24 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         name="spontaneousScopes"
         label="fields.spontaneousScopesREGEX"
         formik={formik}
-        value={getScopeMapping(client.spontaneousScopes, getPrintableScopes())}
-        options={getPrintableScopes()}
+        value={formik.values.spontaneousScopes || []}
+        options={formik.values.spontaneousScopes || []}
+        haveLabelKey={false}
+        allowNew={true}
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
       ></GluuTypeAheadForDn>
       {client.inum && (
         <FormGroup row>
-          <GluuLabel label="fields.subject_type" />
+          <GluuLabel label="fields.spontaneousScopes" />
           <Col sm={9}>
-            <a onClick={handler}>View Current</a>
+            <a
+              onClick={handler}
+              style={{ textDecoration: 'underline', cursor: 'pointer' }}
+            >
+              View Current
+            </a>
           </Col>
         </FormGroup>
       )}

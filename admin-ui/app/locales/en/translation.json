@@ -784,7 +784,8 @@
       "keepClientAuthorizationAfterExpiration": "Keep Client Authorization After Expiration",
       "allowSpontaneousScopes": "Allow Spontaneous Scopes",
       "backchannelLogoutSessionRequired": "Back channel Logout Session Required",
-      "frontChannelLogoutSessionRequired": "Front Channel Logout Session Required"
+      "frontChannelLogoutSessionRequired": "Front Channel Logout Session Required",
+      "authorizedAcrValues": "Allowed ACRs"
     },
     "scope": {
       "inum": "Inum",

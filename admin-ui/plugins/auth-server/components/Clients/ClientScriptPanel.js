@@ -41,10 +41,10 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
   return (
     <Container>
       <GluuTypeAheadForDn
-        name="spontaneousScopes"
+        name="spontaneousScopeScriptDns"
         label="fields.spontaneous_scopes"
         formik={formik}
-        value={client.spontaneousScopes}
+        value={client.spontaneousScopeScriptDns}
         options={scopes}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
