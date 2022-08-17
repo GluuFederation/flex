@@ -48,7 +48,7 @@ export default function userReducer(state = INIT_STATE, action) {
     case CHANGE_USERS_PASSWORD_RESPONSE:
       return {
         ...state,
-        loading: true,
+        loading: false,
       }
     case UPDATE_USER:
       return {
