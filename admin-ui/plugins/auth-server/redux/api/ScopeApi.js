@@ -19,6 +19,13 @@ export default class ScopeApi {
       })
     })
   }
+  getScopeByCreator = async (inum) => {
+    return new Promise((resolve, reject) => {
+      this.api.getScopeByCreator(inum, (error, data) => {
+        this.handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
 
   getScope = async (id) => {
     return new Promise((resolve, reject) => {

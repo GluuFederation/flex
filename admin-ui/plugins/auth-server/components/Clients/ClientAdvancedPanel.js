@@ -8,6 +8,8 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
 import DatePicker from 'react-datepicker'
+import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
+import { useSelector } from 'react-redux'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
@@ -18,6 +20,12 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
   const [expirable, setExpirable] = useState(
     client.expirationDate ? client.expirationDate : false,
   )
+  const [scopesModal, setScopesModal] = useState(false)
+
+  const handler = () => {
+    setScopesModal(!scopesModal)
+  }
+
   function handleExpirable() {
     setExpirable(!expirable)
   }
@@ -57,6 +65,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
   }
   return (
     <Container>
+      <ClientShowSpontaneousScopes handler={handler} isOpen={scopesModal} />
       <FormGroup row>
         <GluuLabel label="fields.subject_type" />
         <Col sm={9}>
@@ -75,13 +84,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
           </InputGroup>
         </Col>
       </FormGroup>
-      <GluuInputRow
-        label="fields.sector_uri"
-        name="sectorIdentifierUri"
-        formik={formik}
-        value={client.sectorIdentifierUri}
-        doc_category={DOC_CATEGORY}
-      />
+
       <GluuToogleRow
         name="persistClientAuthorizations"
         lsize={9}
@@ -102,15 +105,29 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
       />
       <GluuTypeAheadForDn
         name="spontaneousScopes"
-        label="fields.spontaneousScopes"
+        label="fields.spontaneousScopesREGEX"
         formik={formik}
-        value={getScopeMapping(client.spontaneousScopes, scopes)}
-        options={scopes}
+        value={formik.values.spontaneousScopes || []}
+        options={formik.values.spontaneousScopes || []}
+        haveLabelKey={false}
+        allowNew={true}
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
       ></GluuTypeAheadForDn>
-
+      {client.inum && (
+        <FormGroup row>
+          <GluuLabel label="fields.spontaneousScopes" />
+          <Col sm={9}>
+            <a
+              onClick={handler}
+              style={{ textDecoration: 'underline', cursor: 'pointer' }}
+            >
+              View Current
+            </a>
+          </Col>
+        </FormGroup>
+      )}
       <GluuInputRow
         label="fields.initiateLoginUri"
         name="initiateLoginUri"

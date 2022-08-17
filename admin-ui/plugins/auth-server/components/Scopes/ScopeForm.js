@@ -407,7 +407,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                           defaultValue={
                             ['CLIENT', 'USER'].includes(scope.creatorType)
                               ? scope.creatorType +
-                                  '(' +
+                                  ' (' +
                                   scope.creatorId +
                                   ')' || ''
                               : scope.creatorType

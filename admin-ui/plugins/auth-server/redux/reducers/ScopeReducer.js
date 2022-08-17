@@ -14,6 +14,7 @@ import {
   GET_SCOPE_BY_PATTERN,
   GET_SCOPE_BY_PATTERN_RESPONSE,
   SEARCH_SCOPES,
+  GET_SCOPE_BY_CREATOR_RESPONSE,
 } from '../actions/types'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
@@ -22,6 +23,7 @@ const INIT_STATE = {
   loading: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
+  scopesByCreator: [],
 }
 
 const reducerName = 'scopeReducer'
@@ -120,6 +122,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
 
+    case GET_SCOPE_BY_CREATOR_RESPONSE:
+      return {
+        ...state,
+        scopesByCreator: action.payload.data,
+      }
     case SET_ITEM:
       return {
         ...state,

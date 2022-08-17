@@ -13,6 +13,8 @@ import {
   GET_SCOPE_BY_PATTERN,
   GET_SCOPE_BY_PATTERN_RESPONSE,
   SEARCH_SCOPES,
+  GET_SCOPE_BY_CREATOR,
+  GET_SCOPE_BY_CREATOR_RESPONSE,
 } from './types'
 
 export const getScopes = (action) => ({
@@ -83,4 +85,14 @@ export const deleteScopeResponse = (data) => ({
 export const setCurrentItem = (item) => ({
   type: SET_ITEM,
   payload: { item },
+})
+
+export const getScopeByCreator = (item) => ({
+  type: GET_SCOPE_BY_CREATOR,
+  payload: { item },
+})
+
+export const getScopeByCreatorResponse = (data) => ({
+  type: GET_SCOPE_BY_CREATOR_RESPONSE,
+  payload: { data },
 })

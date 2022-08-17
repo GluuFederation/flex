@@ -162,6 +162,13 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration }) => {
           </InputGroup>
         </Col>
       </FormGroup>
+      <GluuInputRow
+        label="fields.sector_uri"
+        name="sectorIdentifierUri"
+        formik={formik}
+        value={client.sectorIdentifierUri}
+        doc_category={DOC_CATEGORY}
+      />
       <GluuTypeAhead
         name="grantTypes"
         label="fields.grant_types"
