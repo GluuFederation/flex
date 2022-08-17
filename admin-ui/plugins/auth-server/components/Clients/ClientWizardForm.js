@@ -482,7 +482,6 @@ function ClientWizardForm({
                               client={client}
                               formik={formik}
                               scripts={scripts}
-                              scopes={scopes}
                             />
                           </div>
                         )
