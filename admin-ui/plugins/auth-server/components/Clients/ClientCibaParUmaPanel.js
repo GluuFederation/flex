@@ -22,11 +22,10 @@ import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { deleteUMAResource } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
-import { getScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientCibaParUmaPanel({ client, dispatch, umaResources, scope, scripts, formik }) {
+function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts, formik }) {
   const { t } = useTranslation()
   const claim_uri_id = 'claim_uri_id'
   const cibaDeliveryModes = ['poll', 'push', 'ping']
@@ -45,6 +44,7 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scope, scripts,
   const [scopeExpression, setScopeExpression] = useState()
   const [showScopeSection, setShowScopeSection] = useState('scope')
   const [confirmModal, setConfirmModal] = useState(false)
+  const [scopeList, setScopeList] = useState([])
 
   const rptScripts = scripts
     .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
@@ -78,13 +78,15 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scope, scripts,
 
   useEffect(() => {
     if(!isEmpty(selectedUMA) && !isEmpty(selectedUMA.scopes) && selectedUMA.scopes?.length > 0) {
-      selectedUMA.scopes.map(scope => {
+      const list = selectedUMA.scopes.map(scope => {
         // scope data example [string] inum=9bc94613-f678-4bb9-a19d-ed026b492247,ou=scopes,o=jans
         const getInum = scope.split(',')[0]
-        const inum = getInum.split('=')[1]
+        const inumFromUMA = getInum.split('=')[1]
 
-        dispatch(getScope(inum))
+        return scopes.find(({ inum }) => inum === inumFromUMA)
       })
+
+      setScopeList(list)
     }
   }, [selectedUMA])
 
@@ -270,22 +272,16 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scope, scripts,
               <Col sm={9} className="top-5">
                 {showScopeSection === 'scope' ? (
                   <React.Fragment>
-                    {!isEmpty(selectedUMA) && selectedUMA?.scopes?.map((scopeString, key) => {
-                      const getInum = scopeString.split(',')[0]
-                      const inum = getInum.length > 0 ? getInum.split('=')[1] : null
-
-                      if (!isEmpty(scope[inum])) {
-                        return (
-                          <Box key={key}>
-                            <Box display="flex">
-                              <Link to={`/auth-server/scope/edit:${scope[inum]?.inum}`} className="common-link">
-                                {scope[inum]?.displayName}
-                              </Link>
-                            </Box>
+                    {!isEmpty(scopeList) && scopeList?.map((scope, key) => {
+                      return (
+                        <Box key={key}>
+                          <Box display="flex">
+                            <Link to={`/auth-server/scope/edit:${scope.inum}`} className="common-link">
+                              {scope.displayName}
+                            </Link>
                           </Box>
-                        )
-                      }
-                      return '-'
+                        </Box>
+                      )
                     })}
                   </React.Fragment>
                 ) : (
@@ -357,7 +353,6 @@ const mapStateToProps = (state) => {
   return {
     clientData: state.oidcReducer.item,
     loading: state.oidcReducer.loading,
-    scope: state.scopeReducer.item,
   }
 }
 

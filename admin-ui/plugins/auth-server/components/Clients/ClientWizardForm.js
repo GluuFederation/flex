@@ -425,6 +425,7 @@ function ClientWizardForm({
                             <ClientCibaParUmaPanel
                               client={client}
                               umaResources={umaResources}
+                              scopes={scopes}
                               scripts={scripts}
                               formik={formik}
                             />

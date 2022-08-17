@@ -121,7 +121,11 @@ export default function scopeReducer(state = INIT_STATE, action) {
       }
 
     case SET_ITEM:
-      return setItem()
+      return {
+        ...state,
+        item: action.payload.item,
+        loading: false,
+      }
     case RESET:
       return {
         ...state,
@@ -130,18 +134,6 @@ export default function scopeReducer(state = INIT_STATE, action) {
       }
     default:
       return handleDefault()
-  }
-  function setItem() {
-    const currentItem = state.item
-    const newItem = { ...currentItem, [action.payload.inum]: action.payload.item }
-
-    console.log('newItem', newItem)
-
-    return {
-      ...state,
-      item: newItem,
-      loading: false,
-    }
   }
   function handleLoading() {
     return {
