@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Box from '@material-ui/core/Box'
 import { Link } from 'react-router-dom'
 import {
@@ -22,11 +22,11 @@ import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { deleteUMAResource } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
+import { getScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import { buildPayload } from 'Utils/PermChecker'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientCibaParUmaPanel({ client, dispatch, umaResources, scripts, formik }) {
+function ClientCibaParUmaPanel({ client, dispatch, umaResources, scope, scripts, formik }) {
   const { t } = useTranslation()
   const claim_uri_id = 'claim_uri_id'
   const cibaDeliveryModes = ['poll', 'push', 'ping']
@@ -68,10 +68,25 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scripts, formik
   }
 
   const onDeletionConfirmed = (message) => {
-    buildPayload({}, message, selectedUMA.id)
-    dispatch(deleteUMAResource(selectedUMA.id))
+    const params = {
+      id: selectedUMA.id,
+      message
+    }
+    dispatch(deleteUMAResource(params))
     setConfirmModal(false)
   }
+
+  useEffect(() => {
+    if(!isEmpty(selectedUMA) && !isEmpty(selectedUMA.scopes) && selectedUMA.scopes?.length > 0) {
+      selectedUMA.scopes.map(scope => {
+        // scope data example [string] inum=9bc94613-f678-4bb9-a19d-ed026b492247,ou=scopes,o=jans
+        const getInum = scope.split(',')[0]
+        const inum = getInum.split('=')[1]
+
+        dispatch(getScope(inum))
+      })
+    }
+  }, [selectedUMA])
 
   return (
     <Container>
@@ -255,16 +270,16 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scripts, formik
               <Col sm={9} className="top-5">
                 {showScopeSection === 'scope' ? (
                   <React.Fragment>
-                    {!isEmpty(selectedUMA) && selectedUMA?.scopes?.map((scope, key) => {
-                      const getInum = scope.split(',')[0]
+                    {!isEmpty(selectedUMA) && selectedUMA?.scopes?.map((scopeString, key) => {
+                      const getInum = scopeString.split(',')[0]
                       const inum = getInum.length > 0 ? getInum.split('=')[1] : null
 
-                      if (inum) {
+                      if (!isEmpty(scope[inum])) {
                         return (
                           <Box key={key}>
                             <Box display="flex">
-                              <Link to={`/auth-server/scope/edit:${inum}`} className="common-link">
-                                {scope}
+                              <Link to={`/auth-server/scope/edit:${scope[inum]?.inum}`} className="common-link">
+                                {scope[inum]?.displayName}
                               </Link>
                             </Box>
                           </Box>

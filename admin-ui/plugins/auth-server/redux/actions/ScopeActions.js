@@ -80,7 +80,10 @@ export const deleteScopeResponse = (data) => ({
   payload: { data },
 })
 
-export const setCurrentItem = (item) => ({
-  type: SET_ITEM,
-  payload: { item },
-})
+export const setCurrentItem = (item, inum) => {
+  console.log(item, inum)
+  return ({
+    type: SET_ITEM,
+    payload: { item, inum },
+  })
+}

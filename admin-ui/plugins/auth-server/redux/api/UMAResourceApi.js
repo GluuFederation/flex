@@ -11,9 +11,10 @@ export default class UMAResourceApi {
     })
   }
 
-  deteleUMAResources = async (id) => {
+  deteleUMAResource = async (id) => {
     return new Promise((resolve, reject) => {
       this.api.deleteOauthUmaResourcesById(id, (error, data) => {
+        console.log('delete uma')
         this.handleResponse(error, reject, resolve, data)
       })
     })

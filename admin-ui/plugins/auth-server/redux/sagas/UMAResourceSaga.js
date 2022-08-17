@@ -56,8 +56,8 @@ export function* deleteUMAResourceById({ payload }) {
   try {
     addAdditionalData(audit, DELETION, UMA, payload)
     const api = yield* newFunction()
-    yield call(api.deleteUMAResourceById, payload.action.action_data)
-    yield put(deleteUMAResourceResponse(payload.action.action_data))
+    yield call(api.deteleUMAResource, payload.action.id)
+    yield put(deleteUMAResourceResponse(payload.action.id))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteUMAResourceResponse(null))

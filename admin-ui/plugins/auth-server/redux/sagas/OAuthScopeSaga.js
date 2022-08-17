@@ -58,7 +58,8 @@ export function* getScopeByInum({ payload }) {
     addAdditionalData(audit, FETCH, SCOPE, {})
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.getScope, payload.action)
-    yield put(setCurrentItem(data))
+    console.log('data', data)
+    yield put(setCurrentItem(data, payload.action))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteScopeResponse(null))
