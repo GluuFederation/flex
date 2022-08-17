@@ -18,7 +18,7 @@ data:
   # Jetty header size in bytes in the auth server
   CN_JETTY_REQUEST_HEADER_SIZE: {{ .Values.configmap.cnJettyRequestHeaderSize | quote }}
   # Port used by Prometheus JMX agent
-  CN_PROMETHEUS_PORT: {{ .Values.global.cnPrometheusPort }}
+  CN_PROMETHEUS_PORT: {{ .Values.global.cnPrometheusPort | quote }}
   CN_DISTRIBUTION: {{ .Values.global.distribution | quote }}
   {{ if .Values.global.cnObExtSigningJwksUri }}
   CN_OB_EXT_SIGNING_JWKS_URI: {{ .Values.global.cnObExtSigningJwksUri | quote }}
