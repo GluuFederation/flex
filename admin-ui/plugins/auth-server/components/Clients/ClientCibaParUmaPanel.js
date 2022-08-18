@@ -213,36 +213,38 @@ function ClientCibaParUmaPanel({ client,
         doc_entry="rptClaimsScripts"
         lsize={3}
       ></GluuTypeAheadForDn>
-      <FormGroup row>
-        <GluuLabel label={'Resources'} size={3} />
-        <Col sm={9}>
-          {umaResources.length > 0 && umaResources?.map(uma => {
-            return (
-              <Box key={uma.id} className="mb-2">
-                <Box display="flex">
-                  <Box width="40%">
-                    <a href="javascript:;" className="common-link cursor-pointer" onClick={() => handleUMADetail(uma)}>
-                      {uma.id}
-                    </a>
-                  </Box>
-                  <Box width="50%" className="text-dark">
-                    {uma.name}
-                  </Box>
-                  <Box width="10%">
-                    <Button
-                      color="danger"
-                      size="sm"
-                      onClick={() => handleDeleteUMA(uma)}
-                    >
-                      <span className="font-weight-bold">X</span>
-                    </Button>
+      {!isEmpty(umaResources) && (
+        <FormGroup row>
+          <GluuLabel label={'Resources'} size={3} />
+          <Col sm={9}>
+            {umaResources?.length > 0 && umaResources?.map(uma => {
+              return (
+                <Box key={uma.id} className="mb-2">
+                  <Box display="flex">
+                    <Box width="40%">
+                      <a href="javascript:;" className="common-link cursor-pointer" onClick={() => handleUMADetail(uma)}>
+                        {uma.id}
+                      </a>
+                    </Box>
+                    <Box width="50%" className="text-dark">
+                      {uma.name}
+                    </Box>
+                    <Box width="10%">
+                      <Button
+                        color="danger"
+                        size="sm"
+                        onClick={() => handleDeleteUMA(uma)}
+                      >
+                        <span className="font-weight-bold">X</span>
+                      </Button>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
-            )
-          })}
-        </Col>
-      </FormGroup>
+              )
+            })}
+          </Col>
+        </FormGroup>
+      )}
       <Modal
         isOpen={open}
         toggle={() => setOpen(!open)}
@@ -308,7 +310,7 @@ function ClientCibaParUmaPanel({ client,
                         <Box key={key}>
                           <Box display="flex">
                             <a href="javascript:;" onClick={() => handleScopeEdit(scope)} className="common-link">
-                              {scope.displayName}
+                              {scope?.displayName ? scope?.displayName : ''}
                             </a>
                           </Box>
                         </Box>
