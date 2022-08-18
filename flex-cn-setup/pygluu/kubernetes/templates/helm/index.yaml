@@ -31,7 +31,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-08-08T10:03:36.4688044Z"
+    created: "2022-08-18T13:59:19.1564484Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -94,7 +94,7 @@ entries:
       repository: ""
       version: 5.0.5
     description: Gluu Access and Identity Management
-    digest: 9d2f13dd1bad446f6dd0ca2a9efae763d87fdb7c856017bf0cdb5f0825988488
+    digest: b9a487b43f82facc23629ece09e9e98d56610d74a1c77274ba62ca5a91fa96d5
     home: https://www.gluu.org
     icon: https://gluu.org/docs/gluu-server/favicon.ico
     kubeVersion: '>=v1.21.0-0'
@@ -138,7 +138,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-08-08T10:03:36.4501215Z"
+    created: "2022-08-18T13:59:19.1404481Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -245,7 +245,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-08-08T10:03:36.4295888Z"
+    created: "2022-08-18T13:59:19.1254486Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -354,7 +354,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-08-08T10:03:36.4105876Z"
+    created: "2022-08-18T13:59:19.1079279Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -471,7 +471,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-08-08T10:03:36.3855872Z"
+    created: "2022-08-18T13:59:19.0889301Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -588,7 +588,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-08-08T10:03:36.3610639Z"
+    created: "2022-08-18T13:59:19.0734013Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -669,4 +669,4 @@ entries:
     urls:
     - gluu-5.0.0.tgz
     version: 5.0.0
-generated: "2022-08-08T10:03:36.3412459Z"
+generated: "2022-08-18T13:59:19.0499449Z"
