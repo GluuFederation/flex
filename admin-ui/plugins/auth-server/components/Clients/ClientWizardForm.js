@@ -427,6 +427,8 @@ function ClientWizardForm({
                               umaResources={umaResources}
                               scopes={scopes}
                               scripts={scripts}
+                              setCurrentStep={setCurrentStep}
+                              sequence={sequence}
                               formik={formik}
                             />
                             {/* <ClientScript

@@ -23,10 +23,23 @@ import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { deleteUMAResource } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
 import { setCurrentItem } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import {
+  setCurrentItem as setCurrentItemClient,
+  viewOnly
+} from 'Plugins/auth-server/redux/actions/OIDCActions'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts, formik }) {
+function ClientCibaParUmaPanel({ client, 
+  clients,
+  dispatch,
+  umaResources,
+  scopes,
+  scripts,
+  setCurrentStep,
+  sequence,
+  formik,
+}) {
   const { t } = useTranslation()
   const history = useHistory()
   const claim_uri_id = 'claim_uri_id'
@@ -72,15 +85,26 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts
   const onDeletionConfirmed = (message) => {
     const params = {
       id: selectedUMA.id,
-      message
+      action_message: message,
+      action_data: selectedUMA.id
     }
     dispatch(deleteUMAResource(params))
     setConfirmModal(false)
+    setOpen(false)
   }
 
   const handleScopeEdit = (scope) => {
     dispatch(setCurrentItem(scope))
     return history.push(`/auth-server/scope/edit:${scope.inum}`)
+  }
+
+  const handleClientEdit = (inum) => {
+    const currentClient = clients.find(client => client.inum === inum)
+    dispatch(setCurrentItemClient(currentClient))
+    setOpen(false)
+    dispatch(viewOnly(true))
+    setCurrentStep(sequence[0])
+    return history.push(`/auth-server/client/edit:${inum?.substring(0, 4)}`)
   }
 
   useEffect(() => {
@@ -225,7 +249,7 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts
         size="lg"
         className="modal-outline-primary"
       >
-        <ModalHeader  toggle={() => setOpen(!open)}>
+        <ModalHeader toggle={() => setOpen(!open)}>
           UMA Resource Detail
         </ModalHeader>
         <ModalBody>
@@ -316,9 +340,9 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts
                   return (
                     <Box key={key}>
                       <Box display="flex">
-                        <Link to={`/auth-server/client/edit:${inum}`} className="common-link">
+                        <a href="javascript:;" onClick={() => handleClientEdit(inum)} className="common-link">
                           {inum}
-                        </Link>
+                        </a>
                       </Box>
                     </Box>
                   )}
@@ -358,7 +382,7 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts
 
 const mapStateToProps = (state) => {
   return {
-    clientData: state.oidcReducer.item,
+    clients: state.oidcReducer.items,
     loading: state.oidcReducer.loading,
   }
 }
