@@ -54,10 +54,8 @@ function ClientEditPage({
     clientData.attributes = {}
   }
   scopes = scopes.map((item) => ({ 
-    dn: item.dn,
+    ...item,
     name: item.id,
-    inum: item.inum,
-    displayName: item.displayName
   }))
 
   function handleSubmit(data) {

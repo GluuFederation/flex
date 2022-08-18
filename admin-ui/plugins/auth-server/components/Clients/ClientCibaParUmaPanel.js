@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@material-ui/core/Box'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import {
   Button,
   Modal,
@@ -22,11 +22,13 @@ import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { deleteUMAResource } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
+import { setCurrentItem } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts, formik }) {
   const { t } = useTranslation()
+  const history = useHistory()
   const claim_uri_id = 'claim_uri_id'
   const cibaDeliveryModes = ['poll', 'push', 'ping']
   const claimRedirectURI = []
@@ -74,6 +76,11 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts
     }
     dispatch(deleteUMAResource(params))
     setConfirmModal(false)
+  }
+
+  const handleScopeEdit = (scope) => {
+    dispatch(setCurrentItem(scope))
+    return history.push(`/auth-server/scope/edit:${scope.inum}`)
   }
 
   useEffect(() => {
@@ -276,9 +283,9 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts
                       return (
                         <Box key={key}>
                           <Box display="flex">
-                            <Link to={`/auth-server/scope/edit:${scope.inum}`} className="common-link">
+                            <a href="javascript:;" onClick={() => handleScopeEdit(scope)} className="common-link">
                               {scope.displayName}
-                            </Link>
+                            </a>
                           </Box>
                         </Box>
                       )
@@ -310,7 +317,7 @@ function ClientCibaParUmaPanel({ client, dispatch, umaResources, scopes, scripts
                     <Box key={key}>
                       <Box display="flex">
                         <Link to={`/auth-server/client/edit:${inum}`} className="common-link">
-                          {client}
+                          {inum}
                         </Link>
                       </Box>
                     </Box>
