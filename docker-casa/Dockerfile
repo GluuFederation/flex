@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjre-alpine:11.0.15
+FROM bellsoft/liberica-openjre-alpine:11.0.16
 
 # ===============
 # Alpine packages
@@ -15,7 +15,7 @@ RUN apk update \
 # Jetty
 # =====
 
-ARG JETTY_VERSION=11.0.8
+ARG JETTY_VERSION=11.0.11
 ARG JETTY_HOME=/opt/jetty
 ARG JETTY_BASE=/opt/jans/jetty
 ARG JETTY_USER_HOME_LIB=/home/jetty/lib
@@ -74,7 +74,7 @@ RUN mkdir -p /opt/prometheus \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_LINUX_SETUP_VERSION=afc539d63a70cda21e990fecd470224a4f94e9d6
+ENV JANS_SOURCE_VERSION=0783176284eec597c4fe6d83e892c82bcbe5e138
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -82,7 +82,7 @@ ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 RUN git clone --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
     && cd /tmp/jans \
     && git sparse-checkout init --cone \
-    && git checkout ${JANS_LINUX_SETUP_VERSION} \
+    && git checkout ${JANS_SOURCE_VERSION} \
     && git sparse-checkout set ${JANS_SETUP_DIR}
 
 RUN mkdir -p /app/static/rdbm /app/schema
@@ -101,7 +101,7 @@ RUN cd /tmp/jans \
 # flex setup sync
 # ===============
 
-ENV FLEX_VERSION=9de53ada7bd2ca576e8b64b09fa51b002223e84e
+ENV FLEX_VERSION=36eb4b2cda6a119adc90c68af15bc9c159293ef4
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 ARG CASA_EXTRAS_DIR=casa/extras
 

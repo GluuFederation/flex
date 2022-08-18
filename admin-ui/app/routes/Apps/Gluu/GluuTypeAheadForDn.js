@@ -24,7 +24,9 @@ function GluuTypeAheadForDn({
   required,
   doc_category,
   doc_entry,
+  disabled = false,
   allowNew = false,
+  haveLabelKey = true,
   lsize = 4,
   rsize = 8,
 }) {
@@ -39,15 +41,24 @@ function GluuTypeAheadForDn({
         <GluuLabel label={label} size={lsize} required={required} />
         <Col sm={rsize}>
           <Typeahead
-            labelKey={(opt) => `${opt.name || getItemName(options, opt)}`}
+            labelKey={
+              haveLabelKey
+                ? (opt) => `${opt.name || getItemName(options, opt)}`
+                : null
+            }
             onChange={(selected) => {
               formik.setFieldValue(
                 name,
                 selected.map((item) =>
-                  item.customOption ? item.label : item.dn,
+                  typeof item == 'string'
+                    ? item
+                    : item.customOption
+                    ? item.label
+                    : item.dn,
                 ),
               )
             }}
+            disabled={disabled}
             id={name}
             data-testid={name}
             name={name}

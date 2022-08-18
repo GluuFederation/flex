@@ -331,7 +331,7 @@ casa:
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
   additionalAnnotations: { }
-# -- Middleware API to help application developers call an OAuth, OpenID or UMA server. You may wonder why this is necessary. It makes it easier for client developers to use OpenID signing and encryption features, without becoming crypto experts. This API provides some high level endpoints to do some of the heavy lifting.
+# -- Middleware API to help application developers call an OAuth, OpenID or UMA server. You may wonder why this is necessary. It makes it easier for client developers to use OpenID signing and encryption features, without becoming crypto experts. This API provides some high level endpoints to do some heavy lifting.
 client-api:
   # -- Configure the HorizontalPodAutoscaler
   hpa:
@@ -452,9 +452,9 @@ config:
     cnCouchbaseIndexNumReplica: 0
     # -- Couchbase password for the restricted user config.configmap.cnCouchbaseUser  that is often used inside the services. The password must contain one digit, one uppercase letter, one lower case letter and one symbol .
     cnCouchbasePassword: P@ssw0rd
-    # -- The Couchbase super user (admin) user name. This user is used during initialization only.
+    # -- The Couchbase super user (admin) username. This user is used during initialization only.
     cnCouchbaseSuperUser: admin
-    # -- Couchbase password for the super user config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol
+    # -- Couchbase password for the superuser config.configmap.cnCouchbaseSuperUser  that is used during the initialization process. The password must contain one digit, one uppercase letter, one lower case letter and one symbol
     cnCouchbaseSuperUserPassword: Test1234#
     # -- Couchbase URL. Used only when global.cnPersistenceType is hybrid or couchbase. This should be in FQDN format for either remote or local Couchbase clusters. The address can be an internal address inside the kubernetes cluster
     cnCouchbaseUrl: cbgluu.default.svc.cluster.local
@@ -463,7 +463,7 @@ config:
     # [google_envs] Envs related to using Google
     # -- Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
     cnGoogleSecretManagerServiceAccount: SWFtTm90YVNlcnZpY2VBY2NvdW50Q2hhbmdlTWV0b09uZQo=
-    # -- Project id of the google project the secret manager belongs to. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
+    # -- Project id of the Google project the secret manager belongs to. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
     cnGoogleProjectId: google-project-to-save-config-and-secrets-to
     # [google_spanner_envs] Envs related to using Google Secret Manager to store config and secret layer
     # -- Google Spanner ID. Used only when global.cnPersistenceType is spanner.
@@ -512,7 +512,7 @@ config:
     cnRedisUseSsl: false
     # -- Kubernetes secret name holding configuration keys. Used when global.configSecretAdapter is set to kubernetes which is the default.
     cnSecretKubernetesSecret: cn
-    # -- Loadbalancer address for AWS if the FQDN is not registered.
+    # -- Load balancer address for AWS if the FQDN is not registered.
     lbAddr: ""
   # -- Country code. Used for certificate creation.
   countryCode: US
@@ -525,7 +525,7 @@ config:
     tag: 1.0.1-1
     # -- Image Pull Secrets
     pullSecrets: [ ]
-  # -- LDAP admin password if OpennDJ is used for persistence.
+  # -- LDAP admin password if OpenDJ is used for persistence.
   ldapPassword: P@ssw0rds
   # -- Organization name. Used for certificate creation.
   orgName: Gluu
@@ -791,7 +791,7 @@ global:
   casa:
     # -- Name of the casa service. Please keep it as default.
     casaServiceName: casa
-    # -- Boolean flag to enable/disable the casachart.
+    # -- Boolean flag to enable/disable the casa chart.
     enabled: true
   client-api:
     # -- Name of the client-api service. Please keep it as default.
@@ -837,15 +837,15 @@ global:
   cnObExtSigningJwksKey: ""
   # -- Open banking external signing jwks AS key passphrase to unlock provided key. This must be encoded using base64. Used when `.global.cnObExtSigningJwksUri` is set.
   cnObExtSigningJwksKeyPassPhrase: ""
-  # -- Open banking external signing AS Alias. This is a kid value.Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e XkwIzWy44xWSlcWnMiEc8iq9s2G
+  # -- Open banking external signing AS Alias. This is a kid value.Used in SSA Validation, kid used while encoding a JWT sent to token URL i.e. XkwIzWy44xWSlcWnMiEc8iq9s2G
   cnObExtSigningAlias: ""
-  # -- Open banking  signing AS kid to force the AS to use a specific signing key. i.e Wy44xWSlcWnMiEc8iq9s2G
+  # -- Open banking  signing AS kid to force the AS to use a specific signing key. i.e. Wy44xWSlcWnMiEc8iq9s2G
   cnObStaticSigningKeyKid: ""
   # -- Open banking AS transport crt. Used in SSA Validation. This must be encoded using base64.
   cnObTransportCrt: ""
   # -- Open banking AS transport key. Used in SSA Validation. This must be encoded using base64.
   cnObTransportKey: ""
-  # -- Open banking AS transport key pas`sphrase to unlock AS transport key. This must be encoded using base64.
+  # -- Open banking AS transport key passphrase to unlock AS transport key. This must be encoded using base64.
   cnObTransportKeyPassPhrase: ""
   # -- Open banking transport Alias used inside the JVM.
   cnObTransportAlias: ""
@@ -854,6 +854,8 @@ global:
   config:
     # -- Boolean flag to enable/disable the configuration chart. This normally should never be false
     enabled: true
+  # -- https://kubernetes.io/docs/concepts/workloads/controllers/ttlafterfinished/
+  jobTtlSecondsAfterFinished: 300
   # -- The config backend adapter that will hold Gluu configuration layer. google|kubernetes
   configAdapterName: kubernetes
   # -- The config backend adapter that will hold Gluu secret layer. google|kubernetes
@@ -887,7 +889,7 @@ global:
       scriptLogTarget: "FILE"
       # -- config-api_script.log level
       scriptLogLevel: "INFO"
-    adminUiappLoggers:
+    adminUiAppLoggers:
       # -- config-api admin-ui plugin log level
       adminUiLogTarget: "FILE"
       # -- config-api admin-ui plugin log target
@@ -915,10 +917,10 @@ global:
       persistenceLogLevel: "INFO"
   # -- GCE storage kind if using Google disks
   gcePdStorageType: pd-standard
-  # -- Boolean flag to enable mapping global.lbIp  to global.fqdn inside pods on clouds that provide static ip for loadbalancers. On cloud that provide only addresses to the LB this flag will enable a script to actively scan config.configmap.lbAddr and update the hosts file inside the pods automatically.
+  # -- Boolean flag to enable mapping global.lbIp  to global.fqdn inside pods on clouds that provide static ip for load balancers. On cloud that provide only addresses to the LB this flag will enable a script to actively scan config.configmap.lbAddr and update the hosts file inside the pods automatically.
   isFqdnRegistered: false
   istio:
-    # -- Boolean flag that enables using istio side cars with Gluu services.
+    # -- Boolean flag that enables using istio side-cars with Gluu services.
     enabled: false
     # -- Boolean flag that enables using istio gateway for Gluu. This assumes istio ingress is installed and hence the LB is available.
     ingress: false
@@ -1386,7 +1388,7 @@ oxshibboleth:
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
   additionalAnnotations: { }
-# -- Job to generate data and intial config for Gluu Server persistence layer.
+# -- Job to generate data and initial config for Gluu Server persistence layer.
 persistence:
   # -- Add custom normal and secret envs to the service
   usrEnvs:

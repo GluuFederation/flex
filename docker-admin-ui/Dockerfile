@@ -1,13 +1,13 @@
-FROM node:14.20.0-alpine3.16 AS builder
+FROM node:14.20-alpine3.16 AS builder
 
 RUN apk update \
-    && apk upgrade \
+    && apk upgrade --available \
     && apk add --no-cache git openjdk11-jre-headless
 
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=5286c6139fe85cdc403e10c2c3fec022462189b8
+ENV ADMIN_UI_VERSION=224001fe4ef0c9d0a16e4a2af02e34c93ebe0443
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -22,13 +22,14 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
     && npm install @openapitools/openapi-generator-cli \
     && npm run api \
     && npm install \
+    && npm uninstall @openapitools/openapi-generator-cli \
     && rm -rf $HOME/.npm
 
 # ===========
 # Application
 # ===========
 
-FROM node:14.20.0-alpine3.16
+FROM node:14.20-alpine3.16
 
 # ======
 # alpine
@@ -65,7 +66,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_LINUX_SETUP_VERSION=b3b3d22d93beb9d248c005b618e998c55ae007d5
+ENV JANS_SOURCE_VERSION=0783176284eec597c4fe6d83e892c82bcbe5e138
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -73,7 +74,7 @@ ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 RUN git clone --filter blob:none --no-checkout https://github.com/janssenproject/jans /tmp/jans \
     && cd /tmp/jans \
     && git sparse-checkout init --cone \
-    && git checkout ${JANS_LINUX_SETUP_VERSION} \
+    && git checkout ${JANS_SOURCE_VERSION} \
     && git sparse-checkout set ${JANS_SETUP_DIR}
 
 RUN mkdir -p /app/static/rdbm /app/schema

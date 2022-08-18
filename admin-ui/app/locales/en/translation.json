@@ -106,6 +106,7 @@
     "id_token_encrypted_response_enc": "JWS enc for encryption",
     "id_token_signed_response_alg": "JWS alg for signing",
     "spontaneousScopes": "Spontaneous scopes",
+    "spontaneousScopesREGEX": "Spontaneous scope validation regex",
     "inactive": "InActive",
     "include_in_scim_extension": "Include In SCIM Extension?",
     "in_memory_configuration": "inMemoryConfiguration",
@@ -171,6 +172,11 @@
     "saml1_uri": "Saml1 URI",
     "saml2_uri": "Saml2 URI",
     "scope_type": "Scope type",
+    "umaAuthorizationPolicies": "Authorization Policies",
+    "associatedClients": "Associated Clients",
+    "creationDate": "Creation Time",
+    "creatorType": "Creator",
+    "iconUrl": "Icon URL",
     "scopes:": "Scopes",
     "scripts": "Scripts",
     "script_type": "Script Type",
@@ -358,7 +364,8 @@
     "view_client_details": "View client details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
-    "no_scope_in_client": "No Scope data for this Client"
+    "no_scope_in_client": "No Scope data for this Client",
+    "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
@@ -417,7 +424,8 @@
     "sql_passwordEncryptionMethod": "Add password encryption method.",
     "sql_serverTimezone": "Enter server timezone.",
     "activate_sql_configuration": "Activate SQL configuration.",
-    "script_path": "Enter script file path"
+    "script_path": "Enter script file path",
+    "iconUrl": "Icon URL"
   },
   "titles": {
     "acrs": "ACRs",
@@ -787,7 +795,8 @@
       "keepClientAuthorizationAfterExpiration": "Keep Client Authorization After Expiration",
       "allowSpontaneousScopes": "Allow Spontaneous Scopes",
       "backchannelLogoutSessionRequired": "Back channel Logout Session Required",
-      "frontChannelLogoutSessionRequired": "Front Channel Logout Session Required"
+      "frontChannelLogoutSessionRequired": "Front Channel Logout Session Required",
+      "authorizedAcrValues": "Allowed ACRs"
     },
     "scope": {
       "inum": "Inum",

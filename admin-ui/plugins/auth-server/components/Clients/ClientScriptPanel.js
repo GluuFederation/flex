@@ -4,7 +4,7 @@ import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 
 const DOC_CATEGORY = 'openid_client'
 
-function ClientScriptPanel({ client, scopes, scripts, formik }) {
+function ClientScriptPanel({ client, scripts, formik }) {
   const postScripts = scripts
     .filter((item) => item.scriptType == 'POST_AUTHN')
     .filter((item) => item.enabled)
@@ -36,11 +36,11 @@ function ClientScriptPanel({ client, scopes, scripts, formik }) {
   return (
     <Container>
       <GluuTypeAheadForDn
-        name="spontaneousScopes"
+        name="spontaneousScopeScriptDns"
         label="fields.spontaneous_scopes"
         formik={formik}
-        value={client.spontaneousScopes}
-        options={scopes}
+        value={client.spontaneousScopeScriptDns}
+        options={spontaneousScripts}
         doc_category={DOC_CATEGORY}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
