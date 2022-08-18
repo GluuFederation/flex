@@ -30,8 +30,15 @@ function UserForm({ formik }) {
 
   const submitChangePassword = () => {
     const submitableValue = {
-      userPassword: formik.values.userPassword,
       inum: userDetails.inum,
+      jsonPatchString: '[]',
+      customAttributes: [
+        {
+          name: 'userPassword',
+          multiValued: false,
+          values: [formik.values.userPassword],
+        },
+      ],
     }
     dispatch(changeUserPassword(submitableValue))
     toggleChangePasswordModal()
@@ -89,7 +96,9 @@ function UserForm({ formik }) {
     const tempList = [...selectedClaims]
     for (const i in userDetails.customAttributes) {
       if (userDetails.customAttributes[i].values) {
-        const data = getCustomAttributeById(userDetails.customAttributes[i].name)
+        const data = getCustomAttributeById(
+          userDetails.customAttributes[i].name,
+        )
         if (
           data &&
           !usedClaimes.includes(userDetails.customAttributes[i].name)
@@ -169,16 +178,16 @@ function UserForm({ formik }) {
         </ModalBody>
         <ModalFooter>
           {formik.values?.userPassword?.length > 3 &&
-          formik.values?.userPassword ==
-            formik.values.userConfirmPassword && (
-            <Button
-              color={`primary-${selectedTheme}`}
-              type="button"
-              onClick={() => submitChangePassword()}
-            >
-              {t('actions.change_password')}
-            </Button>
-          )}
+            formik.values?.userPassword ==
+              formik.values.userConfirmPassword && (
+              <Button
+                color={`primary-${selectedTheme}`}
+                type="button"
+                onClick={() => submitChangePassword()}
+              >
+                {t('actions.change_password')}
+              </Button>
+            )}
           &nbsp;
           <Button
             color={`primary-${selectedTheme}`}
@@ -340,10 +349,7 @@ function UserForm({ formik }) {
                   {/* For Space in buttons */}
                   &nbsp; &nbsp; &nbsp;
                   {/* For Space in buttons */}
-                  <Button
-                    color={`primary-${selectedTheme}`}
-                    type="submit"
-                  >
+                  <Button color={`primary-${selectedTheme}`} type="submit">
                     <i className="fa fa-check-circle mr-2"></i>
                     {t('actions.save')}
                   </Button>
