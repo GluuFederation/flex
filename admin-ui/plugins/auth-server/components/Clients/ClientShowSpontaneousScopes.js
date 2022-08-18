@@ -21,9 +21,7 @@ function ClientShowSpontaneousScopes({ handler, isOpen }) {
           scopesByCreator?.map((scope, key) => {
             return (
               <div key={key}>
-                <Badge color={`primary-${selectedTheme}`}>
-                  {scope?.attributes?.spontaneousClientScopes[0]}
-                </Badge>
+                <Badge color={`primary-${selectedTheme}`}>{scope?.id}</Badge>
               </div>
             )
           })
