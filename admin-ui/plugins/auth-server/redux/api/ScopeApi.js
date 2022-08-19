@@ -60,7 +60,7 @@ export default class ScopeApi {
 
   deleteAScope = async (inum) => {
     return new Promise((resolve, reject) => {
-      this.api.deleteOauthScopesByInum(inum, (error, data) => {
+      this.api.deleteOauthScopesByInum(inum, {}, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
       })
     })
