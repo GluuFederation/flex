@@ -4,15 +4,14 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { editClient } from 'Plugins/auth-server/redux/actions/OIDCActions'
-import {
-  getScopes,
-  getScopeByCreator,
-} from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { getScopes, getScopeByCreator } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
+import { getUMAResourcesByClient } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
 import { getScripts } from 'Redux/actions/InitActions'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
+import isEmpty from 'lodash/isEmpty'
 
 function ClientEditPage({
   clientData,
@@ -25,6 +24,7 @@ function ClientEditPage({
   oidcConfiguration,
   saveOperationFlag,
   errorInSaveOperationFlag,
+  umaResources,
 }) {
   const userAction = {}
   const options = {}
@@ -41,6 +41,9 @@ function ClientEditPage({
     if (scripts.length < 1) {
       dispatch(getScripts(options))
     }
+    if (isEmpty(umaResources)) {
+      dispatch(getUMAResourcesByClient(clientData?.inum))
+    }
     dispatch(getOidcDiscovery())
   }, [])
   useEffect(() => {
@@ -51,7 +54,10 @@ function ClientEditPage({
   if (!clientData.attributes) {
     clientData.attributes = {}
   }
-  scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
+  scopes = scopes.map((item) => ({ 
+    ...item,
+    name: item.id,
+  }))
 
   function handleSubmit(data) {
     if (data) {
@@ -75,6 +81,7 @@ function ClientEditPage({
         permissions={permissions}
         oidcConfiguration={oidcConfiguration}
         customOnSubmit={handleSubmit}
+        umaResources={umaResources}
       />
     </GluuLoader>
   )
@@ -90,6 +97,7 @@ const mapStateToProps = (state) => {
     oidcConfiguration: state.oidcDiscoveryReducer.configuration,
     saveOperationFlag: state.oidcReducer.saveOperationFlag,
     errorInSaveOperationFlag: state.oidcReducer.errorInSaveOperationFlag,
+    umaResources: state.umaResourceReducer.items,
   }
 }
 export default connect(mapStateToProps)(ClientEditPage)

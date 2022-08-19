@@ -36,6 +36,7 @@ function ClientWizardForm({
   permissions,
   customOnSubmit,
   oidcConfiguration,
+  umaResources,
 }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -419,7 +420,11 @@ function ClientWizardForm({
                           >
                             <ClientCibaParUmaPanel
                               client={client}
+                              umaResources={umaResources}
+                              scopes={scopes}
                               scripts={scripts}
+                              setCurrentStep={setCurrentStep}
+                              sequence={sequence}
                               formik={formik}
                             />
                             {/* <ClientScript
@@ -526,7 +531,7 @@ function ClientWizardForm({
                         >
                           {t('actions.apply')}
                         </Button>
-                      )}
+                    )}
                   </div>
                 </CardFooter>
                 <Button

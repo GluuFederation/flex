@@ -8,7 +8,7 @@ import {
   getOpenidClientsResponse,
   addClientResponse,
   editClientResponse,
-  deleteClientResponse,
+  deleteClientResponse
 } from '../actions/OIDCActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { OIDC } from '../audit/Resources'
@@ -23,7 +23,7 @@ import {
   ADD_NEW_CLIENT,
   EDIT_CLIENT,
   DELETE_CLIENT,
-  SEARCH_CLIENTS,
+  SEARCH_CLIENTS
 } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from 'Redux/api/base'

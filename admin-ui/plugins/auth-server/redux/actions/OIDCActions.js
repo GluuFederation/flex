@@ -9,7 +9,7 @@ import {
   DELETE_CLIENT_RESPONSE,
   SET_CLIENT_ITEM,
   SET_VIEW,
-  SEARCH_CLIENTS,
+  SEARCH_CLIENTS
 } from './types'
 
 export const getOpenidClients = (action) => ({

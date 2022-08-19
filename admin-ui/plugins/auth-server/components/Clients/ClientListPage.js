@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
 import { Card, CardBody, Badge } from 'Components'
 import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
+import { resetUMAResources } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import ClientDetailPage from '../Clients/ClientDetailPage'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
@@ -155,6 +156,10 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       }, 3000);
     }
   }, [haveScopeINUMParam])
+
+  useEffect(() => {
+    dispatch(resetUMAResources())
+  }, [])
 
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {

@@ -15,6 +15,7 @@ import {
   editScopeResponse,
   deleteScopeResponse,
   getScopeByCreatorResponse,
+  setCurrentItem,
 } from '../actions/ScopeActions'
 import {
   GET_SCOPES,
@@ -50,13 +51,13 @@ function* newFunction() {
   return new ScopeApi(api)
 }
 
-export function* getScopeByInum() {
+export function* getScopeByInum({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, FETCH, SCOPE, {})
     const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.getScope)
-    yield put(deleteScopeResponse(data))
+    const data = yield call(scopeApi.getScope, payload.action)
+    yield put(setCurrentItem(data))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteScopeResponse(null))

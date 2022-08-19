@@ -78,7 +78,9 @@
     "remove": "Remover",
     "test": "Teste",
     "view": "Visualizar",
-    "yes": "Sim"
+    "yes": "Sim",
+    "close": "Fechar",
+    "delete": "Deletar"
   },
   "fields": {
     "access_token_signing_alg": "Algoritmo de assinatura de token de acesso",
@@ -193,7 +195,7 @@
     "required_ssl": "SSL obrigatório",
     "response_types": "Tipos de Resposta",
     "revision": "Revisão",
-    "rpt_scripts": "Rpt Scripts",
+    "rpt_scripts": "Script de Modificação RPT",
     "saml1_uri": "Saml1 Uri",
     "saml2_uri": "Saml2 Uri",
     "scope_type": "Tipo de Escopo",
@@ -250,7 +252,16 @@
     "deletable": "Apagável",
     "email": "E-mail",
     "userName": "Nome do usuário",
-    "nickName": "Apelido"
+    "nickName": "Apelido",
+    "resources": "Recursos",
+    "resourceId": "ID do recurso",
+    "iconUrl": "URL do ícone",
+    "scopeSelection": "Seleção de Escopo",
+    "scopeOrExpression": "Escopo (ou Expressão)",
+    "associatedClient": "Cliente Associado",
+    "creationTime": "Tempo de Criação",
+    "escopo": "Escopo",
+    "scopeExpression": "Expressão de escopo"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Container } from 'Components'
 import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
-import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 
 const DOC_CATEGORY = 'openid_client'
 
@@ -25,10 +24,6 @@ function ClientScriptPanel({ client, scripts, formik }) {
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
-  const rptScripts = scripts
-    .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
-    .filter((item) => item.enabled)
-    .map((item) => ({ dn: item.dn, name: item.name }))
   const ropcScripts = scripts
     .filter((item) => item.scriptType == 'RESOURCE_OWNER_PASSWORD_CREDENTIALS')
     .filter((item) => item.enabled)
@@ -87,16 +82,6 @@ function ClientScriptPanel({ client, scripts, formik }) {
         value={client.consentGatheringScripts}
         options={consentScripts}
         doc_category={DOC_CATEGORY}
-      ></GluuTypeAheadForDn>
-
-      <GluuTypeAheadForDn
-        name="rptClaimsScripts"
-        label="fields.rpt_scripts"
-        formik={formik}
-        value={client.rptClaimsScripts}
-        options={rptScripts}
-        doc_category={DOC_CATEGORY}
-        doc_entry="rptClaimsScripts"
       ></GluuTypeAheadForDn>
     </Container>
   )

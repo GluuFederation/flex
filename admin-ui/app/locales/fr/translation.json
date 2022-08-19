@@ -79,7 +79,9 @@
     "remove": "Supprimer",
     "test": "Test",
     "view": "Vue",
-    "yes": "Oui"
+    "yes": "Oui",
+    "close": "Fermer",
+    "delete": "Supprimez"
   },
   "fields": {
     "access_token_signing_alg": "Algorithme de signature de jeton d'accès",
@@ -194,7 +196,7 @@
     "required_ssl": "SSL requis",
     "response_types": "Types de réponse",
     "revision": "Révision",
-    "rpt_scripts": "Scripts de répétition",
+    "rpt_scripts": "Script de modification RPT",
     "saml1_uri": "URI Saml1",
     "saml2_uri": "URI Saml2",
     "scope_type": "Type de portée",
@@ -251,7 +253,16 @@
     "deletable": "Supprimable",
     "email": "E-mail",
     "userName": "Nom d'utilisateur",
-    "nickName": "Surnom"
+    "nickName": "Surnom",
+    "resources": "Ressources",
+    "resourceId": "Identifiant de la ressource",
+    "iconUrl": "URL de l'icône",
+    "scopeSelection": "Sélection de la portée",
+    "scopeOrExpression": "Portée (ou Expression)",
+    "associatedClient": "Client associé",
+    "creationTime": "Heure de création",
+    "portée": "Portée",
+    "scopeExpression": "Expression d'étendue"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",

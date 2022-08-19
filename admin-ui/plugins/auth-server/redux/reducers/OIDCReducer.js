@@ -127,7 +127,6 @@ export default function oidcReducer(state = INIT_STATE, action) {
       } else {
         return handleDefault()
       }
-
     case RESET:
       return {
         ...state,

@@ -27,7 +27,7 @@ export default class ScopeApi {
     })
   }
 
-  getScope = async (id) => {
+  patchScope = async (id) => {
     return new Promise((resolve, reject) => {
       this.api.patchOauthScopesById(id, (error, data) => {
         this.handleResponse(error, reject, resolve, data)
