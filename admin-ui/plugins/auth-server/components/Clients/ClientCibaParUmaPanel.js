@@ -253,7 +253,7 @@ function ClientCibaParUmaPanel({ client,
         isOpen={open}
         toggle={() => setOpen(!open)}
         size="lg"
-        className="modal-outline-primary"
+        className="modal-outline-primary modal-lg-900"
       >
         <ModalHeader toggle={() => setOpen(!open)}>
           UMA Resource Detail
@@ -333,7 +333,6 @@ function ClientCibaParUmaPanel({ client,
                         height="300px"
                         name="scopeExpression"
                         defaultValue={JSON.stringify(scopeExpression, null, 2)}
-                        editorProps={{ $blockScrolling: true }}
                       />
                     ) : '-'}
                   </React.Fragment>
