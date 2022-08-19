@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@material-ui/core/Box'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import {
   Button,
   Modal,
@@ -12,6 +12,7 @@ import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import AceEditor from 'react-ace'
 import { Card, Col, Container, FormGroup } from 'Components'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
@@ -28,6 +29,9 @@ import {
   viewOnly
 } from 'Plugins/auth-server/redux/actions/OIDCActions'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
+import "ace-builds/src-noconflict/mode-json"
+import "ace-builds/src-noconflict/ext-language_tools"
+
 const DOC_CATEGORY = 'openid_client'
 
 function ClientCibaParUmaPanel({ client, 
@@ -70,7 +74,7 @@ function ClientCibaParUmaPanel({ client,
     if (!isEmpty(uma)) {
       setSelectedUMA(uma)
       if (!isEmpty(uma.scopeExpression)) {
-        setScopeExpression(JSON.parse(uma.scopeExpression)?.data)
+        setScopeExpression(JSON.parse(uma.scopeExpression))
       }
     }
     
@@ -319,15 +323,19 @@ function ClientCibaParUmaPanel({ client,
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
-                    {!isEmpty(scopeExpression) ? scopeExpression.map((expression, key) => (
-                      <Box key={key}>
-                        <Box display="flex">
-                          <a href={expression} target="_blank" alt="scope expression" className="common-link" rel="noreferrer">
-                            {expression}
-                          </a>
-                        </Box>
-                      </Box>
-                    )) : '-'}
+                    {!isEmpty(scopeExpression) ? (
+                      <AceEditor
+                        mode="json"
+                        theme="xcode"
+                        readOnly
+                        fontSize={14}
+                        width="95%"
+                        height="300px"
+                        name="scopeExpression"
+                        defaultValue={JSON.stringify(scopeExpression, null, 2)}
+                        editorProps={{ $blockScrolling: true }}
+                      />
+                    ) : '-'}
                   </React.Fragment>
                 )}
               </Col>
