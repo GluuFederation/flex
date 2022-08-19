@@ -47,6 +47,7 @@ function DashboardPage({
   const [endDate] = useState(new Date())
   const [mobileChartStyle, setMobileChartStyle] = useState({})
   const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
+  const breakDashboardCard = useMediaQuery({ query: '(max-width: 1424px)' })
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const userAction = {}
   const options = {}
@@ -327,7 +328,7 @@ function DashboardPage({
       >
         <div className={classes.root}>
           <Grid container className="px-40">
-            <Grid item lg={4} md={12}>
+            <Grid item lg={breakDashboardCard ? 12 : 4} md={12}>
               <h3 className="txt-white">
                 {t('dashboard.summary_title')}
               </h3>
@@ -340,7 +341,7 @@ function DashboardPage({
                 ))}
               </div>
             </Grid>
-            <Grid item lg={4} md={6} xs={12} style={{ width: '100%' }}>
+            <Grid item lg={breakDashboardCard ? 6 : 4} md={6} xs={12} style={{ width: '100%' }}>
               <Paper
                 className={`${classes.dashboardCard} top-minus-40`}
                 elevation={0}
@@ -354,7 +355,7 @@ function DashboardPage({
                   >
                     <Paper
                       className={classes.userInfo}
-                      style={isTabletOrMobile ? { marginLeft: 0 } : {}}
+                      style={isTabletOrMobile || breakDashboardCard ? { marginLeft: 0 } : {}}
                       elevation={3}
                     >
                       <div className={classes.userInfoTitle}>
@@ -385,7 +386,7 @@ function DashboardPage({
                 </Grid>
               </Paper>
             </Grid>
-            <Grid item lg={4} md={6} xs={12} style={{ width: '100%' }}>
+            <Grid item lg={breakDashboardCard ? 6 : 4} md={6} xs={12} style={{ width: '100%' }}>
               <StatusCard />
             </Grid>
           </Grid>
