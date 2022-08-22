@@ -51,10 +51,10 @@ function UserEditPage() {
                 ? val.push(
                     moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD'),
                   )
-                : val.push('')
+                : null
               value = values[key]
                 ? moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
-                : ''
+                : null
             }
             obj = {
               name: key,
