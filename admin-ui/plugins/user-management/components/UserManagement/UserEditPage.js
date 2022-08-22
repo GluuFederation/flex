@@ -47,8 +47,14 @@ function UserEditPage() {
             if (key != 'birthdate') {
               val.push(values[key])
             } else {
-              val.push(moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD'))
-              value = moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
+              values[key]
+                ? val.push(
+                    moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                  )
+                : null
+              value = values[key]
+                ? moment(values[key], 'YYYY-MM-DD').format('YYYY-MM-DD')
+                : null
             }
             obj = {
               name: key,
