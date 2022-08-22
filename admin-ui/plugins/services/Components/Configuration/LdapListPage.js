@@ -24,6 +24,7 @@ import {
   setCurrentItem,
   deleteLdap,
   testLdap,
+  resetTestLdap,
 } from 'Plugins/services/redux/actions/LdapActions'
 import { getPersistenceType } from 'Plugins/services/redux/actions/PersistenceActions'
 import { useTranslation } from 'react-i18next'
@@ -50,6 +51,7 @@ function LdapListPage({
   const history = useHistory()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
+  const [testRunning, setTestRunning] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
   const [alertObj, setAlertObj] = useState({
     severity: '',
@@ -137,31 +139,44 @@ function LdapListPage({
   function testLdapConnect(row) {
     const testPromise = new Promise(function (resolve, reject) {
       setAlertObj({ ...alertObj, show: false })
+      dispatch(resetTestLdap())
       resolve()
     })
 
     testPromise
       .then(() => {
+        setTestRunning(true)
         dispatch(testLdap(row))
       })
-      .then(() => {
-        if (testStatus) {
-          setAlertObj({
-            ...alertObj,
-            severity: 'success',
-            message: `${t('messages.ldap_connection_success')}`,
-            show: true,
-          })
-        } else {
-          setAlertObj({
-            ...alertObj,
-            severity: 'error',
-            message: `${t('messages.ldap_connection_error')}`,
-            show: true,
-          })
-        }
-      })
   }
+
+  useEffect(() => {
+    dispatch(resetTestLdap())
+    setAlertObj({ ...alertObj, show: false })
+  }, [])
+
+  useEffect(() => {
+    if (testStatus === null || !testRunning) {
+      return
+    }
+
+    if (testStatus) {
+      setAlertObj({
+        ...alertObj,
+        severity: 'success',
+        message: `${t('messages.ldap_connection_success')}`,
+        show: true,
+      })
+    } else {
+      setAlertObj({
+        ...alertObj,
+        severity: 'error',
+        message: `${t('messages.ldap_connection_error')}`,
+        show: true,
+      })
+    }
+  }, [testStatus])
+
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>

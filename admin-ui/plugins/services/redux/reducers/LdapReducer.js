@@ -11,12 +11,13 @@ import {
   DELETE_LDAP_RESPONSE,
   TEST_LDAP,
   TEST_LDAP_RESPONSE,
+  RESET_TEST_LDAP_RESPONSE,
 } from '../actions/types'
 const INIT_STATE = {
   ldap: [],
   item: {},
   loading: false,
-  testStatus: false,
+  testStatus: null,
 }
 
 export default function ldapReducer(state = INIT_STATE, action) {
@@ -120,6 +121,11 @@ export default function ldapReducer(state = INIT_STATE, action) {
         loading: false,
       }
 
+    case RESET_TEST_LDAP_RESPONSE:
+      return {
+        ...state,
+        testStatus: INIT_STATE.testStatus,
+      }
     case RESET:
       return {
         ...state,
