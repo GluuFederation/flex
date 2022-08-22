@@ -10,6 +10,7 @@ import {
   SET_LDAP,
   TEST_LDAP,
   TEST_LDAP_RESPONSE,
+  RESET_TEST_LDAP_RESPONSE
 } from './types'
 
 export const getLdapConfig = () => ({
@@ -58,10 +59,15 @@ export const setCurrentItem = (item) => ({
 
 export const testLdap = (data) => ({
   type: TEST_LDAP,
-  payload: {data},
+  payload: { data },
 })
 
 export const testLdapResponse = (data) => ({
   type: TEST_LDAP_RESPONSE,
   payload: { data },
+})
+
+export const resetTestLdap = () => ({
+  type: RESET_TEST_LDAP_RESPONSE,
+  payload: {},
 })

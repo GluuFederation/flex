@@ -41,7 +41,6 @@ export default class LdapApi {
 
   // test LDAP Config
   testLdapConfig = (input) => {
-    console.log('Ldap Api testLdapConfig  ')
     return new Promise((resolve, reject) => {
       this.api.postConfigDatabaseLdapTest(input, (error, data, response) => {
         this.handleResponse(error, reject, resolve, data)
