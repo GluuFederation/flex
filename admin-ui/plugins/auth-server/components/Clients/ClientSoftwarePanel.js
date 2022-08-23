@@ -5,7 +5,7 @@ import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientSoftwarePanel({ client, scripts, formik }) {
+function ClientSoftwarePanel({ client, scripts, formik, view_only }) {
   const { t } = useTranslation()
 
   const origin_uri_id = 'origin_uri_id'
@@ -33,6 +33,7 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         formik={formik}
         value={client.clientUri}
         doc_category={DOC_CATEGORY}
+        disabled={view_only}
       />
       <GluuInputRow
         label="fields.policy_uri"
@@ -40,6 +41,7 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         formik={formik}
         value={client.policyUri}
         doc_category={DOC_CATEGORY}
+        disabled={view_only}
       />
       <GluuInputRow
         label="fields.logo_uri"
@@ -47,6 +49,7 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         formik={formik}
         value={client.logoUri}
         doc_category={DOC_CATEGORY}
+        disabled={view_only}
       />
       <GluuInputRow
         label="fields.tosUri"
@@ -54,6 +57,7 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         formik={formik}
         value={client.tosUri}
         doc_category={DOC_CATEGORY}
+        disabled={view_only}
       />
       <GluuTypeAheadWithAdd
         name="contacts"
@@ -67,6 +71,7 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
+        disabled={view_only}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadWithAdd
         name="authorizedOrigins"
@@ -80,6 +85,7 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
+        disabled={view_only}
       ></GluuTypeAheadWithAdd>
 
       <GluuInputRow
@@ -88,6 +94,7 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         formik={formik}
         value={client.softwareId}
         doc_category={DOC_CATEGORY}
+        disabled={view_only}
       />
 
       <GluuInputRow
@@ -96,6 +103,7 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         formik={formik}
         value={client.softwareVersion}
         doc_category={DOC_CATEGORY}
+        disabled={view_only}
       />
 
       <GluuInputRow
@@ -104,6 +112,7 @@ function ClientSoftwarePanel({ client, scripts, formik }) {
         formik={formik}
         value={client.softwareStatement}
         doc_category={DOC_CATEGORY}
+        disabled={view_only}
       />
     </Container>
   )

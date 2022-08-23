@@ -13,6 +13,7 @@ function GluuToogleRow({
   handler,
   rsize,
   doc_category ="no_category",
+  disabled
 }) {
   return (
     <GluuTooltip doc_category={doc_category} doc_entry={name}>
@@ -26,6 +27,7 @@ function GluuToogleRow({
             handler={handler}
             formik={formik}
             value={value}
+            disabled={disabled}
           />
         </Col>
       </FormGroup>
@@ -35,6 +37,7 @@ function GluuToogleRow({
 GluuToogleRow.defaultProps = {
   lsize: 3,
   rsize: 9,
+  disabled: false,
 }
 
 export default GluuToogleRow

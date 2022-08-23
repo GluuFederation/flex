@@ -26,7 +26,6 @@ const sequence = [
   'ClientScripts',
 ]
 const ATTRIBUTE = 'attributes'
-const DESCRIPTION = 'description'
 let commitMessage = ''
 function ClientWizardForm({
   client_data,
@@ -338,7 +337,7 @@ function ClientWizardForm({
                           <div
                             style={
                               view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                ? { opacity: '0.99' }
                                 : {}
                             }
                           >
@@ -346,6 +345,7 @@ function ClientWizardForm({
                               client={client}
                               scopes={scopes}
                               formik={formik}
+                              view_only={view_only}
                               oidcConfiguration={oidcConfiguration}
                             />
                           </div>
@@ -355,7 +355,7 @@ function ClientWizardForm({
                           <div
                             style={
                               view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                ? { opacity: '0.99' }
                                 : {}
                             }
                           >
@@ -363,6 +363,7 @@ function ClientWizardForm({
                               client={client}
                               scripts={scripts}
                               formik={formik}
+                              view_only
                             />
                             {/* <ClientAdvanced
                               client={client}
@@ -376,7 +377,7 @@ function ClientWizardForm({
                           <div
                             style={
                               view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                ? { opacity: '0.99' }
                                 : {}
                             }
                           >
@@ -384,6 +385,7 @@ function ClientWizardForm({
                               client={client}
                               scripts={scripts}
                               formik={formik}
+                              view_only
                             />
                             {/* <ClientEncryption
                               client={client}
@@ -397,7 +399,7 @@ function ClientWizardForm({
                           <div
                             style={
                               view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                ? { opacity: '0.99' }
                                 : {}
                             }
                           >
@@ -405,6 +407,7 @@ function ClientWizardForm({
                               client={client}
                               scripts={scripts}
                               formik={formik}
+                              view_only={view_only}
                             />
                             {/* <ClientAttributes client={client} formik={formik} /> */}
                           </div>
@@ -414,7 +417,7 @@ function ClientWizardForm({
                           <div
                             style={
                               view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                ? { opacity: '0.99' }
                                 : {}
                             }
                           >
@@ -426,6 +429,7 @@ function ClientWizardForm({
                               setCurrentStep={setCurrentStep}
                               sequence={sequence}
                               formik={formik}
+                              view_only={view_only}
                             />
                             {/* <ClientScript
                               client={client}
@@ -440,7 +444,7 @@ function ClientWizardForm({
                           <div
                             style={
                               view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                ? { opacity: '0.99' }
                                 : {}
                             }
                           >
@@ -448,6 +452,7 @@ function ClientWizardForm({
                               client={client}
                               formik={formik}
                               oidcConfiguration={oidcConfiguration}
+                              view_only={view_only}
                             />
                             {/* <ClientScript
                               client={client}
@@ -462,7 +467,7 @@ function ClientWizardForm({
                           <div
                             style={
                               view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                ? { opacity: '0.99' }
                                 : {}
                             }
                           >
@@ -471,6 +476,7 @@ function ClientWizardForm({
                               scripts={scripts}
                               formik={formik}
                               scopes={scopes}
+                              view_only={view_only}
                             />
                           </div>
                         )
@@ -479,7 +485,7 @@ function ClientWizardForm({
                           <div
                             style={
                               view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
+                                ? { opacity: '0.99' }
                                 : {}
                             }
                           >
@@ -487,6 +493,7 @@ function ClientWizardForm({
                               client={client}
                               formik={formik}
                               scripts={scripts}
+                              view_only={view_only}
                             />
                           </div>
                         )

@@ -13,6 +13,7 @@ function GluuSelectRow({
   lsize,
   rsize,
   doc_category,
+  disabled,
 }) {
   const { t } = useTranslation()
   return (
@@ -28,6 +29,7 @@ function GluuSelectRow({
               name={name}
               defaultValue={value}
               onChange={formik.handleChange}
+              disabled={disabled}
             >
               <option value="">{t('actions.choose')}...</option>
               {values.map((item, key) => (
@@ -47,6 +49,7 @@ GluuSelectRow.defaultProps = {
   values: [],
   lsize: 3,
   rsize: 9,
+  disabled: false,
 }
 
 export default GluuSelectRow

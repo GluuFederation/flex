@@ -12,6 +12,7 @@ function GluuBooleanSelectBox({
   lsize,
   rsize,
   doc_category,
+  disabled,
 }) {
   const { t } = useTranslation()
   return (
@@ -27,6 +28,7 @@ function GluuBooleanSelectBox({
               data-testid={name}
               defaultValue={value}
               onChange={formik.handleChange}
+              disabled={disabled}
             >
               <option value="false">{t('options.false')}</option>
               <option value="true">{t('options.true')}</option>

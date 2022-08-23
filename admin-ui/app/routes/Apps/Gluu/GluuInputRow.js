@@ -13,7 +13,7 @@ function GluuInputRow({
   lsize,
   rsize,
   doc_category,
-  disabled = false,
+  disabled,
 }) {
   const [customType, setCustomType] = useState(null)
 
@@ -58,6 +58,7 @@ GluuInputRow.defaultProps = {
   lsize: 3,
   rsize: 9,
   required: false,
+  disabled: false,
 }
 
 export default GluuInputRow

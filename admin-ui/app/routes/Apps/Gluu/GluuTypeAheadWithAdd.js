@@ -19,6 +19,7 @@ function GluuTypeAheadWithAdd({
   doc_category,
   lsize = 4,
   rsize = 8,
+  disabled,
 }) {
   const [items, setItems] = useState(value)
   const [opts, setOpts] = useState(options)
@@ -61,6 +62,7 @@ function GluuTypeAheadWithAdd({
               <Input
                 placeholder={placeholder}
                 id={inputId}
+                disabled={disabled}
                 data-testid="new_entry"
                 aria-label="new_entry"
               />
@@ -68,6 +70,7 @@ function GluuTypeAheadWithAdd({
             <Button
               color={`primary-${selectedTheme}`}
               type="button"
+              disabled={disabled}
               style={applicationStyle.buttonStyle}
               onClick={addItem}
             >
@@ -79,6 +82,7 @@ function GluuTypeAheadWithAdd({
           <Typeahead
             emptyLabel=""
             labelKey={name}
+            disabled={disabled}
             onChange={(selected) => {
               handleChange(name, selected)
             }}
@@ -94,6 +98,13 @@ function GluuTypeAheadWithAdd({
       </FormGroup>
     </GluuTooltip>
   )
+}
+
+GluuTypeAheadWithAdd.defaultProps = {
+  lsize: 4,
+  rsize: 8,
+  required: false,
+  disabled: false,
 }
 
 export default GluuTypeAheadWithAdd
