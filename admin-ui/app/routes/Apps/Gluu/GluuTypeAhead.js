@@ -28,6 +28,7 @@ function GluuTypeAhead({
   onChange = null,
   lsize = 4,
   rsize = 8,
+  disabled,
 }) {
   const { t } = useTranslation()
   return (
@@ -41,6 +42,7 @@ function GluuTypeAhead({
         <Col sm={rsize}>
           <Typeahead
             allowNew
+            disabled={disabled}
             ref={forwardRef}
             emptyLabel=""
             labelKey={name}
@@ -67,6 +69,13 @@ function GluuTypeAhead({
       </FormGroup>
     </GluuTooltip>
   )
+}
+
+GluuTypeAhead.defaultProps = {
+  lsize: 4,
+  rsize: 8,
+  required: false,
+  disabled: false,
 }
 
 export default GluuTypeAhead

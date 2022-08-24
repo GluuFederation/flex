@@ -7,7 +7,7 @@ import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientLogoutPanel({ client, scripts, formik }) {
+function ClientLogoutPanel({ client, scripts, formik, viewOnly }) {
   const { t } = useTranslation()
 
   scripts = scripts
@@ -40,6 +40,7 @@ function ClientLogoutPanel({ client, scripts, formik }) {
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}
+        disabled={viewOnly}
       />
       <GluuTypeAheadWithAdd
         name="postLogoutRedirectUris"
@@ -51,6 +52,7 @@ function ClientLogoutPanel({ client, scripts, formik }) {
         validator={postUriValidator}
         inputId={post_uri_id}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
 
       <GluuTypeAheadWithAdd
@@ -63,6 +65,7 @@ function ClientLogoutPanel({ client, scripts, formik }) {
         validator={uriValidator}
         inputId={backchannel_uri_id}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
       <GluuBooleanSelectBox
         name="backchannelLogoutSessionRequired"
@@ -72,6 +75,7 @@ function ClientLogoutPanel({ client, scripts, formik }) {
         lsize={4}
         rsize={8}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
 
       <GluuToogleRow
@@ -82,6 +86,7 @@ function ClientLogoutPanel({ client, scripts, formik }) {
         label="fields.frontChannelLogoutSessionRequired"
         value={client.frontChannelLogoutSessionRequired}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
     </Container>
   )

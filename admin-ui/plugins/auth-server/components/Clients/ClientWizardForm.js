@@ -26,11 +26,10 @@ const sequence = [
   'ClientScripts',
 ]
 const ATTRIBUTE = 'attributes'
-const DESCRIPTION = 'description'
 let commitMessage = ''
 function ClientWizardForm({
   client_data,
-  view_only,
+  viewOnly,
   scopes,
   scripts,
   permissions,
@@ -335,34 +334,24 @@ function ClientWizardForm({
                     switch (currentStep) {
                       case sequence[0]:
                         return (
-                          <div
-                            style={
-                              view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
-                                : {}
-                            }
-                          >
+                          <div>
                             <ClientBasic
                               client={client}
                               scopes={scopes}
                               formik={formik}
+                              viewOnly={viewOnly}
                               oidcConfiguration={oidcConfiguration}
                             />
                           </div>
                         )
                       case sequence[1]:
                         return (
-                          <div
-                            style={
-                              view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
-                                : {}
-                            }
-                          >
+                          <div>
                             <ClientTokensPanel
                               client={client}
                               scripts={scripts}
                               formik={formik}
+                              viewOnly
                             />
                             {/* <ClientAdvanced
                               client={client}
@@ -373,17 +362,12 @@ function ClientWizardForm({
                         )
                       case sequence[2]:
                         return (
-                          <div
-                            style={
-                              view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
-                                : {}
-                            }
-                          >
+                          <div>
                             <ClientLogoutPanel
                               client={client}
                               scripts={scripts}
                               formik={formik}
+                              viewOnly
                             />
                             {/* <ClientEncryption
                               client={client}
@@ -394,30 +378,19 @@ function ClientWizardForm({
                         )
                       case sequence[3]:
                         return (
-                          <div
-                            style={
-                              view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
-                                : {}
-                            }
-                          >
+                          <div>
                             <ClientSoftwarePanel
                               client={client}
                               scripts={scripts}
                               formik={formik}
+                              viewOnly={viewOnly}
                             />
                             {/* <ClientAttributes client={client} formik={formik} /> */}
                           </div>
                         )
                       case sequence[4]:
                         return (
-                          <div
-                            style={
-                              view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
-                                : {}
-                            }
-                          >
+                          <div>
                             <ClientCibaParUmaPanel
                               client={client}
                               umaResources={umaResources}
@@ -426,6 +399,7 @@ function ClientWizardForm({
                               setCurrentStep={setCurrentStep}
                               sequence={sequence}
                               formik={formik}
+                              viewOnly={viewOnly}
                             />
                             {/* <ClientScript
                               client={client}
@@ -437,17 +411,12 @@ function ClientWizardForm({
                         )
                       case sequence[5]:
                         return (
-                          <div
-                            style={
-                              view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
-                                : {}
-                            }
-                          >
+                          <div>
                             <ClientEncryptionSigningPanel
                               client={client}
                               formik={formik}
                               oidcConfiguration={oidcConfiguration}
+                              viewOnly={viewOnly}
                             />
                             {/* <ClientScript
                               client={client}
@@ -459,34 +428,24 @@ function ClientWizardForm({
                         )
                       case sequence[6]:
                         return (
-                          <div
-                            style={
-                              view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
-                                : {}
-                            }
-                          >
+                          <div>
                             <ClientAdvanced
                               client={client}
                               scripts={scripts}
                               formik={formik}
                               scopes={scopes}
+                              viewOnly={viewOnly}
                             />
                           </div>
                         )
                       case sequence[7]:
                         return (
-                          <div
-                            style={
-                              view_only
-                                ? { pointerEvents: 'none', opacity: '0.99' }
-                                : {}
-                            }
-                          >
+                          <div>
                             <ClientScript
                               client={client}
                               formik={formik}
                               scripts={scripts}
+                              viewOnly={viewOnly}
                             />
                           </div>
                         )
@@ -520,7 +479,7 @@ function ClientWizardForm({
                       </Button>
                     )}
                     {currentStep === sequence[sequence.length - 1] &&
-                      !view_only &&
+                      !viewOnly &&
                       hasPermission(permissions, CLIENT_WRITE) && (
                         <Button
                           type="button"

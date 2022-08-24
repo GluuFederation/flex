@@ -1,6 +1,6 @@
 import React from 'react'
 import Toggle from 'react-toggle'
-function GluuToogle({ name, formik, value, handler }) {
+function GluuToogle({ name, formik, value, handler, disabled }) {
   return (
     <Toggle
       name={name}
@@ -8,6 +8,7 @@ function GluuToogle({ name, formik, value, handler }) {
       defaultChecked={value}
       onClick={handler}
       onChange={formik.handleChange}
+      disabled={disabled}
     />
   )
 }

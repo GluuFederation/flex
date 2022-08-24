@@ -43,6 +43,7 @@ function ClientCibaParUmaPanel({ client,
   setCurrentStep,
   sequence,
   formik,
+  viewOnly,
 }) {
   const { t } = useTranslation()
   const history = useHistory()
@@ -135,6 +136,7 @@ function ClientCibaParUmaPanel({ client,
         value={client.backchannelTokenDeliveryMode}
         values={cibaDeliveryModes}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       ></GluuSelectRow>
       <GluuInputRow
         label="fields.backchannelClientNotificationEndpoint"
@@ -142,6 +144,7 @@ function ClientCibaParUmaPanel({ client,
         formik={formik}
         value={client.backchannelClientNotificationEndpoint}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
 
       <GluuToogleRow
@@ -150,6 +153,7 @@ function ClientCibaParUmaPanel({ client,
         label="fields.backchannelUserCodeParameter"
         value={client.backchannelUserCodeParameter}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
       <h2>{t(`titles.PAR`)}</h2>
       <GluuInputRow
@@ -158,6 +162,7 @@ function ClientCibaParUmaPanel({ client,
         formik={formik}
         value={client.parLifetime}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
       <GluuToogleRow
         name="requirePar"
@@ -165,6 +170,7 @@ function ClientCibaParUmaPanel({ client,
         label="fields.requirePar"
         value={client.requirePar}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
       <h2>{t(`titles.UMA`)}</h2>
       <FormGroup row>
@@ -183,12 +189,14 @@ function ClientCibaParUmaPanel({ client,
               control={<Radio color="primary" />}
               label="JWT"
               checked={client.rptAsJwt == true}
+              disabled={viewOnly}
             />
             <FormControlLabel
               value={false}
               control={<Radio color="primary" />}
               label="Reference"
               checked={client.rptAsJwt == false}
+              disabled={viewOnly}
             />
           </RadioGroup>
         </Col>
@@ -206,6 +214,7 @@ function ClientCibaParUmaPanel({ client,
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
+        disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadForDn
         name="rptClaimsScripts"
@@ -216,6 +225,7 @@ function ClientCibaParUmaPanel({ client,
         doc_category={DOC_CATEGORY}
         doc_entry="rptClaimsScripts"
         lsize={3}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
       {!isEmpty(umaResources) && (
         <FormGroup row>
@@ -294,12 +304,14 @@ function ClientCibaParUmaPanel({ client,
                     control={<Radio color="primary" />}
                     label={t('fields.scope')}
                     checked={showScopeSection === 'scope'}
+                    disabled={viewOnly}
                   />
                   <FormControlLabel
                     value={'expression'}
                     control={<Radio color="primary" />}
                     label={t('fields.scopeExpression')}
                     checked={showScopeSection === 'expression'}
+                    disabled={viewOnly}
                   />
                 </RadioGroup>
               </Col>

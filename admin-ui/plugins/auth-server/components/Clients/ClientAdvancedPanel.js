@@ -9,10 +9,9 @@ import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
 import DatePicker from 'react-datepicker'
 import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
-import { useSelector } from 'react-redux'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
+function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
   const { t } = useTranslation()
   const request_uri_id = 'request_uri_id'
   const requestUris = []
@@ -74,6 +73,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
               type="select"
               id="subjectType"
               name="subjectType"
+              disabled={viewOnly}
               defaultValue={client.subjectType}
               onChange={formik.handleChange}
             >
@@ -93,6 +93,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         label="fields.persist_client_authorizations"
         value={client.persistClientAuthorizations}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
       <GluuBooleanSelectBox
         name="allowSpontaneousScopes"
@@ -102,6 +103,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         lsize={3}
         rsize={9}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
       <GluuTypeAheadForDn
         name="spontaneousScopes"
@@ -114,6 +116,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
       {client.inum && (
         <FormGroup row>
@@ -134,6 +137,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         formik={formik}
         value={client.initiateLoginUri}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
       <GluuTypeAheadWithAdd
         name="requestUris"
@@ -147,6 +151,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
+        disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
       <GluuTypeAheadForDn
         name="defaultAcrValues"
@@ -157,6 +162,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="authorizedAcrValues"
@@ -167,6 +173,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuToogleRow
         name="jansDefaultPromptLogin"
@@ -176,6 +183,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         label="fields.defaultPromptLogin"
         value={client.jansDefaultPromptLogin}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
       <GluuInputRow
         label="fields.tls_client_auth_subject_dn"
@@ -183,6 +191,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
         formik={formik}
         value={client.tlsClientAuthSubjectDn}
         doc_category={DOC_CATEGORY}
+        disabled={viewOnly}
       />
 
       <FormGroup row>
@@ -197,6 +206,7 @@ function ClientAdvancedPanel({ client, scripts, formik, scopes }) {
               doc_category={DOC_CATEGORY}
               lsize={6}
               rsize={6}
+              disabled={viewOnly}
             />
           )}
         </Col>
