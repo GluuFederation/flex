@@ -4,7 +4,7 @@ import GluuTypeAheadForDn from 'Routes/Apps/Gluu/GluuTypeAheadForDn'
 
 const DOC_CATEGORY = 'openid_client'
 
-function ClientScriptPanel({ client, scripts, formik, view_only }) {
+function ClientScriptPanel({ client, scripts, formik, viewOnly }) {
   const postScripts = scripts
     .filter((item) => item.scriptType == 'POST_AUTHN')
     .filter((item) => item.enabled)
@@ -42,7 +42,7 @@ function ClientScriptPanel({ client, scripts, formik, view_only }) {
         value={client.spontaneousScopeScriptDns}
         options={spontaneousScripts}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="updateTokenScriptDns"
@@ -51,7 +51,7 @@ function ClientScriptPanel({ client, scripts, formik, view_only }) {
         value={client.updateTokenScriptDns}
         options={updateTokenScriptDns}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="postAuthnScripts"
@@ -60,7 +60,7 @@ function ClientScriptPanel({ client, scripts, formik, view_only }) {
         value={client.postAuthnScripts}
         options={postScripts}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="introspectionScripts"
@@ -69,7 +69,7 @@ function ClientScriptPanel({ client, scripts, formik, view_only }) {
         value={client.introspectionScripts}
         options={instrospectionScripts}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="ropcScripts"
@@ -78,7 +78,7 @@ function ClientScriptPanel({ client, scripts, formik, view_only }) {
         value={client.ropcScripts}
         options={ropcScripts}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
       <GluuTypeAheadForDn
         name="consentGatheringScripts"
@@ -87,7 +87,7 @@ function ClientScriptPanel({ client, scripts, formik, view_only }) {
         value={client.consentGatheringScripts}
         options={consentScripts}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
     </Container>
   )

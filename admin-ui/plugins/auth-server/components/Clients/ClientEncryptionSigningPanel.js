@@ -5,7 +5,7 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_only }) {
+function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, viewOnly }) {
   const { t } = useTranslation()
   const accessTokenSigningAlg = !!oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
     ? oidcConfiguration.tokenEndpointAuthSigningAlgValuesSupported
@@ -72,7 +72,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
         formik={formik}
         value={client.jwksUri}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <GluuInputRow
         label="fields.jwks"
@@ -80,7 +80,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
         formik={formik}
         value={client.jwks}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <h2>{t(`titles.id_token`)}</h2>
       <FormGroup row>
@@ -94,7 +94,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="idTokenSignedResponseAlg"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={6}>
@@ -107,7 +107,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             values={idTokenEncryptedResponseAlg}
             name="idTokenEncryptedResponseAlg"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={6}>
@@ -120,7 +120,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="idTokenEncryptedResponseEnc"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
       </FormGroup>
@@ -136,7 +136,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="accessTokenSigningAlg"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
       </FormGroup>
@@ -152,7 +152,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="userInfoSignedResponseAlg"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={6}>
@@ -165,7 +165,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="userInfoEncryptedResponseAlg"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={6}>
@@ -178,7 +178,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="userInfoEncryptedResponseEnc"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
       </FormGroup>
@@ -194,7 +194,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="jansAuthSignedRespAlg"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={6}>
@@ -207,7 +207,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             values={idTokenEncryptedResponseAlg}
             name="jansAuthEncRespAlg"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={6}>
@@ -220,7 +220,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="jansAuthEncRespEnc"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
       </FormGroup>
@@ -236,7 +236,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="requestObjectSigningAlg"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={6}>
@@ -249,7 +249,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="requestObjectEncryptionAlg"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={6}>
@@ -262,7 +262,7 @@ function ClientEncryptionSigningPanel({ client, formik, oidcConfiguration, view_
             rsize={6}
             name="requestObjectEncryptionEnc"
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
       </FormGroup>

@@ -21,7 +21,7 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
-const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only }) => {
+const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, viewOnly }) => {
   const { t } = useTranslation()
   const uri_id = 'redirect_uri'
   const post_uri_id = 'post_uri_id'
@@ -83,7 +83,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
                 style={{ backgroundColor: '#F5F5F5' }}
                 id="inum"
                 name="inum"
-                disabled={view_only}
+                disabled={viewOnly}
                 value={client.inum}
               />
             </Col>
@@ -96,7 +96,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
         formik={formik}
         value={client.clientName || client.displayName}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="clientSecret">
         <FormGroup row>
@@ -116,7 +116,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
                 type={showClientSecret ? 'text' : 'password'}
                 value={client.clientSecret}
                 onChange={formik.handleChange}
-                disabled={view_only}
+                disabled={viewOnly}
               />
               <IconButton
                 onClick={handleClickShowClientSecret}
@@ -134,7 +134,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
         formik={formik}
         value={client.description}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <GluuSelectRow
         label="fields.token_endpoint_auth_method"
@@ -145,7 +145,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
         rsize={9}
         name="tokenEndpointAuthMethod"
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       />
 
       <FormGroup row>
@@ -156,7 +156,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
               type="select"
               id="subjectType"
               name="subjectType"
-              disabled={view_only}
+              disabled={viewOnly}
               defaultValue={client.subjectType}
               onChange={formik.handleChange}
             >
@@ -173,7 +173,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
         formik={formik}
         value={client.sectorIdentifierUri}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <GluuTypeAhead
         name="grantTypes"
@@ -184,7 +184,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAhead>
       <GluuTypeAhead
         name="responseTypes"
@@ -195,7 +195,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAhead>
       <FormGroup row>
         <Col sm={6}>
@@ -207,7 +207,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
             doc_category={DOC_CATEGORY}
             lsize={9}
             rsize={3}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={6}>
@@ -219,7 +219,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
             label="fields.is_trusted_client"
             value={client.trustedClient}
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
       </FormGroup>
@@ -233,7 +233,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
               name="applicationType"
               defaultValue={client.applicationType}
               onChange={formik.handleChange}
-              disabled={view_only}
+              disabled={viewOnly}
             >
               <option value="">{t('actions.choose')}...</option>
               <option>web</option>
@@ -254,7 +254,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
 
       <GluuInputRow
@@ -263,7 +263,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
         formik={formik}
         value={client.redirectUrisRegex}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <GluuTypeAheadForDn
         name="scopes"
@@ -274,7 +274,7 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, view_only
         doc_category={DOC_CATEGORY}
         lsize={3}
         rsize={9}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAheadForDn>
     </Container>
   )

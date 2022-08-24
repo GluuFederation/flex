@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
 const DOC_CATEGORY = 'openid_client'
 
-function ClientTokensPanel({ client, scripts, formik, view_only }) {
+function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
   const { t } = useTranslation()
   const additionalAudiences = []
   function audienceValidator(aud) {
@@ -67,14 +67,14 @@ function ClientTokensPanel({ client, scripts, formik, view_only }) {
                   control={<Radio color="primary" />}
                   label="JWT"
                   checked={client.accessTokenAsJwt == true}
-                  disabled={view_only}
+                  disabled={viewOnly}
                 />
                 <FormControlLabel
                   value={false}
                   control={<Radio color="primary" />}
                   label="Reference"
                   checked={client.accessTokenAsJwt == false}
-                  disabled={view_only}
+                  disabled={viewOnly}
                 />
               </RadioGroup>
             </Col>
@@ -89,7 +89,7 @@ function ClientTokensPanel({ client, scripts, formik, view_only }) {
             label="fields.includeClaimsInIdToken"
             value={client.includeClaimsInIdToken}
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
         <Col sm={12}>
@@ -101,7 +101,7 @@ function ClientTokensPanel({ client, scripts, formik, view_only }) {
             label="fields.requireAuthTime"
             value={client.requireAuthTime}
             doc_category={DOC_CATEGORY}
-            disabled={view_only}
+            disabled={viewOnly}
           />
         </Col>
       </FormGroup>
@@ -116,7 +116,7 @@ function ClientTokensPanel({ client, scripts, formik, view_only }) {
         lsize={8}
         rsize={4}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <GluuInputRow
         label="fields.idTokenTokenBindingCnf"
@@ -126,7 +126,7 @@ function ClientTokensPanel({ client, scripts, formik, view_only }) {
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <GluuTypeAheadWithAdd
         name="additionalAudience"
@@ -137,7 +137,7 @@ function ClientTokensPanel({ client, scripts, formik, view_only }) {
         validator={audienceValidator}
         inputId={audience_id}
         doc_category={DOC_CATEGORY}
-        disabled={view_only}
+        disabled={viewOnly}
       ></GluuTypeAheadWithAdd>
 
       <GluuInputRow
@@ -149,7 +149,7 @@ function ClientTokensPanel({ client, scripts, formik, view_only }) {
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <GluuInputRow
         label="fields.refreshTokenLifetime"
@@ -160,7 +160,7 @@ function ClientTokensPanel({ client, scripts, formik, view_only }) {
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}
-        disabled={view_only}
+        disabled={viewOnly}
       />
       <GluuInputRow
         label="fields.defaultMaxAge"
@@ -171,7 +171,7 @@ function ClientTokensPanel({ client, scripts, formik, view_only }) {
         doc_category={DOC_CATEGORY}
         lsize={4}
         rsize={8}
-        disabled={view_only}
+        disabled={viewOnly}
       />
     </Container>
   )

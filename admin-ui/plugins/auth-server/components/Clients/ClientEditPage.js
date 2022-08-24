@@ -15,7 +15,7 @@ import isEmpty from 'lodash/isEmpty'
 
 function ClientEditPage({
   clientData,
-  view_only,
+  viewOnly,
   scopes,
   scripts,
   loading,
@@ -75,7 +75,7 @@ function ClientEditPage({
       />
       <ClientWizardForm
         client_data={clientData}
-        view_only={view_only}
+        viewOnly={viewOnly}
         scopes={scopes}
         scripts={scripts}
         permissions={permissions}
@@ -89,7 +89,7 @@ function ClientEditPage({
 const mapStateToProps = (state) => {
   return {
     clientData: state.oidcReducer.item,
-    view_only: state.oidcReducer.view,
+    viewOnly: state.oidcReducer.view,
     loading: state.oidcReducer.loading,
     scopes: state.scopeReducer.items,
     scripts: state.initReducer.scripts,
