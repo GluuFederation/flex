@@ -145,6 +145,7 @@
     "name": "Name",
     "native_persistence_configuration": "nativePersistenceConfiguration",
     "oauth": "OAuth",
+    "organization":"Organization",
     "openid": "OpenID",
     "oxauth_claim_name": "oxAuth claim name",
     "ox_attributes": "oxAttributes",
