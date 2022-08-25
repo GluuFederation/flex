@@ -42,11 +42,12 @@ import getThemeColor from 'Context/theme/config'
 
 function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const { t } = useTranslation()
+  clients = clients.map(addOrg)
   const userAction = {}
   const options = {}
   const myActions = []
   const history = useHistory()
-  const { search } = useLocation();
+  const { search } = useLocation()
   const pageSize = localStorage.getItem('paggingSize') || 10
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -71,6 +72,31 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   let memoLimit = limit
   let memoPattern = pattern
 
+  function addOrg(client) {
+    let org = '-'
+    if(client.hasOwnProperty("o")){
+      client['organization'] = client.o
+      return client
+    }
+    if (
+      client.hasOwnProperty('customAttributes') &&
+      Array.isArray(client.customAttributes)
+    ) {
+      const results = client.customAttributes.filter(
+        (item) => item.name == 'o' || item.name == 'organization',
+      )
+      if (results.length !== 0) {
+        org = results[0].values[0]
+      }
+    }
+    client['organization'] = org
+    return client
+  }
+
+  function shouldHideOrgColumn(clients) {
+    return !clients.some((client) => client.organization != '-')
+  }
+
   const handler = () => {
     setScopesModal({
       data: [],
@@ -83,6 +109,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       show: true,
     })
   }
+
   const tableColumns = [
     {
       title: `${t('fields.inum')}`,
@@ -132,14 +159,22 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
         </Badge>
       ),
     },
+    {
+      title: `${t('fields.organization')}`,
+      field: 'organization',
+      hidden: shouldHideOrgColumn(clients),
+      sorting: true,
+      searchable: true,
+    },
   ]
 
   useEffect(() => {
     if (haveScopeINUMParam) {
       const scopeInumParam = search.replace('?scopeInum=', '')
-      
+
       if (scopeInumParam.length > 0) {
-        const clientsScope = scopes.find(({ inum }) => inum === scopeInumParam)?.clients || []
+        const clientsScope =
+          scopes.find(({ inum }) => inum === scopeInumParam)?.clients || []
         setScopeClients(clientsScope)
       }
     } else {
@@ -153,7 +188,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
 
       setTimeout(() => {
         setIsPageLoading(false)
-      }, 3000);
+      }, 3000)
     }
   }, [haveScopeINUMParam])
 
@@ -303,7 +338,10 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              headerStyle: {
+                ...applicationStyle.tableHeaderStyle,
+                ...bgThemeColor,
+              },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

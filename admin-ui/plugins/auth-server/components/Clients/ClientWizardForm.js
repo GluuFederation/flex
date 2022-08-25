@@ -89,7 +89,6 @@ function ClientWizardForm({
   function submitForm(message) {
     commitMessage = message
     toggle()
-    //document.querySelector('button[type="submit"]').click()
     document.getElementsByClassName('UserActionSubmitButton')[0].click()
   }
 
