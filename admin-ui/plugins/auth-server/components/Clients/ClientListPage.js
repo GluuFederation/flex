@@ -73,6 +73,11 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   let memoPattern = pattern
 
   function addOrg(client) {
+    let org = '-'
+    if(client.hasOwnProperty("o")){
+      client['organization'] = client.o
+      return client
+    }
     if (
       client.hasOwnProperty('customAttributes') &&
       Array.isArray(client.customAttributes)
@@ -80,20 +85,16 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       const results = client.customAttributes.filter(
         (item) => item.name == 'o' || item.name == 'organization',
       )
-      if (results.length === 0) {
-        client['organization'] = '-'
-      } else {
-        client['organization'] = results[0].values[0]
+      if (results.length !== 0) {
+        org = results[0].values[0]
       }
-    } else {
-      client['organization'] = '-'
     }
-
+    client['organization'] = org
     return client
   }
 
   function shouldHideOrgColumn(clients) {
-    return clients.filter(client => client.organization != '-').length === 0 ? true:false
+    return !clients.some((client) => client.organization != '-')
   }
 
   const handler = () => {
