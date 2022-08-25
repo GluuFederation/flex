@@ -16,6 +16,7 @@ import {
   getCustomScriptByType,
   setCurrentItem,
   getCustomScripts,
+  viewOnly,
 } from 'Plugins/admin/redux/actions/CustomScriptActions'
 import {
   hasPermission,
@@ -92,6 +93,18 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     }))
   }
   if (hasPermission(permissions, SCRIPT_READ)) {
+    myActions.push((rowData) => ({
+      icon: 'visibility',
+      iconProps: {
+        id: 'viewCustomScript' + rowData.inum,
+      },
+      tooltip: `${t('messages.view_script_details')}`,
+      onClick: (event, rowData) =>
+        handleGoToCustomScriptEditPage(rowData, true),
+      disabled: false,
+    }))
+  }
+  if (hasPermission(permissions, SCRIPT_READ)) {
     myActions.push({
       icon: () => (
         <GluuCustomScriptSearch
@@ -154,7 +167,8 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   function handleGoToCustomScriptAddPage() {
     return history.push('/adm/script/new')
   }
-  function handleGoToCustomScriptEditPage(row) {
+  function handleGoToCustomScriptEditPage(row, edition) {
+    dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
     return history.push(`/adm/script/edit:` + row.inum)
   }
@@ -184,11 +198,17 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
                 field: 'enabled',
                 type: 'boolean',
                 render: (rowData) => (
-                  <Badge color={rowData.enabled == true ? `primary-${selectedTheme}` : 'dimmed'}>
+                  <Badge
+                    color={
+                      rowData.enabled == true
+                        ? `primary-${selectedTheme}`
+                        : 'dimmed'
+                    }
+                  >
                     {rowData.enabled ? 'true' : 'false'}
                   </Badge>
                 ),
-                defaultSort: 'desc'
+                defaultSort: 'desc',
               },
             ]}
             data={selectedScripts}
@@ -201,9 +221,14 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
               selection: false,
               pageSize: pageSize,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled ? themeColors.lightBackground : '#FFF',
+                backgroundColor: rowData.enabled
+                  ? themeColors.lightBackground
+                  : '#FFF',
               }),
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              headerStyle: {
+                ...applicationStyle.tableHeaderStyle,
+                ...bgThemeColor,
+              },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {

@@ -22,7 +22,7 @@ import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import items from './scriptTypes'
 
-function CustomScriptForm({ item, scripts, handleSubmit }) {
+function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
@@ -43,7 +43,9 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
     }
     return false
   })
-  const [selectedLanguage, setSelectedLanguage] = useState(item.programmingLanguage)
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    item.programmingLanguage,
+  )
 
   function activate() {
     if (!init) {
@@ -229,6 +231,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               id="name"
               valid={!formik.errors.name && !formik.touched.name && init}
               name="name"
+              disabled={viewOnly}
               defaultValue={item.name}
               onKeyUp={activate}
               onChange={formik.handleChange}
@@ -252,6 +255,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                   init
                 }
                 id="description"
+                disabled={viewOnly}
                 defaultValue={item.description}
                 onChange={formik.handleChange}
               />
@@ -270,6 +274,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 id="aliases"
                 defaultValue={item.aliases}
                 multiple
+                disabled={viewOnly}
                 onChange={formik.handleChange}
               >
                 <option value="urn:oasis:names:tc:SAML:2.0:ac:classes:InternetProtocol">
@@ -296,6 +301,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 id="scriptType"
                 name="scriptType"
                 defaultValue={item.scriptType}
+                disabled={viewOnly}
                 onChange={(e) => {
                   setScriptTypeState(e.target.value)
                   formik.setFieldValue('scriptType', e.target.value)
@@ -325,6 +331,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 id="programmingLanguage"
                 name="programmingLanguage"
                 defaultValue={item.programmingLanguage}
+                disabled={viewOnly}
                 onChange={(e) => {
                   formik.handleChange('programmingLanguage')
                   setSelectedLanguage(e.target.value)
@@ -336,11 +343,11 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               </CustomInput>
             </InputGroup>
             {formik.errors.programmingLanguage &&
-            formik.touched.programmingLanguage && (
-              <div style={{ color: 'red' }}>
-                {formik.errors.programmingLanguage}
-              </div>
-            )}
+              formik.touched.programmingLanguage && (
+                <div style={{ color: 'red' }}>
+                  {formik.errors.programmingLanguage}
+                </div>
+              )}
           </Col>
         </FormGroup>
       </GluuTooltip>
@@ -353,14 +360,15 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                 type="select"
                 id="location_type"
                 name="location_type"
+                disabled={viewOnly}
                 defaultValue={
                   !!item.moduleProperties &&
                   item.moduleProperties.filter(
                     (i) => i.value1 === 'location_type',
                   ).length > 0
                     ? item.moduleProperties.filter(
-                      (it) => it.value1 === 'location_type',
-                    )[0].value2
+                        (it) => it.value1 === 'location_type',
+                      )[0].value2
                     : undefined
                 }
                 onChange={(e) => {
@@ -388,6 +396,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                     !formik.touched.location_path &&
                     init
                   }
+                  disabled={viewOnly}
                   id="location_path"
                   defaultValue={
                     !!item.moduleProperties &&
@@ -395,8 +404,8 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                       (i) => i.value1 === 'location_path',
                     ).length > 0
                       ? item.moduleProperties.filter(
-                        (it) => it.value1 === 'location_path',
-                      )[0].value2
+                          (it) => it.value1 === 'location_path',
+                        )[0].value2
                       : undefined
                   }
                   onChange={(e) => {
@@ -418,14 +427,15 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
                   type="select"
                   id="usage_type"
                   name="usage_type"
+                  disabled={viewOnly}
                   defaultValue={
                     !!item.moduleProperties &&
                     item.moduleProperties.filter(
                       (vItem) => vItem.value1 === 'usage_type',
                     ).length > 0
                       ? item.moduleProperties.filter(
-                        (kItem) => kItem.value1 === 'usage_type',
-                      )[0].value2
+                          (kItem) => kItem.value1 === 'usage_type',
+                        )[0].value2
                       : undefined
                   }
                   onChange={(e) => {
@@ -448,6 +458,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           <Col sm={9}>
             <Counter
               counter={item.level}
+              disabled={viewOnly}
               onCounterChange={(level) => onLevelChange(level)}
             />
             <Input type="hidden" id="level" defaultValue={item.level} />
@@ -461,6 +472,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
         keyPlaceholder={t('placeholders.enter_property_key')}
         valuePlaceholder={t('placeholders.enter_property_value')}
         options={getPropertiesConfig(item)}
+        disabled={viewOnly}
       ></GluuProperties>
       {!scriptPath && (
         <GluuInputEditor
@@ -472,6 +484,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
           rsize={10}
           formik={formik}
           value={item.script}
+          readOnly={viewOnly}
           required
         ></GluuInputEditor>
       )}
@@ -484,6 +497,7 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
               name="enabled"
               onChange={formik.handleChange}
               defaultChecked={item.enabled}
+              disabled={viewOnly}
             />
           </Col>
         </FormGroup>
@@ -494,15 +508,17 @@ function CustomScriptForm({ item, scripts, handleSubmit }) {
             type="hidden"
             id="moduleProperties"
             defaultValue={item.moduleProperties}
+            disabled={viewOnly}
           />
         </FormGroup>
       </GluuTooltip>
-      <GluuCommitFooter saveHandler={toggle} />
+      {!viewOnly && <GluuCommitFooter saveHandler={toggle} />}
       <GluuCommitDialog
         handler={toggle}
         modal={modal}
         onAccept={submitForm}
         formik={formik}
+        disabled={viewOnly}
       />
     </Form>
   )

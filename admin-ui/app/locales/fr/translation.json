@@ -290,6 +290,7 @@
     "resource_not_found_message": "La ressource demandée n'existe pas sur ce serveur. Veuillez contacter l'administrateur du site ou l'équipe d'assistance.",
     "resource_not_found_title": "Ressource introuvable",
     "view_client_details": "Afficher les détails du client",
+    "view_script_details": "Afficher les détails du script personnalisé",
     "add_new_user": "Ajouter un utilisateur",
     "no_scope_in_client": "Aucune donnée d'étendue pour ce client"
   },
