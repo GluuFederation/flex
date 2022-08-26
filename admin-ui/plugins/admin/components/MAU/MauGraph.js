@@ -139,7 +139,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
           <CardBody>
             <Row>
               <Col sm={5}>
-                <GluuLabel label="Select a date range" size="4" style={{ minWidth: '200px' }} />
+                <GluuLabel label={t('fields.select_date_range')} size="4" style={{ minWidth: '200px' }} />
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                   <Grid container justifyContent="space-around">
                     <KeyboardDatePicker
@@ -148,7 +148,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
                       format="MM/dd/yyyy"
                       margin="normal"
                       id="date-picker-inline"
-                      label="Start Date"
+                      label={t('dashboard.start_date')}
                       value={startDate}
                       onChange={(date) => setStartDate(date)}
                       KeyboardButtonProps={{
@@ -162,7 +162,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
                       format="MM/dd/yyyy"
                       margin="normal"
                       id="date-picker-inline"
-                      label="End Date"
+                      label={t('dashboard.end_date')}
                       value={endDate}
                       onChange={(date) => setEndDate(date)}
                       KeyboardButtonProps={{

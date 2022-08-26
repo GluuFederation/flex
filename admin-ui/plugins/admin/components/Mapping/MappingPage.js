@@ -91,7 +91,7 @@ function MappingPage({
                     onClick={showMappingDialog}
                   >
                     <i className="fa fa-plus mr-2"></i>
-                    Add Mapping
+                    {t('actions.add_mapping')}
                   </Button>
                 </Box>
               </Col>
