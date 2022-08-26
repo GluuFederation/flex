@@ -10,7 +10,15 @@ import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
-function CustomScriptEditPage({ item, scripts, loading, dispatch, saveOperationFlag, errorInSaveOperationFlag }) {
+function CustomScriptEditPage({
+  item,
+  scripts,
+  loading,
+  dispatch,
+  saveOperationFlag,
+  errorInSaveOperationFlag,
+  viewOnly,
+}) {
   const userAction = {}
   const history = useHistory()
   const { t } = useTranslation()
@@ -41,6 +49,7 @@ function CustomScriptEditPage({ item, scripts, loading, dispatch, saveOperationF
           <CustomScriptForm
             item={item}
             scripts={scripts}
+            viewOnly={viewOnly}
             handleSubmit={handleSubmit}
           />
         </CardBody>
@@ -55,7 +64,9 @@ const mapStateToProps = (state) => {
     loading: state.customScriptReducer.loading,
     permissions: state.authReducer.permissions,
     saveOperationFlag: state.customScriptReducer.saveOperationFlag,
-    errorInSaveOperationFlag: state.customScriptReducer.errorInSaveOperationFlag,
+    errorInSaveOperationFlag:
+      state.customScriptReducer.errorInSaveOperationFlag,
+    viewOnly: state.customScriptReducer.view,
   }
 }
 export default connect(mapStateToProps)(CustomScriptEditPage)

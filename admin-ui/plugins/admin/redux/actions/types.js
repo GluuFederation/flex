@@ -1,6 +1,7 @@
 export const RESET = 'RESET'
 
 // Custom Script
+export const SET_VIEW = 'SET_VIEW'
 export const GET_CUSTOM_SCRIPT = 'GET_CUSTOM_SCRIPT'
 export const GET_CUSTOM_SCRIPT_RESPONSE = 'GET_CUSTOM_SCRIPT_RESPONSE'
 export const ADD_CUSTOM_SCRIPT = 'ADD_CUSTOM_SCRIPT'

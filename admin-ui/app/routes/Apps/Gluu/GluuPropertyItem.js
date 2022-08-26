@@ -9,6 +9,7 @@ function GluuPropertyItem({
   valuePlaceholder,
   onPropertyChange,
   onPropertyRemove,
+  disabled = false,
 }) {
   const { t } = useTranslation()
   return (
@@ -17,6 +18,7 @@ function GluuPropertyItem({
         <Input
           name={'key'}
           defaultValue={property.key}
+          disabled={disabled}
           onChange={onPropertyChange(position)}
           placeholder={
             keyPlaceholder
@@ -29,6 +31,7 @@ function GluuPropertyItem({
         <Input
           name={'value'}
           defaultValue={property.value}
+          disabled={disabled}
           onChange={onPropertyChange(position)}
           placeholder={
             valuePlaceholder
@@ -41,6 +44,7 @@ function GluuPropertyItem({
         <Button
           type="button"
           color="danger"
+          disabled={disabled}
           onClick={() => onPropertyRemove(position)}
         >
           <i className="fa fa-fw fa-trash mr-2"></i>

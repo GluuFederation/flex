@@ -12,6 +12,7 @@ function GluuProperties({
   keyPlaceholder,
   valuePlaceholder,
   options,
+  disabled = false,
 }) {
   const [properties, setProperties] = useState(options)
   const { t } = useTranslation()
@@ -52,6 +53,7 @@ function GluuProperties({
           type="button"
           color={`primary-${selectedTheme}`}
           onClick={addProperty}
+          disabled={disabled}
         >
           <i className="fa fa-fw fa-plus mr-2"></i>
           {t('actions.add_property')}
@@ -68,6 +70,7 @@ function GluuProperties({
                     keyPlaceholder={keyPlaceholder}
                     valuePlaceholder={valuePlaceholder}
                     property={item}
+                    disabled={disabled}
                     onPropertyChange={changeProperty}
                     onPropertyRemove={removeProperty}
                   ></GluuPropertyItem>

@@ -12,6 +12,7 @@ import {
   DELETE_CUSTOM_SCRIPT,
   DELETE_CUSTOM_SCRIPT_RESPONSE,
   SET_SCRIPT_ITEM,
+  SET_VIEW,
 } from './types'
 
 export const getCustomScripts = (action) => ({
@@ -77,4 +78,9 @@ export const deleteCustomScriptResponse = (inum) => ({
 export const setCurrentItem = (item) => ({
   type: SET_SCRIPT_ITEM,
   payload: { item },
+})
+
+export const viewOnly = (view) => ({
+  type: SET_VIEW,
+  payload: { view },
 })
