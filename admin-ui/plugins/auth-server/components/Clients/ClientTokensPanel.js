@@ -7,6 +7,7 @@ import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
@@ -48,37 +49,39 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
     <Container>
       <FormGroup row>
         <Col sm={12}>
-          <FormGroup row>
-            <GluuLabel label="fields.accessTokenAsJwt" size={4} />
-            <Col sm={8}>
-              <RadioGroup
-                row
-                name="accessTokenAsJwt"
-                value={client.accessTokenAsJwt || true}
-                onChange={(e) => {
-                  formik.setFieldValue(
-                    'accessTokenAsJwt',
-                    e.target.value == 'true',
-                  )
-                }}
-              >
-                <FormControlLabel
-                  value={true}
-                  control={<Radio color="primary" />}
-                  label="JWT"
-                  checked={client.accessTokenAsJwt == true}
-                  disabled={viewOnly}
-                />
-                <FormControlLabel
-                  value={false}
-                  control={<Radio color="primary" />}
-                  label="Reference"
-                  checked={client.accessTokenAsJwt == false}
-                  disabled={viewOnly}
-                />
-              </RadioGroup>
-            </Col>
-          </FormGroup>
+          <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="accessTokenAsJwt">
+            <FormGroup row>
+              <GluuLabel label="fields.accessTokenAsJwt" size={4} />
+              <Col sm={8}>
+                <RadioGroup
+                  row
+                  name="accessTokenAsJwt"
+                  value={client.accessTokenAsJwt || true}
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      'accessTokenAsJwt',
+                      e.target.value == 'true',
+                    )
+                  }}
+                >
+                  <FormControlLabel
+                    value={true}
+                    control={<Radio color="primary" />}
+                    label="JWT"
+                    checked={client.accessTokenAsJwt == true}
+                    disabled={viewOnly}
+                  />
+                  <FormControlLabel
+                    value={false}
+                    control={<Radio color="primary" />}
+                    label="Reference"
+                    checked={client.accessTokenAsJwt == false}
+                    disabled={viewOnly}
+                  />
+                </RadioGroup>
+              </Col>
+            </FormGroup>
+          </GluuTooltip>
         </Col>
         <Col sm={12}>
           <GluuToogleRow
