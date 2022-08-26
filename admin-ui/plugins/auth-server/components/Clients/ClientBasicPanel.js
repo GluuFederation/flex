@@ -21,7 +21,13 @@ import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
 const DOC_CATEGORY = 'openid_client'
 
-const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, viewOnly }) => {
+const ClientBasicPanel = ({
+  client,
+  scopes,
+  formik,
+  oidcConfiguration,
+  viewOnly,
+}) => {
   const { t } = useTranslation()
   const uri_id = 'redirect_uri'
   const post_uri_id = 'post_uri_id'
@@ -148,25 +154,27 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, viewOnly 
         disabled={viewOnly}
       />
 
-      <FormGroup row>
-        <GluuLabel label="fields.subject_type_basic" />
-        <Col sm={9}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id="subjectType"
-              name="subjectType"
-              disabled={viewOnly}
-              defaultValue={client.subjectType}
-              onChange={formik.handleChange}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              <option>pairwise</option>
-              <option>public</option>
-            </CustomInput>
-          </InputGroup>
-        </Col>
-      </FormGroup>
+      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="subjectType">
+        <FormGroup row>
+          <GluuLabel label="fields.subject_type_basic" />
+          <Col sm={9}>
+            <InputGroup>
+              <CustomInput
+                type="select"
+                id="subjectType"
+                name="subjectType"
+                disabled={viewOnly}
+                defaultValue={client.subjectType}
+                onChange={formik.handleChange}
+              >
+                <option value="">{t('actions.choose')}...</option>
+                <option>pairwise</option>
+                <option>public</option>
+              </CustomInput>
+            </InputGroup>
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
       <GluuInputRow
         label="fields.sector_uri"
         name="sectorIdentifierUri"
@@ -223,25 +231,27 @@ const ClientBasicPanel = ({ client, scopes, formik, oidcConfiguration, viewOnly 
           />
         </Col>
       </FormGroup>
-      <FormGroup row>
-        <GluuLabel label="fields.application_type" />
-        <Col sm={9}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id="applicationType"
-              name="applicationType"
-              defaultValue={client.applicationType}
-              onChange={formik.handleChange}
-              disabled={viewOnly}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              <option>web</option>
-              <option>native</option>
-            </CustomInput>
-          </InputGroup>
-        </Col>
-      </FormGroup>
+      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="applicationType">
+        <FormGroup row>
+          <GluuLabel label="fields.application_type" />
+          <Col sm={9}>
+            <InputGroup>
+              <CustomInput
+                type="select"
+                id="applicationType"
+                name="applicationType"
+                defaultValue={client.applicationType}
+                onChange={formik.handleChange}
+                disabled={viewOnly}
+              >
+                <option value="">{t('actions.choose')}...</option>
+                <option>web</option>
+                <option>native</option>
+              </CustomInput>
+            </InputGroup>
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
       <GluuTypeAheadWithAdd
         name="redirectUris"
         label="fields.redirect_uris"

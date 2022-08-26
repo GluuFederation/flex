@@ -9,6 +9,7 @@ import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
 import DatePicker from 'react-datepicker'
 import ClientShowSpontaneousScopes from './ClientShowSpontaneousScopes'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 const DOC_CATEGORY = 'openid_client'
 
 function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
@@ -118,19 +119,25 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
         rsize={9}
         disabled={viewOnly}
       ></GluuTypeAheadForDn>
-      {client.inum && (
-        <FormGroup row>
-          <GluuLabel label="fields.spontaneousScopes" />
-          <Col sm={9}>
-            <a
-              onClick={handler}
-              style={{ textDecoration: 'underline', cursor: 'pointer' }}
-            >
-              View Current
-            </a>
-          </Col>
-        </FormGroup>
-      )}
+
+      <GluuTooltip
+        doc_category={DOC_CATEGORY}
+        doc_entry="spontaneousScopesViewContent"
+      >
+        {client.inum && (
+          <FormGroup row>
+            <GluuLabel label="fields.spontaneousScopes" />
+            <Col sm={9}>
+              <a
+                onClick={handler}
+                style={{ textDecoration: 'underline', cursor: 'pointer' }}
+              >
+                View Current
+              </a>
+            </Col>
+          </FormGroup>
+        )}
+      </GluuTooltip>
       <GluuInputRow
         label="fields.initiateLoginUri"
         name="initiateLoginUri"

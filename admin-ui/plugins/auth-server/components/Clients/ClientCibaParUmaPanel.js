@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@material-ui/core/Box'
 import { useHistory } from 'react-router-dom'
-import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
@@ -26,15 +20,17 @@ import { deleteUMAResource } from 'Plugins/auth-server/redux/actions/UMAResource
 import { setCurrentItem } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import {
   setCurrentItem as setCurrentItemClient,
-  viewOnly
+  viewOnly,
 } from 'Plugins/auth-server/redux/actions/OIDCActions'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import "ace-builds/src-noconflict/mode-json"
-import "ace-builds/src-noconflict/ext-language_tools"
+import 'ace-builds/src-noconflict/mode-json'
+import 'ace-builds/src-noconflict/ext-language_tools'
+import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 
 const DOC_CATEGORY = 'openid_client'
 
-function ClientCibaParUmaPanel({ client, 
+function ClientCibaParUmaPanel({
+  client,
   clients,
   dispatch,
   umaResources,
@@ -78,7 +74,7 @@ function ClientCibaParUmaPanel({ client,
         setScopeExpression(JSON.parse(uma.scopeExpression))
       }
     }
-    
+
     setOpen(true)
   }
 
@@ -91,7 +87,7 @@ function ClientCibaParUmaPanel({ client,
     const params = {
       id: selectedUMA.id,
       action_message: message,
-      action_data: selectedUMA.id
+      action_data: selectedUMA.id,
     }
     dispatch(deleteUMAResource(params))
     setConfirmModal(false)
@@ -104,7 +100,7 @@ function ClientCibaParUmaPanel({ client,
   }
 
   const handleClientEdit = (inum) => {
-    const currentClient = clients.find(client => client.inum === inum)
+    const currentClient = clients.find((client) => client.inum === inum)
     dispatch(setCurrentItemClient(currentClient))
     setOpen(false)
     dispatch(viewOnly(true))
@@ -113,8 +109,12 @@ function ClientCibaParUmaPanel({ client,
   }
 
   useEffect(() => {
-    if(!isEmpty(selectedUMA) && !isEmpty(selectedUMA.scopes) && selectedUMA.scopes?.length > 0) {
-      const list = selectedUMA.scopes.map(scope => {
+    if (
+      !isEmpty(selectedUMA) &&
+      !isEmpty(selectedUMA.scopes) &&
+      selectedUMA.scopes?.length > 0
+    ) {
+      const list = selectedUMA.scopes.map((scope) => {
         // scope data example [string] inum=9bc94613-f678-4bb9-a19d-ed026b492247,ou=scopes,o=jans
         const getInum = scope.split(',')[0]
         const inumFromUMA = getInum.split('=')[1]
@@ -173,35 +173,36 @@ function ClientCibaParUmaPanel({ client,
         disabled={viewOnly}
       />
       <h2>{t(`titles.UMA`)}</h2>
-      <FormGroup row>
-        <GluuLabel label="fields.rptAsJwt" size={6} />
-        <Col sm={6}>
-          <RadioGroup
-            row
-            name="accessTokenAsJwt"
-            value={client.rptAsJwt || true}
-            onChange={(e) => {
-              formik.setFieldValue('rptAsJwt', e.target.value == 'true')
-            }}
-          >
-            <FormControlLabel
-              value={true}
-              control={<Radio color="primary" />}
-              label="JWT"
-              checked={client.rptAsJwt == true}
-              disabled={viewOnly}
-            />
-            <FormControlLabel
-              value={false}
-              control={<Radio color="primary" />}
-              label="Reference"
-              checked={client.rptAsJwt == false}
-              disabled={viewOnly}
-            />
-          </RadioGroup>
-        </Col>
-      </FormGroup>
-
+      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="rptAsJwt">
+        <FormGroup row>
+          <GluuLabel label="fields.rptAsJwt" size={6} />
+          <Col sm={6}>
+            <RadioGroup
+              row
+              name="accessTokenAsJwt"
+              value={client.rptAsJwt || true}
+              onChange={(e) => {
+                formik.setFieldValue('rptAsJwt', e.target.value == 'true')
+              }}
+            >
+              <FormControlLabel
+                value={true}
+                control={<Radio color="primary" />}
+                label="JWT"
+                checked={client.rptAsJwt == true}
+                disabled={viewOnly}
+              />
+              <FormControlLabel
+                value={false}
+                control={<Radio color="primary" />}
+                label="Reference"
+                checked={client.rptAsJwt == false}
+                disabled={viewOnly}
+              />
+            </RadioGroup>
+          </Col>
+        </FormGroup>
+      </GluuTooltip>
       <GluuTypeAheadWithAdd
         name="claimRedirectURIs"
         label="fields.claimRedirectURIs"
@@ -231,31 +232,36 @@ function ClientCibaParUmaPanel({ client,
         <FormGroup row>
           <GluuLabel label={'Resources'} size={3} />
           <Col sm={9}>
-            {umaResources?.length > 0 && umaResources?.map(uma => {
-              return (
-                <Box key={uma.id} className="mb-2">
-                  <Box display="flex">
-                    <Box width="40%">
-                      <a href="javascript:;" className="common-link cursor-pointer" onClick={() => handleUMADetail(uma)}>
-                        {uma.id}
-                      </a>
-                    </Box>
-                    <Box width="50%" className="text-dark">
-                      {uma.name}
-                    </Box>
-                    <Box width="10%">
-                      <Button
-                        color="danger"
-                        size="sm"
-                        onClick={() => handleDeleteUMA(uma)}
-                      >
-                        <span className="font-weight-bold">X</span>
-                      </Button>
+            {umaResources?.length > 0 &&
+              umaResources?.map((uma) => {
+                return (
+                  <Box key={uma.id} className="mb-2">
+                    <Box display="flex">
+                      <Box width="40%">
+                        <a
+                          href="javascript:;"
+                          className="common-link cursor-pointer"
+                          onClick={() => handleUMADetail(uma)}
+                        >
+                          {uma.id}
+                        </a>
+                      </Box>
+                      <Box width="50%" className="text-dark">
+                        {uma.name}
+                      </Box>
+                      <Box width="10%">
+                        <Button
+                          color="danger"
+                          size="sm"
+                          onClick={() => handleDeleteUMA(uma)}
+                        >
+                          <span className="font-weight-bold">X</span>
+                        </Button>
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              )
-            })}
+                )
+              })}
           </Col>
         </FormGroup>
       )}
@@ -285,7 +291,13 @@ function ClientCibaParUmaPanel({ client,
             <FormGroup row>
               <GluuLabel label={t('fields.iconUrl')} size={3} />
               <Col sm={9} className="top-5">
-                <a href={selectedUMA?.iconUri} target="_blank" alt="iconUrl" className="common-link" rel="noreferrer">
+                <a
+                  href={selectedUMA?.iconUri}
+                  target="_blank"
+                  alt="iconUrl"
+                  className="common-link"
+                  rel="noreferrer"
+                >
                   {selectedUMA?.iconUri || '-'}
                 </a>
               </Col>
@@ -321,17 +333,22 @@ function ClientCibaParUmaPanel({ client,
               <Col sm={9} className="top-5">
                 {showScopeSection === 'scope' ? (
                   <React.Fragment>
-                    {!isEmpty(scopeList) && scopeList?.map((scope, key) => {
-                      return (
-                        <Box key={key}>
-                          <Box display="flex">
-                            <a href="javascript:;" onClick={() => handleScopeEdit(scope)} className="common-link">
-                              {scope?.displayName ? scope?.displayName : ''}
-                            </a>
+                    {!isEmpty(scopeList) &&
+                      scopeList?.map((scope, key) => {
+                        return (
+                          <Box key={key}>
+                            <Box display="flex">
+                              <a
+                                href="javascript:;"
+                                onClick={() => handleScopeEdit(scope)}
+                                className="common-link"
+                              >
+                                {scope?.displayName ? scope?.displayName : ''}
+                              </a>
+                            </Box>
                           </Box>
-                        </Box>
-                      )
-                    })}
+                        )
+                      })}
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
@@ -346,7 +363,9 @@ function ClientCibaParUmaPanel({ client,
                         name="scopeExpression"
                         defaultValue={JSON.stringify(scopeExpression, null, 2)}
                       />
-                    ) : '-'}
+                    ) : (
+                      '-'
+                    )}
                   </React.Fragment>
                 )}
               </Col>
@@ -354,35 +373,40 @@ function ClientCibaParUmaPanel({ client,
             <FormGroup row>
               <GluuLabel label={t('fields.associatedClient')} size={3} />
               <Col sm={9} className="top-5">
-                {!isEmpty(selectedUMA) && selectedUMA.clients?.map((client, key) => {
-                  const getInum = client.split(',')[0]
-                  const inum = getInum.length > 0 ? getInum.split('=')[1] : null
+                {!isEmpty(selectedUMA) &&
+                  selectedUMA.clients?.map((client, key) => {
+                    const getInum = client.split(',')[0]
+                    const inum =
+                      getInum.length > 0 ? getInum.split('=')[1] : null
 
-                  return (
-                    <Box key={key}>
-                      <Box display="flex">
-                        <a href="javascript:;" onClick={() => handleClientEdit(inum)} className="common-link">
-                          {inum}
-                        </a>
+                    return (
+                      <Box key={key}>
+                        <Box display="flex">
+                          <a
+                            href="javascript:;"
+                            onClick={() => handleClientEdit(inum)}
+                            className="common-link"
+                          >
+                            {inum}
+                          </a>
+                        </Box>
                       </Box>
-                    </Box>
-                  )}
-                )}
+                    )
+                  })}
               </Col>
             </FormGroup>
             <FormGroup row>
               <GluuLabel label={t('fields.creationTime')} size={3} />
               <Col sm={9} className="top-5">
-                { moment(selectedUMA?.creationDate).format("ddd, MMM DD, YYYY h:mm:ss A") }
+                {moment(selectedUMA?.creationDate).format(
+                  'ddd, MMM DD, YYYY h:mm:ss A',
+                )}
               </Col>
             </FormGroup>
           </Card>
         </ModalBody>
         <ModalFooter>
-          <Button
-            color="danger"
-            onClick={() => handleDeleteUMA(selectedUMA)}
-          >
+          <Button color="danger" onClick={() => handleDeleteUMA(selectedUMA)}>
             {t('actions.delete')}
           </Button>
         </ModalFooter>
