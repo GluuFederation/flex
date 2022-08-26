@@ -350,7 +350,7 @@ function ClientWizardForm({
                               client={client}
                               scripts={scripts}
                               formik={formik}
-                              viewOnly
+                              viewOnly={viewOnly}
                             />
                             {/* <ClientAdvanced
                               client={client}
@@ -366,7 +366,7 @@ function ClientWizardForm({
                               client={client}
                               scripts={scripts}
                               formik={formik}
-                              viewOnly
+                              viewOnly={viewOnly}
                             />
                             {/* <ClientEncryption
                               client={client}
