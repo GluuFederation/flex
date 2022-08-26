@@ -173,6 +173,7 @@
     "name": "Nome",
     "native_persistence_configuration": "nativePersistenceConfiguration",
     "oauth": "OAuth",
+    "organization":"Organization",
     "openid": "OpenID",
     "oxauth_claim_name": "nome de reivindicação oxAuth",
     "ox_attributes": "oxAtributes",
@@ -289,6 +290,7 @@
     "resource_not_found_message": "O recurso solicitado não existe neste servidor. Entre em contato com o administrador do site ou com a equipe de suporte.",
     "resource_not_found_title": "Recurso não encontrado",
     "view_client_details": "Ver detalhes do cliente",
+    "view_script_details": "Ver detalhes do guião personalizado",
     "add_new_user": "Adicionar usuário",
     "no_scope_in_client": "Sem dados de Escopo para este Cliente"
   },

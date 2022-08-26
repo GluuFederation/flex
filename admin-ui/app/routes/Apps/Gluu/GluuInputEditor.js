@@ -1,11 +1,11 @@
 import React from 'react'
 import { Col, FormGroup } from 'Components'
 import GluuLabel from '../Gluu/GluuLabel'
-import AceEditor from "react-ace"
-import "ace-builds/src-noconflict/mode-java"
-import "ace-builds/src-noconflict/mode-python"
-import "ace-builds/src-noconflict/theme-xcode"
-import "ace-builds/src-noconflict/ext-language_tools"
+import AceEditor from 'react-ace'
+import 'ace-builds/src-noconflict/mode-java'
+import 'ace-builds/src-noconflict/mode-python'
+import 'ace-builds/src-noconflict/theme-xcode'
+import 'ace-builds/src-noconflict/ext-language_tools'
 
 function GluuInputEditor({
   name,
@@ -16,6 +16,7 @@ function GluuInputEditor({
   lsize,
   rsize,
   doc_category,
+  readOnly = false,
 }) {
   const handleChange = (scripts) => {
     formik.handleChange(name)(scripts)
@@ -36,6 +37,7 @@ function GluuInputEditor({
       <Col sm={rsize}>
         <AceEditor
           mode={language}
+          readOnly={readOnly}
           theme="xcode"
           placeholder="Write your custom script here"
           fontSize={16}

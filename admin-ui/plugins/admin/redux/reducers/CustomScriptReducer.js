@@ -11,11 +11,13 @@ import {
   DELETE_CUSTOM_SCRIPT,
   DELETE_CUSTOM_SCRIPT_RESPONSE,
   RESET,
+  SET_VIEW,
 } from '../actions/types'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   loading: true,
+  view: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
 }
@@ -126,6 +128,16 @@ export default function customScriptReducer(state = INIT_STATE, action) {
         ...state,
         items: INIT_STATE.items,
         loading: INIT_STATE.loading,
+      }
+    case SET_VIEW:
+      if (action.payload) {
+        return {
+          ...state,
+          view: action.payload.view,
+          loading: false,
+        }
+      } else {
+        return handleDefault()
       }
     default:
       return handleDefault()
