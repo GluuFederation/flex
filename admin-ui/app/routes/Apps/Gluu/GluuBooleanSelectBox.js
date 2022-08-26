@@ -1,6 +1,7 @@
 import React from 'react'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
+import GluuToogle from './GluuToogle'
 import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 
@@ -9,10 +10,12 @@ function GluuBooleanSelectBox({
   name,
   value,
   formik,
+  handler,
   lsize,
   rsize,
   doc_category,
   disabled,
+  toToggle = true,
 }) {
   const { t } = useTranslation()
   return (
@@ -20,20 +23,33 @@ function GluuBooleanSelectBox({
       <FormGroup row>
         <GluuLabel label={label} size={lsize} />
         <Col sm={rsize}>
-          <InputGroup>
-            <CustomInput
-              type="select"
+          {!toToggle && (
+            <InputGroup>
+              <CustomInput
+                type="select"
+                id={name}
+                name={name}
+                data-testid={name}
+                defaultValue={value}
+                onChange={formik.handleChange}
+                disabled={disabled}
+              >
+                <option value="false">{t('options.false')}</option>
+                <option value="true">{t('options.true')}</option>
+              </CustomInput>
+            </InputGroup>
+          )}
+          {toToggle && (
+            <GluuToogle
               id={name}
-              name={name}
               data-testid={name}
-              defaultValue={value}
-              onChange={formik.handleChange}
+              name={name}
+              handler={handler}
+              formik={formik}
+              value={value}
               disabled={disabled}
-            >
-              <option value="false">{t('options.false')}</option>
-              <option value="true">{t('options.true')}</option>
-            </CustomInput>
-          </InputGroup>
+            />
+          )}
         </Col>
       </FormGroup>
     </GluuTooltip>
