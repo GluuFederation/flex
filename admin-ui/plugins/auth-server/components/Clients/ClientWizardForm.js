@@ -304,20 +304,6 @@ function ClientWizardForm({
                     >
                       {t('titles.client_advanced')}
                     </Wizard.Step>
-                    {/* <Wizard.Step
-                      id={setId(2)}
-                      icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[2])}
-                    >
-                      {t('titles.client_encryption_signing')}
-                    </Wizard.Step>
-                    <Wizard.Step
-                      id={setId(3)}
-                      icon={<i className="fa fa-credit-card fa-fw"></i>}
-                      complete={isComplete(sequence[3])}
-                    >
-                      {t('titles.client_attributes')}
-                    </Wizard.Step> */}
                     <Wizard.Step
                       id={setId(7)}
                       icon={<i className="fa fa-credit-card fa-fw"></i>}
@@ -350,13 +336,8 @@ function ClientWizardForm({
                               client={client}
                               scripts={scripts}
                               formik={formik}
-                              viewOnly
+                              viewOnly={viewOnly}
                             />
-                            {/* <ClientAdvanced
-                              client={client}
-                              scripts={scripts}
-                              formik={formik}
-                            /> */}
                           </div>
                         )
                       case sequence[2]:
@@ -366,13 +347,8 @@ function ClientWizardForm({
                               client={client}
                               scripts={scripts}
                               formik={formik}
-                              viewOnly
+                              viewOnly={viewOnly}
                             />
-                            {/* <ClientEncryption
-                              client={client}
-                              formik={formik}
-                              oidcConfiguration={oidcConfiguration}
-                            /> */}
                           </div>
                         )
                       case sequence[3]:
@@ -384,7 +360,6 @@ function ClientWizardForm({
                               formik={formik}
                               viewOnly={viewOnly}
                             />
-                            {/* <ClientAttributes client={client} formik={formik} /> */}
                           </div>
                         )
                       case sequence[4]:
@@ -400,12 +375,6 @@ function ClientWizardForm({
                               formik={formik}
                               viewOnly={viewOnly}
                             />
-                            {/* <ClientScript
-                              client={client}
-                              formik={formik}
-                              scripts={scripts}
-                              scopes={scopes}
-                            /> */}
                           </div>
                         )
                       case sequence[5]:
@@ -417,12 +386,6 @@ function ClientWizardForm({
                               oidcConfiguration={oidcConfiguration}
                               viewOnly={viewOnly}
                             />
-                            {/* <ClientScript
-                              client={client}
-                              formik={formik}
-                              scripts={scripts}
-                              scopes={scopes}
-                            /> */}
                           </div>
                         )
                       case sequence[6]:
