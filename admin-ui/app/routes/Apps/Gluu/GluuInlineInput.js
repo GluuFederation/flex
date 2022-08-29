@@ -7,8 +7,6 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   Col,
-  InputGroup,
-  CustomInput,
   FormGroup,
   Input,
   Button,
