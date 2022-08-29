@@ -378,10 +378,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                               onClick={() =>
                                 goToClientViewPage(item.inum, item)
                               }
-                              style={{
-                                textDecoration: 'underline',
-                                cursor: 'pointer',
-                              }}
+                              className="common-link"
                             >
                               {item.displayName ? item.displayName : item.inum}
                             </a>
@@ -443,10 +440,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                               onClick={() =>
                                 goToClientViewPage(item.inum, item)
                               }
-                              style={{
-                                textDecoration: 'underline',
-                                cursor: 'pointer',
-                              }}
+                              className="common-link"
                             >
                               {item.displayName ? item.displayName : item.inum}
                             </a>

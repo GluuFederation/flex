@@ -5,7 +5,7 @@
 }
 
 .txt-white {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .badge {
@@ -14,109 +14,111 @@
 
 .badge-primary-darkBlack {
   background-color: #303641;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .badge-primary-darkBlue {
   background-color: #284461;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .badge-primary-lightBlue {
-  background-color: #9DBDE2;
-  color: #FFFFFF;
+  background-color: #9dbde2;
+  color: #ffffff;
 }
 
 .badge-primary-lightGreen {
-  background-color: #3BC391;
-  color: #FFFFFF;
+  background-color: #3bc391;
+  color: #ffffff;
 }
 
 // Button
 
 .btn-primary-darkBlack {
-  background-color: #303641!important;
-  color: #FFFFFF!important;
+  background-color: #303641 !important;
+  color: #ffffff !important;
 }
 
 .btn-primary-darkBlue {
-  background-color: #284461!important;
-  color: #FFFFFF!important;
+  background-color: #284461 !important;
+  color: #ffffff !important;
 }
 
 .btn-primary-lightBlue {
-  background-color: #9DBDE2!important;
-  color: #FFFFFF!important;
+  background-color: #9dbde2 !important;
+  color: #ffffff !important;
 }
 
 .btn-primary-lightGreen {
-  background-color: #3BC391!important;
-  color: #FFFFFF!important;
+  background-color: #3bc391 !important;
+  color: #ffffff !important;
 }
 
 // Button outline
 
 .btn-outline-primary-darkBlack {
-  background-color: #303641!important;
-  color: #FFFFFF!important;
+  background-color: #303641 !important;
+  color: #ffffff !important;
 }
 
 .btn-outline-primary-darkBlue {
-  background-color: #284461!important;
-  color: #FFFFFF!important;
+  background-color: #284461 !important;
+  color: #ffffff !important;
 }
 
 .btn-outline-primary-lightBlue {
-  background-color: #9DBDE2!important;
-  color: #FFFFFF!important;
+  background-color: #9dbde2 !important;
+  color: #ffffff !important;
 }
 
 .btn-outline-primary-lightGreen {
-  background-color: #3BC391!important;
-  color: #FFFFFF!important;
+  background-color: #3bc391 !important;
+  color: #ffffff !important;
 }
 
 // Tooltip
 
 .type-darkBlack {
-  background-color: #303641!important;
-  color: #FFFFFF!important;
+  background-color: #303641 !important;
+  color: #ffffff !important;
   &::after {
-    border-bottom-color: #303641!important;
+    border-bottom-color: #303641 !important;
   }
 }
 
 .type-darkBlue {
-  background-color: #284461!important;
-  color: #FFFFFF!important;
+  background-color: #284461 !important;
+  color: #ffffff !important;
   &::after {
-    border-bottom-color: #284461!important;
+    border-bottom-color: #284461 !important;
   }
 }
 
 .type-lightBlue {
-  background-color: #9DBDE2!important;
-  color: #FFFFFF!important;
+  background-color: #9dbde2 !important;
+  color: #ffffff !important;
   &::after {
-    border-bottom-color: #9DBDE2!important;
+    border-bottom-color: #9dbde2 !important;
   }
 }
 
 .type-lightGreen {
-  background-color: #3BC391!important;
-  color: #FFFFFF!important;
+  background-color: #3bc391 !important;
+  color: #ffffff !important;
   &::after {
-    border-bottom-color: #3BC391!important;
+    border-bottom-color: #3bc391 !important;
   }
 }
 
 .badge-dimmed {
   background-color: #777;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .common-link {
-  color: #2767b3
+  color: #2767b3;
+  text-decoration: 'none';
+  cursor: pointer;
 }
 
 .top-5 {
@@ -125,5 +127,5 @@
 }
 
 .modal-lg-900 {
-  max-width: 900px!important;
+  max-width: 900px !important;
 }

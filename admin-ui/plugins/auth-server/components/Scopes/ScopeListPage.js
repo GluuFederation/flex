@@ -74,7 +74,10 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
           return 0
         }
         return (
-          <Link to={`/auth-server/clients?scopeInum=${rowData.inum}`} className={classes.link}>
+          <Link
+            to={`/auth-server/clients?scopeInum=${rowData.inum}`}
+            className="common-link"
+          >
             {rowData.clients?.length}
           </Link>
         )
@@ -226,7 +229,10 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              headerStyle: {
+                ...applicationStyle.tableHeaderStyle,
+                ...bgThemeColor,
+              },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
