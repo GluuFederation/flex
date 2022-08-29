@@ -6,6 +6,8 @@ import ClientListPage from './components/Clients/ClientListPage'
 import ClientAddPage from './components/Clients/ClientAddPage'
 import ClientEditPage from './components/Clients/ClientEditPage'
 
+import SessionListPage from './components/Sessions/SessionListPage'
+
 import PropertiesPage from './components/Configuration/ConfigPage'
 import KeysPage from './components/Configuration/Keys/KeysPage'
 import LoggingPage from './components/Configuration/Defaults/LoggingPage'
@@ -19,6 +21,7 @@ import jwksReducer from './redux/reducers/JwksReducer'
 import acrReducer from './redux/reducers/AcrReducer'
 import loggingReducer from './redux/reducers/LoggingReducer'
 import umaResourceReducer from './redux/reducers/UMAResourceReducer'
+import sessionReducer from './redux/reducers/SessionReducer'
 
 import scopesSaga from './redux/sagas/OAuthScopeSaga'
 import oidcSaga from './redux/sagas/OIDCSaga'
@@ -27,6 +30,7 @@ import jwksSaga from './redux/sagas/JwksSaga'
 import acrSaga from './redux/sagas/AcrsSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
+import sessionSaga from './redux/sagas/SessionSaga'
 
 import {
   ACR_READ,
@@ -45,6 +49,11 @@ const pluginMetadata = {
       title: 'menus.oauthserver',
       icon: 'oauthserver',
       children: [
+        {
+          title: 'menus.sessions',
+          path: PLUGIN_BASE_APTH + '/sessions',
+          permission: CLIENT_READ,
+        },
         {
           title: 'menus.configuration',
           children: [
@@ -79,6 +88,11 @@ const pluginMetadata = {
     },
   ],
   routes: [
+    {
+      component: SessionListPage,
+      path: PLUGIN_BASE_APTH + '/sessions',
+      permission: CLIENT_READ,
+    },
     {
       component: ClientListPage,
       path: PLUGIN_BASE_APTH + '/clients',
@@ -138,6 +152,7 @@ const pluginMetadata = {
     { name: 'acrReducer', reducer: acrReducer },
     { name: 'loggingReducer', reducer: loggingReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
+    { name: 'sessionReducer', reducer: sessionReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -147,6 +162,7 @@ const pluginMetadata = {
     acrSaga(),
     loggingSaga(),
     umaResourceSaga(),
+    sessionSaga()
   ],
 }
 
