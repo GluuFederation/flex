@@ -7,7 +7,7 @@ function GluuToogle({ name, formik, value, handler, disabled }) {
       data-testid={name}
       defaultChecked={value}
       onClick={handler}
-      onChange={formik.handleChange}
+      onChange={formik !== undefined ? formik.handleChange : handler}
       disabled={disabled}
     />
   )
