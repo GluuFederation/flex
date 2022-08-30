@@ -34,4 +34,8 @@ export default {
     borderRadius: 24,
     padding: 12,
   },
+  licensePanel: {
+    backgroundColor: '#F5F5F5',
+    float: 'left',
+  },
 }

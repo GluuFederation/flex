@@ -24,13 +24,13 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
   }, [])
 
   function formatDate(date) {
-    if (date == undefined) {
-      return ''
+    if (!date) {
+      return '-'
     }
     if (date.length > 10) {
       return date.substring(0, 10)
     }
-    return ''
+    return '-'
   }
   SetTitle(t('fields.licenseDetails'))
   return (
@@ -38,7 +38,7 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
       <Card className="mb-3" style={applicationStyle.mainCard}>
         <CardBody>
           {item.licenseEnabled ? (
-            <Container style={{ backgroundColor: '#F5F5F5', float: 'left' }}>
+            <Container style={applicationStyle.licensePanel}>
               <Row>
                 <Col sm={6}>
                   <GluuFormDetailRow
@@ -102,7 +102,7 @@ function LicenseDetailsPage({ item, loading, dispatch }) {
                 <Col sm={6}>
                   <GluuFormDetailRow
                     label="fields.customerName"
-                    value={item.customerFirstName + ' ' + item.customerLastName}
+                    value={`${item.customerFirstName} ${item.customerLastName}`}
                     isBadge={true}
                     lsize={3}
                     rsize={9}
