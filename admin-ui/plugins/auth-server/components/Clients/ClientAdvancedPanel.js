@@ -128,10 +128,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
           <FormGroup row>
             <GluuLabel label="fields.spontaneousScopes" />
             <Col sm={9}>
-              <a
-                onClick={handler}
-                style={{ textDecoration: 'underline', cursor: 'pointer' }}
-              >
+              <a onClick={handler} className="common-link">
                 View Current
               </a>
             </Col>
