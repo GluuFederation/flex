@@ -20,8 +20,8 @@ export default {
     paddingLeft: '20px',
     paddingRight: '30px',
     color: 'white',
-    fontSize:'1.5em',
-    fontWeight: 'bold'
+    fontSize: '1.5em',
+    fontWeight: 'bold',
   },
   healthDown: {
     background: 'rgb(241 35 32)',
@@ -33,5 +33,5 @@ export default {
     minHeight: '70vh',
     borderRadius: 24,
     padding: 12,
-  }
+  },
 }
