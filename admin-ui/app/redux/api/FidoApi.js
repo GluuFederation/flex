@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class FidoApi {
   constructor(api) {
     this.api = api
@@ -6,7 +8,7 @@ export default class FidoApi {
   getFidoConfig = () => {
     return new Promise((resolve, reject) => {
       this.api.getPropertiesFido2((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -15,7 +17,7 @@ export default class FidoApi {
   updateFidoConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putPropertiesFido2(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }

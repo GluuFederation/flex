@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class ScopeApi {
   constructor(api) {
     this.api = api
@@ -7,7 +9,7 @@ export default class ScopeApi {
     options['withAssociatedClients'] = true
     return new Promise((resolve, reject) => {
       this.api.getOauthScopes(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -15,14 +17,14 @@ export default class ScopeApi {
   getScope = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthScopesByInum(inum, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
   getScopeByCreator = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.getScopeByCreator(inum, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -30,7 +32,7 @@ export default class ScopeApi {
   patchScope = async (id) => {
     return new Promise((resolve, reject) => {
       this.api.patchOauthScopesById(id, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -38,14 +40,14 @@ export default class ScopeApi {
   getScopeByOpts = (opts) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthScopes(opts, (error, data, response) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
   addNewScope = (input) => {
     return new Promise((resolve, reject) => {
       this.api.postOauthScopes(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -53,7 +55,7 @@ export default class ScopeApi {
   editAScope = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putOauthScopes(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -61,16 +63,8 @@ export default class ScopeApi {
   deleteAScope = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteOauthScopesByInum(inum, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

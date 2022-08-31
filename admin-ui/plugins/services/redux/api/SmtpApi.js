@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class SmtpApi {
   constructor(api) {
     this.api = api
@@ -7,7 +9,7 @@ export default class SmtpApi {
   getSmtpConfig = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigSmtp((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -16,7 +18,7 @@ export default class SmtpApi {
   updateSmtpConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigSmtp(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -25,7 +27,7 @@ export default class SmtpApi {
   addSmtpConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.postConfigSmtp(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -34,16 +36,8 @@ export default class SmtpApi {
   testSmtpConfig = () => {
     return new Promise((resolve, reject) => {
       this.api.testConfigSmtp((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

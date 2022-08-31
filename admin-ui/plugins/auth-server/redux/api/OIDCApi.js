@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class OIDCApi {
   constructor(api) {
     this.api = api
@@ -6,7 +8,7 @@ export default class OIDCApi {
   getAllOpenidClients = (opts) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthOpenidClients(opts, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -14,7 +16,7 @@ export default class OIDCApi {
   addNewOpenIdClient = (data) => {
     return new Promise((resolve, reject) => {
       this.api.postOauthOpenidClients(data, (error, res) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -22,7 +24,7 @@ export default class OIDCApi {
   editAClient = (data) => {
     return new Promise((resolve, reject) => {
       this.api.putOauthOpenidClients(data, (error, res) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -30,16 +32,8 @@ export default class OIDCApi {
   deleteAClient = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteOauthOpenidClientsByInum(inum, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }
