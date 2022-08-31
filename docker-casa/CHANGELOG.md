@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.0.0-2](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-1...docker-casa-v5.0.0-2) (2022-08-31)
+
+
+### Bug Fixes
+
+* **docker-casa:** upgrade lxml version ([#330](https://github.com/GluuFederation/flex/issues/330)) ([bfc2c34](https://github.com/GluuFederation/flex/commit/bfc2c344b6bc566f86456082579951b211e8aec1))
+* gluu casa version ([3a0ef91](https://github.com/GluuFederation/flex/commit/3a0ef918d075bba89d4a4153a72a76740afc9b70))
+
+
+### Miscellaneous Chores
+
+* release 5.0.0-2 ([06c6e64](https://github.com/GluuFederation/flex/commit/06c6e64f43a7c98bcb04ba1d48ec97044c19d75d))
+* release 5.0.0-2 ([1f6f950](https://github.com/GluuFederation/flex/commit/1f6f950860cb295de35a7c161ca7a803be461148))
+
 ## 5.0.0-1 (2022-07-14)
 
 
