@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.0.0-2](https://github.com/GluuFederation/flex/compare/casa-v5.0.0-1...casa-v5.0.0-2) (2022-08-31)
+
+
+### Bug Fixes
+
+* casa/pom.xml to reduce vulnerabilities ([7dbd49a](https://github.com/GluuFederation/flex/commit/7dbd49aae2b056fc7a460ce3752624de0d3cea0a))
+
+
+### Miscellaneous Chores
+
+* release 5.0.0-2 ([06c6e64](https://github.com/GluuFederation/flex/commit/06c6e64f43a7c98bcb04ba1d48ec97044c19d75d))
+* release 5.0.0-2 ([cea3e6e](https://github.com/GluuFederation/flex/commit/cea3e6e2c31eeaebb5cb30a95827481d81b2bfa3))
+
 ## 5.0.0-1 (2022-07-14)
 
 
