@@ -1,5 +1,23 @@
 # Changelog
 
+## [5.0.0-2](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.0-1...docker-admin-ui-v5.0.0-2) (2022-08-31)
+
+
+### Features
+
+* **docker-admin-ui:** add support for plugins installation ([#319](https://github.com/GluuFederation/flex/issues/319)) ([f660fb8](https://github.com/GluuFederation/flex/commit/f660fb805c6f67439c5952a393ad1e192a14d342))
+
+
+### Bug Fixes
+
+* docker-admin-ui/Dockerfile to reduce vulnerabilities ([a2050c8](https://github.com/GluuFederation/flex/commit/a2050c8dba1154d66cb09a8ea8a0152440d1eb9e))
+
+
+### Miscellaneous Chores
+
+* release 1.0.1-1 ([366d4b8](https://github.com/GluuFederation/flex/commit/366d4b8f25c6722973fd2f8376f596ccb2b57c08))
+* release 5.0.0-2 ([06c6e64](https://github.com/GluuFederation/flex/commit/06c6e64f43a7c98bcb04ba1d48ec97044c19d75d))
+
 ## 1.0.0-1 (2022-07-14)
 
 
