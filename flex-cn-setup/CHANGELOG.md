@@ -1,6 +1,6 @@
 # Changelog
 
-## [5.0.0-2](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v0.1.1...flex-cn-setup-v5.0.0-2) (2022-08-31)
+## [0.1.2](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v0.1.1...flex-cn-setup-v0.1.2) (2022-08-31)
 
 
 ### Bug Fixes
@@ -11,7 +11,6 @@
 ### Miscellaneous Chores
 
 * release 0.1.2 ([0185ce9](https://github.com/GluuFederation/flex/commit/0185ce9c9c7504f145980ffe7af104baaa34b81c))
-* release 5.0.0-2 ([06c6e64](https://github.com/GluuFederation/flex/commit/06c6e64f43a7c98bcb04ba1d48ec97044c19d75d))
 
 ## 0.1.1 (2022-07-14)
 
