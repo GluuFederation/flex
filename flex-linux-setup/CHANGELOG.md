@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.0.0-2](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v0.1.1...flex-linux-setup-v5.0.0-2) (2022-08-31)
+
+
+### Features
+
+* flex-linux-setup non-interactive mode ([#340](https://github.com/GluuFederation/flex/issues/340)) ([15a73dc](https://github.com/GluuFederation/flex/commit/15a73dcab6bb8763a7a611a60cb16c041b0707cc))
+
+
+### Miscellaneous Chores
+
+* release 0.1.2 ([0185ce9](https://github.com/GluuFederation/flex/commit/0185ce9c9c7504f145980ffe7af104baaa34b81c))
+* release 5.0.0-2 ([06c6e64](https://github.com/GluuFederation/flex/commit/06c6e64f43a7c98bcb04ba1d48ec97044c19d75d))
+
 ## 0.1.1 (2022-07-14)
 
 
