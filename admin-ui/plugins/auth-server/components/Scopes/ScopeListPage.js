@@ -57,7 +57,6 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const classes = styles()
 
   SetTitle(t('titles.scopes'))
 

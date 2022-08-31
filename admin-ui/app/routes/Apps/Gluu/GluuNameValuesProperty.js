@@ -7,7 +7,6 @@ import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 
 function GluuNameValuesProperty({
   formik,
-  name,
   label1,
   name1,
   placeholder1,
@@ -15,10 +14,7 @@ function GluuNameValuesProperty({
   name2,
   placeholder2,
   value,
-  inputId,
   options,
-  validator,
-  items,
   dataArr,
 }) {
   const [dataArray, setDataArray] = useState(dataArr)

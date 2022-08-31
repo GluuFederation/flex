@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 
 function ScopeDetailPage({ row }) {
-  console.log("========================="+JSON.stringify(row))
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme

@@ -4,13 +4,13 @@ import { Col, FormGroup, CustomInput, InputGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 import GluuTooltip from './GluuTooltip'
 import { Typeahead } from 'react-bootstrap-typeahead'
+import applicationstyle from './styles/applicationstyle'
 
 function GluuRemovableTypeAhead({
   label,
   name,
   value,
   formik,
-  values,
   lsize,
   rsize,
   handler,
@@ -49,16 +49,7 @@ function GluuRemovableTypeAhead({
           </InputGroup>
         </Col>
         <div
-          style={{
-            float: 'right',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            padding: '5px',
-            width: '25px',
-            height: '25px',
-            marginTop: '0px',
-            marginRight: '-10px',
-          }}
+          style={applicationstyle.removableInputRow}
           onClick={handler}
         >
           <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>

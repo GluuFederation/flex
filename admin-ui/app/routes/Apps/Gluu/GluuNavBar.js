@@ -5,7 +5,6 @@ import {
   Avatar,
   AvatarAddOn,
   DropdownToggle,
-  NavbarThemeProvider,
   Navbar,
   Nav,
   NavItem,

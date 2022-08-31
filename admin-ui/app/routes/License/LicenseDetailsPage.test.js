@@ -7,11 +7,6 @@ import i18n from '../../i18n'
 import { I18nextProvider } from 'react-i18next'
 import license from "./license"
 
-const permissions = [
-  'https://jans.io/oauth/config/attributes.readonly',
-  'https://jans.io/oauth/config/attributes.write',
-  'https://jans.io/oauth/config/attributes.delete',
-]
 const INIT_LICENSE_DETAIL_STATE = {
   item: license,
   loading: false,
