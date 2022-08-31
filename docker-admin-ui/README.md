@@ -26,7 +26,7 @@ The following environment variables are supported by the container:
 - `CN_CONFIG_KUBERNETES_USE_KUBE_CONFIG`: Load credentials from `$HOME/.kube/config`, only useful for non-container environment (default to `false`).
 - `CN_CONFIG_GOOGLE_SECRET_VERSION_ID`: Janssen configuration secret version ID in Google Secret Manager. Defaults to `latest`, which is recommended.
 - `CN_CONFIG_GOOGLE_SECRET_NAME_PREFIX`: Prefix for Janssen configuration secret in Google Secret Manager. Defaults to `jans`. If left intact `jans-configuration` secret will be created.
-- `CN_SECRET_ADAPTER`: The secrets adapter, can be `vault` (default), `kubernetes`, or `google`.
+- `CN_SECRET_ADAPTER`: The secrets' adapter, can be `vault` (default), `kubernetes`, or `google`.
 - `CN_SECRET_VAULT_SCHEME`: supported Vault scheme (`http` or `https`).
 - `CN_SECRET_VAULT_HOST`: hostname or IP of Vault (default to `localhost`).
 - `CN_SECRET_VAULT_PORT`: port of Vault (default to `8200`).
@@ -72,7 +72,7 @@ The following environment variables are supported by the container:
 - `CN_SQL_DB_HOST`: Host of SQL backend (default to `localhost`).
 - `CN_SQL_DB_PORT`: Port of SQL backend (default to `3306`).
 - `CN_SQL_DB_NAME`: Database name (default to `jans`)
-- `CN_SQL_DB_USER`: User name to interact with SQL backend (default to `jans`).
+- `CN_SQL_DB_USER`: Username to interact with SQL backend (default to `jans`).
 - `CN_GOOGLE_SPANNER_INSTANCE_ID`: Instance ID of Google Spanner (default to empty string).
 - `CN_GOOGLE_SPANNER_DATABASE_ID`: Database ID of Google Spanner (default to empty string).
 - `GOOGLE_APPLICATION_CREDENTIALS`: Path to Google credentials JSON file (default to `/etc/jans/conf/google-credentials.json`).
@@ -87,9 +87,9 @@ The following environment variables are supported by the container:
 
 Hybrid persistence supports all available persistence types. To configure hybrid persistence and its data mapping, follow steps below:
 
-1.  Set `CN_PERSISTENCE_TYPE` environment variable to `hybrid`
+1. Set `CN_PERSISTENCE_TYPE` environment variable to `hybrid`
 
-1.  Set `CN_HYBRID_MAPPING` with the following format:
+2. Set `CN_HYBRID_MAPPING` with the following format:
 
     ```
     {
@@ -120,4 +120,4 @@ Hybrid persistence supports all available persistence types. To configure hybrid
 To add plugins to AdminUI, for example `myplugin.zip`
 
 1. Set the name of the plugin (without the extension name) in environment variable `GLUU_ADMIN_UI_PLUGINS`, for example: `GLUU_ADMIN_UI_PLUGINS=myplugin`.
-1. Mount `myplugin.zip` to `/app/plugins/myplugin.zip` inside the pod/container. Note that if `/app/plugins/myplugin.zip` is not exist, plugin will be ignored.
+2. Mount `myplugin.zip` to `/app/plugins/myplugin.zip` inside the pod/container. Note that if `/app/plugins/myplugin.zip` is not exist, plugin will be ignored.
