@@ -49,8 +49,8 @@ function GluuNavBar({ userinfo }) {
             {/*<NavbarActivityFeed />*/}
             <NavSearch />
             <Notifications />
-            <LanguageMenu />
-            <ThemeSetting />
+            <LanguageMenu userInfo={userInfo} />
+            <ThemeSetting userInfo={userInfo} />
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav>
                 <Avatar.Image
