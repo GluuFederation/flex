@@ -1,6 +1,6 @@
 # Changelog
 
-## [5.0.0-2](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.0-1...admin-ui-v5.0.0-2) (2022-08-31)
+## [1.0.1-1](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.0-1...admin-ui-v1.0.1-1) (2022-08-31)
 
 
 ### Features
@@ -114,7 +114,6 @@
 ### Miscellaneous Chores
 
 * release 1.0.1-1 ([0bed6d0](https://github.com/GluuFederation/flex/commit/0bed6d0545305ad3ad279ad047d862dab35318e2))
-* release 5.0.0-2 ([06c6e64](https://github.com/GluuFederation/flex/commit/06c6e64f43a7c98bcb04ba1d48ec97044c19d75d))
 
 ## 1.0.0-1 (2022-07-14)
 
