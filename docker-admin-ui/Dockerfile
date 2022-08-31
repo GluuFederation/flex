@@ -189,7 +189,7 @@ LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
     version="1.0.1" \
-    release="1" \
+    release="dev" \
     summary="Gluu Admin UI" \
     description=""
 
