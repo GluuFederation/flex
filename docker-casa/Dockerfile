@@ -34,7 +34,7 @@ EXPOSE 8080
 # Casa
 # ====
 
-ENV GLUU_VERSION=5.0.0
+ENV GLUU_VERSION=5.0.0-2
 ENV GLUU_BUILD_DATE='2022-08-31 09:55'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
@@ -222,7 +222,7 @@ LABEL name="gluufederation/casa" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
     version="5.0.0" \
-    release="dev" \
+    release="2" \
     summary="Gluu Casa" \
     description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 
