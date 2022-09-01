@@ -74,7 +74,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
 
   function addOrg(client) {
     let org = '-'
-    if(client.hasOwnProperty("o")){
+    if (client.hasOwnProperty('o')) {
       client['organization'] = client.o
       return client
     }
@@ -139,13 +139,13 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       field: 'scopes',
       render: (rowData) => {
         return (
-          <Badge
-            color={`primary-${selectedTheme}`}
-            role={'button'}
+          <a
+            className="common-link"
+            href="javascript:;"
             onClick={() => setScopeData(rowData.scopes)}
           >
             {rowData.scopes?.length || '0'}
-          </Badge>
+          </a>
         )
       },
     },

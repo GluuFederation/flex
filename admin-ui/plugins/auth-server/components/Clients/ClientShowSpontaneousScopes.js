@@ -10,6 +10,10 @@ function ClientShowSpontaneousScopes({ handler, isOpen }) {
   const scopesByCreator = useSelector(
     (state) => state.scopeReducer.scopesByCreator,
   )
+
+  const printableScopes = scopesByCreator.filter(
+    (item) => item.scopeType == 'spontaneous',
+  )
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
 
@@ -17,8 +21,8 @@ function ClientShowSpontaneousScopes({ handler, isOpen }) {
     <Modal isOpen={isOpen} toggle={handler} className="modal-outline-primary">
       <ModalHeader>{t('fields.spontaneousScopes')}</ModalHeader>
       <ModalBody>
-        {scopesByCreator.length > 0 ? (
-          scopesByCreator?.map((scope, key) => {
+        {printableScopes.length > 0 ? (
+          printableScopes?.map((scope, key) => {
             return (
               <div key={key}>
                 <Badge color={`primary-${selectedTheme}`}>{scope?.id}</Badge>

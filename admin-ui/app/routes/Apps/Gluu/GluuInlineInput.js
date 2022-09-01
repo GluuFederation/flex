@@ -1,13 +1,12 @@
 import React, { useState, useContext } from 'react'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
+import GluuToogle from './GluuToogle'
 import { useTranslation } from 'react-i18next'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import {
   Col,
-  InputGroup,
-  CustomInput,
   FormGroup,
   Input,
   Button,
@@ -83,19 +82,13 @@ function GluuInlineInput({
                 />
               )}
               {isBoolean && (
-                <InputGroup>
-                  <CustomInput
-                    type="select"
-                    onChange={onValueChanged}
-                    data-testid={name}
-                    id={name}
-                    name={name}
-                    defaultValue={value}
-                  >
-                    <option value="false">{t('options.false')}</option>
-                    <option value="true">{t('options.true')}</option>
-                  </CustomInput>
-                </InputGroup>
+                <GluuToogle
+                  id={name}
+                  data-testid={name}
+                  name={name}
+                  onChange={onValueChanged}
+                  value={value}
+                />
               )}
               {isArray && (
                 <Typeahead

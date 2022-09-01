@@ -7,24 +7,36 @@ import {
   ButtonDropdown,
 } from 'Components'
 
-const LanguageMenu = () => {
+const LanguageMenu = ({ userInfo }) => {
   const [isOpen, setOpen] = useState(false)
   const initLang = localStorage.getItem('initLang')
+  const userConfig = JSON.parse(localStorage.getItem('userConfig'))
+  const userConfigLang = userConfig?.lang || {}
   const [lang, setLang] = useState('en')
   const { t, i18n } = useTranslation()
+  const { inum } = userInfo
   const toggle = () => setOpen(!isOpen)
 
   function changeLanguage(code) {
     i18n.changeLanguage(code)
     setLang(code)
-    localStorage.setItem('initLang', code)
+
+    let lang = { ...userConfigLang }
+    const theme = userConfig?.theme || {}
+
+    if (inum) {
+      lang = { [inum]: code }
+    }
+
+    const newConfig = { lang, theme }
+    localStorage.setItem('userConfig', JSON.stringify(newConfig))
   }
 
   useEffect(() => {
-    i18n.changeLanguage(initLang)
-    const currentLang = initLang ? initLang : 'en'
+    const currentLang = userConfigLang[inum] ? userConfigLang[inum] : initLang
+    i18n.changeLanguage(currentLang)
     setLang(currentLang)
-  }, [initLang])
+  }, [initLang, userConfigLang])
 
   return (
     <ButtonDropdown isOpen={isOpen} toggle={toggle}>
