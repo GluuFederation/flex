@@ -21,6 +21,7 @@ import GluuTypeAhead from 'Routes/Apps/Gluu/GluuTypeAhead'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { Formik } from 'formik'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { t } from 'i18next'
 
 function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
@@ -146,7 +147,7 @@ function MappingItem({ candidate, roles }) {
                         <Col sm={10}>
                           <GluuTypeAhead
                             name="mappingAddPermissions"
-                            label="Search"
+                            label={t('actions.search')}
                             formik={formik}
                             options={searchablePermissions}
                             required={false}
@@ -162,7 +163,7 @@ function MappingItem({ candidate, roles }) {
                             style={applicationStyle.buttonStyle}
                           >
                             <i className="fa fa-plus mr-2"></i>
-                            Add
+                            {t('actions.add')}
                           </Button>
                         </Col>
                       </Row>
@@ -185,7 +186,7 @@ function MappingItem({ candidate, roles }) {
                       }}
                     >
                       <i className="fa fa-trash mr-2"></i>
-                      Remove
+                      {t('actions.remove')}
                     </Button>
                   </Col>
                 </Row>
@@ -201,7 +202,7 @@ function MappingItem({ candidate, roles }) {
                     onClick={() => revertLocalChanges()}
                   >
                     <i className="fa fa-undo mr-2"></i>
-                    Revert
+                    {t('actions.revert')}
                   </Button>
                 </Col>
                 <Col sm={6} className="text-right">
@@ -215,7 +216,7 @@ function MappingItem({ candidate, roles }) {
                     }}
                   >
                     <i className="fa fa-plus mr-2"></i>
-                    Save
+                    {t('actions.save')}
                   </Button>
                 </Col>
               </Row>
