@@ -95,7 +95,7 @@ export function* getUsersSaga({ payload }) {
   try {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
-    const data = yield call(userApi.getUsers)
+    const data = yield call(userApi.getUsers, payload)
     yield put(getUserResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {

@@ -20,13 +20,16 @@ import {
   hasPermission,
   ROLE_READ,
   ROLE_WRITE,
+  USER_READ,
 } from '../../../../app/utils/PermChecker'
+import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import SetTitle from 'Utils/SetTitle'
 import { getRoles } from '../../../admin/redux/actions/ApiRoleActions'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
 
 function UserList(props) {
   const dispatch = useDispatch()
@@ -72,11 +75,56 @@ function UserList(props) {
     dispatch(setSelectedUserData(row))
     return history.push(`/user/usermanagement/edit:` + row.tableData.uuid)
   }
+  const [limit, setLimit] = useState(200)
+  const [pattern, setPattern] = useState(null)
+
+  let memoLimit = limit
+  let memoPattern = pattern
+
+  function handleOptionsChange(event) {
+    if (event.target.name == 'limit') {
+      memoLimit = event.target.value
+    } else if (event.target.name == 'pattern') {
+      memoPattern = event.target.value
+    }
+  }
 
   function handleUserDelete(row) {
     dispatch(deleteUser(row.inum))
   }
 
+  if (hasPermission(permissions, USER_READ)) {
+    myActions.push({
+      icon: () => (
+        <GluuAdvancedSearch
+          limitId={LIMIT_ID}
+          patternId={PATTERN_ID}
+          limit={limit}
+          pattern={pattern}
+          handler={handleOptionsChange}
+        />
+      ),
+      tooltip: `${t('messages.advanced_search')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => {},
+    })
+  }
+  if (hasPermission(permissions, USER_READ)) {
+    myActions.push({
+      icon: 'refresh',
+      tooltip: `${t('messages.refresh')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => {
+        setLimit(memoLimit)
+        setPattern(memoPattern)
+        console.log('LIMIT', memoLimit)
+        console.log('PATTERN', memoPattern)
+        dispatch(getUsers({ limit: memoLimit, pattern: memoPattern }))
+      },
+    })
+  }
   if (hasPermission(permissions, ROLE_WRITE)) {
     myActions.push({
       icon: 'add',
@@ -154,7 +202,11 @@ function UserList(props) {
             )}
           </GluuViewWrapper>
         </CardBody>
-        <GluuCommitDialog handler={toggle} modal={modal} onAccept={submitForm} />
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={submitForm}
+        />
       </Card>
     </GluuLoader>
   )
