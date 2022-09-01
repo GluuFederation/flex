@@ -3,9 +3,9 @@ export default class SessionApi {
     this.api = api
   }
 
-  getAllSessions = async (options) => {
+  getAllSessions = async () => {
     return new Promise((resolve, reject) => {
-      this.api.getSessions(options, (error, data) => {
+      this.api.getSessions((error, data) => {
         this.handleResponse(error, reject, resolve, data)
       })
     })

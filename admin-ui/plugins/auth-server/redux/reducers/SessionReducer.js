@@ -2,11 +2,14 @@ import {
   RESET,
   GET_SESSIONS,
   GET_SESSIONS_RESPONSE,
+  REVOKE_SESSION,
+  REVOKE_SESSION_RESPONSE
 } from '../actions/types'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 
 const INIT_STATE = {
   items: [],
+  item: {},
   loading: false,
 }
 
@@ -28,6 +31,19 @@ export default function SessionReducer(state = INIT_STATE, action) {
       } else {
         return handleDefault()
       }
+
+    case REVOKE_SESSION:
+      return handleLoading()
+
+    case REVOKE_SESSION_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          items: state.items.filter(({ userDn }) => userDn !== action.payload.data),
+          loading: false,
+        }
+      }
+      return handleDefault()
 
     case RESET:
       return {

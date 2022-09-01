@@ -31,14 +31,12 @@ function* newFunction() {
 
 export function* getSessions({ payload }) {
   const audit = yield* initAudit()
-  console.log('payload', payload)
   try {
-    payload = payload ? payload : {}
+    payload = payload ? payload : { action: {} }
     addAdditionalData(audit, FETCH, SESSION, payload)
-    const sagaApi = yield* newFunction()
+    const sessionApi = yield* newFunction()
     const data = yield call(
-      sagaApi.getAllSessions,
-      payload,
+      sessionApi.getAllSessions,
     )
     yield put(getSessionsResponse(data))
     yield call(postUserAction, audit)
@@ -56,8 +54,8 @@ export function* revokeSessionByUserDn({ payload }) {
   const audit = yield* initAudit()
   try {
     addAdditionalData(audit, DELETION, SESSION, payload)
-    const sagaApi = yield* newFunction()
-    yield call(sagaApi.revokeSession, payload.action.userDn)
+    const sessionApi = yield* newFunction()
+    yield call(sessionApi.revokeSession, payload.action.userDn)
     yield put(revokeSessionsResponse(payload.action.userDn))
     yield call(postUserAction, audit)
   } catch (e) {

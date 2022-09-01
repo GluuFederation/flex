@@ -6,9 +6,9 @@ import {
   RESET
 } from './types'
 
-export const getSessions = (action) => ({
+export const getSessions = () => ({
   type: GET_SESSIONS,
-  payload: { action },
+  payload: { },
 })
 
 export const getSessionsResponse = (data) => ({
@@ -16,7 +16,7 @@ export const getSessionsResponse = (data) => ({
   payload: { data },
 })
 
-export const revokeSessions = (action) => ({
+export const revokeSession = (action) => ({
   type: REVOKE_SESSION,
   payload: { action },
 })

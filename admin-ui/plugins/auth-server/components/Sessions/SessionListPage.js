@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import moment from 'moment'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { Paper } from '@material-ui/core'
@@ -6,30 +7,19 @@ import { connect } from 'react-redux'
 import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { useTranslation } from 'react-i18next'
-import { getSessions } from 'Plugins/auth-server/redux/actions/SessionActions'
-import { buildPayload } from 'Utils/PermChecker'
-import {
-  LIMIT,
-  PATTERN,
-  FETCHING_SESSIONS,
-  WITH_ASSOCIATED_CLIENTS,
-} from 'Plugins/auth-server/common/Constants'
+import { getSessions, revokeSession } from 'Plugins/auth-server/redux/actions/SessionActions'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import styles from './styles'
 
-function SessionListPage({ sessions, loading, dispatch }) {
+function SessionListPage({ sessions, permissions, loading, dispatch }) {
   const { t } = useTranslation()
-  const userAction = {}
-  const options = {}
   const myActions = []
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
-  const [limit, setLimit] = useState(500)
-  const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -39,42 +29,54 @@ function SessionListPage({ sessions, loading, dispatch }) {
   SetTitle(t('menus.sessions'))
 
   const tableColumns = [
-    { title: `${t('fields.s_id')}`, field: 'sid' },
-    { title: `${t('fields.username')}`, field: 'auth_user' },
-    { title: `${t('fields.ip_address')}`, field: 'remote_ip' },
-    { title: `${t('fields.client_id_used')}`, field: 'client_id' },
-    { title: `${t('fields.auth_time')}`, field: 'authenticationTime' },
-    { title: `${t('fields.session_expired')}`, field: 'expirationDate' },
+    { title: `${t('fields.s_id')}`, field: 'sessionAttributes.sid' },
+    { title: `${t('fields.username')}`, field: 'sessionAttributes.auth_user' },
+    { title: `${t('fields.ip_address')}`, field: 'sessionAttributes.remote_ip' },
+    { title: `${t('fields.client_id_used')}`, field: 'sessionAttributes.client_id' },
+    { 
+      title: `${t('fields.auth_time')}`,
+      field: 'authenticationTime',
+      render: (rowData) => (
+        <span>
+          { moment(rowData.authenticationTime).format("ddd, MMM DD, YYYY h:mm:ss A") }
+        </span>
+      ),
+    },
+    {
+      title: `${t('fields.session_expired')}`,
+      field: 'expirationDate',
+      render: (rowData) => (
+        <span>
+          { moment(rowData.expirationDate).format("ddd, MMM DD, YYYY h:mm:ss A") }
+        </span>
+      ),
+    },
     { title: `${t('fields.state')}`, field: 'state' },
   ]
 
   useEffect(() => {
-    makeOptions()
-    buildPayload(userAction, FETCHING_SESSIONS, options)
-    dispatch(getSessions(userAction))
+    dispatch(getSessions())
   }, [])
 
-  function makeOptions() {
-    setLimit(limit)
-    setPattern(pattern)
-    options[LIMIT] = limit
-    options[WITH_ASSOCIATED_CLIENTS] = true
-    if (pattern) {
-      options[PATTERN] = pattern
-    }
+  const handleRevoke = (row) => {
+    setItem(row)
+    toggle()
   }
 
-  function handleRevoke(row) {
-    console.log('row', row)
+  const onRevokeConfirmed = (message) => {
+    const { userDn } = item
+    const params = { userDn, action_message: message }
+    dispatch(revokeSession(params))
+    toggle()
   }
 
   myActions.push((rowData) => ({
     icon: () => <DeleteOutlined />,
     iconProps: {
       color: 'secondary',
-      id: 'deleteScope' + rowData.inum,
+      id: 'revokeSession' + rowData.inum,
     },
-    tooltip: `${t('Delete Scope')}`,
+    tooltip: `${t('Revoke Session')}`,
     onClick: (event, rowData) => handleRevoke(rowData),
     disabled: false,
   }))
@@ -103,6 +105,14 @@ function SessionListPage({ sessions, loading, dispatch }) {
             }}
           />
         </GluuViewWrapper>
+        <GluuDialog
+          row={item}
+          name={item.clientName}
+          handler={toggle}
+          modal={modal}
+          subject="openid connect client"
+          onAccept={onRevokeConfirmed}
+        />
       </CardBody>
     </Card>
   )
