@@ -1,5 +1,5 @@
 import React from 'react'
-import { v4 as uuid } from 'uuid';
+import v4 from 'uuid/v4'
 import {
   chain,
   random,
@@ -187,7 +187,7 @@ export class DragAndDropLayout extends React.Component {
           availableRow -= newCol
           output = {
             ...output,
-            [uuid()]: { md: newCol, h: HEIGHT }
+            [v4()]: { md: newCol, h: HEIGHT }
           }
         }
       }

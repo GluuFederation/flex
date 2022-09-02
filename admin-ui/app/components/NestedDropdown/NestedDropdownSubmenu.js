@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
-import { v4 as uuid } from 'uuid';
+import uuid from 'uuid/v4'
 
 import { Consumer } from './context'
 
