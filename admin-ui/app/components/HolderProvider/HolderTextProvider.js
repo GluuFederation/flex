@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import omit from 'lodash/omit'
-import uid from 'uuid/v4'
+//import uid from 'uuid/v4'
+import { v4 as uid } from 'uuid';
 import qs from 'query-string'
 
 import colors from './../../colors'
