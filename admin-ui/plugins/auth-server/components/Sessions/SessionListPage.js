@@ -42,9 +42,11 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
         </span>
       ),
     },
+    { title: `ACR`, field: 'sessionAttributes.acr_values' },
     {
       title: `${t('fields.session_expired')}`,
       field: 'expirationDate',
+      hidden: true,
       render: (rowData) => (
         <span>
           { moment(rowData.expirationDate).format("ddd, MMM DD, YYYY h:mm:ss A") }
@@ -70,17 +72,6 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
     toggle()
   }
 
-  myActions.push((rowData) => ({
-    icon: () => <DeleteOutlined />,
-    iconProps: {
-      color: 'secondary',
-      id: 'revokeSession' + rowData.inum,
-    },
-    tooltip: `${t('Revoke Session')}`,
-    onClick: (event, rowData) => handleRevoke(rowData),
-    disabled: false,
-  }))
-
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
@@ -101,7 +92,7 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
               selection: false,
               pageSize: pageSize,
               headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
-              actionsColumnIndex: -1,
+              actionsColumnIndex: -1
             }}
           />
         </GluuViewWrapper>
