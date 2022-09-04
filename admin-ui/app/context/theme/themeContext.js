@@ -8,7 +8,6 @@ const initialState = {
 
 const themeReducer = (state, action) => {
   if (action.type) {
-    window.localStorage.setItem('initTheme', action.type)
     return { theme: action.type }
   }
 
