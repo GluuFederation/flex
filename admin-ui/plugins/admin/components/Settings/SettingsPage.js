@@ -34,7 +34,7 @@ function SettingsPage() {
         <CardBody>
           <GluuTooltip doc_category={SETTINGS} doc_entry="pageSize">
             <FormGroup row>
-              <GluuLabel label="List paging size" size={4} />
+              <GluuLabel label={t('fields.list_paging_size')} size={4} />
               <Col sm={8}>
                 <InputGroup>
                   <CustomInput
@@ -66,7 +66,7 @@ function SettingsPage() {
           </GluuTooltip>
           <GluuTooltip doc_category={SETTINGS} doc_entry="darkMode">
             <FormGroup row style={{ justifyContent: 'space-between' }}>
-              <GluuLabel label="Dark Mode" />
+              <GluuLabel label={t('fields.dark_mode')} />
               <div
                 className="toggle-container"
                 style={{
@@ -82,7 +82,7 @@ function SettingsPage() {
           </GluuTooltip>
           <GluuTooltip doc_category={SETTINGS} doc_entry="configApiUrl">
             <FormGroup row style={{ justifyContent: 'space-between' }}>
-              <GluuLabel label="Config API URL" />
+              <GluuLabel label={t('fields.config_api_url')} />
               <Label
                 style={{
                   display: 'flex',
