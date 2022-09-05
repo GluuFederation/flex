@@ -11,15 +11,10 @@ import lightBlueThumbnail from 'Images/theme-thumbnail/lightBlue.jpg'
 import lightGreenThumbnail from 'Images/theme-thumbnail/lightGreen.jpg'
 import styles from './styles'
 
-export function ThemeSettings() {
+export function ThemeSettings({ userInfo }) {
   const classes = styles()
   const [open, setOpen] = React.useState(false)
-  const theme = useContext(ThemeContext)
-
-  const onChangeTheme = (value) => {
-    theme.dispatch({ type: value })
-    return
-  }
+  const themeContext = useContext(ThemeContext)
 
   const themeList = [
     { value: 'darkBlack', thumbnail: darkBlackThumbnail, text: 'Dark Black' }, 
@@ -27,6 +22,23 @@ export function ThemeSettings() {
     { value: 'lightBlue', thumbnail: lightBlueThumbnail, text: 'Light Blue' }, 
     { value: 'lightGreen', thumbnail: lightGreenThumbnail, text: 'Light Green' },
   ]
+  const existingConfig = JSON.parse(localStorage.getItem('userConfig'))
+  const lang = existingConfig?.lang || {}
+  const theme = existingConfig?.theme || {}
+
+  const onChangeTheme = (value) => {
+    const { inum } = userInfo
+
+    if (inum) {
+      theme[inum] = value
+    }
+
+    const newConfig = { lang, theme }
+    localStorage.setItem('userConfig', JSON.stringify(newConfig))
+
+    themeContext.dispatch({ type: value })
+    return
+  }
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -50,7 +62,7 @@ export function ThemeSettings() {
         {themeList.map(text => (
           <Box 
             className={clsx(classes.selectItem, {
-              [classes.selectedItem]: theme.state.theme === text.value
+              [classes.selectedItem]: themeContext.state.theme === text.value
             })} 
             onClick={() => onChangeTheme(text.value)} 
             key={text.value}
