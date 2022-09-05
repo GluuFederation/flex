@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react'
 import moment from 'moment'
+import isEmpty from 'lodash/isEmpty'
 import MaterialTable from '@material-table/core'
-import { DeleteOutlined } from '@material-ui/icons'
-import { Paper } from '@material-ui/core'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import { Paper, TextField, Box } from '@material-ui/core'
 import { connect } from 'react-redux'
+import { Button } from 'reactstrap'
 import { Card, CardBody } from 'Components'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -13,8 +15,13 @@ import { getSessions, revokeSession } from 'Plugins/auth-server/redux/actions/Se
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import {
+  hasPermission,
+  SESSION_DELETE,
+} from 'Utils/PermChecker'
 
 function SessionListPage({ sessions, permissions, loading, dispatch }) {
+  console.log('permissions', permissions)
   const { t } = useTranslation()
   const myActions = []
   const [item, setItem] = useState({})
@@ -25,6 +32,9 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const sessionUsername = sessions.map(session => session.sessionAttributes.auth_user)
+  const usernames = [...new Set(sessionUsername)]
+  const [revokeUsername, setRevokeUsername] = useState()
 
   SetTitle(t('menus.sessions'))
 
@@ -60,9 +70,12 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
     dispatch(getSessions())
   }, [])
 
-  const handleRevoke = (row) => {
-    setItem(row)
-    toggle()
+  const handleRevoke = () => {
+    const row = !isEmpty(sessions) ? sessions.find(({ sessionAttributes }) => sessionAttributes.auth_user === revokeUsername) : null
+    if (row) {
+      setItem(row)
+      toggle()
+    }
   }
 
   const onRevokeConfirmed = (message) => {
@@ -76,6 +89,30 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuViewWrapper canShow>
+          {hasPermission(permissions, SESSION_DELETE) && (
+            <Box display="flex" justifyContent="flex-end">
+              <Box display="flex" alignItems="center" fontSize="16px" mr="20px">
+                {t('fields.selectUserRevoke')}
+              </Box>
+              <Autocomplete
+                id="combo-box-demo"
+                options={usernames}
+                getOptionLabel={(option) => option}
+                style={{ width: 300 }}
+                onChange={(_, value) => setRevokeUsername(value)}
+                renderInput={(params) => <TextField {...params} label="Username" variant="outlined" />}
+              />
+              {revokeUsername && (
+                <Button
+                  color={`danger`}
+                  style={{ marginLeft: 20 }}
+                  onClick={handleRevoke}
+                >
+                  {t('actions.revoke')}
+                </Button>
+              )}
+            </Box>
+          )}
           <MaterialTable
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
@@ -96,14 +133,16 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
             }}
           />
         </GluuViewWrapper>
-        <GluuDialog
-          row={item}
-          name={item.clientName}
-          handler={toggle}
-          modal={modal}
-          subject="openid connect client"
-          onAccept={onRevokeConfirmed}
-        />
+        {!isEmpty(item) && (
+          <GluuDialog
+            row={item}
+            name={item.sessionAttributes.auth_user}
+            handler={toggle}
+            modal={modal}
+            subject="user session revoke"
+            onAccept={onRevokeConfirmed}
+          />
+        )}
       </CardBody>
     </Card>
   )

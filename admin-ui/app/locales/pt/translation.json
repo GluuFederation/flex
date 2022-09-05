@@ -89,7 +89,8 @@
     "view": "Visualizar",
     "yes": "Sim",
     "close": "Fechar",
-    "delete": "Deletar"
+    "delete": "Deletar",
+    "revoke": "Revogar"
   },
   "fields": {
     "access_token_signing_alg": "Algoritmo de assinatura de token de acesso",
@@ -281,7 +282,8 @@
     "associatedClient": "Cliente Associado",
     "creationTime": "Tempo de Criação",
     "escopo": "Escopo",
-    "scopeExpression": "Expressão de escopo"
+    "scopeExpression": "Expressão de escopo",
+    "selectUserRevoke": "Selecione o usuário para revogar"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",

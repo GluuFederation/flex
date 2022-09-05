@@ -25,7 +25,8 @@
     "yes": "Yes",
     "change_password": "Change Password",
     "close": "Close",
-    "delete": "Delete"
+    "delete": "Delete",
+    "revoke": "Revoke"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
@@ -300,7 +301,8 @@
     "creationTime": "Creation Time",
     "select_date_range":"Select a date range",
     "scope": "Scope",
-    "scopeExpression": "Scope Expression"
+    "scopeExpression": "Scope Expression",
+    "selectUserRevoke": "Select the user to revoke"
   },
   "languages": {
     "french": "French",

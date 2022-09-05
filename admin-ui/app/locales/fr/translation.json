@@ -91,7 +91,8 @@
     "view": "Vue",
     "yes": "Oui",
     "close": "Fermer",
-    "delete": "Supprimez"
+    "delete": "Supprimez",
+    "revoke": "Révoquer"
   },
   "fields": {
     "access_token_signing_alg": "Algorithme de signature de jeton d'accès",
@@ -287,7 +288,8 @@
     "associatedClient": "Client associé",
     "creationTime": "Heure de création",
     "portée": "Portée",
-    "scopeExpression": "Expression d'étendue"
+    "scopeExpression": "Expression d'étendue",
+    "selectUserRevoke": "Sélectionnez l'utilisateur à révoquer"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",

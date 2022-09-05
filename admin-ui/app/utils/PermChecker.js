@@ -90,9 +90,12 @@ export const STAT_JANS_READ = 'jans_stat'
 export const USER_READ = BASE_URL + '/config/user.readonly'
 export const USER_WRITE = BASE_URL + '/config/user.write'
 
+export const SESSION_READ = BASE_URL + '/jans-auth-server/session.readonly'
+export const SESSION_DELETE = BASE_URL + '/jans-auth-server/session.delete'
+
 export const hasPermission = (scopes, scope) => {
   if (scopes) {
-    return scopes.includes(scope, 0)
+    return scopes.map(scp => scope === scp)
   }
   return false
 }
