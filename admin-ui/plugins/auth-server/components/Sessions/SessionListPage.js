@@ -21,7 +21,6 @@ import {
 } from 'Utils/PermChecker'
 
 function SessionListPage({ sessions, permissions, loading, dispatch }) {
-  console.log('permissions', permissions)
   const { t } = useTranslation()
   const myActions = []
   const [item, setItem] = useState({})
