@@ -39,6 +39,7 @@ import {
   CLIENT_WRITE,
   SCOPE_WRITE,
   JWKS_READ,
+  SESSION_READ,
 } from 'Utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/auth-server'
@@ -52,7 +53,7 @@ const pluginMetadata = {
         {
           title: 'menus.sessions',
           path: PLUGIN_BASE_APTH + '/sessions',
-          permission: CLIENT_READ,
+          permission: SESSION_READ,
         },
         {
           title: 'menus.configuration',
@@ -91,7 +92,7 @@ const pluginMetadata = {
     {
       component: SessionListPage,
       path: PLUGIN_BASE_APTH + '/sessions',
-      permission: CLIENT_READ,
+      permission: SESSION_READ,
     },
     {
       component: ClientListPage,
