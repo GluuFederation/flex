@@ -180,6 +180,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
           <MaterialTable
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
+              Pagination: (props) => <CustomPagination />,
             }}
             columns={[
               { title: `${t('fields.inum')}`, field: 'inum' },
@@ -204,7 +205,10 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
               selection: false,
               searchFieldAlignment: 'left',
               pageSize: pageSize,
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              headerStyle: {
+                ...applicationStyle.tableHeaderStyle,
+                ...bgThemeColor,
+              },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
