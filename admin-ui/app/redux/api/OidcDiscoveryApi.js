@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class OidcDiscoveryApi {
   constructor(api) {
     this.api = api
@@ -7,11 +9,7 @@ export default class OidcDiscoveryApi {
     getOidcDiscovery = () => {
       return new Promise((resolve, reject) => {
         this.api.getProperties((error, data) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(data)
-          }
+          handleResponse(error, reject, resolve, data)
         })
       })
     }

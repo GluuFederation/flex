@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class CacheApi {
   constructor(api) {
     this.api = api
@@ -7,7 +9,7 @@ export default class CacheApi {
   getConfigCache = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCache((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -16,7 +18,7 @@ export default class CacheApi {
   getConfigCacheInMemory = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCacheInMemory((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -25,7 +27,7 @@ export default class CacheApi {
   getConfigCacheMemcached = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCacheMemcached((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -34,7 +36,7 @@ export default class CacheApi {
   getConfigCacheNativePersistence = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCacheNativePersistence((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -43,7 +45,7 @@ export default class CacheApi {
   getConfigCacheRedis = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigCacheRedis((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -52,7 +54,7 @@ export default class CacheApi {
   updateCacheConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.patchConfigCache(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -60,7 +62,7 @@ export default class CacheApi {
   updateCacheMemoryConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigCacheInMemory(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -68,7 +70,7 @@ export default class CacheApi {
   updateCacheMemConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigCacheMemcached(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -76,7 +78,7 @@ export default class CacheApi {
   updateCacheNativeConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigCacheNativePersistence(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -84,7 +86,7 @@ export default class CacheApi {
   updateCacheRedisConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigCacheRedis(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -93,16 +95,8 @@ export default class CacheApi {
   addCacheConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.postConfigCache(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

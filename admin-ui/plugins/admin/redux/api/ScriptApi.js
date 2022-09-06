@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class ScriptApi {
   constructor(api) {
     this.api = api
@@ -5,7 +7,7 @@ export default class ScriptApi {
   getAllCustomScript = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScripts((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -15,7 +17,7 @@ export default class ScriptApi {
         options['type'],
         options,
         (error, data) => {
-          this.handleResponse(error, reject, resolve, data)
+          handleResponse(error, reject, resolve, data)
         },
       )
     })
@@ -24,7 +26,7 @@ export default class ScriptApi {
   addCustomScript = (data) => {
     return new Promise((resolve, reject) => {
       this.api.postConfigScripts(data, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -32,7 +34,7 @@ export default class ScriptApi {
   editCustomScript = (data) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigScripts(data, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -40,7 +42,7 @@ export default class ScriptApi {
   getCustomScript = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScriptsByInum(inum, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -48,7 +50,7 @@ export default class ScriptApi {
   getCustomScriptByType = async (type) => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScriptsByType(type, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -56,16 +58,8 @@ export default class ScriptApi {
   deleteCustomScript = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteConfigScriptsByInum(inum, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

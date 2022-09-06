@@ -53,10 +53,6 @@ const ClientBasicPanel = ({
   )
   const [showClientSecret, setShowClientSecret] = useState(false)
 
-  function handleExpirable() {
-    setExpirable(!expirable)
-  }
-
   function getScopeMapping(exitingScopes, scopes) {
     if (!exitingScopes) {
       exitingScopes = []
@@ -65,9 +61,6 @@ const ClientBasicPanel = ({
   }
 
   function uriValidator(uri) {
-    return uri
-  }
-  function postUriValidator(uri) {
     return uri
   }
   function handleClickShowClientSecret() {

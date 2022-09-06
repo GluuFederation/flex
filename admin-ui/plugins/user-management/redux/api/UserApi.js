@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class UserApi {
   constructor(api) {
     this.api = api
@@ -5,8 +7,8 @@ export default class UserApi {
 
   getUsers = (payload) => {
     return new Promise((resolve, reject) => {
-      this.api.getUser(payload.action, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+      this.api.getUser({}, (error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -16,7 +18,7 @@ export default class UserApi {
     options['extendedCustomUser'] = data
     return new Promise((resolve, reject) => {
       this.api.postUser(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -25,7 +27,7 @@ export default class UserApi {
     options['customUser'] = data
     return new Promise((resolve, reject) => {
       this.api.putUser(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -35,23 +37,15 @@ export default class UserApi {
     options['userPatchRequest'] = data
     return new Promise((resolve, reject) => {
       this.api.patchUserByInum(data.inum, options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
   deleteUser = (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteUser(inum, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

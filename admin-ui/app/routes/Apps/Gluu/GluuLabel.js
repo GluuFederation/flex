@@ -2,6 +2,7 @@ import React from 'react'
 import { Label } from 'Components'
 import ReactTooltip from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
+import applicationStyle from './styles/applicationstyle'
 
 function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
   const { t } = useTranslation()
@@ -15,7 +16,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
     <Label for={label} sm={getSize()} data-tip data-for={label} style={style}>
       <h5>
         {t(label)}
-        {required && <span style={{ color: 'red', fontSize: '22px' }}> *</span>}
+        {required && <span style={applicationStyle.fieldRequired}> *</span>}
         :
       </h5>
       {doc_category && (

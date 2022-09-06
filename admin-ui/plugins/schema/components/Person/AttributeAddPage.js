@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from 'Components'
+import { CardBody, Card } from 'Components'
 import AttributeForm from './AttributeForm'
 import { addAttribute } from 'Plugins/schema/redux/actions/AttributeActions'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'

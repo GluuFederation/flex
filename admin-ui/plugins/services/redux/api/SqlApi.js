@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class SqlApi {
   constructor(api) {
     this.api = api
@@ -7,7 +9,7 @@ export default class SqlApi {
   getSqlConfig = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigDatabaseSql((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -16,7 +18,7 @@ export default class SqlApi {
   updateSqlConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigDatabaseSql(input.sql, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -26,7 +28,7 @@ export default class SqlApi {
     alert(JSON.stringify(input.sql))
     return new Promise((resolve, reject) => {
       this.api.postConfigDatabaseSql(input.sql, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -35,7 +37,7 @@ export default class SqlApi {
   deleteSqlConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.deleteConfigDatabaseSqlByName(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -44,16 +46,8 @@ export default class SqlApi {
   testLdapConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.postConfigDatabaseSqlTest(input, (error, data, response) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

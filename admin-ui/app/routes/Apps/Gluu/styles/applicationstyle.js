@@ -38,4 +38,18 @@ export default {
     backgroundColor: '#F5F5F5',
     float: 'left',
   },
+  fieldRequired: {
+    color: 'red',
+    fontSize: '22px',
+  },
+ removableInputRow: {
+  float: 'right',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  padding: '5px',
+  width: '25px',
+  height: '25px',
+  marginTop: '0px',
+  marginRight: '-10px',
+},
 }

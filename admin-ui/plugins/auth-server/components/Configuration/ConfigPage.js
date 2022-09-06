@@ -24,7 +24,7 @@ import { SIMPLE_PASSWORD_AUTH, FETCHING_SCRIPTS } from 'Plugins/auth-server/comm
 import { getAcrsConfig, editAcrs } from 'Plugins/auth-server/redux/actions/AcrsActions'
 import { getScripts } from 'Redux/actions/InitActions'
 
-function ConfigPage({ acrs, scripts, configuration, loading, dispatch, permissions }) {
+function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
   const { t } = useTranslation()
   const lSize = 6
   const userAction = {}

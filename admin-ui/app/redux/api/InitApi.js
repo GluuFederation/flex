@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class InitApi {
   constructor(api) {
     this.api = api
@@ -6,7 +8,7 @@ export default class InitApi {
   getScopes = (options) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthScopes(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -14,7 +16,7 @@ export default class InitApi {
   getScripts = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigScripts((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -22,7 +24,7 @@ export default class InitApi {
   getAttributes = (options) => {
     return new Promise((resolve, reject) => {
       this.api.getAttributes(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -30,16 +32,8 @@ export default class InitApi {
   getClients = (options) => {
     return new Promise((resolve, reject) => {
       this.api.getOauthOpenidClients(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

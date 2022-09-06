@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class LdapApi {
   constructor(api) {
     this.api = api
@@ -7,7 +9,7 @@ export default class LdapApi {
   getLdapConfig = () => {
     return new Promise((resolve, reject) => {
       this.api.getConfigDatabaseLdap((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -16,7 +18,7 @@ export default class LdapApi {
   updateLdapConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.putConfigDatabaseLdap(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -25,7 +27,7 @@ export default class LdapApi {
   addLdapConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.postConfigDatabaseLdap(input.ldap, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -34,7 +36,7 @@ export default class LdapApi {
   deleteLdapConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.deleteConfigDatabaseLdapByName(input, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -43,16 +45,8 @@ export default class LdapApi {
   testLdapConfig = (input) => {
     return new Promise((resolve, reject) => {
       this.api.postConfigDatabaseLdapTest(input, (error, data, response) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }
