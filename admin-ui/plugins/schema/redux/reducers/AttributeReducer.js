@@ -16,9 +16,11 @@ const INIT_STATE = {
   items: [],
   item: {},
   loading: false,
+  totalItems: 0,
+  entriesCount: 0,
 }
 
-const reducerName = 'attributeReducer';
+const reducerName = 'attributeReducer'
 
 export default function attributeReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -36,7 +38,9 @@ export default function attributeReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          items: action.payload.data,
+          items: action.payload.data.data,
+          totalItems: action.payload.data.totalItems,
+          entriesCount: action.payload.data.entriesCount,
           loading: false,
         }
       } else {
