@@ -60,6 +60,7 @@
     "scopes": "Portées",
     "scripts": "Scénarios",
     "services": "Prestations de service",
+    "sessions": "Séances",
     "settings": "Paramètres",
     "signout": "Déconnexion",
     "user_management": "User Management",
@@ -90,7 +91,8 @@
     "view": "Vue",
     "yes": "Oui",
     "close": "Fermer",
-    "delete": "Supprimez"
+    "delete": "Supprimez",
+    "revoke": "Révoquer"
   },
   "fields": {
     "access_token_signing_alg": "Algorithme de signature de jeton d'accès",
@@ -100,6 +102,7 @@
     "attributes": "Les attributs",
     "attribute_edit_type": "Type de modification d'attribut",
     "attribute_view_type": "Type de vue d'attribut",
+    "auth_time": "Heure d'authentification",
     "authentication_method": "Méthode d'authentification pour le point de terminaison du jeton",
     "authorization_code_access_token": "Jeton d'accès au code d'autorisation",
     "average_of_mau": "Moyenne de MAU",
@@ -114,6 +117,7 @@
     "client_credentials_access_token": "Jeton d'accès aux informations d'identification du client",
     "client_expiration_date": "Date d'expiration du client",
     "client_id": "Identité du client",
+    "client_id_used": "Identifiant client utilisé",
     "client_name": "Nom du client",
     "client_secret": "Secret du client",
     "computation_pool_size": "Taille du pool de calcul",
@@ -157,6 +161,7 @@
     "internal": "Interne",
     "introspection_scripts": "Scripts d'introspection",
     "inum": "inum",
+    "ip_address": "Adresse IP",
     "is_active": "C'est actif",
     "is_expirable_client": "est un client expirable ?",
     "is_trusted_client": "Est un client de confiance",
@@ -225,6 +230,8 @@
     "sentinel_master_group_name": "sentinelleMasterGroupName",
     "servers": "Les serveurs",
     "show_in_configuration_endpoint": "Afficher dans le point de terminaison de configuration",
+    "s_id": "ID de session",
+    "session_expired": "Session expirée",
     "smtp_server_port": "Port du serveur SMTP",
     "smtp_test_status": "État du test SMTP",
     "smtp_user_name": "Nom d'utilisateur SMTP",
@@ -240,6 +247,7 @@
     "ssl_trust_store_file_path": "sslTrustStoreFilePath",
     "ssl_trust_store_format": "Format de magasin de confiance SSL",
     "ssl_trust_store_pin": "NIP du magasin de confiance SSL",
+    "state": "État",
     "status": "StatutStatut",
     "subject_type": "Type de sujet",
     "test_config": "Tester la configuration",
@@ -280,7 +288,8 @@
     "associatedClient": "Client associé",
     "creationTime": "Heure de création",
     "portée": "Portée",
-    "scopeExpression": "Expression d'étendue"
+    "scopeExpression": "Expression d'étendue",
+    "selectUserRevoke": "Sélectionnez l'utilisateur à révoquer"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
