@@ -35,7 +35,7 @@ function UserList(props) {
   const dispatch = useDispatch()
   const opt = {}
   useEffect(() => {
-    opt['limit'] = 0
+    opt['limit'] = 100
     dispatch(getUsers({}))
     dispatch(getAttributes(opt))
     dispatch(getRoles())
