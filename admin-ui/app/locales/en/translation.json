@@ -311,6 +311,7 @@
   },
   "menus": {
     "adminui": "Admin",
+    "blockFlow": "Block Flow",
     "config-api": "Config-API",
     "api": {
       "roles": "Access roles",

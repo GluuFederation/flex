@@ -4,6 +4,7 @@ import AttributeEditPage from './components/Person/AttributeEditPage'
 import AttributeViewPage from './components/Person/AttributeViewPage'
 import attributeReducer from './redux/reducers/AttributeReducer'
 import attributeSaga from './redux/sagas/AttributeSaga'
+import BlockFlowPage from './components/BlockFlow/BlockFlowPage'
 import { ATTRIBUTE_READ, ATTRIBUTE_WRITE } from 'Utils//PermChecker'
 
 const pluginMetadata = {
@@ -15,6 +16,11 @@ const pluginMetadata = {
         {
           title: 'menus.person',
           path: '/attributes',
+          permission: ATTRIBUTE_READ,
+        },
+        {
+          title: 'menus.blockFlow',
+          path: '/block-flow',
           permission: ATTRIBUTE_READ,
         },
       ],
@@ -39,6 +45,11 @@ const pluginMetadata = {
     {
       component: AttributeListPage,
       path: '/attributes',
+      permission: ATTRIBUTE_READ,
+    },
+    {
+      component: BlockFlowPage,
+      path: '/block-flow',
       permission: ATTRIBUTE_READ,
     },
   ],

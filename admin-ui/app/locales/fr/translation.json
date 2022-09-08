@@ -28,6 +28,7 @@
   },
   "menus": {
     "adminui": "Administratrice",
+    "blockFlow": "Flux de bloc",
     "config-api": "Config-API",
     "api": {
       "roles": "Rôles d'accès",

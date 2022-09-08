@@ -28,6 +28,7 @@
   },
   "menus": {
     "adminui": "Admin",
+    "blockFlow": "Bloquear fluxo",
     "config-api": "Config-API",
     "api": {
       "roles": "Papéis de acesso",
