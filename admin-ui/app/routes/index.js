@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Route, Switch, Redirect } from 'react-router'
+import { Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 // ----------- Pages Imports ---------------
@@ -34,51 +34,52 @@ export const RoutedContent = () => {
   }, [])
 
   return (
-    <Switch>
-      <Redirect from="/" to="/home/dashboard" exact />
-      <Route path="/home/dashboard" exact component={DashboardPage} />
-      <Route path="/home/health" exact component={HealthPage} />
-      <Route path="/home/licenseDetails" exact component={LicenseDetailsPage} />
+    <Routes>
+      <Route path="/home/dashboard" element={<DashboardPage />} />
+      <Route path="/" element={ <Navigate to="/home/dashboard" /> } />
+      <Route path="/home/health" element={<HealthPage />} />
+      <Route path="/home/licenseDetails" element={<LicenseDetailsPage />} />
       {/*    Layouts     */}
-      <Route path="/layouts/navbar" component={NavbarOnly} />
-      <Route path="/layouts/sidebar" component={SidebarDefault} />
-      <Route path="/layouts/sidebar-a" component={SidebarA} />
+      <Route path="/layouts/navbar" element={<NavbarOnly />} />
+      <Route path="/layouts/sidebar" element={<SidebarDefault />} />
+      <Route path="/layouts/sidebar-a" element={<SidebarA />} />
       <Route
         path="/layouts/sidebar-with-navbar"
-        component={SidebarWithNavbar}
+        element={<SidebarWithNavbar />}
       />
 
       {/* -------- Plugins ---------*/}
       {pluginMenus.map(
         (item, key) =>
           hasPermission(scopes, item.permission) && (
-            <Route key={key} path={item.path} component={item.component} />
+            <Route key={key} path={item.path} element={<item.component />} />
           ),
       )}
       {/*    Pages Routes    */}
-      <Route component={ProfilePage} path="/profile" />
-      <Route component={ByeBye} path="/logout" />
-      <Route component={Gluu404Error} path="/error-404" />
+      <Route element={<ProfilePage />} path="/profile" />
+      <Route element={<ByeBye />} path="/logout" />
+      <Route element={<Gluu404Error />} path="/error-404" />
 
       {/*    404    */}
-      <Redirect to="/error-404" />
-    </Switch>
+      <Route path="*" element={ <Navigate to="/error-404" /> } />
+    </Routes>
   )
 }
 
 //------ Custom Layout Parts --------
 export const RoutedNavbars = () => (
-  <Switch>
+  <Routes>
     <Route
-      component={() => (
+    path="/*"
+      element={
         <GluuNavBar themeStyle="color" themeColor="primary" navStyle="accent" />
-      )}
+      }
     />
-  </Switch>
+  </Routes>
 )
 
 export const RoutedSidebars = () => (
-  <Switch>
-    <Route component={DefaultSidebar} />
-  </Switch>
+  <Routes>
+    <Route path="/*" element={<DefaultSidebar />} />
+  </Routes>
 )

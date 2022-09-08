@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from '../../../../app/components'
 import UserForm from './UserForm'
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
@@ -11,7 +11,7 @@ import moment from 'moment'
 function UserAddPage() {
   const dispatch = useDispatch()
   const userAction = {}
-  const history = useHistory()
+  const navigate =useNavigate()
   const redirectToUserListPage = useSelector(
     (state) => state.userReducer.redirectToUserListPage,
   )
@@ -78,7 +78,7 @@ function UserAddPage() {
 
   useEffect(() => {
     if (redirectToUserListPage) {
-      history.push('/user/usersmanagement')
+      navigate('/user/usersmanagement')
     }
   }, [redirectToUserListPage])
   const formik = useFormik({

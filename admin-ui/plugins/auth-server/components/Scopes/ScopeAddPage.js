@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import ScopeForm from './ScopeForm'
 import { addScope } from 'Plugins/auth-server/redux/actions/ScopeActions'
@@ -16,7 +16,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function ScopeAddPage({ scripts, dispatch, attributes, loading, saveOperationFlag, errorInSaveOperationFlag }) {
   const userAction = {}
-  const history = useHistory()
+  const navigate =useNavigate()
   const { t } = useTranslation()
   useEffect(() => {
     if (attributes.length === 0) {
@@ -31,7 +31,7 @@ function ScopeAddPage({ scripts, dispatch, attributes, loading, saveOperationFla
 
   useEffect(() => {
     if (saveOperationFlag && !errorInSaveOperationFlag)
-      history.push('/auth-server/scopes')
+      navigate('/auth-server/scopes')
   }, [saveOperationFlag])
 
   function handleSubmit(data) {

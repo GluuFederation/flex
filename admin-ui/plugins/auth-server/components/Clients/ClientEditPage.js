@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { editClient } from 'Plugins/auth-server/redux/actions/OIDCActions'
 import { getScopes, getScopeByCreator } from 'Plugins/auth-server/redux/actions/ScopeActions'
@@ -30,7 +30,7 @@ function ClientEditPage({
   const options = {}
   options['limit'] = parseInt(100000)
   const { t } = useTranslation()
-  const history = useHistory()
+  const navigate =useNavigate()
 
   useEffect(() => {
     dispatch(getScopeByCreator({ inum: clientData.inum }))
@@ -48,7 +48,7 @@ function ClientEditPage({
   }, [])
   useEffect(() => {
     if (saveOperationFlag && !errorInSaveOperationFlag)
-      history.push('/auth-server/clients')
+      navigate('/auth-server/clients')
   }, [saveOperationFlag])
 
   if (!clientData.attributes) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
 import { Card, CardBody, FormGroup } from 'Components'
@@ -46,7 +46,7 @@ function SqlListPage({
   const { t } = useTranslation()
   const userAction = {}
   const myActions = []
-  const history = useHistory()
+  const navigate =useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
@@ -64,7 +64,7 @@ function SqlListPage({
 
   function handleGoToSqlEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/config/sql/edit:` + row.configId)
+    return navigate(`/config/sql/edit:` + row.configId)
   }
 
   function handleSqlDelete(row) {
@@ -72,7 +72,7 @@ function SqlListPage({
     toggle()
   }
   function handleGoToSqlAddPage() {
-    return history.push('/config/sql/new')
+    return navigate('/config/sql/new')
   }
 
   if (hasPermission(permissions, SQL_WRITE)) {
@@ -123,7 +123,7 @@ function SqlListPage({
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.configId)
     dispatch(deleteSql(item.configId))
-    history.push('/config/sql')
+    navigate('/config/sql')
     toggle()
   }
   function testSqlConnect(row) {

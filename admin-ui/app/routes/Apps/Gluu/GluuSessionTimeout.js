@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import IdleTimer from 'react-idle-timer'
 import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 let countdownInterval
 let timeout
 
@@ -10,7 +10,7 @@ const SessionTimeout = ({ isAuthenticated }) => {
   const [timeoutCountdown, setTimeoutCountdown] = useState(0)
   const idleTimer = useRef(null)
   const SESSION_TIMEOUT_IN_MINUTES = process.env.SESSION_TIMEOUT_IN_MINUTES
-  const history = useHistory()
+  const navigate =useNavigate()
 
   const clearSessionTimeout = () => {
     clearTimeout(timeout)
@@ -25,7 +25,7 @@ const SessionTimeout = ({ isAuthenticated }) => {
       setTimeoutModalOpen(false)
       clearSessionInterval()
       clearSessionTimeout()
-      history.push('/logout')
+      navigate('/logout')
     } catch (err) {
       console.error(err)
     }
