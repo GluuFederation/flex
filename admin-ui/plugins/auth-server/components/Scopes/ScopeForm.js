@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Formik, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
@@ -40,7 +40,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   let associatedClientsSelectedValues = []
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-  const history = useHistory()
+  const navigate =useNavigate()
   const dispatch = useDispatch()
   const client = scope.clients || []
 
@@ -136,7 +136,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   const goToClientViewPage = (clientId, clientData = {}) => {
     dispatch(viewOnly(true))
     dispatch(setCurrentItem(clientData))
-    return history.push(`/auth-server/client/edit:` + clientId)
+    return navigate(`/auth-server/client/edit:` + clientId)
   }
 
   return (

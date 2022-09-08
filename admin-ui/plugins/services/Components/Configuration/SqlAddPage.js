@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import SqlForm from './SqlForm'
 import { addSql } from 'Plugins/services/redux/actions/SqlActions'
@@ -8,14 +8,14 @@ import { buildPayload } from 'Utils/PermChecker'
 
 function SqlAddPage({ dispatch }) {
   const userAction = {}
-  const history = useHistory()
+  const navigate =useNavigate()
   function handleSubmit(data) {
     if (data) {
       const message = data.sql.action_message
       delete data.sql.action_message
       buildPayload(userAction, message, data)
       dispatch(addSql(userAction))
-      history.push('/config/sql')
+      navigate('/config/sql')
     }
   }
   const defautConfigurations = {}
