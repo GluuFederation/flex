@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'
@@ -42,7 +42,7 @@ import getThemeColor from 'Context/theme/config'
 
 function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const { t } = useTranslation()
-  const history = useHistory()
+  const navigate =useNavigate()
   const userAction = {}
   const options = {}
   const myActions = []
@@ -165,12 +165,12 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
     )
   }
   function handleGoToCustomScriptAddPage() {
-    return history.push('/adm/script/new')
+    return navigate('/adm/script/new')
   }
   function handleGoToCustomScriptEditPage(row, edition) {
     dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
-    return history.push(`/adm/script/edit:` + row.inum)
+    return navigate(`/adm/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
     setItem(row)
@@ -179,7 +179,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.inum)
     dispatch(deleteCustomScript(userAction))
-    history.push('/adm/scripts')
+    navigate('/adm/scripts')
     toggle()
   }
   return (

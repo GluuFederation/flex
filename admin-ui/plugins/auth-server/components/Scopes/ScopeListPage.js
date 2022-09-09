@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { Paper } from '@material-ui/core'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Link } from 'react-router-dom'
@@ -46,7 +46,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const options = {}
   const clientOptions = {}
   const myActions = []
-  const history = useHistory()
+  const navigate =useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
@@ -123,11 +123,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   }
 
   function handleGoToScopeAddPage() {
-    return history.push('/auth-server/scope/new')
+    return navigate('/auth-server/scope/new')
   }
   function handleGoToScopeEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/auth-server/scope/edit:` + row.inum)
+    return navigate(`/auth-server/scope/edit:` + row.inum)
   }
 
   function handleScopeDelete(row) {
@@ -139,7 +139,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.inum)
     dispatch(deleteScope(userAction))
-    history.push('/auth-server/scopes')
+    navigate('/auth-server/scopes')
     toggle()
   }
 

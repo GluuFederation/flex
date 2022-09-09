@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import AttributeForm from './AttributeForm'
@@ -15,11 +15,11 @@ function AttributeEditPage({ item, loading, dispatch }) {
       minLength: null,
     }
   }
-  const history = useHistory()
+  const navigate =useNavigate()
   function customHandleSubmit(data) {
     if (data) {
       dispatch(editAttribute(data))
-      history.push('/attributes')
+      navigate('/attributes')
     }
   }
   return (

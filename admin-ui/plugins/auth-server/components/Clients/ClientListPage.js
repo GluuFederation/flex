@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Paper } from '@material-ui/core'
 import { Card, CardBody, Badge } from 'Components'
@@ -46,7 +46,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const userAction = {}
   const options = {}
   const myActions = []
-  const history = useHistory()
+  const navigate =useNavigate()
   const { search } = useLocation()
   const pageSize = localStorage.getItem('paggingSize') || 10
   const theme = useContext(ThemeContext)
@@ -206,10 +206,10 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   function handleGoToClientEditPage(row, edition) {
     dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
-    return history.push(`/auth-server/client/edit:` + row.inum.substring(0, 4))
+    return navigate(`/auth-server/client/edit:` + row.inum.substring(0, 4))
   }
   function handleGoToClientAddPage() {
-    return history.push('/auth-server/client/new')
+    return navigate('/auth-server/client/new')
   }
   function handleClientDelete(row) {
     dispatch(setCurrentItem(row))
@@ -227,7 +227,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.inum)
     dispatch(deleteClient(userAction))
-    history.push('/auth-server/clients')
+    navigate('/auth-server/clients')
     toggle()
   }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Box from '@material-ui/core/Box'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import isEmpty from 'lodash/isEmpty'
 import { useTranslation } from 'react-i18next'
@@ -42,7 +42,7 @@ function ClientCibaParUmaPanel({
   viewOnly,
 }) {
   const { t } = useTranslation()
-  const history = useHistory()
+  const navigate =useNavigate()
   const claim_uri_id = 'claim_uri_id'
   const cibaDeliveryModes = ['poll', 'push', 'ping']
   const claimRedirectURI = []
@@ -96,7 +96,7 @@ function ClientCibaParUmaPanel({
 
   const handleScopeEdit = (scope) => {
     dispatch(setCurrentItem(scope))
-    return history.push(`/auth-server/scope/edit:${scope.inum}`)
+    return navigate(`/auth-server/scope/edit:${scope.inum}`)
   }
 
   const handleClientEdit = (inum) => {
@@ -105,7 +105,7 @@ function ClientCibaParUmaPanel({
     setOpen(false)
     dispatch(viewOnly(true))
     setCurrentStep(sequence[0])
-    return history.push(`/auth-server/client/edit:${inum?.substring(0, 4)}`)
+    return navigate(`/auth-server/client/edit:${inum?.substring(0, 4)}`)
   }
 
   useEffect(() => {

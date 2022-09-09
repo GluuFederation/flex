@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import ClientWizardForm from './ClientWizardForm'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { addNewClientAction } from 'Plugins/auth-server/redux/actions/OIDCActions'
 import { getOidcDiscovery } from 'Redux/actions/OidcDiscoveryActions'
 import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
@@ -24,7 +24,7 @@ function ClientAddPage({
   const userAction = {}
   const options = {}
   options['limit'] = parseInt(100000)
-  const history = useHistory()
+  const navigate =useNavigate()
   const { t } = useTranslation()
   useEffect(() => {
     buildPayload(userAction, '', options)
@@ -39,7 +39,7 @@ function ClientAddPage({
 
   useEffect(() => {
     if (saveOperationFlag && !errorInSaveOperationFlag)
-      history.push('/auth-server/clients')
+      navigate('/auth-server/clients')
   }, [saveOperationFlag])
 
   scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
