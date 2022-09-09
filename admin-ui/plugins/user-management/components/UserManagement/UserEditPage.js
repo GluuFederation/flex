@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from '../../../../app/components'
 import UserForm from './UserForm'
 import GluuAlert from '../../../../app/routes/Apps/Gluu/GluuAlert'
@@ -13,7 +13,7 @@ import { getPersistenceType } from '../../../services/redux/actions/PersistenceA
 function UserEditPage() {
   const dispatch = useDispatch()
   const userAction = {}
-  const history = useHistory()
+  const navigate =useNavigate()
   const { t } = useTranslation()
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
   const personAttributes = useSelector((state) => state.attributeReducer.items)
@@ -31,7 +31,7 @@ function UserEditPage() {
 
   useEffect(() => {
     if (redirectToUserListPage) {
-      history.push('/user/usersmanagement')
+      navigate('/user/usersmanagement')
     }
   }, [redirectToUserListPage])
   const createCustomAttributes = (values) => {

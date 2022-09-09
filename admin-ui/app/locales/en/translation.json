@@ -25,7 +25,8 @@
     "yes": "Yes",
     "change_password": "Change Password",
     "close": "Close",
-    "delete": "Delete"
+    "delete": "Delete",
+    "revoke": "Revoke"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
@@ -57,6 +58,7 @@
     "attributes": "Attributes",
     "attribute_edit_type": "Attribute Edit Type",
     "attribute_view_type": "Attribute View Type",
+    "auth_time": "Auth Time",
     "authentication_method": "Authentication method for the Token Endpoint",
     "authorization_code_access_token": "Authorization Code Access Token",
     "average_of_mau": "Average of MAU",
@@ -71,6 +73,7 @@
     "client_credentials_access_token": "Client Credentials Access Token",
     "client_expiration_date": "Client Expiration Date",
     "client_id": "Client Id",
+    "client_id_used": "Client Id Used",
     "client_name": "Client name",
     "client_secret": "Client secret",
     "computation_pool_size": "Computation Pool Size",
@@ -113,7 +116,9 @@
     "in_memory_configuration": "inMemoryConfiguration",
     "internal": "Internal",
     "introspection_scripts": "Introspection",
+    "ropcScripts": "Password Grant",
     "inum": "inum",
+    "ip_address": "IP Address",
     "is_active": "Active",
     "is_expirable_client": "Is Expirable Client?",
     "is_trusted_client": "Supress authorization",
@@ -171,7 +176,6 @@
     "required_ssl": "Required SSL",
     "response_types": "Response types",
     "revision": "Revision",
-    "ropcScripts": "Password Grant",
     "rpt_scripts": "RPT Modification Script",
     "saml1_uri": "Saml1 URI",
     "saml2_uri": "Saml2 URI",
@@ -190,6 +194,8 @@
     "sentinel_master_group_name": "sentinelMasterGroupName",
     "servers": "Server Details",
     "show_in_configuration_endpoint": "Show in configuration endpoint",
+    "s_id": "Session ID",
+    "session_expired": "Session Expired",
     "smtp_server_port": "SMTP server port",
     "smtp_test_status": "Smtp Test Status",
     "smtp_user_name": "SMTP User Name",
@@ -206,6 +212,7 @@
     "ssl_trust_store_file_path": "sslTrustStoreFilePath",
     "ssl_trust_store_format": "SSL Trust Store Format",
     "ssl_trust_store_pin": "SSL Trust Store Pin",
+    "state": "State",
     "status": "Status",
     "scopes": "Scopes",
     "subject_type": "id_token subject type",
@@ -294,7 +301,8 @@
     "creationTime": "Creation Time",
     "select_date_range":"Select a date range",
     "scope": "Scope",
-    "scopeExpression": "Scope Expression"
+    "scopeExpression": "Scope Expression",
+    "selectUserRevoke": "Select the user to revoke"
   },
   "languages": {
     "french": "French",
@@ -335,6 +343,7 @@
     "scopes": "Scopes",
     "scripts": "Scripts",
     "services": "Services",
+    "sessions": "Sessions",
     "settings": "Settings",
     "signout": "Sign out",
     "user_management": "User Management",

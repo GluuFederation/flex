@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { CardBody, Card } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import CustomScriptForm from './CustomScriptForm'
@@ -20,12 +20,12 @@ function CustomScriptEditPage({
   viewOnly,
 }) {
   const userAction = {}
-  const history = useHistory()
+  const navigate =useNavigate()
   const { t } = useTranslation()
 
   useEffect(() => {
     if (saveOperationFlag && !errorInSaveOperationFlag)
-      history.push('/adm/scripts')
+      navigate('/adm/scripts')
   }, [saveOperationFlag])
 
   function handleSubmit(data) {

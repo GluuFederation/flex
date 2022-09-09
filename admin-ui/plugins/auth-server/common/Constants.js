@@ -13,5 +13,6 @@ export const FETCHING_SCOPES = 'Fetch scopes'
 export const SEARCHING_SCRIPTS = 'Search scripts'
 export const FETCHING_SCRIPTS = 'Fetch scripts'
 export const FETCHING_JSON_PROPERTIES = 'Fetch json properties'
+export const FETCHING_SESSIONS = 'Fetch session'
 
 export const SIMPLE_PASSWORD_AUTH = 'simple_password_auth'

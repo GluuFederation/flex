@@ -15,7 +15,7 @@ import { Card, CardBody } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   hasPermission,
   ROLE_READ,
@@ -35,7 +35,7 @@ function UserList(props) {
   const dispatch = useDispatch()
   const opt = {}
   useEffect(() => {
-    opt['limit'] = 0
+    opt['limit'] = 100
     dispatch(getUsers({}))
     dispatch(getAttributes(opt))
     dispatch(getRoles())
@@ -65,15 +65,15 @@ function UserList(props) {
   const options = []
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
-  const history = useHistory()
+  const navigate =useNavigate()
 
   function handleGoToUserAddPage() {
     dispatch(setSelectedUserData(null))
-    return history.push('/user/usermanagement/add')
+    return navigate('/user/usermanagement/add')
   }
   function handleGoToUserEditPage(row) {
     dispatch(setSelectedUserData(row))
-    return history.push(`/user/usermanagement/edit:` + row.tableData.uuid)
+    return navigate(`/user/usermanagement/edit:` + row.tableData.uuid)
   }
   const [limit, setLimit] = useState(200)
   const [pattern, setPattern] = useState(null)

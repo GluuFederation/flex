@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Paper } from '@material-ui/core'
@@ -48,7 +48,7 @@ function LdapListPage({
   const { t } = useTranslation()
   const userAction = {}
   const myActions = []
-  const history = useHistory()
+  const navigate =useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const [testRunning, setTestRunning] = useState(false)
@@ -67,7 +67,7 @@ function LdapListPage({
 
   function handleGoToLdapEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/config/ldap/edit:` + row.configId)
+    return navigate(`/config/ldap/edit:` + row.configId)
   }
 
   function handleLdapDelete(row) {
@@ -75,7 +75,7 @@ function LdapListPage({
     toggle()
   }
   function handleGoToLdapAddPage() {
-    return history.push('/config/ldap/new')
+    return navigate('/config/ldap/new')
   }
 
   if (hasPermission(permissions, LDAP_WRITE)) {
@@ -133,7 +133,7 @@ function LdapListPage({
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.configId)
     dispatch(deleteLdap(item.configId))
-    history.push('/config/ldap')
+    navigate('/config/ldap')
     toggle()
   }
   function testLdapConnect(row) {

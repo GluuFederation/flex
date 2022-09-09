@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Badge } from 'reactstrap'
@@ -51,7 +51,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   let memoLimit = limit
   let memoPattern = pattern
 
-  const history = useHistory()
+  const navigate =useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -73,18 +73,18 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }
   function handleGoToAttributeEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/attribute/edit:` + row.inum)
+    return navigate(`/attribute/edit:` + row.inum)
   }
   function handleGoToAttributeViewPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/attribute/view:` + row.inum)
+    return navigate(`/attribute/view:` + row.inum)
   }
   function handleAttribueDelete(row) {
     setItem(row)
     toggle()
   }
   function handleGoToAttributeAddPage() {
-    return history.push('/attribute/new')
+    return navigate('/attribute/new')
   }
 
   if (hasPermission(permissions, ATTRIBUTE_WRITE)) {
@@ -170,7 +170,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   }
   function onDeletionConfirmed() {
     dispatch(deleteAttribute(item.inum))
-    history.push('/attributes')
+    navigate('/attributes')
     toggle()
   }
   return (
