@@ -32,10 +32,8 @@ export default class MappingApi {
     })
   }
   deleteMapping = (data) => {
-    const options = {}
-    options['rolePermissionMapping'] = data
     return new Promise((resolve, reject) => {
-      this.api.removeRolePermissionsPermission(options, (error, options) => {
+      this.api.removeRolePermissionsPermission(data.role, (error, options) => {
         handleResponse(error, reject, resolve, data)
       })
     })
