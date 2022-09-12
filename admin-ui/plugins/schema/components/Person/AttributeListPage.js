@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useNavigate } from 'react-router-dom'
-import { Paper } from '@material-ui/core'
-import { connect } from 'react-redux'
+import { Paper, TablePagination } from '@material-ui/core'
+import { useSelector, useDispatch } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Card, CardBody } from 'Components'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -28,11 +28,19 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 
-function AttributeListPage({ attributes, permissions, loading, dispatch }) {
+function AttributeListPage() {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const attributes = useSelector((state) => state.attributeReducer.items)
+  const loading = useSelector((state) => state.attributeReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const { totalItems, entriesCount } = useSelector(
+    (state) => state.attributeReducer,
+  )
   const options = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
   const [limit, setLimit] = useState(pageSize)
+  const [pageNumber, setPageNumber] = useState(0)
   const [pattern, setPattern] = useState(null)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -51,7 +59,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   let memoLimit = limit
   let memoPattern = pattern
 
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -63,8 +71,24 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
     }
   }
 
+  const onPageChangeClick = (page) => {
+    makeOptions()
+    let startCount = page * limit
+    options['startIndex'] = parseInt(startCount) + 1
+    options['limit'] = limit
+    setPageNumber(page)
+    dispatch(getAttributes(options))
+  }
+  const onRowCountChangeClick = (count) => {
+    makeOptions()
+    options['startIndex'] = 0
+    options['limit'] = count
+    setPageNumber(0)
+    setLimit(count)
+    dispatch(getAttributes(options))
+  }
+
   function makeOptions() {
-    setLimit(memoLimit)
     setPattern(memoPattern)
     options['limit'] = parseInt(memoLimit)
     if (memoPattern) {
@@ -118,6 +142,7 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
           pattern={pattern}
           patternId={patternId}
           handler={handleOptionsChange}
+          showLimit={false}
         />
       ),
       tooltip: `${t('tooltips.advanced_search_options')}`,
@@ -178,8 +203,23 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
       <CardBody>
         <GluuViewWrapper canShow={hasPermission(permissions, ATTRIBUTE_READ)}>
           <MaterialTable
+            key={attributes ? attributes.length : 0}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
+              Pagination: (props) => (
+                <TablePagination
+                  component="div"
+                  count={totalItems}
+                  page={pageNumber}
+                  onPageChange={(prop, page) => {
+                    onPageChangeClick(page)
+                  }}
+                  rowsPerPage={limit}
+                  onRowsPerPageChange={(prop, count) =>
+                    onRowCountChangeClick(count.props.value)
+                  }
+                />
+              ),
             }}
             columns={[
               { title: `${t('fields.inum')}`, field: 'inum' },
@@ -203,8 +243,11 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
               search: true,
               selection: false,
               searchFieldAlignment: 'left',
-              pageSize: pageSize,
-              headerStyle: { ...applicationStyle.tableHeaderStyle, ...bgThemeColor },
+              pageSize: limit,
+              headerStyle: {
+                ...applicationStyle.tableHeaderStyle,
+                ...bgThemeColor,
+              },
               actionsColumnIndex: -1,
             }}
             detailPanel={(rowData) => {
@@ -226,11 +269,4 @@ function AttributeListPage({ attributes, permissions, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    attributes: state.attributeReducer.items,
-    loading: state.attributeReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(AttributeListPage)
+export default AttributeListPage
