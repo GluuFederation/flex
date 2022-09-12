@@ -20,14 +20,12 @@ import { connect } from 'react-redux'
 import { getLicenseDetails } from 'Redux/actions/LicenseDetailsActions'
 import { getHealthStatus } from 'Redux/actions/HealthAction'
 import DashboardChart from './Chart/DashboardChart'
-import DashboardTable from './Table/DashboardTable'
 import DateRange from './DateRange'
 import CheckIcon from '../../images/svg/check.svg'
 import CrossIcon from '../../images/svg/cross.svg'
 import Logo from '../../images/gluu-white-logo.png'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { getUsers } from '../../redux/actions'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 
@@ -93,9 +91,6 @@ function DashboardPage({
 
   useEffect(() => {
     let count = 0
-    const userOptions = {
-      limit: 3,
-    }
     const interval = () => {
       setTimeout(() => {
         if (statData.length === 0 && count < 2) {
@@ -104,7 +99,6 @@ function DashboardPage({
         if (clients.length === 0 && count < 2) {
           buildPayload(userAction, 'Fetch openid connect clients', {})
           dispatch(getClients(userAction))
-          dispatch(getUsers(userOptions))
         }
         if (Object.keys(license).length === 0 && count < 2) {
           getLicense()
@@ -485,7 +479,6 @@ function DashboardPage({
                   </li>
                 </ul>
               </Grid>
-              <DashboardTable />
             </Grid>
           </Grid>
         </div>
