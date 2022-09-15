@@ -14,7 +14,3 @@ export function getNewColor() {
   }
   return color
 }
-
-export function isEmptyObject(obj){
-  return JSON.stringify(obj) === '{}';
-}
