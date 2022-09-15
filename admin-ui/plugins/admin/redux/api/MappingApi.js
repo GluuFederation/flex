@@ -6,7 +6,7 @@ export default class MappingApi {
   }
   getMappings = () => {
     return new Promise((resolve, reject) => {
-      this.api.getAdminuiRolePermissions((error, data) => {
+      this.api.getAllAdminuiRolePermissions((error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
