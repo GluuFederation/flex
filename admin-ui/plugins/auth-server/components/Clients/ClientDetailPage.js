@@ -1,12 +1,5 @@
 import React, { useContext } from 'react'
-import {
-  Container,
-  Badge,
-  Row,
-  Col,
-  FormGroup,
-  Label,
-} from 'Components'
+import { Container, Badge, Row, Col, FormGroup, Label } from 'Components'
 import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
 import GluuSecretDetail from 'Routes/Apps/Gluu/GluuSecretDetail'
 import { useTranslation } from 'react-i18next'
@@ -24,13 +17,15 @@ function ClientDetailPage({ row, scopes }) {
     .filter((item) => scopesDns.includes(item.dn, 0))
     .map((item) => item.id)
   function extractDescription(customAttributes) {
-    const result = customAttributes.filter((item) => item.name === 'description')
+    const result = customAttributes.filter(
+      (item) => item.name === 'description',
+    )
     if (result && result.length >= 1) {
       return result[0].values
     }
     return ''
   }
-
+  const dash = '-'
   return (
     <React.Fragment>
       <Container style={{ backgroundColor: '#F5F5F5' }}>
@@ -46,7 +41,7 @@ function ClientDetailPage({ row, scopes }) {
           <Col sm={6}>
             <GluuSecretDetail
               label="fields.client_secret"
-              value={row.clientSecret ? row.clientSecret : '-'}
+              value={row.clientSecret ? row.clientSecret : dash }
               doc_category={DOC_CATEGORY}
               doc_entry="clientSecret"
             />
@@ -56,7 +51,7 @@ function ClientDetailPage({ row, scopes }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.name"
-              value={row.clientName || row.displayName || '-'}
+              value={row.displayName ? row.displayName : dash}
               doc_category={DOC_CATEGORY}
               doc_entry="displayName"
             />
@@ -64,7 +59,7 @@ function ClientDetailPage({ row, scopes }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.description"
-              value={extractDescription(row.customAttributes || []) || '-'}
+              value={extractDescription(row.customAttributes || []) || dash}
               doc_category={DOC_CATEGORY}
               doc_entry="description"
             />
@@ -74,7 +69,7 @@ function ClientDetailPage({ row, scopes }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.subject_type"
-              value={row.subjectType ? row.subjectType : '-'}
+              value={row.subjectType ? row.subjectType : dash}
               doc_category={DOC_CATEGORY}
               doc_entry="subjectType"
             />
@@ -94,7 +89,9 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={6}>{t('fields.is_trusted_client')}:</Label>
               <Label sm={6}>
                 {row.trustedClient ? (
-                  <Badge color={`primary-${selectedTheme}`}>{t('options.yes')}</Badge>
+                  <Badge color={`primary-${selectedTheme}`}>
+                    {t('options.yes')}
+                  </Badge>
                 ) : (
                   <Badge color="danger">{t('options.no')}</Badge>
                 )}
@@ -106,7 +103,9 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={6}>{t('fields.status')}:</Label>
               <Label sm={6}>
                 {!row.disabled ? (
-                  <Badge color={`primary-${selectedTheme}`}>{t('options.enabled')}</Badge>
+                  <Badge color={`primary-${selectedTheme}`}>
+                    {t('options.enabled')}
+                  </Badge>
                 ) : (
                   <Badge color="danger">{t('options.disabled')}</Badge>
                 )}
@@ -190,7 +189,9 @@ function ClientDetailPage({ row, scopes }) {
               <Label sm={6}>{t('fields.authentication_method')}:</Label>
               <Label sm={6}>
                 {row.authenticationMethod && (
-                  <Badge color={`primary-${selectedTheme}`}>{row.authenticationMethod}</Badge>
+                  <Badge color={`primary-${selectedTheme}`}>
+                    {row.authenticationMethod}
+                  </Badge>
                 )}
               </Label>
             </FormGroup>
