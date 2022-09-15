@@ -70,7 +70,7 @@ const ClientBasicPanel = ({
   function handleMouseDownClientSecret(event) {
     event.preventDefault()
   }
-console.log("============Client=========== "+ JSON.stringify(client))
+  
   return (
     <Container>
       {client.inum && (
