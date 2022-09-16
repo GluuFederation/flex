@@ -216,7 +216,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
             title=""
             actions={myActions}
             options={{
-              search: false,
+              search: true,
               searchFieldAlignment: 'left',
               selection: false,
               pageSize: pageSize,

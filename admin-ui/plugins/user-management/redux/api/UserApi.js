@@ -7,7 +7,7 @@ export default class UserApi {
 
   getUsers = (payload) => {
     return new Promise((resolve, reject) => {
-      this.api.getUser({}, (error, data) => {
+      this.api.getUser(payload.action, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })

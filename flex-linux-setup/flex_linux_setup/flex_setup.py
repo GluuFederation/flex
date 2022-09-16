@@ -281,7 +281,7 @@ class flex_installer(JettyInstaller):
         config_api_installer.run([paths.cmd_chown, '-R', 'node:node', self.source_dir])
         cmd_path = 'PATH=$PATH:{}/bin:{}/bin'.format(Config.jre_home, Config.node_home)
 
-        for cmd in ('npm install @openapitools/openapi-generator-cli', 'npm run api', 'npm install', 'npm run build:prod'):
+        for cmd in ('npm install @openapitools/openapi-generator-cli', 'npm install openapi-merge-cli', 'npm run api', 'npm install', 'npm run build:prod'):
             print("Executing `{}`".format(cmd))
             run_cmd = '{} {}'.format(cmd_path, cmd)
             config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)

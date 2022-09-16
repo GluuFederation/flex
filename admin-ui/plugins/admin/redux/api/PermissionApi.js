@@ -31,12 +31,10 @@ export default class PermissionApi {
       })
     })
   }
-  permission
+  
   deletePermission = async (data) => {
-    const options = {}
-    options['adminPermission'] = data
     return new Promise((resolve, reject) => {
-      this.api.deleteAdminuiPermission(options, (error, data) => {
+      this.api.deleteAdminuiPermission(data.permission, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
