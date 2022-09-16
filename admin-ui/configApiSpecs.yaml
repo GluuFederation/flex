@@ -3717,7 +3717,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PagedResult'
+                $ref: '#/components/schemas/UserPagedResult'
         '401':
           description: Unauthorized
         '500':
@@ -4110,6 +4110,10 @@ components:
           $ref: '#/components/schemas/AttributeValidation'
         tooltip:
           type: string
+        userCanView:
+          type: boolean
+        adminCanEdit:
+          type: boolean
         userCanAccess:
           type: boolean
         adminCanView:
@@ -4117,10 +4121,6 @@ components:
         userCanEdit:
           type: boolean
         adminCanAccess:
-          type: boolean
-        userCanView:
-          type: boolean
-        adminCanEdit:
           type: boolean
         whitePagesCanView:
           type: boolean
@@ -4471,7 +4471,7 @@ components:
       properties:
         tlsClientAuthSubjectDn:
           type: string
-        runIntrospectionScriptBeforeAccessTokenAsJwtCreationAndIncludeClaims:
+        runIntrospectionScriptBeforeJwtCreation:
           type: boolean
         keepClientAuthorizationAfterExpiration:
           type: boolean
@@ -4551,9 +4551,9 @@ components:
           type: array
           items:
             type: string
-        displayValue:
-          type: string
         value:
+          type: string
+        displayValue:
           type: string
     LocalizedString:
       type: object
@@ -4562,13 +4562,13 @@ components:
           type: object
           additionalProperties:
             type: string
+        value:
+          type: string
         languageTags:
           uniqueItems: true
           type: array
           items:
             type: string
-        value:
-          type: string
     AppConfiguration:
       type: object
       properties:
@@ -5245,6 +5245,8 @@ components:
           type: string
         agamaConfiguration:
           $ref: '#/components/schemas/EngineConfig'
+        fapi:
+          type: boolean
         enabledFeatureFlags:
           uniqueItems: true
           type: array
@@ -5280,8 +5282,6 @@ components:
               - code
               - token
               - id_token
-        fapi:
-          type: boolean
     AuthenticationFilter:
       required:
         - baseDn
@@ -6131,8 +6131,6 @@ components:
           type: array
           items:
             type: string
-        rev:
-          type: string
         creator:
           type: string
         description:
@@ -6276,6 +6274,22 @@ components:
           type: string
         baseDn:
           type: string
+    UserPagedResult:
+      type: object
+      properties:
+        start:
+          type: integer
+          format: int32
+        totalEntriesCount:
+          type: integer
+          format: int32
+        entriesCount:
+          type: integer
+          format: int32
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomUser'
     UserPatchRequest:
       type: object
       properties:
