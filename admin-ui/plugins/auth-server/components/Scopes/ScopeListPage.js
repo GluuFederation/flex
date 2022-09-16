@@ -46,11 +46,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   const options = {}
   const clientOptions = {}
   const myActions = []
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
-  const [limit, setLimit] = useState(500)
+  const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
@@ -97,6 +97,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   useEffect(() => {
     makeOptions()
     buildPayload(userAction, FETCHING_SCOPES, options)
+    console.log(userAction)
     dispatch(getScopes(userAction))
   }, [])
 
