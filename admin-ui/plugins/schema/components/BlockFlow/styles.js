@@ -29,6 +29,9 @@ const styles = makeStyles((theme) => ({
     paddingBottom: 10,
     marginBottom: 15,
     borderBottom: '1.5px solid #b6b5b5',
+  },
+  boardBlock: {
+    minHeight: '70vh'
   }
 }))
 
