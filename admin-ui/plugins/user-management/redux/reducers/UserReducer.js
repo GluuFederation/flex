@@ -80,7 +80,7 @@ export default function userReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: false,
-        items: action.payload ? action.payload : [],
+        items: action.payload ? action.payload.entries : [],
       }
     default:
       return handleDefault()
