@@ -38,8 +38,8 @@ export default function attributeReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          items: action.payload.data.data,
-          totalItems: action.payload.data.totalItems,
+          items: action.payload.data.entries,
+          totalItems: action.payload.data.totalEntriesCount,
           entriesCount: action.payload.data.entriesCount,
           loading: false,
         }

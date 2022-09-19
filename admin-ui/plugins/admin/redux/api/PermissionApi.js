@@ -6,7 +6,7 @@ export default class PermissionApi {
   }
   getPermissions = () => {
     return new Promise((resolve, reject) => {
-      this.api.getAdminuiPermissions((error, data) => {
+      this.api.getAllAdminuiPermissions((error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
@@ -34,7 +34,7 @@ export default class PermissionApi {
   
   deletePermission = async (data) => {
     return new Promise((resolve, reject) => {
-      this.api.deleteAdminuiPermission(data.permission, (error, data) => {
+      this.api.deleteAdminuiPermission(encodeURIComponent(data.permission), (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
