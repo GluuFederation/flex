@@ -88,7 +88,7 @@ export function* getScopes({ payload }) {
   try {
     addAdditionalData(audit, FETCH, SCOPE, payload)
     const scopeApi = yield* newFunction()
-    const data = yield call(scopeApi.getAllScopes, payload.action.action_data)
+    const data = yield call(scopeApi.getAllScopes, payload.action)
     yield put(getScopesResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
