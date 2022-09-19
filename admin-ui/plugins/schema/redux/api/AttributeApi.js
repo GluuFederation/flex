@@ -24,8 +24,10 @@ export default class AttributeApi {
   }
 
   addNewAttribute = (data) => {
+    let options = {}
+    options['gluuAttribute'] = data
     return new Promise((resolve, reject) => {
-      this.api.postAttributes(data, (error, data) => {
+      this.api.postAttributes(options, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })

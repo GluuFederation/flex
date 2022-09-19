@@ -15,7 +15,7 @@ export default class UserApi {
   createUsers = (data) => {
     // customUser
     const options = {}
-    options['extendedCustomUser'] = data
+    options['customUser'] = data
     return new Promise((resolve, reject) => {
       this.api.postUser(options, (error, data) => {
         handleResponse(error, reject, resolve, data)
