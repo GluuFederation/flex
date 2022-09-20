@@ -23,7 +23,7 @@ export default class LicenseApi {
   }
   submitLicenseKey = (data) => {
     const options = {}
-    options['licenseApiRequest'] = data.payload
+    options['licenseRequest'] = data.payload
     return new Promise((resolve, reject) => {
       this.api.activateAdminuiLicense(options, (error, data) => {
         handleResponse(error, reject, resolve, data)
