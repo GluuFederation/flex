@@ -7,39 +7,99 @@ copyright: Copyright &copy; 2022, Gluu, Inc.
 
 # Repository
 docs_dir: source
-repo_name: GluuFederation/flex
+repo_name: GitHub
 repo_url: https://github.com/GluuFederation/flex/
 edit_uri: edit/main/docs/source
 
+# Plugins
+plugins:
+   - search
+   - git-revision-date-localized:
+       type: timeago
+       enable_creation_date: true
+   - git-committers:
+       repository: JanssenProject/jans
+       token: !ENV GH_TOKEN
 # Configuration
 theme:
     name: material
-    custom_dir: 'theme'
+    highlightjs: true
+    hljs_languages:
+        - yaml
+        - java
+        - bash
+        - python
+    shortcuts:
+        help: 191    # ?
+        next: 78     # n
+        previous: 80 # p
+        search: 83   # s
+    language: 'en'
+    font:
+        text: Roboto
+        code: Roboto Mono
     palette:
-        primary: 'green'
-        accent: 'green'
-    logo: 'gluu.jpg'
-    favicon: 'favicon.ico'
-extra:
-    version: '5.0'
+        # Palette toggle for automatic mode
+        - media: "(prefers-color-scheme)"
+          primary: green
+          accent: green
+          toggle:
+            icon: material/brightness-auto
+            name: Switch to light mode
+        # Palette toggle for light mode
+        - media: "(prefers-color-scheme: light)"
+          primary: green
+          accent: green
+          scheme: default
+          toggle:
+            icon: material/brightness-7
+            name: Switch to dark mode
+        # Palette toggle for dark mode
+        - media: "(prefers-color-scheme: dark)"
+          primary: green
+          accent: green
+          scheme: slate
+          toggle:
+            icon: material/brightness-4
+            name: Switch to system preference
+    logo: 'assets/janssen_project.svg'
+    favicon: 'assets/janssen_project_favicon_transparent_50px_50px.ico'
+    features:
+        - toc.autohide
+          - search.suggest
+          - search.highlight
+        - navigation.tracking
+        - navigation.tabs
+        - navigation.tabs.sticky
+        - navigation.indexes
 extra_css:
   - css/tabs.css
-
-# Tracking
-google_analytics:
-  - 'UA-31008645-7'
-  - 'auto'
 
 # Extensions
 markdown_extensions:
 - admonition
 - attr_list
 - toc:
-     permalink: '#'
+    permalink: '#'
 - codehilite
-- pymdownx.superfences
+- pymdownx.superfences:
+    custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 - pymdownx.tabbed
 
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/JanssenProject/jans
+      name: Janssen on GitHub
+    - icon: fontawesome/solid/link
+      link: https://jans.io/docs
+      name: Janssen Website
+  version:
+    provider: mike
+    default: stable
 # Navigation
 nav:
-
