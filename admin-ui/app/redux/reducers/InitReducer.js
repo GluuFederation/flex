@@ -20,55 +20,55 @@ const reducerName = 'initReducer'
 
 export default function initReducer(state = INIT_STATE, action) {
   switch (action.type) {
-  case GET_SCRIPTS_FOR_STAT:
-    return handleDefault()
-
-  case GET_SCRIPTS_FOR_STAT_RESPONSE:
-    if (action.payload.data) {
-      return {
-        ...state,
-        scripts: action.payload.data,
-      }
-    } else {
+    case GET_SCRIPTS_FOR_STAT:
       return handleDefault()
-    }
 
-  case GET_CLIENTS_FOR_STAT:
-    return handleDefault()
-  case GET_CLIENTS_FOR_STAT_RESPONSE:
-    if (action.payload.data) {
-      return {
-        ...state,
-        clients: action.payload.data,
+    case GET_SCRIPTS_FOR_STAT_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          scripts: action.payload.data,
+        }
+      } else {
+        return handleDefault()
       }
-    } else {
-      return handleDefault()
-    }
 
-  case GET_ATTRIBUTES_FOR_STAT:
-  case GET_ATTRIBUTES_FOR_STAT_RESPONSE:
-    if (action.payload.data) {
-      return {
-        ...state,
-        attributes: action.payload.data,
-      }
-    } else {
+    case GET_CLIENTS_FOR_STAT:
       return handleDefault()
-    }
+    case GET_CLIENTS_FOR_STAT_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          clients: action.payload.data,
+        }
+      } else {
+        return handleDefault()
+      }
 
-  case GET_SCOPES_FOR_STAT:
-    return handleDefault()
-  case GET_SCOPES_FOR_STAT_RESPONSE:
-    if (action.payload.data) {
-      return {
-        ...state,
-        scopes: action.payload.data,
+    case GET_ATTRIBUTES_FOR_STAT:
+    case GET_ATTRIBUTES_FOR_STAT_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          attributes: action.payload.data.entries,
+        }
+      } else {
+        return handleDefault()
       }
-    } else {
+
+    case GET_SCOPES_FOR_STAT:
       return handleDefault()
-    }
-  default:
-    return handleDefault()
+    case GET_SCOPES_FOR_STAT_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          scopes: action.payload.data,
+        }
+      } else {
+        return handleDefault()
+      }
+    default:
+      return handleDefault()
   }
 
   function handleDefault() {

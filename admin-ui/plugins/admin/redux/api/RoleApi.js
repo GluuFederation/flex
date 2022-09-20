@@ -6,7 +6,7 @@ export default class RoleApi {
   }
   getRoles = () => {
     return new Promise((resolve, reject) => {
-      this.api.getAllAdminuiRoles((error, data) => {
+      this.api.getAdminuiRole('adminUIRoles', (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
