@@ -15,7 +15,8 @@ export default class OIDCApi {
 
   addNewOpenIdClient = (data) => {
     return new Promise((resolve, reject) => {
-      this.api.postOauthOpenidClients(data, (error, res) => {
+      console.log('PO', data)
+      this.api.postOauthOpenidClient(data, (error, res) => {
         handleResponse(error, reject, resolve, data)
       })
     })
@@ -23,7 +24,7 @@ export default class OIDCApi {
 
   editAClient = (data) => {
     return new Promise((resolve, reject) => {
-      this.api.putOauthOpenidClients(data, (error, res) => {
+      this.api.putOauthOpenidClient(data, (error, res) => {
         handleResponse(error, reject, resolve, data)
       })
     })

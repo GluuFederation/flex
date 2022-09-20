@@ -21,6 +21,8 @@ const INIT_STATE = {
   loading: false,
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
+  totalItems: 0,
+  entriesCount: 0,
 }
 
 const reducerName = 'oidcReducer'
@@ -35,8 +37,10 @@ export default function oidcReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          items: action.payload.data,
+          items: action.payload.data.entries,
           loading: false,
+          totalItems: action.payload.data.totalEntriesCount,
+          entriesCount: action.payload.data.entriesCount,
         }
       } else {
         return handleDefault()

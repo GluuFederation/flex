@@ -1,14 +1,11 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import { postUserAction } from 'Redux/api/backend-api'
 import {
   getOpenidClientsResponse,
   addClientResponse,
   editClientResponse,
-  deleteClientResponse
+  deleteClientResponse,
 } from '../actions/OIDCActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { OIDC } from '../audit/Resources'
@@ -23,7 +20,7 @@ import {
   ADD_NEW_CLIENT,
   EDIT_CLIENT,
   DELETE_CLIENT,
-  SEARCH_CLIENTS
+  SEARCH_CLIENTS,
 } from '../actions/types'
 import OIDCApi from '../api/OIDCApi'
 import { getClient } from 'Redux/api/base'
@@ -51,10 +48,7 @@ export function* getOauthOpenidClients({ payload }) {
     payload = payload ? payload : { action: {} }
     addAdditionalData(audit, FETCH, OIDC, payload)
     const openIdApi = yield* newFunction()
-    const data = yield call(
-      openIdApi.getAllOpenidClients,
-      payload.action.action_data,
-    )
+    const data = yield call(openIdApi.getAllOpenidClients, payload.action)
     yield put(getOpenidClientsResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
