@@ -103,3 +103,35 @@ extra:
     default: stable
 # Navigation
 nav:
+- 'Overview': 'README.md'
+- 'Installation': 
+    - 'install/README.md'
+    - 'VM Installation':
+        - 'install/vm-install/README.md'
+        - 'VM Requirements': 'install/vm-install/vm-requirements.md'
+        - 'Ubuntu': 'install/vm-install/ubuntu.md'
+        - 'RHEL': 'install/vm-install/rhel.md'
+        - 'Suse': 'install/vm-install/suse.md'
+        - 'FIPS DISA STIG': 'install/vm-install/disa-stig.md'
+        - 'Dynamic Download': 'install/vm-install/dynamic-download.md'
+   - 'Helm Deployments':
+        - 'install/helm-install/README.md'
+        - 'Local Kubernetes Cluster': 'install/helm-install/local.md'
+        - 'Amazon EKS': 'install/helm-install/amazon-eks.md'
+        - 'Google GKE': 'install/helm-install/google-gke.md'
+        - 'Digital Ocean DOK': 'install/helm-install/digitalocean-dok.md'
+        - 'Microsoft Azure AKS': 'install/helm-install/microsoft-azure.md'
+        - 'Red Hat Open Shift': 'install/helm-install/red-hat-open-shift.md'
+        - 'Using Rancher Marketplace': 'install/helm-install/rancher.md'
+- 'Administration':
+    - 'Admin UI':
+        - 'admin-ui/README.md'
+        - 'Add Content': 'admin-ui/template.md'
+    - 'SAML':
+        - 'saml/README.md'
+        - 'SAML IDP': 'saml/idp.md'
+        - 'SAML Proxy': 'saml/proxy.md'
+    - 'Casa':
+        - 'casa/README.md'
+        - 'Add Content': 'casa/template.md'
+    - 
