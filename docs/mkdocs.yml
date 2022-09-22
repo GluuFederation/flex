@@ -18,7 +18,7 @@ plugins:
        type: timeago
        enable_creation_date: true
    - git-committers:
-       repository: JanssenProject/jans
+       repository: GluuFederation/flex
        token: !ENV GH_TOKEN
 # Configuration
 theme:
@@ -62,8 +62,8 @@ theme:
           toggle:
             icon: material/brightness-4
             name: Switch to system preference
-    logo: 'assets/janssen_project.svg'
-    favicon: 'assets/janssen_project_favicon_transparent_50px_50px.ico'
+    logo: 'assets/gluu.png'
+    favicon: 'assets/favicon.ico'
     features:
         - toc.autohide
           - search.suggest
@@ -93,11 +93,11 @@ extra:
   generator: false
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/JanssenProject/jans
-      name: Janssen on GitHub
+      link: https://github.com/GluuFederation/flex
+      name: Gluu Flex on GitHub
     - icon: fontawesome/solid/link
-      link: https://jans.io/docs
-      name: Janssen Website
+      link: https://gluu.org
+      name: Gluu Website
   version:
     provider: mike
     default: stable
