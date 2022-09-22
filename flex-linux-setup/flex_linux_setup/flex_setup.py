@@ -24,6 +24,7 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
+    parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
     return parser
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
@@ -131,6 +132,7 @@ Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
 if not os.path.join(Config.outputFolder):
     os.makedirs(Config.outputFolder)
 
+
 if not installed:
 
     # initialize config object
@@ -184,6 +186,9 @@ class flex_installer(JettyInstaller):
         self.py_lib_dir = os.path.join(Config.jansOptPythonFolder, 'libs')
         self.fido2_client_jar_fn = os.path.join(Config.dist_jans_dir, 'jans-fido2-client.jar')
         self.dbUtils.bind(force=True)
+
+        Config.templateRenderingDict['casa_web_port'] = '8080'
+        self.simple_auth_scr_inum = 'A51E-76DA'
 
         if os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir+'-'+time.ctime().replace(' ', '_'))
@@ -339,10 +344,8 @@ class flex_installer(JettyInstaller):
         class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.fido2_client_jar_fn))
         jansAuthInstaller.add_extra_class(class_path)
 
-
-        simple_auth_scr_inum = 'A51E-76DA'
-        print("Enabling script", simple_auth_scr_inum)
-        self.dbUtils.enable_script(simple_auth_scr_inum)
+        print("Enabling script", self.simple_auth_scr_inum)
+        self.dbUtils.enable_script(self.simple_auth_scr_inum)
 
         # copy casa scripts
         if not os.path.exists(self.py_lib_dir):
@@ -362,7 +365,7 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['casa_redirect_uri'] = 'https://{}/casa'.format(Config.hostname)
         Config.templateRenderingDict['casa_redirect_logout_uri'] = 'https://{}/casa/bye.zul'.format(Config.hostname)
         Config.templateRenderingDict['casa_frontchannel_logout_uri'] = 'https://{}/casa/autologout'.format(Config.hostname)
-        Config.templateRenderingDict['casa_web_port'] = '8080'
+        
 
         self.casa_client_fn = os.path.join(self.source_dir, 'templates/casa_client.ldif')
         self.casa_config_fn = os.path.join(self.source_dir, 'templates/casa_config.ldif')
@@ -461,6 +464,64 @@ class flex_installer(JettyInstaller):
             propertiesUtils.save_properties()
 
 
+    def uninstall(self):
+        print("Uninstalling Gluu Flex")
+        for fn in (os.path.join(Config.os_default, 'casa'), os.path.join(Config.unit_files_path, 'casa.service')):
+            if os.path.exists(fn):
+                print("Deleting", fn)
+                self.run(['rm', '-f', fn])
+
+        https_jans_current = self.readFile(httpd_installer.https_jans_fn)
+        if ':{}/casa'.format(Config.templateRenderingDict['casa_web_port']) in https_jans_current:
+
+            print("Removing casa directives from apache configuration")
+            https_jans_list = []
+            append_c = 2
+
+            for l in https_jans_current.splitlines():
+                if 'Location' in l and  '/casa' in l:
+                    append_c = 0
+                elif append_c == 0 and '/Location' in l:
+                    append_c = 1
+
+                if append_c > 1:
+                    https_jans_list.append(l)
+
+                if append_c == 1:
+                    append_c = 2
+
+            self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
+
+
+        write_jans_auth_config = False
+        jans_auth_plugins = jansAuthInstaller.get_plugins(paths=True)
+
+        for casa_plugin in (self.fido2_client_jar_fn, self.twillo_fn):
+
+            plugin_jar_fn = os.path.join(
+                                        self.jans_auth_custom_lib_dir,
+                                        os.path.basename(casa_plugin)
+                                        )
+
+            if os.path.exists(plugin_jar_fn):
+                print("Deleting", plugin_jar_fn)
+                self.run(['rm', '-f', plugin_jar_fn])
+
+
+            if plugin_jar_fn in jans_auth_plugins:
+                print("Removing plugin {} from Jans Auth Configuration".format(plugin_jar_fn))
+                jans_auth_plugins.remove(plugin_jar_fn)
+                write_jans_auth_config = True
+
+        if write_jans_auth_config:
+            jansAuthInstaller.set_class_path(jans_auth_plugins)
+
+        print("Disabling script", self.simple_auth_scr_inum)
+        self.dbUtils.enable_script(self.simple_auth_scr_inum, enable=False)
+
+        sys.exit()
+
+
 def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
@@ -485,26 +546,34 @@ def prompt_for_installation():
 
 
 
-def main():
+def main(uninstall):
 
-    if not argsp.flex_non_interactive:
-        prompt_for_installation()
 
-    if install_components['admin_ui'] and not node_installer.installed():
-        node_fn = 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION'])
-        node_path = os.path.join(Config.dist_app_dir, node_fn)
-        if not os.path.exists(node_path):
-            base.download('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), node_path, verbose=True)
-        print("Installing node")
-        node_installer.install()
+    if not uninstall:
+
+        if not argsp.flex_non_interactive:
+            prompt_for_installation()
+
+        if install_components['admin_ui'] and not node_installer.installed():
+            node_fn = 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION'])
+            node_path = os.path.join(Config.dist_app_dir, node_fn)
+            if not os.path.exists(node_path):
+                base.download('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), node_path, verbose=True)
+            print("Installing node")
+            node_installer.install()
 
     installer_obj = flex_installer()
-    installer_obj.download_files()
 
-    if install_components['admin_ui']:
+    if uninstall:
+        installer_obj.uninstall()
+
+    if not uninstall:
+        installer_obj.download_files()
+
+    if not uninstall and install_components['admin_ui']:
         installer_obj.install_gluu_admin_ui()
 
-    if install_components['casa']:
+    if not uninstall and  install_components['casa']:
         installer_obj.install_casa()
         installer_obj.save_properties()
 
@@ -517,22 +586,24 @@ def main():
     print("Restarting Janssen Config Api")
     config_api_installer.restart()
 
-    if install_components['casa']:
-        print("Starting Casa")
-        config_api_installer.start('casa')
+    if not uninstall:
 
-    print("Installation was completed.")
+        if install_components['casa']:
+            print("Starting Casa")
+            config_api_installer.start('casa')
 
-    if install_components['admin_ui']:
-        print("Browse https://{}/admin".format(Config.hostname))
+        print("Installation was completed.")
 
-    if install_components['casa']:
-        print("Browse https://{}/casa".format(Config.hostname))
+        if install_components['admin_ui']:
+            print("Browse https://{}/admin".format(Config.hostname))
+
+        if install_components['casa']:
+            print("Browse https://{}/casa".format(Config.hostname))
 
 if __name__ == "__main__":
     if argsp.shell:
         code.interact(local=locals())
         sys.exit()
     else:
-        main()
+       main(uninstall=argsp.remove_flex)
 
