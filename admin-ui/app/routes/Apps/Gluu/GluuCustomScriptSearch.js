@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  Input,
-  InputGroup,
-  CustomInput,
-  FormGroup,
-} from 'Components'
+import { Input, InputGroup, CustomInput, FormGroup } from 'Components'
 import { useTranslation } from 'react-i18next'
 
 function GluuCustomScriptSearch({
@@ -14,21 +9,20 @@ function GluuCustomScriptSearch({
   typeId,
   limit,
   scriptType,
+  pattern = '',
 }) {
   const { t } = useTranslation()
   return (
     <FormGroup row style={{ marginTop: '10px' }}>
-      <Input
-        style={{ width: '80px' }}
-        id={limitId}
-        type="number"
-        data-testid={limitId}
-        onChange={handler}
-        defaultValue={limit}
-      />
-      &nbsp;
       <InputGroup style={{ width: '210px' }}>
-        <CustomInput type="select" data-testid={typeId} id={typeId} defaultValue={scriptType} onChange={handler}>
+        <CustomInput
+          type="select"
+          name="type"
+          data-testid={typeId}
+          id={typeId}
+          defaultValue={scriptType}
+          onChange={handler}
+        >
           <option>PERSON_AUTHENTICATION</option>
           <option>INTROSPECTION</option>
           <option>RESOURCE_OWNER_PASSWORD_CREDENTIALS</option>
@@ -60,8 +54,10 @@ function GluuCustomScriptSearch({
         id={patternId}
         type="text"
         data-testid={patternId}
+        name="pattern"
         onChange={handler}
-        placeholder={t("placeholders.search_pattern")}
+        defaultValue={pattern}
+        placeholder={t('placeholders.search_pattern')}
       />
     </FormGroup>
   )

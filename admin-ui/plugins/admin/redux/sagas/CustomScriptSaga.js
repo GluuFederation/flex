@@ -13,10 +13,7 @@ import {
   FETCH,
 } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import {
-  isFourZeroOneError,
-  addAdditionalData,
-} from 'Utils/TokenController'
+import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
 import {
   GET_CUSTOM_SCRIPT,
   GET_CUSTOM_SCRIPT_BY_TYPE,
@@ -45,7 +42,7 @@ export function* getCustomScripts({ payload }) {
   try {
     addAdditionalData(audit, FETCH, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data = yield call(scriptApi.getAllCustomScript)
+    const data = yield call(scriptApi.getAllCustomScript, payload.action)
     yield put(getCustomScriptsResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -61,10 +58,7 @@ export function* getScriptsByType({ payload }) {
   try {
     addAdditionalData(audit, FETCH, SCRIPT, payload)
     const scriptApi = yield* newFunction()
-    const data = yield call(
-      scriptApi.getScriptsByType,
-      payload.action.action_data,
-    )
+    const data = yield call(scriptApi.getScriptsByType, payload.action)
     yield put(getCustomScriptsResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
