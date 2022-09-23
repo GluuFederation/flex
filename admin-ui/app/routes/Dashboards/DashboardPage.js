@@ -38,6 +38,7 @@ function DashboardPage({
   dbStatus,
   loading,
   users,
+  totalClientsEntries,
   dispatch,
 }) {
   const { t } = useTranslation()
@@ -157,7 +158,7 @@ function DashboardPage({
   const summaryData = [
     {
       text: t('dashboard.oidc_clients_count'),
-      value: clients?.length,
+      value: totalClientsEntries,
     },
     {
       text: t('dashboard.active_users_count'),
@@ -492,6 +493,7 @@ const mapStateToProps = (state) => {
     statData: state.mauReducer.stat,
     loading: state.mauReducer.loading,
     clients: state.initReducer.clients,
+    totalClientsEntries: state.initReducer.totalClientsEntries,
     license: state.licenseDetailsReducer.item,
     serverStatus: state.healthReducer.serverStatus,
     dbStatus: state.healthReducer.dbStatus,
