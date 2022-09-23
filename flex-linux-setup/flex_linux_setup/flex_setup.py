@@ -31,7 +31,7 @@ if '--remove-flex' in sys.argv:
         response = input("Are you sure to uninstall Gluu Flex? [yes/N] ")
         print('\033[0m')
         if response.lower() in ('yes', 'n', 'no'):
-            if not response.lower() == 'yes':
+            if response.lower() != 'yes':
                 sys.exit()
             else:
                 break
