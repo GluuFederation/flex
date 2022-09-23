@@ -16,6 +16,29 @@ from urllib import request
 from urllib.parse import urljoin
 
 
+
+
+
+if '--remove-flex' in sys.argv:
+
+    print('\033[31m')
+    print("This process is irreversible.")
+    print("Gluu Flex Components will be removed")
+    print('\033[0m')
+    print()
+    while True:
+        print('\033[31m \033[1m')
+        response = input("Are you sure to uninstall Gluu Flex? [yes/N] ")
+        print('\033[0m')
+        if response.lower() in ('yes', 'n', 'no'):
+            if not response.lower() == 'yes':
+                sys.exit()
+            else:
+                break
+        else:
+            print("Please type \033[1m yes \033[0m to uninstall")
+
+
 def get_flex_setup_parser():
     parser = argparse.ArgumentParser(description="This script downloads Gluu Admin UI components and installs")
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
@@ -643,7 +666,6 @@ def main(uninstall):
     if uninstall:
         installer_obj.uninstall_casa()
         installer_obj.uninstall_admin_ui()
-        sys.exit()
 
     if not uninstall:
         installer_obj.download_files()
