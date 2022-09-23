@@ -181,7 +181,7 @@ class flex_installer(JettyInstaller):
         self.casa_web_resources_fn = os.path.join(self.casa_dist_dir, 'casa_web_resources.xml')
         self.casa_war_fn = os.path.join(self.casa_dist_dir, 'casa.war')
         self.casa_config_fn = os.path.join(self.casa_dist_dir,'casa-config.jar')
-        self.casa_script_fn = os.path.join(self.casa_dist_dir,'Casa.py')
+
         self.twillo_fn = os.path.join(self.casa_dist_dir,'twilio.jar')
         self.py_lib_dir = os.path.join(Config.jansOptPythonFolder, 'libs')
         self.fido2_client_jar_fn = os.path.join(Config.dist_jans_dir, 'jans-fido2-client.jar')
@@ -189,6 +189,9 @@ class flex_installer(JettyInstaller):
 
         Config.templateRenderingDict['casa_web_port'] = '8080'
         self.simple_auth_scr_inum = 'A51E-76DA'
+        self.casa_python_libs = ['Casa.py', 'casa-external_fido2.py', 'casa-external_otp.py', 'casa-external_super_gluu.py', 'casa-external_twilio_sms.py']
+        self.casa_script_fn = os.path.join(self.casa_dist_dir, self.casa_python_libs[0])
+        self.casa_client_id_prefix = '3000.'
 
         if os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir+'-'+time.ctime().replace(' ', '_'))
@@ -213,10 +216,8 @@ class flex_installer(JettyInstaller):
             base.download('https://maven.gluu.org/maven/org/gluu/casa-config/{0}/casa-config-{0}.jar'.format(app_versions['CASA_VERSION']), self.casa_config_fn, verbose=True)
             base.download('https://repo1.maven.org/maven2/com/twilio/sdk/twilio/{0}/twilio-{0}.jar'.format(app_versions['TWILIO_VERSION']), self.twillo_fn, verbose=True)
             base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/Casa.py', self.casa_script_fn, verbose=True)
-            base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_fido2.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_fido2.py'), verbose=True)
-            base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_otp.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_otp.py'), verbose=True)
-            base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_super_gluu.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_super_gluu.py'), verbose=True)
-            base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa-external_twilio_sms.py', os.path.join(self.casa_dist_dir, 'pylib/casa-external_twilio_sms.py'), verbose=True)
+            for plib in self.casa_python_libs:
+                base.download('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/{}'.format(plib), os.path.join(self.casa_dist_dir, 'pylib', plib), verbose=True)
             base.download('https://maven.jans.io/maven/io/jans/jans-fido2-client/{0}{1}/jans-fido2-client-{0}{1}.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD']), self.fido2_client_jar_fn, verbose=True)
 
 
@@ -375,7 +376,7 @@ class flex_installer(JettyInstaller):
             if casa_prop in setup_properties:
                 setattr(Config, casa_prop, setup_properties[casa_prop])
 
-        self.check_clients([('casa_client_id', '3000.')])
+        self.check_clients([('casa_client_id', self.casa_client_id_prefix)])
 
         if not Config.get('casa_client_encoded_pw'):
             Config.casa_client_encoded_pw = jansAuthInstaller.obscure(Config.casa_client_pw)
@@ -507,7 +508,6 @@ class flex_installer(JettyInstaller):
                 print("Deleting", plugin_jar_fn)
                 self.run(['rm', '-f', plugin_jar_fn])
 
-
             if plugin_jar_fn in jans_auth_plugins:
                 print("Removing plugin {} from Jans Auth Configuration".format(plugin_jar_fn))
                 jans_auth_plugins.remove(plugin_jar_fn)
@@ -518,6 +518,31 @@ class flex_installer(JettyInstaller):
 
         print("Disabling script", self.simple_auth_scr_inum)
         self.dbUtils.enable_script(self.simple_auth_scr_inum, enable=False)
+
+        for plib in self.casa_python_libs:
+            plib_path = os.path.join(self.py_lib_dir, plib)
+            if os.path.exists(plib_path):
+                print("Deleting", plib_path)
+                self.run(['rm', '-f', plib_path])
+
+        result = self.dbUtils.search('ou=clients,o=jans', '(&(inum={}*)(objectClass=jansClnt))'.format(self.casa_client_id_prefix))
+        if result:
+            print("Deleting casa client from db backend")
+            self.dbUtils.delete_dn(result['dn'])
+
+        print("Deleting casa configuration from db backend")
+        self.dbUtils.delete_dn('ou=casa,ou=configuration,o=jans')
+
+        print("Deleting script 3000-F75A from db backend")
+        self.dbUtils.delete_dn('inum=3000-F75A,ou=scripts,o=jans')
+
+        casa_dir = os.path.join(Config.jetty_base, 'casa')
+        if os.path.exists(casa_dir):
+            print("Deleting", casa_dir)
+            self.run(['rm', '-f', '-r', casa_dir])
+
+
+        #self.dbUtils.delete_dn('ou=admin-ui,ou=configuration,o=jans')
 
         sys.exit()
 
