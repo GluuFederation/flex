@@ -93,6 +93,7 @@ if not os.path.exists('/etc/jans/conf/jans.properties'):
     jans_setup.main()
 
 argsp = arg_parser.get_parser()
+del_msg = "  - Deleting"
 
 from setup_app import static
 from setup_app.utils import base
@@ -489,7 +490,7 @@ class flex_installer(JettyInstaller):
         print("Uninstalling Gluu Casa")
         for fn in (os.path.join(Config.os_default, 'casa'), os.path.join(Config.unit_files_path, 'casa.service')):
             if os.path.exists(fn):
-                print("  - Deleting", fn)
+                print(del_msg, fn)
                 self.run(['rm', '-f', fn])
 
         print("  - Removing casa directives from apache configuration")
@@ -506,7 +507,7 @@ class flex_installer(JettyInstaller):
                                         )
 
             if os.path.exists(plugin_jar_fn):
-                print("  - Deleting", plugin_jar_fn)
+                print(del_msg, plugin_jar_fn)
                 self.run(['rm', '-f', plugin_jar_fn])
 
             if plugin_jar_fn in jans_auth_plugins:
@@ -523,7 +524,7 @@ class flex_installer(JettyInstaller):
         for plib in self.casa_python_libs:
             plib_path = os.path.join(self.py_lib_dir, plib)
             if os.path.exists(plib_path):
-                print("  - Deleting", plib_path)
+                print(del_msg, plib_path)
                 self.run(['rm', '-f', plib_path])
 
         result = self.dbUtils.search('ou=clients,o=jans', '(&(inum={}*)(objectClass=jansClnt))'.format(self.casa_client_id_prefix))
@@ -539,7 +540,7 @@ class flex_installer(JettyInstaller):
 
         casa_dir = os.path.join(Config.jetty_base, 'casa')
         if os.path.exists(casa_dir):
-            print("  - Deleting", casa_dir)
+            print(del_msg, casa_dir)
             self.run(['rm', '-f', '-r', casa_dir])
 
 
@@ -553,7 +554,7 @@ class flex_installer(JettyInstaller):
         self.remove_apache_directive('<Directory "{}">'.format(Config.templateRenderingDict['admin_ui_apache_root']))
 
         if os.path.exists(self.admin_ui_plugin_path):
-            print("  - Deleting", self.admin_ui_plugin_path)
+            print(del_msg, self.admin_ui_plugin_path)
             self.run(['rm', '-f', self.admin_ui_plugin_path])
 
 
@@ -574,13 +575,13 @@ class flex_installer(JettyInstaller):
                         os.path.basename(s_path)
                         )
             if os.path.exists(f_path):
-                print("  - Deleting", f_path)
+                print(del_msg, f_path)
                 self.run(['rm', '-f', f_path])
 
         self.rewrite_cli_ini()
 
         if os.path.exists(Config.templateRenderingDict['admin_ui_apache_root']):
-            print("  - Deleting", Config.templateRenderingDict['admin_ui_apache_root'])
+            print(del_msg, Config.templateRenderingDict['admin_ui_apache_root'])
             self.run(['rm', '-f', '-r', Config.templateRenderingDict['admin_ui_apache_root']])
 
 def prompt_for_installation():
@@ -606,22 +607,36 @@ def prompt_for_installation():
         sys.exit()
 
 
+def install_post_setup():
+    if install_components['casa']:
+        print("Starting Casa")
+        config_api_installer.start('casa')
+
+    print("Installation was completed.")
+
+    if install_components['admin_ui']:
+        print("Browse https://{}/admin".format(Config.hostname))
+
+    if install_components['casa']:
+        print("Browse https://{}/casa".format(Config.hostname))
+
+def prepare_for_installation():
+    if not argsp.flex_non_interactive:
+        prompt_for_installation()
+
+    if install_components['admin_ui'] and not node_installer.installed():
+        node_fn = 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION'])
+        node_path = os.path.join(Config.dist_app_dir, node_fn)
+        if not os.path.exists(node_path):
+            base.download('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), node_path, verbose=True)
+        print("Installing node")
+        node_installer.install()
+
 
 def main(uninstall):
 
-
     if not uninstall:
-
-        if not argsp.flex_non_interactive:
-            prompt_for_installation()
-
-        if install_components['admin_ui'] and not node_installer.installed():
-            node_fn = 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION'])
-            node_path = os.path.join(Config.dist_app_dir, node_fn)
-            if not os.path.exists(node_path):
-                base.download('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), node_path, verbose=True)
-            print("Installing node")
-            node_installer.install()
+        prepare_for_installation()
 
     installer_obj = flex_installer()
 
@@ -650,18 +665,7 @@ def main(uninstall):
     config_api_installer.restart()
 
     if not uninstall:
-
-        if install_components['casa']:
-            print("Starting Casa")
-            config_api_installer.start('casa')
-
-        print("Installation was completed.")
-
-        if install_components['admin_ui']:
-            print("Browse https://{}/admin".format(Config.hostname))
-
-        if install_components['casa']:
-            print("Browse https://{}/casa".format(Config.hostname))
+        install_post_setup()
 
 if __name__ == "__main__":
     if argsp.shell:
