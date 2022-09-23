@@ -187,11 +187,14 @@ class flex_installer(JettyInstaller):
         self.fido2_client_jar_fn = os.path.join(Config.dist_jans_dir, 'jans-fido2-client.jar')
         self.dbUtils.bind(force=True)
 
+        Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
         Config.templateRenderingDict['casa_web_port'] = '8080'
         self.simple_auth_scr_inum = 'A51E-76DA'
         self.casa_python_libs = ['Casa.py', 'casa-external_fido2.py', 'casa-external_otp.py', 'casa-external_super_gluu.py', 'casa-external_twilio_sms.py']
         self.casa_script_fn = os.path.join(self.casa_dist_dir, self.casa_python_libs[0])
         self.casa_client_id_prefix = '3000.'
+
+        self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
 
         if os.path.exists(self.source_dir):
             os.rename(self.source_dir, self.source_dir+'-'+time.ctime().replace(' ', '_'))
@@ -271,6 +274,19 @@ class flex_installer(JettyInstaller):
                 base_mod_path.write_text('\n'.join(mod_load_content))
 
 
+    def rewrite_cli_ini(self):
+        print("  - Rewriting Jans CLI init file for plgins")
+        cli_config = Path(jans_cli_installer.config_ini_fn)
+
+        if cli_config.exists():
+            config = configparser.ConfigParser()
+            config.read_file(cli_config.open())
+            plugins = config_api_installer.get_plugins()
+            config['DEFAULT']['jca_plugins'] = ','.join(plugins)
+            config.write(cli_config.open('w'))
+            cli_config.chmod(0o600)
+
+
     def install_gluu_admin_ui(self):
 
         print("Installing Gluu Admin UI Frontend")
@@ -292,8 +308,6 @@ class flex_installer(JettyInstaller):
             run_cmd = '{} {}'.format(cmd_path, cmd)
             config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)
 
-        Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
-
         self.add_apache_directive(Config.templateRenderingDict['admin_ui_apache_root'], 'admin_ui_apache_directive')
 
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
@@ -301,32 +315,14 @@ class flex_installer(JettyInstaller):
 
         config_api_installer.check_clients([('role_based_client_id', '2000.')])
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, os.path.join(self.flex_setup_dir, 'templates'), config_api_installer.custom_config_dir)
-        admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
+        
         config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir)
-        config_api_installer.add_extra_class(admin_ui_plugin_path)
+        config_api_installer.add_extra_class(self.admin_ui_plugin_path)
 
         for logfn in (self.log4j2_adminui_path, self.log4j2_path):
             config_api_installer.copyFile(logfn, config_api_installer.custom_config_dir)
 
-        cli_config = Path(jans_cli_installer.config_ini_fn)
-
-        current_plugins = []
-
-        if cli_config.exists():
-
-            config = configparser.ConfigParser()
-            config.read_file(cli_config.open())
-            current_plugins = config['DEFAULT'].get('jca_plugins', '').split(',')
-
-        plugins = config_api_installer.get_plugins()
-
-        for plugin in plugins:
-            if plugin not in current_plugins:
-                current_plugins.append(plugin)
-
-        config['DEFAULT']['jca_plugins'] = ','.join(current_plugins)
-        config.write(cli_config.open('w'))
-        cli_config.chmod(0o600)
+        self.rewrite_cli_ini()
 
     def install_casa(self):
 
@@ -338,7 +334,6 @@ class flex_installer(JettyInstaller):
             os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn)),
             )
         jansAuthInstaller.add_extra_class(class_path)
-
 
         print("Adding Fido2 Client lib to jans-auth")
         self.copyFile(self.fido2_client_jar_fn, self.jans_auth_custom_lib_dir)
@@ -366,7 +361,7 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['casa_redirect_uri'] = 'https://{}/casa'.format(Config.hostname)
         Config.templateRenderingDict['casa_redirect_logout_uri'] = 'https://{}/casa/bye.zul'.format(Config.hostname)
         Config.templateRenderingDict['casa_frontchannel_logout_uri'] = 'https://{}/casa/autologout'.format(Config.hostname)
-        
+
 
         self.casa_client_fn = os.path.join(self.source_dir, 'templates/casa_client.ldif')
         self.casa_config_fn = os.path.join(self.source_dir, 'templates/casa_config.ldif')
@@ -465,34 +460,40 @@ class flex_installer(JettyInstaller):
             propertiesUtils.save_properties()
 
 
-    def uninstall(self):
-        print("Uninstalling Gluu Flex")
+    def remove_apache_directive(self, directive):
+        https_jans_current = self.readFile(httpd_installer.https_jans_fn)
+        tmp_ = directive.lstrip('<').rstrip('>').strip()
+        dir_name, dir_arg = tmp_.split()
+        dir_fname = '/'+dir_name
+
+        https_jans_list = []
+        append_c = 2
+
+        for l in https_jans_current.splitlines():
+            if dir_name in l and dir_arg in l:
+                append_c = 0
+            elif append_c == 0 and dir_fname in l:
+                append_c = 1
+
+            if append_c > 1:
+                https_jans_list.append(l)
+
+            if append_c == 1:
+                append_c = 2
+
+        self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
+
+
+
+    def uninstall_casa(self):
+        print("Uninstalling Gluu Casa")
         for fn in (os.path.join(Config.os_default, 'casa'), os.path.join(Config.unit_files_path, 'casa.service')):
             if os.path.exists(fn):
-                print("Deleting", fn)
+                print("  - Deleting", fn)
                 self.run(['rm', '-f', fn])
 
-        https_jans_current = self.readFile(httpd_installer.https_jans_fn)
-        if ':{}/casa'.format(Config.templateRenderingDict['casa_web_port']) in https_jans_current:
-
-            print("Removing casa directives from apache configuration")
-            https_jans_list = []
-            append_c = 2
-
-            for l in https_jans_current.splitlines():
-                if 'Location' in l and  '/casa' in l:
-                    append_c = 0
-                elif append_c == 0 and '/Location' in l:
-                    append_c = 1
-
-                if append_c > 1:
-                    https_jans_list.append(l)
-
-                if append_c == 1:
-                    append_c = 2
-
-            self.writeFile(httpd_installer.https_jans_fn, '\n'.join(https_jans_list))
-
+        print("  - Removing casa directives from apache configuration")
+        self.remove_apache_directive('<Location /casa>')
 
         write_jans_auth_config = False
         jans_auth_plugins = jansAuthInstaller.get_plugins(paths=True)
@@ -505,47 +506,82 @@ class flex_installer(JettyInstaller):
                                         )
 
             if os.path.exists(plugin_jar_fn):
-                print("Deleting", plugin_jar_fn)
+                print("  - Deleting", plugin_jar_fn)
                 self.run(['rm', '-f', plugin_jar_fn])
 
             if plugin_jar_fn in jans_auth_plugins:
-                print("Removing plugin {} from Jans Auth Configuration".format(plugin_jar_fn))
+                print("  - Removing plugin {} from Jans Auth Configuration".format(plugin_jar_fn))
                 jans_auth_plugins.remove(plugin_jar_fn)
                 write_jans_auth_config = True
 
         if write_jans_auth_config:
             jansAuthInstaller.set_class_path(jans_auth_plugins)
 
-        print("Disabling script", self.simple_auth_scr_inum)
+        print("  - Disabling script", self.simple_auth_scr_inum)
         self.dbUtils.enable_script(self.simple_auth_scr_inum, enable=False)
 
         for plib in self.casa_python_libs:
             plib_path = os.path.join(self.py_lib_dir, plib)
             if os.path.exists(plib_path):
-                print("Deleting", plib_path)
+                print("  - Deleting", plib_path)
                 self.run(['rm', '-f', plib_path])
 
         result = self.dbUtils.search('ou=clients,o=jans', '(&(inum={}*)(objectClass=jansClnt))'.format(self.casa_client_id_prefix))
         if result:
-            print("Deleting casa client from db backend")
+            print("  - Deleting casa client from db backend")
             self.dbUtils.delete_dn(result['dn'])
 
-        print("Deleting casa configuration from db backend")
+        print("  - Deleting casa configuration from db backend")
         self.dbUtils.delete_dn('ou=casa,ou=configuration,o=jans')
 
-        print("Deleting script 3000-F75A from db backend")
+        print("  - Deleting script 3000-F75A from db backend")
         self.dbUtils.delete_dn('inum=3000-F75A,ou=scripts,o=jans')
 
         casa_dir = os.path.join(Config.jetty_base, 'casa')
         if os.path.exists(casa_dir):
-            print("Deleting", casa_dir)
+            print("  - Deleting", casa_dir)
             self.run(['rm', '-f', '-r', casa_dir])
 
 
-        #self.dbUtils.delete_dn('ou=admin-ui,ou=configuration,o=jans')
+    def uninstall_admin_ui(self):
+        print("Uninstalling Gluu Admin-UI")
 
-        sys.exit()
+        print("  - Deleting admin-ui configuration from db backend")
+        self.dbUtils.delete_dn('ou=admin-ui,ou=configuration,o=jans')
 
+        print("  - Removing Admin UI directives from apache configuration")
+        self.remove_apache_directive('<Directory "{}">'.format(Config.templateRenderingDict['admin_ui_apache_root']))
+
+        if os.path.exists(self.admin_ui_plugin_path):
+            print("  - Deleting", self.admin_ui_plugin_path)
+            self.run(['rm', '-f', self.admin_ui_plugin_path])
+
+
+        write_config_api_xml = False
+        config_api_plugins = config_api_installer.get_plugins(paths=True)
+
+        if self.admin_ui_plugin_path in config_api_plugins:
+            print("  - Removing plugin {} from Jans Config API Configuration".format(self.admin_ui_plugin_path))
+            config_api_plugins.remove(self.admin_ui_plugin_path)
+            write_config_api_xml = True
+
+        if write_config_api_xml:
+            config_api_installer.set_class_path(config_api_plugins)
+
+        for s_path in (self.admin_ui_config_properties_path, self.log4j2_adminui_path, self.log4j2_path):
+            f_path = os.path.join(
+                        config_api_installer.custom_config_dir,
+                        os.path.basename(s_path)
+                        )
+            if os.path.exists(f_path):
+                print("  - Deleting", f_path)
+                self.run(['rm', '-f', f_path])
+
+        self.rewrite_cli_ini()
+
+        if os.path.exists(Config.templateRenderingDict['admin_ui_apache_root']):
+            print("  - Deleting", Config.templateRenderingDict['admin_ui_apache_root'])
+            self.run(['rm', '-f', '-r', Config.templateRenderingDict['admin_ui_apache_root']])
 
 def prompt_for_installation():
 
@@ -590,7 +626,9 @@ def main(uninstall):
     installer_obj = flex_installer()
 
     if uninstall:
-        installer_obj.uninstall()
+        installer_obj.uninstall_casa()
+        installer_obj.uninstall_admin_ui()
+        sys.exit()
 
     if not uninstall:
         installer_obj.download_files()
