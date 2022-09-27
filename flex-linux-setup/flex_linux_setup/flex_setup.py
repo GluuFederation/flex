@@ -71,8 +71,14 @@ except ModuleNotFoundError:
         install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
         request.urlretrieve(install_url, 'install.py')
         install_cmd = 'python3 install.py --setup-branch={}'.format(setup_branch)
+
+        if argsp.flex_non_interactive:
+            nargs.append('-n')
+            install_cmd += ' -yes'
+
         if nargs:
             install_cmd += ' --args="{}"'.format(shlex.join(nargs))
+
         print("Executing", install_cmd)
         os.system(install_cmd)
         sys.path.append(__STATIC_SETUP_DIR__)
