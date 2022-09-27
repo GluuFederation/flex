@@ -43,6 +43,7 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
     parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
+    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
     parser.add_argument('--gluu-passwurd-cert', help="Creates Gluu Passwurd API keystore", action='store_true')
@@ -224,7 +225,6 @@ class flex_installer(JettyInstaller):
             os.rename(self.source_dir, self.source_dir+'-'+time.ctime().replace(' ', '_'))
 
 
-
     def download_files(self):
         print("Downloading components")
         base.download('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path, verbose=True)
@@ -337,6 +337,7 @@ class flex_installer(JettyInstaller):
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
+        Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
         config_api_installer.check_clients([('role_based_client_id', '2000.')])
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, os.path.join(self.flex_setup_dir, 'templates'), config_api_installer.custom_config_dir)
         
@@ -412,7 +413,6 @@ class flex_installer(JettyInstaller):
                 os.path.join(self.source_dir, os.path.basename(self.casa_config_fn)),
                 os.path.join(self.source_dir, os.path.basename(casa_auth_script_fn)),
                 ])
-
 
         Config.installCasa = True
 
@@ -685,6 +685,9 @@ def get_components_from_setup_properties():
         if not (argsp.install_casa or install_components['casa']):
             install_components['casa'] = base.as_bool(setup_properties.get('install-casa'))
 
+        if 'adminui-authentication-mode' in setup_properties:
+            argsp.adminui_authentication_mode = setup_properties['adminui-authentication-mode']
+
 
 def main(uninstall):
 
@@ -708,7 +711,6 @@ def main(uninstall):
             installer_obj.save_properties()
         if argsp.gluu_passwurd_cert:
             installer_obj.generate_gluu_passwurd_api_keystore()
-
 
     print("Restarting Apache")
     httpd_installer.restart()
