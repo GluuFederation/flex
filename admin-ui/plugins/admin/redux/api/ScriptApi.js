@@ -4,9 +4,9 @@ export default class ScriptApi {
   constructor(api) {
     this.api = api
   }
-  getAllCustomScript = () => {
+  getAllCustomScript = (options) => {
     return new Promise((resolve, reject) => {
-      this.api.getConfigScripts((error, data) => {
+      this.api.getConfigScripts(options, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })

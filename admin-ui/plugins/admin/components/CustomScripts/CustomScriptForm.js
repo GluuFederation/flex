@@ -333,7 +333,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                 defaultValue={item.programmingLanguage}
                 disabled={viewOnly}
                 onChange={(e) => {
-                  formik.handleChange('programmingLanguage')
+                  formik.setFieldValue('programmingLanguage', e.target.value)
                   setSelectedLanguage(e.target.value)
                 }}
               >

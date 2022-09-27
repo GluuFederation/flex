@@ -223,7 +223,6 @@ function ScopeListPage() {
     options['startIndex'] = parseInt(startCount) + 1
     options['limit'] = limit
     setPageNumber(page)
-    console.log(options)
     dispatch(getScopes(options))
   }
   const onRowCountChangeClick = (count) => {

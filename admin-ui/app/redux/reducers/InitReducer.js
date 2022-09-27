@@ -14,6 +14,7 @@ const INIT_STATE = {
   clients: [],
   scopes: [],
   attributes: [],
+  totalClientsEntries:0
 }
 
 const reducerName = 'initReducer'
@@ -39,7 +40,8 @@ export default function initReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          clients: action.payload.data,
+          clients: action.payload.data.entries,
+          totalClientsEntries: action.payload.data.totalEntriesCount
         }
       } else {
         return handleDefault()
