@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { Paper } from '@material-ui/core'
+import { Paper, TablePagination } from '@material-ui/core'
 import UserDetailViewPage from './UserDetailViewPage'
 import {
   getUsers,
@@ -40,7 +40,10 @@ function UserList(props) {
     dispatch(getAttributes(opt))
     dispatch(getRoles())
   }, [])
-
+  const { totalItems, entriesCount } = useSelector(
+    (state) => state.userReducer,
+  )
+  const [pageNumber, setPageNumber] = useState(0)
   const usersList = useSelector((state) => state.userReducer.items)
   const redirectToUserListPage = useSelector(
     (state) => state.userReducer.redirectToUserListPage,
@@ -62,9 +65,8 @@ function UserList(props) {
   SetTitle(t('titles.user_management'))
 
   const myActions = []
-  const options = []
+  const options = {}
   const userAction = {}
-  const pageSize = localStorage.getItem('paggingSize') || 10
   const navigate =useNavigate()
 
   function handleGoToUserAddPage() {
@@ -75,7 +77,7 @@ function UserList(props) {
     dispatch(setSelectedUserData(row))
     return navigate(`/user/usermanagement/edit:` + row.tableData.uuid)
   }
-  const [limit, setLimit] = useState(200)
+  const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
 
   let memoLimit = limit
@@ -102,6 +104,7 @@ function UserList(props) {
           limit={limit}
           pattern={pattern}
           handler={handleOptionsChange}
+          showLimit={false}
         />
       ),
       tooltip: `${t('messages.advanced_search')}`,
@@ -119,8 +122,6 @@ function UserList(props) {
       onClick: () => {
         setLimit(memoLimit)
         setPattern(memoPattern)
-        console.log('LIMIT', memoLimit)
-        console.log('PATTERN', memoPattern)
         dispatch(getUsers({ limit: memoLimit, pattern: memoPattern }))
       },
     })
@@ -159,6 +160,23 @@ function UserList(props) {
     }))
   }
 
+  const onPageChangeClick = (page) => {
+    let startCount = page * limit
+    options['startIndex'] = parseInt(startCount) + 1
+    options['limit'] = limit
+    options['pattern'] = pattern
+    setPageNumber(page)
+    dispatch(getUsers(options))
+  }
+  const onRowCountChangeClick = (count) => {
+    
+    options['limit'] = count
+    options['pattern'] = pattern
+    setPageNumber(0)
+    setLimit(count)
+    dispatch(getUsers(options))
+  }
+
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
@@ -166,8 +184,23 @@ function UserList(props) {
           <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
             {usersList.length > 0 && (
               <MaterialTable
+                key={limit}
                 components={{
                   Container: (props) => <Paper {...props} elevation={0} />,
+                  Pagination: (props) => (
+                    <TablePagination
+                      component="div"
+                      count={totalItems}
+                      page={pageNumber}
+                      onPageChange={(prop, page) => {
+                        onPageChangeClick(page)
+                      }}
+                      rowsPerPage={limit}
+                      onRowsPerPageChange={(prop, count) =>
+                        onRowCountChangeClick(count.props.value)
+                      }
+                    />
+                  ),
                 }}
                 columns={[
                   {
@@ -185,7 +218,7 @@ function UserList(props) {
                   search: true,
                   searchFieldAlignment: 'left',
                   selection: false,
-                  pageSize: pageSize,
+                  pageSize: limit,
                   rowStyle: (rowData) => ({
                     backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
                   }),
