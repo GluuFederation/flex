@@ -18,6 +18,8 @@ const INIT_STATE = {
   selectedUserData: null,
   loading: true,
   redirectToUserListPage: false,
+  totalItems: 0,
+  entriesCount: 0,
 }
 const reducerName = 'userReducer'
 
@@ -81,6 +83,8 @@ export default function userReducer(state = INIT_STATE, action) {
         ...state,
         loading: false,
         items: action.payload ? action.payload.entries : [],
+        totalItems: action.payload.totalEntriesCount,
+        entriesCount: action.payload.entriesCount,
       }
     default:
       return handleDefault()
