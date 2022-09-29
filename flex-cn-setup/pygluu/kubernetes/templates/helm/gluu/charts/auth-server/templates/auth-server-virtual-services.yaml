@@ -18,8 +18,13 @@ metadata:
 spec:
   hosts:
   - {{ .Values.global.fqdn }}
+{{- if and (.Values.global.istio.gateways) (not .Values.global.istio.ingress) }}
   gateways:
-  - {{ .Release.Name }}-global-gtw # can omit the namespace if gateway is in same namespace as virtual service.
+{{ toYaml .Values.global.istio.gateways | indent 2 }}
+{{- else }}
+  gateways:
+  - {{ .Release.Name }}-global-gtw
+{{- end }}
   http:
   - name: "{{ .Release.Name }}-istio-openid-config"
     match:

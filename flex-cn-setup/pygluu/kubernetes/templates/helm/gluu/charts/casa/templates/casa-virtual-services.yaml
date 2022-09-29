@@ -16,8 +16,13 @@ metadata:
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
 spec:
+{{- if and (.Values.global.istio.gateways) (not .Values.global.istio.ingress) }}
+  gateways:
+{{ toYaml .Values.global.istio.gateways | indent 2 }}
+{{- else }}
   gateways:
   - {{ .Release.Name }}-global-gtw
+{{- end }}
   hosts:
   - {{ .Values.global.fqdn }}
   http:

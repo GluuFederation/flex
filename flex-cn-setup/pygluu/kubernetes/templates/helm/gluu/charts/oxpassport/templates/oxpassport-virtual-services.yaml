@@ -17,8 +17,13 @@ metadata:
 spec:
   hosts:
   - {{ .Values.global.fqdn }}
+{{- if and (.Values.global.istio.gateways) (not .Values.global.istio.ingress) }}
+  gateways:
+{{ toYaml .Values.global.istio.gateways | indent 2 }}
+{{- else }}
   gateways:
   - {{ .Release.Name }}-global-gtw
+{{- end }}
   http:
   - name: {{ .Release.Name }}-istio-passport
     match:
