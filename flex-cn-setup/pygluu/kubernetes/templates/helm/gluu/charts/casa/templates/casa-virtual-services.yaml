@@ -1,5 +1,4 @@
-{{- if .Values.global.istio.ingress }}
-
+{{- if and (.Values.global.istio.ingress) (.Values.global.casa.ingress.casaEnabled) }}
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -16,7 +15,7 @@ metadata:
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
 spec:
-{{- if and (.Values.global.istio.gateways) (not .Values.global.istio.ingress) }}
+{{- if .Values.global.istio.gateways }}
   gateways:
 {{ toYaml .Values.global.istio.gateways | indent 2 }}
 {{- else }}

@@ -1,12 +1,12 @@
-{{- if and (.Values.global.istio.ingress) (index .Values "global" "admin-ui" "ingress" "adminUiEnabled") }}
+{{- if and (.Values.global.istio.ingress) (index .Values "global" "config-api" "ingress" "configApiEnabled") }}
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: {{ .Release.Name }}-istio-admin-ui
+  name: {{ .Release.Name }}-istio-config-api
   namespace: {{.Release.Namespace}}
   labels:
-    APP_NAME: admin-ui
-{{ include "admin-ui.labels" . | indent 4 }}
+    APP_NAME: config-api
+{{ include "config-api.labels" . | indent 4 }}
 {{- if .Values.additionalLabels }}
 {{ toYaml .Values.additionalLabels | indent 4 }}
 {{- end }}
@@ -15,8 +15,6 @@ metadata:
 {{ toYaml .Values.additionalAnnotations | indent 4 }}
 {{- end }}
 spec:
-  hosts:
-  - {{ .Values.global.fqdn }}
 {{- if .Values.global.istio.gateways }}
   gateways:
 {{ toYaml .Values.global.istio.gateways | indent 2 }}
@@ -24,14 +22,17 @@ spec:
   gateways:
   - {{ .Release.Name }}-global-gtw
 {{- end }}
+  hosts:
+  - {{ .Values.global.fqdn }}
   http:
-  - name: "{{ .Release.Name }}-istio-cn"
+  - name: {{ .Release.Name }}-istio-config-api
     match:
     - uri:
-        prefix: "/admin"
+        prefix: /jans-config-api
     route:
     - destination:
-        host: {{ index .Values "global" "admin-ui" "adminUiServiceName" }}.{{ .Release.Namespace }}.svc.cluster.local
+        host: {{ index .Values "global" "config-api" "configApiServerServiceName" }}.{{.Release.Namespace}}.svc.cluster.local
         port:
-          number: 8080
+          number: 8074
+      weight: 100
 {{- end }}
