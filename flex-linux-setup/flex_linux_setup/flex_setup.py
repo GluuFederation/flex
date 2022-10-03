@@ -76,6 +76,10 @@ except ModuleNotFoundError:
         if argsp.download_exit:
             nargs.append('--download-exit')
 
+        if argsp.flex_non_interactive:
+            nargs.append('-n')
+            install_cmd += ' -yes'
+
         if nargs:
             install_cmd += ' --args="{}"'.format(shlex.join(nargs))
 
