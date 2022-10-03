@@ -43,8 +43,10 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
     parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
+    parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
+    parser.add_argument('--gluu-passwurd-cert', help="Creates Gluu Passwurd API keystore", action='store_true')
     parser.add_argument('-download-exit', help="Downloads files and exits", action='store_true')
 
     return parser
@@ -76,7 +78,6 @@ except ModuleNotFoundError:
 
         if nargs:
             install_cmd += ' --args="{}"'.format(shlex.join(nargs))
-
 
         print("Executing", install_cmd)
         os.system(install_cmd)
@@ -135,7 +136,7 @@ else:
 
 os.environ['JANS_PROFILE'] = profile
 base.current_app.profile = profile
-
+base.argsp = argsp
 
 if 'SETUP_BRANCH' not in base.current_app.app_info:
     base.current_app.app_info['SETUP_BRANCH'] = argsp.jans_setup_branch
@@ -195,6 +196,7 @@ config_api_installer = ConfigApiInstaller()
 jansAuthInstaller = JansAuthInstaller()
 jans_cli_installer = JansCliInstaller()
 setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
+
 
 class flex_installer(JettyInstaller):
 
@@ -364,6 +366,7 @@ class flex_installer(JettyInstaller):
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
+        Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
         config_api_installer.check_clients([('role_based_client_id', '2000.')])
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, os.path.join(self.flex_setup_dir, 'templates'), config_api_installer.custom_config_dir)
         
@@ -439,7 +442,6 @@ class flex_installer(JettyInstaller):
                 os.path.join(self.source_dir, os.path.basename(self.casa_config_fn)),
                 os.path.join(self.source_dir, os.path.basename(casa_auth_script_fn)),
                 ])
-
 
         Config.installCasa = True
 
@@ -634,6 +636,20 @@ class flex_installer(JettyInstaller):
             print(del_msg, Config.templateRenderingDict['admin_ui_apache_root'])
             self.run(['rm', '-f', '-r', Config.templateRenderingDict['admin_ui_apache_root']])
 
+    def generate_gluu_passwurd_api_keystore(self):
+        print("Generating Gluu Passwurd API Keystore")
+        suffix = 'passwurd_api'
+        key_fn, csr_fn, crt_fn = jansAuthInstaller.gen_cert(suffix, 'changeit', user='jetty')
+        passwurd_api_keystore_fn = os.path.join(Config.certFolder, 'passwurdAKeystore.pcks12')
+        self.import_key_cert_into_keystore(
+                        suffix=suffix,
+                        keystore_fn=passwurd_api_keystore_fn,
+                        keystore_pw='changeit',
+                        in_key=key_fn,
+                        in_cert=crt_fn,
+                        store_type='PKCS12'
+                        )
+
 def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
@@ -652,7 +668,11 @@ def prompt_for_installation():
         print("Casa is allready installed on this system")
         install_components['casa'] = False
 
-    if not (install_components['casa'] or install_components['admin_ui']):
+    prompt_gluu_passwurd_api_keystore = input("Generate Gluu Passwurd API Keystore [Y/n]: ")
+    if prompt_gluu_passwurd_api_keystore.lower().startswith('y'):
+        argsp.gluu_passwurd_cert = True
+
+    if not (install_components['casa'] or install_components['admin_ui'] or argsp.gluu_passwurd_cert):
         print("Nothing to install. Exiting ...")
         sys.exit()
 
@@ -683,7 +703,24 @@ def prepare_for_installation():
         node_installer.install()
 
 
+def get_components_from_setup_properties():
+    if argsp.f:
+        if not argsp.gluu_passwurd_cert:
+            argsp.gluu_passwurd_cert = base.as_bool(setup_properties.get('gluu-passwurd-cert'))
+
+        if not (argsp.install_admin_ui or install_components['admin_ui']):
+            install_components['admin_ui'] = base.as_bool(setup_properties.get('install-admin-ui'))
+
+        if not (argsp.install_casa or install_components['casa']):
+            install_components['casa'] = base.as_bool(setup_properties.get('install-casa'))
+
+        if 'adminui-authentication-mode' in setup_properties:
+            argsp.adminui_authentication_mode = setup_properties['adminui-authentication-mode']
+
+
 def main(uninstall):
+
+    get_components_from_setup_properties()
 
     if not uninstall:
         prepare_for_installation()
@@ -694,18 +731,15 @@ def main(uninstall):
         installer_obj.uninstall_casa()
         installer_obj.uninstall_admin_ui()
 
-    if not uninstall:
-        installer_obj.download_files(force=argsp.download_exit)
-
-    if argsp.download_exit:
-        sys.exit()
-
-    if not uninstall and install_components['admin_ui']:
-        installer_obj.install_gluu_admin_ui()
-
-    if not uninstall and  install_components['casa']:
-        installer_obj.install_casa()
-        installer_obj.save_properties()
+    else:
+        installer_obj.download_files()
+        if install_components['admin_ui']:
+            installer_obj.install_gluu_admin_ui()
+        if install_components['casa']:
+            installer_obj.install_casa()
+            installer_obj.save_properties()
+        if argsp.gluu_passwurd_cert:
+            installer_obj.generate_gluu_passwurd_api_keystore()
 
     print("Restarting Apache")
     httpd_installer.restart()
