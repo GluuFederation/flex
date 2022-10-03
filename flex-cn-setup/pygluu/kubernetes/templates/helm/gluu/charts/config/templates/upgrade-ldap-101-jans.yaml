@@ -1,6 +1,5 @@
 {{- if .Values.global.upgrade.enabled }}
 {{- if or (eq .Values.global.cnPersistenceType "ldap") (eq .Values.global.cnPersistenceType "hybrid")  }}
-
 apiVersion: v1
 kind: ConfigMap
 metadata:

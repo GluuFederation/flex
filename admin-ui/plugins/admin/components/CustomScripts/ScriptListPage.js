@@ -165,6 +165,8 @@ function ScriptListTable() {
       memoPattern = event.target.value
     } else if (name == 'type') {
       memoType = event.target.value
+      makeOptions()
+      dispatch(getCustomScriptByType(options))
     }
   }
   function handleGoToCustomScriptAddPage() {
