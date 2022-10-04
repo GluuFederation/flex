@@ -8,19 +8,22 @@ function GluuAdvancedSearch({
   limitId,
   limit,
   pattern = '',
+  showLimit = true,
 }) {
   const { t } = useTranslation()
   return (
     <FormGroup row style={{ marginTop: '10px' }}>
-      <Input
-        style={{ width: '100px' }}
-        id={limitId}
-        type="number"
-        name="limit"
-        data-testid={limitId}
-        defaultValue={limit}
-        onChange={handler}
-      />
+      {showLimit && (
+        <Input
+          style={{ width: '100px' }}
+          id={limitId}
+          type="number"
+          name="limit"
+          data-testid={limitId}
+          defaultValue={limit}
+          onChange={handler}
+        />
+      )}
       &nbsp;
       <Input
         style={{ width: '180px' }}

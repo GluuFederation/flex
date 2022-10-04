@@ -39,64 +39,64 @@ maintainers:
   email: support@gluu.org
 description: Gluu Access and Identity Management
 name: gluu
-version: 5.0.6
+version: 5.0.7
 dependencies:
     - name: config
       condition: global.config.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: config-api
       condition: global.config-api.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: opendj
       condition: global.opendj.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: auth-server
       condition: global.auth-server.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: admin-ui
       condition: global.admin-ui.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: fido2
       condition: global.fido2.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: scim
       condition: global.scim.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: nginx-ingress
       condition: global.nginx-ingress.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: oxshibboleth
       condition: global.oxshibboleth.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: oxpassport
-      version: 5.0.6
+      version: 5.0.7
       condition: global.oxpassport.enabled
 
     - name: casa
-      version: 5.0.6
+      version: 5.0.7
       condition: global.casa.enabled
 
     - name: auth-server-key-rotation
       condition: global.auth-server-key-rotation.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: client-api
       condition: global.client-api.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: persistence
       condition: global.persistence.enabled
-      version: 5.0.6
+      version: 5.0.7
 
     - name: cn-istio-ingress
       condition: global.istio.ingress
-      version: 5.0.6
+      version: 5.0.7

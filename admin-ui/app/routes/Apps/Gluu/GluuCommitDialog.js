@@ -102,7 +102,6 @@ const GluuCommitDialog = ({
         </FormGroup>
       </ModalBody>
       <ModalFooter>
-        {/* <ClipLoader loading={loading} size={35} /> */}
         {active && (
           <Button color={`primary-${selectedTheme}`} onClick={handleAccept}>
             <i className="fa fa-check-circle mr-2"></i>

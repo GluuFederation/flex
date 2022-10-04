@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { Paper } from '@material-ui/core'
-import { useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { Paper, TablePagination } from '@material-ui/core'
+import { useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import { Card, CardBody } from 'Components'
@@ -40,24 +40,31 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import styles from './styles'
 
-function ScopeListPage({ scopes, permissions, loading, dispatch }) {
+function ScopeListPage() {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
   const userAction = {}
   const options = {}
   const clientOptions = {}
   const myActions = []
-  const history = useHistory()
+  const navigate = useNavigate()
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
   const pageSize = localStorage.getItem('paggingSize') || 10
-  const [limit, setLimit] = useState(500)
+  const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-  const classes = styles()
+  const [pageNumber, setPageNumber] = useState(0)
+  const { totalItems, entriesCount } = useSelector(
+    (state) => state.scopeReducer,
+  )
+  const scopes = useSelector((state) => state.scopeReducer.items)
+  const loading = useSelector((state) => state.scopeReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
 
   SetTitle(t('titles.scopes'))
 
@@ -97,8 +104,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
 
   useEffect(() => {
     makeOptions()
-    buildPayload(userAction, FETCHING_SCOPES, options)
-    dispatch(getScopes(userAction))
+    dispatch(getScopes(options))
   }, [])
 
   function handleOptionsChange(event) {
@@ -124,11 +130,11 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   }
 
   function handleGoToScopeAddPage() {
-    return history.push('/auth-server/scope/new')
+    return navigate('/auth-server/scope/new')
   }
   function handleGoToScopeEditPage(row) {
     dispatch(setCurrentItem(row))
-    return history.push(`/auth-server/scope/edit:` + row.inum)
+    return navigate(`/auth-server/scope/edit:` + row.inum)
   }
 
   function handleScopeDelete(row) {
@@ -140,7 +146,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.inum)
     dispatch(deleteScope(userAction))
-    history.push('/auth-server/scopes')
+    navigate('/auth-server/scopes')
     toggle()
   }
 
@@ -165,6 +171,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
           limit={limit}
           pattern={pattern}
           handler={handleOptionsChange}
+          showLimit={false}
         />
       ),
       tooltip: `${t('messages.advanced_search')}`,
@@ -181,8 +188,8 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        buildPayload(userAction, SEARCHING_SCOPES, options)
-        dispatch(searchScopes(userAction))
+        // buildPayload(userAction, SEARCHING_SCOPES, options)
+        dispatch(getScopes(options))
       },
     })
   }
@@ -210,13 +217,45 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
     }))
   }
 
+  const onPageChangeClick = (page) => {
+    makeOptions()
+    let startCount = page * limit
+    options['startIndex'] = parseInt(startCount) + 1
+    options['limit'] = limit
+    setPageNumber(page)
+    dispatch(getScopes(options))
+  }
+  const onRowCountChangeClick = (count) => {
+    makeOptions()
+    options['startIndex'] = 0
+    options['limit'] = count
+    setPageNumber(0)
+    setLimit(count)
+    dispatch(getScopes(options))
+  }
+
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuViewWrapper canShow={hasPermission(permissions, SCOPE_READ)}>
           <MaterialTable
+            key={limit ? limit : 0}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
+              Pagination: (props) => (
+                <TablePagination
+                  component="div"
+                  count={totalItems}
+                  page={pageNumber}
+                  onPageChange={(prop, page) => {
+                    onPageChangeClick(page)
+                  }}
+                  rowsPerPage={limit}
+                  onRowsPerPageChange={(prop, count) =>
+                    onRowCountChangeClick(count.props.value)
+                  }
+                />
+              ),
             }}
             columns={tableColumns}
             data={scopes}
@@ -228,7 +267,7 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
               search: true,
               searchFieldAlignment: 'left',
               selection: false,
-              pageSize: pageSize,
+              pageSize: limit,
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
                 ...bgThemeColor,
@@ -255,11 +294,4 @@ function ScopeListPage({ scopes, permissions, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    scopes: state.scopeReducer.items,
-    loading: state.scopeReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(ScopeListPage)
+export default ScopeListPage

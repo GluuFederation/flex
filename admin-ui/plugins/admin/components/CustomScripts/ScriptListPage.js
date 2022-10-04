@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { useHistory } from 'react-router-dom'
-import { Paper } from '@material-ui/core'
+import { useNavigate } from 'react-router-dom'
+import { Paper, TablePagination } from '@material-ui/core'
 import { Badge } from 'reactstrap'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
 import { Card, CardBody } from 'Components'
 import CustomScriptDetailPage from './CustomScriptDetailPage'
@@ -40,9 +40,10 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 
-function ScriptListTable({ scripts, loading, dispatch, permissions }) {
+function ScriptListTable() {
   const { t } = useTranslation()
-  const history = useHistory()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const userAction = {}
   const options = {}
   const myActions = []
@@ -58,29 +59,32 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const scripts = useSelector((state) => state.customScriptReducer.items)
+  const loading = useSelector((state) => state.customScriptReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
+  const { totalItems, entriesCount } = useSelector(
+    (state) => state.customScriptReducer,
+  )
+  const [pageNumber, setPageNumber] = useState(0)
+  let memoPattern = pattern
+  let memoType = type
   SetTitle(t('titles.scripts'))
 
   function makeOptions() {
+    setPattern(memoPattern)
+    setType(memoType)
     options[LIMIT] = parseInt(limit)
-    if (pattern) {
-      options[PATTERN] = pattern
+    if (memoPattern) {
+      options[PATTERN] = memoPattern
     }
-    if (type && type != '') {
-      options[TYPE] = type
+    if (memoType != '') {
+      options[TYPE] = memoType
     }
   }
   useEffect(() => {
     makeOptions()
-    buildPayload(userAction, FETCHING_SCRIPTS, options)
-    dispatch(getCustomScripts(userAction))
+    dispatch(getCustomScriptByType(options))
   }, [])
-  useEffect(() => {
-    setSelectedScripts(
-      scripts.filter(
-        (script) => script.scriptType == document.getElementById(TYPE_ID).value,
-      ),
-    )
-  }, [scripts])
   if (hasPermission(permissions, SCRIPT_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
@@ -113,6 +117,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
           typeId={TYPE_ID}
           patternId={PATTERN_ID}
           scriptType={type}
+          pattern={pattern}
           handler={handleOptionsChange}
         />
       ),
@@ -129,8 +134,7 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        buildPayload(userAction, SEARCHING_SCRIPTS, options)
-        dispatch(getCustomScriptByType(userAction))
+        dispatch(getCustomScriptByType(options))
       },
     })
   }
@@ -154,23 +158,24 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
       onClick: () => handleGoToCustomScriptAddPage(),
     })
   }
-  function handleOptionsChange() {
-    setLimit(document.getElementById(LIMIT_ID).value)
-    setPattern(document.getElementById(PATTERN_ID).value)
-    setType(document.getElementById(TYPE_ID).value)
-    setSelectedScripts(
-      scripts.filter(
-        (script) => script.scriptType == document.getElementById(TYPE_ID).value,
-      ),
-    )
+  function handleOptionsChange(event) {
+    const name = event.target.name
+    console.log(name, event.target.value)
+    if (name == 'pattern') {
+      memoPattern = event.target.value
+    } else if (name == 'type') {
+      memoType = event.target.value
+      makeOptions()
+      dispatch(getCustomScriptByType(options))
+    }
   }
   function handleGoToCustomScriptAddPage() {
-    return history.push('/adm/script/new')
+    return navigate('/adm/script/new')
   }
   function handleGoToCustomScriptEditPage(row, edition) {
     dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
-    return history.push(`/adm/script/edit:` + row.inum)
+    return navigate(`/adm/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
     setItem(row)
@@ -179,16 +184,49 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.inum)
     dispatch(deleteCustomScript(userAction))
-    history.push('/adm/scripts')
+    navigate('/adm/scripts')
     toggle()
   }
+
+  const onPageChangeClick = (page) => {
+    makeOptions()
+    let startCount = page * limit
+    options['startIndex'] = parseInt(startCount) + 1
+    options['limit'] = limit
+    setPageNumber(page)
+    dispatch(getCustomScriptByType(options))
+  }
+  const onRowCountChangeClick = (count) => {
+    console.log(count)
+    makeOptions()
+    options['limit'] = count
+    setPageNumber(0)
+    setLimit(count)
+    dispatch(getCustomScriptByType(options))
+  }
+
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
         <GluuViewWrapper canShow={hasPermission(permissions, SCRIPT_READ)}>
           <MaterialTable
+            key={limit}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
+              Pagination: (props) => (
+                <TablePagination
+                  component="div"
+                  count={totalItems}
+                  page={pageNumber}
+                  onPageChange={(prop, page) => {
+                    onPageChangeClick(page)
+                  }}
+                  rowsPerPage={limit}
+                  onRowsPerPageChange={(prop, count) =>
+                    onRowCountChangeClick(count.props.value)
+                  }
+                />
+              ),
             }}
             columns={[
               { title: `${t('fields.name')}`, field: 'name' },
@@ -211,15 +249,15 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
                 defaultSort: 'desc',
               },
             ]}
-            data={selectedScripts}
+            data={scripts}
             isLoading={loading}
             title=""
             actions={myActions}
             options={{
-              search: false,
+              search: true,
               searchFieldAlignment: 'left',
               selection: false,
-              pageSize: pageSize,
+              pageSize: limit,
               rowStyle: (rowData) => ({
                 backgroundColor: rowData.enabled
                   ? themeColors.lightBackground
@@ -250,11 +288,4 @@ function ScriptListTable({ scripts, loading, dispatch, permissions }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    scripts: state.customScriptReducer.items,
-    loading: state.customScriptReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(ScriptListTable)
+export default ScriptListTable

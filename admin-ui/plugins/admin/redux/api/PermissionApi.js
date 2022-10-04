@@ -1,11 +1,13 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class PermissionApi {
   constructor(api) {
     this.api = api
   }
   getPermissions = () => {
     return new Promise((resolve, reject) => {
-      this.api.getAdminuiPermissions((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+      this.api.getAllAdminuiPermissions((error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -15,7 +17,7 @@ export default class PermissionApi {
     options['adminPermission'] = data
     return new Promise((resolve, reject) => {
       this.api.addAdminuiPermission(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -25,26 +27,16 @@ export default class PermissionApi {
     options['adminPermission'] = data
     return new Promise((resolve, reject) => {
       this.api.editAdminuiPermission(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
-  permission
+  
   deletePermission = async (data) => {
-    const options = {}
-    options['adminPermission'] = data
     return new Promise((resolve, reject) => {
-      this.api.deleteAdminuiPermission(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+      this.api.deleteAdminuiPermission(encodeURIComponent(data.permission), (error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

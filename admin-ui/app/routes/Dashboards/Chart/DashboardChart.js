@@ -51,10 +51,11 @@ const DashboardChart = () => {
   }
 
   return (
-    <ResponsiveContainer width="100%" aspect={6.0 / 2.4}>
+    <ResponsiveContainer width="100%" height="100%">
       <BarChart
         data={doDataAugmentation(statData)}
         margin={{ top: 5, right: 30, bottom: 5 }}
+        height={400}
       >
         <XAxis dataKey={'month'} />
         <YAxis />

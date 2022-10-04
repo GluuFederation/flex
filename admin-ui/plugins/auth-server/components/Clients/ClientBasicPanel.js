@@ -53,10 +53,6 @@ const ClientBasicPanel = ({
   )
   const [showClientSecret, setShowClientSecret] = useState(false)
 
-  function handleExpirable() {
-    setExpirable(!expirable)
-  }
-
   function getScopeMapping(exitingScopes, scopes) {
     if (!exitingScopes) {
       exitingScopes = []
@@ -67,9 +63,6 @@ const ClientBasicPanel = ({
   function uriValidator(uri) {
     return uri
   }
-  function postUriValidator(uri) {
-    return uri
-  }
   function handleClickShowClientSecret() {
     setShowClientSecret(!showClientSecret)
   }
@@ -77,7 +70,7 @@ const ClientBasicPanel = ({
   function handleMouseDownClientSecret(event) {
     event.preventDefault()
   }
-
+  
   return (
     <Container>
       {client.inum && (
@@ -100,7 +93,7 @@ const ClientBasicPanel = ({
         label="fields.client_name"
         name="clientName"
         formik={formik}
-        value={client.clientName || client.displayName}
+        value={client.displayName}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />

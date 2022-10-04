@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route } from 'react-router'
+import { Route } from 'react-router-dom'
 
 export const RoutesRecursiveWrapper = ({ item }) => {
 
@@ -11,7 +11,7 @@ export const RoutesRecursiveWrapper = ({ item }) => {
       children.map((child, i) => (<RoutesRecursiveWrapper key={i} item={child} />))
 
     ) : (!!path &&
-    <Route component={component} path={path} />
+    <Route element={<component />} path={path} />
     )
   )
 

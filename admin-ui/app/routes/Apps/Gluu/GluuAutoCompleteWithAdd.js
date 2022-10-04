@@ -3,7 +3,6 @@ import { FormGroup, Col, Row, Button, Input } from 'Components'
 import { Typeahead } from 'react-bootstrap-typeahead'
 import GluuLabel from '../Gluu/GluuLabel'
 import GluuTooltip from './GluuTooltip'
-import applicationStyle from './styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 

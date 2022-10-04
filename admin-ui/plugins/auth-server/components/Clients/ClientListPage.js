@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { useHistory, useLocation } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { Paper } from '@material-ui/core'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { Paper, TablePagination } from '@material-ui/core'
 import { Card, CardBody, Badge } from 'Components'
 import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import { resetUMAResources } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
@@ -40,13 +40,19 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 
-function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
+function ClientListPage() {
   const { t } = useTranslation()
+  const dispatch = useDispatch()
+  let clients = useSelector((state) => state.oidcReducer.items)
+  const { totalItems, entriesCount } = useSelector((state) => state.oidcReducer)
+  const scopes = useSelector((state) => state.scopeReducer.items)
+  const loading = useSelector((state) => state.oidcReducer.loading)
+  const permissions = useSelector((state) => state.authReducer.permissions)
   clients = clients.map(addOrg)
   const userAction = {}
   const options = {}
   const myActions = []
-  const history = useHistory()
+  const navigate = useNavigate()
   const { search } = useLocation()
   const pageSize = localStorage.getItem('paggingSize') || 10
   const theme = useContext(ThemeContext)
@@ -56,14 +62,14 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   const [scopeClients, setScopeClients] = useState()
   const [haveScopeINUMParam] = useState(search.indexOf('?scopeInum=') > -1)
   const [isPageLoading, setIsPageLoading] = useState(loading)
-
+  const [pageNumber, setPageNumber] = useState(0)
   SetTitle(t('titles.oidc_clients'))
 
   const [scopesModal, setScopesModal] = useState({
     data: [],
     show: false,
   })
-  const [limit, setLimit] = useState(200)
+  const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
   const [item, setItem] = useState({})
   const [modal, setModal] = useState(false)
@@ -180,8 +186,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     } else {
       setIsPageLoading(true)
       makeOptions()
-      buildPayload(userAction, FETCHING_OIDC_CLIENTS, options)
-      dispatch(getOpenidClients(userAction))
+      dispatch(getOpenidClients(options))
 
       buildPayload(userAction, '', options)
       dispatch(getScopes(userAction))
@@ -206,10 +211,10 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   function handleGoToClientEditPage(row, edition) {
     dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
-    return history.push(`/auth-server/client/edit:` + row.inum.substring(0, 4))
+    return navigate(`/auth-server/client/edit:` + row.inum.substring(0, 4))
   }
   function handleGoToClientAddPage() {
-    return history.push('/auth-server/client/new')
+    return navigate('/auth-server/client/new')
   }
   function handleClientDelete(row) {
     dispatch(setCurrentItem(row))
@@ -227,7 +232,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   function onDeletionConfirmed(message) {
     buildPayload(userAction, message, item.inum)
     dispatch(deleteClient(userAction))
-    history.push('/auth-server/clients')
+    navigate('/auth-server/clients')
     toggle()
   }
 
@@ -251,6 +256,7 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
           limit={limit}
           pattern={pattern}
           handler={handleOptionsChange}
+          showLimit={false}
         />
       ),
       tooltip: `${t('messages.advanced_search')}`,
@@ -267,8 +273,8 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       isFreeAction: true,
       onClick: () => {
         makeOptions()
-        buildPayload(userAction, SEARCHING_OIDC_CLIENTS, options)
-        dispatch(searchClients(userAction))
+        // buildPayload(userAction, SEARCHING_OIDC_CLIENTS, options)
+        dispatch(getOpenidClients(options))
       },
     })
   }
@@ -315,6 +321,24 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
     }
   }
 
+  const onPageChangeClick = (page) => {
+    makeOptions()
+    let startCount = page * limit
+    options['startIndex'] = parseInt(startCount) + 1
+    options['limit'] = limit
+    setPageNumber(page)
+    console.log(options)
+    dispatch(getOpenidClients(options))
+  }
+  const onRowCountChangeClick = (count) => {
+    makeOptions()
+    options['startIndex'] = 0
+    options['limit'] = count
+    setPageNumber(0)
+    setLimit(count)
+    dispatch(getOpenidClients(options))
+  }
+
   return (
     <Card style={applicationStyle.mainCard}>
       <ClientShowScopes
@@ -325,19 +349,34 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
       <CardBody>
         <GluuViewWrapper canShow={hasPermission(permissions, CLIENT_READ)}>
           <MaterialTable
+            key={limit ? limit : 0}
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
+              Pagination: (props) => (
+                <TablePagination
+                  component="div"
+                  count={totalItems}
+                  page={pageNumber}
+                  onPageChange={(prop, page) => {
+                    onPageChangeClick(page)
+                  }}
+                  rowsPerPage={limit}
+                  onRowsPerPageChange={(prop, count) =>
+                    onRowCountChangeClick(count.props.value)
+                  }
+                />
+              ),
             }}
             columns={tableColumns}
             data={haveScopeINUMParam ? scopeClients : clients}
-            isLoading={isPageLoading}
+            isLoading={isPageLoading ? isPageLoading : loading}
             title=""
             actions={myActions}
             options={{
               search: true,
               searchFieldAlignment: 'left',
               selection: false,
-              pageSize: pageSize,
+              pageSize: limit,
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,
                 ...bgThemeColor,
@@ -364,12 +403,4 @@ function ClientListPage({ clients, permissions, scopes, loading, dispatch }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    clients: state.oidcReducer.items,
-    scopes: state.scopeReducer.items,
-    loading: state.oidcReducer.loading,
-    permissions: state.authReducer.permissions,
-  }
-}
-export default connect(mapStateToProps)(ClientListPage)
+export default ClientListPage

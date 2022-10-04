@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
-import { Paper } from '@material-ui/core'
+import { Paper, TablePagination } from '@material-ui/core'
 import UserDetailViewPage from './UserDetailViewPage'
 import {
   getUsers,
@@ -15,7 +15,7 @@ import { Card, CardBody } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   hasPermission,
   ROLE_READ,
@@ -35,12 +35,15 @@ function UserList(props) {
   const dispatch = useDispatch()
   const opt = {}
   useEffect(() => {
-    opt['limit'] = 0
+    opt['limit'] = 100
     dispatch(getUsers({}))
     dispatch(getAttributes(opt))
     dispatch(getRoles())
   }, [])
-
+  const { totalItems, entriesCount } = useSelector(
+    (state) => state.userReducer,
+  )
+  const [pageNumber, setPageNumber] = useState(0)
   const usersList = useSelector((state) => state.userReducer.items)
   const redirectToUserListPage = useSelector(
     (state) => state.userReducer.redirectToUserListPage,
@@ -62,20 +65,19 @@ function UserList(props) {
   SetTitle(t('titles.user_management'))
 
   const myActions = []
-  const options = []
+  const options = {}
   const userAction = {}
-  const pageSize = localStorage.getItem('paggingSize') || 10
-  const history = useHistory()
+  const navigate =useNavigate()
 
   function handleGoToUserAddPage() {
     dispatch(setSelectedUserData(null))
-    return history.push('/user/usermanagement/add')
+    return navigate('/user/usermanagement/add')
   }
   function handleGoToUserEditPage(row) {
     dispatch(setSelectedUserData(row))
-    return history.push(`/user/usermanagement/edit:` + row.tableData.uuid)
+    return navigate(`/user/usermanagement/edit:` + row.tableData.uuid)
   }
-  const [limit, setLimit] = useState(200)
+  const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
 
   let memoLimit = limit
@@ -102,6 +104,7 @@ function UserList(props) {
           limit={limit}
           pattern={pattern}
           handler={handleOptionsChange}
+          showLimit={false}
         />
       ),
       tooltip: `${t('messages.advanced_search')}`,
@@ -119,8 +122,6 @@ function UserList(props) {
       onClick: () => {
         setLimit(memoLimit)
         setPattern(memoPattern)
-        console.log('LIMIT', memoLimit)
-        console.log('PATTERN', memoPattern)
         dispatch(getUsers({ limit: memoLimit, pattern: memoPattern }))
       },
     })
@@ -159,6 +160,23 @@ function UserList(props) {
     }))
   }
 
+  const onPageChangeClick = (page) => {
+    let startCount = page * limit
+    options['startIndex'] = parseInt(startCount) + 1
+    options['limit'] = limit
+    options['pattern'] = pattern
+    setPageNumber(page)
+    dispatch(getUsers(options))
+  }
+  const onRowCountChangeClick = (count) => {
+    
+    options['limit'] = count
+    options['pattern'] = pattern
+    setPageNumber(0)
+    setLimit(count)
+    dispatch(getUsers(options))
+  }
+
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
@@ -166,8 +184,23 @@ function UserList(props) {
           <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
             {usersList.length > 0 && (
               <MaterialTable
+                key={limit}
                 components={{
                   Container: (props) => <Paper {...props} elevation={0} />,
+                  Pagination: (props) => (
+                    <TablePagination
+                      component="div"
+                      count={totalItems}
+                      page={pageNumber}
+                      onPageChange={(prop, page) => {
+                        onPageChangeClick(page)
+                      }}
+                      rowsPerPage={limit}
+                      onRowsPerPageChange={(prop, count) =>
+                        onRowCountChangeClick(count.props.value)
+                      }
+                    />
+                  ),
                 }}
                 columns={[
                   {
@@ -185,7 +218,7 @@ function UserList(props) {
                   search: true,
                   searchFieldAlignment: 'left',
                   selection: false,
-                  pageSize: pageSize,
+                  pageSize: limit,
                   rowStyle: (rowData) => ({
                     backgroundColor: rowData.enabled ? '#33AE9A' : '#FFF',
                   }),

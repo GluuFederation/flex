@@ -1,11 +1,13 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class MappingApi {
   constructor(api) {
     this.api = api
   }
   getMappings = () => {
     return new Promise((resolve, reject) => {
-      this.api.getAdminuiRolePermissions((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+      this.api.getAllAdminuiRolePermissions((error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -15,7 +17,7 @@ export default class MappingApi {
     options['rolePermissionMapping'] = data
     return new Promise((resolve, reject) => {
       this.api.mapPermissionsToRole(options, (error, options) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -25,25 +27,15 @@ export default class MappingApi {
     options['rolePermissionMapping'] = data
     return new Promise((resolve, reject) => {
       this.api.mapPermissionsToRole(options, (error, options) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
   deleteMapping = (data) => {
-    const options = {}
-    options['rolePermissionMapping'] = data
     return new Promise((resolve, reject) => {
-      this.api.removeRolePermissionsPermission(options, (error, options) => {
-        this.handleResponse(error, reject, resolve, data)
+      this.api.removeRolePermissionsPermission(data.role, (error, options) => {
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

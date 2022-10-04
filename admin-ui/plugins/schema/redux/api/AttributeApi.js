@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class AttributeApi {
   constructor(api) {
     this.api = api
@@ -7,7 +9,7 @@ export default class AttributeApi {
   getAllAttributes = (opts) => {
     return new Promise((resolve, reject) => {
       this.api.getAttributes(opts, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -16,23 +18,27 @@ export default class AttributeApi {
   searchAttributes = (opts) => {
     return new Promise((resolve, reject) => {
       this.api.getAttributes(opts, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
 
   addNewAttribute = (data) => {
+    let options = {}
+    options['gluuAttribute'] = data
     return new Promise((resolve, reject) => {
-      this.api.postAttributes(data, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+      this.api.postAttributes(options, (error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
 
   editAnAttribute = (data) => {
+    let options = {}
+    options['gluuAttribute'] = data
     return new Promise((resolve, reject) => {
-      this.api.putAttributes(data, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+      this.api.putAttributes(options, (error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -40,16 +46,8 @@ export default class AttributeApi {
   deleteAnAttribute = async (inum) => {
     return new Promise((resolve, reject) => {
       this.api.deleteAttributesByInum(inum, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

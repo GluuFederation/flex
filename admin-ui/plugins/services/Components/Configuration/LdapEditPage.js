@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Container, CardBody, Card } from 'Components'
 import LdapForm from './LdapForm'
 import { editLdap } from 'Plugins/services/redux/actions/LdapActions'
@@ -8,14 +8,14 @@ import { buildPayload } from 'Utils/PermChecker'
 
 function LdapEditPage({ item, dispatch }) {
   const userAction = {}
-  const history = useHistory()
+  const navigate =useNavigate()
   function handleSubmit(data) {
     if (data) {
       const message = data.ldap.action_message
       delete data.ldap.action_message
       buildPayload(userAction, message, data)
       dispatch(editLdap(userAction))
-      history.push('/config/ldap')
+      navigate('/config/ldap')
     }
   }
 

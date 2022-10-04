@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import { Helmet } from 'react-helmet'
-import { withRouter } from 'react-router-dom'
+import { useWithRouter as withRouter } from 'Utils/WithRouter'
 import {
   filter,
   forOwn,

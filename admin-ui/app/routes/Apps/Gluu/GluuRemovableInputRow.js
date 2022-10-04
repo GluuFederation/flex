@@ -2,6 +2,8 @@ import React from 'react'
 import { Col, FormGroup, Input } from 'Components'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
+import applicationStyle from './styles/applicationstyle'
+
 function GluuRemovableInputRow({
   label,
   name,
@@ -34,16 +36,7 @@ function GluuRemovableInputRow({
           />
         </Col>
         <div
-          style={{
-            float: 'right',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            padding: '5px',
-            width: '25px',
-            height: '25px',
-            marginTop: '0px',
-            marginRight: '-10px',
-          }}
+          style={applicationStyle.removableInputRow}
           onClick={handler}
         >
           <i className={'fa fa-fw fa-close'} style={{ color: 'red' }}></i>

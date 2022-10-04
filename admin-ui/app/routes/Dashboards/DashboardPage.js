@@ -20,14 +20,12 @@ import { connect } from 'react-redux'
 import { getLicenseDetails } from 'Redux/actions/LicenseDetailsActions'
 import { getHealthStatus } from 'Redux/actions/HealthAction'
 import DashboardChart from './Chart/DashboardChart'
-import DashboardTable from './Table/DashboardTable'
 import DateRange from './DateRange'
 import CheckIcon from '../../images/svg/check.svg'
 import CrossIcon from '../../images/svg/cross.svg'
 import Logo from '../../images/gluu-white-logo.png'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { getUsers } from '../../redux/actions'
 import SetTitle from 'Utils/SetTitle'
 import styles from './styles'
 
@@ -40,6 +38,7 @@ function DashboardPage({
   dbStatus,
   loading,
   users,
+  totalClientsEntries,
   dispatch,
 }) {
   const { t } = useTranslation()
@@ -75,23 +74,24 @@ function DashboardPage({
     const currentMonth = date.getMonth() + 1
     const formattedMonth = currentMonth > 9 ? currentMonth : `0${currentMonth}`
     const yearMonth = `${currentYear}${formattedMonth}`
-    const currentMonthData = statData.find(({ month }) => month.toString() === yearMonth)
+    const currentMonthData = statData.find(
+      ({ month }) => month.toString() === yearMonth,
+    )
 
     const mau = currentMonthData?.mau
-    const token = currentMonthData?.authz_code_access_token_count + currentMonthData?.client_credentials_access_token_count
+    const token =
+      currentMonthData?.authz_code_access_token_count +
+      currentMonthData?.client_credentials_access_token_count
     if (mau) {
       setMauCount(mau)
     }
-    if(token) {
+    if (token) {
       setTokenCount(token)
     }
   }, [statData])
 
   useEffect(() => {
     let count = 0
-    const userOptions = {
-      limit: 3,
-    }
     const interval = () => {
       setTimeout(() => {
         if (statData.length === 0 && count < 2) {
@@ -100,7 +100,6 @@ function DashboardPage({
         if (clients.length === 0 && count < 2) {
           buildPayload(userAction, 'Fetch openid connect clients', {})
           dispatch(getClients(userAction))
-          dispatch(getUsers(userOptions))
         }
         if (Object.keys(license).length === 0 && count < 2) {
           getLicense()
@@ -159,7 +158,7 @@ function DashboardPage({
   const summaryData = [
     {
       text: t('dashboard.oidc_clients_count'),
-      value: clients?.length,
+      value: totalClientsEntries,
     },
     {
       text: t('dashboard.active_users_count'),
@@ -197,10 +196,7 @@ function DashboardPage({
   const StatusCard = () => {
     return (
       <Grid xs={12}>
-        <Paper
-          className={`${classes.statusContainer} ml-20`}
-          elevation={3}
-        >
+        <Paper className={`${classes.statusContainer} ml-20`} elevation={3}>
           <div className={classes.userInfoText}>
             <div className={classes.statusText}>
               <Box display="flex" justifyContent="flex-start">
@@ -287,11 +283,7 @@ function DashboardPage({
           style={{ background: themeColors.dashboard.supportCard }}
         >
           <div style={{ zIndex: 2 }}>
-            <img
-              src={Logo}
-              alt="logo"
-              className={classes.supportLogo}
-            />
+            <img src={Logo} alt="logo" className={classes.supportLogo} />
             <div className="mt-40">Gluu Services</div>
             <div className="mt-40">Community Support</div>
             <div className="mt-40">FAQ</div>
@@ -309,9 +301,7 @@ function DashboardPage({
             }}
           >
             <div className={classes.textVertical}>WORLD</div>
-            <div className={`${classes.textVertical} text-center`}>
-              WIDE
-            </div>
+            <div className={`${classes.textVertical} text-center`}>WIDE</div>
             <div className={`${classes.textVertical} text-right`}>
               SU<span className={`${classes.redText}`}>PP</span>ORT
             </div>
@@ -329,9 +319,7 @@ function DashboardPage({
         <div className={classes.root}>
           <Grid container className="px-40">
             <Grid item lg={breakDashboardCard ? 12 : 4} md={12}>
-              <h3 className="txt-white">
-                {t('dashboard.summary_title')}
-              </h3>
+              <h3 className="txt-white">{t('dashboard.summary_title')}</h3>
               <div className="mt-20">
                 {summaryData.map((data, key) => (
                   <Paper key={key} className={classes.summary}>
@@ -341,21 +329,27 @@ function DashboardPage({
                 ))}
               </div>
             </Grid>
-            <Grid item lg={breakDashboardCard ? 6 : 4} md={6} xs={12} style={{ width: '100%' }}>
+            <Grid
+              item
+              lg={breakDashboardCard ? 6 : 4}
+              md={6}
+              xs={12}
+              style={{ width: '100%' }}
+            >
               <Paper
                 className={`${classes.dashboardCard} top-minus-40`}
                 elevation={0}
                 spacing={2}
               >
                 <Grid className={classes.flex} container>
-                  <Grid
-                    item
-                    xs={12}
-                    className={isMobile ? 'mt-20' : ''}
-                  >
+                  <Grid item xs={12} className={isMobile ? 'mt-20' : ''}>
                     <Paper
                       className={classes.userInfo}
-                      style={isTabletOrMobile || breakDashboardCard ? { marginLeft: 0 } : {}}
+                      style={
+                        isTabletOrMobile || breakDashboardCard
+                          ? { marginLeft: 0 }
+                          : {}
+                      }
                       elevation={3}
                     >
                       <div className={classes.userInfoTitle}>
@@ -386,19 +380,31 @@ function DashboardPage({
                 </Grid>
               </Paper>
             </Grid>
-            <Grid item lg={breakDashboardCard ? 6 : 4} md={6} xs={12} style={{ width: '100%' }}>
+            <Grid
+              item
+              lg={breakDashboardCard ? 6 : 4}
+              md={6}
+              xs={12}
+              style={{ width: '100%' }}
+            >
               <StatusCard />
             </Grid>
           </Grid>
           <Grid container className={`px-40`}>
             <Grid lg={12} xs={12}>
-              <h3 className="text-white">{t('dashboard.access_tokens_graph')}</h3>
+              <h3 className="text-white">
+                {t('dashboard.access_tokens_graph')}
+              </h3>
               {isTabletOrMobile ? (
                 <Grid container className={`${classes.whiteBg}`}>
                   <Grid
                     xs={12}
                     item
-                    style={isTabletOrMobile ? { marginLeft: 40 } : { marginLeft: 40, marginBottom: 40 }}
+                    style={
+                      isTabletOrMobile
+                        ? { marginLeft: 40 }
+                        : { marginLeft: 40, marginBottom: 40 }
+                    }
                   >
                     <div>{t('dashboard.select_date_range')}</div>
                     <DateRange />
@@ -409,7 +415,13 @@ function DashboardPage({
                     style={isMobile ? mobileChartStyle : {}}
                     item
                   >
-                    <div className={isTabletOrMobile ? classes.chartContainerTable : classes.chartContainer}>
+                    <div
+                      className={
+                        isTabletOrMobile
+                          ? classes.chartContainerTable
+                          : classes.chartContainer
+                      }
+                    >
                       <DashboardChart />
                     </div>
                   </Grid>
@@ -468,7 +480,6 @@ function DashboardPage({
                   </li>
                 </ul>
               </Grid>
-              <DashboardTable />
             </Grid>
           </Grid>
         </div>
@@ -482,6 +493,7 @@ const mapStateToProps = (state) => {
     statData: state.mauReducer.stat,
     loading: state.mauReducer.loading,
     clients: state.initReducer.clients,
+    totalClientsEntries: state.initReducer.totalClientsEntries,
     license: state.licenseDetailsReducer.item,
     serverStatus: state.healthReducer.serverStatus,
     dbStatus: state.healthReducer.dbStatus,

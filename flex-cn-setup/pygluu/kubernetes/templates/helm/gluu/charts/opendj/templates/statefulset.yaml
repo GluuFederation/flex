@@ -1,5 +1,4 @@
 {{- if or (eq .Values.global.cnPersistenceType "ldap") (eq .Values.global.cnPersistenceType "hybrid") }}
-
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

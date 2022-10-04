@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
+import { useWithRouter as withRouter } from 'Utils/WithRouter'
 import find from 'lodash/find'
 import includes from 'lodash/includes'
 import mapValues from 'lodash/mapValues'

@@ -1,3 +1,5 @@
+import { handleResponse } from 'Utils/ApiUtils'
+
 export default class LicenseApi {
   constructor(api) {
     this.api = api
@@ -5,7 +7,7 @@ export default class LicenseApi {
   getIsActive = () => {
     return new Promise((resolve, reject) => {
       this.api.isLicenseActive((error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -15,16 +17,16 @@ export default class LicenseApi {
     options['licenseSpringCredentials'] = data.payload
     return new Promise((resolve, reject) => {
       this.api.saveLicenseApiCredentials(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
   submitLicenseKey = (data) => {
     const options = {}
-    options['licenseApiRequest'] = data.payload
+    options['licenseRequest'] = data.payload
     return new Promise((resolve, reject) => {
       this.api.activateAdminuiLicense(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -34,7 +36,7 @@ export default class LicenseApi {
     options['adminPermission'] = data
     return new Promise((resolve, reject) => {
       this.api.addAdminuiPermission(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -44,7 +46,7 @@ export default class LicenseApi {
     options['adminPermission'] = data
     return new Promise((resolve, reject) => {
       this.api.editAdminuiPermission(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
   }
@@ -54,16 +56,8 @@ export default class LicenseApi {
     options['adminPermission'] = data
     return new Promise((resolve, reject) => {
       this.api.deleteAdminuiPermission(options, (error, data) => {
-        this.handleResponse(error, reject, resolve, data)
+        handleResponse(error, reject, resolve, data)
       })
     })
-  }
-
-  handleResponse(error, reject, resolve, data) {
-    if (error) {
-      reject(error)
-    } else {
-      resolve(data)
-    }
   }
 }

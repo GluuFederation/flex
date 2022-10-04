@@ -24,6 +24,8 @@ const INIT_STATE = {
   saveOperationFlag: false,
   errorInSaveOperationFlag: false,
   scopesByCreator: [],
+  totalItems: 0,
+  entriesCount: 0,
 }
 
 const reducerName = 'scopeReducer'
@@ -38,7 +40,9 @@ export default function scopeReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          items: action.payload.data,
+          items: action.payload.data.entries,
+          totalItems: action.payload.data.totalEntriesCount,
+          entriesCount: action.payload.data.entriesCount,
           loading: false,
         }
       } else {

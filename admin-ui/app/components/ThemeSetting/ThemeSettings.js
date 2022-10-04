@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import clsx from 'clsx'
 import Drawer from '@material-ui/core/Drawer'
 import Button from '@material-ui/core/Button'

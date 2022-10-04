@@ -1,17 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import { Container, CardBody, Card } from 'Components'
+import { useNavigate } from 'react-router-dom'
+import { CardBody, Card } from 'Components'
 import AttributeForm from './AttributeForm'
 import { addAttribute } from 'Plugins/schema/redux/actions/AttributeActions'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 
 function AttributeAddPage({ dispatch }) {
-  const history = useHistory()
+  const navigate =useNavigate()
   function onSubmit(data) {
     if (data) {
       dispatch(addAttribute(data))
-      history.push('/attributes')
+      navigate('/attributes')
     }
   }
   const defautAttribute = {
