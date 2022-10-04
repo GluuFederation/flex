@@ -166,7 +166,7 @@
     "react-responsive": "^9.0.0-beta.10",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
-    "react-spinners": "^0.11.0",
+    "react-spinners": "^0.13.4",
     "react-test-renderer": "^18.1.0",
     "react-text-mask": "^5.4.3",
     "react-toastify": "^9.0.8",
