@@ -3,8 +3,10 @@ import { Col, Container, FormGroup } from 'Components'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
+import isEmpty from 'lodash/isEmpty'
 const DOC_CATEGORY = 'openid_client'
 
+const EMPTY = ''
 function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
   const { t } = useTranslation()
 
@@ -31,7 +33,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.clientUri"
         name="clientUri"
         formik={formik}
-        value={client.clientUri}
+        value={isEmpty(client.clientUri) ? EMPTY : client.clientUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -39,7 +41,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.policy_uri"
         name="policyUri"
         formik={formik}
-        value={client.policyUri}
+        value={isEmpty(client.policyUri) ? EMPTY : client.policyUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -47,7 +49,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.logo_uri"
         name="logoUri"
         formik={formik}
-        value={client.logoUri}
+        value={isEmpty(client.logoUri) ? EMPTY : client.logoUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
@@ -55,7 +57,7 @@ function ClientSoftwarePanel({ client, scripts, formik, viewOnly }) {
         label="fields.tosUri"
         name="tosUri"
         formik={formik}
-        value={client.tosUri}
+        value={isEmpty(client.tosUri) ? EMPTY : client.tosUri}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
