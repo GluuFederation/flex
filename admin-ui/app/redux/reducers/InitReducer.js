@@ -28,7 +28,7 @@ export default function initReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          scripts: action.payload.data,
+          scripts: action.payload.data.entries,
         }
       } else {
         return handleDefault()
