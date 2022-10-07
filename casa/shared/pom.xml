@@ -80,7 +80,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.4</version>
+            <version>20030211.134440</version>
         </dependency>
 
         <!-- SERVLET -->
