@@ -189,6 +189,7 @@ function ClientListPage() {
       dispatch(getOpenidClients(options))
 
       buildPayload(userAction, '', options)
+      userAction['limit'] = 100
       dispatch(getScopes(userAction))
 
       setTimeout(() => {
