@@ -699,10 +699,6 @@ def prepare_for_installation():
     if not (argsp.flex_non_interactive or argsp.download_exit):
         prompt_for_installation()
 
-    if install_components['admin_ui'] and not node_installer.installed():
-        print("Installing node")
-        node_installer.install()
-
 
 def get_components_from_setup_properties():
     if argsp.f:
@@ -735,6 +731,9 @@ def main(uninstall):
     else:
         installer_obj.download_files()
         if install_components['admin_ui']:
+            if not node_installer.installed():
+                print("Installing node")
+                node_installer.install()
             installer_obj.install_gluu_admin_ui()
         if install_components['casa']:
             installer_obj.install_casa()
