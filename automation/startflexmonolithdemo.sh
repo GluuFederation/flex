@@ -54,11 +54,11 @@ echo "Waiting for the Janssen server to come up. Depending on the  resources it 
 sleep 180
 cat << EOF > testendpoints.sh
 echo -e "Testing openid-configuration endpoint.. \n"
-docker exec -ti docker-flex-monolith-flex-1 curl -k https://$GLUU_FQDN/.well-known/openid-configuration
+docker exec docker-flex-monolith-flex-1 curl -k https://$GLUU_FQDN/.well-known/openid-configuration
 echo -e "Testing scim-configuration endpoint.. \n"
-docker exec -ti docker-flex-monolith-flex-1 curl -k https://$GLUU_FQDN/.well-known/scim-configuration
+docker exec docker-flex-monolith-flex-1 curl -k https://$GLUU_FQDN/.well-known/scim-configuration
 echo -e "Testing fido2-configuration endpoint.. \n"
-docker exec -ti docker-flex-monolith-flex-1 curl -k https://$GLUU_FQDN/.well-known/fido2-configuration
+docker exec docker-flex-monolith-flex-1 curl -k https://$GLUU_FQDN/.well-known/fido2-configuration
 EOF
 sudo bash testendpoints.sh
 echo -e "You may re-execute bash testendpoints.sh to do a quick test to check the configuration endpoints."
