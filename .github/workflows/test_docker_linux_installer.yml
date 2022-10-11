@@ -31,9 +31,9 @@ jobs:
         
         sudo apt-get update
         sudo python3 -m pip install --upgrade pip
-        sudo pip3 install setuptools --upgrade
-        sudo pip3 install dockerfile-parse
+        pip3 install setuptools --upgrade
+        pip3 install dockerfile-parse
         python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-flex-monolith') ; dfparser.envs['FLEX_SOURCE_VERSION'] = '${{ github.sha }}'"
         ip=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
-        csudo hmod u+x automation/startflexmonolithdemo.sh
+        sudo chmod u+x automation/startflexmonolithdemo.sh
         sudo bash ./automation/startflexmonolithdemo.sh demoexample.gluu.org ${{ matrix.persistence-backends }} $ip true

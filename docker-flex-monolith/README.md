@@ -1,6 +1,6 @@
 # Overview
 
-**This image is for testing and development purposes only! Use Janssen [helm charts](../charts) for production setups**
+**This image is for testing and development purposes only! Use Flex [helm charts](../flex-cn-setup/pygluu/kubernetes/templates/helm/gluu) for production setups**
 
 Docker monolith image packaging for Gluu Flex.This image packs janssen services including, the auth-server, client-api, config-api, fido2, and scim and the Gluu admin ui and Casa.
 
