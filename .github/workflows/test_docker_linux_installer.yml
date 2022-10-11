@@ -36,4 +36,4 @@ jobs:
         python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-flex-monolith') ; dfparser.envs['FLEX_SOURCE_VERSION'] = '${{ github.sha }}'"
         ip=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
         sudo chmod u+x automation/startflexmonolithdemo.sh
-        sudo bash ./automation/startflexmonolithdemo.sh demoexample.gluu.org ${{ matrix.persistence-backends }} $ip true
+        sudo bash ./automation/startflexmonolithdemo.sh demoexample.gluu.org ${{ matrix.persistence-backends }} $ip

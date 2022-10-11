@@ -4,7 +4,7 @@ set -eo pipefail
 GLUU_FQDN=$1
 GLUU_PERSISTENCE=$2
 EXT_IP=$3
-CI_CD=$4
+
 if [[ ! "$GLUU_FQDN" ]]; then
   read -rp "Enter Hostname [demoexample.gluu.org]:                           " GLUU_FQDN
 fi
@@ -47,22 +47,18 @@ git clone --filter blob:none --no-checkout https://github.com/gluufederation/fle
     && cd "$WORKING_DIRECTORY"
 
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
-  if [[ -z "$CI_CD" ]]; then
-    docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up
-  else
     docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d
-  fi
 fi
 echo "$EXT_IP $GLUU_FQDN" | sudo tee -a /etc/hosts > /dev/null
 echo "Waiting for the Janssen server to come up. Depending on the  resources it may take 3-5 mins for the services to be up."
 sleep 180
 cat << EOF > testendpoints.sh
 echo -e "Testing openid-configuration endpoint.. \n"
-curl -k https://$GLUU_FQDN/.well-known/openid-configuration
+ocker exec -ti docker-flex-monolith-flex-1 curl -k https://$GLUU_FQDN/.well-known/openid-configuration
 echo -e "Testing scim-configuration endpoint.. \n"
-curl -k https://$GLUU_FQDN/.well-known/scim-configuration
+ocker exec -ti docker-flex-monolith-flex-1 curl -k https://$GLUU_FQDN/.well-known/scim-configuration
 echo -e "Testing fido2-configuration endpoint.. \n"
-curl -k https://$GLUU_FQDN/.well-known/fido2-configuration
+cocker exec -ti docker-flex-monolith-flex-1 curl -k https://$GLUU_FQDN/.well-known/fido2-configuration
 EOF
 sudo bash testendpoints.sh
 echo -e "You may re-execute bash testendpoints.sh to do a quick test to check the configuration endpoints."

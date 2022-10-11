@@ -56,7 +56,7 @@ docker compose -f mysql-docker-compose.yml down && rm -rf jans-*
 ## Test
 
 ```bash
-docker exec -ti docker-flex-monolith_flex_1 bash
+docker exec -ti docker-flex-monolith-flex-1 bash
 ```
 
 Run 
