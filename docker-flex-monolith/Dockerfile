@@ -39,17 +39,8 @@ EXPOSE 443 8080 1636
 # =====================
 
 ENV FLEX_SOURCE_VERSION=bab8837291e3450a50419e8e03cc9e1da1820c36
-
 # cleanup
 RUN rm -rf /tmp/jans
-
-# ======
-# Python
-# ======
-COPY requirements.txt /app/requirements.txt
-RUN pip3 install --no-cache-dir -U pip wheel \
-    && pip3 install --no-cache-dir -r /app/requirements.txt \
-    && pip3 uninstall -y pip wheel
 
 # =======
 # License

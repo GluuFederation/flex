@@ -3,16 +3,20 @@ set -eo pipefail
 
 GLUU_FQDN=$1
 GLUU_PERSISTENCE=$2
-
+EXT_IP=$3
+CI_CD=$4
 if [[ ! "$GLUU_FQDN" ]]; then
   read -rp "Enter Hostname [demoexample.gluu.org]:                           " GLUU_FQDN
 fi
 if [[ ! "$GLUU_PERSISTENCE" ]]; then
-  read -rp "Enter persistence type [LDAP(NOT SUPPORTED YET)|MYSQL]:                            " GLUU_PERSISTENCE
+  read -rp "Enter persistence type [LDAP(NOT SUPPORTED YET)|MYSQL]:          " GLUU_PERSISTENCE
 fi
 
 if [[ -z $EXT_IP ]]; then
   EXT_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
+  if [[ -z $EXT_IP ]]; then
+    read -rp "We couldn't detect your external ip. Please enter it manually: " EXT_IP
+  fi
 fi
 
 sudo apt-get update
@@ -43,7 +47,11 @@ git clone --filter blob:none --no-checkout https://github.com/gluufederation/fle
     && cd "$WORKING_DIRECTORY"
 
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
-  docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d
+  if [[ -z "$CI_CD" ]]; then
+    docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up
+  else
+    docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d
+  fi
 fi
 echo "$EXT_IP $GLUU_FQDN" | sudo tee -a /etc/hosts > /dev/null
 echo "Waiting for the Janssen server to come up. Depending on the  resources it may take 3-5 mins for the services to be up."
