@@ -17,7 +17,7 @@ The following environment variables are supported by the container:
 |-------------------------|--------------------------------------------------|--------------------------------------------------|
 | `CN_HOSTNAME`           | Hostname to install gluu with.                   | `demoexample.gluu.org`                           |
 | `CN_ADMIN_PASS`         | Password of the admin user.                      | `1t5Fin3#security`                               |
-| `CN_ORG_NAME`           | Organization name. Used for ssl cert generation. | `Janssen`                                        |
+| `CN_ORG_NAME`           | Organization name. Used for ssl cert generation. | `Gluu`                                           |
 | `CN_EMAIL`              | Email. Used for ssl cert generation.             | `support@gluu.org`                               |
 | `CN_CITY`               | City. Used for ssl cert generation.              | `Austin`                                         |
 | `CN_STATE`              | State. Used for ssl cert generation              | `TX`                                             |
