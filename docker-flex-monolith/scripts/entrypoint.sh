@@ -80,6 +80,7 @@ start_services() {
   /opt/dist/scripts/jans-auth start
   /opt/dist/scripts/jans-client-api start
   /opt/dist/scripts/jans-config-api start
+  /opt/dist/scripts/jans-fido2 start
   /opt/dist/scripts/jans-scim start
   /opt/dist/scripts/casa start
 }
