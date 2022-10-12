@@ -50,15 +50,25 @@ if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
     docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d
 fi
 echo "$EXT_IP $GLUU_FQDN" | sudo tee -a /etc/hosts > /dev/null
-echo "Waiting for the Janssen server to come up. Depending on the  resources it may take 3-5 mins for the services to be up."
+flex_status="unhealthy"
+while true; do
+    flex_status=$(docker inspect --format='{{json .State.Health.Status}}' docker-flex-monolith-flex-1) || echo "unhealthy"
+    echo "$flex_status"
+    if [ "$flex_status" == '"healthy"' ]; then
+        break
+    fi
+    sleep 10
+    echo "Waiting for the Janssen server to come up. Depending on the  resources it may take 3-5 mins for the services to be up."
+done
+echo "Will be ready in exactly 3 mins"
 sleep 180
 cat << EOF > testendpoints.sh
 echo -e "Testing openid-configuration endpoint.. \n"
-docker exec docker-flex-monolith-flex-1 curl -k https://localhost/.well-known/openid-configuration
+docker exec docker-flex-monolith-flex-1 curl -f -k https://localhost/.well-known/openid-configuration
 echo -e "Testing scim-configuration endpoint.. \n"
-docker exec docker-flex-monolith-flex-1 curl -k https://localhost/.well-known/scim-configuration
+docker exec docker-flex-monolith-flex-1 curl -f -k https://localhost/.well-known/scim-configuration
 echo -e "Testing fido2-configuration endpoint.. \n"
-docker exec docker-flex-monolith-flex-1 curl -k https://localhost/.well-known/fido2-configuration
+docker exec docker-flex-monolith-flex-1 curl -f -k https://localhost/.well-known/fido2-configuration
 docker exec docker-flex-monolith-flex-1 /opt/jans/jans-cli/config-cli.py --operation-id get-properties
 EOF
 sudo bash testendpoints.sh
