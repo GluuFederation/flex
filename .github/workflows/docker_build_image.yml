@@ -90,6 +90,9 @@ jobs:
         run: |
           MAIN_VERSION=$(python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-${{ matrix.docker-images }}') ; print(dfparser.labels['version'])")
           DOCKER_IMAGE=gluufederation/${{ matrix.docker-images }}
+          if [[ ${{ matrix.docker-images }} == "flex-monolith" ]]; then
+            DOCKER_IMAGE=gluufederation/monolith
+          fi
           VERSION=${MAIN_VERSION}_dev
           BUILD=true
           if [[ $GITHUB_REF == refs/tags/docker-${{ matrix.docker-images }}-* ]]; then

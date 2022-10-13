@@ -17,12 +17,11 @@ RUN echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/00-docker \
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update \
     && apt-get install -y python3 tini curl ca-certificates dbus systemd iproute2 gpg python3-pip python3-dev libpq-dev gcc \
-    && apt-get clean \
     # install certbot
-    && apt-get -y install ibaugeas0 \
-    && apt-get clean \
+    && apt-get -y install libaugeas0 \
     && pip install certbot certbot-apache \
-    # Cleaning up package lists
+    # Cleaning up package lists \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 
@@ -80,7 +79,7 @@ ENV CN_HOSTNAME="demoexample.gluu.org" \
 # misc stuff
 # ==========
 
-LABEL name="gluufederation/flex-monolith" \
+LABEL name="gluufederation/monolith" \
     maintainer="GluuFederation <support@gluu.org>" \
     vendor="GluuFederation" \
     version="5.0.0" \
