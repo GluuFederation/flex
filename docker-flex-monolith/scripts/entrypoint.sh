@@ -75,6 +75,11 @@ check_installed_flex() {
   fi
 }
 
+register_fqdn() {
+    if [[ "${IS_FQDN_REGISTERED}" == "true" ]]; then
+      certbot --apache -d "${CN_HOSTNAME}" -n --agree-tos --email "${CN_EMAIL}" || echo "FQDN was not registered with cerbot"
+    fi
+}
 start_services() {
   /etc/init.d/apache2 start
   /opt/dist/scripts/jans-auth start
@@ -87,6 +92,7 @@ start_services() {
 
 check_installed_flex
 start_services
+register_fqdn
 
 tail -f /opt/jans/jetty/jans-auth/logs/*.log \
 -f /opt/jans/jetty/jans-client-api/logs/*.log \

@@ -18,6 +18,10 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update \
     && apt-get install -y python3 tini curl ca-certificates dbus systemd iproute2 gpg python3-pip python3-dev libpq-dev gcc \
     && apt-get clean \
+    # install certbot
+    && apt-get -y install ibaugeas0 \
+    && apt-get clean \
+    && pip install certbot certbot-apache \
     # Cleaning up package lists
     && rm -rf /var/lib/apt/lists/*
 
@@ -59,6 +63,7 @@ ENV CN_HOSTNAME="demoexample.gluu.org" \
     CN_CITY="Austin" \
     CN_STATE="TX" \
     CN_COUNTRY="US" \
+    IS_FQDN_REGISTERED="false" \
     # Install with local mysql by default
     INSTALL_LDAP="false" \
     CN_INSTALL_CONFIG_API="true" \
