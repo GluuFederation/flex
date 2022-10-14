@@ -7,8 +7,8 @@ import moment from 'moment'
 const UserDetailViewPage = ({ row }) => {
   const { rowData } = row
   const DOC_SECTION = 'user'
-  const personAttributes = useSelector((state) => state.attributeReducer.items)
-
+  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
+  
   const getCustomAttributeById = (id) => {
     let claimData = null
     for (let i in personAttributes) {
@@ -61,16 +61,17 @@ const UserDetailViewPage = ({ row }) => {
             } else {
               valueToShow = data?.values[0]
             }
-            return (
-              <Col sm={4} key={'customAttributes' + key}>
-                <GluuFormDetailRow
-                  label={getCustomAttributeById(data.name).displayName}
-                  doc_category={getCustomAttributeById(data.name).description}
-                  isDirect={true}
-                  value={valueToShow}
-                />
-              </Col>
-            )
+              return (
+                <Col sm={4} key={'customAttributes' + key}>
+                  <GluuFormDetailRow
+                    label={getCustomAttributeById(data.name) ? getCustomAttributeById(data.name).displayName : ''}
+                    doc_category={getCustomAttributeById(data.name) ? getCustomAttributeById(data.name).description : ''}
+                    isDirect={true}
+                    value={valueToShow}
+                  />
+                </Col>
+              )
+            
           })}
         </Row>
       </Container>

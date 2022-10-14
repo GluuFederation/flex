@@ -16,7 +16,7 @@ function UserEditPage() {
   const navigate =useNavigate()
   const { t } = useTranslation()
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
-  const personAttributes = useSelector((state) => state.attributeReducer.items)
+  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
   const redirectToUserListPage = useSelector(
     (state) => state.userReducer.redirectToUserListPage,
   )
