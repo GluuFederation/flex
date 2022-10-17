@@ -422,6 +422,8 @@ config:
   configmap:
     # -- Jetty header size in bytes in the auth server
     cnJettyRequestHeaderSize: 8192
+    # -- Schema name used by SQL database (default to empty-string; if using MySQL, the schema name will be resolved as the database name, whereas in PostgreSQL the schema name will be resolved as `"public"`).
+    cnSqlDbSchema: ""
     # -- SQL database dialect. `mysql` or `pgsql`
     cnSqlDbDialect: mysql
     # -- SQL database host uri.
