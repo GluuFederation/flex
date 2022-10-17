@@ -58,4 +58,4 @@ python3 ./automation/janssen_helm_chart/analyze_chart.py
 helm-docs ${temp_chart_folder}
 helm package ${temp_chart_folder} -d charts
 helm repo index charts
-echo "Chart preperation is finished!"
+echo "Chart preparation is finished!"

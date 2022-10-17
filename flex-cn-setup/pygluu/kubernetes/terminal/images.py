@@ -55,9 +55,6 @@ class PromptImages:
             # CONFIG_API
             if self.settings.get("global.config-api.enabled"):
                 prompt_and_set_setting("Config-API", "config-api")
-            # CLIENT_API
-            if self.settings.get("global.client-api.enabled"):
-                prompt_and_set_setting("CLIENT_API server", "client-api")
             # OXPASSPORT
             if self.settings.get("config.configmap.cnPassportEnabled"):
                 prompt_and_set_setting("oxPassport", "oxpassport")

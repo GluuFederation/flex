@@ -15,7 +15,6 @@ set -e
 # INSTALL_LDAP
 # CN_INSTALL_CONFIG_API
 # CN_INSTALL_SCIM
-# CN_INSTALL_CLIENT_API
 # CN_INSTALL_CASA
 # CN_INSTALL_ADMIN_UI
 # MYSQL_DATABASE
@@ -41,7 +40,6 @@ install_flex() {
   echo "install_config_api=""$([[ ${CN_INSTALL_CONFIG_API} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install_scim_server=""$([[ ${CN_INSTALL_SCIM} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "installFido2=""$([[ ${CN_INSTALL_FIDO2} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
-  echo "install_client_api=""$([[ ${CN_INSTALL_CLIENT_API} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install-admin-ui=""$([[ ${CN_INSTALL_ADMIN_UI} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install-casa=""$([[ ${CN_INSTALL_CASA} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "adminui-authentication-mode=casa" | tee -a setup.properties > /dev/null
@@ -83,7 +81,6 @@ register_fqdn() {
 start_services() {
   /etc/init.d/apache2 start
   /opt/dist/scripts/jans-auth start
-  /opt/dist/scripts/jans-client-api start
   /opt/dist/scripts/jans-config-api start
   /opt/dist/scripts/jans-fido2 start
   /opt/dist/scripts/jans-scim start
@@ -95,7 +92,6 @@ start_services
 register_fqdn
 
 tail -f /opt/jans/jetty/jans-auth/logs/*.log \
--f /opt/jans/jetty/jans-client-api/logs/*.log \
 -f /opt/jans/jetty/jans-config-api/logs/*.log \
 -f /opt/jans/jetty/jans-fido2/logs/*.log \
 -f /opt/jans/jetty/jans-scim/logs/*.log \

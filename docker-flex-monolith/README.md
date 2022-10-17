@@ -2,7 +2,7 @@
 
 **This image is for testing and development purposes only! Use Flex [helm charts](../flex-cn-setup/pygluu/kubernetes/templates/helm/gluu) for production setups**
 
-Docker monolith image packaging for Gluu Flex.This image packs janssen services including, the auth-server, client-api, config-api, fido2, and scim and the Gluu admin ui and Casa.
+Docker monolith image packaging for Gluu Flex.This image packs janssen services including, the auth-server, config-api, fido2, and scim and the Gluu admin ui and Casa.
 
 ## Versions
 
@@ -27,7 +27,6 @@ The following environment variables are supported by the container:
 | `CN_INSTALL_CONFIG_API` | Installs the Config API service.                  | `true`                                           |
 | `CN_INSTALL_SCIM`       | Installs the SCIM  API service.                   | `true`                                           |
 | `CN_INSTALL_FIDO2`      | Installs the FIDO2 API service.                   | `true`                                           |
-| `CN_INSTALL_CLIENT_API` | Installs the CLIENT API service.                  | `true`                                           |
 | `CN_INSTALL_CASA`       | Installs the Casa service.                        | `true`                                           |
 | `CN_INSTALL_ADMIN_UI`   | Installs the Admin UI service.                    | `true`                                           |
 | `MYSQL_DATABASE`        | MySQL gluu flex database.                         | `gluu`                                           |

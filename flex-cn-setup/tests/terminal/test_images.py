@@ -74,20 +74,6 @@ def test_testenv_prompt_test_edit_ldap(monkeypatch, settings, given, expected):
 @pytest.mark.parametrize("given, expected", [
     (True, True),
 ])
-def test_testenv_prompt_test_edit_clientapi(monkeypatch, settings, given, expected):
-    from pygluu.kubernetes.terminal.images import PromptImages
-
-    monkeypatch.setattr("click.prompt", lambda x, default: given)
-    settings.set("installer-settings.images.edit", True)
-    settings.set("global.client-api.enabled", True)
-    prompt = PromptImages(settings)
-    prompt.prompt_image_name_tag()
-    assert settings.get("client-api.image.tag") == expected
-
-
-@pytest.mark.parametrize("given, expected", [
-    (True, True),
-])
 def test_testenv_prompt_test_edit_oxpassport(monkeypatch, settings, given, expected):
     from pygluu.kubernetes.terminal.images import PromptImages
 

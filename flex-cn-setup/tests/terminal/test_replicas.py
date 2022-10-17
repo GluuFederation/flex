@@ -77,19 +77,6 @@ def test_prompt_replicas_oxpassport(monkeypatch, settings):
     assert settings.get("oxpassport.replicas") == 1
 
 
-def test_prompt_replicas_client_api(monkeypatch, settings):
-    from pygluu.kubernetes.terminal.replicas import PromptReplicas
-
-    monkeypatch.setattr("click.prompt", lambda x, default: 1)
-
-    # bypass
-    settings.set("client-api.replicas", "")
-
-    settings.set("global.client-api.enabled", "Y")
-    PromptReplicas(settings).prompt_replicas()
-    assert settings.get("client-api.replicas") == 1
-
-
 def test_prompt_replicas_casa(monkeypatch, settings):
     from pygluu.kubernetes.terminal.replicas import PromptReplicas
 

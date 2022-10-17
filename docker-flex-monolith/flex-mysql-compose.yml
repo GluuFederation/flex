@@ -38,7 +38,6 @@ services:
       - CN_INSTALL_CONFIG_API=true
       - CN_INSTALL_SCIM=true
       - CN_INSTALL_FIDO2=true
-      - CN_INSTALL_CLIENT_API=true
       - CN_INSTALL_CASA=true
       - CN_INSTALL_ADMIN_UI=true
       - MYSQL_DATABASE=gluu
@@ -47,7 +46,6 @@ services:
       - MYSQL_HOST=mysql
     volumes:
       - ./jans-auth-custom:/opt/jans/jetty/jans-auth/custom
-      - ./jans-client-api-custom:/opt/jans/jetty/jans-client-api/custom
       - ./jans-config-api-custom:/opt/jans/jetty/jans-config-api/custom
       - ./jans-fido2-custom:/opt/jans/jetty/jans-fido2/custom
       - ./jans-scim-custom:/opt/jans/jetty/jans-scim/custom

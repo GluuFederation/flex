@@ -44,9 +44,6 @@ class PromptReplicas:
                 self.settings.get("oxpassport.replicas") in (None, ''):
             self.settings.set("oxpassport.replicas", click.prompt("Number of oxPassport replicas", default=1))
 
-        if self.settings.get("global.client-api.enabled") and self.settings.get("client-api.replicas") in (None, ''):
-            self.settings.set("client-api.replicas", click.prompt("Number of client-api replicas", default=1))
-
         if self.settings.get("config.configmap.cnCasaEnabled") and self.settings.get("casa.replicas") in (None, ''):
             self.settings.set("casa.replicas", click.prompt("Number of Casa replicas", default=1))
 

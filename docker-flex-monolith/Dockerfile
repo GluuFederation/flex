@@ -68,7 +68,6 @@ ENV CN_HOSTNAME="demoexample.gluu.org" \
     CN_INSTALL_CONFIG_API="true" \
     CN_INSTALL_SCIM="true" \
     CN_INSTALL_FIDO2="true" \
-    CN_INSTALL_CLIENT_API="true" \
     CN_INSTALL_CASA="true" \
     CN_INSTALL_ADMIN_UI="true" \
     MYSQL_DATABASE="gluu" \

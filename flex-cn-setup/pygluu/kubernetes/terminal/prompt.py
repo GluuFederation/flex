@@ -165,7 +165,6 @@ class Prompt:
             self.settings.set("config.configmap.cnPassportEnabled", False)
             self.settings.set("global.oxshibboleth.enabled", False)
             self.settings.set("config.configmap.cnCasaEnabled", False)
-            self.settings.set("global.client-api.enabled", False)
             self.settings.set("global.fido2.enabled", False)
             self.settings.set("global.scim.enabled", False)
             self.settings.set("installer-settings.volumeProvisionStrategy", "microk8sDynamic")
