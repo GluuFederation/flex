@@ -8,8 +8,7 @@ import time
 import glob
 import code
 import configparser
-import shlex
-import shutil
+import subprocess
 
 from pathlib import Path
 from urllib import request
@@ -75,13 +74,14 @@ except ModuleNotFoundError:
 
         if argsp.download_exit:
             nargs.append('--download-exit')
+            argsp.flex_non_interactive = True
 
         if argsp.flex_non_interactive:
             nargs.append('-n')
             install_cmd += ' -yes'
 
         if nargs:
-            install_cmd += ' --args="{}"'.format(shlex.join(nargs))
+            install_cmd += ' --args="{}"'.format(subprocess.list2cmdline(nargs))
 
         print("Executing", install_cmd)
         os.system(install_cmd)
