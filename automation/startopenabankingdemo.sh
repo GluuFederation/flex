@@ -84,8 +84,6 @@ nginx-ingress:
 global:
   auth-server-key-rotation:
     enabled: false
-  client-api:
-    enabled: false
   config-api:
     enabled: true
   fido2:

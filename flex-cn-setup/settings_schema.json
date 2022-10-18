@@ -92,15 +92,12 @@
     "IS_CN_FQDN_REGISTERED": { "$ref": "#/definitions/yes-no-string" },
     "LDAP_PW": { "$ref": "#/definitions/password" },
     "ADMIN_PW": { "$ref": "#/definitions/password" },
-    "CLIENT_API_APPLICATION_KEYSTORE_CN": { "type": "string" },
-    "CLIENT_API_ADMIN_KEYSTORE_CN": { "type": "string" },
     "LDAP_STORAGE_SIZE": { "type": "string" },
     "AUTH_SERVER_REPLICAS": { "$ref": "#/definitions/emptiable-number" },
     "OXTRUST_REPLICAS": { "$ref": "#/definitions/emptiable-number" },
     "LDAP_REPLICAS": { "$ref": "#/definitions/emptiable-number" },
     "OXSHIBBOLETH_REPLICAS": { "$ref": "#/definitions/emptiable-number" },
     "OXPASSPORT_REPLICAS": { "$ref": "#/definitions/emptiable-number" },
-    "CLIENT_API_REPLICAS": { "$ref": "#/definitions/emptiable-number" },
     "CASA_REPLICAS": { "$ref": "#/definitions/emptiable-number" },
     "FIDO2_REPLICAS": { "$ref": "#/definitions/emptiable-number" },
     "SCIM_REPLICAS": { "$ref": "#/definitions/emptiable-number" },
@@ -108,7 +105,6 @@
     "ENABLE_OXTRUST_API": { "$ref": "#/definitions/yes-no-string" },
     "ENABLE_OXTRUST_TEST_MODE": { "$ref": "#/definitions/yes-no-string" },
     "ENABLE_CACHE_REFRESH": { "$ref": "#/definitions/yes-no-string" },
-    "ENABLE_CLIENT_API": { "$ref": "#/definitions/yes-no-string" },
     "ENABLE_FIDO2": { "$ref": "#/definitions/yes-no-string" },
     "ENABLE_SCIM": { "$ref": "#/definitions/yes-no-string" },
     "ENABLE_OXPASSPORT": { "$ref": "#/definitions/yes-no-string" },
@@ -136,7 +132,6 @@
           "casa",
           "fido2",
           "scim",
-          "client-api",
           "ldap",
           "update-lb-ip"
         ]
@@ -160,8 +155,6 @@
     "FIDO2_IMAGE_TAG": { "type": "string" },
     "SCIM_IMAGE_NAME": { "type": "string" },
     "SCIM_IMAGE_TAG": { "type": "string" },
-    "CLIENT_API_IMAGE_NAME": { "type": "string" },
-    "CLIENT_API_IMAGE_TAG": { "type": "string" },
     "OXPASSPORT_IMAGE_NAME": { "type": "string" },
     "OXPASSPORT_IMAGE_TAG": { "type": "string" },
     "OXSHIBBOLETH_IMAGE_NAME": { "type": "string" },
@@ -182,7 +175,6 @@
     { "$ref": "#/definitions/casa-enabled" },
     { "$ref": "#/definitions/fido2-enabled" },
     { "$ref": "#/definitions/scim-enabled" },
-    { "$ref": "#/definitions/client-api-enabled" },
     { "$ref": "#/definitions/oxtrust-api-enabled" },
     { "$ref": "#/definitions/oxtrust-test-mode-enabled"},
     { "$ref": "#/definitions/istio-ingress-yes" },
@@ -403,10 +395,9 @@
             "errors": {
               "contains": "casa key not found"
             }
-          },
-          "ENABLE_CLIENT_API": { "const": "Y" }
+          }
         },
-        "required": ["ENABLE_CASA_BOOLEAN", "ENABLE_CLIENT_API", "ENABLED_SERVICES_LIST"]
+        "required": ["ENABLE_CASA_BOOLEAN", "ENABLED_SERVICES_LIST"]
       }
     },
     "fido2-enabled": {
@@ -443,26 +434,6 @@
           }
         },
         "required": ["ENABLED_SERVICES_LIST"]
-      }
-    },
-    "client-api-enabled": {
-      "if": {
-        "properties": {
-          "ENABLE_CLIENT_API": { "const": "Y" }
-        }
-      },
-      "then": {
-        "properties": {
-          "ENABLED_SERVICES_LIST": {
-            "contains": { "enum" : ["client-api"] },
-            "errors": {
-              "contains": "client-api key not found"
-            }
-          },
-          "CLIENT_API_APPLICATION_KEYSTORE_CN": { "type": "string", "minLength": 3 },
-          "CLIENT_API_ADMIN_KEYSTORE_CN": { "type": "string", "minLength": 3 }
-        },
-        "required": ["CLIENT_API_APPLICATION_KEYSTORE_CN", "CLIENT_API_ADMIN_KEYSTORE_CN", "ENABLED_SERVICES_LIST"]
       }
     },
     "oxtrust-api-enabled": {

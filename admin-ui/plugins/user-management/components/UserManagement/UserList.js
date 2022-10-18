@@ -9,7 +9,7 @@ import {
   deleteUser,
 } from '../../redux/actions/UserActions'
 
-import { getAttributes } from '../../../schema/redux/actions/AttributeActions'
+import { getAttributesRoot } from '../../../../app/redux/actions/AttributesActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody } from '../../../../app/components'
 import { useTranslation } from 'react-i18next'
@@ -35,9 +35,9 @@ function UserList(props) {
   const dispatch = useDispatch()
   const opt = {}
   useEffect(() => {
-    opt['limit'] = 100
+    opt['limit'] = 10
     dispatch(getUsers({}))
-    dispatch(getAttributes(opt))
+    dispatch(getAttributesRoot(opt))
     dispatch(getRoles())
   }, [])
   const { totalItems, entriesCount } = useSelector(
@@ -176,6 +176,21 @@ function UserList(props) {
     setLimit(count)
     dispatch(getUsers(options))
   }
+
+  useEffect(() => {
+    let usedAttributes = [];
+    for(let i in usersList){
+      for(let j in usersList[i].customAttributes){
+        let val = usersList[i].customAttributes[j].name
+        if(!usedAttributes.includes(val)){
+          usedAttributes.push(val);
+        }
+      }
+    }
+    if(usedAttributes.length){
+      dispatch(getAttributesRoot({pattern:usedAttributes.toString(), limit:100}))
+    }
+  },[usersList])
 
   return (
     <GluuLoader blocking={loading}>

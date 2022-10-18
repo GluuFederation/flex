@@ -8,7 +8,7 @@ import time
 import glob
 import code
 import configparser
-import shlex
+import subprocess
 import shutil
 
 from pathlib import Path
@@ -75,9 +75,14 @@ except ModuleNotFoundError:
 
         if argsp.download_exit:
             nargs.append('--download-exit')
+            argsp.flex_non_interactive = True
+
+        if argsp.flex_non_interactive:
+            nargs.append('-n')
+            install_cmd += ' -yes'
 
         if nargs:
-            install_cmd += ' --args="{}"'.format(shlex.join(nargs))
+            install_cmd += ' --args="{}"'.format(subprocess.list2cmdline(nargs))
 
         print("Executing", install_cmd)
         os.system(install_cmd)
@@ -183,7 +188,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.0.1",
+  "JANS_APP_VERSION": "1.0.3",
   "JANS_BUILD": "-SNAPSHOT", 
   "NODE_VERSION": "v14.18.2",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
@@ -254,6 +259,7 @@ class flex_installer(JettyInstaller):
 
         if install_components['admin_ui'] or argsp.download_exit:
             download_files += [
+                    ('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), os.path.join(Config.dist_app_dir, 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']))),
                     (urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
@@ -694,14 +700,6 @@ def prepare_for_installation():
     if not (argsp.flex_non_interactive or argsp.download_exit):
         prompt_for_installation()
 
-    if install_components['admin_ui'] and not node_installer.installed():
-        node_fn = 'node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION'])
-        node_path = os.path.join(Config.dist_app_dir, node_fn)
-        if not os.path.exists(node_path):
-            base.download('https://nodejs.org/dist/{0}/node-{0}-linux-x64.tar.xz'.format(app_versions['NODE_VERSION']), node_path, verbose=True)
-        print("Installing node")
-        node_installer.install()
-
 
 def get_components_from_setup_properties():
     if argsp.f:
@@ -734,6 +732,9 @@ def main(uninstall):
     else:
         installer_obj.download_files()
         if install_components['admin_ui']:
+            if not node_installer.installed():
+                print("Installing node")
+                node_installer.install()
             installer_obj.install_gluu_admin_ui()
         if install_components['casa']:
             installer_obj.install_casa()

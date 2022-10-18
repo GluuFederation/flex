@@ -377,33 +377,6 @@ global:
     ingress:
       # -- Enable casa endpoints /casa
       casaEnabled: true
-  client-api:
-    # -- Name of the client-api service. Please keep it as default.
-    clientApiServerServiceName: client-api
-    # -- Boolean flag to enable/disable the client-api chart.
-    enabled: false
-    # -- App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed.
-    appLoggers:
-      # -- client-api.log target
-      clientApiLogTarget: "STDOUT"
-      # -- client-api.log level
-      clientApiLogLevel: "INFO"
-      # -- client-api_persistence.log target
-      persistenceLogTarget: "FILE"
-      # -- client-api_persistence.log level
-      persistenceLogLevel: "INFO"
-      # -- client-api_persistence_duration.log target
-      persistenceDurationLogTarget: "FILE"
-      # -- client-api_persistence_duration.log level
-      persistenceDurationLogLevel: "INFO"
-      # -- client-api_persistence_ldap_statistics.log target
-      ldapStatsLogTarget: "FILE"
-      # -- client-api_persistence_ldap_statistics.log level
-      ldapStatsLogLevel: "INFO"
-      # -- client-api_script.log target
-      scriptLogTarget: "FILE"
-      # -- client-api_script.log level
-      scriptLogLevel: "INFO"
   cloud:
     # -- Boolean flag if enabled will strip resources requests and limits from all services.
     testEnviroment: false

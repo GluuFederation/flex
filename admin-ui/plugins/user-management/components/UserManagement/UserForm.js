@@ -10,6 +10,7 @@ import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { changeUserPassword } from '../../redux/actions/UserActions'
 import { ThemeContext } from 'Context/theme/themeContext'
+import { getAttributesRoot } from '../../../../app/redux/actions'
 
 function UserForm({ formik }) {
   const dispatch = useDispatch()
@@ -23,10 +24,19 @@ function UserForm({ formik }) {
   const [changePasswordModal, setChangePasswordModal] = useState(false)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-
+  let options = {}
   const toggle = () => {
     setModal(!modal)
   }
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      options['pattern'] = searchClaims;
+      dispatch(getAttributesRoot(options))  
+    }, 500)
+
+    return () => clearTimeout(delayDebounceFn)
+  },[searchClaims])
 
   const submitChangePassword = () => {
     const submitableValue = {
@@ -50,7 +60,7 @@ function UserForm({ formik }) {
   }
 
   const userDetails = useSelector((state) => state.userReducer.selectedUserData)
-  const personAttributes = useSelector((state) => state.attributeReducer.items)
+  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
   const loading = useSelector((state) => state.userReducer.loading)
   const setSelectedClaimsToState = (data) => {
     const tempList = [...selectedClaims]
@@ -373,7 +383,7 @@ function UserForm({ formik }) {
               />
               <ul className="list-group">
                 {personAttributes.map((data, key) => {
-                  const name = data.name.toLowerCase()
+                  const name = data.displayName.toLowerCase()
                   const alreadyAddedClaim = selectedClaims.some(
                     (el) => el.name === data.name,
                   )

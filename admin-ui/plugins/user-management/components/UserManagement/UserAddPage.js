@@ -16,7 +16,7 @@ function UserAddPage() {
     (state) => state.userReducer.redirectToUserListPage,
   )
   const { t } = useTranslation()
-  const personAttributes = useSelector((state) => state.attributeReducer.items)
+  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
   const createCustomAttributes = (values) => {
     let customAttributes = []
     if (values) {

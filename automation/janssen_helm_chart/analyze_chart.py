@@ -137,7 +137,6 @@ def main():
     find_replace(main_dir, "support@gluu.org", "support@jans.io", "*.*")
     find_replace(main_dir, "https://github.com/GluuFederation/flex/flex-cn-setup",
                  "https://github.com/JanssenProject/jans/charts/janssen", "*.*")
-    find_replace(main_dir, "https://gluu.org/docs/oxd", "https://github.com/JanssenProject/jans/jans-client-api", "*.*")
     find_replace(main_dir, "https://gluu.org/docs/gluu-server/reference/container-configs/",
                  "/docker-jans-configurator", "*.*")
     find_replace(main_dir, "https://gluu.org/docs/gluu-server/favicon.ico",
