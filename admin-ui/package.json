@@ -67,6 +67,7 @@
   "devDependencies": {
     "@babel/cli": "^7.15.7",
     "@babel/core": "^7.14.6",
+    "@babel/eslint-parser": "^7.19.1",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-modules-commonjs": "^7.15.4",
@@ -79,8 +80,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.4.3",
     "@webpack-cli/serve": "^1.5.2",
-    "autoprefixer": "^10.3.1",
-    "@babel/eslint-parser": "^7.19.1",
+    "autoprefixer": "10.4.5",
     "babel-jest": "^29.0.1",
     "babel-loader": "^8.2.2",
     "babel-plugin-recharts": "^2.0.0",
@@ -123,8 +123,6 @@
     "@miltonbo/dashboard-style-airframe": "^0.2.0",
     "@reduxjs/toolkit": "^1.8.2",
     "ace-builds": "^1.5.3",
-    "ag-grid-community": "^28.1.1",
-    "ag-grid-react": "^21.0.1",
     "axios": "^0.27.2",
     "bootstrap": "^4.5.3",
     "date-fns": "^2.25.0",
@@ -162,7 +160,6 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.15.3",
     "react-idle-timer": "^4.6.4",
-    "react-image-crop": "8.6.12",
     "react-month-picker": "^2.2.1",
     "react-responsive": "^9.0.0-beta.10",
     "react-router": "^6.3.0",
@@ -189,7 +186,11 @@
   "resolutions": {
     "ansi-regex": "^5.0.1",
     "set-value": "^4.1.0",
-    "jspdf ": "^2.4.0"
+    "jspdf ": "^2.4.0",
+    "autoprefixer": "10.4.5"
+  },
+  "overrides": {
+    "autoprefixer": "10.4.5"
   },
   "eslintConfig": {
     "root": true,
