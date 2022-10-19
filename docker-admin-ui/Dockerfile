@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=224001fe4ef0c9d0a16e4a2af02e34c93ebe0443
+ENV ADMIN_UI_VERSION=5798ee9f6320602d756cb2d33fe297200d2231dd
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -20,6 +20,7 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
     && mv /tmp/flex/admin-ui /opt/flex/admin-ui \
     && cd /opt/flex/admin-ui \
     && npm install @openapitools/openapi-generator-cli \
+    && npm install openapi-merge-cli \
     && npm run api \
     && npm install \
     && npm uninstall @openapitools/openapi-generator-cli \
@@ -66,7 +67,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=0783176284eec597c4fe6d83e892c82bcbe5e138
+ENV JANS_SOURCE_VERSION=e74ea8e27e59d35ff6e3c6f997e6c1df6a04ec83
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
