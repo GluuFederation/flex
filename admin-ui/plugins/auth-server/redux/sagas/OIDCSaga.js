@@ -6,6 +6,7 @@ import {
   addClientResponse,
   editClientResponse,
   deleteClientResponse,
+  getOpenidClients
 } from '../actions/OIDCActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { OIDC } from '../audit/Resources'
@@ -105,7 +106,7 @@ export function* deleteAClient({ payload }) {
     addAdditionalData(audit, DELETION, OIDC, payload)
     const api = yield* newFunction()
     yield call(api.deleteAClient, payload.action.action_data)
-    yield put(deleteClientResponse(payload.action.action_data))
+    yield put(getOpenidClients())
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(deleteClientResponse(null))

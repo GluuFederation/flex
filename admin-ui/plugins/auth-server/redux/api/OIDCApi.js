@@ -32,7 +32,7 @@ export default class OIDCApi {
 
   deleteAClient = async (inum) => {
     return new Promise((resolve, reject) => {
-      this.api.deleteOauthOpenidClientsByInum(inum, (error, data) => {
+      this.api.deleteOauthOpenidClientByInum(inum, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
