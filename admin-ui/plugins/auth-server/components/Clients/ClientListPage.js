@@ -392,7 +392,7 @@ function ClientListPage() {
         {hasPermission(permissions, CLIENT_DELETE) && (
           <GluuDialog
             row={item}
-            name={item.clientName}
+            name={item?.clientName?.value || ''}
             handler={toggle}
             modal={modal}
             subject="openid connect client"
