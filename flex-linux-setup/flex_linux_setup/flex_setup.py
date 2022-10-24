@@ -361,22 +361,23 @@ class flex_installer(JettyInstaller):
 
         print("Creating Gluu Flex Admin UI Client")
 
-        config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
-        ldif_parser = myLdifParser(jans_cli_installer.ldif_client)
-        ldif_parser.parse()
+        client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
+        if client_check_result['2001.'] == -1:
+            ldif_parser = myLdifParser(jans_cli_installer.ldif_client)
+            ldif_parser.parse()
 
-        ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
-        ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
-        ldif_parser.entries[0][1]['displayName'] = ['Gluu Flex Admin UI Client']
+            ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
+            ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
+            ldif_parser.entries[0][1]['displayName'] = ['Gluu Flex Admin UI Client']
 
-        client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
+            client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
 
-        with open(client_tmp_fn, 'wb') as w:
-            ldif_writer = LDIFWriter(w)
-            ldif_writer.unparse('inum=%(admin_ui_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
+            with open(client_tmp_fn, 'wb') as w:
+                ldif_writer = LDIFWriter(w)
+                ldif_writer.unparse('inum=%(admin_ui_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
 
-        config_api_installer.renderTemplateInOut(client_tmp_fn, self.templates_dir, self.source_dir)
-        self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(client_tmp_fn))])
+            config_api_installer.renderTemplateInOut(client_tmp_fn, self.templates_dir, self.source_dir)
+            self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(client_tmp_fn))])
 
         env_tmp = os.path.join(self.source_dir, '.env.tmp')
         print("env_tmp", env_tmp)
