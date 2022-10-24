@@ -152,6 +152,7 @@ sys.path.insert(0, base.pylib_dir)
 sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
 
 from setup_app.pylib.jproperties import Properties
+from setup_app.pylib.ldif4.ldif import LDIFWriter
 from setup_app.utils.package_utils import packageUtils
 from setup_app.config import Config
 from setup_app.utils.collect_properties import CollectProperties
@@ -162,6 +163,8 @@ from setup_app.installers.jetty import JettyInstaller
 from setup_app.installers.jans_auth import JansAuthInstaller
 from setup_app.installers.jans_cli import JansCliInstaller
 from setup_app.utils.properties_utils import propertiesUtils
+from setup_app.utils.ldif_utils import myLdifParser
+
 
 Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
 if not os.path.join(Config.outputFolder):
@@ -355,6 +358,26 @@ class flex_installer(JettyInstaller):
         base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
 
         print("Source directory:", self.source_dir)
+
+        print("Creating Gluu Flex Admin UI Client")
+
+        config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
+        ldif_parser = myLdifParser(jans_cli_installer.ldif_client)
+        ldif_parser.parse()
+
+        ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
+        ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
+        ldif_parser.entries[0][1]['displayName'] = ['Gluu Flex Admin UI Client']
+
+        client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
+
+        with open(client_tmp_fn, 'wb') as w:
+            ldif_writer = LDIFWriter(w)
+            ldif_writer.unparse('inum=%(admin_ui_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
+
+        config_api_installer.renderTemplateInOut(client_tmp_fn, self.templates_dir, self.source_dir)
+        self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(client_tmp_fn))])
+
         env_tmp = os.path.join(self.source_dir, '.env.tmp')
         print("env_tmp", env_tmp)
         config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
@@ -373,9 +396,9 @@ class flex_installer(JettyInstaller):
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
-        config_api_installer.check_clients([('role_based_client_id', '2000.')])
-        config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, os.path.join(self.flex_setup_dir, 'templates'), config_api_installer.custom_config_dir)
-        
+
+        config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, self.templates_dir, config_api_installer.custom_config_dir)
+
         config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir)
         config_api_installer.add_extra_class(self.admin_ui_plugin_path)
 
