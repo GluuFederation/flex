@@ -21,9 +21,7 @@ logger = logging.getLogger("entrypoint")
 def render_env(manager):
     hostname = manager.config.get("hostname")
     ctx = {
-        # "base_path": os.environ.get("CN_ADMIN_API_BASE_PATH", "/admin"),
-        "config_api_base_url": f"https://{hostname}",
-        "api_base_url": f"https://{hostname}/jans-config-api/admin-ui",
+        "hostname": hostname,
     }
 
     with open("/app/templates/env.tmpl") as fr:

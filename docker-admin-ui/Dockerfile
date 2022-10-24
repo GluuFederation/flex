@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=5798ee9f6320602d756cb2d33fe297200d2231dd
+ENV ADMIN_UI_VERSION=9c01b841e5a5c28d58d7b3aed6cbe87ff1c2126f
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
