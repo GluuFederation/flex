@@ -629,16 +629,12 @@ class flex_installer(JettyInstaller):
     def uninstall_admin_ui(self):
         print("Uninstalling Gluu Admin-UI")
 
-        print("  - Deleting admin-ui configuration from db backend")
-        self.dbUtils.delete_dn('ou=admin-ui,ou=configuration,o=jans')
-
         print("  - Removing Admin UI directives from apache configuration")
         self.remove_apache_directive('<Directory "{}">'.format(Config.templateRenderingDict['admin_ui_apache_root']))
 
         if os.path.exists(self.admin_ui_plugin_path):
             print(del_msg, self.admin_ui_plugin_path)
             self.run(['rm', '-f', self.admin_ui_plugin_path])
-
 
         write_config_api_xml = False
         config_api_plugins = config_api_installer.get_plugins(paths=True)
