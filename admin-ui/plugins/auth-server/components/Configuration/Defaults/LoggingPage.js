@@ -71,7 +71,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                     : logging.enabledOAuthAuditLogging
 
                 const opts = {}
-                opts['loggingConfiguration'] = JSON.stringify(values)
+                opts['logging'] = JSON.stringify(values)
                 dispatch(editLoggingConfig(opts))
               }}
             >
