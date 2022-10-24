@@ -629,6 +629,11 @@ class flex_installer(JettyInstaller):
     def uninstall_admin_ui(self):
         print("Uninstalling Gluu Admin-UI")
 
+        client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
+        if client_check_result['2001.'] == 1:
+            print("  - Deleting Gluu Flex Admin UI Client ", Config.admin_ui_client_id)
+            self.dbUtils.delete_dn('inum={},ou=clients,o=jans'.format(Config.admin_ui_client_id))
+
         print("  - Removing Admin UI directives from apache configuration")
         self.remove_apache_directive('<Directory "{}">'.format(Config.templateRenderingDict['admin_ui_apache_root']))
 
