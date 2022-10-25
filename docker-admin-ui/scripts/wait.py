@@ -24,6 +24,10 @@ def main():
         sql_dialect = os.environ.get("CN_SQL_DB_DIALECT", "mysql")
         validate_persistence_sql_dialect(sql_dialect)
 
+    auth_method = os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "basic")
+    if auth_method not in ("basic", "casa"):
+        raise ValueError(f"Unsupported authentication method {auth_method}")
+
     manager = get_manager()
     deps = ["config", "secret"]
     wait_for(manager, deps)

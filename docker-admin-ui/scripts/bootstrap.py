@@ -115,6 +115,7 @@ class PersistenceSetup:
 
         ctx = {
             "hostname": self.manager.config.get("hostname"),
+            "admin_ui_auth_method": os.environ.get("GLUU_ADMIN_UI_AUTH_METHOD", "basic"),
         }
 
         # admin-ui client for auth server

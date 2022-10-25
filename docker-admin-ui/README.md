@@ -82,6 +82,7 @@ The following environment variables are supported by the container:
 - `CN_GOOGLE_SPANNER_INSTANCE_ID`: Google Spanner instance ID.
 - `CN_GOOGLE_SPANNER_DATABASE_ID`: Google Spanner database ID.
 - `GLUU_ADMIN_UI_PLUGINS`: Comma-separated additional plugins to be enabled (default to empty string). See [Adding plugins](#adding-plugins) for details.
+- `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (one of `basic` or `casa`; default to `basic`). Note, changing the value require restart to jans-config-api.
 
 ### Hybrid mapping
 
