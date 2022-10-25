@@ -8,7 +8,6 @@ import {
   Navbar,
   Nav,
   NavItem,
-  NavSearch,
   Notifications,
   SidebarTrigger,
   ThemeSetting,
@@ -44,9 +43,6 @@ function GluuNavBar({ userinfo }) {
         <Box display="flex" justifyContent="space-between" width="100%">
           <h3 className="page-title" id="page-title">Dashboard</h3>
           <Nav className="ml-auto" pills>
-            {/*<NavbarMessages  />*/}
-            {/*<NavbarActivityFeed />*/}
-            <NavSearch />
             <Notifications />
             <LanguageMenu userInfo={userInfo} />
             <ThemeSetting userInfo={userInfo} />
