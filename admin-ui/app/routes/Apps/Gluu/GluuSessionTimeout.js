@@ -6,9 +6,7 @@ import { withIdleTimer } from 'react-idle-timer'
 let countdownInterval
 let timeout
 
-const IdleTimerComponent = ({ children }) => {
-  return children
-}
+const IdleTimerComponent = ({ children }) => children
 const IdleTimer = withIdleTimer(IdleTimerComponent)
 
 const SessionTimeout = ({ isAuthenticated }) => {
