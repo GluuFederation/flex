@@ -1,9 +1,13 @@
 import React, { useRef, useState } from 'react'
-import IdleTimer from 'react-idle-timer'
 import SessionTimeoutDialog from './GluuSessionTimeoutDialog'
 import { useNavigate } from 'react-router-dom'
+import { withIdleTimer } from 'react-idle-timer'
+
 let countdownInterval
 let timeout
+
+const IdleTimerComponent = ({ children }) => children
+const IdleTimer = withIdleTimer(IdleTimerComponent)
 
 const SessionTimeout = ({ isAuthenticated }) => {
   const [timeoutModalOpen, setTimeoutModalOpen] = useState(false)
