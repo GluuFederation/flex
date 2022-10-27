@@ -9,6 +9,8 @@ const INIT_STATE = {
   acrs: {},
   scripts: [],
   loading: true,
+  isSuccess: false,
+  isError: false,
 }
 
 const reducerName = 'acrReducer'
@@ -35,6 +37,8 @@ export default function acrReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case PUT_ACRS_RESPONSE:
       if (action.payload.data) {
@@ -42,17 +46,19 @@ export default function acrReducer(state = INIT_STATE, action) {
           ...state,
           acrs: action.payload.data,
           loading: false,
+          isSuccess: true,
         }
       } else {
-        return handleDefault()
+        return handleDefault({ isError: true, isSuccess: false })
       }
     default:
       return handleDefault()
   }
 
-  function handleDefault() {
+  function handleDefault(additionalParams) {
     return {
       ...state,
+      ...additionalParams,
       loading: false,
     }
   }

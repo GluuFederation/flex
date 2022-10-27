@@ -48,7 +48,7 @@ export default function loggingReducer(state = INIT_STATE, action) {
           isSuccess: true,
         }
       } else {
-        return handleDefault({ isError: true })
+        return handleDefault({ isError: true, isSuccess: false })
       }
 
     case RESET:

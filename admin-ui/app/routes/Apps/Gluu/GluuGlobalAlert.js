@@ -7,20 +7,20 @@ import useAlert from 'Context/alert/useAlert'
 
 export default function GluuGlobalAlert() {
   const classes = styles()
-  const { title, text, type, open, setAlert } = useAlert()
+  const { title, text, severity, open, setAlert } = useAlert()
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
     }
 
-    setAlert({ open: false, title, text, type })
+    setAlert({ open: false, title, text, severity })
   }
 
   return (
     <div className={classes.root}>
       <Snackbar open={open} autoHideDuration={7000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={type}>
+        <Alert onClose={handleClose} severity={severity}>
           <AlertTitle>{title}</AlertTitle>
           {text}
         </Alert>

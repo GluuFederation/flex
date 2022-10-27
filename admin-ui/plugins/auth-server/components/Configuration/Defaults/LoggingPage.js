@@ -65,11 +65,10 @@ function LoggingPage({
   useEffect(() => {
     const alertParam = { 
       open: (isSuccess || isError),
-      title: 'Alert Message',
+      title: isSuccess ? 'Success' : 'Failed',
       text: alertMessage,
       severity: alertSeverity
     }
-    console.log('alertParam', alertParam)
     setAlert(alertParam)
   }, [isSuccess, isError])
 

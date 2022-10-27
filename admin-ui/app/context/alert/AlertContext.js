@@ -2,9 +2,10 @@ import React from 'react'
 import { createContext, useState } from 'react'
 
 const initialState = {
+  open: false,
   title: '',
   text: '',
-  type: '',
+  severity: '',
 }
 
 const AlertContext = createContext({
@@ -15,13 +16,13 @@ const AlertContext = createContext({
 export const AlertProvider = ({ children }) => {
   const [title, setTitle] = useState('')
   const [text, setText] = useState('')
-  const [type, setType] = useState('')
+  const [severity, setSeverity] = useState('')
   const [open, setOpen] = useState('')
 
   const setAlert = (alertParams) => {
-    const { open, type, title, text } = alertParams
+    const { open, severity, title, text } = alertParams
     setOpen(open)
-    setType(type)
+    setSeverity(severity)
     setTitle(title)
     setText(text)
   }
@@ -32,7 +33,7 @@ export const AlertProvider = ({ children }) => {
         open,
         title,
         text,
-        type,
+        severity,
         setAlert,
       }}
     >
