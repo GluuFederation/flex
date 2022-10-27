@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "scim.fullname" . }}-test-scim
+  labels:
+    {{- include "scim.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Values.global.scim.scimServiceName }}:{{ .Values.service.port }}/jans-scim/sys/health-check']
+  restartPolicy: Never

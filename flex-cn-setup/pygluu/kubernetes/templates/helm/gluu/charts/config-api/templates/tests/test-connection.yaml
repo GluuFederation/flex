@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "config-api.fullname" . }}-test-config-api
+  labels:
+    {{- include "config-api.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Values.service.name }}:8074/jans-config-api/api/v1/health/live']
+  restartPolicy: Never

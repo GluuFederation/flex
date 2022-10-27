@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "casa.fullname" . }}-test-casa
+  labels:
+    {{- include "casa.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Values.global.casa.casaServiceName }}:{{ .Values.service.port }}/casa/health-check']
+  restartPolicy: Never

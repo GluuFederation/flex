@@ -351,19 +351,19 @@ config:
     # -- Schema name used by SQL database (default to empty-string; if using MySQL, the schema name will be resolved as the database name, whereas in PostgreSQL the schema name will be resolved as `"public"`).
     cnSqlDbSchema: ""
     # -- SQL database dialect. `mysql` or `pgsql`
-    cnSqlDbDialect: mysql
+    cnSqlDbDialect: "mysql"
     # -- SQL database host uri.
-    cnSqlDbHost: my-release-mysql.default.svc.cluster.local
+    cnSqlDbHost: "my-release-mysql.default.svc.cluster.local"
     # -- SQL database port.
     cnSqlDbPort: 3306
     # -- SQL database name.
-    cnSqlDbName: jans
+    cnSqlDbName: "jans"
     # -- SQL database username.
-    cnSqlDbUser: jans
+    cnSqlDbUser: "jans"
     # -- SQL database timezone.
     cnSqlDbTimezone: UTC
     # -- SQL password  injected the secrets .
-    cnSqldbUserPassword: Test1234#
+    cnSqldbUserPassword: "Test1234#"
     # -- Cache type. `NATIVE_PERSISTENCE`, `REDIS`. or `IN_MEMORY`. Defaults to `NATIVE_PERSISTENCE` .
     cnCacheType: NATIVE_PERSISTENCE
     # -- The name of the Kubernetes ConfigMap that will hold the configuration layer

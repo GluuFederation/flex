@@ -47,7 +47,7 @@ resources:
     memory: 2500Mi
 service:
   # -- The name of the oxauth port within the oxauth service. Please keep it as default.
-  name: http-auth
+  name: auth-server
   # -- Port of the oxauth service. Please keep it as default.
   port: 8080
   # -- Default set to None If you want to make sure that connections from a particular client are passed to the same Pod each time, you can select the session affinity based on the client's IP addresses by setting this to ClientIP

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "oxshibboleth.fullname" . }}-test-oxshibboleth
+  labels:
+    {{- include "oxshibboleth.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Values.global.oxshibboleth.oxShibbolethServiceName }}:{{ .Values.service.port }}/idp']
+  restartPolicy: Never

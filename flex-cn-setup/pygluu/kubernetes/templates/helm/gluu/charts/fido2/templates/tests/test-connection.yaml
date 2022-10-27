@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "fido2.fullname" . }}-test-fido2
+  labels:
+    {{- include "fido2.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Values.global.fido2.fido2ServiceName }}:{{ .Values.service.port }}/jans-fido2/sys/health-check']
+  restartPolicy: Never

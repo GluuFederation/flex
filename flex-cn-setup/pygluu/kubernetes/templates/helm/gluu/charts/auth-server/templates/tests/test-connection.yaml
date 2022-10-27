@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "auth-server.fullname" . }}-test-auth-server
+  labels:
+    {{- include "auth-server.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ .Values.service.name }}:{{ .Values.service.port }}/jans-auth/sys/health-check']
+  restartPolicy: Never
