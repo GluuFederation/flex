@@ -9,6 +9,8 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   logging: {},
   loading: false,
+  isSuccess: false,
+  isError: false,
 }
 
 const reducerName = 'loggingReducer'
@@ -34,6 +36,8 @@ export default function loggingReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case PUT_LOGGING_RESPONSE:
       if (action.payload.data) {
@@ -41,9 +45,10 @@ export default function loggingReducer(state = INIT_STATE, action) {
           ...state,
           logging: action.payload.data,
           loading: false,
+          isSuccess: true,
         }
       } else {
-        return handleDefault()
+        return handleDefault({ isError: true })
       }
 
     case RESET:
@@ -51,14 +56,17 @@ export default function loggingReducer(state = INIT_STATE, action) {
         ...state,
         logging: INIT_STATE.logging,
         loading: INIT_STATE.loading,
+        isSuccess: false,
+        isError: false,
       }
     default:
       return handleDefault()
   }
 
-  function handleDefault() {
+  function handleDefault(additionalParams) {
     return {
       ...state,
+      ...additionalParams,
       loading: false,
     }
   }

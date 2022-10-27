@@ -313,6 +313,8 @@
     "view_client_details": "Ver detalhes do cliente",
     "view_script_details": "Ver detalhes do guião personalizado",
     "add_new_user": "Adicionar usuário",
+    "error_in_saving": "Erro ao salvar.",
+    "success_in_saving": "Alterações salvas com sucesso",
     "no_scope_in_client": "Sem dados de Escopo para este Cliente"
   },
   "tooltips": {

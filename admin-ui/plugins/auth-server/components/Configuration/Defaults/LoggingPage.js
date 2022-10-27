@@ -29,14 +29,22 @@ import {
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import useAlert from 'Context/alert/useAlert'
 
-function LoggingPage({ logging, dispatch, permissions, loading }) {
+function LoggingPage({ 
+  logging,
+  dispatch,
+  permissions,
+  loading,
+  isSuccess,
+  isError,
+}) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+  const { setAlert } = useAlert()
   const selectedTheme = theme.state.theme
-  useEffect(() => {
-    dispatch(getLoggingConfig())
-  }, [])
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
 
   const initialValues = {
     loggingLevel: logging.loggingLevel,
@@ -45,9 +53,25 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
     disableJdkLogger: logging.disableJdkLogger,
     enabledOAuthAuditLogging: logging.enabledOAuthAuditLogging,
   }
+
   const levels = ['TRACE', 'DEBUG', 'INFO', 'ERROR', 'WARN']
   const logLayouts = ['text', 'json']
   SetTitle('Logging')
+
+  useEffect(() => {
+    dispatch(getLoggingConfig())
+  }, [])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: 'Alert Message',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    console.log('alertParam', alertParam)
+    setAlert(alertParam)
+  }, [isSuccess, isError])
 
   return (
     <GluuLoader blocking={loading}>
@@ -199,6 +223,8 @@ const mapStateToProps = (state) => {
   return {
     logging: state.loggingReducer.logging,
     loading: state.loggingReducer.loading,
+    isSuccess: state.loggingReducer.isSuccess,
+    isError: state.loggingReducer.isError,
     permissions: state.authReducer.permissions,
   }
 }
