@@ -17,6 +17,8 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   loading: false,
+  isSuccess: false,
+  isError: false,
 }
 const reducerName = 'apiRoleReducer'
 
@@ -39,36 +41,56 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case ADD_ROLE:
-      return handleLoading()
+      return handleLoading({
+        isSuccess: false,
+        isError: false,
+      })
     case ADD_ROLE_RESPONSE:
       if (action.payload.data) {
         return {
           ...state,
           items: [...state.items, action.payload.data],
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
-        return handleDefault()
+        return handleDefault({
+          isSuccess: false,
+          isError: true,
+        })
       }
 
     case EDIT_ROLE:
-      return handleLoading()
+      return handleLoading({
+        isSuccess: false,
+        isError: false,
+      })
     case EDIT_ROLE_RESPONSE:
+      console.log('action.payload.data', action.payload.data)
       if (action.payload.data) {
-        let currentItems = [...state.items]
+        const currentItems = [...state.items]
         currentItems.filter((item) => item.role === action.payload.data.role)
         currentItems.push(action.payload.data)
         return {
           ...state,
           items: currentItems,
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
-        return handleDefault()
+        return handleDefault({
+          isSuccess: false,
+          isError: true,
+        })
       }
 
     case DELETE_ROLE:
-      return handleLoading()
+      return handleLoading({
+        isSuccess: false,
+        isError: false,
+      })
     case DELETE_ROLE_RESPONSE:
       if (action.payload.inum) {
         return {
@@ -77,9 +99,14 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
             (item) => item.inum !== action.payload.inum,
           ),
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
-        return handleDefault()
+        return handleDefault({
+          isSuccess: false,
+          isError: true,
+        })
       }
     case SET_ROLE_ITEM:
       return {
@@ -105,16 +132,18 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
     }
   }
 
-  function handleLoading() {
+  function handleLoading(additionalParams) {
     return {
       ...state,
+      ...additionalParams,
       loading: true,
     }
   }
 
-  function handleDefault() {
+  function handleDefault(additionalParams) {
     return {
       ...state,
+      ...additionalParams,
       loading: false,
     }
   }

@@ -62,10 +62,10 @@ export function* getRole({ payload }) {
     addAdditionalData(audit, FETCH, API_ROLE, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.getRole, payload.action.action_data)
-    yield put(getRoleResponse(data))
+    yield put(getRolesResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
-    yield put(getRoleResponse(null))
+    yield put(getRolesResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
       yield put(getAPIAccessToken(jwt))
@@ -78,6 +78,7 @@ export function* addRole({ payload }) {
     addAdditionalData(audit, CREATE, API_ROLE, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.addRole, payload.action.action_data)
+    yield put(addRoleResponse(data))
     yield put(getRolesAction({}))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -94,6 +95,7 @@ export function* editRole({ payload }) {
     addAdditionalData(audit, UPDATE, API_ROLE, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.editRole, payload.action.action_data)
+    yield put(editRoleResponse(data))
     yield put(getRolesAction({}))
     yield call(postUserAction, audit)
   } catch (e) {
@@ -110,7 +112,8 @@ export function* deleteRole({ payload }) {
   try {
     addAdditionalData(audit, DELETION, API_ROLE, payload)
     const roleApi = yield* newFunction()
-    yield call(roleApi.deleteRole, payload.action.action_data)
+    const data = yield call(roleApi.deleteRole, payload.action.action_data)
+    yield put(deleteRoleResponse(data))
     yield put(getRolesAction({}))
     yield call(postUserAction, audit)
   } catch (e) {

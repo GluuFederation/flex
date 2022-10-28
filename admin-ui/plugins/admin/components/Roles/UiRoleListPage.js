@@ -24,10 +24,13 @@ import {
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import useAlert from 'Context/alert/useAlert'
 
-function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
+function UiRoleListPage({ apiRoles, permissions, loading, isSuccess, isError, dispatch }) {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
+  const { setAlert } = useAlert()
+
   const toggle = () => setModal(!modal)
   const myActions = []
   const options = []
@@ -37,10 +40,22 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
 
   useEffect(() => {
     doFetchList()
   }, [])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
 
   SetTitle(t('titles.roles'))
 
@@ -173,6 +188,8 @@ const mapStateToProps = (state) => {
     apiRoles: state.apiRoleReducer.items,
     loading: state.apiRoleReducer.loading,
     permissions: state.authReducer.permissions,
+    isSuccess: state.apiRoleReducer.isSuccess,
+    isError: state.apiRoleReducer.isError,
   }
 }
 
