@@ -24,8 +24,9 @@ import {
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import useAlert from 'Context/alert/useAlert'
 
-function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
+function UiPermListPage({ apiPerms, permissions, loading, dispatch, isSuccess, isError }) {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const toggle = () => setModal(!modal)
@@ -34,13 +35,27 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
   const userAction = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
   const theme = useContext(ThemeContext)
+  const { setAlert } = useAlert()
+
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
 
   useEffect(() => {
     doFetchList()
   }, [])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
 
   SetTitle(t('titles.permissions'))
 
@@ -137,6 +152,8 @@ const mapStateToProps = (state) => {
   return {
     apiPerms: state.apiPermissionReducer.items,
     loading: state.apiPermissionReducer.loading,
+    isSuccess: state.apiPermissionReducer.isSuccess,
+    isError: state.apiPermissionReducer.isError,
     permissions: state.authReducer.permissions,
   }
 }

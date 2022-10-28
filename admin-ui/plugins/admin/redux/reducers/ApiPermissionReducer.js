@@ -16,6 +16,8 @@ import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   items: [],
   loading: true,
+  isSuccess: false,
+  isError: false,
 }
 const reducerName = 'apiPermissionReducer'
 
@@ -38,33 +40,52 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
         return handleDefault()
       }
     case ADD_PERMISSION:
-      return handleLoading()
+      return handleLoading({
+        isSuccess: false,
+        isError: false,
+      })
     case ADD_PERMISSION_RESPONSE:
       if (action.payload.data) {
         return {
           ...state,
           items: [...state.items, action.payload.data],
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
-        return handleDefault()
+        return handleDefault({
+          isSuccess: false,
+          isError: true,
+        })
       }
 
     case EDIT_PERMISSION:
-      return handleLoading()
+      return handleLoading({
+        isSuccess: false,
+        isError: false,
+      })
     case EDIT_PERMISSION_RESPONSE:
       if (action.payload.data) {
         return {
           ...state,
           items: [...action.payload.data],
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
-        return handleDefault()
+        return handleDefault({
+          isSuccess: false,
+          isError: true,
+        })
       }
 
     case DELETE_PERMISSION:
-      return handleLoading()
+      return handleLoading({
+        isSuccess: false,
+        isError: false,
+      })
     case DELETE_PERMISSION_RESPONSE:
       if (action.payload.inum) {
         return {
@@ -73,9 +94,14 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
             (item) => item.inum !== action.payload.inum,
           ),
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
-        return handleDefault()
+        return handleDefault({
+          isSuccess: false,
+          isError: true,
+        })
       }
     case SET_PERMISSION_ITEM:
       return {
@@ -88,9 +114,14 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
         ...state,
         items: INIT_STATE.items,
         loading: INIT_STATE.loading,
+        isSuccess: false,
+        isError: false,
       }
     default:
-      return handleDefault()
+      return handleDefault({
+        isSuccess: false,
+        isError: false,
+      })
   }
 
   function handleItems() {
@@ -101,16 +132,18 @@ export default function apiPermissionReducer(state = INIT_STATE, action) {
     }
   }
 
-  function handleDefault() {
+  function handleDefault(additionalParams) {
     return {
       ...state,
+      ...additionalParams,
       loading: false,
     }
   }
 
-  function handleLoading() {
+  function handleLoading(additionalParams) {
     return {
       ...state,
+      ...additionalParams,
       loading: true,
     }
   }
