@@ -24,6 +24,7 @@ import {
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import { ROLE_DELETE } from '../../../../app/utils/PermChecker'
 
 function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
   const { t } = useTranslation()
@@ -141,6 +142,8 @@ function UiRoleListPage({ apiRoles, permissions, loading, dispatch }) {
               return <UiRoleDetailPage row={rowData} />
             }}
             editable={{
+              isDeleteHidden:() => !hasPermission(permissions, ROLE_DELETE),
+              isEditHidden:() => !hasPermission(permissions, ROLE_WRITE),
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Edit role', newData)
