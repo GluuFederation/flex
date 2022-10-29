@@ -20,6 +20,7 @@ import {
   buildPayload,
   PERMISSION_READ,
   PERMISSION_WRITE,
+  PERMISSION_DELETE
 } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -106,6 +107,8 @@ function UiPermListPage({ apiPerms, permissions, loading, dispatch }) {
               return <UiPermDetailPage row={rowD} />
             }}
             editable={{
+              isDeleteHidden:() => !hasPermission(permissions, PERMISSION_DELETE),
+              isEditHidden:() => !hasPermission(permissions, PERMISSION_WRITE),
               onRowUpdate: (newData, oldData) =>
                 new Promise((resolve, reject) => {
                   buildPayload(userAction, 'Edit permision', newData)

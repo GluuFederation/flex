@@ -34,7 +34,7 @@ export const MAPPING_READ =
 export const MAPPING_WRITE =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write'
 export const MAPPING_DELETE =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write'
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete'
 
 export const LICENSE_DETAILS_READ =
   BASE_URL + '/config/adminui/license.readonly'
