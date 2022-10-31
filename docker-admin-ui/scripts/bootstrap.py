@@ -158,6 +158,7 @@ class PersistenceSetup:
     def export_plugin_properties(self):
         with open("/app/templates/auiConfiguration.properties.tmpl") as f:
             txt = f.read() % self.ctx
+            logger.info("Creating/updating plugins_admin_ui_properties secrets")
             self.manager.secret.set("plugins_admin_ui_properties", txt)
 
     @cached_property
