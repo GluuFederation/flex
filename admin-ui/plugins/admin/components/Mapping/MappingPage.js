@@ -27,6 +27,7 @@ import {
 } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import useAlert from 'Context/alert/useAlert'
 
 function MappingPage({
   mapping,
@@ -34,6 +35,8 @@ function MappingPage({
   permissions,
   permissionLoading,
   loading,
+  isSuccess,
+  isError,
   dispatch,
 }) {
   const { t } = useTranslation()
@@ -43,7 +46,11 @@ function MappingPage({
   const userAction = {}
   SetTitle(t('titles.mapping'))
   const theme = useContext(ThemeContext)
+  const { setAlert } = useAlert()
+
   const selectedTheme = theme.state.theme
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
 
   function doFetchPermissionsList() {
     buildPayload(userAction, 'PERMISSIONS', options)
@@ -55,6 +62,16 @@ function MappingPage({
     doFetchRoles()
     doFetchPermissionsList()
   }, [])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
 
   function onAddConfirmed(mappingData) {
     buildPayload(userAction, 'Add new mapping', mappingData)
@@ -118,6 +135,8 @@ const mapStateToProps = (state) => {
   return {
     mapping: state.mappingReducer.items,
     loading: state.mappingReducer.loading,
+    isSuccess: state.mappingReducer.isSuccess,
+    isError: state.mappingReducer.isError,
     apiRoles: state.apiRoleReducer.items,
     permissions: state.authReducer.permissions,
     permissionLoading: state.apiPermissionReducer.loading,
