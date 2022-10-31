@@ -122,8 +122,8 @@ jobs:
           # move generated chart from a previous step
           mv ../gluu-*.tgz ./charts/
           cd ./charts
-          helm repo index .
           git add gluu-*.tgz && git update-index --refresh
+          helm repo index .
           git add index.yaml && git update-index --refresh
           cd ..
           # END move generated chart from a previous step
