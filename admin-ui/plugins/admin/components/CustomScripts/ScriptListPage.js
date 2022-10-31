@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { connect } from 'react-redux'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useNavigate } from 'react-router-dom'
@@ -15,7 +16,6 @@ import {
   deleteCustomScript,
   getCustomScriptByType,
   setCurrentItem,
-  getCustomScripts,
   viewOnly,
 } from 'Plugins/admin/redux/actions/CustomScriptActions'
 import {
@@ -32,15 +32,14 @@ import {
   PATTERN_ID,
   TYPE,
   TYPE_ID,
-  FETCHING_SCRIPTS,
-  SEARCHING_SCRIPTS,
 } from '../../common/Constants'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import useAlert from 'Context/alert/useAlert'
 
-function ScriptListTable() {
+function ScriptListTable({ isSuccess, isError }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -52,13 +51,16 @@ function ScriptListTable() {
   const pageSize = localStorage.getItem('paggingSize') || 10
   const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
-  const [selectedScripts, setSelectedScripts] = useState(scripts)
   const [type, setType] = useState('PERSON_AUTHENTICATION')
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
+  const { setAlert } = useAlert()
+
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
   const scripts = useSelector((state) => state.customScriptReducer.items)
   const loading = useSelector((state) => state.customScriptReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
@@ -81,10 +83,22 @@ function ScriptListTable() {
       options[TYPE] = memoType
     }
   }
+
   useEffect(() => {
     makeOptions()
     dispatch(getCustomScriptByType(options))
   }, [])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
+
   if (hasPermission(permissions, SCRIPT_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
@@ -190,7 +204,7 @@ function ScriptListTable() {
 
   const onPageChangeClick = (page) => {
     makeOptions()
-    let startCount = page * limit
+    const startCount = page * limit
     options['startIndex'] = parseInt(startCount) + 1
     options['limit'] = limit
     setPageNumber(page)
@@ -288,4 +302,11 @@ function ScriptListTable() {
   )
 }
 
-export default ScriptListTable
+const mapStateToProps = (state) => {
+  return {
+    isSuccess: state.customScriptReducer.isSuccess,
+    isError: state.customScriptReducer.isError,
+  }
+}
+
+export default connect(mapStateToProps)(ScriptListTable)

@@ -22,6 +22,8 @@ const INIT_STATE = {
   errorInSaveOperationFlag: false,
   totalItems: 0,
   entriesCount: 0,
+  isSuccess: false,
+  isError: false,
 }
 
 const reducerName = 'customScriptReducer'
@@ -69,6 +71,8 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
         return {
@@ -76,6 +80,8 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: true,
+          isSuccess: false,
+          isError: true,
         }
       }
 
@@ -85,6 +91,8 @@ export default function customScriptReducer(state = INIT_STATE, action) {
         loading: true,
         saveOperationFlag: false,
         errorInSaveOperationFlag: false,
+        isSuccess: false,
+        isError: false,
       }
     case EDIT_CUSTOM_SCRIPT_RESPONSE:
       if (action.payload.data) {
@@ -94,6 +102,8 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
         return {
@@ -101,6 +111,8 @@ export default function customScriptReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: true,
+          isSuccess: false,
+          isError: true,
         }
       }
 
@@ -108,6 +120,8 @@ export default function customScriptReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case DELETE_CUSTOM_SCRIPT_RESPONSE:
       if (action.payload.inum) {
@@ -117,9 +131,14 @@ export default function customScriptReducer(state = INIT_STATE, action) {
             (item) => item.inum !== action.payload.inum,
           ),
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
-        return handleDefault()
+        return handleDefault({
+          isSuccess: false,
+          isError: true,
+        })
       }
     case SET_SCRIPT_ITEM:
       return {
@@ -147,9 +166,10 @@ export default function customScriptReducer(state = INIT_STATE, action) {
       return handleDefault()
   }
 
-  function handleDefault() {
+  function handleDefault(additionalParam) {
     return {
       ...state,
+      ...additionalParam,
       loading: false,
       saveOperationFlag: false,
       errorInSaveOperationFlag: false,
