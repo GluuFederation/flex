@@ -11,6 +11,11 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { DeleteOutlined } from '@material-ui/icons'
 import {
+  hasPermission,
+  MAPPING_WRITE,
+  MAPPING_DELETE
+} from 'Utils/PermChecker'
+import {
   updateMapping,
   addPermissionsToRole,
   updatePermissionsToServer,
@@ -27,6 +32,7 @@ function MappingItem({ candidate, roles }) {
   const dispatch = useDispatch()
   const autocompleteRef = useRef(null)
   const permissions = useSelector((state) => state.apiPermissionReducer.items)
+  const authPermissions = useSelector((state) => state.authReducer.permissions)
   const [searchablePermissions, setSearchAblePermissions] = useState([])
   const [serverPermissions, setServerPermissions] = useState(null)
   const [isDeleteable, setIsDeleteable] = useState(false)
@@ -136,6 +142,7 @@ function MappingItem({ candidate, roles }) {
             </Accordion.Header>
             <Accordion.Body>
               <div style={{ marginTop: 10 }}></div>
+              {hasPermission(authPermissions, MAPPING_WRITE) ? 
               <Formik
                 initialValues={initialValues}
                 onSubmit={handleAddPermission}
@@ -170,10 +177,11 @@ function MappingItem({ candidate, roles }) {
                     </Form>
                   </>
                 )}
-              </Formik>
+              </Formik>:null}
               {candidate.permissions.map((permission, id) => (
                 <Row key={id}>
                   <Col sm={10}>{permission}</Col>
+                  {hasPermission(authPermissions, MAPPING_DELETE) ? 
                   <Col sm={2}>
                     <Button
                       type="button"
@@ -188,11 +196,13 @@ function MappingItem({ candidate, roles }) {
                       <i className="fa fa-trash mr-2"></i>
                       {t('actions.remove')}
                     </Button>
-                  </Col>
+                  </Col>:null
+                  }
                 </Row>
               ))}
               {/* Bottom Buttons  */}
               <FormGroup row />
+              {hasPermission(authPermissions, MAPPING_WRITE) ?
               <Row>
                 <Col sm={6}>
                   <Button
@@ -205,6 +215,7 @@ function MappingItem({ candidate, roles }) {
                     {t('actions.revert')}
                   </Button>
                 </Col>
+                
                 <Col sm={6} className="text-right">
                   <Button
                     type="button"
@@ -219,7 +230,7 @@ function MappingItem({ candidate, roles }) {
                     {t('actions.save')}
                   </Button>
                 </Col>
-              </Row>
+              </Row>:null}
               {/* Bottom Buttons  */}
             </Accordion.Body>
           </Accordion>

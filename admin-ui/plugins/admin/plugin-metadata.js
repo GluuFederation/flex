@@ -117,7 +117,7 @@ const pluginMetadata = {
     {
       component: CustomScriptEditPage,
       path: PLUGIN_BASE_APTH + '/script/edit:id',
-      permission: SCRIPT_WRITE,
+      permission: SCRIPT_READ,
     },
     {
       component: SettingsPage,
