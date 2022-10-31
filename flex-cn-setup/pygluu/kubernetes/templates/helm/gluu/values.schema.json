@@ -1040,7 +1040,7 @@
 
          }
       }
-   },
+   ,
    "allOf":[
       {
          "$ref":"#/definitions/admin-ui-enabled"
