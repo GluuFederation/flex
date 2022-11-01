@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
+import { connect } from 'react-redux'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { Paper, TablePagination } from '@material-ui/core'
@@ -30,8 +31,9 @@ import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
+import useAlert from 'Context/alert/useAlert'
 
-function UserList(props) {
+function UserList({ isSuccess, isError }) {
   const dispatch = useDispatch()
   const opt = {}
   useEffect(() => {
@@ -59,6 +61,10 @@ function UserList(props) {
     handleUserDelete(deleteData)
   }
   const theme = useContext(ThemeContext)
+  const { setAlert } = useAlert()
+
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
@@ -161,7 +167,7 @@ function UserList(props) {
   }
 
   const onPageChangeClick = (page) => {
-    let startCount = page * limit
+    const startCount = page * limit
     options['startIndex'] = parseInt(startCount) + 1
     options['limit'] = limit
     options['pattern'] = pattern
@@ -178,19 +184,29 @@ function UserList(props) {
   }
 
   useEffect(() => {
-    let usedAttributes = [];
-    for(let i in usersList){
-      for(let j in usersList[i].customAttributes){
-        let val = usersList[i].customAttributes[j].name
+    const usedAttributes = []
+    for(const i in usersList) {
+      for(const j in usersList[i].customAttributes) {
+        const val = usersList[i].customAttributes[j].name
         if(!usedAttributes.includes(val)){
-          usedAttributes.push(val);
+          usedAttributes.push(val)
         }
       }
     }
     if(usedAttributes.length){
-      dispatch(getAttributesRoot({pattern:usedAttributes.toString(), limit:100}))
+      dispatch(getAttributesRoot({ pattern:usedAttributes.toString(), limit:100 }))
     }
-  },[usersList])
+  }, [usersList])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
 
   return (
     <GluuLoader blocking={loading}>
@@ -259,4 +275,12 @@ function UserList(props) {
     </GluuLoader>
   )
 }
-export default UserList
+
+const mapStateToProps = (state) => {
+  return {
+    isSuccess: state.userReducer.isSuccess,
+    isError: state.userReducer.isError,
+  }
+}
+
+export default connect(mapStateToProps)(UserList)

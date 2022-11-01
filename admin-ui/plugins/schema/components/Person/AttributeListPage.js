@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { connect } from 'react-redux'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useNavigate } from 'react-router-dom'
@@ -27,8 +28,9 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import useAlert from 'Context/alert/useAlert'
 
-function AttributeListPage() {
+function AttributeListPage({ isSuccess, isError }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const attributes = useSelector((state) => state.attributeReducer.items)
@@ -37,6 +39,10 @@ function AttributeListPage() {
   const { totalItems, entriesCount } = useSelector(
     (state) => state.attributeReducer,
   )
+  const { setAlert } = useAlert()
+
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
   const options = {}
   const pageSize = localStorage.getItem('paggingSize') || 10
   const [limit, setLimit] = useState(pageSize)
@@ -51,6 +57,17 @@ function AttributeListPage() {
     makeOptions()
     dispatch(getAttributes(options))
   }, [])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
+
   const limitId = 'searchLimit'
   const patternId = 'searchPattern'
   const myActions = []
@@ -73,7 +90,7 @@ function AttributeListPage() {
 
   const onPageChangeClick = (page) => {
     makeOptions()
-    let startCount = page * limit
+    const startCount = page * limit
     options['startIndex'] = parseInt(startCount) + 1
     options['limit'] = limit
     setPageNumber(page)
@@ -269,4 +286,11 @@ function AttributeListPage() {
   )
 }
 
-export default AttributeListPage
+const mapStateToProps = (state) => {
+  return {
+    isSuccess: state.attributeReducer.isSuccess,
+    isError: state.attributeReducer.isError,
+  }
+}
+
+export default connect(mapStateToProps)(AttributeListPage)

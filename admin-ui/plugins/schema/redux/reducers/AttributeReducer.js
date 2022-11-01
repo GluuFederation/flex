@@ -18,6 +18,8 @@ const INIT_STATE = {
   loading: false,
   totalItems: 0,
   entriesCount: 0,
+  isSuccess: false,
+  isError: false,
 }
 
 const reducerName = 'attributeReducer'
@@ -54,6 +56,8 @@ export default function attributeReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case ADD_ATTRIBUTE_RESPONSE:
       if (action.payload.data) {
@@ -61,11 +65,15 @@ export default function attributeReducer(state = INIT_STATE, action) {
           ...state,
           items: [...state.items, action.payload.data],
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
         return {
           ...state,
           loading: false,
+          isSuccess: false,
+          isError: true,
         }
       }
 
@@ -73,6 +81,8 @@ export default function attributeReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case EDIT_ATTRIBUTE_RESPONSE:
       if (action.payload.data) {
@@ -80,11 +90,15 @@ export default function attributeReducer(state = INIT_STATE, action) {
           ...state,
           items: [...state.items],
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
         return {
           ...state,
           loading: false,
+          isSuccess: false,
+          isError: true,
         }
       }
 
@@ -92,6 +106,8 @@ export default function attributeReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
 
     case DELETE_ATTRIBUTE_RESPONSE:
@@ -100,11 +116,15 @@ export default function attributeReducer(state = INIT_STATE, action) {
           ...state,
           items: state.items.filter((i) => i.inum !== action.payload.inum),
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
         return {
           ...state,
           loading: false,
+          isSuccess: false,
+          isError: true,
         }
       }
 

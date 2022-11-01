@@ -35,6 +35,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import useAlert from 'Context/alert/useAlert'
 
 function CachePage({
   cacheData,
@@ -44,12 +45,18 @@ function CachePage({
   cacheRedisData,
   loading,
   dispatch,
+  isSuccess,
+  isError,
 }) {
   const { t } = useTranslation()
   const [modal, setModal] = useState(false)
   const [cacheProviderType, setCacheProviderType] = useState(
     cacheData.cacheProviderType,
   )
+  const { setAlert } = useAlert()
+
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
   SetTitle(t('fields.cache_configuration'))
 
   useEffect(() => {
@@ -63,6 +70,16 @@ function CachePage({
   useEffect(() => {
     setCacheProviderType(cacheData.cacheProviderType)
   }, [cacheData])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
 
   const INITIAL_VALUES = {
     cacheProviderType: cacheData.cacheProviderType,
@@ -193,7 +210,6 @@ function CachePage({
                               id="cacheProviderType"
                               name="cacheProviderType"
                               defaultValue={cacheData.cacheProviderType}
-                              onChange={formik.handleChange}
                               onChange={(e) => {
                                 setCacheProviderType(e.target.value)
                                 formik.setFieldValue(
@@ -257,6 +273,8 @@ const mapStateToProps = (state) => {
     cacheMemData: state.cacheReducer.cacheMem,
     cacheNativeData: state.cacheReducer.cacheNative,
     cacheRedisData: state.cacheReducer.cacheRedis,
+    isSuccess: state.cacheReducer.isSuccess,
+    isError: state.cacheReducer.isError,
     permissions: state.authReducer.permissions,
     loading: state.cacheReducer.loading,
   }

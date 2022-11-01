@@ -31,6 +31,8 @@ const INIT_STATE = {
   cacheNative: {},
   cacheRedis: {},
   loading: false,
+  isSuccess: false,
+  isError: false,
 }
 
 const reducerName = 'cacheReducer'
@@ -148,60 +150,80 @@ export default function cacheReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case PUT_CACHE_RESPONSE:
       return {
         ...state,
         cache: action.payload.data,
         loading: false,
+        isSuccess: true,
+        isError: false,
       }
 
     case PUT_MEMORY_CACHE:
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case PUT_MEMORY_CACHE_RESPONSE:
       return {
         ...state,
         cacheMemory: action.payload.data,
         loading: false,
+        isSuccess: true,
+        isError: false,
       }
 
     case PUT_MEM_CACHE:
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case PUT_MEM_CACHE_RESPONSE:
       return {
         ...state,
         cacheMem: action.payload.data,
         loading: false,
+        isSuccess: true,
+        isError: false,
       }
 
     case PUT_NATIVE_CACHE:
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case PUT_NATIVE_CACHE_RESPONSE:
       return {
         ...state,
         cacheNative: action.payload.data,
         loading: false,
+        isSuccess: true,
+        isError: false,
       }
 
     case PUT_REDIS_CACHE:
       return {
         ...state,
         loading: true,
+        isSuccess: false,
+        isError: false,
       }
     case PUT_REDIS_CACHE_RESPONSE:
       return {
         ...state,
         cacheRedis: action.payload.data,
         loading: false,
+        isSuccess: true,
+        isError: false,
       }
     case RESET:
       return {
