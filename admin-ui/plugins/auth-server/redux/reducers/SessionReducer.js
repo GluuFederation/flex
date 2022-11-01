@@ -11,6 +11,8 @@ const INIT_STATE = {
   items: [],
   item: {},
   loading: false,
+  isSuccess: false,
+  isError: false,
 }
 
 const reducerName = 'SessionReducer'
@@ -41,30 +43,40 @@ export default function SessionReducer(state = INIT_STATE, action) {
           ...state,
           items: state.items.filter(({ userDn }) => userDn !== action.payload.data),
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       }
-      return handleDefault()
+      return handleDefault({
+        isSuccess: false,
+        isError: true,
+      })
 
     case RESET:
       return {
         ...state,
         items: INIT_STATE.items,
         loading: INIT_STATE.loading,
+        isSuccess: false,
+        isError: false,
       }
 
     default:
       return handleDefault()
   }
 
-  function handleDefault() {
+  function handleDefault(additionalParam) {
     return {
       ...state,
+      ...additionalParam,
       loading: false,
     }
   }
   function handleLoading() {
     return {
       ...state,
+      isSuccess: false,
+      isError: false,
       loading: true,
     }
   }

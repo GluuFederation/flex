@@ -19,8 +19,9 @@ import {
   hasPermission,
   SESSION_DELETE,
 } from 'Utils/PermChecker'
+import useAlert from 'Context/alert/useAlert'
 
-function SessionListPage({ sessions, permissions, loading, dispatch }) {
+function SessionListPage({ sessions, permissions, loading, dispatch, isSuccess, isError }) {
   const { t } = useTranslation()
   const myActions = []
   const [item, setItem] = useState({})
@@ -34,8 +35,12 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
   const sessionUsername = sessions.map(session => session.sessionAttributes.auth_user)
   const usernames = [...new Set(sessionUsername)]
   const [revokeUsername, setRevokeUsername] = useState()
+  const { setAlert } = useAlert()
 
   SetTitle(t('menus.sessions'))
+
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
 
   const tableColumns = [
     { title: `${t('fields.s_id')}`, field: 'sessionAttributes.sid' },
@@ -68,6 +73,16 @@ function SessionListPage({ sessions, permissions, loading, dispatch }) {
   useEffect(() => {
     dispatch(getSessions())
   }, [])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
 
   const handleRevoke = () => {
     const row = !isEmpty(sessions) ? sessions.find(({ sessionAttributes }) => sessionAttributes.auth_user === revokeUsername) : null
@@ -151,6 +166,8 @@ const mapStateToProps = (state) => {
   return {
     sessions: state.sessionReducer.items,
     loading: state.sessionReducer.loading,
+    isSuccess: state.sessionReducer.isSuccess,
+    isError: state.sessionReducer.isError,
     permissions: state.authReducer.permissions,
   }
 }
