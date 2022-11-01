@@ -34,7 +34,7 @@ export const MAPPING_READ =
 export const MAPPING_WRITE =
   'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write'
 export const MAPPING_DELETE =
-  'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.write'
+  'https://jans.io/oauth/jans-auth-server/config/adminui/user/rolePermissionMapping.delete'
 
 export const LICENSE_DETAILS_READ =
   BASE_URL + '/config/adminui/license.readonly'
@@ -85,7 +85,7 @@ export const SQL_WRITE = BASE_URL + '/config/database/sql.write'
 export const SQL_DELETE = BASE_URL + '/config/database/sql.delete'
 
 export const STAT_READ = BASE_URL + '/config/stats.readonly'
-export const STAT_JANS_READ = 'jans_stat'
+export const STAT_JANS_READ = BASE_URL + '/config/stats.jans_stat.readonly'
 
 export const USER_READ = BASE_URL + '/config/user.readonly'
 export const USER_WRITE = BASE_URL + '/config/user.write'
@@ -94,10 +94,15 @@ export const SESSION_READ = BASE_URL + '/jans-auth-server/session.readonly'
 export const SESSION_DELETE = BASE_URL + '/jans-auth-server/session.delete'
 
 export const hasPermission = (scopes, scope) => {
+  let available = false;
   if (scopes) {
-    return scopes.map(scp => scope === scp)
+    for(let i in scopes){
+      if(scopes[i] === scope){
+        available = true;
+      }
+    }
   }
-  return false
+  return available
 }
 
 export const buildPayload = (userAction, message, payload) => {

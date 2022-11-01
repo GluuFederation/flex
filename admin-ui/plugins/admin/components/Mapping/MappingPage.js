@@ -23,7 +23,8 @@ import MappingItem from './MappingItem'
 import {
   hasPermission,
   buildPayload,
-  ROLE_READ,
+  MAPPING_WRITE,
+  MAPPING_READ
 } from 'Utils/PermChecker'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -96,7 +97,8 @@ function MappingPage({
     <GluuLoader blocking={loading || permissionLoading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
+          <GluuViewWrapper canShow={hasPermission(permissions, MAPPING_READ)}>
+            {hasPermission(permissions, MAPPING_WRITE) ? 
             <FormGroup row>
               <Col sm={10}></Col>
               <Col sm={2}>
@@ -112,7 +114,7 @@ function MappingPage({
                   </Button>
                 </Box>
               </Col>
-            </FormGroup>
+            </FormGroup>:null}
             {mapping.map((candidate, idx) => (
               <MappingItem key={idx} candidate={candidate} roles={apiRoles} />
             ))}
