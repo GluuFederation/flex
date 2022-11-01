@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { connect } from 'react-redux'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { Paper, TablePagination } from '@material-ui/core'
@@ -306,4 +307,11 @@ function ScopeListPage({ isSuccess, isError }) {
   )
 }
 
-export default ScopeListPage
+const mapStateToProps = (state) => {
+  return {
+    isSuccess: state.scopeReducer.isSuccess,
+    isError: state.scopeReducer.isError,
+  }
+}
+
+export default connect(mapStateToProps)(ScopeListPage)
