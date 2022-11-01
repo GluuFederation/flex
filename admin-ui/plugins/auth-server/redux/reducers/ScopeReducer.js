@@ -26,6 +26,8 @@ const INIT_STATE = {
   scopesByCreator: [],
   totalItems: 0,
   entriesCount: 0,
+  isSuccess: false,
+  isError: false,
 }
 
 const reducerName = 'scopeReducer'
@@ -83,6 +85,8 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
         return {
@@ -90,6 +94,8 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: true,
+          isSuccess: false,
+          isError: true,
         }
       }
 
@@ -104,6 +110,8 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
         return {
@@ -111,6 +119,8 @@ export default function scopeReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: true,
+          isSuccess: false,
+          isError: true,
         }
       }
     case DELETE_SCOPE:
@@ -121,9 +131,14 @@ export default function scopeReducer(state = INIT_STATE, action) {
           ...state,
           items: state.items.filter((i) => i.inum !== action.payload.data),
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
-        return handleDefault()
+        return handleDefault({
+          isSuccess: false,
+          isError: true,
+        })
       }
 
     case GET_SCOPE_BY_CREATOR_RESPONSE:
@@ -152,11 +167,14 @@ export default function scopeReducer(state = INIT_STATE, action) {
       loading: true,
       saveOperationFlag: false,
       errorInSaveOperationFlag: false,
+      isSuccess: false,
+      isError: false,
     }
   }
-  function handleDefault() {
+  function handleDefault(additionalParam) {
     return {
       ...state,
+      ...additionalParam,
       loading: false,
       saveOperationFlag: false,
       errorInSaveOperationFlag: false,

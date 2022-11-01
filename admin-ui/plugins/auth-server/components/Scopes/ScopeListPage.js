@@ -15,7 +15,6 @@ import ScopeDetailPage from '../Scopes/ScopeDetailPage'
 import { useTranslation } from 'react-i18next'
 import {
   getScopes,
-  searchScopes,
   deleteScope,
   setCurrentItem,
 } from 'Plugins/auth-server/redux/actions/ScopeActions'
@@ -31,16 +30,14 @@ import {
   LIMIT,
   PATTERN,
   PATTERN_ID,
-  SEARCHING_SCOPES,
-  FETCHING_SCOPES,
   WITH_ASSOCIATED_CLIENTS,
 } from 'Plugins/auth-server/common/Constants'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import styles from './styles'
+import useAlert from 'Context/alert/useAlert'
 
-function ScopeListPage() {
+function ScopeListPage({ isSuccess, isError }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const userAction = {}
@@ -65,6 +62,10 @@ function ScopeListPage() {
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.scopeReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
+  const { setAlert } = useAlert()
+
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
 
   SetTitle(t('titles.scopes'))
 
@@ -106,6 +107,16 @@ function ScopeListPage() {
     makeOptions()
     dispatch(getScopes(options))
   }, [])
+
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
 
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
@@ -219,12 +230,13 @@ function ScopeListPage() {
 
   const onPageChangeClick = (page) => {
     makeOptions()
-    let startCount = page * limit
+    const startCount = page * limit
     options['startIndex'] = parseInt(startCount) + 1
     options['limit'] = limit
     setPageNumber(page)
     dispatch(getScopes(options))
   }
+
   const onRowCountChangeClick = (count) => {
     makeOptions()
     options['startIndex'] = 0

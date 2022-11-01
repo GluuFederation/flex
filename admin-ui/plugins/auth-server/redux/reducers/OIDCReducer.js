@@ -23,6 +23,8 @@ const INIT_STATE = {
   errorInSaveOperationFlag: false,
   totalItems: 0,
   entriesCount: 0,
+  isSuccess: false,
+  isError: false,
 }
 
 const reducerName = 'oidcReducer'
@@ -52,6 +54,8 @@ export default function oidcReducer(state = INIT_STATE, action) {
         loading: true,
         saveOperationFlag: false,
         errorInSaveOperationFlag: false,
+        isSuccess: false,
+        isError: false,
       }
     case ADD_CLIENT_RESPONSE:
       if (action.payload.data) {
@@ -61,6 +65,8 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
         return {
@@ -68,6 +74,8 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: true,
+          isSuccess: false,
+          isError: true,
         }
       }
 
@@ -78,6 +86,8 @@ export default function oidcReducer(state = INIT_STATE, action) {
         items: [],
         saveOperationFlag: false,
         errorInSaveOperationFlag: false,
+        isSuccess: false,
+        isError: false,
       }
     case EDIT_CLIENT_RESPONSE:
       if (action.payload.data) {
@@ -91,6 +101,8 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
         return {
@@ -98,11 +110,16 @@ export default function oidcReducer(state = INIT_STATE, action) {
           loading: false,
           saveOperationFlag: true,
           errorInSaveOperationFlag: true,
+          isSuccess: false,
+          isError: true,
         }
       }
 
     case DELETE_CLIENT:
-      return handleLoading()
+      return handleLoading({
+        isSuccess: false,
+        isError: false,
+      })
 
     case DELETE_CLIENT_RESPONSE:
       if (action.payload.data) {
@@ -110,9 +127,14 @@ export default function oidcReducer(state = INIT_STATE, action) {
           ...state,
           items: state.items.filter((i) => i.inum !== action.payload.data),
           loading: false,
+          isSuccess: true,
+          isError: false,
         }
       } else {
-        return handleDefault()
+        return handleDefault({
+          isSuccess: false,
+          isError: true,
+        })
       }
 
     case SET_CLIENT_ITEM:
@@ -141,14 +163,16 @@ export default function oidcReducer(state = INIT_STATE, action) {
       return handleDefault()
   }
 
-  function handleDefault() {
+  function handleDefault(additionalParam) {
     return {
       ...state,
+      ...additionalParam,
       loading: false,
       saveOperationFlag: false,
       errorInSaveOperationFlag: false,
     }
   }
+
   function handleLoading() {
     return {
       ...state,
@@ -158,4 +182,5 @@ export default function oidcReducer(state = INIT_STATE, action) {
     }
   }
 }
+
 reducerRegistry.register(reducerName, oidcReducer)

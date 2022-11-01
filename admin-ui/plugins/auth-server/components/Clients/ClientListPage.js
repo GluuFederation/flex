@@ -1,4 +1,6 @@
+/* eslint-disable no-prototype-builtins */
 import React, { useState, useEffect, useContext } from 'react'
+import { connect } from 'react-redux'
 import MaterialTable from '@material-table/core'
 import { DeleteOutlined } from '@material-ui/icons'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -18,12 +20,9 @@ import {
   LIMIT,
   PATTERN,
   PATTERN_ID,
-  SEARCHING_OIDC_CLIENTS,
-  FETCHING_OIDC_CLIENTS,
 } from 'Plugins/auth-server/common/Constants'
 import {
   getOpenidClients,
-  searchClients,
   setCurrentItem,
   deleteClient,
   viewOnly,
@@ -39,8 +38,9 @@ import ClientShowScopes from './ClientShowScopes'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
+import useAlert from 'Context/alert/useAlert'
 
-function ClientListPage() {
+function ClientListPage({ isSuccess, isError, }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   let clients = useSelector((state) => state.oidcReducer.items)
@@ -48,6 +48,10 @@ function ClientListPage() {
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.oidcReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
+  const { setAlert } = useAlert()
+
+  const alertSeverity = isSuccess ? 'success' : 'error'
+  const alertMessage = isSuccess ? t('messages.success_in_saving') : t('messages.error_in_saving')
   clients = clients.map(addOrg)
   const userAction = {}
   const options = {}
@@ -202,6 +206,16 @@ function ClientListPage() {
     dispatch(resetUMAResources())
   }, [])
 
+  useEffect(() => {
+    const alertParam = { 
+      open: (isSuccess || isError),
+      title: isSuccess ? 'Success' : 'Failed',
+      text: alertMessage,
+      severity: alertSeverity
+    }
+    setAlert(alertParam)
+  }, [isSuccess, isError])
+
   function handleOptionsChange(event) {
     if (event.target.name == 'limit') {
       memoLimit = event.target.value
@@ -324,7 +338,7 @@ function ClientListPage() {
 
   const onPageChangeClick = (page) => {
     makeOptions()
-    let startCount = page * limit
+    const startCount = page * limit
     options['startIndex'] = parseInt(startCount) + 1
     options['limit'] = limit
     setPageNumber(page)
@@ -404,4 +418,11 @@ function ClientListPage() {
   )
 }
 
-export default ClientListPage
+const mapStateToProps = (state) => {
+  return {
+    isSuccess: state.oidcReducer.isSuccess,
+    isError: state.oidcReducer.isError,
+  }
+}
+
+export default connect(mapStateToProps)(ClientListPage)
