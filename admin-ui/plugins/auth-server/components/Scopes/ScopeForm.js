@@ -161,7 +161,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
         onSubmit={(values) => {
           const result = Object.assign(scope, values)
           result['id'] = result.id
-          result['creatorType'] = 'USER'
+          result['creatorType'] = 'user'
           result['creatorId'] = authReducer.userinfo.inum
           result['attributes'].showInConfigurationEndpoint =
             scope.attributes.showInConfigurationEndpoint
