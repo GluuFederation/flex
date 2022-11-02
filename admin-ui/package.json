@@ -123,7 +123,7 @@
     "@miltonbo/dashboard-style-airframe": "^0.2.0",
     "@reduxjs/toolkit": "^1.8.2",
     "ace-builds": "^1.5.3",
-    "axios": "^0.27.2",
+    "axios": "^1.1.2",
     "bootstrap": "^4.5.3",
     "date-fns": "^2.25.0",
     "dotenv": "^16.0.2",
