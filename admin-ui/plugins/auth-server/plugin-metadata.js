@@ -40,6 +40,8 @@ import {
   SCOPE_WRITE,
   JWKS_READ,
   SESSION_READ,
+  PROPERTIES_READ,
+  LOGGING_READ
 } from 'Utils/PermChecker'
 
 const PLUGIN_BASE_APTH = '/auth-server'
@@ -66,12 +68,12 @@ const pluginMetadata = {
             {
               title: 'menus.properties',
               path: PLUGIN_BASE_APTH + '/config/properties',
-              permission: ACR_READ,
+              permission: PROPERTIES_READ,
             },
             {
               title: 'menus.logging',
               path: PLUGIN_BASE_APTH + '/config/logging',
-              permission: ACR_READ,
+              permission: LOGGING_READ,
             },
           ],
         },
