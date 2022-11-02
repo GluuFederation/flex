@@ -410,6 +410,8 @@ class flex_installer(JettyInstaller):
 
     def install_casa(self):
 
+        self.source_files = [(self.casa_war_fn,)]
+
         print("Adding twillo and casa config to jans-auth")
         self.copyFile(self.casa_config_fn, self.jans_auth_custom_lib_dir)
         self.copyFile(self.twillo_fn, self.jans_auth_custom_lib_dir)
