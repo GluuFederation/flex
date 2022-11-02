@@ -20,6 +20,10 @@ annotations:
       image: janssenproject/persistence-loader:1.0.2-1
     - name: scim
       image: janssenproject/scim:1.0.2-1
+    - name: casa
+      image: gluufederation/casa:5.0.0_dev
+    - name: admin-ui
+      image: gluufederation/admin-ui:1.0.1_dev
   artifacthub.io/license: Apache-2.0
   artifacthub.io/prerelease: "true"
   catalog.cattle.io/certified: partner
