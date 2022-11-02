@@ -124,7 +124,7 @@
     "@reduxjs/toolkit": "^1.8.2",
     "ace-builds": "^1.5.3",
     "axios": "^0.27.2",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "^5.2.2",
     "date-fns": "^2.25.0",
     "dotenv": "^16.0.2",
     "eslint-plugin-jest": "^27.0.1",
