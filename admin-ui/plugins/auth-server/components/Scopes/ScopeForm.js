@@ -49,12 +49,12 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
   scripts = scripts || []
   attributes = attributes || []
   dynamicScopeScripts = scripts
-    .filter((item) => item.scriptType == 'DYNAMIC_SCOPE')
+    .filter((item) => item.scriptType == 'dynamic_scope')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   umaAuthorizationPolicies = scripts
-    .filter((item) => item.scriptType == 'UMA_RPT_POLICY')
+    .filter((item) => item.scriptType == 'uma_rpt_policy')
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   associatedClients = client.map((item) => ({ dn: item.dn, name: item.inum }))

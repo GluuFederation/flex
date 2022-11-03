@@ -53,7 +53,7 @@ function ScriptListTable() {
   const [limit, setLimit] = useState(pageSize)
   const [pattern, setPattern] = useState(null)
   const [selectedScripts, setSelectedScripts] = useState(scripts)
-  const [type, setType] = useState('PERSON_AUTHENTICATION')
+  const [type, setType] = useState('person_authentication')
   const toggle = () => setModal(!modal)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
