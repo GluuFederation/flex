@@ -8,7 +8,7 @@ import readline
 from collections import OrderedDict
 
 mydir = os.getcwd()
-dirs = glob.glob('/opt/jans/jans-setup/output/gluu-admin-ui*')
+dirs = glob.glob('/opt/jans/jans-setup/flex*')
 run_cmd = '/bin/su node -c "PATH=$PATH:/opt/jre/bin:/opt/node/bin {}"'
 
 for d in dirs:
