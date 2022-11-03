@@ -171,7 +171,7 @@
     "react-toggle": "^4.1.2",
     "react-tooltip": "^4.2.21",
     "react-universal-component": "^4.0.0",
-    "reactstrap": "^8.7.1",
+    "reactstrap": "^9.1.4",
     "recharts": "^2.1.9",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
