@@ -31,7 +31,7 @@ function ClientAdvancedPanel({ client, scripts, formik, viewOnly }) {
   }
 
   scripts = scripts
-    .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
+    .filter((item) => item.scriptType == 'person_authentication')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
   function uriValidator(uri) {

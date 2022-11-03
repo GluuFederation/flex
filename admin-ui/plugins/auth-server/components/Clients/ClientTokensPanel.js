@@ -19,7 +19,7 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
   const audience_id = 'audience_id'
 
   scripts = scripts
-    .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
+    .filter((item) => item.scriptType == 'person_authentication')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
   function uriValidator(uri) {

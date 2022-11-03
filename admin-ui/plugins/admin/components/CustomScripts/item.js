@@ -1,7 +1,7 @@
 export const item = {
   name: "basic",
   script: "",
-  scriptType: "PERSON_AUTHENTICATION",
+  scriptType: "person_authentication",
   programmingLanguage: "PYTHON",
   moduleProperties: [
       {

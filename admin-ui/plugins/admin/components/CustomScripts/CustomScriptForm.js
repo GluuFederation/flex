@@ -263,7 +263,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
           </Col>
         </FormGroup>
       </GluuTooltip>
-      {scriptTypeState === 'PERSON_AUTHENTICATION' && (
+      {scriptTypeState === 'person_authentication' && (
         <GluuTooltip doc_category={SCRIPT} doc_entry="aliases">
           <FormGroup row>
             <GluuLabel label={t('Select SAML ACRS')} />
@@ -309,7 +309,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               >
                 <option value="">{t('options.choose')}...</option>
                 {items.map((ele, index) => (
-                  <option key={index} value={ele.name}>
+                  <option key={index} value={ele.value}>
                     {ele.name}
                   </option>
                 ))}
@@ -338,8 +338,8 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                 }}
               >
                 <option value="">{t('Choose')}...</option>
-                <option value="JAVA">Java</option>
-                <option value="PYTHON">Jython</option>
+                <option value="java">Java</option>
+                <option value="python">Jython</option>
               </CustomInput>
             </InputGroup>
             {formik.errors.programmingLanguage &&
@@ -417,7 +417,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
           </FormGroup>
         </GluuTooltip>
       )}
-      {scriptTypeState === 'PERSON_AUTHENTICATION' && (
+      {scriptTypeState === 'person_authentication' && (
         <GluuTooltip doc_category={SCRIPT} doc_entry="usage_type">
           <FormGroup row>
             <GluuLabel label="Interactive" />
