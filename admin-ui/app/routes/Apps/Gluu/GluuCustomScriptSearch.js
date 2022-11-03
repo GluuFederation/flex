@@ -22,6 +22,7 @@ function GluuCustomScriptSearch({
           id={typeId}
           defaultValue={scriptType}
           onChange={handler}
+          className="search-select"
         >
           <option>PERSON_AUTHENTICATION</option>
           <option>INTROSPECTION</option>

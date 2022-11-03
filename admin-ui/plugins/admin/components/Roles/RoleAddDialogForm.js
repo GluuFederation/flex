@@ -38,7 +38,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
   }
   return (
     <>
-      <Modal isOpen={modal} toggle={handler} className="modal-outline-primary">
+      <Modal isOpen={modal} toggle={handler}>
         <ModalHeader toggle={handler}>
           <i
             style={{ color: 'green' }}
