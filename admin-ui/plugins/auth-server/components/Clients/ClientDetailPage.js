@@ -93,7 +93,7 @@ function ClientDetailPage({ row, scopes }) {
                     {t('options.yes')}
                   </Badge>
                 ) : (
-                  <Badge color="danger">{t('options.no')}</Badge>
+                  <Badge color="secondary">{t('options.no')}</Badge>
                 )}
               </Label>
             </FormGroup>
