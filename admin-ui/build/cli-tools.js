@@ -40,9 +40,9 @@ program
     .option('-c, --clear [serve/dist]')
     .option('-cr, --create [serve/dist]')
     .parse(process.argv);
-
+    const options = program.opts();
 for (const commandName in commands) {
-    if (commands.hasOwnProperty(commandName) && program[commandName]) {
-        commands[commandName](program[commandName]);
+    if (commands.hasOwnProperty(commandName) && options[commandName]) {
+        commands[commandName](options[commandName]);
     }
 }

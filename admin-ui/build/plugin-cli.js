@@ -73,8 +73,9 @@ const commands = {
   removePlugin: function(pluginName) {
     try {
       const pluginsPath = dirParamToPath('plugins')
-      const pluginPathInRepo = path.join(pluginsPath, pluginName)
-
+      const pluginDirName = path.dirname(pluginsObj.filter(ele => ele.key === pluginName)[0].metadataFile).replace('./', '')
+      const pluginPathInRepo = path.join(pluginsPath, pluginDirName)
+      
       if (fse.existsSync(pluginPathInRepo)) {
         rimraf.sync(pluginPathInRepo)
         fse.writeFileSync(
@@ -116,10 +117,10 @@ program
   .option('-ap, --addPlugin []')
   .option('-rp, --removePlugin []')
   .parse(process.argv)
-
+  const options = program.opts();
 for (const commandName in commands) {
   // eslint-disable-next-line no-prototype-builtins
-  if (commands.hasOwnProperty(commandName) && program[commandName]) {
-    commands[commandName](program[commandName])
+  if (commands.hasOwnProperty(commandName) && options[commandName]) {
+    commands[commandName](options[commandName])
   }
 }
