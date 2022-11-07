@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=1a57928d7e2bfdfa009e9de37f8785854d9e97e0
+ENV ADMIN_UI_VERSION=5743f86c2802354db396be97b1dc5465d22851c4
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -67,7 +67,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=e74ea8e27e59d35ff6e3c6f997e6c1df6a04ec83
+ENV JANS_SOURCE_VERSION=47edb6e4112ce834486101e2cc8aea3a725df308
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
