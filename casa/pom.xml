@@ -24,7 +24,7 @@
         <casa.version>5.0.0-SNAPSHOT</casa.version>
         <jans.version>1.0.0-SNAPSHOT</jans.version>
         <log4j.version>2.19.0</log4j.version>
-        <jackson.version>2.13.4</jackson.version>
+        <jackson.version>2.14.0</jackson.version>
         <zk.version>9.6.0.2-jakarta</zk.version>
         <ldapsdk.version>6.0.6</ldapsdk.version>
         <resteasy.version>6.2.1.Final</resteasy.version>
@@ -131,7 +131,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.13.4.2</version>
+                <version>${jackson.version}</version>
             </dependency>
 
             <!-- APACHE TIKA -->
