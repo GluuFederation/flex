@@ -687,7 +687,7 @@ def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
-        if prompt_admin_ui_install and prompt_admin_ui_install.lower().startswith('y'):
+        if not prompt_admin_ui_install.lower().startswith('n'):
             install_components['admin_ui'] = True
     else:
         print("Admin UI is allready installed on this system")
@@ -695,14 +695,14 @@ def prompt_for_installation():
 
     if not os.path.exists(os.path.join(Config.jetty_base, 'casa')):
         prompt_casa_install = input("Install Casa [Y/n]: ")
-        if prompt_casa_install and prompt_casa_install.lower().startswith('y'):
+        if not prompt_casa_install.lower().startswith('n'):
             install_components['casa'] = True
     else:
         print("Casa is allready installed on this system")
         install_components['casa'] = False
 
     prompt_gluu_passwurd_api_keystore = input("Generate Gluu Passwurd API Keystore [Y/n]: ")
-    if prompt_gluu_passwurd_api_keystore.lower().startswith('y'):
+    if not prompt_gluu_passwurd_api_keystore.lower().startswith('n'):
         argsp.gluu_passwurd_cert = True
 
     if not (install_components['casa'] or install_components['admin_ui'] or argsp.gluu_passwurd_cert):
