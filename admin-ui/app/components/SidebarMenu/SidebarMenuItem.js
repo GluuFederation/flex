@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import classNames from 'classnames'
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from 'uuid'
 import { MenuContext } from './MenuContext'
 
 /**
