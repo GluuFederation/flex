@@ -1,6 +1,27 @@
 name: release
 on:
   workflow_dispatch:
+    inputs:
+      node_release_as:
+        description: 'Release version for the admin ui'
+        required: true
+        default: '1.0.4'
+      java_release_as:
+        description: 'Release version for the java projects casa'
+        required: true
+        default: '5.0.0-3'
+      docker_release_as:
+        description: 'Release version for the docker images docker-*'
+        required: true
+        default: '1.0.4-1'
+      python_release_as:
+        description: 'Release version for the python projects'
+        required: true
+        default: '1.0.4'
+      mega_release_as:
+        description: 'Mega release version'
+        required: true
+        default: '5.0.0-3'
 jobs:
   release-java-pr:
     runs-on: ubuntu-latest
@@ -38,6 +59,7 @@ jobs:
          release-type: maven
          package-name: ${{ matrix.maven }}
          monorepo-tags: true
+         release-as: ${{ github.event.inputs.java_release_as }}
   release-simple-pr:
     needs: release-java-pr
     runs-on: ubuntu-latest
@@ -45,7 +67,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        simple: [ "docker-casa", "docker-admin-ui" ]
+        simple: [ "docs", "docker-casa", "docker-admin-ui" ]
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -68,6 +90,7 @@ jobs:
         git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
 
     - uses: google-github-actions/release-please-action@v3.5
+      if: ${{ matrix.simple }} == "docker-casa"
       id: release-please
       with:
          path: ${{ matrix.simple }}
@@ -75,6 +98,27 @@ jobs:
          release-type: simple
          package-name: ${{ matrix.simple }}
          monorepo-tags: true
+         release-as: ${{ github.event.inputs.java_release_as }}
+    - uses: google-github-actions/release-please-action@v3.5
+      if: ${{ matrix.simple }} == "docker-admin-ui"
+      id: release-please
+      with:
+         path: ${{ matrix.simple }}
+         token: ${{ secrets.MOWORKFLOWTOKEN }}
+         release-type: simple
+         package-name: ${{ matrix.simple }}
+         monorepo-tags: true
+         release-as: ${{ github.event.inputs.docker_release_as }}
+    - uses: google-github-actions/release-please-action@v3.5
+      if: ${{ matrix.simple }} == "docs"
+      id: release-please
+      with:
+         path: ${{ matrix.simple }}
+         token: ${{ secrets.MOWORKFLOWTOKEN }}
+         release-type: simple
+         package-name: ${{ matrix.simple }}
+         monorepo-tags: true
+         release-as: ${{ github.event.inputs.mega_release_as }}
   release-python-pr:
     # Wait for other jobs to finish. This limits the API rate limit issue
     needs: release-simple-pr
@@ -113,6 +157,7 @@ jobs:
          release-type: python
          package-name: ${{ matrix.python-projects }}
          monorepo-tags: true
+         release-as: ${{ github.event.inputs.python_release_as }}
   release-node-pr:
     # Wait for other jobs to finish. This limits the API rate limit issue
     needs: release-python-pr
@@ -151,6 +196,8 @@ jobs:
          release-type: node
          package-name: ${{ matrix.node-projects }}
          monorepo-tags: true
+         release-as: ${{ github.event.inputs.node_release_as }}
+
   mega-release-pr:
     needs: release-node-pr
     runs-on: ubuntu-latest
@@ -181,3 +228,4 @@ jobs:
       with:
          token: ${{ secrets.MOWORKFLOWTOKEN }}
          release-type: simple
+         release-as: ${{ github.event.inputs.mega_release_as }}
