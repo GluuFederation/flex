@@ -91,7 +91,7 @@ jobs:
 
     - uses: google-github-actions/release-please-action@v3.5
       if: ${{ matrix.simple }} == "docker-casa"
-      id: release-please
+      id: release-casa
       with:
          path: ${{ matrix.simple }}
          token: ${{ secrets.MOWORKFLOWTOKEN }}
@@ -101,7 +101,7 @@ jobs:
          release-as: ${{ github.event.inputs.java_release_as }}
     - uses: google-github-actions/release-please-action@v3.5
       if: ${{ matrix.simple }} == "docker-admin-ui"
-      id: release-please
+      id: release-admin-ui
       with:
          path: ${{ matrix.simple }}
          token: ${{ secrets.MOWORKFLOWTOKEN }}
@@ -111,7 +111,7 @@ jobs:
          release-as: ${{ github.event.inputs.docker_release_as }}
     - uses: google-github-actions/release-please-action@v3.5
       if: ${{ matrix.simple }} == "docs"
-      id: release-please
+      id: release-docs
       with:
          path: ${{ matrix.simple }}
          token: ${{ secrets.MOWORKFLOWTOKEN }}
