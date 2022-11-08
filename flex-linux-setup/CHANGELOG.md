@@ -1,5 +1,48 @@
 # Changelog
 
+## 1.0.4 (2022-11-08)
+
+
+### Features
+
+* **admin-ui:** resolved merge conflict [#412](https://github.com/GluuFederation/flex/issues/412) ([ea5c1e6](https://github.com/GluuFederation/flex/commit/ea5c1e64f7726d947b7bf9fb6cc18f964cb2071c))
+* **admin-ui:** reviewed previously updated dependencies [#416](https://github.com/GluuFederation/flex/issues/416) ([ab81760](https://github.com/GluuFederation/flex/commit/ab81760457727c7a5890d89c2f2ec3dabdeb12eb))
+* flex-linux-setup add options to setup.properties ([#467](https://github.com/GluuFederation/flex/issues/467)) ([29b9055](https://github.com/GluuFederation/flex/commit/29b9055458f229b1587535cbdf09ded63699fcfd))
+* flex-linux-setup ask compoments to install (ref: [#282](https://github.com/GluuFederation/flex/issues/282)) ([8907087](https://github.com/GluuFederation/flex/commit/8907087b057e4ccc31d37d1145a7e60b26820f70))
+* flex-linux-setup non-interactive mode ([#340](https://github.com/GluuFederation/flex/issues/340)) ([15a73dc](https://github.com/GluuFederation/flex/commit/15a73dcab6bb8763a7a611a60cb16c041b0707cc))
+* flex-linux-setup option -download-exit ([#474](https://github.com/GluuFederation/flex/issues/474)) ([62c5556](https://github.com/GluuFederation/flex/commit/62c555695426de5f83a74db4bd9e0dbc9eeb061d))
+* flex-linux-setup uninstall ([#461](https://github.com/GluuFederation/flex/issues/461)) ([de8c700](https://github.com/GluuFederation/flex/commit/de8c700f9002379428969d2f287d9e0f1246312b))
+* generate jans-config-api client from multiple swagger specs [#426](https://github.com/GluuFederation/flex/issues/426) ([0870b03](https://github.com/GluuFederation/flex/commit/0870b036b89840f178c6ad4fb2fd7d2d847fe89c))
+
+
+### Bug Fixes
+
+* fix plugin installation script [#589](https://github.com/GluuFederation/flex/issues/589) ([4da2e07](https://github.com/GluuFederation/flex/commit/4da2e0738a6db0745f9717d62537a6e9cad3497d))
+* flex linux setup admin UI client ([#542](https://github.com/GluuFederation/flex/issues/542)) ([ef51e0f](https://github.com/GluuFederation/flex/commit/ef51e0f26a7be83a6689709c38434c0bbd7d0c91))
+* flex-linus-setup code smell ([c10bdd3](https://github.com/GluuFederation/flex/commit/c10bdd3b00873ecfd7fba5cb08bac3ebf93b6f1f))
+* flex-linux-setup code smell - remove unused var ([a5856d1](https://github.com/GluuFederation/flex/commit/a5856d1c4b952b1fa458f78c7f59142d60c142a0))
+* flex-linux-setup download node ([61b6246](https://github.com/GluuFederation/flex/commit/61b6246b86fddcaa4451bc92aec8da47cc96180b))
+* flex-linux-setup enable apache module mod_dir (ref: [#291](https://github.com/GluuFederation/flex/issues/291)) ([d92b21a](https://github.com/GluuFederation/flex/commit/d92b21a07a2192765a4c17b10edee911f5d217f6))
+* flex-linux-setup import shutil ([3a2f346](https://github.com/GluuFederation/flex/commit/3a2f346d9b2a1864ed33cb0ded1c5bad15e94e80))
+* flex-linux-setup missing source_files definition for casa ([363da1d](https://github.com/GluuFederation/flex/commit/363da1df736c5755933e2aea11051de49b0e36da))
+* flex-linux-setup nod download ([#508](https://github.com/GluuFederation/flex/issues/508)) ([bab8837](https://github.com/GluuFederation/flex/commit/bab8837291e3450a50419e8e03cc9e1da1820c36))
+* flex-linux-setup noninteractive setup ([ad46bd6](https://github.com/GluuFederation/flex/commit/ad46bd6ccf6ea3ddc62a7fc1a30382c9f28e5e42))
+* flex-linux-setup prompts ([8dad937](https://github.com/GluuFederation/flex/commit/8dad9375532205878838dbd2dea9ae365964250f))
+* flex-linux-setup python executable ([#480](https://github.com/GluuFederation/flex/issues/480)) ([f9f7682](https://github.com/GluuFederation/flex/commit/f9f76822a97958b775dfc3f9989fe367410dca24))
+* flex-linux-setup use encoded client secret ([427e2bb](https://github.com/GluuFederation/flex/commit/427e2bb6efc7c80bc9e843ee22fa5bac3e758383))
+* flex-linux-setup version 1.0.4-SNAPSHOT ([9f4776d](https://github.com/GluuFederation/flex/commit/9f4776debedd9d8ea0612e2ffc5086b1cd1360f9))
+* flex-linux-setup-replace replace-shlex.join() by subprocess.list2cmdline() ([57a4213](https://github.com/GluuFederation/flex/commit/57a42136991157a56168313126d82419fc14e4d8))
+* getting ready to release 5.0.0-3 ([e8f3ecc](https://github.com/GluuFederation/flex/commit/e8f3eccc3804a0bcc6075d755dad209b188db444))
+* jans-linux-setup flex-plugin install dir ([8c91b77](https://github.com/GluuFederation/flex/commit/8c91b7784bfc19a2340a1c1a10dcc8fecadcbec0))
+* jans-linux-setup set Jannsen version to 1.0.3 ([e4e6a61](https://github.com/GluuFederation/flex/commit/e4e6a61a7bdf55882cc9d2c1d33d5d32cd4e5f46))
+
+
+### Miscellaneous Chores
+
+* release 0.1.1 ([fa0f8a3](https://github.com/GluuFederation/flex/commit/fa0f8a3d951c34317925ef8b147d35110f5916c0))
+* release 0.1.2 ([0185ce9](https://github.com/GluuFederation/flex/commit/0185ce9c9c7504f145980ffe7af104baaa34b81c))
+* release 5.0.0-2 ([06c6e64](https://github.com/GluuFederation/flex/commit/06c6e64f43a7c98bcb04ba1d48ec97044c19d75d))
+
 ## [0.1.2](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v0.1.1...flex-linux-setup-v0.1.2) (2022-08-31)
 
 
