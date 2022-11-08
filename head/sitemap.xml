@@ -6,6 +6,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://docs.gluu.org/head/CHANGELOG/</loc>
+         <lastmod>2022-11-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://docs.gluu.org/head/source/admin-ui/</loc>
          <lastmod>2022-11-08</lastmod>
          <changefreq>daily</changefreq>
