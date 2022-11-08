@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.0.4 (2022-11-08)
+
+
+### Features
+
+* **admin-ui:** resolved merge conflict [#412](https://github.com/GluuFederation/flex/issues/412) ([ea5c1e6](https://github.com/GluuFederation/flex/commit/ea5c1e64f7726d947b7bf9fb6cc18f964cb2071c))
+* **admin-ui:** reviewed previously updated dependencies [#416](https://github.com/GluuFederation/flex/issues/416) ([ab81760](https://github.com/GluuFederation/flex/commit/ab81760457727c7a5890d89c2f2ec3dabdeb12eb))
+* **helm-charts:** allow emitting logs for preStop hook ([2cdd90f](https://github.com/GluuFederation/flex/commit/2cdd90f900050d8c4999f8e90bb63706cefc525e))
+
+
+### Bug Fixes
+
+* add cbSqlDbSchema propetry to helm chart ([2dac5c8](https://github.com/GluuFederation/flex/commit/2dac5c884925cf68a3c562142191a27b945e1ca6))
+* add quote on prometheous env ([c4a20b9](https://github.com/GluuFederation/flex/commit/c4a20b907a4a1d6fece8b5eb8b90a8f98c7fbde6))
+* add rewrite rule directly in the default nginx conf of the docker admin ui ([#524](https://github.com/GluuFederation/flex/issues/524)) ([5798ee9](https://github.com/GluuFederation/flex/commit/5798ee9f6320602d756cb2d33fe297200d2231dd))
+* allow overriding istio gateway ([280f432](https://github.com/GluuFederation/flex/commit/280f432343564f78db4702110b6fbc562625e12a))
+* **charts:** fix values.yaml schema ([09e8f14](https://github.com/GluuFederation/flex/commit/09e8f14c65cb8024aab95da7ecf5295ed0e20b4b))
+* getting ready to release 5.0.0-3 ([e8f3ecc](https://github.com/GluuFederation/flex/commit/e8f3eccc3804a0bcc6075d755dad209b188db444))
+* helm chart nil SQLSCHEMA property ([0a87349](https://github.com/GluuFederation/flex/commit/0a87349ac9d858a45406437c1e509a887854dc52))
+* typos in istio vs ([1c48e40](https://github.com/GluuFederation/flex/commit/1c48e4034492c0961a2e941f13987869c2a3f37f))
+* update cronjob api versions ([c572384](https://github.com/GluuFederation/flex/commit/c5723843caa73a306aca25a297173d8a862845e6))
+
+
+### Miscellaneous Chores
+
+* release 0.1.1 ([fa0f8a3](https://github.com/GluuFederation/flex/commit/fa0f8a3d951c34317925ef8b147d35110f5916c0))
+* release 0.1.2 ([0185ce9](https://github.com/GluuFederation/flex/commit/0185ce9c9c7504f145980ffe7af104baaa34b81c))
+* release 5.0.0-2 ([06c6e64](https://github.com/GluuFederation/flex/commit/06c6e64f43a7c98bcb04ba1d48ec97044c19d75d))
+
 ## [0.1.2](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v0.1.1...flex-cn-setup-v0.1.2) (2022-08-31)
 
 
