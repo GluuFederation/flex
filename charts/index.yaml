@@ -7,6 +7,111 @@ entries:
       artifacthub.io/containsSecurityUpdates: "true"
       artifacthub.io/images: |
         - name: auth-server
+          image: janssenproject/auth-server:1.0.4-1
+        - name: auth-server-key-rotation
+          image: janssenproject/certmanager:1.0.4-1
+        - name: configuration-manager
+          image: janssenproject/configurator:1.0.4-1
+        - name:  config-api
+          image: janssenproject/config-api:1.0.4-1
+        - name: fido2
+          image: janssenproject/fido2:1.0.4-1
+        - name: opendj
+          image: gluufederation/opendj:5.0.0_dev
+        - name: persistence
+          image: janssenproject/persistence-loader:1.0.4-1
+        - name: scim
+          image: janssenproject/scim:1.0.4-1
+        - name: casa
+          image: gluufederation/casa:5.0.0_dev
+        - name: admin-ui
+          image: gluufederation/admin-ui:1.0.1_dev
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/prerelease: "true"
+      catalog.cattle.io/certified: partner
+      catalog.cattle.io/display-name: Gluu Cloud Identity and Access Management
+      catalog.cattle.io/release-name: gluu
+    apiVersion: v2
+    appVersion: 5.0.0
+    created: "2022-11-08T15:20:54.334928061Z"
+    dependencies:
+    - condition: global.config.enabled
+      name: config
+      repository: ""
+      version: 5.0.8
+    - condition: global.config-api.enabled
+      name: config-api
+      repository: ""
+      version: 5.0.8
+    - condition: global.opendj.enabled
+      name: opendj
+      repository: ""
+      version: 5.0.8
+    - condition: global.auth-server.enabled
+      name: auth-server
+      repository: ""
+      version: 5.0.8
+    - condition: global.admin-ui.enabled
+      name: admin-ui
+      repository: ""
+      version: 5.0.8
+    - condition: global.fido2.enabled
+      name: fido2
+      repository: ""
+      version: 5.0.8
+    - condition: global.scim.enabled
+      name: scim
+      repository: ""
+      version: 5.0.8
+    - condition: global.nginx-ingress.enabled
+      name: nginx-ingress
+      repository: ""
+      version: 5.0.8
+    - condition: global.oxshibboleth.enabled
+      name: oxshibboleth
+      repository: ""
+      version: 5.0.8
+    - condition: global.oxpassport.enabled
+      name: oxpassport
+      repository: ""
+      version: 5.0.8
+    - condition: global.casa.enabled
+      name: casa
+      repository: ""
+      version: 5.0.8
+    - condition: global.auth-server-key-rotation.enabled
+      name: auth-server-key-rotation
+      repository: ""
+      version: 5.0.8
+    - condition: global.persistence.enabled
+      name: persistence
+      repository: ""
+      version: 5.0.8
+    - condition: global.istio.ingress
+      name: cn-istio-ingress
+      repository: ""
+      version: 5.0.8
+    description: Gluu Access and Identity Management
+    digest: 17afb70e19f4ea37eb38b00d2bcfbcc1d9841c3dd7317db8645ba9d0116245b3
+    home: https://www.gluu.org
+    icon: https://gluu.org/docs/gluu-server/favicon.ico
+    kubeVersion: '>=v1.21.0-0'
+    maintainers:
+    - email: support@gluu.org
+      name: moabu
+    name: gluu
+    sources:
+    - https://gluu.org/docs/gluu-server
+    - https://github.com/GluuFederation/flex/flex-cn-setup
+    urls:
+    - gluu-5.0.8.tgz
+    version: 5.0.8
+  - annotations:
+      artifacthub.io/changes: |
+        - Update always
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/images: |
+        - name: auth-server
           image: janssenproject/auth-server:1.0.2-1
         - name: auth-server-key-rotation
           image: janssenproject/certmanager:1.0.2-1
@@ -33,7 +138,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-08T15:20:15.246935267Z"
+    created: "2022-11-08T15:20:54.321675496Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -136,7 +241,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-08T15:20:15.234096709Z"
+    created: "2022-11-08T15:20:54.309215528Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -243,7 +348,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-08T15:20:15.219656057Z"
+    created: "2022-11-08T15:20:54.294542167Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -350,7 +455,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-08T15:20:15.206533001Z"
+    created: "2022-11-08T15:20:54.280893002Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -457,7 +562,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-08T15:20:15.193252245Z"
+    created: "2022-11-08T15:20:54.267353237Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -566,7 +671,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-08T15:20:15.17952769Z"
+    created: "2022-11-08T15:20:54.251703178Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -683,7 +788,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-08T15:20:15.163928242Z"
+    created: "2022-11-08T15:20:54.236333218Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -800,7 +905,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-08T15:20:15.150683286Z"
+    created: "2022-11-08T15:20:54.223549851Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -881,4 +986,4 @@ entries:
     urls:
     - gluu-5.0.0.tgz
     version: 5.0.0
-generated: "2022-11-08T15:20:15.13737833Z"
+generated: "2022-11-08T15:20:54.210333086Z"
