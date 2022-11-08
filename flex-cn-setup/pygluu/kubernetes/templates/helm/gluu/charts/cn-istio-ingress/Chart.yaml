@@ -1,7 +1,7 @@
 
 apiVersion: v2
 name:  cn-istio-ingress
-version: 5.0.7
+version: 5.0.8
 kubeVersion: ">=v1.21.0-0"
 description: Istio Gateway
 type: application

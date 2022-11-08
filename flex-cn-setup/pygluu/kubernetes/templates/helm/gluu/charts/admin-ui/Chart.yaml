@@ -1,6 +1,6 @@
 apiVersion: v2
 name: admin-ui
-version: 5.0.7
+version: 5.0.8
 kubeVersion: ">=v1.21.0-0"
 description: Admin GUI. Requires license.
 type: application
