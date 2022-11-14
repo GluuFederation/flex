@@ -18,6 +18,7 @@ import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicatio
 import { useNavigate } from 'react-router-dom'
 import {
   hasPermission,
+  ROLE_DELETE,
   ROLE_READ,
   ROLE_WRITE,
   USER_READ,
@@ -145,7 +146,7 @@ function UserList(props) {
       disabled: !hasPermission(permissions, ROLE_WRITE),
     }))
   }
-  if (hasPermission(permissions, ROLE_WRITE)) {
+  if (hasPermission(permissions, ROLE_DELETE)) {
     myActions.push((rowData) => ({
       icon: () => <DeleteOutlined />,
       iconProps: {
