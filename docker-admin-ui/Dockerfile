@@ -1,4 +1,4 @@
-FROM node:14.20-alpine3.16 AS builder
+FROM node:fermium-alpine AS builder
 
 RUN apk update \
     && apk upgrade --available \
@@ -30,7 +30,7 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
 # Application
 # ===========
 
-FROM node:14.20-alpine3.16
+FROM node:fermium-alpine
 
 # ======
 # alpine
