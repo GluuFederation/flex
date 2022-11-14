@@ -16,11 +16,11 @@ import {
 import { randomAvatar } from './../../../../utilities'
 
 import { NavbarActivityFeed } from
-'./../../../../layout/components/NavbarActivityFeed'
+  './../../../../layout/components/NavbarActivityFeed'
 import { NavbarMessages } from
-'./../../../../layout/components/NavbarMessages'
+  './../../../../layout/components/NavbarMessages'
 import { NavbarUser } from
-'./../../../../layout/components/NavbarUser'
+  './../../../../layout/components/NavbarUser'
 import { DropdownProfile } from 'Routes/components/Dropdowns/DropdownProfile'
 import { NavbarNavigation } from 'Routes/components/Navbars/NavbarNavigation'
 import { LogoThemed } from 'Routes/components/LogoThemed/LogoThemed'

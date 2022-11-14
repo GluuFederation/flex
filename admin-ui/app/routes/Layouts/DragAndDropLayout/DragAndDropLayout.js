@@ -1,5 +1,5 @@
 import React from 'react'
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from 'uuid'
 import {
   chain,
   random,
@@ -173,31 +173,31 @@ export class DragAndDropLayout extends React.Component {
     )
   }
 
-    _generateLayout = (rowsCount = 3) => {
-      const TOTAL_ROWS = 12
-      const HEIGHT = 5
-      let output = {}
+  _generateLayout = (rowsCount = 3) => {
+    const TOTAL_ROWS = 12
+    const HEIGHT = 5
+    let output = {}
 
-      for (let i = 0; i < rowsCount; i++) {
-        let availableRow = TOTAL_ROWS
-        while (availableRow > 0) {
-          const newCol = availableRow < TOTAL_ROWS ? availableRow : 
-            random(3, 9)
+    for (let i = 0; i < rowsCount; i++) {
+      let availableRow = TOTAL_ROWS
+      while (availableRow > 0) {
+        const newCol = availableRow < TOTAL_ROWS ? availableRow : 
+          random(3, 9)
 
-          availableRow -= newCol
-          output = {
-            ...output,
-            [uuid()]: { md: newCol, h: HEIGHT }
-          }
+        availableRow -= newCol
+        output = {
+          ...output,
+          [uuid()]: { md: newCol, h: HEIGHT }
         }
       }
-
-      return output
     }
 
-    _generateTexts = (layouts) =>
-      mapValues(layouts, () => ({
-        title: 'faker.commerce.productName()',
-        desc: 'faker.lorem.paragraph()'
-      }))
+    return output
+  }
+
+  _generateTexts = (layouts) =>
+    mapValues(layouts, () => ({
+      title: 'faker.commerce.productName()',
+      desc: 'faker.lorem.paragraph()'
+    }))
 }

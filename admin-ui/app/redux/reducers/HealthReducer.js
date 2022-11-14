@@ -10,24 +10,24 @@ const reducerName = 'healthReducer'
 
 export default function healthReducer(state = INIT_STATE, action) {
   switch (action.type) {
-  case GET_HEALTH:
-    return {
-      ...state,
-      loading: true,
-    }
-  case GET_HEALTH_RESPONSE:
-    if (action.payload.data) {
+    case GET_HEALTH:
       return {
         ...state,
-        serverStatus: action.payload.data.status,
-        dbStatus: action.payload.data.db_status,
-        loading: false,
+        loading: true,
       }
-    } else {
+    case GET_HEALTH_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          serverStatus: action.payload.data.status,
+          dbStatus: action.payload.data.db_status,
+          loading: false,
+        }
+      } else {
+        return handleDefault()
+      }
+    default:
       return handleDefault()
-    }
-  default:
-    return handleDefault()
   }
 
   function handleDefault() {

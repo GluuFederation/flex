@@ -70,7 +70,7 @@ export const RoutedContent = () => {
 export const RoutedNavbars = () => (
   <Routes>
     <Route
-    path="/*"
+      path="/*"
       element={
         <GluuNavBar themeStyle="color" themeColor="primary" navStyle="accent" />
       }

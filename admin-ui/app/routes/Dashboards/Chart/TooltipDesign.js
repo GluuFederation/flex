@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 function TooltipDesign({ payload }) {
   const { t } = useTranslation()
-  let objValues = {
+  const objValues = {
     client_credentials_access_token_count:
     t('tooltips.client_credentials_access_token_count'),
     authz_code_access_token_count: t('tooltips.authz_code_access_token_count'),

@@ -53,8 +53,8 @@ function GluuTypeAheadForDn({
                   typeof item == 'string'
                     ? item
                     : item.customOption
-                    ? item.label
-                    : item.dn,
+                      ? item.label
+                      : item.dn,
                 ),
               )
             }}

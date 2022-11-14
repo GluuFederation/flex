@@ -5,12 +5,12 @@ export default class OidcDiscoveryApi {
     this.api = api
   }
   
-    // Get OIDC Discovery
-    getOidcDiscovery = () => {
-      return new Promise((resolve, reject) => {
-        this.api.getProperties((error, data) => {
-          handleResponse(error, reject, resolve, data)
-        })
+  // Get OIDC Discovery
+  getOidcDiscovery = () => {
+    return new Promise((resolve, reject) => {
+      this.api.getProperties((error, data) => {
+        handleResponse(error, reject, resolve, data)
       })
-    }
+    })
+  }
 }
