@@ -89,6 +89,7 @@ export const STAT_JANS_READ = BASE_URL + '/config/stats.jans_stat.readonly'
 
 export const USER_READ = BASE_URL + '/config/user.readonly'
 export const USER_WRITE = BASE_URL + '/config/user.write'
+export const USER_DELETE = BASE_URL + '/config/user.delete'
 
 export const SESSION_READ = BASE_URL + '/jans-auth-server/session.readonly'
 export const SESSION_DELETE = BASE_URL + '/jans-auth-server/session.delete'
