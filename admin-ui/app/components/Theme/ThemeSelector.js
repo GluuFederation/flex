@@ -7,7 +7,7 @@ import {
   CardBody,
   Button,
   FormGroup,
-  CustomInput
+  Input as CustomInput
 } from 'reactstrap'
 
 import 'Styles/components/theme-selector.scss'

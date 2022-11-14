@@ -162,7 +162,7 @@ public class SmppMobilePhoneService extends MobilePhoneService {
                             ),
                             (byte)0,                           // default message id
                             body.getBytes()
-                    );
+                    ).getMessageId();
 
                     status = SMSDeliveryStatus.SUCCESS;
                     logger.info("Message \"{}\" sent to #{} with message id {}", body, number, messageId);

@@ -65,7 +65,7 @@ function getToken(url, clientId, clientSecret) {
 			{name : "Content-Type", value : "application/x-www-form-urlencoded"}
 	]
 	var payload = "grant_type=client_credentials"
-	payload += "&scope=casa.enroll%20casa.2fa"
+	payload += "&scope=https%3A%2F%2Fjans.io%2Fcasa.enroll%20https%3A%2F%2Fjans.io%2Fcasa.2fa"
 	return genericPOST(url, payload, headers)
 				.then(result => JSON.parse(result).access_token)
 

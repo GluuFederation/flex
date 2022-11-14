@@ -388,7 +388,7 @@ function UserForm({ formik }) {
                     (el) => el.name === data.name,
                   )
                   if (
-                    data.status == 'ACTIVE' &&
+                    data.status == 'active' &&
                     !usedClaimes.includes(data.name)
                   ) {
                     if (

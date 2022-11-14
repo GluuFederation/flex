@@ -191,7 +191,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.0.3",
+  "JANS_APP_VERSION": "1.0.4",
   "JANS_BUILD": "-SNAPSHOT", 
   "NODE_VERSION": "v14.18.2",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
@@ -409,6 +409,8 @@ class flex_installer(JettyInstaller):
         self.rewrite_cli_ini()
 
     def install_casa(self):
+
+        self.source_files = [(self.casa_war_fn,)]
 
         print("Adding twillo and casa config to jans-auth")
         self.copyFile(self.casa_config_fn, self.jans_auth_custom_lib_dir)
@@ -685,7 +687,7 @@ def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
-        if prompt_admin_ui_install and prompt_admin_ui_install.lower().startswith('y'):
+        if not prompt_admin_ui_install.lower().startswith('n'):
             install_components['admin_ui'] = True
     else:
         print("Admin UI is allready installed on this system")
@@ -693,14 +695,14 @@ def prompt_for_installation():
 
     if not os.path.exists(os.path.join(Config.jetty_base, 'casa')):
         prompt_casa_install = input("Install Casa [Y/n]: ")
-        if prompt_casa_install and prompt_casa_install.lower().startswith('y'):
+        if not prompt_casa_install.lower().startswith('n'):
             install_components['casa'] = True
     else:
         print("Casa is allready installed on this system")
         install_components['casa'] = False
 
     prompt_gluu_passwurd_api_keystore = input("Generate Gluu Passwurd API Keystore [Y/n]: ")
-    if prompt_gluu_passwurd_api_keystore.lower().startswith('y'):
+    if not prompt_gluu_passwurd_api_keystore.lower().startswith('n'):
         argsp.gluu_passwurd_cert = True
 
     if not (install_components['casa'] or install_components['admin_ui'] or argsp.gluu_passwurd_cert):

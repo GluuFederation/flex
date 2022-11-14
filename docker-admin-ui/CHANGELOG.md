@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.0.4-1 (2022-11-08)
+
+
+### Features
+
+* **admin-ui:** resolved merge conflict [#412](https://github.com/GluuFederation/flex/issues/412) ([ea5c1e6](https://github.com/GluuFederation/flex/commit/ea5c1e64f7726d947b7bf9fb6cc18f964cb2071c))
+* **docker-admin-ui:** add support for plugins installation ([#319](https://github.com/GluuFederation/flex/issues/319)) ([f660fb8](https://github.com/GluuFederation/flex/commit/f660fb805c6f67439c5952a393ad1e192a14d342))
+* **image:** add authentication method selection for admin-ui image ([#540](https://github.com/GluuFederation/flex/issues/540)) ([d97d10d](https://github.com/GluuFederation/flex/commit/d97d10d28e2881e8cc71dad28c2c4fabaff164af))
+* **image:** use admin-ui client encoded secret to render properties ([#567](https://github.com/GluuFederation/flex/issues/567)) ([31e9142](https://github.com/GluuFederation/flex/commit/31e9142c887d4cd8d2be1f1dc7b83a21ff23fb2b))
+
+
+### Bug Fixes
+
+* add rewrite rule directly in the default nginx conf of the docker admin ui ([#524](https://github.com/GluuFederation/flex/issues/524)) ([5798ee9](https://github.com/GluuFederation/flex/commit/5798ee9f6320602d756cb2d33fe297200d2231dd))
+* docker-admin-ui/Dockerfile to reduce vulnerabilities ([a2050c8](https://github.com/GluuFederation/flex/commit/a2050c8dba1154d66cb09a8ea8a0152440d1eb9e))
+* getting ready to release 5.0.0-3 ([e8f3ecc](https://github.com/GluuFederation/flex/commit/e8f3eccc3804a0bcc6075d755dad209b188db444))
+* **image:** add missing openapi-merge-cli executable ([#526](https://github.com/GluuFederation/flex/issues/526)) ([c14b1f4](https://github.com/GluuFederation/flex/commit/c14b1f48b6fa05675b80169a7ecfe98be42fbea1))
+* **image:** admin UI regressions ([#537](https://github.com/GluuFederation/flex/issues/537)) ([b466435](https://github.com/GluuFederation/flex/commit/b466435cc3c230c658c439cba21665b29a40271d))
+
+
+### Miscellaneous Chores
+
+* release 1.0.0-1 ([6463768](https://github.com/GluuFederation/flex/commit/64637684b9a9276dc53d62cbee116415d1b47d7c))
+* release 1.0.1-1 ([366d4b8](https://github.com/GluuFederation/flex/commit/366d4b8f25c6722973fd2f8376f596ccb2b57c08))
+* release 5.0.0-2 ([06c6e64](https://github.com/GluuFederation/flex/commit/06c6e64f43a7c98bcb04ba1d48ec97044c19d75d))
+
 ## [1.0.1-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.0-1...docker-admin-ui-v1.0.1-1) (2022-08-31)
 
 

@@ -1,7 +1,7 @@
 
 apiVersion: v2
 name: persistence
-version: 5.0.7
+version: 5.0.8
 kubeVersion: ">=v1.21.0-0"
 description: Job to generate data and initial config for Gluu Server persistence layer.
 type: application

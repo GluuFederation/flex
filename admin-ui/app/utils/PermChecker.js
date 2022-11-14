@@ -85,7 +85,7 @@ export const SQL_WRITE = BASE_URL + '/config/database/sql.write'
 export const SQL_DELETE = BASE_URL + '/config/database/sql.delete'
 
 export const STAT_READ = BASE_URL + '/config/stats.readonly'
-export const STAT_JANS_READ = BASE_URL + '/config/stats.jans_stat.readonly'
+export const STAT_JANS_READ = 'jans_stat'
 
 export const USER_READ = BASE_URL + '/config/user.readonly'
 export const USER_WRITE = BASE_URL + '/config/user.write'

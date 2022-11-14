@@ -37,7 +37,7 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
 
   const [put, setPut] = useState([])
   const authScripts = scripts
-    .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
+    .filter((item) => item.scriptType == 'person_authentication')
     .filter((item) => item.enabled)
     .map((item) => item.name)
 

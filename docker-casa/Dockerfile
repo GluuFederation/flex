@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2022-08-31 10:39'
+ENV GLUU_BUILD_DATE='2022-11-07 18:32'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -74,7 +74,7 @@ RUN mkdir -p /opt/prometheus \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=0783176284eec597c4fe6d83e892c82bcbe5e138
+ENV JANS_SOURCE_VERSION=d1890e76c13c8c2c3dcdcc0625edd04cf552bbf9
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -101,7 +101,7 @@ RUN cd /tmp/jans \
 # flex setup sync
 # ===============
 
-ENV FLEX_VERSION=36eb4b2cda6a119adc90c68af15bc9c159293ef4
+ENV FLEX_VERSION=31e9142c887d4cd8d2be1f1dc7b83a21ff23fb2b
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 ARG CASA_EXTRAS_DIR=casa/extras
 

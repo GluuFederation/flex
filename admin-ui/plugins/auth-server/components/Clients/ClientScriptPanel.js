@@ -6,30 +6,30 @@ const DOC_CATEGORY = 'openid_client'
 
 function ClientScriptPanel({ client, scripts, formik, viewOnly }) {
   const postScripts = scripts
-    .filter((item) => item.scriptType == 'POST_AUTHN')
+    .filter((item) => item.scriptType == 'post_authn')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   const spontaneousScripts = scripts
-    .filter((item) => item.scriptType == 'SPONTANEOUS_SCOPE')
+    .filter((item) => item.scriptType == 'spontaneous_scope')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   const consentScripts = scripts
-    .filter((item) => item.scriptType == 'CONSENT_GATHERING')
+    .filter((item) => item.scriptType == 'consent_gathering')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
   const instrospectionScripts = scripts
-    .filter((item) => item.scriptType == 'INTROSPECTION')
+    .filter((item) => item.scriptType == 'introspection')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   const ropcScripts = scripts
-    .filter((item) => item.scriptType == 'RESOURCE_OWNER_PASSWORD_CREDENTIALS')
+    .filter((item) => item.scriptType == 'resource_owner_password_credentials')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
   const updateTokenScriptDns = scripts
-    .filter((item) => item.scriptType == 'UPDATE_TOKEN')
+    .filter((item) => item.scriptType == 'update_token')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
