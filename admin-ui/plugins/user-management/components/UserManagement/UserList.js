@@ -18,6 +18,7 @@ import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicatio
 import { useNavigate } from 'react-router-dom'
 import {
   hasPermission,
+  ROLE_DELETE,
   ROLE_READ,
   ROLE_WRITE,
   USER_READ,
@@ -145,7 +146,7 @@ function UserList(props) {
       disabled: !hasPermission(permissions, ROLE_WRITE),
     }))
   }
-  if (hasPermission(permissions, ROLE_WRITE)) {
+  if (hasPermission(permissions, ROLE_DELETE)) {
     myActions.push((rowData) => ({
       icon: () => <DeleteOutlined />,
       iconProps: {
@@ -191,12 +192,13 @@ function UserList(props) {
       dispatch(getAttributesRoot({pattern:usedAttributes.toString(), limit:100}))
     }
   },[usersList])
-
+  console.log("USER READ",USER_READ)
+  console.log("USER PERM",permissions)
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuViewWrapper canShow={hasPermission(permissions, ROLE_READ)}>
+          <GluuViewWrapper canShow={hasPermission(permissions, USER_READ)}>
             {usersList.length > 0 && (
               <MaterialTable
                 key={limit}

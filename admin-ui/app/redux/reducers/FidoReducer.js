@@ -15,39 +15,39 @@ const reducerName = 'fidoReducer'
 
 export default function fidoReducer(state = INIT_STATE, action) {
   switch (action.type) {
-  case GET_FIDO:
-    return handleLoading()
-  case GET_FIDO_RESPONSE:
-    if (action.payload.data) {
-      return {
-        ...state,
-        fido: action.payload.data,
-        loading: false,
+    case GET_FIDO:
+      return handleLoading()
+    case GET_FIDO_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          fido: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return handleDefault()
       }
-    } else {
-      return handleDefault()
-    }
-  case PUT_FIDO:
-    return handleLoading()
-  case PUT_FIDO_RESPONSE:
-    if (action.payload.data) {
-      return {
-        ...state,
-        fido: action.payload.data,
-        loading: false,
+    case PUT_FIDO:
+      return handleLoading()
+    case PUT_FIDO_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          fido: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return handleDefault()
       }
-    } else {
-      return handleDefault()
-    }
 
-  case RESET:
-    return {
-      ...state,
-      fido: INIT_STATE.fido,
-      loading: INIT_STATE.loading,
-    }
-  default:
-    return handleDefault()
+    case RESET:
+      return {
+        ...state,
+        fido: INIT_STATE.fido,
+        loading: INIT_STATE.loading,
+      }
+    default:
+      return handleDefault()
   }
 
   function handleLoading() {

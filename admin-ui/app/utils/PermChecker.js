@@ -89,16 +89,17 @@ export const STAT_JANS_READ = 'jans_stat'
 
 export const USER_READ = BASE_URL + '/config/user.readonly'
 export const USER_WRITE = BASE_URL + '/config/user.write'
+export const USER_DELETE = BASE_URL + '/config/user.delete'
 
 export const SESSION_READ = BASE_URL + '/jans-auth-server/session.readonly'
 export const SESSION_DELETE = BASE_URL + '/jans-auth-server/session.delete'
 
 export const hasPermission = (scopes, scope) => {
-  let available = false;
+  let available = false
   if (scopes) {
-    for(let i in scopes){
+    for(const i in scopes){
       if(scopes[i] === scope){
-        available = true;
+        available = true
       }
     }
   }

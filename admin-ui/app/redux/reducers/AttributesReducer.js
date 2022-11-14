@@ -10,23 +10,23 @@ const reducerName = 'attributesReducerRoot'
 
 export default function attributesReducerRoot(state = INIT_STATE, action) {
   switch (action.type) {
-  case GET_ATTRIBUTES_FOR_USER_MANAGEMENT:
-    return {
-      ...state,
-      loading: true,
-    }
-  case GET_ATTRIBUTES_FOR_USER_MANAGEMENT_RESPONSE:
-    if (action.payload.data) {
+    case GET_ATTRIBUTES_FOR_USER_MANAGEMENT:
       return {
         ...state,
-        loading: false,
-        items: _.unionBy(action.payload.data.entries, state.items, 'displayName'),
+        loading: true,
       }
-    } else {
+    case GET_ATTRIBUTES_FOR_USER_MANAGEMENT_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          loading: false,
+          items: _.unionBy(action.payload.data.entries, state.items, 'displayName'),
+        }
+      } else {
+        return handleDefault()
+      }
+    default:
       return handleDefault()
-    }
-  default:
-    return handleDefault()
   }
 
   function handleDefault() {

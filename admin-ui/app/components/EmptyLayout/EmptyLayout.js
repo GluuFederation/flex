@@ -10,7 +10,7 @@ class EmptyLayout extends React.Component {
     pageConfig: PropTypes.object.isRequired,
     children: PropTypes.node.isRequired,
     className: PropTypes.string
-  };
+  }
 
   componentDidMount() {
     this.props.pageConfig.setElementsVisibility({
