@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=5743f86c2802354db396be97b1dc5465d22851c4
+ENV ADMIN_UI_VERSION=292c90182c988a138c169b5cdc12a0da6397a04b
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -67,7 +67,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=d1890e76c13c8c2c3dcdcc0625edd04cf552bbf9
+ENV JANS_SOURCE_VERSION=fddbc51d305eee28895b806be178fe8e089b9fc6
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -189,7 +189,7 @@ EXPOSE 8080
 LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
-    version="1.0.1" \
+    version="1.0.5" \
     release="dev" \
     summary="Gluu Admin UI" \
     description=""
