@@ -18,10 +18,9 @@ import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicatio
 import { useNavigate } from 'react-router-dom'
 import {
   hasPermission,
-  ROLE_DELETE,
-  ROLE_READ,
   ROLE_WRITE,
   USER_READ,
+  USER_DELETE,
 } from '../../../../app/utils/PermChecker'
 import GluuAdvancedSearch from 'Routes/Apps/Gluu/GluuAdvancedSearch'
 import GluuCommitDialog from '../../../../app/routes/Apps/Gluu/GluuCommitDialog'
@@ -146,7 +145,7 @@ function UserList(props) {
       disabled: !hasPermission(permissions, ROLE_WRITE),
     }))
   }
-  if (hasPermission(permissions, ROLE_DELETE)) {
+  if (hasPermission(permissions, USER_DELETE)) {
     myActions.push((rowData) => ({
       icon: () => <DeleteOutlined />,
       iconProps: {
