@@ -77,11 +77,11 @@ jobs:
          cd flex/
          sudo python${{ matrix.python_version }} flex_setup.py -download-exit
          cp -r /opt/dist flex-src/opt/
-         cp -r /opt/flex flex-src/opt/
-         touch flex-src/opt/flex/flex-setup/package
-         rm -rf install.py install flex-cli
-         rm -rf flex-src/opt/flex/flex-setup/logs/setup.log
-         rm -rf flex-src/opt/flex/flex-setup/logs/setup_error.log
+         cp -r /opt/jans flex-src/opt/
+         touch flex-src/opt/jans/jans-setup/package
+         rm -rf install.py install jans-cli
+         rm -rf flex-src/opt/jans/jans-setup/logs/setup.log
+         rm -rf flex-src/opt/jans/jans-setup/logs/setup_error.log
          sed -i "s/%VERSION%/${{ steps.previoustag.outputs.version }}/g" run-build.sh
          cat run-build.sh
          sudo ./run-build.sh
