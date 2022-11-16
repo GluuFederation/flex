@@ -18,7 +18,7 @@ import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicatio
 import { useNavigate } from 'react-router-dom'
 import {
   hasPermission,
-  ROLE_WRITE,
+  USER_WRITE,
   USER_READ,
   USER_DELETE,
 } from '../../../../app/utils/PermChecker'
@@ -126,7 +126,7 @@ function UserList(props) {
       },
     })
   }
-  if (hasPermission(permissions, ROLE_WRITE)) {
+  if (hasPermission(permissions, USER_WRITE)) {
     myActions.push({
       icon: 'add',
       tooltip: `${t('messages.add_role')}`,
@@ -135,14 +135,14 @@ function UserList(props) {
       onClick: () => handleGoToUserAddPage(),
     })
   }
-  if (hasPermission(permissions, ROLE_WRITE)) {
+  if (hasPermission(permissions, USER_WRITE)) {
     myActions.push((rowData) => ({
       icon: 'edit',
       iconProps: {
         id: 'editScope' + rowData.inum,
       },
       onClick: (event, rowData) => handleGoToUserEditPage(rowData),
-      disabled: !hasPermission(permissions, ROLE_WRITE),
+      disabled: !hasPermission(permissions, USER_WRITE),
     }))
   }
   if (hasPermission(permissions, USER_DELETE)) {
