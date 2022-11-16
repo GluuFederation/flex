@@ -3,6 +3,112 @@ entries:
   gluu:
   - annotations:
       artifacthub.io/changes: |
+        - Added PDB and Topology spread constraints
+        - fixed global override user values
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/images: |
+        - name: auth-server
+          image: janssenproject/auth-server:1.0.4-1
+        - name: auth-server-key-rotation
+          image: janssenproject/certmanager:1.0.4-1
+        - name: configuration-manager
+          image: janssenproject/configurator:1.0.4-1
+        - name:  config-api
+          image: janssenproject/config-api:1.0.4-1
+        - name: fido2
+          image: janssenproject/fido2:1.0.4-1
+        - name: opendj
+          image: gluufederation/opendj:5.0.0_dev
+        - name: persistence
+          image: janssenproject/persistence-loader:1.0.4-1
+        - name: scim
+          image: janssenproject/scim:1.0.4-1
+        - name: casa
+          image: gluufederation/casa:5.0.0_dev
+        - name: admin-ui
+          image: gluufederation/admin-ui:1.0.1_dev
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/prerelease: "true"
+      catalog.cattle.io/certified: partner
+      catalog.cattle.io/display-name: Gluu Cloud Identity and Access Management
+      catalog.cattle.io/release-name: gluu
+    apiVersion: v2
+    appVersion: 5.0.0
+    created: "2022-11-16T09:38:17.739846671Z"
+    dependencies:
+    - condition: global.config.enabled
+      name: config
+      repository: ""
+      version: 5.0.9
+    - condition: global.config-api.enabled
+      name: config-api
+      repository: ""
+      version: 5.0.9
+    - condition: global.opendj.enabled
+      name: opendj
+      repository: ""
+      version: 5.0.9
+    - condition: global.auth-server.enabled
+      name: auth-server
+      repository: ""
+      version: 5.0.9
+    - condition: global.admin-ui.enabled
+      name: admin-ui
+      repository: ""
+      version: 5.0.9
+    - condition: global.fido2.enabled
+      name: fido2
+      repository: ""
+      version: 5.0.9
+    - condition: global.scim.enabled
+      name: scim
+      repository: ""
+      version: 5.0.9
+    - condition: global.nginx-ingress.enabled
+      name: nginx-ingress
+      repository: ""
+      version: 5.0.9
+    - condition: global.oxshibboleth.enabled
+      name: oxshibboleth
+      repository: ""
+      version: 5.0.9
+    - condition: global.oxpassport.enabled
+      name: oxpassport
+      repository: ""
+      version: 5.0.9
+    - condition: global.casa.enabled
+      name: casa
+      repository: ""
+      version: 5.0.9
+    - condition: global.auth-server-key-rotation.enabled
+      name: auth-server-key-rotation
+      repository: ""
+      version: 5.0.9
+    - condition: global.persistence.enabled
+      name: persistence
+      repository: ""
+      version: 5.0.9
+    - condition: global.istio.ingress
+      name: cn-istio-ingress
+      repository: ""
+      version: 5.0.9
+    description: Gluu Access and Identity Management
+    digest: 7df961ca58de53a1be2b925008ad02e73bf8e2a8f847caf9ce12272f3ee3be4d
+    home: https://www.gluu.org
+    icon: https://gluu.org/docs/gluu-server/favicon.ico
+    kubeVersion: '>=v1.21.0-0'
+    maintainers:
+    - email: support@gluu.org
+      name: moabu
+    name: gluu
+    sources:
+    - https://gluu.org/docs/gluu-server
+    - https://github.com/GluuFederation/flex/flex-cn-setup
+    urls:
+    - gluu-5.0.9.tgz
+    version: 5.0.9
+  - annotations:
+      artifacthub.io/changes: |
         - Update always
       artifacthub.io/containsSecurityUpdates: "true"
       artifacthub.io/images: |
@@ -33,7 +139,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-16T09:34:22.602369624Z"
+    created: "2022-11-16T09:38:17.720713146Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -138,7 +244,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-16T09:34:22.58899101Z"
+    created: "2022-11-16T09:38:17.702386763Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -241,7 +347,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-16T09:34:22.575773493Z"
+    created: "2022-11-16T09:38:17.686371105Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -348,7 +454,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-16T09:34:22.561219294Z"
+    created: "2022-11-16T09:38:17.666451737Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -455,7 +561,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-16T09:34:22.546740395Z"
+    created: "2022-11-16T09:38:17.650375575Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -562,7 +668,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-16T09:34:22.532970786Z"
+    created: "2022-11-16T09:38:17.633493371Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -671,7 +777,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-16T09:34:22.518553086Z"
+    created: "2022-11-16T09:38:17.616634967Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -788,7 +894,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-16T09:34:22.50161362Z"
+    created: "2022-11-16T09:38:17.598707606Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -905,7 +1011,7 @@ entries:
       catalog.cattle.io/release-name: gluu
     apiVersion: v2
     appVersion: 5.0.0
-    created: "2022-11-16T09:34:22.487982309Z"
+    created: "2022-11-16T09:38:17.58235943Z"
     dependencies:
     - condition: global.config.enabled
       name: config
@@ -986,4 +1092,4 @@ entries:
     urls:
     - gluu-5.0.0.tgz
     version: 5.0.0
-generated: "2022-11-16T09:34:22.474673693Z"
+generated: "2022-11-16T09:38:17.564958397Z"
