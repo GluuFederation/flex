@@ -109,7 +109,7 @@ jobs:
       id: upload_binaries
       uses: svenstaro/upload-release-action@v2
       with:
-        repo_token: ${{ secrets.MOAUTO_WORKFLOW_TOKEN }}
+        repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
         file: ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ env.ASSET_PRESUFFIX }}${{ matrix.asset_suffix }}
         asset_name: flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ env.ASSET_PRESUFFIX }}${{ matrix.asset_suffix }}
         tag: ${{ steps.previoustag.outputs.tag }}
@@ -117,7 +117,7 @@ jobs:
       id: upload_shas
       uses: svenstaro/upload-release-action@v2
       with:
-        repo_token: ${{ secrets.MOAUTO_WORKFLOW_TOKEN }}
+        repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
         file: ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ env.ASSET_PRESUFFIX }}${{ matrix.asset_suffix }}.sha256sum
         asset_name: flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ env.ASSET_PRESUFFIX }}${{ matrix.asset_suffix }}.sha256sum
         tag: ${{ steps.previoustag.outputs.tag }}
