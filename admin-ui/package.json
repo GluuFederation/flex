@@ -133,7 +133,7 @@
     "fs-extra": "^10.0.0",
     "holderjs": "^2.9.6",
     "i18next": "^22.0.1",
-    "i18next-browser-languagedetector": "^6.0.1",
+    "i18next-browser-languagedetector": "^7.0.0",
     "i18next-fetch-backend": "^5.0.1",
     "isomorphic-fetch": "^3.0.0",
     "jans_config_api": "file:jans_config_api",
