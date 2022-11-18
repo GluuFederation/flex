@@ -127,7 +127,7 @@ function UserEditPage() {
           userDetails.customAttributes[i].values[0],
         ).format('YYYY-MM-DD')
       } else {
-        if (customAttribute[0].oxMultiValuedAttribute) {
+        if (customAttribute[0]?.oxMultiValuedAttribute) {
           initialValues[userDetails.customAttributes[i].name] =
             userDetails.customAttributes[i].values
         } else {
