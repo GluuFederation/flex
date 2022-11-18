@@ -2,7 +2,7 @@ dn: inum=%(admin_ui_client_id)s,ou=clients,o=jans
 objectClass: top
 objectClass: jansClnt
 del: false
-displayName: Jans Admin UI Client
+displayName: Gluu Flex Admin UI Client
 inum: %(admin_ui_client_id)s
 jansAccessTknAsJwt: true
 jansAccessTknSigAlg: RS256
@@ -35,7 +35,7 @@ dn: inum=%(token_server_admin_ui_client_id)s,ou=clients,o=jans
 objectClass: top
 objectClass: jansClnt
 del: false
-displayName: Token server admin-ui client
+displayName: Gluu Flex Admin UI Client for Token Server
 inum: %(token_server_admin_ui_client_id)s
 jansAccessTknAsJwt: true
 jansAccessTknSigAlg: RS256
