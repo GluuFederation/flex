@@ -37,6 +37,10 @@ spec:
       dnsConfig:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- include "admin-ui.topology-spread-constraints" . | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ include "admin-ui.name" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}

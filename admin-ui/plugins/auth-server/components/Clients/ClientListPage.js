@@ -332,7 +332,7 @@ function ClientListPage({ isSuccess, isError, }) {
     if (status) {
       return `primary-${selectedTheme}`
     } else {
-      return 'dimmed'
+      return 'secondary'
     }
   }
 

@@ -48,7 +48,7 @@ function ClientCibaParUmaPanel({
   const claimRedirectURI = []
 
   scripts = scripts
-    .filter((item) => item.scriptType == 'PERSON_AUTHENTICATION')
+    .filter((item) => item.scriptType == 'person_authentication')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
   function uriValidator(uri) {
@@ -63,7 +63,7 @@ function ClientCibaParUmaPanel({
   const [scopeList, setScopeList] = useState([])
 
   const rptScripts = scripts
-    .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
+    .filter((item) => item.scriptType == 'uma_rpt_claims')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 

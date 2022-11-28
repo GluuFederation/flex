@@ -33,24 +33,24 @@ const Avatar = (props) => {
       {
         !isEmpty(icons) && (() => {
           switch(icons.length) {
-          case 1:
-            return (
-              <div className="avatar__icon">
-                { first(icons) }
-              </div>
-            )
-          default:
-            return (
-              <div
-                className={
-                  classNames({
-                    'avatar__icon--nested': isNested,
-                  }, 'avatar__icon', 'avatar__icon--stack')
-                }
-              >
-                { icons }
-              </div>
-            )
+            case 1:
+              return (
+                <div className="avatar__icon">
+                  { first(icons) }
+                </div>
+              )
+            default:
+              return (
+                <div
+                  className={
+                    classNames({
+                      'avatar__icon--nested': isNested,
+                    }, 'avatar__icon', 'avatar__icon--stack')
+                  }
+                >
+                  { icons }
+                </div>
+              )
           }
         })() 
       }

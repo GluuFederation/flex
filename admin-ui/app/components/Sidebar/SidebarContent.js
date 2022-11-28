@@ -5,69 +5,69 @@ import classNames from 'classnames'
 import Common from './../../common'
 
 export class SidebarContent extends React.Component {
-    static propTypes = {
-      children: PropTypes.node,
-      slim: PropTypes.bool,
-      collapsed: PropTypes.bool,
-      animationsDisabled: PropTypes.bool,
-      pageConfig: PropTypes.object
+  static propTypes = {
+    children: PropTypes.node,
+    slim: PropTypes.bool,
+    collapsed: PropTypes.bool,
+    animationsDisabled: PropTypes.bool,
+    pageConfig: PropTypes.object
+  }
+
+  sidebarRef = React.createRef()
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      entryAnimationFinished: false,
     }
+  }
 
-    sidebarRef = React.createRef();
+  componentDidMount() {
+    this.sidebarEntryAnimate = new Common.SidebarEntryAnimate()
+    this.slimSidebarAnimate = new Common.SlimSidebarAnimate()
+    this.slimMenuAnimate = new Common.SlimMenuAnimate()
 
-    constructor(props) {
-      super(props)
+    this.sidebarEntryAnimate.assignParentElement(this.sidebarRef.current)
+    this.slimSidebarAnimate.assignParentElement(this.sidebarRef.current)
+    this.slimMenuAnimate.assignSidebarElement(this.sidebarRef.current)
 
-      this.state = {
-        entryAnimationFinished: false,
-      }
-    }
-
-    componentDidMount() {
-      this.sidebarEntryAnimate = new Common.SidebarEntryAnimate()
-      this.slimSidebarAnimate = new Common.SlimSidebarAnimate()
-      this.slimMenuAnimate = new Common.SlimMenuAnimate()
-
-      this.sidebarEntryAnimate.assignParentElement(this.sidebarRef.current)
-      this.slimSidebarAnimate.assignParentElement(this.sidebarRef.current)
-      this.slimMenuAnimate.assignSidebarElement(this.sidebarRef.current)
-
-      this.sidebarEntryAnimate.executeAnimation()
-        .then(() => {
-          this.setState({ entryAnimationFinished: true })
-        })
-    }
-
-    componentWillUnmount() {
-      this.sidebarEntryAnimate.destroy()
-      this.slimSidebarAnimate.destroy()
-      this.slimMenuAnimate.destroy()
-    }
-
-    render() {
-      const {
-        animationsDisabled,
-        collapsed,
-        pageConfig,
-        slim,
-        children,
-      } = this.props
-
-      const sidebarClass = classNames('sidebar custom-sidebar-container', 'sidebar--animations-enabled', {
-        'sidebar--slim': slim || pageConfig.sidebarSlim,
-        'sidebar--collapsed': collapsed || pageConfig.sidebarCollapsed,
-        'sidebar--animations-disabled': animationsDisabled || pageConfig.animationsDisabled,
-        'sidebar--animate-entry-complete': this.state.entryAnimationFinished,
+    this.sidebarEntryAnimate.executeAnimation()
+      .then(() => {
+        this.setState({ entryAnimationFinished: true })
       })
+  }
 
-      return (
-        <div 
-          className={ sidebarClass } 
-          style={{ boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)' }}
-          ref={ this.sidebarRef }
-        >
-          { children }
-        </div>
-      )
-    }
+  componentWillUnmount() {
+    this.sidebarEntryAnimate.destroy()
+    this.slimSidebarAnimate.destroy()
+    this.slimMenuAnimate.destroy()
+  }
+
+  render() {
+    const {
+      animationsDisabled,
+      collapsed,
+      pageConfig,
+      slim,
+      children,
+    } = this.props
+
+    const sidebarClass = classNames('sidebar custom-sidebar-container', 'sidebar--animations-enabled', {
+      'sidebar--slim': slim || pageConfig.sidebarSlim,
+      'sidebar--collapsed': collapsed || pageConfig.sidebarCollapsed,
+      'sidebar--animations-disabled': animationsDisabled || pageConfig.animationsDisabled,
+      'sidebar--animate-entry-complete': this.state.entryAnimationFinished,
+    })
+
+    return (
+      <div 
+        className={ sidebarClass } 
+        style={{ boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)' }}
+        ref={ this.sidebarRef }
+      >
+        { children }
+      </div>
+    )
+  }
 }

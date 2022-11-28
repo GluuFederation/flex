@@ -28,62 +28,62 @@ const getCurrentbreakPoint = (width, breakPoints) => {
 }
 
 export class Col extends React.Component {
-    static propTypes = {
-      active: PropTypes.bool,
+  static propTypes = {
+    active: PropTypes.bool,
 
-      lg: PropTypes.number,
-      md: PropTypes.number,
-      sm: PropTypes.number,
-      xs: PropTypes.number,
-      xl: PropTypes.number,
+    lg: PropTypes.number,
+    md: PropTypes.number,
+    sm: PropTypes.number,
+    xs: PropTypes.number,
+    xl: PropTypes.number,
 
-      xlH: PropTypes.number,
-      lgH: PropTypes.number,
-      mdH: PropTypes.number,
-      smH: PropTypes.number,
-      xsH: PropTypes.number,
+    xlH: PropTypes.number,
+    lgH: PropTypes.number,
+    mdH: PropTypes.number,
+    smH: PropTypes.number,
+    xsH: PropTypes.number,
 
-      xlX: PropTypes.number,
-      lgX: PropTypes.number,
-      mdX: PropTypes.number,
-      smX: PropTypes.number,
-      xsX: PropTypes.number,
+    xlX: PropTypes.number,
+    lgX: PropTypes.number,
+    mdX: PropTypes.number,
+    smX: PropTypes.number,
+    xsX: PropTypes.number,
 
-      xlY: PropTypes.number,
-      lgY: PropTypes.number,
-      mdY: PropTypes.number,
-      smY: PropTypes.number,
-      xsY: PropTypes.number, 
+    xlY: PropTypes.number,
+    lgY: PropTypes.number,
+    mdY: PropTypes.number,
+    smY: PropTypes.number,
+    xsY: PropTypes.number, 
 
-      trueSize: PropTypes.object,
-      children: PropTypes.node,
-      className: PropTypes.string
-    }
+    trueSize: PropTypes.object,
+    children: PropTypes.node,
+    className: PropTypes.string
+  }
 
-    static defaultProps = {
-      active: true
-    }
+  static defaultProps = {
+    active: true
+  }
 
-    render() {
-      const { active, children, className, trueSize } = this.props
-      const bsColumnProps = pick(this.props, ['xl', 'lg', 'md', 'sm', 'xs'])
-      const otherProps = omit(this.props, [...keys(Col.propTypes),
-        'minW', 'maxW', 'minH', 'maxH', 'moved', 'static', 'isDraggable', 'isResizable'])
-      const floatColBpId = trueSize ? getCurrentbreakPoint(trueSize.wPx, breakPoints) : 'xl'
-      const floatColClasses = classNames(className, 'float-col',
-        'float-column', `float-column--size-${floatColBpId}`)
+  render() {
+    const { active, children, className, trueSize } = this.props
+    const bsColumnProps = pick(this.props, ['xl', 'lg', 'md', 'sm', 'xs'])
+    const otherProps = omit(this.props, [...keys(Col.propTypes),
+      'minW', 'maxW', 'minH', 'maxH', 'moved', 'static', 'isDraggable', 'isResizable'])
+    const floatColBpId = trueSize ? getCurrentbreakPoint(trueSize.wPx, breakPoints) : 'xl'
+    const floatColClasses = classNames(className, 'float-col',
+      'float-column', `float-column--size-${floatColBpId}`)
 
-      return active ? (
-        <div { ...otherProps } className={ floatColClasses }>
-          { children }
-        </div>
-      ) : (
-        <BootstrapCol
-          { ...(extend(bsColumnProps, otherProps)) }
-          className={ classNames(className, 'pb-3') }
-        >
-          { children }
-        </BootstrapCol>
-      )
-    }
+    return active ? (
+      <div { ...otherProps } className={ floatColClasses }>
+        { children }
+      </div>
+    ) : (
+      <BootstrapCol
+        { ...(extend(bsColumnProps, otherProps)) }
+        className={ classNames(className, 'pb-3') }
+      >
+        { children }
+      </BootstrapCol>
+    )
+  }
 }

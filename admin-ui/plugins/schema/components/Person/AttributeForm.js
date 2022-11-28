@@ -167,8 +167,8 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                     onChange={formik.handleChange}
                   >
                     <option value="">{t('options.choose')}...</option>
-                    <option value="ACTIVE">{t('options.active')}</option>
-                    <option value="INACTIVE">{t('options.inactive')}</option>
+                    <option value="active">{t('options.active')}</option>
+                    <option value="inactive">{t('options.inactive')}</option>
                   </CustomInput>
                 </InputGroup>
                 <ErrorMessage name="status">
@@ -190,15 +190,15 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                     onChange={formik.handleChange}
                   >
                     <option value="">{t('options.choose')}...</option>
-                    <option value="STRING">{t('options.string')}</option>
-                    <option value="JSON">{t('options.json')}</option>
-                    <option value="NUMERIC">{t('options.numeric')}</option>
-                    <option value="BINARY">{t('options.binary')}</option>
-                    <option value="CERTIFICATE">
+                    <option value="string">{t('options.string')}</option>
+                    <option value="json">{t('options.json')}</option>
+                    <option value="numeric">{t('options.numeric')}</option>
+                    <option value="binary">{t('options.binary')}</option>
+                    <option value="certificate">
                       {t('options.certificate')}
                     </option>
-                    <option value="DATE">{t('options.date')}</option>
-                    <option value="BOOLEAN">{t('options.boolean')}</option>
+                    <option value="date">{t('options.date')}</option>
+                    <option value="boolean">{t('options.boolean')}</option>
                   </CustomInput>
                 </InputGroup>
                 <ErrorMessage name="dataType">
@@ -219,8 +219,8 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                   multiple
                   onChange={formik.handleChange}
                 >
-                  <option value="ADMIN">{t('options.admin')}</option>
-                  <option value="USER">{t('options.user')}</option>
+                  <option value="admin">{t('options.admin')}</option>
+                  <option value="user">{t('options.user')}</option>
                 </Input>
                 <ErrorMessage name="editType">
                   {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
@@ -240,8 +240,8 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                   multiple
                   onChange={formik.handleChange}
                 >
-                  <option value="ADMIN">{t('options.admin')}</option>
-                  <option value="USER">{t('options.user')}</option>
+                  <option value="admin">{t('options.admin')}</option>
+                  <option value="user">{t('options.user')}</option>
                 </Input>
               </Col>
             </FormGroup>
@@ -258,7 +258,7 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                   multiple
                   onChange={formik.handleChange}
                 >
-                  <option value="OPENID">{t('options.openid')}</option>
+                  <option value="openid">{t('options.openid')}</option>
                 </Input>
                 <ErrorMessage name="usageType">
                   {(msg) => <div style={{ color: 'red' }}>{msg}</div>}

@@ -44,27 +44,27 @@ function ClientWizardForm({
   const [client, setClient] = useState(client_data)
   const [currentStep, setCurrentStep] = useState(sequence[0])
   const postScripts = scripts
-    .filter((item) => item.scriptType == 'POST_AUTHN')
+    .filter((item) => item.scriptType == 'post_authn')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   const spontaneousScripts = scripts
-    .filter((item) => item.scriptType == 'SPONTANEOUS_SCOPE')
+    .filter((item) => item.scriptType == 'spontaneous_scope')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   const consentScripts = scripts
-    .filter((item) => item.scriptType == 'CONSENT_GATHERING')
+    .filter((item) => item.scriptType == 'consent_gathering')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   const instrospectionScripts = scripts
-    .filter((item) => item.scriptType == 'INTROSPECTION')
+    .filter((item) => item.scriptType == 'introspection')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 
   const rptScripts = scripts
-    .filter((item) => item.scriptType == 'UMA_RPT_CLAIMS')
+    .filter((item) => item.scriptType == 'uma_rpt_claims')
     .filter((item) => item.enabled)
     .map((item) => ({ dn: item.dn, name: item.name }))
 

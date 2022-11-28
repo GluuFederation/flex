@@ -1,22 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { DropdownContext } from 'reactstrap/es/DropdownContext'
+import { Dropdown } from 'reactstrap'
 
 const ExtendedDropdownLink = (props) => {
   const { children, ...otherProps } = props
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const toggle = () => setDropdownOpen((prevState) => !prevState)
 
   return (
-    <DropdownContext.Consumer>
-      {
-        ({ toggle }) => (
-          <Link { ...otherProps } onClick={ () => { toggle() } }>
-            { children }
-          </Link>
-        )
-      }
-    </DropdownContext.Consumer>        
+    <Dropdown isOpen={dropdownOpen} toggle={toggle} {...otherProps}>
+      { children }
+    </Dropdown>   
   )
 }
+
 ExtendedDropdownLink.propTypes = { ...Link.propTypes }
 ExtendedDropdownLink.defaultProps = { ...Link.defaultProps }
 

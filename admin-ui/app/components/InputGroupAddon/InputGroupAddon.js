@@ -3,7 +3,7 @@ import some from 'lodash/some'
 import includes from 'lodash/includes'
 
 import {
-  InputGroupAddon as BsInputGroupAddon
+  InputGroup as BsInputGroupAddon
 } from 'reactstrap'
 
 const InputGroupAddon = (props) => {

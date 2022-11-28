@@ -32,23 +32,23 @@ function GluuAppSidebar({ scopes }) {
 
   function getMenuIcon(name) {
     switch (name) {
-    case 'admin':
-      return <AdministratorIcon className="menu-icon" />
+      case 'admin':
+        return <AdministratorIcon className="menu-icon" />
 
-    case 'oauthserver':
-      return <OAuthIcon className="menu-icon" />
+      case 'oauthserver':
+        return <OAuthIcon className="menu-icon" />
 
-    case 'services':
-      return <ServicesIcon className="menu-icon" />
+      case 'services':
+        return <ServicesIcon className="menu-icon" />
 
-    case 'schema':
-      return <SchemaIcon className="menu-icon" />
+      case 'schema':
+        return <SchemaIcon className="menu-icon" />
 
-    case 'usersmanagement':
-      return <UsersIcon className="menu-icon" style={{ top: '-2px' }} />
+      case 'usersmanagement':
+        return <UsersIcon className="menu-icon" style={{ top: '-2px' }} />
   
-    default:
-      return null
+      default:
+        return null
     }
 
   }

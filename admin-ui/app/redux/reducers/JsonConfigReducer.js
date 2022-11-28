@@ -14,33 +14,33 @@ const reducerName = 'jsonConfigReducer'
 
 export default function jsonConfigReducer(state = INIT_STATE, action) {
   switch (action.type) {
-  case GET_JSON_CONFIG:
-    return handleLoading()
-  case GET_JSONCONFIG_RESPONSE:
-    if (action.payload.data) {
-      return {
-        ...state,
-        configuration: action.payload.data,
-        loading: false,
+    case GET_JSON_CONFIG:
+      return handleLoading()
+    case GET_JSONCONFIG_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          configuration: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return handleDefault()
       }
-    } else {
-      return handleDefault()
-    }
 
-  case PATCH_JSON_CONFIG:
-    return handleLoading()
-  case PATCH_JSONCONFIG_RESPONSE:
-    if (action.payload.data) {
-      return {
-        ...state,
-        configuration: action.payload.data,
-        loading: false,
+    case PATCH_JSON_CONFIG:
+      return handleLoading()
+    case PATCH_JSONCONFIG_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          configuration: action.payload.data,
+          loading: false,
+        }
+      } else {
+        return handleDefault()
       }
-    } else {
+    default:
       return handleDefault()
-    }
-  default:
-    return handleDefault()
   }
 
   function handleLoading() {

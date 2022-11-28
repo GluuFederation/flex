@@ -5,7 +5,7 @@
 
     <groupId>org.gluu</groupId>
     <artifactId>casa-base</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.0-3</version>
 
     <packaging>pom</packaging>
     <url>http://www.gluu.org</url>
@@ -19,15 +19,15 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.min-version>3.6.3</maven.min-version>
-        <weld.version>4.0.3.Final</weld.version>
+        <weld.version>5.1.0.Final</weld.version>
         <pf4j.version>3.7.0</pf4j.version>
         <casa.version>5.0.0-SNAPSHOT</casa.version>
         <jans.version>1.0.0-SNAPSHOT</jans.version>
         <log4j.version>2.19.0</log4j.version>
-        <jackson.version>2.13.4</jackson.version>
+        <jackson.version>2.14.0</jackson.version>
         <zk.version>9.6.0.2-jakarta</zk.version>
         <ldapsdk.version>6.0.6</ldapsdk.version>
-        <resteasy.version>6.2.0.Final</resteasy.version>
+        <resteasy.version>6.2.1.Final</resteasy.version>
         <tika.version>2.5.0</tika.version>
         <!-- SonarCloud integration properties -->
         <sonar.projectKey>GluuFederation_flex_casa</sonar.projectKey>
@@ -93,7 +93,7 @@
             <dependency>
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
-                <version>6.0.0</version>
+                <version>5.0.0</version>
             </dependency>
 
             <!-- WELD -->
@@ -131,7 +131,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.13.4.2</version>
+                <version>${jackson.version}</version>
             </dependency>
 
             <!-- APACHE TIKA -->

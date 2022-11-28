@@ -1,4 +1,4 @@
-FROM node:14.20-alpine3.16 AS builder
+FROM node:fermium-alpine AS builder
 
 RUN apk update \
     && apk upgrade --available \
@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=1a57928d7e2bfdfa009e9de37f8785854d9e97e0
+ENV ADMIN_UI_VERSION=01e306ad4cc4695b105d57ea1bcd864544edfad3
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -30,7 +30,7 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
 # Application
 # ===========
 
-FROM node:14.20-alpine3.16
+FROM node:fermium-alpine
 
 # ======
 # alpine
@@ -67,7 +67,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=e74ea8e27e59d35ff6e3c6f997e6c1df6a04ec83
+ENV JANS_SOURCE_VERSION=13f599830c0d6b48bd1cd6f71f3d200ec6bddfe7
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -189,7 +189,7 @@ EXPOSE 8080
 LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
-    version="1.0.1" \
+    version="1.0.5" \
     release="dev" \
     summary="Gluu Admin UI" \
     description=""

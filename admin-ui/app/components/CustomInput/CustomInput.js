@@ -1,6 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
-import { CustomInput as RSCustomInput } from 'reactstrap'
+import { Input as RSCustomInput } from 'reactstrap'
 
 const CustomInput = (props) => {
   const { className, ...otherProps } = props

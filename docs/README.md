@@ -33,4 +33,3 @@ The Gluu Flex contract includes guaranteed response times and consultative suppo
 We want to keep improving our docs. Please help us improve by submitting any improvements to our [Github](https://github.com/GluuFederation/flex/docs. If you're a Github pro, submit a pull request. If not, just open an issue on any typos, bugs, or improvements you'd like to see addressed. We need your help... even if you're not a coder, you can contribute! 
 
 ## License
-
