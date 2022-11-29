@@ -95,9 +95,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                   id="name"
                   valid={!formik.errors.name && !formik.touched.name && init}
                   name="name"
-                  defaultValue={item.name}
+                  value={formik.values.name}
                   onKeyUp={toogle}
-                  onChange={formik.handleChange}
+                  onChange={(e) => formik.setFieldValue('name', e.target.value.trim())}
                 />
                 <ErrorMessage name="name">
                   {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
