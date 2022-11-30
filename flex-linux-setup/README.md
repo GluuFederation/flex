@@ -11,6 +11,8 @@ Currently, installation is supported on CentOS 8 and Ubuntu 20.
 
 If you installed Janssen server before, the script will install additional Gluu Flex Components. If Janssen isn't already installed, the script will do so.
 
+0. Update repository: `apt update`
+
 1. Download installer
 
    `curl https://raw.githubusercontent.com/GluuFederation/flex/main/flex-linux-setup/flex_linux_setup/flex_setup.py > flex_setup.py`
