@@ -72,7 +72,7 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
   const handleSubmit = (message) => {
     if (patches.length >= 0) {
       const postBody = {}
-      postBody['patchRequest'] = patches
+      postBody['requestBody'] = patches
       buildPayload(userAction, message, postBody)
       if (!!put) {
         const opts = {}
