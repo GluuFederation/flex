@@ -30,9 +30,10 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import useAlert from 'Context/alert/useAlert'
 
-function AttributeListPage({ isSuccess, isError }) {
+function AttributeListPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const {isError, isSuccess} = useSelector(state => state.attributeReducer)
   const attributes = useSelector((state) => state.attributeReducer.items)
   const loading = useSelector((state) => state.attributeReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
@@ -286,11 +287,4 @@ function AttributeListPage({ isSuccess, isError }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isSuccess: state.attributeReducer.isSuccess,
-    isError: state.attributeReducer.isError,
-  }
-}
-
-export default connect(mapStateToProps)(AttributeListPage)
+export default AttributeListPage

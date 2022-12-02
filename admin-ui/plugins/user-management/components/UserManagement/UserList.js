@@ -33,8 +33,9 @@ import getThemeColor from 'Context/theme/config'
 import { LIMIT_ID, PATTERN_ID } from '../../common/Constants'
 import useAlert from 'Context/alert/useAlert'
 
-function UserList({ isSuccess, isError }) {
+function UserList() {
   const dispatch = useDispatch()
+  const {isError, isSuccess} = useSelector(state => state.userReducer)
   const opt = {}
   useEffect(() => {
     opt['limit'] = 10
@@ -276,11 +277,4 @@ function UserList({ isSuccess, isError }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isSuccess: state.userReducer.isSuccess,
-    isError: state.userReducer.isError,
-  }
-}
-
-export default connect(mapStateToProps)(UserList)
+export default UserList

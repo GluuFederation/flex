@@ -38,9 +38,10 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import useAlert from 'Context/alert/useAlert'
 
-function ScopeListPage({ isSuccess, isError }) {
+function ScopeListPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
+  const {isError, isSuccess} = useSelector(state => state.scopeReducer)
   const userAction = {}
   const options = {}
   const clientOptions = {}
@@ -307,11 +308,6 @@ function ScopeListPage({ isSuccess, isError }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isSuccess: state.scopeReducer.isSuccess,
-    isError: state.scopeReducer.isError,
-  }
-}
 
-export default connect(mapStateToProps)(ScopeListPage)
+
+export default ScopeListPage

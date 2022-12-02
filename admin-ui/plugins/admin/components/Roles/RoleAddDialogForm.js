@@ -9,15 +9,17 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from '../../../../app/routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import useAlert from 'Context/alert/useAlert'
 
-const RoleAddDialogForm = ({ handler, modal, onAccept, isSuccess, isError }) => {
+const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
+  const {isError, isSuccess} = useSelector(state => state.apiRoleReducer)
   const [active, setActive] = useState(false)
   const [deletable, setDeletable] = useState(false)
+  
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const { setAlert } = useAlert()
@@ -124,11 +126,4 @@ const RoleAddDialogForm = ({ handler, modal, onAccept, isSuccess, isError }) => 
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isSuccess: state.apiRoleReducer.isSuccess,
-    isError: state.apiRoleReducer.isError,
-  }
-}
-
-export default connect(mapStateToProps)(RoleAddDialogForm)
+export default RoleAddDialogForm

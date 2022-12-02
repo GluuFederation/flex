@@ -39,10 +39,11 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import useAlert from 'Context/alert/useAlert'
 
-function ScriptListTable({ isSuccess, isError }) {
+function ScriptListTable() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const {isSuccess, isError} = useSelector(state => state.customScriptReducer)
   const userAction = {}
   const options = {}
   const myActions = []
@@ -303,11 +304,4 @@ function ScriptListTable({ isSuccess, isError }) {
   )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isSuccess: state.customScriptReducer.isSuccess,
-    isError: state.customScriptReducer.isError,
-  }
-}
-
-export default connect(mapStateToProps)(ScriptListTable)
+export default ScriptListTable

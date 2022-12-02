@@ -56,7 +56,17 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
         scimCustomAttr: item.scimCustomAttr,
       }}
       validationSchema={Yup.object({
-        name: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
+        name: Yup.string()
+          .min(2, 'Mininum 2 characters')
+          .required('Required!')
+          .test("sheck-space", "Spaces are not allowed in name", function(value){
+            let test = value.split(" ");
+            if(test.length <= 1){
+              return true
+            }else{
+              return false
+            }
+          }),
         displayName: Yup.string()
           .min(2, 'Mininum 2 characters')
           .required('Required!'),
