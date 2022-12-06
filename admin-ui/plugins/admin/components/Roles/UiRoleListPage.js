@@ -14,6 +14,7 @@ import {
   addRole,
   editRole,
   deleteRole,
+  updateToastValue
 } from 'Plugins/admin/redux/actions/ApiRoleActions'
 import {
   hasPermission,
@@ -46,6 +47,7 @@ function UiRoleListPage({ apiRoles, permissions, loading, isSuccess, isError, di
 
   useEffect(() => {
     doFetchList()
+    dispatch(updateToastValue({isSuccess:false,isError:false}))
   }, [])
 
   useEffect(() => {

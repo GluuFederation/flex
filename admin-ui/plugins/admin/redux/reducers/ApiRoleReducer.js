@@ -10,6 +10,7 @@ import {
   DELETE_ROLE,
   DELETE_ROLE_RESPONSE,
   SET_ROLE_ITEM,
+  ROLE_UPDATE_TOAST,
   RESET,
 } from '../actions/types'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
@@ -60,7 +61,12 @@ export default function apiRoleReducer(state = INIT_STATE, action) {
           isError: true,
         })
       }
-
+    case ROLE_UPDATE_TOAST:
+      return {
+        ...state,
+        isSuccess:action.payload.data.isSuccess,
+        isError:action.payload.data.isError
+      }
     case EDIT_ROLE:
       return handleLoading({
         isSuccess: false,

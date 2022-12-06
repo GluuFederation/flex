@@ -10,11 +10,17 @@ import {
   DELETE_ROLE,
   DELETE_ROLE_RESPONSE,
   SET_ROLE_ITEM,
+  ROLE_UPDATE_TOAST
 } from './types'
 
 export const getRoles = (action) => ({
   type: GET_ROLES,
   payload: { action },
+})
+
+export const updateToastValue =(data) => ({
+  type:ROLE_UPDATE_TOAST,
+  payload:{data}
 })
 
 export const getRolesResponse = (data) => ({
