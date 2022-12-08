@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.5](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.4...flex-linux-setup-v1.0.5) (2022-12-08)
+
+
+### Bug Fixes
+
+* getting ready for a release ([a0de091](https://github.com/GluuFederation/flex/commit/a0de091ca26f2c38378e5b0252ab680cb1e3cd88))
+
+
+### Documentation
+
+* fix main  README.md ([#634](https://github.com/GluuFederation/flex/issues/634)) ([4c6b303](https://github.com/GluuFederation/flex/commit/4c6b303cfb330e135831734573e63c0955673588))
+
 ## 1.0.4 (2022-11-08)
 
 
