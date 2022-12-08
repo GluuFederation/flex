@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.5](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.4...flex-cn-setup-v1.0.5) (2022-12-08)
+
+
+### Features
+
+* add aws secret manager https://github.com/JanssenProject/jans/issues/3026 ([48418cd](https://github.com/GluuFederation/flex/commit/48418cd351655a48c650075a6d60601c368a403d))
+* **charts:** add pdb and topology spread constrants ([6191c47](https://github.com/GluuFederation/flex/commit/6191c478d02905e5da46b05ab15720c929677d63))
+
+
+### Bug Fixes
+
+* getting ready for a release ([a0de091](https://github.com/GluuFederation/flex/commit/a0de091ca26f2c38378e5b0252ab680cb1e3cd88))
+
 ## 1.0.4 (2022-11-08)
 
 
