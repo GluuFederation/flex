@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.5-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.4-1...docker-admin-ui-v1.0.5-1) (2022-12-08)
+
+
+### Bug Fixes
+
+* docker-admin-ui/Dockerfile to reduce vulnerabilities ([#613](https://github.com/GluuFederation/flex/issues/613)) ([81f7fe3](https://github.com/GluuFederation/flex/commit/81f7fe3cb58eaf0a62a370d1afc35817fc86135c))
+* getting ready for a release ([a0de091](https://github.com/GluuFederation/flex/commit/a0de091ca26f2c38378e5b0252ab680cb1e3cd88))
+
 ## 1.0.4-1 (2022-11-08)
 
 
