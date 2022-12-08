@@ -222,7 +222,7 @@ LABEL name="gluufederation/casa" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
     version="5.0.0" \
-    release="4" \
+    release="dev" \
     summary="Gluu Casa" \
     description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 

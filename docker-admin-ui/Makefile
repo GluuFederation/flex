@@ -1,4 +1,4 @@
-GLUU_VERSION?=1.0.5
+GLUU_VERSION?=1.0.6
 IMAGE_NAME=gluufederation/admin-ui
 UNSTABLE_VERSION?=dev
 

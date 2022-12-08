@@ -819,7 +819,7 @@ questions:
 - variable: casa.image.tag
   required: true
   type: string
-  default: "5.0.0-1"
+  default: "5.0.0-4"
   description: "The Casa Image tag"
   label: Casa image tag
   group: "Images"

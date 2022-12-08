@@ -189,8 +189,8 @@ EXPOSE 8080
 LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
-    version="1.0.5" \
-    release="1" \
+    version="1.0.6" \
+    release="dev" \
     summary="Gluu Admin UI" \
     description=""
 
