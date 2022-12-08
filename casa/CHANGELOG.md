@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.0.0-4](https://github.com/GluuFederation/flex/compare/casa-v5.0.0-3...casa-v5.0.0-4) (2022-12-08)
+
+
+### Bug Fixes
+
+* getting ready for a release ([a0de091](https://github.com/GluuFederation/flex/commit/a0de091ca26f2c38378e5b0252ab680cb1e3cd88))
+* upgrade com.twilio.sdk:twilio from 9.0.1 to 9.1.0 ([b71d7de](https://github.com/GluuFederation/flex/commit/b71d7de73ecfffc52fe67d5bc452e1039ab9d93a))
+* upgrade com.twilio.sdk:twilio from 9.1.0 to 9.1.1 ([7b4f003](https://github.com/GluuFederation/flex/commit/7b4f00394530190d75ea7c019a4f79db6e46fcb6))
+* upgrade com.twilio.sdk:twilio from 9.1.1 to 9.1.2 ([ae0245f](https://github.com/GluuFederation/flex/commit/ae0245fb0b5e0b583bc5d91deb5349682e67c8a4))
+* upgrade org.apache.tika:tika-core from 2.5.0 to 2.6.0 ([fdf4bc1](https://github.com/GluuFederation/flex/commit/fdf4bc1d364549e7821fa5df312e11944983f368))
+
+
+### Miscellaneous Chores
+
+* update jans version in casa ([0a81109](https://github.com/GluuFederation/flex/commit/0a81109ebccd882dfa0f4adb2dd3603e7dd2cad3))
+
 ## 5.0.0-3 (2022-11-08)
 
 
