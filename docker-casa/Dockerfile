@@ -74,7 +74,7 @@ RUN mkdir -p /opt/prometheus \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=13f599830c0d6b48bd1cd6f71f3d200ec6bddfe7
+ENV JANS_SOURCE_VERSION=d794504fc371eac8ab2377b4828040bd73099ec4
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
