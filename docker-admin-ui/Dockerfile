@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=01e306ad4cc4695b105d57ea1bcd864544edfad3
+ENV ADMIN_UI_VERSION=1855dc434c1a357cb5e36ef79c3b2ac45bb89083
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -190,7 +190,7 @@ LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
     version="1.0.5" \
-    release="dev" \
+    release="1" \
     summary="Gluu Admin UI" \
     description=""
 
