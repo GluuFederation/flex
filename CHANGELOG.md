@@ -1,5 +1,40 @@
 # Changelog
 
+## [5.0.0-4](https://github.com/GluuFederation/flex/compare/v5.0.0-3...v5.0.0-4) (2022-12-08)
+
+
+### Features
+
+* add aws secret manager https://github.com/JanssenProject/jans/issues/3026 ([48418cd](https://github.com/GluuFederation/flex/commit/48418cd351655a48c650075a6d60601c368a403d))
+* **charts:** add pdb and topology spread constrants ([6191c47](https://github.com/GluuFederation/flex/commit/6191c478d02905e5da46b05ab15720c929677d63))
+* upgrade i18next from 21.10.0 to 22.0.1 ([7befaa3](https://github.com/GluuFederation/flex/commit/7befaa350ffd3a5fb7d31847d368eb023cf42080))
+* upgrade i18next-browser-languagedetector from 6.1.8 to 7.0.0 ([7f57d9f](https://github.com/GluuFederation/flex/commit/7f57d9f13ed596b125b5b4db8eb573280352690f))
+* upgrade react-i18next from 11.18.6 to 12.0.0 ([411b31f](https://github.com/GluuFederation/flex/commit/411b31ff26edf3d9ecff796aaa8c38bbdc7d5f25))
+
+
+### Bug Fixes
+
+* **admin-ui:** edit values not auto popup [#617](https://github.com/GluuFederation/flex/issues/617) ([c0c8589](https://github.com/GluuFederation/flex/commit/c0c858933d444adf572a7a1206c7dd132500bc36))
+* **admin-ui:** es lint run ([5ac7600](https://github.com/GluuFederation/flex/commit/5ac76007585c70cb07299498b2446190da62ed40))
+* **admin-ui:** fix user delete role ([f3ae09f](https://github.com/GluuFederation/flex/commit/f3ae09f5e5d6836f556e04c17b84dfb6bb0456f1))
+* **admin-ui:** fix user write permission ([e179d65](https://github.com/GluuFederation/flex/commit/e179d65945e6192f79b32e78d365184deb98e5a1))
+* **admin-ui:** permission check for user ([9794f29](https://github.com/GluuFederation/flex/commit/9794f295d817fbf3331139b386970f2e8690eb26))
+* **admin-ui:** user and client page ([f387806](https://github.com/GluuFederation/flex/commit/f3878066db1548249e909fe39ed2ea233aa1f772))
+* **admin-ui:** user delete permission fixed ([1be3cf1](https://github.com/GluuFederation/flex/commit/1be3cf14f456e65be102cc10b057f7ee53a77921))
+* docker-admin-ui/Dockerfile to reduce vulnerabilities ([#613](https://github.com/GluuFederation/flex/issues/613)) ([81f7fe3](https://github.com/GluuFederation/flex/commit/81f7fe3cb58eaf0a62a370d1afc35817fc86135c))
+* fix CodeQL report ([ce86056](https://github.com/GluuFederation/flex/commit/ce86056115c634f42c404c857086aab8cbcf9568))
+* getting ready for a release ([a0de091](https://github.com/GluuFederation/flex/commit/a0de091ca26f2c38378e5b0252ab680cb1e3cd88))
+* upgrade com.twilio.sdk:twilio from 9.0.1 to 9.1.0 ([b71d7de](https://github.com/GluuFederation/flex/commit/b71d7de73ecfffc52fe67d5bc452e1039ab9d93a))
+* upgrade com.twilio.sdk:twilio from 9.1.0 to 9.1.1 ([7b4f003](https://github.com/GluuFederation/flex/commit/7b4f00394530190d75ea7c019a4f79db6e46fcb6))
+* upgrade com.twilio.sdk:twilio from 9.1.1 to 9.1.2 ([ae0245f](https://github.com/GluuFederation/flex/commit/ae0245fb0b5e0b583bc5d91deb5349682e67c8a4))
+* upgrade org.apache.tika:tika-core from 2.5.0 to 2.6.0 ([fdf4bc1](https://github.com/GluuFederation/flex/commit/fdf4bc1d364549e7821fa5df312e11944983f368))
+* uth server configuration are not saving in admin-ui [#635](https://github.com/GluuFederation/flex/issues/635) ([978b20a](https://github.com/GluuFederation/flex/commit/978b20a00e92fcfbd7e284870a83509d3790d92c))
+
+
+### Miscellaneous Chores
+
+* update jans version in casa ([0a81109](https://github.com/GluuFederation/flex/commit/0a81109ebccd882dfa0f4adb2dd3603e7dd2cad3))
+
 ## 5.0.0-3 (2022-11-08)
 
 
