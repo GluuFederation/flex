@@ -125,7 +125,7 @@ function ClientListPage() {
       searchable: true,
     },
     { title: `${t('fields.client_id')}`, field: 'inum' },
-    { title: `${t('fields.client_name')}`, field: 'displayName' },
+    { title: `${t('fields.client_name')}`, field: 'clientName' },
     {
       title: `${t('fields.grant_types')}`,
       field: 'grantTypes',
