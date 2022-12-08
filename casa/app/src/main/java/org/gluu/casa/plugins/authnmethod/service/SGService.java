@@ -16,8 +16,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -208,11 +206,7 @@ public class SGService extends FidoService {
 
     }
 
-    private String getUrlContents(String url, int timeout) throws Exception{
-        return getUrlContents(url, Collections.emptyList(), timeout);
-    }
-
-    private String getUrlContents(String url, List<NameValuePair> nvPairList, int timeout) throws Exception {
+    private String getUrlContents(String url, int timeout) throws Exception {
 
         String contents = null;
 
@@ -223,7 +217,6 @@ public class SGService extends FidoService {
 
         HttpGet httpGet = new HttpGet(url);
         URIBuilder uribe = new URIBuilder(httpGet.getURI());
-        nvPairList.forEach(pair -> uribe.addParameter(pair.getName(), pair.getValue()));
 
         httpGet.setURI(uribe.build());
         httpGet.setHeader("Accept", "application/json");
@@ -231,7 +224,7 @@ public class SGService extends FidoService {
         HttpEntity entity = response.getEntity();
 
         logger.debug("GET request is {}", httpGet.getURI());
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+        if (response.getStatusLine().getStatusCode() == 200) {
             contents = EntityUtils.toString(entity);
         }
         EntityUtils.consume(entity);
