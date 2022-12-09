@@ -2,7 +2,7 @@ package org.gluu.casa.plugins.authnmethod.service;
 
 import io.jans.orm.search.filter.Filter;
 import io.jans.fido2.client.AttestationService;
-import io.jans.fido2.model.entry.Fido2RegistrationStatus;
+import io.jans.orm.model.fido2.Fido2RegistrationStatus;
 
 import java.net.URL;
 import java.util.ArrayList;
