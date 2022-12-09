@@ -76,7 +76,7 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
       buildPayload(userAction, message, postBody)
       if (!!put) {
         const opts = {}
-        opts['authenticationMethod'] = { 'defaultAcr': put.value }
+        opts['authenticationMethod'] = { 'defaultAcr': put.value || acrs.defaultAcr }
         dispatch(editAcrs(opts))
       }
       dispatch(patchJsonConfig(userAction))
