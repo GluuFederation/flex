@@ -2,127 +2,127 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://docs.gluu.org/head/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/CHANGELOG/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/admin-ui/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/admin-ui/template/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/casa/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/casa/template/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/helm-install/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/helm-install/amazon-eks/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/helm-install/digitalocean-dok/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/helm-install/google-gke/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/helm-install/local/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/helm-install/microsoft-azure/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/helm-install/rancher/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/helm-install/red-hat-open-shift/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/vm-install/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/vm-install/disa-stig/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/vm-install/dynamic-download/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/vm-install/rhel/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/vm-install/suse/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/vm-install/ubuntu/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/install/vm-install/vm-requirements/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/saml/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/saml/idp/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://docs.gluu.org/head/source/saml/proxy/</loc>
-         <lastmod>2022-12-08</lastmod>
+         <lastmod>2022-12-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
