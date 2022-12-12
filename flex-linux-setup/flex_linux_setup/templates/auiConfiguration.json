@@ -1,0 +1,33 @@
+{
+  "oidcConfig": {
+    "authServerClient": {
+      "opHost": "https://%(hostname)s/admin",
+      "clientId": "%(admin_ui_client_id)s",
+      "clientSecret": "%(admin_ui_client_encoded_pw)s",
+      "scopes": [
+        "openid",
+        "profile",
+        "user_name",
+        "email"
+      ],
+      "acrValues": [
+        "basic"
+      ],
+      "redirectUri": "https://%(hostname)s/admin",
+      "postLogoutUri": "https://%(hostname)s/admin",
+      "frontchannelLogoutUri": "https://%(hostname)s/admin/logout"
+    },
+    "tokenServerClient": {
+      "opHost": "https://%(hostname)s/admin",
+      "clientId": "%(admin_ui_client_id)s",
+      "clientSecret": "%(admin_ui_client_encoded_pw)s",
+      "tokenEndpoint": "https://%(hostname)s/jans-auth/restv1/token",
+      "scopes": [
+        "openid",
+        "profile",
+        "user_name",
+        "email"
+      ]
+    }
+  }
+}

@@ -222,7 +222,7 @@ class flex_installer(JettyInstaller):
         self.source_dir = os.path.join(Config.install_dir, 'flex')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
-        self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.properties')
+        self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
         self.casa_dist_dir = os.path.join(Config.dist_jans_dir, 'gluu-casa')
         self.casa_web_resources_fn = os.path.join(self.casa_dist_dir, 'casa_web_resources.xml')
         self.casa_war_fn = os.path.join(self.casa_dist_dir, 'casa.war')
@@ -235,6 +235,7 @@ class flex_installer(JettyInstaller):
         if not argsp.download_exit:
             self.dbUtils.bind(force=True)
 
+        self.admin_ui_dn = 'ou=admin-ui,ou=configuration,o=jans'
         Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
         Config.templateRenderingDict['casa_web_port'] = '8080'
         self.simple_auth_scr_inum = 'A51E-76DA'
@@ -398,7 +399,9 @@ class flex_installer(JettyInstaller):
 
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
-        config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, self.templates_dir, config_api_installer.custom_config_dir)
+        config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, self.templates_dir, self.source_dir)
+        admin_ui_jans_conf_app =  config_api_installer.readFile(os.path.join(self.source_dir, os.path.basename(self.admin_ui_config_properties_path)))
+        config_api_installer.dbUtils.set_configuration('jansConfApp', admin_ui_jans_conf_app, self.admin_ui_dn)
 
         config_api_installer.copyFile(self.admin_ui_plugin_source_path, config_api_installer.libDir)
         config_api_installer.add_extra_class(self.admin_ui_plugin_path)
@@ -636,6 +639,8 @@ class flex_installer(JettyInstaller):
             print("  - Deleting Gluu Flex Admin UI Client ", Config.admin_ui_client_id)
             self.dbUtils.delete_dn('inum={},ou=clients,o=jans'.format(Config.admin_ui_client_id))
 
+        self.dbUtils.set_configuration("jansConfApp", None, self.admin_ui_dn)
+
         print("  - Removing Admin UI directives from apache configuration")
         self.remove_apache_directive('<Directory "{}">'.format(Config.templateRenderingDict['admin_ui_apache_root']))
 
@@ -654,7 +659,7 @@ class flex_installer(JettyInstaller):
         if write_config_api_xml:
             config_api_installer.set_class_path(config_api_plugins)
 
-        for s_path in (self.admin_ui_config_properties_path, self.log4j2_adminui_path, self.log4j2_path):
+        for s_path in (self.log4j2_adminui_path, self.log4j2_path):
             f_path = os.path.join(
                         config_api_installer.custom_config_dir,
                         os.path.basename(s_path)
