@@ -474,11 +474,11 @@ config:
     # The URL of AWS secretsmanager service (if omitted, will use the one in specified region). Used only when global.configAdapterName and global.configSecretAdapter is set to aws.
     cnAwsSecretsEndpointUrl: ""
     # The prefix name of the secrets. Used only when global.configAdapterName and global.configSecretAdapter is set to aws.
-    cnAwsSecretsNamePrefix: janssen
+    cnAwsSecretsNamePrefix: gluu
     # The default AWS Region to use, for example, `us-west-1` or `us-west-2`.
     cnAwsDefaultRegion: us-west-1
     # The default profile to use.
-    cnAwsProfile: "janssen"
+    cnAwsProfile: "gluu"
     # Example replicated region [{"Region": "us-west-1"}, {"Region": "us-west-2"}]
     cnAwsSecretsReplicaRegions: []
     # [aws_secret_manager_envs] END
