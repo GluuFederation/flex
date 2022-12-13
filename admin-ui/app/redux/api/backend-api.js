@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 export const fetchServerConfiguration = async (token) => {
   const headers = { Authorization: `Bearer ${token}` }
   return axios
-    .get('/oauth2/config', { headers })
+    .get('/app/admin-ui/oauth2/config', { headers })
     .then((response) => response.data)
     .catch((error) => {
       console.error(
@@ -32,7 +32,7 @@ export const getUserIpAndLocation = async () => {
 // Retrieve user information
 export const fetchUserInformation = async (code) => {
   return axios
-    .post('/oauth2/user-info', {
+    .post('/app/admin-ui/oauth2/user-info', {
       code: code,
     })
     .then((response) => response.data)
@@ -48,7 +48,7 @@ export const fetchUserInformation = async (code) => {
 // post user action
 export const postUserAction = async (userAction) => {
   return axios
-    .post('/logging/audit', {
+    .post('/admin-ui/logging/audit', {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -63,7 +63,7 @@ export const postUserAction = async (userAction) => {
 // Get API Access Token
 export const fetchApiAccessToken = async (jwt) => {
   return axios
-    .get('/oauth2/api-protection-token', { params: { ujwt: jwt } })
+    .get('/app/admin-ui/oauth2/api-protection-token', { params: { ujwt: jwt } })
     .then((response) => response.data)
     .catch((error) => {
       console.error(
@@ -76,7 +76,7 @@ export const fetchApiAccessToken = async (jwt) => {
 
 export const fetchApiTokenWithDefaultScopes = async () => {
   return axios
-    .get('/oauth2/api-protection-token')
+    .get('/app/admin-ui/oauth2/api-protection-token')
     .then((response) => response.data)
     .catch((error) => {
       console.error(
