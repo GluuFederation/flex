@@ -352,6 +352,7 @@
     "user-management": "User Management"
   },
   "messages": {
+    "success_in_saving": "Changes saved successfully",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
     "action_deletion_question": "Do you really want to delete this item?",
     "action_deletion_for": "Deletion confirmation for",

@@ -20,6 +20,7 @@ import {
   isFourZeroOneError,
   addAdditionalData,
 } from 'Utils/TokenController'
+import {updateToast} from 'Redux/actions/ToastAction'
 import {
   GET_PERMISSIONS,
   ADD_PERMISSION,
@@ -78,9 +79,11 @@ export function* addPermission({ payload }) {
     addAdditionalData(audit, CREATE, API_PERMISSION, payload)
     const permApi = yield* newFunction()
     const data = yield call(permApi.addPermission, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(addPermissionResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(addPermissionResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -94,9 +97,11 @@ export function* editPermission({ payload }) {
     addAdditionalData(audit, UPDATE, API_PERMISSION, payload)
     const permApi = yield* newFunction()
     const data = yield call(permApi.editPermission, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(editPermissionResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(editPermissionResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -111,9 +116,11 @@ export function* deletePermission({ payload }) {
     addAdditionalData(audit, DELETION, API_PERMISSION, payload)
     const permApi = yield* newFunction()
     yield call(permApi.deletePermission, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(deletePermissionResponse(payload.action.action_data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(deletePermissionResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

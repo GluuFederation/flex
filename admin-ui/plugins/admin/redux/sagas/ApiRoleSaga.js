@@ -14,6 +14,7 @@ import {
   FETCH,
 } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import {updateToast} from 'Redux/actions/ToastAction'
 import {
   isFourZeroOneError,
   addAdditionalData,
@@ -78,9 +79,11 @@ export function* addRole({ payload }) {
     addAdditionalData(audit, CREATE, API_ROLE, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.addRole, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(getRolesAction({}))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(addRoleResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -94,9 +97,11 @@ export function* editRole({ payload }) {
     addAdditionalData(audit, UPDATE, API_ROLE, payload)
     const roleApi = yield* newFunction()
     const data = yield call(roleApi.editRole, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(getRolesAction({}))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(editRoleResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -111,9 +116,11 @@ export function* deleteRole({ payload }) {
     addAdditionalData(audit, DELETION, API_ROLE, payload)
     const roleApi = yield* newFunction()
     yield call(roleApi.deleteRole, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(getRolesAction({}))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(deleteRoleResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

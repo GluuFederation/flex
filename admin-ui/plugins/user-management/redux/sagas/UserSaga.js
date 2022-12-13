@@ -33,6 +33,7 @@ import {
   createUserResponse,
   getUsers,
 } from '../actions/UserActions'
+import {updateToast} from 'Redux/actions/ToastAction'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
@@ -49,8 +50,10 @@ export function* createUserSaga({ payload }) {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
     const data = yield call(userApi.createUsers, payload)
+    yield put(updateToast(true, 'success'))
     yield put(createUserResponse(data))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(createUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -64,8 +67,10 @@ export function* updateUserSaga({ payload }) {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
     const data = yield call(userApi.updateUsers, payload)
+    yield put(updateToast(true, 'success'))
     yield put(updateUserResponse(data))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(updateUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -80,8 +85,10 @@ export function* changeUserPasswordSaga({ payload }) {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
     const data = yield call(userApi.changeUserPassword, payload)
+    yield put(updateToast(true, 'success'))
     yield put(changeUserPasswordResponse(data))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(changeUserPasswordResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -113,9 +120,11 @@ export function* deleteUserSaga({ payload }) {
     addAdditionalData(audit, FETCH, API_USERS, payload)
     const userApi = yield* newFunction()
     const data = yield call(userApi.deleteUser, payload)
+    yield put(updateToast(true, 'success'))
     yield put(getUsers({}))
     yield put(deleteUserResponse(data))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(deleteUserResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

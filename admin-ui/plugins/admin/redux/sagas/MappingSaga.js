@@ -16,6 +16,7 @@ import {
 import { API_MAPPING } from '../audit/Resources'
 import { FETCH } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import {updateToast} from 'Redux/actions/ToastAction'
 import {
   isFourZeroOneError,
   addAdditionalData,
@@ -63,8 +64,10 @@ export function* updateMapping({ payload }) {
   try {
     const mappingApi = yield* newFunction()
     const data = yield call(mappingApi.updateMapping, payload.data)
+    yield put(updateToast(true, 'success'))
     yield put(updatePermissionsServerResponse(data))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading(false))
     yield put(getMappingResponse(null))
     if (isFourZeroOneError(e)) {
@@ -78,8 +81,10 @@ export function* addMapping({ payload }) {
   try {
     const mappingApi = yield* newFunction()
     const data = yield call(mappingApi.addMapping, payload.data)
+    yield put(updateToast(true, 'success'))
     yield put(getMapping({}))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading(false))
     // yield put(getMappingResponse(null))
     if (isFourZeroOneError(e)) {
@@ -94,8 +99,10 @@ export function* deleteMapping({ payload }) {
   try {
     const mappingApi = yield* newFunction()
     const data = yield call(mappingApi.deleteMapping, payload.data)
+    yield put(updateToast(true, 'success'))
     yield put(getMapping({}))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(updatePermissionsLoading(false))
     // yield put(getMappingResponse(null))
     if (isFourZeroOneError(e)) {

@@ -90,3 +90,8 @@ export const UPDATE_LICENSE_DETAILS_RESPONSE = 'UPDATE_LICENSE_DETAILS_RESPONSE'
 //User Management
 export const GET_USERS = 'GET_USERS'
 export const GET_USERS_RESPONSE = 'GET_USERS_RESPONSE'
+
+
+// Toasts
+
+export const UPDATE_TOAST = "UPDATE_TOAST"

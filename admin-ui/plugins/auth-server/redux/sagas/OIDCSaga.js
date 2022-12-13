@@ -10,6 +10,7 @@ import {
 } from '../actions/OIDCActions'
 import { getAPIAccessToken } from '../actions/AuthActions'
 import { OIDC } from '../audit/Resources'
+import {updateToast} from 'Redux/actions/ToastAction'
 import {
   CREATE,
   UPDATE,
@@ -68,9 +69,11 @@ export function* addNewClient({ payload }) {
     addAdditionalData(audit, CREATE, OIDC, payload)
     const api = yield* newFunction()
     const data = yield call(api.addNewOpenIdClient, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(addClientResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(addClientResponse(null))
     if (isFourZeroOneError(e)) {
       console.log(JSON.stringify(e))
@@ -88,9 +91,11 @@ export function* editAClient({ payload }) {
     postBody['client'] = payload.action.action_data
     const api = yield* newFunction()
     const data = yield call(api.editAClient, postBody)
+    yield put(updateToast(true, 'success'))
     yield put(editClientResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     console.log(e)
     yield put(editClientResponse(null))
     if (isFourZeroOneError(e)) {
@@ -106,9 +111,11 @@ export function* deleteAClient({ payload }) {
     addAdditionalData(audit, DELETION, OIDC, payload)
     const api = yield* newFunction()
     yield call(api.deleteAClient, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(getOpenidClients())
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(deleteClientResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
