@@ -352,6 +352,7 @@
     "user-management": "User Management"
   },
   "messages": {
+    "success_in_saving": "Changes saved successfully",
     "action_commit_question": "Audit log: Want to apply changes made on this page?",
     "action_deletion_question": "Do you really want to delete this item?",
     "action_deletion_for": "Deletion confirmation for",
@@ -380,6 +381,7 @@
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
+    "error_processiong_request":"Error in processing request.",
     "no_scope_in_client": "No Scope data for this Client",
     "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client"
   },

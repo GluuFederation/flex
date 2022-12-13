@@ -14,6 +14,7 @@ import {
 } from '../../../../app/audit/UserActionType'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { isFourZeroOneError, addAdditionalData } from 'Utils/TokenController'
+import {updateToast} from 'Redux/actions/ToastAction'
 import {
   GET_CUSTOM_SCRIPT,
   GET_CUSTOM_SCRIPT_BY_TYPE,
@@ -78,9 +79,11 @@ export function* addScript({ payload }) {
       scriptApi.addCustomScript,
       payload.action.action_data,
     )
+    yield put(updateToast(true, 'success'))
     yield put(addCustomScriptResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(addCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -97,9 +100,11 @@ export function* editScript({ payload }) {
       scriptApi.editCustomScript,
       payload.action.action_data,
     )
+    yield put(updateToast(true, 'success'))
     yield put(editCustomScriptResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(editCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -114,9 +119,11 @@ export function* deleteScript({ payload }) {
     addAdditionalData(audit, DELETION, SCRIPT, payload)
     const scriptApi = yield* newFunction()
     yield call(scriptApi.deleteCustomScript, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(deleteCustomScriptResponse(payload.action.action_data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(deleteCustomScriptResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

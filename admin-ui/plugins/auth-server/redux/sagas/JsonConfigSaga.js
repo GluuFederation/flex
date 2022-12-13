@@ -6,6 +6,7 @@ import { getClient } from 'Redux/api/base'
 import { JSON_CONFIG } from '../audit/Resources'
 import { PATCH, FETCH } from '../../../../app/audit/UserActionType'
 import { postUserAction } from 'Redux/api/backend-api'
+import {updateToast} from 'Redux/actions/ToastAction'
 import {
   isFourZeroOneError,
   addAdditionalData,
@@ -55,9 +56,11 @@ export function* patchJsonConfig({ payload }) {
       configApi.patchJsonConfig,
       payload.action.action_data,
     )
+    yield put(updateToast(true, 'success'))
     yield put(patchJsonConfigResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(patchJsonConfigResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

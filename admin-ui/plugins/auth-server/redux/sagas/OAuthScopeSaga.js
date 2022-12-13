@@ -8,6 +8,7 @@ import {
   select,
 } from 'redux-saga/effects'
 import { getAPIAccessToken } from '../actions/AuthActions'
+import {updateToast} from 'Redux/actions/ToastAction'
 import {
   getScopesResponse,
   getScopeByPatternResponse,
@@ -122,9 +123,11 @@ export function* addAScope({ payload }) {
     addAdditionalData(audit, CREATE, SCOPE, payload)
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.addNewScope, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(addScopeResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(addScopeResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -139,9 +142,11 @@ export function* editAnScope({ payload }) {
     addAdditionalData(audit, UPDATE, SCOPE, payload)
     const scopeApi = yield* newFunction()
     const data = yield call(scopeApi.editAScope, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(editScopeResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(editScopeResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -156,9 +161,11 @@ export function* deleteAnScope({ payload }) {
     addAdditionalData(audit, DELETION, SCOPE, payload)
     const scopeApi = yield* newFunction()
     yield call(scopeApi.deleteAScope, payload.action.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(deleteScopeResponse(payload.action.action_data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(deleteScopeResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.s.userinfo_jwt)

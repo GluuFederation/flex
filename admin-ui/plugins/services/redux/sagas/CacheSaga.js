@@ -17,6 +17,7 @@ import {
   editRedisCacheResponse,
 } from '../actions/CacheActions'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import {updateToast} from 'Redux/actions/ToastAction'
 import {
   GET_CACHE,
   GET_MEMORY_CACHE,
@@ -169,8 +170,10 @@ export function* editCache({ payload }) {
   try {
     const api = yield* newFunctionForCacheConfig()
     const data = yield call(api.updateCacheConfig, payload.data)
+    yield put(updateToast(true, 'success'))
     yield put(editCacheResponse(data))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
@@ -181,8 +184,10 @@ export function* editMemoryCache({ payload }) {
   try {
     const api = yield* newFunctionForMemoryCache()
     const data = yield call(api.updateCacheMemoryConfig, payload.data)
+    yield put(updateToast(true, 'success'))
     yield put(editMemoryCacheResponse(data))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
@@ -194,7 +199,9 @@ export function* editMemCache({ payload }) {
     const api = yield* newFunctionForMemCache()
     const data = yield call(api.updateCacheMemConfig, payload.data)
     yield put(editMemCacheResponse(data))
+    yield put(updateToast(true, 'success'))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
@@ -206,7 +213,9 @@ export function* editNativeCache({ payload }) {
     const api = yield* newFunctionForNativeCache()
     const data = yield call(api.updateCacheNativeConfig, payload.data)
     yield put(editNativeCacheResponse(data))
+    yield put(updateToast(true, 'success'))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }
@@ -217,8 +226,10 @@ export function* editRedisCache({ payload }) {
   try {
     const api = yield* newFunctionForRedisCache()
     const data = yield call(api.updateCacheRedisConfig, payload.data)
+    yield put(updateToast(true, 'success'))
     yield put(editRedisCacheResponse(data))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     if (isFourZeroOneError(e) && !hasApiToken()) {
       yield put(getAPIAccessToken())
     }

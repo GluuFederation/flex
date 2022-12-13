@@ -11,6 +11,7 @@ import licenseReducer from './LicenseReducer'
 import licenseDetailsReducer from './LicenseDetailsReducer'
 import oidcDiscoveryReducer from './OidcDiscoveryReducer'
 import attributesReducerRoot from './AttributesReducer'
+import toastReducer from './ToastReducer'
 const appReducers = {
   authReducer,
   fidoReducer,
@@ -21,7 +22,8 @@ const appReducers = {
   mauReducer,
   healthReducer,
   licenseDetailsReducer,
-  attributesReducerRoot
+  attributesReducerRoot,
+  toastReducer
 }
 
 export default appReducers

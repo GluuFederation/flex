@@ -5,6 +5,7 @@ import {
   editLoggingResponse,
 } from '../actions/LoggingActions'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
+import {updateToast} from 'Redux/actions/ToastAction'
 import { GET_LOGGING, PUT_LOGGING } from '../actions/types'
 import LoggingApi from '../api/LoggingApi'
 import { getClient } from 'Redux/api/base'
@@ -37,8 +38,10 @@ export function* editLogging({ payload }) {
   try {
     const api = yield* newFunction()
     const data = yield call(api.editLoggingConfig, payload.data)
+    yield put(updateToast(true, 'success'))
     yield put(editLoggingResponse(data))
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(editLoggingResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
