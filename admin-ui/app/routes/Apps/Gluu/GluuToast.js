@@ -12,7 +12,7 @@ function GluuToast(){
         return (
             <div style={{textAlign:"left"}}>
                 <strong>{type == 'success' ? "Success" : "Error" }</strong><br/>
-                {message == "" ? type == "success" ? t('messages.success_in_saving') : t('messages.error_in_saving') : message}
+                {message == "" ? type == "success" ? t('messages.success_in_saving') : t('messages.error_processiong_request') : message}
             </div>
         )
     }
