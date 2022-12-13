@@ -51,7 +51,7 @@ jobs:
         git config user.email "54212639+mo-auto@users.noreply.github.com"
         git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
 
-    - uses: google-github-actions/release-please-action@v3.6
+    - uses: google-github-actions/release-please-action@v3.7
       id: release-please
       with:
          path: ${{ matrix.maven }}
@@ -89,7 +89,7 @@ jobs:
         git config user.email "54212639+mo-auto@users.noreply.github.com"
         git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
 
-    - uses: google-github-actions/release-please-action@v3.6
+    - uses: google-github-actions/release-please-action@v3.7
       if: matrix.simple == 'docker-casa'
       id: release-casa
       with:
@@ -99,7 +99,7 @@ jobs:
          package-name: ${{ matrix.simple }}
          monorepo-tags: true
          release-as: ${{ github.event.inputs.java_release_as }}
-    - uses: google-github-actions/release-please-action@v3.6
+    - uses: google-github-actions/release-please-action@v3.7
       if: matrix.simple == 'docker-admin-ui'
       id: release-admin-ui
       with:
@@ -109,7 +109,7 @@ jobs:
          package-name: ${{ matrix.simple }}
          monorepo-tags: true
          release-as: ${{ github.event.inputs.docker_release_as }}
-    - uses: google-github-actions/release-please-action@v3.6
+    - uses: google-github-actions/release-please-action@v3.7
       if: matrix.simple == 'docs'
       id: release-docs
       with:
@@ -149,7 +149,7 @@ jobs:
         git config user.email "54212639+mo-auto@users.noreply.github.com"
         git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
 
-    - uses: google-github-actions/release-please-action@v3.6
+    - uses: google-github-actions/release-please-action@v3.7
       id: release-please
       with:
          path: ${{ matrix.python-projects }}
@@ -188,7 +188,7 @@ jobs:
         git config user.email "54212639+mo-auto@users.noreply.github.com"
         git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
 
-    - uses: google-github-actions/release-please-action@v3.6
+    - uses: google-github-actions/release-please-action@v3.7
       id: release-please
       with:
          path: ${{ matrix.node-projects }}
@@ -223,7 +223,7 @@ jobs:
         git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
 
 
-    - uses: google-github-actions/release-please-action@v3.6
+    - uses: google-github-actions/release-please-action@v3.7
       id: release-please
       with:
          token: ${{ secrets.MOWORKFLOWTOKEN }}
