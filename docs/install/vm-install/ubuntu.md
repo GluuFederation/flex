@@ -57,23 +57,24 @@ Removing Janssen is a two step process:
 1. Delete files installed by Gluu Flex
 1. Remove and purge the `jans` package
 
-<!-- I haven't tested and updated the uninstallation section yet -->
-
 Use the command below to uninstall the Gluu Flex server
 
 ```
-python3 /opt/jans/jans-setup/install.py -uninstall
+python3 /opt/jans/flex/flex-linux-setup/flex_setup.py --remove-flex
 ```
 
 You'll see the following confirmation:
 
+
+<!-- I haven't tested and updated the uninstallation section yet -->
+
 ```text
 This process is irreversible.
-You will lose all data related to Janssen Server.
+Gluu Flex Components will be removed.
 
 
 
-Are you sure to uninstall Janssen Server? [yes/N] yes
+Are you sure to uninstall Gluu Flex? [yes/N] yes
 
 Uninstalling Jannsen Server...
 Removing /etc/default/jans-config-api
