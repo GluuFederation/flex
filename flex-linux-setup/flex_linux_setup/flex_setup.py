@@ -130,7 +130,7 @@ logs_dir = os.path.join(__STATIC_SETUP_DIR__, 'logs')
 if not os.path.exists(logs_dir):
     os.makedirs(logs_dir)
 
-if not __STATIC_SETUP_DIR__ in sys.path:
+if __STATIC_SETUP_DIR__ not in sys.path:
     sys.path.append(__STATIC_SETUP_DIR__)
 
 from setup_app import paths
