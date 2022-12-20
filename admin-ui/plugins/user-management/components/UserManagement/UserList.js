@@ -191,14 +191,12 @@ function UserList(props) {
       dispatch(getAttributesRoot({pattern:usedAttributes.toString(), limit:100}))
     }
   },[usersList])
-  console.log("USER READ",USER_READ)
-  console.log("USER PERM",permissions)
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={hasPermission(permissions, USER_READ)}>
-            {usersList.length > 0 && (
+            {usersList?.length > 0 && (
               <MaterialTable
                 key={limit}
                 components={{

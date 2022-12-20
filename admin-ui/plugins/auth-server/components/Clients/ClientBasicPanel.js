@@ -93,7 +93,7 @@ const ClientBasicPanel = ({
         label="fields.client_name"
         name="clientName"
         formik={formik}
-        value={client.displayName}
+        value={client.clientName}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />

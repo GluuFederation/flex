@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import { Wizard, Card, CardFooter, CardBody, Form, Button } from 'Components'
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
@@ -14,7 +14,7 @@ import ClientLogoutPanel from './ClientLogoutPanel'
 import ClientSoftwarePanel from './ClientSoftwarePanel'
 import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
 import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
-
+import {toast} from 'react-toastify'
 const sequence = [
   'Basic',
   'Tokens',
@@ -37,6 +37,7 @@ function ClientWizardForm({
   oidcConfiguration,
   umaResources,
 }) {
+  const formRef = useRef();
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -81,7 +82,12 @@ function ClientWizardForm({
     setCurrentStep(sequence[sequence.indexOf(currentStep) - 1])
   }
   function nextStep() {
-    setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+    if(formRef && formRef.current && formRef.current.values.redirectUris.length > 0){
+      setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+    }else{
+      toast.info("Please add atleast 1 redirect URL");
+    }
+    
   }
   function isComplete(stepId) {
     return sequence.indexOf(stepId) < sequence.indexOf(currentStep)
@@ -210,6 +216,7 @@ function ClientWizardForm({
     <React.Fragment>
       <Card style={applicationStyle.mainCard}>
         <Formik
+          innerRef={formRef}
           initialValues={initialValues}
           onSubmit={(values) => {
             values['action_message'] = commitMessage
@@ -247,7 +254,12 @@ function ClientWizardForm({
               values.jansAuthSignedRespAlg
             values[ATTRIBUTE].jansAuthEncRespAlg = values.jansAuthEncRespAlg
             values[ATTRIBUTE].jansAuthEncRespEnc = values.jansAuthEncRespEnc
-            customOnSubmit(JSON.parse(JSON.stringify(values)))
+            if(values?.redirectUris && values?.redirectUris.length <= 0){
+
+            }else{
+              customOnSubmit(JSON.parse(JSON.stringify(values)))
+            }
+            
           }}
         >
           {(formik) => (
