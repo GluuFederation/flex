@@ -10,11 +10,13 @@ import code
 import configparser
 import subprocess
 import shutil
+import tempfile
 
 from pathlib import Path
 from urllib import request
 from urllib.parse import urljoin
 
+cur_dir = os.path.dirname(__file__)
 
 if '--remove-flex' in sys.argv:
 
@@ -53,25 +55,30 @@ def get_flex_setup_parser():
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
+if os.path.exists(__STATIC_SETUP_DIR__):
+    os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
+
 installed_components = {'admin_ui': False, 'casa': False}
 argsp = None
+jans_installer_downloaded = False
+install_py_path = os.path.join(cur_dir, 'jans_install.py')
+
+def download_jans_install_py(setup_branch):
+    print("Downloading", os.path.basename(install_py_path))
+    install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
+    request.urlretrieve(install_url, install_py_path)
 
 try:
     import jans_setup
     path_ = list(jans_setup.__path__)
     sys.path.append(path_[0])
 except ModuleNotFoundError:
-    if os.path.exists(os.path.join(__STATIC_SETUP_DIR__, 'setup_app')):
-        sys.path.append(__STATIC_SETUP_DIR__)
-    else:
+    if not os.path.exists('/etc/jans/conf/jans.properties'):
         argsp, nargs = get_flex_setup_parser().parse_known_args()
-
         print("Unable to locate jans-setup, installing ...")
-
         setup_branch = argsp.jans_setup_branch or 'main'
-        install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
-        request.urlretrieve(install_url, 'install.py')
-        install_cmd = '{} install.py --setup-branch={}'.format(sys.executable, setup_branch)
+        download_jans_install_py(setup_branch)
+        install_cmd = '{} {} --setup-branch={}'.format(sys.executable, install_py_path, setup_branch)
 
         if argsp.download_exit:
             nargs.append('--download-exit')
@@ -86,21 +93,45 @@ except ModuleNotFoundError:
 
         print("Executing", install_cmd)
         os.system(install_cmd)
-        sys.path.append(__STATIC_SETUP_DIR__)
+        jans_installer_downloaded = True
 
 if not argsp:
     argsp, nargs = get_flex_setup_parser().parse_known_args()
+
+if not jans_installer_downloaded:
+    jans_archieve_url = 'https://github.com/JanssenProject/jans/archive/refs/heads/{}.zip'.format(argsp.jans_branch)
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archieve_url))
+        print("Downloading {} as {}".format(jans_archieve_url, jans_zip_file))
+        request.urlretrieve(jans_archieve_url, jans_zip_file)
+
+        print("Extracting jans-setup package")
+        jans_zip = zipfile.ZipFile(jans_zip_file)
+        parent_dir = jans_zip.filelist[0].orig_filename
+        unpack_dir = os.path.join(tmp_dir, 'unpacked')
+        shutil.unpack_archive(jans_zip_file, unpack_dir)
+        shutil.copytree(os.path.join(unpack_dir, parent_dir, 'jans-linux-setup/jans_setup'), __STATIC_SETUP_DIR__)
+        jans_zip.close()
+
+    sys.path.append(__STATIC_SETUP_DIR__)
+    from setup_app import downloads
+    from setup_app.utils import base
+    downloads.base.current_app.app_info = base.readJsonFile(os.path.join(__STATIC_SETUP_DIR__, 'app_info.json'))
+    downloads.download_sqlalchemy()
+    downloads.download_gcs()
 
 install_components = {
         'admin_ui': argsp.install_admin_ui,
         'casa': argsp.install_casa
     }
 
-
 logs_dir = os.path.join(__STATIC_SETUP_DIR__, 'logs')
 
 if not os.path.exists(logs_dir):
     os.makedirs(logs_dir)
+
+if not __STATIC_SETUP_DIR__ in sys.path:
+    sys.path.append(__STATIC_SETUP_DIR__)
 
 from setup_app import paths
 paths.LOG_FILE = os.path.join(logs_dir, 'flex-setup.log')
@@ -338,7 +369,7 @@ class flex_installer(JettyInstaller):
 
 
     def rewrite_cli_ini(self):
-        print("  - Rewriting Jans CLI init file for plgins")
+        print("  - Rewriting Jans CLI init file for plugins")
         cli_config = Path(jans_cli_installer.config_ini_fn)
 
         if cli_config.exists():
@@ -364,7 +395,9 @@ class flex_installer(JettyInstaller):
 
         client_check_result = config_api_installer.check_clients([('admin_ui_client_id', '2001.')])
         if client_check_result['2001.'] == -1:
-            ldif_parser = myLdifParser(jans_cli_installer.ldif_client)
+
+            cli_ldif_client_fn = os.path.join(jans_cli_installer.templates_folder, os.path.basename(jans_cli_installer.ldif_client))
+            ldif_parser = myLdifParser(cli_ldif_client_fn)
             ldif_parser.parse()
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
