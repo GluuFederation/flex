@@ -43,6 +43,7 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
     parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
+    parser.add_argument('--node-modules-branch', help="Node modules mranch. Default to flex setup github branch")
     parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
@@ -227,6 +228,7 @@ app_versions = {
   "NODE_VERSION": "v14.18.2",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
   "TWILIO_VERSION": "7.17.0",
+  "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
 }
 
 node_installer = NodeInstaller()
@@ -253,6 +255,13 @@ class flex_installer(JettyInstaller):
         self.source_dir = os.path.join(Config.install_dir, 'flex')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
+
+        self.admin_ui_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/node_modules/admin-ui-{0}-node_modules.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
+        self.config_api_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/OpenApi/jans_config_api/admin-ui-{0}-jans_config_api.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
+
+        self.admin_ui_node_modules_path = os.path.join(Config.dist_jans_dir, os.path.basename(self.admin_ui_node_modules_url))
+        self.config_api_node_modules_path = os.path.join(Config.dist_jans_dir, os.path.basename(self.config_api_node_modules_url))
+
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
         self.casa_dist_dir = os.path.join(Config.dist_jans_dir, 'gluu-casa')
         self.casa_web_resources_fn = os.path.join(self.casa_dist_dir, 'casa_web_resources.xml')
@@ -298,6 +307,8 @@ class flex_installer(JettyInstaller):
                     (urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
+                    (self.admin_ui_node_modules_url, self.admin_ui_node_modules_path),
+                    (self.config_api_node_modules_url, self.config_api_node_modules_path),
                     ]
 
         if install_components['casa'] or argsp.download_exit:
@@ -417,10 +428,15 @@ class flex_installer(JettyInstaller):
         print("env_tmp", env_tmp)
         config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
         config_api_installer.copyFile(os.path.join(self.source_dir, '.env.tmp'), os.path.join(self.source_dir, '.env'))
+
+        for module_pack in (self.admin_ui_node_modules_path, self.config_api_node_modules_path):
+            print("Unpacking", module_pack)
+            shutil.unpack_archive(module_pack, self.source_dir)
+
         config_api_installer.run([paths.cmd_chown, '-R', 'node:node', self.source_dir])
         cmd_path = 'PATH=$PATH:{}/bin:{}/bin'.format(Config.jre_home, Config.node_home)
 
-        for cmd in ('npm install @openapitools/openapi-generator-cli', 'npm install openapi-merge-cli', 'npm run api', 'npm install', 'npm run build:prod'):
+        for cmd in ('npm run build:prod',):
             print("Executing `{}`".format(cmd))
             run_cmd = '{} {}'.format(cmd_path, cmd)
             config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)
