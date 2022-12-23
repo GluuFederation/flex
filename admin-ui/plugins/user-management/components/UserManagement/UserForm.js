@@ -11,8 +11,9 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import { changeUserPassword } from '../../redux/actions/UserActions'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { getAttributesRoot } from '../../../../app/redux/actions'
-
-function UserForm({ formik }) {
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+function UserForm({onSubmitData}) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const DOC_SECTION = 'user'
@@ -22,9 +23,65 @@ function UserForm({ formik }) {
   const [showButtons, setShowButtons] = useState(false)
   const [modal, setModal] = useState(false)
   const [changePasswordModal, setChangePasswordModal] = useState(false)
+  const userDetails = useSelector((state) => state.userReducer.selectedUserData)
+  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   let options = {}
+
+  const initialValues = {
+    displayName: userDetails?.displayName || '',
+    givenName: userDetails?.givenName || '',
+    mail: userDetails?.mail || '',
+    userId: userDetails?.userId || '',
+    sn:'',
+    middleName:'',
+    jansStatus: userDetails?.jansStatus || '',
+  }
+
+  if(userDetails){
+    for (let i in userDetails.customAttributes) {
+      if (userDetails.customAttributes[i].values) {
+        let customAttribute = personAttributes.filter(
+          (e) => e.name == userDetails.customAttributes[i].name,
+        )
+        if (userDetails.customAttributes[i].name == 'birthdate') {
+          initialValues[userDetails.customAttributes[i].name] = moment(
+            userDetails.customAttributes[i].values[0],
+          ).format('YYYY-MM-DD')
+        } else {
+          if (customAttribute[0]?.oxMultiValuedAttribute) {
+            initialValues[userDetails.customAttributes[i].name] =
+              userDetails.customAttributes[i].values
+          } else {
+            initialValues[userDetails.customAttributes[i].name] =
+              userDetails.customAttributes[i].values[0]
+          }
+        }
+      }
+    }
+  }
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    onSubmit: (values) => {
+      toggle()
+    },
+    validationSchema: Yup.object(
+      {
+        displayName:Yup.string().required('Display name is required.'),
+        givenName:Yup.string().required('First name is required.'),
+        middleName:Yup.string().required('Middle name is required.'),
+        sn:Yup.string().required('Last name is required.'),
+        userId:Yup.string().required('User name is required.'),
+        mail:Yup.string().required('Email is required.'),
+      }
+    ),
+    setFieldValue: (field) => {
+      delete values[field]
+    },
+  })
+
   const toggle = () => {
     setModal(!modal)
   }
@@ -56,11 +113,8 @@ function UserForm({ formik }) {
 
   const submitForm = () => {
     toggle()
-    formik.handleSubmit()
+    onSubmitData(formik.values)
   }
-
-  const userDetails = useSelector((state) => state.userReducer.selectedUserData)
-  const personAttributes = useSelector((state) => state.attributesReducerRoot.items)
   const loading = useSelector((state) => state.userReducer.loading)
   const setSelectedClaimsToState = (data) => {
     const tempList = [...selectedClaims]
@@ -151,6 +205,7 @@ function UserForm({ formik }) {
     formik.setFieldValue('userConfirmPassword')
     setShowButtons(true)
   }
+  
 
   return (
     <GluuLoader blocking={loading}>
@@ -214,7 +269,7 @@ function UserForm({ formik }) {
       <Form
         onSubmit={(e) => {
           e.preventDefault()
-          toggle()
+          formik.handleSubmit()
         }}
       >
         <FormGroup row>
@@ -239,8 +294,9 @@ function UserForm({ formik }) {
               formik={formik}
               lsize={3}
               rsize={9}
+              showError={formik.errors.givenName && formik.touched.givenName}
+              errorMessage={formik.errors.givenName}
             />
-
             <GluuInputRow
               doc_category={DOC_SECTION}
               label="Middle Name"
@@ -249,6 +305,8 @@ function UserForm({ formik }) {
               formik={formik}
               lsize={3}
               rsize={9}
+              showError={formik.errors.middleName && formik.touched.middleName}
+              errorMessage={formik.errors.middleName}
             />
 
             <GluuInputRow
@@ -259,6 +317,8 @@ function UserForm({ formik }) {
               formik={formik}
               lsize={3}
               rsize={9}
+              showError={formik.errors.sn && formik.touched.sn}
+              errorMessage={formik.errors.sn}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -266,9 +326,10 @@ function UserForm({ formik }) {
               name="userId"
               value={formik.values.userId || ''}
               formik={formik}
-              required
               lsize={3}
               rsize={9}
+              showError={formik.errors.userId && formik.touched.userId}
+              errorMessage={formik.errors.userId}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -278,6 +339,8 @@ function UserForm({ formik }) {
               formik={formik}
               lsize={3}
               rsize={9}
+              showError={formik.errors.displayName && formik.touched.displayName}
+              errorMessage={formik.errors.displayName}
             />
             <GluuInputRow
               doc_category={DOC_SECTION}
@@ -288,6 +351,8 @@ function UserForm({ formik }) {
               formik={formik}
               lsize={3}
               rsize={9}
+              showError={formik.errors.mail && formik.touched.mail}
+              errorMessage={formik.errors.mail}
             />
 
             <GluuSelectRow

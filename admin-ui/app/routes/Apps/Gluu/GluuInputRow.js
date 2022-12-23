@@ -14,6 +14,8 @@ function GluuInputRow({
   rsize,
   doc_category,
   disabled,
+  showError = false,
+  errorMessage = ''
 }) {
   const [customType, setCustomType] = useState(null)
 
@@ -47,6 +49,7 @@ function GluuInputRow({
               )}
             </div>
           )}
+          {showError ? <div style={{color:"red"}}>{errorMessage}</div> : null }
         </Col>
       </FormGroup>
     </GluuTooltip>

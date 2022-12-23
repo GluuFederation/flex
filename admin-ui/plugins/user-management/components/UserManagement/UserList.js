@@ -162,7 +162,7 @@ function UserList(props) {
 
   const onPageChangeClick = (page) => {
     let startCount = page * limit
-    options['startIndex'] = parseInt(startCount) + 1
+    options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     options['pattern'] = pattern
     setPageNumber(page)

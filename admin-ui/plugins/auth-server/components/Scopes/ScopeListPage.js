@@ -220,7 +220,7 @@ function ScopeListPage() {
   const onPageChangeClick = (page) => {
     makeOptions()
     let startCount = page * limit
-    options['startIndex'] = parseInt(startCount) + 1
+    options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
     dispatch(getScopes(options))
