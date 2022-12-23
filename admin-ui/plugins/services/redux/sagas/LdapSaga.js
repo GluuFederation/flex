@@ -11,6 +11,7 @@ import {
   deleteLdapResponse,
   testLdapResponse,
 } from '../actions/LdapActions'
+import {updateToast} from 'Redux/actions/ToastAction'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
 import { LDAP } from '../audit/Resources'
 import {
@@ -63,9 +64,11 @@ export function* addLdap({ payload }) {
     addAdditionalData(audit, CREATE, LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.addLdapConfig, payload.data.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(addLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(addLdapResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)
@@ -80,9 +83,11 @@ export function* editLdap({ payload }) {
     addAdditionalData(audit, UPDATE, LDAP, payload)
     const api = yield* newFunction()
     const data = yield call(api.updateLdapConfig, payload.data.action_data)
+    yield put(updateToast(true, 'success'))
     yield put(editLdapResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     console.log(e)
     yield put(editLdapResponse(null))
     if (isFourZeroOneError(e)) {
@@ -99,9 +104,11 @@ export function* deleteLdap({ payload }) {
     addAdditionalData(audit, DELETION, LDAP, payload)
     const api = yield* newFunction()
     yield call(api.deleteLdapConfig, payload.configId)
+    yield put(updateToast(true, 'success'))
     yield put(deleteLdapResponse(payload.configId))
     yield call(postUserAction, audit)
   } catch (e) {
+    yield put(updateToast(true, 'error'))
     yield put(deleteLdapResponse(null))
     if (isFourZeroOneError(e)) {
       const jwt = yield select((state) => state.authReducer.userinfo_jwt)

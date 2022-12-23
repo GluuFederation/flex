@@ -9,6 +9,7 @@ import { updateUser } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
 import { getPersistenceType } from '../../../services/redux/actions/PersistenceActions'
+import * as Yup from 'yup'
 
 function UserEditPage() {
   const dispatch = useDispatch()
@@ -109,43 +110,8 @@ function UserEditPage() {
 
     dispatch(updateUser(submitableValues))
   }
-
-  const initialValues = {
-    displayName: userDetails.displayName,
-    givenName: userDetails.givenName,
-    mail: userDetails.mail,
-    userId: userDetails.userId,
-    jansStatus: userDetails.jansStatus || '',
-  }
-  for (let i in userDetails.customAttributes) {
-    if (userDetails.customAttributes[i].values) {
-      let customAttribute = personAttributes.filter(
-        (e) => e.name == userDetails.customAttributes[i].name,
-      )
-      if (userDetails.customAttributes[i].name == 'birthdate') {
-        initialValues[userDetails.customAttributes[i].name] = moment(
-          userDetails.customAttributes[i].values[0],
-        ).format('YYYY-MM-DD')
-      } else {
-        if (customAttribute[0]?.oxMultiValuedAttribute) {
-          initialValues[userDetails.customAttributes[i].name] =
-            userDetails.customAttributes[i].values
-        } else {
-          initialValues[userDetails.customAttributes[i].name] =
-            userDetails.customAttributes[i].values[0]
-        }
-      }
-    }
-  }
-  const formik = useFormik({
-    initialValues: initialValues,
-    onSubmit: (values) => {
-      submitData(values)
-    },
-    setFieldValue: (field) => {
-      delete values[field]
-    },
-  })
+  
+  
   return (
     <React.Fragment>
       <GluuAlert
@@ -156,7 +122,7 @@ function UserEditPage() {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <UserForm formik={formik} />
+            <UserForm onSubmitData={submitData} />
           </CardBody>
         </Card>
       </Container>

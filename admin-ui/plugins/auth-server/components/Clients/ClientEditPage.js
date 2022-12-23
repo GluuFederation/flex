@@ -47,7 +47,8 @@ function ClientEditPage({
     dispatch(getOidcDiscovery())
   }, [])
   useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag)
+    console.log("Save operation flag",saveOperationFlag)
+    if (saveOperationFlag)
       navigate('/auth-server/clients')
   }, [saveOperationFlag])
 

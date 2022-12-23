@@ -69,8 +69,8 @@ export function* addNewClient({ payload }) {
     addAdditionalData(audit, CREATE, OIDC, payload)
     const api = yield* newFunction()
     const data = yield call(api.addNewOpenIdClient, payload.action.action_data)
-    yield put(updateToast(true, 'success'))
     yield put(addClientResponse(data))
+    yield put(updateToast(true, 'success'))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -91,8 +91,8 @@ export function* editAClient({ payload }) {
     postBody['client'] = payload.action.action_data
     const api = yield* newFunction()
     const data = yield call(api.editAClient, postBody)
-    yield put(updateToast(true, 'success'))
     yield put(editClientResponse(data))
+    yield put(updateToast(true, 'success'))
     yield call(postUserAction, audit)
   } catch (e) {
     yield put(updateToast(true, 'error'))
