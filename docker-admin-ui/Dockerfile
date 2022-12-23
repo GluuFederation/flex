@@ -30,7 +30,7 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
 # Application
 # ===========
 
-FROM node:fermium-alpine
+FROM node:fermium-alpine3.16
 
 # ======
 # alpine
