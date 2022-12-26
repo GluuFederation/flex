@@ -1,3 +1,4 @@
+import json
 import logging.config
 import os
 from uuid import uuid4
@@ -10,6 +11,8 @@ from jans.pycloudlib.persistence import CouchbaseClient
 from jans.pycloudlib.persistence import LdapClient
 from jans.pycloudlib.persistence import SpannerClient
 from jans.pycloudlib.persistence import SqlClient
+from jans.pycloudlib.persistence import doc_id_from_dn
+from jans.pycloudlib.persistence import id_from_dn
 from jans.pycloudlib.persistence.utils import PersistenceMapper
 
 from settings import LOGGING_CONFIG
@@ -56,7 +59,7 @@ def main():
 
     persistence_setup = PersistenceSetup(manager)
     persistence_setup.import_ldif_files()
-    persistence_setup.export_plugin_properties()
+    persistence_setup.save_config()
 
 
 def read_from_file(path):
@@ -155,12 +158,6 @@ class PersistenceSetup:
         # finalized contexts
         return ctx
 
-    def export_plugin_properties(self):
-        with open("/app/templates/auiConfiguration.properties.tmpl") as f:
-            txt = f.read() % self.ctx
-            logger.info("Creating/updating plugins_admin_ui_properties secrets")
-            self.manager.secret.set("plugins_admin_ui_properties", txt)
-
     @cached_property
     def ldif_files(self):
         filenames = ["clients.ldif"]
@@ -170,6 +167,55 @@ class PersistenceSetup:
         for file_ in self.ldif_files:
             logger.info(f"Importing {file_}")
             self.client.create_from_ldif(file_, self.ctx)
+
+    def save_config(self):
+        logger.info("Updating admin-ui config in persistence (if required).")
+
+        with open("/app/templates/auiConfiguration.json") as f:
+            conf_from_file = f.read() % self.ctx
+
+        dn = "ou=admin-ui,ou=configuration,o=jans"
+
+        if self.persistence_type in ("sql", "spanner"):
+            dn = doc_id_from_dn(dn)
+            table_name = "jansAppConf"
+
+            entry = self.client.get(table_name, dn)
+
+            if not entry["jansConfApp"]:
+                entry["jansConfApp"] = conf_from_file
+                entry["jansRevision"] += 1
+                self.client.update(table_name, dn, entry)
+
+        elif self.persistence_type == "couchbase":
+            bucket = os.environ.get("CN_COUCHBASE_BUCKET_PREFIX", "jans")
+            dn = id_from_dn(dn)
+
+            req = self.client.exec_query(f"SELECT META().id, {bucket}.* FROM {bucket} USE KEYS '{dn}'")
+            entry = req.json()["results"][0]
+
+            conf = entry.get("jansConfApp") or {}
+            if not conf:
+                rev = entry["jansRevision"] + 1
+                self.client.exec_query(f"UPDATE {bucket} USE KEYS '{dn}' SET jansConfApp={conf_from_file}, jansRevision={rev}")
+
+        else:
+            entry = self.client.get(dn)
+            attrs = entry.entry_attributes_as_dict
+
+            try:
+                conf = attrs.get("jansConfApp", [])[0]
+            except IndexError:
+                conf = ""
+
+            if not conf:
+                self.client.modify(
+                    dn,
+                    {
+                        "jansRevision": [(self.client.MODIFY_REPLACE, attrs["jansRevision"][0] + 1)],
+                        "jansConfApp": [(self.client.MODIFY_REPLACE, conf_from_file)],
+                    }
+                )
 
 
 if __name__ == "__main__":
