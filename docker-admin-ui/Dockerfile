@@ -2,12 +2,14 @@ FROM node:fermium-alpine AS builder
 
 RUN apk update \
     && apk upgrade --available \
-    && apk add --no-cache git openjdk11-jre-headless
+    && apk add --no-cache git
 
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=1855dc434c1a357cb5e36ef79c3b2ac45bb89083
+ENV ADMIN_UI_VERSION=412c49a15d103ab34be248f0633df64448ba5879
+
+RUN mkdir -p /opt/flex
 
 # note that as we're pulling from a monorepo (with multiple project in it)
 # we are using partial-clone and sparse-checkout to get the admin-ui code
@@ -15,22 +17,24 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
     && cd /tmp/flex \
     && git sparse-checkout init --cone \
     && git checkout ${ADMIN_UI_VERSION} \
-    && git sparse-checkout set admin-ui \
-    && mkdir -p /opt/flex \
-    && mv /tmp/flex/admin-ui /opt/flex/admin-ui \
-    && cd /opt/flex/admin-ui \
-    && npm install @openapitools/openapi-generator-cli \
-    && npm install openapi-merge-cli \
-    && npm run api \
-    && npm install \
-    && npm uninstall @openapitools/openapi-generator-cli \
-    && rm -rf $HOME/.npm
+    && git sparse-checkout add admin-ui \
+    && mv /tmp/flex/admin-ui /opt/flex/admin-ui
+
+# pre-packaged node modules and openapi
+RUN wget -q https://jenkins.gluu.org/npm/admin_ui/main/node_modules/admin-ui-main-node_modules.tar.gz -P /tmp \
+    && tar xzf /tmp/admin-ui-main-node_modules.tar.gz -C /opt/flex/admin-ui
+
+RUN wget -q https://jenkins.gluu.org/npm/admin_ui/main/OpenApi/jans_config_api/admin-ui-main-jans_config_api.tar.gz -P /tmp \
+    && tar xzf /tmp/admin-ui-main-jans_config_api.tar.gz -C /opt/flex/admin-ui
+
+# add missing node-sass binding for musl (alpine)
+RUN cd /opt/flex/admin-ui && npm rebuild node-sass
 
 # ===========
 # Application
 # ===========
 
-FROM node:fermium-alpine
+FROM node:fermium-alpine3.16
 
 # ======
 # alpine
@@ -45,13 +49,10 @@ RUN apk update \
 # nginx
 # =====
 
-RUN mkdir -p /etc/certs
-# RUN openssl dhparam -out /etc/certs/dhparams.pem 2048
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # Ports for nginx
-# EXPOSE 80
-# EXPOSE 443
+EXPOSE 8080
 
 # ======
 # Python
@@ -67,7 +68,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=d794504fc371eac8ab2377b4828040bd73099ec4
+ENV JANS_SOURCE_VERSION=19f2ad856b069f06bdac60e10db47f3ac3a96e32
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -185,7 +186,7 @@ ENV CN_WAIT_MAX_TIME=300 \
 # ==========
 # misc stuff
 # ==========
-EXPOSE 8080
+
 LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
@@ -194,10 +195,10 @@ LABEL name="gluufederation/admin-ui" \
     summary="Gluu Admin UI" \
     description=""
 
+RUN mkdir -p /etc/jans/conf /etc/certs
 COPY templates /app/templates/
 COPY scripts /app/scripts/
 RUN chmod +x /app/scripts/entrypoint.sh
-RUN mkdir -p /etc/jans/conf
 
 # forward logs to stdout and stderr
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
@@ -206,30 +207,21 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 # add existing node user to root group
 RUN addgroup node root
 
-# make empty folders
+# make empty files and folders
 RUN mkdir -p /opt/flex/admin-ui/dist /app/plugins \
     && touch /run/nginx/nginx.pid
 
-# && chown -R 1000:1000 /etc/certs \
-# && chgrp -R 0 /etc/certs && chmod -R g=u /etc/certs \
-
 # adjust ownership
-RUN chown -R 1000:1000 /var/lib/nginx \
-    && chown 1000:1000 /run/nginx/nginx.pid \
-    && chown -R 1000:1000 /opt/flex/admin-ui/.env \
-    && chown -R 1000:1000 /opt/flex/admin-ui/dist \
-    && chown -R 1000:1000 /etc/nginx/http.d/default.conf \
-    && chown -R 1000:1000 /var/lib/nginx \
-    && chown -R 1000:1000 /var/log/nginx \
-    && chown -R 1000:1000 /etc/jans \
-    && chown -R 1000:1000 /run/nginx/nginx.pid \
-    && chgrp -R 0 /opt/flex/admin-ui/.env && chmod -R g=u /opt/flex/admin-ui/.env \
-    && chgrp -R 0 /opt/flex/admin-ui/dist && chmod -R g=u /opt/flex/admin-ui/dist \
-    && chgrp -R 0 /etc/nginx/http.d/default.conf && chmod -R g=u /etc/nginx/http.d/default.conf \
-    && chgrp -R 0 /var/lib/nginx && chmod -R g=u /var/lib/nginx \
-    && chgrp -R 0 /var/log/nginx && chmod -R g=u /var/log/nginx \
-    && chgrp -R 0 /run/nginx/nginx.pid && chmod -R g=u /run/nginx/nginx.pid \
-    && chgrp -R 0 /etc/jans && chmod -R g=u /etc/jans \
+RUN chown -R 1000:0 /var/lib/nginx \
+    && chown 1000:0 /run/nginx/nginx.pid \
+    && chown 1000:0 /opt/flex/admin-ui/.env \
+    && chown -R 1000:0 /opt/flex/admin-ui/dist \
+    && chown 1000:0 /etc/nginx/http.d/default.conf \
+    && chown -R 1000:0 /var/lib/nginx \
+    && chown -R 1000:0 /var/log/nginx \
+    && chown -R 1000:0 /etc/jans \
+    && chown -R 1000:0 /etc/certs \
+    && chown 1000:0 /run/nginx/nginx.pid \
     && chown 1000:0 /opt/flex/admin-ui/plugins.config.json \
     && chown -R 1000:0 /opt/flex/admin-ui/plugins \
     && chown -R 1000:0 /app/plugins
