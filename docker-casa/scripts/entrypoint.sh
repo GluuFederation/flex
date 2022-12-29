@@ -39,6 +39,7 @@ python3 /app/scripts/wait.py
 python3 /app/scripts/bootstrap.py
 # python3 /app/scripts/jca_sync.py &
 python3 /app/scripts/auth_conf.py
+python3 /app/scripts/mod_context.py casa
 
 get_casa_plugins
 
