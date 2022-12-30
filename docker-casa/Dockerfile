@@ -73,7 +73,7 @@ RUN mkdir -p /opt/prometheus \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=386dbd522d0efb6ce97140e82982cb15325f7225
+ENV JANS_SOURCE_VERSION=d95fc492ca00ccee0ecc88132376c128203faefb
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -211,7 +211,8 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     GOOGLE_PROJECT_ID="" \
     GOOGLE_APPLICATION_CREDENTIALS=/etc/jans/conf/google-credentials.json \
     GLUU_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable \
-    CN_PROMETHEUS_PORT=""
+    CN_PROMETHEUS_PORT="" \
+    CN_VERSION=1.0.6-SNAPSHOT
 
 # ==========
 # misc stuff
@@ -230,9 +231,11 @@ RUN mkdir -p /etc/certs \
     /opt/jans/python/libs \
     /opt/jans/jetty/casa/static \
     /opt/jans/jetty/casa/plugins \
-    /opt/jans/jetty/casa/logs
+    /opt/jans/jetty/casa/logs \
+    /opt/jans/jetty/common/libs/spanner \
+    /opt/jans/jetty/common/libs/couchbase \
+    /usr/share/java
 
-COPY jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 COPY jetty/log4j2.xml ${JETTY_BASE}/casa/resources/
 COPY jetty/casa_web_resources.xml ${JETTY_BASE}/casa/webapps/
 COPY conf/*.tmpl /app/templates/
@@ -241,6 +244,8 @@ RUN chmod +x /app/scripts/entrypoint.sh
 
 # create non-root user
 RUN adduser -s /bin/sh -D -G root -u 1000 jetty
+
+COPY --chown=1000:0 jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 
 # adjust ownership
 RUN chmod -R g=u ${JETTY_BASE}/casa/static \
@@ -251,7 +256,9 @@ RUN chmod -R g=u ${JETTY_BASE}/casa/static \
     && chmod -R g=u /etc/jans \
     && chmod 664 /usr/java/latest/jre/lib/security/cacerts \
     && chmod 664 /opt/jetty/etc/jetty.xml \
-    && chmod 664 /opt/jetty/etc/webdefault.xml
+    && chmod 664 /opt/jetty/etc/webdefault.xml \
+    && chown -R 1000:0 ${JETTY_BASE}/common/libs \
+    && chown -R 1000:0 /usr/share/java
 
 USER 1000
 
