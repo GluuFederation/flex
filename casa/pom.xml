@@ -27,7 +27,7 @@
         <jackson.version>2.14.1</jackson.version>
         <zk.version>9.6.0.2-jakarta</zk.version>
         <ldapsdk.version>6.0.7</ldapsdk.version>
-        <resteasy.version>6.0.3.Final</resteasy.version>
+        <resteasy.version>6.2.1.Final</resteasy.version>
         <tika.version>2.6.0</tika.version>
         <!-- SonarCloud integration properties -->
         <sonar.projectKey>GluuFederation_flex_casa</sonar.projectKey>
