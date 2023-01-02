@@ -75,6 +75,13 @@ function ClientWizardForm({
   function toggle() {
     setModal(!modal)
   }
+  function validateFinish(){
+    if(formRef && formRef.current && formRef.current.values.redirectUris.length > 0){
+      toggle()
+    }else{
+      toast.info("Please add atleast 1 redirect URL");
+    }
+  }
   function setId(index) {
     return sequence[index]
   }
@@ -461,7 +468,7 @@ function ClientWizardForm({
                           type="button"
                           color={`primary-${selectedTheme}`}
                           className="px-4 ml-2"
-                          onClick={toggle}
+                          onClick={validateFinish}
                           style={applicationStyle.buttonStyle}
                         >
                           {t('actions.finish')}
