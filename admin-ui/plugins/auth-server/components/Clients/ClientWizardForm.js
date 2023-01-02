@@ -428,6 +428,7 @@ function ClientWizardForm({
                 </CardBody>
                 <CardFooter className="p-4 bt-0">
                   <div className="d-flex">
+                    <div style={{flex:1}}>
                     {currentStep !== sequence[0] && (
                       <Button
                         type="button"
@@ -440,31 +441,33 @@ function ClientWizardForm({
                         {t('actions.previous')}
                       </Button>
                     )}
+                    </div>
+                    <div style={{flex:1, justifyContent:"flex-end", display:"flex"}}>
                     {currentStep !== sequence[sequence.length - 1] && (
                       <Button
                         type="button"
                         color={`primary-${selectedTheme}`}
                         onClick={nextStep}
                         style={applicationStyle.buttonStyle}
-                        className="ml-auto px-4"
+                        className="px-4"
                       >
                         {t('actions.next')}
                         <i className="fa fa-angle-right ml-2"></i>
                       </Button>
                     )}
-                    {currentStep === sequence[sequence.length - 1] &&
-                      !viewOnly &&
+                    {!viewOnly &&
                       hasPermission(permissions, CLIENT_WRITE) && (
                         <Button
                           type="button"
                           color={`primary-${selectedTheme}`}
-                          className="ml-auto px-4"
+                          className="px-4 ml-2"
                           onClick={toggle}
                           style={applicationStyle.buttonStyle}
                         >
-                          {t('actions.apply')}
+                          {t('actions.finish')}
                         </Button>
                     )}
+                    </div>
                   </div>
                 </CardFooter>
                 <Button
