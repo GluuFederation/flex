@@ -1,7 +1,8 @@
 {
   "actions": {
     "accept": "Accept",
-    "add": "Add",
+    "finish": "Finish"
+,    "add": "Add",
     "add_ldap_configuration": "Add LDAP Configuration",
     "add_mapping":"Add Mapping",
     "add_property": "Add property",
