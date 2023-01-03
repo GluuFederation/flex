@@ -852,6 +852,18 @@ global:
   # -- Azure storage kind if using Azure disks
   azureStorageKind: Managed
   casa:
+    # -- App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed.
+    appLoggers:
+      # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e casa ===> 2022-12-20 17:49:55,744 INFO
+      enableStdoutLogPrefix: "true"
+      # -- casa.log target
+      casaLogTarget: "STDOUT"
+      # -- casa.log level
+      casaLogLevel: "INFO"
+      # -- casa timer log target
+      timerLogTarget: "FILE"
+      # -- casa timer log level
+      timerLogLevel: "INFO"
     # -- Name of the casa service. Please keep it as default.
     casaServiceName: casa
     # -- Boolean flag to enable/disable the casa chart.
