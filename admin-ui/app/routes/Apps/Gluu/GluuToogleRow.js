@@ -16,9 +16,9 @@ function GluuToogleRow({
   disabled
 }) {
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
+    
       <FormGroup row>
-        <GluuLabel label={label} size={lsize} />
+        <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
         <Col sm={rsize}>
           <GluuToogle
             id={name}
@@ -31,7 +31,7 @@ function GluuToogleRow({
           />
         </Col>
       </FormGroup>
-    </GluuTooltip>
+    
   )
 }
 GluuToogleRow.defaultProps = {

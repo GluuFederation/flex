@@ -175,9 +175,9 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
       >
         {(formik) => (
           <Form onSubmit={formik.handleSubmit}>
-            <GluuTooltip doc_category={SCOPE} doc_entry="id">
+            
               <FormGroup row>
-                <GluuLabel label="fields.id" size={4} required />
+                <GluuLabel label="fields.id" size={4} required doc_category={SCOPE} doc_entry="id" />
                 <Col sm={8}>
                   <Input
                     placeholder={t('placeholders.id')}
@@ -193,7 +193,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
                 </ErrorMessage>
               </FormGroup>
-            </GluuTooltip>
             {scope.inum && (
               <GluuInumInput
                 label="fields.inum"
@@ -202,9 +201,9 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                 doc_category={SCOPE}
               />
             )}
-            <GluuTooltip doc_category={SCOPE} doc_entry="displayName">
+            
               <FormGroup row>
-                <GluuLabel label="fields.displayname" size={4} required />
+                <GluuLabel label="fields.displayname" size={4} required doc_category={SCOPE} doc_entry="displayName"/>
                 <Col sm={8}>
                   <Input
                     placeholder={t('placeholders.display_name')}
@@ -224,10 +223,9 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
                 </ErrorMessage>
               </FormGroup>
-            </GluuTooltip>
-            <GluuTooltip doc_category={SCOPE} doc_entry="description">
+            
               <FormGroup row>
-                <GluuLabel label="fields.description" size={4} />
+                <GluuLabel label="fields.description" size={4} doc_category={SCOPE} doc_entry="description"/>
                 <Col sm={8}>
                   <Input
                     type="textarea"
@@ -241,7 +239,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                   />
                 </Col>
               </FormGroup>
-            </GluuTooltip>
             {!showSpontaneousPanel && (
               <div>
                 <GluuToogleRow
@@ -261,20 +258,19 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
               </div>
             )}
             {showSpontaneousPanel ? (
-              <GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
+              
                 <FormGroup row>
-                  <GluuLabel label="fields.scope_type" size={4} />
+                  <GluuLabel label="fields.scope_type" size={4} doc_category={SCOPE} doc_entry="scopeType"/>
                   <Col sm={8}>
                     <Badge key={scope.inum} color={`primary-${selectedTheme}`}>
                       {scope.scopeType}
                     </Badge>
                   </Col>
                 </FormGroup>
-              </GluuTooltip>
             ) : (
-              <GluuTooltip doc_category={SCOPE} doc_entry="scopeType">
+              
                 <FormGroup row>
-                  <GluuLabel label="fields.scope_type" size={4} />
+                  <GluuLabel label="fields.scope_type" size={4} doc_category={SCOPE} doc_entry="scopeType" />
                   <Col sm={8}>
                     <InputGroup>
                       <CustomInput
@@ -299,7 +295,6 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                     {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
                   </ErrorMessage>
                 </FormGroup>
-              </GluuTooltip>
             )}
             {showDynamicPanel && (
               <GluuTypeAheadForDn

@@ -32,12 +32,12 @@ function GluuTypeAhead({
 }) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
+    
       <FormGroup row>
         {required ? (
-          <GluuLabel label={label} size={lsize} required />
+          <GluuLabel label={label} size={lsize} required doc_category={doc_category} doc_entry={doc_entry || name} />
         ) : (
-          <GluuLabel label={label} size={lsize} />
+          <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} />
         )}
         <Col sm={rsize}>
           <Typeahead
@@ -67,7 +67,6 @@ function GluuTypeAhead({
           </ThemeProvider>
         </Col>
       </FormGroup>
-    </GluuTooltip>
   )
 }
 

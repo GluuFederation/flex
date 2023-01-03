@@ -45,9 +45,9 @@ function GluuTypeAheadWithAdd({
   }
 
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
+    
       <FormGroup row>
-        <GluuLabel label={label} size={lsize} />
+        <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
         <Col
           sm={rsize}
           style={{
@@ -96,7 +96,6 @@ function GluuTypeAheadWithAdd({
           &nbsp;
         </Col>
       </FormGroup>
-    </GluuTooltip>
   )
 }
 

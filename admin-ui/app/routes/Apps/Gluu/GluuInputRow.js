@@ -27,9 +27,8 @@ function GluuInputRow({
     }
   }
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
       <FormGroup row>
-        <GluuLabel label={label} size={lsize} required={required} />
+        <GluuLabel label={label} size={lsize} doc_category={doc_category} required={required} doc_entry={name} />
         <Col sm={rsize}>
           <Input
             id={name}
@@ -52,7 +51,6 @@ function GluuInputRow({
           {showError ? <div style={{color:"red"}}>{errorMessage}</div> : null }
         </Col>
       </FormGroup>
-    </GluuTooltip>
   )
 }
 

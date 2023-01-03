@@ -97,36 +97,34 @@ const ClientBasicPanel = ({
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
-      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="clientSecret">
-        <FormGroup row>
-          <GluuLabel label="fields.client_secret" />
-          <Col sm={9}>
-            <div
-              style={{
-                height: '0.01em',
-                display: 'flex',
-                maxHeight: '2em',
-                whiteSpace: 'nowrap',
-              }}
+      <FormGroup row>
+        <GluuLabel label="fields.client_secret" doc_category={DOC_CATEGORY} doc_entry="clientSecret" />
+        <Col sm={9}>
+          <div
+            style={{
+              height: '0.01em',
+              display: 'flex',
+              maxHeight: '2em',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Input
+              id="clientSecret"
+              name="clientSecret"
+              type={showClientSecret ? 'text' : 'password'}
+              value={client.clientSecret}
+              onChange={formik.handleChange}
+              disabled={viewOnly}
+            />
+            <IconButton
+              onClick={handleClickShowClientSecret}
+              onMouseDown={handleMouseDownClientSecret}
             >
-              <Input
-                id="clientSecret"
-                name="clientSecret"
-                type={showClientSecret ? 'text' : 'password'}
-                value={client.clientSecret}
-                onChange={formik.handleChange}
-                disabled={viewOnly}
-              />
-              <IconButton
-                onClick={handleClickShowClientSecret}
-                onMouseDown={handleMouseDownClientSecret}
-              >
-                {showClientSecret ? <Visibility /> : <VisibilityOff />}
-              </IconButton>
-            </div>
-          </Col>
-        </FormGroup>
-      </GluuTooltip>
+              {showClientSecret ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </div>
+        </Col>
+      </FormGroup>
       <GluuInputRow
         label="fields.description"
         name="description"
@@ -147,9 +145,9 @@ const ClientBasicPanel = ({
         disabled={viewOnly}
       />
 
-      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="subjectType">
+      
         <FormGroup row>
-          <GluuLabel label="fields.subject_type_basic" />
+          <GluuLabel label="fields.subject_type_basic" doc_category={DOC_CATEGORY} doc_entry="subjectType"/>
           <Col sm={9}>
             <InputGroup>
               <CustomInput
@@ -167,7 +165,6 @@ const ClientBasicPanel = ({
             </InputGroup>
           </Col>
         </FormGroup>
-      </GluuTooltip>
       <GluuInputRow
         label="fields.sector_uri"
         name="sectorIdentifierUri"
@@ -224,27 +221,25 @@ const ClientBasicPanel = ({
           />
         </Col>
       </FormGroup>
-      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="applicationType">
-        <FormGroup row>
-          <GluuLabel label="fields.application_type" />
-          <Col sm={9}>
-            <InputGroup>
-              <CustomInput
-                type="select"
-                id="applicationType"
-                name="applicationType"
-                defaultValue={client.applicationType}
-                onChange={formik.handleChange}
-                disabled={viewOnly}
-              >
-                <option value="">{t('actions.choose')}...</option>
-                <option>web</option>
-                <option>native</option>
-              </CustomInput>
-            </InputGroup>
-          </Col>
-        </FormGroup>
-      </GluuTooltip>
+      <FormGroup row>
+        <GluuLabel label="fields.application_type" doc_category={DOC_CATEGORY} doc_entry="applicationType" />
+        <Col sm={9}>
+          <InputGroup>
+            <CustomInput
+              type="select"
+              id="applicationType"
+              name="applicationType"
+              defaultValue={client.applicationType}
+              onChange={formik.handleChange}
+              disabled={viewOnly}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              <option>web</option>
+              <option>native</option>
+            </CustomInput>
+          </InputGroup>
+        </Col>
+      </FormGroup>
       <GluuTypeAheadWithAdd
         name="redirectUris"
         label="fields.redirect_uris"

@@ -36,9 +36,9 @@ function GluuTypeAheadForDn({
     return data[0].name
   }
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
+    
       <FormGroup row>
-        <GluuLabel label={label} size={lsize} required={required} />
+        <GluuLabel label={label} size={lsize} required={required} doc_category={doc_category} doc_entry={doc_entry || name}/>
         <Col sm={rsize}>
           <Typeahead
             labelKey={
@@ -74,7 +74,6 @@ function GluuTypeAheadForDn({
           </ThemeProvider>
         </Col>
       </FormGroup>
-    </GluuTooltip>
   )
 }
 
