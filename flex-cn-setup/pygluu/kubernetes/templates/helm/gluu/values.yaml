@@ -1485,24 +1485,30 @@ oxshibboleth:
       cpu: 1000m
       # -- Memory request.
       memory: 1000Mi
-  # -- Configure the liveness healthcheck for the oxShibboleth if needed.
+  # -- Configure the liveness healthcheck for oxshibboleth if needed.
+  # https://github.com/GluuFederation/docker-oxshibboleth/blob/master/scripts/healthcheck.py
   livenessProbe:
-    httpGet:
-      # -- http liveness probe endpoint
-      path: /idp
-      port: http-oxshib
+    # -- Executes the python3 healthcheck.
+    exec:
+      command:
+      - python3
+      - /app/scripts/healthcheck.py
     initialDelaySeconds: 30
     periodSeconds: 30
     timeoutSeconds: 5
+    failureThreshold: 20
   # -- Configure the readiness healthcheck for the casa if needed.
   readinessProbe:
-    httpGet:
-      # -- http liveness probe endpoint
-      path: /idp
-      port: http-oxshib
-    initialDelaySeconds: 25
-    periodSeconds: 25
+  # https://github.com/GluuFederation/docker-oxshibboleth/blob/master/scripts/healthcheck.py
+  # -- Executes the python3 healthcheck.
+    exec:
+      command:
+      - python3
+      - /app/scripts/healthcheck.py
+    initialDelaySeconds: 30
+    periodSeconds: 30
     timeoutSeconds: 5
+    failureThreshold: 20
   # -- Configure any additional volumes that need to be attached to the pod
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
