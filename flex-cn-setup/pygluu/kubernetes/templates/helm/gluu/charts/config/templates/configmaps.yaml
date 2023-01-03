@@ -191,6 +191,7 @@ data:
   | replace "adminUiLogLevel" "admin_ui_log_level"
   | replace "adminUiAuditLogTarget" "admin_ui_audit_log_target"
   | replace "adminUiAuditLogLevel" "admin_ui_audit_log_level"
+  | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
   {{- end }}

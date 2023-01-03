@@ -938,6 +938,8 @@ global:
       # -- config-api_script.log level
       scriptLogLevel: "INFO"
     adminUiAppLoggers:
+      # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e config-api_persistence ===> 2022-12-20 17:49:55,744 INFO
+      enableStdoutLogPrefix: "true"
       # -- config-api admin-ui plugin log level
       adminUiLogTarget: "FILE"
       # -- config-api admin-ui plugin log target
