@@ -28,6 +28,7 @@ from jans.pycloudlib.utils import cert_to_truststore
 from jans.pycloudlib.utils import get_random_chars
 from jans.pycloudlib.utils import encode_text
 from jans.pycloudlib.utils import generate_base64_contents
+from jans.pycloudlib.utils import as_boolean
 
 from settings import LOGGING_CONFIG
 
@@ -78,6 +79,7 @@ def configure_logging():
         "casa_log_level": "INFO",
         "timer_log_target": "FILE",
         "timer_log_level": "INFO",
+        "log_prefix": "",
     }
 
     # pre-populate custom config; format is JSON string of ``dict``
@@ -127,10 +129,13 @@ def configure_logging():
         else:
             config[key] = file_aliases[key]
 
-    logfile = "/opt/jans/jetty/casa/resources/log4j2.xml"
-    with open(logfile) as f:
+    if as_boolean(custom_config.get("enable_stdout_log_prefix")):
+        config["log_prefix"] = "${sys:log.console.prefix}%X{log.console.group} - "
+
+    with open("/app/templates/log4j2.xml") as f:
         txt = f.read()
 
+    logfile = "/opt/jans/jetty/casa/resources/log4j2.xml"
     tmpl = Template(txt)
     with open(logfile, "w") as f:
         f.write(tmpl.safe_substitute(config))
