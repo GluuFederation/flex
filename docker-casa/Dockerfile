@@ -15,7 +15,7 @@ RUN apk update \
 # Jetty
 # =====
 
-ARG JETTY_VERSION=11.0.11
+ARG JETTY_VERSION=11.0.13
 ARG JETTY_HOME=/opt/jetty
 ARG JETTY_BASE=/opt/jans/jetty
 ARG JETTY_USER_HOME_LIB=/home/jetty/lib
@@ -46,7 +46,7 @@ RUN mkdir -p ${JETTY_BASE}/casa/webapps \
     && zip -d casa.war WEB-INF/jetty-web.xml \
     && zip -r casa.war WEB-INF/jetty-env.xml \
     && cp casa.war ${JETTY_BASE}/casa/webapps/casa.war \
-    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/casa --add-module=server,deploy,resources,http,jsp,cdi-decorate,jmx,stats \
+    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/casa --add-module=server,deploy,resources,http,jsp,cdi-decorate,jmx,stats,logging-log4j2 --approve-all-licenses \
     && rm -rf /tmp/casa.war /tmp/WEB-INF
 
 # ======
@@ -232,7 +232,7 @@ RUN mkdir -p /etc/certs \
     /opt/jans/jetty/common/libs/couchbase \
     /usr/share/java
 
-COPY jetty/log4j2.xml ${JETTY_BASE}/casa/resources/
+COPY jetty/log4j2.xml /app/templates/
 COPY jetty/casa_web_resources.xml ${JETTY_BASE}/casa/webapps/
 COPY conf/*.tmpl /app/templates/
 COPY scripts /app/scripts
@@ -246,7 +246,7 @@ COPY --chown=1000:0 jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 # adjust ownership
 RUN chmod -R g=u ${JETTY_BASE}/casa/static \
     && chmod -R g=u ${JETTY_BASE}/casa/plugins \
-    && chmod -R g=u ${JETTY_BASE}/casa/resources \
+    && chmod 664 ${JETTY_BASE}/casa/resources/log4j2.xml \
     && chmod -R g=u ${JETTY_BASE}/casa/logs \
     && chmod -R g=u /etc/certs \
     && chmod -R g=u /etc/jans \

@@ -104,6 +104,12 @@ The following key-value pairs are the defaults:
 }
 ```
 
+To enable prefix on `STDOUT` logging, set the `enable_stdout_log_prefix` key. Example:
+
+```
+{"casa_log_target":"STDOUT","timer_log_target":"STDOUT","enable_stdout_log_prefix":true}
+```
+
 ### Exposing metrics
 
 As per v1.0.1, certain metrics can be exposed via Prometheus JMX exporter.
