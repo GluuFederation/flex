@@ -86,28 +86,26 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
               doc_category={ATTRIBUTE}
             />
           )}
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="name">
+          <FormGroup row>
+            <GluuLabel label="fields.name" required doc_category={ATTRIBUTE} doc_entry="name"/>
+            <Col sm={9}>
+              <Input
+                placeholder={t('placeholders.enter_the_attribute_name')}
+                id="name"
+                valid={!formik.errors.name && !formik.touched.name && init}
+                name="name"
+                defaultValue={item.name}
+                onKeyUp={toogle}
+                onChange={formik.handleChange}
+              />
+              <ErrorMessage name="name">
+                {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
+              </ErrorMessage>
+            </Col>
+          </FormGroup>
+          
             <FormGroup row>
-              <GluuLabel label="fields.name" required />
-              <Col sm={9}>
-                <Input
-                  placeholder={t('placeholders.enter_the_attribute_name')}
-                  id="name"
-                  valid={!formik.errors.name && !formik.touched.name && init}
-                  name="name"
-                  defaultValue={item.name}
-                  onKeyUp={toogle}
-                  onChange={formik.handleChange}
-                />
-                <ErrorMessage name="name">
-                  {(msg) => <div style={{ color: 'red' }}>{msg}</div>}
-                </ErrorMessage>
-              </Col>
-            </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="displayName">
-            <FormGroup row>
-              <GluuLabel label="fields.displayname" required />
+              <GluuLabel label="fields.displayname" required doc_category={ATTRIBUTE} doc_entry="displayName"/>
               <Col sm={9}>
                 <InputGroup>
                   <Input
@@ -130,10 +128,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 </ErrorMessage>
               </Col>
             </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="description">
+          
             <FormGroup row>
-              <GluuLabel label="fields.description" required />
+              <GluuLabel label="fields.description" required doc_category={ATTRIBUTE} doc_entry="description"/>
               <Col sm={9}>
                 <InputGroup>
                   <Input
@@ -153,10 +150,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 </ErrorMessage>
               </Col>
             </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="status">
+          
             <FormGroup row>
-              <GluuLabel label="fields.status" required />
+              <GluuLabel label="fields.status" required doc_category={ATTRIBUTE} doc_entry="status"/>
               <Col sm={9}>
                 <InputGroup>
                   <CustomInput
@@ -176,10 +172,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 </ErrorMessage>
               </Col>
             </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="dataType">
+          
             <FormGroup row>
-              <GluuLabel label="fields.data_type" required />
+              <GluuLabel label="fields.data_type" required doc_category={ATTRIBUTE} doc_entry="dataType"/>
               <Col sm={9}>
                 <InputGroup>
                   <CustomInput
@@ -206,10 +201,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 </ErrorMessage>
               </Col>
             </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="editType">
+          
             <FormGroup row>
-              <GluuLabel label="fields.edit_type" required />
+              <GluuLabel label="fields.edit_type" required doc_category={ATTRIBUTE} doc_entry="editType"/>
               <Col sm={9}>
                 <Input
                   type="select"
@@ -227,10 +221,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 </ErrorMessage>
               </Col>
             </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="viewType">
+          
             <FormGroup row>
-              <GluuLabel label="fields.view_type" />
+              <GluuLabel label="fields.view_type" doc_category={ATTRIBUTE} doc_entry="viewType" />
               <Col sm={9}>
                 <Input
                   type="select"
@@ -245,10 +238,9 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 </Input>
               </Col>
             </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={ATTRIBUTE} doc_entry="usageType">
+          
             <FormGroup row>
-              <GluuLabel label="fields.usage_type" required />
+              <GluuLabel label="fields.usage_type" required doc_category={ATTRIBUTE} doc_entry="usageType"/>
               <Col sm={9}>
                 <Input
                   type="select"
@@ -265,7 +257,6 @@ function AttributeForm({ item, customOnSubmit, hideButtons }) {
                 </ErrorMessage>
               </Col>
             </FormGroup>
-          </GluuTooltip>
           <GluuInputRow
             label="fields.oxauth_claim_name"
             name="claimName"

@@ -193,7 +193,6 @@ function CachePage({
                               id="cacheProviderType"
                               name="cacheProviderType"
                               defaultValue={cacheData.cacheProviderType}
-                              onChange={formik.handleChange}
                               onChange={(e) => {
                                 setCacheProviderType(e.target.value)
                                 formik.setFieldValue(

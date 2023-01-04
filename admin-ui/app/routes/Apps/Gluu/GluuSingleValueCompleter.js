@@ -27,12 +27,12 @@ function GluuSingleValueCompleter({
 }) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
+    
       <FormGroup row>
         {required ? (
-          <GluuLabel label={label} size={4} required />
+          <GluuLabel label={label} size={4} required doc_category={doc_category} doc_entry={doc_entry || name}/>
         ) : (
-          <GluuLabel label={label} size={4} />
+          <GluuLabel label={label} size={4} doc_category={doc_category} doc_entry={doc_entry || name} />
         )}
         <Col sm={8}>
           <Typeahead
@@ -56,7 +56,6 @@ function GluuSingleValueCompleter({
           </ThemeProvider>
         </Col>
       </FormGroup>
-    </GluuTooltip>
   )
 }
 

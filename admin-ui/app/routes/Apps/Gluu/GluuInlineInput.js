@@ -62,13 +62,14 @@ function GluuInlineInput({
   return (
     <FormGroup row>
       <Col sm={10}>
-        <GluuTooltip doc_category="json_properties" doc_entry={name}>
           <FormGroup row>
             <GluuLabel
               label={label}
               size={lsize}
               required={required}
               withTooltip={false}
+              doc_category="json_properties" 
+              doc_entry={name}
             />
             <Col sm={rsize}>
               {!isBoolean && !isArray && (
@@ -106,7 +107,6 @@ function GluuInlineInput({
               )}
             </Col>
           </FormGroup>
-        </GluuTooltip>
       </Col>
       <Col sm={2}>
         {show && (

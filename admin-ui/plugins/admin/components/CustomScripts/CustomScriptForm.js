@@ -222,9 +222,9 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
           doc_category={SCRIPT}
         />
       )}
-      <GluuTooltip doc_category={SCRIPT} doc_entry="name">
+      
         <FormGroup row>
-          <GluuLabel label="fields.name" required />
+          <GluuLabel label="fields.name" required doc_category={SCRIPT} doc_entry="name"/>
           <Col sm={9}>
             <Input
               placeholder={t('placeholders.name')}
@@ -241,10 +241,9 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={SCRIPT} doc_entry="description">
+      
         <FormGroup row>
-          <GluuLabel label="fields.description" />
+          <GluuLabel label="fields.description" doc_category={SCRIPT} doc_entry="description" />
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -262,11 +261,10 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             </InputGroup>
           </Col>
         </FormGroup>
-      </GluuTooltip>
       {scriptTypeState === 'person_authentication' && (
-        <GluuTooltip doc_category={SCRIPT} doc_entry="aliases">
+        
           <FormGroup row>
-            <GluuLabel label={t('Select SAML ACRS')} />
+            <GluuLabel label={t('Select SAML ACRS')} doc_category={SCRIPT} doc_entry="aliases" />
             <Col sm={9}>
               <Input
                 type="select"
@@ -289,11 +287,10 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               </Input>
             </Col>
           </FormGroup>
-        </GluuTooltip>
       )}
-      <GluuTooltip doc_category={SCRIPT} doc_entry="scriptType">
+      
         <FormGroup row>
-          <GluuLabel label="fields.script_type" required />
+          <GluuLabel label="fields.script_type" required doc_category={SCRIPT} doc_entry="scriptType"/>
           <Col sm={9}>
             <InputGroup>
               <CustomInput
@@ -320,10 +317,9 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={SCRIPT} doc_entry="programmingLanguage">
+      
         <FormGroup row>
-          <GluuLabel label="fields.programming_language" required />
+          <GluuLabel label="fields.programming_language" required doc_category={SCRIPT} doc_entry="programmingLanguage"/>
           <Col sm={9}>
             <InputGroup>
               <CustomInput
@@ -350,10 +346,9 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               )}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={SCRIPT} doc_entry="locationType">
+      
         <FormGroup row>
-          <GluuLabel label="fields.location_type" />
+          <GluuLabel label="fields.location_type" doc_category={SCRIPT} doc_entry="locationType" />
           <Col sm={9}>
             <InputGroup>
               <CustomInput
@@ -382,11 +377,10 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             </InputGroup>
           </Col>
         </FormGroup>
-      </GluuTooltip>
       {scriptPath && (
-        <GluuTooltip doc_category={SCRIPT} doc_entry="scriptPath">
+        
           <FormGroup row>
-            <GluuLabel label="fields.script_path" />
+            <GluuLabel label="fields.script_path" doc_category={SCRIPT} doc_entry="scriptPath" />
             <Col sm={9}>
               <InputGroup>
                 <Input
@@ -415,12 +409,11 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               </InputGroup>
             </Col>
           </FormGroup>
-        </GluuTooltip>
       )}
       {scriptTypeState === 'person_authentication' && (
-        <GluuTooltip doc_category={SCRIPT} doc_entry="usage_type">
+        
           <FormGroup row>
-            <GluuLabel label="Interactive" />
+            <GluuLabel label="Interactive" doc_category={SCRIPT} doc_entry="usage_type"/>
             <Col sm={9}>
               <InputGroup>
                 <CustomInput
@@ -450,11 +443,10 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               </InputGroup>
             </Col>
           </FormGroup>
-        </GluuTooltip>
       )}
-      <GluuTooltip doc_category={SCRIPT} doc_entry="level">
+      
         <FormGroup row>
-          <GluuLabel doc_category={SCRIPT} label="fields.level" />
+          <GluuLabel label="fields.level" doc_category={SCRIPT} doc_entry="level"/>
           <Col sm={9}>
             <Counter
               counter={item.level}
@@ -464,7 +456,6 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             <Input type="hidden" id="level" defaultValue={item.level} />
           </Col>
         </FormGroup>
-      </GluuTooltip>
       <GluuProperties
         compName="configurationProperties"
         label="fields.custom_properties"
@@ -488,9 +479,9 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
           required
         ></GluuInputEditor>
       )}
-      <GluuTooltip doc_category={SCRIPT} doc_entry="enabled">
+      
         <FormGroup row>
-          <GluuLabel label="options.enabled" size={3} />
+          <GluuLabel label="options.enabled" size={3} doc_category={SCRIPT} doc_entry="enabled"/>
           <Col sm={1}>
             <Toggle
               id="enabled"
@@ -501,7 +492,6 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             />
           </Col>
         </FormGroup>
-      </GluuTooltip>
       <GluuTooltip doc_category={SCRIPT} doc_entry="moduleProperties">
         <FormGroup row>
           <Input

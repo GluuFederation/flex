@@ -78,12 +78,9 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
               {(formik) => (
                 <Form onSubmit={formik.handleSubmit}>
                   <FormGroup row></FormGroup>
-                  <GluuTooltip
-                    doc_category={JSON_CONFIG}
-                    doc_entry="loggingLevel"
-                  >
+                  
                     <FormGroup row>
-                      <GluuLabel label="fields.log_level" size={4} />
+                      <GluuLabel label="fields.log_level" size={4} doc_category={JSON_CONFIG} doc_entry="loggingLevel" />
                       <Col sm={8}>
                         <CustomInput
                           type="select"
@@ -105,13 +102,8 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                         </CustomInput>
                       </Col>
                     </FormGroup>
-                  </GluuTooltip>
-                  <GluuTooltip
-                    doc_category={JSON_CONFIG}
-                    doc_entry="loggingLayout"
-                  >
                     <FormGroup row>
-                      <GluuLabel label="fields.log_layout" size={4} />
+                      <GluuLabel label="fields.log_layout" size={4} doc_category={JSON_CONFIG} doc_entry="loggingLayout"/>
                       <Col sm={8}>
                         <CustomInput
                           type="select"
@@ -136,7 +128,6 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                         </CustomInput>
                       </Col>
                     </FormGroup>
-                  </GluuTooltip>
                   <GluuCheckBoxRow
                     label="fields.http_logging_enabled"
                     name="httpLoggingEnabled"
