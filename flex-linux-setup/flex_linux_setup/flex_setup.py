@@ -417,6 +417,9 @@ class flex_installer(JettyInstaller):
 
             client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
 
+            print("\033[1mAdmin UI Client ID:\033[0m", Config.admin_ui_client_id)
+            print("\033[1mAdmin UI Client Secret:\033[0m", Config.admin_ui_client_pw)
+
             with open(client_tmp_fn, 'wb') as w:
                 ldif_writer = LDIFWriter(w)
                 ldif_writer.unparse('inum=%(admin_ui_client_id)s,ou=clients,o=jans', ldif_parser.entries[0][1])
@@ -514,8 +517,8 @@ class flex_installer(JettyInstaller):
         if not Config.get('casa_client_encoded_pw'):
             Config.casa_client_encoded_pw = jansAuthInstaller.obscure(Config.casa_client_pw)
 
-        print("Casa client id", Config.casa_client_id)
-        print("Casa client encoded password", Config.casa_client_encoded_pw)
+        print("\033[1mCasa Client ID:\033[0m", Config.casa_client_id)
+        print("\033[1mCasa Client Secret:\033[0m", Config.casa_client_pw)
 
         print("Importing LDIF Files")
 
@@ -588,7 +591,7 @@ class flex_installer(JettyInstaller):
             p = Properties()
             with open(fn, 'rb') as f:
                 p.load(f, 'utf-8')
-            for prop in ('casa_client_id', 'casa_client_pw', 'casa_client_encoded_pw'):
+            for prop in ('casa_client_id', 'casa_client_pw', 'casa_client_encoded_pw', 'admin_ui_client_id', 'admin_ui_client_pw'):
                 if Config.get(prop):
                     p[prop] = Config.get(prop)
             with open(fn, 'wb') as f:
