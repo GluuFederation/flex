@@ -124,16 +124,14 @@ nav:
         - 'RHEL': 'install/vm-install/rhel.md'
         - 'Suse': 'install/vm-install/suse.md'
         - 'Dynamic Download': 'install/vm-install/dynamic-download.md'
-    - 'Setup Script': 'install/setup.md'
+        - 'Setup Script': 'install/setup.md'
 - 'Administration':
-    - 'Admin UI':
-        - 'admin-ui/README.md'
-        - 'Add Content': 'admin-ui/template.md'
-    - 'SAML':
-        - 'saml/README.md'
-        - 'SAML IDP': 'saml/idp.md'
-        - 'SAML Proxy': 'saml/proxy.md'
-    - 'Casa':
-        - 'casa/README.md'
-        - 'Add Content': 'casa/template.md'
+    - 'admin-ui/README.md'
+    - 'Admin UI Properties': 'admin-ui/properties.md'
+#    - 'SAML':
+ #       - 'saml/README.md'
+  #      - 'SAML IDP': 'saml/idp.md'
+   #     - 'SAML Proxy': 'saml/proxy.md'
+    - 'Casa': 'casa/README.md'
+
 
