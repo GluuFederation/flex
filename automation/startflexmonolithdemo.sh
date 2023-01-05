@@ -53,9 +53,10 @@ sudo python3 -m pip install --upgrade pip
 pip3 install setuptools --upgrade
 pip3 install dockerfile-parse ruamel.yaml
 if [[ "$FLEX_BUILD_COMMIT" ]]; then
+  echo "Updating build commit in Dockerfile to $FLEX_BUILD_COMMIT"
   python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['FLEX_SOURCE_VERSION'] = '$FLEX_BUILD_COMMIT'"
 fi
-python3 -c "from pathlib import Path ; import ruamel.yaml ; compose = Path('/tmp/flex/docker-flex-monolith/flex-mysql-compose.yml') ; yaml = ruamel.yaml.YAML() ; data = yaml.load(compose) ; data['services']['flex']['build'] = '.' ; yaml.dump(data, compose)"
+python3 -c "from pathlib import Path ; import ruamel.yaml ; compose = Path('/tmp/flex/docker-flex-monolith/flex-mysql-compose.yml') ; yaml = ruamel.yaml.YAML() ; data = yaml.load(compose) ; data['services']['flex']['build'] = '.' ; del data['services']['flex']['image'] ; yaml.dump(data, compose)"
 # --
 
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
