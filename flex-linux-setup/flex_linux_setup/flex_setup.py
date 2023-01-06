@@ -481,9 +481,6 @@ class flex_installer(JettyInstaller):
         class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.fido2_client_jar_fn))
         jansAuthInstaller.add_extra_class(class_path)
 
-        print("Enabling script", self.simple_auth_scr_inum)
-        self.dbUtils.enable_script(self.simple_auth_scr_inum)
-
         # copy casa scripts
         if not os.path.exists(self.py_lib_dir):
             os.makedirs(self.py_lib_dir)
@@ -657,9 +654,6 @@ class flex_installer(JettyInstaller):
         if write_jans_auth_config:
             jansAuthInstaller.set_class_path(jans_auth_plugins)
 
-        print("  - Disabling script", self.simple_auth_scr_inum)
-        self.dbUtils.enable_script(self.simple_auth_scr_inum, enable=False)
-
         for plib in self.casa_python_libs:
             plib_path = os.path.join(self.py_lib_dir, plib)
             if os.path.exists(plib_path):
@@ -812,9 +806,14 @@ def main(uninstall):
     if uninstall:
         installer_obj.uninstall_casa()
         installer_obj.uninstall_admin_ui()
+        print("Disabling script", installer_obj.simple_auth_scr_inum)
+        installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum, enable=False)
 
     else:
         installer_obj.download_files()
+        print("Enabling script", installer_obj.simple_auth_scr_inum)
+        installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum)
+
         if install_components['admin_ui']:
             if not node_installer.installed():
                 print("Installing node")
