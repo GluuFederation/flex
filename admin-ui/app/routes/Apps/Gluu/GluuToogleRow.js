@@ -17,20 +17,20 @@ function GluuToogleRow({
 }) {
   return (
     
-      <FormGroup row>
-        <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
-        <Col sm={rsize}>
-          <GluuToogle
-            id={name}
-            data-testid={name}
-            name={name}
-            handler={handler}
-            formik={formik}
-            value={value}
-            disabled={disabled}
-          />
-        </Col>
-      </FormGroup>
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
+      <Col sm={rsize}>
+        <GluuToogle
+          id={name}
+          data-testid={name}
+          name={name}
+          handler={handler}
+          formik={formik}
+          value={value}
+          disabled={disabled}
+        />
+      </Col>
+    </FormGroup>
     
   )
 }

@@ -46,56 +46,56 @@ function GluuTypeAheadWithAdd({
 
   return (
     
-      <FormGroup row>
-        <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
-        <Col
-          sm={rsize}
-          style={{
-            borderStyle: 'solid',
-            borderRadius: '5px',
-            borderColor: '#03a96d',
-          }}
-        >
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
+      <Col
+        sm={rsize}
+        style={{
+          borderStyle: 'solid',
+          borderRadius: '5px',
+          borderColor: '#03a96d',
+        }}
+      >
           &nbsp;
-          <Row>
-            <Col sm={10}>
-              <Input
-                placeholder={placeholder}
-                id={inputId}
-                disabled={disabled}
-                data-testid="new_entry"
-                aria-label="new_entry"
-              />
-            </Col>
-            <Button
-              color={`primary-${selectedTheme}`}
-              type="button"
+        <Row>
+          <Col sm={10}>
+            <Input
+              placeholder={placeholder}
+              id={inputId}
               disabled={disabled}
-              style={applicationStyle.buttonStyle}
-              onClick={addItem}
-            >
-              <i className="fa fa-plus-circle mr-2"></i>
-              {t('actions.add')}
-            </Button>
-          </Row>
-          &nbsp;
-          <Typeahead
-            emptyLabel=""
-            labelKey={name}
+              data-testid="new_entry"
+              aria-label="new_entry"
+            />
+          </Col>
+          <Button
+            color={`primary-${selectedTheme}`}
+            type="button"
             disabled={disabled}
-            onChange={(selected) => {
-              handleChange(name, selected)
-            }}
-            id={name}
-            name={name}
-            data-testid={name}
-            multiple={true}
-            selected={items}
-            options={opts}
-          />
+            style={applicationStyle.buttonStyle}
+            onClick={addItem}
+          >
+            <i className="fa fa-plus-circle mr-2"></i>
+            {t('actions.add')}
+          </Button>
+        </Row>
           &nbsp;
-        </Col>
-      </FormGroup>
+        <Typeahead
+          emptyLabel=""
+          labelKey={name}
+          disabled={disabled}
+          onChange={(selected) => {
+            handleChange(name, selected)
+          }}
+          id={name}
+          name={name}
+          data-testid={name}
+          multiple={true}
+          selected={items}
+          options={opts}
+        />
+          &nbsp;
+      </Col>
+    </FormGroup>
   )
 }
 

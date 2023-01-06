@@ -1,4 +1,4 @@
-import {UPDATE_TOAST } from '../actions/types'
+import { UPDATE_TOAST } from '../actions/types'
 import reducerRegistry from './ReducerRegistry'
 const INIT_STATE = {
   showToast:false,

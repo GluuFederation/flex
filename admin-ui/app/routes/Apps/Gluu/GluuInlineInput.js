@@ -62,51 +62,51 @@ function GluuInlineInput({
   return (
     <FormGroup row>
       <Col sm={10}>
-          <FormGroup row>
-            <GluuLabel
-              label={label}
-              size={lsize}
-              required={required}
-              withTooltip={false}
-              doc_category="json_properties" 
-              doc_entry={name}
+        <FormGroup row>
+          <GluuLabel
+            label={label}
+            size={lsize}
+            required={required}
+            withTooltip={false}
+            doc_category="json_properties" 
+            doc_entry={name}
+          />
+          <Col sm={rsize}>
+            {!isBoolean && !isArray && (
+            <Input
+              id={name}
+              data-testid={name}
+              name={name}
+              type={type}
+              defaultValue={data}
+              onChange={onValueChanged}
             />
-            <Col sm={rsize}>
-              {!isBoolean && !isArray && (
-                <Input
-                  id={name}
-                  data-testid={name}
-                  name={name}
-                  type={type}
-                  defaultValue={data}
-                  onChange={onValueChanged}
-                />
-              )}
-              {isBoolean && (
-                <GluuToogle
-                  id={name}
-                  data-testid={name}
-                  name={name}
-                  onChange={onValueChanged}
-                  value={value}
-                />
-              )}
-              {isArray && (
-                <Typeahead
-                  id={name}
-                  data-testid={name}
-                  name={name}
-                  allowNew
-                  emptyLabel=""
-                  labelKey={name}
-                  onChange={handleTypeAheadChange}
-                  multiple={true}
-                  defaultSelected={value}
-                  options={options}
-                />
-              )}
-            </Col>
-          </FormGroup>
+            )}
+            {isBoolean && (
+            <GluuToogle
+              id={name}
+              data-testid={name}
+              name={name}
+              onChange={onValueChanged}
+              value={value}
+            />
+            )}
+            {isArray && (
+            <Typeahead
+              id={name}
+              data-testid={name}
+              name={name}
+              allowNew
+              emptyLabel=""
+              labelKey={name}
+              onChange={handleTypeAheadChange}
+              multiple={true}
+              defaultSelected={value}
+              options={options}
+            />
+            )}
+          </Col>
+        </FormGroup>
       </Col>
       <Col sm={2}>
         {show && (

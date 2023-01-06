@@ -37,43 +37,43 @@ function GluuTypeAheadForDn({
   }
   return (
     
-      <FormGroup row>
-        <GluuLabel label={label} size={lsize} required={required} doc_category={doc_category} doc_entry={doc_entry || name}/>
-        <Col sm={rsize}>
-          <Typeahead
-            labelKey={
-              haveLabelKey
-                ? (opt) => `${opt.name || getItemName(options, opt)}`
-                : null
-            }
-            onChange={(selected) => {
-              formik.setFieldValue(
-                name,
-                selected.map((item) =>
-                  typeof item == 'string'
-                    ? item
-                    : item.customOption
-                      ? item.label
-                      : item.dn,
-                ),
-              )
-            }}
-            disabled={disabled}
-            id={name}
-            data-testid={name}
-            name={name}
-            allowNew={allowNew}
-            multiple={true}
-            defaultSelected={value}
-            options={options}
-          />
-          <ThemeProvider theme={theme}>
-            <Typography variant="subtitle1">
-              {t('placeholders.typeahead_holder_message')}
-            </Typography>
-          </ThemeProvider>
-        </Col>
-      </FormGroup>
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} required={required} doc_category={doc_category} doc_entry={doc_entry || name}/>
+      <Col sm={rsize}>
+        <Typeahead
+          labelKey={
+            haveLabelKey
+              ? (opt) => `${opt.name || getItemName(options, opt)}`
+              : null
+          }
+          onChange={(selected) => {
+            formik.setFieldValue(
+              name,
+              selected.map((item) =>
+                typeof item == 'string'
+                  ? item
+                  : item.customOption
+                    ? item.label
+                    : item.dn,
+              ),
+            )
+          }}
+          disabled={disabled}
+          id={name}
+          data-testid={name}
+          name={name}
+          allowNew={allowNew}
+          multiple={true}
+          defaultSelected={value}
+          options={options}
+        />
+        <ThemeProvider theme={theme}>
+          <Typography variant="subtitle1">
+            {t('placeholders.typeahead_holder_message')}
+          </Typography>
+        </ThemeProvider>
+      </Col>
+    </FormGroup>
   )
 }
 

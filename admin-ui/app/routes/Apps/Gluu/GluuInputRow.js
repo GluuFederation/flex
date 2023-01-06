@@ -27,30 +27,30 @@ function GluuInputRow({
     }
   }
   return (
-      <FormGroup row>
-        <GluuLabel label={label} size={lsize} doc_category={doc_category} required={required} doc_entry={name} />
-        <Col sm={rsize}>
-          <Input
-            id={name}
-            data-testid={name}
-            type={customType || type}
-            name={name}
-            defaultValue={value}
-            onChange={formik.handleChange}
-            disabled={disabled}
-          />
-          {type == 'password' && (
-            <div style={{ position: 'absolute', right: 20, top: 7 }}>
-              {customType == 'text' ? (
-                <Visibility onClick={() => setVisivility()} />
-              ) : (
-                <VisibilityOff onClick={() => setVisivility()} />
-              )}
-            </div>
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} required={required} doc_entry={name} />
+      <Col sm={rsize}>
+        <Input
+          id={name}
+          data-testid={name}
+          type={customType || type}
+          name={name}
+          defaultValue={value}
+          onChange={formik.handleChange}
+          disabled={disabled}
+        />
+        {type == 'password' && (
+        <div style={{ position: 'absolute', right: 20, top: 7 }}>
+          {customType == 'text' ? (
+            <Visibility onClick={() => setVisivility()} />
+          ) : (
+            <VisibilityOff onClick={() => setVisivility()} />
           )}
-          {showError ? <div style={{color:"red"}}>{errorMessage}</div> : null }
-        </Col>
-      </FormGroup>
+        </div>
+        )}
+        {showError ? <div style={{ color:"red" }}>{errorMessage}</div> : null }
+      </Col>
+    </FormGroup>
   )
 }
 

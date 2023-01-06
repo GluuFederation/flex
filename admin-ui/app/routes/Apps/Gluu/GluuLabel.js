@@ -6,7 +6,7 @@ import applicationStyle from './styles/applicationstyle'
 import { HelpOutline } from '@material-ui/icons'
 import GluuTooltip from './GluuTooltip'
 
-function GluuLabel({ label, required, size, doc_category, doc_entry, style}) {
+function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
   const { t } = useTranslation()
   function getSize() {
     if (size != null) {
@@ -30,7 +30,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style}) {
             >
               {t('documentation.' + doc_category + '.' + doc_entry)}
             </ReactTooltip>
-            <HelpOutline style={{width: 18,height: 18, marginLeft:6, marginRight:6}} data-tip data-for={doc_entry} />
+            <HelpOutline style={{ width: 18, height: 18, marginLeft:6, marginRight:6 }} data-tip data-for={doc_entry} />
           </>
         }
         :

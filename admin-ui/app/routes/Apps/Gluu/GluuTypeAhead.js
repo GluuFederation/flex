@@ -33,40 +33,40 @@ function GluuTypeAhead({
   const { t } = useTranslation()
   return (
     
-      <FormGroup row>
-        {required ? (
-          <GluuLabel label={label} size={lsize} required doc_category={doc_category} doc_entry={doc_entry || name} />
-        ) : (
-          <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} />
-        )}
-        <Col sm={rsize}>
-          <Typeahead
-            allowNew
-            disabled={disabled}
-            ref={forwardRef}
-            emptyLabel=""
-            labelKey={name}
-            onChange={(selected) => {
-              if (formik) {
-                formik.setFieldValue(name, selected)
-              } else if (onChange) {
-                onChange(selected)
-              }
-            }}
-            id={name}
-            data-testid={name}
-            name={name}
-            multiple={true}
-            defaultSelected={value}
-            options={options}
-          />
-          <ThemeProvider theme={theme}>
-            <Typography variant="subtitle1">
-              {t('placeholders.typeahead_holder_message')}
-            </Typography>
-          </ThemeProvider>
-        </Col>
-      </FormGroup>
+    <FormGroup row>
+      {required ? (
+        <GluuLabel label={label} size={lsize} required doc_category={doc_category} doc_entry={doc_entry || name} />
+      ) : (
+        <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={doc_entry || name} />
+      )}
+      <Col sm={rsize}>
+        <Typeahead
+          allowNew
+          disabled={disabled}
+          ref={forwardRef}
+          emptyLabel=""
+          labelKey={name}
+          onChange={(selected) => {
+            if (formik) {
+              formik.setFieldValue(name, selected)
+            } else if (onChange) {
+              onChange(selected)
+            }
+          }}
+          id={name}
+          data-testid={name}
+          name={name}
+          multiple={true}
+          defaultSelected={value}
+          options={options}
+        />
+        <ThemeProvider theme={theme}>
+          <Typography variant="subtitle1">
+            {t('placeholders.typeahead_holder_message')}
+          </Typography>
+        </ThemeProvider>
+      </Col>
+    </FormGroup>
   )
 }
 
