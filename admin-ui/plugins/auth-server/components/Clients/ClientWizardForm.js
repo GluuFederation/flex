@@ -268,12 +268,7 @@ function ClientWizardForm({
               values.jansAuthSignedRespAlg
             values[ATTRIBUTE].jansAuthEncRespAlg = values.jansAuthEncRespAlg
             values[ATTRIBUTE].jansAuthEncRespEnc = values.jansAuthEncRespEnc
-            if(values?.redirectUris && values?.redirectUris.length <= 0){
-
-            }else{
-              customOnSubmit(JSON.parse(JSON.stringify(values)))
-            }
-            
+            customOnSubmit(JSON.parse(JSON.stringify(values)))
           }}
         >
           {(formik) => (
