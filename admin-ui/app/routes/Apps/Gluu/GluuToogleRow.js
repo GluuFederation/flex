@@ -16,22 +16,22 @@ function GluuToogleRow({
   disabled
 }) {
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
-      <FormGroup row>
-        <GluuLabel label={label} size={lsize} />
-        <Col sm={rsize}>
-          <GluuToogle
-            id={name}
-            data-testid={name}
-            name={name}
-            handler={handler}
-            formik={formik}
-            value={value}
-            disabled={disabled}
-          />
-        </Col>
-      </FormGroup>
-    </GluuTooltip>
+    
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
+      <Col sm={rsize}>
+        <GluuToogle
+          id={name}
+          data-testid={name}
+          name={name}
+          handler={handler}
+          formik={formik}
+          value={value}
+          disabled={disabled}
+        />
+      </Col>
+    </FormGroup>
+    
   )
 }
 GluuToogleRow.defaultProps = {

@@ -49,9 +49,9 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
     <Container>
       <FormGroup row>
         <Col sm={12}>
-          <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="accessTokenAsJwt">
+          
             <FormGroup row>
-              <GluuLabel label="fields.accessTokenAsJwt" size={4} />
+              <GluuLabel label="fields.accessTokenAsJwt" size={4} doc_category={DOC_CATEGORY} doc_entry="accessTokenAsJwt"/>
               <Col sm={8}>
                 <RadioGroup
                   row
@@ -81,7 +81,6 @@ function ClientTokensPanel({ client, scripts, formik, viewOnly }) {
                 </RadioGroup>
               </Col>
             </FormGroup>
-          </GluuTooltip>
         </Col>
         <Col sm={12}>
           <GluuToogleRow

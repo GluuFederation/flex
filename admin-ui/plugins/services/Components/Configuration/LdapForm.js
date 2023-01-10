@@ -84,9 +84,9 @@ function LdapForm({ item, handleSubmit }) {
   })
   return (
     <Form onSubmit={formik.handleSubmit}>
-      <GluuTooltip doc_category={LDAP} doc_entry="configId">
+      
         <FormGroup row>
-          <GluuLabel label="fields.name" required />
+          <GluuLabel label="fields.name" required doc_category={LDAP} doc_entry="configId"/>
           <Col sm={9}>
             {!!item.configId ? (
               <Input
@@ -119,10 +119,8 @@ function LdapForm({ item, handleSubmit }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={LDAP} doc_entry="bind_dn">
         <FormGroup row>
-          <GluuLabel label="fields.bind_dn" required />
+          <GluuLabel label="fields.bind_dn" required doc_category={LDAP} doc_entry="bind_dn"/>
           <Col sm={9}>
             <Input
               placeholder={t('placeholders.ldap_bind_dn')}
@@ -138,10 +136,8 @@ function LdapForm({ item, handleSubmit }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={LDAP} doc_entry="bind_password">
         <FormGroup row>
-          <GluuLabel label="fields.bind_password" required />
+          <GluuLabel label="fields.bind_password" required doc_category={LDAP} doc_entry="bind_password"/>
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -163,8 +159,6 @@ function LdapForm({ item, handleSubmit }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={LDAP} doc_entry="servers">
         <FormGroup row>
           <Col sm={9}>
             <GluuTypeAhead
@@ -173,6 +167,8 @@ function LdapForm({ item, handleSubmit }) {
               formik={formik}
               required={true}
               options={['localhost:1636']}
+              doc_category={LDAP} 
+              doc_entry="servers"
               value={item.servers}
               valid={!formik.errors.servers && !formik.touched.servers && init}
               onKeyUp={toogle}
@@ -183,10 +179,8 @@ function LdapForm({ item, handleSubmit }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={LDAP} doc_entry="max_connections">
         <FormGroup row>
-          <GluuLabel label="fields.max_connections" required />
+          <GluuLabel label="fields.max_connections" required doc_category={LDAP} doc_entry="max_connections"/>
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -207,10 +201,8 @@ function LdapForm({ item, handleSubmit }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={LDAP} doc_entry="use_ssl">
         <FormGroup row>
-          <GluuLabel label="fields.use_ssl" required />
+          <GluuLabel label="fields.use_ssl" required doc_category={LDAP} doc_entry="use_ssl"/>
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -225,13 +217,13 @@ function LdapForm({ item, handleSubmit }) {
             </InputGroup>
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={LDAP} doc_entry="base_dns">
         <FormGroup row>
           <Col sm={9}>
             <GluuTypeAhead
               name="baseDNs"
               label="fields.base_dns"
+              doc_category={LDAP} 
+              doc_entry="base_dns"
               formik={formik}
               options={[]}
               required={true}
@@ -243,10 +235,8 @@ function LdapForm({ item, handleSubmit }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={LDAP} doc_entry="primary_key">
         <FormGroup row>
-          <GluuLabel label="fields.primary_key" required />
+          <GluuLabel label="fields.primary_key" required doc_category={LDAP} doc_entry="primary_key"/>
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -265,10 +255,8 @@ function LdapForm({ item, handleSubmit }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={LDAP} doc_entry="local_primary_key">
         <FormGroup row>
-          <GluuLabel label="fields.local_primary_key" required />
+          <GluuLabel label="fields.local_primary_key" required doc_category={LDAP} doc_entry="local_primary_key"/>
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -289,10 +277,8 @@ function LdapForm({ item, handleSubmit }) {
             ) : null}
           </Col>
         </FormGroup>
-      </GluuTooltip>
-      <GluuTooltip doc_category={LDAP} doc_entry="activate">
         <FormGroup row>
-          <GluuLabel label="fields.activate" />
+          <GluuLabel label="fields.activate" doc_category={LDAP} doc_entry="activate"/>
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -307,7 +293,6 @@ function LdapForm({ item, handleSubmit }) {
             </InputGroup>
           </Col>
         </FormGroup>
-      </GluuTooltip>
       <FormGroup row>
         {' '}
         <Input

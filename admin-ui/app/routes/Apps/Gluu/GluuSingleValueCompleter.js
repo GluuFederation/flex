@@ -27,36 +27,35 @@ function GluuSingleValueCompleter({
 }) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={doc_entry || name}>
-      <FormGroup row>
-        {required ? (
-          <GluuLabel label={label} size={4} required />
-        ) : (
-          <GluuLabel label={label} size={4} />
-        )}
-        <Col sm={8}>
-          <Typeahead
-            emptyLabel=""
-            labelKey={name}
-            id={name}
-            data-testid={name}
-            name={name}
-            defaultSelected={value}
-            options={options}
-            onChange={(e) => {
-              if (onChange) {
-                onChange(e)
-              }
-            }}
-          />
-          <ThemeProvider theme={theme}>
-            <Typography variant="subtitle1">
-              {t('placeholders.typeahead_holder_message')}
-            </Typography>
-          </ThemeProvider>
-        </Col>
-      </FormGroup>
-    </GluuTooltip>
+    
+    <FormGroup row>
+      {required ? (
+        <GluuLabel label={label} size={4} required doc_category={doc_category} doc_entry={doc_entry || name}/>
+      ) : (
+        <GluuLabel label={label} size={4} doc_category={doc_category} doc_entry={doc_entry || name} />
+      )}
+      <Col sm={8}>
+        <Typeahead
+          emptyLabel=""
+          labelKey={name}
+          id={name}
+          data-testid={name}
+          name={name}
+          defaultSelected={value}
+          options={options}
+          onChange={(e) => {
+            if (onChange) {
+              onChange(e)
+            }
+          }}
+        />
+        <ThemeProvider theme={theme}>
+          <Typography variant="subtitle1">
+            {t('placeholders.typeahead_holder_message')}
+          </Typography>
+        </ThemeProvider>
+      </Col>
+    </FormGroup>
   )
 }
 
