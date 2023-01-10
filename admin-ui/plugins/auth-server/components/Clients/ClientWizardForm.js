@@ -76,10 +76,14 @@ function ClientWizardForm({
     setModal(!modal)
   }
   function validateFinish(){
-    if(formRef && formRef.current && formRef.current.values.redirectUris.length > 0){
-      toggle()
+    if(formRef.current.values.grantTypes.includes('authorization_code') || formRef.current.values.grantTypes.includes('implicit')){
+      if(formRef && formRef.current && formRef.current.values.redirectUris.length > 0){
+        toggle()
+      }else{
+        toast.info("Please add atleast 1 redirect URL");
+      }
     }else{
-      toast.info("Please add atleast 1 redirect URL");
+      toggle()
     }
   }
   function setId(index) {
@@ -89,12 +93,15 @@ function ClientWizardForm({
     setCurrentStep(sequence[sequence.indexOf(currentStep) - 1])
   }
   function nextStep() {
-    if(formRef && formRef.current && formRef.current.values.redirectUris.length > 0){
-      setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+    if(formRef.current.values.grantTypes.includes('authorization_code') || formRef.current.values.grantTypes.includes('implicit')){
+      if(formRef && formRef.current && formRef.current.values.redirectUris.length > 0){
+        setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+      }else{
+        toast.info("Please add atleast 1 redirect URL");
+      }
     }else{
-      toast.info("Please add atleast 1 redirect URL");
+      setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
     }
-    
   }
   function isComplete(stepId) {
     return sequence.indexOf(stepId) < sequence.indexOf(currentStep)
@@ -261,12 +268,7 @@ function ClientWizardForm({
               values.jansAuthSignedRespAlg
             values[ATTRIBUTE].jansAuthEncRespAlg = values.jansAuthEncRespAlg
             values[ATTRIBUTE].jansAuthEncRespEnc = values.jansAuthEncRespEnc
-            if(values?.redirectUris && values?.redirectUris.length <= 0){
-
-            }else{
-              customOnSubmit(JSON.parse(JSON.stringify(values)))
-            }
-            
+            customOnSubmit(JSON.parse(JSON.stringify(values)))
           }}
         >
           {(formik) => (
