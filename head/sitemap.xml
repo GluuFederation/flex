@@ -16,7 +16,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://docs.gluu.org/head/admin-ui/template/</loc>
+         <loc>https://docs.gluu.org/head/admin-ui/properties/</loc>
          <lastmod>2023-01-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -32,11 +32,6 @@
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/</loc>
-         <lastmod>2023-01-10</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://docs.gluu.org/head/install/setup/</loc>
          <lastmod>2023-01-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -82,6 +77,11 @@
     </url>
     <url>
          <loc>https://docs.gluu.org/head/install/vm-install/rhel/</loc>
+         <lastmod>2023-01-10</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.gluu.org/head/install/vm-install/setup/</loc>
          <lastmod>2023-01-10</lastmod>
          <changefreq>daily</changefreq>
     </url>
