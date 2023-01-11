@@ -39,7 +39,13 @@ function GluuInlineInput({
     setShow(true)
   }
   const handleTypeAheadChange = (selectedOptions) => {
-    setCorrectValue(selectedOptions)
+    let object = selectedOptions.filter((data) => typeof data == 'object')
+    let arrayItems = selectedOptions.filter((data) => typeof data != 'object')
+
+    for(let i in object){
+        arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
+    }
+    setCorrectValue(arrayItems)
     setShow(true)
   }
   const onAccept = () => {
