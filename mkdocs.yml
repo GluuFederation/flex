@@ -126,12 +126,20 @@ nav:
       #  - 'Dynamic Download': 'install/vm-install/dynamic-download.md'
         - 'Setup Script': 'install/vm-install/setup.md'
 - 'Administration':
-    - 'admin-ui/README.md'
-    - 'Admin UI Properties': 'admin-ui/properties.md'
+    - 'admin/README.md'
+    - 'Admin UI':
+        - 'admin/admin-ui/README.md'
+        - 'Admin UI Properties': 'admin/admin-ui/properties.md'
 #    - 'SAML':
- #       - 'saml/README.md'
-  #      - 'SAML IDP': 'saml/idp.md'
-   #     - 'SAML Proxy': 'saml/proxy.md'
-    - 'Casa': 'casa/README.md'
+ #       - 'admin/saml/README.md'
+  #      - 'SAML IDP': 'admin/saml/idp.md'
+   #     - 'SAML Proxy': 'admin/saml/proxy.md'
+    - 'Casa': 'admin/casa/README.md'
+- 'Reference":
+    - 'reference/kubernetes/README.md'
+    - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
+    - 'Flex Docker Image': 'reference/kubernetes/docker-flex-monolith.md'
+    - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
+    - 'Casa Docker Image': 'reference/kubernetes/docker-casa.md'
 
 
