@@ -53,7 +53,7 @@ const GluuCommitDialog = ({
   }
 
   return (
-    <Modal isOpen={modal} toggle={closeModal} className="modal-outline-primary">
+    <Modal isOpen={modal} size={'lg'} toggle={closeModal} className="modal-outline-primary">
       <ModalHeader toggle={closeModal}>
         <i
           style={{ color: 'green' }}
@@ -67,14 +67,25 @@ const GluuCommitDialog = ({
           operations.map((item, key) => (
             <FormGroup row key={key}>
               <Col sm={1}>Set</Col>
-              <Col sm={7}>
+              <Col sm={5} style={{overflow:"auto"}}>
                 <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
               </Col>
               <Col sm={1}>to</Col>
-              <Col sm={3}>
+              <Col sm={5} style={{overflow:"auto"}}>
+                {Array.isArray(item.value) ? 
+                <>
+                {
+                  item.value.map((data) => 
+                    <Badge color={`primary-${selectedTheme}`}>
+                      {String(data)}
+                    </Badge>
+                  )
+                }
+                </>:
                 <Badge color={`primary-${selectedTheme}`}>
                   {String(item.value)}
                 </Badge>
+                }
               </Col>
             </FormGroup>
           ))}
