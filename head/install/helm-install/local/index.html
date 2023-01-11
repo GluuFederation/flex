@@ -14,7 +14,7 @@
       
         <link rel="canonical" href="https://docs.gluu.org/head/install/helm-install/local/">
       
-      <link rel="icon" href="../../../assets/favicon.ico">
+      <link rel="icon" href="../../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#where-is-this-content" class="md-skip">
+        <a href="#install-gluu-server-locally-with-minikube-and-microk8s" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="Gluu Flex Documentation" class="md-header__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../../assets/gluu.png" alt="logo">
+  <img src="../../../assets/logo/gluu.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -285,7 +285,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="Gluu Flex Documentation" class="md-nav__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../../assets/gluu.png" alt="logo">
+  <img src="../../../assets/logo/gluu.png" alt="logo">
 
     </a>
     Gluu Flex Documentation
@@ -432,6 +432,8 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           Local Kubernetes Cluster
@@ -448,6 +450,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -456,8 +460,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#where-is-this-content" class="md-nav__link">
-    Where is this content?
+  <a href="#system-requirements" class="md-nav__link">
+    System Requirements
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-steps" class="md-nav__link">
+    Installation Steps
   </a>
   
 </li>
@@ -766,6 +777,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -774,8 +787,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#where-is-this-content" class="md-nav__link">
-    Where is this content?
+  <a href="#system-requirements" class="md-nav__link">
+    System Requirements
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-steps" class="md-nav__link">
+    Installation Steps
   </a>
   
 </li>
@@ -795,6 +815,25 @@
                   
   
 
+  <nav class="md-tags" >
+    
+      
+      
+        <span class="md-tag">administration</span>
+      
+    
+      
+      
+        <span class="md-tag">installation</span>
+      
+    
+      
+      
+        <span class="md-tag">helm</span>
+      
+    
+  </nav>
+
 
 
   <a href="https://github.com/GluuFederation/flex/edit/main/docs/install/helm-install/local.md" title="Edit this page" class="md-content__button md-icon">
@@ -803,17 +842,163 @@
   </a>
 
 
-  <h1>Local Kubernetes Cluster</h1>
-
-<h2 id="where-is-this-content">Where is this content?<a class="headerlink" href="#where-is-this-content" title="Permanent link">#</a></h2>
-<p>The Gluu Flex documentation is a work in progress, and this document is currently a draft. Keep an eye on this page for updates.</p>
+<h1 id="install-gluu-server-locally-with-minikube-and-microk8s">Install Gluu Server Locally with minikube and MicroK8s<a class="headerlink" href="#install-gluu-server-locally-with-minikube-and-microk8s" title="Permanent link">#</a></h1>
+<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h2>
+<p>For local deployments like <code>minikube</code> and <code>MicroK8s</code> or cloud installations in demo mode, resources may be set to the minimum as below:</p>
+<ul>
+<li>8GB RAM</li>
+<li>4 CPU cores</li>
+<li>50GB hard-disk</li>
+</ul>
+<p>Use the listing below for detailed estimation of minimum required resources. Table contains the default resources recommendations per service. Depending on the use of each service the resources needs may be increase or decrease.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>CPU Unit</th>
+<th>RAM</th>
+<th>Disk Space</th>
+<th>Processor Type</th>
+<th>Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Auth server</td>
+<td>2.5</td>
+<td>2.5GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>LDAP (OpenDJ)</td>
+<td>1.5</td>
+<td>2GB</td>
+<td>10GB</td>
+<td>64 Bit</td>
+<td>Only if couchbase is not installed</td>
+</tr>
+<tr>
+<td>fido2</td>
+<td>0.5</td>
+<td>0.5GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>scim</td>
+<td>1.0</td>
+<td>1.0GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>config - job</td>
+<td>0.5</td>
+<td>0.5GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>Yes on fresh installs</td>
+</tr>
+<tr>
+<td>persistence - job</td>
+<td>0.5</td>
+<td>0.5GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>Yes on fresh installs</td>
+</tr>
+<tr>
+<td>nginx</td>
+<td>1</td>
+<td>1GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>Yes if not ALB</td>
+</tr>
+<tr>
+<td>auth-key-rotation</td>
+<td>0.3</td>
+<td>0.3GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No [Strongly recommended]</td>
+</tr>
+<tr>
+<td>config-api</td>
+<td>1</td>
+<td>1GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>casa</td>
+<td>1</td>
+<td>1GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>admin-ui</td>
+<td>2</td>
+<td>2GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>Releases of images are in style 1.0.0-beta.0, 1.0.0-0</p>
+<h2 id="installation-steps">Installation Steps<a class="headerlink" href="#installation-steps" title="Permanent link">#</a></h2>
+<p>Start a fresh ubuntu <code>18.04</code> or <code>20.04</code> 4 CPU, 16 GB RAM, and 50GB SSD VM with ports <code>443</code> and <code>80</code> open. Then execute the following</p>
+<p><div class="highlight"><pre><span></span><code>sudo su -
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>wget https://raw.githubusercontent.com/GluuFederation/flex/vreplace-flex-version/automation/startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> chmod u+x startflexmonolithdemo.sh <span class="o">&amp;&amp;</span> ./startflexmonolithdemo.sh
+</code></pre></div></p>
+<p>This will install docker, microk8s, helm and Gluu with the default settings that can be found inside <a href="https://github.com/GluuFederation/flex/blob/main/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu">values.yaml</a>.  </p>
+<p>The installer will automatically add a record to your hosts record in the VM but if you want access the endpoints outside the VM you must  map the <code>ip</code> of the instance running ubuntu to the FQDN you provided and then access the endpoints at your browser such in the example in the table below.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Example endpoint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Auth server</td>
+<td><code>https://FQDN/.well-known/openid-configuration</code></td>
+</tr>
+<tr>
+<td>fido2</td>
+<td><code>https://FQDN/.well-known/fido2-configuration</code></td>
+</tr>
+<tr>
+<td>scim</td>
+<td><code>https://FQDN/.well-known/scim-configuration</code></td>
+</tr>
+<tr>
+<td>Casa</td>
+<td><code>https://FQDN/casa</code></td>
+</tr>
+<tr>
+<td>Admin-UI</td>
+<td><code>https://FQDN/admin</code></td>
+</tr>
+</tbody>
+</table>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-12-13T19:54:55+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-12-13</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-01-11T14:01:55+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-01-11</span>
       
         <br>
         Created:
@@ -842,7 +1027,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Index" rel="prev">
+        <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Overview" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -851,7 +1036,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Index
+              Overview
             </div>
           </div>
         </a>

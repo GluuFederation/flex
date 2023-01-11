@@ -14,7 +14,7 @@
       
         <link rel="canonical" href="https://docs.gluu.org/head/install/helm-install/amazon-eks/">
       
-      <link rel="icon" href="../../../assets/favicon.ico">
+      <link rel="icon" href="../../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#gluu-flex-eks-amazon-secret-manager-and-aurora-production-tutorial-setup" class="md-skip">
+        <a href="#install-gluu-on-eks" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="Gluu Flex Documentation" class="md-header__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../../assets/gluu.png" alt="logo">
+  <img src="../../../assets/logo/gluu.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -285,7 +285,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="Gluu Flex Documentation" class="md-nav__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../../assets/gluu.png" alt="logo">
+  <img src="../../../assets/logo/gluu.png" alt="logo">
 
     </a>
     Gluu Flex Documentation
@@ -474,76 +474,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#cloud-native-distribution" class="md-nav__link">
-    Cloud Native Distribution
+  <a href="#system-requirements" class="md-nav__link">
+    System Requirements
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-started-with-kubernetes" class="md-nav__link">
-    Getting Started with Kubernetes
+  <a href="#initial-setup" class="md-nav__link">
+    Initial Setup
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#system-requirements-for-cloud-deployments" class="md-nav__link">
-    System Requirements for cloud deployments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-eks-with-aurora" class="md-nav__link">
-    Configure EKS with Aurora
-  </a>
-  
-    <nav class="md-nav" aria-label="Configure EKS with Aurora">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#amazon-web-services-aws-eks" class="md-nav__link">
-    Amazon Web Services (AWS) - EKS
-  </a>
-  
-    <nav class="md-nav" aria-label="Amazon Web Services (AWS) - EKS">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#setup-cluster" class="md-nav__link">
-    Setup Cluster
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#amazon-aurora" class="md-nav__link">
-    Amazon Aurora
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#install-gluu-using-helm" class="md-nav__link">
-    Install Gluu using Helm
+  <a href="#gluu-installation-using-helm" class="md-nav__link">
+    Gluu Installation using Helm
   </a>
   
 </li>
@@ -848,76 +794,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#cloud-native-distribution" class="md-nav__link">
-    Cloud Native Distribution
+  <a href="#system-requirements" class="md-nav__link">
+    System Requirements
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-started-with-kubernetes" class="md-nav__link">
-    Getting Started with Kubernetes
+  <a href="#initial-setup" class="md-nav__link">
+    Initial Setup
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#system-requirements-for-cloud-deployments" class="md-nav__link">
-    System Requirements for cloud deployments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-eks-with-aurora" class="md-nav__link">
-    Configure EKS with Aurora
-  </a>
-  
-    <nav class="md-nav" aria-label="Configure EKS with Aurora">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#amazon-web-services-aws-eks" class="md-nav__link">
-    Amazon Web Services (AWS) - EKS
-  </a>
-  
-    <nav class="md-nav" aria-label="Amazon Web Services (AWS) - EKS">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#setup-cluster" class="md-nav__link">
-    Setup Cluster
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#requirements" class="md-nav__link">
-    Requirements
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#amazon-aurora" class="md-nav__link">
-    Amazon Aurora
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#install-gluu-using-helm" class="md-nav__link">
-    Install Gluu using Helm
+  <a href="#gluu-installation-using-helm" class="md-nav__link">
+    Gluu Installation using Helm
   </a>
   
 </li>
@@ -937,6 +829,40 @@
                   
   
 
+  <nav class="md-tags" >
+    
+      
+      
+        <span class="md-tag">administration</span>
+      
+    
+      
+      
+        <span class="md-tag">installation</span>
+      
+    
+      
+      
+        <span class="md-tag">helm</span>
+      
+    
+      
+      
+        <span class="md-tag">EKS</span>
+      
+    
+      
+      
+        <span class="md-tag">Amazon Web Services</span>
+      
+    
+      
+      
+        <span class="md-tag">AWS</span>
+      
+    
+  </nav>
+
 
 
   <a href="https://github.com/GluuFederation/flex/edit/main/docs/install/helm-install/amazon-eks.md" title="Edit this page" class="md-content__button md-icon">
@@ -945,11 +871,15 @@
   </a>
 
 
-<h1 id="gluu-flex-eks-amazon-secret-manager-and-aurora-production-tutorial-setup">Gluu Flex EKS , Amazon Secret manager and Aurora Production tutorial setup<a class="headerlink" href="#gluu-flex-eks-amazon-secret-manager-and-aurora-production-tutorial-setup" title="Permanent link">#</a></h1>
-<h2 id="cloud-native-distribution">Cloud Native Distribution<a class="headerlink" href="#cloud-native-distribution" title="Permanent link">#</a></h2>
-<h2 id="getting-started-with-kubernetes">Getting Started with Kubernetes<a class="headerlink" href="#getting-started-with-kubernetes" title="Permanent link">#</a></h2>
-<h2 id="system-requirements-for-cloud-deployments">System Requirements for cloud deployments<a class="headerlink" href="#system-requirements-for-cloud-deployments" title="Permanent link">#</a></h2>
-<p>Please calculate the minimum required resources as per services deployed. The following table contains default recommended resources to start with. Depending on the use of each service, the resources may be increased or decreased. </p>
+<h1 id="install-gluu-on-eks">Install Gluu on EKS<a class="headerlink" href="#install-gluu-on-eks" title="Permanent link">#</a></h1>
+<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">#</a></h2>
+<p>The resources may be set to the minimum as below:</p>
+<ul>
+<li>8 GiB RAM</li>
+<li>8 CPU cores</li>
+<li>50GB hard-disk</li>
+</ul>
+<p>Use the listing below for detailed estimation of minimum required resources. Table contains the default resources recommendations per service. Depending on the use of each service the resources needs may be increase or decrease.</p>
 <table>
 <thead>
 <tr>
@@ -1011,14 +941,6 @@
 <td>Yes on fresh installs</td>
 </tr>
 <tr>
-<td>client-api</td>
-<td>1</td>
-<td>0.4GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
 <td>nginx</td>
 <td>1</td>
 <td>1GB</td>
@@ -1036,55 +958,153 @@
 </tr>
 <tr>
 <td>config-api</td>
-<td>0.5</td>
-<td>0.5GB</td>
-<td>N/A</td>
-<td>64 Bit</td>
-<td>No</td>
-</tr>
-<tr>
-<td>admin-ui</td>
-<td>1.0</td>
-<td>1.0GB</td>
+<td>1</td>
+<td>1GB</td>
 <td>N/A</td>
 <td>64 Bit</td>
 <td>No</td>
 </tr>
 <tr>
 <td>casa</td>
-<td>1.0</td>
-<td>1.0GB</td>
+<td>1</td>
+<td>1GB</td>
+<td>N/A</td>
+<td>64 Bit</td>
+<td>No</td>
+</tr>
+<tr>
+<td>admin-ui</td>
+<td>2</td>
+<td>2GB</td>
 <td>N/A</td>
 <td>64 Bit</td>
 <td>No</td>
 </tr>
 </tbody>
 </table>
-<h2 id="configure-eks-with-aurora">Configure EKS with Aurora<a class="headerlink" href="#configure-eks-with-aurora" title="Permanent link">#</a></h2>
-<h3 id="amazon-web-services-aws-eks">Amazon Web Services (AWS) - EKS<a class="headerlink" href="#amazon-web-services-aws-eks" title="Permanent link">#</a></h3>
-<h4 id="setup-cluster">Setup Cluster<a class="headerlink" href="#setup-cluster" title="Permanent link">#</a></h4>
-<ul>
-<li>Follow this <a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html">guide</a> to install a cluster with worker nodes. This setup must use three <code>t2.xlarge</code> instances distributed in three different zones. Please make sure that you have all the <code>IAM</code> policies for the AWS user that will be creating the cluster and volumes.</li>
-</ul>
-<h4 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">#</a></h4>
-<ul>
-<li>The above guide should also walk you through installing <code>kubectl</code> , <code>aws-iam-authenticator</code> and <code>aws cli</code> on the VM you will be managing your cluster and nodes from. Check to make sure.<div class="codehilite"><pre><span></span><code>aws-iam-authenticator help
-aws-cli
-kubectl version
-</code></pre></div>
-
-</li>
-</ul>
-<h3 id="amazon-aurora">Amazon Aurora<a class="headerlink" href="#amazon-aurora" title="Permanent link">#</a></h3>
-<p><a href="https://aws.amazon.com/rds/aurora/?aurora-whats-new.sort-by=item.additionalFields.postDateTime&amp;aurora-whats-new.sort-order=desc">Amazon Aurora</a> is a MySQL and PostgreSQL-compatible relational database built for the cloud, that combines the performance and availability of traditional enterprise databases with the simplicity and cost-effectiveness of open source databases. Gluu fully supports Amazon Aurora, and recommends it in production.</p>
+<p>Releases of images are in style 1.0.0-beta.0, 1.0.0-0</p>
+<h2 id="initial-setup">Initial Setup<a class="headerlink" href="#initial-setup" title="Permanent link">#</a></h2>
 <ol>
 <li>
-<p>Copy the  below into a file named <code>override-values.yaml</code>. We will be referencing this file throughout this tutorial.</p>
-<div class="highlight"><pre><span></span><code><span class="nt">config</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">countryCode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">US</span><span class="w"></span>
-<span class="w">  </span><span class="nt">email</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">support@gluu.org</span><span class="w"></span>
-<span class="w">  </span><span class="nt">orgName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Gluu</span><span class="w"></span>
-<span class="w">  </span><span class="nt">city</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Austin</span><span class="w"></span>
+<p>Install <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">aws cli</a></p>
+</li>
+<li>
+<p>Configure your AWS user account using <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html">aws configure</a> command. This makes you able to authenticate before creating the cluster.
+    Note that this user account must have permissions to work with Amazon EKS IAM roles and service linked roles, AWS CloudFormation, and a VPC and related resources</p>
+</li>
+<li>
+<p>Install <a href="https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html">kubectl</a></p>
+</li>
+<li>
+<p>Install <a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html">eksctl</a> </p>
+</li>
+<li>
+<p>Create cluster using eksctl such as the following example:</p>
+<p><div class="highlight"><pre><span></span><code>eksctl create cluster --name gluu-cluster --nodegroup-name gluu-nodes --node-type NODE_TYPE --nodes 2  --managed --region REGION_CODE
+</code></pre></div>
+You can adjust <code>node-type</code> and <code>nodes</code> number as per your desired cluster size</p>
+</li>
+<li>
+<p>Install <a href="https://helm.sh/docs/intro/install/">Helm3</a></p>
+</li>
+<li>
+<p>Create <code>gluu</code> namespace where our resources will reside
+    <div class="highlight"><pre><span></span><code>kubectl create namespace gluu
+</code></pre></div></p>
+</li>
+</ol>
+<h2 id="gluu-installation-using-helm">Gluu Installation using Helm<a class="headerlink" href="#gluu-installation-using-helm" title="Permanent link">#</a></h2>
+<ol>
+<li>
+<p>Install <a href="https://github.com/kubernetes/ingress-nginx">Nginx-Ingress</a>, if you are not using Istio ingress</p>
+<div class="highlight"><pre><span></span><code>helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo add stable https://charts.helm.sh/stable
+helm repo update
+helm install nginx ingress-nginx/ingress-nginx
+</code></pre></div>
+</li>
+<li>
+<p>Create a file named <code>override.yaml</code> and add changes as per your desired configuration:</p>
+<ul>
+<li>
+<p>FQDN/domain is <em>not</em> registered:</p>
+<p>Get the Loadbalancer address: 
+<div class="highlight"><pre><span></span><code>kubectl get svc nginx-ingress-nginx-controller --output jsonpath=&#39;{.status.loadBalancer.ingress[0].hostname}&#39;
+</code></pre></div></p>
+<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="nt">config</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">lbAddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://</span><span class="w"> </span><span class="c1">#Add LB address from previous command</span><span class="w"></span>
+</code></pre></div>
+</li>
+<li>
+<p>FQDN/domain is registered:</p>
+<p>Add the following yaml snippet to your <code>override.yaml</code> file`:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">    </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
+<span class="nt">config</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">lbAddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://</span><span class="w"> </span><span class="c1">#Add LB address from previous command</span><span class="w"></span>
+<span class="nt">nginx</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
+<span class="w">      </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
+<span class="w">      </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span><span class="w"></span>
+<span class="w">        </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
+</code></pre></div>
+</li>
+<li>
+<p>LDAP/Opendj for persistence storage</p>
+<p>Add the following yaml snippet to your <code>override.yaml</code> file:
+  <div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ldap</span><span class="w"></span>
+<span class="w">  </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">provisioner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes.io/aws-ebs</span><span class="w"></span>
+<span class="w">  </span><span class="nt">opendj</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</code></pre></div></p>
+<p>So if your desired configuration has no-FQDN and LDAP, the final <code>override.yaml</code> file will look something like that:</p>
+<div class="highlight"><pre><span></span><code><span class="w"> </span><span class="nt">global</span><span class="p">:</span><span class="w"></span>
+<span class="w">   </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ldap</span><span class="w"></span>
+<span class="w">   </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">   </span><span class="nt">storageClass</span><span class="p">:</span><span class="w"></span>
+<span class="w">     </span><span class="nt">provisioner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kubernetes.io/aws-ebs</span><span class="w"></span>
+<span class="w">   </span><span class="nt">opendj</span><span class="p">:</span><span class="w"></span>
+<span class="w">     </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w"> </span><span class="nt">config</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">lbAddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://</span><span class="w"> </span><span class="c1">#Add LB address from previous command</span><span class="w"></span>
+<span class="w"> </span><span class="nt">nginx-ingress</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
+<span class="w">      </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
+<span class="w">      </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span><span class="w"></span>
+<span class="w">        </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu          </span><span class="w"></span>
+</code></pre></div>
+</li>
+<li>
+<p>MySQL for persistence storage</p>
+</li>
+</ul>
+<p>In a production environment, a production grade MySQL server should be used such as <code>Amazon RDS</code></p>
+<p>For testing purposes, you can deploy it on the EKS cluster using the following commands:</p>
+<div class="highlight"><pre><span></span><code>helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install my-release --set auth.rootPassword=Test1234#,auth.database=gluu bitnami/mysql -n gluu
+</code></pre></div>
+<p>Add the following yaml snippet to your <code>override.yaml</code> file:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
+<span class="nt">config</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
 <span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span><span class="w"></span>
 <span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3306</span><span class="w"></span>
@@ -1093,160 +1113,40 @@ kubectl version
 <span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span><span class="w"></span>
 <span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span><span class="w"></span>
 <span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span><span class="w"></span>
-<span class="w">    </span><span class="nt">configAdapterName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws</span><span class="w"></span>
-<span class="w">    </span><span class="nt">configSecretAdapter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnAwsAccessKeyId</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnAwsSecretAccessKey</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnAwsSecretsEndpointUrl</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnAwsSecretsNamePrefix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnAwsDefaultRegion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">us-west-1</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnAwsProfile</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;gluu&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="nt">cnAwsSecretsReplicaRegions</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span><span class="w">  </span>
-
-<span class="nt">global</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">admin-ui</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">adminUiEnabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</code></pre></div>
+<p>So if your desired configuration has FQDN and MySQL, the final <code>override.yaml</code> file will look something like that:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">global</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">cnPersistenceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sql</span><span class="w"></span>
-<span class="w">  </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"></span>
 <span class="w">  </span><span class="nt">isFqdnRegistered</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
-<span class="w">  </span><span class="nt">scim</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="c1"># -- Enable endpoint /.well-known/scim-configuration</span><span class="w"></span>
-<span class="w">      </span><span class="nt">scimConfigEnabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">  </span><span class="nt">fqdn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
 <span class="nt">nginx-ingress</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
-<span class="w">    </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"></span>
-<span class="w">    </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span><span class="w"></span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span><span class="w"></span>
 <span class="w">      </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu</span><span class="w"></span>
+<span class="w">      </span><span class="nt">tls</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tls-certificate</span><span class="w"></span>
+<span class="w">        </span><span class="nt">hosts</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">demoexample.gluu.org</span><span class="w"> </span><span class="c1">#CHANGE-THIS to the FQDN used for Gluu  </span><span class="w"></span>
+<span class="nt">config</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">configmap</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">lbAddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://</span><span class="w"> </span><span class="c1">#Add LB address from previous command</span><span class="w"></span>
+<span class="w">    </span><span class="nt">cnSqlDbName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gluu</span><span class="w"></span>
+<span class="w">    </span><span class="nt">cnSqlDbPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3306</span><span class="w"></span>
+<span class="w">    </span><span class="nt">cnSqlDbDialect</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mysql</span><span class="w"></span>
+<span class="w">    </span><span class="nt">cnSqlDbHost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-release-mysql.gluu.svc</span><span class="w"></span>
+<span class="w">    </span><span class="nt">cnSqlDbUser</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span><span class="w"></span>
+<span class="w">    </span><span class="nt">cnSqlDbTimezone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">UTC</span><span class="w"></span>
+<span class="w">    </span><span class="nt">cnSqldbUserPassword</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test1234#</span><span class="w"></span>
 </code></pre></div>
 </li>
 <li>
-<p>Create an Amazon Aurora database with MySQL compatibility version &gt;= <code>Aurora(8.x) 3.x</code> and capacity type <code>Serverless</code>. Make sure the EKS cluster can reach the database endpoint. You may choose to use the same VPC as the EKS cluster. Save the master user, master password, and initial database name for use in Gluus helm chart.</p>
-</li>
-<li>
-<p>Inject the Aurora endpoint, master user, master password, and initial database name for use in Gluus helm chart <a href="#helm-valuesyaml"><code>override-values.yaml</code></a>. </p>
-</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>Helm values configuration</th>
-<th>Description</th>
-<th>default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>config.configmap.cnSqlDbHost</td>
-<td>Aurora database endpoint i.e <code>gluu.cluster-xxxxxxx.eu-central.rds.amazonaws.com</code></td>
-<td>empty</td>
-</tr>
-<tr>
-<td>config.configmap.cnSqlDbPort</td>
-<td>Aurora database port</td>
-<td><code>3306</code></td>
-</tr>
-<tr>
-<td>config.configmap.cnSqlDbName</td>
-<td>Aurora initial database name</td>
-<td><code>gluu</code></td>
-</tr>
-<tr>
-<td>config.configmap.cnSqlDbUser</td>
-<td>Aurora master user</td>
-<td><code>gluu</code></td>
-</tr>
-<tr>
-<td>config.configmap.cnSqldbUserPassword</td>
-<td>Aurora master password</td>
-<td><code>Test1234#</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="install-gluu-using-helm">Install Gluu using Helm<a class="headerlink" href="#install-gluu-using-helm" title="Permanent link">#</a></h2>
-<ol>
-<li>
-<p>Install <a href="https://github.com/kubernetes/ingress-nginx">nginx-ingress</a> Helm <a href="https://github.com/helm/charts/tree/master/stable/nginx-ingress">Chart</a>.</p>
-<div class="highlight"><pre><span></span><code>kubectl create ns &lt;nginx-namespace&gt;
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+<p>Install Gluu</p>
+<p>After finishing all the tweaks to the <code>override.yaml</code> file, we can use it to install gluu.</p>
+<div class="highlight"><pre><span></span><code>helm repo add gluu-flex https://docs.gluu.org/charts
 helm repo update
-<span class="c1"># The below `set`  is needed currently as the admission webhook of nginx upon initial installation sometimes revokes the ingress definitions incorrectly.</span>
-helm install &lt;nginx-release-name&gt; ingress-nginx/ingress-nginx --namespace<span class="o">=</span>&lt;nginx-namespace&gt; --set controller.admissionWebhooks.enabled<span class="o">=</span><span class="nb">false</span>
+helm install gluu gluu-flex/gluu -n gluu -f override.yaml
 </code></pre></div>
-</li>
-<li>
-<p>Create a namespace  for gluu openbanking distribution:    </p>
-<p><div class="highlight"><pre><span></span><code>kubectl create ns gluu
-</code></pre></div>
-3. Modify other values in the helm chart configuration to fit your setup</p>
-<p>| Helm values configuration       | Description                     | default                  |
----------------------------------|---------------------------------------|--------------------------|-----------------------------|
-| config.city                     | City                           | <code>Austin</code>                 |
-| config.countryCode              | Country                        | <code>US</code>                     |
-| config.email                    | Email                          | <code>support@gluu.org</code>       |
-| config.orgName                  | Organization name              | <code>Gluu</code>                   |
-| config.state                    | State                          | <code>TX</code>                     |
-| global.fqdn                     | FQDN                           | <code>demoexample.gluu.org</code>   |
-| nginx-ingress.ingress.hosts     | A list containing the FQDN     | <code>[demoexample.gluu.org]</code> |
-| nginx-ingress.ingress.tls.hosts | A list containing the FQDN     | <code>[demoexample.gluu.org]</code> |</p>
-</li>
-<li>
-<p>Modify the values in the helm chart to activate using <code>AWS Secret Manager</code> as the config and secret layer holder. </p>
-<ol>
-<li>Change <code>global.configAdapterName</code> and <code>global.configSecretAdapter</code> to <code>aws</code>.</li>
-<li>Change the below values appropriately:</li>
-</ol>
-<p>| Helm values configuration       | Description                     | default                  |
----------------------------------|---------------------------------------|--------------------------|-----------------------------|
-| config.configmap.cnAwsAccessKeyId        | AWS Access key id  that belong to a user/id with SecretsManagerReadWrite policy                           | <code>""</code>                 | 
-| config.configmap.cnAwsSecretAccessKey        | AWS Secret Access key that belong to a user/id with SecretsManagerReadWrite policy                           | <code>""</code>                 | 
-| config.configmap.cnAwsSecretsEndpointUrl        | The URL of AWS secretsmanager service (if omitted, will use the one in specified region). Used only when global.configAdapterName and global.configSecretAdapter is set to aws.                           | <code>""</code>                 | 
-| config.configmap.cnAwsSecretsEndpointUrl        | The URL of AWS secretsmanager service (if omitted, will use the one in specified region). Used only when global.configAdapterName and global.configSecretAdapter is set to aws.                           | <code>""</code>                 | 
-| config.configmap.cnAwsSecretsNamePrefix        | The prefix name of the secrets. Used only when global.configAdapterName and global.configSecretAdapter is set to aws.                           | <code>"gluu"</code>                 | 
-| config.configmap.cnAwsDefaultRegion        | The default AWS Region to use, for example, <code>us-west-1</code> or <code>us-west-2</code>.                           | <code>us-west-1</code>                 | 
-| config.configmap.cnAwsProfile        | The name of the default profile to use.                           | <code>gluu</code>                 | 
-| config.configmap.cnAwsSecretsReplicaRegions        | Example replicated region [{"Region": "us-west-1"}, {"Region": "us-west-2"}]                           | <code>[]</code>                 | 
-5. 
-<strong>NOT REEQUIRED IF FQDN IS REGISTERED</strong>: Please note that the FQDN <strong>must</strong> be resolvable or the <code>config-api</code> will fail to find the host. You may choose to modify the <code>CoreDNS</code> to reroute the domain internally to the nginx-ingress as following:</p>
-<p>Add rewrite rule to CoreDNS <code>ConfigMap</code>. In the following example we will be using ingress-nginx which you have installed previously. The internal address of this service will be <code>nginx-ingress-nginx-controller.nginx.svc.cluster.local</code> which is in the following format <code>&lt;releasename&gt;-ingress-nginx-controller.&lt;namespace&gt;.svc.cluster.local</code> and our example domain will be <code>demoexample.gluu.org</code>:</p>
-<ol>
-<li>
-<p>Take a copy of the <code>ConfigMap</code>:</p>
-<div class="highlight"><pre><span></span><code>kubectl -n kube-system get configmap coredns -o yaml &gt; original_coredns_cm.yaml
-cp original_coredns_cm.yaml gluu_modified_coredns_cm.yaml 
-</code></pre></div>
-</li>
-<li>
-<p>Edit the <code>ConfigMap</code> to include the rewrite using any edition:</p>
-<div class="highlight"><pre><span></span><code>vi gluu_modified_coredns_cm.yaml
-</code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="w">   </span><span class="l l-Scalar l-Scalar-Plain">.:53 {</span><span class="w"></span>
-<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">....</span><span class="w"></span>
-<span class="w">            </span><span class="l l-Scalar l-Scalar-Plain">rewrite name demoexample.gluu.org nginx-ingress-nginx-controller.nginx.svc.cluster.local</span><span class="w"></span>
-<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">}</span><span class="w"></span>
-</code></pre></div>
-</li>
-<li>
-<p>Apply the changes:</p>
-<div class="highlight"><pre><span></span><code>kubectl apply -f gluu_modified_coredns_cm.yaml
-</code></pre></div>
-</li>
-</ol>
-</li>
-<li>
-<p>Install gluu flex, <a href="https://artifacthub.io/packages/helm/gluu-flex/gluu">refer here</a>  for the latest version details:    </p>
-<div class="highlight"><pre><span></span><code>helm repo add gluu https://docs.gluu.org/charts
-helm repo update
-helm install &lt;release-name&gt; gluu/gluu -n &lt;namespace&gt; -f override-values.yaml --version<span class="o">=</span><span class="m">5</span>.0.10
-</code></pre></div>
-</li>
-<li>
-<p>Wait for your pods to be up and running , head to <code>https://&lt;fqdn&gt;/admin</code> place your license creds and login.</p>
 </li>
 </ol>
 
@@ -1255,7 +1155,7 @@ helm install &lt;release-name&gt; gluu/gluu -n &lt;namespace&gt; -f override-val
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-12-13T19:54:55+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-12-13</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-01-11T14:01:55+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-01-11</span>
       
         <br>
         Created:

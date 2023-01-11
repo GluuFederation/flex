@@ -14,7 +14,7 @@
       
         <link rel="canonical" href="https://docs.gluu.org/head/install/helm-install/rancher/">
       
-      <link rel="icon" href="../../../assets/favicon.ico">
+      <link rel="icon" href="../../../assets/logo/favicon.ico">
       <meta name="generator" content="mkdocs-1.4.1, mkdocs-material-8.5.7">
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#where-is-this-content" class="md-skip">
+        <a href="#install-gluu-server-using-rancher-marketplace" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="Gluu Flex Documentation" class="md-header__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../../assets/gluu.png" alt="logo">
+  <img src="../../../assets/logo/gluu.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -285,7 +285,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="Gluu Flex Documentation" class="md-nav__button md-logo" aria-label="Gluu Flex Documentation" data-md-component="logo">
       
-  <img src="../../../assets/gluu.png" alt="logo">
+  <img src="../../../assets/logo/gluu.png" alt="logo">
 
     </a>
     Gluu Flex Documentation
@@ -488,6 +488,8 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           Using Rancher Marketplace
@@ -504,6 +506,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -512,8 +516,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#where-is-this-content" class="md-nav__link">
-    Where is this content?
+  <a href="#installation-steps" class="md-nav__link">
+    Installation Steps
   </a>
   
 </li>
@@ -766,6 +770,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -774,8 +780,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#where-is-this-content" class="md-nav__link">
-    Where is this content?
+  <a href="#installation-steps" class="md-nav__link">
+    Installation Steps
   </a>
   
 </li>
@@ -795,6 +801,25 @@
                   
   
 
+  <nav class="md-tags" >
+    
+      
+      
+        <span class="md-tag">administration</span>
+      
+    
+      
+      
+        <span class="md-tag">installation</span>
+      
+    
+      
+      
+        <span class="md-tag">helm</span>
+      
+    
+  </nav>
+
 
 
   <a href="https://github.com/GluuFederation/flex/edit/main/docs/install/helm-install/rancher.md" title="Edit this page" class="md-content__button md-icon">
@@ -803,17 +828,38 @@
   </a>
 
 
-  <h1>Using Rancher Marketplace</h1>
-
-<h2 id="where-is-this-content">Where is this content?<a class="headerlink" href="#where-is-this-content" title="Permanent link">#</a></h2>
-<p>The Gluu Flex documentation is a work in progress, and this document is currently a draft. Keep an eye on this page for updates.</p>
+<h1 id="install-gluu-server-using-rancher-marketplace">Install Gluu Server Using Rancher Marketplace<a class="headerlink" href="#install-gluu-server-using-rancher-marketplace" title="Permanent link">#</a></h1>
+<p>For this quick start we will use a <a href="https://rancher.com/docs/rancher/v2.6/en/installation/other-installation-methods/single-node-docker/">single node Kubernetes install in docker with a self-signed certificate</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a more generic setup, use Rancher UI to deploy the setup. For more options please follow this <a href="https://rancher.com/docs/rancher/v2.6/en/installation/">link</a>.</p>
+</div>
+<h2 id="installation-steps">Installation Steps<a class="headerlink" href="#installation-steps" title="Permanent link">#</a></h2>
+<ol>
+<li>Provision a Linux 4 CPU, 16 GB RAM, and 50GB SSD VM with ports <code>443</code> and <code>80</code> open. Save the VM IP address. For development environments, the VM can be set up using VMWare Workstation Player or VirtualBox with Ubuntu 20.0.4 operating system running on VM.</li>
+<li>Install <a href="https://docs.docker.com/engine/install/">Docker</a>.</li>
+<li>Execute
+    <div class="highlight"><pre><span></span><code>docker run -d --restart<span class="o">=</span>unless-stopped -p <span class="m">80</span>:80 -p <span class="m">443</span>:443 --privileged rancher/rancher:latest
+</code></pre></div>
+   The final line of the returned text is the <code>container-id</code>, which you'll need for the next step.</li>
+<li>Execute the following command to get the <a href="https://rancher.com/docs/rancher/v2.6/en/installation/resources/bootstrap-password/#specifying-the-bootstrap-password-in-docker-installs">boostrap password</a> for login.
+    <div class="highlight"><pre><span></span><code>docker logs  &lt;container-id&gt;  <span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">|</span> grep <span class="s2">&quot;Bootstrap Password:&quot;</span>
+</code></pre></div></li>
+<li>Head to <code>https://&lt;VM-IP-ADDRESS-FROM-FIRST-STEP&gt;</code> and log in with the username <code>admin</code> and the password from the previous step. If you are logging into Rancher for the first time, you'll need to enter just the password, and on the next step, Rancher will ask you to reset your current password.</li>
+<li>Next you'll see the Rancher home page with a list of existing clusters. By default, the name of the newly created cluster would be <code>local</code>. Click on the cluster name to go to the dashboard.</li>
+<li>From the top-left menu expand <code>Apps &amp; Marketplace</code> and click <code>charts</code>.</li>
+<li>Search for <code>Gluu</code> and begin your installation.</li>
+<li>During Step 1 of installation, be sure to select the <code>Customize Helm options before install</code> options.</li>
+<li>In Step 2, customize the settings for the Gluu installation. Specifically <code>Optional Services</code> from where you can enable Gluu modules.</li>
+<li>In Step 3, unselect the <code>Wait</code> option and start the installation.</li>
+</ol>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-12-13T19:54:55+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-12-13</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-01-11T14:01:55+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-01-11</span>
       
         <br>
         Created:
