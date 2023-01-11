@@ -65,8 +65,8 @@ theme:
           toggle:
             icon: material/brightness-4
             name: Switch to system preference
-    logo: 'assets/gluu.png'
-    favicon: 'assets/favicon.ico'
+    logo: 'assets/logo/gluu.png'
+    favicon: 'assets/logo/favicon.ico'
     features:
         - toc.autohide
           - search.suggest

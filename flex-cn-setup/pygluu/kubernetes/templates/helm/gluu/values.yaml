@@ -120,14 +120,14 @@ admin-ui:
   resources:
     limits:
       # -- CPU limit.
-      cpu: 2500m
+      cpu: 2000m
       # -- Memory limit.
-      memory: 2500Mi
+      memory: 2000Mi
     requests:
       # -- CPU request.
-      cpu: 2500m
+      cpu: 2000m
       # -- Memory request.
-      memory: 2500Mi
+      memory: 2000Mi
   # -- Configure the liveness healthcheck for the admin ui if needed.
   livenessProbe:
     tcpSocket:

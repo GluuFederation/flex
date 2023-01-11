@@ -16,17 +16,17 @@ cd ..
 helm-docs flex-cn-setup/pygluu/kubernetes/templates/helm/
 rm -rf helmtemp
 echo "Copying Helm chart Readme to helm-chart.md"
-cp ./flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/README.md ./docs/admin/reference/kubernetes/helm-chart.md
+cp ./flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/README.md ./docs/reference/kubernetes/helm-chart.md
 echo "Adding keywords to helm-chart"
-sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n---\n/' ./docs/admin/reference/kubernetes/helm-chart.md
+sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n---\n/' ./docs/reference/kubernetes/helm-chart.md
 echo "Copying docker-monolith main README.md to compose.md"
-cp ./docker-jans-monolith/README.md  ./docs/admin/install/docker-install/compose.md
+cp ./docker-jans-monolith/README.md  ./docs/install/docker-install/compose.md
 echo "Copying docker images Readme to respective image md"
 # cp docker files main README.md
-docker_images="docker-jans-auth-server docker-jans-certmanager docker-jans-config-api docker-jans-configurator docker-jans-fido2 docker-jans-persistence-loader docker-jans-scim docker-jans-monolith"
+docker_images="docker-casa docker-admin-ui docker-jans-monolith"
 for image in $docker_images;do
-  cp ./"$image"/README.md ./docs/admin/reference/kubernetes/"$image".md
+  cp ./"$image"/README.md ./docs/reference/kubernetes/"$image".md
 done
 echo "cp docker-opendj main README.md"
-wget https://raw.githubusercontent.com/GluuFederation/docker-opendj/5.0/README.md -O ./docs/admin/reference/kubernetes/docker-opendj.md
-sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n - docker image\n---\n/' ./docs/admin/reference/kubernetes/docker-opendj.md
+wget https://raw.githubusercontent.com/GluuFederation/docker-opendj/5.0/README.md -O ./docs/reference/kubernetes/docker-opendj.md
+sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n - docker image\n---\n/' ./docs/reference/kubernetes/docker-opendj.md
