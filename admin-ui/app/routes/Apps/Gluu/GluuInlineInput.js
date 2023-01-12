@@ -35,7 +35,12 @@ function GluuInlineInput({
   const [show, setShow] = useState(false)
   const [correctValue, setCorrectValue] = useState([])
   const [data, setData] = useState(value)
-  const onValueChanged = () => {
+  const onValueChanged = (e) => {
+    if(isBoolean){
+      setData(e.target.checked)
+    }else{
+      setData(e.target.value)
+    }
     setShow(true)
   }
   const handleTypeAheadChange = (selectedOptions) => {
@@ -54,12 +59,11 @@ function GluuInlineInput({
     if (isArray) {
       patch[VALUE] = correctValue
     } else {
-      patch[VALUE] = document.getElementById(name).value
+        patch[VALUE] = data
     }
     patch['op'] = 'replace'
     handler(patch)
     setShow(!show)
-    setData(document.getElementById(name).value)
   }
   const onCancel = () => {
     setCorrectValue([])
@@ -93,7 +97,7 @@ function GluuInlineInput({
               id={name}
               data-testid={name}
               name={name}
-              onChange={onValueChanged}
+              handler={onValueChanged}
               value={value}
             />
             )}
