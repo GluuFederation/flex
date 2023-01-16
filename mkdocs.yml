@@ -141,5 +141,10 @@ nav:
     - 'Flex Docker Image': 'reference/kubernetes/docker-flex-monolith.md'
     - 'Admin UI Docker Image': 'reference/kubernetes/docker-admin-ui.md'
     - 'Casa Docker Image': 'reference/kubernetes/docker-casa.md'
-
-
+#   Use section below to configure documentation structure as per available property and feature-flag documents
+#    - 'JSON Configuration':
+#      - 'reference/json-config/README.md'
+#      - 'Properties':
+#          - 'reference/json-config/properties/README.md'
+#          - 'Casa': 'reference/json-config/properties/casa-properties.md'
+#          - 'Casa Config': 'reference/json-config/properties/casaconfig-properties.md'

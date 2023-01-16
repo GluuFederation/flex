@@ -294,6 +294,12 @@
             <artifactId>oauth2-oidc-sdk</artifactId>
             <version>10.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.jans</groupId>
+            <artifactId>jans-doc</artifactId>
+            <version>${jans.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -369,6 +375,13 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgument>-Amodule=Casa</compilerArgument>
+                </configuration>
             </plugin>
         </plugins>
     </build>

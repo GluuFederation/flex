@@ -95,6 +95,24 @@
             <artifactId>jboss-jaxrs-api_3.0_spec</artifactId>
             <version>1.0.1.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.jans</groupId>
+            <artifactId>jans-doc</artifactId>
+            <version>${jans.version}</version>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgument>-Amodule=Casa Shared</compilerArgument>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
