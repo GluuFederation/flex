@@ -6,4 +6,4 @@ tags:
 
 # Overview
 
-Please use the left navigation menu to browse the content of this section while we are still working on developing content for `Overview` page.
+The Gluu Flex reference guide includes technical references for Flex-specific components and deployments. References for Janssen components, including database references, can be found in the [Janssen Project documentation](https://docs.jans.io/).
