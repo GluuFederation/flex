@@ -123,8 +123,6 @@ nav:
         - 'Ubuntu': 'install/vm-install/ubuntu.md'
         - 'RHEL': 'install/vm-install/rhel.md'
         - 'Suse': 'install/vm-install/suse.md'
-      #  - 'Dynamic Download': 'install/vm-install/dynamic-download.md'
-        - 'Setup Script': 'install/vm-install/setup.md'
 - 'Administration':
     - 'admin/README.md'
     - 'Admin UI':
