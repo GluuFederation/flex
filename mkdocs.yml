@@ -133,7 +133,7 @@ nav:
   #      - 'SAML IDP': 'admin/saml/idp.md'
    #     - 'SAML Proxy': 'admin/saml/proxy.md'
     - 'Casa': 'admin/casa/README.md'
-- 'Reference":
+- 'Reference':
     - 'reference/kubernetes/README.md'
     - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
     - 'Flex Docker Image': 'reference/kubernetes/docker-flex-monolith.md'
