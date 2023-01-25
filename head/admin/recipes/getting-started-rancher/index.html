@@ -1737,6 +1737,7 @@ kubectl create ns gluu #Create gluu namespace
 <p>The running deployment and services of different Gluu Flex components like <code>casa</code>, <code>admin ui</code>, <code>scim</code>, <code>auth server</code>, etc can be viewed by navigating through the SUSE Rancher. Go to workloads and see the running pods, Go under service discovery and checkout the ingresses and services. All should be in a healthy and running state like in the screenshot shown below.</p>
 <p><img width="1488" alt="Screenshot 2022-07-05 at 11 53 06" src="https://user-images.githubusercontent.com/17182751/177325882-e2819b8d-b2cb-4be2-8c4c-d90815d02093.png"></p>
 <h4 id="connecting-to-the-setup">Connecting to the Setup<a class="headerlink" href="#connecting-to-the-setup" title="Permanent link">#</a></h4>
+<p>In the event you used microk8s or your fqdn is not registed the below steps will help with connecting to your setup.</p>
 <ol>
 <li>
 <p>To access the setup from a browser or another VM, we need to change the ingress class annotation from <code>kubernetes.io/ingress.class: nginx</code> to <code>kubernetes.io/ingress.class: public</code> e.g., for the specific component you want to access publicly in the browser;</p>
@@ -1850,16 +1851,11 @@ kubectl create ns gluu #Create gluu namespace
 <li>Navigate to <code>Auth server</code> -&gt; <code>Clients</code> and click on <code>+</code> in the top right corner to create a client.</li>
 </ol>
 <p>Take note of the following keys:values because they configure the right client that we need</p>
-<div class="codehilite"><pre><span></span><code>```
-scopes: email_,openid_,profile
+<div class="highlight"><pre><span></span><code>scopes: email_,openid_,profile
 responseTypes: code
-```
-
-The screenshot below shows an example of the Admin UI section from where a client is created
-
-&lt;img width=&quot;1447&quot; alt=&quot;Screenshot 2022-07-26 at 16 34 05&quot; src=&quot;https://user-images.githubusercontent.com/17182751/181018938-d64b81b9-58c6-49e1-bd86-6d50a6dada9f.png&quot;&gt;
 </code></pre></div>
-
+<p>The screenshot below shows an example of the Admin UI section from where a client is created</p>
+<p><img width="1447" alt="Screenshot 2022-07-26 at 16 34 05" src="https://user-images.githubusercontent.com/17182751/181018938-d64b81b9-58c6-49e1-bd86-6d50a6dada9f.png"></p>
 <h4 id="jans-cli"><code>Jans CLI</code><a class="headerlink" href="#jans-cli" title="Permanent link">#</a></h4>
 <p>On the Janssen server, we are going to register a new client using the jans-cli. There are two ways you can register an OIDC client with the Janssen server, Manual Client Registration and Dynamic Client Registration (DCR).</p>
 <p>Here we will use manual client registration. We will use jans-cli tool provided by the Janssen server. jans-cli has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.</p>
@@ -2273,7 +2269,7 @@ docker run -dit -p 8111:80 \
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-01-25T09:30:31+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-01-25</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-01-25T09:55:21+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-01-25</span>
       
         <br>
         Created:
