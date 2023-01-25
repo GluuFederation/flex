@@ -11,7 +11,7 @@
         "email"
       ],
       "acrValues": [
-        "basic"
+        "%(adminui_authentication_mode)s"
       ],
       "redirectUri": "https://%(hostname)s/admin",
       "postLogoutUri": "https://%(hostname)s/admin",
