@@ -194,6 +194,7 @@ The running deployment and services of different Gluu Flex components like `casa
 <img width="1488" alt="Screenshot 2022-07-05 at 11 53 06" src="https://user-images.githubusercontent.com/17182751/177325882-e2819b8d-b2cb-4be2-8c4c-d90815d02093.png">
 
 #### Connecting to the Setup
+In the event you used microk8s or your fqdn is not registed the below steps will help with connecting to your setup.
 
 1. To access the setup from a browser or another VM, we need to change the ingress class annotation from `kubernetes.io/ingress.class: nginx` to `kubernetes.io/ingress.class: public` e.g., for the specific component you want to access publicly in the browser;
     - Navigate through the SUSE Rancher UI to `Service Discovery` -> `Ingresses`
@@ -319,14 +320,14 @@ On the Janssen server, you can register a new client in the Flex Admin UI or the
 
    Take note of the following keys:values because they configure the right client that we need
 
-    ```
-    scopes: email_,openid_,profile
-    responseTypes: code
-    ```
+   ```
+   scopes: email_,openid_,profile
+   responseTypes: code
+   ```
 
-    The screenshot below shows an example of the Admin UI section from where a client is created
+   The screenshot below shows an example of the Admin UI section from where a client is created
 
-    <img width="1447" alt="Screenshot 2022-07-26 at 16 34 05" src="https://user-images.githubusercontent.com/17182751/181018938-d64b81b9-58c6-49e1-bd86-6d50a6dada9f.png">
+   <img width="1447" alt="Screenshot 2022-07-26 at 16 34 05" src="https://user-images.githubusercontent.com/17182751/181018938-d64b81b9-58c6-49e1-bd86-6d50a6dada9f.png">
 
 #### `Jans CLI`
 
