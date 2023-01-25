@@ -135,7 +135,7 @@ nav:
     - 'Casa': 'admin/casa/README.md'
     - 'Flex Recipes':
         - 'admin/recipes/README.md'
-        - 'Rancher': 'admin/recipes/benchmark.md'
+        - 'Getting Started with Rancher': 'admin/recipes/getting-started-rancher.md'
 - 'Reference':
     - 'reference/kubernetes/README.md'
     - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
