@@ -133,6 +133,9 @@ nav:
   #      - 'SAML IDP': 'admin/saml/idp.md'
    #     - 'SAML Proxy': 'admin/saml/proxy.md'
     - 'Casa': 'admin/casa/README.md'
+    - 'Flex Recipes':
+        - 'admin/recipes/README.md'
+        - 'Rancher': 'admin/recipes/benchmark.md'
 - 'Reference':
     - 'reference/kubernetes/README.md'
     - 'Flex Helm Chart': 'reference/kubernetes/helm-chart.md'
