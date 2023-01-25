@@ -43,7 +43,7 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
     parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
-    parser.add_argument('--node-modules-branch', help="Node modules mranch. Default to flex setup github branch")
+    parser.add_argument('--node-modules-branch', help="Node modules branch. Default to flex setup github branch")
     parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
