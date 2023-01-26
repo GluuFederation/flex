@@ -988,8 +988,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#jans-cli" class="md-nav__link">
-    Jans CLI
+  <a href="#jans-tui" class="md-nav__link">
+    Jans TUI
   </a>
   
 </li>
@@ -1330,8 +1330,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#jans-cli" class="md-nav__link">
-    Jans CLI
+  <a href="#jans-tui" class="md-nav__link">
+    Jans TUI
   </a>
   
 </li>
@@ -1427,7 +1427,7 @@
 <p><img alt="gluucloudnative-jans" src="https://user-images.githubusercontent.com/47318409/177173069-2d2d6c79-e226-4cca-a14e-92caf3cd7353.png" /></p>
 <p>In addition to the core services listed in the Introduction above, the SUSE Rancher deployment includes the following components:</p>
 <ul>
-<li><code>MySQL</code>: SQL database dialect used to store configuration, people clients, sessions and other data needed for Gluu Flex operation.</li>
+<li><code>PostgreSQL</code>: SQL database dialect used to store configuration, people clients, sessions and other data needed for Gluu Flex operation.</li>
 <li><code>Cert Manager</code>: Used for managing X.509 certificates and crypto keys lifecycle in Janssen Server.</li>
 <li><code>Key Rotation</code>: A cronjob that implements <code>Cert Manager</code> to rotate the auth keys</li>
 <li><code>Configuration job</code>: This job loads (generate/restore) and dumps (backup) the configuration and secrets.</li>
@@ -1701,32 +1701,46 @@
 <p><strong>Summary of steps</strong>:</p>
 <ol>
 <li>
-<p>Install MYSQL:</p>
-<p>To install a quick setup with <code>MySQL</code> as the backend, you need to either provide the connection parameters of a fresh setup or follow the below instructions for a test setup :</p>
+<p>Install PostgreSQL:</p>
+<p>To install a quick setup with <code>PostgreSQL</code> as the backend, you need to either provide the connection parameters of a fresh setup or follow the below instructions for a test setup :</p>
 <ul>
-<li>Since SUSE Rancher currently doesn't have a <code>MySQL</code> chart. Hence, we will install it manually. [This needs editing as there is a chart] </li>
-<li>Open a kubectl shell from the top right navigation menu <code>&gt;_</code>. </li>
-<li>Run 
-<div class="highlight"><pre><span></span><code>helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-kubectl create ns gluu #Create gluu namespace
-</code></pre></div></li>
-<li>Pass in a custom password for the database. Here we used <code>Test1234#</code>. The admin user will be left as <code>root</code>. Notice we are installing in the <code>gluu</code> namespace. Run </li>
+<li><code>Apps &amp; Marketplace</code> --&gt; <code>Charts</code> and search for <code>postgres</code>.</li>
+<li>Click on <code>Install</code> on the right side of the window.</li>
+<li>Choose a new namespace called <code>postgres</code> and hit <code>Next</code>. followed by <code>Install</code> at the bottom right of the page.</li>
+<li>You should be on the <code>Values</code> page. Modify the below keys to your choices. The values will be inputted in a the installation of Gluu Flex.:</li>
 </ul>
-<p><div class="highlight"><pre><span></span><code>helm install my-release --set auth.rootPassword=Test1234#,auth.database=jans bitnami/mysql -n gluu
-</code></pre></div>
-- After the installation is successful, you should have a MYSQL statefulset active in the rancher UI as shown in the screenshot below.</p>
-<p><img width="1504" alt="Screenshot 2022-07-05 at 14 54 26" src="https://user-images.githubusercontent.com/17182751/177326700-9215436c-f1c2-467f-94ff-601ff7fbdbfb.png"></p>
 </li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>global.postgresql.auth.database</code></td>
+</tr>
+<tr>
+<td><code>global.postgresql.auth.username</code></td>
+</tr>
+<tr>
+<td><code>global.postgresql.auth.password</code></td>
+</tr>
+</tbody>
+</table>
+<ol>
 <li>
 <p>Install Gluu Flex:</p>
 <ul>
-<li>Once MySQL is up and running. Head to the <code>Apps &amp; Marketplace</code> --&gt; <code>Charts</code> and search for <code>Gluu</code></li>
+<li>Once PostgreSQL is up and running. Head to the <code>Apps &amp; Marketplace</code> --&gt; <code>Charts</code> and search for <code>Gluu</code></li>
 <li>Click on <code>Install</code> on the right side of the window. </li>
-<li>Change the namespace from <code>default</code> to <code>gluu</code>, then click on <code>Next</code>.</li>
-<li>From the default open tab <code>Edit Options</code>, click on the <code>Persistence</code> section.</li>
-<li>only change <code>SQL database host uri</code> to <code>my-release-mysql.gluu.svc.cluster.local</code>, <code>SQL database username</code> to <code>root</code> and <code>SQL password</code> to the password you chose when you installed MySql. For us that would be <code>Test1234#</code>.</li>
-<li>Click on the next section named <code>NGINX</code> and enable all the endpoints.</li>
+<li>Change the namespace from <code>default</code> to <code>gluu</code>, then click on <code>Next</code>.     </li>
+<li>Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.</li>
+<li>From the default open tab <code>Edit Options</code>, click on the <code>Persistence</code> section and update the information accordingly.</li>
+<li>For example, if you installed the test PostgreSQL make sure to update  <code>SQL database host uri</code> to <code>postgresql.postgres.svc.cluster.local</code>, <code>SQL database username</code> to username you entered during installing PostgreSQL, <code>SQL password</code> and <code>SQL database name</code> to the password and database name chosen.</li>
+<li>Click on the  section named <code>Configuration</code> and make syre to pass the information correctly such as your <code>FQDN</code> that is intended to serve the Gluu Flex IDP.</li>
+<li>Click on the  section named <code>NGINX</code> and enable all the endpoints.</li>
 <li>To enable Casa and the Admin UI, navigate to the <code>Optional Services</code> section and check the <code>Enable casa</code> and <code>boolean flag to enable admin UI</code> boxes. </li>
 <li>You may also customize the settings for the Flex installation. Specifically through the <code>Optional Services</code> section where you can enable different services like ClientApi and Jackrabbit. You also configure the domain/fqdn of the installation from the <code>Configuration</code> section.</li>
 <li>Click on <code>Install</code> on the bottom right of the window</li>
@@ -1856,14 +1870,22 @@ responseTypes: code
 </code></pre></div>
 <p>The screenshot below shows an example of the Admin UI section from where a client is created</p>
 <p><img width="1447" alt="Screenshot 2022-07-26 at 16 34 05" src="https://user-images.githubusercontent.com/17182751/181018938-d64b81b9-58c6-49e1-bd86-6d50a6dada9f.png"></p>
-<h4 id="jans-cli"><code>Jans CLI</code><a class="headerlink" href="#jans-cli" title="Permanent link">#</a></h4>
+<h4 id="jans-tui"><code>Jans TUI</code><a class="headerlink" href="#jans-tui" title="Permanent link">#</a></h4>
 <p>On the Janssen server, we are going to register a new client using the jans-cli. There are two ways you can register an OIDC client with the Janssen server, Manual Client Registration and Dynamic Client Registration (DCR).</p>
-<p>Here we will use manual client registration. We will use jans-cli tool provided by the Janssen server. jans-cli has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.</p>
+<p>Here we will use manual client registration. We will use jans-tui tool provided by the Janssen server. jans-tui has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.</p>
+<p>Download or build <a href="../../../jans-cli-tui">config-cli-tui</a> then:</p>
 <ol>
-<li>
-<p>Get schema file using this command</p>
-<p><code>/opt/jans/jans-cli/config-cli.py --schema /components/schemas/Client</code></p>
-</li>
+<li>Get the role based client id and secret:</li>
+</ol>
+<p><div class="highlight"><pre><span></span><code><span class="c1"># Notice the namespace is jans here . Change it if it was changed during installation of janssen previously</span>
+<span class="nv">ROLE_BASED_CLIENT_ID</span><span class="o">=</span><span class="k">$(</span>kubectl get cm cn -o json -n jans <span class="p">|</span> grep <span class="s1">&#39;&quot;role_based_client_id&quot;:&#39;</span> <span class="p">|</span> sed -e <span class="s1">&#39;s#.*:\(\)#\1#&#39;</span> <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="p">|</span> tr -d <span class="s2">&quot;,&quot;</span> <span class="p">|</span> tr -d <span class="s1">&#39;[:space:]&#39;</span><span class="k">)</span>
+<span class="nv">ROLE_BASED_CLIENT_SECRET</span><span class="o">=</span><span class="k">$(</span>kubectl get secret cn -o json -n jans <span class="p">|</span> grep <span class="s1">&#39;&quot;role_based_client_pw&quot;:&#39;</span> <span class="p">|</span> sed -e <span class="s1">&#39;s#.*:\(\)#\1#&#39;</span> <span class="p">|</span> tr -d <span class="s1">&#39;&quot;&#39;</span> <span class="p">|</span> tr -d <span class="s2">&quot;,&quot;</span> <span class="p">|</span> tr -d <span class="s1">&#39;[:space:]&#39;</span> <span class="p">|</span> base64 -d<span class="k">)</span>
+</code></pre></div>
+2. Get schema file using this command</p>
+<div class="codehilite"><pre><span></span><code>`./config-cli-tui.pyz --host &lt;FQDN&gt; --client-id &lt;ROLE_BASED_CLIENT_ID&gt; --client-secret &lt;ROLE_BASED_CLIENT_SECRET&gt; --no-tui --schema /components/schemas/Client`
+</code></pre></div>
+
+<ol>
 <li>
 <p>Add values for required params and store this JSON in a text file. Take keynote of the following properties.</p>
 <p><code>schema-json-file.json</code></p>
@@ -1952,7 +1974,7 @@ responseTypes: code
 </li>
 <li>
 <p>Now you can use that JSON file as input to the command below and register your client</p>
-<p><code>/opt/jans/jans-cli/config-cli.py --operation-id post-oauth-openid-clients --data &lt;path&gt;/schema-json-file.json</code></p>
+<p><code>./config-cli-tui.pyz --host &lt;FQDN&gt; --client-id &lt;ROLE_BASED_CLIENT_ID&gt; --client-secret &lt;ROLE_BASED_CLIENT_SECRET&gt; --no-tui --operation-id=post-oauth-openid-client --data &lt;path&gt;/schema-json-file.json</code></p>
 </li>
 <li>
 <p>After the client is successfully registered, there will be data that describes the newly registered client. Some of these values, like <code>inum</code> and <code>clientSecret</code>, will be required before we configure <code>mod_auth_openidc</code> So keep in mind that we shall get back to this.</p>
@@ -2269,7 +2291,7 @@ docker run -dit -p 8111:80 \
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-01-25T09:55:21+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-01-25</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-01-26T15:20:51+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-01-26</span>
       
         <br>
         Created:
