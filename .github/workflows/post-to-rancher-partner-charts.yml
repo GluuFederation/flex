@@ -38,6 +38,8 @@ jobs:
         git config --global user.name "mo-auto"
         git config --global user.email "54212639+mo-auto@users.noreply.github.com"
         git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
+        git config --global pull.rebase true
+        git config --global rebase.autoStash true
         cd partner-charts
         git remote add upstream https://github.com/rancher/partner-charts.git
         git fetch upstream
