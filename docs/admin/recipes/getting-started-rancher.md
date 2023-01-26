@@ -44,7 +44,7 @@ This document is intended for DevOps engineers, site reliability engineers (SREs
 
 In addition to the core services listed in the Introduction above, the SUSE Rancher deployment includes the following components:
 
-- `MySQL`: SQL database dialect used to store configuration, people clients, sessions and other data needed for Gluu Flex operation.
+- `PostgreSQL`: SQL database dialect used to store configuration, people clients, sessions and other data needed for Gluu Flex operation.
 - `Cert Manager`: Used for managing X.509 certificates and crypto keys lifecycle in Janssen Server.
 - `Key Rotation`: A cronjob that implements `Cert Manager` to rotate the auth keys
 - `Configuration job`: This job loads (generate/restore) and dumps (backup) the configuration and secrets.
@@ -154,35 +154,32 @@ kubectl get secret cn -o json -n <namespace>
 
 **Summary of steps**:
 
-1. Install MYSQL:
+1. Install PostgreSQL:
 
-    To install a quick setup with `MySQL` as the backend, you need to either provide the connection parameters of a fresh setup or follow the below instructions for a test setup :
+    To install a quick setup with `PostgreSQL` as the backend, you need to either provide the connection parameters of a fresh setup or follow the below instructions for a test setup :
 
-    - Since SUSE Rancher currently doesn't have a `MySQL` chart. Hence, we will install it manually. [This needs editing as there is a chart] 
-    - Open a kubectl shell from the top right navigation menu `>_`. 
-    - Run 
-    ```
-    helm repo add bitnami https://charts.bitnami.com/bitnami
-    helm repo update
-    kubectl create ns gluu #Create gluu namespace
-    ```
-    - Pass in a custom password for the database. Here we used `Test1234#`. The admin user will be left as `root`. Notice we are installing in the `gluu` namespace. Run 
+    - `Apps & Marketplace` --> `Charts` and search for `postgres`.
+    - Click on `Install` on the right side of the window.
+    - Choose a new namespace called `postgres` and hit `Next`. followed by `Install` at the bottom right of the page.
+    - You should be on the `Values` page. Modify the below keys to your choices. The values will be inputted in a the installation of Gluu Flex.:
+     
+| Key                               |
+|-----------------------------------|
+| `global.postgresql.auth.database` |
+| `global.postgresql.auth.username` |
+| `global.postgresql.auth.password` |
 
-    ```
-    helm install my-release --set auth.rootPassword=Test1234#,auth.database=jans bitnami/mysql -n gluu
-    ```
-    - After the installation is successful, you should have a MYSQL statefulset active in the rancher UI as shown in the screenshot below.
-
-    <img width="1504" alt="Screenshot 2022-07-05 at 14 54 26" src="https://user-images.githubusercontent.com/17182751/177326700-9215436c-f1c2-467f-94ff-601ff7fbdbfb.png">
 
 2. Install Gluu Flex:
 
-    - Once MySQL is up and running. Head to the `Apps & Marketplace` --> `Charts` and search for `Gluu`
+    - Once PostgreSQL is up and running. Head to the `Apps & Marketplace` --> `Charts` and search for `Gluu`
     - Click on `Install` on the right side of the window. 
-    - Change the namespace from `default` to `gluu`, then click on `Next`.
-    - From the default open tab `Edit Options`, click on the `Persistence` section.
-    - only change `SQL database host uri` to `my-release-mysql.gluu.svc.cluster.local`, `SQL database username` to `root` and `SQL password` to the password you chose when you installed MySql. For us that would be `Test1234#`.
-    - Click on the next section named `NGINX` and enable all the endpoints.
+    - Change the namespace from `default` to `gluu`, then click on `Next`.     
+    - Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.
+    - From the default open tab `Edit Options`, click on the `Persistence` section and update the information accordingly.
+    - For example, if you installed the test PostgreSQL make sure to update  `SQL database host uri` to `postgresql.postgres.svc.cluster.local`, `SQL database username` to username you entered during installing PostgreSQL, `SQL password` and `SQL database name` to the password and database name chosen.
+    - Click on the  section named ` Configuration` and make syre to pass the information correctly such as your `FQDN` that is intended to serve the Gluu Flex IDP.
+    - Click on the  section named `NGINX` and enable all the endpoints.
     - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes. 
     - You may also customize the settings for the Flex installation. Specifically through the `Optional Services` section where you can enable different services like ClientApi and Jackrabbit. You also configure the domain/fqdn of the installation from the `Configuration` section.
     - Click on `Install` on the bottom right of the window
@@ -329,17 +326,26 @@ On the Janssen server, you can register a new client in the Flex Admin UI or the
 
    <img width="1447" alt="Screenshot 2022-07-26 at 16 34 05" src="https://user-images.githubusercontent.com/17182751/181018938-d64b81b9-58c6-49e1-bd86-6d50a6dada9f.png">
 
-#### `Jans CLI`
+#### `Jans TUI`
 
 On the Janssen server, we are going to register a new client using the jans-cli. There are two ways you can register an OIDC client with the Janssen server, Manual Client Registration and Dynamic Client Registration (DCR).
 
-Here we will use manual client registration. We will use jans-cli tool provided by the Janssen server. jans-cli has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.
+Here we will use manual client registration. We will use jans-tui tool provided by the Janssen server. jans-tui has a menu-driven interface that makes it easy to configure the Janssen server. Here we will use the menu-driven approach to register a new client.
 
-1. Get schema file using this command
+Download or build [config-cli-tui](../../../jans-cli-tui) then:
 
-    `/opt/jans/jans-cli/config-cli.py --schema /components/schemas/Client`
+1. Get the role based client id and secret:
 
-2. Add values for required params and store this JSON in a text file. Take keynote of the following properties.
+   ```bash
+   # Notice the namespace is jans here . Change it if it was changed during installation of janssen previously
+   ROLE_BASED_CLIENT_ID=$(kubectl get cm cn -o json -n jans | grep '"role_based_client_id":' | sed -e 's#.*:\(\)#\1#' | tr -d '"' | tr -d "," | tr -d '[:space:]')
+   ROLE_BASED_CLIENT_SECRET=$(kubectl get secret cn -o json -n jans | grep '"role_based_client_pw":' | sed -e 's#.*:\(\)#\1#' | tr -d '"' | tr -d "," | tr -d '[:space:]' | base64 -d)
+   ```
+2. Get schema file using this command
+
+    `./config-cli-tui.pyz --host <FQDN> --client-id <ROLE_BASED_CLIENT_ID> --client-secret <ROLE_BASED_CLIENT_SECRET> --no-tui --schema /components/schemas/Client`
+
+3. Add values for required params and store this JSON in a text file. Take keynote of the following properties.
 
     `schema-json-file.json`
     
@@ -427,17 +433,17 @@ Here we will use manual client registration. We will use jans-cli tool provided 
     }
     ```
 
-3. Now you can use that JSON file as input to the command below and register your client
+4. Now you can use that JSON file as input to the command below and register your client
 
-    `/opt/jans/jans-cli/config-cli.py --operation-id post-oauth-openid-clients --data <path>/schema-json-file.json`
+    `./config-cli-tui.pyz --host <FQDN> --client-id <ROLE_BASED_CLIENT_ID> --client-secret <ROLE_BASED_CLIENT_SECRET> --no-tui --operation-id=post-oauth-openid-client --data <path>/schema-json-file.json`
 
-4. After the client is successfully registered, there will be data that describes the newly registered client. Some of these values, like `inum` and `clientSecret`, will be required before we configure `mod_auth_openidc` So keep in mind that we shall get back to this.
+5. After the client is successfully registered, there will be data that describes the newly registered client. Some of these values, like `inum` and `clientSecret`, will be required before we configure `mod_auth_openidc` So keep in mind that we shall get back to this.
 
 ### Create an Application Container
 
 An application docker container will be run locally which will act as the protected resource (PR) / external application. The following files have code for the small application. We shall create a directory locally / on your machine called `test` and add the required files.
 
-5. Firstly create a project folder named `test` by running `mkdir test && cd test` and add the following files with their content; 
+6. Firstly create a project folder named `test` by running `mkdir test && cd test` and add the following files with their content; 
 
 `app.conf `
 

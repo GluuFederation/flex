@@ -96,9 +96,9 @@ config:
     # -- SQL database port.
     cnSqlDbPort: 3306
     # -- SQL database name.
-    cnSqlDbName: jans
+    cnSqlDbName: gluu
     # -- SQL database username.
-    cnSqlDbUser: jans
+    cnSqlDbUser: gluu
     # -- SQL database timezone.
     cnSqlDbTimezone: UTC
     # -- SQL password  injected the secrets .
