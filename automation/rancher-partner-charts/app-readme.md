@@ -19,7 +19,7 @@ The Gluu Server can be deployed to support the following open standards for auth
 - OAuth 2.0    
 - OpenID Connect    
 - User Managed Access 2.0 (UMA)    
-- SAML 2.0   
+- SAML 2.0 - Coming soon...   
 - System for Cross-domain Identity Management (SCIM)    
 - FIDO Universal 2nd Factor (U2F)
 - FIDO 2.0 / WebAuthn
