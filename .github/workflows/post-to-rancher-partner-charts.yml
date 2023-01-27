@@ -67,8 +67,9 @@ jobs:
         git push origin
         MESSAGE="feat(gluu): update Gluu helm partner chart"
         BODY=$(<../automation/rancher-partner-charts/pull_request_body.md)
-        echo "${{ secrets.MOWORKFLOWTOKEN }}" > token.txt
-        gh auth login --with-token < token.txt
-        PR=$(gh pr create --base "main-source" --body "${BODY}" --title "${MESSAGE}")        
+        # Rancher has a new method in updating partner charts
+        #echo "${{ secrets.MOWORKFLOWTOKEN }}" > token.txt
+        #gh auth login --with-token < token.txt
+        #PR=$(gh pr create --base "main-source" --body "${BODY}" --title "${MESSAGE}")        
 
 #TODO: Add docker test before opening a PR in rancher-partner charts.
