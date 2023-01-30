@@ -69,7 +69,7 @@ COPY conf/prometheus-config.yaml /opt/prometheus/
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=d95fc492ca00ccee0ecc88132376c128203faefb
+ENV JANS_SOURCE_VERSION=cee252522061b43065eddbdc70d51bda9e2e85d7
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -96,7 +96,7 @@ RUN cd /tmp/jans \
 # flex setup sync
 # ===============
 
-ENV FLEX_VERSION=7ab3c3f8e65f084efe08187039998bbd407ef3c9
+ENV FLEX_VERSION=291566e2e7117c6f11ce24ef0b1330feb0cdef4f
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 ARG CASA_EXTRAS_DIR=casa/extras
 
