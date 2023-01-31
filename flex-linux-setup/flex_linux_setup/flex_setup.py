@@ -229,7 +229,6 @@ app_versions = {
   "JANS_BUILD": "-SNAPSHOT", 
   "NODE_VERSION": "v14.18.2",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
-  "TWILIO_VERSION": "7.17.0",
   "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
 }
 
@@ -282,7 +281,7 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['casa_web_port'] = '8080'
         self.simple_auth_scr_inum = 'A51E-76DA'
         self.casa_python_libs = ['Casa.py', 'casa-external_fido2.py', 'casa-external_otp.py', 'casa-external_super_gluu.py', 'casa-external_twilio_sms.py']
-        self.casa_script_fn = os.path.join(self.casa_dist_dir, self.casa_python_libs[0])
+        self.casa_script_fn = os.path.join(self.casa_dist_dir, 'pylib', self.casa_python_libs[0])
         self.casa_client_id_prefix = '3000.'
 
         self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
@@ -318,9 +317,9 @@ class flex_installer(JettyInstaller):
                     ('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa_web_resources.xml', self.casa_web_resources_fn),
                     ('https://maven.gluu.org/maven/org/gluu/casa/{0}/casa-{0}.war'.format(app_versions['CASA_VERSION']), self.casa_war_fn),
                     ('https://maven.gluu.org/maven/org/gluu/casa-config/{0}/casa-config-{0}.jar'.format(app_versions['CASA_VERSION']), self.casa_config_fn),
-                    ('https://repo1.maven.org/maven2/com/twilio/sdk/twilio/{0}/twilio-{0}.jar'.format(app_versions['TWILIO_VERSION']), self.twillo_fn),
                     ('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/Casa.py', self.casa_script_fn),
-                    ('https://maven.jans.io/maven/io/jans/jans-fido2-client/{0}{1}/jans-fido2-client-{0}{1}.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD']), self.fido2_client_jar_fn),
+                    (os.path.join(base.current_app.app_info['TWILIO_MAVEN'], '{0}/twilio-{0}.jar'.format(base.current_app.app_info['TWILIO_VERSION'])), self.twillo_fn),
+                    (os.path.join(base.current_app.app_info['JANS_MAVEN'], 'maven/io/jans/jans-fido2-client/{0}{1}/jans-fido2-client-{0}{1}.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.fido2_client_jar_fn),
                 ]
 
             for plib in self.casa_python_libs:
@@ -469,19 +468,25 @@ class flex_installer(JettyInstaller):
 
         self.source_files = [(self.casa_war_fn,)]
 
-        print("Adding twillo and casa config to jans-auth")
+        print("Adding casa config to jans-auth")
         self.copyFile(self.casa_config_fn, self.jans_auth_custom_lib_dir)
-        self.copyFile(self.twillo_fn, self.jans_auth_custom_lib_dir)
-        class_path = '{},{}'.format(
-            os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn)),
-            os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn)),
-            )
-        jansAuthInstaller.add_extra_class(class_path)
+        casa_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn))
+        jansAuthInstaller.add_extra_class(casa_config_class_path)
 
-        print("Adding Fido2 Client lib to jans-auth")
-        self.copyFile(self.fido2_client_jar_fn, self.jans_auth_custom_lib_dir)
-        class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.fido2_client_jar_fn))
-        jansAuthInstaller.add_extra_class(class_path)
+        print("jansAuthInstaller.web_app_xml_fn:", jansAuthInstaller.web_app_xml_fn)
+        jans_auth_web_app_xml = jansAuthInstaller.readFile(jansAuthInstaller.web_app_xml_fn)
+
+        if not os.path.basename(self.twillo_fn) in jans_auth_web_app_xml:
+            print("Adding twillo to jans-auth")
+            self.copyFile(self.twillo_fn, self.jans_auth_custom_lib_dir)
+            twillo_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn))
+            jansAuthInstaller.add_extra_class(twillo_config_class_path)
+
+        if not os.path.basename(self.fido2_client_jar_fn) in jans_auth_web_app_xml:
+            print("Adding Fido2 Client lib to jans-auth")
+            self.copyFile(self.fido2_client_jar_fn, self.jans_auth_custom_lib_dir)
+            fido2_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.fido2_client_jar_fn))
+            jansAuthInstaller.add_extra_class(fido2_class_path)
 
         # copy casa scripts
         if not os.path.exists(self.py_lib_dir):
@@ -634,26 +639,18 @@ class flex_installer(JettyInstaller):
         print("  - Removing casa directives from apache configuration")
         self.remove_apache_directive('<Location /casa>')
 
-        write_jans_auth_config = False
+
         jans_auth_plugins = jansAuthInstaller.get_plugins(paths=True)
 
-        for casa_plugin in (self.fido2_client_jar_fn, self.twillo_fn):
+        casa_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn))
 
-            plugin_jar_fn = os.path.join(
-                                        self.jans_auth_custom_lib_dir,
-                                        os.path.basename(casa_plugin)
-                                        )
+        if os.path.exists(casa_config_class_path):
+            print(del_msg, casa_config_class_path)
+            self.run(['rm', '-f', casa_config_class_path])
 
-            if os.path.exists(plugin_jar_fn):
-                print(del_msg, plugin_jar_fn)
-                self.run(['rm', '-f', plugin_jar_fn])
-
-            if plugin_jar_fn in jans_auth_plugins:
-                print("  - Removing plugin {} from Jans Auth Configuration".format(plugin_jar_fn))
-                jans_auth_plugins.remove(plugin_jar_fn)
-                write_jans_auth_config = True
-
-        if write_jans_auth_config:
+        if casa_config_class_path in jans_auth_plugins:
+            print("  - Removing plugin {} from Jans Auth Configuration".format(casa_config_class_path))
+            jans_auth_plugins.remove(casa_config_class_path)
             jansAuthInstaller.set_class_path(jans_auth_plugins)
 
         for plib in self.casa_python_libs:
