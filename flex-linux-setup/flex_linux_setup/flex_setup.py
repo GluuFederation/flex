@@ -476,13 +476,13 @@ class flex_installer(JettyInstaller):
         print("jansAuthInstaller.web_app_xml_fn:", jansAuthInstaller.web_app_xml_fn)
         jans_auth_web_app_xml = jansAuthInstaller.readFile(jansAuthInstaller.web_app_xml_fn)
 
-        if not os.path.basename(self.twillo_fn) in jans_auth_web_app_xml:
+        if os.path.basename(self.twillo_fn) not in jans_auth_web_app_xml:
             print("Adding twillo to jans-auth")
             self.copyFile(self.twillo_fn, self.jans_auth_custom_lib_dir)
             twillo_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn))
             jansAuthInstaller.add_extra_class(twillo_config_class_path)
 
-        if not os.path.basename(self.fido2_client_jar_fn) in jans_auth_web_app_xml:
+        if os.path.basename(self.fido2_client_jar_fn) not in jans_auth_web_app_xml:
             print("Adding Fido2 Client lib to jans-auth")
             self.copyFile(self.fido2_client_jar_fn, self.jans_auth_custom_lib_dir)
             fido2_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.fido2_client_jar_fn))
