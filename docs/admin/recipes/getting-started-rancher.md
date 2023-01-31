@@ -44,7 +44,7 @@ This document is intended for DevOps engineers, site reliability engineers (SREs
 
 In addition to the core services listed in the Introduction above, the SUSE Rancher deployment includes the following components:
 
-- `PostgreSQL`: SQL database dialect used to store configuration, people clients, sessions and other data needed for Gluu Flex operation.
+- `MySQL`: SQL database dialect used to store configuration, people clients, sessions and other data needed for `Gluu Flex` operation.
 - `Cert Manager`: Used for managing X.509 certificates and crypto keys lifecycle in Janssen Server.
 - `Key Rotation`: A cronjob that implements `Cert Manager` to rotate the auth keys
 - `Configuration job`: This job loads (generate/restore) and dumps (backup) the configuration and secrets.
@@ -154,68 +154,100 @@ kubectl get secret cn -o json -n <namespace>
 
 **Summary of steps**:
 
-1. Install PostgreSQL:
+1. Install MYSQL:
 
-    To install a quick setup with `PostgreSQL` as the backend, you need to either provide the connection parameters of a fresh setup or follow the below instructions for a test setup :
+    To install a quick setup with `MySQL` as the backend, you need to provide the connection parameters of a fresh setup. 
+    For a test setup, you can follow the below instructions:
 
-    - `Apps & Marketplace` --> `Charts` and search for `postgres`.
-    - Click on `Install` on the right side of the window.
-    - Choose a new namespace called `postgres` and hit `Next`. followed by `Install` at the bottom right of the page.
-    - You should be on the `Values` page. Modify the below keys to your choices. The values will be inputted in a the installation of Gluu Flex.:
-     
-| Key                               |
-|-----------------------------------|
-| `global.postgresql.auth.database` |
-| `global.postgresql.auth.username` |
-| `global.postgresql.auth.password` |
+    !!! Note
+        For `MySQL` installation using helm to work, a PV provisioner support must be present in the underlying infrastructure.
+
+    - Open a kubectl shell from the top right navigation menu `>_`. 
+    - Run:
+        ```
+        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm repo update
+        kubectl create ns gluu #Create gluu namespace
+        ```
+    - Pass in a custom password for the database. Here we used `Test1234#`. The admin user will be left as `root`. Notice we are installing in the `gluu` namespace. Run 
+
+        ```
+        helm install my-release --set auth.rootPassword=Test1234#,auth.database=jans bitnami/mysql -n gluu
+        ```
+    
+    After the installation is successful, you should have a MySQL `Statefulset` active in the rancher UI as shown in the screenshot below.
+
+    <img width="1504" alt="Screenshot 2022-07-05 at 14 54 26" src="https://user-images.githubusercontent.com/17182751/177326700-9215436c-f1c2-467f-94ff-601ff7fbdbfb.png">
 
 
-2. Install Gluu Flex:
+2. Install [Nginx-Ingress](https://github.com/kubernetes/ingress-nginx), if you are not using Istio ingress
+    
+    ```
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm repo add stable https://charts.helm.sh/stable
+    helm repo update
+    helm install nginx ingress-nginx/ingress-nginx
+    ```
 
-    - Once PostgreSQL is up and running. Head to the `Apps & Marketplace` --> `Charts` and search for `Gluu`
+    To get the Loadbalancer IP: 
+    ```
+    kubectl get svc nginx-ingress-nginx-controller --output jsonpath='{.status.loadBalancer.ingress[0].ip}'
+    ```
+
+3. Install Gluu Flex:
+
+    - Head to `Apps` --> `Charts` and search for `Gluu`
     - Click on `Install` on the right side of the window. 
-    - Change the namespace from `default` to `gluu`, then click on `Next`.     
+    - Change the namespace from `default` to `gluu`, then click on `Next`.
     - Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.
-    - From the default open tab `Edit Options`, click on the `Persistence` section and update the information accordingly.
-    - For example, if you installed the test PostgreSQL make sure to update  `SQL database host uri` to `postgresql.postgres.svc.cluster.local`, `SQL database username` to username you entered during installing PostgreSQL, `SQL password` and `SQL database name` to the password and database name chosen.
-    - Click on the  section named ` Configuration` and make syre to pass the information correctly such as your `FQDN` that is intended to serve the Gluu Flex IDP.
-    - Click on the  section named `NGINX` and enable all the endpoints.
-    - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes. 
-    - You may also customize the settings for the Flex installation. Specifically through the `Optional Services` section where you can enable different services like ClientApi and Jackrabbit. You also configure the domain/fqdn of the installation from the `Configuration` section.
-    - Click on `Install` on the bottom right of the window
+    - From the default opened tab `Edit Options`, click on the `Persistence` section.
+    - Change `SQL database host uri` to `my-release-mysql.gluu.svc.cluster.local`, `SQL database username` to `root` and `SQL password` to the password you chose when you installed MySql. For us that would be `Test1234#`.
+    - To pass your `FQDN` or `Domain` that is intended to serve the Gluu Flex IDP, head to the `Configuration` section:
+        1.  Add your `FQDN` and check the box `Is the FQDN globally resolvable`.
+        2.  Click on the `Edit YAML` tab and add your `FQDN` to `nginx-ingress.ingress.hosts` and `nginx-ingress.ingress.tls.hosts`.
+    - Click on the  section named `NGINX` and enable all the endpoints. You might add LB IP or address if you don't have `FQDN` for `Gluu`. 
+    - To enable Casa and the Admin UI, navigate to the `Optional Services` section and check the `Enable casa` and `boolean flag to enable admin UI` boxes. You can also enable different services like `Client API` and `Jackrabbit`. 
+    - Click on `Install` on the bottom right of the window.
 
-NOTE: To enable `Casa` and `Admin Ui` after having deployed the first time, go to the SUSE Rancher Dashboard -> Apps -> Installed Apps -> gluu -> Click on the 3 dots on the right, Upgrade -> Optional Services and check the `Enable casa` and `boolean flag to enable admin UI` boxes and click Update.
+    !!! NOTE
+        You can upgrade your installation after the deployment. To do that, go to the SUSE Rancher Dashboard -> Apps -> Installed Apps -> gluu -> Click on the 3 dots on the right -> Upgrade -> Make your changes -> Click Update.
 
-The running deployment and services of different Gluu Flex components like `casa`, `admin ui`, `scim`, `auth server`, etc can be viewed by navigating through the SUSE Rancher. Go to workloads and see the running pods, Go under service discovery and checkout the ingresses and services. All should be in a healthy and running state like in the screenshot shown below.
+The running deployment and services of different Gluu Flex components like `casa`, `admin-ui`, `scim`, `auth-server`, etc can be viewed by navigating through the SUSE Rancher. Go to `Workloads` and see the running pods. Go under `Service Discovery` and checkout the `Ingresses` and `Services`. All deployed components should be in a healthy and running state like in the screenshot shown below.
 
 <img width="1488" alt="Screenshot 2022-07-05 at 11 53 06" src="https://user-images.githubusercontent.com/17182751/177325882-e2819b8d-b2cb-4be2-8c4c-d90815d02093.png">
 
 #### Connecting to the Setup
-In the event you used microk8s or your fqdn is not registed the below steps will help with connecting to your setup.
+
+!!! NOTE 
+    You can skip this section if you have a globally resolvable `FQDN`.
+
+In the event you used microk8s or your fqdn is not registered, the below steps will help with connecting to your setup.
 
 1. To access the setup from a browser or another VM, we need to change the ingress class annotation from `kubernetes.io/ingress.class: nginx` to `kubernetes.io/ingress.class: public` e.g., for the specific component you want to access publicly in the browser;
     - Navigate through the SUSE Rancher UI to `Service Discovery` -> `Ingresses`
-    - Choose the name of the ingress for a component that points to a certain target / url e.g `gluu-nginx-ingress-fido2-configuration` for fido 
+    - Choose the `ingress` for the targeted component. For example `gluu-nginx-ingress-auth-server` for `auth-server` 
     - Click on the three dots in the top right corner 
     - Click on `Edit Yaml `
-    - On line 6, change the `kubernetes.io/ingress.class` annotation value from `nginx` to `public`
-    - Click `Save`.
+    - On line 8, change the `kubernetes.io/ingress.class` annotation value from `nginx` to `public`
+    - Click `Save`
 
     <img width="1508" alt="Screenshot 2022-07-05 at 11 54 17" src="https://user-images.githubusercontent.com/17182751/177326471-49bb4f33-d0c4-4202-b84a-3dd2514cff65.png">
 
-2. The IP of the SUSE VM needs to get mapped inside `/etc/hosts` with the domain chosen for `gluu flex`. If the domain you used in the setup is demoexample.gluu.org:
+2. The `LoadBalancer IP` needs to get mapped inside `/etc/hosts` with the domain chosen for `gluu flex`. If the domain you used in the setup is demoexample.gluu.org:
 
-```
-3.65.27.95 demoexample.gluu.org
-```
+    ```
+    3.65.27.95 demoexample.gluu.org
+    ```
+
+3. You can do the same edit for every each component you want to access publicly from the browser.
 
 #### Testing Configuration endpoints
 
-3. Try accessing some Gluu Flex endpoints like `https://demoexample.gluu.org/.well-known/openid-configuration` in the browser and you'll get back a JSON response;
+1. Try accessing some Gluu Flex endpoints like `https://demoexample.gluu.org/.well-known/openid-configuration` in the browser and you'll get back a JSON response;
 
-<img width="1508" alt="Screenshot 2022-07-17 at 02 27 17" src="https://user-images.githubusercontent.com/17182751/179374985-479aff51-85bb-4f13-bf23-bb31047a50d3.png">
+    <img width="1508" alt="Screenshot 2022-07-17 at 02 27 17" src="https://user-images.githubusercontent.com/17182751/179374985-479aff51-85bb-4f13-bf23-bb31047a50d3.png">
 
-4. Note that you can also access those endpoints via curl command, E.g.
+2.  Note that you can also access those endpoints via curl command, E.g.
 
     ```
     curl -k https://demoexample.gluu.org/.well-known/openid-configuration
@@ -225,7 +257,7 @@ In the event you used microk8s or your fqdn is not registed the below steps will
 
     `{"version":"1.1","issuer":"https://demoexample.gluu.org","attestation":{"base_path":"https://demoexample.gluu.org/jans-fido2/restv1/attestation","options_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/attestation/options","result_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/attestation/result"},"assertion":{"base_path":"https://demoexample.gluu.org/jans-fido2/restv1/assertion","options_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/assertion/options","result_enpoint":"https://demoexample.gluu.org/jans-fido2/restv1/assertion/result"}}`
 
-5. You can do the same for every ingress of each component that you want to access publicly from the browser.
+
 
 #### Testing Admin UI
 
