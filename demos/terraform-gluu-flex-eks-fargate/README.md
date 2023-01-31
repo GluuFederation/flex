@@ -40,3 +40,4 @@ The module currently has an issue with the Fargate provisioner. The provisioner 
 kubectl patch deployment coredns -n kube-system --type=json -p='[{"op": "remove", "path": "/spec/template/metadata/annotations", "value": "eks.amazonaws.com/compute-type"}]'
 kubectl rollout restart -n kube-system deployment coredns
 ```
+
