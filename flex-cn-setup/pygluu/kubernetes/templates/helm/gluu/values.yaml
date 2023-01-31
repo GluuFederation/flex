@@ -449,15 +449,11 @@ config:
     # [google_spanner_envs] END
     # [google_secret_manager_envs] Envs related to using Google Secret Manager to store config and secret layer
     # -- Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
-    cnSecretGoogleSecretVersionId: "latest"
+    cnGoogleSecretVersionId: "latest"
     # -- Prefix for Gluu secret in Google Secret Manager. Defaults to gluu. If left gluu-secret secret will be created. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
-    cnSecretGoogleSecretNamePrefix: gluu
+    cnGoogleSecretNamePrefix: gluu
     # -- Passphrase for Gluu secret in Google Secret Manager. This is used for encrypting and decrypting data from the Google Secret Manager. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
     cnGoogleSecretManagerPassPhrase: Test1234#
-    # -- Secret version to be used for configuration. Defaults to latest and should normally always stay that way. Used only when global.configAdapterName and global.configSecretAdapter is set to google. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
-    cnConfigGoogleSecretVersionId: "latest"
-    # -- Prefix for Gluu configuration secret in Google Secret Manager. Defaults to gluu. If left intact gluu-configuration secret will be created. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
-    cnConfigGoogleSecretNamePrefix: gluu
     # [google_secret_manager_envs] END
     # [google_envs] END
     # [aws_envs] Envs related to using AWS
