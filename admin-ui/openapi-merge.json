@@ -1,7 +1,7 @@
 {
     "inputs": [
       {
-        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/docs/jans-config-api-swagger-auto.yaml"
+        "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/docs/jans-config-api-swagger.yaml"
       },
       {
         "inputURL": "https://raw.githubusercontent.com/JanssenProject/jans/main/jans-config-api/plugins/docs/jans-admin-ui-plugin-swagger.yaml"
