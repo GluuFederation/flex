@@ -164,6 +164,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                             logger.error("Latest changes to custom scripts were not picked");
                         }
                         break;
+                    case DB:
                     case LDAP:
                         long rev = Optional.ofNullable(script.getRevision()).map(r -> r == Long.MAX_VALUE ? 0 : r).orElse(0L);
                         script.setRevision(rev + 1);
