@@ -244,6 +244,7 @@ COPY --chown=1000:0 jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 # adjust ownership
 RUN chmod -R g=u ${JETTY_BASE}/casa/static \
     && chmod -R g=u ${JETTY_BASE}/casa/plugins \
+    && chown -R 1000:0 ${JETTY_BASE}/casa/resources \
     && chmod 664 ${JETTY_BASE}/casa/resources/log4j2.xml \
     && chmod -R g=u ${JETTY_BASE}/casa/logs \
     && chmod -R g=u /etc/certs \
