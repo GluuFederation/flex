@@ -158,6 +158,9 @@
                             <annotationProcessor>
                                 io.jans.doc.annotation.DocFeatureFlagProcessor
                             </annotationProcessor>
+                            <annotationProcessor>
+                                org.pf4j.processor.ExtensionAnnotationProcessor
+                            </annotationProcessor>
                         </annotationProcessors>
                         <compilerArgument>-Amodule=Casa</compilerArgument>
                         <forceJavacCompilerUse>true</forceJavacCompilerUse>
