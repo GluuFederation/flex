@@ -22,7 +22,7 @@
         <weld.version>4.0.3.Final</weld.version>
         <pf4j.version>3.8.0</pf4j.version>
         <casa.version>5.0.0-SNAPSHOT</casa.version>
-        <jans.version>1.0.6-SNAPSHOT</jans.version>
+        <jans.version>1.0.7-SNAPSHOT</jans.version>
         <log4j.version>2.19.0</log4j.version>
         <jackson.version>2.14.1</jackson.version>
         <zk.version>9.6.0.2-jakarta</zk.version>
