@@ -221,6 +221,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                 case FILE:
                     bytes = Files.readAllBytes(Paths.get(moduleProperties.get(LOCATION_PATH_PROPERTY)));
                     break;
+                case DB:
                 case LDAP:
                     bytes = script.getScript().getBytes(StandardCharsets.UTF_8);
                     break;
