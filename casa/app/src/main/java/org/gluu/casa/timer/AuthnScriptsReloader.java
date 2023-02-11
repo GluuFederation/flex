@@ -248,6 +248,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                 case FILE:
                     fingerPrint = Paths.get(moduleProperties.get(LOCATION_PATH_PROPERTY)).toFile().lastModified();
                     break;
+                case DB:
                 case LDAP:
                     fingerPrint = script.getRevision();
                     break;
