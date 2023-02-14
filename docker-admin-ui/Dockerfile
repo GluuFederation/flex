@@ -34,7 +34,7 @@ RUN cd /opt/flex/admin-ui && npm rebuild node-sass
 # Application
 # ===========
 
-FROM node:fermium-alpine3.16
+FROM node:14-alpine3.16
 
 # ======
 # alpine
