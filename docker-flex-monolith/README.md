@@ -29,10 +29,10 @@ The following environment variables are supported by the container:
 | `CN_INSTALL_FIDO2`      | Installs the FIDO2 API service.                   | `true`                                           |
 | `CN_INSTALL_CASA`       | Installs the Casa service.                        | `true`                                           |
 | `CN_INSTALL_ADMIN_UI`   | Installs the Admin UI service.                    | `true`                                           |
-| `MYSQL_DATABASE`        | MySQL gluu flex database.                         | `gluu`                                           |
-| `MYSQL_USER`            | MySQL database user.                              | `gluu`                                           |
-| `MYSQL_PASSWORD`        | MySQL database user password.                     | `1t5Fin3#security`                               |
-| `MYSQL_HOST`            | MySQL host.                                       | `mysql` which is the docker compose service name |
+| `RDBMS_DATABASE`        | MySQL gluu flex database.                         | `gluu`                                           |
+| `RDBMS_USER`            | MySQL database user.                              | `gluu`                                           |
+| `RDBMS_PASSWORD`        | MySQL database user password.                     | `1t5Fin3#security`                               |
+| `RDBMS_HOST`            | MySQL host.                                       | `mysql` which is the docker compose service name |
 
 
 ## Pre-requisites

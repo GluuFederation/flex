@@ -1,28 +1,26 @@
 version: "3.7"
 services:
-  mysql:
-    image: mysql:8.0.30
-    command: "--default-authentication-plugin=mysql_native_password"
+  pgsql:
+    image: postgres:15.1
     restart: always
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - ./db-data:/var/lib/mysql
+      - db-data:/var/lib/postgresql/data/
     networks:
       - cloud_bridge
     environment:
-      - RDBMS_DATABASE=gluu
-      - RDBMS_USER=gluu
-      - RDBMS_PASSWORD=1t5Fin3#security
-      - MYSQL_ROOT_PASSWORD=1t5Fin3#security
-  flex:
+      POSTGRES_USER: jans
+      POSTGRES_PASSWORD: 1t5Fin3#security
+      POSTGRES_DB: jans
+  jans:
     image: gluufederation/monolith:5.0.0_dev
     restart: always
     ports:
       - "443:443"
       - "80:80"
     depends_on:
-      - mysql
+      - pgsql
     networks:
       - cloud_bridge
     environment:
@@ -33,7 +31,7 @@ services:
       - CN_CITY=Austin
       - CN_STATE=TX
       - CN_COUNTRY=US
-      - CN_INSTALL_MYSQL=true
+      - CN_INSTALL_PGSQL=true
       - IS_FQDN_REGISTERED=false
       - CN_INSTALL_CONFIG_API=true
       - CN_INSTALL_SCIM=true
@@ -43,16 +41,15 @@ services:
       - TEST_CLIENT_ID=9876baac-de39-4c23-8a78-674b59df8c09
       - TEST_CLIENT_TRUSTED=true
       - TEST_CLIENT_SECRET=1t5Fin3#security
-      - RDBMS_DATABASE=gluu
-      - RDBMS_USER=gluu
+      - RDBMS_DATABASE=jans
+      - RDBMS_USER=jans
       - RDBMS_PASSWORD=1t5Fin3#security
-      - RDBMS_HOST=mysql
+      - RDBMS_HOST=pgsql
     volumes:
       - ./jans-auth-custom:/opt/jans/jetty/jans-auth/custom
       - ./jans-config-api-custom:/opt/jans/jetty/jans-config-api/custom
       - ./jans-fido2-custom:/opt/jans/jetty/jans-fido2/custom
       - ./jans-scim-custom:/opt/jans/jetty/jans-scim/custom
-      - ./flex-casa:/opt/jans/jetty/casa/custom
 volumes:
   db-data:
 networks:

@@ -62,17 +62,23 @@ ENV CN_HOSTNAME="demoexample.gluu.org" \
     CN_CITY="Austin" \
     CN_STATE="TX" \
     CN_COUNTRY="US" \
+    TEST_CLIENT_ID="9876baac-de39-4c23-8a78-674b59df8c09" \
+    TEST_CLIENT_SECRET="" \
+    TEST_CLIENT_TRUSTED="true" \
     IS_FQDN_REGISTERED="false" \
     # Install with local mysql by default
-    INSTALL_LDAP="false" \
+    CN_INSTALL_LDAP="false" \
+    CN_INSTALL_MYSQL="false" \
+    CN_INSTALL_PGSQL="false" \
     CN_INSTALL_CONFIG_API="true" \
     CN_INSTALL_SCIM="true" \
     CN_INSTALL_FIDO2="true" \
     CN_INSTALL_CASA="true" \
     CN_INSTALL_ADMIN_UI="true" \
-    MYSQL_DATABASE="gluu" \
-    MYSQL_USER="gluu" \
-    MYSQL_PASSWORD=""
+    RDBMS_DATABASE="gluu" \
+    RDBMS_USER="gluu" \
+    RDBMS_PASSWORD="" \
+    RDBMS_HOST=""
 
 # ==========
 # misc stuff
