@@ -10,9 +10,9 @@ services:
     networks:
       - cloud_bridge
     environment:
-      POSTGRES_USER: jans
+      POSTGRES_USER: gluu
       POSTGRES_PASSWORD: 1t5Fin3#security
-      POSTGRES_DB: jans
+      POSTGRES_DB: gluu
   flex:
     image: gluufederation/monolith:5.0.0_dev
     restart: always

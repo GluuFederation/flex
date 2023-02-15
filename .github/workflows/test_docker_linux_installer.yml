@@ -38,6 +38,17 @@ jobs:
         ip=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
         sudo chmod u+x automation/startflexmonolithdemo.sh
         sudo bash ./automation/startflexmonolithdemo.sh demoexample.gluu.org ${{ matrix.persistence-backends }} $ip ${{ github.sha }}
+        
+        echo "echo setup.properties"
+        docker exec docker-flex-monolith-flex-1 cat setup.properties
+        echo "echo setup.properties.last"
+        docker exec docker-flex-monolith-flex-1 cat /opt/jans/jans-setup/setup.properties.last
+        if [[ ${{ matrix.persistence-backends }} == "MYSQL" ]]; then
+          docker exec docker-flex-monolith-mysql-1 mysql -u gluu -p1t5Fin3#security -D gluu -e "SELECT * FROM `jansClnt`"
+        elif [[ ${{ matrix.persistence-backends }} == "PGSQL" ]]; then
+          docker exec docker-flex-monolith-pgsql-1 PGPASSWORD=1t5Fin3#security psql -U gluu -d gluu -c "select * from jansClnt"
+        fi
+        
         export JANS_URL=https://demoexample.gluu.org
         export JANS_CLIENT_ID=9876baac-de39-4c23-8a78-674b59df8c09
         export JANS_CLIENT_SECRET=1t5Fin3#security
