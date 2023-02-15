@@ -36,7 +36,7 @@ jobs:
     - name: Test Flex monolith demo
       run: |
         ip=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
-        sudo chmod u+x automation/startjanssenmonolithdemo.sh
+        sudo chmod u+x automation/startflexmonolithdemo.sh
         sudo bash ./automation/startflexmonolithdemo.sh demoexample.gluu.org ${{ matrix.persistence-backends }} $ip ${{ github.sha }}
         export JANS_URL=https://demoexample.gluu.org
         export JANS_CLIENT_ID=9876baac-de39-4c23-8a78-674b59df8c09
