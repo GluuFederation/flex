@@ -1,36 +1,50 @@
-# Based on oxAuth SuperGluuExternalAuthenticator.py
+# Janssen Project software is available under the Apache 2.0 License (2004). See http://www.apache.org/licenses/ for full text.
+# Copyright (c) 2020, Janssen Project
+#
+# Author: Yuriy Movchan
+#
 
 from com.google.android.gcm.server import Sender, Message
-from com.notnoop.apns import APNS
-
+from java.util import Arrays
+from org.apache.http.params import CoreConnectionPNames
 from io.jans.service.cdi.util import CdiUtil
 from io.jans.as.server.security import Identity
 from io.jans.model.custom.script.type.auth import PersonAuthenticationType
 from io.jans.as.server.model.config import ConfigurationFactory
 from io.jans.as.server.service import AuthenticationService
-from io.jans.as.server.service import UserService
 from io.jans.as.server.service import SessionIdService
-from io.jans.as.common.service.common import EncryptionService
-from io.jans.as.server.service.fido.u2f import DeviceRegistrationService
+from io.jans.as.common.service.common.fido2 import RegistrationPersistenceService
 from io.jans.as.server.service.net import HttpService
 from io.jans.as.server.util import ServerUtil
 from io.jans.util import StringHelper
+from io.jans.as.common.service.common import EncryptionService
+from io.jans.as.server.service import UserService
 from io.jans.service import MailService
 from io.jans.as.server.service.push.sns import PushPlatform
 from io.jans.as.server.service.push.sns import PushSnsService
 from io.jans.notify.client import NotifyClientFactory
-
 from java.util import Arrays, HashMap, IdentityHashMap, Date
 from java.time import ZonedDateTime
 from java.time.format import DateTimeFormatter
-
-from org.apache.http.params import CoreConnectionPNames
+from io.jans.as.model.configuration import AppConfiguration
+import datetime
+import urllib
+import sys
+import json
 
 import datetime
 import urllib
 
 import sys
 import json
+
+try:
+    from com.notnoop.apns import APNS
+    has_apns = True
+except ImportError:
+    print "Super-Gluu. Load. Native APNS will be disabled. There are missing libs needed to enable it"
+    has_apns = False
+
 
 class PersonAuthentication(PersonAuthenticationType):
     def __init__(self, currentTimeMillis):
@@ -123,7 +137,7 @@ class PersonAuthentication(PersonAuthenticationType):
     def getApiVersion(self):
         return 11
 
-    def getAuthenticationMethodClaims(self, configurationAttributes):
+    def getAuthenticationMethodClaims(self, requestParameters):
         return None
 
     def isValidAuthenticationMethod(self, usageType, configurationAttributes):
@@ -162,13 +176,12 @@ class PersonAuthentication(PersonAuthenticationType):
                     return False
 
         userService = CdiUtil.bean(UserService)
-        deviceRegistrationService = CdiUtil.bean(DeviceRegistrationService)
+        registrationPersistenceService = CdiUtil.bean(RegistrationPersistenceService)
         if step == 1:
             print "Super-Gluu. Authenticate for step 1"
 
             user_name = credentials.getUsername()
             if self.oneStep:
-                #This branch will never be taken
                 session_device_status = self.getSessionDeviceStatus(session_attributes, user_name)
                 if session_device_status == None:
                     return False
@@ -193,11 +206,13 @@ class PersonAuthentication(PersonAuthenticationType):
 
                 user_inum = session_device_status['user_inum']
 
-                u2f_device = deviceRegistrationService.findUserDeviceRegistration(user_inum, u2f_device_id, "oxId")
+                u2f_device = registrationPersistenceService.findRegisteredUserDevice(user_inum, u2f_device_id, "jansId")
                 if u2f_device == None:
                     print "Super-Gluu. Authenticate for step 1. Failed to load u2f_device '%s'" % u2f_device_id
                     return False
 
+                found = userService.getUserByInum(user_inum)
+                user_name = found.getUserId()
                 logged_in = authenticationService.authenticate(user_name)
                 if not logged_in:
                     print "Super-Gluu. Authenticate for step 1. Failed to authenticate user '%s'" % user_name
@@ -233,8 +248,7 @@ class PersonAuthentication(PersonAuthenticationType):
                     auth_method = 'enroll'
 
                 if auth_method == 'authenticate':
-                    user_inum = userService.getUserInum(authenticated_user)
-                    u2f_devices_list = deviceRegistrationService.findUserDeviceRegistrations(user_inum, client_redirect_uri, "jansId")
+                    u2f_devices_list = registrationPersistenceService.findByRpRegisteredUserDevices(authenticated_user.getUserId(), client_redirect_uri, "jansId")
                     if u2f_devices_list.size() == 0:
                         auth_method = 'enroll'
                         print "Super-Gluu. Authenticate for step 1. There is no U2F '%s' user devices associated with application '%s'. Changing auth_method to '%s'" % (user_name, client_redirect_uri, auth_method)
@@ -248,46 +262,59 @@ class PersonAuthentication(PersonAuthenticationType):
             return False
         elif step == 2:
             print "Super-Gluu. Authenticate for step 2"
-
-            user = authenticationService.getAuthenticatedUser()
-            if (user == None):
-                print "Super-Gluu. Authenticate for step 2. Failed to determine user name"
-                return False
-            user_name = user.getUserId()
-
             session_attributes = identity.getSessionId().getSessionAttributes()
 
-            session_device_status = self.getSessionDeviceStatus(session_attributes, user_name)
-            if session_device_status == None:
-                return False
-
-            u2f_device_id = session_device_status['device_id']
-
             # There are two steps only in enrollment mode
-            if self.oneStep and session_device_status['enroll']:
+            if self.oneStep :
                 authenticated_user = self.processBasicAuthentication(credentials)
                 if authenticated_user == None:
                     return False
 
                 user_inum = userService.getUserInum(authenticated_user)
+                session_device_status = self.getSessionDeviceStatus(session_attributes, user_inum)
 
-                attach_result = deviceRegistrationService.attachUserDeviceRegistration(user_inum, u2f_device_id)
+                if session_device_status['enroll']:
+                    if session_device_status == None:
+                        print "Super-Gluu. oneStep, authenticate for step2, session_device_status is false"
+                        return False
 
-                print "Super-Gluu. Authenticate for step 2. Result after attaching u2f_device '%s' to user '%s': '%s'" % (u2f_device_id, user_name, attach_result)
+                    u2f_device_dn = session_device_status['device_dn']
+                    device_id = session_device_status['device_id']
 
-                return attach_result
+                    attach_result = registrationPersistenceService.attachDeviceRegistrationToUser(user_inum, u2f_device_dn)
+
+                    print "Super-Gluu. Authenticate for step 2. Result after attaching u2f_device '%s' to user '%s': '%s'" % (device_id, user_inum, attach_result)
+
+                    return attach_result
+                else:
+                    print "Super-Gluu. one_step but  session_device_status['enroll'] = false"
+                    return False
             elif self.twoStep:
-                if user_name == None:
+                user = authenticationService.getAuthenticatedUser()
+                if (user == None):
                     print "Super-Gluu. Authenticate for step 2. Failed to determine user name"
                     return False
+
+                user_name = user.getUserId()
+                if user_name == None:
+                    print "Super-Gluu. Authenticate for step 2. Failed to determine user id"
+                    return False
+
+                session_device_status = self.getSessionDeviceStatus(session_attributes, user_name)
+                if session_device_status == None:
+                    print "Super-Gluu. twoStep, authenticate for step2, session_device_status is false"
+                    return False
+
+                u2f_device_id = session_device_status['device_id']
 
                 validation_result = self.validateSessionDeviceStatus(client_redirect_uri, session_device_status, user_name)
                 if validation_result:
                     print "Super-Gluu. Authenticate for step 2. User '%s' successfully authenticated with u2f_device '%s'" % (user_name, u2f_device_id)
                 else:
                     return False
-
                 super_gluu_request = json.loads(session_device_status['super_gluu_request'])
+                print "super_gluu_request %s " % super_gluu_request
+
                 auth_method = super_gluu_request['method']
                 if auth_method in ['enroll', 'authenticate']:
                     if validation_result and self.use_audit_group:
@@ -311,22 +338,20 @@ class PersonAuthentication(PersonAuthenticationType):
             print "Super-Gluu. Prepare for step. redirect_uri is not set"
             return False
 
-        #This call is harmless with respect to Casa restrictions
         self.setRequestScopedParameters(identity, step)
 
         if step == 1:
             print "Super-Gluu. Prepare for step 1"
             if self.oneStep:
-                #This branch will never be taken (see note in getExtraParametersForStep)
-                session_id = CdiUtil.bean(SessionIdService).getSessionId()
-                if session_id == None:
+                session = CdiUtil.bean(SessionIdService).getSessionId()
+                if session == None:
                     print "Super-Gluu. Prepare for step 2. Failed to determine session_id"
                     return False
+                issuer = CdiUtil.bean(AppConfiguration).getIssuer()
 
-                issuer = CdiUtil.bean(ConfigurationFactory).getConfiguration().getIssuer()
                 super_gluu_request_dictionary = {'app': client_redirect_uri,
                                    'issuer': issuer,
-                                   'state': session_id,
+                                   'state': session.getId(),
                                    'created': DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now().withNano(0))}
 
                 self.addGeolocationData(session_attributes, super_gluu_request_dictionary)
@@ -356,8 +381,8 @@ class PersonAuthentication(PersonAuthenticationType):
                    print "Super-Gluu. Prepare for step 2. Request was generated already"
                    return True
 
-            session_id = CdiUtil.bean(SessionIdService).getSessionId()
-            if session_id == None:
+            session = CdiUtil.bean(SessionIdService).getSessionId()
+            if session == None:
                 print "Super-Gluu. Prepare for step 2. Failed to determine session_id"
                 return False
 
@@ -368,12 +393,12 @@ class PersonAuthentication(PersonAuthenticationType):
 
             print "Super-Gluu. Prepare for step 2. auth_method: '%s'" % auth_method
 
-            issuer = CdiUtil.bean(ConfigurationFactory).getAppConfiguration().getIssuer()
+            issuer = CdiUtil.bean(AppConfiguration).getIssuer()
             super_gluu_request_dictionary = {'username': user.getUserId(),
                                'app': client_redirect_uri,
                                'issuer': issuer,
                                'method': auth_method,
-                               'state': session_id,
+                               'state': session.getId(),
                                'created': DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now().withNano(0))}
 
             self.addGeolocationData(session_attributes, super_gluu_request_dictionary)
@@ -407,9 +432,6 @@ class PersonAuthentication(PersonAuthenticationType):
         return -1
 
     def getExtraParametersForStep(self, configurationAttributes, step):
-        #This violates Casa restriction. However, self.oneStep and self.twoStep have to be False/True
-        #respectively as in this scenario only 2 or more steps make sense to call an external script dynamically.
-        #Parameter "display_register_action" used in default login.xhtml page of Gluu Server will not be set
         if step == 1:
             if self.oneStep:
                 return Arrays.asList("super_gluu_request")
@@ -446,33 +468,43 @@ class PersonAuthentication(PersonAuthenticationType):
 
         return ""
 
+    def getLogoutExternalUrl(self, configurationAttributes, requestParameters):
+        print "Get external logout URL call"
+        return None
+
     def logout(self, configurationAttributes, requestParameters):
         return True
 
     def processBasicAuthentication(self, credentials):
         authenticationService = CdiUtil.bean(AuthenticationService)
 
-        # Modified for Casa compliance
-        user = authenticationService.getAuthenticatedUser()
-        if user == None:
-            user_name = credentials.getUsername()
-            user_password = credentials.getPassword()
+        user_name = credentials.getUsername()
+        user_password = credentials.getPassword()
 
-            if StringHelper.isNotEmptyString(user_name) and StringHelper.isNotEmptyString(user_password):
-                authenticationService.authenticate(user_name, user_password)
-                user = authenticationService.getAuthenticatedUser()
+        logged_in = False
+        if StringHelper.isNotEmptyString(user_name) and StringHelper.isNotEmptyString(user_password):
+            logged_in = authenticationService.authenticate(user_name, user_password)
 
-        return user
+        if not logged_in:
+            return None
 
-    def validateSessionDeviceStatus(self, client_redirect_uri, session_device_status, user_name = None):
+        find_user_by_uid = authenticationService.getAuthenticatedUser()
+        if find_user_by_uid == None:
+            print "Super-Gluu. Process basic authentication. Failed to find user '%s'" % user_name
+            return None
+
+        return find_user_by_uid
+
+    def validateSessionDeviceStatus(self, application_name, session_device_status, user_name = None):
         userService = CdiUtil.bean(UserService)
-        deviceRegistrationService = CdiUtil.bean(DeviceRegistrationService)
+        registrationPersistenceService = CdiUtil.bean(RegistrationPersistenceService)
 
         u2f_device_id = session_device_status['device_id']
+        u2f_device_dn = session_device_status['device_dn']
 
         u2f_device = None
         if session_device_status['enroll'] and session_device_status['one_step']:
-            u2f_device = deviceRegistrationService.findOneStepUserDeviceRegistration(u2f_device_id)
+            u2f_device = registrationPersistenceService.findOneStepUserDeviceRegistration(u2f_device_dn)
             if u2f_device == None:
                 print "Super-Gluu. Validate session device status. There is no one step u2f_device '%s'" % u2f_device_id
                 return False
@@ -483,13 +515,13 @@ class PersonAuthentication(PersonAuthenticationType):
             if session_device_status['one_step']:
                 user_inum = session_device_status['user_inum']
 
-            u2f_device = deviceRegistrationService.findUserDeviceRegistration(user_inum, u2f_device_id)
+            u2f_device = registrationPersistenceService.findRegisteredUserDevice(user_inum, u2f_device_id)
             if u2f_device == None:
                 print "Super-Gluu. Validate session device status. There is no u2f_device '%s' associated with user '%s'" % (u2f_device_id, user_inum)
                 return False
 
-        if not StringHelper.equalsIgnoreCase(client_redirect_uri, u2f_device.application):
-            print "Super-Gluu. Validate session device status. u2f_device '%s' associated with other application '%s'" % (u2f_device_id, u2f_device.application)
+        if not StringHelper.equalsIgnoreCase(application_name, u2f_device.rpId):
+            print "Super-Gluu. Validate session device status. u2f_device '%s' associated with other application '%s'" % (u2f_device_id, u2f_device.rpId)
             return False
 
         return True
@@ -512,28 +544,34 @@ class PersonAuthentication(PersonAuthenticationType):
             return None
 
         # Try to find device_id in session attribute
-        if not session_attributes.containsKey("oxpush2_u2f_device_id"):
+        if not session_attributes.containsKey("super_gluu_u2f_device_id"):
+            print "Super-Gluu. Get session device status. There is no u2f_device associated with this request"
+            return None
+
+        # Try to find device_dn in session attribute
+        if not session_attributes.containsKey("super_gluu_u2f_device_dn"):
             print "Super-Gluu. Get session device status. There is no u2f_device associated with this request"
             return None
 
         # Try to find user_inum in session attribute
-        if not session_attributes.containsKey("oxpush2_u2f_device_user_inum"):
+        if not session_attributes.containsKey("super_gluu_u2f_device_user_inum"):
             print "Super-Gluu. Get session device status. There is no user_inum associated with this request"
             return None
 
         enroll = False
-        if session_attributes.containsKey("oxpush2_u2f_device_enroll"):
-            enroll = StringHelper.equalsIgnoreCase("true", session_attributes.get("oxpush2_u2f_device_enroll"))
+        if session_attributes.containsKey("super_gluu_u2f_device_enroll"):
+            enroll = StringHelper.equalsIgnoreCase("true", session_attributes.get("super_gluu_u2f_device_enroll"))
 
         one_step = False
-        if session_attributes.containsKey("oxpush2_u2f_device_one_step"):
-            one_step = StringHelper.equalsIgnoreCase("true", session_attributes.get("oxpush2_u2f_device_one_step"))
+        if session_attributes.containsKey("super_gluu_u2f_device_one_step"):
+            one_step = StringHelper.equalsIgnoreCase("true", session_attributes.get("super_gluu_u2f_device_one_step"))
 
         super_gluu_request = session_attributes.get("super_gluu_request")
-        u2f_device_id = session_attributes.get("oxpush2_u2f_device_id")
-        user_inum = session_attributes.get("oxpush2_u2f_device_user_inum")
+        u2f_device_dn = session_attributes.get("super_gluu_u2f_device_dn")
+        u2f_device_id = session_attributes.get("super_gluu_u2f_device_id")
+        user_inum = session_attributes.get("super_gluu_u2f_device_user_inum")
 
-        session_device_status = {"super_gluu_request": super_gluu_request, "device_id": u2f_device_id, "user_inum" : user_inum, "enroll" : enroll, "one_step" : one_step}
+        session_device_status = {"super_gluu_request": super_gluu_request, "device_id": u2f_device_id, "device_dn": u2f_device_dn, "user_inum" : user_inum, "enroll" : enroll, "one_step" : one_step}
         print "Super-Gluu. Get session device status. session_device_status: '%s'" % (session_device_status)
 
         return session_device_status
@@ -572,7 +610,7 @@ class PersonAuthentication(PersonAuthenticationType):
             self.pushAndroidService = Sender(android_creds["api_key"])
             print "Super-Gluu. Initialize native notification services. Created Android notification service"
 
-        if ios_creds["enabled"]:
+        if has_apns and ios_creds["enabled"]:
             p12_file_path = ios_creds["p12_file_path"]
             p12_password = ios_creds["p12_password"]
 
@@ -752,13 +790,13 @@ class PersonAuthentication(PersonAuthenticationType):
         send_notification_result = True
 
         userService = CdiUtil.bean(UserService)
-        deviceRegistrationService = CdiUtil.bean(DeviceRegistrationService)
+        registrationPersistenceService = CdiUtil.bean(RegistrationPersistenceService)
 
         user_inum = userService.getUserInum(user_name)
 
         send_android = 0
         send_ios = 0
-        u2f_devices_list = deviceRegistrationService.findUserDeviceRegistrations(user_inum, client_redirect_uri, "oxId", "oxDeviceData", "oxDeviceNotificationConf")
+        u2f_devices_list = registrationPersistenceService.findByRpRegisteredUserDevices(user_inum, client_redirect_uri, "jansId", "jansDeviceData", "jansDeviceNotificationConf")
         if u2f_devices_list.size() > 0:
             for u2f_device in u2f_devices_list:
                 device_data = u2f_device.getDeviceData()
@@ -783,7 +821,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
                         if self.pushSnsMode or self.pushGluuMode:
                             pushSnsService = CdiUtil.bean(PushSnsService)
-                            targetEndpointArn = self.getTargetEndpointArn(deviceRegistrationService, pushSnsService, PushPlatform.APNS, user, u2f_device)
+                            targetEndpointArn = self.getTargetEndpointArn(registrationPersistenceService, pushSnsService, PushPlatform.APNS, user, u2f_device)
                             if targetEndpointArn == None:
                                 return
 
@@ -836,7 +874,7 @@ class PersonAuthentication(PersonAuthenticationType):
                         title = "Super-Gluu"
                         if self.pushSnsMode or self.pushGluuMode:
                             pushSnsService = CdiUtil.bean(PushSnsService)
-                            targetEndpointArn = self.getTargetEndpointArn(deviceRegistrationService, pushSnsService, PushPlatform.GCM, user, u2f_device)
+                            targetEndpointArn = self.getTargetEndpointArn(registrationPersistenceService, pushSnsService, PushPlatform.GCM, user, u2f_device)
                             if targetEndpointArn == None:
                                 return
 
@@ -870,7 +908,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
         print "Super-Gluu. Send push notification. send_android: '%s', send_ios: '%s'" % (send_android, send_ios)
 
-    def getTargetEndpointArn(self, deviceRegistrationService, pushSnsService, platform, user, u2fDevice):
+    def getTargetEndpointArn(self, registrationPersistenceService, pushSnsService, platform, user, u2fDevice):
         targetEndpointArn = None
 
         # Return endpoint ARN if it created already
@@ -921,9 +959,9 @@ class PersonAuthentication(PersonAuthenticationType):
 
         # Store created endpoint ARN in device entry
         userInum = user.getAttribute("inum")
-        u2fDeviceUpdate = deviceRegistrationService.findUserDeviceRegistration(userInum, u2fDevice.getId())
+        u2fDeviceUpdate = registrationPersistenceService.findByRpRegisteredUserDevices(userInum, u2fDevice.getId())
         u2fDeviceUpdate.setDeviceNotificationConf('{"sns_endpoint_arn" : "%s"}' % targetEndpointArn)
-        deviceRegistrationService.updateDeviceRegistration(userInum, u2fDeviceUpdate)
+        registrationPersistenceService.update(u2fDeviceUpdate)
 
         return targetEndpointArn
 
@@ -950,7 +988,7 @@ class PersonAuthentication(PersonAuthenticationType):
         if self.customLabel != None:
             identity.setWorkingParameter("super_gluu_label", self.customLabel)
 
-        identity.setWorkingParameter("download_url",downloadMap)
+        identity.setWorkingParameter("download_url", downloadMap)
         identity.setWorkingParameter("super_gluu_qr_options", self.customQrOptions)
 
     def addGeolocationData(self, session_attributes, super_gluu_request_dictionary):
@@ -1035,19 +1073,6 @@ class PersonAuthentication(PersonAuthenticationType):
             body = "User log in: %s" % user_id
             mailService.sendMail(self.audit_email, subject, body)
 
-    # Added for Casa compliance
-
     def hasEnrollments(self, configurationAttributes, user):
-
-        inum = user.getAttribute("inum")
-        devRegService = CdiUtil.bean(DeviceRegistrationService)
-        app_id = configurationAttributes.get("application_id").getValue2()
-        userDevices = devRegService.findUserDeviceRegistrations(inum, app_id, "jansStatus")
-
-        hasDevices = False
-        for device in userDevices:
-            if device.getStatus().getValue() == "active":
-                hasDevices = True
-                break
-
-        return hasDevices
+        count = CdiUtil.bean(UserService).countFido2RegisteredDevices(user.getUserId(), self.applicationId)
+        return count > 0
