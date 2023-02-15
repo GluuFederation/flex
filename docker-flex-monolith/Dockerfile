@@ -57,7 +57,7 @@ COPY LICENSE /licenses/LICENSE
 
 ENV CN_HOSTNAME="demoexample.gluu.org" \
     CN_ADMIN_PASS="" \
-    CN_ORG_NAME="Janssen" \
+    CN_ORG_NAME="Gluu" \
     CN_EMAIL="support.gluu.org" \
     CN_CITY="Austin" \
     CN_STATE="TX" \

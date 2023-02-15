@@ -41,8 +41,8 @@ services:
       - TEST_CLIENT_ID=9876baac-de39-4c23-8a78-674b59df8c09
       - TEST_CLIENT_TRUSTED=true
       - TEST_CLIENT_SECRET=1t5Fin3#security
-      - RDBMS_DATABASE=jans
-      - RDBMS_USER=jans
+      - RDBMS_DATABASE=gluu
+      - RDBMS_USER=gluu
       - RDBMS_PASSWORD=1t5Fin3#security
       - RDBMS_HOST=pgsql
     volumes:
