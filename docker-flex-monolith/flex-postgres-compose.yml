@@ -13,7 +13,7 @@ services:
       POSTGRES_USER: jans
       POSTGRES_PASSWORD: 1t5Fin3#security
       POSTGRES_DB: jans
-  jans:
+  flex:
     image: gluufederation/monolith:5.0.0_dev
     restart: always
     ports:
@@ -50,6 +50,7 @@ services:
       - ./jans-config-api-custom:/opt/jans/jetty/jans-config-api/custom
       - ./jans-fido2-custom:/opt/jans/jetty/jans-fido2/custom
       - ./jans-scim-custom:/opt/jans/jetty/jans-scim/custom
+      - ./flex-casa:/opt/jans/jetty/casa/customk
 volumes:
   db-data:
 networks:
