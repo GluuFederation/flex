@@ -1,5 +1,5 @@
 
-# Ubuntu Janssen Installation
+# Ubuntu Flex Installation
 
 Before you install, check the [VM system requirements](vm-requirements.md).
 
