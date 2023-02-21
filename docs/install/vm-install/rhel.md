@@ -13,7 +13,6 @@ Before you install, check the [VM system requirements](vm-requirements.md).
 
 ## Supported versions
 - Red Hat Enterprise Linus 8 (RHEL 8)
-- CentOS 8
 
 ## Disable SELinux
 You can disbale SELinux temporarily by executing `setenforce 0`. To disable permanently edit file `/etc/selinux/config`.
