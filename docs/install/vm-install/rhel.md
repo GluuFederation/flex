@@ -7,7 +7,7 @@ tags:
 - CentOS
 ---
 
-# Red Hat EL Janssen Installation
+# Red Hat EL Flex Installation
 
 Before you install, check the [VM system requirements](vm-requirements.md).
 
@@ -21,7 +21,7 @@ You can disbale SELinux temporarily by executing `setenforce 0`. To disable perm
 
 
 - Download the release package from the Github Janssen Project
-  [Releases](https://github.com/JanssenProject/jans/releases)
+  [Releases](https://github.com/gluufederation/flex/releases)
 
 ```
 wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-4/flex-5.0.0-4.el8.x86_64.rpm -P ~/
