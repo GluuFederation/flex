@@ -30,7 +30,7 @@ python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 
 ## Ubuntu Flex Uninstallation
 
-Removing Janssen is a two step process:
+Removing Flex is a two step process:
 
 1. Delete files installed by Gluu Flex
 1. Remove and purge the `jans` package
