@@ -449,6 +449,19 @@ class flex_installer(JettyInstaller):
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
+        print("Creating credentials encryption private and public key")
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+
+            private_key_fn = os.path.join(tmp_dir, 'private.pem')
+            public_key_fn = os.path.join(tmp_dir, 'public.pem')
+
+            config_api_installer.run([paths.cmd_openssl, 'genrsa', '-out', private_key_fn])
+            config_api_installer.run([paths.cmd_openssl, 'rsa', '-in', private_key_fn, '-outform', 'PEM', '-pubout', '-out', public_key_fn])
+
+            Config.templateRenderingDict['cred_enc_private_key'] = config_api_installer.generate_base64_file(private_key_fn, 0)
+            Config.templateRenderingDict['cred_enc_public_key'] = config_api_installer.generate_base64_file(public_key_fn, 0)
+
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, self.templates_dir, self.source_dir)
