@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.0.7](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.5...flex-linux-setup-v1.0.7) (2023-02-22)
+
+
+### Features
+
+* flex-linux-setup use tarball to install node_modules in admin-ui ([8a1fd53](https://github.com/GluuFederation/flex/commit/8a1fd53e0f96b02db7f1703c5e2b9498929b8f0c))
+
+
+### Bug Fixes
+
+* admin-ui database configuration ([f42099e](https://github.com/GluuFederation/flex/commit/f42099e032577599a92474a76caffb37dba9b41c))
+* flex-linux-setup always download latest jans-installer ([f5480c2](https://github.com/GluuFederation/flex/commit/f5480c2b271302d259e16ea0a3d93935c6b0a1c8))
+* flex-linux-setup check twilio and fido2 client before deploy ([#736](https://github.com/GluuFederation/flex/issues/736)) ([fd28ad3](https://github.com/GluuFederation/flex/commit/fd28ad389646bd42f06f88e256fc94a6eb8092ad))
+* flex-linux-setup code smell ([1146797](https://github.com/GluuFederation/flex/commit/1146797fec64213c23e6cc547a1ca72ffe6cff02))
+* flex-linux-setup download pyjwt and cryptography instead of gcs ([#724](https://github.com/GluuFederation/flex/issues/724)) ([c28a435](https://github.com/GluuFederation/flex/commit/c28a435ee2206ae100f5782dbe7be10cd2eccf5f))
+* flex-linux-setup Dump Admin UI Client and Secret to screen and setup.properties ([#700](https://github.com/GluuFederation/flex/issues/700)) ([69af163](https://github.com/GluuFederation/flex/commit/69af163482ce1a8312d8b8081b274bc787784d8d))
+* flex-linux-setup remove Casa.py ([ca6b289](https://github.com/GluuFederation/flex/commit/ca6b28957d12da4179640fd422dfc6b6707b6f1d))
+* prepare for 5.0.0-7 release ([7f96937](https://github.com/GluuFederation/flex/commit/7f9693729156b04367b85d0d44a4022a52d53417))
+
 ## [1.0.5](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.4...flex-linux-setup-v1.0.5) (2022-12-08)
 
 
