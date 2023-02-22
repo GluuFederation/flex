@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.0.0-7](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-4...docker-casa-v5.0.0-7) (2023-02-22)
+
+
+### Features
+
+* **docker-casa:** enable prefix and group for stdout logs ([#696](https://github.com/GluuFederation/flex/issues/696)) ([bdb0f06](https://github.com/GluuFederation/flex/commit/bdb0f06c730aa2878cd05d70446574cc4e893550))
+
+
+### Bug Fixes
+
+* **docker-casa:** adjust permission to allow creating administrable lock file ([#747](https://github.com/GluuFederation/flex/issues/747)) ([59515e3](https://github.com/GluuFederation/flex/commit/59515e3212cf6e3da179eec7011509a06f93ee81))
+* **docker-casa:** handle startup errors on postgres, spanner, and couchbase persistence ([#689](https://github.com/GluuFederation/flex/issues/689)) ([a3cd54b](https://github.com/GluuFederation/flex/commit/a3cd54bc45efaa4b46c7cb3ab50a20b55e754313))
+* extend fido2 appLoggers ([2757139](https://github.com/GluuFederation/flex/commit/27571390a6b0534e13253b86bd6a039f1d854a68))
+* prepare for 5.0.0-7 release ([7f96937](https://github.com/GluuFederation/flex/commit/7f9693729156b04367b85d0d44a4022a52d53417))
+
 ## [5.0.0-4](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-3...docker-casa-v5.0.0-4) (2022-12-08)
 
 
