@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.7-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.5-1...docker-admin-ui-v1.0.7-1) (2023-02-22)
+
+
+### Features
+
+* **docker-admin-ui:** save admin-ui config into persistence ([#674](https://github.com/GluuFederation/flex/issues/674)) ([6bc9763](https://github.com/GluuFederation/flex/commit/6bc9763b4c86ba2ea3023d4b27c2631bf11af1d5))
+
+
+### Bug Fixes
+
+* docker-admin-ui/Dockerfile to reduce vulnerabilities ([#758](https://github.com/GluuFederation/flex/issues/758)) ([b066b6a](https://github.com/GluuFederation/flex/commit/b066b6aead9f1a75b6999151fd8a72dd8739fb6f))
+* extend fido2 appLoggers ([2757139](https://github.com/GluuFederation/flex/commit/27571390a6b0534e13253b86bd6a039f1d854a68))
+* prepare for 5.0.0-7 release ([7f96937](https://github.com/GluuFederation/flex/commit/7f9693729156b04367b85d0d44a4022a52d53417))
+
 ## [1.0.5-1](https://github.com/GluuFederation/flex/compare/docker-admin-ui-v1.0.4-1...docker-admin-ui-v1.0.5-1) (2022-12-08)
 
 
