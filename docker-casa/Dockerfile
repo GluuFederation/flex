@@ -206,7 +206,7 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     CN_GOOGLE_SECRET_NAME_PREFIX=jans \
     GLUU_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable \
     CN_PROMETHEUS_PORT="" \
-    CN_VERSION=1.0.8-SNAPSHOT
+    CN_VERSION=1.0.7
 
 # ==========
 # misc stuff

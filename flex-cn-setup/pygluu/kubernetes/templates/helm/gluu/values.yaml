@@ -339,7 +339,7 @@ casa:
     # -- Image  to use for deploying.
     repository: gluufederation/casa
     # -- Image  tag to use for deploying.
-    tag: 5.0.0-7
+    tag: 5.0.0-4
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
