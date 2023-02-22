@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#where-is-this-content" class="md-skip">
+        <a href="#red-hat-el-flex-installation" class="md-skip">
           Skip to content
         </a>
       
@@ -601,6 +601,8 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           RHEL
@@ -617,6 +619,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -625,8 +629,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#where-is-this-content" class="md-nav__link">
-    Where is this content?
+  <a href="#supported-versions" class="md-nav__link">
+    Supported versions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disable-selinux" class="md-nav__link">
+    Disable SELinux
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-the-package" class="md-nav__link">
+    Install the Package
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-setup-script" class="md-nav__link">
+    Run the setup script
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rhel-flex-uninstallation" class="md-nav__link">
+    RHEL Flex Uninstallation
   </a>
   
 </li>
@@ -992,6 +1024,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1000,8 +1034,36 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#where-is-this-content" class="md-nav__link">
-    Where is this content?
+  <a href="#supported-versions" class="md-nav__link">
+    Supported versions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disable-selinux" class="md-nav__link">
+    Disable SELinux
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-the-package" class="md-nav__link">
+    Install the Package
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-the-setup-script" class="md-nav__link">
+    Run the setup script
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rhel-flex-uninstallation" class="md-nav__link">
+    RHEL Flex Uninstallation
   </a>
   
 </li>
@@ -1021,6 +1083,35 @@
                   
   
 
+  <nav class="md-tags" >
+    
+      
+      
+        <span class="md-tag">administration</span>
+      
+    
+      
+      
+        <span class="md-tag">installation</span>
+      
+    
+      
+      
+        <span class="md-tag">vm</span>
+      
+    
+      
+      
+        <span class="md-tag">RHEL</span>
+      
+    
+      
+      
+        <span class="md-tag">CentOS</span>
+      
+    
+  </nav>
+
 
 
   <a href="https://github.com/GluuFederation/flex/edit/main/docs/install/vm-install/rhel.md" title="Edit this page" class="md-content__button md-icon">
@@ -1029,18 +1120,54 @@
   </a>
 
 
-  <h1>RHEL</h1>
+<h1 id="red-hat-el-flex-installation">Red Hat EL Flex Installation<a class="headerlink" href="#red-hat-el-flex-installation" title="Permanent link">#</a></h1>
+<p>Before you install, check the <a href="../vm-requirements/">VM system requirements</a>.</p>
+<h2 id="supported-versions">Supported versions<a class="headerlink" href="#supported-versions" title="Permanent link">#</a></h2>
+<ul>
+<li>Red Hat Enterprise Linus 8 (RHEL 8)</li>
+</ul>
+<h2 id="disable-selinux">Disable SELinux<a class="headerlink" href="#disable-selinux" title="Permanent link">#</a></h2>
+<p>You can disbale SELinux temporarily by executing <code>setenforce 0</code>. To disable permanently edit file <code>/etc/selinux/config</code>.</p>
+<h2 id="install-the-package">Install the Package<a class="headerlink" href="#install-the-package" title="Permanent link">#</a></h2>
+<ul>
+<li>Download the release package from the Github Flex
+  <a href="https://github.com/gluufederation/flex/releases">Releases</a></li>
+</ul>
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-4/flex-5.0.0-4.el8.x86_64.rpm -P ~/
+</code></pre></div>
+<ul>
+<li>Install the package</li>
+</ul>
+<div class="highlight"><pre><span></span><code>yum install ~/flex-5.0.0-4.el8.x86_64.rpm
+</code></pre></div>
+<h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
+<ul>
+<li>Run the setup script in interactive mode:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+</code></pre></div>
+<h2 id="rhel-flex-uninstallation">RHEL Flex Uninstallation<a class="headerlink" href="#rhel-flex-uninstallation" title="Permanent link">#</a></h2>
+<p>Removing Flex is a two step process:</p>
+<ol>
+<li>Delete files installed by Gluu Flex</li>
+<li>Remove and purge the <code>jans</code> package</li>
+</ol>
+<p>Use the command below to uninstall the Gluu Flex server</p>
+<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
+</code></pre></div>
+<!-- I need to add the output when command is run. -->
 
-<h2 id="where-is-this-content">Where is this content?<a class="headerlink" href="#where-is-this-content" title="Permanent link">#</a></h2>
-<p>The Gluu Flex documentation is a work in progress, and this document is currently a draft. Keep an eye on this page for updates.</p>
-<p>This content is for Gluu Flex, an upcoming Gluu product. If you're looking for the Gluu 4 installation page, find it <a href="https://gluu.org/docs/gluu-server/4.4/installation-guide/install-rhel/">here</a>, and if you're looking for the Janssen Project installation page, find it <a href="https://docs.jans.io/head/admin/install/vm-install/rhel/">here</a>.</p>
+<p>The command below removes and uninstall the <code>jans</code> package</p>
+<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/install.py -uninstall
+</code></pre></div>
+<!-- I need to add the output when command is run. -->
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-12-27T07:53:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-12-27</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-02-22T09:55:52+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-02-22</span>
       
         <br>
         Created:

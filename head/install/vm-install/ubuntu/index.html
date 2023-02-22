@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ubuntu-janssen-installation" class="md-skip">
+        <a href="#ubuntu-flex-installation" class="md-skip">
           Skip to content
         </a>
       
@@ -636,8 +636,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ubuntu-flex-un-installation" class="md-nav__link">
-    Ubuntu Flex Un-Installation
+  <a href="#ubuntu-flex-uninstallation" class="md-nav__link">
+    Ubuntu Flex Uninstallation
   </a>
   
 </li>
@@ -1048,8 +1048,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ubuntu-flex-un-installation" class="md-nav__link">
-    Ubuntu Flex Un-Installation
+  <a href="#ubuntu-flex-uninstallation" class="md-nav__link">
+    Ubuntu Flex Uninstallation
   </a>
   
 </li>
@@ -1077,7 +1077,7 @@
   </a>
 
 
-<h1 id="ubuntu-janssen-installation">Ubuntu Janssen Installation<a class="headerlink" href="#ubuntu-janssen-installation" title="Permanent link">#</a></h1>
+<h1 id="ubuntu-flex-installation">Ubuntu Flex Installation<a class="headerlink" href="#ubuntu-flex-installation" title="Permanent link">#</a></h1>
 <p>Before you install, check the <a href="../vm-requirements/">VM system requirements</a>.</p>
 <h2 id="supported-versions">Supported Versions<a class="headerlink" href="#supported-versions" title="Permanent link">#</a></h2>
 <ul>
@@ -1090,21 +1090,7 @@
 <div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-4/flex_5.0.0-4.ubuntu20.04_amd64.deb -P ~/
 </code></pre></div>
 <ul>
-<li>
-<p>Verify integrity of the downloaded package by verifying published <code>sha256sum</code>.   </p>
-<p>Download <code>sha256sum</code> file for the package</p>
-<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-4/flex_5.0.0-4.ubuntu20.04_amd64.deb.sha256sum -P ~/
-</code></pre></div>
-<p>Check the hash if it is matching. </p>
-<div class="highlight"><pre><span></span><code>sha256sum -c flex_5.0.0-4.ubuntu20.04_amd64.deb.sha256sum
-</code></pre></div>
-<p>Output similar to below should confirm the integrity of the downloaded package.</p>
-<div class="highlight"><pre><span></span><code>&lt;package-name&gt;: OK
-</code></pre></div>
-</li>
-<li>
-<p>Install the package</p>
-</li>
+<li>Install the package</li>
 </ul>
 <div class="highlight"><pre><span></span><code>apt install -y ~/flex_5.0.0-4.ubuntu20.04_amd64.deb
 </code></pre></div>
@@ -1112,22 +1098,21 @@
 <ul>
 <li>Run the setup script in interactive mode:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/flex/flex-linux-setup/flex_setup.py
+<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
 </code></pre></div>
-<p>See more detailed <a href="../setup.md">instructions</a> on the setup script if you're confused how to answer any of the questions, for details about command line arguments, or you would prefer to use a properties file instead of interactive mode.</p>
-<h2 id="ubuntu-flex-un-installation">Ubuntu Flex Un-Installation<a class="headerlink" href="#ubuntu-flex-un-installation" title="Permanent link">#</a></h2>
-<p>Removing Janssen is a two step process:</p>
+<h2 id="ubuntu-flex-uninstallation">Ubuntu Flex Uninstallation<a class="headerlink" href="#ubuntu-flex-uninstallation" title="Permanent link">#</a></h2>
+<p>Removing Flex is a two step process:</p>
 <ol>
 <li>Delete files installed by Gluu Flex</li>
 <li>Remove and purge the <code>jans</code> package</li>
 </ol>
 <p>Use the command below to uninstall the Gluu Flex server</p>
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/flex/flex-linux-setup/flex_setup.py --remove-flex
+<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex
 </code></pre></div>
 <!-- I need to add the output when command is run. -->
 
-<p>The command below removes and purges the <code>jans</code> package</p>
-<div class="highlight"><pre><span></span><code>apt-get --purge remove jans
+<p>The command below removes and uninstall the <code>jans</code> package</p>
+<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/install.py -uninstall
 </code></pre></div>
 <!-- I need to add the output when command is run. -->
 
@@ -1136,7 +1121,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-02-16T23:09:42+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-02-16</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-02-22T09:55:52+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-02-22</span>
       
         <br>
         Created:
