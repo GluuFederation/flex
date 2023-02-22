@@ -126,7 +126,7 @@ jobs:
         #If on schedule build nightly packages
         if [ ${{ github.event_name }} = "schedule" ] || [ ${{ github.event.inputs.nightly }} = true ]; then
           echo "Activating nightly build"
-          echo "ASSETNAME=${{ steps.output.outputs.asset_name }}-nightly-build" >> ${GITHUB_ENV}
+          echo "ASSETNAME=nightly-build-${{ steps.output.outputs.asset_name }}" >> ${GITHUB_ENV}
         fi
         echo "${{ steps.previoustag.outputs.tag }}"
         echo "$ASSETNAME"
