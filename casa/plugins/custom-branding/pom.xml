@@ -13,7 +13,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <plugin.id>custom-branding</plugin.id>
         <plugin.version>5.0.0-SNAPSHOT</plugin.version>
-        <jans.version>1.0.7-SNAPSHOT</jans.version>
+        <jans.version>1.0.7</jans.version>
     </properties>
 
     <repositories>
