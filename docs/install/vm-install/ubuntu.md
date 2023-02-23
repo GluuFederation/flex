@@ -11,13 +11,13 @@ Before you install, check the [VM system requirements](vm-requirements.md).
 - Download the release package from the Github Gluu Flex [Releases](https://github.com/GluuFederation/flex/releases)
 
 ```
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-4/flex_5.0.0-4.ubuntu20.04_amd64.deb -P ~/
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P ~/
 ```
 
 - Install the package
 
 ```
-apt install -y ~/flex_5.0.0-4.ubuntu20.04_amd64.deb
+apt install -y ~/flex_replace-flex-version.ubuntu20.04_amd64.deb
 ```
 
 ## Run the setup script
