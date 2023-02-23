@@ -105,7 +105,11 @@ if not jans_installer_downloaded:
         jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archieve_url))
         print("Downloading {} as {}".format(jans_archieve_url, jans_zip_file))
         request.urlretrieve(jans_archieve_url, jans_zip_file)
-
+        if argsp.download_exit:
+            dist_dir = '/opt/dist/jans/'
+            if not os.path.exists(dist_dir):
+                os.makedirs(dist_dir)
+            shutil.copyfile(jans_zip_file, os.path.join(dist_dir, 'jans.zip'))
         print("Extracting jans-setup package")
         jans_zip = zipfile.ZipFile(jans_zip_file)
         parent_dir = jans_zip.filelist[0].orig_filename
@@ -117,6 +121,8 @@ if not jans_installer_downloaded:
     sys.path.append(__STATIC_SETUP_DIR__)
     from setup_app import downloads
     from setup_app.utils import base
+    from setup_app.utils import arg_parser
+    base.argsp = arg_parser.get_parser()
     downloads.base.current_app.app_info = base.readJsonFile(os.path.join(__STATIC_SETUP_DIR__, 'app_info.json'))
     downloads.download_sqlalchemy()
     downloads.download_cryptography()
@@ -328,6 +334,8 @@ class flex_installer(JettyInstaller):
             if force or not os.path.exists(target):
                 base.download(download_url, target, verbose=True)
 
+        if argsp.download_exit:
+            sys.exit()
 
     def add_apache_directive(self, check_str, template):
         print("Updating apache configuration")
