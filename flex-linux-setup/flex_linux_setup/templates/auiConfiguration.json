@@ -28,13 +28,6 @@
         "user_name",
         "email"
       ]
-    },
-    "license": {
-      "credentialsEncryptionKey": {
-        "alg": "RS256",
-        "publicKey": "%(cred_enc_public_key)s",
-        "privateKey": "%(cred_enc_private_key)s"
-      }
     }
   }
 }
