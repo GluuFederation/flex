@@ -386,7 +386,7 @@ class PersonAuthentication(PersonAuthenticationType):
                 print "Super-Gluu. Prepare for step 2. Failed to determine session_id"
                 return False
 
-            auth_method = session_attributes.get("super_gluu_auth_method")
+            auth_method = "authenticate" 
             if StringHelper.isEmpty(auth_method):
                 print "Super-Gluu. Prepare for step 2. Failed to determine auth_method"
                 return False

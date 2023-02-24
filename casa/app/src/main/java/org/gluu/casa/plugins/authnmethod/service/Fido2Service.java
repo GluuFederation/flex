@@ -65,19 +65,20 @@ public class Fido2Service extends BaseService {
 
     }
 
-    public int getDevicesTotal(String userId, boolean active) {
-        return getDevices(userId, active).size();
+    public int getDevicesTotal(String userId, String appId, boolean active) {
+        return getDevices(userId, appId, active).size();
     }
 
-    public List<FidoDevice> getDevices(String userId, boolean active) {
+    public List<FidoDevice> getDevices(String userId, String appId, boolean active) {
 
         //In CB the ou=fido2_register branch does not exist (not a hierarchical DB)
         String state = active ? Fido2RegistrationStatus.registered.getValue() : Fido2RegistrationStatus.pending.getValue();
         logger.trace("Finding Fido 2 devices with state={} for user={}", state, userId);
         Filter filter = Filter.createANDFilter(
                 Filter.createEqualityFilter("jansStatus", state),
-                Filter.createEqualityFilter("personInum", userId));
-
+                Filter.createEqualityFilter("personInum", userId),
+                Filter.createEqualityFilter("jansApp", appId));
+        
         List<FidoDevice> devices = new ArrayList<>();
         try {
             List<Fido2RegistrationEntry> list = persistenceService.find(Fido2RegistrationEntry.class,
@@ -88,8 +89,10 @@ public class Fido2Service extends BaseService {
             	if (Optional.ofNullable(entry.getRegistrationData().getAttenstationRequest())
             	       .map(ar -> ar.contains("platform")).orElse(false)) {
             		device = new PlatformAuthenticator();
+            		
             	} else {
             		device = new SecurityKey();
+            		
             	}
             	device.setId(entry.getId());
             	device.setCreationDate(entry.getCreationDate());
@@ -140,7 +143,7 @@ public class Fido2Service extends BaseService {
         if (list.size() == 1) {
             return list.get(0);
         } else {
-            logger.warn("Search for fido 2 device registration with oxId {} returned {} results!", id, list.size());
+            logger.warn("Search for fido 2 device registration with jansId {} returned {} results!", id, list.size());
             return null;
         }
 
@@ -179,7 +182,7 @@ public class Fido2Service extends BaseService {
 
     	FidoDevice sk = null;
         try {
-            List<FidoDevice> list = getDevices(userId, true);
+            List<FidoDevice> list = getDevices(userId, getScriptPropertyValue("fido2_server_uri"), true);
             sk = FidoService.getRecentlyCreatedDevice(list, time);
             if (sk != null && sk.getNickName() != null) {
                 sk = null;    //should have no name

@@ -226,16 +226,9 @@ class PersonAuthentication(PersonAuthenticationType):
         return -1
 
     def getPageForStep(self, configurationAttributes, step):
-        if step == 1:
-            return "/auth/fido2/step1.xhtml"
-        elif step == 2:
-            identity = CdiUtil.bean(Identity)
-            if identity.getWorkingParameter("platformAuthenticatorAvailable") == "true":
-                print "page platform"
-                return "/auth/fido2/platform.xhtml"
-            else:
-                print "page security key"
-                return "/auth/fido2/secKeys.xhtml"
+        
+        if step == 2 :
+            return "/casa/fido2.xhtml"
         return ""
 
     def logout(self, configurationAttributes, requestParameters):
