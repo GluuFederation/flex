@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next'
 import items from './scriptTypes'
 
 function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
+  console.log(scripts,"here")
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)

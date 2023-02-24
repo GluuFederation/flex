@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles'
+import { useTheme } from '@mui/material/styles';
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles(() => ({
   root: {
     display: 'flex',
   },
@@ -8,7 +9,7 @@ const styles = makeStyles((theme) => ({
     color: '#FFFFFF',
   },
   paper: {
-    marginRight: theme.spacing(2),
+    marginRight: useTheme().spacing(2),
   },
   btnContainer: {
     position: 'relative',

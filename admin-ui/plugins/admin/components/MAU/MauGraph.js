@@ -2,12 +2,13 @@ import React, { useState, useEffect, useContext } from 'react'
 import { subMonths } from 'date-fns'
 import moment from 'moment'
 import ActiveUsersGraph from 'Routes/Dashboards/Grapths/ActiveUsersGraph'
-import Grid from '@material-ui/core/Grid'
+import Grid from '@mui/material/Grid'
 import 'react-datepicker/dist/react-datepicker.css'
 import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers'
+  LocalizationProvider,
+  DatePicker,
+} from '@mui/lab'
+// import { LocalizationProvider } from '@mui/x-date-pickers'
 import DateFnsUtils from '@date-io/date-fns'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
@@ -140,9 +141,9 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
             <Row>
               <Col sm={5}>
                 <GluuLabel label={t('fields.select_date_range')} size="4" style={{ minWidth: '200px' }} />
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <LocalizationProvider utils={DateFnsUtils}>
                   <Grid container justifyContent="space-around">
-                    <KeyboardDatePicker
+                    <DatePicker
                       disableToolbar
                       variant="inline"
                       format="MM/dd/yyyy"
@@ -156,7 +157,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
                       }}
                       autoOk={true}
                     />
-                    <KeyboardDatePicker
+                    <DatePicker
                       disableToolbar
                       variant="inline"
                       format="MM/dd/yyyy"
@@ -171,7 +172,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
                       autoOk={true}
                     />
                   </Grid>
-                </MuiPickersUtilsProvider>
+                </LocalizationProvider>
               </Col>
               <Col sm={2}>
                 <Button

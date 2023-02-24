@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import clsx from 'clsx'
-import Drawer from '@material-ui/core/Drawer'
-import Button from '@material-ui/core/Button'
-import Box from '@material-ui/core/Box'
-import SettingsIcon from '@material-ui/icons/Settings'
+import Drawer from '@mui/material/Drawer'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import SettingsIcon from '@mui/icons-material/Settings'
 import { ThemeContext } from "Context/theme/themeContext"
 import darkBlackThumbnail from 'Images/theme-thumbnail/darkBlack.jpg'
 import darkBlueThumbnail from 'Images/theme-thumbnail/darkBlue.jpg'
@@ -78,7 +78,7 @@ export function ThemeSettings({ userInfo }) {
   return (
     <React.Fragment>
       <Button onClick={toggleDrawer(true)} className={classes.whiteColor}>
-        <SettingsIcon />
+        <SettingsIcon  style={{color: "white"}}/>
       </Button>
       <Drawer className={classes.drawerContainer} anchor={'right'} open={open} onClose={toggleDrawer(false)}>
         {list('right')}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
-import { DeleteOutlined } from '@material-ui/icons'
-import { Paper, TablePagination } from '@material-ui/core'
+import { DeleteOutlined } from '@mui/icons-material'
+import { Paper, TablePagination } from '@mui/material'
 import UserDetailViewPage from './UserDetailViewPage'
 import {
   getUsers,

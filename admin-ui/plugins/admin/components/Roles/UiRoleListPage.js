@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
-import { Paper } from '@material-ui/core'
+import { Paper } from '@mui/material'
 import UiRoleDetailPage from './UiRoleDetailPage'
 import RoleAddDialogForm from './RoleAddDialogForm'
 import { Badge } from 'reactstrap'

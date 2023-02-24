@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
-import { DeleteOutlined } from '@material-ui/icons'
+import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
-import { Paper, TablePagination } from '@material-ui/core'
+import { Paper, TablePagination } from '@mui/material'
 import { Badge } from 'reactstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
@@ -92,7 +92,7 @@ function ScriptListTable() {
         id: 'editCustomScript' + rowData.inum,
       },
       tooltip: `${t('messages.edit_script')}`,
-      onClick: (event, entry) => handleGoToCustomScriptEditPage(entry),
+      onClick: (event, entry) => {handleGoToCustomScriptEditPage(entry)},
       disabled: false,
     }))
   }
@@ -175,6 +175,7 @@ function ScriptListTable() {
   function handleGoToCustomScriptEditPage(row, edition) {
     dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
+    
     return navigate(`/adm/script/edit:` + row.inum)
   }
   function handleCustomScriptDelete(row) {

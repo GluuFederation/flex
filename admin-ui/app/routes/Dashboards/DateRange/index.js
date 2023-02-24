@@ -1,12 +1,13 @@
 import 'date-fns'
 import React, { useEffect } from 'react'
-import Grid from '@material-ui/core/Grid'
+import Grid from '@mui/material/Grid'
 import DateFnsUtils from '@date-io/date-fns'
 import { buildPayload } from 'Utils/PermChecker'
 import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers'
+  LocalizationProvider,
+  DatePicker,
+} from '@mui/lab'
+// import { LocalizationProvider } from '@mui/x-date-pickers'
 import moment from 'moment'
 import { useDispatch } from 'react-redux'
 import { getMau } from 'Redux/actions/MauActions'
@@ -39,9 +40,9 @@ export default function MaterialUIPickers() {
   }
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <LocalizationProvider utils={DateFnsUtils}>
       <Grid container>
-        <KeyboardDatePicker
+        <DatePicker
           disableToolbar
           variant="inline"
           format="MM/dd/yyyy"
@@ -55,7 +56,7 @@ export default function MaterialUIPickers() {
           }}
           autoOk={true}
         />
-        <KeyboardDatePicker
+        <DatePicker
           disableToolbar
           variant="inline"
           format="MM/dd/yyyy"
@@ -70,6 +71,6 @@ export default function MaterialUIPickers() {
           autoOk={true}
         />
       </Grid>
-    </MuiPickersUtilsProvider>
+    </LocalizationProvider>
   )
 }

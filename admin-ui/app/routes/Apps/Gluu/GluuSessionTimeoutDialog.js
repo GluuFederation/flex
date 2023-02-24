@@ -7,7 +7,7 @@ import {
   Button,
   Typography,
   Slide
-} from "@material-ui/core"
+} from "@mui/material"
 import clsx from "clsx"
 import styles from "./styles/GluuSessionTimeoutDialog.style"
 import { ThemeContext } from 'Context/theme/themeContext'

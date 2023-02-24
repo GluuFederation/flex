@@ -5,7 +5,7 @@ import CouchbaseItem from './CouchbaseItem'
 import { Form, FormGroup, Card, CardBody } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import { connect } from 'react-redux'
-import Alert from '@material-ui/lab/Alert'
+import Alert from '@mui/lab/Alert'
 import {
   getCouchBaseConfig,
   editCouchBase,

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { subMonths } from 'date-fns'
-import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
-import Box from '@material-ui/core/Box'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import Box from '@mui/material/Box'
 import { useMediaQuery } from 'react-responsive'
 import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
@@ -195,7 +195,7 @@ function DashboardPage({
 
   const StatusCard = () => {
     return (
-      <Grid xs={12}>
+      <Grid xs={12} item>
         <Paper className={`${classes.statusContainer} ml-20`} elevation={3}>
           <div className={classes.userInfoText}>
             <div className={classes.statusText}>
@@ -391,7 +391,7 @@ function DashboardPage({
             </Grid>
           </Grid>
           <Grid container className={`px-40`}>
-            <Grid lg={12} xs={12}>
+            <Grid lg={12} xs={12} item>
               <h3 className="text-white">
                 {t('dashboard.access_tokens_graph')}
               </h3>
@@ -449,6 +449,7 @@ function DashboardPage({
             {/* TODO: Implement support Card later */}
             {/* <Grid
               lg={3}
+              item
               xs={isTabletOrMobile ? 5 : 3}
               className={`${classes.bannerContainer} top-minus-40`}
             >
@@ -457,7 +458,7 @@ function DashboardPage({
             {isTabletOrMobile && !isMobile && <StatusCard />} */}
           </Grid>
           <Grid container className={`${classes.flex} px-40`}>
-            <Grid xs={12}>
+            <Grid xs={12} item>
               <Grid
                 xs={12}
                 item

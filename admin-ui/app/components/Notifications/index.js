@@ -1,13 +1,13 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import Grow from '@material-ui/core/Grow'
-import Paper from '@material-ui/core/Paper'
-import Popper from '@material-ui/core/Popper'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import NotificationsIcon from '@material-ui/icons/Notifications'
+import Button from '@mui/material/Button'
+import ClickAwayListener from '@mui/base/ClickAwayListener'
+import Grow from '@mui/material/Grow'
+import Paper from '@mui/material/Paper'
+import Popper from '@mui/material/Popper'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import NotificationsIcon from '@mui/icons-material/Notifications'
 import styles from './styles'
 
 export default function Lang() {
@@ -47,7 +47,7 @@ export default function Lang() {
           className={classes.btnContainer}
           onClick={handleToggle}
         >
-          <NotificationsIcon />
+          <NotificationsIcon style={{color: "white"}}/>
         </Button>
         <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal className={classes.topElm}>
           {({ TransitionProps, placement }) => (

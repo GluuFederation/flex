@@ -8,7 +8,7 @@ import { getLicenseDetails } from 'Redux/actions/LicenseDetailsActions'
 import { Card, CardBody, Container, Row, Col } from 'Components'
 import { buildPayload } from 'Utils/PermChecker'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import Alert from '@material-ui/lab/Alert'
+import Alert from '@mui/lab/Alert'
 import SetTitle from 'Utils/SetTitle'
 
 const FETCHING_LICENSE_DETAILS = 'Fetch license details'

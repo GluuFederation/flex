@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Col, FormGroup, Input } from 'Components'
-import { Visibility, VisibilityOff } from '@material-ui/icons'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 function GluuInputRow({
