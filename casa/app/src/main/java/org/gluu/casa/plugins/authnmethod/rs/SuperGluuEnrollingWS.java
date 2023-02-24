@@ -16,12 +16,14 @@ import jakarta.ws.rs.core.Response;
 
 import net.jodah.expiringmap.ExpiringMap;
 
+import org.gluu.casa.core.ConfigurationHandler;
 import org.gluu.casa.core.PersistenceService;
 import org.gluu.casa.core.UserService;
 import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.gluu.casa.misc.Utils;
+import org.gluu.casa.misc.WebUtils;
 import org.gluu.casa.plugins.authnmethod.SuperGluuExtension;
 import org.gluu.casa.plugins.authnmethod.rs.status.sg.ComputeRequestCode;
 import org.gluu.casa.plugins.authnmethod.rs.status.sg.EnrollmentStatusCode;
@@ -29,6 +31,7 @@ import org.gluu.casa.plugins.authnmethod.rs.status.u2f.FinishCode;
 import org.gluu.casa.plugins.authnmethod.service.SGService;
 import org.gluu.casa.rest.ProtectedApi;
 import org.slf4j.Logger;
+import java.util.UUID;
 
 /**
  * @author jgomer
@@ -79,9 +82,9 @@ public class SuperGluuEnrollingWS {
                 result = ComputeRequestCode.UNKNOWN_USER_ID;
             } else {
                 String userName = person.getUid();
-                String code = userService.generateRandEnrollmentCode(userId);
+                String code = WebUtils.getValueFromCookie("session_id");//userService.generateRandEnrollmentCode(userId);
                 usersWithRandEnrollmentCodes.put(userId, null);
-
+                String state = UUID.randomUUID().toString();
                 //key serves an identifier for clients to poll status afterwards
                 String key = UUID.randomUUID().toString();
 
@@ -121,7 +124,7 @@ public class SuperGluuEnrollingWS {
             status = EnrollmentStatusCode.FAILED;
         } else {
 
-            newDevice = sgService.getLatestSuperGluuDevice(userId, System.currentTimeMillis());
+            newDevice = sgService.getLatestSuperGluuDevice(userId, persistenceService.getCustScriptConfigProperties(ConfigurationHandler.DEFAULT_ACR).get("supergluu_app_id"));
             if (newDevice == null) {
                 //Not ready yet (probably due to delayed push or user delayed to approve)
                 cacheProvider.put(MIN_CLIENT_POLL_PERIOD, BANNED_KEYS_PREFIX + queryParamKey, "");
@@ -136,7 +139,7 @@ public class SuperGluuEnrollingWS {
                     status = EnrollmentStatusCode.SUCCESS;
                     cacheProvider.put(EXPIRATION, RECENT_DEVICES_PREFIX + newDevice.getId(), userId);
                 } else {
-                    sgService.removeDevice(newDevice);
+                    sgService.removeDevice(newDevice, userId);
                     logger.info("Duplicated SuperGluu device {} has been removed", newDevice.getDeviceData().getUuid());
                     status = EnrollmentStatusCode.DUPLICATED;
                 }
@@ -179,7 +182,7 @@ public class SuperGluuEnrollingWS {
             FidoDevice dev = getDeviceWithID(deviceId);
             dev.setNickName(nickName);
 
-            if (sgService.updateDevice(dev)) {
+            if (sgService.updateDevice(dev, userId)) {
                 result = FinishCode.SUCCESS;
                 cacheProvider.remove(RECENT_DEVICES_PREFIX + deviceId);
             } else {
