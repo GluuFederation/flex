@@ -461,11 +461,13 @@ class flex_installer(JettyInstaller):
 
         with tempfile.TemporaryDirectory() as tmp_dir:
 
-            private_key_fn = os.path.join(tmp_dir, 'private.pem')
-            public_key_fn = os.path.join(tmp_dir, 'public.pem')
+            private_fn = os.path.join(tmp_dir, 'private.pem')
+            private_key_fn = os.path.join(tmp_dir, 'private_key.pem')
+            public_key_fn = os.path.join(tmp_dir, 'public_key.pem')
 
-            config_api_installer.run([paths.cmd_openssl, 'genrsa', '-out', private_key_fn])
-            config_api_installer.run([paths.cmd_openssl, 'rsa', '-in', private_key_fn, '-outform', 'PEM', '-pubout', '-out', public_key_fn])
+            config_api_installer.run([paths.cmd_openssl, 'genrsa', '-out', private_fn, '2048'])
+            config_api_installer.run([paths.cmd_openssl, 'rsa', '-in', private_fn, '-outform', 'PEM', '-pubout', '-out', public_key_fn])
+            config_api_installer.run([paths.cmd_openssl, 'pkcs8', '-topk8', '-inform', 'PEM', '-in', private_fn, '-out', private_key_fn, '-nocrypt'])
 
             Config.templateRenderingDict['cred_enc_private_key'] = config_api_installer.generate_base64_file(private_key_fn, 0)
             Config.templateRenderingDict['cred_enc_public_key'] = config_api_installer.generate_base64_file(public_key_fn, 0)
