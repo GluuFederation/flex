@@ -22,13 +22,13 @@ Before you install, check the [VM system requirements](vm-requirements.md).
 - Download the release package from the GitHub FLEX [Releases](https://github.com/gluufederation/flex/releases)
 
 ```
-wget https://github.com/GluuFederation/flex/releases/download/v5.0.0-4/flex-5.0.0-4.suse15.x86_64.rpm -P ~/
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version.suse15.x86_64.rpm -P ~/
 ```
 
 - Install the package
 
 ```
-zypper install ~/flex-5.0.0-4.suse15.x86_64.rpm
+zypper install ~/flex-replace-flex-version.suse15.x86_64.rpm
 ```
 
 ## Run the setup script
