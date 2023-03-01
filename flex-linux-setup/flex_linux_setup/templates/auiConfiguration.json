@@ -17,6 +17,16 @@
       "postLogoutUri": "https://%(hostname)s/admin",
       "frontchannelLogoutUri": "https://%(hostname)s/admin/logout"
     },
+    "oidcClient": {
+      "clientId": "%(oidc_client_id)s",
+      "clientSecret": "%(oidc_client_secret)s",
+      "tokenEndpoint": null,
+      "redirectUri": null,
+      "postLogoutUri": null,
+      "frontchannelLogoutUri": null,
+      "scopes": null,
+      "acrValues": null
+    },
     "tokenServerClient": {
       "opHost": "https://%(hostname)s/admin",
       "clientId": "%(admin_ui_client_id)s",
