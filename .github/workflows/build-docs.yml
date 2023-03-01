@@ -91,17 +91,17 @@ jobs:
          echo "Custom work on generating docs can go here."
           
          # Run cn docs 
-         sudo bash ./automation/docs/generated-cn-docs.sh
+         sudo bash ./automation/docs/generated-cn-docs.sh || echo "something went wrong with generating the cn docs"
           
          echo "Generating property docs and push to main"
-         sudo bash ./automation/docs/generate-property-docs.sh 
+         sudo bash ./automation/docs/generate-property-docs.sh || echo "something went wrong with generating the property docs"
          cd docs
          git add . || echo "Nothing to add"
          git commit -a -S -m "docs: automated property doc generation" || echo "Nothing to commit"
          cd ..
           
          echo "Generating javadocs"
-         sudo bash ./automation/docs/generate-javadocs.sh
+         sudo bash ./automation/docs/generate-javadocs.sh || echo "something went wrong with generating the java docs"
          cd docs
          git add . || echo "Nothing to add"
          git commit -a -S -m "docs: generate and add javadocs" || echo "Nothing to commit"
@@ -155,8 +155,8 @@ jobs:
           LATEST=$(echo "${TAGS}" | tail -1)
           STABLE=$(echo "${TAGS}" | grep -v -- "-" | tail -1)
           # remove below two lines after first release
-          LATEST="head"
-          STABLE="head"
+          #LATEST="head"
+          #STABLE="head"
           mike alias -u head main
           mike alias -u "${STABLE}" stable
           mike set-default --push stable
