@@ -528,10 +528,6 @@
       
         
           
-            
-          
-        
-          
         
           
         
@@ -541,16 +537,10 @@
         
       
       
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../">VM Installation</a>
-          
-            <label for="__nav_2_3">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
+        <label class="md-nav__link" for="__nav_2_3">
+          VM Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <nav class="md-nav" aria-label="VM Installation" data-md-level="2">
         <label class="md-nav__title" for="__nav_2_3">
@@ -560,15 +550,13 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
-          
-            
               
   
   
   
     <li class="md-nav__item">
       <a href="../vm-requirements/" class="md-nav__link">
-        VM Requirements
+        VM System Requirements
       </a>
     </li>
   
@@ -625,6 +613,26 @@
   <a href="#install-the-package" class="md-nav__link">
     Install the Package
   </a>
+  
+    <nav class="md-nav" aria-label="Install the Package">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ubuntu-2204" class="md-nav__link">
+    Ubuntu 22.04
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ubuntu-2004" class="md-nav__link">
+    Ubuntu 20.04
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1038,6 +1046,26 @@
     Install the Package
   </a>
   
+    <nav class="md-nav" aria-label="Install the Package">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ubuntu-2204" class="md-nav__link">
+    Ubuntu 22.04
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ubuntu-2004" class="md-nav__link">
+    Ubuntu 20.04
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1081,9 +1109,22 @@
 <p>Before you install, check the <a href="../vm-requirements/">VM system requirements</a>.</p>
 <h2 id="supported-versions">Supported Versions<a class="headerlink" href="#supported-versions" title="Permanent link">#</a></h2>
 <ul>
+<li>Ubuntu 22.04</li>
 <li>Ubuntu 20.04</li>
 </ul>
 <h2 id="install-the-package">Install the Package<a class="headerlink" href="#install-the-package" title="Permanent link">#</a></h2>
+<h3 id="ubuntu-2204">Ubuntu 22.04<a class="headerlink" href="#ubuntu-2204" title="Permanent link">#</a></h3>
+<ul>
+<li>Download the release package from the Github Gluu Flex <a href="https://github.com/GluuFederation/flex/releases">Releases</a></li>
+</ul>
+<div class="highlight"><pre><span></span><code>wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P ~/
+</code></pre></div>
+<ul>
+<li>Install the package</li>
+</ul>
+<div class="highlight"><pre><span></span><code>apt install -y ~/flex_replace-flex-version.ubuntu22.04_amd64.deb
+</code></pre></div>
+<h3 id="ubuntu-2004">Ubuntu 20.04<a class="headerlink" href="#ubuntu-2004" title="Permanent link">#</a></h3>
 <ul>
 <li>Download the release package from the Github Gluu Flex <a href="https://github.com/GluuFederation/flex/releases">Releases</a></li>
 </ul>
@@ -1121,7 +1162,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-02-28T06:19:53+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-02-28</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-03-02T08:15:10+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-03-02</span>
       
         <br>
         Created:
@@ -1150,7 +1191,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="../vm-requirements/" class="md-footer__link md-footer__link--prev" aria-label="Previous: VM Requirements" rel="prev">
+        <a href="../vm-requirements/" class="md-footer__link md-footer__link--prev" aria-label="Previous: VM System Requirements" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -1159,7 +1200,7 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              VM Requirements
+              VM System Requirements
             </div>
           </div>
         </a>

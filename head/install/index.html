@@ -19,7 +19,7 @@
     
     
       
-        <title>Index - Gluu Flex Documentation</title>
+        <title>Installation Overview - Gluu Flex Documentation</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#where-is-this-content" class="md-skip">
+        <a href="#installation-overview" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Index
+              Installation Overview
             
           </span>
         </div>
@@ -526,10 +526,6 @@
       
         
           
-            
-          
-        
-          
         
           
         
@@ -539,16 +535,10 @@
         
       
       
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="vm-install/">VM Installation</a>
-          
-            <label for="__nav_2_3">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
+        <label class="md-nav__link" for="__nav_2_3">
+          VM Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <nav class="md-nav" aria-label="VM Installation" data-md-level="2">
         <label class="md-nav__title" for="__nav_2_3">
@@ -558,15 +548,13 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
-          
-            
               
   
   
   
     <li class="md-nav__item">
       <a href="vm-install/vm-requirements/" class="md-nav__link">
-        VM Requirements
+        VM System Requirements
       </a>
     </li>
   
@@ -953,6 +941,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -961,8 +951,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#where-is-this-content" class="md-nav__link">
-    Where is this content?
+  <a href="#minimal-configuration" class="md-nav__link">
+    Minimal Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databases" class="md-nav__link">
+    Databases
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optimization" class="md-nav__link">
+    Optimization
   </a>
   
 </li>
@@ -982,6 +986,20 @@
                   
   
 
+  <nav class="md-tags" >
+    
+      
+      
+        <span class="md-tag">administration</span>
+      
+    
+      
+      
+        <span class="md-tag">installation</span>
+      
+    
+  </nav>
+
 
 
   <a href="https://github.com/GluuFederation/flex/edit/main/docs/install/README.md" title="Edit this page" class="md-content__button md-icon">
@@ -990,17 +1008,48 @@
   </a>
 
 
-  <h1>Index</h1>
-
-<h2 id="where-is-this-content">Where is this content?<a class="headerlink" href="#where-is-this-content" title="Permanent link">#</a></h2>
-<p>The Gluu Flex documentation is a work in progress, and this document is currently a draft. Keep an eye on this page for updates.</p>
+<h1 id="installation-overview">Installation Overview<a class="headerlink" href="#installation-overview" title="Permanent link">#</a></h1>
+<p>The goal of Gluu Flex is to give you a lot of deployment options. This is
+a challenge--the more ways to install, the more ways for things to go wrong!
+But to build a large community, we need to provide ways to install the software
+in enough different ways to make at least the bulk of the community happy.</p>
+<p>Currently, that means the following installation options:</p>
+<ol>
+<li>VM packages for Ubuntu, SUSE and Red Hat</li>
+<li>Helm deployments for Amazon, Google, Microsoft and Rancher</li>
+<li>Docker monolith deployment for development / testing (not production)</li>
+</ol>
+<h2 id="minimal-configuration">Minimal Configuration<a class="headerlink" href="#minimal-configuration" title="Permanent link">#</a></h2>
+<p>It turns out that just installing the Flex binary object code (i.e. the bits),
+is totally useless. That's because in order to do anything useful with Gluu Flex,
+you need a minimal amount of configuration. For example,
+you need to generate cryptographic key pairs, you need to generate a minimal
+amount of data in the database, you need to generate some web server TLS
+certificates.  For this reason, for most of the platforms, installation is a
+three step process. Step 1, install the bits. Step 2, run "setup" and answer
+some basic question (like the hostname of your IDP). Step 3, fire up a
+configuration tool to perform any other last mile configuration.</p>
+<h2 id="databases">Databases<a class="headerlink" href="#databases" title="Permanent link">#</a></h2>
+<p>Gluu Flex gives you a few options to store data: LDAP, MySQL, Postgres,
+Couchbase, Amazon Aurora, and Spanner. You can also configure an in-memory cache
+server like Redis. Sometimes installation and configuration of this database
+is included in the setup process. Sometimes, you need to setup the database
+ahead of time. Please refer to the database instructions specific for your
+choice. And of course, you may need to refer to the database documentation
+itself--we don't want to duplicate any of that third party content.</p>
+<h2 id="optimization">Optimization<a class="headerlink" href="#optimization" title="Permanent link">#</a></h2>
+<p>Remember, installation is just a starting point. To get peak performance, you
+may need to tweak some of the configuration dials for your system or the
+database. If you intend to deploy a Gluu Flex in production for high
+concurrency, make sure you benchmark the exact flows you expect to serve
+in production. </p>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2022-12-13T19:54:55+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2022-12-13</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-03-02T08:15:10+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-03-02</span>
       
         <br>
         Created:
