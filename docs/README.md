@@ -26,4 +26,3 @@ Gluu Flex uses Agama to offer an alternative way to build web-based authenticati
 ## Support
 
 The Gluu Flex contract includes guaranteed response times and consultative support via our [support portal](https://support.gluu.org).
-
