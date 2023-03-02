@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.8](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.7...flex-linux-setup-v1.0.8) (2023-03-02)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-8 release ([29e0cbb](https://github.com/GluuFederation/flex/commit/29e0cbb5166d83268ab9c3ee3c5f3e2bc4dd1489))
+
 ## [1.0.7](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.5...flex-linux-setup-v1.0.7) (2023-02-22)
 
 
