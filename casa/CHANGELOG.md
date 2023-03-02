@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.0.0-8](https://github.com/GluuFederation/flex/compare/casa-v5.0.0-7...casa-v5.0.0-8) (2023-03-02)
+
+
+### Bug Fixes
+
+* **casa:** SG Extension and FIDO2 extension [#764](https://github.com/GluuFederation/flex/issues/764) ([6f1b942](https://github.com/GluuFederation/flex/commit/6f1b942e39643971dcb4110b75c58f8176b1dac3))
+* prepare for 5.0.0-8 release ([29e0cbb](https://github.com/GluuFederation/flex/commit/29e0cbb5166d83268ab9c3ee3c5f3e2bc4dd1489))
+
 ## [5.0.0-7](https://github.com/GluuFederation/flex/compare/casa-v5.0.0-7...casa-v5.0.0-7) (2023-02-22)
 
 
