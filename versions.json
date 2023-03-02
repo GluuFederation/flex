@@ -1,1 +1,1 @@
-[{"version": "v5.0.0-8", "title": "v5.0.0-8", "aliases": []}, {"version": "v5.0.0-7", "title": "v5.0.0-7", "aliases": []}, {"version": "v5.0.0-4", "title": "v5.0.0-4", "aliases": []}, {"version": "head", "title": "head", "aliases": ["main", "stable"]}]
+[{"version": "v5.0.0-8", "title": "v5.0.0-8", "aliases": ["stable"]}, {"version": "v5.0.0-7", "title": "v5.0.0-7", "aliases": []}, {"version": "v5.0.0-4", "title": "v5.0.0-4", "aliases": []}, {"version": "head", "title": "head", "aliases": ["main"]}]
