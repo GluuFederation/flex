@@ -17,16 +17,6 @@
       "postLogoutUri": "https://%(hostname)s/admin",
       "frontchannelLogoutUri": "https://%(hostname)s/admin/logout"
     },
-    "oidcClient": {
-      "clientId": "%(oidc_client_id)s",
-      "clientSecret": "%(oidc_client_secret)s",
-      "tokenEndpoint": null,
-      "redirectUri": null,
-      "postLogoutUri": null,
-      "frontchannelLogoutUri": null,
-      "scopes": null,
-      "acrValues": null
-    },
     "tokenServerClient": {
       "opHost": "https://%(hostname)s/admin",
       "clientId": "%(admin_ui_client_id)s",
@@ -39,11 +29,24 @@
         "email"
       ]
     },
-    "license": {
+    "licenseConfig": {
+      "scanLicenseApiHostname": "%(scan_license_api_hostname)s",
+      "scanLicenseAuthServerHostname": "%(scan_license_auth_server_hostname)s",
+      "licenseHardwareKey": "%(license_hardware_key)s",
       "credentialsEncryptionKey": {
         "alg": "RS256",
         "publicKey": "%(cred_enc_public_key)s",
         "privateKey": "%(cred_enc_private_key)s"
+      },
+      "oidcClient": {
+        "clientId": "%(oidc_client_id)s",
+        "clientSecret": "%(oidc_client_secret)s",
+        "tokenEndpoint": null,
+        "redirectUri": null,
+        "postLogoutUri": null,
+        "frontchannelLogoutUri": null,
+        "scopes": null,
+        "acrValues": null
       }
     }
   }

@@ -12,6 +12,7 @@ import subprocess
 import shutil
 import tempfile
 import json
+import uuid
 
 from pathlib import Path
 from urllib import request
@@ -195,6 +196,7 @@ sys.path.insert(0, base.pylib_dir)
 sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
 
 from setup_app.pylib.jproperties import Properties
+from setup_app.pylib import jwt
 from setup_app.pylib.ldif4.ldif import LDIFWriter
 from setup_app.utils.package_utils import packageUtils
 from setup_app.config import Config
@@ -460,9 +462,25 @@ class flex_installer(JettyInstaller):
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
+        
+        ssa = installed_components.get('ssa')
+        ssa_json = {}
+        if ssa:
+            ssa_json = jwt.decode(
+                        ssa,
+                        options={
+                                'verify_signature': False,
+                                'verify_exp': True,
+                                'verify_aud': False
+                                }
+                    )
+
         oidc_client = installed_components.get('oidc_client', {})
         Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
         Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
+        Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
+        Config.templateRenderingDict['scan_license_auth_server_hostname'] = ssa_json.get('iss', '')
+        Config.templateRenderingDict['scan_license_api_hostname'] = Config.templateRenderingDict['scan_license_auth_server_hostname'].replace('account', 'cloud')
 
         print("Creating credentials encryption private and public key")
 
@@ -837,6 +855,8 @@ def get_components_from_setup_properties():
 def obtain_oidc_client_credidentials():
     with open(argsp.admin_ui_ssa) as f:
         ssa = f.read()
+    installed_components['ssa'] = ssa
+
     data = {
         "software_statement": ssa,
         "response_types": ["token"],
