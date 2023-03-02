@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-8
-ENV GLUU_BUILD_DATE='2023-02-13 11:44'
+ENV GLUU_BUILD_DATE='2023-03-02 09:33'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
