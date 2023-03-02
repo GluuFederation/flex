@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=3f0281bbf381a63b28229388d6b0ae536902b455
+ENV ADMIN_UI_VERSION=29e0cbb5166d83268ab9c3ee3c5f3e2bc4dd1489
 
 RUN mkdir -p /opt/flex
 
@@ -191,7 +191,7 @@ LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
     version="1.0.8" \
-    release="dev" \
+    release="1" \
     summary="Gluu Admin UI" \
     description=""
 

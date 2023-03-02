@@ -1,29 +1,29 @@
 kubeVersion: ">=v1.21.0-0"
 annotations:
   artifacthub.io/changes: |
-    - Chart 5.0.11 official release
+    - Chart 5.0.12 official release
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/images: |
     - name: auth-server
-      image: janssenproject/auth-server:1.0.8_dev
+      image: janssenproject/auth-server:1.0.8-1
     - name: auth-server-key-rotation
-      image: janssenproject/certmanager:1.0.8_dev
+      image: janssenproject/certmanager:1.0.8-1
     - name: configuration-manager
-      image: janssenproject/configurator:1.0.8_dev
+      image: janssenproject/configurator:1.0.8-1
     - name:  config-api
-      image: janssenproject/config-api:1.0.8_dev
+      image: janssenproject/config-api:1.0.8-1
     - name: fido2
-      image: janssenproject/fido2:1.0.8_dev
+      image: janssenproject/fido2:1.0.8-1
     - name: opendj
       image: gluufederation/opendj:5.0.0_dev
     - name: persistence
-      image: janssenproject/persistence-loader:1.0.8_dev
+      image: janssenproject/persistence-loader:1.0.8-1
     - name: scim
-      image: janssenproject/scim:1.0.8_dev
+      image: janssenproject/scim:1.0.8-1
     - name: casa
       image: gluufederation/casa:5.0.0_dev
     - name: admin-ui
-      image: gluufederation/admin-ui:1.0.8_dev
+      image: gluufederation/admin-ui:1.0.8-1
   artifacthub.io/license: Apache-2.0
   artifacthub.io/prerelease: "true"
   catalog.cattle.io/certified: partner
@@ -41,60 +41,60 @@ maintainers:
   email: support@gluu.org
 description: Gluu Access and Identity Management
 name: gluu
-version: 5.0.11
+version: 5.0.12
 dependencies:
     - name: config
       condition: global.config.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: config-api
       condition: global.config-api.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: opendj
       condition: global.opendj.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: auth-server
       condition: global.auth-server.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: admin-ui
       condition: global.admin-ui.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: fido2
       condition: global.fido2.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: scim
       condition: global.scim.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: nginx-ingress
       condition: global.nginx-ingress.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: oxshibboleth
       condition: global.oxshibboleth.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: oxpassport
-      version: 5.0.11
+      version: 5.0.12
       condition: global.oxpassport.enabled
 
     - name: casa
-      version: 5.0.11
+      version: 5.0.12
       condition: global.casa.enabled
 
     - name: auth-server-key-rotation
       condition: global.auth-server-key-rotation.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: persistence
       condition: global.persistence.enabled
-      version: 5.0.11
+      version: 5.0.12
 
     - name: cn-istio-ingress
       condition: global.istio.ingress
-      version: 5.0.11
+      version: 5.0.12

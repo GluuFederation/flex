@@ -34,7 +34,7 @@ EXPOSE 8080
 # Casa
 # ====
 
-ENV GLUU_VERSION=5.0.0-SNAPSHOT
+ENV GLUU_VERSION=5.0.0-8
 ENV GLUU_BUILD_DATE='2023-02-13 11:44'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
@@ -206,7 +206,7 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     CN_GOOGLE_SECRET_NAME_PREFIX=jans \
     GLUU_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable \
     CN_PROMETHEUS_PORT="" \
-    CN_VERSION=1.0.8-SNAPSHOT
+    CN_VERSION=1.0.8
 
 # ==========
 # misc stuff
@@ -216,7 +216,7 @@ LABEL name="gluufederation/casa" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
     version="5.0.0" \
-    release="dev" \
+    release="8" \
     summary="Gluu Casa" \
     description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 
