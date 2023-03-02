@@ -22,7 +22,6 @@ plugins:
        enable_creation_date: true
    - git-committers:
        repository: GluuFederation/flex
-       token: !ENV GH_TOKEN
 # Configuration
 theme:
     name: material

@@ -87,6 +87,8 @@ jobs:
 
       - name: Generate docs
         continue-on-error: true
+        env:
+          VERSION: ${{ github.event.release.tag_name }}
         run: |
          echo "Custom work on generating docs can go here."
           
@@ -108,7 +110,8 @@ jobs:
          cd ..
          
          git push
-         # The below should not be pushed to main          
+        
+         # The below should not be pushed to main
          echo "Replacing release number markers with actual release number"
          if [ ! -z "$VERSION" ]; then
            cd docs
