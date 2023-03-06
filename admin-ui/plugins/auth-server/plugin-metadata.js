@@ -114,7 +114,7 @@ const pluginMetadata = {
     },
     {
       component: ClientEditPage,
-      path: PLUGIN_BASE_APTH + '/client/edit:id',
+      path: PLUGIN_BASE_APTH + '/client/edit/:id',
       permission: CLIENT_WRITE,
     },
     {
@@ -129,7 +129,7 @@ const pluginMetadata = {
     },
     {
       component: ScopeEditPage,
-      path: PLUGIN_BASE_APTH + '/scope/edit:id',
+      path: PLUGIN_BASE_APTH + '/scope/edit/:id',
       permission: SCOPE_WRITE,
     },
     {

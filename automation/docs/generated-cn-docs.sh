@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
-
+# The below variable represents the top level directory of the repository
+MAIN_DIRECTORY_LOCATION=$1
 echo "Copies generated/duplicate cn docs such as the helm main readme to the main docs folder"
 
 echo "Generating helm docs"
@@ -13,20 +14,21 @@ tar xvf helm-docs_"${HELM_DOCS_VERSION}"_Linux_x86_64.tar.gz
 sudo cp helm-docs /usr/local/bin/
 cd ..
 # Generate Helm docs
-helm-docs flex-cn-setup/pygluu/kubernetes/templates/helm/
+helm-docs "$MAIN_DIRECTORY_LOCATION"/flex-cn-setup/pygluu/kubernetes/templates/helm/
 rm -rf helmtemp
 echo "Copying Helm chart Readme to helm-chart.md"
-cp ./flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/README.md ./docs/reference/kubernetes/helm-chart.md
+cp "$MAIN_DIRECTORY_LOCATION"/flex-cn-setup/pygluu/kubernetes/templates/helm/gluu/README.md "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/helm-chart.md
 echo "Adding keywords to helm-chart"
-sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n---\n/' ./docs/reference/kubernetes/helm-chart.md
+sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n---\n/' "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/helm-chart.md
 echo "Copying docker-monolith main README.md to compose.md"
-cp ./docker-jans-monolith/README.md  ./docs/install/docker-install/compose.md
+cp "$MAIN_DIRECTORY_LOCATION"/docker-jans-monolith/README.md "$MAIN_DIRECTORY_LOCATION"/docs/install/docker-install/compose.md
 echo "Copying docker images Readme to respective image md"
 # cp docker files main README.md
 docker_images="docker-casa docker-admin-ui docker-jans-monolith"
 for image in $docker_images;do
-  cp ./"$image"/README.md ./docs/reference/kubernetes/"$image".md
+  cp "$MAIN_DIRECTORY_LOCATION"/"$image"/README.md "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/"$image".md
 done
 echo "cp docker-opendj main README.md"
-wget https://raw.githubusercontent.com/GluuFederation/docker-opendj/5.0/README.md -O ./docs/reference/kubernetes/docker-opendj.md
-sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n - docker image\n---\n/' ./docs/reference/kubernetes/docker-opendj.md
+wget https://raw.githubusercontent.com/GluuFederation/docker-opendj/5.0/README.md -O "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/docker-opendj.md
+sed -i '1 s/^/---\ntags:\n  - administration\n  - reference\n  - kubernetes\n - docker image\n---\n/' "$MAIN_DIRECTORY_LOCATION"/docs/reference/kubernetes/docker-opendj.md
+echo "generated-cn-docs.sh executed successfully!"

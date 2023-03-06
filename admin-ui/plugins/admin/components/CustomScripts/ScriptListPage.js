@@ -175,7 +175,7 @@ function ScriptListTable() {
   function handleGoToCustomScriptEditPage(row, edition) {
     dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
-    return navigate(`/adm/script/edit:` + row.inum)
+    return navigate(`/adm/script/edit/:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
     setItem(row)

@@ -64,7 +64,7 @@ function SqlListPage({
 
   function handleGoToSqlEditPage(row) {
     dispatch(setCurrentItem(row))
-    return navigate(`/config/sql/edit:` + row.configId)
+    return navigate(`/config/sql/edit/:` + row.configId)
   }
 
   function handleSqlDelete(row) {
