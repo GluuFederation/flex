@@ -119,17 +119,7 @@ jobs:
          MESSAGE="fix(docs): autogenerate docs"
          PR=$(gh pr create --body "Auto generated docs" --title "${MESSAGE}")
          cd ../../
-         rm -rf temp
-          
-         # The below should not be pushed to main
-         echo "Replacing release number markers with actual release number"
-         if [ ! -z "$VERSION" ]; then
-           cd docs
-           egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${VERSION:1}/g"
-           git add . || echo "Nothing to add"
-           git commit -a -S -m "docs: replace release marker with release number" || echo "Nothing to commit"
-           cd ..
-         fi
+         sudo rm -rf temp
 
       - name: mike deploy ${{ github.event.inputs.version }}
         if: >-
@@ -196,6 +186,13 @@ jobs:
           git add index.yaml && git update-index --refresh
           cd ..
           # END move generated chart from a previous step
+          
+          echo "Replacing release number markers with actual release number"
+          cd ${LATEST}
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${VERSION:1}/g"
+          git add . && git update-index --refresh
+          cd ..
+
           echo "${STABLE}" > stable.txt
           git add stable.txt && git update-index --refresh
           git diff-index --quiet HEAD -- || git commit -S -m "Set stable to ${STABLE}"
