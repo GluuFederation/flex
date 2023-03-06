@@ -43,6 +43,7 @@ import {
   PROPERTIES_READ,
   LOGGING_READ
 } from 'Utils/PermChecker'
+import AgamaListPage from './components/Agama/AgamaListPage'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -85,6 +86,11 @@ const pluginMetadata = {
         {
           title: 'menus.scopes',
           path: PLUGIN_BASE_APTH + '/scopes',
+          permission: SCOPE_READ,
+        },
+        {
+          title: 'menus.agama',
+          path: PLUGIN_BASE_APTH + '/agama',
           permission: SCOPE_READ,
         },
       ],
@@ -146,6 +152,16 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/reports',
       permission: ACR_READ,
     },
+    {
+      component: AgamaListPage,
+      path: PLUGIN_BASE_APTH + '/agama',
+      permission: ACR_READ,
+    },
+    // {
+    //   component: AgamaAddPage,
+    //   path: PLUGIN_BASE_APTH + '/agama/new',
+    //   permission: AGAMA_WRITE,
+    // },
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
