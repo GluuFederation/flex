@@ -75,7 +75,7 @@ function UserList(props) {
   }
   function handleGoToUserEditPage(row) {
     dispatch(setSelectedUserData(row))
-    return navigate(`/user/usermanagement/edit:` + row.tableData.uuid)
+    return navigate(`/user/usermanagement/edit/:` + row.tableData.uuid)
   }
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
