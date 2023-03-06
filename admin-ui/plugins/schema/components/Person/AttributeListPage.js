@@ -97,11 +97,11 @@ function AttributeListPage() {
   }
   function handleGoToAttributeEditPage(row) {
     dispatch(setCurrentItem(row))
-    return navigate(`/attribute/edit:` + row.inum)
+    return navigate(`/attribute/edit/:` + row.inum)
   }
   function handleGoToAttributeViewPage(row) {
     dispatch(setCurrentItem(row))
-    return navigate(`/attribute/view:` + row.inum)
+    return navigate(`/attribute/view/:` + row.inum)
   }
   function handleAttribueDelete(row) {
     setItem(row)

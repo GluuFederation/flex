@@ -29,7 +29,7 @@ const pluginMetadata = {
     },
     {
       component: UserEditPage,
-      path: PLUGIN_BASE_APTH + '/usermanagement/edit:id',
+      path: PLUGIN_BASE_APTH + '/usermanagement/edit/:id',
       permission: USER_WRITE,
     },
   ],
