@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
-
+# The below variable represents the top level directory of the repository
+MAIN_DIRECTORY_LOCATION=$1
 echo "Generate properties and feature flag documents from elements annotated with @DocFeatureFlag and @DocProperty"
 
 # Compile jans-core to pick-up any changes in annotation processors
@@ -8,7 +9,7 @@ echo "Generate properties and feature flag documents from elements annotated wit
 
 # Compile modules where classes that use these annotations exist.
 # This will generate markdown files under target/classes directory
-mvn -q -f casa/pom.xml clean compile
+mvn -q -f "$MAIN_DIRECTORY_LOCATION"/casa/pom.xml clean compile
 
 # Move markdown files to appropriate locations under documentation root 'doc'
 # Sample commands to move generated files are given below. Properties files and feature flag doc files
