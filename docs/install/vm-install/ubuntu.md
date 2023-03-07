@@ -39,10 +39,12 @@ apt install -y ~/flex_replace-flex-version.ubuntu20.04_amd64.deb
 
 ## Run the setup script
 
-- Run the setup script in interactive mode:
+- Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT you can use to install, specified by the `-admin-ui-ssa` argument.
+
+- Run the setup script:
 
 ```
-python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
 ```
 
 ## Ubuntu Flex Uninstallation
