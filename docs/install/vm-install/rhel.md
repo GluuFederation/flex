@@ -43,7 +43,17 @@ yum install /tmp/flex-replace-flex-version.el8.x86_64.rpm
 python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
 ```
 
-## RHEL Flex Uninstallation
+## Log in to Text User Interface (TUI)
+
+Begin configuration by accessing the TUI with the following command:
+
+```
+/opt/jans/jans-cli/jans_cli_tui.py
+```
+
+Full TUI documentation can be found [here](https://docs.jans.io/v1.0.9/admin/config-guide/jans-tui/)
+
+## Uninstallation
 
 Removing Flex is a two step process:
 
