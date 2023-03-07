@@ -11,12 +11,15 @@ import configparser
 import subprocess
 import shutil
 import tempfile
+import json
+import uuid
 
 from pathlib import Path
 from urllib import request
 from urllib.parse import urljoin
 
 cur_dir = os.path.dirname(__file__)
+registration_url = 'https://account-dev.gluu.cloud/jans-auth/restv1/register'
 
 if '--remove-flex' in sys.argv:
 
@@ -46,6 +49,7 @@ def get_flex_setup_parser():
     parser.add_argument('--node-modules-branch', help="Node modules branch. Default to flex setup github branch")
     parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
+    parser.add_argument('-admin-ui-ssa', help="Admin-ui SSA file")
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
@@ -192,6 +196,7 @@ sys.path.insert(0, base.pylib_dir)
 sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
 
 from setup_app.pylib.jproperties import Properties
+from setup_app.pylib import jwt
 from setup_app.pylib.ldif4.ldif import LDIFWriter
 from setup_app.utils.package_utils import packageUtils
 from setup_app.config import Config
@@ -456,6 +461,41 @@ class flex_installer(JettyInstaller):
 
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
+
+        
+        ssa = installed_components.get('ssa')
+        ssa_json = {}
+        if ssa:
+            ssa_json = jwt.decode(
+                        ssa,
+                        options={
+                                'verify_signature': False,
+                                'verify_exp': True,
+                                'verify_aud': False
+                                }
+                    )
+
+        oidc_client = installed_components.get('oidc_client', {})
+        Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
+        Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
+        Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
+        Config.templateRenderingDict['scan_license_auth_server_hostname'] = ssa_json.get('iss', '')
+        Config.templateRenderingDict['scan_license_api_hostname'] = Config.templateRenderingDict['scan_license_auth_server_hostname'].replace('account', 'cloud')
+
+        print("Creating credentials encryption private and public key")
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+
+            private_fn = os.path.join(tmp_dir, 'private.pem')
+            private_key_fn = os.path.join(tmp_dir, 'private_key.pem')
+            public_key_fn = os.path.join(tmp_dir, 'public_key.pem')
+
+            config_api_installer.run([paths.cmd_openssl, 'genrsa', '-out', private_fn, '2048'])
+            config_api_installer.run([paths.cmd_openssl, 'rsa', '-in', private_fn, '-outform', 'PEM', '-pubout', '-out', public_key_fn])
+            config_api_installer.run([paths.cmd_openssl, 'pkcs8', '-topk8', '-inform', 'PEM', '-in', private_fn, '-out', private_key_fn, '-nocrypt'])
+
+            Config.templateRenderingDict['cred_enc_private_key'] = config_api_installer.generate_base64_file(private_key_fn, 0)
+            Config.templateRenderingDict['cred_enc_public_key'] = config_api_installer.generate_base64_file(public_key_fn, 0)
 
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
@@ -746,6 +786,15 @@ def prompt_for_installation():
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
         if not prompt_admin_ui_install.lower().startswith('n'):
             install_components['admin_ui'] = True
+            while True:
+                ssa_fn = input("Please enter path of file containing SSA if you have any: ")
+                if not ssa_fn:
+                    break
+                if os.path.isfile(ssa_fn):
+                    break
+                else:
+                    print("{} is not a file".format(ssa_fn))
+            argsp.admin_ui_ssa = ssa_fn
     else:
         print("Admin UI is allready installed on this system")
         install_components['admin_ui'] = False
@@ -793,11 +842,42 @@ def get_components_from_setup_properties():
         if not (argsp.install_admin_ui or install_components['admin_ui']):
             install_components['admin_ui'] = base.as_bool(setup_properties.get('install-admin-ui'))
 
+        if not argsp.admin_ui_ssa and install_components['admin_ui']:
+            argsp.admin_ui_ssa = setup_properties.get('admin-ui-ssa')
+
         if not (argsp.install_casa or install_components['casa']):
             install_components['casa'] = base.as_bool(setup_properties.get('install-casa'))
 
         if 'adminui-authentication-mode' in setup_properties:
             argsp.adminui_authentication_mode = setup_properties['adminui-authentication-mode']
+
+
+def obtain_oidc_client_credidentials():
+    with open(argsp.admin_ui_ssa) as f:
+        ssa = f.read()
+    installed_components['ssa'] = ssa
+
+    data = {
+        "software_statement": ssa,
+        "response_types": ["token"],
+        "redirect_uris": ["http://localhost"],
+        "client_name": "test-ui-client"
+    }
+
+    req = request.Request(registration_url)
+    req.add_header('Content-Type', 'application/json')
+    jsondata = json.dumps(data)
+    jsondataasbytes = jsondata.encode('utf-8')
+    req.add_header('Content-Length', len(jsondataasbytes))
+
+    try:
+        response = request.urlopen(req, jsondataasbytes)
+        result = response.read()
+        installed_components['oidc_client'] = json.loads(result.decode())
+    except Exception as e:
+        print("Error sending request to {}".format(registration_url))
+        print(e)
+        sys.exit()
 
 
 def main(uninstall):
@@ -816,6 +896,10 @@ def main(uninstall):
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum, enable=False)
 
     else:
+
+        if install_components['admin_ui'] and argsp.admin_ui_ssa:
+            obtain_oidc_client_credidentials()
+
         installer_obj.download_files()
         print("Enabling script", installer_obj.simple_auth_scr_inum)
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum)
