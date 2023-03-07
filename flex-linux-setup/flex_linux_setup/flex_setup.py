@@ -63,7 +63,7 @@ __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 if os.path.exists(__STATIC_SETUP_DIR__):
     os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
 
-installed_components = {'admin_ui': False, 'casa': False}
+installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
 argsp = None
 jans_installer_downloaded = False
 install_py_path = os.path.join(cur_dir, 'jans_install.py')
@@ -236,7 +236,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.0.9",
+  "JANS_APP_VERSION": "1.0.8",
   "JANS_BUILD": "-SNAPSHOT",
   "NODE_VERSION": "v14.18.2",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
@@ -249,6 +249,7 @@ config_api_installer = ConfigApiInstaller()
 jansAuthInstaller = JansAuthInstaller()
 jans_cli_installer = JansCliInstaller()
 setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
+
 
 
 class flex_installer(JettyInstaller):
@@ -462,18 +463,7 @@ class flex_installer(JettyInstaller):
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
-        
-        ssa = installed_components.get('ssa')
-        ssa_json = {}
-        if ssa:
-            ssa_json = jwt.decode(
-                        ssa,
-                        options={
-                                'verify_signature': False,
-                                'verify_exp': True,
-                                'verify_aud': False
-                                }
-                    )
+        ssa_json = decode_ssa_jwt()
 
         oidc_client = installed_components.get('oidc_client', {})
         Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
@@ -780,6 +770,27 @@ class flex_installer(JettyInstaller):
                         store_type='PKCS12'
                         )
 
+def decode_ssa_jwt():
+    ssa_fn = argsp.admin_ui_ssa
+
+    print("Decoding {}".format(ssa_fn))
+
+    with open(ssa_fn) as f:
+        ssa_jwt = f.read().strip()
+
+    ssa_decoded = jwt.decode(
+        ssa_jwt,
+        options={
+                'verify_signature': False,
+                'verify_exp': True,
+                'verify_aud': False
+                }
+        )
+
+    return ssa_decoded
+
+
+
 def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
@@ -795,6 +806,11 @@ def prompt_for_installation():
                 else:
                     print("{} is not a file".format(ssa_fn))
             argsp.admin_ui_ssa = ssa_fn
+            try:
+                decode_ssa_jwt()
+            except Exception:
+                print("Error decoding {}".format(ssa_fn))
+                sys.exit()
     else:
         print("Admin UI is allready installed on this system")
         install_components['admin_ui'] = False
@@ -854,7 +870,8 @@ def get_components_from_setup_properties():
 
 def obtain_oidc_client_credidentials():
     with open(argsp.admin_ui_ssa) as f:
-        ssa = f.read()
+        ssa = f.read().strip()
+
     installed_components['ssa'] = ssa
 
     data = {
@@ -870,10 +887,13 @@ def obtain_oidc_client_credidentials():
     jsondataasbytes = jsondata.encode('utf-8')
     req.add_header('Content-Length', len(jsondataasbytes))
 
+    print("Requesting OIDC Client from", registration_url)
+
     try:
         response = request.urlopen(req, jsondataasbytes)
         result = response.read()
         installed_components['oidc_client'] = json.loads(result.decode())
+        print("OIDC Client ID is", installed_components['oidc_client']['client_id'])
     except Exception as e:
         print("Error sending request to {}".format(registration_url))
         print(e)
