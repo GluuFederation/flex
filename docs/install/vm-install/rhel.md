@@ -24,13 +24,13 @@ You can disbale SELinux temporarily by executing `setenforce 0`. To disable perm
   [Releases](https://github.com/gluufederation/flex/releases)
 
 ```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version.el8.x86_64.rpm -P ~/
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version.el8.x86_64.rpm -P /tmp
 ```
   
 - Install the package
 
 ```
-yum install ~/flex-replace-flex-version.el8.x86_64.rpm
+yum install /tmp/flex-replace-flex-version.el8.x86_64.rpm
 ```
 
 ## Run the setup script
