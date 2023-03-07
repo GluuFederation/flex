@@ -18,4 +18,4 @@ If needed, a command-line alternative to the TUI is available. Instructions can 
 
 ## Admin UI
 
-Exclusive to Gluu Flex, the new Gluu Flex Admin UI is a browser-based GUI in development. Many features are available now, and it can be accessed by accessing the hostname set during installation in the browser.
+The Gluu Flex Admin UI is a reactive web interface to simplify the management and configuration of your Auth Server. The Admin UI enables you to easily view and edit configuration properties, interception scripts, clients, and metrics in one place. The Admin UI can be accessed by accessing the hostname set during installation in the browser.
