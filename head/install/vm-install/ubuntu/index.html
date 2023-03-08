@@ -644,8 +644,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ubuntu-flex-uninstallation" class="md-nav__link">
-    Ubuntu Flex Uninstallation
+  <a href="#log-in-to-text-user-interface-tui" class="md-nav__link">
+    Log in to Text User Interface (TUI)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallation" class="md-nav__link">
+    Uninstallation
   </a>
   
 </li>
@@ -1027,8 +1034,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ubuntu-flex-uninstallation" class="md-nav__link">
-    Ubuntu Flex Uninstallation
+  <a href="#log-in-to-text-user-interface-tui" class="md-nav__link">
+    Log in to Text User Interface (TUI)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uninstallation" class="md-nav__link">
+    Uninstallation
   </a>
   
 </li>
@@ -1088,11 +1102,21 @@
 </code></pre></div>
 <h2 id="run-the-setup-script">Run the setup script<a class="headerlink" href="#run-the-setup-script" title="Permanent link">#</a></h2>
 <ul>
-<li>Run the setup script in interactive mode:</li>
+<li>
+<p>Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT you can use to install, specified by the <code>-admin-ui-ssa</code> argument.</p>
+</li>
+<li>
+<p>Run the setup script:</p>
+</li>
 </ul>
-<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+<div class="highlight"><pre><span></span><code>python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
 </code></pre></div>
-<h2 id="ubuntu-flex-uninstallation">Ubuntu Flex Uninstallation<a class="headerlink" href="#ubuntu-flex-uninstallation" title="Permanent link">#</a></h2>
+<h2 id="log-in-to-text-user-interface-tui">Log in to Text User Interface (TUI)<a class="headerlink" href="#log-in-to-text-user-interface-tui" title="Permanent link">#</a></h2>
+<p>Begin configuration by accessing the TUI with the following command:</p>
+<div class="highlight"><pre><span></span><code>/opt/jans/jans-cli/jans_cli_tui.py
+</code></pre></div>
+<p>Full TUI documentation can be found <a href="https://docs.jans.io/v1.0.9/admin/config-guide/jans-tui/">here</a></p>
+<h2 id="uninstallation">Uninstallation<a class="headerlink" href="#uninstallation" title="Permanent link">#</a></h2>
 <p>Removing Flex is a two step process:</p>
 <ol>
 <li>Delete files installed by Gluu Flex</li>
@@ -1113,7 +1137,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-03-07T20:59:56+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-03-07</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-03-08T12:39:19+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-03-08</span>
       
         <br>
         Created:
