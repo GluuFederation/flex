@@ -39,13 +39,25 @@ apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
 
 ## Run the setup script
 
-- Run the setup script in interactive mode:
+- Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT you can use to install, specified by the `-admin-ui-ssa` argument.
+
+- Run the setup script:
 
 ```
-python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py
+python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py -admin-ui-ssa [filename]
 ```
 
-## Ubuntu Flex Uninstallation
+## Log in to Text User Interface (TUI)
+
+Begin configuration by accessing the TUI with the following command:
+
+```
+/opt/jans/jans-cli/jans_cli_tui.py
+```
+
+Full TUI documentation can be found [here](https://docs.jans.io/v1.0.9/admin/config-guide/jans-tui/)
+
+## Uninstallation
 
 Removing Flex is a two step process:
 
