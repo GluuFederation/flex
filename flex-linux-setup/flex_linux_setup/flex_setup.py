@@ -19,7 +19,8 @@ from urllib import request
 from urllib.parse import urljoin
 
 cur_dir = os.path.dirname(__file__)
-registration_url = 'https://account-dev.gluu.cloud/jans-auth/restv1/register'
+installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
+ssa_json = {}
 
 if '--remove-flex' in sys.argv:
 
@@ -47,7 +48,7 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
     parser.add_argument('--node-modules-branch', help="Node modules branch. Default to flex setup github branch")
-    parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
+    parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
     parser.add_argument('-admin-ui-ssa', help="Admin-ui SSA file")
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
@@ -63,7 +64,8 @@ __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 if os.path.exists(__STATIC_SETUP_DIR__):
     os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
 
-installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
+
+
 argsp = None
 jans_installer_downloaded = False
 install_py_path = os.path.join(cur_dir, 'jans_install.py')
@@ -251,9 +253,7 @@ jans_cli_installer = JansCliInstaller()
 setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
 
 
-
 class flex_installer(JettyInstaller):
-
 
     def __init__(self):
 
@@ -462,8 +462,6 @@ class flex_installer(JettyInstaller):
 
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
-
-        ssa_json = decode_ssa_jwt()
 
         oidc_client = installed_components.get('oidc_client', {})
         Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
@@ -787,8 +785,7 @@ def decode_ssa_jwt():
                 }
         )
 
-    return ssa_decoded
-
+    ssa_json.update(ssa_decoded)
 
 
 def prompt_for_installation():
@@ -860,6 +857,7 @@ def get_components_from_setup_properties():
 
         if not argsp.admin_ui_ssa and install_components['admin_ui']:
             argsp.admin_ui_ssa = setup_properties.get('admin-ui-ssa')
+            decode_ssa_jwt()
 
         if not (argsp.install_casa or install_components['casa']):
             install_components['casa'] = base.as_bool(setup_properties.get('install-casa'))
@@ -880,6 +878,8 @@ def obtain_oidc_client_credidentials():
         "redirect_uris": ["http://localhost"],
         "client_name": "test-ui-client"
     }
+
+    registration_url = urljoin(ssa_json['iss'], 'jans-auth/restv1/register')
 
     req = request.Request(registration_url)
     req.add_header('Content-Type', 'application/json')
