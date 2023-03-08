@@ -18,9 +18,15 @@ from pathlib import Path
 from urllib import request
 from urllib.parse import urljoin
 
+
+argsp = None
 cur_dir = os.path.dirname(__file__)
+jans_installer_downloaded = False
+flex_installer_downloaded = False
+install_py_path = os.path.join(cur_dir, 'jans_install.py')
 installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
 ssa_json = {}
+jans_config_properties = '/etc/jans/conf/jans.properties'
 
 if '--remove-flex' in sys.argv:
 
@@ -61,46 +67,43 @@ def get_flex_setup_parser():
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
-if os.path.exists(__STATIC_SETUP_DIR__):
+if os.path.join(__STATIC_SETUP_DIR__, 'flex/flex-linux-setup') == cur_dir:
+    jans_installer_downloaded = True
+    flex_installer_downloaded = True
+
+if not jans_installer_downloaded and os.path.exists(__STATIC_SETUP_DIR__):
+    print("Backing up old Janssen setup directory")
     os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
-
-
-
-argsp = None
-jans_installer_downloaded = False
-install_py_path = os.path.join(cur_dir, 'jans_install.py')
+else:
+    sys.path.append(__STATIC_SETUP_DIR__)
 
 def download_jans_install_py(setup_branch):
     print("Downloading", os.path.basename(install_py_path))
     install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
     request.urlretrieve(install_url, install_py_path)
 
-try:
-    import jans_setup
-    path_ = list(jans_setup.__path__)
-    sys.path.append(path_[0])
-except ModuleNotFoundError:
-    if not os.path.exists('/etc/jans/conf/jans.properties'):
-        argsp, nargs = get_flex_setup_parser().parse_known_args()
-        print("Unable to locate jans-setup, installing ...")
-        setup_branch = argsp.jans_setup_branch or 'main'
-        download_jans_install_py(setup_branch)
-        install_cmd = '{} {} --setup-branch={}'.format(sys.executable, install_py_path, setup_branch)
 
-        if argsp.download_exit:
-            nargs.append('--download-exit')
-            argsp.flex_non_interactive = True
+if not (jans_installer_downloaded or os.path.exists(jans_config_properties)):
+    argsp, nargs = get_flex_setup_parser().parse_known_args()
+    print("Unable to locate jans-setup, installing ...")
+    setup_branch = argsp.jans_setup_branch or 'main'
+    download_jans_install_py(setup_branch)
+    install_cmd = '{} {} --setup-branch={}'.format(sys.executable, install_py_path, setup_branch)
 
-        if argsp.flex_non_interactive:
-            nargs.append('-n')
-            install_cmd += ' -yes'
+    if argsp.download_exit:
+        nargs.append('--download-exit')
+        argsp.flex_non_interactive = True
 
-        if nargs:
-            install_cmd += ' --args="{}"'.format(subprocess.list2cmdline(nargs))
+    if argsp.flex_non_interactive:
+        nargs.append('-n')
+        install_cmd += ' -yes'
 
-        print("Executing", install_cmd)
-        os.system(install_cmd)
-        jans_installer_downloaded = True
+    if nargs:
+        install_cmd += ' --args="{}"'.format(subprocess.list2cmdline(nargs))
+
+    print("Executing", install_cmd)
+    os.system(install_cmd)
+    jans_installer_downloaded = True
 
 if not argsp:
     argsp, nargs = get_flex_setup_parser().parse_known_args()
@@ -164,7 +167,8 @@ from setup_app.utils import arg_parser
 arg_parser.add_to_me(parser)
 installed = False
 
-if not (os.path.exists('/etc/jans/conf/jans.properties') or argsp.download_exit):
+
+if not (os.path.exists(jans_config_properties) or argsp.download_exit):
     installed = True
     try:
         from jans_setup import jans_setup
@@ -298,8 +302,8 @@ class flex_installer(JettyInstaller):
 
         self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
 
-        if os.path.exists(self.source_dir):
-            os.rename(self.source_dir, self.source_dir+'-'+time.ctime().replace(' ', '_'))
+        if not flex_installer_downloaded and os.path.exists(self.source_dir):
+            os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
 
 
     def download_files(self, force=False):
@@ -795,19 +799,22 @@ def prompt_for_installation():
         if not prompt_admin_ui_install.lower().startswith('n'):
             install_components['admin_ui'] = True
             while True:
+                argsp.admin_ui_ssa = None
                 ssa_fn = input("Please enter path of file containing SSA if you have any: ")
                 if not ssa_fn:
                     break
                 if os.path.isfile(ssa_fn):
-                    break
+                    try:
+                        argsp.admin_ui_ssa = ssa_fn
+                        decode_ssa_jwt()
+                        break
+                    except Exception as e:
+                        print("Error decoding {}".format(ssa_fn))
+                        print(e)
                 else:
                     print("{} is not a file".format(ssa_fn))
-            argsp.admin_ui_ssa = ssa_fn
-            try:
-                decode_ssa_jwt()
-            except Exception:
-                print("Error decoding {}".format(ssa_fn))
-                sys.exit()
+
+
     else:
         print("Admin UI is allready installed on this system")
         install_components['admin_ui'] = False
@@ -920,7 +927,9 @@ def main(uninstall):
         if install_components['admin_ui'] and argsp.admin_ui_ssa:
             obtain_oidc_client_credidentials()
 
-        installer_obj.download_files()
+        if not flex_installer_downloaded or argsp.download_exit:
+            installer_obj.download_files(argsp.download_exit)
+
         print("Enabling script", installer_obj.simple_auth_scr_inum)
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum)
 
