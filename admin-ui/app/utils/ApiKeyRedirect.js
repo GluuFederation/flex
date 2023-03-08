@@ -47,7 +47,7 @@ function ApiKeyRedirect({
           type="error"
           message={t('The UI backend service is down')}
           description={t(
-            'Please contact the side administrator or make sure it is up and running.',
+            'It may due to any of the following reason-\r\n1. Admin UI Backend is down. \n2. Unable to get license credentials from Gluu server.\nPlease contact the site administrator or check server logs.',
           )}
           show={!backendIsUp}
         />
