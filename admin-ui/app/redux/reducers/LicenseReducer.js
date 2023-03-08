@@ -38,21 +38,7 @@ export default function licenseReducer(state = INIT_STATE, action) {
         isLoading: true,
         error: '',
       }
-    case ACTIVATE_CHECK_LICENCE_API_VALID:
-      if (action.payload.apiResult) {
-        return {
-          ...state,
-          isLicenceAPIkeyValid: action.payload,
-          error: '',
-          isLoading: false,
-        }
-      } else {
-        return {
-          ...state,
-          error: action.payload.responseMessage,
-          isLoading: false,
-        }
-      }
+
     case ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE:
       if (action.payload.apiResult) {
         return {
