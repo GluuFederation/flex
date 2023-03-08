@@ -97,6 +97,7 @@ jobs:
          git clone  https://mo-auto:${{ secrets.MOWORKFLOWTOKEN }}@github.com/GluuFederation/flex.git
          cd flex
          git checkout -b cn-flex-update-auto-generated-docs
+         git pull origin cn-flex-update-auto-generated-docs || echo "Nothing to pull"
          echo "Custom work on generating docs can go here."
          # Run cn docs 
          sudo bash ./automation/docs/generated-cn-docs.sh . || echo "something went wrong with generating the cn docs"
@@ -190,6 +191,7 @@ jobs:
           echo "Replacing release number markers with actual release number"
           cd ${LATEST}
           egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${VERSION:1}/g"
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-jans-version/${VERSION:1}/g"
           git add . && git update-index --refresh
           cd ..
 
