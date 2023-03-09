@@ -41,7 +41,7 @@ EXPOSE 443 8080 1636
 # flex-linux-setup
 # =====================
 
-ENV FLEX_SOURCE_VERSION=29e0cbb5166d83268ab9c3ee3c5f3e2bc4dd1489
+ENV FLEX_SOURCE_VERSION=468f4e9555ce8846edf76e896a7c3ec6acbbe18f
 # cleanup
 RUN rm -rf /tmp/jans
 
