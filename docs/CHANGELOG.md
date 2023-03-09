@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.0.0-9](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-8...docs-v5.0.0-9) (2023-03-09)
+
+
+### Bug Fixes
+
+* **docs:** ubuntu install download location ([bb3a5cd](https://github.com/GluuFederation/flex/commit/bb3a5cdc282c6089edb326675061e72d20bd8431))
+* prepare for 5.0.0-9 release ([716d309](https://github.com/GluuFederation/flex/commit/716d309350f5713b96f482dde9e0a543e5e62286))
+
 ## [5.0.0-8](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-7...docs-v5.0.0-8) (2023-03-02)
 
 
