@@ -23,6 +23,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
         {doc_category &&  
           <>
             <ReactTooltip
+              tabIndex="-1"
               html
               id={doc_entry}
               data-testid={doc_entry}
@@ -30,7 +31,7 @@ function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
             >
               {t('documentation.' + doc_category + '.' + doc_entry)}
             </ReactTooltip>
-            <HelpOutline style={{ width: 18, height: 18, marginLeft:6, marginRight:6 }} data-tip data-for={doc_entry} />
+            <HelpOutline tabIndex="-1" style={{ width: 18, height: 18, marginLeft:6, marginRight:6 }} data-tip data-for={doc_entry} />
           </>
         }
         :
