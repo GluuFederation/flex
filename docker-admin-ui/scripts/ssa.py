@@ -69,12 +69,15 @@ def get_enc_keys():
 
 
 def get_license_client_creds(manager):
+    # used mostly for testing on fresh deployment to re-use license client ID thus client registration will be skipped
+    # in production mode, omit or set empty string to force registering license client (if required)
     client_id = os.environ.get("GLUU_LICENSE_CLIENT_ID", "")
     if client_id:
         logger.warning("Got license client ID from GLUU_LICENSE_CLIENT_ID env which is not suitable for production")
     else:
         client_id = manager.config.get("license_client_id")
 
+    # used mostly for testing on fresh deployment to re-use license client secret
     client_secret = os.environ.get("GLUU_LICENSE_CLIENT_SECRET", "")
     if client_secret:
         logger.warning("Got license client secret from GLUU_LICENSE_CLIENT_SECRET env which is not suitable for production")

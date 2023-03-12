@@ -81,8 +81,8 @@ The following environment variables are supported by the container:
 - `CN_GOOGLE_SPANNER_DATABASE_ID`: Google Spanner database ID.
 - `GLUU_ADMIN_UI_PLUGINS`: Comma-separated additional plugins to be enabled (default to empty string). See [Adding plugins](#adding-plugins) for details.
 - `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (one of `basic` or `casa`; default to `basic`). Note, changing the value require restart to jans-config-api.
-- `GLUU_SCAN_API_URL`: Base URL to SCAN API host (i.e. `https://cloud-dev.gluu.cloud`).
-- `GLUU_SCAN_AUTH_URL`: Base URL to auth server to register dynamic client for license (i.e. `https://account-dev.gluu.cloud`; default to empty string). If omitted or use default value, the URL will be taken from `iss` claim included in SSA.
+- `GLUU_SCAN_AUTH_URL`: Base URL to auth server to register license client (i.e. `https://account-dev.gluu.cloud`; default to empty string). If omitted or use default value, the URL will be pre-populated from `iss` claim included in SSA file.
+- `GLUU_SCAN_API_URL`: Base URL to SCAN API host (i.e. `https://cloud-dev.gluu.cloud`; default to empty string). If omitted or use default value, the URL will be pre-populated and modified based on `iss` claim included in SSA file.
 
 ### Hybrid mapping
 
