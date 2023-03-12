@@ -800,9 +800,10 @@ def prompt_for_installation():
             install_components['admin_ui'] = True
             while True:
                 argsp.admin_ui_ssa = None
-                ssa_fn = input("Please enter path of file containing SSA if you have any: ")
-                if not ssa_fn:
-                    break
+                ssa_fn = input("Please enter path of file containing SSA (q to exit): ")
+                if ssa_fn.strip().lower() == 'q':
+                    print("Can't continue without SSA. Exiting...")
+                    sys.exit()
                 if os.path.isfile(ssa_fn):
                     try:
                         argsp.admin_ui_ssa = ssa_fn
@@ -813,7 +814,6 @@ def prompt_for_installation():
                         print(e)
                 else:
                     print("{} is not a file".format(ssa_fn))
-
 
     else:
         print("Admin UI is allready installed on this system")
