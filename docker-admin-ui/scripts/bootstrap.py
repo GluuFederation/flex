@@ -1,7 +1,6 @@
 import json
 import logging.config
 import os
-from hashlib import sha256
 from uuid import uuid4
 from functools import cached_property
 
@@ -235,12 +234,6 @@ class PersistenceSetup:
                 )
 
 
-def digest_equals(old_value, new_value):
-    old_value_b = json.dumps(old_value).encode()
-    new_value_b = json.dumps(new_value).encode()
-    return sha256(old_value_b).hexdigest() == sha256(new_value_b).hexdigest()
-
-
 def resolve_conf_app(old_conf, new_conf):
     should_update = False
 
@@ -248,18 +241,12 @@ def resolve_conf_app(old_conf, new_conf):
     if not old_conf:
         return True, new_conf
 
-    # old_conf may have `licenseKey` which is not defined in auiConfiguration.json
-    # the value should be extracted and merged later (if required)
-    license_key = old_conf.get("licenseConfig", {}).pop("licenseKey", None)
-
-    # check if contents are different; if so, merge conf
-    if not digest_equals(old_conf, new_conf):
-        old_conf.update(new_conf)
+    # licenseConfig is new property added after v1.0.9 release
+    if "licenseConfig" not in old_conf:
+        old_conf["licenseConfig"] = new_conf["licenseConfig"]
         should_update = True
 
-    # bring back licenseKey (if any)
-    if license_key:
-        old_conf["licenseConfig"]["licenseKey"] = license_key
+    # finalized status and conf
     return should_update, old_conf
 
 
