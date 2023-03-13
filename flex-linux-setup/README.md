@@ -56,3 +56,11 @@ To add/remove Admin UI, on vm execute -
     `python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex-plugin.py`
 
 The available plugins can be downloaded from https://jenkins.gluu.org/npm/admin_ui/<git-branch-name>
+
+
+Uninstallation of Gluu Flex along with Jans
+-----------------------------------------------
+
+ - Uninstall Flex: `python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex`
+ - Uninstall Jans: `python3 /opt/jans/jans-setup/install.py --uninstall`
+ - Remove old files from `/var/www/html/` directory
