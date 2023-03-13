@@ -14,13 +14,13 @@ Before you install, check the [VM system requirements](vm-requirements.md).
 - Download the release package from the Github Gluu Flex [Releases](https://github.com/GluuFederation/flex/releases)
 
 ```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu22.04_amd64.deb -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-ubuntu22.04_amd64.deb -P /tmp
 ```
 
 - Install the package
 
 ```
-apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version-ubuntu22.04_amd64.deb
 ```
 
 ### Ubuntu 20.04
@@ -28,13 +28,13 @@ apt install -y /tmp/flex_replace-flex-version.ubuntu22.04_amd64.deb
 - Download the release package from the Github Gluu Flex [Releases](https://github.com/GluuFederation/flex/releases)
 
 ```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version.ubuntu20.04_amd64.deb -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex_replace-flex-version-ubuntu20.04_amd64.deb -P /tmp
 ```
 
 - Install the package
 
 ```
-apt install -y /tmp/flex_replace-flex-version.ubuntu20.04_amd64.deb
+apt install -y /tmp/flex_replace-flex-version-ubuntu20.04_amd64.deb
 ```
 
 ## Run the setup script
