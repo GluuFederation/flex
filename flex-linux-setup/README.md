@@ -62,5 +62,5 @@ Uninstallation of Gluu Flex along with Jans
 -----------------------------------------------
 
  - Uninstall Flex: `python3 /opt/jans/jans-setup/flex/flex-linux-setup/flex_setup.py --remove-flex`
- - Uninstall Jans: `python3 /opt/jans/jans-setup/install.py --uninstall`
+ - Uninstall Jans: `python3 /opt/jans/jans-setup/install.py -uninstall`
  - Remove old files from `/var/www/html/` directory
