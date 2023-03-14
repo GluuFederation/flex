@@ -47,12 +47,11 @@ function DefaultAcrInput({
     if (isArray) {
       put[VALUE] = correctValue
     } else {
-      put[VALUE] = document.getElementById(name).value
+      put[VALUE] = data
     }
     put['op'] = 'replace'
     handler(put)
     setShow(!show)
-    setData(document.getElementById(name).value)
   }
   const onCancel = () => {
     setCorrectValue([])
