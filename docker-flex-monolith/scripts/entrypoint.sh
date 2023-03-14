@@ -69,8 +69,9 @@ install_flex() {
   echo "*****   Running the setup script for ${CN_ORG_NAME}!!   *****"
   echo "*****   PLEASE NOTE THAT THIS MAY TAKE A WHILE TO FINISH. PLEASE BE PATIENT!!   *****"
   echo "*****   Installing Gluu Flex..."
+  echo "$CN_GLUU_LICENSE_SSA" > ssa
   curl https://raw.githubusercontent.com/GluuFederation/flex/"${FLEX_SOURCE_VERSION}"/flex-linux-setup/flex_linux_setup/flex_setup.py > flex_setup.py
-  python3 flex_setup.py -f setup.properties --flex-non-interactive
+  python3 flex_setup.py -f setup.properties -admin-ui-ssa ssa --flex-non-interactive
   echo "*****   Setup script completed!!    *****"
 
 }

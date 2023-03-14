@@ -760,7 +760,8 @@ global:
   alb:
     # -- Activates ALB ingress
     ingress: false
-
+  # -- Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded.
+  licenseSsa: ""
   admin-ui:
     # -- Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin.
     enabled: true

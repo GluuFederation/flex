@@ -5,6 +5,7 @@ GLUU_FQDN=$1
 GLUU_PERSISTENCE=$2
 EXT_IP=$3
 FLEX_BUILD_COMMIT=$4
+GLUU_LICENSE_SSA=$5
 
 if [[ ! "$GLUU_FQDN" ]]; then
   read -rp "Enter Hostname [demoexample.gluu.org]:                           " GLUU_FQDN
@@ -17,6 +18,9 @@ if [[ -z $EXT_IP ]]; then
   EXT_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
 fi
 
+if [[ ! "$GLUU_LICENSE_SSA" ]]; then
+  read -rp "Enter the License SSA in base64 format provided from Gluu:          " GLUU_LICENSE_SSA
+fi
 sudo apt-get update
 # Install Docker and Docker compose plugin
 sudo apt-get remove docker docker-engine docker.io containerd runc -y || echo "Docker doesn't exist..installing.."
@@ -53,6 +57,7 @@ if [[ "$FLEX_BUILD_COMMIT" ]]; then
   echo "Updating build commit in Dockerfile to $FLEX_BUILD_COMMIT"
   python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['FLEX_SOURCE_VERSION'] = '$FLEX_BUILD_COMMIT'"
 fi
+python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['CN_GLUU_LICENSE_SSA'] = '$GLUU_LICENSE_SSA'"
 python3 -c "from pathlib import Path ; import ruamel.yaml ; compose = Path('/tmp/flex/docker-flex-monolith/flex-mysql-compose.yml') ; yaml = ruamel.yaml.YAML() ; data = yaml.load(compose) ; data['services']['flex']['build'] = '.' ; del data['services']['flex']['image'] ; yaml.dump(data, compose)"
 python3 -c "from pathlib import Path ; import ruamel.yaml ; compose = Path('/tmp/flex/docker-flex-monolith/flex-postgres-compose.yml') ; yaml = ruamel.yaml.YAML() ; data = yaml.load(compose) ; data['services']['flex']['build'] = '.' ; del data['services']['flex']['image'] ; yaml.dump(data, compose)"
 # --

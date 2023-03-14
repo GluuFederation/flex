@@ -55,7 +55,8 @@ COPY LICENSE /licenses/LICENSE
 # SETUP ENVS
 # ==========
 
-ENV CN_HOSTNAME="demoexample.gluu.org" \
+ENV CN_GLUU_LICENSE_SSA="" \
+    CN_HOSTNAME="demoexample.gluu.org" \
     CN_ADMIN_PASS="" \
     CN_ORG_NAME="Gluu" \
     CN_EMAIL="support.gluu.org" \
