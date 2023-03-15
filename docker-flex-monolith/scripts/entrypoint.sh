@@ -46,7 +46,7 @@ install_flex() {
   echo "test_client_id=${TEST_CLIENT_ID}"| tee -a setup.properties > /dev/null
   echo "test_client_pw=${TEST_CLIENT_SECRET}" | tee -a setup.properties > /dev/null
   echo "test_client_trusted=""$([[ ${TEST_CLIENT_TRUSTED} == true ]] && echo True || echo True)" | tee -a setup.properties > /dev/null
-  echo "admin-ui-ssa=/ssa.txt" | tee -a setup.properties > /dev/null
+  echo "admin-ui-ssa=/opt/ssa.txt" | tee -a setup.properties > /dev/null
   if [[ "${CN_INSTALL_MYSQL}" == "true" ]] || [[ "${CN_INSTALL_PGSQL}" == "true" ]]; then
     echo "Installing with RDBMS"
     echo "rdbm_install=2" | tee -a setup.properties > /dev/null
@@ -70,7 +70,7 @@ install_flex() {
   echo "*****   Running the setup script for ${CN_ORG_NAME}!!   *****"
   echo "*****   PLEASE NOTE THAT THIS MAY TAKE A WHILE TO FINISH. PLEASE BE PATIENT!!   *****"
   echo "*****   Installing Gluu Flex..."
-  echo "$CN_GLUU_LICENSE_SSA" | tee -a /ssa.txt > /dev/null
+  echo "$CN_GLUU_LICENSE_SSA" | tee -a /opt/ssa.txt > /dev/null
   curl https://raw.githubusercontent.com/GluuFederation/flex/"${FLEX_SOURCE_VERSION}"/flex-linux-setup/flex_linux_setup/flex_setup.py > flex_setup.py
   python3 flex_setup.py -f setup.properties --flex-non-interactive
   echo "*****   Setup script completed!!    *****"
