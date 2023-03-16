@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.10](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.9...flex-linux-setup-v1.0.10) (2023-03-16)
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** enforce SSA ([f46b80e](https://github.com/GluuFederation/flex/commit/f46b80edd500a7721358cedfcb43ca342a77401e))
+* prepare for 5.0.10 release ([1ffcbc7](https://github.com/GluuFederation/flex/commit/1ffcbc74d837e7a037d6cff71d990573d04bba7b))
+
+
+### Documentation
+
+* fix jans uninstall linux setup command ([82dcf8c](https://github.com/GluuFederation/flex/commit/82dcf8c87e5e5ace4af0ecb7af18304100c2cb8e))
+* update setup uninstallation ([#842](https://github.com/GluuFederation/flex/issues/842)) ([6ba3aaf](https://github.com/GluuFederation/flex/commit/6ba3aafff9f371c895ec566861f40d8112ef17b1))
+
 ## [1.0.9](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.8...flex-linux-setup-v1.0.9) (2023-03-09)
 
 
