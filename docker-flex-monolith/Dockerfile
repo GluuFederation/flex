@@ -41,7 +41,7 @@ EXPOSE 443 8080 1636
 # flex-linux-setup
 # =====================
 
-ENV FLEX_SOURCE_VERSION=468f4e9555ce8846edf76e896a7c3ec6acbbe18f
+ENV FLEX_SOURCE_VERSION=66beede904dfec29997cfc05e829f6f47cc43ba3
 # cleanup
 RUN rm -rf /tmp/jans
 
@@ -89,7 +89,7 @@ LABEL name="gluufederation/monolith" \
     maintainer="GluuFederation <support@gluu.org>" \
     vendor="GluuFederation" \
     version="5.0.0" \
-    release="dev" \
+    release="10" \
     summary="GluuFederation Flex Monolith Image" \
     description="Janssen Authorization server + Casa + AdminUI"
 

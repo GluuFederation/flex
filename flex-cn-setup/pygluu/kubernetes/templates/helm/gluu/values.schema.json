@@ -237,8 +237,7 @@
                "properties":{
                   "repository":{
                      "description":"Image  to use for deploying",
-                     "type":"string",
-                     "pattern":"^[a-z0-9-_/]+$"
+                     "type":"string"
                   },
                   "tag":{
                      "description":"Image  tag to use for deploying.",
@@ -1226,8 +1225,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1366,8 +1364,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1475,8 +1472,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1620,8 +1616,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1761,8 +1756,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1863,8 +1857,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2141,8 +2134,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2400,8 +2392,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2552,8 +2543,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2676,8 +2666,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2814,8 +2803,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
