@@ -85,4 +85,3 @@ Grab a fresh ubuntu 22.04 lts VM and run:
 ```bash
 wget https://raw.githubusercontent.com/GluuFederation/flex/main/automation/startflexmonolithdemo.sh && chmod u+x startflexmonolithdemo.sh && sudo bash startflexmonolithdemo.sh demoexample.gluu.org MYSQL
 ```
-
