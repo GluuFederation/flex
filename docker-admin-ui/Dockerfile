@@ -190,8 +190,8 @@ ENV CN_WAIT_MAX_TIME=300 \
 LABEL name="gluufederation/admin-ui" \
     maintainer="Gluu Inc. <support@gluu.org>" \
     vendor="Gluu Federation" \
-    version="1.0.10" \
-    release="1" \
+    version="1.0.11" \
+    release="dev" \
     summary="Gluu Admin UI" \
     description=""
 

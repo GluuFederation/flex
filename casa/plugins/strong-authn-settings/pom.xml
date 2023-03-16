@@ -13,7 +13,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <plugin.id>strong-authn-settings</plugin.id>
         <plugin.version>5.0.0-8</plugin.version>
-        <jans.version>1.0.10-SNAPSHOT</jans.version>
+        <jans.version>1.0.11-SNAPSHOT</jans.version>
     </properties>
 
     <repositories>
