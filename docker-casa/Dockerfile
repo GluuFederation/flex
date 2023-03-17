@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjre-alpine:11.0.18
+FROM bellsoft/liberica-openjre-alpine:11.0.16
 
 # ===============
 # Alpine packages
@@ -212,13 +212,12 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
 # misc stuff
 # ==========
 
-LABEL name="gluufederation/casa" \
-    maintainer="Gluu Inc. <support@gluu.org>" \
-    vendor="Gluu Federation" \
-    version="5.0.0" \
-    release="dev" \
-    summary="Gluu Casa" \
-    description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
+LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/casa" \
+    org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
+    org.opencontainers.image.vendor="Gluu Federation" \
+    org.opencontainers.image.version="5.0.0" \
+    org.opencontainers.image.title="Gluu Flex Casa" \
+    org.opencontainers.image.description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 
 RUN mkdir -p /etc/certs \
     /etc/jans/conf/casa \
