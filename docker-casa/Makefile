@@ -1,5 +1,5 @@
 GLUU_VERSION?=5.0.0
-IMAGE_NAME=gluufederation/casa
+IMAGE_NAME=ghcr.io/gluufederation/flex/casa
 UNSTABLE_VERSION?=dev
 
 .PHONY: test clean all build-dev trivy-scan grype-scan

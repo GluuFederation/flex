@@ -85,13 +85,12 @@ ENV CN_GLUU_LICENSE_SSA="" \
 # misc stuff
 # ==========
 
-LABEL name="gluufederation/monolith" \
-    maintainer="GluuFederation <support@gluu.org>" \
-    vendor="GluuFederation" \
-    version="5.0.0" \
-    release="10" \
-    summary="GluuFederation Flex Monolith Image" \
-    description="Janssen Authorization server + Casa + AdminUI"
+LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/monolith" \
+    org.opencontainers.image.authors="GluuFederation <support@gluu.org>" \
+    org.opencontainers.image.vendor="GluuFederation" \
+    org.opencontainers.image.version="5.0.0" \
+    org.opencontainers.image.title="GluuFederation Flex Monolith Image" \
+    org.opencontainers.image.description="Janssen Authorization server + Casa + AdminUI"
 
 COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh

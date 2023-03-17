@@ -187,13 +187,12 @@ ENV CN_WAIT_MAX_TIME=300 \
 # misc stuff
 # ==========
 
-LABEL name="gluufederation/admin-ui" \
-    maintainer="Gluu Inc. <support@gluu.org>" \
-    vendor="Gluu Federation" \
-    version="1.0.11" \
-    release="dev" \
-    summary="Gluu Admin UI" \
-    description=""
+LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
+    org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
+    org.opencontainers.image.vendor="Gluu Federation" \
+    org.opencontainers.image.version="1.0.11" \
+    org.opencontainers.image.title="Gluu Flex Admin UI" \
+    org.opencontainers.image.description=""
 
 RUN mkdir -p /etc/jans/conf /etc/certs
 COPY templates /app/templates/
