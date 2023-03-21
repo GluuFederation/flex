@@ -1,5 +1,43 @@
 # Changelog
 
+## [5.0.0-10](https://github.com/GluuFederation/flex/compare/v5.0.0-9...v5.0.0-10) (2023-03-16)
+
+
+### Features
+
+* **admin-ui:** change design for backend error ([afb1221](https://github.com/GluuFederation/flex/commit/afb12214d1cd0e8ee88f5e60fa781b0e254d7b2e))
+* **docker-admin-ui:** admin-ui license registration ([#844](https://github.com/GluuFederation/flex/issues/844)) ([1b64602](https://github.com/GluuFederation/flex/commit/1b64602861501d831e1516534576f8162463d3c2))
+
+
+### Bug Fixes
+
+* add cn license enforcment to chart ([55fb0c9](https://github.com/GluuFederation/flex/commit/55fb0c97428a3ec704e80558679a7e9d7f88c42c))
+* **admin-ui:** fix default arc in properties [#851](https://github.com/GluuFederation/flex/issues/851) ([9ef87ad](https://github.com/GluuFederation/flex/commit/9ef87ad0c44d2e22686e49d4d01ea72ef878d57f))
+* **admin-ui:** fix properties page [#848](https://github.com/GluuFederation/flex/issues/848) ([1aa30da](https://github.com/GluuFederation/flex/commit/1aa30dac3496fd8b9bf4df8600cd0bab53c55a34))
+* **admin-ui:** tab skip tooltip ([c35f8d5](https://github.com/GluuFederation/flex/commit/c35f8d5a8258a4ba0475fa4ca5e01a2968f0f0dd))
+* **flex-linux-setup:** enforce SSA ([f46b80e](https://github.com/GluuFederation/flex/commit/f46b80edd500a7721358cedfcb43ca342a77401e))
+* prepare for 5.0.10 release ([1ffcbc7](https://github.com/GluuFederation/flex/commit/1ffcbc74d837e7a037d6cff71d990573d04bba7b))
+
+## [5.0.0-9](https://github.com/GluuFederation/flex/compare/v5.0.0-8...v5.0.0-9) (2023-03-09)
+
+
+### Features
+
+* admin ui license registration [#497](https://github.com/GluuFederation/flex/issues/497) ([f10ec67](https://github.com/GluuFederation/flex/commit/f10ec678bbea7c1eacde9574c771fad10540fce1))
+* change error message[#497](https://github.com/GluuFederation/flex/issues/497) ([d2e94a4](https://github.com/GluuFederation/flex/commit/d2e94a4067c84674860894623f282b904eecb099))
+
+
+### Bug Fixes
+
+* **admin-ui:** fix edit and view pages issue ([90f396a](https://github.com/GluuFederation/flex/commit/90f396a7687384b55067f467b1d003acdaf7ea36))
+* **docs:** ubuntu install download location ([bb3a5cd](https://github.com/GluuFederation/flex/commit/bb3a5cdc282c6089edb326675061e72d20bd8431))
+* **flex-linux-setup:** adminui template ([85249a3](https://github.com/GluuFederation/flex/commit/85249a3447242957e45e887634430740ff520059))
+* **flex-linux-setup:** decoding ssa jwt ([a953d31](https://github.com/GluuFederation/flex/commit/a953d31a459fac4ca55ff5b0d61cf454635e0673))
+* **flex-linux-setup:** no download for deb/rpm packages ([02b9ac4](https://github.com/GluuFederation/flex/commit/02b9ac4f24e20413a9b138df430f28168605f3eb))
+* **flex-linux-setup:** set flex version 1.0.9 ([#827](https://github.com/GluuFederation/flex/issues/827)) ([d94b40d](https://github.com/GluuFederation/flex/commit/d94b40d7b79d7baabc547294cce3156ec442ff26))
+* prepare for 5.0.0-9 release ([716d309](https://github.com/GluuFederation/flex/commit/716d309350f5713b96f482dde9e0a543e5e62286))
+* redirect_uris is mandatory if grant_types is not selected [#807](https://github.com/GluuFederation/flex/issues/807) ([a986eb0](https://github.com/GluuFederation/flex/commit/a986eb0a81971e3e5355121f4ca1ca1b68b324ca))
+
 ## [5.0.0-8](https://github.com/GluuFederation/flex/compare/v5.0.0-7...v5.0.0-8) (2023-03-02)
 
 

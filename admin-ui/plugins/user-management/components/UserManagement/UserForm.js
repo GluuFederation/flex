@@ -71,7 +71,6 @@ function UserForm({onSubmitData}) {
       {
         displayName:Yup.string().required('Display name is required.'),
         givenName:Yup.string().required('First name is required.'),
-        middleName:Yup.string().required('Middle name is required.'),
         sn:Yup.string().required('Last name is required.'),
         userId:Yup.string().required('User name is required.'),
         mail:Yup.string().required('Email is required.'),

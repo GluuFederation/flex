@@ -12,7 +12,6 @@ import { checkLicensePresentResponse } from '../actions'
 import LicenseApi from '../api/LicenseApi'
 import { getClient, getClientWithToken } from '../api/base'
 import {
-  checkUserApiKeyResponse,
   checkUserLicenseKeyResponse,
 } from '../actions'
 import {
@@ -46,15 +45,7 @@ function* checkLicensePresentWorker() {
   yield put(checkLicensePresentResponse())
 }
 
-function* activateCheckUserApi({ payload }) {
-  try {
-    const licenseApi = yield* getApiTokenWithDefaultScopes()
-    const response = yield call(licenseApi.submitApiKey, payload)
-    yield put(checkUserApiKeyResponse(response))
-  } catch (error) {
-    console.log(error)
-  }
-}
+
 function* activateCheckUserLicenseKey({ payload }) {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
@@ -71,15 +62,12 @@ export function* checkLicensePresentWatcher() {
   yield takeEvery(ACTIVATE_CHECK_USER_LICENSE_KEY, activateCheckUserLicenseKey)
 }
 
-export function* activateCheckApiKeyWatcher() {
-  yield takeEvery(ACTIVATE_CHECK_USER_API, activateCheckUserApi)
-}
+
 /**
  * License Root Saga
  */
 export default function* rootSaga() {
   yield all([
     fork(checkLicensePresentWatcher),
-    fork(activateCheckApiKeyWatcher),
   ])
 }

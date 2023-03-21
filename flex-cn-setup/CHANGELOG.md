@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.10](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.9...flex-cn-setup-v1.0.10) (2023-03-16)
+
+
+### Bug Fixes
+
+* add cn license enforcment to chart ([55fb0c9](https://github.com/GluuFederation/flex/commit/55fb0c97428a3ec704e80558679a7e9d7f88c42c))
+* prepare for 5.0.10 release ([1ffcbc7](https://github.com/GluuFederation/flex/commit/1ffcbc74d837e7a037d6cff71d990573d04bba7b))
+
+## [1.0.9](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.8...flex-cn-setup-v1.0.9) (2023-03-09)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-9 release ([716d309](https://github.com/GluuFederation/flex/commit/716d309350f5713b96f482dde9e0a543e5e62286))
+
 ## [1.0.8](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.7...flex-cn-setup-v1.0.8) (2023-03-02)
 
 

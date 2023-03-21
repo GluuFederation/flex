@@ -11,12 +11,22 @@ import configparser
 import subprocess
 import shutil
 import tempfile
+import json
+import uuid
 
 from pathlib import Path
 from urllib import request
 from urllib.parse import urljoin
 
+
+argsp = None
 cur_dir = os.path.dirname(__file__)
+jans_installer_downloaded = False
+flex_installer_downloaded = False
+install_py_path = os.path.join(cur_dir, 'jans_install.py')
+installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
+ssa_json = {}
+jans_config_properties = '/etc/jans/conf/jans.properties'
 
 if '--remove-flex' in sys.argv:
 
@@ -44,8 +54,9 @@ def get_flex_setup_parser():
     parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
     parser.add_argument('--node-modules-branch', help="Node modules branch. Default to flex setup github branch")
-    parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
+    parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
+    parser.add_argument('-admin-ui-ssa', help="Admin-ui SSA file")
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
@@ -56,45 +67,43 @@ def get_flex_setup_parser():
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
-if os.path.exists(__STATIC_SETUP_DIR__):
-    os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
+if os.path.join(__STATIC_SETUP_DIR__, 'flex/flex-linux-setup') == cur_dir:
+    jans_installer_downloaded = True
+    flex_installer_downloaded = True
 
-installed_components = {'admin_ui': False, 'casa': False}
-argsp = None
-jans_installer_downloaded = False
-install_py_path = os.path.join(cur_dir, 'jans_install.py')
+if not jans_installer_downloaded and os.path.exists(__STATIC_SETUP_DIR__):
+    print("Backing up old Janssen setup directory")
+    os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
+else:
+    sys.path.append(__STATIC_SETUP_DIR__)
 
 def download_jans_install_py(setup_branch):
     print("Downloading", os.path.basename(install_py_path))
     install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
     request.urlretrieve(install_url, install_py_path)
 
-try:
-    import jans_setup
-    path_ = list(jans_setup.__path__)
-    sys.path.append(path_[0])
-except ModuleNotFoundError:
-    if not os.path.exists('/etc/jans/conf/jans.properties'):
-        argsp, nargs = get_flex_setup_parser().parse_known_args()
-        print("Unable to locate jans-setup, installing ...")
-        setup_branch = argsp.jans_setup_branch or 'main'
-        download_jans_install_py(setup_branch)
-        install_cmd = '{} {} --setup-branch={}'.format(sys.executable, install_py_path, setup_branch)
 
-        if argsp.download_exit:
-            nargs.append('--download-exit')
-            argsp.flex_non_interactive = True
+if not (jans_installer_downloaded or os.path.exists(jans_config_properties)):
+    argsp, nargs = get_flex_setup_parser().parse_known_args()
+    print("Unable to locate jans-setup, installing ...")
+    setup_branch = argsp.jans_setup_branch or 'main'
+    download_jans_install_py(setup_branch)
+    install_cmd = '{} {} --setup-branch={}'.format(sys.executable, install_py_path, setup_branch)
 
-        if argsp.flex_non_interactive:
-            nargs.append('-n')
-            install_cmd += ' -yes'
+    if argsp.download_exit:
+        nargs.append('--download-exit')
+        argsp.flex_non_interactive = True
 
-        if nargs:
-            install_cmd += ' --args="{}"'.format(subprocess.list2cmdline(nargs))
+    if argsp.flex_non_interactive:
+        nargs.append('-n')
+        install_cmd += ' -yes'
 
-        print("Executing", install_cmd)
-        os.system(install_cmd)
-        jans_installer_downloaded = True
+    if nargs:
+        install_cmd += ' --args="{}"'.format(subprocess.list2cmdline(nargs))
+
+    print("Executing", install_cmd)
+    os.system(install_cmd)
+    jans_installer_downloaded = True
 
 if not argsp:
     argsp, nargs = get_flex_setup_parser().parse_known_args()
@@ -158,7 +167,8 @@ from setup_app.utils import arg_parser
 arg_parser.add_to_me(parser)
 installed = False
 
-if not (os.path.exists('/etc/jans/conf/jans.properties') or argsp.download_exit):
+
+if not (os.path.exists(jans_config_properties) or argsp.download_exit):
     installed = True
     try:
         from jans_setup import jans_setup
@@ -192,6 +202,7 @@ sys.path.insert(0, base.pylib_dir)
 sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
 
 from setup_app.pylib.jproperties import Properties
+from setup_app.pylib import jwt
 from setup_app.pylib.ldif4.ldif import LDIFWriter
 from setup_app.utils.package_utils import packageUtils
 from setup_app.config import Config
@@ -231,7 +242,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.0.9",
+  "JANS_APP_VERSION": "1.0.11",
   "JANS_BUILD": "-SNAPSHOT",
   "NODE_VERSION": "v14.18.2",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
@@ -247,7 +258,6 @@ setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
 
 
 class flex_installer(JettyInstaller):
-
 
     def __init__(self):
 
@@ -292,8 +302,8 @@ class flex_installer(JettyInstaller):
 
         self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
 
-        if os.path.exists(self.source_dir):
-            os.rename(self.source_dir, self.source_dir+'-'+time.ctime().replace(' ', '_'))
+        if not flex_installer_downloaded and os.path.exists(self.source_dir):
+            os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
 
 
     def download_files(self, force=False):
@@ -456,6 +466,28 @@ class flex_installer(JettyInstaller):
 
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
+
+        oidc_client = installed_components.get('oidc_client', {})
+        Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
+        Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
+        Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
+        Config.templateRenderingDict['scan_license_auth_server_hostname'] = ssa_json.get('iss', '')
+        Config.templateRenderingDict['scan_license_api_hostname'] = Config.templateRenderingDict['scan_license_auth_server_hostname'].replace('account', 'cloud')
+
+        print("Creating credentials encryption private and public key")
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+
+            private_fn = os.path.join(tmp_dir, 'private.pem')
+            private_key_fn = os.path.join(tmp_dir, 'private_key.pem')
+            public_key_fn = os.path.join(tmp_dir, 'public_key.pem')
+
+            config_api_installer.run([paths.cmd_openssl, 'genrsa', '-out', private_fn, '2048'])
+            config_api_installer.run([paths.cmd_openssl, 'rsa', '-in', private_fn, '-outform', 'PEM', '-pubout', '-out', public_key_fn])
+            config_api_installer.run([paths.cmd_openssl, 'pkcs8', '-topk8', '-inform', 'PEM', '-in', private_fn, '-out', private_key_fn, '-nocrypt'])
+
+            Config.templateRenderingDict['cred_enc_private_key'] = config_api_installer.generate_base64_file(private_key_fn, 0)
+            Config.templateRenderingDict['cred_enc_public_key'] = config_api_installer.generate_base64_file(public_key_fn, 0)
 
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
@@ -740,12 +772,49 @@ class flex_installer(JettyInstaller):
                         store_type='PKCS12'
                         )
 
+def decode_ssa_jwt():
+    ssa_fn = argsp.admin_ui_ssa
+
+    print("Decoding {}".format(ssa_fn))
+
+    with open(ssa_fn) as f:
+        ssa_jwt = f.read().strip()
+
+    ssa_decoded = jwt.decode(
+        ssa_jwt,
+        options={
+                'verify_signature': False,
+                'verify_exp': True,
+                'verify_aud': False
+                }
+        )
+
+    ssa_json.update(ssa_decoded)
+
+
 def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
         if not prompt_admin_ui_install.lower().startswith('n'):
             install_components['admin_ui'] = True
+            while True:
+                argsp.admin_ui_ssa = None
+                ssa_fn = input("Please enter path of file containing SSA (q to exit): ")
+                if ssa_fn.strip().lower() == 'q':
+                    print("Can't continue without SSA. Exiting...")
+                    sys.exit()
+                if os.path.isfile(ssa_fn):
+                    try:
+                        argsp.admin_ui_ssa = ssa_fn
+                        decode_ssa_jwt()
+                        break
+                    except Exception as e:
+                        print("Error decoding {}".format(ssa_fn))
+                        print(e)
+                else:
+                    print("{} is not a file".format(ssa_fn))
+
     else:
         print("Admin UI is allready installed on this system")
         install_components['admin_ui'] = False
@@ -793,11 +862,49 @@ def get_components_from_setup_properties():
         if not (argsp.install_admin_ui or install_components['admin_ui']):
             install_components['admin_ui'] = base.as_bool(setup_properties.get('install-admin-ui'))
 
+        if not argsp.admin_ui_ssa and install_components['admin_ui']:
+            argsp.admin_ui_ssa = setup_properties.get('admin-ui-ssa')
+            decode_ssa_jwt()
+
         if not (argsp.install_casa or install_components['casa']):
             install_components['casa'] = base.as_bool(setup_properties.get('install-casa'))
 
         if 'adminui-authentication-mode' in setup_properties:
             argsp.adminui_authentication_mode = setup_properties['adminui-authentication-mode']
+
+
+def obtain_oidc_client_credidentials():
+    with open(argsp.admin_ui_ssa) as f:
+        ssa = f.read().strip()
+
+    installed_components['ssa'] = ssa
+
+    data = {
+        "software_statement": ssa,
+        "response_types": ["token"],
+        "redirect_uris": ["http://localhost"],
+        "client_name": "test-ui-client"
+    }
+
+    registration_url = urljoin(ssa_json['iss'], 'jans-auth/restv1/register')
+
+    req = request.Request(registration_url)
+    req.add_header('Content-Type', 'application/json')
+    jsondata = json.dumps(data)
+    jsondataasbytes = jsondata.encode('utf-8')
+    req.add_header('Content-Length', len(jsondataasbytes))
+
+    print("Requesting OIDC Client from", registration_url)
+
+    try:
+        response = request.urlopen(req, jsondataasbytes)
+        result = response.read()
+        installed_components['oidc_client'] = json.loads(result.decode())
+        print("OIDC Client ID is", installed_components['oidc_client']['client_id'])
+    except Exception as e:
+        print("Error sending request to {}".format(registration_url))
+        print(e)
+        sys.exit()
 
 
 def main(uninstall):
@@ -816,7 +923,13 @@ def main(uninstall):
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum, enable=False)
 
     else:
-        installer_obj.download_files()
+
+        if install_components['admin_ui'] and argsp.admin_ui_ssa:
+            obtain_oidc_client_credidentials()
+
+        if not flex_installer_downloaded or argsp.download_exit:
+            installer_obj.download_files(argsp.download_exit)
+
         print("Enabling script", installer_obj.simple_auth_scr_inum)
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum)
 

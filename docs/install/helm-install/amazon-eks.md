@@ -38,25 +38,27 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
 
 ## Initial Setup
 
-1.  Install [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+1. Before initiating the setup please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT in base64 format that you can use to install, specified by the `.global.licenseSsa` key in the `values.yaml` of Gluus Chart.
 
-2.  Configure your AWS user account using [aws configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) command. This makes you able to authenticate before creating the cluster.
+2. Install [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+
+3. Configure your AWS user account using [aws configure](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) command. This makes you able to authenticate before creating the cluster.
     Note that this user account must have permissions to work with Amazon EKS IAM roles and service linked roles, AWS CloudFormation, and a VPC and related resources
     
-3.  Install [kubectl](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)
+4. Install [kubectl](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)
 
-4.  Install [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html) 
+5. Install [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html) 
 
-5.  Create cluster using eksctl such as the following example:
+6. Create cluster using eksctl such as the following example:
 
     ```  
     eksctl create cluster --name gluu-cluster --nodegroup-name gluu-nodes --node-type NODE_TYPE --nodes 2  --managed --region REGION_CODE
     ```
     You can adjust `node-type` and `nodes` number as per your desired cluster size
 
-6.  Install [Helm3](https://helm.sh/docs/intro/install/)
+7. Install [Helm3](https://helm.sh/docs/intro/install/)
 
-7.  Create `gluu` namespace where our resources will reside
+8. Create `gluu` namespace where our resources will reside
     ```
     kubectl create namespace gluu
     ```

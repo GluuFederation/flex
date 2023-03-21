@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.0.10](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.9...flex-linux-setup-v1.0.10) (2023-03-16)
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** enforce SSA ([f46b80e](https://github.com/GluuFederation/flex/commit/f46b80edd500a7721358cedfcb43ca342a77401e))
+* prepare for 5.0.10 release ([1ffcbc7](https://github.com/GluuFederation/flex/commit/1ffcbc74d837e7a037d6cff71d990573d04bba7b))
+
+
+### Documentation
+
+* fix jans uninstall linux setup command ([82dcf8c](https://github.com/GluuFederation/flex/commit/82dcf8c87e5e5ace4af0ecb7af18304100c2cb8e))
+* update setup uninstallation ([#842](https://github.com/GluuFederation/flex/issues/842)) ([6ba3aaf](https://github.com/GluuFederation/flex/commit/6ba3aafff9f371c895ec566861f40d8112ef17b1))
+
+## [1.0.9](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.8...flex-linux-setup-v1.0.9) (2023-03-09)
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** adminui template ([85249a3](https://github.com/GluuFederation/flex/commit/85249a3447242957e45e887634430740ff520059))
+* **flex-linux-setup:** decoding ssa jwt ([a953d31](https://github.com/GluuFederation/flex/commit/a953d31a459fac4ca55ff5b0d61cf454635e0673))
+* **flex-linux-setup:** no download for deb/rpm packages ([02b9ac4](https://github.com/GluuFederation/flex/commit/02b9ac4f24e20413a9b138df430f28168605f3eb))
+* **flex-linux-setup:** set flex version 1.0.9 ([#827](https://github.com/GluuFederation/flex/issues/827)) ([d94b40d](https://github.com/GluuFederation/flex/commit/d94b40d7b79d7baabc547294cce3156ec442ff26))
+* prepare for 5.0.0-9 release ([716d309](https://github.com/GluuFederation/flex/commit/716d309350f5713b96f482dde9e0a543e5e62286))
+
 ## [1.0.8](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.7...flex-linux-setup-v1.0.8) (2023-03-02)
 
 

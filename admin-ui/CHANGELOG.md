@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.0.10](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.9...admin-ui-v1.0.10) (2023-03-16)
+
+
+### Features
+
+* **admin-ui:** change design for backend error ([afb1221](https://github.com/GluuFederation/flex/commit/afb12214d1cd0e8ee88f5e60fa781b0e254d7b2e))
+
+
+### Bug Fixes
+
+* **admin-ui:** fix default arc in properties [#851](https://github.com/GluuFederation/flex/issues/851) ([9ef87ad](https://github.com/GluuFederation/flex/commit/9ef87ad0c44d2e22686e49d4d01ea72ef878d57f))
+* **admin-ui:** fix properties page [#848](https://github.com/GluuFederation/flex/issues/848) ([1aa30da](https://github.com/GluuFederation/flex/commit/1aa30dac3496fd8b9bf4df8600cd0bab53c55a34))
+* **admin-ui:** tab skip tooltip ([c35f8d5](https://github.com/GluuFederation/flex/commit/c35f8d5a8258a4ba0475fa4ca5e01a2968f0f0dd))
+* prepare for 5.0.10 release ([1ffcbc7](https://github.com/GluuFederation/flex/commit/1ffcbc74d837e7a037d6cff71d990573d04bba7b))
+
+## [1.0.9](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.8...admin-ui-v1.0.9) (2023-03-09)
+
+
+### Features
+
+* admin ui license registration [#497](https://github.com/GluuFederation/flex/issues/497) ([f10ec67](https://github.com/GluuFederation/flex/commit/f10ec678bbea7c1eacde9574c771fad10540fce1))
+* change error message[#497](https://github.com/GluuFederation/flex/issues/497) ([d2e94a4](https://github.com/GluuFederation/flex/commit/d2e94a4067c84674860894623f282b904eecb099))
+
+
+### Bug Fixes
+
+* **admin-ui:** fix edit and view pages issue ([90f396a](https://github.com/GluuFederation/flex/commit/90f396a7687384b55067f467b1d003acdaf7ea36))
+* prepare for 5.0.0-9 release ([716d309](https://github.com/GluuFederation/flex/commit/716d309350f5713b96f482dde9e0a543e5e62286))
+* redirect_uris is mandatory if grant_types is not selected [#807](https://github.com/GluuFederation/flex/issues/807) ([a986eb0](https://github.com/GluuFederation/flex/commit/a986eb0a81971e3e5355121f4ca1ca1b68b324ca))
+
 ## [1.0.8](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.7...admin-ui-v1.0.8) (2023-03-02)
 
 

@@ -1,33 +1,53 @@
 {
-  "oidcConfig": {
-    "authServerClient": {
-      "opHost": "https://%(hostname)s/admin",
-      "clientId": "%(admin_ui_client_id)s",
-      "clientSecret": "%(admin_ui_client_encoded_pw)s",
-      "scopes": [
-        "openid",
-        "profile",
-        "user_name",
-        "email"
-      ],
-      "acrValues": [
-        "%(admin_ui_auth_method)s"
-      ],
-      "redirectUri": "https://%(hostname)s/admin",
-      "postLogoutUri": "https://%(hostname)s/admin",
-      "frontchannelLogoutUri": "https://%(hostname)s/admin/logout"
+    "oidcConfig": {
+        "authServerClient": {
+            "opHost": "https://%(hostname)s/admin",
+            "clientId": "%(admin_ui_client_id)s",
+            "clientSecret": "%(admin_ui_client_encoded_pw)s",
+            "scopes": [
+                "openid",
+                "profile",
+                "user_name",
+                "email"
+            ],
+            "acrValues": [
+                "%(admin_ui_auth_method)s"
+            ],
+            "redirectUri": "https://%(hostname)s/admin",
+            "postLogoutUri": "https://%(hostname)s/admin",
+            "frontchannelLogoutUri": "https://%(hostname)s/admin/logout"
+        },
+        "tokenServerClient": {
+            "opHost": "https://%(hostname)s/admin",
+            "clientId": "%(token_server_admin_ui_client_id)s",
+            "clientSecret": "%(token_server_admin_ui_client_encoded_pw)s",
+            "tokenEndpoint": "%(token_server_token_url)s",
+            "scopes": [
+                "openid",
+                "profile",
+                "user_name",
+                "email"
+            ]
+        }
     },
-    "tokenServerClient": {
-      "opHost": "https://%(hostname)s/admin",
-      "clientId": "%(token_server_admin_ui_client_id)s",
-      "clientSecret": "%(token_server_admin_ui_client_encoded_pw)s",
-      "tokenEndpoint": "%(token_server_token_url)s",
-      "scopes": [
-        "openid",
-        "profile",
-        "user_name",
-        "email"
-      ]
+    "licenseConfig": {
+        "scanLicenseApiHostname": "%(scan_license_api_hostname)s",
+        "scanLicenseAuthServerHostname": "%(scan_license_auth_server_hostname)s",
+        "licenseHardwareKey": "%(license_hardware_key)s",
+        "credentialsEncryptionKey": {
+            "alg": "RS256",
+            "publicKey": "%(cred_enc_public_key)s",
+            "privateKey": "%(cred_enc_private_key)s"
+        },
+        "oidcClient": {
+            "clientId": "%(oidc_client_id)s",
+            "clientSecret": "%(oidc_client_secret)s",
+            "tokenEndpoint": null,
+            "redirectUri": null,
+            "postLogoutUri": null,
+            "frontchannelLogoutUri": null,
+            "scopes": null,
+            "acrValues": null
+        }
     }
-  }
 }

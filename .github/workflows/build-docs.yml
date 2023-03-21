@@ -83,8 +83,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "mo-auto"
-          git config user.email "54212639+mo-auto@users.noreply.github.com"
+          git config --global user.name "mo-auto"
+          git config --global user.email "54212639+mo-auto@users.noreply.github.com"
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
           echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token 
 
@@ -97,6 +97,7 @@ jobs:
          git clone  https://mo-auto:${{ secrets.MOWORKFLOWTOKEN }}@github.com/GluuFederation/flex.git
          cd flex
          git checkout -b cn-flex-update-auto-generated-docs
+         git pull origin cn-flex-update-auto-generated-docs || echo "Nothing to pull"
          echo "Custom work on generating docs can go here."
          # Run cn docs 
          sudo bash ./automation/docs/generated-cn-docs.sh . || echo "something went wrong with generating the cn docs"
@@ -119,17 +120,7 @@ jobs:
          MESSAGE="fix(docs): autogenerate docs"
          PR=$(gh pr create --body "Auto generated docs" --title "${MESSAGE}")
          cd ../../
-         rm -rf temp
-          
-         # The below should not be pushed to main
-         echo "Replacing release number markers with actual release number"
-         if [ ! -z "$VERSION" ]; then
-           cd docs
-           egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${VERSION:1}/g"
-           git add . || echo "Nothing to add"
-           git commit -a -S -m "docs: replace release marker with release number" || echo "Nothing to commit"
-           cd ..
-         fi
+         sudo rm -rf temp
 
       - name: mike deploy ${{ github.event.inputs.version }}
         if: >-
@@ -164,7 +155,8 @@ jobs:
         run: |
           TAGS=$(gh release list -L 1000 -R ${{ github.repository }} | grep -o '^\v.*'| grep -v Draft | cut -f 1 | sed '/-/!{s/$/_/}' | sort -V | sed 's/_$//')
           LATEST=$(echo "${TAGS}" | tail -1)
-          STABLE=$(echo "${TAGS}" | grep -v -- "-" | tail -1)
+          #STABLE=$(echo "${TAGS}" | grep -v -- "-" | tail -1)
+          STABLE=$LATEST
           echo "Latest is $LATEST and Stable is $STABLE"
           # remove below two lines after first release
           #LATEST="head"
@@ -195,6 +187,14 @@ jobs:
           git add index.yaml && git update-index --refresh
           cd ..
           # END move generated chart from a previous step
+          
+          echo "Replacing release number markers with actual release number"
+          cd ${LATEST}
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${LATEST:1}/g"
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-jans-version/${LATEST:1}/g"
+          git add . && git update-index --refresh
+          cd ..
+
           echo "${STABLE}" > stable.txt
           git add stable.txt && git update-index --refresh
           git diff-index --quiet HEAD -- || git commit -S -m "Set stable to ${STABLE}"
