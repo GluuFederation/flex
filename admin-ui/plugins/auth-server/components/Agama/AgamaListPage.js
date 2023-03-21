@@ -11,10 +11,8 @@ import { Paper, TablePagination } from '@material-ui/core'
 import { getAgama , postAgama} from '../../redux/actions/AgamaActions'
 import {
   hasPermission,
-  buildPayload,
-  SCOPE_READ,
-  SCOPE_WRITE,
-  SCOPE_DELETE,
+  AGAMA_READ,
+  AGAMA_WRITE
 } from 'Utils/PermChecker'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
@@ -138,7 +136,7 @@ function AgamaListPage() {
     dispatch(getAgama(options))
   }
 
-  // if (hasPermission(permissions, USER_WRITE)) {
+  if (hasPermission(permissions, AGAMA_WRITE)) {
   myActions.push({
     icon: 'add',
     tooltip: `${t('messages.add_role')}`,
@@ -146,12 +144,12 @@ function AgamaListPage() {
     isFreeAction: true,
     onClick: () => setShowAddModal(true),
   })
-  // }
+  }
 
   return (
     <Card style={applicationStyle.mainCard}>
       <CardBody>
-        <GluuViewWrapper canShow={hasPermission(permissions, SCOPE_READ)}>
+        <GluuViewWrapper canShow={hasPermission(permissions, AGAMA_READ)}>
           <MaterialTable
             key={limit}
             components={{

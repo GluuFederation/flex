@@ -42,7 +42,8 @@ import {
   JWKS_READ,
   SESSION_READ,
   PROPERTIES_READ,
-  LOGGING_READ
+  LOGGING_READ,
+  AGAMA_READ
 } from 'Utils/PermChecker'
 import AgamaListPage from './components/Agama/AgamaListPage'
 import agamaReducer from './redux/reducers/AgamaReducer'
@@ -93,7 +94,7 @@ const pluginMetadata = {
         {
           title: 'menus.agama',
           path: PLUGIN_BASE_APTH + '/agama',
-          permission: SCOPE_READ,
+          permission: AGAMA_READ,
         },
       ],
     },
@@ -157,7 +158,7 @@ const pluginMetadata = {
     {
       component: AgamaListPage,
       path: PLUGIN_BASE_APTH + '/agama',
-      permission: ACR_READ,
+      permission: AGAMA_READ,
     },
     // {
     //   component: AgamaAddPage,
