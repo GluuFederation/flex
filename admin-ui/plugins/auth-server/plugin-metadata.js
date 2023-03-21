@@ -31,6 +31,7 @@ import acrSaga from './redux/sagas/AcrsSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
+import agamaSaga from './redux/sagas/AgamaSaga'
 
 import {
   ACR_READ,
@@ -44,6 +45,7 @@ import {
   LOGGING_READ
 } from 'Utils/PermChecker'
 import AgamaListPage from './components/Agama/AgamaListPage'
+import agamaReducer from './redux/reducers/AgamaReducer'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -172,6 +174,7 @@ const pluginMetadata = {
     { name: 'loggingReducer', reducer: loggingReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
     { name: 'sessionReducer', reducer: sessionReducer },
+    { name: 'agamaReducer', reducer: agamaReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -181,7 +184,8 @@ const pluginMetadata = {
     acrSaga(),
     loggingSaga(),
     umaResourceSaga(),
-    sessionSaga()
+    sessionSaga(),
+    agamaSaga()
   ],
 }
 

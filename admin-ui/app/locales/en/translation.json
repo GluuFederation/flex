@@ -350,7 +350,8 @@
     "user_management": "User Management",
     "maugraph": "MAU",
     "users": "Users",
-    "user-management": "User Management"
+    "user-management": "User Management",
+    "agama":"Agama"
   },
   "messages": {
     "success_in_saving": "Changes saved successfully",
