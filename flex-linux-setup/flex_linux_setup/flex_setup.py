@@ -13,6 +13,7 @@ import shutil
 import tempfile
 import json
 import uuid
+import ldap3
 
 from pathlib import Path
 from urllib import request
@@ -62,6 +63,7 @@ def get_flex_setup_parser():
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
     parser.add_argument('--gluu-passwurd-cert', help="Creates Gluu Passwurd API keystore", action='store_true')
     parser.add_argument('-download-exit', help="Downloads files and exits", action='store_true')
+    parser.add_argument('-post-oidc', help="Creates post-setup OIDC client", action='store_true')
 
     return parser
 
@@ -71,7 +73,7 @@ if os.path.join(__STATIC_SETUP_DIR__, 'flex/flex-linux-setup') == cur_dir:
     jans_installer_downloaded = True
     flex_installer_downloaded = True
 
-if not jans_installer_downloaded and os.path.exists(__STATIC_SETUP_DIR__):
+if not jans_installer_downloaded and os.path.exists(__STATIC_SETUP_DIR__) and not os.environ.get('JANSSETUP'):
     print("Backing up old Janssen setup directory")
     os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
 else:
@@ -108,7 +110,7 @@ if not (jans_installer_downloaded or os.path.exists(jans_config_properties)):
 if not argsp:
     argsp, nargs = get_flex_setup_parser().parse_known_args()
 
-if not jans_installer_downloaded:
+if not (jans_installer_downloaded or os.environ.get('JANSSETUP')):
     jans_archieve_url = 'https://github.com/JanssenProject/jans/archive/refs/heads/{}.zip'.format(argsp.jans_branch)
     with tempfile.TemporaryDirectory() as tmp_dir:
         jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archieve_url))
@@ -627,6 +629,38 @@ class flex_installer(JettyInstaller):
 
         self.enable()
 
+
+    def refresh_oidc_client(self):
+        result = self.dbUtils.search(
+                search_base=self.admin_ui_dn,
+                search_filter='(objectClass=jansAppConf)',
+                search_scope=ldap3.BASE
+                )
+
+        if not result:
+            print("Can't find entry {}".format(self.admin_ui_dn))
+            sys.exit()
+
+        admin_ui_config = result['jansConfApp']
+        if isinstance(admin_ui_config, str):
+            admin_ui_config = json.loads(admin_ui_config)
+
+        oidc_client = {
+                'clientId': installed_components['oidc_client'].get('client_id', ''),
+                'clientSecret': installed_components['oidc_client'].get('client_secret', ''),
+                'tokenEndpoint': None,
+                'redirectUri': None,
+                'postLogoutUri': None,
+                'frontchannelLogoutUri': None,
+                'scopes': None,
+                'acrValues': None,
+                }
+
+        admin_ui_config["licenseConfig"]["oidcClient"] = oidc_client
+        admin_ui_config["licenseConfig"]["scanLicenseAuthServerHostname"] = ssa_json.get('iss', '')
+        admin_ui_config["licenseConfig"]["scanLicenseApiHostname"] = admin_ui_config["licenseConfig"]["scanLicenseAuthServerHostname"].replace('account', 'cloud')
+        config_api_installer.dbUtils.set_configuration('jansConfApp', json.dumps(admin_ui_config, indent=2), self.admin_ui_dn)
+
     def save_properties(self):
         fn = Config.savedProperties
         print("Saving properties", fn)
@@ -792,28 +826,33 @@ def decode_ssa_jwt():
     ssa_json.update(ssa_decoded)
 
 
+
+def prompt_for_ssa():
+    while True:
+        argsp.admin_ui_ssa = None
+        ssa_fn = input("Please enter path of file containing SSA (q to exit): ")
+        if ssa_fn.strip().lower() == 'q':
+            print("Can't continue without SSA. Exiting...")
+            sys.exit()
+        if os.path.isfile(ssa_fn):
+            try:
+                argsp.admin_ui_ssa = ssa_fn
+                decode_ssa_jwt()
+                break
+            except Exception as e:
+                print("Error decoding {}".format(ssa_fn))
+                print(e)
+        else:
+            print("{} is not a file".format(ssa_fn))
+
+
 def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
         if not prompt_admin_ui_install.lower().startswith('n'):
             install_components['admin_ui'] = True
-            while True:
-                argsp.admin_ui_ssa = None
-                ssa_fn = input("Please enter path of file containing SSA (q to exit): ")
-                if ssa_fn.strip().lower() == 'q':
-                    print("Can't continue without SSA. Exiting...")
-                    sys.exit()
-                if os.path.isfile(ssa_fn):
-                    try:
-                        argsp.admin_ui_ssa = ssa_fn
-                        decode_ssa_jwt()
-                        break
-                    except Exception as e:
-                        print("Error decoding {}".format(ssa_fn))
-                        print(e)
-                else:
-                    print("{} is not a file".format(ssa_fn))
+            prompt_for_ssa()
 
     else:
         print("Admin UI is allready installed on this system")
@@ -900,7 +939,7 @@ def obtain_oidc_client_credidentials():
         response = request.urlopen(req, jsondataasbytes)
         result = response.read()
         installed_components['oidc_client'] = json.loads(result.decode())
-        print("OIDC Client ID is", installed_components['oidc_client']['client_id'])
+        print("\033[1mOIDC Client ID:\033[0m", installed_components['oidc_client']['client_id'])
     except Exception as e:
         print("Error sending request to {}".format(registration_url))
         print(e)
@@ -911,7 +950,7 @@ def main(uninstall):
 
     get_components_from_setup_properties()
 
-    if not uninstall:
+    if not uninstall and not argsp.post_oidc:
         prepare_for_installation()
 
     installer_obj = flex_installer()
@@ -921,6 +960,11 @@ def main(uninstall):
         installer_obj.uninstall_admin_ui()
         print("Disabling script", installer_obj.simple_auth_scr_inum)
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum, enable=False)
+
+    elif argsp.post_oidc:
+        prompt_for_ssa()
+        obtain_oidc_client_credidentials()
+        installer_obj.refresh_oidc_client()
 
     else:
 
