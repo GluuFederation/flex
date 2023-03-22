@@ -264,8 +264,7 @@ function ScopeListPage() {
             actions={myActions}
             options={{
               columnsButton: true,
-              search: true,
-              searchFieldAlignment: 'left',
+              search: false,
               selection: false,
               pageSize: limit,
               headerStyle: {
