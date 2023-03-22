@@ -10,7 +10,3 @@ import {
     payload: data
   })
   
-  export const postAgama = (data) => ({
-    type:POST_AGAMA,
-    payload:data
-  })

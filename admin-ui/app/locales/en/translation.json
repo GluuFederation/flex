@@ -505,7 +505,8 @@
     "access_token": "Access token",
     "userinfo": "Userinfo",
     "JARM": "JARM",
-    "request_object": "Request Object"
+    "request_object": "Request Object",
+    "agama":"Agama"
   },
   "links": {
     "support": "https://support.gluu.org/"

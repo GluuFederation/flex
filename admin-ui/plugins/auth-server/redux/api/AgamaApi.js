@@ -13,16 +13,4 @@ export default class AgamaApi {
       })
     })
   }
-  // Post Agama
-  postAgama = ({payload}) => {
-    console.log('abcd',payload)
-    let opts = {}
-    opts['requestBody'] = payload.file
-    opts['name'] = payload.name
-    return new Promise((resolve, reject) => {
-      this.api.postAgamaDevStudioPrj(payload, (error, data) => {
-        handleResponse(error, reject, resolve, data)
-      })
-    })
-  }
 }

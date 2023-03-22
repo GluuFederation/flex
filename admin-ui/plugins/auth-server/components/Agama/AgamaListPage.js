@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Card, CardBody, Badge, Input } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
@@ -8,17 +7,20 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { Paper, TablePagination } from '@material-ui/core'
-import { getAgama , postAgama} from '../../redux/actions/AgamaActions'
+import { getAgama } from '../../redux/actions/AgamaActions'
 import {
   hasPermission,
   AGAMA_READ,
   AGAMA_WRITE
 } from 'Utils/PermChecker'
+import axios from 'axios'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
+const JansConfigApi = require('jans_config_api')
+import { getClient } from '../../../../app/redux/api/base'
 
 function AgamaListPage() {
   const { t } = useTranslation()
@@ -35,11 +37,16 @@ function AgamaListPage() {
   const [projectName, setProjectName] = useState('')
   const [getProjectName, setGetProjectName] = useState(false)
 
+
+  const token = useSelector((state) => state.authReducer.token.access_token)
+  const issuer = useSelector((state) => state.authReducer.issuer)
+
+  const BASE_PATH = getClient(JansConfigApi, token, issuer)
+
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
   const bgThemeColor = { background: themeColors.background }
-
   function convertFileToByteArray(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -54,11 +61,27 @@ function AgamaListPage() {
     })
   }
 
-
   const submitData = async () => {
     let file = await convertFileToByteArray(selectedFile);
-    let obj = {file, name:projectName}
-    dispatch(postAgama(obj))
+    var config = {
+      method: 'post',
+      url: BASE_PATH.basePath+'/api/v1/agama-deployment?name='+projectName,
+      headers: { 
+        'Authorization': 'Bearer '+token,
+        'Content-Type': 'application/zip'
+      },
+      data : file
+    }
+    axios(config)
+    .then(function (response) {
+      dispatch(getAgama())
+      setProjectName('')
+      setShowAddModal(false)
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    // dispatch(postAgama(obj))
   }
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the files
@@ -71,11 +94,9 @@ function AgamaListPage() {
         zip.forEach(function (relativePath, zipEntry) {
           if (zipEntry.name.endsWith('.json')) {
             foundJson = true
-            console.log(zipEntry.name)
             if (!foundProjectName) {
               zipEntry.async('string').then(function (jsonStr) {
                 const jsonData = JSON.parse(jsonStr) // Parse the JSON data
-                console.log(jsonData) // Do something with the JSON data
                 if (jsonData?.projectName) {
                   foundProjectName = true
                   setGetProjectName(false)
@@ -96,13 +117,12 @@ function AgamaListPage() {
           setGetProjectName(true)
         }
       })
-    // console.log(acceptedFiles[0]);
   }, [])
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: false,
     accept: {
-      'application/*': ['.zip'],
+      'application/x-zip-compressed': ['.zip'],
     },
   })
 
@@ -111,11 +131,10 @@ function AgamaListPage() {
   )
   const agamaList = useSelector((state) => state.agamaReducer.agamaList)
   const permissions = useSelector((state) => state.authReducer.permissions)
-  SetTitle(t('titles.oidc_clients'))
+  SetTitle(t('titles.agama'))
 
   let memoLimit = limit
   useEffect(() => {
-    console.log('GET AGAMA')
     dispatch(getAgama())
   }, [])
 

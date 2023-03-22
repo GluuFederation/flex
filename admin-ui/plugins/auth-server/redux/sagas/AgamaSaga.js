@@ -1,8 +1,7 @@
 import { call, all, put, fork, takeLatest, select } from 'redux-saga/effects'
 import { isFourZeroOneError } from 'Utils/TokenController'
-import { getAcrsResponse, editAcrsResponse } from '../actions/AcrsActions'
 import { getAPIAccessToken } from 'Redux/actions/AuthActions'
-import { GET_AGAMA, POST_AGAMA } from '../actions/types'
+import { GET_AGAMA } from '../actions/types'
 import AgamaApi from '../api/AgamaApi'
 import { getClient } from 'Redux/api/base'
 import { getAgamaResponse } from '../actions/AgamaActions'
@@ -29,20 +28,6 @@ export function* getAgamas() {
     }
   }
 }
-export function* postAgamaSaga(payload) {
-  console.log("POST AGAMA")
-  try {
-    const api = yield* newFunction()
-    const data = yield call(api.postAgama, payload)
-    console.log(data);
-    // yield put(getAgamaResponse(data))
-  } catch (e) {
-    if (isFourZeroOneError(e)) {
-      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
-      yield put(getAPIAccessToken(jwt))
-    }
-  }
-}
 
 
 
@@ -50,11 +35,8 @@ export function* postAgamaSaga(payload) {
 export function* watchGetAgama() {
   yield takeLatest(GET_AGAMA, getAgamas)
 }
-export function* watchPostAgama() {
-  yield takeLatest(POST_AGAMA, postAgamaSaga)
-}
 
 
 export default function* rootSaga() {
-  yield all([fork(watchGetAgama), fork(watchPostAgama)])
+  yield all([fork(watchGetAgama)])
 }
