@@ -20,10 +20,6 @@ const theme = createTheme({
   },
 })
 
-const userAction = {
-  limit: PER_PAGE_SCOPES
-}
-
 function GluuTypeAheadForDn({
   label,
   name,
@@ -45,6 +41,10 @@ function GluuTypeAheadForDn({
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [paginate, setPaginate] = useState(true)
+
+  const [userAction] = useState({
+    limit: PER_PAGE_SCOPES
+  })
 
   const getItemName = useCallback((theOptions, item) => {
     const data = theOptions.filter((e) => e.dn === item)
