@@ -296,7 +296,7 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['admin_ui_apache_root'] = os.path.join(httpd_installer.server_root, 'admin')
         Config.templateRenderingDict['casa_web_port'] = '8080'
         self.simple_auth_scr_inum = 'A51E-76DA'
-        self.casa_python_libs = ['casa-external_fido2.py', 'casa-external_otp.py', 'casa-external_super_gluu.py', 'casa-external_twilio_sms.py']
+        self.casa_python_libs = ['Casa.py', 'casa-external_fido2.py', 'casa-external_otp.py', 'casa-external_super_gluu.py', 'casa-external_twilio_sms.py']
         self.casa_script_fn = os.path.join(self.casa_dist_dir, 'pylib', self.casa_python_libs[0])
         self.casa_client_id_prefix = '3000.'
 
