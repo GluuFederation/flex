@@ -11,7 +11,7 @@ if [[ ! "$GLUU_FQDN" ]]; then
   read -rp "Enter Hostname [demoexample.gluu.org]:                           " GLUU_FQDN
 fi
 if [[ ! "$GLUU_PERSISTENCE" ]]; then
-  read -rp "Enter persistence type [LDAP(NOT SUPPORTED YET)|MYSQL|PGSQL]:          " GLUU_PERSISTENCE
+  read -rp "Enter persistence type [LDAP|MYSQL|PGSQL]:          " GLUU_PERSISTENCE
 fi
 
 if [[ -z $EXT_IP ]]; then
@@ -65,6 +65,8 @@ if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
   docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d
 elif [[ $GLUU_PERSISTENCE == "PGSQL" ]]; then
   docker compose -f /tmp/flex/docker-flex-monolith/flex-postgres-compose.yml up -d
+elif [[ $GLUU_PERSISTENCE == "LDAP" ]]; then
+  docker compose -f /tmp/flex/docker-flex-monolith/flex-ldap-compose.yml up -d
 fi
 echo "$EXT_IP $GLUU_FQDN" | sudo tee -a /etc/hosts > /dev/null
 flex_status="unhealthy"
