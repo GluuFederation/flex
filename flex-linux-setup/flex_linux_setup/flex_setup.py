@@ -798,8 +798,13 @@ def prompt_for_installation():
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
         if not prompt_admin_ui_install.lower().startswith('n'):
             install_components['admin_ui'] = True
-            while True:
-                argsp.admin_ui_ssa = None
+            if argsp.admin_ui_ssa:
+                try:
+                    decode_ssa_jwt()
+                except Exception:
+                    argsp.admin_ui_ssa = None
+                    print("\033[31mSSA you provided via argument is not valid.\033[0m")
+            while not argsp.admin_ui_ssa:
                 ssa_fn = input("Please enter path of file containing SSA (q to exit): ")
                 if ssa_fn.strip().lower() == 'q':
                     print("Can't continue without SSA. Exiting...")
@@ -808,8 +813,8 @@ def prompt_for_installation():
                     try:
                         argsp.admin_ui_ssa = ssa_fn
                         decode_ssa_jwt()
-                        break
                     except Exception as e:
+                        argsp.admin_ui_ssa = None
                         print("Error decoding {}".format(ssa_fn))
                         print(e)
                 else:
