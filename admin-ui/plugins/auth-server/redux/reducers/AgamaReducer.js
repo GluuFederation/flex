@@ -1,4 +1,5 @@
 import {
+  DELETE_AGAMA,
     GET_AGAMA,
     GET_AGAMA_RESPONSE
   } from '../actions/types'
@@ -30,6 +31,11 @@ import {
           }
         } else {
           return handleDefault()
+        }
+      case DELETE_AGAMA:
+        return{
+          ...state,
+          loading:true
         }
       default:
         return handleDefault()

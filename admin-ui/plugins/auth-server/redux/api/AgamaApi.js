@@ -14,7 +14,6 @@ export default class AgamaApi {
     })
   }
   deleteAgama = ({payload}) => {
-    console.log(payload)
     return new Promise((resolve, reject) => {
       this.api.deleteAgamaDevStudioPrj(payload.name, (error, data) => {
         handleResponse(error, reject, resolve, data)

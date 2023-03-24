@@ -18,6 +18,7 @@ import JSZip from 'jszip'
 const JansConfigApi = require('jans_config_api')
 import { getClient } from '../../../../app/redux/api/base'
 import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
+import {CircularProgress} from '@material-ui/core'
 
 function AgamaListPage() {
   const { t } = useTranslation()
@@ -37,6 +38,8 @@ function AgamaListPage() {
   const [shaFile, setSHAfile] = useState(null)
   const [shaStatus, setShaStatus] = useState(false)
   const [shaFileName, setShaFileName] = useState('')
+  const [localLoading, setLocalLoading] = useState(false)
+
 
   const token = useSelector((state) => state.authReducer.token.access_token)
   const issuer = useSelector((state) => state.authReducer.issuer)
@@ -62,10 +65,11 @@ function AgamaListPage() {
   }
 
   const submitData = async () => {
+    setLocalLoading(true)
     let file = await convertFileToByteArray(selectedFile)
     var config = {
       method: 'post',
-      url: BASE_PATH.basePath + '/api/v1/agama-deployment?name=' + projectName,
+      url: BASE_PATH.basePath + '/api/v1/agama-deployment/' + projectName,
       headers: {
         Authorization: 'Bearer ' + token,
         'Content-Type': 'application/zip',
@@ -77,8 +81,11 @@ function AgamaListPage() {
         dispatch(getAgama())
         setProjectName('')
         setShowAddModal(false)
+        setLocalLoading(false)
       })
-      .catch(function (error) {
+      .catch(function (error) 
+      {
+        setLocalLoading(false)
         console.log(error)
       })
     // dispatch(postAgama(obj))
@@ -329,8 +336,12 @@ function AgamaListPage() {
               color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
               onClick={() => submitData()}
-              disabled={shaFile && selectedFileName && shaStatus ? false : true}
+              disabled={(shaFile && selectedFileName && shaStatus && projectName != '') ? localLoading ? true : false : true}
             >
+              
+              {localLoading ? <>
+                <CircularProgress size={12} /> &nbsp;
+              </>: null }
               {t('actions.add')}
             </Button>
             &nbsp;
