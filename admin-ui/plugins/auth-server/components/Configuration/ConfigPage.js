@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FormGroup, Card, CardBody } from 'Components'
+import { FormGroup, Card, CardBody, CardHeader } from 'Components'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import useExitPrompt from 'Routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
+import Refresh from '@material-ui/icons/Refresh'
 import {
   buildPayload,
   hasPermission,
@@ -32,7 +33,8 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
   const [patches, setPatches] = useState([])
   const [operations, setOperations] = useState([])
   const [showExitPrompt, setShowExitPrompt] = useExitPrompt(true)
-
+  const [search, setSearch] = useState('')
+  const [finalSearch, setFinalSearch] = useState('')
   SetTitle(t('titles.jans_json_property'))
 
   const [put, setPut] = useState([])
@@ -85,19 +87,46 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
   function toggle() {
     setModal(!modal)
   }
+
+  function generateLabel(name) {
+    const result = name.replace(/([A-Z])/g, ' $1')
+    return result.toLowerCase();
+  }
+
   return (
     <GluuLoader blocking={!(!!configuration && Object.keys(configuration).length > 0)}>
-      <Card style={applicationStyle.mainCard}>
+      <Card style={{borderRadius:24}}>
+        <CardHeader>
+          <div style={{display:"flex"}}>
+            {/* Div For title if needed in future */}
+            <div style={{flex:2}}></div>
+            <div style={{flex:1, display:"flex", alignItems:"center"}}>
+              <div style={{flex:1}}>
+                <input type="search" className='form-control' placeholder='Search...' onChange={(e) => setSearch(e.target.value)} value={search} />
+              </div>
+              <div style={{paddingLeft:5}}>
+                <Refresh 
+                  onClick={() => setFinalSearch(search.toLowerCase())}
+                  style={{cursor:"pointer"}}
+                />
+              </div>
+            </div>
+          </div>
+        </CardHeader>
         <CardBody style={{ minHeight: 500 }}>
-          {Object.keys(configuration).map((propKey, idx) => (
-            <PropertyBuilder
-              key={idx}
-              propKey={propKey}
-              propValue={configuration[propKey]}
-              lSize={lSize}
-              handler={patchHandler}
-            />
-          ))}
+          {Object.keys(configuration).map((propKey, idx) => {
+            if(generateLabel(propKey).includes(finalSearch)){
+              return (
+              <PropertyBuilder
+                key={idx}
+                propKey={propKey}
+                propValue={configuration[propKey]}
+                lSize={lSize}
+                handler={patchHandler}
+              />
+              )
+            }
+          })}
           {!!configuration && Object.keys(configuration).length > 0 &&
             (<DefaultAcrInput
               id="defaultAcr"
