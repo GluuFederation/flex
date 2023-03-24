@@ -1,4 +1,5 @@
 import {
+  DELETE_AGAMA,
     GET_AGAMA, GET_AGAMA_RESPONSE, POST_AGAMA
   } from './types'
   
@@ -7,6 +8,10 @@ import {
   })
   export const getAgamaResponse = (data) => ({
     type: GET_AGAMA_RESPONSE,
+    payload: data
+  })
+  export const deleteAgama = (data) => ({
+    type: DELETE_AGAMA,
     payload: data
   })
   

@@ -7,12 +7,8 @@ import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { Paper, TablePagination } from '@material-ui/core'
-import { getAgama } from '../../redux/actions/AgamaActions'
-import {
-  hasPermission,
-  AGAMA_READ,
-  AGAMA_WRITE
-} from 'Utils/PermChecker'
+import { getAgama, deleteAgama } from '../../redux/actions/AgamaActions'
+import { hasPermission, AGAMA_READ, AGAMA_WRITE } from 'Utils/PermChecker'
 import axios from 'axios'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
@@ -21,6 +17,7 @@ import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
 const JansConfigApi = require('jans_config_api')
 import { getClient } from '../../../../app/redux/api/base'
+import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
 
 function AgamaListPage() {
   const { t } = useTranslation()
@@ -36,7 +33,10 @@ function AgamaListPage() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [projectName, setProjectName] = useState('')
   const [getProjectName, setGetProjectName] = useState(false)
-
+  const [selectedFileName, setSelectedFileName] = useState(null)
+  const [shaFile, setSHAfile] = useState(null)
+  const [shaStatus, setShaStatus] = useState(false)
+  const [shaFileName, setShaFileName] = useState('')
 
   const token = useSelector((state) => state.authReducer.token.access_token)
   const issuer = useSelector((state) => state.authReducer.issuer)
@@ -62,35 +62,38 @@ function AgamaListPage() {
   }
 
   const submitData = async () => {
-    let file = await convertFileToByteArray(selectedFile);
+    let file = await convertFileToByteArray(selectedFile)
     var config = {
       method: 'post',
-      url: BASE_PATH.basePath+'/api/v1/agama-deployment?name='+projectName,
-      headers: { 
-        'Authorization': 'Bearer '+token,
-        'Content-Type': 'application/zip'
+      url: BASE_PATH.basePath + '/api/v1/agama-deployment?name=' + projectName,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/zip',
       },
-      data : file
+      data: file,
     }
     axios(config)
-    .then(function (response) {
-      dispatch(getAgama())
-      setProjectName('')
-      setShowAddModal(false)
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+      .then(function (response) {
+        dispatch(getAgama())
+        setProjectName('')
+        setShowAddModal(false)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
     // dispatch(postAgama(obj))
   }
   const onDrop = useCallback((acceptedFiles) => {
+    setProjectName('')
     // Do something with the files
     const file = acceptedFiles[0]
+    setSelectedFileName(file.name)
     setSelectedFile(file)
     JSZip.loadAsync(file) // 1) read the Blob
       .then(function (zip) {
         let foundProjectName = false
         let foundJson = false
+        let projectNamelocal = null
         zip.forEach(function (relativePath, zipEntry) {
           if (zipEntry.name.endsWith('.json')) {
             foundJson = true
@@ -98,31 +101,45 @@ function AgamaListPage() {
               zipEntry.async('string').then(function (jsonStr) {
                 const jsonData = JSON.parse(jsonStr) // Parse the JSON data
                 if (jsonData?.projectName) {
-                  foundProjectName = true
-                  setGetProjectName(false)
                   setProjectName(jsonData?.projectName)
+                  foundProjectName = true
+                  projectNamelocal = jsonData?.projectName
                   // projectName
-                } else {
-                  setGetProjectName(true)
-                  setProjectName('')
                 }
                 // handleFileChange(f)
               })
-            } else {
-              setGetProjectName(false)
             }
           }
         })
-        if (!foundJson) {
-          setGetProjectName(true)
-        }
+        setGetProjectName(true)
       })
   }, [])
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    multiple: false,
+  const onDrop2 = useCallback((acceptedFiles) => {
+    // Do something with the files
+    const file = acceptedFiles[0]
+    setShaFileName(file.name)
+    setSHAfile(file)
+  }, [])
+  const {
+    getRootProps: getRootProps1,
+    getInputProps: getInputProps1,
+    isDragActive: isDragActive1,
+  } = useDropzone({
+    onDrop: onDrop,
     accept: {
+      'application/octet-stream': ['.gama'],
       'application/x-zip-compressed': ['.zip'],
+    },
+  })
+  const {
+    getRootProps: getRootProps2,
+    getInputProps: getInputProps2,
+    isDragActive: isDragActive2,
+  } = useDropzone({
+    onDrop: onDrop2,
+
+    accept: {
+      'text/plain': ['.sha256sum'],
     },
   })
 
@@ -156,14 +173,51 @@ function AgamaListPage() {
   }
 
   if (hasPermission(permissions, AGAMA_WRITE)) {
-  myActions.push({
-    icon: 'add',
-    tooltip: `${t('messages.add_role')}`,
-    iconProps: { color: 'primary' },
-    isFreeAction: true,
-    onClick: () => setShowAddModal(true),
-  })
+    myActions.push({
+      icon: 'add',
+      tooltip: `${t('messages.add_role')}`,
+      iconProps: { color: 'primary' },
+      isFreeAction: true,
+      onClick: () => {
+        setSelectedFile(null)
+        setSelectedFileName(null)
+        setGetProjectName(false)
+        setSHAfile(null)
+        setShowAddModal(true)
+      },
+    })
   }
+
+  const getSHA256 = async (sha256sum) => {
+    const uint8Array = new Uint8Array(
+      await new Blob([selectedFile]).arrayBuffer(),
+    )
+    const hashBuffer = await crypto.subtle.digest('SHA-256', uint8Array)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+    setShaStatus(hashHex === sha256sum)
+  }
+
+  const checkSHA1 = () => {
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      const sha256sum = reader.result
+      // setSha256sum(...sha256sum.split(" ", 1))
+      getSHA256(...sha256sum.split(' ', 1))
+    }
+
+    const blob = new Blob([shaFile])
+    reader.readAsText(blob)
+  }
+
+  useEffect(() => {
+    if (shaFile && selectedFile) {
+      checkSHA1()
+    }
+  }, [shaFile, selectedFile])
 
   return (
     <Card style={applicationStyle.mainCard}>
@@ -192,7 +246,7 @@ function AgamaListPage() {
               {
                 title: `${t('fields.name')}`,
                 field: 'details.projectMetadata.projectName',
-              }
+              },
             ]}
             data={agamaList}
             isLoading={loading}
@@ -212,16 +266,55 @@ function AgamaListPage() {
               },
               actionsColumnIndex: -1,
             }}
+            editable={{
+              isDeleteHidden:() => !hasPermission(permissions, AGAMA_DELETE),
+              onRowDelete: (oldData) => {
+                return new Promise((resolve, reject) => {
+                  dispatch(deleteAgama({name:oldData.details.projectMetadata.projectName}))
+                  resolve()
+                })
+              }
+            }}
           />
         </GluuViewWrapper>
         <Modal isOpen={showAddModal}>
           <ModalHeader>Add Agama</ModalHeader>
           <ModalBody>
-            <div {...getRootProps({ className: 'dropzone' })}>
-              <input {...getInputProps()} />
-              <p>Drag 'n' drop .zip file here, or click to select file</p>
+            <div
+              {...getRootProps1()}
+              className={isDragActive1 ? 'active' : 'dropzone'}
+            >
+              <input {...getInputProps1()} />
+              {selectedFileName ? (
+                <strong>Selected File : {selectedFileName}</strong>
+              ) : (
+                <p>Drag 'n' drop .gama file here, or click to select file</p>
+              )}
             </div>
             <div className="mt-2"></div>
+            <div
+              {...getRootProps2()}
+              className={isDragActive2 ? 'active' : 'dropzone'}
+            >
+              <input {...getInputProps2()} />
+              {shaFile ? (
+                <strong>Selected File : {shaFileName}</strong>
+              ) : (
+                <p>
+                  Drag 'n' drop .sha256sum file here, or click to select file
+                </p>
+              )}
+            </div>
+            <div className="mt-2"></div>
+            <div className="text-danger">
+              {shaFile &&
+                selectedFileName &&
+                !shaStatus &&
+                'SHA256 not verified'}
+            </div>
+            <div className="text-success">
+              {shaFile && selectedFileName && shaStatus && 'SHA256 verified'}
+            </div>
             {getProjectName && (
               <Input
                 type="text"
@@ -236,6 +329,7 @@ function AgamaListPage() {
               color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
               onClick={() => submitData()}
+              disabled={shaFile && selectedFileName && shaStatus ? false : true}
             >
               {t('actions.add')}
             </Button>

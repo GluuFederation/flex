@@ -20,7 +20,6 @@ import {
           loading: true,
         }
       case GET_AGAMA_RESPONSE:
-        console.log(action.payload)
         if (action.payload) {
           return {
             ...state,
