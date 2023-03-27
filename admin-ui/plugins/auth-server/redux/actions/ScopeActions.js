@@ -15,10 +15,17 @@ import {
   SEARCH_SCOPES,
   GET_SCOPE_BY_CREATOR,
   GET_SCOPE_BY_CREATOR_RESPONSE,
+  GET_CLIENT_SCOPES,
+  GET_CLIENT_SCOPES_RESPONSE,
 } from './types'
 
 export const getScopes = (action) => ({
   type: GET_SCOPES,
+  payload: { action },
+})
+
+export const getClientScopes = (action) => ({
+  type: GET_CLIENT_SCOPES,
   payload: { action },
 })
 
@@ -29,6 +36,11 @@ export const searchScopes = (action) => ({
 
 export const getScopesResponse = (data) => ({
   type: GET_SCOPES_RESPONSE,
+  payload: { data },
+})
+
+export const getClientScopesResponse = (data) => ({
+  type: GET_CLIENT_SCOPES_RESPONSE,
   payload: { data },
 })
 
