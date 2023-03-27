@@ -350,7 +350,8 @@
     "user_management": "User Management",
     "maugraph": "MAU",
     "users": "Users",
-    "user-management": "User Management"
+    "user-management": "User Management",
+    "agama":"Agama"
   },
   "messages": {
     "success_in_saving": "Changes saved successfully",
@@ -504,7 +505,8 @@
     "access_token": "Access token",
     "userinfo": "Userinfo",
     "JARM": "JARM",
-    "request_object": "Request Object"
+    "request_object": "Request Object",
+    "agama":"Agama"
   },
   "links": {
     "support": "https://support.gluu.org/"
