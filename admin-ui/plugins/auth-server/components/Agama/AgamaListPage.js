@@ -1,31 +1,26 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Card, CardBody, Badge, Input } from 'Components'
+import { Card, CardBody, Input } from 'Components'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
 import { Paper, TablePagination } from '@material-ui/core'
-import { getAgama, deleteAgama } from '../../redux/actions/AgamaActions'
+import { getAgama, deleteAgama, addAgama } from '../../redux/actions/AgamaActions'
 import { hasPermission, AGAMA_READ, AGAMA_WRITE } from 'Utils/PermChecker'
-import axios from 'axios'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
 import MaterialTable from '@material-table/core'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
-const JansConfigApi = require('jans_config_api')
-import { getClient } from '../../../../app/redux/api/base'
 import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
 import {CircularProgress} from '@material-ui/core'
 
 function AgamaListPage() {
   const { t } = useTranslation()
   const dispatch = useDispatch()
-  const userAction = {}
   const options = {}
-  const clientOptions = {}
   const myActions = []
   const [limit, setLimit] = useState(10)
   const [pageNumber, setPageNumber] = useState(0)
@@ -38,13 +33,7 @@ function AgamaListPage() {
   const [shaFile, setSHAfile] = useState(null)
   const [shaStatus, setShaStatus] = useState(false)
   const [shaFileName, setShaFileName] = useState('')
-  const [localLoading, setLocalLoading] = useState(false)
 
-
-  const token = useSelector((state) => state.authReducer.token.access_token)
-  const issuer = useSelector((state) => state.authReducer.issuer)
-
-  const BASE_PATH = getClient(JansConfigApi, token, issuer)
 
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -65,30 +54,16 @@ function AgamaListPage() {
   }
 
   const submitData = async () => {
-    setLocalLoading(true)
     let file = await convertFileToByteArray(selectedFile)
-    var config = {
-      method: 'post',
-      url: BASE_PATH.basePath + '/api/v1/agama-deployment/' + projectName,
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/zip',
-      },
-      data: file,
+    let object = {
+      name:projectName,
+      file:file
     }
-    axios(config)
-      .then(function (response) {
-        dispatch(getAgama())
-        setProjectName('')
-        setShowAddModal(false)
-        setLocalLoading(false)
-      })
-      .catch(function (error) 
-      {
-        setLocalLoading(false)
-        console.log(error)
-      })
-    // dispatch(postAgama(obj))
+
+    dispatch(addAgama(object))
+
+    setProjectName('')
+    setShowAddModal(false)
   }
   const onDrop = useCallback((acceptedFiles) => {
     setProjectName('')
@@ -100,7 +75,6 @@ function AgamaListPage() {
       .then(function (zip) {
         let foundProjectName = false
         let foundJson = false
-        let projectNamelocal = null
         zip.forEach(function (relativePath, zipEntry) {
           if (zipEntry.name.endsWith('.json')) {
             foundJson = true
@@ -110,10 +84,7 @@ function AgamaListPage() {
                 if (jsonData?.projectName) {
                   setProjectName(jsonData?.projectName)
                   foundProjectName = true
-                  projectNamelocal = jsonData?.projectName
-                  // projectName
                 }
-                // handleFileChange(f)
               })
             }
           }
@@ -336,10 +307,10 @@ function AgamaListPage() {
               color={`primary-${selectedTheme}`}
               style={applicationStyle.buttonStyle}
               onClick={() => submitData()}
-              disabled={(shaFile && selectedFileName && shaStatus && projectName != '') ? localLoading ? true : false : true}
+              disabled={(shaFile && selectedFileName && shaStatus && projectName != '') ? loading ? true : false : true}
             >
               
-              {localLoading ? <>
+              {loading ? <>
                 <CircularProgress size={12} /> &nbsp;
               </>: null }
               {t('actions.add')}

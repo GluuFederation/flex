@@ -1,7 +1,9 @@
 import {
   DELETE_AGAMA,
     GET_AGAMA,
-    GET_AGAMA_RESPONSE
+    GET_AGAMA_RESPONSE,
+    ADD_AGAMA,
+    ADD_AGAMA_RESPONSE
   } from '../actions/types'
   
   const INIT_STATE = {
@@ -36,6 +38,16 @@ import {
         return{
           ...state,
           loading:true
+        }
+      case ADD_AGAMA:
+        return{
+          ...state,
+          loading:true
+        }
+      case ADD_AGAMA_RESPONSE:
+        return{
+          ...state,
+          loading:false
         }
       default:
         return handleDefault()
