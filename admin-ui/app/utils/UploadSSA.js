@@ -58,7 +58,7 @@ function UploadSSA() {
 
   const submitData = () => {
     if(selectedFile){
-        dispatch(uploadNewSsaToken({licenseKey:jwt}))
+        dispatch(uploadNewSsaToken({ssa:jwt}))
     }
   }
 
