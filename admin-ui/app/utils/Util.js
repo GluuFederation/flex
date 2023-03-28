@@ -14,3 +14,9 @@ export function getNewColor() {
   }
   return color
 }
+
+export const getClientScopeByInum = (str) => {
+  const inum = str.split(',')[0]
+  const value = inum.split('=')[1]
+  return value
+}

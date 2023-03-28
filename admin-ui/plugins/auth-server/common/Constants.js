@@ -16,3 +16,4 @@ export const FETCHING_JSON_PROPERTIES = 'Fetch json properties'
 export const FETCHING_SESSIONS = 'Fetch session'
 
 export const SIMPLE_PASSWORD_AUTH = 'simple_password_auth'
+export const PER_PAGE_SCOPES = 100
