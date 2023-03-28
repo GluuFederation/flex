@@ -32,9 +32,9 @@ export default function AppAuthProvider(props) {
   } = useSelector((state) => state.licenseReducer)
 
   useEffect(() => {
+    dispatch(checkLicenseConfigValid())
     dispatch(getOAuth2Config())
     dispatch(checkLicensePresent())
-    dispatch(checkLicenseConfigValid())
   }, [])
   useEffect(() => {
     getDerivedStateFromProps()
@@ -73,7 +73,9 @@ export default function AppAuthProvider(props) {
     }
     if (!isLicenseValid) {
       setShowContent(false)
-      // return false
+    }
+    if (!isConfigValid) {
+      setShowContent(false)
     }
     if (!showContent) {
       if (!userinfo) {
@@ -121,14 +123,12 @@ export default function AppAuthProvider(props) {
     <React.Fragment>
       <SessionTimeout isAuthenticated={showContent} />
       {showContent && props.children}
-      {!isConfigValid &&
-        <UploadSSA />
-      }
-      {!showContent && isConfigValid &&(
+      {!showContent &&(
         <ApiKeyRedirect
           backendIsUp={backendIsUp}
           isLicenseValid={isLicenseValid}
           redirectUrl={config.redirectUrl}
+          isConfigValid={isConfigValid}
           islicenseCheckResultLoaded={islicenseCheckResultLoaded}
           isLicenseActivationResultLoaded={isLicenseActivationResultLoaded}
         />

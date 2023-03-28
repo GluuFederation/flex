@@ -7,12 +7,14 @@ import { ThemeContext } from 'Context/theme/themeContext'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { useTranslation } from 'react-i18next'
 import { useSelector, useDispatch } from 'react-redux'
-
+import { uploadNewSsaToken } from '../redux/actions'
+import './LicenseScreens/style.css'
 function UploadSSA() {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
+  const isLoading = useSelector((state) => state.licenseReducer.isLoading)
 
   const [selectedFileName, setSelectedFileName] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -24,9 +26,7 @@ function UploadSSA() {
 
     reader.onload = () => {
       const token = reader.result
-      // setSha256sum(...sha256sum.split(" ", 1))
-    //   console.log(token)
-      setJWT(...token)
+      setJWT(token)
     }
 
     const blob = new Blob([selectedFile])
@@ -57,12 +57,19 @@ function UploadSSA() {
   })
 
   const submitData = () => {
-    readJWTFile();
+    if(selectedFile){
+        dispatch(uploadNewSsaToken({licenseKey:jwt}))
+    }
   }
 
   return (
     <React.Fragment>
       <Container>
+      {isLoading && (
+        <div className="loader-outer">
+          <div className="loader"></div>
+        </div>
+      )}
         <div className="row">
           <div className="col-md-12 text-center mt-5 mb-5">
             <img
@@ -86,6 +93,7 @@ function UploadSSA() {
             </div>
             <div className="mt-4">
               <Button
+                disabled={isLoading}
                 color={`primary-${selectedTheme}`}
                 style={applicationStyle.buttonStyle}
                 onClick={() => submitData()}

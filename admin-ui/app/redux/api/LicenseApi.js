@@ -21,6 +21,15 @@ export default class LicenseApi {
       })
     })
   }
+  uploadSSAtoken = (data) => {
+    let option = {}
+    option['sSARequest'] = {ssa:data.licenseKey}
+    return new Promise((resolve, reject) => {
+      this.api.adminuiPostSsa(option, (error, data) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
   checkAdminuiLicenseConfig = () => {
     return new Promise((resolve, reject) => {
       this.api.checkAdminuiLicenseConfig((error, data) => {

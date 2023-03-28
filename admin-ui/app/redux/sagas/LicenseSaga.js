@@ -7,8 +7,10 @@ import {
   ACTIVATE_CHECK_USER_API,
   ACTIVATE_CHECK_USER_LICENSE_KEY,
   ACTIVATE_CHECK_IS_CONFIG_VALID,
+  UPLOAD_NEW_SSA_TOKEN,
 } from '../actions/types'
-import { checkLicenseConfigValidResponse, checkLicensePresentResponse } from '../actions'
+import { checkLicenseConfigValidResponse, checkLicensePresentResponse,checkLicensePresent, getOAuth2Config } from '../actions'
+import {updateToast} from 'Redux/actions/ToastAction'
 
 import LicenseApi from '../api/LicenseApi'
 import { getClient, getClientWithToken } from '../api/base'
@@ -16,7 +18,6 @@ import {
   checkUserLicenseKeyResponse,
 } from '../actions'
 import {
-  checkLicensePresent,
   activateLicense,
   fetchApiTokenWithDefaultScopes,
 } from '../api/backend-api'
@@ -56,6 +57,23 @@ function* activateCheckUserLicenseKey({ payload }) {
     console.log(error)
   }
 }
+function* uploadNewSsaToken({ payload }) {
+  try {
+    const licenseApi = yield* getApiTokenWithDefaultScopes()
+    const response = yield call(licenseApi.uploadSSAtoken, payload)
+    console.log(response)
+    // yield put(checkUserLicenseKeyResponse(response))
+    if(!response?.apiResult){
+      yield put(updateToast(true, 'error'))
+    }
+    yield put(checkLicenseConfigValidResponse(response?.apiResult))
+    yield put(getOAuth2Config())
+    yield put(checkLicensePresent())
+    // window.location.reload()
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 
 function* checkAdminuiLicenseConfig() {
@@ -75,6 +93,7 @@ export function* checkLicensePresentWatcher() {
   yield takeEvery(CHECK_FOR_VALID_LICENSE, checkLicensePresentWorker)
   yield takeEvery(ACTIVATE_CHECK_USER_LICENSE_KEY, activateCheckUserLicenseKey)
   yield takeEvery(ACTIVATE_CHECK_IS_CONFIG_VALID, checkAdminuiLicenseConfig)
+  yield takeEvery(UPLOAD_NEW_SSA_TOKEN, uploadNewSsaToken)
   
 }
 

@@ -4,21 +4,27 @@ import GluuNotification from 'Routes/Apps/Gluu/GluuNotification'
 import { useTranslation } from 'react-i18next'
 import ApiKey from './LicenseScreens/ApiKey'
 import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
+import UploadSSA from './UploadSSA'
 function ApiKeyRedirect({
   backendIsUp,
   isLicenseValid,
   islicenseCheckResultLoaded,
   isLicenseActivationResultLoaded,
   roleNotFound,
+  isConfigValid
 }) {
   const { t } = useTranslation()
 
   return (
     <React.Fragment>
       <Container>
-        {!isLicenseValid && islicenseCheckResultLoaded ? (
-          <ApiKey />
-        ) : (
+        {isConfigValid == false ? (
+          <UploadSSA />
+        ) : 
+          !isLicenseValid && islicenseCheckResultLoaded && isConfigValid
+         ?
+         <ApiKey /> :
+        (
           <div
             style={{
               backgroundColor: 'transparent',
