@@ -21,6 +21,13 @@ export default class LicenseApi {
       })
     })
   }
+  checkAdminuiLicenseConfig = () => {
+    return new Promise((resolve, reject) => {
+      this.api.checkAdminuiLicenseConfig((error, data) => {
+        handleResponse(error, reject, resolve, data)
+      })
+    })
+  }
 
   addPermission = (data) => {
     const options = {}

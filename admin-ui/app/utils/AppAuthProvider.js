@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ApiKeyRedirect from './ApiKeyRedirect'
+import UploadSSA from './UploadSSA'
 import { useLocation } from 'react-router'
 import { saveState } from './TokenController'
 import queryString from 'query-string'
@@ -12,6 +13,7 @@ import {
   checkLicensePresent,
 } from 'Redux/actions'
 import SessionTimeout from 'Routes/Apps/Gluu/GluuSessionTimeout'
+import { checkLicenseConfigValid } from '../redux/actions'
 
 export default function AppAuthProvider(props) {
   const dispatch = useDispatch()
@@ -26,11 +28,13 @@ export default function AppAuthProvider(props) {
     islicenseCheckResultLoaded,
     isLicenseActivationResultLoaded,
     isLicenseValid,
+    isConfigValid
   } = useSelector((state) => state.licenseReducer)
 
   useEffect(() => {
     dispatch(getOAuth2Config())
     dispatch(checkLicensePresent())
+    dispatch(checkLicenseConfigValid())
   }, [])
   useEffect(() => {
     getDerivedStateFromProps()
@@ -117,7 +121,10 @@ export default function AppAuthProvider(props) {
     <React.Fragment>
       <SessionTimeout isAuthenticated={showContent} />
       {showContent && props.children}
-      {!showContent && (
+      {!isConfigValid &&
+        <UploadSSA />
+      }
+      {!showContent && isConfigValid &&(
         <ApiKeyRedirect
           backendIsUp={backendIsUp}
           isLicenseValid={isLicenseValid}

@@ -5,6 +5,7 @@ import {
   ACTIVATE_CHECK_LICENCE_API_VALID,
   ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE,
   ACTIVATE_CHECK_USER_LICENSE_KEY,
+  ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE,
 } from '../actions/types'
 import reducerRegistry from './ReducerRegistry'
 
@@ -14,6 +15,7 @@ const INIT_STATE = {
   isLicenseActivationResultLoaded: false,
   isLicenceAPIkeyValid: false,
   isLoading: false,
+  isConfigValid:false,
   error: '',
 }
 
@@ -37,6 +39,12 @@ export default function licenseReducer(state = INIT_STATE, action) {
         ...state,
         isLoading: true,
         error: '',
+      }
+    case ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE:
+      return {
+        ...state,
+        isLoading: false,
+        isConfigValid: action.payload || false,
       }
 
     case ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE:
