@@ -19,6 +19,7 @@ const INIT_STATE = {
   isLoading: false,
   isConfigValid:null,
   error: '',
+  errorSSA: ''
 }
 
 const reducerName = 'licenseReducer'
@@ -47,18 +48,18 @@ export default function licenseReducer(state = INIT_STATE, action) {
         ...state,
         isLoading: false,
         isConfigValid: action.payload || false,
-        
       }
     case UPLOAD_NEW_SSA_TOKEN_RESPONSE:
       return {
         ...state,
         isLoading: false,
-        error: action?.payload,
+        errorSSA: action?.payload,
       }
     case UPLOAD_NEW_SSA_TOKEN:
       return {
         ...state,
         isLoading: true,
+        errorSSA: '',
       }
 
     case ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE:

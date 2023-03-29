@@ -15,7 +15,7 @@ function UploadSSA() {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const isLoading = useSelector((state) => state.licenseReducer.isLoading)
-  const error = useSelector((state) => state.licenseReducer.error)
+  const error = useSelector((state) => state.licenseReducer.errorSSA)
 
   const [selectedFileName, setSelectedFileName] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
