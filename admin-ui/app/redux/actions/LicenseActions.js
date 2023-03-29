@@ -4,6 +4,10 @@ import {
   ACTIVATE_CHECK_USER_API,
   ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE,
   ACTIVATE_CHECK_USER_LICENSE_KEY,
+  ACTIVATE_CHECK_IS_CONFIG_VALID,
+  ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE,
+  UPLOAD_NEW_SSA_TOKEN,
+  UPLOAD_NEW_SSA_TOKEN_RESPONSE
 } from './types'
 
 export const checkLicensePresent = (token) => ({
@@ -27,4 +31,19 @@ export const checkUserLicenseKeyResponse = (payload) => ({
 export const checkLicensePresentResponse = (isLicenseValid) => ({
   type: CHECK_FOR_VALID_LICENSE_RESPONSE,
   payload: { isLicenseValid },
+})
+export const checkLicenseConfigValid = () => ({
+  type: ACTIVATE_CHECK_IS_CONFIG_VALID,
+})
+export const checkLicenseConfigValidResponse = (apiResult) => ({
+  type: ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE,
+  payload:  apiResult ,
+})
+export const uploadNewSsaToken = (data) => ({
+  type: UPLOAD_NEW_SSA_TOKEN,
+  payload:  data ,
+})
+export const uploadNewSsaTokenResponse = (data) => ({
+  type: UPLOAD_NEW_SSA_TOKEN_RESPONSE,
+  payload:  data ,
 })

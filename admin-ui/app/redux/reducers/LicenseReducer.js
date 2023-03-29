@@ -5,6 +5,9 @@ import {
   ACTIVATE_CHECK_LICENCE_API_VALID,
   ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE,
   ACTIVATE_CHECK_USER_LICENSE_KEY,
+  ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE,
+  UPLOAD_NEW_SSA_TOKEN,
+  UPLOAD_NEW_SSA_TOKEN_RESPONSE
 } from '../actions/types'
 import reducerRegistry from './ReducerRegistry'
 
@@ -14,7 +17,9 @@ const INIT_STATE = {
   isLicenseActivationResultLoaded: false,
   isLicenceAPIkeyValid: false,
   isLoading: false,
+  isConfigValid:null,
   error: '',
+  errorSSA: ''
 }
 
 const reducerName = 'licenseReducer'
@@ -37,6 +42,24 @@ export default function licenseReducer(state = INIT_STATE, action) {
         ...state,
         isLoading: true,
         error: '',
+      }
+    case ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE:
+      return {
+        ...state,
+        isLoading: false,
+        isConfigValid: action.payload || false,
+      }
+    case UPLOAD_NEW_SSA_TOKEN_RESPONSE:
+      return {
+        ...state,
+        isLoading: false,
+        errorSSA: action?.payload,
+      }
+    case UPLOAD_NEW_SSA_TOKEN:
+      return {
+        ...state,
+        isLoading: true,
+        errorSSA: '',
       }
 
     case ACTIVATE_CHECK_USER_LICENSE_KEY_RESPONSE:
