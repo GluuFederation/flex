@@ -7,6 +7,7 @@ import {
   ACTIVATE_CHECK_USER_LICENSE_KEY,
   ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE,
   UPLOAD_NEW_SSA_TOKEN,
+  UPLOAD_NEW_SSA_TOKEN_RESPONSE
 } from '../actions/types'
 import reducerRegistry from './ReducerRegistry'
 
@@ -46,6 +47,13 @@ export default function licenseReducer(state = INIT_STATE, action) {
         ...state,
         isLoading: false,
         isConfigValid: action.payload || false,
+        
+      }
+    case UPLOAD_NEW_SSA_TOKEN_RESPONSE:
+      return {
+        ...state,
+        isLoading: false,
+        error: action?.payload,
       }
     case UPLOAD_NEW_SSA_TOKEN:
       return {

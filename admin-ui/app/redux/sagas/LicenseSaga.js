@@ -9,7 +9,7 @@ import {
   ACTIVATE_CHECK_IS_CONFIG_VALID,
   UPLOAD_NEW_SSA_TOKEN,
 } from '../actions/types'
-import { checkLicenseConfigValidResponse, checkLicensePresentResponse,checkLicensePresent, getOAuth2Config } from '../actions'
+import { checkLicenseConfigValidResponse, checkLicensePresentResponse,checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse } from '../actions'
 import {updateToast} from 'Redux/actions/ToastAction'
 
 import LicenseApi from '../api/LicenseApi'
@@ -61,10 +61,8 @@ function* uploadNewSsaToken({ payload }) {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
     const response = yield call(licenseApi.uploadSSAtoken, payload)
-    console.log(response)
-    // yield put(checkUserLicenseKeyResponse(response))
     if(!response?.apiResult){
-      yield put(updateToast(true, 'error'))
+      yield put(uploadNewSsaTokenResponse("Invalid SSA. Please contact Gluu's team to verify if SSA is correct."))
     }
     yield put(checkLicenseConfigValidResponse(response?.apiResult))
     yield put(getOAuth2Config())

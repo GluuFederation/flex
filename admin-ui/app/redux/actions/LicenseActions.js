@@ -6,7 +6,8 @@ import {
   ACTIVATE_CHECK_USER_LICENSE_KEY,
   ACTIVATE_CHECK_IS_CONFIG_VALID,
   ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE,
-  UPLOAD_NEW_SSA_TOKEN
+  UPLOAD_NEW_SSA_TOKEN,
+  UPLOAD_NEW_SSA_TOKEN_RESPONSE
 } from './types'
 
 export const checkLicensePresent = (token) => ({
@@ -40,5 +41,9 @@ export const checkLicenseConfigValidResponse = (apiResult) => ({
 })
 export const uploadNewSsaToken = (data) => ({
   type: UPLOAD_NEW_SSA_TOKEN,
+  payload:  data ,
+})
+export const uploadNewSsaTokenResponse = (data) => ({
+  type: UPLOAD_NEW_SSA_TOKEN_RESPONSE,
   payload:  data ,
 })

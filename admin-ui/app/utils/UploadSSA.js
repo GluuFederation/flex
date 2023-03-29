@@ -15,6 +15,7 @@ function UploadSSA() {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const isLoading = useSelector((state) => state.licenseReducer.isLoading)
+  const error = useSelector((state) => state.licenseReducer.error)
 
   const [selectedFileName, setSelectedFileName] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -90,6 +91,9 @@ function UploadSSA() {
               ) : (
                 <p>Drag 'n' drop .jwt file here, or click to select file</p>
               )}
+            </div>
+            <div className='text-sm text-danger'>
+                {error}
             </div>
             <div className="mt-4">
               <Button
