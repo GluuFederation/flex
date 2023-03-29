@@ -31,6 +31,7 @@
     }
   },
   "licenseConfig": {
+    "ssa": "%(ssa)s",
     "scanLicenseApiHostname": "%(scan_license_api_hostname)s",
     "scanLicenseAuthServerHostname": "%(scan_license_auth_server_hostname)s",
     "licenseHardwareKey": "%(license_hardware_key)s",

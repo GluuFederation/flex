@@ -468,6 +468,7 @@ class flex_installer(JettyInstaller):
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
         oidc_client = installed_components.get('oidc_client', {})
+        Config.templateRenderingDict['ssa'] = installed_components['ssa']
         Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
         Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
         Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
