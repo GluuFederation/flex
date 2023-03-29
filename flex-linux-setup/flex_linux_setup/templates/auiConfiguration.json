@@ -33,7 +33,6 @@
   "licenseConfig": {
     "ssa": "%(ssa)s",
     "scanLicenseApiHostname": "%(scan_license_api_hostname)s",
-    "scanLicenseAuthServerHostname": "%(scan_license_auth_server_hostname)s",
     "licenseHardwareKey": "%(license_hardware_key)s",
     "credentialsEncryptionKey": {
       "alg": "RS256",
@@ -41,6 +40,7 @@
       "privateKey": "%(cred_enc_private_key)s"
     },
     "oidcClient": {
+      "opHost": "https://%(hostname)s",
       "clientId": "%(oidc_client_id)s",
       "clientSecret": "%(oidc_client_secret)s",
       "tokenEndpoint": null,
