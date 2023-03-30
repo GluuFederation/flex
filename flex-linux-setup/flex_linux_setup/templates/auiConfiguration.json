@@ -40,7 +40,7 @@
       "privateKey": "%(cred_enc_private_key)s"
     },
     "oidcClient": {
-      "opHost": "https://%(hostname)s",
+      "opHost": "%(op_host)s",
       "clientId": "%(oidc_client_id)s",
       "clientSecret": "%(oidc_client_secret)s",
       "tokenEndpoint": null,

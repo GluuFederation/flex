@@ -469,11 +469,11 @@ class flex_installer(JettyInstaller):
 
         oidc_client = installed_components.get('oidc_client', {})
         Config.templateRenderingDict['ssa'] = installed_components['ssa']
+        Config.templateRenderingDict['op_host'] = ssa_json.get('iss', '')
         Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
         Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
         Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
-        Config.templateRenderingDict['scan_license_auth_server_hostname'] = ssa_json.get('iss', '')
-        Config.templateRenderingDict['scan_license_api_hostname'] = Config.templateRenderingDict['scan_license_auth_server_hostname'].replace('account', 'cloud')
+        Config.templateRenderingDict['scan_license_api_hostname'] =  Config.templateRenderingDict['op_host'].replace('account', 'cloud')
 
         print("Creating credentials encryption private and public key")
 
