@@ -63,7 +63,8 @@
 			var mode = encodeURIComponent($("#validateCode_mode").val())
 
 			getToken(tokenURL, clientId, clientSecret)
-				.then(t => genericGET(endpoint + "?key=" + key + "&code=" + code + "&mode=" + mode, [{name : "Authorization", value : t}]))
+			    let formParams = "key=" + encodeURIComponent(key) + "&code=" + encodeURIComponent(code) + "&mode=" + encodeURIComponent(mode)
+				.then(t => genericPOST(endpoint, formParams, [{name : "Authorization", value : t}]))
 				.then(response => {
 							result = JSON.parse(response)
 							if (result.code == "NO_MATCH") {
