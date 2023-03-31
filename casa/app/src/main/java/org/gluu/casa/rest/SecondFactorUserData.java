@@ -35,6 +35,8 @@ public class SecondFactorUserData {
 
     @JsonProperty("total_creds")
     private int totalCreds;
+    
+    private String preference;
 
     public StatusCode getCode() {
         return code;
@@ -51,6 +53,10 @@ public class SecondFactorUserData {
     public int getTotalCreds() {
     	return totalCreds;
     }
+
+    public String getPreference() {
+        return preference;
+    }
     
     public void setCode(StatusCode code) {
         this.code = code;
@@ -66,6 +72,10 @@ public class SecondFactorUserData {
 
     public void setTotalCreds(int totalCreds) {
         this.totalCreds = totalCreds;
+    }
+
+    public void setPreference(String preference) {
+        this.preference = preference;
     }
 
     //Prevents a loop in serialization process

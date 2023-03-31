@@ -155,25 +155,40 @@ public class Fido2Service extends BaseService {
         map.put("username", userName);
         map.put("displayName", displayName);
         map.put("attestation", "direct");
-        if (platformAuthenticator)
-        {
-        	Map <String, String> platform = new HashMap<String, String>();
-        	platform.put("authenticatorAttachment", "platform");
-        	platform.put("requireResidentKey","false");
-        	platform.put("userVerification", "discouraged");
-        	map.put("authenticatorSelection",platform);
+
+        if (platformAuthenticator) {
+        	map.put("authenticatorSelection", 
+        	       Map.of("authenticatorAttachment", "platform"
+        	              , "requireResidentKey", "false"
+        	              , "userVerification", "discouraged"));
         }
-        return attestationService.register(mapper.writeValueAsString(map)).readEntity(String.class);
+
+        try (Response response = attestationService.register(mapper.writeValueAsString(map))) {
+            String content = response.readEntity(String.class);
+            int status = response.getStatus();
+
+            if (status != Response.Status.OK.getStatusCode()) {
+                String msg = "Registration failed (code: " + status + ")";
+                logger.error(msg + "; response was: " + content);
+                throw new Exception(msg);
+            }
+            return content;
+        }
 
     }
 
     public boolean verifyRegistration(String tokenResponse) throws Exception {
     	
-    	Response response = attestationService.verify(tokenResponse);
-    	try {
-    		return Response.Status.OK.getStatusCode() == response.getStatus();
-		} finally {
-			response.close();
+    	try (Response response = attestationService.verify(tokenResponse)) {
+            int status = response.getStatus();
+            boolean verified = status == Response.Status.OK.getStatusCode();
+            
+            if (!verified) {
+                String content = response.readEntity(String.class);
+                String msg = "Registration failed (code: " + status + ")";
+                logger.error(msg + "; response was: " + content);
+            }            
+    		return verified;
         }
         
     }
@@ -182,7 +197,7 @@ public class Fido2Service extends BaseService {
 
     	FidoDevice sk = null;
         try {
-            List<FidoDevice> list = getDevices(userId, getScriptPropertyValue("fido2_server_uri"), true);
+            List<FidoDevice> list = getDevices(userId, new java.net.URI(getScriptPropertyValue("fido2_server_uri")).getHost(), true);
             sk = FidoService.getRecentlyCreatedDevice(list, time);
             if (sk != null && sk.getNickName() != null) {
                 sk = null;    //should have no name
