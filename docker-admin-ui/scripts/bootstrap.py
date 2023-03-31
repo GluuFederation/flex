@@ -246,6 +246,20 @@ def resolve_conf_app(old_conf, new_conf):
         old_conf["licenseConfig"] = new_conf["licenseConfig"]
         should_update = True
 
+    # there are various attributes need to be updated in the config
+    else:
+        # licenseConfig.ssa is added as per v1.0.11
+        if "ssa" not in old_conf["licenseConfig"]:
+            old_conf["licenseConfig"]["ssa"] = new_conf["licenseConfig"]["ssa"]
+            should_update = True
+
+        if "opHost" not in old_conf["licenseConfig"]["oidcClient"]:
+            old_conf["licenseConfig"]["oidcClient"]["opHost"] = old_conf["licenseConfig"].pop(
+                "scanLicenseAuthServerHostname",
+                new_conf["licenseConfig"]["oidcClient"]["opHost"],
+            )
+            should_update = True
+
     # finalized status and conf
     return should_update, old_conf
 
