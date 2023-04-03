@@ -90,7 +90,8 @@
     "yes": "Sim",
     "close": "Fechar",
     "delete": "Deletar",
-    "revoke": "Revogar"
+    "revoke": "Revogar",
+    "show_error": "Mostrar erro"
   },
   "fields": {
     "access_token_signing_alg": "Algoritmo de assinatura de token de acesso",
@@ -313,7 +314,8 @@
     "view_client_details": "Ver detalhes do cliente",
     "view_script_details": "Ver detalhes do guião personalizado",
     "add_new_user": "Adicionar usuário",
-    "no_scope_in_client": "Sem dados de Escopo para este Cliente"
+    "no_scope_in_client": "Sem dados de Escopo para este Cliente",
+    "error_in_script": "Erro no roteiro"
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
