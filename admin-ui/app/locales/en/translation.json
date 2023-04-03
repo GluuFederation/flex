@@ -303,7 +303,10 @@
     "select_date_range":"Select a date range",
     "scope": "Scope",
     "scopeExpression": "Scope Expression",
-    "selectUserRevoke": "Select the user to revoke"
+    "selectUserRevoke": "Select the user to revoke",
+    "acr":"acr",
+    "remote_primary_key":"Remote primary key",
+    "remote_ldap_server_post":"Remote LDAP server:port"
   },
   "languages": {
     "french": "French",
@@ -448,7 +451,8 @@
     "sql_serverTimezone": "Enter server timezone.",
     "activate_sql_configuration": "Activate SQL configuration.",
     "script_path": "Enter script file path",
-    "iconUrl": "Icon URL"
+    "iconUrl": "Icon URL",
+    "level":"Level"
   },
   "titles": {
     "acrs": "ACRs",

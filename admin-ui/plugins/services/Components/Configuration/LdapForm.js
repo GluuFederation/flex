@@ -46,6 +46,7 @@ function LdapForm({ item, handleSubmit }) {
       primaryKey: item.primaryKey,
       localPrimaryKey: item.localPrimaryKey,
       enabled: item.enabled,
+      level:item.level
     },
     validationSchema: Yup.object({
       configId: Yup.string()
@@ -56,6 +57,7 @@ function LdapForm({ item, handleSubmit }) {
         .min(2, 'Mininum 2 characters')
         .required('Required!'),
       servers: Yup.array().required('Required!'),
+      level: Yup.number().integer('Level should be integer.'),
       maxConnections: Yup.number()
         .required()
         .positive()
@@ -86,7 +88,7 @@ function LdapForm({ item, handleSubmit }) {
     <Form onSubmit={formik.handleSubmit}>
       
         <FormGroup row>
-          <GluuLabel label="fields.name" required doc_category={LDAP} doc_entry="configId"/>
+          <GluuLabel label="fields.acr" required doc_category={LDAP} doc_entry="configId"/>
           <Col sm={9}>
             {!!item.configId ? (
               <Input
@@ -163,7 +165,7 @@ function LdapForm({ item, handleSubmit }) {
           <Col sm={9}>
             <GluuTypeAhead
               name="servers"
-              label="fields.servers"
+              label="fields.remote_ldap_server_post"
               formik={formik}
               required={true}
               options={['localhost:1636']}
@@ -236,7 +238,7 @@ function LdapForm({ item, handleSubmit }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label="fields.primary_key" required doc_category={LDAP} doc_entry="primary_key"/>
+          <GluuLabel label="fields.remote_primary_key" required doc_category={LDAP} doc_entry="primary_key"/>
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -278,7 +280,7 @@ function LdapForm({ item, handleSubmit }) {
           </Col>
         </FormGroup>
         <FormGroup row>
-          <GluuLabel label="fields.activate" doc_category={LDAP} doc_entry="activate"/>
+          <GluuLabel label="fields.enabled" doc_category={LDAP} doc_entry="activate"/>
           <Col sm={9}>
             <InputGroup>
               <Input
@@ -291,6 +293,29 @@ function LdapForm({ item, handleSubmit }) {
                 onChange={formik.handleChange}
               />
             </InputGroup>
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <GluuLabel label="fields.level" required doc_category={LDAP} doc_entry="level"/>
+          <Col sm={9}>
+            <InputGroup>
+              <Input
+                type="number"
+                placeholder={t('placeholders.level')}
+                valid={
+                  !formik.errors.level &&
+                  !formik.touched.level &&
+                  init
+                }
+                id="level"
+                onKeyUp={toogle}
+                defaultValue={item.level}
+                onChange={formik.handleChange}
+              />
+            </InputGroup>
+            {formik.errors.level && formik.touched.level ? (
+              <div style={{ color: 'red' }}>{formik.errors.level}</div>
+            ) : null}
           </Col>
         </FormGroup>
       <FormGroup row>
