@@ -68,15 +68,9 @@ const ClientBasicPanel = ({
   const [showClientSecret, setShowClientSecret] = useState(false)
   const [userScopeAction] = useState({
     limit: PER_PAGE_SCOPES,
-    pattern: ""
+    pattern: "",
+    startIndex: 0,
   })
-
-  function getScopeMapping(exitingScopes, scopes) {
-    if (!exitingScopes) {
-      exitingScopes = []
-    }
-    return scopes.filter((item) => exitingScopes.includes(item.dn))
-  }
 
   function uriValidator(uri) {
     return uri
@@ -103,7 +97,14 @@ const ClientBasicPanel = ({
   }, [])
 
   const handlePagination = async (event, shownResults) => {
-    userScopeAction['limit'] += PER_PAGE_SCOPES
+    userScopeAction['limit'] = PER_PAGE_SCOPES
+    userScopeAction['startIndex'] = (userScopeAction['startIndex'] ?? 0) + 10
+    if(!userScopeAction.pattern) {
+      delete userScopeAction.pattern
+    }
+    if(!userScopeAction.startIndex) {
+      delete userScopeAction.startIndex
+    }
     if (totalItems + PER_PAGE_SCOPES > userScopeAction.limit) {
       dispatch(getScopes(userScopeAction))
     }
@@ -118,6 +119,7 @@ const ClientBasicPanel = ({
 
   function handleDebounceFn(inputValue) {
     userScopeAction['pattern'] = inputValue
+    delete userScopeAction.startIndex
     dispatch(getScopes(userScopeAction))
   }
 
@@ -324,10 +326,10 @@ const ClientBasicPanel = ({
           lsize={3}
           rsize={9}
           disabled={viewOnly}
-          paginate={true}
+          paginate={totalItems >= PER_PAGE_SCOPES}
           onSearch={debounceFn}
           onPaginate={handlePagination}
-          maxResults={scopeOptions?.length ? scopeOptions?.length - 1 : PER_PAGE_SCOPES - 1}
+          maxResults={scopeOptions?.length ? scopeOptions.length - 1 : undefined}
           isLoading={scopeLoading}
           placeholder="Search for a scope..."
         ></GluuTypeAheadForDn>
