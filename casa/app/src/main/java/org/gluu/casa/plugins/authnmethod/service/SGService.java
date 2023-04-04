@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jans.as.model.fido.u2f.protocol.DeviceData;
-
+import io.jans.orm.search.filter.Filter;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,12 +25,17 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.gluu.casa.core.ConfigurationHandler;
+import org.gluu.casa.core.PersistenceService;
+import org.gluu.casa.core.model.Fido2RegistrationEntry;
+import org.gluu.casa.core.model.Person;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
+import org.gluu.casa.misc.Utils;
 import org.gluu.casa.plugins.authnmethod.SuperGluuExtension;
 import org.gluu.casa.plugins.authnmethod.conf.SGConfig;
 import org.slf4j.Logger;
 import org.zkoss.util.resource.Labels;
-
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 /**
  * An app. scoped bean that encapsulates logic needed to enroll supergluu devices
  */
@@ -47,6 +52,9 @@ public class SGService extends FidoService {
 
     private SGConfig conf;
     private ObjectMapper mapper;
+    @Inject
+    private PersistenceService persistenceService;
+    
 
     @PostConstruct
     private void inited() {
@@ -103,23 +111,24 @@ public class SGService extends FidoService {
         reqAsMap.put("app", conf.getAppId());
         reqAsMap.put("issuer", persistenceService.getIssuerUrl());
         reqAsMap.put("created", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        reqAsMap.put("enrollment", code);
+        reqAsMap.put("state", code);
         reqAsMap.put("method", "enroll");
-
-        if (remoteIp != null) {   //Add  geolocation information only if we have an IP available
-            reqAsMap.put("req_ip", remoteIp);
-
-            JsonNode geolocation = getGeoLocation(remoteIp, GEOLOCATION_URL_PATTERN, GEO_REQ_TIMEOUT);
-            if (geolocation != null) {
-                String reqLocation = Stream.of("country", "regionName", "city").map(key -> geolocation.get(key).asText())
-                        .reduce("", (acc, next) -> acc + ", " + next);
-                reqAsMap.put("req_loc", reqLocation.substring(2)); //Drop space+comma at the beginning
-            }
-        }
-
         String request = null;
         try {
-            request = mapper.writeValueAsString(reqAsMap);
+	        if (remoteIp != null) {   //Add  geolocation information only if we have an IP available
+	            reqAsMap.put("req_ip", remoteIp);
+	
+	            JsonNode geolocation = getGeoLocation(remoteIp, GEOLOCATION_URL_PATTERN, GEO_REQ_TIMEOUT);
+	            if (geolocation != null) {
+	                String reqLocation = Stream.of("country", "regionName", "city").map(key -> geolocation.get(key).asText())
+	                        .reduce("", (acc, next) -> acc + ", " + next);
+	                reqLocation = reqLocation.substring(2); //Drop space+comma at the beginning
+	                reqLocation = URLEncoder.encode(reqLocation, StandardCharsets.UTF_8.toString());
+	                reqAsMap.put("req_loc", reqLocation);
+	            }
+	        }
+
+	        request = mapper.writeValueAsString(reqAsMap);
             logger.debug("Super Gluu request is {}", request);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -134,7 +143,7 @@ public class SGService extends FidoService {
      * @param time Timestamp (milliseconds from the "epoch")
      * @return A SuperGluuDevice object or null if no device could be found. Device has to have counter=-1 and no displayName yet
      */
-    public SuperGluuDevice getLatestSuperGluuDevice(String userId, long time) {
+    /*public SuperGluuDevice getLatestSuperGluuDevice(String userId, long time) {
 
         SuperGluuDevice sg = null;
         try {
@@ -151,7 +160,42 @@ public class SGService extends FidoService {
         }
         return sg;
 
+    }*/
+    
+    public SuperGluuDevice getLatestSuperGluuDevice(String userInum, String rpId) {
+		
+		if (userInum == null) {
+			return null;
+		}
+		logger.trace("getLatestSuperGluuDevice. userInum id is {}", userInum);
+		String baseDn = getBaseDnForFido2RegistrationEntries(userInum);
+        Filter userInumFilter = Filter.createEqualityFilter("personInum", userInum);
+        Filter registeredFilter = Filter.createEqualityFilter("jansStatus", "registered");
+        Filter appIdFilter = Filter.createEqualityFilter("jansApp", rpId);
+        Filter filter = Filter.createANDFilter(userInumFilter, registeredFilter, appIdFilter);
+        logger.trace("getLatestSuperGluuDevice. Filter", filter);
+		
+        List<Fido2RegistrationEntry> fido2RegistrationnEntries =  persistenceService.find(Fido2RegistrationEntry.class, baseDn, filter);
+        if (fido2RegistrationnEntries.size() > 0)
+        {
+        	Fido2RegistrationEntry entry = fido2RegistrationnEntries.get(0);
+        	SuperGluuDevice newDevice = new SuperGluuDevice(entry);
+        	return newDevice;
+        }
+        	
+        else 
+        	return null;
     }
+    
+    private String getBaseDnForFido2RegistrationEntries(String userInum) {
+        final String userBaseDn = persistenceService.getPersonDn(userInum); // "ou=fido2_register,inum=1234,ou=people,o=jans"
+        if (Utils.isNotEmpty(userInum)) {
+            return userBaseDn;
+        }
+
+        return String.format("ou=fido2_register,%s", userBaseDn);
+    }
+   
     /**
      * Determines if the device passed is enrolled exactly once or more times
      * @param dev A SuperGluuDevice instance
@@ -166,7 +210,8 @@ public class SGService extends FidoService {
         List<String> uuids = getDevices(userId, true).stream().map(SuperGluuDevice::getDeviceData)
                 .map(DeviceData::getUuid).collect(Collectors.toList());
 
-        logger.trace("isSGDeviceUnique. All SG user's devices {}", uuids.toString());
+        logger.debug("isSGDeviceUnique. All SG user's devices {}", uuids.toString());
+        
         int size = (int) uuids.stream().filter(uuid -> uuid.equals(uiid)).count();
         if (size == 0) {
             throw new Exception(Labels.getLabel("app.error_uniqueness", new String[] { uiid }));

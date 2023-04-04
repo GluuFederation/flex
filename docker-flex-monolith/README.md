@@ -13,26 +13,27 @@ For bleeding-edge/unstable version, use `gluufederation/monolith:5.0.0_dev`.
 
 The following environment variables are supported by the container:
 
-| ENV                     | Description                                       | Default                                          |
-|-------------------------|---------------------------------------------------|--------------------------------------------------|
-| `CN_HOSTNAME`           | Hostname to install gluu with.                    | `demoexample.gluu.org`                           |
-| `CN_ADMIN_PASS`         | Password of the admin user.                       | `1t5Fin3#security`                               |
-| `CN_ORG_NAME`           | Organization name. Used for ssl cert generation.  | `Gluu`                                           |
-| `CN_EMAIL`              | Email. Used for ssl cert generation.              | `support@gluu.org`                               |
-| `CN_CITY`               | City. Used for ssl cert generation.               | `Austin`                                         |
-| `CN_STATE`              | State. Used for ssl cert generation               | `TX`                                             |
-| `CN_COUNTRY`            | Country. Used for ssl cert generation.            | `US`                                             |
-| `IS_FQDN_REGISTERED`    | If a DNS record has been added for the docker vm. | `false`                                          |
-| `CN_INSTALL_LDAP`       | **NOT SUPPORTED YET**                             | `false`                                          |
-| `CN_INSTALL_CONFIG_API` | Installs the Config API service.                  | `true`                                           |
-| `CN_INSTALL_SCIM`       | Installs the SCIM  API service.                   | `true`                                           |
-| `CN_INSTALL_FIDO2`      | Installs the FIDO2 API service.                   | `true`                                           |
-| `CN_INSTALL_CASA`       | Installs the Casa service.                        | `true`                                           |
-| `CN_INSTALL_ADMIN_UI`   | Installs the Admin UI service.                    | `true`                                           |
-| `MYSQL_DATABASE`        | MySQL gluu flex database.                         | `gluu`                                           |
-| `MYSQL_USER`            | MySQL database user.                              | `gluu`                                           |
-| `MYSQL_PASSWORD`        | MySQL database user password.                     | `1t5Fin3#security`                               |
-| `MYSQL_HOST`            | MySQL host.                                       | `mysql` which is the docker compose service name |
+| ENV                     | Description                                                                                                                                                     | Default                                          |
+|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
+| `CN_GLUU_LICENSE_SSA`   | **REQUIRED** The organization/user that intends to use this needs to register with Gluu to trial Flex, after which you are issued a JWT you can use to install. | ``                                               |
+| `CN_HOSTNAME`           | Hostname to install gluu with.                                                                                                                                  | `demoexample.gluu.org`                           |
+| `CN_ADMIN_PASS`         | Password of the admin user.                                                                                                                                     | `1t5Fin3#security`                               |
+| `CN_ORG_NAME`           | Organization name. Used for ssl cert generation.                                                                                                                | `Gluu`                                           |
+| `CN_EMAIL`              | Email. Used for ssl cert generation.                                                                                                                            | `support@gluu.org`                               |
+| `CN_CITY`               | City. Used for ssl cert generation.                                                                                                                             | `Austin`                                         |
+| `CN_STATE`              | State. Used for ssl cert generation                                                                                                                             | `TX`                                             |
+| `CN_COUNTRY`            | Country. Used for ssl cert generation.                                                                                                                          | `US`                                             |
+| `IS_FQDN_REGISTERED`    | If a DNS record has been added for the docker vm.                                                                                                               | `false`                                          |
+| `CN_INSTALL_LDAP`       | **NOT SUPPORTED YET**                                                                                                                                           | `false`                                          |
+| `CN_INSTALL_CONFIG_API` | Installs the Config API service.                                                                                                                                | `true`                                           |
+| `CN_INSTALL_SCIM`       | Installs the SCIM  API service.                                                                                                                                 | `true`                                           |
+| `CN_INSTALL_FIDO2`      | Installs the FIDO2 API service.                                                                                                                                 | `true`                                           |
+| `CN_INSTALL_CASA`       | Installs the Casa service.                                                                                                                                      | `true`                                           |
+| `CN_INSTALL_ADMIN_UI`   | Installs the Admin UI service.                                                                                                                                  | `true`                                           |
+| `RDBMS_DATABASE`        | MySQL gluu flex database.                                                                                                                                       | `gluu`                                           |
+| `RDBMS_USER`            | MySQL database user.                                                                                                                                            | `gluu`                                           |
+| `RDBMS_PASSWORD`        | MySQL database user password.                                                                                                                                   | `1t5Fin3#security`                               |
+| `RDBMS_HOST`            | MySQL host.                                                                                                                                                     | `mysql` which is the docker compose service name |
 
 
 ## Pre-requisites

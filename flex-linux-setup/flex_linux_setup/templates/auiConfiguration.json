@@ -29,5 +29,26 @@
         "email"
       ]
     }
+  },
+  "licenseConfig": {
+    "ssa": "%(ssa)s",
+    "scanLicenseApiHostname": "%(scan_license_api_hostname)s",
+    "licenseHardwareKey": "%(license_hardware_key)s",
+    "credentialsEncryptionKey": {
+      "alg": "RS256",
+      "publicKey": "%(cred_enc_public_key)s",
+      "privateKey": "%(cred_enc_private_key)s"
+    },
+    "oidcClient": {
+      "opHost": "%(op_host)s",
+      "clientId": "%(oidc_client_id)s",
+      "clientSecret": "%(oidc_client_secret)s",
+      "tokenEndpoint": null,
+      "redirectUri": null,
+      "postLogoutUri": null,
+      "frontchannelLogoutUri": null,
+      "scopes": null,
+      "acrValues": null
+    }
   }
 }

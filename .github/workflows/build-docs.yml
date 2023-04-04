@@ -38,6 +38,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          token: ${{ secrets.MOWORKFLOWTOKEN }}
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
@@ -58,6 +59,7 @@ jobs:
         with:
           ref: '${{ github.event.inputs.version }}'
           fetch-depth: 0
+          token: ${{ secrets.MOWORKFLOWTOKEN }}
 
       - name: Copy files from main to ${{ github.event.inputs.version }}
         if: >-
@@ -81,42 +83,44 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "mo-auto"
-          git config user.email "54212639+mo-auto@users.noreply.github.com"
+          git config --global user.name "mo-auto"
+          git config --global user.email "54212639+mo-auto@users.noreply.github.com"
           git config --global user.signingkey "${{ steps.import_gpg.outputs.keyid }}"
+          echo "${{ secrets.MOWORKFLOWTOKEN }}" | gh auth login --with-token 
 
       - name: Generate docs
         continue-on-error: true
+        env:
+          VERSION: ${{ github.event.release.tag_name }}
         run: |
+         mkdir temp && cd temp
+         git clone  https://mo-auto:${{ secrets.MOWORKFLOWTOKEN }}@github.com/GluuFederation/flex.git
+         cd flex
+         git checkout -b cn-flex-update-auto-generated-docs
+         git pull origin cn-flex-update-auto-generated-docs || echo "Nothing to pull"
          echo "Custom work on generating docs can go here."
-          
          # Run cn docs 
-         sudo bash ./automation/docs/generated-cn-docs.sh
+         sudo bash ./automation/docs/generated-cn-docs.sh . || echo "something went wrong with generating the cn docs"
           
          echo "Generating property docs and push to main"
-         sudo bash ./automation/docs/generate-property-docs.sh 
+         sudo bash ./automation/docs/generate-property-docs.sh . || echo "something went wrong with generating the property docs"
          cd docs
          git add . || echo "Nothing to add"
          git commit -a -S -m "docs: automated property doc generation" || echo "Nothing to commit"
          cd ..
           
          echo "Generating javadocs"
-         sudo bash ./automation/docs/generate-javadocs.sh
+         sudo bash ./automation/docs/generate-javadocs.sh . || echo "something went wrong with generating the java docs"
          cd docs
          git add . || echo "Nothing to add"
          git commit -a -S -m "docs: generate and add javadocs" || echo "Nothing to commit"
          cd ..
          
-         git push
-         # The below should not be pushed to main          
-         echo "Replacing release number markers with actual release number"
-         if [ ! -z "$VERSION" ]; then
-           cd docs
-           egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${VERSION:1}/g"
-           git add . || echo "Nothing to add"
-           git commit -a -S -m "docs: replace release marker with release number" || echo "Nothing to commit"
-           cd ..
-         fi
+         git push --set-upstream origin cn-flex-update-auto-generated-docs
+         MESSAGE="fix(docs): autogenerate docs"
+         PR=$(gh pr create --body "Auto generated docs" --title "${MESSAGE}")
+         cd ../../
+         sudo rm -rf temp
 
       - name: mike deploy ${{ github.event.inputs.version }}
         if: >-
@@ -148,15 +152,15 @@ jobs:
         #if: >-
         # github.event_name != 'workflow_dispatch'
         id: set_versions
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAGS=$(gh release list -L 1000 -R ${{ github.repository }} | grep -o '^\v.*'| grep -v Draft | cut -f 1 | sed '/-/!{s/$/_/}' | sort -V | sed 's/_$//')
           LATEST=$(echo "${TAGS}" | tail -1)
-          STABLE=$(echo "${TAGS}" | grep -v -- "-" | tail -1)
+          #STABLE=$(echo "${TAGS}" | grep -v -- "-" | tail -1)
+          STABLE=$LATEST
+          echo "Latest is $LATEST and Stable is $STABLE"
           # remove below two lines after first release
-          LATEST="head"
-          STABLE="head"
+          #LATEST="head"
+          #STABLE="head"
           mike alias -u head main
           mike alias -u "${STABLE}" stable
           mike set-default --push stable
@@ -183,6 +187,14 @@ jobs:
           git add index.yaml && git update-index --refresh
           cd ..
           # END move generated chart from a previous step
+          
+          echo "Replacing release number markers with actual release number"
+          cd ${LATEST}
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-flex-version/${LATEST:1}/g"
+          egrep -lRZ --exclude=CONTRIBUTING.md . | xargs -0 -l sed -i -e "s/replace-jans-version/${LATEST:1}/g"
+          git add . && git update-index --refresh
+          cd ..
+
           echo "${STABLE}" > stable.txt
           git add stable.txt && git update-index --refresh
           git diff-index --quiet HEAD -- || git commit -S -m "Set stable to ${STABLE}"

@@ -35,6 +35,8 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
 
 ## Installation Steps
 
+Before initiating the setup please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT in base64 format that you can use to install in which you will be prompted for.
+
 Start a fresh ubuntu `18.04` or `20.04` 4 CPU, 16 GB RAM, and 50GB SSD VM with ports `443` and `80` open. Then execute the following
 
 ```bash

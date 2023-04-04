@@ -5,21 +5,22 @@ GLUU_FQDN=$1
 GLUU_PERSISTENCE=$2
 EXT_IP=$3
 FLEX_BUILD_COMMIT=$4
+GLUU_LICENSE_SSA=$5
 
 if [[ ! "$GLUU_FQDN" ]]; then
   read -rp "Enter Hostname [demoexample.gluu.org]:                           " GLUU_FQDN
 fi
 if [[ ! "$GLUU_PERSISTENCE" ]]; then
-  read -rp "Enter persistence type [LDAP(NOT SUPPORTED YET)|MYSQL]:          " GLUU_PERSISTENCE
+  read -rp "Enter persistence type [LDAP|MYSQL|PGSQL]:          " GLUU_PERSISTENCE
 fi
 
 if [[ -z $EXT_IP ]]; then
   EXT_IP=$(dig +short myip.opendns.com @resolver1.opendns.com)
-  if [[ -z $EXT_IP ]]; then
-    read -rp "We couldn't detect your external ip. Please enter it manually: " EXT_IP
-  fi
 fi
 
+if [[ ! "$GLUU_LICENSE_SSA" ]]; then
+  read -rp "Enter the License SSA in base64 format provided from Gluu:          " GLUU_LICENSE_SSA
+fi
 sudo apt-get update
 # Install Docker and Docker compose plugin
 sudo apt-get remove docker docker-engine docker.io containerd runc -y || echo "Docker doesn't exist..installing.."
@@ -56,23 +57,37 @@ if [[ "$FLEX_BUILD_COMMIT" ]]; then
   echo "Updating build commit in Dockerfile to $FLEX_BUILD_COMMIT"
   python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['FLEX_SOURCE_VERSION'] = '$FLEX_BUILD_COMMIT'"
 fi
+python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['CN_GLUU_LICENSE_SSA'] = '$GLUU_LICENSE_SSA'"
 python3 -c "from pathlib import Path ; import ruamel.yaml ; compose = Path('/tmp/flex/docker-flex-monolith/flex-mysql-compose.yml') ; yaml = ruamel.yaml.YAML() ; data = yaml.load(compose) ; data['services']['flex']['build'] = '.' ; del data['services']['flex']['image'] ; yaml.dump(data, compose)"
+python3 -c "from pathlib import Path ; import ruamel.yaml ; compose = Path('/tmp/flex/docker-flex-monolith/flex-postgres-compose.yml') ; yaml = ruamel.yaml.YAML() ; data = yaml.load(compose) ; data['services']['flex']['build'] = '.' ; del data['services']['flex']['image'] ; yaml.dump(data, compose)"
 # --
-
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
-    docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d
+  docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d
+elif [[ $GLUU_PERSISTENCE == "PGSQL" ]]; then
+  docker compose -f /tmp/flex/docker-flex-monolith/flex-postgres-compose.yml up -d
+elif [[ $GLUU_PERSISTENCE == "LDAP" ]]; then
+  docker compose -f /tmp/flex/docker-flex-monolith/flex-ldap-compose.yml up -d
 fi
 echo "$EXT_IP $GLUU_FQDN" | sudo tee -a /etc/hosts > /dev/null
 flex_status="unhealthy"
-while true; do
+# run loop for 5 mins
+echo "Waiting for the Janssen server to come up. Depending on the  resources it may take 3-5 mins for the services to be up."
+end=$((SECONDS+300))
+while [ $SECONDS -lt $end ]; do
     flex_status=$(docker inspect --format='{{json .State.Health.Status}}' docker-flex-monolith-flex-1) || echo "unhealthy"
     echo "$flex_status"
     if [ "$flex_status" == '"healthy"' ]; then
         break
     fi
     sleep 10
-    echo "Waiting for the Janssen server to come up. Depending on the  resources it may take 3-5 mins for the services to be up."
+    docker ps
+    docker logs docker-flex-monolith-flex-1 || echo "Container is not starting..."
 done
+if [ "$flex_status" == '"unhealthy"' ]; then
+    docker ps
+    docker logs docker-flex-monolith-flex-1
+    exit 1
+fi
 echo "Will be ready in exactly 3 mins"
 sleep 180
 cat << EOF > testendpoints.sh
@@ -87,4 +102,5 @@ sudo bash testendpoints.sh
 echo -e "You may re-execute bash testendpoints.sh to do a quick test to check the configuration endpoints."
 echo -e "Add the following record to your local computers' hosts file to engage with the services $EXT_IP $GLUU_FQDN"
 echo -e "To clean up run:"
-echo -e "docker compose -f /tmp/flex/docker-flex-monolith/mysql-docker-compose.yml down && rm -rf /tmp/flex"
+echo -e "docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml down && rm -rf /tmp/flex"
+echo -e "or docker compose -f /tmp/flex/docker-flex-monolith/flex-postgres-compose.yml down && rm -rf /tmp/flex"

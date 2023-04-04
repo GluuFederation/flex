@@ -175,8 +175,7 @@ function ScriptListTable() {
   function handleGoToCustomScriptEditPage(row, edition) {
     dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
-    
-    return navigate(`/adm/script/edit:` + row.inum)
+    return navigate(`/adm/script/edit/:` + row.inum)
   }
   function handleCustomScriptDelete(row) {
     setItem(row)
@@ -260,9 +259,10 @@ function ScriptListTable() {
               selection: false,
               pageSize: limit,
               rowStyle: (rowData) => ({
-                backgroundColor: rowData.enabled
-                  ? themeColors.lightBackground
-                  : '#FFF',
+                backgroundColor: rowData.enabled && rowData?.scriptError?.stackTrace
+                  ? '#FF5858' : rowData.enabled
+                    ? themeColors.lightBackground
+                    : '#FFF',
               }),
               headerStyle: {
                 ...applicationStyle.tableHeaderStyle,

@@ -86,7 +86,9 @@ public class SuperGluuViewModel extends UserViewModel {
     public void showQR() {
 
         try {
-            String code = userService.generateRandEnrollmentCode(user.getId());
+            
+            String code = WebUtils.getValueFromCookie("session_id"); //userService.generateRandEnrollmentCode(user.getId());
+            
             String request = sgService.generateRequest(user.getUserName(), code, WebUtils.getRemoteIP());
 
             if (request != null) {
@@ -122,7 +124,6 @@ public class SuperGluuViewModel extends UserViewModel {
     @Listen("onData=#readyButton")
     public void qrScanResult(Event event) {
 
-        logger.debug("qrScanResult. Event value is {}", event.getData().toString());
         if (uiQRShown) {
             switch (event.getData().toString()) {
                 case "timeout":
@@ -130,7 +131,9 @@ public class SuperGluuViewModel extends UserViewModel {
                     stopPolling();
                     break;
                 case "poll":
-                    newDevice = sgService.getLatestSuperGluuDevice(user.getId(), System.currentTimeMillis());
+                	
+                    newDevice = sgService.getLatestSuperGluuDevice(user.getId(), sgService.getConf().getAppId());
+                    
                     if (newDevice != null) {    //New device detected, stop polling
                         stopPolling();
                         try {
@@ -142,7 +145,7 @@ public class SuperGluuViewModel extends UserViewModel {
                                 BindUtils.postNotifyChange(this, "uiEnrolled");
                             } else {
                                 //drop duplicated device from LDAP
-                                sgService.removeDevice(newDevice);
+                                sgService.removeDevice(newDevice,user.getId());
                                 logger.info("Duplicated SuperGluu device {} has been removed", newDevice.getDeviceData().getUuid());
                                 UIUtils.showMessageUI(false, Labels.getLabel("usr.supergluu_already_enrolled"));
                             }
@@ -165,7 +168,7 @@ public class SuperGluuViewModel extends UserViewModel {
 
         if (Utils.isNotEmpty(newDevice.getNickName())) {
             try {
-                sgService.updateDevice(newDevice);
+                sgService.updateDevice(newDevice, user.getId());
                 devices.add(newDevice);
                 UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
                 userService.notifyEnrollment(user, SuperGluuExtension.ACR);
@@ -185,7 +188,7 @@ public class SuperGluuViewModel extends UserViewModel {
             Clients.response(new AuInvoke("stopPolling"));
             //Check if cancelation was made after a real enrollment took place
             if (newDevice != null && newDevice.getDeviceData() != null) {
-                sgService.removeDevice(newDevice);
+                sgService.removeDevice(newDevice, user.getId());
             }
         } catch (Exception e) {
             UIUtils.showMessageUI(false);
@@ -214,7 +217,7 @@ public class SuperGluuViewModel extends UserViewModel {
             cancelUpdate(null);
 
             try {
-                sgService.updateDevice(dev);
+                sgService.updateDevice(dev, user.getId());
                 UIUtils.showMessageUI(true);
             } catch (Exception e) {
                 UIUtils.showMessageUI(false);
@@ -245,7 +248,7 @@ public class SuperGluuViewModel extends UserViewModel {
                     if (Messagebox.ON_YES.equals(event.getName())) {
                         try {
                             devices.remove(device);
-                            boolean success = sgService.removeDevice(device);
+                            boolean success = sgService.removeDevice(device, user.getId());
 
                             if (success) {
                                 if (reset) {

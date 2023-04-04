@@ -134,7 +134,7 @@ function ScopeListPage() {
   }
   function handleGoToScopeEditPage(row) {
     dispatch(setCurrentItem(row))
-    return navigate(`/auth-server/scope/edit:` + row.inum)
+    return navigate(`/auth-server/scope/edit/:` + row.inum)
   }
 
   function handleScopeDelete(row) {
@@ -264,8 +264,7 @@ function ScopeListPage() {
             actions={myActions}
             options={{
               columnsButton: true,
-              search: true,
-              searchFieldAlignment: 'left',
+              search: false,
               selection: false,
               pageSize: limit,
               headerStyle: {

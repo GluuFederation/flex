@@ -9,6 +9,6 @@ public interface IOTPAlgorithm {
 
     String generateSecretKeyUri(byte[] secretKey, String displayName);
 
-    String getExternalUid(byte[] secretKey, String code);
+    String getExternalUid(String secretKey, String code);
 
 }

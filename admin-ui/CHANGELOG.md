@@ -1,5 +1,70 @@
 # Changelog
 
+## [1.0.10](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.9...admin-ui-v1.0.10) (2023-03-16)
+
+
+### Features
+
+* **admin-ui:** change design for backend error ([afb1221](https://github.com/GluuFederation/flex/commit/afb12214d1cd0e8ee88f5e60fa781b0e254d7b2e))
+
+
+### Bug Fixes
+
+* **admin-ui:** fix default arc in properties [#851](https://github.com/GluuFederation/flex/issues/851) ([9ef87ad](https://github.com/GluuFederation/flex/commit/9ef87ad0c44d2e22686e49d4d01ea72ef878d57f))
+* **admin-ui:** fix properties page [#848](https://github.com/GluuFederation/flex/issues/848) ([1aa30da](https://github.com/GluuFederation/flex/commit/1aa30dac3496fd8b9bf4df8600cd0bab53c55a34))
+* **admin-ui:** tab skip tooltip ([c35f8d5](https://github.com/GluuFederation/flex/commit/c35f8d5a8258a4ba0475fa4ca5e01a2968f0f0dd))
+* prepare for 5.0.10 release ([1ffcbc7](https://github.com/GluuFederation/flex/commit/1ffcbc74d837e7a037d6cff71d990573d04bba7b))
+
+## [1.0.9](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.8...admin-ui-v1.0.9) (2023-03-09)
+
+
+### Features
+
+* admin ui license registration [#497](https://github.com/GluuFederation/flex/issues/497) ([f10ec67](https://github.com/GluuFederation/flex/commit/f10ec678bbea7c1eacde9574c771fad10540fce1))
+* change error message[#497](https://github.com/GluuFederation/flex/issues/497) ([d2e94a4](https://github.com/GluuFederation/flex/commit/d2e94a4067c84674860894623f282b904eecb099))
+
+
+### Bug Fixes
+
+* **admin-ui:** fix edit and view pages issue ([90f396a](https://github.com/GluuFederation/flex/commit/90f396a7687384b55067f467b1d003acdaf7ea36))
+* prepare for 5.0.0-9 release ([716d309](https://github.com/GluuFederation/flex/commit/716d309350f5713b96f482dde9e0a543e5e62286))
+* redirect_uris is mandatory if grant_types is not selected [#807](https://github.com/GluuFederation/flex/issues/807) ([a986eb0](https://github.com/GluuFederation/flex/commit/a986eb0a81971e3e5355121f4ca1ca1b68b324ca))
+
+## [1.0.8](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.7...admin-ui-v1.0.8) (2023-03-02)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-8 release ([29e0cbb](https://github.com/GluuFederation/flex/commit/29e0cbb5166d83268ab9c3ee3c5f3e2bc4dd1489))
+
+## [1.0.7](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.5...admin-ui-v1.0.7) (2023-02-22)
+
+
+### Features
+
+* **admin-ui:** added information icon on client ([5c8d2a8](https://github.com/GluuFederation/flex/commit/5c8d2a8e22ee86c1508429944ecc393c51cf8034))
+* **admin-ui:** implement finish button on client ([0a71edc](https://github.com/GluuFederation/flex/commit/0a71edc1487771afc893a10ef78bd62fa37f098c))
+* **admin-ui:** implement help icon on label ([cc176f6](https://github.com/GluuFederation/flex/commit/cc176f685ebbf6db6d5db413cb840da0486afa44))
+* **admin-ui:** implement toast ([08155a3](https://github.com/GluuFederation/flex/commit/08155a365a9974b0ddfaca216aa6da34cc55436e))
+* apis changes in admin-ui [#649](https://github.com/GluuFederation/flex/issues/649) ([814920b](https://github.com/GluuFederation/flex/commit/814920b3e5c7fbae911f1c61fda876e985bb721e))
+
+
+### Bug Fixes
+
+* **admin-ui:** add validation for finish button ([f5ace25](https://github.com/GluuFederation/flex/commit/f5ace251a7064766774d910f5118352a35e54afd))
+* **admin-ui:** boolean and string undefined fix ([c4df14b](https://github.com/GluuFederation/flex/commit/c4df14b0aa54b1f31f877144f9bb460e964e9b3e))
+* **admin-ui:** change redirect url mandatory logic ([cabea3d](https://github.com/GluuFederation/flex/commit/cabea3dbf0db40b1bf8ce15d5a91734e104cd15f))
+* **admin-ui:** change the text for error ([4878e93](https://github.com/GluuFederation/flex/commit/4878e93e7bae8df4e836689c4cd9d42cafbb917b))
+* **admin-ui:** client submit issue fixed ([114a306](https://github.com/GluuFederation/flex/commit/114a306e922acff0f204e00fdf5fa94cb7d0f2bd))
+* **admin-ui:** fix pagination and users page ([0516f3b](https://github.com/GluuFederation/flex/commit/0516f3bd4d8495780fa5f21aedc9ec1e3752ccd0))
+* **admin-ui:** fix type ahead ([00a6773](https://github.com/GluuFederation/flex/commit/00a67736d6fa45b796c99d4f763632027cfad8c8))
+* **admin-ui:** format the code ([87a5ff0](https://github.com/GluuFederation/flex/commit/87a5ff016312e385de48fe9af7a256d68a7ed329))
+* **admin-ui:** implement limit on users page ([c59987f](https://github.com/GluuFederation/flex/commit/c59987fb04a834d63cf7a27fcad263a5a6d2c4f2))
+* **admin-ui:** misc changes [#663](https://github.com/GluuFederation/flex/issues/663) ([4c36576](https://github.com/GluuFederation/flex/commit/4c3657669fd1b827d35eaa239dde0f04a4afbc5b))
+* **admin-ui:** remove toast on search ([e97a94e](https://github.com/GluuFederation/flex/commit/e97a94ea819a4c74a490062bf9fa2071ed3843d3))
+* error on getting API response from jans-config-api server [#732](https://github.com/GluuFederation/flex/issues/732) ([3803c24](https://github.com/GluuFederation/flex/commit/3803c241a621ebbd37dd7bee31befde4d529d3eb))
+* prepare for 5.0.0-7 release ([7f96937](https://github.com/GluuFederation/flex/commit/7f9693729156b04367b85d0d44a4022a52d53417))
+
 ## [1.0.5](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.4...admin-ui-v1.0.5) (2022-12-08)
 
 

@@ -1,5 +1,119 @@
 # Changelog
 
+## [5.0.0-10](https://github.com/GluuFederation/flex/compare/v5.0.0-9...v5.0.0-10) (2023-03-16)
+
+
+### Features
+
+* **admin-ui:** change design for backend error ([afb1221](https://github.com/GluuFederation/flex/commit/afb12214d1cd0e8ee88f5e60fa781b0e254d7b2e))
+* **docker-admin-ui:** admin-ui license registration ([#844](https://github.com/GluuFederation/flex/issues/844)) ([1b64602](https://github.com/GluuFederation/flex/commit/1b64602861501d831e1516534576f8162463d3c2))
+
+
+### Bug Fixes
+
+* add cn license enforcment to chart ([55fb0c9](https://github.com/GluuFederation/flex/commit/55fb0c97428a3ec704e80558679a7e9d7f88c42c))
+* **admin-ui:** fix default arc in properties [#851](https://github.com/GluuFederation/flex/issues/851) ([9ef87ad](https://github.com/GluuFederation/flex/commit/9ef87ad0c44d2e22686e49d4d01ea72ef878d57f))
+* **admin-ui:** fix properties page [#848](https://github.com/GluuFederation/flex/issues/848) ([1aa30da](https://github.com/GluuFederation/flex/commit/1aa30dac3496fd8b9bf4df8600cd0bab53c55a34))
+* **admin-ui:** tab skip tooltip ([c35f8d5](https://github.com/GluuFederation/flex/commit/c35f8d5a8258a4ba0475fa4ca5e01a2968f0f0dd))
+* **flex-linux-setup:** enforce SSA ([f46b80e](https://github.com/GluuFederation/flex/commit/f46b80edd500a7721358cedfcb43ca342a77401e))
+* prepare for 5.0.10 release ([1ffcbc7](https://github.com/GluuFederation/flex/commit/1ffcbc74d837e7a037d6cff71d990573d04bba7b))
+
+## [5.0.0-9](https://github.com/GluuFederation/flex/compare/v5.0.0-8...v5.0.0-9) (2023-03-09)
+
+
+### Features
+
+* admin ui license registration [#497](https://github.com/GluuFederation/flex/issues/497) ([f10ec67](https://github.com/GluuFederation/flex/commit/f10ec678bbea7c1eacde9574c771fad10540fce1))
+* change error message[#497](https://github.com/GluuFederation/flex/issues/497) ([d2e94a4](https://github.com/GluuFederation/flex/commit/d2e94a4067c84674860894623f282b904eecb099))
+
+
+### Bug Fixes
+
+* **admin-ui:** fix edit and view pages issue ([90f396a](https://github.com/GluuFederation/flex/commit/90f396a7687384b55067f467b1d003acdaf7ea36))
+* **docs:** ubuntu install download location ([bb3a5cd](https://github.com/GluuFederation/flex/commit/bb3a5cdc282c6089edb326675061e72d20bd8431))
+* **flex-linux-setup:** adminui template ([85249a3](https://github.com/GluuFederation/flex/commit/85249a3447242957e45e887634430740ff520059))
+* **flex-linux-setup:** decoding ssa jwt ([a953d31](https://github.com/GluuFederation/flex/commit/a953d31a459fac4ca55ff5b0d61cf454635e0673))
+* **flex-linux-setup:** no download for deb/rpm packages ([02b9ac4](https://github.com/GluuFederation/flex/commit/02b9ac4f24e20413a9b138df430f28168605f3eb))
+* **flex-linux-setup:** set flex version 1.0.9 ([#827](https://github.com/GluuFederation/flex/issues/827)) ([d94b40d](https://github.com/GluuFederation/flex/commit/d94b40d7b79d7baabc547294cce3156ec442ff26))
+* prepare for 5.0.0-9 release ([716d309](https://github.com/GluuFederation/flex/commit/716d309350f5713b96f482dde9e0a543e5e62286))
+* redirect_uris is mandatory if grant_types is not selected [#807](https://github.com/GluuFederation/flex/issues/807) ([a986eb0](https://github.com/GluuFederation/flex/commit/a986eb0a81971e3e5355121f4ca1ca1b68b324ca))
+
+## [5.0.0-8](https://github.com/GluuFederation/flex/compare/v5.0.0-7...v5.0.0-8) (2023-03-02)
+
+
+### Bug Fixes
+
+* **casa:** SG Extension and FIDO2 extension [#764](https://github.com/GluuFederation/flex/issues/764) ([6f1b942](https://github.com/GluuFederation/flex/commit/6f1b942e39643971dcb4110b75c58f8176b1dac3))
+* prepare for 5.0.0-8 release ([29e0cbb](https://github.com/GluuFederation/flex/commit/29e0cbb5166d83268ab9c3ee3c5f3e2bc4dd1489))
+
+## [5.0.0-7](https://github.com/GluuFederation/flex/compare/v5.0.0-4...v5.0.0-7) (2023-02-22)
+
+
+### Features
+
+* add readme for tf fargate ([3314c38](https://github.com/GluuFederation/flex/commit/3314c383ca58955864a8f55ba8ff54dfbcd483f9))
+* add tf fargate eks ([90c7a02](https://github.com/GluuFederation/flex/commit/90c7a02e907324cbf6c4c2d2f39cbbdd677c91a8))
+* **admin-ui:** added information icon on client ([5c8d2a8](https://github.com/GluuFederation/flex/commit/5c8d2a8e22ee86c1508429944ecc393c51cf8034))
+* **admin-ui:** implement finish button on client ([0a71edc](https://github.com/GluuFederation/flex/commit/0a71edc1487771afc893a10ef78bd62fa37f098c))
+* **admin-ui:** implement help icon on label ([cc176f6](https://github.com/GluuFederation/flex/commit/cc176f685ebbf6db6d5db413cb840da0486afa44))
+* **admin-ui:** implement toast ([08155a3](https://github.com/GluuFederation/flex/commit/08155a365a9974b0ddfaca216aa6da34cc55436e))
+* apis changes in admin-ui [#649](https://github.com/GluuFederation/flex/issues/649) ([814920b](https://github.com/GluuFederation/flex/commit/814920b3e5c7fbae911f1c61fda876e985bb721e))
+* **docker-admin-ui:** save admin-ui config into persistence ([#674](https://github.com/GluuFederation/flex/issues/674)) ([6bc9763](https://github.com/GluuFederation/flex/commit/6bc9763b4c86ba2ea3023d4b27c2631bf11af1d5))
+* **docker-casa:** enable prefix and group for stdout logs ([#696](https://github.com/GluuFederation/flex/issues/696)) ([bdb0f06](https://github.com/GluuFederation/flex/commit/bdb0f06c730aa2878cd05d70446574cc4e893550))
+* flex-linux-setup use tarball to install node_modules in admin-ui ([8a1fd53](https://github.com/GluuFederation/flex/commit/8a1fd53e0f96b02db7f1703c5e2b9498929b8f0c))
+
+
+### Bug Fixes
+
+* add init containers for adjusting ownership on upgrade ([291566e](https://github.com/GluuFederation/flex/commit/291566e2e7117c6f11ce24ef0b1330feb0cdef4f))
+* add init containers for adjusting ownership on upgrade ([e157fcb](https://github.com/GluuFederation/flex/commit/e157fcb359350014b79767a8dcb03eaddcc6ca36))
+* add init containers for adjusting ownership on upgrade ([c54f598](https://github.com/GluuFederation/flex/commit/c54f598679a6e9c3a44ae00807a09a0d26e17c59))
+* add postgres compose file ([808748f](https://github.com/GluuFederation/flex/commit/808748f9b2eb0dda042581967c538b9108866a33))
+* add stdout log prefix ([9853283](https://github.com/GluuFederation/flex/commit/9853283b6a037196ca618d4c0ed071a204a7543f))
+* add stdout log prefix ([fc046ba](https://github.com/GluuFederation/flex/commit/fc046baf2330a76709416994ffbae10f81f46eec))
+* admin-ui database configuration ([f42099e](https://github.com/GluuFederation/flex/commit/f42099e032577599a92474a76caffb37dba9b41c))
+* **admin-ui:** add validation for finish button ([f5ace25](https://github.com/GluuFederation/flex/commit/f5ace251a7064766774d910f5118352a35e54afd))
+* **admin-ui:** boolean and string undefined fix ([c4df14b](https://github.com/GluuFederation/flex/commit/c4df14b0aa54b1f31f877144f9bb460e964e9b3e))
+* **admin-ui:** change redirect url mandatory logic ([cabea3d](https://github.com/GluuFederation/flex/commit/cabea3dbf0db40b1bf8ce15d5a91734e104cd15f))
+* **admin-ui:** change the text for error ([4878e93](https://github.com/GluuFederation/flex/commit/4878e93e7bae8df4e836689c4cd9d42cafbb917b))
+* **admin-ui:** client submit issue fixed ([114a306](https://github.com/GluuFederation/flex/commit/114a306e922acff0f204e00fdf5fa94cb7d0f2bd))
+* **admin-ui:** fix pagination and users page ([0516f3b](https://github.com/GluuFederation/flex/commit/0516f3bd4d8495780fa5f21aedc9ec1e3752ccd0))
+* **admin-ui:** fix type ahead ([00a6773](https://github.com/GluuFederation/flex/commit/00a67736d6fa45b796c99d4f763632027cfad8c8))
+* **admin-ui:** format the code ([87a5ff0](https://github.com/GluuFederation/flex/commit/87a5ff016312e385de48fe9af7a256d68a7ed329))
+* **admin-ui:** implement limit on users page ([c59987f](https://github.com/GluuFederation/flex/commit/c59987fb04a834d63cf7a27fcad263a5a6d2c4f2))
+* **admin-ui:** misc changes [#663](https://github.com/GluuFederation/flex/issues/663) ([4c36576](https://github.com/GluuFederation/flex/commit/4c3657669fd1b827d35eaa239dde0f04a4afbc5b))
+* **admin-ui:** remove toast on search ([e97a94e](https://github.com/GluuFederation/flex/commit/e97a94ea819a4c74a490062bf9fa2071ed3843d3))
+* docker-admin-ui/Dockerfile to reduce vulnerabilities ([#758](https://github.com/GluuFederation/flex/issues/758)) ([b066b6a](https://github.com/GluuFederation/flex/commit/b066b6aead9f1a75b6999151fd8a72dd8739fb6f))
+* **docker-casa:** adjust permission to allow creating administrable lock file ([#747](https://github.com/GluuFederation/flex/issues/747)) ([59515e3](https://github.com/GluuFederation/flex/commit/59515e3212cf6e3da179eec7011509a06f93ee81))
+* **docker-casa:** handle startup errors on postgres, spanner, and couchbase persistence ([#689](https://github.com/GluuFederation/flex/issues/689)) ([a3cd54b](https://github.com/GluuFederation/flex/commit/a3cd54bc45efaa4b46c7cb3ab50a20b55e754313))
+* error on getting API response from jans-config-api server [#732](https://github.com/GluuFederation/flex/issues/732) ([3803c24](https://github.com/GluuFederation/flex/commit/3803c241a621ebbd37dd7bee31befde4d529d3eb))
+* extend fido2 appLoggers ([2757139](https://github.com/GluuFederation/flex/commit/27571390a6b0534e13253b86bd6a039f1d854a68))
+* fix compilation errors [#651](https://github.com/GluuFederation/flex/issues/651) ([#652](https://github.com/GluuFederation/flex/issues/652)) ([f9728d3](https://github.com/GluuFederation/flex/commit/f9728d33ad6ce1159785f5eac35e42ec3526345c))
+* flex-linux-setup always download latest jans-installer ([f5480c2](https://github.com/GluuFederation/flex/commit/f5480c2b271302d259e16ea0a3d93935c6b0a1c8))
+* flex-linux-setup check twilio and fido2 client before deploy ([#736](https://github.com/GluuFederation/flex/issues/736)) ([fd28ad3](https://github.com/GluuFederation/flex/commit/fd28ad389646bd42f06f88e256fc94a6eb8092ad))
+* flex-linux-setup code smell ([1146797](https://github.com/GluuFederation/flex/commit/1146797fec64213c23e6cc547a1ca72ffe6cff02))
+* flex-linux-setup download pyjwt and cryptography instead of gcs ([#724](https://github.com/GluuFederation/flex/issues/724)) ([c28a435](https://github.com/GluuFederation/flex/commit/c28a435ee2206ae100f5782dbe7be10cd2eccf5f))
+* flex-linux-setup Dump Admin UI Client and Secret to screen and setup.properties ([#700](https://github.com/GluuFederation/flex/issues/700)) ([69af163](https://github.com/GluuFederation/flex/commit/69af163482ce1a8312d8b8081b274bc787784d8d))
+* flex-linux-setup remove Casa.py ([ca6b289](https://github.com/GluuFederation/flex/commit/ca6b28957d12da4179640fd422dfc6b6707b6f1d))
+* idp healthcheck (idp not configured yet) ([cf221b9](https://github.com/GluuFederation/flex/commit/cf221b9842f4578537b0f300c125e1cd867cc41f))
+* include DB enumeration [#749](https://github.com/GluuFederation/flex/issues/749) ([f921d6e](https://github.com/GluuFederation/flex/commit/f921d6e0dbfb90a933c108405e52418a3438fffd))
+* include DB enumeration [#749](https://github.com/GluuFederation/flex/issues/749) ([51c3f24](https://github.com/GluuFederation/flex/commit/51c3f24a049505256d9dd65aa08094c6b6654f45))
+* include DB enumeration [#749](https://github.com/GluuFederation/flex/issues/749) ([544b7cc](https://github.com/GluuFederation/flex/commit/544b7cc3e7db9ca25e68905f6131f6824a17bcd0))
+* increase config-api resource requirements ([f046679](https://github.com/GluuFederation/flex/commit/f0466794e31002c9e61074352b8f891f1168632b))
+* pf4j annotation processing ([f18d8d0](https://github.com/GluuFederation/flex/commit/f18d8d0f112078b94c830bfd74db2df847db4e9d))
+* prepare for 5.0.0-7 release ([d3a1074](https://github.com/GluuFederation/flex/commit/d3a1074dd7fe75c9498b29aeeb4e10ee6843b9cb))
+* prepare for 5.0.0-7 release ([7f96937](https://github.com/GluuFederation/flex/commit/7f9693729156b04367b85d0d44a4022a52d53417))
+* prepare for helm chart 5.0.11 ([726ad05](https://github.com/GluuFederation/flex/commit/726ad05ba5aabcb24d4a73ec5420bc54c9bfc912))
+* remove image tag on build commit ([8541cde](https://github.com/GluuFederation/flex/commit/8541cdefa9ae089e4f9ea763780af61ce21019a0))
+* **terraform-gluu-flex-eks-fargate:** update terraform module ([#739](https://github.com/GluuFederation/flex/issues/739)) ([c058072](https://github.com/GluuFederation/flex/commit/c058072f89332b3ef0f788ca807477f5094a9353))
+* update configmap ENVs ([acda6a5](https://github.com/GluuFederation/flex/commit/acda6a50dae83d53550c6bd9f20c09592e3048cf))
+* update flex source commit in docker monolith ([dd74a80](https://github.com/GluuFederation/flex/commit/dd74a80c02301da8a9fcd2d24709256d985df595))
+* upgrade com.fasterxml.jackson.core:jackson-databind from 2.14.0 to 2.14.1 ([dfdc048](https://github.com/GluuFederation/flex/commit/dfdc0481641fb91003631feea1747bab59326a7e))
+* upgrade com.twilio.sdk:twilio from 9.1.2 to 9.1.3 ([1ad28d9](https://github.com/GluuFederation/flex/commit/1ad28d9f6a2ebbb5fca7556348f5bf493b8a2a8e))
+* upgrade com.twilio.sdk:twilio from 9.1.3 to 9.1.4 ([cc55a6e](https://github.com/GluuFederation/flex/commit/cc55a6e657485ee4193b467a03cd10c434d4c4c7))
+* upgrade com.twilio.sdk:twilio from 9.1.4 to 9.2.0 ([29d64d7](https://github.com/GluuFederation/flex/commit/29d64d780a6aa7ecafcefc939d97c899f9e9a0c0))
+* upgrade com.unboundid:unboundid-ldapsdk from 6.0.6 to 6.0.7 ([e2046ad](https://github.com/GluuFederation/flex/commit/e2046ada1dd0c5a3750411cab3d45284ce872e90))
+
 ## [5.0.0-4](https://github.com/GluuFederation/flex/compare/v5.0.0-3...v5.0.0-4) (2022-12-08)
 
 

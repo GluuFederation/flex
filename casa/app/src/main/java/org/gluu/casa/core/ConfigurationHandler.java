@@ -7,8 +7,8 @@ import jakarta.inject.Inject;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import io.jans.as.model.util.SecurityProviderUtility;
 import io.jans.orm.exception.operation.PersistenceException;
+import io.jans.util.security.SecurityProviderUtility;
 
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.model.ApplicationConfiguration;

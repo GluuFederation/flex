@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2022-12-27 19:26'
+ENV GLUU_BUILD_DATE='2023-03-16 13:28'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -69,7 +69,7 @@ COPY conf/prometheus-config.yaml /opt/prometheus/
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=8ad3a64d1e49bd3696412f12f61709aa96a7cf7e
+ENV JANS_SOURCE_VERSION=8beb2b2d0f07e6ca536c2699d229250e498d1c07
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -96,7 +96,7 @@ RUN cd /tmp/jans \
 # flex setup sync
 # ===============
 
-ENV FLEX_VERSION=291566e2e7117c6f11ce24ef0b1330feb0cdef4f
+ENV FLEX_VERSION=3f0281bbf381a63b28229388d6b0ae536902b455
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 ARG CASA_EXTRAS_DIR=casa/extras
 
@@ -206,19 +206,18 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     CN_GOOGLE_SECRET_NAME_PREFIX=jans \
     GLUU_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable \
     CN_PROMETHEUS_PORT="" \
-    CN_VERSION=1.0.6-SNAPSHOT
+    CN_VERSION=1.0.11-SNAPSHOT
 
 # ==========
 # misc stuff
 # ==========
 
-LABEL name="gluufederation/casa" \
-    maintainer="Gluu Inc. <support@gluu.org>" \
-    vendor="Gluu Federation" \
-    version="5.0.0" \
-    release="dev" \
-    summary="Gluu Casa" \
-    description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
+LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/casa" \
+    org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
+    org.opencontainers.image.vendor="Gluu Federation" \
+    org.opencontainers.image.version="5.0.0" \
+    org.opencontainers.image.title="Gluu Flex Casa" \
+    org.opencontainers.image.description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 
 RUN mkdir -p /etc/certs \
     /etc/jans/conf/casa \
@@ -244,6 +243,7 @@ COPY --chown=1000:0 jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 # adjust ownership
 RUN chmod -R g=u ${JETTY_BASE}/casa/static \
     && chmod -R g=u ${JETTY_BASE}/casa/plugins \
+    && chown -R 1000:0 ${JETTY_BASE}/casa/resources \
     && chmod 664 ${JETTY_BASE}/casa/resources/log4j2.xml \
     && chmod -R g=u ${JETTY_BASE}/casa/logs \
     && chmod -R g=u /etc/certs \

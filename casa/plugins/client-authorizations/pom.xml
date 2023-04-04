@@ -5,14 +5,14 @@
 
     <groupId>org.gluu.casa.plugins</groupId>
     <artifactId>${plugin.id}</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>5.0.0-10</version>
     <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <plugin.id>authorized-clients</plugin.id>
-        <plugin.version>5.0.0-SNAPSHOT</plugin.version>
+        <plugin.version>5.0.0-8</plugin.version>
     </properties>
 
     <repositories>

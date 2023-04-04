@@ -6,17 +6,18 @@ import {
   CHECK_FOR_VALID_LICENSE,
   ACTIVATE_CHECK_USER_API,
   ACTIVATE_CHECK_USER_LICENSE_KEY,
+  ACTIVATE_CHECK_IS_CONFIG_VALID,
+  UPLOAD_NEW_SSA_TOKEN,
 } from '../actions/types'
-import { checkLicensePresentResponse } from '../actions'
+import { checkLicenseConfigValidResponse, checkLicensePresentResponse,checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse } from '../actions'
+import {updateToast} from 'Redux/actions/ToastAction'
 
 import LicenseApi from '../api/LicenseApi'
 import { getClient, getClientWithToken } from '../api/base'
 import {
-  checkUserApiKeyResponse,
   checkUserLicenseKeyResponse,
 } from '../actions'
 import {
-  checkLicensePresent,
   activateLicense,
   fetchApiTokenWithDefaultScopes,
 } from '../api/backend-api'
@@ -46,15 +47,7 @@ function* checkLicensePresentWorker() {
   yield put(checkLicensePresentResponse())
 }
 
-function* activateCheckUserApi({ payload }) {
-  try {
-    const licenseApi = yield* getApiTokenWithDefaultScopes()
-    const response = yield call(licenseApi.submitApiKey, payload)
-    yield put(checkUserApiKeyResponse(response))
-  } catch (error) {
-    console.log(error)
-  }
-}
+
 function* activateCheckUserLicenseKey({ payload }) {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
@@ -64,22 +57,50 @@ function* activateCheckUserLicenseKey({ payload }) {
     console.log(error)
   }
 }
+function* uploadNewSsaToken({ payload }) {
+  try {
+    const licenseApi = yield* getApiTokenWithDefaultScopes()
+    const response = yield call(licenseApi.uploadSSAtoken, payload)
+    if(!response?.apiResult){
+      yield put(uploadNewSsaTokenResponse("Invalid SSA. Please contact Gluu's team to verify if SSA is correct."))
+    }
+    yield put(checkLicenseConfigValidResponse(response?.apiResult))
+    yield put(getOAuth2Config())
+    yield put(checkLicensePresent())
+    // window.location.reload()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+function* checkAdminuiLicenseConfig() {
+  try {
+    const licenseApi = yield* getApiTokenWithDefaultScopes()
+    const response = yield call(licenseApi.checkAdminuiLicenseConfig)
+    yield put(checkLicenseConfigValidResponse(response?.apiResult))
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
 
 //watcher sagas
 export function* checkLicensePresentWatcher() {
   yield takeEvery(CHECK_FOR_VALID_LICENSE, checkLicensePresentWorker)
   yield takeEvery(ACTIVATE_CHECK_USER_LICENSE_KEY, activateCheckUserLicenseKey)
+  yield takeEvery(ACTIVATE_CHECK_IS_CONFIG_VALID, checkAdminuiLicenseConfig)
+  yield takeEvery(UPLOAD_NEW_SSA_TOKEN, uploadNewSsaToken)
+  
 }
 
-export function* activateCheckApiKeyWatcher() {
-  yield takeEvery(ACTIVATE_CHECK_USER_API, activateCheckUserApi)
-}
+
 /**
  * License Root Saga
  */
 export default function* rootSaga() {
   yield all([
     fork(checkLicensePresentWatcher),
-    fork(activateCheckApiKeyWatcher),
   ])
 }

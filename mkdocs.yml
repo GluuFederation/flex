@@ -22,7 +22,6 @@ plugins:
        enable_creation_date: true
    - git-committers:
        repository: GluuFederation/flex
-       token: !ENV GH_TOKEN
 # Configuration
 theme:
     name: material
@@ -118,16 +117,16 @@ nav:
         - 'Microsoft Azure AKS': 'install/helm-install/microsoft-azure.md'
         - 'Using Rancher Marketplace': 'install/helm-install/rancher.md'
     - 'VM Installation':
-        - 'install/vm-install/README.md'
-        - 'VM Requirements': 'install/vm-install/vm-requirements.md'
+        - 'install/vm-install/vm-requirements.md'
         - 'Ubuntu': 'install/vm-install/ubuntu.md'
         - 'RHEL': 'install/vm-install/rhel.md'
         - 'Suse': 'install/vm-install/suse.md'
 - 'Administration':
     - 'admin/README.md'
-    - 'Admin UI':
-        - 'admin/admin-ui/README.md'
-        - 'Admin UI Properties': 'admin/admin-ui/properties.md'
+    - 'Configuration': 'admin/config.md'
+#    - 'Admin UI':
+#        - 'admin/admin-ui/README.md'
+#        - 'Admin UI Properties': 'admin/admin-ui/properties.md'
 #    - 'SAML':
  #       - 'admin/saml/README.md'
   #      - 'SAML IDP': 'admin/saml/idp.md'

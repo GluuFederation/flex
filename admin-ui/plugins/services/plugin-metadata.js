@@ -70,7 +70,7 @@ const pluginMetadata = {
     },
     {
       component: LdapEditPage,
-      path: '/config/ldap/edit:configId',
+      path: '/config/ldap/edit/:configId',
       permission: CACHE_WRITE,
     },
     {
@@ -85,7 +85,7 @@ const pluginMetadata = {
     },
     {
       component: SqlEditPage,
-      path: '/config/sql/edit:configId',
+      path: '/config/sql/edit/:configId',
       permission: SQL_WRITE,
     },
     {

@@ -76,7 +76,8 @@ function ClientWizardForm({
     setModal(!modal)
   }
   function validateFinish(){
-    if(formRef.current.values.grantTypes.includes('authorization_code') || formRef.current.values.grantTypes.includes('implicit')){
+    
+    if(formRef.current.values.grantTypes.includes('authorization_code') || formRef.current.values.grantTypes.includes('implicit') || formRef.current.values.grantTypes.length == 0){
       if(formRef && formRef.current && formRef.current.values.redirectUris.length > 0){
         toggle()
       }else{

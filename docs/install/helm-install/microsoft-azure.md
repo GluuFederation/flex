@@ -38,14 +38,16 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
 
 ## Initial Setup
 
-1.  Install [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+1. Before initiating the setup please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT in base64 format that you can use to install, specified by the `.global.licenseSsa` key in the `values.yaml` of Gluus Chart.
 
-2.  Create a [Resource Group](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli#create-a-resource-group)
+2. Install [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
+
+3. Create a [Resource Group](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli#create-a-resource-group)
     ```
     az group create --name gluu-resource-group --location eastus
     ```
   
-3.  Create an [AKS cluster](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli#create-aks-cluster) such as the following example:
+4. Create an [AKS cluster](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli#create-aks-cluster) such as the following example:
     ```
     az aks create -g gluu-resource-group -n gluu-cluster --enable-managed-identity --node-vm-size NODE_TYPE --node-count 2 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys 
     ``` 

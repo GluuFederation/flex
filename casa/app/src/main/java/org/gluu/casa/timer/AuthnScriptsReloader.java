@@ -164,6 +164,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                             logger.error("Latest changes to custom scripts were not picked");
                         }
                         break;
+                    case DB:
                     case LDAP:
                         long rev = Optional.ofNullable(script.getRevision()).map(r -> r == Long.MAX_VALUE ? 0 : r).orElse(0L);
                         script.setRevision(rev + 1);
@@ -220,6 +221,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                 case FILE:
                     bytes = Files.readAllBytes(Paths.get(moduleProperties.get(LOCATION_PATH_PROPERTY)));
                     break;
+                case DB:
                 case LDAP:
                     bytes = script.getScript().getBytes(StandardCharsets.UTF_8);
                     break;
@@ -246,6 +248,7 @@ public class AuthnScriptsReloader extends JobListenerSupport {
                 case FILE:
                     fingerPrint = Paths.get(moduleProperties.get(LOCATION_PATH_PROPERTY)).toFile().lastModified();
                     break;
+                case DB:
                 case LDAP:
                     fingerPrint = script.getRevision();
                     break;

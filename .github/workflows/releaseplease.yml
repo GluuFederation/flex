@@ -5,23 +5,23 @@ on:
       node_release_as:
         description: 'Release version for the admin ui'
         required: true
-        default: '1.0.6'
+        default: '1.0.11'
       java_release_as:
         description: 'Release version for the java projects casa'
         required: true
-        default: '5.0.0-5'
+        default: '5.0.0-11'
       docker_release_as:
         description: 'Release version for the docker images docker-*'
         required: true
-        default: '1.0.6-1'
+        default: '1.0.11-1'
       python_release_as:
         description: 'Release version for the python projects'
         required: true
-        default: '1.0.6'
+        default: '1.0.11'
       mega_release_as:
         description: 'Mega release version'
         required: true
-        default: '5.0.0-5'
+        default: '5.0.0-11'
 jobs:
   release-java-pr:
     runs-on: ubuntu-latest

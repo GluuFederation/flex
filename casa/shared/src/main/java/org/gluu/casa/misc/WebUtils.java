@@ -3,7 +3,7 @@ package org.gluu.casa.misc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
-
+import jakarta.servlet.http.Cookie;
 import javax.imageio.ImageIO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -148,6 +148,23 @@ public final class WebUtils {
             sb.append("?").append(query);
         }
         return sb.toString();
+    }
+    
+    public static String getValueFromCookie( String cookieName) {
+        try {
+            final Cookie[] cookies = ((HttpServletRequest)Executions.getCurrent().getNativeRequest()).getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals(cookieName) /*&& cookie.getSecure()*/) {
+                    	LOG.info("Found cookie: '{}'", cookie.getValue());
+                        return cookie.getValue();
+                    }
+                }
+            }
+        } catch (Exception e) {
+        	LOG.error(e.getMessage(), e);
+        }
+        return "";
     }
 
 }

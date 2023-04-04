@@ -49,8 +49,10 @@ export default class LdapApi {
 
   // test LDAP Config
   testLdapConfig = (input) => {
+    let options = {}
+    options['gluuLdapConfiguration'] = input
     return new Promise((resolve, reject) => {
-      this.api.postConfigDatabaseLdapTest(input, (error, data, response) => {
+      this.api.postConfigDatabaseLdapTest(options, (error, data, response) => {
         handleResponse(error, reject, resolve, data)
       })
     })

@@ -15,6 +15,8 @@ import {
   GET_SCOPE_BY_PATTERN_RESPONSE,
   SEARCH_SCOPES,
   GET_SCOPE_BY_CREATOR_RESPONSE,
+  GET_CLIENT_SCOPES_RESPONSE,
+  GET_CLIENT_SCOPES,
 } from '../actions/types'
 import reducerRegistry from 'Redux/reducers/ReducerRegistry'
 const INIT_STATE = {
@@ -26,6 +28,8 @@ const INIT_STATE = {
   scopesByCreator: [],
   totalItems: 0,
   entriesCount: 0,
+  clientScopes: [],
+  loadingClientScopes: false,
 }
 
 const reducerName = 'scopeReducer'
@@ -44,6 +48,18 @@ export default function scopeReducer(state = INIT_STATE, action) {
           totalItems: action.payload.data.totalEntriesCount,
           entriesCount: action.payload.data.entriesCount,
           loading: false,
+        }
+      } else {
+        return handleDefault()
+      }
+    case GET_CLIENT_SCOPES:
+      return { ...state, loadingClientScopes: true }
+    case GET_CLIENT_SCOPES_RESPONSE:
+      if (action.payload.data) {
+        return {
+          ...state,
+          clientScopes: action.payload.data.entries,
+          loadingClientScopes: false,
         }
       } else {
         return handleDefault()

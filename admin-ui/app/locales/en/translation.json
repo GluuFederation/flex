@@ -27,7 +27,8 @@
     "change_password": "Change Password",
     "close": "Close",
     "delete": "Delete",
-    "revoke": "Revoke"
+    "revoke": "Revoke",
+    "show_error": "Show Error"
   },
   "dashboard": {
     "summary_title": "Actives Users & Access Token Stats",
@@ -303,7 +304,11 @@
     "select_date_range":"Select a date range",
     "scope": "Scope",
     "scopeExpression": "Scope Expression",
-    "selectUserRevoke": "Select the user to revoke"
+    "selectUserRevoke": "Select the user to revoke",
+    "acr":"acr",
+    "remote_primary_key":"Remote primary key",
+    "remote_ldap_server_post":"Remote LDAP server:port",
+    "test":"TEST"
   },
   "languages": {
     "french": "French",
@@ -350,7 +355,8 @@
     "user_management": "User Management",
     "maugraph": "MAU",
     "users": "Users",
-    "user-management": "User Management"
+    "user-management": "User Management",
+    "agama":"Agama"
   },
   "messages": {
     "success_in_saving": "Changes saved successfully",
@@ -384,7 +390,8 @@
     "error_in_saving": "Error in saving.",
     "error_processiong_request":"Error in processing request.",
     "no_scope_in_client": "No Scope data for this Client",
-    "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client"
+    "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client",
+    "error_in_script": "Error in script"
   },
   "tooltips": {
     "add_attribute": "Add attribute",
@@ -447,7 +454,8 @@
     "sql_serverTimezone": "Enter server timezone.",
     "activate_sql_configuration": "Activate SQL configuration.",
     "script_path": "Enter script file path",
-    "iconUrl": "Icon URL"
+    "iconUrl": "Icon URL",
+    "level":"Level"
   },
   "titles": {
     "acrs": "ACRs",
@@ -504,7 +512,8 @@
     "access_token": "Access token",
     "userinfo": "Userinfo",
     "JARM": "JARM",
-    "request_object": "Request Object"
+    "request_object": "Request Object",
+    "agama":"Agama"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -914,7 +923,8 @@
       "base_dns": "This contains the location of the Active Directory/LDAP tree from where the Gluu Server shall read the user information.",
       "primary_key": "Primary Key",
       "local_primary_key": "Local Primary Key",
-      "activate": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values."
+      "activate": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values.",
+      "level":"Level"
     },
     "cache": {
       "cacheProviderType": "The cache Provider Type.",

@@ -1,5 +1,5 @@
 package org.gluu.casa.core.model;
-
+import io.jans.as.model.fido.u2f.protocol.DeviceData;
 import io.jans.orm.annotation.AttributeName;
 import io.jans.orm.annotation.DataEntry;
 import io.jans.orm.annotation.ObjectClass;
@@ -21,11 +21,28 @@ public class Fido2RegistrationEntry extends Entry {
 
     @AttributeName(name = "jansId")
     private String id;
+    
+    @AttributeName(name = "jansApp")
+    private String application;
 
     @JsonObject
     @AttributeName(name = "jansRegistrationData" , ignoreDuringUpdate = true)
     private Fido2RegistrationData registrationData;
+    
+    @AttributeName(name = "jansCounter", ignoreDuringUpdate = true)
+	private int counter;
 
+    @JsonObject
+   	@AttributeName(name = "jansDeviceData", ignoreDuringUpdate = true)
+   	private DeviceData deviceData;
+       
+    
+    @JsonObject
+    @AttributeName(name = "jansStatus" , ignoreDuringUpdate = true)
+    private String registrationStatus;
+
+    
+   
     public String getDisplayName() {
             return displayName;
     }
@@ -57,5 +74,39 @@ public class Fido2RegistrationEntry extends Entry {
     public void setRegistrationData(Fido2RegistrationData registrationData) {
             this.registrationData = registrationData;
     }
+
+	public int getCounter() {
+		return counter;
+	}
+
+	public void setCounter(int counter) {
+		this.counter = counter;
+	}
+
+	public String getRegistrationStatus() {
+		return registrationStatus;
+	}
+
+	public void setRegistrationStatus(String registrationStatus) {
+		this.registrationStatus = registrationStatus;
+	}
+
+	public DeviceData getDeviceData() {
+		return deviceData;
+	}
+
+	public void setDeviceData(DeviceData deviceData) {
+		this.deviceData = deviceData;
+	}
+
+	public String getApplication() {
+		return application;
+	}
+
+	public void setApplication(String application) {
+		this.application = application;
+	}
+
+
 
 }

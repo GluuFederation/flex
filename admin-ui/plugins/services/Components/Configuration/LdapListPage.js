@@ -67,7 +67,7 @@ function LdapListPage({
 
   function handleGoToLdapEditPage(row) {
     dispatch(setCurrentItem(row))
-    return navigate(`/config/ldap/edit:` + row.configId)
+    return navigate(`/config/ldap/edit/:` + row.configId)
   }
 
   function handleLdapDelete(row) {

@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=291566e2e7117c6f11ce24ef0b1330feb0cdef4f
+ENV ADMIN_UI_VERSION=4ece88375d5c3bb51245f16f4db3a2e9db4fca26
 
 RUN mkdir -p /opt/flex
 
@@ -34,7 +34,7 @@ RUN cd /opt/flex/admin-ui && npm rebuild node-sass
 # Application
 # ===========
 
-FROM node:fermium-alpine3.16
+FROM node:14-alpine3.16
 
 # ======
 # alpine
@@ -68,7 +68,7 @@ RUN python3 -m ensurepip \
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=8ad3a64d1e49bd3696412f12f61709aa96a7cf7e
+ENV JANS_SOURCE_VERSION=8beb2b2d0f07e6ca536c2699d229250e498d1c07
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -187,13 +187,12 @@ ENV CN_WAIT_MAX_TIME=300 \
 # misc stuff
 # ==========
 
-LABEL name="gluufederation/admin-ui" \
-    maintainer="Gluu Inc. <support@gluu.org>" \
-    vendor="Gluu Federation" \
-    version="1.0.7" \
-    release="dev" \
-    summary="Gluu Admin UI" \
-    description=""
+LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/admin-ui" \
+    org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
+    org.opencontainers.image.vendor="Gluu Federation" \
+    org.opencontainers.image.version="1.0.11" \
+    org.opencontainers.image.title="Gluu Flex Admin UI" \
+    org.opencontainers.image.description=""
 
 RUN mkdir -p /etc/jans/conf /etc/certs
 COPY templates /app/templates/

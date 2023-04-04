@@ -38,22 +38,24 @@ Releases of images are in style 1.0.0-beta.0, 1.0.0-0
 
 ## Initial Setup
 
-1.  If you are using Cloud Shell, you can skip to step 4.
+1. Before initiating the setup please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT in base64 format that you can use to install, specified by the `.global.licenseSsa` key in the `values.yaml` of Gluus Chart.
 
-2.  Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts)
+2. If you are using Cloud Shell, you can skip to step 4.
+
+3. Install [gcloud](https://cloud.google.com/sdk/docs/quickstarts)
     
-3.  Install kubectl using `gcloud components install kubectl` command
+4. Install kubectl using `gcloud components install kubectl` command
     
-4.  Create cluster using a command such as the following example:
+5. Create cluster using a command such as the following example:
 
     ```  
     gcloud container clusters create gluu-cluster --num-nodes 2 --machine-type e2-highcpu-8 --zone us-west1-a
     ```
     You can adjust `num-nodes` and `machine-type` as per your desired cluster size
 
-5.  Install [Helm3](https://helm.sh/docs/intro/install/)    
+6. Install [Helm3](https://helm.sh/docs/intro/install/)    
 
-6.  Create `gluu` namespace where our resources will reside
+7. Create `gluu` namespace where our resources will reside
     ```
     kubectl create namespace gluu
     ```

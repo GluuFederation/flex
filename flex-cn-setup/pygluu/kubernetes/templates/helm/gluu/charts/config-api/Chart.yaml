@@ -1,7 +1,7 @@
 
 apiVersion: v2
 name: config-api
-version: 5.0.10
+version: 5.0.15-dev
 kubeVersion: ">=v1.21.0-0"
 description: Jans Config Api endpoints can be used to configure jans-auth-server, which is an open-source OpenID Connect Provider (OP) and UMA Authorization Server (AS)
 type: application

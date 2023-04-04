@@ -21,6 +21,9 @@ import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import { SCRIPT } from 'Utils/ApiResources'
 import { useTranslation } from 'react-i18next'
 import items from './scriptTypes'
+import GluuScriptErrorModal from "../../../../app/routes/Apps/Gluu/GluuScriptErrorModal";
+import { Alert, Button } from "reactstrap";
+import ErrorIcon from '@material-ui/icons/Error';
 
 function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
   console.log(scripts,"here")
@@ -28,6 +31,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)
   const [scriptTypeState, setScriptTypeState] = useState(item.scriptType)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [scriptPath, setScriptPath] = useState(() => {
     if (!item.moduleProperties) {
       return false
@@ -89,7 +93,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       configurationProperties: item.configurationProperties,
     },
     validationSchema: Yup.object({
-      name: Yup.string().min(2, 'Mininum 2 characters').required('Required!'),
+      name: Yup.string().matches(/^[a-zA-Z0-9_]+$/,"Name should contain only letters, digits and underscores").min(2, 'Mininum 2 characters').required('Required!'),
       description: Yup.string(),
       scriptType: Yup.string()
         .min(2, 'Mininum 2 characters')
@@ -211,19 +215,47 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
     item.level = level
   }
 
+  const showErrorModal = () => {
+    setIsModalOpen(true)
+  };
+
   return (
-    <Form onSubmit={formik.handleSubmit}>
-      {item.inum && (
-        <GluuInumInput
-          label="fields.inum"
-          name="inum"
-          lsize={3}
-          rsize={9}
-          value={item.inum}
-          doc_category={SCRIPT}
+    <>
+      {isModalOpen && (
+        <GluuScriptErrorModal
+          isOpen={isModalOpen}
+          error={item.scriptError.stackTrace}
+          handler={() => setIsModalOpen(false)}
         />
       )}
-      
+
+      {item?.scriptError?.stackTrace ? (
+        <>
+          <Alert
+            className='d-flex align-items-center justify-content-between w-100 mb-3'
+            color='danger'>
+            <div className='d-flex align-items-center' style={{ gap: '4px' }}>
+              <ErrorIcon color='error' />
+              <h5 className="alert-heading m-0">{t("messages.error_in_script")}!</h5>
+            </div>
+            <Button color="danger" onClick={showErrorModal}>
+              {t('actions.show_error')}
+            </Button>
+          </Alert>
+        </>
+      ) : null}
+      <Form onSubmit={formik.handleSubmit}>
+        {item.inum && (
+          <GluuInumInput
+            label="fields.inum"
+            name="inum"
+            lsize={3}
+            rsize={9}
+            value={item.inum}
+            doc_category={SCRIPT}
+          />
+        )}
+
         <FormGroup row>
           <GluuLabel label="fields.name" required doc_category={SCRIPT} doc_entry="name"/>
           <Col sm={9}>
@@ -242,7 +274,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             ) : null}
           </Col>
         </FormGroup>
-      
+
         <FormGroup row>
           <GluuLabel label="fields.description" doc_category={SCRIPT} doc_entry="description" />
           <Col sm={9}>
@@ -262,8 +294,8 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             </InputGroup>
           </Col>
         </FormGroup>
-      {scriptTypeState === 'person_authentication' && (
-        
+        {scriptTypeState === 'person_authentication' && (
+
           <FormGroup row>
             <GluuLabel label={t('Select SAML ACRS')} doc_category={SCRIPT} doc_entry="aliases" />
             <Col sm={9}>
@@ -288,8 +320,8 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               </Input>
             </Col>
           </FormGroup>
-      )}
-      
+        )}
+
         <FormGroup row>
           <GluuLabel label="fields.script_type" required doc_category={SCRIPT} doc_entry="scriptType"/>
           <Col sm={9}>
@@ -318,7 +350,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             ) : null}
           </Col>
         </FormGroup>
-      
+
         <FormGroup row>
           <GluuLabel label="fields.programming_language" required doc_category={SCRIPT} doc_entry="programmingLanguage"/>
           <Col sm={9}>
@@ -347,7 +379,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               )}
           </Col>
         </FormGroup>
-      
+
         <FormGroup row>
           <GluuLabel label="fields.location_type" doc_category={SCRIPT} doc_entry="locationType" />
           <Col sm={9}>
@@ -359,12 +391,12 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                 disabled={viewOnly}
                 defaultValue={
                   !!item.moduleProperties &&
-                  item.moduleProperties.filter(
-                    (i) => i.value1 === 'location_type',
-                  ).length > 0
+                    item.moduleProperties.filter(
+                      (i) => i.value1 === 'location_type',
+                    ).length > 0
                     ? item.moduleProperties.filter(
-                        (it) => it.value1 === 'location_type',
-                      )[0].value2
+                      (it) => it.value1 === 'location_type',
+                    )[0].value2
                     : undefined
                 }
                 onChange={(e) => {
@@ -378,8 +410,8 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             </InputGroup>
           </Col>
         </FormGroup>
-      {scriptPath && (
-        
+        {scriptPath && (
+
           <FormGroup row>
             <GluuLabel label="fields.script_path" doc_category={SCRIPT} doc_entry="scriptPath" />
             <Col sm={9}>
@@ -395,12 +427,12 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                   id="location_path"
                   defaultValue={
                     !!item.moduleProperties &&
-                    item.moduleProperties.filter(
-                      (i) => i.value1 === 'location_path',
-                    ).length > 0
+                      item.moduleProperties.filter(
+                        (i) => i.value1 === 'location_path',
+                      ).length > 0
                       ? item.moduleProperties.filter(
-                          (it) => it.value1 === 'location_path',
-                        )[0].value2
+                        (it) => it.value1 === 'location_path',
+                      )[0].value2
                       : undefined
                   }
                   onChange={(e) => {
@@ -410,9 +442,9 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               </InputGroup>
             </Col>
           </FormGroup>
-      )}
-      {scriptTypeState === 'person_authentication' && (
-        
+        )}
+        {scriptTypeState === 'person_authentication' && (
+
           <FormGroup row>
             <GluuLabel label="Interactive" doc_category={SCRIPT} doc_entry="usage_type"/>
             <Col sm={9}>
@@ -424,12 +456,12 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                   disabled={viewOnly}
                   defaultValue={
                     !!item.moduleProperties &&
-                    item.moduleProperties.filter(
-                      (vItem) => vItem.value1 === 'usage_type',
-                    ).length > 0
+                      item.moduleProperties.filter(
+                        (vItem) => vItem.value1 === 'usage_type',
+                      ).length > 0
                       ? item.moduleProperties.filter(
-                          (kItem) => kItem.value1 === 'usage_type',
-                        )[0].value2
+                        (kItem) => kItem.value1 === 'usage_type',
+                      )[0].value2
                       : undefined
                   }
                   onChange={(e) => {
@@ -444,8 +476,8 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
               </InputGroup>
             </Col>
           </FormGroup>
-      )}
-      
+        )}
+
         <FormGroup row>
           <GluuLabel label="fields.level" doc_category={SCRIPT} doc_entry="level"/>
           <Col sm={9}>
@@ -457,30 +489,30 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             <Input type="hidden" id="level" defaultValue={item.level} />
           </Col>
         </FormGroup>
-      <GluuProperties
-        compName="configurationProperties"
-        label="fields.custom_properties"
-        formik={formik}
-        keyPlaceholder={t('placeholders.enter_property_key')}
-        valuePlaceholder={t('placeholders.enter_property_value')}
-        options={getPropertiesConfig(item)}
-        disabled={viewOnly}
-      ></GluuProperties>
-      {!scriptPath && (
-        <GluuInputEditor
-          doc_category={SCRIPT}
-          name="script"
-          language={selectedLanguage?.toLowerCase()}
-          label="script"
-          lsize={2}
-          rsize={10}
+        <GluuProperties
+          compName="configurationProperties"
+          label="fields.custom_properties"
           formik={formik}
-          value={item.script}
-          readOnly={viewOnly}
-          required
-        ></GluuInputEditor>
-      )}
-      
+          keyPlaceholder={t('placeholders.enter_property_key')}
+          valuePlaceholder={t('placeholders.enter_property_value')}
+          options={getPropertiesConfig(item)}
+          disabled={viewOnly}
+        ></GluuProperties>
+        {!scriptPath && (
+          <GluuInputEditor
+            doc_category={SCRIPT}
+            name="script"
+            language={selectedLanguage?.toLowerCase()}
+            label="script"
+            lsize={2}
+            rsize={10}
+            formik={formik}
+            value={item.script}
+            readOnly={viewOnly}
+            required
+          ></GluuInputEditor>
+        )}
+
         <FormGroup row>
           <GluuLabel label="options.enabled" size={3} doc_category={SCRIPT} doc_entry="enabled"/>
           <Col sm={1}>
@@ -493,25 +525,26 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
             />
           </Col>
         </FormGroup>
-      <GluuTooltip doc_category={SCRIPT} doc_entry="moduleProperties">
-        <FormGroup row>
-          <Input
-            type="hidden"
-            id="moduleProperties"
-            defaultValue={item.moduleProperties}
-            disabled={viewOnly}
-          />
-        </FormGroup>
-      </GluuTooltip>
-      {!viewOnly && <GluuCommitFooter saveHandler={toggle} />}
-      <GluuCommitDialog
-        handler={toggle}
-        modal={modal}
-        onAccept={submitForm}
-        formik={formik}
-        disabled={viewOnly}
-      />
-    </Form>
+        <GluuTooltip doc_category={SCRIPT} doc_entry="moduleProperties">
+          <FormGroup row>
+            <Input
+              type="hidden"
+              id="moduleProperties"
+              defaultValue={item.moduleProperties}
+              disabled={viewOnly}
+            />
+          </FormGroup>
+        </GluuTooltip>
+        {!viewOnly && <GluuCommitFooter saveHandler={toggle} />}
+        <GluuCommitDialog
+          handler={toggle}
+          modal={modal}
+          onAccept={submitForm}
+          formik={formik}
+          disabled={viewOnly}
+        />
+      </Form>
+    </>
   )
 }
 

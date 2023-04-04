@@ -212,7 +212,7 @@ function ClientListPage() {
   function handleGoToClientEditPage(row, edition) {
     dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
-    return navigate(`/auth-server/client/edit:` + row.inum.substring(0, 4))
+    return navigate(`/auth-server/client/edit/:` + row.inum.substring(0, 4))
   }
   function handleGoToClientAddPage() {
     return navigate('/auth-server/client/new')

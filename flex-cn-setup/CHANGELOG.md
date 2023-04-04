@@ -1,5 +1,55 @@
 # Changelog
 
+## [1.0.10](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.9...flex-cn-setup-v1.0.10) (2023-03-16)
+
+
+### Bug Fixes
+
+* add cn license enforcment to chart ([55fb0c9](https://github.com/GluuFederation/flex/commit/55fb0c97428a3ec704e80558679a7e9d7f88c42c))
+* prepare for 5.0.10 release ([1ffcbc7](https://github.com/GluuFederation/flex/commit/1ffcbc74d837e7a037d6cff71d990573d04bba7b))
+
+## [1.0.9](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.8...flex-cn-setup-v1.0.9) (2023-03-09)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-9 release ([716d309](https://github.com/GluuFederation/flex/commit/716d309350f5713b96f482dde9e0a543e5e62286))
+
+## [1.0.8](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.7...flex-cn-setup-v1.0.8) (2023-03-02)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-8 release ([29e0cbb](https://github.com/GluuFederation/flex/commit/29e0cbb5166d83268ab9c3ee3c5f3e2bc4dd1489))
+
+## [1.0.7](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.5...flex-cn-setup-v1.0.7) (2023-02-22)
+
+
+### Features
+
+* **docker-casa:** enable prefix and group for stdout logs ([#696](https://github.com/GluuFederation/flex/issues/696)) ([bdb0f06](https://github.com/GluuFederation/flex/commit/bdb0f06c730aa2878cd05d70446574cc4e893550))
+
+
+### Bug Fixes
+
+* add init containers for adjusting ownership on upgrade ([291566e](https://github.com/GluuFederation/flex/commit/291566e2e7117c6f11ce24ef0b1330feb0cdef4f))
+* add init containers for adjusting ownership on upgrade ([e157fcb](https://github.com/GluuFederation/flex/commit/e157fcb359350014b79767a8dcb03eaddcc6ca36))
+* add init containers for adjusting ownership on upgrade ([c54f598](https://github.com/GluuFederation/flex/commit/c54f598679a6e9c3a44ae00807a09a0d26e17c59))
+* add stdout log prefix ([9853283](https://github.com/GluuFederation/flex/commit/9853283b6a037196ca618d4c0ed071a204a7543f))
+* add stdout log prefix ([fc046ba](https://github.com/GluuFederation/flex/commit/fc046baf2330a76709416994ffbae10f81f46eec))
+* extend fido2 appLoggers ([2757139](https://github.com/GluuFederation/flex/commit/27571390a6b0534e13253b86bd6a039f1d854a68))
+* idp healthcheck (idp not configured yet) ([cf221b9](https://github.com/GluuFederation/flex/commit/cf221b9842f4578537b0f300c125e1cd867cc41f))
+* increase config-api resource requirements ([f046679](https://github.com/GluuFederation/flex/commit/f0466794e31002c9e61074352b8f891f1168632b))
+* prepare for 5.0.0-7 release ([7f96937](https://github.com/GluuFederation/flex/commit/7f9693729156b04367b85d0d44a4022a52d53417))
+* prepare for helm chart 5.0.11 ([726ad05](https://github.com/GluuFederation/flex/commit/726ad05ba5aabcb24d4a73ec5420bc54c9bfc912))
+* update configmap ENVs ([acda6a5](https://github.com/GluuFederation/flex/commit/acda6a50dae83d53550c6bd9f20c09592e3048cf))
+
+
+### Documentation
+
+* add initial eks tutorial ([1579572](https://github.com/GluuFederation/flex/commit/157957291d5443237712627f24ac843deed961a9))
+* add initial k8s docs ([3562826](https://github.com/GluuFederation/flex/commit/3562826b9ae8fd54fdc04447e03abbd421c66aa5))
+
 ## [1.0.5](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.4...flex-cn-setup-v1.0.5) (2022-12-08)
 
 

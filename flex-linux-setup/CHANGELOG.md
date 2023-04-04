@@ -1,5 +1,56 @@
 # Changelog
 
+## [1.0.10](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.9...flex-linux-setup-v1.0.10) (2023-03-16)
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** enforce SSA ([f46b80e](https://github.com/GluuFederation/flex/commit/f46b80edd500a7721358cedfcb43ca342a77401e))
+* prepare for 5.0.10 release ([1ffcbc7](https://github.com/GluuFederation/flex/commit/1ffcbc74d837e7a037d6cff71d990573d04bba7b))
+
+
+### Documentation
+
+* fix jans uninstall linux setup command ([82dcf8c](https://github.com/GluuFederation/flex/commit/82dcf8c87e5e5ace4af0ecb7af18304100c2cb8e))
+* update setup uninstallation ([#842](https://github.com/GluuFederation/flex/issues/842)) ([6ba3aaf](https://github.com/GluuFederation/flex/commit/6ba3aafff9f371c895ec566861f40d8112ef17b1))
+
+## [1.0.9](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.8...flex-linux-setup-v1.0.9) (2023-03-09)
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** adminui template ([85249a3](https://github.com/GluuFederation/flex/commit/85249a3447242957e45e887634430740ff520059))
+* **flex-linux-setup:** decoding ssa jwt ([a953d31](https://github.com/GluuFederation/flex/commit/a953d31a459fac4ca55ff5b0d61cf454635e0673))
+* **flex-linux-setup:** no download for deb/rpm packages ([02b9ac4](https://github.com/GluuFederation/flex/commit/02b9ac4f24e20413a9b138df430f28168605f3eb))
+* **flex-linux-setup:** set flex version 1.0.9 ([#827](https://github.com/GluuFederation/flex/issues/827)) ([d94b40d](https://github.com/GluuFederation/flex/commit/d94b40d7b79d7baabc547294cce3156ec442ff26))
+* prepare for 5.0.0-9 release ([716d309](https://github.com/GluuFederation/flex/commit/716d309350f5713b96f482dde9e0a543e5e62286))
+
+## [1.0.8](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.7...flex-linux-setup-v1.0.8) (2023-03-02)
+
+
+### Bug Fixes
+
+* prepare for 5.0.0-8 release ([29e0cbb](https://github.com/GluuFederation/flex/commit/29e0cbb5166d83268ab9c3ee3c5f3e2bc4dd1489))
+
+## [1.0.7](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.5...flex-linux-setup-v1.0.7) (2023-02-22)
+
+
+### Features
+
+* flex-linux-setup use tarball to install node_modules in admin-ui ([8a1fd53](https://github.com/GluuFederation/flex/commit/8a1fd53e0f96b02db7f1703c5e2b9498929b8f0c))
+
+
+### Bug Fixes
+
+* admin-ui database configuration ([f42099e](https://github.com/GluuFederation/flex/commit/f42099e032577599a92474a76caffb37dba9b41c))
+* flex-linux-setup always download latest jans-installer ([f5480c2](https://github.com/GluuFederation/flex/commit/f5480c2b271302d259e16ea0a3d93935c6b0a1c8))
+* flex-linux-setup check twilio and fido2 client before deploy ([#736](https://github.com/GluuFederation/flex/issues/736)) ([fd28ad3](https://github.com/GluuFederation/flex/commit/fd28ad389646bd42f06f88e256fc94a6eb8092ad))
+* flex-linux-setup code smell ([1146797](https://github.com/GluuFederation/flex/commit/1146797fec64213c23e6cc547a1ca72ffe6cff02))
+* flex-linux-setup download pyjwt and cryptography instead of gcs ([#724](https://github.com/GluuFederation/flex/issues/724)) ([c28a435](https://github.com/GluuFederation/flex/commit/c28a435ee2206ae100f5782dbe7be10cd2eccf5f))
+* flex-linux-setup Dump Admin UI Client and Secret to screen and setup.properties ([#700](https://github.com/GluuFederation/flex/issues/700)) ([69af163](https://github.com/GluuFederation/flex/commit/69af163482ce1a8312d8b8081b274bc787784d8d))
+* flex-linux-setup remove Casa.py ([ca6b289](https://github.com/GluuFederation/flex/commit/ca6b28957d12da4179640fd422dfc6b6707b6f1d))
+* prepare for 5.0.0-7 release ([7f96937](https://github.com/GluuFederation/flex/commit/7f9693729156b04367b85d0d44a4022a52d53417))
+
 ## [1.0.5](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.4...flex-linux-setup-v1.0.5) (2022-12-08)
 
 
