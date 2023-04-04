@@ -139,6 +139,17 @@ function LdapForm({ item, handleSubmit }) {
   return (
     <Form onSubmit={formik.handleSubmit}>
       <GluuLoader blocking={loading}>
+      <FormGroup row>
+          <Col sm={12} className="text-right">
+            <button
+              onClick={checkLdapConnection}
+              type="button"
+              className={`btn btn-primary-${selectedTheme} text-center`}
+            >
+              {t('fields.test')}
+            </button>
+          </Col>
+        </FormGroup>
         <FormGroup row>
           <GluuLabel
             label="fields.acr"
@@ -202,54 +213,6 @@ function LdapForm({ item, handleSubmit }) {
         </FormGroup>
         <FormGroup row>
           <GluuLabel
-            label="fields.bind_password"
-            required
-            doc_category={LDAP}
-            doc_entry="bind_password"
-          />
-          <Col sm={9}>
-            <InputGroup>
-              <Input
-                placeholder={t('placeholders.ldap_bind_password')}
-                valid={
-                  !formik.errors.bindPassword &&
-                  !formik.touched.bindPassword &&
-                  init
-                }
-                onKeyUp={toogle}
-                id="bindPassword"
-                type="password"
-                defaultValue={item.bindPassword}
-                onChange={formik.handleChange}
-              />
-            </InputGroup>
-            {formik.errors.bindPassword && formik.touched.bindPassword ? (
-              <div style={{ color: 'red' }}>{formik.errors.bindPassword}</div>
-            ) : null}
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Col sm={9}>
-            <GluuTypeAhead
-              name="servers"
-              label="fields.remote_ldap_server_post"
-              formik={formik}
-              required={true}
-              options={['localhost:1636']}
-              doc_category={LDAP}
-              doc_entry="servers"
-              value={item.servers}
-              valid={!formik.errors.servers && !formik.touched.servers && init}
-              onKeyUp={toogle}
-            ></GluuTypeAhead>
-
-            {formik.errors.servers && formik.touched.servers ? (
-              <div style={{ color: 'red' }}>{formik.errors.servers}</div>
-            ) : null}
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <GluuLabel
             label="fields.max_connections"
             required
             doc_category={LDAP}
@@ -272,45 +235,6 @@ function LdapForm({ item, handleSubmit }) {
             </InputGroup>
             {formik.errors.maxConnections && formik.touched.maxConnections ? (
               <div style={{ color: 'red' }}>{formik.errors.maxConnections}</div>
-            ) : null}
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <GluuLabel
-            label="fields.use_ssl"
-            required
-            doc_category={LDAP}
-            doc_entry="use_ssl"
-          />
-          <Col sm={9}>
-            <InputGroup>
-              <Input
-                placeholder={t('placeholders.enable_ssl_communication')}
-                valid={!formik.errors.useSSL && !formik.touched.useSSL && init}
-                id="useSSL"
-                type="checkbox"
-                onKeyUp={toogle}
-                defaultChecked={item.useSSL}
-                onChange={formik.handleChange}
-              />
-            </InputGroup>
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Col sm={9}>
-            <GluuTypeAhead
-              name="baseDNs"
-              label="fields.base_dns"
-              doc_category={LDAP}
-              doc_entry="base_dns"
-              formik={formik}
-              options={[]}
-              required={true}
-              onKeyUp={toogle}
-              value={item.baseDNs}
-            ></GluuTypeAhead>
-            {formik.errors.baseDNs && formik.touched.baseDNs ? (
-              <div style={{ color: 'red' }}>{formik.errors.baseDNs}</div>
             ) : null}
           </Col>
         </FormGroup>
@@ -371,7 +295,94 @@ function LdapForm({ item, handleSubmit }) {
           </Col>
         </FormGroup>
         <FormGroup row>
+          <Col sm={9}>
+            <GluuTypeAhead
+              name="servers"
+              label="fields.remote_ldap_server_post"
+              formik={formik}
+              required={true}
+              options={['localhost:1636']}
+              doc_category={LDAP}
+              doc_entry="servers"
+              value={item.servers}
+              valid={!formik.errors.servers && !formik.touched.servers && init}
+              onKeyUp={toogle}
+            ></GluuTypeAhead>
+
+            {formik.errors.servers && formik.touched.servers ? (
+              <div style={{ color: 'red' }}>{formik.errors.servers}</div>
+            ) : null}
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <Col sm={9}>
+            <GluuTypeAhead
+              name="baseDNs"
+              label="fields.base_dns"
+              doc_category={LDAP}
+              doc_entry="base_dns"
+              formik={formik}
+              options={[]}
+              required={true}
+              onKeyUp={toogle}
+              value={item.baseDNs}
+            ></GluuTypeAhead>
+            {formik.errors.baseDNs && formik.touched.baseDNs ? (
+              <div style={{ color: 'red' }}>{formik.errors.baseDNs}</div>
+            ) : null}
+          </Col>
+        </FormGroup>
+        <FormGroup row>
           <GluuLabel
+            label="fields.bind_password"
+            required
+            doc_category={LDAP}
+            doc_entry="bind_password"
+          />
+          <Col sm={9}>
+            <InputGroup>
+              <Input
+                placeholder={t('placeholders.ldap_bind_password')}
+                valid={
+                  !formik.errors.bindPassword &&
+                  !formik.touched.bindPassword &&
+                  init
+                }
+                onKeyUp={toogle}
+                id="bindPassword"
+                type="password"
+                defaultValue={item.bindPassword}
+                onChange={formik.handleChange}
+              />
+            </InputGroup>
+            {formik.errors.bindPassword && formik.touched.bindPassword ? (
+              <div style={{ color: 'red' }}>{formik.errors.bindPassword}</div>
+            ) : null}
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+          <GluuLabel
+            label="fields.use_ssl"
+            required
+            doc_category={LDAP}
+            doc_entry="use_ssl"
+          />
+          <Col sm={9}>
+            <InputGroup>
+              <Input
+                placeholder={t('placeholders.enable_ssl_communication')}
+                valid={!formik.errors.useSSL && !formik.touched.useSSL && init}
+                id="useSSL"
+                type="checkbox"
+                onKeyUp={toogle}
+                defaultChecked={item.useSSL}
+                onChange={formik.handleChange}
+              />
+            </InputGroup>
+          </Col>
+        </FormGroup>
+        <FormGroup row>
+         <GluuLabel
             label="fields.enabled"
             doc_category={LDAP}
             doc_entry="activate"
@@ -416,17 +427,7 @@ function LdapForm({ item, handleSubmit }) {
             ) : null}
           </Col>
         </FormGroup>
-        <FormGroup row>
-          <Col sm={12}>
-            <button
-              onClick={checkLdapConnection}
-              type="button"
-              className={`btn btn-primary-${selectedTheme} text-center`}
-            >
-              {t('fields.test_connection')}
-            </button>
-          </Col>
-        </FormGroup>
+        
 
         <FormGroup row>
           {' '}

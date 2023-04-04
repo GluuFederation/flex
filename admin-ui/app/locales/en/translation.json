@@ -306,7 +306,8 @@
     "selectUserRevoke": "Select the user to revoke",
     "acr":"acr",
     "remote_primary_key":"Remote primary key",
-    "remote_ldap_server_post":"Remote LDAP server:port"
+    "remote_ldap_server_post":"Remote LDAP server:port",
+    "test":"TEST"
   },
   "languages": {
     "french": "French",
@@ -920,7 +921,8 @@
       "base_dns": "This contains the location of the Active Directory/LDAP tree from where the Gluu Server shall read the user information.",
       "primary_key": "Primary Key",
       "local_primary_key": "Local Primary Key",
-      "activate": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values."
+      "activate": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values.",
+      "level":"Level"
     },
     "cache": {
       "cacheProviderType": "The cache Provider Type.",
