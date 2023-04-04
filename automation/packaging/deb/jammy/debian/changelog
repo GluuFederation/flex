@@ -1,0 +1,5 @@
+flex (%VER%~ubuntu22.04) unstable; urgency=low
+
+  * Initial release. 
+
+ -- The Packaging team <packaging@gluu.org>  Wed, 05 Oct 2022 00:00:24 +0000
