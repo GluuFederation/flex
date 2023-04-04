@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next'
 import SetTitle from 'Utils/SetTitle'
 import { ThemeContext } from 'Context/theme/themeContext'
 import getThemeColor from 'Context/theme/config'
-import { Paper, TablePagination } from '@material-ui/core'
+import TablePagination from '@mui/material/TablePagination';
+import Paper from '@mui/material/Paper';
 import { getAgama, deleteAgama, addAgama } from '../../redux/actions/AgamaActions'
 import { hasPermission, AGAMA_READ, AGAMA_WRITE } from 'Utils/PermChecker'
 import GluuViewWrapper from '../../../../app/routes/Apps/Gluu/GluuViewWrapper'
@@ -15,7 +16,7 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 import { useDropzone } from 'react-dropzone'
 import JSZip from 'jszip'
 import { AGAMA_DELETE } from '../../../../app/utils/PermChecker'
-import {CircularProgress} from '@material-ui/core'
+import CircularProgress from '@mui/material/CircularProgress';
 
 function AgamaListPage() {
   const { t } = useTranslation()
