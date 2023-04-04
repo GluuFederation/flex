@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next'
 import items from './scriptTypes'
 import GluuScriptErrorModal from "../../../../app/routes/Apps/Gluu/GluuScriptErrorModal";
 import { Alert, Button } from "reactstrap";
-import ErrorIcon from '@material-ui/icons/Error';
+import ErrorIcon from '@mui/icons-material/Error';
 
 function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
   console.log(scripts,"here")
