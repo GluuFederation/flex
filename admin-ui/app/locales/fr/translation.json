@@ -92,7 +92,8 @@
     "yes": "Oui",
     "close": "Fermer",
     "delete": "Supprimez",
-    "revoke": "Révoquer"
+    "revoke": "Révoquer",
+    "show_error": "Afficher l'erreur"
   },
   "fields": {
     "access_token_signing_alg": "Algorithme de signature de jeton d'accès",
@@ -319,7 +320,8 @@
     "view_client_details": "Afficher les détails du client",
     "view_script_details": "Afficher les détails du script personnalisé",
     "add_new_user": "Ajouter un utilisateur",
-    "no_scope_in_client": "Aucune donnée d'étendue pour ce client"
+    "no_scope_in_client": "Aucune donnée d'étendue pour ce client",
+    "error_in_script": "Erreur dans le script"
   },
   "tooltips": {
     "add_attribute": "Ajouter un attribut",

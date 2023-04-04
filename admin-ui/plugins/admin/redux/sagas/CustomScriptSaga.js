@@ -79,9 +79,9 @@ export function* addScript({ payload }) {
       scriptApi.addCustomScript,
       payload.action.action_data,
     )
-    yield put(updateToast(true, 'success'))
     yield put(addCustomScriptResponse(data))
     yield call(postUserAction, audit)
+    yield put(updateToast(true, 'success'))
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(addCustomScriptResponse(null))
@@ -100,9 +100,9 @@ export function* editScript({ payload }) {
       scriptApi.editCustomScript,
       payload.action.action_data,
     )
-    yield put(updateToast(true, 'success'))
     yield put(editCustomScriptResponse(data))
     yield call(postUserAction, audit)
+    yield put(updateToast(true, 'success'))
   } catch (e) {
     yield put(updateToast(true, 'error'))
     yield put(editCustomScriptResponse(null))

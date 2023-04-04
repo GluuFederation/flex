@@ -8,9 +8,12 @@ import { buildPayload } from 'Utils/PermChecker'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
+import { useSelector } from 'react-redux'
+import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 
 function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSaveOperationFlag }) {
   const userAction = {}
+  const loading  = useSelector((state) => state.customScriptReducer.loading)
   const navigate =useNavigate()
   const { t } = useTranslation()
 
@@ -28,7 +31,7 @@ function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSave
     }
   }
   return (
-    <React.Fragment>
+    <GluuLoader blocking={loading}>
       <GluuAlert
         severity={t('titles.error')}
         message={t('messages.error_in_saving')}
@@ -43,13 +46,12 @@ function CustomScriptAddPage({ scripts, dispatch, saveOperationFlag, errorInSave
           />
         </CardBody>
       </Card>
-    </React.Fragment>
+    </GluuLoader>
   )
 }
 const mapStateToProps = (state) => {
   return {
     scripts: state.customScriptReducer.items,
-    loading: state.customScriptReducer.loading,
     permissions: state.authReducer.permissions,
     saveOperationFlag: state.customScriptReducer.saveOperationFlag,
     errorInSaveOperationFlag: state.customScriptReducer.errorInSaveOperationFlag,
