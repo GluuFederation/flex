@@ -5,7 +5,7 @@ Summary:        Gluu
 License:        Apache-2.0
 URL:            https://www.gluu.org/
 Source0:        flex-%VER%.tar.gz
-Requires:       httpd, mod_ssl, mod_auth_openidc, curl, wget, tar, xz, unzip, rsyslog, bzip2, python3-ldap3, python3-requests, python3-ruamel-yaml, python3-certifi, python3-PyMySQL, python3-cryptography, python3-prompt-toolkit, python3-psycopg2
+Requires:       httpd, mod_ssl, mod_auth_openidc, curl, wget, tar, xz, unzip, rsyslog, bzip2, python3-ldap3, python3-requests, python3-ruamel-yaml, python3-certifi, python3-PyMySQL, python3-cryptography, python3-prompt-toolkit
 %description
 Janssen enables organizations to build a scalable centralized authentication and authorization service using free open source software.
 
@@ -15,7 +15,7 @@ Janssen enables organizations to build a scalable centralized authentication and
 %undefine __brp_python_bytecompile
 
 %prep
-%setup -q 
+%setup -q
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -68,7 +68,7 @@ if [ $1 == 0 ]; then
             cp -rp /opt/opendj /opt/jans.saved/
         fi
         if [ -e /opt/amazon-corretto-* ]; then
-            cp -rp /opt/amazon-corretto-* /opt/jans.saved/ 
+            cp -rp /opt/amazon-corretto-* /opt/jans.saved/
         fi
     fi
 fi
@@ -76,8 +76,8 @@ fi
 
 %postun
 if [ $1 == 0 ]; then
-    rm -rf /etc/systemd/system/jans-*.service    
-    rm -rf /etc/systemd/system/opendj.service    
+    rm -rf /etc/systemd/system/jans-*.service
+    rm -rf /etc/systemd/system/opendj.service
     rm -rf /etc/jans
     rm -rf /etc/certs
     rm -rf /etc/default/jans-*
