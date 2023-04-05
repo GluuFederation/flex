@@ -24,13 +24,13 @@ You can disbale SELinux temporarily by executing `setenforce 0`. To disable perm
   [Releases](https://github.com/gluufederation/flex/releases)
 
 ```
-wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version.el8.x86_64.rpm -P /tmp
+wget https://github.com/GluuFederation/flex/releases/download/vreplace-flex-version/flex-replace-flex-version-el8.x86_64.rpm -P /tmp
 ```
   
 - Install the package
 
 ```
-yum install /tmp/flex-replace-flex-version.el8.x86_64.rpm
+yum install /tmp/flex-replace-flex-version-el8.x86_64.rpm
 ```
 
 ## Run the setup script
@@ -51,7 +51,7 @@ Begin configuration by accessing the TUI with the following command:
 /opt/jans/jans-cli/jans_cli_tui.py
 ```
 
-Full TUI documentation can be found [here](https://docs.jans.io/v1.0.9/admin/config-guide/jans-tui/)
+Full TUI documentation can be found [here](https://docs.jans.io/stable/admin/config-guide/jans-tui)
 
 ## Uninstallation
 
