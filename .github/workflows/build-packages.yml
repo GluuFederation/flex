@@ -115,7 +115,7 @@ jobs:
       with:
         repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
         file: ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}
-        asset_name: ${{ env.PACKAGE_PREFIX }}${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}-${{ matrix.asset_suffix }}
+        asset_name: ${{ env.PACKAGE_PREFIX }}${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}
         tag: ${{ steps.previoustag.outputs.tag }}
         overwrite: true
     - name: Upload checksum to release
@@ -124,6 +124,6 @@ jobs:
       with:
         repo_token: ${{ secrets.MOWORKFLOWTOKEN }}
         file: ${{github.workspace}}/${{ matrix.asset_path }}/flex${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sha256sum
-        asset_name: ${{ env.PACKAGE_PREFIX }}${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}-${{ matrix.asset_suffix }}.sha256sum
+        asset_name: ${{ env.PACKAGE_PREFIX }}${{ matrix.asset_prefix }}${{ steps.previoustag.outputs.version }}${{ matrix.asset_suffix }}.sha256sum
         tag: ${{ steps.previoustag.outputs.tag }}
         overwrite: true
