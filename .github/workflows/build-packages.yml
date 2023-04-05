@@ -14,28 +14,28 @@ jobs:
 
         include:
           - name: ubuntu22
-            asset_suffix: ubuntu22.04_amd64.deb
+            asset_suffix: ~ubuntu22.04_amd64.deb
             build_files: deb/jammy
             asset_prefix: '_'
             asset_path: flex
             sign_cmd: dpkg-sig -s builder -k DE92BEF14A1A4E542F678B64DC3C790386C73900
             python_version: "3.8"                
           - name: ubuntu20
-            asset_suffix: ubuntu20.04_amd64.deb
+            asset_suffix: ~ubuntu20.04_amd64.deb
             build_files: deb/focal
             asset_prefix: '_'
             asset_path: flex
             sign_cmd: dpkg-sig -s builder -k DE92BEF14A1A4E542F678B64DC3C790386C73900
             python_version: "3.8"
           - name: el8
-            asset_suffix: el8.x86_64.rpm
+            asset_suffix: -el8.x86_64.rpm
             build_files: rpm/el8
             asset_prefix: '-'
             asset_path: flex/rpmbuild/RPMS/x86_64
             sign_cmd: rpm --addsign
             python_version: "3.6"
           - name: suse15
-            asset_suffix: suse15.x86_64.rpm
+            asset_suffix: -suse15.x86_64.rpm
             build_files: rpm/suse15
             asset_prefix: '-'
             asset_path: flex/rpmbuild/RPMS/x86_64
