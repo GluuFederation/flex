@@ -1,6 +1,7 @@
 import React from 'react'
 import { Label } from 'Components'
-import ReactTooltip from 'react-tooltip'
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
 import { HelpOutline } from '@mui/icons-material'

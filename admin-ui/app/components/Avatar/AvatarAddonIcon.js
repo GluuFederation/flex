@@ -7,7 +7,7 @@ import avatarColors from './../../colors.scss'
 const AvatarAddonIcon = (props) => {
   const addOnClass = classNames({
     'avatar__icon__inner': props.small
-  }, avatarColors[`fg-color--${ props.color }`])
+  }, avatarColors[`fg-color--${ props.color || 'default' }`])
 
   return (
     <i className={ classNames(addOnClass, props.className) }></i>
