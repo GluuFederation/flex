@@ -16,7 +16,7 @@ services:
       - MYSQL_PASSWORD=1t5Fin3#security
       - MYSQL_ROOT_PASSWORD=1t5Fin3#security
   flex:
-    image: gluufederation/monolith:5.0.0_dev
+    image: ghcr.io/gluufederation/flex/monolith:5.0.0_dev
     restart: always
     ports:
       - "443:443"
