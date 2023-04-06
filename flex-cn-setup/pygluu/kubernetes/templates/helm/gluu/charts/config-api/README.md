@@ -39,6 +39,7 @@ Kubernetes: `>=v1.21.0-0`
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
 | image.repository | string | `"janssenproject/config-api"` | Image  to use for deploying. |
 | image.tag | string | `"1.0.11_dev"` | Image  tag to use for deploying. |
+| lifecycle | object | `{}` |  |
 | livenessProbe | object | `{"httpGet":{"path":"/jans-config-api/api/v1/health/live","port":8074},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}` | Configure the liveness healthcheck for the auth server if needed. |
 | livenessProbe.httpGet | object | `{"path":"/jans-config-api/api/v1/health/live","port":8074}` | Executes the python3 healthcheck. https://github.com/GluuFederation/docker-oxauth/blob/4.3/scripts/healthcheck.py |
 | nameOverride | string | `""` |  |

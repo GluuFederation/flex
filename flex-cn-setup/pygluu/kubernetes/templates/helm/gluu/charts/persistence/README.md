@@ -35,6 +35,7 @@ Kubernetes: `>=v1.21.0-0`
 | image.repository | string | `"gluufederation/persistence"` | Image  to use for deploying. |
 | image.tag | string | `"1.0.11_dev"` | Image  tag to use for deploying. |
 | imagePullSecrets | list | `[]` |  |
+| lifecycle | object | `{}` |  |
 | nameOverride | string | `""` |  |
 | resources | object | `{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"300m","memory":"300Mi"}}` | Resource specs. |
 | resources.limits.cpu | string | `"300m"` | CPU limit |

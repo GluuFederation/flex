@@ -39,6 +39,7 @@ Kubernetes: `>=v1.21.0-0`
 | image.pullSecrets | list | `[]` | Image Pull Secrets |
 | image.repository | string | `"gluufederation/oxpassport"` | Image  to use for deploying. |
 | image.tag | string | `"5.0.0_dev"` | Image  tag to use for deploying. |
+| lifecycle | object | `{}` |  |
 | livenessProbe | object | `{"failureThreshold":20,"httpGet":{"path":"/passport/health-check","port":"http-passport"},"initialDelaySeconds":30,"periodSeconds":30,"timeoutSeconds":5}` | Configure the liveness healthcheck for oxPassport if needed. |
 | livenessProbe.httpGet.path | string | `"/passport/health-check"` | http liveness probe endpoint |
 | nameOverride | string | `""` |  |
