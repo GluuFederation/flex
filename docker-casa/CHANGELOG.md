@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.0.0-11](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-10...docker-casa-v5.0.0-11) (2023-04-06)
+
+
+### Bug Fixes
+
+* **docker-casa:** image build failed due to mismatched version ([#869](https://github.com/GluuFederation/flex/issues/869)) ([430cb72](https://github.com/GluuFederation/flex/commit/430cb728d08979dd20dacb3a22e68161253709d7))
+* prepare for 5.0.11 release ([d3cc35a](https://github.com/GluuFederation/flex/commit/d3cc35a70437f4298dadc0f779d190af7370c75b))
+
 ## [5.0.0-10](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-9...docker-casa-v5.0.0-10) (2023-03-16)
 
 
