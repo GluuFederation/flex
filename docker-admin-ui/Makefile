@@ -1,4 +1,4 @@
-GLUU_VERSION?=1.0.11
+GLUU_VERSION?=1.0.12-SNAPSHOT
 IMAGE_NAME=ghcr.io/gluufederation/flex/admin-ui
 UNSTABLE_VERSION?=dev
 
