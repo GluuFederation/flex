@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.11](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.10...flex-cn-setup-v1.0.11) (2023-04-06)
+
+
+### Features
+
+* add lifecycle customization to helm charts ([#888](https://github.com/GluuFederation/flex/issues/888)) ([8368722](https://github.com/GluuFederation/flex/commit/836872207d305b2fb54b8e7fcdcbb59214319dc5))
+
+
+### Bug Fixes
+
+* add AWS envs ([5910b9b](https://github.com/GluuFederation/flex/commit/5910b9b66d67feb9c02f08b51f3c13bc22b8f380))
+* prepare for 5.0.11 release ([d3cc35a](https://github.com/GluuFederation/flex/commit/d3cc35a70437f4298dadc0f779d190af7370c75b))
+* rename casa cookie ([e13fdbd](https://github.com/GluuFederation/flex/commit/e13fdbd43d1a21779caa775a2923038372e79b20))
+
 ## [1.0.10](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.9...flex-cn-setup-v1.0.10) (2023-03-16)
 
 
