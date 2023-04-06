@@ -7,7 +7,7 @@ sed -i "s/%VER%/$VERSION/g" flex.spec
 if [ -z "$REL" ]; then
         RELEASE="el8"
 else
-        RELEASE="$REL.el8"
+        RELEASE="$REL-el8"
 fi
 sed -i "s/%RELEASE%/$RELEASE/g" flex.spec
 rpmbuild_path="$current_dir/rpmbuild"
