@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.0.11](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.10...admin-ui-v1.0.11) (2023-04-06)
+
+
+### Features
+
+* **admin-ui:** add permissions for agama ([8e43fad](https://github.com/GluuFederation/flex/commit/8e43fada74304e6e1eba65ac61078e2940c9cf96))
+* **admin-ui:** add upload token feature [#874](https://github.com/GluuFederation/flex/issues/874) ([dae7f4f](https://github.com/GluuFederation/flex/commit/dae7f4f68c5226bfee64948d21f18c92145468c5))
+* **admin-ui:** arrange fields as per wireframe ([1b10202](https://github.com/GluuFederation/flex/commit/1b10202ed822a5419e2b7a6025d8d739945c21bd))
+* **admin-ui:** change variable name as suggested ([222e98a](https://github.com/GluuFederation/flex/commit/222e98ac69a8a16debf742510314885b121fdd75))
+* **admin-ui:** changes in ldap ([b6b4ca8](https://github.com/GluuFederation/flex/commit/b6b4ca8ab9ee430c264a8dc19928a56f3dcee41a))
+* **admin-ui:** error message fix on license page ([1254dff](https://github.com/GluuFederation/flex/commit/1254dff090a5b3b697f0dc4757a52fbafbd22c80))
+* **admin-ui:** implement error message [#874](https://github.com/GluuFederation/flex/issues/874) ([64bf0eb](https://github.com/GluuFederation/flex/commit/64bf0ebbce081471c43b6f14e9a48bbe3b828ef0))
+* **admin-ui:** implement ldap test on form ([4064dd5](https://github.com/GluuFederation/flex/commit/4064dd5de86873ef02a90d8c5a8859f0eb370ac8))
+* **admin-ui:** implement new page to upload token ([0593acf](https://github.com/GluuFederation/flex/commit/0593acf7b38b70bb5788f77050959a9bb430e234))
+* **admin-ui:** implement security check [#806](https://github.com/GluuFederation/flex/issues/806) ([74199fd](https://github.com/GluuFederation/flex/commit/74199fde1466c526efe1550e56a48ee6a9a5bfd4))
+* **admin-ui:** implement upload zip file in agama ([decfd32](https://github.com/GluuFederation/flex/commit/decfd32dfba815d87ec2a4374563d46de8459bcd))
+* **admin-ui:** implemented delete agama [#806](https://github.com/GluuFederation/flex/issues/806) ([ce57837](https://github.com/GluuFederation/flex/commit/ce5783769183268f8f7293e7c3e55dbf95b45605))
+* **admin-ui:** move api to saga ([8148882](https://github.com/GluuFederation/flex/commit/8148882d485c2f7ac2e04ff584a4ac245bbf2fdc))
+* **admin-ui:** post agama locally [#806](https://github.com/GluuFederation/flex/issues/806) ([70baf8f](https://github.com/GluuFederation/flex/commit/70baf8f95ed5e43b0d151692a62ad37d4c73963e))
+* feature to show error on custom scripts ([0475e7c](https://github.com/GluuFederation/flex/commit/0475e7c3d55452bb0c840a0958fc367f33f62128))
+
+
+### Bug Fixes
+
+* added error statement in script ([9ea1001](https://github.com/GluuFederation/flex/commit/9ea10016742803fcbe31ee81932d829ad3d1677b))
+* Can't load all scopes [#790](https://github.com/GluuFederation/flex/issues/790) ([c28f96f](https://github.com/GluuFederation/flex/commit/c28f96fff91e20c71a202093fe15e6b4494f447e))
+* change row color to red on scriptError ([9bc4747](https://github.com/GluuFederation/flex/commit/9bc47474537775156c6cb1a05ecbe261f4dbde48))
+* implement pagination api to fetch scopes ([70f57f3](https://github.com/GluuFederation/flex/commit/70f57f311331de63969f949336b98c494da42732))
+* labels are not appearing in admin ui profile in dark mode [#855](https://github.com/GluuFederation/flex/issues/855) ([bf23b2d](https://github.com/GluuFederation/flex/commit/bf23b2d5cb68f974cb992ffb0ac86cd2204a2298))
+* newly added scope is not showing [#812](https://github.com/GluuFederation/flex/issues/812) ([9b95289](https://github.com/GluuFederation/flex/commit/9b95289910ef4d1b8421e92ee07c05a75272003a))
+* paginate issue on second visit ([d51e6d1](https://github.com/GluuFederation/flex/commit/d51e6d11e5ba77c07ec45d9d7b8276780755dfb2))
+* prepare for 5.0.11 release ([d3cc35a](https://github.com/GluuFederation/flex/commit/d3cc35a70437f4298dadc0f779d190af7370c75b))
+
 ## [1.0.10](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.9...admin-ui-v1.0.10) (2023-03-16)
 
 
