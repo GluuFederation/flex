@@ -1,11 +1,11 @@
-import { makeStyles } from '@mui/styles'
-import { useTheme } from '@mui/material/styles';
+import { makeStyles } from 'tss-react/mui'
+// import { useTheme } from '@mui/material/styles';
 
-const styles = makeStyles(() => ({
+const styles = makeStyles()((theme) => ({
   root: {
     width: '100%',
     '& > * + *': {
-      marginTop: useTheme().spacing(2),
+      marginTop: theme.spacing(2),
     },
   },
 }))

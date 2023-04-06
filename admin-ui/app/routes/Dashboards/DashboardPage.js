@@ -53,7 +53,7 @@ function DashboardPage({
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
-  const classes = styles()
+  const { classes } = styles()
   const FETCHING_LICENSE_DETAILS = 'Fetch license details'
   const [mauCount, setMauCount] = useState(null)
   const [tokenCount, setTokenCount] = useState(null)

@@ -11,7 +11,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import styles from './styles'
 
 export default function Lang() {
-  const classes = styles()
+  const { classes } = styles()
   const [open, setOpen] = React.useState(false)
   const anchorRef = React.useRef(null)
 

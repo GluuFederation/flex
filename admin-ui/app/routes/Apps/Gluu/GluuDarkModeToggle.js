@@ -1,5 +1,5 @@
 import React from 'react'
-import useDarkMode from 'use-dark-mode'
+import useDarkMode from "@fisch0920/use-dark-mode";
 
 import Toggle from 'react-toggle'
 

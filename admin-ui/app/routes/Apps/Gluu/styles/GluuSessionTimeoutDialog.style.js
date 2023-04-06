@@ -1,7 +1,7 @@
-import { makeStyles } from '@mui/styles'
+import { makeStyles } from 'tss-react/mui'
 import red from "@mui/material/colors/red"
 
-const styles = makeStyles(() => ({
+const styles = makeStyles()({
   dialog: {
     borderRadius: 0
   },
@@ -20,6 +20,6 @@ const styles = makeStyles(() => ({
   countdown: {
     color: "red[700]"
   }
-}))
+})
 
 export default styles

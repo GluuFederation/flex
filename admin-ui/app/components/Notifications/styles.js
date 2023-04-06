@@ -1,7 +1,7 @@
-import { makeStyles } from '@mui/styles'
-import { useTheme } from '@mui/material/styles';
+import { makeStyles } from "tss-react/mui";
+// import { useTheme } from '@mui/material/styles';
 
-const styles = makeStyles(() => ({
+const styles = makeStyles()((theme) => ({
   root: {
     display: 'flex',
   },
@@ -9,7 +9,7 @@ const styles = makeStyles(() => ({
     color: '#FFFFFF',
   },
   paper: {
-    marginRight: useTheme().spacing(2),
+    marginRight: theme.spacing(2),
   },
   btnContainer: {
     position: 'relative',

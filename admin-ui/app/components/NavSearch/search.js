@@ -6,7 +6,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import styles from './styles'
 
 export default function Search({ isTabletOrMobile }) {
-  const classes = styles()
+  const { classes } = styles()
 
   return (
     <Paper component="form" className={`${classes.root} ${isTabletOrMobile ? classes.mobile : ''}`}>

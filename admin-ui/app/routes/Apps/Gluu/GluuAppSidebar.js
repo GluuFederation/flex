@@ -23,7 +23,7 @@ function GluuAppSidebar({ scopes }) {
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const sidebarMenuActiveClass = `sidebar-menu-active-${selectedTheme}`
-  const classes = styles()
+  const { classes } = styles()
   const themeColors = getThemeColor(selectedTheme)
 
   useEffect(() => {

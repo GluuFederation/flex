@@ -1,6 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
-import useDarkMode from 'use-dark-mode'
+import useDarkMode from "@fisch0920/use-dark-mode"
 import { Layout, ThemeProvider } from "Components"
 
 import "Styles/bootstrap.scss"

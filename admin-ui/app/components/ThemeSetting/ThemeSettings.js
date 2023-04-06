@@ -12,7 +12,7 @@ import lightGreenThumbnail from 'Images/theme-thumbnail/lightGreen.jpg'
 import styles from './styles'
 
 export function ThemeSettings({ userInfo }) {
-  const classes = styles()
+  const { classes } = styles()
   const [open, setOpen] = React.useState(false)
   const themeContext = useContext(ThemeContext)
 

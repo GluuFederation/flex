@@ -122,6 +122,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: 'fonts/[name].[ext]',
+          esModule: false,
         },
       },
       // Files
@@ -130,6 +131,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: 'static/[name].[ext]',
+          esModule: false,
         },
       },
     ],
