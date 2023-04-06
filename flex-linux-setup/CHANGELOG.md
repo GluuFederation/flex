@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.11](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.10...flex-linux-setup-v1.0.11) (2023-04-06)
+
+
+### Features
+
+* **flex-linux-setup:** include SSA in licenseConfig ([cfa0af8](https://github.com/GluuFederation/flex/commit/cfa0af87faf917f0de69f1b8aac1424914b70440))
+* **flex-linux-setup:** remove licenseConfig.scanLicenseAuthServerHostname and set licenseConfig.oidcClient.opHost ([6b6390f](https://github.com/GluuFederation/flex/commit/6b6390f3b92d07dd683e880faa84402796721d7d))
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** CASA authentication script (ref: [#856](https://github.com/GluuFederation/flex/issues/856)) ([eb81e08](https://github.com/GluuFederation/flex/commit/eb81e08128c381001a98fdf617c475c127a6c65c))
+* **flex-linux-setup:** don't assk ssa when provided in args ([bc44e69](https://github.com/GluuFederation/flex/commit/bc44e69160a5456727cc3d949434d9b587e7d6b4))
+* **flex-linux-setup:** licenseConfig.oidcClient.opHost ([a071a02](https://github.com/GluuFederation/flex/commit/a071a0275f1757e35acb5a068d9a362bf70fc545))
+* prepare for 5.0.11 release ([d3cc35a](https://github.com/GluuFederation/flex/commit/d3cc35a70437f4298dadc0f779d190af7370c75b))
+
 ## [1.0.10](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.9...flex-linux-setup-v1.0.10) (2023-03-16)
 
 
