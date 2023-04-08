@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import avatarColors from './../../colors.scss'
+import * as avatarColors from './../../colors.scss'
 
 const AvatarAddonIcon = (props) => {
   const addOnClass = classNames({
