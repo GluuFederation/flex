@@ -750,6 +750,12 @@ class flex_installer(JettyInstaller):
             print("  - Deleting casa client from db backend")
             self.dbUtils.delete_dn(result['dn'])
 
+        result = self.dbUtils.search('ou=scopes,o=jans', '(&(inum=3000.*)(objectClass=jansScope))', fetchmany=True)
+        if result:
+            print("  - Deleting casa client scopes from db backend")
+            for scope in result:
+                self.dbUtils.delete_dn(scope[1]['dn'])
+
         print("  - Deleting casa configuration from db backend")
         self.dbUtils.delete_dn('ou=casa,ou=configuration,o=jans')
 
