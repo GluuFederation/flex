@@ -85,20 +85,16 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          { loader: 'style-loader' },
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              importLoaders: 1,
+              modules: {
+                localIdentName: '[hash:base64:5]',
+              },
             },
           },
-          { loader: 'postcss-loader' },
-          {
-            loader: 'sass-loader',
-            options: {},
-          },
+          'sass-loader',
         ],
         exclude: [path.resolve(config.srcDir, 'styles')],
         include: [config.srcDir],
