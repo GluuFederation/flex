@@ -311,7 +311,7 @@ class flex_installer(JettyInstaller):
         print("Downloading Gluu Flex components")
         download_url, target = ('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path)
 
-        if target:
+        if force or not os.path.exists(target):
             base.download(download_url, target, verbose=True)
 
         print("Extracting", self.flex_path)
@@ -475,22 +475,6 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
         Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
         Config.templateRenderingDict['scan_license_api_hostname'] =  Config.templateRenderingDict['op_host'].replace('account', 'cloud')
-
-        print("Creating credentials encryption private and public key")
-
-        with tempfile.TemporaryDirectory() as tmp_dir:
-
-            private_fn = os.path.join(tmp_dir, 'private.pem')
-            private_key_fn = os.path.join(tmp_dir, 'private_key.pem')
-            public_key_fn = os.path.join(tmp_dir, 'public_key.pem')
-
-            config_api_installer.run([paths.cmd_openssl, 'genrsa', '-out', private_fn, '2048'])
-            config_api_installer.run([paths.cmd_openssl, 'rsa', '-in', private_fn, '-outform', 'PEM', '-pubout', '-out', public_key_fn])
-            config_api_installer.run([paths.cmd_openssl, 'pkcs8', '-topk8', '-inform', 'PEM', '-in', private_fn, '-out', private_key_fn, '-nocrypt'])
-
-            Config.templateRenderingDict['cred_enc_private_key'] = config_api_installer.generate_base64_file(private_key_fn, 0)
-            Config.templateRenderingDict['cred_enc_public_key'] = config_api_installer.generate_base64_file(public_key_fn, 0)
-
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, self.templates_dir, self.source_dir)
