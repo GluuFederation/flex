@@ -311,7 +311,7 @@ class flex_installer(JettyInstaller):
         print("Downloading Gluu Flex components")
         download_url, target = ('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path)
 
-        if force or not os.path.exists(target):
+        if not flex_installer_downloaded:
             base.download(download_url, target, verbose=True)
 
         print("Extracting", self.flex_path)
