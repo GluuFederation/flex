@@ -293,7 +293,10 @@
     "creationTime": "Tempo de Criação",
     "escopo": "Escopo",
     "scopeExpression": "Expressão de escopo",
-    "selectUserRevoke": "Selecione o usuário para revogar"
+    "selectUserRevoke": "Selecione o usuário para revogar",
+    "export_sample_config": "Exportar Configuração de Amostra",
+    "export_current_config": "Exportar configuração atual",
+    "import_configuration": "Configuração de Importação"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",

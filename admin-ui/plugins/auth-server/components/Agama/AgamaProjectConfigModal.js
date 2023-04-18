@@ -4,7 +4,7 @@ import { ThemeContext } from "Context/theme/themeContext";
 import axios from "../../../../app/redux/api/axios";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { Box, Typography } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import MaterialTable from "@material-table/core";
 import { useDispatch } from "react-redux";
 import { updateToast } from "../../../../app/redux/actions/ToastAction";
@@ -51,13 +51,11 @@ const AgamaProjectConfigModal = ({
           Authorization: "Bearer " + token,
         },
       })
-      // .then(response => response.blob())
       .then((response) => {
         setConfigDetails((prevState) => ({
           ...prevState,
           data: response.data,
         }));
-        // dispatch(updateToast(true, 'success'))
       })
       .finally(() => {
         setConfigDetails((prevState) => ({ ...prevState, isLoading: false }));
@@ -110,9 +108,55 @@ const AgamaProjectConfigModal = ({
       });
   }
 
+  function handleImportConfig() {
+    let parsedValue = null;
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = function (event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        try {
+          parsedValue = JSON.parse(event.target.result);
+          setConfigDetails((prevState) => ({ ...prevState, isLoading: true }));
+          axios
+            .put("/api/v1/agama-deployment/configs/" + name, parsedValue, {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            })
+            .then((response) => {
+              setConfigDetails((prevState) => ({
+                ...prevState,
+                data: response.data,
+              }));
+              dispatch(
+                updateToast(
+                  true,
+                  "success",
+                  `Configuration for project ${name} imported successfully.`
+                )
+              );
+            })
+            .finally(() => {
+              setConfigDetails((prevState) => ({
+                ...prevState,
+                isLoading: false,
+              }));
+            });
+        } catch (error) {
+          dispatch(updateToast(true, "error", `Invalid JSON file`));
+        }
+      };
+      reader.readAsText(file, "utf-8");
+    };
+    input.click();
+  }
+
   function save_data(data) {
     try {
-      // Convert fdata.save_data to a Blob object
+      // Convert data to a Blob object
       const blob = new Blob([data], { type: "application/json" });
 
       // Create a download link for the Blob object
@@ -131,12 +175,40 @@ const AgamaProjectConfigModal = ({
       }
 
       // Show a success message to the user
-      // dispatch(updateToast(true, 'success', 'File saved successfully'));
+      dispatch(updateToast(true, "success", "File saved successfully"));
     } catch (e) {
       // Show an error message to the user
-      alert(`An error occurred while saving the file: ${e.message}`);
+      dispatch(
+        updateToast(true, "success", "An error occurred while saving the file")
+      );
     }
   }
+
+  const handleExportCurrentConfig = () => {
+    if (isEmpty(configDetails.data)) {
+      dispatch(
+        updateToast(true, "error", `No configurations defined for ${name}`)
+      );
+      return;
+    }
+    save_data(JSON.stringify(configDetails.data));
+  };
+
+  const handleExportSampleConfig = () => {
+    if (isEmpty(projectDetails?.data?.details?.projectMetadata?.configs)) {
+      dispatch(
+        updateToast(
+          true,
+          "error",
+          `No sample configurations defined for ${name}`
+        )
+      );
+      return;
+    }
+    save_data(
+      JSON.stringify(projectDetails?.data?.details?.projectMetadata?.configs)
+    );
+  };
 
   return (
     <Modal
@@ -170,60 +242,25 @@ const AgamaProjectConfigModal = ({
             {projectDetails.data.statusCode === 200 && (
               <>
                 {manageConfig ? (
-                  <>
-                    {isEmpty(
-                      projectDetails?.data?.details?.projectMetadata?.configs
-                    ) ? (
-                      <Box>
-                        No sample configurations defined <b>{name}</b>
-                      </Box>
-                    ) : (
-                      <>
-                        <Typography variant="subtitle2">
-                          Export sample configurations
-                        </Typography>
-                        <Box>
-                          {JSON.stringify(
-                            projectDetails?.data?.details?.projectMetadata
-                              ?.configs,
-                            null,
-                            2
-                          )}
-                        </Box>
-                        <Button
-                          onClick={() =>
-                            save_data(
-                              JSON.stringify(
-                                projectDetails?.data?.details?.projectMetadata
-                              )
-                            )
-                          }
-                        >
-                          Export Sample Config
-                        </Button>
-                      </>
-                    )}
-                    <Typography variant="subtitle2">
-                      Export current configurations
-                    </Typography>
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    sx={{ margin: "8px" }}
+                    style={{ gap: "12px" }}
+                  >
+                    <Button onClick={handleExportSampleConfig}>
+                      {t("fields.export_sample_config")}
+                    </Button>
 
-                    {isEmpty(configDetails.data) ? (
-                      <Box>No configurations defined</Box>
-                    ) : (
-                      <>
-                        <Box>
-                          {JSON.stringify(configDetails.data?.configs, null, 2)}
-                        </Box>
-                        <Button
-                          onClick={() =>
-                            save_data(JSON.stringify(configDetails.data))
-                          }
-                        >
-                          Export Current Config
-                        </Button>
-                      </>
-                    )}
-                  </>
+                    <Button onClick={handleExportCurrentConfig}>
+                      {t("fields.export_current_config")}
+                    </Button>
+
+                    <Button onClick={handleImportConfig}>
+                      {t("fields.import_configuration")}
+                    </Button>
+                  </Box>
                 ) : (
                   <>
                     <Box>

@@ -317,7 +317,10 @@
     "acr":"acr",
     "remote_primary_key":"Remote primary key",
     "remote_ldap_server_post":"Remote LDAP server:port",
-    "test":"TEST"
+    "test":"TEST",
+    "export_sample_config": "Export Sample Config",
+    "export_current_config": "Export Current Config",
+    "import_configuration": "Import Configuration"
   },
   "languages": {
     "french": "French",

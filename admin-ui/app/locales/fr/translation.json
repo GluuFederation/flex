@@ -299,7 +299,10 @@
     "creationTime": "Heure de création",
     "portée": "Portée",
     "scopeExpression": "Expression d'étendue",
-    "selectUserRevoke": "Sélectionnez l'utilisateur à révoquer"
+    "selectUserRevoke": "Sélectionnez l'utilisateur à révoquer",
+    "export_sample_config": "Exporter l'exemple de configuration",
+    "export_current_config": "Exporter la configuration actuelle",
+    "import_configuration": "Importer la configuration"
   },
   "messages": {
     "action_commit_question": "Journal d'audit : vous souhaitez appliquer les modifications apportées sur cette page ?",
