@@ -135,6 +135,10 @@
     "default_scope": "Escopo Padrão",
     "delete_expired_on_get_request": "Excluir OnGetRequest expirado",
     "description": "Descrição",
+    "version": "Versão",
+    "deployed_started_on": "Implantado iniciado em",
+    "deployed_finished_on": "Implantado concluído em",
+    "flow": "Fluxo",
     "disable": "Desabilitar",
     "disabled": "Desabilitada",
     "disable_jdk_logger": "Desativar JDK Logger?",
@@ -188,6 +192,11 @@
     "monthly_active_users": "Usuários ativos mensais",
     "multivalued": "Multivalorado?",
     "name": "Nome",
+    "type": "Tipo",
+    "author": "Autor",
+    "deployed_on": "implantado em",
+    "error": "Erro",
+    "errors": "Erros",
     "native_persistence_configuration": "nativePersistenceConfiguration",
     "oauth": "OAuth",
     "organization":"Organization",
@@ -284,7 +293,10 @@
     "creationTime": "Tempo de Criação",
     "escopo": "Escopo",
     "scopeExpression": "Expressão de escopo",
-    "selectUserRevoke": "Selecione o usuário para revogar"
+    "selectUserRevoke": "Selecione o usuário para revogar",
+    "export_sample_config": "Exportar Configuração de Amostra",
+    "export_current_config": "Exportar configuração atual",
+    "import_configuration": "Configuração de Importação"
   },
   "messages": {
     "action_commit_question": "Registro de auditoria: deseja aplicar as alterações feitas nesta página?",
@@ -315,7 +327,10 @@
     "view_script_details": "Ver detalhes do guião personalizado",
     "add_new_user": "Adicionar usuário",
     "no_scope_in_client": "Sem dados de Escopo para este Cliente",
-    "error_in_script": "Erro no roteiro"
+    "error_in_script": "Erro no roteiro",
+    "see_configurations": "Voir configuration",
+    "manage_configurations": "Gerenciar configurações",
+    "fetching_project_details": "Buscando detalhes do projeto..."
   },
   "tooltips": {
     "add_attribute": "Adicionar atributo",
