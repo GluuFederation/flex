@@ -91,10 +91,11 @@ jobs:
           REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
           MAIN_VERSION=$(python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('./docker-${{ matrix.docker-images }}') ; print(dfparser.labels['org.opencontainers.image.version'])")
           DOCKER_IMAGE=ghcr.io/$REPOSITORY/${{ matrix.docker-images }}
-          if [[ ${{ matrix.docker-images }} == "flex-monolith" ]]; then
-            DOCKER_IMAGE=gluufederation/monolith
-          fi
           VERSION=${MAIN_VERSION}_dev
+          if [[ ${{ matrix.docker-images }} == "flex-monolith" ]]; then
+            VERSION=5.0.0_dev
+            DOCKER_IMAGE=ghcr.io/$REPOSITORY/monolith
+          fi
           BUILD=true
           if [[ $GITHUB_REF == refs/tags/docker-${{ matrix.docker-images }}-* ]]; then
             VERSION=${GITHUB_REF#refs/tags/docker-${{ matrix.docker-images }}-v}
