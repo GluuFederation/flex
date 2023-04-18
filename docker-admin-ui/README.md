@@ -122,3 +122,4 @@ To add plugins to AdminUI, for example `myplugin.zip`
 
 1. Set the name of the plugin (without the extension name) in environment variable `GLUU_ADMIN_UI_PLUGINS`, for example: `GLUU_ADMIN_UI_PLUGINS=myplugin`.
 2. Mount `myplugin.zip` to `/app/plugins/myplugin.zip` inside the pod/container. Note that if `/app/plugins/myplugin.zip` is not exist, plugin will be ignored.
+
