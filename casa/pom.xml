@@ -61,6 +61,7 @@
 
     <modules>
         <module>app</module>
+        <module>app-fips</module>
         <module>config</module>
         <module>shared</module>
         <!--module>plugins/account-linking</module-->
