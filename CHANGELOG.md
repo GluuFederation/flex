@@ -1,5 +1,25 @@
 # Changelog
 
+## [5.0.0-12](https://github.com/GluuFederation/flex/compare/v5.0.0...v5.0.0-12) (2023-04-18)
+
+
+### Bug Fixes
+
+* prepare for 5.0.12 release ([994c985](https://github.com/GluuFederation/flex/commit/994c9855cf34c3c805f87943f9203cf58c5810e7))
+
+## [5.0.0-11](https://github.com/GluuFederation/flex/compare/v5.0.0...v5.0.0-11) (2023-04-06)
+
+
+### Features
+
+* add lifecycle customization to helm charts ([#888](https://github.com/GluuFederation/flex/issues/888)) ([8368722](https://github.com/GluuFederation/flex/commit/836872207d305b2fb54b8e7fcdcbb59214319dc5))
+
+
+### Bug Fixes
+
+* prepare for 5.0.11 release ([d3cc35a](https://github.com/GluuFederation/flex/commit/d3cc35a70437f4298dadc0f779d190af7370c75b))
+* rename casa cookie ([e13fdbd](https://github.com/GluuFederation/flex/commit/e13fdbd43d1a21779caa775a2923038372e79b20))
+
 ## [5.0.0-10](https://github.com/GluuFederation/flex/compare/v5.0.0-9...v5.0.0-10) (2023-03-16)
 
 

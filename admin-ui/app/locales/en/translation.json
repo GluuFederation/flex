@@ -94,6 +94,10 @@
     "default_scope": "Default Scope",
     "delete_expired_on_get_request": "Delete Expired OnGetRequest",
     "description": "Description",
+    "version": "Version",
+    "deployed_started_on": "Deployed started on",
+    "deployed_finished_on": "Deployed finished on",
+    "flow": "Flow",
     "disable": "Disable",
     "disabled": "Disabled",
     "disable_jdk_logger": "Disable JDK Logger?",
@@ -151,6 +155,11 @@
     "monthly_active_users": "Monthly Active Users",
     "multivalued": "Multivalued?",
     "name": "Name",
+    "type": "Type",
+    "author": "Author",
+    "deployed_on": "Deployed On",
+    "error": "Error",
+    "errors": "Errors",
     "native_persistence_configuration": "nativePersistenceConfiguration",
     "oauth": "OAuth",
     "organization":"Organization",
@@ -308,7 +317,10 @@
     "acr":"acr",
     "remote_primary_key":"Remote primary key",
     "remote_ldap_server_post":"Remote LDAP server:port",
-    "test":"TEST"
+    "test":"TEST",
+    "export_sample_config": "Export Sample Config",
+    "export_current_config": "Export Current Config",
+    "import_configuration": "Import Configuration"
   },
   "languages": {
     "french": "French",
@@ -391,7 +403,10 @@
     "error_processiong_request":"Error in processing request.",
     "no_scope_in_client": "No Scope data for this Client",
     "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client",
-    "error_in_script": "Error in script"
+    "error_in_script": "Error in script",
+    "see_configurations": "See Configuration",
+    "manage_configurations": "Manage Configurations",
+    "fetching_project_details": "Fetching project details..."
   },
   "tooltips": {
     "add_attribute": "Add attribute",
