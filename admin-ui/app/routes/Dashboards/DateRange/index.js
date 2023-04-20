@@ -1,76 +1,55 @@
-import 'date-fns'
-import React, { useEffect } from 'react'
-import Grid from '@mui/material/Grid'
-import DateFnsUtils from '@date-io/date-fns'
-import { buildPayload } from 'Utils/PermChecker'
-import {
-  LocalizationProvider,
-  DatePicker,
-} from '@mui/lab'
-// import { LocalizationProvider } from '@mui/x-date-pickers'
-import moment from 'moment'
-import { useDispatch } from 'react-redux'
-import { getMau } from 'Redux/actions/MauActions'
-import { useTranslation } from 'react-i18next'
+import "date-fns";
+import React, { useEffect, useState } from "react";
+import Grid from "@mui/material/Grid";
+import { buildPayload } from "Utils/PermChecker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useDispatch } from "react-redux";
+import { getMau } from "Redux/actions/MauActions";
+import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
 
 export default function MaterialUIPickers() {
-  const dispatch = useDispatch()
-  const { t } = useTranslation()
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
   // The first commit of Material-UI
-  const [startDate, setStartDate] = React.useState(
-    moment().subtract(3, 'months'),
-  )
-  const [endDate, setEndDate] = React.useState(moment())
-  const userAction = {}
-  const options = {}
+  const [startDate, setStartDate] = useState(dayjs().subtract(3, "months"));
+  const [endDate, setEndDate] = useState(dayjs());
+  const userAction = {};
+  const options = {};
 
   useEffect(() => {
-    options['startMonth'] = startDate.format('YYYYMM')
-    options['endMonth'] = endDate.format('YYYYMM')
-    buildPayload(userAction, 'GET MAU', options)
-    dispatch(getMau(userAction))
-  }, [startDate, endDate])
+    options["startMonth"] = startDate.format("YYYYMM");
+    options["endMonth"] = endDate.format("YYYYMM");
+    buildPayload(userAction, "GET MAU", options);
+    dispatch(getMau(userAction));
+  }, [startDate, endDate]);
 
   const setDate = (val, type) => {
-    if (type == 'start') {
-      setStartDate(moment(val))
+    if (type === "start") {
+      setStartDate(dayjs(val));
     } else {
-      setEndDate(moment(val))
+      setEndDate(dayjs(val));
     }
-  }
+  };
 
   return (
-    <LocalizationProvider utils={DateFnsUtils}>
-      <Grid container>
+    <Grid container gap={2}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
-          disableToolbar
-          variant="inline"
-          format="MM/dd/yyyy"
-          margin="normal"
-          id="date-picker-inline"
-          label={t('dashboard.start_date')}
+          format="MM/DD/YYYY"
+          label={t("dashboard.start_date")}
           value={startDate}
-          onChange={(val) => setDate(val, 'start')}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-          autoOk={true}
+          onChange={(val) => setDate(val, "start")}
         />
         <DatePicker
-          disableToolbar
-          variant="inline"
-          format="MM/dd/yyyy"
-          margin="normal"
-          id="date-picker-inline"
-          label={t('dashboard.end_date')}
+          format="MM/DD/YYYY"
+          label={t("dashboard.end_date")}
           value={endDate}
-          onChange={(val) => setDate(val, 'end')}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-          autoOk={true}
+          onChange={(val) => setDate(val, "end")}
         />
-      </Grid>
-    </LocalizationProvider>
-  )
+      </LocalizationProvider>
+    </Grid>
+  );
 }

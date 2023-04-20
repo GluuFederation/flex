@@ -9,7 +9,7 @@ import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import SqlDetailPage from './SqlDetailPage'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuDialog from 'Routes/Apps/Gluu/GluuDialog'
-import Alert from '@mui/lab/Alert'
+import Alert from '@mui/material/Alert'
 import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { getPersistenceType } from 'Plugins/services/redux/actions/PersistenceActions'
 import {
