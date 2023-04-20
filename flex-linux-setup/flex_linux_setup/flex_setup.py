@@ -959,6 +959,7 @@ def main(uninstall):
     installer_obj = flex_installer()
 
     if uninstall:
+        config_api_installer.stop('casa')
         installer_obj.uninstall_casa()
         installer_obj.uninstall_admin_ui()
         print("Disabling script", installer_obj.simple_auth_scr_inum)
