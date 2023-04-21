@@ -89,11 +89,10 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: {
-                localIdentName: '[hash:base64:5]',
-              },
+              modules: true,
             },
           },
+          { loader: 'postcss-loader' },
           'sass-loader',
         ],
         exclude: [path.resolve(config.srcDir, 'styles')],
