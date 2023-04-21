@@ -432,7 +432,7 @@ class flex_installer(JettyInstaller):
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Gluu Flex Admin UI Client']
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Client {}'.format(ssa_json.get('org_id', ''))]
 
             client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
 
@@ -924,7 +924,7 @@ def obtain_oidc_client_credidentials():
     data = {
         "software_statement": ssa,
         "response_types": ["token"],
-        "redirect_uris": ["http://localhost"],
+        "redirect_uris": ["https://cloud.gluu.org"],
         "client_name": "test-ui-client"
     }
 
