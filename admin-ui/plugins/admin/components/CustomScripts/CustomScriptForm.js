@@ -135,7 +135,6 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
       if (!item.moduleProperties) {
         item.moduleProperties = []
       }
-
       if (
         item.moduleProperties.filter(
           (candidate) => candidate.value1 === 'location_type',
@@ -153,7 +152,9 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
         value2: value,
         description: '',
       })
+
     }
+    item.locationType = value;
     if (value == 'file') {
       setScriptPath(true)
     } else {
@@ -403,7 +404,7 @@ function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
                 }}
               >
                 <option value="">{t('options.choose')}...</option>
-                <option value="ldap">{t('Database')}</option>
+                <option value="db">{t('Database')}</option>
                 <option value="file">{t('File')}</option>
               </CustomInput>
             </InputGroup>
