@@ -22,6 +22,7 @@ const INIT_STATE = {
       passwordAttribute: "userPassword",
       hashAlgorithm: "bcrypt",
       defaultAuthNMethod: false,
+      acrName: "simple_password_auth",
     },
   ],
   item: {},
@@ -96,11 +97,7 @@ export default function authNReducer(state = INIT_STATE, action) {
       }
 
     case SET_SUCCESS:
-      if (action.payload.data) {
-        return { ...state, isSuccess: action.payload.data };
-      } else {
-        return handleDefault();
-      }
+      return { ...state, isSuccess: action.payload.data };
 
     default:
       return handleDefault();

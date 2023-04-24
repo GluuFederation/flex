@@ -15,7 +15,8 @@ import getThemeColor from "Context/theme/config";
 import AuthNDetailPage from "./AuthNDetailPage";
 import { getLdapConfig } from "Plugins/services/redux/actions/LdapActions";
 import { getCustomScriptByType } from "Plugins/admin/redux/actions/CustomScriptActions";
-import { setCurrentItem, setSuccess } from "../../redux/actions/AuthnActions";
+import { setCurrentItem } from "../../redux/actions/AuthnActions";
+import { getAcrsConfig } from "Plugins/auth-server/redux/actions/AcrsActions";
 
 function AuthNListPage() {
   const { t } = useTranslation();
@@ -39,22 +40,18 @@ function AuthNListPage() {
   const ldap = useSelector((state) => state.ldapReducer.ldap);
   const scripts = useSelector((state) => state.customScriptReducer.items);
   const loading = useSelector((state) => state.ldapReducer.loading);
+  const acrs = useSelector((state) => state.acrReducer.acrReponse);
+  const success = useSelector((state) => state.authNReducer.isSuccess);
+  console.log("isSucess",success)
   const customScriptloading = useSelector(
     (state) => state.customScriptReducer.loading
   );
-
   SetTitle(t("titles.authn"));
-
-  const tableColumns = [
-    { title: `${t("fields.acr")}`, field: "name" },
-    { title: `${t("fields.level")}`, field: "level" },
-    { title: `${t("fields.description")}`, field: "description" },
-  ];
 
   useEffect(() => {
     dispatch(getLdapConfig());
     dispatch(getCustomScriptByType({ type: "person_authentication" }));
-    dispatch(setSuccess(false))
+    dispatch(getAcrsConfig());
   }, []);
 
   useEffect(() => {
@@ -68,6 +65,7 @@ function AuthNListPage() {
         const updateLDAPItems = ldap.map((item) => ({
           ...item,
           name: "default_ldap_password",
+          acrName: item.configId,
         }));
         const temp = [...authNList, ...updateLDAPItems];
         setAuthNList(temp);
@@ -122,7 +120,28 @@ function AuthNListPage() {
             components={{
               Container: (props) => <Paper {...props} elevation={0} />,
             }}
-            columns={tableColumns}
+            columns={[
+              { title: `${t("fields.acr")}`, field: "acrName" },
+              { title: `${t("fields.saml_acr")}`, field: "samlACR" },
+              { title: `${t("fields.level")}`, field: "level" },
+              {
+                title: `${t("options.default")}`,
+                field: "",
+                render: (rowData) => {
+                  return rowData.acrName === acrs.defaultAcr ? (
+                    <i
+                      className="fa fa-check"
+                      style={{ color: "green", fontSize: "24px" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa fa-close"
+                      style={{ color: "red", fontSize: "24px" }}
+                    ></i>
+                  );
+                },
+              },
+            ]}
             data={
               loading || customScriptloading
                 ? []

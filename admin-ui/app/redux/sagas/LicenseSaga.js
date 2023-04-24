@@ -37,7 +37,7 @@ function* checkLicensePresentWorker() {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
     const response = yield call(licenseApi.getIsActive)
     if (response) {
-      yield put(checkLicensePresentResponse(response.apiResult))
+      yield put(checkLicensePresentResponse(true))
       return
     }
     yield put(checkLicensePresentResponse(false))

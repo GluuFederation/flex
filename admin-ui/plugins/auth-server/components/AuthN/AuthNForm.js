@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -13,41 +13,26 @@ import {
   Button,
 } from "Components";
 import GluuLabel from "Routes/Apps/Gluu/GluuLabel";
-import GluuCommitFooter from "Routes/Apps/Gluu/GluuCommitFooter";
 import GluuCommitDialog from "Routes/Apps/Gluu/GluuCommitDialog";
 import GluuProperties from "Routes/Apps/Gluu/GluuProperties";
 import GluuTypeAhead from "Routes/Apps/Gluu/GluuTypeAhead";
 import { useTranslation } from "react-i18next";
 import GluuInputRow from "../../../../app/routes/Apps/Gluu/GluuInputRow";
 import { ThemeContext } from "Context/theme/themeContext";
+import { useSelector } from "react-redux";
 
 function AuthNForm({ item, handleSubmit }) {
   const theme = useContext(ThemeContext);
   const selectedTheme = theme.state.theme;
   const { t } = useTranslation();
   const [modal, setModal] = useState(false);
-  const [scriptPath, setScriptPath] = useState(() => {
-    if (!item.moduleProperties) {
-      return false;
-    }
-    if (
-      item.moduleProperties.filter((i) => i.value1 === "location_type").length >
-      0
-    ) {
-      return (
-        item.moduleProperties.filter((it) => it.value1 === "location_type")[0]
-          .value2 == "file"
-      );
-    }
-    return false;
-  });
-  console.log(item)
+  const acrs = useSelector((state) => state.acrReducer.acrReponse);
 
   const initialValues = {
     acr: item?.name || "",
     acrName: item?.acrName || "",
     level: item.level,
-    defaultAuthNMethod: item?.defaultAuthNMethod || false,
+    defaultAuthNMethod: acrs.defaultAcr === item.acrName ? true : false,
     samlACR: item?.samlACR || "",
     description: item?.description || "",
     primaryKey: item?.primaryKey || "",

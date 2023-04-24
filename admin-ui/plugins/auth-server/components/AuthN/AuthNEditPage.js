@@ -6,13 +6,12 @@ import GluuAlert from "Routes/Apps/Gluu/GluuAlert";
 import { useTranslation } from "react-i18next";
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useSelector, useDispatch } from "react-redux";
-
+import { useNavigate } from "react-router";
 import {
-  editLDAPAuthAcr,
   editScriptAuthAcr,
   editSimpleAuthAcr,
+  setSuccess,
 } from "../../redux/actions/AuthnActions";
-import { useNavigate } from "react-router";
 
 function AuthNEditPage() {
   const dispatch = useDispatch();
@@ -23,37 +22,49 @@ function AuthNEditPage() {
   const success = useSelector((state) => state.authNReducer.isSuccess);
 
   useEffect(() => {
-    if(success){
-      navigate("/auth-server/authn")
+    if (success) {
+      dispatch(setSuccess(false));
+      navigate("/auth-server/authn");
     }
-  },[success])
-
-
+  }, [success]);
 
   function handleSubmit(data) {
     const payload = {};
+
     if (data.acr === "simple_password_auth") {
-      if (data.defaultAuthNMethod === "true") {
-        payload.authenticationMethod = { defaultArc: "simple_password_auth" };
-       dispatch(editSimpleAuthAcr(payload));
+      if (data.defaultAuthNMethod == "true") {
+        payload.authenticationMethod = { defaultAcr: "simple_password_auth" };
+        dispatch(editSimpleAuthAcr(payload));
       }
-     
     } else if (data.acr === "default_ldap_password") {
-      delete data.hashAlgorithm;
-      delete data.samlACR;
-      payload.authenticationMethod = { defaultArc: data.configId };
-      dispatch(editSimpleAuthAcr(payload));
-      dispatch(editLDAPAuthAcr(data));
+      const ldapPayload = item;
+      ldapPayload.level = data.level;
+      ldapPayload.bindDN = data.bindDN;
+      ldapPayload.maxConnections = data.maxConnections;
+      ldapPayload.primaryKey = data.primaryKey;
+      ldapPayload.localPrimaryKey = data.localPrimaryKey;
+      ldapPayload.servers = data.servers;
+      ldapPayload.baseDNs = data.baseDNs;
+      ldapPayload.bindPassword = data.bindPassword;
+      ldapPayload.useSSL = data.useSSL;
+      ldapPayload.enabled = data.enabled;
+
+      if (data.defaultAuthNMethod == "true") {
+        payload.authenticationMethod = { defaultAcr: data.configId };
+        dispatch(editSimpleAuthAcr(payload));
+      }
+
+      dispatch(editLDAPAuthAcr(ldapPayload));
     } else {
-      const scriptData = {
-        description: data.description,
-        samlACR: data.samlACR,
-        level: data.level,
-        dn: data.baseDn,
-        inum: data.inum,
-      };
+      const scriptPayload = item;
+      scriptPayload.description = data.description;
+      scriptPayload.samlACR = data.samlACR;
+      scriptPayload.level = data.level;
+      scriptPayload.dn = data.baseDn;
+      scriptPayload.inum = data.inum;
+
       if (data?.configurationProperties?.length > 0) {
-        scriptData.configurationProperties = data?.configurationProperties
+        scriptPayload.configurationProperties = data?.configurationProperties
           .filter((e) => e != null)
           .filter((e) => Object.keys(e).length !== 0)
           .map((e) => ({
@@ -62,8 +73,11 @@ function AuthNEditPage() {
             hide: false,
           }));
       }
-       payload.customScript = scriptData;
-       payload.authenticationMethod = { defaultArc: data.acrName };
+      if (data.defaultAuthNMethod == "true") {
+        payload.authenticationMethod = { defaultAcr: data.acrName };
+        dispatch(editSimpleAuthAcr(payload));
+      }
+      payload.customScript = scriptPayload;
       dispatch(editScriptAuthAcr(payload));
     }
   }
