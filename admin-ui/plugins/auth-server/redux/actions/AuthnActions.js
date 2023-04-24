@@ -10,7 +10,7 @@ import {
   SET_LDAP_AUTH_ACR_RESPONSE,
   SET_SCRIPT_ACR_RESPONSE,
   SET_SUCCESS,
-} from "./types";
+} from "./types"
 
 export const getDefaultAuthn = () => ({
   type: GET_DEFAULT_AUTHN,

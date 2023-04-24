@@ -1,94 +1,94 @@
-import React, { useContext } from "react";
-import { Container, Row, Col } from "Components";
-import GluuFormDetailRow from "Routes/Apps/Gluu/GluuFormDetailRow";
-import { AUTHN } from "Utils/ApiResources";
-import { useTranslation } from "react-i18next";
-import { ThemeContext } from "Context/theme/themeContext";
+import React, { useContext } from 'react'
+import { Container, Row, Col } from 'Components'
+import GluuFormDetailRow from 'Routes/Apps/Gluu/GluuFormDetailRow'
+import { AUTHN } from 'Utils/ApiResources'
+import { useTranslation } from 'react-i18next'
+import { ThemeContext } from 'Context/theme/themeContext'
 
 function AuthNDetailPage({ row }) {
-  const { t } = useTranslation();
-  const theme = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
+  const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   function getBadgeTheme(status) {
     if (status) {
-      return `primary-${selectedTheme}`;
+      return `primary-${selectedTheme}`
     } else {
-      return "dimmed";
+      return 'dimmed'
     }
   }
   return (
     <React.Fragment>
-      <Container style={{ backgroundColor: "#F5F5F5" }}>
+      <Container style={{ backgroundColor: '#F5F5F5' }}>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label="fields.acr"
+              label='fields.acr'
               value={row.acrName}
               doc_category={AUTHN}
-              doc_entry="acr"
+              doc_entry='acr'
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label="fields.level"
+              label='fields.level'
               value={row.level}
               doc_category={AUTHN}
-              doc_entry="level"
+              doc_entry='level'
             />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label="fields.password_attribute"
+              label='fields.password_attribute'
               value={row.passwordAttribute}
               doc_category={AUTHN}
-              doc_entry="passwordAttribute"
+              doc_entry='passwordAttribute'
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label="fields.hash_algorithm"
+              label='fields.hash_algorithm'
               value={row.hashAlgorithm}
               doc_category={AUTHN}
-              doc_entry="hashAlgorithm"
+              doc_entry='hashAlgorithm'
               isBadge
             />
           </Col>
         </Row>
         <Row>
-          {" "}
+          {' '}
           <Col sm={6}>
             <GluuFormDetailRow
-              label="fields.primary_key"
+              label='fields.primary_key'
               value={row.primaryKey}
               doc_category={AUTHN}
-              doc_entry="primaryKey"
+              doc_entry='primaryKey'
             />
           </Col>
           <Col sm={6}>
             <GluuFormDetailRow
-              label="fields.saml_acr"
+              label='fields.saml_acr'
               value={row.samlACR}
               doc_category={AUTHN}
-              doc_entry="samlACR"
+              doc_entry='samlACR'
             />
           </Col>
         </Row>
         <Row>
           <Col sm={6}>
             <GluuFormDetailRow
-              label="fields.description"
+              label='fields.description'
               value={row.description}
               doc_category={AUTHN}
-              doc_entry="description"
+              doc_entry='description'
             />
           </Col>
         </Row>
       </Container>
     </React.Fragment>
-  );
+  )
 }
 
-export default AuthNDetailPage;
+export default AuthNDetailPage
