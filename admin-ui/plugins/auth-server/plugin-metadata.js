@@ -1,38 +1,38 @@
-import ScopeListPage from './components/Scopes/ScopeListPage';
-import ScopeAddPage from './components/Scopes/ScopeAddPage';
-import ScopeEditPage from './components/Scopes/ScopeEditPage';
+import ScopeListPage from './components/Scopes/ScopeListPage'
+import ScopeAddPage from './components/Scopes/ScopeAddPage'
+import ScopeEditPage from './components/Scopes/ScopeEditPage'
 
-import ClientListPage from './components/Clients/ClientListPage';
-import ClientAddPage from './components/Clients/ClientAddPage';
-import ClientEditPage from './components/Clients/ClientEditPage';
+import ClientListPage from './components/Clients/ClientListPage'
+import ClientAddPage from './components/Clients/ClientAddPage'
+import ClientEditPage from './components/Clients/ClientEditPage'
 
-import SessionListPage from './components/Sessions/SessionListPage';
+import SessionListPage from './components/Sessions/SessionListPage'
 
-import PropertiesPage from './components/Configuration/ConfigPage';
-import KeysPage from './components/Configuration/Keys/KeysPage';
-import LoggingPage from './components/Configuration/Defaults/LoggingPage';
+import PropertiesPage from './components/Configuration/ConfigPage'
+import KeysPage from './components/Configuration/Keys/KeysPage'
+import LoggingPage from './components/Configuration/Defaults/LoggingPage'
 
-import ReportPage from './components/Reports/ReportPage';
+import ReportPage from './components/Reports/ReportPage'
 
-import oidcReducer from './redux/reducers/OIDCReducer';
-import scopeReducer from './redux/reducers/ScopeReducer';
-import jsonReducer from './redux/reducers/JsonConfigReducer';
-import jwksReducer from './redux/reducers/JwksReducer';
-import acrReducer from './redux/reducers/AcrReducer';
-import loggingReducer from './redux/reducers/LoggingReducer';
-import umaResourceReducer from './redux/reducers/UMAResourceReducer';
-import sessionReducer from './redux/reducers/SessionReducer';
+import oidcReducer from './redux/reducers/OIDCReducer'
+import scopeReducer from './redux/reducers/ScopeReducer'
+import jsonReducer from './redux/reducers/JsonConfigReducer'
+import jwksReducer from './redux/reducers/JwksReducer'
+import acrReducer from './redux/reducers/AcrReducer'
+import loggingReducer from './redux/reducers/LoggingReducer'
+import umaResourceReducer from './redux/reducers/UMAResourceReducer'
+import sessionReducer from './redux/reducers/SessionReducer'
 
-import scopesSaga from './redux/sagas/OAuthScopeSaga';
-import oidcSaga from './redux/sagas/OIDCSaga';
-import jsonSaga from './redux/sagas/JsonConfigSaga';
-import jwksSaga from './redux/sagas/JwksSaga';
-import acrSaga from './redux/sagas/AcrsSaga';
-import loggingSaga from './redux/sagas/LoggingSaga';
-import umaResourceSaga from './redux/sagas/UMAResourceSaga';
-import sessionSaga from './redux/sagas/SessionSaga';
-import agamaSaga from './redux/sagas/AgamaSaga';
-import authnSaga from './redux/sagas/AuthnSaga';
+import scopesSaga from './redux/sagas/OAuthScopeSaga'
+import oidcSaga from './redux/sagas/OIDCSaga'
+import jsonSaga from './redux/sagas/JsonConfigSaga'
+import jwksSaga from './redux/sagas/JwksSaga'
+import acrSaga from './redux/sagas/AcrsSaga'
+import loggingSaga from './redux/sagas/LoggingSaga'
+import umaResourceSaga from './redux/sagas/UMAResourceSaga'
+import sessionSaga from './redux/sagas/SessionSaga'
+import agamaSaga from './redux/sagas/AgamaSaga'
+import authnSaga from './redux/sagas/AuthnSaga'
 
 import {
   ACR_READ,
@@ -45,14 +45,14 @@ import {
   PROPERTIES_READ,
   LOGGING_READ,
   AGAMA_READ,
-} from 'Utils/PermChecker';
-import AgamaListPage from './components/Agama/AgamaListPage';
-import agamaReducer from './redux/reducers/AgamaReducer';
-import AuthNListPage from './components/AuthN/AuthNListPage';
-import authNReducer from './redux/reducers/AuthNReducer';
-import AuthNEditPage from './components/AuthN/AuthNEditPage';
+} from 'Utils/PermChecker'
+import AgamaListPage from './components/Agama/AgamaListPage'
+import agamaReducer from './redux/reducers/AgamaReducer'
+import AuthNListPage from './components/AuthN/AuthNListPage'
+import authNReducer from './redux/reducers/AuthNReducer'
+import AuthNEditPage from './components/AuthN/AuthNEditPage'
 
-const PLUGIN_BASE_APTH = '/auth-server';
+const PLUGIN_BASE_APTH = '/auth-server'
 
 const pluginMetadata = {
   menus: [
@@ -209,6 +209,6 @@ const pluginMetadata = {
     agamaSaga(),
     authnSaga()
   ],
-};
+}
 
-export default pluginMetadata;
+export default pluginMetadata

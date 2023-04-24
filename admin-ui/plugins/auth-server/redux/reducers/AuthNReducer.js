@@ -8,7 +8,7 @@ import {
   PUT_SIMPLE_AUTH_ACR,
   SET_SQL,
   SET_SUCCESS,
-} from "../actions/types";
+} from "../actions/types"
 
 const INIT_STATE = {
   acrs: [
@@ -29,7 +29,7 @@ const INIT_STATE = {
   loading: false,
   acrAUTHReponse: {},
   isSuccess: false,
-};
+}
 
 export default function authNReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -37,19 +37,19 @@ export default function authNReducer(state = INIT_STATE, action) {
       return {
         ...state,
         loading: true,
-      };
+      }
 
     case SET_SQL:
       return {
         ...state,
         item: action.payload.item,
-      };
+      }
 
     case PUT_SIMPLE_AUTH_ACR:
       return {
         ...state,
         loading: true,
-      };
+      }
 
     case SET_SIMPLE_AUTH_ACR_RESPONSE:
       if (action.payload.data) {
@@ -57,16 +57,16 @@ export default function authNReducer(state = INIT_STATE, action) {
           ...state,
           acrAUTHReponse: action.payload.data,
           loading: false,
-        };
+        }
       } else {
-        return handleDefault();
+        return handleDefault()
       }
 
     case PUT_LDAP_AUTH_ACR:
       return {
         ...state,
         loading: true,
-      };
+      }
 
     case SET_LDAP_AUTH_ACR_RESPONSE:
       if (action.payload.data) {
@@ -74,16 +74,16 @@ export default function authNReducer(state = INIT_STATE, action) {
           ...state,
           acrAUTHReponse: action.payload.data,
           loading: false,
-        };
+        }
       } else {
-        return handleDefault();
+        return handleDefault()
       }
 
     case PUT_SCRIPT_ACR:
       return {
         ...state,
         loading: true,
-      };
+      }
 
     case SET_SCRIPT_ACR_RESPONSE:
       if (action.payload.data) {
@@ -91,22 +91,22 @@ export default function authNReducer(state = INIT_STATE, action) {
           ...state,
           acrAUTHReponse: action.payload.data,
           loading: false,
-        };
+        }
       } else {
-        return handleDefault();
+        return handleDefault()
       }
 
     case SET_SUCCESS:
-      return { ...state, isSuccess: action.payload.data };
+      return { ...state, isSuccess: action.payload.data }
 
     default:
-      return handleDefault();
+      return handleDefault()
   }
 
   function handleDefault() {
     return {
       ...state,
       loading: false,
-    };
+    }
   }
 }
