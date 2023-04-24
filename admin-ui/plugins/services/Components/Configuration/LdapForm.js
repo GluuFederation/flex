@@ -18,7 +18,7 @@ import {
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useDispatch, useSelector } from 'react-redux'
 
-function LdapForm({ item, handleSubmit }) {
+function LdapForm({ item, handleSubmit, createLdap }) {
   const dispatch = useDispatch()
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
@@ -92,8 +92,7 @@ function LdapForm({ item, handleSubmit }) {
       )
 
       const result = Object.assign(item, values)
-      const reqBody = { ldap: result }
-      handleSubmit(reqBody)
+      handleSubmit(createLdap ? { ldap: result } : result)
     },
   })
 
