@@ -16,6 +16,7 @@ import {
   PUT_LDAP_AUTH_ACR,
   PUT_SCRIPT_ACR,
 } from "../actions/types";
+import {updateToast} from 'Redux/actions/ToastAction'
 const JansConfigApi = require("jans_config_api");
 
 function* newACRFunction() {

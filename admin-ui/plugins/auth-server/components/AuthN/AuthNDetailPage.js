@@ -24,7 +24,7 @@ function AuthNDetailPage({ row }) {
           <Col sm={6}>
             <GluuFormDetailRow
               label="fields.acr"
-              value={row.name}
+              value={row.acrName}
               doc_category={AUTHN}
               doc_entry="acr"
             />

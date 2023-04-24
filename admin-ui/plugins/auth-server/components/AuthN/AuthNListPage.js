@@ -23,7 +23,6 @@ function AuthNListPage() {
   const dispatch = useDispatch();
   const myActions = [];
   const navigate = useNavigate();
-  const [item, setItem] = useState({});
   const [modal, setModal] = useState(false);
   const pageSize = localStorage.getItem("paggingSize") || 10;
   const [limit, setLimit] = useState(10);
@@ -35,14 +34,21 @@ function AuthNListPage() {
   const bgThemeColor = { background: themeColors.background };
   const [authNList, setAuthNList] = useState([]);
 
+  const [list, setList] = useState({
+    ldap: [],
+    scripts: [],
+  });
+
   const permissions = useSelector((state) => state.authReducer.permissions);
   const authN = useSelector((state) => state.authNReducer.acrs);
   const ldap = useSelector((state) => state.ldapReducer.ldap);
   const scripts = useSelector((state) => state.customScriptReducer.items);
+  const scriptsLoading = useSelector(
+    (state) => state.customScriptReducer.loading
+  );
   const loading = useSelector((state) => state.ldapReducer.loading);
   const acrs = useSelector((state) => state.acrReducer.acrReponse);
-  const success = useSelector((state) => state.authNReducer.isSuccess);
-  console.log("isSucess",success)
+
   const customScriptloading = useSelector(
     (state) => state.customScriptReducer.loading
   );
@@ -52,14 +58,16 @@ function AuthNListPage() {
     dispatch(getLdapConfig());
     dispatch(getCustomScriptByType({ type: "person_authentication" }));
     dispatch(getAcrsConfig());
+
+    return () => {
+      setAuthNList([]);
+    };
   }, []);
 
   useEffect(() => {
-    const checkItems = [...authNList];
-    const checkItemsAlreadyExists = checkItems.filter(
-      (item) => item.name === "default_ldap_password"
-    );
-    if (ldap.length > 0 && checkItemsAlreadyExists.length === 0) {
+    setList({ ...list, ldap: [] });
+
+    if (ldap.length > 0 && !loading) {
       const getEnabledldap = ldap.filter((item) => item.enabled === true);
       if (getEnabledldap?.length > 0) {
         const updateLDAPItems = ldap.map((item) => ({
@@ -67,18 +75,14 @@ function AuthNListPage() {
           name: "default_ldap_password",
           acrName: item.configId,
         }));
-        const temp = [...authNList, ...updateLDAPItems];
-        setAuthNList(temp);
+        setList({ ...list, ldap: updateLDAPItems });
       }
     }
   }, [ldap]);
 
   useEffect(() => {
-    const checkItems = [...authNList];
-    const checkItemsAlreadyExists = checkItems.filter(
-      (item) => item.name === "myAuthnScript"
-    );
-    if (scripts.length > 0 && checkItemsAlreadyExists.length === 0) {
+    setList({ ...list, scripts: [] });
+    if (scripts.length > 0 && !scriptsLoading) {
       const getEnabledscripts = scripts.filter((item) => item.enabled === true);
       if (getEnabledscripts?.length > 0) {
         const updateScriptsItems = getEnabledscripts.map((item) => ({
@@ -86,8 +90,7 @@ function AuthNListPage() {
           name: "myAuthnScript",
           acrName: item.name,
         }));
-        const temp = [...authNList, ...updateScriptsItems];
-        setAuthNList(temp);
+        setList({ ...list, scripts: updateScriptsItems });
       }
     }
   }, [scripts]);
@@ -145,7 +148,7 @@ function AuthNListPage() {
             data={
               loading || customScriptloading
                 ? []
-                : [...authN, ...authNList].sort(
+                : [...authN, ...list.ldap, ...list.scripts].sort(
                     (item1, item2) => item1.level - item2.level
                   )
             }

@@ -8,6 +8,7 @@ import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import {
+  editLDAPAuthAcr,
   editScriptAuthAcr,
   editSimpleAuthAcr,
   setSuccess,
@@ -24,19 +25,21 @@ function AuthNEditPage() {
   useEffect(() => {
     if (success) {
       dispatch(setSuccess(false));
-      navigate("/auth-server/authn");
+      setTimeout(() => {
+        navigate("/auth-server/authn");
+      }, [2000]);
     }
   }, [success]);
 
   function handleSubmit(data) {
     const payload = {};
 
-    if (data.acr === "simple_password_auth") {
+    if (item.name === "simple_password_auth") {
       if (data.defaultAuthNMethod == "true") {
         payload.authenticationMethod = { defaultAcr: "simple_password_auth" };
         dispatch(editSimpleAuthAcr(payload));
       }
-    } else if (data.acr === "default_ldap_password") {
+    } else if (item.name === "default_ldap_password") {
       const ldapPayload = item;
       ldapPayload.level = data.level;
       ldapPayload.bindDN = data.bindDN;
@@ -53,7 +56,6 @@ function AuthNEditPage() {
         payload.authenticationMethod = { defaultAcr: data.configId };
         dispatch(editSimpleAuthAcr(payload));
       }
-
       dispatch(editLDAPAuthAcr(ldapPayload));
     } else {
       const scriptPayload = item;
@@ -62,7 +64,7 @@ function AuthNEditPage() {
       scriptPayload.level = data.level;
       scriptPayload.dn = data.baseDn;
       scriptPayload.inum = data.inum;
-
+      scriptPayload.name = item.acrName;
       if (data?.configurationProperties?.length > 0) {
         scriptPayload.configurationProperties = data?.configurationProperties
           .filter((e) => e != null)
@@ -74,9 +76,10 @@ function AuthNEditPage() {
           }));
       }
       if (data.defaultAuthNMethod == "true") {
-        payload.authenticationMethod = { defaultAcr: data.acrName };
+        payload.authenticationMethod = { defaultAcr: item.acrName };
         dispatch(editSimpleAuthAcr(payload));
       }
+
       payload.customScript = scriptPayload;
       dispatch(editScriptAuthAcr(payload));
     }

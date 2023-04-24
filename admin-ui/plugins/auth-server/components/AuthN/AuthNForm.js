@@ -29,9 +29,8 @@ function AuthNForm({ item, handleSubmit }) {
   const acrs = useSelector((state) => state.acrReducer.acrReponse);
 
   const initialValues = {
-    acr: item?.name || "",
-    acrName: item?.acrName || "",
-    level: item.level,
+    acr: item?.acrName || "",
+    level: parseInt(item.level),
     defaultAuthNMethod: acrs.defaultAcr === item.acrName ? true : false,
     samlACR: item?.samlACR || "",
     description: item?.description || "",
@@ -40,9 +39,9 @@ function AuthNForm({ item, handleSubmit }) {
     hashAlgorithm: item?.hashAlgorithm || "",
     bindDN: item?.bindDN || "",
     maxConnections: item?.maxConnections || "",
-    remotePrimaryKey: item?.primaryKey || "",
+    remotePrimaryKey: item?.localPrimaryKey || "",
     localPrimaryKey: item?.localPrimaryKey || "",
-    remoteLDAPServer: item?.servers || "",
+    servers: item?.servers || "",
     baseDNs: item?.baseDNs || "",
     bindPassword: item?.bindPassword || "",
     useSSL: item?.useSSL || false,
@@ -60,7 +59,7 @@ function AuthNForm({ item, handleSubmit }) {
     },
     validationSchema: Yup.object({
       acr: Yup.string().required("ACR name is required."),
-      level: Yup.string().required("Level is required.")
+      level: Yup.string().required("Level is required."),
     }),
     setFieldValue: (field) => {
       delete values[field];
@@ -76,10 +75,9 @@ function AuthNForm({ item, handleSubmit }) {
     handleSubmit(formik.values);
   };
 
-
   const goBack = () => {
-    window.history.back()
-  }
+    window.history.back();
+  };
 
   const getPropertiesConfig = (entry) => {
     if (
@@ -93,7 +91,7 @@ function AuthNForm({ item, handleSubmit }) {
     } else {
       return [];
     }
-  }
+  };
 
   return (
     <Container>
@@ -112,7 +110,7 @@ function AuthNForm({ item, handleSubmit }) {
               formik={formik}
               lsize={4}
               rsize={8}
-              disabled={item.name === "simple_password_auth" ? true : false}
+              disabled={true}
               showError={formik.errors.acr && formik.touched.acr}
               errorMessage={formik.errors.acr}
               required={true}
@@ -139,7 +137,7 @@ function AuthNForm({ item, handleSubmit }) {
         </FormGroup>
 
         <FormGroup row>
-          <GluuLabel label="fields.default_authn_method" size={4}  />
+          <GluuLabel label="fields.default_authn_method" size={4} />
           <Col sm={4}>
             <InputGroup>
               <CustomInput
@@ -150,7 +148,6 @@ function AuthNForm({ item, handleSubmit }) {
                 formik={formik}
                 onChange={formik.handleChange}
                 disabled={false}
-         
               >
                 <option value="">{t("actions.choose")}...</option>
                 <option value="true">true</option>
@@ -163,7 +160,7 @@ function AuthNForm({ item, handleSubmit }) {
         {(item.name === "simple_password_auth" ||
           item.name === "myAuthnScript") && (
           <FormGroup row>
-            <GluuLabel label="fields.saml_acr" size={4}  />
+            <GluuLabel label="fields.saml_acr" size={4} />
             <Col sm={8}>
               <Input
                 id="samlACR"
@@ -172,7 +169,6 @@ function AuthNForm({ item, handleSubmit }) {
                 formik={formik}
                 onChange={formik.handleChange}
                 disabled={item.name === "simple_password_auth" ? true : false}
-               
               />
             </Col>
           </FormGroup>
@@ -181,7 +177,7 @@ function AuthNForm({ item, handleSubmit }) {
         {(item.name === "simple_password_auth" ||
           item.name === "myAuthnScript") && (
           <FormGroup row>
-            <GluuLabel label="fields.description" size={4}  />
+            <GluuLabel label="fields.description" size={4} />
             <Col sm={8}>
               <Input
                 id="description"
@@ -190,7 +186,6 @@ function AuthNForm({ item, handleSubmit }) {
                 formik={formik}
                 onChange={formik.handleChange}
                 disabled={item.name === "simple_password_auth" ? true : false}
-          
               />
             </Col>
           </FormGroup>
@@ -198,7 +193,7 @@ function AuthNForm({ item, handleSubmit }) {
 
         {item.name === "simple_password_auth" && (
           <FormGroup row>
-            <GluuLabel label="fields.primary_key" size={4}  />
+            <GluuLabel label="fields.primary_key" size={4} />
             <Col sm={8}>
               <Input
                 id="primaryKey"
@@ -213,7 +208,7 @@ function AuthNForm({ item, handleSubmit }) {
         )}
         {item.name === "simple_password_auth" && (
           <FormGroup row>
-            <GluuLabel label="fields.password_attribute" size={4}  />
+            <GluuLabel label="fields.password_attribute" size={4} />
             <Col sm={8}>
               <Input
                 id="passwordAttribute"
@@ -229,7 +224,7 @@ function AuthNForm({ item, handleSubmit }) {
 
         {item.name === "myAuthnScript" && (
           <Row>
-            <GluuLabel label="fields.script_properties" size={4}  />
+            <GluuLabel label="fields.script_properties" size={4} />
             <Col sm={8}>
               <GluuProperties
                 compName="configurationProperties"
@@ -239,7 +234,7 @@ function AuthNForm({ item, handleSubmit }) {
                 valuePlaceholder={t("placeholders.enter_property_value")}
                 options={getPropertiesConfig(item)}
                 defaultValue={item.passwordAttribute}
-            
+
                 //  disabled={viewOnly}
               ></GluuProperties>
             </Col>
@@ -248,7 +243,7 @@ function AuthNForm({ item, handleSubmit }) {
 
         {item.name === "simple_password_auth" && (
           <FormGroup row>
-            <GluuLabel label="fields.hash_algorithm" size={4}  />
+            <GluuLabel label="fields.hash_algorithm" size={4} />
             <Col sm={4}>
               <InputGroup>
                 <CustomInput
@@ -259,7 +254,6 @@ function AuthNForm({ item, handleSubmit }) {
                   formik={formik}
                   onChange={formik.handleChange}
                   disabled={item.name === "simple_password_auth" ? true : false}
-            
                 >
                   <option value="">{t("actions.choose")}...</option>
                   <option value="bcrypt">bcrypt</option>
@@ -272,7 +266,7 @@ function AuthNForm({ item, handleSubmit }) {
         {item.name === "default_ldap_password" && (
           <>
             <FormGroup row>
-              <GluuLabel label="fields.bind_dn" size={4}  />
+              <GluuLabel label="fields.bind_dn" size={4} />
               <Col sm={8}>
                 <Input
                   id="bindDN"
@@ -280,13 +274,12 @@ function AuthNForm({ item, handleSubmit }) {
                   value={item?.bindDN || ""}
                   formik={formik}
                   onChange={formik.handleChange}
-                 
                 />
               </Col>
             </FormGroup>
 
             <FormGroup row>
-              <GluuLabel label="fields.max_connections" size={4}  />
+              <GluuLabel label="fields.max_connections" size={4} />
               <Col sm={8}>
                 <Input
                   id="maxConnections"
@@ -294,27 +287,25 @@ function AuthNForm({ item, handleSubmit }) {
                   value={item?.maxConnections || ""}
                   formik={formik}
                   onChange={formik.handleChange}
-                 
                 />
               </Col>
             </FormGroup>
 
             <FormGroup row>
-              <GluuLabel label="fields.remote_primary_key" size={4}  />
+              <GluuLabel label="fields.remote_primary_key" size={4} />
               <Col sm={8}>
                 <Input
                   id="remotePrimaryKey"
                   name="remotePrimaryKey"
-                  value={item?.remotePrimaryKey || ""}
+                  value={item?.localPrimaryKey || ""}
                   formik={formik}
                   onChange={formik.handleChange}
-                
                 />
               </Col>
             </FormGroup>
 
             <FormGroup row>
-              <GluuLabel label="fields.local_primary_key" size={4}  />
+              <GluuLabel label="fields.local_primary_key" size={4} />
               <Col sm={8}>
                 <Input
                   id="localPrimaryKey"
@@ -322,7 +313,6 @@ function AuthNForm({ item, handleSubmit }) {
                   value={item?.localPrimaryKey || ""}
                   formik={formik}
                   onChange={formik.handleChange}
-               
                 />
               </Col>
             </FormGroup>
@@ -335,7 +325,6 @@ function AuthNForm({ item, handleSubmit }) {
               options={[]}
               value={item.servers}
               valid={!formik.errors.servers && !formik.touched.servers}
-             
             ></GluuTypeAhead>
 
             {formik.errors.servers && formik.touched.servers ? (
@@ -354,7 +343,7 @@ function AuthNForm({ item, handleSubmit }) {
             ) : null}
 
             <FormGroup row>
-              <GluuLabel label="fields.bind_password" size={4}  />
+              <GluuLabel label="fields.bind_password" size={4} />
               <Col sm={8}>
                 <Input
                   id="bindPassword"
@@ -362,13 +351,12 @@ function AuthNForm({ item, handleSubmit }) {
                   value={item?.bindPassword || ""}
                   formik={formik}
                   onChange={formik.handleChange}
-                 
                 />
               </Col>
             </FormGroup>
 
             <FormGroup row>
-              <GluuLabel label="fields.use_ssl"  doc_entry="use_ssl" />
+              <GluuLabel label="fields.use_ssl" doc_entry="use_ssl" />
               <Col sm={9}>
                 <InputGroup>
                   <Input
@@ -377,14 +365,13 @@ function AuthNForm({ item, handleSubmit }) {
                     type="checkbox"
                     defaultChecked={item.useSSL}
                     onChange={formik.handleChange}
-                  
                   />
                 </InputGroup>
               </Col>
             </FormGroup>
 
             <FormGroup row>
-              <GluuLabel label="fields.enabled"  doc_entry="enabled" />
+              <GluuLabel label="fields.enabled" doc_entry="enabled" />
               <Col sm={9}>
                 <InputGroup>
                   <Input
@@ -393,7 +380,6 @@ function AuthNForm({ item, handleSubmit }) {
                     type="checkbox"
                     defaultChecked={item.enabled}
                     onChange={formik.handleChange}
-                  
                   />
                 </InputGroup>
               </Col>
