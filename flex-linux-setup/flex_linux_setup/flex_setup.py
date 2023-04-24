@@ -242,7 +242,7 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.0.12",
+  "JANS_APP_VERSION": "1.0.13",
   "JANS_BUILD": "-SNAPSHOT",
   "NODE_VERSION": "v14.18.2",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
@@ -311,7 +311,7 @@ class flex_installer(JettyInstaller):
         print("Downloading Gluu Flex components")
         download_url, target = ('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path)
 
-        if target:
+        if not flex_installer_downloaded:
             base.download(download_url, target, verbose=True)
 
         print("Extracting", self.flex_path)
@@ -432,7 +432,7 @@ class flex_installer(JettyInstaller):
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Gluu Flex Admin UI Client']
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Client {}'.format(ssa_json.get('org_id', ''))]
 
             client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
 
@@ -475,22 +475,6 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
         Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
         Config.templateRenderingDict['scan_license_api_hostname'] =  Config.templateRenderingDict['op_host'].replace('account', 'cloud')
-
-        print("Creating credentials encryption private and public key")
-
-        with tempfile.TemporaryDirectory() as tmp_dir:
-
-            private_fn = os.path.join(tmp_dir, 'private.pem')
-            private_key_fn = os.path.join(tmp_dir, 'private_key.pem')
-            public_key_fn = os.path.join(tmp_dir, 'public_key.pem')
-
-            config_api_installer.run([paths.cmd_openssl, 'genrsa', '-out', private_fn, '2048'])
-            config_api_installer.run([paths.cmd_openssl, 'rsa', '-in', private_fn, '-outform', 'PEM', '-pubout', '-out', public_key_fn])
-            config_api_installer.run([paths.cmd_openssl, 'pkcs8', '-topk8', '-inform', 'PEM', '-in', private_fn, '-out', private_key_fn, '-nocrypt'])
-
-            Config.templateRenderingDict['cred_enc_private_key'] = config_api_installer.generate_base64_file(private_key_fn, 0)
-            Config.templateRenderingDict['cred_enc_public_key'] = config_api_installer.generate_base64_file(public_key_fn, 0)
-
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, self.templates_dir, self.source_dir)
@@ -940,7 +924,7 @@ def obtain_oidc_client_credidentials():
     data = {
         "software_statement": ssa,
         "response_types": ["token"],
-        "redirect_uris": ["http://localhost"],
+        "redirect_uris": ["https://cloud.gluu.org"],
         "client_name": "test-ui-client"
     }
 
@@ -975,6 +959,7 @@ def main(uninstall):
     installer_obj = flex_installer()
 
     if uninstall:
+        config_api_installer.stop('casa')
         installer_obj.uninstall_casa()
         installer_obj.uninstall_admin_ui()
         print("Disabling script", installer_obj.simple_auth_scr_inum)

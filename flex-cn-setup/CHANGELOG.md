@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.12](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.11...flex-cn-setup-v1.0.12) (2023-04-18)
+
+
+### Bug Fixes
+
+* prepare for 5.0.12 release ([994c985](https://github.com/GluuFederation/flex/commit/994c9855cf34c3c805f87943f9203cf58c5810e7))
+
+
+### Documentation
+
+* external secrets ([#924](https://github.com/GluuFederation/flex/issues/924)) ([2f1b9e8](https://github.com/GluuFederation/flex/commit/2f1b9e8f662f2c3f7d7f4148fb0533fd2a356b9d))
+
 ## [1.0.11](https://github.com/GluuFederation/flex/compare/flex-cn-setup-v1.0.10...flex-cn-setup-v1.0.11) (2023-04-06)
 
 

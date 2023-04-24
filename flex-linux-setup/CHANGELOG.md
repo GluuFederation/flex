@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.12](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.11...flex-linux-setup-v1.0.12) (2023-04-18)
+
+
+### Features
+
+* **flex-linux-setup:** casa client scopes ([006c952](https://github.com/GluuFederation/flex/commit/006c952830152c970e6c1cb37fd9ed52dc725fd7))
+* **flex-linux-setup:** delete casa client scopes upon uninstall ([5451951](https://github.com/GluuFederation/flex/commit/5451951672946ad07f804dab31ae45598d72adfa))
+
+
+### Bug Fixes
+
+* **flex-linux-setup:** downloading flex archieve ([49f5dc2](https://github.com/GluuFederation/flex/commit/49f5dc2753c48209691b4a3d7549af5cc8323a54))
+* **flex-linux-setup:** force downloading flex github archieve ([2b951f6](https://github.com/GluuFederation/flex/commit/2b951f62364391f5190b498f7a0808bca35b9b18))
+* **flex-linux-setup:** remove credentialsEncryptionKey field from admin-ui config ([2b94638](https://github.com/GluuFederation/flex/commit/2b94638efaa1dd93d4fc12217f0a00459be69ab3))
+* prepare for 5.0.12 release ([994c985](https://github.com/GluuFederation/flex/commit/994c9855cf34c3c805f87943f9203cf58c5810e7))
+
 ## [1.0.11](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.10...flex-linux-setup-v1.0.11) (2023-04-06)
 
 
