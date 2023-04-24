@@ -67,24 +67,24 @@ const GluuCommitDialog = ({
           operations.map((item, key) => (
             <FormGroup row key={key}>
               <Col sm={1}>Set</Col>
-              <Col sm={5} style={{overflow:"auto"}}>
+              <Col sm={5} style={{ overflow:"auto" }}>
                 <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
               </Col>
               <Col sm={1}>to</Col>
-              <Col sm={5} style={{overflow:"auto"}}>
+              <Col sm={5} style={{ overflow:"auto" }}>
                 {Array.isArray(item.value) ? 
-                <>
-                {
-                  item.value.map((data) => 
-                    <Badge color={`primary-${selectedTheme}`}>
-                      {String(data)}
-                    </Badge>
-                  )
-                }
-                </>:
-                <Badge color={`primary-${selectedTheme}`}>
-                  {String(item.value)}
-                </Badge>
+                  <>
+                    {
+                      item.value.map((data, index) => 
+                        <Badge color={`primary-${selectedTheme}`} key={index}>
+                          {String(data)}
+                        </Badge>
+                      )
+                    }
+                  </>:
+                  <Badge color={`primary-${selectedTheme}`}>
+                    {String(item.value)}
+                  </Badge>
                 }
               </Col>
             </FormGroup>

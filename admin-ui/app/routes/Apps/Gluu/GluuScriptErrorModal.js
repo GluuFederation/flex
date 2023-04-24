@@ -1,13 +1,13 @@
-import React, { useContext } from "react";
-import { useTranslation } from "react-i18next";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import applicationstyle from "./styles/applicationstyle";
-import { ThemeContext } from "Context/theme/themeContext";
+import React, { useContext } from "react"
+import { useTranslation } from "react-i18next"
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap"
+import applicationstyle from "./styles/applicationstyle"
+import { ThemeContext } from "Context/theme/themeContext"
 
 const GluuScriptErrorModal = ({ title = "Error", error, isOpen, handler }) => {
-  const { t } = useTranslation();
-  const theme = useContext(ThemeContext);
-  const selectedTheme = theme.state.theme;
+  const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
 
   return (
     <Modal
@@ -33,7 +33,7 @@ const GluuScriptErrorModal = ({ title = "Error", error, isOpen, handler }) => {
         </Button>
       </ModalFooter>
     </Modal>
-  );
-};
+  )
+}
 
-export default GluuScriptErrorModal;
+export default GluuScriptErrorModal

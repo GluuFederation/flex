@@ -136,7 +136,7 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
               type="select"
               label={t('fields.default_acr')}
               handler={putHandler}
-              value={acrs.defaultAcr}
+              value={acrs?.defaultAcr}
               options={authScripts}
               path={'/ACR'}
             />)}
@@ -167,7 +167,7 @@ const mapStateToProps = (state) => {
     configuration: state.jsonConfigReducer.configuration,
     permissions: state.authReducer.permissions,
     loading: state.jsonConfigReducer.loading,
-    acrs: state.acrReducer.acrs,
+    acrs: state.acrReducer.acrReponse,
     scripts: state.initReducer.scripts,
   }
 }

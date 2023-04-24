@@ -37,13 +37,13 @@ export const checkLicenseConfigValid = () => ({
 })
 export const checkLicenseConfigValidResponse = (apiResult) => ({
   type: ACTIVATE_CHECK_IS_CONFIG_VALID_RESPONSE,
-  payload:  apiResult ,
+  payload:  apiResult,
 })
 export const uploadNewSsaToken = (data) => ({
   type: UPLOAD_NEW_SSA_TOKEN,
-  payload:  data ,
+  payload:  data,
 })
 export const uploadNewSsaTokenResponse = (data) => ({
   type: UPLOAD_NEW_SSA_TOKEN_RESPONSE,
-  payload:  data ,
+  payload:  data,
 })
