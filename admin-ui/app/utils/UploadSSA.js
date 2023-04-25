@@ -19,8 +19,7 @@ function UploadSSA() {
 
   const [selectedFileName, setSelectedFileName] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
-    const [jwt, setJWT] = useState(null)
-
+  const [jwt, setJWT] = useState(null)
 
   const readJWTFile = () => {
     const reader = new FileReader()
@@ -36,10 +35,9 @@ function UploadSSA() {
 
   useEffect(() => {
     if(selectedFile){
-        readJWTFile();
+      readJWTFile()
     }
-  },[selectedFile])
-
+  }, [selectedFile])
 
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0]
@@ -59,18 +57,18 @@ function UploadSSA() {
 
   const submitData = () => {
     if(selectedFile){
-        dispatch(uploadNewSsaToken({ssa:jwt}))
+      dispatch(uploadNewSsaToken({ ssa:jwt }))
     }
   }
 
   return (
     <React.Fragment>
       <Container>
-      {isLoading && (
+        {isLoading && (
         <div className="loader-outer">
           <div className="loader"></div>
         </div>
-      )}
+        )}
         <div className="row">
           <div className="col-md-12 text-center mt-5 mb-5">
             <img
@@ -89,11 +87,11 @@ function UploadSSA() {
               {selectedFileName ? (
                 <strong>Selected File : {selectedFileName}</strong>
               ) : (
-                <p>Drag 'n' drop .jwt file here, or click to select file</p>
+                <p>Drag &apos;n&apos; drop .jwt file here, or click to select file</p>
               )}
             </div>
             <div className='text-sm text-danger'>
-                {error}
+              {error}
             </div>
             <div className="mt-4">
               <Button

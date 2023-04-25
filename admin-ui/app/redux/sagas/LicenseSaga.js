@@ -9,8 +9,8 @@ import {
   ACTIVATE_CHECK_IS_CONFIG_VALID,
   UPLOAD_NEW_SSA_TOKEN,
 } from '../actions/types'
-import { checkLicenseConfigValidResponse, checkLicensePresentResponse,checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse } from '../actions'
-import {updateToast} from 'Redux/actions/ToastAction'
+import { checkLicenseConfigValidResponse, checkLicensePresentResponse, checkLicensePresent, getOAuth2Config, uploadNewSsaTokenResponse } from '../actions'
+import { updateToast } from 'Redux/actions/ToastAction'
 
 import LicenseApi from '../api/LicenseApi'
 import { getClient, getClientWithToken } from '../api/base'
@@ -47,7 +47,6 @@ function* checkLicensePresentWorker() {
   yield put(checkLicensePresentResponse())
 }
 
-
 function* activateCheckUserLicenseKey({ payload }) {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
@@ -73,7 +72,6 @@ function* uploadNewSsaToken({ payload }) {
   }
 }
 
-
 function* checkAdminuiLicenseConfig() {
   try {
     const licenseApi = yield* getApiTokenWithDefaultScopes()
@@ -84,8 +82,6 @@ function* checkAdminuiLicenseConfig() {
   }
 }
 
-
-
 //watcher sagas
 export function* checkLicensePresentWatcher() {
   yield takeEvery(CHECK_FOR_VALID_LICENSE, checkLicensePresentWorker)
@@ -94,7 +90,6 @@ export function* checkLicensePresentWatcher() {
   yield takeEvery(UPLOAD_NEW_SSA_TOKEN, uploadNewSsaToken)
   
 }
-
 
 /**
  * License Root Saga

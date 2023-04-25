@@ -44,11 +44,11 @@ function GluuInlineInput({
     setShow(true)
   }
   const handleTypeAheadChange = (selectedOptions) => {
-    let object = selectedOptions.filter((data) => typeof data == 'object')
-    let arrayItems = selectedOptions.filter((data) => typeof data != 'object')
+    const object = selectedOptions.filter((data) => typeof data == 'object')
+    const arrayItems = selectedOptions.filter((data) => typeof data != 'object')
 
-    for(let i in object){
-        arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
+    for(const i in object){
+      arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
     }
     setCorrectValue(arrayItems)
     setShow(true)
@@ -59,7 +59,7 @@ function GluuInlineInput({
     if (isArray) {
       patch[VALUE] = correctValue
     } else {
-        patch[VALUE] = data
+      patch[VALUE] = data
     }
     patch['op'] = 'replace'
     handler(patch)

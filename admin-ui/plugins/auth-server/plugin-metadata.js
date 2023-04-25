@@ -32,6 +32,7 @@ import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
 import agamaSaga from './redux/sagas/AgamaSaga'
+import authnSaga from './redux/sagas/AuthnSaga'
 
 import {
   ACR_READ,
@@ -43,10 +44,13 @@ import {
   SESSION_READ,
   PROPERTIES_READ,
   LOGGING_READ,
-  AGAMA_READ
+  AGAMA_READ,
 } from 'Utils/PermChecker'
 import AgamaListPage from './components/Agama/AgamaListPage'
 import agamaReducer from './redux/reducers/AgamaReducer'
+import AuthNListPage from './components/AuthN/AuthNListPage'
+import authNReducer from './redux/reducers/AuthNReducer'
+import AuthNEditPage from './components/AuthN/AuthNEditPage'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -92,6 +96,11 @@ const pluginMetadata = {
           permission: SCOPE_READ,
         },
         {
+          title: 'menus.authn',
+          path: PLUGIN_BASE_APTH + '/authn',
+          permission: SCOPE_READ,
+        },
+        {
           title: 'menus.agama',
           path: PLUGIN_BASE_APTH + '/agama',
           permission: AGAMA_READ,
@@ -123,6 +132,16 @@ const pluginMetadata = {
     {
       component: ScopeListPage,
       path: PLUGIN_BASE_APTH + '/scopes',
+      permission: SCOPE_READ,
+    },
+    {
+      component: AuthNEditPage,
+      path: PLUGIN_BASE_APTH + '/authn/edit/:id',
+      permission: SCOPE_READ,
+    },
+    {
+      component: AuthNListPage,
+      path: PLUGIN_BASE_APTH + '/authn',
       permission: SCOPE_READ,
     },
     {
@@ -176,6 +195,7 @@ const pluginMetadata = {
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
     { name: 'sessionReducer', reducer: sessionReducer },
     { name: 'agamaReducer', reducer: agamaReducer },
+    { name: 'authNReducer', reducer: authNReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -186,7 +206,8 @@ const pluginMetadata = {
     loggingSaga(),
     umaResourceSaga(),
     sessionSaga(),
-    agamaSaga()
+    agamaSaga(),
+    authnSaga()
   ],
 }
 

@@ -1,10 +1,10 @@
 {
   "actions": {
     "accept": "Accept",
-    "finish": "Finish"
-,    "add": "Add",
+    "finish": "Finish",
+    "add": "Add",
     "add_ldap_configuration": "Add LDAP Configuration",
-    "add_mapping":"Add Mapping",
+    "add_mapping": "Add Mapping",
     "add_property": "Add property",
     "apply": "Apply",
     "back_home": "Back Home",
@@ -64,6 +64,7 @@
     "authentication_method": "Authentication method for the Token Endpoint",
     "authorization_code_access_token": "Authorization Code Access Token",
     "average_of_mau": "Average of MAU",
+    "acr": "ACR",
     "base_dns": "Base DNs",
     "bind_dn": "Bind DN",
     "bind_password": "Bind Password",
@@ -103,6 +104,7 @@
     "disable_jdk_logger": "Disable JDK Logger?",
     "displayname": "Display Name",
     "dynamic_scope_scripts": "Dynamics Scope Script",
+    "default_authn_method": "Default Authn Method",
     "edit_type": "Edit Type",
     "enable": "Enable",
     "enabled": "Enabled",
@@ -113,6 +115,7 @@
     "host_name": "Host Name",
     "hide_on_discovery": "Hide On Discovery?",
     "http_logging_enabled": "Enable HTTP Logging",
+    "hash_algorithm": "Hash Algorithim",
     "id": "id",
     "id_token_encrypted_response_alg": "JWS alg for encryption",
     "id_token_encrypted_response_enc": "JWS enc for encryption",
@@ -162,7 +165,7 @@
     "errors": "Errors",
     "native_persistence_configuration": "nativePersistenceConfiguration",
     "oauth": "OAuth",
-    "organization":"Organization",
+    "organization": "Organization",
     "openid": "OpenID",
     "oxauth_claim_name": "oxAuth claim name",
     "ox_attributes": "oxAttributes",
@@ -174,6 +177,7 @@
     "pre_authorization": "Pre-Authorization",
     "primary_key": "Primary Key",
     "programming_language": "Programming Language",
+    "password_attribute": "Password Attribute",
     "redirect_regex": "Redirect Regex",
     "redirect_uris": "Redirect URIs",
     "redirectUrisRegex": "Redirect Regex",
@@ -190,7 +194,9 @@
     "rpt_scripts": "RPT Modification Script",
     "saml1_uri": "Saml1 URI",
     "saml2_uri": "Saml2 URI",
+    "saml_acr":"SAML ACR",
     "scope_type": "Scope type",
+    "script_properties":"Script Properties",
     "umaAuthorizationPolicies": "Authorization Policies",
     "associatedClients": "Associated Clients",
     "creationDate": "Creation Time",
@@ -310,11 +316,11 @@
     "scopeOrExpression": "Scope (or Expression)",
     "associatedClient": "Associated Client",
     "creationTime": "Creation Time",
-    "select_date_range":"Select a date range",
+    "select_date_range": "Select a date range",
     "scope": "Scope",
     "scopeExpression": "Scope Expression",
     "selectUserRevoke": "Select the user to revoke",
-    "acr":"acr",
+    
     "remote_primary_key":"Remote primary key",
     "remote_ldap_server_post":"Remote LDAP server:port",
     "test":"TEST",
@@ -330,6 +336,7 @@
   "menus": {
     "adminui": "Admin",
     "config-api": "Config-API",
+    "authn": "Authn",
     "api": {
       "roles": "Access roles",
       "permissions": "Permissions",
@@ -368,7 +375,7 @@
     "maugraph": "MAU",
     "users": "Users",
     "user-management": "User Management",
-    "agama":"Agama"
+    "agama": "Agama"
   },
   "messages": {
     "success_in_saving": "Changes saved successfully",
@@ -380,12 +387,14 @@
     "add_script": "Add Script",
     "advanced_search": "Advanced search options",
     "alert_couchbase": "Backing data source is not Couchbase !",
+    "add_authn":"Add Authn",
     "database_status_down": "Offline",
     "database_status_up": "Online",
     "delete_client": "Delete Client",
     "edit_client": "Edit Client",
     "edit_scope": "Edit Scope",
     "edit_script": "Edit Script",
+    "edit_authn": "Edit AuthN",
     "ldap_connection_error": "LDAP Connection Failed!",
     "ldap_connection_success": "LDAP Connection successful!",
     "not_deletable_client": "This Client can't be detele",
@@ -400,7 +409,7 @@
     "view_script_details": "View custom script details",
     "add_new_user": "Add User",
     "error_in_saving": "Error in saving.",
-    "error_processiong_request":"Error in processing request.",
+    "error_processiong_request": "Error in processing request.",
     "no_scope_in_client": "No Scope data for this Client",
     "no_scope_in_spontaneous_client": "No Spontaneous Scope data for this Client",
     "error_in_script": "Error in script",
@@ -470,7 +479,7 @@
     "activate_sql_configuration": "Activate SQL configuration.",
     "script_path": "Enter script file path",
     "iconUrl": "Icon URL",
-    "level":"Level"
+    "level": "Level"
   },
   "titles": {
     "acrs": "ACRs",
@@ -482,6 +491,7 @@
     "all_custom_scripts": "Custom Scripts",
     "all_oidc_clients": "OpenID Clients",
     "all_scopes": "OAuth/OpenID Scopes",
+    "authn": "Authn",
     "couchbase_authentication": "Couchbase Authentication",
     "client_advanced": "Advanced Client Properties",
     "client_attributes": "Client Attributes",
@@ -528,7 +538,7 @@
     "userinfo": "Userinfo",
     "JARM": "JARM",
     "request_object": "Request Object",
-    "agama":"Agama"
+    "agama": "Agama"
   },
   "links": {
     "support": "https://support.gluu.org/"
@@ -939,7 +949,7 @@
       "primary_key": "Primary Key",
       "local_primary_key": "Local Primary Key",
       "activate": "This check-box is used to save and push the changes. Do not use this unless the server administrator has entered all the required values.",
-      "level":"Level"
+      "level": "Level"
     },
     "cache": {
       "cacheProviderType": "The cache Provider Type.",

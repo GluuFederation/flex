@@ -12,14 +12,6 @@ function ApiKey() {
   const [submitted, setIsSubmitted] = useState(false)
   const [licenseKey, setLicenseKey] = useState('')
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setValues((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
-  }
-
   const submitLicenseKey = () => {
     setIsSubmitted(true)
     if (licenseKey != '') {
@@ -60,34 +52,34 @@ function ApiKey() {
           </div>
         </div>
 
-          <div className="row">
-            <div className="col-md-8 mx-auto">
-              <label>License Key*</label>
-              <input
-                type="text"
-                className={
-                  submitted && licenseKey == ''
-                    ? 'border-danger form-control'
-                    : 'form-control'
-                }
-                value={licenseKey}
-                name="apiKey"
-                onChange={(e) => setLicenseKey(e.target.value)}
-              />
-              <div className="text-danger">
-                {submitted && licenseKey == '' && 'This field is required'}
-              </div>
-              <button
-                type="button"
-                disabled={isLoading}
-                onClick={() => submitLicenseKey()}
-                className="btn mt-3"
-                style={{ backgroundColor: '#00a361', color: 'white' }}
-              >
-                {isLoading ? 'Submitting please wait...' : 'Submit'}
-              </button>
+        <div className="row">
+          <div className="col-md-8 mx-auto">
+            <label>License Key*</label>
+            <input
+              type="text"
+              className={
+                submitted && licenseKey == ''
+                  ? 'border-danger form-control'
+                  : 'form-control'
+              }
+              value={licenseKey}
+              name="apiKey"
+              onChange={(e) => setLicenseKey(e.target.value)}
+            />
+            <div className="text-danger">
+              {submitted && licenseKey == '' && 'This field is required'}
             </div>
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => submitLicenseKey()}
+              className="btn mt-3"
+              style={{ backgroundColor: '#00a361', color: 'white' }}
+            >
+              {isLoading ? 'Submitting please wait...' : 'Submit'}
+            </button>
           </div>
+        </div>
       </div>
     </div>
   )
