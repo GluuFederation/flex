@@ -147,7 +147,7 @@ module.exports = {
         test: /\.(ttf|eot|woff|woff2)$/,
         loader: 'file-loader',
         options: {
-          name: 'fonts/[name].[ext]',
+          name: '/fonts/[name].[ext]',
           esModule: false,
         },
       },
@@ -156,7 +156,7 @@ module.exports = {
         test: /\.(jpg|jpeg|png|gif|svg|ico)$/,
         loader: 'file-loader',
         options: {
-          name: 'static/[name].[ext]',
+          name: '/static/[name].[ext]',
           esModule: false,
         },
       },
