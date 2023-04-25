@@ -154,9 +154,7 @@ const ClientBasicPanel = ({
         <Col sm={9}>
           <div
             style={{
-              height: '0.01em',
               display: 'flex',
-              maxHeight: '2em',
               whiteSpace: 'nowrap',
             }}
           >
