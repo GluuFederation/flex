@@ -9,6 +9,7 @@ function GluuCommitFooter({
   saveHandler,
   extraLabel,
   hideButtons,
+  type = "button"
 }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
@@ -58,6 +59,18 @@ function GluuCommitFooter({
             {t('actions.submit')}
           </Button>
         </Col>
+
+        {type === "submit" && <Button
+          type="submit"
+          color={`primary-${selectedTheme}`}
+          style={applicationStyle.buttonStyle}
+          className="ml-auto px-4"
+        >
+          <i className="fa fa-check-circle mr-2"></i>
+          {t('actions.apply')}
+        </Button>
+        }
+
         {!hideButtons || !hideButtons['save'] ? (
           <Button
             type="button"

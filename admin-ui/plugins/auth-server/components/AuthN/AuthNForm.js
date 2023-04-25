@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next'
 import GluuInputRow from '../../../../app/routes/Apps/Gluu/GluuInputRow'
 import { ThemeContext } from 'Context/theme/themeContext'
 import { useSelector } from 'react-redux'
+import GluuCommitFooter from 'Routes/Apps/Gluu/GluuCommitFooter'
 
 function AuthNForm({ item, handleSubmit }) {
   const theme = useContext(ThemeContext)
@@ -386,25 +387,7 @@ function AuthNForm({ item, handleSubmit }) {
             </FormGroup>
           </>
         )}
-        <FormGroup row>
-          <Col md={12} className='text-right'>
-            <Button
-              color={`primary-${selectedTheme}`}
-              type='button'
-              onClick={goBack}
-            >
-              <i className='fa fa-arrow-circle-left mr-2'></i>
-              {t('actions.cancel')}
-            </Button>
-            {/* For Space in buttons */}
-            &nbsp &nbsp &nbsp
-            {/* For Space in buttons */}
-            <Button color={`primary-${selectedTheme}`} type='submit'>
-              <i className='fa fa-check-circle mr-2'></i>
-              {t('actions.save')}
-            </Button>
-          </Col>
-        </FormGroup>
+        <GluuCommitFooter saveHandler={toggle}  hideButtons={{ save: true }} type="submit"/>
         <GluuCommitDialog
           handler={toggle}
           modal={modal}
