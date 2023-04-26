@@ -26,7 +26,6 @@ import { Alert, Button } from "reactstrap";
 import ErrorIcon from '@mui/icons-material/Error';
 
 function CustomScriptForm({ item, scripts, handleSubmit, viewOnly }) {
-  console.log(scripts,"here")
   const { t } = useTranslation()
   const [init, setInit] = useState(false)
   const [modal, setModal] = useState(false)

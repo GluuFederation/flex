@@ -239,18 +239,6 @@ class Layout extends React.Component {
           changeMeta: (metaData) => { this.setState(metaData) }
         }}
       >
-        {/* <Helmet>
-          <meta charSet="utf-8" />
-          <title>{ config.siteTitle + (this.state.pageTitle ? ` - ${this.state.pageTitle}` : '') }</title>
-          <link rel="canonical" href={ config.siteCannonicalUrl } />
-          <meta name="description" content={ this.state.pageDescription } />
-          {
-            map(favIcons, (favIcon, index) => (
-              <link { ...favIcon } key={ index } />
-            ))
-          }
-
-        </Helmet> */}
         <ThemeClass>
           {(themeClass) => (
             <div className={ classNames(layoutClass, themeClass) } ref={ this.containerRef }>
