@@ -7,7 +7,7 @@ import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import useExitPrompt from 'Routes/Apps/Gluu/useExitPrompt'
 import PropertyBuilder from './JsonPropertyBuilder'
 import { connect } from 'react-redux'
-import Refresh from '@material-ui/icons/Refresh'
+import RefreshIcon from '@mui/icons-material/Refresh';
 import {
   buildPayload,
   hasPermission,
@@ -105,7 +105,7 @@ function ConfigPage({ acrs, scripts, configuration, dispatch, permissions }) {
                 <input type="search" className='form-control' placeholder='Search...' onChange={(e) => setSearch(e.target.value)} value={search} />
               </div>
               <div style={{paddingLeft:5}}>
-                <Refresh 
+                <RefreshIcon 
                   onClick={() => setFinalSearch(search.toLowerCase())}
                   style={{cursor:"pointer"}}
                 />

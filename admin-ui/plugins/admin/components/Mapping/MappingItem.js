@@ -9,7 +9,7 @@ import {
   Form,
 } from 'Components'
 import { useDispatch, useSelector } from 'react-redux'
-import { DeleteOutlined } from '@material-ui/icons'
+import { DeleteOutlined } from '@mui/icons-material'
 import {
   hasPermission,
   MAPPING_WRITE,

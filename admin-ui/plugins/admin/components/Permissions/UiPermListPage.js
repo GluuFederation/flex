@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
-import { Paper } from '@material-ui/core'
+import { Paper } from '@mui/material'
 import UiPermDetailPage from './UiPermDetailPage'
 import { Badge } from 'reactstrap'
 import { connect } from 'react-redux'

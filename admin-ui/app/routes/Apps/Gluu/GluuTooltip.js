@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
-import ReactTooltip from 'react-tooltip'
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'Context/theme/themeContext'
 

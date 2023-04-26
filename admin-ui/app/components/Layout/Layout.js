@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
-import { Helmet } from 'react-helmet'
+// import { Helmet } from 'react-helmet'
 import { useWithRouter as withRouter } from 'Utils/WithRouter'
 import {
   filter,
@@ -239,18 +239,6 @@ class Layout extends React.Component {
           changeMeta: (metaData) => { this.setState(metaData) }
         }}
       >
-        <Helmet>
-          <meta charSet="utf-8" />
-          <title>{ config.siteTitle + (this.state.pageTitle ? ` - ${this.state.pageTitle}` : '') }</title>
-          <link rel="canonical" href={ config.siteCannonicalUrl } />
-          <meta name="description" content={ this.state.pageDescription } />
-          {
-            map(favIcons, (favIcon, index) => (
-              <link { ...favIcon } key={ index } />
-            ))
-          }
-
-        </Helmet>
         <ThemeClass>
           {(themeClass) => (
             <div className={ classNames(layoutClass, themeClass) } ref={ this.containerRef }>

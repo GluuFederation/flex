@@ -1,5 +1,5 @@
 import React from 'react'
-import BlockUi from 'react-block-ui'
+import BlockUi from "../../../components/BlockUi/BlockUi";
 import { useTranslation } from 'react-i18next'
 
 function GluuLoader(props) {

@@ -1,9 +1,10 @@
 import React from 'react'
 import { Label } from 'Components'
-import ReactTooltip from 'react-tooltip'
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import applicationStyle from './styles/applicationstyle'
-import { HelpOutline } from '@material-ui/icons'
+import { HelpOutline } from '@mui/icons-material'
 import GluuTooltip from './GluuTooltip'
 
 function GluuLabel({ label, required, size, doc_category, doc_entry, style }) {
