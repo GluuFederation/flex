@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
-import { Paper } from '@material-ui/core'
+import { Paper } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Card, CardBody } from 'Components'
