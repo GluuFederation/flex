@@ -18,5 +18,9 @@
   {
     "key": "users",
     "metadataFile": "./user-management/plugin-metadata"
+  },
+  {
+    "key": "smtp",
+    "metadataFile": "./smtp-management/plugin-metadata"
   }
 ]

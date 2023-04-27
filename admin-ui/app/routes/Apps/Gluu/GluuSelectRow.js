@@ -14,6 +14,8 @@ function GluuSelectRow({
   rsize,
   doc_category,
   disabled,
+  showError,
+  errorMessage
 }) {
   const { t } = useTranslation()
   return (
@@ -29,6 +31,7 @@ function GluuSelectRow({
             defaultValue={value}
             onChange={formik.handleChange}
             disabled={disabled}
+            value={value}
           >
             <option value="">{t('actions.choose')}...</option>
             {values.map((item, key) => (
@@ -37,6 +40,9 @@ function GluuSelectRow({
               </option>
             ))}
           </CustomInput>
+          {showError ? (
+            <div style={{ color: 'red' }}>{errorMessage}</div>
+          ) : null}
         </InputGroup>
       </Col>
     </FormGroup>
