@@ -248,8 +248,12 @@ def resolve_conf_app(old_conf, new_conf):
 
     # there are various attributes need to be updated in the config
     else:
-        # licenseConfig.ssa is added as per v1.0.11
-        if "ssa" not in old_conf["licenseConfig"]:
+        if any([
+            # licenseConfig.ssa is added as per v1.0.11
+            "ssa" not in old_conf["licenseConfig"],
+            # SSA may be changed
+            new_conf["licenseConfig"]["ssa"] != old_conf["licenseConfig"].get("ssa", ""),
+        ]):
             old_conf["licenseConfig"]["ssa"] = new_conf["licenseConfig"]["ssa"]
             should_update = True
 

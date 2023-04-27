@@ -16,12 +16,12 @@ logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger("entrypoint")
 
 
-def register_license_client(ssa, reg_url):
+def register_license_client(ssa, reg_url, org_id, redirect_uri):
     data = {
         "software_statement": ssa,
-        "client_name": "Gluu Flex License Client",
+        "client_name": f"Admin UI Client {org_id}",
         "response_types": ["token"],
-        "redirect_uris": ["http://localhost"],
+        "redirect_uris": [redirect_uri],
     }
 
     logger.info(f"Registering license client at {reg_url}")
@@ -34,8 +34,10 @@ def register_license_client(ssa, reg_url):
     )
 
     if not req.ok:
-        # FIXME: remote URL is throwing 422 Unprocessable entity
-        raise RuntimeError(f"Failed to register client at {req.request.url}; reason={req.reason} status_code={req.status_code}")
+        raise RuntimeError(
+            f"Failed to register client at {req.request.url}; "
+            f"reason={req.reason} status_code={req.status_code} err={req.json()}"
+        )
     return req.json()
 
 
@@ -104,7 +106,7 @@ def get_license_config(manager):
     client_id, client_secret = get_license_client_creds(manager)
 
     if not client_id:
-        resp = register_license_client(ssa, reg_url)
+        resp = register_license_client(ssa, reg_url, payload["org_id"], payload["iss"])
         client_id = resp["client_id"]
         client_secret = resp["client_secret"]
 
