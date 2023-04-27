@@ -264,6 +264,17 @@ def resolve_conf_app(old_conf, new_conf):
             )
             should_update = True
 
+        # credentialsEncryptionKey is removed post 1.0.12
+        if "credentialsEncryptionKey" in old_conf["licenseConfig"]:
+            old_conf["licenseConfig"].pop("credentialsEncryptionKey", None)
+            should_update = True
+
+        # check client ID and secret
+        for attr in ["clientId", "clientSecret"]:
+            if new_conf["licenseConfig"]["oidcClient"][attr] != old_conf["licenseConfig"]["oidcClient"][attr]:
+                old_conf["licenseConfig"]["oidcClient"][attr] = new_conf["licenseConfig"]["oidcClient"][attr]
+                should_update = True
+
     # finalized status and conf
     return should_update, old_conf
 
