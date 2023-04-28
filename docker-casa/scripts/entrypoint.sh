@@ -69,6 +69,7 @@ exec java \
     -Djava.io.tmpdir=/tmp \
     -Dlog4j2.configurationFile=resources/log4j2.xml \
     -Dadmin.lock=${GLUU_CASA_ADMIN_LOCK_FILE} \
+    -Dcom.nimbusds.jose.jwk.source.RemoteJWKSet.defaultHttpSizeLimit=${GLUU_CASA_JWKS_SIZE_LIMIT} \
     $(get_prometheus_opt) \
     ${CN_JAVA_OPTIONS} \
     -jar /opt/jetty/start.jar jetty.httpConfig.sendServerVersion=false jetty.deploy.scanInterval=0
