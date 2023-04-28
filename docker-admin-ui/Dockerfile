@@ -1,4 +1,4 @@
-FROM node:fermium-alpine AS builder
+FROM node:hydrogen-alpine AS builder
 
 RUN apk update \
     && apk upgrade --available \
@@ -7,7 +7,7 @@ RUN apk update \
 # TODO:
 # - use NODE_ENV=production
 # - download build package (not git clone)
-ENV ADMIN_UI_VERSION=c90d88950f062899445192ebe5cbc91ed96d8aa2
+ENV ADMIN_UI_VERSION=cbe35ae56de73b9a85bfa26a4f32a25e8723fd89
 
 RUN mkdir -p /opt/flex
 
@@ -34,7 +34,7 @@ RUN cd /opt/flex/admin-ui && npm rebuild node-sass
 # Application
 # ===========
 
-FROM node:14-alpine3.16
+FROM node:hydrogen-alpine
 
 # ======
 # alpine
@@ -207,23 +207,23 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 RUN addgroup node root
 
 # make empty files and folders
-RUN mkdir -p /opt/flex/admin-ui/dist /app/plugins \
+RUN mkdir -p /app/plugins \
     && touch /run/nginx/nginx.pid
 
 # adjust ownership
 RUN chown -R 1000:0 /var/lib/nginx \
     && chown 1000:0 /run/nginx/nginx.pid \
-    && chown 1000:0 /opt/flex/admin-ui/.env \
-    && chown -R 1000:0 /opt/flex/admin-ui/dist \
     && chown 1000:0 /etc/nginx/http.d/default.conf \
     && chown -R 1000:0 /var/lib/nginx \
     && chown -R 1000:0 /var/log/nginx \
     && chown -R 1000:0 /etc/jans \
     && chown -R 1000:0 /etc/certs \
     && chown 1000:0 /run/nginx/nginx.pid \
+    && chown -R 1000:0 /app/plugins \
+    && chown 1000:0 /opt/flex/admin-ui \
+    && chown 1000:0 /opt/flex/admin-ui/.env \
     && chown 1000:0 /opt/flex/admin-ui/plugins.config.json \
-    && chown -R 1000:0 /opt/flex/admin-ui/plugins \
-    && chown -R 1000:0 /app/plugins
+    && chown -R 1000:0 /opt/flex/admin-ui/plugins
 
 USER 1000
 
