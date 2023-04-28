@@ -16,9 +16,6 @@ function SmtpForm({ item, handleSubmit }) {
   const dispatch = useDispatch()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-  const testStatus = useSelector((state) => state.smtpsReducer.testStatus);
-  console.log(testStatus);
-
   const [modal, setModal] = useState(false)
   const toggle = () => {
     setModal(!modal)
@@ -72,6 +69,17 @@ function SmtpForm({ item, handleSubmit }) {
     handleSubmit(formik.values)
   }
 
+  const testSmtpConfig = () => {
+    const opts = {}
+    const smtpData = JSON.stringify({
+      sign: true,
+      subject: "Testing Email",
+      message: "Testing"
+    })
+    opts['smtpTest'] = JSON.parse(smtpData)
+
+    dispatch(testSmtp(opts))
+  }
   return (
     <Form
       onSubmit={(e) => {
@@ -148,7 +156,6 @@ function SmtpForm({ item, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-
           <GluuSelectRow
             label="fields.requires_authentication"
             name="requires_authentication"
@@ -190,7 +197,6 @@ function SmtpForm({ item, handleSubmit }) {
         </Col>
 
         <Col sm={8}>
-
           <GluuSelectRow
             label="fields.trust_host"
             name="trust_host"
@@ -205,6 +211,7 @@ function SmtpForm({ item, handleSubmit }) {
           />
 
         </Col>
+
         <Col sm={8}>
           <GluuInputRow
             label="fields.key_store"
@@ -263,7 +270,7 @@ function SmtpForm({ item, handleSubmit }) {
             type="button"
             className={`btn btn-primary-${selectedTheme} text-center`}
             onClick={() => {
-              dispatch(testSmtp())
+              testSmtpConfig()
             }}
           >
             {t('fields.test')}

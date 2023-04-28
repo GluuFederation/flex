@@ -23,9 +23,9 @@ export default class SmtpApi {
   }
 
   // test SMTP Config
-  testSmtpConfig = () => {
+  testSmtpConfig = (input) => {
     return new Promise((resolve, reject) => {
-      this.api.testConfigSmtp((error, data) => {
+      this.api.testConfigSmtp(input, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })

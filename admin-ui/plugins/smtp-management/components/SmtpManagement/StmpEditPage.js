@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
-import GluuAlert from 'Routes/Apps/Gluu/GluuAlert'
 import { CardBody, Card } from 'Components'
 import SetTitle from 'Utils/SetTitle'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import applicationStyle from "Routes/Apps/Gluu/styles/applicationstyle"
-import { getSmpts, updateSmpt } from '../../redux/actions/SmtpActions'
+import { clearSmtpConfig, getSmpts, updateSmpt } from '../../redux/actions/SmtpActions'
 import SmtpForm from './SmtpForm'
+import GluuInfo from '../../../../app/routes/Apps/Gluu/GluuInfo'
 
 function StmpEditPage() {
   const dispatch = useDispatch()
@@ -16,6 +16,8 @@ function StmpEditPage() {
   const item = useSelector((state) => state.smtpsReducer);
 
   const handleSubmit = (data) => {
+    data.connectProtectionList = [data.connect_protection];
+    data.connect_protection = [data.connect_protection];
     const opts = {}
     const smtpData = JSON.stringify(data)
     opts['smtpConfiguration'] = JSON.parse(smtpData)
@@ -30,13 +32,12 @@ function StmpEditPage() {
 
   return (
     <GluuLoader blocking={loading}>
-      <GluuAlert
-        severity={t('titles.error')}
-        message={t('messages.error_in_saving')}
-      />
+      <GluuInfo item={item} handler={() => {
+        dispatch(clearSmtpConfig())
+      }} />
       <Card className='mb-3' style={applicationStyle.mainCard}>
         <CardBody>
-         {!loading && <SmtpForm item={item.smtp} handleSubmit={handleSubmit}/>} 
+          {!loading && <SmtpForm item={item.smtp} handleSubmit={handleSubmit} />}
         </CardBody>
       </Card>
     </GluuLoader>

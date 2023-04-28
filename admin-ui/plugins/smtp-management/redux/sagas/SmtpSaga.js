@@ -13,7 +13,7 @@ import {
 } from '../../../../app/utils/TokenController'
 import {
   GET_SMTPS,
-  TEST_SMTP,
+  TEST_SMTP_CONFIG,
   UPDATE_SMTP
 } from '../actions/types'
 import { getClient } from '../../../../app/redux/api/base'
@@ -22,7 +22,7 @@ import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/actions/ToastAction'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import SmtpApi from '../api/SmtpApi'
-import {  getSmptResponse,getSmpts,updateSmptResponse } from '../actions/SmtpActions'
+import { getSmptResponse, getSmpts, testSmtpResponse, updateSmptResponse } from '../actions/SmtpActions'
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
@@ -67,10 +67,12 @@ export function* getSmtpsSaga() {
   }
 }
 
-export function* testSmtp() {
+export function* testSmtp(payload) {
   try {
+
     const stmpApi = yield* newFunction()
-    const data = yield call(stmpApi.testSmtpConfig)
+    const data = yield call(stmpApi.testSmtpConfig, payload.payload)
+    console.log("dt",data)
     yield put(testSmtpResponse(data))
   } catch (e) {
     yield put(updateToast(true, 'error'))
@@ -91,7 +93,7 @@ export function* watchUpdateUser() {
 }
 
 export function* watchTestSmtpConfig() {
-  yield takeLatest(TEST_SMTP, testSmtp)
+  yield takeLatest(TEST_SMTP_CONFIG, testSmtp)
 }
 
 
@@ -99,6 +101,7 @@ export function* watchTestSmtpConfig() {
 export default function* rootSaga() {
   yield all([
     fork(watchGetUsers),
-    fork(watchUpdateUser)
+    fork(watchUpdateUser),
+    fork(watchTestSmtpConfig)
   ])
 }

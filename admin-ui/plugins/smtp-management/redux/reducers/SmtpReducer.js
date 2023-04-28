@@ -1,8 +1,9 @@
 import {
+  CLEAR_TEST_CONFIG,
   GET_SMTPS,
   GET_SMTPS_RESPONSE,
-  TEST_SMTP,
-  TEST_SMTP_RESPONSE,
+  TEST_SMTP_CONFIG,
+  TEST_SMTP_CONFIG_RESPONSE,
   UPDATE_SMTP,
   UPDATE_SMTP_RESPONSE,
 } from '../actions/types'
@@ -11,7 +12,8 @@ import reducerRegistry from '../../../../app/redux/reducers/ReducerRegistry'
 const INIT_STATE = {
   smtp: {},
   loading: true,
-  testStatus: {}
+  testStatus: null,
+  openModal: false
 }
 const reducerName = 'smtpsReducer'
 
@@ -41,17 +43,25 @@ export default function smtpsReducer(state = INIT_STATE, action) {
         smtp: action.payload ? action.payload : {},
       }
 
-    case TEST_SMTP:
+    case TEST_SMTP_CONFIG:
       return {
         ...state,
-        loading: true,
+        loading: true
       }
 
-    case TEST_SMTP_RESPONSE:
-        return {
-          ...state,
-          testStatus: action?.payload?.data || {},
-          loading: false,
+    case TEST_SMTP_CONFIG_RESPONSE:
+      return {
+        ...state,
+        testStatus: action?.payload?.data || null,
+        loading: false,
+        openModal: true
+      }
+
+    case CLEAR_TEST_CONFIG:
+      return {
+        ...state,
+        openModal: false,
+        testStatus: null
       }
 
     default:
