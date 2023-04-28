@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from 'tss-react/mui'
 
-const styles = makeStyles(() => ({
+const styles = makeStyles()({
   root: {
     color: '#FFFFFF',
     maxWidth: '100vw',
@@ -238,6 +238,6 @@ const styles = makeStyles(() => ({
     overflowY: 'hidden',
     scrollBehavior: 'smooth',
   },
-}))
+})
 
 export default styles

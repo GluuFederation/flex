@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from 'tss-react/mui'
 
-const styles = makeStyles(() => ({
+const styles = makeStyles()({
   waveContainer: {
     position: 'relative',
     bottom: 93,
@@ -23,6 +23,6 @@ const styles = makeStyles(() => ({
     top: -130,
     fontWeight: 500,
   }
-}))
+})
 
 export default styles

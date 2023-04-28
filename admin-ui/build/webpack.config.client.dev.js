@@ -85,20 +85,15 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          { loader: 'style-loader' },
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
               modules: true,
-              importLoaders: 1,
             },
           },
           { loader: 'postcss-loader' },
-          {
-            loader: 'sass-loader',
-            options: {},
-          },
+          'sass-loader',
         ],
         exclude: [path.resolve(config.srcDir, 'styles')],
         include: [config.srcDir],
@@ -122,6 +117,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: 'fonts/[name].[ext]',
+          esModule: false,
         },
       },
       // Files
@@ -130,6 +126,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: 'static/[name].[ext]',
+          esModule: false,
         },
       },
     ],

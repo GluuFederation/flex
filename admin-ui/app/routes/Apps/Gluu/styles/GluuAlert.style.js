@@ -1,6 +1,7 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from 'tss-react/mui'
+// import { useTheme } from '@mui/material/styles';
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles()((theme) => ({
   root: {
     width: '100%',
     '& > * + *': {

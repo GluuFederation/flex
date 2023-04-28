@@ -22,7 +22,7 @@ function CustomScriptEditPage({
   const userAction = {}
   const navigate =useNavigate()
   const { t } = useTranslation()
-
+  
   useEffect(() => {
     if (saveOperationFlag && !errorInSaveOperationFlag)
       navigate('/adm/scripts')

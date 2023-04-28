@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from "tss-react/mui";
 
-const styles = makeStyles({
+const styles = makeStyles()({
   list: {
     width: 250,
   },

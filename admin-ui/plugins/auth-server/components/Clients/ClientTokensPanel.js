@@ -6,7 +6,7 @@ import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuBooleanSelectBox from 'Routes/Apps/Gluu/GluuBooleanSelectBox'
 import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import { useTranslation } from 'react-i18next'
-import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core'
+import { FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 const DOC_CATEGORY = 'openid_client'
 

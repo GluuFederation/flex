@@ -2,7 +2,7 @@
 @import "./../variables.scss";
 
 .react-grid-layout {
-    margin: 0 (-$grid-gutter-width / 2);
+    margin: 0 -#{calc($grid-gutter-width / 2)};
 
     .react-grid-item.react-grid-placeholder {
         background: none;
@@ -21,7 +21,7 @@
             background: rgba($primary, 0.3);
             border-radius: 4px;
             border: 2px dashed $primary;
-            height: calc(100% - #{$grid-gutter-width / 2});
+            height: calc(100% - #{calc($grid-gutter-width / 2)});
             width: calc(100% - #{$grid-gutter-width});
         }
     }
@@ -33,11 +33,11 @@
 
     > .card {
         flex: 1 1 auto;
-        margin-bottom: $grid-gutter-width / 2;
+        margin-bottom: calc($grid-gutter-width / 2);
 
         + .react-resizable-handle {
-            bottom: $grid-gutter-width / 2;
-            right: $grid-gutter-width / 2;
+            bottom: calc($grid-gutter-width / 2);
+            right: calc($grid-gutter-width / 2);
         }
 
         > .card-header {
@@ -69,8 +69,8 @@
 
     &--size-lg {
         .col-md-4 {
-            flex: 0 0 (100% / 3);
-            max-width: (100% / 3);
+            flex: 0 0 calc(100% / 3);
+            max-width: calc(100% / 3);            
         }
     }
 }
