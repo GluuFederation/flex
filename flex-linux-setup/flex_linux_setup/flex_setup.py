@@ -924,7 +924,7 @@ def obtain_oidc_client_credidentials():
     data = {
         "software_statement": ssa,
         "response_types": ["token"],
-        "redirect_uris": ["{}".format(Config.hostname)],
+        "redirect_uris": ["{}".format(ssa_json['iss'])],
         "client_name": "test-ui-client"
     }
 
