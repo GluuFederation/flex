@@ -18,7 +18,7 @@ const TrTableRecentFundings = () => {
             <td className="align-middle text-nowrap">
               20-02-2015
             </td>
-            <td className="align-middle text-right text-nowrap">
+            <td className="align-middle text-end text-nowrap">
               <a href="#" className="text-decoration-none">{t("View")} <i className="fa fa-angle-right"></i></a>
             </td>
           </tr>

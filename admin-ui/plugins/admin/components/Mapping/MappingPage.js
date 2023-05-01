@@ -92,7 +92,7 @@ function MappingPage({
                     style={applicationStyle.buttonStyle}
                     onClick={showMappingDialog}
                   >
-                    <i className="fa fa-plus mr-2"></i>
+                    <i className="fa fa-plus me-2"></i>
                     {t('actions.add_mapping')}
                   </Button>
                 </Box>

@@ -196,7 +196,7 @@ function DashboardPage({
   const StatusCard = () => {
     return (
       <Grid xs={12} item>
-        <Paper className={`${classes.statusContainer} ml-20`} elevation={3}>
+        <Paper className={`${classes.statusContainer} ms-20`} elevation={3}>
           <div className={classes.userInfoText}>
             <div className={classes.statusText}>
               <Box display="flex" justifyContent="flex-start">
@@ -302,7 +302,7 @@ function DashboardPage({
           >
             <div className={classes.textVertical}>WORLD</div>
             <div className={`${classes.textVertical} text-center`}>WIDE</div>
-            <div className={`${classes.textVertical} text-right`}>
+            <div className={`${classes.textVertical} text-end`}>
               SU<span className={`${classes.redText}`}>PP</span>ORT
             </div>
           </div>
@@ -465,12 +465,12 @@ function DashboardPage({
                 className={`${isMobile ? classes.block : classes.flex} mt-20`}
               >
                 {isMobile && <StatusCard />}
-                <ul className="mr-40">
+                <ul className="me-40">
                   <li className={classes.orange}>
                     {t('dashboard.client_credentials_access_token')}
                   </li>
                 </ul>
-                <ul className="mr-40">
+                <ul className="me-40">
                   <li className={classes.lightBlue}>
                     {t('dashboard.authorization_code_access_token')}
                   </li>

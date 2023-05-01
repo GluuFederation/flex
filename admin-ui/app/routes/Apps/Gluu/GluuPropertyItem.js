@@ -47,7 +47,7 @@ function GluuPropertyItem({
           disabled={disabled}
           onClick={() => onPropertyRemove(position)}
         >
-          <i className="fa fa-fw fa-trash mr-2"></i>
+          <i className="fa fa-fw fa-trash me-2"></i>
           {t('actions.remove')}
         </Button>
       </Col>

@@ -58,7 +58,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               <Col sm={8}>
                 {couchbase.servers.length &&
                   couchbase.servers.map((server, index) => (
-                    <Badge key={index} color={`primary-${selectedTheme}`} className="ml-1">
+                    <Badge key={index} color={`primary-${selectedTheme}`} className="ms-1">
                       {server}
                     </Badge>
                   ))}
@@ -73,7 +73,7 @@ function CouchbaseItem({ couchbase, index, formik }) {
               <Col sm={8}>
                 {couchbase.buckets.length &&
                   couchbase.buckets.map((bucket, index) => (
-                    <Badge key={index} color={`primary-${selectedTheme}`} className="ml-1">
+                    <Badge key={index} color={`primary-${selectedTheme}`} className="ms-1">
                       {bucket}
                     </Badge>
                   ))}

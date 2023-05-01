@@ -12,7 +12,7 @@ const ProfileOverviewCard = (props) => (
       <CardTitle tag="h6">
         { props.title }
       </CardTitle>
-      <Badge pill color={ `${ props.badgeColor }` } className="align-self-start ml-auto">
+      <Badge pill color={ `${ props.badgeColor }` } className="align-self-start ms-auto">
         { props.badgeTitle }
       </Badge>
     </div>
@@ -26,8 +26,8 @@ const ProfileOverviewCard = (props) => (
       <span>
         { props.footerTitle }
       </span>
-      <span className={ `ml-auto ${ props.footerTitleClassName }` }>
-        <i className={ `fa mr-1 fa-${ props.footerIcon }` }></i>
+      <span className={ `ms-auto ${ props.footerTitleClassName }` }>
+        <i className={ `fa me-1 fa-${ props.footerIcon }` }></i>
         { props.footerValue }
       </span>
     </div>

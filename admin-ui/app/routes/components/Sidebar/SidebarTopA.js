@@ -45,9 +45,9 @@ const SidebarTopA = () => {
           </Link>
                   
           <UncontrolledButtonDropdown>
-            <DropdownToggle color="link" className="pl-0 pb-0 btn-profile sidebar__link">
+            <DropdownToggle color="link" className="ps-0 pb-0 btn-profile sidebar__link">
               { 'faker.name.firstName()' } { 'faker.name.lastName()' }
-              <i className="fa fa-angle-down ml-2"></i>
+              <i className="fa fa-angle-down ms-2"></i>
             </DropdownToggle>
             <DropdownMenu persist>
               <DropdownItem header>
@@ -62,7 +62,7 @@ const SidebarTopA = () => {
               </DropdownItem>
               <DropdownItem divider />
               <DropdownItem tag={ Link } to="/pages/login">
-                <i className="fa fa-fw fa-sign-out mr-2"></i>
+                <i className="fa fa-fw fa-sign-out me-2"></i>
                 {t("Sign Out")}
               </DropdownItem>
             </DropdownMenu>

@@ -5,7 +5,7 @@ import { Media } from 'reactstrap'
 const HeaderDemo = (props) => (
   <Media className={ `mb-3 ${ props.className }` }>
     <Media left top>
-      <h1 className="mr-3 display-4 text-muted">
+      <h1 className="me-3 display-4 text-muted">
         {props.no}. 
       </h1>
     </Media>

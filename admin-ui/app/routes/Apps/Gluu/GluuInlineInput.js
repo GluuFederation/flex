@@ -127,10 +127,10 @@ function GluuInlineInput({
               size="sm"
               onClick={onAccept}
             >
-              <i className="fa fa-check mr-2"></i>
+              <i className="fa fa-check me-2"></i>
             </Button>{' '}
             <Button color="danger" size="sm" onClick={onCancel}>
-              <i className="fa fa-times mr-2"></i>
+              <i className="fa fa-times me-2"></i>
             </Button>
           </>
         )}

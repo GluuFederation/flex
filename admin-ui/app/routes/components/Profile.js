@@ -20,7 +20,7 @@ const Profile = ({ userinfo }) => {
           <span style={{ color: themeColors.fontColor }}>{userinfo.jansAdminUIRole}</span>
         </Badge>
         <div className="text-center">
-          <i className="fa fa-mail-forward mr-1"></i>
+          <i className="fa fa-mail-forward me-1"></i>
           {userinfo.email}
         </div>
       </div>

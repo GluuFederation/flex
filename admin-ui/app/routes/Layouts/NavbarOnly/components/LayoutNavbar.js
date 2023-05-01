@@ -31,7 +31,7 @@ export const LayoutNavbar = () => {
   return (
     <React.Fragment>
       <Navbar light expand="lg" themed>
-        <Link to="/" className="navbar-brand mr-0 mr-sm-3">
+        <Link to="/" className="navbar-brand me-0 me-sm-3">
           <LogoThemed className="mb-1" checkBackground />
         </Link>
 
@@ -48,7 +48,7 @@ export const LayoutNavbar = () => {
 
         { /* END Navbar: Left Side */ }
         { /* START Navbar: Right Side */ }
-        <Nav className="ml-auto" pills>
+        <Nav className="ms-auto" pills>
           <NavbarMessages />
           <NavbarActivityFeed />
           { /* START Navbar: Dropdown */ }
@@ -90,7 +90,7 @@ export const LayoutNavbar = () => {
           {
             ({ color }) => (
               <Button color={ color } className="px-4 my-sm-0">
-                {t("Download")} <i className="fa ml-1 fa-fw fa-download"></i>
+                {t("Download")} <i className="fa ms-1 fa-fw fa-download"></i>
               </Button>
             )
           }

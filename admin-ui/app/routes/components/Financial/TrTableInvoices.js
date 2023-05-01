@@ -29,7 +29,7 @@ const TrTableInvoices = () => {
             </td>
             <td className="align-middle">
               <Media>
-                <Media left className="align-self-center mr-4">
+                <Media left className="align-self-center me-4">
                   <Avatar.Image
                     size="md"
                     src={ randomAvatar() }
@@ -65,7 +65,7 @@ const TrTableInvoices = () => {
               </a><br />
               { 'faker.phone.phoneNumber()' }
             </td>
-            <td className="text-right align-middle text-nowrap">
+            <td className="text-end align-middle text-nowrap">
               <a href="#" className="text-decoration-none">{t("View")} <i className="fa fa-angle-right"></i></a>
             </td>
           </tr>

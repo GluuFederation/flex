@@ -15,6 +15,11 @@ export default {
   buttonStyle: {
     background: '#00a260',
   },
+  buttonFlexIconStyles: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px'
+  },
   customButtonStyle: {
     background: '#00a260',
     paddingLeft: '20px',

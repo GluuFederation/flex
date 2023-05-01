@@ -443,26 +443,25 @@ function ClientWizardForm({
                       <Button
                         type="button"
                         onClick={prevStep}
-                        style={applicationStyle.buttonStyle}
-                        color="link"
-                        className="mr-3"
+                        style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
+                        className="me-3"
                       >
-                        <i className="fa fa-angle-left mr-2"></i>
+                        <i className="fa fa-angle-left me-2"></i>
                         {t('actions.previous')}
                       </Button>
                     )}
                     </div>
-                    <div style={{flex:1, justifyContent:"flex-end", display:"flex"}}>
+                    <div style={{flex:1, justifyContent:"flex-end", display:"flex", gap: '8px'}}>
                     {currentStep !== sequence[sequence.length - 1] && (
                       <Button
                         type="button"
                         color={`primary-${selectedTheme}`}
                         onClick={nextStep}
-                        style={applicationStyle.buttonStyle}
+                        style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
                         className="px-4"
                       >
                         {t('actions.next')}
-                        <i className="fa fa-angle-right ml-2"></i>
+                        <i className="fa fa-angle-right ms-2"></i>
                       </Button>
                     )}
                     {!viewOnly &&
@@ -470,9 +469,9 @@ function ClientWizardForm({
                         <Button
                           type="button"
                           color={`primary-${selectedTheme}`}
-                          className="px-4 ml-2"
+                          className="px-4 ms-2"
                           onClick={validateFinish}
-                          style={applicationStyle.buttonStyle}
+                          style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
                         >
                           {t('actions.finish')}
                         </Button>

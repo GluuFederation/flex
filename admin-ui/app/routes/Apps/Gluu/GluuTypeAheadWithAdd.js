@@ -74,7 +74,7 @@ function GluuTypeAheadWithAdd({
             style={applicationStyle.buttonStyle}
             onClick={addItem}
           >
-            <i className="fa fa-plus-circle mr-2"></i>
+            <i className="fa fa-plus-circle me-2"></i>
             {t('actions.add')}
           </Button>
         </Row>

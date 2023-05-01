@@ -21,7 +21,7 @@ export const SidebarA = () => {
         <h6>
           {t("Layouts for this framework")}:
         </h6>
-        <ul className="pl-3">
+        <ul className="ps-3">
           <li>
             <Link to="/layouts/sidebar-a">{t("Sidebar A")}</Link>
           </li>
@@ -35,7 +35,7 @@ export const SidebarA = () => {
         <h6>
           {t("This Starter has")}:
         </h6>
-        <ul className="pl-3">
+        <ul className="ps-3">
           <li>
             <a href="https://webkom.gitbook.io/spin/v/airframe/airframe-react/documentation-react" target="_blank" rel="noopener noreferrer">{t("Documentation")}</a> - {t("which describes how to configure this version")}.
           </li>
@@ -55,7 +55,7 @@ export const SidebarA = () => {
         <h6>
           {t("Other versions for")} &quot;Airframe&quot;:
         </h6>
-        <ul className="pl-3">
+        <ul className="ps-3">
           <li>
             <a href="http://dashboards.webkom.co/jquery/airframe">jQuery</a> - {t("based on the newest")} <i>Bootstrap 4.x</i>
           </li>
