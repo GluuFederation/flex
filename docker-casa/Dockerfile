@@ -34,8 +34,8 @@ EXPOSE 8080
 # Casa
 # ====
 
-ENV GLUU_VERSION=5.0.0-12
-ENV GLUU_BUILD_DATE='2023-04-18 13:02'
+ENV GLUU_VERSION=5.0.0-SNAPSHOT
+ENV GLUU_BUILD_DATE='2023-04-10 15:24'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -96,7 +96,7 @@ RUN cd /tmp/jans \
 # flex setup sync
 # ===============
 
-ENV FLEX_VERSION=257d2c9c4c8f4dad6bce20634efb090678a3c6bb
+ENV FLEX_VERSION=96d82038fe752cfff4e722113c757978b2b39119
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 ARG CASA_EXTRAS_DIR=casa/extras
 
@@ -109,7 +109,8 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
     && git sparse-checkout add ${FLEX_SETUP_DIR} \
     && cp ${FLEX_SETUP_DIR}/templates/casa_*.ldif /app/templates \
     && git sparse-checkout add ${CASA_EXTRAS_DIR} \
-    && cp ${CASA_EXTRAS_DIR}/Casa.py /app/static/extension/person_authentication/
+    && cp ${CASA_EXTRAS_DIR}/Casa.py /app/static/extension/person_authentication/ \
+    && cp ${FLEX_SETUP_DIR}/templates/casa_scopes.json /app/static
 
 # =======
 # Cleanup
@@ -206,7 +207,8 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     CN_GOOGLE_SECRET_NAME_PREFIX=jans \
     GLUU_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable \
     CN_PROMETHEUS_PORT="" \
-    CN_VERSION=1.0.13-SNAPSHOT
+    CN_VERSION=1.0.13-SNAPSHOT \
+    GLUU_CASA_JWKS_SIZE_LIMIT=100000
 
 # ==========
 # misc stuff
@@ -253,7 +255,8 @@ RUN chmod -R g=u ${JETTY_BASE}/casa/static \
     && chmod 664 /opt/jetty/etc/webdefault.xml \
     && chown -R 1000:0 ${JETTY_BASE}/common/libs \
     && chown -R 1000:0 /usr/share/java \
-    && chown -R 1000:0 /opt/prometheus
+    && chown -R 1000:0 /opt/prometheus \
+    && chmod -R g=u /app/templates
 
 USER 1000
 
