@@ -40,7 +40,7 @@ class NavbarOnly extends React.Component {
           <h6>
             Layouts for this framework:
           </h6>
-          <ul className="pl-3">
+          <ul className="ps-3">
             <li>
               <Link to="/layouts/navbar" className="text-primary">Navbar</Link>
             </li>
@@ -57,7 +57,7 @@ class NavbarOnly extends React.Component {
           <h6>
             This Starter has:
           </h6>
-          <ul className="pl-3">
+          <ul className="ps-3">
             <li>
               <a href="https://webkom.gitbook.io/spin/v/airframe/airframe-react/documentation-react" className="text-primary" target="_blank" rel="noopener noreferrer">Documentation</a> - which describes how to configure this version.
             </li>
@@ -77,7 +77,7 @@ class NavbarOnly extends React.Component {
           <h6>
             Other versions for &quot;Airframe&quot;:
           </h6>
-          <ul className="pl-3">
+          <ul className="ps-3">
             <li>
               <a href="http://dashboards.webkom.co/jquery/airframe" className="text-primary">jQuery</a> - based on the newest <i>Bootstrap 4.x</i>
             </li>

@@ -457,7 +457,7 @@ function ScopeForm({ scope, scripts, attributes, handleSubmit }) {
                       <Col sm={8}>
                         {scope?.attributes?.spontaneousClientScopes?.map(
                           (item, key) => (
-                            <div style={{ maxWidth: 120, overflow: 'auto' }}>
+                            <div style={{ maxWidth: 140, overflow: 'auto' }}>
                               <Badge
                                 key={key}
                                 color={`primary-${selectedTheme}`}

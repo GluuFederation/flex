@@ -255,7 +255,7 @@ function ClientCibaParUmaPanel({
                           size="sm"
                           onClick={() => handleDeleteUMA(uma)}
                         >
-                          <span className="font-weight-bold">X</span>
+                          <span className="fw-bold">X</span>
                         </Button>
                       </Box>
                     </Box>

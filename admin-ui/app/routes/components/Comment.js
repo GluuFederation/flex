@@ -21,11 +21,11 @@ const Comment = (props) => {
   return (
 
     <Media className={ `mb-4 ${ props.mediaClassName }` }>
-      <Media left className="mr-3">
+      <Media left className="me-3">
         <Avatar.Image
           size="md"
           src={ randomAvatar() }
-          className="mr-2"
+          className="me-2"
           addOns={[
             <AvatarAddOn.Icon 
               className="fa fa-circle"
@@ -42,7 +42,7 @@ const Comment = (props) => {
       </Media>
       <Media body>
         <div className="mb-2">
-          <span className="text-inverse mr-2">
+          <span className="text-inverse me-2">
             { 'faker.name.firstName()' } { 'faker.name.firstName()' }
           </span>
           <span className="small">
@@ -53,26 +53,26 @@ const Comment = (props) => {
           { 'faker.lorem.paragraph()' }
         </p>
         <div>
-          <span className="text-success mr-2">
+          <span className="text-success me-2">
             +92
           </span>
-          <a href="#" id="tooltipVoteUp1" className="mr-2">
+          <a href="#" id="tooltipVoteUp1" className="me-2">
             <i className="fa fa-angle-up text-success"></i>
           </a>
           <UncontrolledTooltip placement="top" target="tooltipVoteUp1">
             {t("Vote Up")}
           </UncontrolledTooltip>
-          <a href="#" id="tooltipVoteDown2" className="mr-2">
+          <a href="#" id="tooltipVoteDown2" className="me-2">
             <i className="fa fa-angle-down text-danger"></i>
           </a>
           <UncontrolledTooltip placement="bottom" target="tooltipVoteDown2">
             {t("Vote Down")}
           </UncontrolledTooltip>
-          <span className="mr-2">·</span>
-          <a href="#" className="mr-2">
+          <span className="me-2">·</span>
+          <a href="#" className="me-2">
             {t("Reply")}
           </a>
-          <span className="mr-2">·</span>
+          <span className="me-2">·</span>
           <a href="#">
             {t("Edit")}
           </a>

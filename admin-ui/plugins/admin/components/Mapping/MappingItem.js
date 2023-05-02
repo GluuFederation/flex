@@ -119,7 +119,7 @@ function MappingItem({ candidate, roles }) {
         <Col sm={12}>
           <Accordion className="mb-12">
             <Accordion.Header className="text-info">
-              <Accordion.Indicator className="mr-2" />
+              <Accordion.Indicator className="me-2" />
               {candidate.role}
 
               {isDeleteable && (
@@ -169,7 +169,7 @@ function MappingItem({ candidate, roles }) {
                             color={`primary-${selectedTheme}`}
                             style={applicationStyle.buttonStyle}
                           >
-                            <i className="fa fa-plus mr-2"></i>
+                            <i className="fa fa-plus me-2"></i>
                             {t('actions.add')}
                           </Button>
                         </Col>
@@ -193,7 +193,7 @@ function MappingItem({ candidate, roles }) {
                         padding: '0px',
                       }}
                     >
-                      <i className="fa fa-trash mr-2"></i>
+                      <i className="fa fa-trash me-2"></i>
                       {t('actions.remove')}
                     </Button>
                   </Col>:null
@@ -211,12 +211,12 @@ function MappingItem({ candidate, roles }) {
                     style={applicationStyle.buttonStyle}
                     onClick={() => revertLocalChanges()}
                   >
-                    <i className="fa fa-undo mr-2"></i>
+                    <i className="fa fa-undo me-2"></i>
                     {t('actions.revert')}
                   </Button>
                 </Col>
                 
-                <Col sm={6} className="text-right">
+                <Col sm={6} className="text-end">
                   <Button
                     type="button"
                     color={`primary-${selectedTheme}`}
@@ -226,7 +226,7 @@ function MappingItem({ candidate, roles }) {
                       setServerPermissionsToLocalState()
                     }}
                   >
-                    <i className="fa fa-plus mr-2"></i>
+                    <i className="fa fa-plus me-2"></i>
                     {t('actions.save')}
                   </Button>
                 </Col>

@@ -78,7 +78,7 @@ export class DragAndDropLayout extends React.Component {
               Generate New Layout
             </Button>
 
-            <UncontrolledDropdown className="ml-2">
+            <UncontrolledDropdown className="ms-2">
               <DropdownToggle outline>
                 Change Compaction Type:&nbsp;
                 <strong>
@@ -86,7 +86,7 @@ export class DragAndDropLayout extends React.Component {
                   { compactType === "vertical" && "Vertical" }
                   { compactType === "horizontal" && "Horizontal" }
                 </strong>
-                <i className="fa fa-angle-down ml-2" />
+                <i className="fa fa-angle-down ms-2" />
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem
@@ -110,14 +110,14 @@ export class DragAndDropLayout extends React.Component {
               </DropdownMenu>
             </UncontrolledDropdown>
 
-            <UncontrolledDropdown className="ml-2">
+            <UncontrolledDropdown className="ms-2">
               <DropdownToggle outline>
                 Layout:&nbsp;
                 <strong>
                   { !fluid && "Container" }
                   { fluid && "Fluid" }
                 </strong>
-                <i className="fa fa-angle-down ml-2" />
+                <i className="fa fa-angle-down ms-2" />
               </DropdownToggle>
               <DropdownMenu right >
                 <DropdownItem
@@ -135,8 +135,8 @@ export class DragAndDropLayout extends React.Component {
               </DropdownMenu>
             </UncontrolledDropdown>
 
-            <Button color="link" className="ml-2" onClick={ this.resetLayoutHandler }>
-              <i className="fa fa-times-circle text-danger fa-fw mr-1" />Reset
+            <Button color="link" className="ms-2" onClick={ this.resetLayoutHandler }>
+              <i className="fa fa-times-circle text-danger fa-fw me-1" />Reset
             </Button>
           </div>
         </Container>
@@ -157,7 +157,7 @@ export class DragAndDropLayout extends React.Component {
                   <Grid.Col {...applyColumn(layoutKey, this.state.layouts)} key={ layoutKey }>
                     <Card>
                       <CardHeader className="bb-0 pt-3 pb-0 bg-none" tag="h6">
-                        <i className="fa fa-ellipsis-v mr-2"></i> { texts[layoutKey].title }
+                        <i className="fa fa-ellipsis-v me-2"></i> { texts[layoutKey].title }
                       </CardHeader>
                       <CardBody style={{ overflow: "hidden" }} className="pt-3">
                         { texts[layoutKey].desc }

@@ -37,7 +37,7 @@ export const InfoPopover = ({ colorId, children, className, tag: Tag, ...otherPr
         <PopoverBody>
           {
             POPOVER_BODY_PARTS.map((partText, index) =>
-              <span className="mr-1" key={ index }>{ `${partText}${colorId}` }</span>
+              <span className="me-1" key={ index }>{ `${partText}${colorId}` }</span>
             )
           }   
         </PopoverBody>

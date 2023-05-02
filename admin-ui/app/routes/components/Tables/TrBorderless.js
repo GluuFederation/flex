@@ -28,10 +28,10 @@ const TrBorderless = () => {
           </Badge>
         </td>
         <td className="align-middle">
-          <i className="fa fa-fw fa-paypal text-primary mr-2"></i>
+          <i className="fa fa-fw fa-paypal text-primary me-2"></i>
           { 'faker.internet.email()' }
         </td>
-        <td className="align-middle text-right">
+        <td className="align-middle text-end">
           <a href="#" id="UncontrolledTooltipDownload">
             <i className="fa fa-fw fa-download text-primary"></i>
           </a>

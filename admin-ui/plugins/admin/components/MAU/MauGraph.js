@@ -161,7 +161,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
                   color={`primary-${selectedTheme}`}
                   onClick={search}
                 >
-                  <i className="fa fa-search mr-2"></i>
+                  <i className="fa fa-search me-2"></i>
                   {t('actions.view')}
                 </Button>
               </Col>

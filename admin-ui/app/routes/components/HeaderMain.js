@@ -11,7 +11,7 @@ const HeaderMain = (props) => {
     <React.Fragment>
       { /* START H1 Header */}
       <div className={` d-flex ${props.className}`}>
-        <h1 className="display-4 mr-3 mb-0 align-self-start" style={{ color: themeColors.fontColor ?? "#000" }}>
+        <h1 className="display-4 me-3 mb-0 align-self-start" style={{ color: themeColors.fontColor ?? "#000" }}>
           {props.title}
         </h1>
       </div>

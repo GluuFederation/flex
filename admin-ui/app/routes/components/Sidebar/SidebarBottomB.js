@@ -24,9 +24,9 @@ const SidebarBottomB = () => (
       { /* START DESKTOP View */ }
       <Sidebar.HideSlim>
         <UncontrolledButtonDropdown direction="up" className="mb-3">
-          <DropdownToggle color="link" className="btn-profile text-left pl-0 pb-0">
+          <DropdownToggle color="link" className="btn-profile text-start ps-0 pb-0">
             <Media>
-              <Media left middle className="mr-3">
+              <Media left middle className="me-3">
                 <Avatar.Image
                   size="md"
                   src={ randomAvatar() }
@@ -46,7 +46,7 @@ const SidebarBottomB = () => (
               </Media>
               <Media body>
                 <span className="mt-0 d-flex h6 mb-1 text-truncate">
-                  { 'faker.name.firstName()' } { 'faker.name.lastName()' } <i className="fa fa-fw fa-angle-up ml-1"></i>
+                  { 'faker.name.firstName()' } { 'faker.name.lastName()' } <i className="fa fa-fw fa-angle-up ms-1"></i>
                 </span>
                 <p className="small text-truncate">
                   { 'faker.name.jobTitle()' }
@@ -62,7 +62,7 @@ const SidebarBottomB = () => (
       <Sidebar.ShowSlim>
         <div className="text-center">
           <UncontrolledButtonDropdown direction="right" className="mb-3">
-            <DropdownToggle color="link" className="text-left pl-0 pb-0">
+            <DropdownToggle color="link" className="text-start ps-0 pb-0">
               <Avatar.Image
                 size="sm"
                 src={ randomAvatar() }

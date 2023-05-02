@@ -22,7 +22,7 @@ const SwitchVersion = () => {
               Sun, Jun 12, 2018 4:43:12 PM
             </span>
           </span>
-          <i className="fa fa-fw ml-auto align-self-center pl-2" />
+          <i className="fa fa-fw ms-auto align-self-center ps-2" />
         </DropdownItem>
         <DropdownItem href="http://react.bs4.webkom.co" active className="d-flex">
           <span>
@@ -32,7 +32,7 @@ const SwitchVersion = () => {
               Sun, Jun 12, 2018 4:43:12 PM
             </span>
           </span>
-          <i className="fa fa-fw fa-check ml-auto align-self-center pl-4" />
+          <i className="fa fa-fw fa-check ms-auto align-self-center ps-4" />
         </DropdownItem>
         <DropdownItem href="http://angular.bs4.webkom.co" className="d-flex">
           <span>
@@ -42,7 +42,7 @@ const SwitchVersion = () => {
               Sun, Jun 12, 2018 4:43:12 PM
             </span>
           </span>
-          <i className="fa fa-fw ml-auto align-self-center pl-2" />
+          <i className="fa fa-fw ms-auto align-self-center ps-2" />
         </DropdownItem>
         <DropdownItem href="http://vue.bs4.webkom.co" className="d-flex">
           <span>
@@ -52,7 +52,7 @@ const SwitchVersion = () => {
               Sun, Jun 12, 2018 4:43:12 PM
             </span>
           </span>
-          <i className="fa fa-fw ml-auto align-self-center pl-2" />
+          <i className="fa fa-fw ms-auto align-self-center ps-2" />
         </DropdownItem>
       </DropdownMenu>
     </React.Fragment>

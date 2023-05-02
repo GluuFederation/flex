@@ -40,22 +40,22 @@ const TrTableFavStock = () => {
               {t(randomArray(name))}
             </td>
             <td className="align-middle">
-              <Badge pill className="text-uppercase mr-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
+              <Badge pill className="text-uppercase me-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
             </td>
             <td className="align-middle">
-              <Badge pill className="text-uppercase mr-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
+              <Badge pill className="text-uppercase me-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
             </td>
             <td className="align-middle">
-              <Badge pill className="text-uppercase mr-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
+              <Badge pill className="text-uppercase me-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
             </td>
             <td className="align-middle">
-              <Badge pill className="text-uppercase mr-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
+              <Badge pill className="text-uppercase me-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
             </td>
             <td className="align-middle">
-              <Badge pill className="text-uppercase mr-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
+              <Badge pill className="text-uppercase me-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
             </td>
             <td className="align-middle">
-              <Badge pill className="text-uppercase mr-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
+              <Badge pill className="text-uppercase me-1"> { randomArray(badge) } </Badge> <span className="text-inverse">{ randomArray(value) }</span>
             </td>
           </tr>
         ))

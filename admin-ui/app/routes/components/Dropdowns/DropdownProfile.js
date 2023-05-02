@@ -20,7 +20,7 @@ const DropdownProfile = (props) => {
         </DropdownItem>
         <DropdownItem divider />
         <DropdownItem tag={Link} to="/logout">
-          <i className="fa fa-fw fa-sign-out mr-2"></i>
+          <i className="fa fa-fw fa-sign-out me-2"></i>
           {t("menus.signout")}
         </DropdownItem>
       </DropdownMenu>

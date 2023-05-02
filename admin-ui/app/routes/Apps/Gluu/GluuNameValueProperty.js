@@ -49,7 +49,7 @@ function GluuNameValueProperty({
           color={`primary-${selectedTheme}`}
           onClick={addClick}
         >
-          <i className="fa fa-fw fa-plus mr-2"></i>
+          <i className="fa fa-fw fa-plus me-2"></i>
           {t('actions.add_property')}
         </Button>
         <FormGroup row>
@@ -88,7 +88,7 @@ function GluuNameValueProperty({
                     color="danger"
                     onClick={() => removeClick(index)}
                   >
-                    <i className="fa fa-fw fa-trash mr-2"></i>
+                    <i className="fa fa-fw fa-trash me-2"></i>
                     {t('actions.remove')}
                   </Button>
                 </Col>

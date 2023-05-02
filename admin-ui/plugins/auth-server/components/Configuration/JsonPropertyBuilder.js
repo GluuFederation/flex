@@ -168,7 +168,7 @@ function JsonPropertyBuilder({
                       style={{ float: 'right' }}
                       onClick={removeHandler}
                     >
-                      <i className="fa fa-remove mr-2"></i>
+                      <i className="fa fa-remove me-2"></i>
                       {'  '}
                       {t('actions.remove')}
                       {'  '}

@@ -410,25 +410,25 @@ function UserForm({onSubmitData}) {
                       color={`primary-${selectedTheme}`}
                       onClick={() => setChangePasswordModal(true)}
                     >
-                      <i className="fa fa-key mr-2"></i>
+                      <i className="fa fa-key me-2"></i>
                       {t('actions.change_password')}
                     </Button>
                   )}
                 </Col>
-                <Col md={8} className="text-right">
+                <Col md={8} className="text-end">
                   <Button
                     color={`primary-${selectedTheme}`}
                     type="button"
                     onClick={goBack}
                   >
-                    <i className="fa fa-arrow-circle-left mr-2"></i>
+                    <i className="fa fa-arrow-circle-left me-2"></i>
                     {t('actions.cancel')}
                   </Button>
                   {/* For Space in buttons */}
                   &nbsp; &nbsp; &nbsp;
                   {/* For Space in buttons */}
                   <Button color={`primary-${selectedTheme}`} type="submit">
-                    <i className="fa fa-check-circle mr-2"></i>
+                    <i className="fa fa-check-circle me-2"></i>
                     {t('actions.save')}
                   </Button>
                 </Col>

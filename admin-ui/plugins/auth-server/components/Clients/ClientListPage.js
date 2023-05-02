@@ -133,7 +133,7 @@ function ClientListPage() {
         return rowData?.grantTypes?.map((data) => {
           return (
             // eslint-disable-next-line react/jsx-key
-            <div style={{ maxWidth: 120, overflow: 'auto' }}>
+            <div style={{ maxWidth: 140, overflow: 'auto' }}>
               <Badge color={`primary-${selectedTheme}`}>{data}</Badge>
             </div>
           )

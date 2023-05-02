@@ -20,12 +20,12 @@ const WebsitePerformance = (props) => (
         </h6>
         <TinyAreaChart />
       </Col>
-      <Col sm={ 12 } md="auto" className="text-center text-md-right pl-md-2">
+      <Col sm={ 12 } md="auto" className="text-center text-md-right ps-md-2">
         <h2>
           { props.value }
         </h2>
         <div className={ `mb-1 ${ props.valuePercentColor }` }>
-          <i className={ `fa mr-1 fa-${ props.valuePercentIcon }` }></i>
+          <i className={ `fa me-1 fa-${ props.valuePercentIcon }` }></i>
           { props.valuePercent }%
         </div>
         <div>
