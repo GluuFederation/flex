@@ -248,8 +248,12 @@ def resolve_conf_app(old_conf, new_conf):
 
     # there are various attributes need to be updated in the config
     else:
-        # licenseConfig.ssa is added as per v1.0.11
-        if "ssa" not in old_conf["licenseConfig"]:
+        if any([
+            # licenseConfig.ssa is added as per v1.0.11
+            "ssa" not in old_conf["licenseConfig"],
+            # SSA may be changed
+            new_conf["licenseConfig"]["ssa"] != old_conf["licenseConfig"].get("ssa", ""),
+        ]):
             old_conf["licenseConfig"]["ssa"] = new_conf["licenseConfig"]["ssa"]
             should_update = True
 
@@ -259,6 +263,17 @@ def resolve_conf_app(old_conf, new_conf):
                 new_conf["licenseConfig"]["oidcClient"]["opHost"],
             )
             should_update = True
+
+        # credentialsEncryptionKey is removed post 1.0.12
+        if "credentialsEncryptionKey" in old_conf["licenseConfig"]:
+            old_conf["licenseConfig"].pop("credentialsEncryptionKey", None)
+            should_update = True
+
+        # check client ID and secret
+        for attr in ["clientId", "clientSecret"]:
+            if new_conf["licenseConfig"]["oidcClient"][attr] != old_conf["licenseConfig"]["oidcClient"][attr]:
+                old_conf["licenseConfig"]["oidcClient"][attr] = new_conf["licenseConfig"]["oidcClient"][attr]
+                should_update = True
 
     # finalized status and conf
     return should_update, old_conf

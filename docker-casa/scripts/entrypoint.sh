@@ -48,6 +48,7 @@ get_prometheus_lib() {
 get_prometheus_lib
 python3 /app/scripts/wait.py
 python3 /app/scripts/bootstrap.py
+python3 /app/scripts/upgrade.py
 # python3 /app/scripts/jca_sync.py &
 python3 /app/scripts/auth_conf.py
 python3 /app/scripts/mod_context.py casa
@@ -68,6 +69,7 @@ exec java \
     -Djava.io.tmpdir=/tmp \
     -Dlog4j2.configurationFile=resources/log4j2.xml \
     -Dadmin.lock=${GLUU_CASA_ADMIN_LOCK_FILE} \
+    -Dcom.nimbusds.jose.jwk.source.RemoteJWKSet.defaultHttpSizeLimit=${GLUU_CASA_JWKS_SIZE_LIMIT} \
     $(get_prometheus_opt) \
     ${CN_JAVA_OPTIONS} \
     -jar /opt/jetty/start.jar jetty.httpConfig.sendServerVersion=false jetty.deploy.scanInterval=0

@@ -7,6 +7,8 @@ from uuid import uuid4
 from string import Template
 from functools import cached_property
 
+from ldif import LDIFWriter
+
 from jans.pycloudlib import get_manager
 from jans.pycloudlib.persistence import render_couchbase_properties
 from jans.pycloudlib.persistence import render_base_properties
@@ -264,20 +266,23 @@ class PersistenceSetup:
         # java.lang.IllegalStateException: Duplicate key casa (attempted merging values 1 and 1)
         if not self._deprecated_script_exists():
             filenames.append("casa_person_authentication_script.ldif")
+
+        # generate extra scopes
+        self.generate_scopes_ldif()
+        filenames.append("casa_scopes.ldif")
+
         return [f"/app/templates/{filename}" for filename in filenames]
 
     def _deprecated_script_exists(self):
-        script_exists = False
-
         # deprecated Casa script DN
         id_ = "inum=BABA-CACA,ou=scripts,o=jans"
 
         # sql and spanner
         if self.persistence_type in ("sql", "spanner"):
-            script_exists = bool(self.client.get("jansCustomScr", doc_id_from_dn(id_)))
+            return bool(self.client.get("jansCustomScr", doc_id_from_dn(id_)))
 
         # couchbase
-        elif self.persistence_type == "couchbase":
+        if self.persistence_type == "couchbase":
             bucket = os.environ.get("CN_COUCHBASE_BUCKET_PREFIX", "jans")
             key = id_from_dn(id_)
             req = self.client.exec_query(
@@ -285,18 +290,42 @@ class PersistenceSetup:
             )
             with contextlib.suppress(IndexError):
                 entry = req.json()["results"][0]
-                script_exists = bool(entry["id"])
+                return bool(entry["id"])
 
         # ldap
-        else:
-            script_exists = bool(self.client.get(id_))
-
-        return script_exists
+        return bool(self.client.get(id_))
 
     def import_ldif_files(self):
         for file_ in self.ldif_files:
             logger.info(f"Importing {file_}")
             self.client.create_from_ldif(file_, self.ctx)
+
+    def generate_scopes_ldif(self):
+        # prepare required scopes (if any)
+        with open("/app/static/casa_scopes.json") as f:
+            scopes = json.loads(f.read())
+
+        with open("/app/templates/casa_scopes.ldif", "wb") as fd:
+            writer = LDIFWriter(fd, cols=1000)
+
+            for scope in scopes:
+                writer.unparse(
+                    f"inum={scope['inum']},ou=scopes,o=jans",
+                    {
+                        "objectClass": ["top", "jansScope"],
+                        "description": [scope["description"]],
+                        "displayName": [scope["displayName"]],
+                        "inum": [scope["inum"]],
+                        "jansDefScope": [str(scope["jansDefScope"]).lower()],
+                        "jansId": [scope["jansId"]],
+                        "jansScopeTyp": [scope["jansScopeTyp"]],
+                        "jansAttrs": [json.dumps({
+                            "spontaneousClientId": None,
+                            "spontaneousClientScopes": [],
+                            "showInConfigurationEndpoint": False,
+                        })],
+                    },
+                )
 
 
 if __name__ == "__main__":

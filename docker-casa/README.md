@@ -76,6 +76,7 @@ The following environment variables are supported by the container:
 - `GLUU_CASA_APP_LOGGERS`: Custom logging configuration in JSON-string format with hash type (see [Configure app loggers](#configure-app-loggers) section for details).
 - `GLUU_CASA_ADMIN_LOCK_FILE`: Path to lock file to enable/disable administration feature (default to `/opt/jans/jetty/casa/resources/.administrable`). If file is not exist, the feature is disabled.
 - `CN_PROMETHEUS_PORT`: Port used by Prometheus JMX agent (default to empty string). To enable Prometheus JMX agent, set the value to a number. See [Exposing metrics](#exposing-metrics) for details.
+- `GLUU_CASA_JWKS_SIZE_LIMIT`: Default HTTP size limit (in bytes) when retrieving remote JWKS (default to `100000`).
 
 ### Configure app loggers
 
