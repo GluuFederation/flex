@@ -67,16 +67,18 @@ function GluuTypeAheadWithAdd({
               aria-label="new_entry"
             />
           </Col>
-          <Button
-            color={`primary-${selectedTheme}`}
-            type="button"
-            disabled={disabled}
-            style={applicationStyle.buttonStyle}
-            onClick={addItem}
-          >
-            <i className="fa fa-plus-circle me-2"></i>
-            {t('actions.add')}
-          </Button>
+          <Col>
+            <Button
+              color={`primary-${selectedTheme}`}
+              type="button"
+              disabled={disabled}
+              style={applicationStyle.buttonStyle}
+              onClick={addItem}
+            >
+              <i className="fa fa-plus-circle me-2"></i>
+              {t('actions.add')}
+            </Button>
+          </Col>
         </Row>
           &nbsp;
         <Typeahead
