@@ -29,7 +29,7 @@ function GluuInputRow({
   return (
     <FormGroup row>
       <GluuLabel label={label} size={lsize} doc_category={doc_category} required={required} doc_entry={name} />
-      <Col sm={rsize}>
+      <Col sm={rsize} style={{ position: 'relative' }}>
         <Input
           id={name}
           data-testid={name}
