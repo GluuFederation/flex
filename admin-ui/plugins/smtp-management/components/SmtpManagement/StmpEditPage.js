@@ -16,8 +16,6 @@ function StmpEditPage() {
   const item = useSelector((state) => state.smtpsReducer);
 
   const handleSubmit = (data) => {
-    data.connectProtectionList = [data.connect_protection];
-    data.connect_protection = [data.connect_protection];
     const opts = {}
     const smtpData = JSON.stringify(data)
     opts['smtpConfiguration'] = JSON.parse(smtpData)
