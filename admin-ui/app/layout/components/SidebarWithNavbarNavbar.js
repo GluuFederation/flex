@@ -41,15 +41,15 @@ export const SidebarWithNavbarNavbar = () => (
             </Nav>
 
             <h1
-              className="h5 mb-0 mr-auto ml-2 d-none d-lg-block"
+              className="h5 mb-0 me-automs--2 d-none d-lg-block"
             >
               Sidebar with Navbar
             </h1>
 
-            <Nav navbar className="ml-auto">
+            <Nav navbar className="ms-auto">
               <NavbarActivityFeed />
-              <NavbarMessages className="ml-2" />
-              <NavbarUser className="ml-2" />
+              <NavbarMessages className="ms-2" />
+              <NavbarUser className="ms-2" />
             </Nav>
           </Navbar>
           { /*    Second Navbar    */}
@@ -61,7 +61,7 @@ export const SidebarWithNavbarNavbar = () => (
             fluid
             className="pt-0 pt-lg-2"
           >
-            <h1 className="h5 mb-0 py-2 mr-auto d-lg-none">
+            <h1 className="h5 mb-0 py-2 me-auto d-lg-none">
               Sidebar with Navbar
             </h1>
 
@@ -94,7 +94,7 @@ export const SidebarWithNavbarNavbar = () => (
               </Nav>
             </UncontrolledCollapse>
 
-            <Nav navbar pills className="ml-auto">
+            <Nav navbar pills className="ms-auto">
               <NavItem>
                 <NavLink tag={ NavbarToggler } id="navbar-navigation-toggler" className="b-0">
                   <i className="fa fa-ellipsis-h fa-fw"></i>

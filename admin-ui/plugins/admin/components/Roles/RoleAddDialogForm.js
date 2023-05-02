@@ -70,7 +70,7 @@ const RoleAddDialogForm = ({ handler, modal, onAccept }) => {
             </Col>
           </FormGroup>
           <FormGroup row>
-            <Col sm={12} className="pl-4">
+            <Col sm={12} className="ps-4">
               <Input
                 id="deletable"
                 type="checkbox"

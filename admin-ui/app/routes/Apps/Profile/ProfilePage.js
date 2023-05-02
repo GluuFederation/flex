@@ -23,6 +23,7 @@ import getThemeColor from '../../../context/theme/config'
 const ProfileDetails = ({ userinfo }) => {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(theme.state.theme)
 
   return (
@@ -44,17 +45,17 @@ const ProfileDetails = ({ userinfo }) => {
                       {t('titles.detail_information')}
                     </span>
                   </div>
-                  <div className="text-left mb-4">
-                    <Badge pill color="info" className="mr-1">
+                  <div className="text-start mb-4">
+                    <Badge pill color={`primary-${selectedTheme}`} className="me-1">
                       <span style={{ color: themeColors.fontColor }}>{userinfo.family_name}</span>
                     </Badge>
-                    <Badge pill color="info" className="mr-1">
+                    <Badge pill color={`primary-${selectedTheme}`} className="me-1">
                       <span style={{ color: themeColors.fontColor }}>{userinfo.nickname}</span>
                     </Badge>
-                    <Badge pill color="info" className="mr-1">
+                    <Badge pill color={`primary-${selectedTheme}`} className="me-1">
                       <span style={{ color: themeColors.fontColor }}>{userinfo.name}</span>
                     </Badge>
-                    <Badge pill color="info" className="mr-1">
+                    <Badge pill color={`primary-${selectedTheme}`} className="me-1">
                       <span style={{ color: themeColors.fontColor }}>{userinfo.middle_name}</span>
                     </Badge>
                   </div>
@@ -85,8 +86,8 @@ const ProfileDetails = ({ userinfo }) => {
                         userinfo.jansAdminUIRole.map((role, index) => (
                           <Badge
                             style={{ width: '100px' }}
-                            color="info"
-                            className="mr-1"
+                            color={`primary-${selectedTheme}`}
+                            className="me-1"
                             key={index}
                           >
                             <span style={{ color: themeColors.fontColor }}>{role}</span>
@@ -97,17 +98,17 @@ const ProfileDetails = ({ userinfo }) => {
                           {t('titles.detail_information')}
                         </span>
                       </div>
-                      <div className="text-left mb-4">
-                        <Badge pill color="info" className="mr-1">
+                      <div className="text-start mb-4">
+                        <Badge pill color={`primary-${selectedTheme}`} className="me-1">
                           <span style={{ color: themeColors.fontColor }}>{userinfo.family_name}</span>
                         </Badge>
-                        <Badge pill color="info" className="mr-1">
+                        <Badge pill color={`primary-${selectedTheme}`} className="me-1">
                           <span style={{ color: themeColors.fontColor }}>{userinfo.nickname}</span>
                         </Badge>
-                        <Badge pill color="info" className="mr-1">
+                        <Badge pill color={`primary-${selectedTheme}`} className="me-1">
                           <span style={{ color: themeColors.fontColor }}>{userinfo.name}</span>
                         </Badge>
-                        <Badge pill color="info" className="mr-1">
+                        <Badge pill color={`primary-${selectedTheme}`} className="me-1">
                           <span style={{ color: themeColors.fontColor }}>{userinfo.middle_name}</span>
                         </Badge>
                       </div>

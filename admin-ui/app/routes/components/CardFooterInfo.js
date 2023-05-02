@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const CardFooterInfo = (props) => (
   <React.Fragment>
     <div className="small">
-      <i className={ `fa fa-fw fa-${ props.icon } ${ props.iconClassName } mr-2` }></i>
+      <i className={ `fa fa-fw fa-${ props.icon } ${ props.iconClassName } me-2` }></i>
       { props.text }
     </div>
   </React.Fragment>

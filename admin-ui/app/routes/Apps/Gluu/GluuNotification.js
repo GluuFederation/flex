@@ -18,7 +18,7 @@ function GluuNotification({ type, message, description, show }) {
   }
   const toastContent = (
     <Media>
-      <Media middle left className="mr-3">
+      <Media middle left className="me-3">
         <i className={getClassName(typeIcon)}></i>
       </Media>
       <Media body>

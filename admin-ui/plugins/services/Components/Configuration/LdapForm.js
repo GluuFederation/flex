@@ -139,7 +139,7 @@ function LdapForm({ item, handleSubmit, createLdap }) {
     <Form onSubmit={formik.handleSubmit}>
       <GluuLoader blocking={loading}>
       <FormGroup row>
-          <Col sm={12} className="text-right">
+          <Col sm={12} className="text-end">
             <button
               onClick={checkLdapConnection}
               type="button"

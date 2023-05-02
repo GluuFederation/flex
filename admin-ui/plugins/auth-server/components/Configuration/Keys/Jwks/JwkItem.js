@@ -16,7 +16,7 @@ function JwkItem({ item, index }) {
       <FormGroup row />
       <Accordion className="mb-12">
         <Accordion.Header className="text-info">
-          <Accordion.Indicator className="mr-2" />
+          <Accordion.Indicator className="me-2" />
           {item.name}
         </Accordion.Header>
         <Accordion.Body>

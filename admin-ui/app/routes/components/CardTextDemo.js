@@ -7,7 +7,7 @@ const CardTextDemo = (props) => {
   const { t } = useTranslation()
   return (
     <CardText>
-      <span className="mr-2">
+      <span className="me-2">
         #{ props.cardNo }
       </span> 
       {t("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")} 

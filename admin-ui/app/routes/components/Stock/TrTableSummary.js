@@ -30,13 +30,13 @@ const TrTableSummary = () => (
           <td className="align-middle text-inverse">
             { randomArray(name) }
           </td>
-          <td className="align-middle text-right">
+          <td className="align-middle text-end">
             { randomArray(tr2013) }
           </td>
-          <td className="align-middle text-right">
+          <td className="align-middle text-end">
             { randomArray(tr2013) }
           </td>
-          <td className="align-middle text-right">
+          <td className="align-middle text-end">
             { randomArray(ttm) }
           </td>
         </tr>

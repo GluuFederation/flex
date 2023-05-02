@@ -173,7 +173,7 @@ function LoggingPage({ logging, dispatch, permissions, loading }) {
                       color={`primary-${selectedTheme}`}
                       type="submit"
                     >
-                      <i className="fa fa-check-circle mr-2"></i>
+                      <i className="fa fa-check-circle me-2"></i>
                       {t('actions.save')}
                     </Button>
                   )}

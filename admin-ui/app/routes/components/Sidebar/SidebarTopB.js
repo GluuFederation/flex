@@ -31,11 +31,11 @@ const SidebarTopB = () => {
               dashboard="Airframe"
               render={(currentVersion) => (
                 <React.Fragment>
-                  <div className="h4 fw-600 sidebar-logo mb-1 text-left">
-                    react.bs4 <i className="fa fa-angle-down ml-1 sidebar__link--muted"></i>
+                  <div className="h4 fw-600 sidebar-logo mb-1 text-start">
+                    react.bs4 <i className="fa fa-angle-down ms-1 sidebar__link--muted"></i>
                   </div>
                   <div
-                    className="job-title small text-left sidebar__link--muted"
+                    className="job-title small text-start sidebar__link--muted"
                   >
                     {t("Version")}: {currentVersion.label}, {currentVersion.version}
                   </div>

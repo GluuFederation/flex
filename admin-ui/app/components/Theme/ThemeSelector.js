@@ -101,7 +101,7 @@ class ThemeSelector extends React.Component {
                     label={(
                       <span className="d-flex align-items-center">
                         { option.name }
-                        <i className={`fa fa-circle ml-auto text-${option.value}`} />
+                        <i className={`fa fa-circle ms-auto text-${option.value}`} />
                       </span>
                     )}
                   />

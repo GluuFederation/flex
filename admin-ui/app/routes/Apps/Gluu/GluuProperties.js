@@ -55,7 +55,7 @@ function GluuProperties({
           onClick={addProperty}
           disabled={disabled}
         >
-          <i className="fa fa-fw fa-plus mr-2"></i>
+          <i className="fa fa-fw fa-plus me-2"></i>
           {t('actions.add_property')}
         </Button>
         <FormGroup row>

@@ -52,11 +52,11 @@ const LanguageMenu = ({ userInfo }) => {
       setThemeUpdated(true)
     }
   }, [userConfigLang, userConfigTheme, langUpdated, themeUpdated])
-
+  // style={{ border: '1px solid #9a9a9a', paddingRight: '24px' }}
   return (
     <ButtonDropdown isOpen={isOpen} toggle={toggle}>
-      <DropdownToggle caret color="transparent" data-testid="ACTIVE_LANG">
-        {lang}
+      <DropdownToggle caret color='transparent' style={{ border: '1px solid #9a9a9a', fontSize: '12px' }} data-testid="ACTIVE_LANG">
+        <span style={{ color: '#fff' }}>{lang}</span>
       </DropdownToggle>
       <DropdownMenu>
         <DropdownItem onClick={() => changeLanguage('fr')} data-testid="FRE">

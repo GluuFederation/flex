@@ -23,7 +23,7 @@ const CardRgbaColor = (props) => (
           <Tag className={ `d-flex justify-content-center b-0 bg-${ colorId }` } key={ index }>
             <InfoPopover className="h6 text-inverse p-1 mb-0" colorId={ colorId } tag={ Button } color="link">
               { colorId } 
-              <i className="fa fa-angle-up ml-1"></i>
+              <i className="fa fa-angle-up ms-1"></i>
             </InfoPopover>
           </Tag>
         )

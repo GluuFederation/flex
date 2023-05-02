@@ -28,8 +28,8 @@ DlRowContacts.propTypes = {
   rightSideClassName: PropTypes.node
 }
 DlRowContacts.defaultProps = {
-  leftSideClassName: "text-right",
-  rightSideClassName: "text-left"
+  leftSideClassName: "text-end",
+  rightSideClassName: "text-start"
 }
 
 export { DlRowContacts }

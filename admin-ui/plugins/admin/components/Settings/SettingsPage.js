@@ -13,7 +13,6 @@ import {
   InputGroup,
   CustomInput,
 } from 'Components'
-import GluuDarkModeToggle from 'Routes/Apps/Gluu/GluuDarkModeToggle'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -62,20 +61,6 @@ function SettingsPage() {
                   </CustomInput>
                 </InputGroup>
               </Col>
-            </FormGroup>
-            <FormGroup row style={{ justifyContent: 'space-between' }}>
-              <GluuLabel label={t('fields.dark_mode')} doc_category={SETTINGS} doc_entry="darkMode"/>
-              <div
-                className="toggle-container"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  padding: '0px 15px 0px 15px',
-                }}
-              >
-                <GluuDarkModeToggle />
-              </div>
             </FormGroup>
           
             <FormGroup row style={{ justifyContent: 'space-between' }}>
