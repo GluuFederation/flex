@@ -43,7 +43,9 @@ FROM node:hydrogen-alpine
 RUN apk update \
     && apk upgrade --available \
     && apk add --no-cache tini openssl python3 py3-cryptography py3-psycopg2 nginx py3-grpcio \
-    && apk add --no-cache --virtual .build-deps git
+    && apk add --no-cache --virtual .build-deps git shadow
+
+RUN usermod -m -d /home/1000 node
 
 # =====
 # nginx
@@ -178,7 +180,6 @@ ENV CN_PERSISTENCE_TYPE=ldap \
 ENV CN_WAIT_MAX_TIME=300 \
     CN_WAIT_SLEEP_DURATION=10 \
     GOOGLE_PROJECT_ID="" \
-    GOOGLE_APPLICATION_CREDENTIALS=/etc/jans/conf/google-credentials.json \
     CN_GOOGLE_SECRET_MANAGER_PASSPHRASE=secret \
     CN_GOOGLE_SECRET_VERSION_ID=latest \
     CN_GOOGLE_SECRET_NAME_PREFIX=jans
@@ -226,6 +227,8 @@ RUN chown -R 1000:0 /var/lib/nginx \
     && chown -R 1000:0 /opt/flex/admin-ui/plugins
 
 USER 1000
+
+RUN mkdir -p $HOME/.config/gcloud
 
 ENTRYPOINT ["tini", "-g", "--"]
 CMD ["sh", "/app/scripts/entrypoint.sh"]

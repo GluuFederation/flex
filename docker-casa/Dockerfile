@@ -201,7 +201,6 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     CN_JAVA_OPTIONS="" \
     CN_SSL_CERT_FROM_SECRETS=false \
     GOOGLE_PROJECT_ID="" \
-    GOOGLE_APPLICATION_CREDENTIALS=/etc/jans/conf/google-credentials.json \
     CN_GOOGLE_SECRET_MANAGER_PASSPHRASE=secret \
     CN_GOOGLE_SECRET_VERSION_ID=latest \
     CN_GOOGLE_SECRET_NAME_PREFIX=jans \
@@ -238,7 +237,7 @@ COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh
 
 # create non-root user
-RUN adduser -s /bin/sh -D -G root -u 1000 jetty
+RUN adduser -s /bin/sh -h /home/1000 -D -G root -u 1000 jetty
 
 COPY --chown=1000:0 jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 
@@ -259,6 +258,8 @@ RUN chmod -R g=u ${JETTY_BASE}/casa/static \
     && chmod -R g=u /app/templates
 
 USER 1000
+
+RUN mkdir -p $HOME/.config/gcloud
 
 ENTRYPOINT ["tini", "-e", "143", "-g", "--"]
 CMD ["sh", "/app/scripts/entrypoint.sh"]
