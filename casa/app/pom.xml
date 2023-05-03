@@ -286,7 +286,7 @@
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
-            <version>2.0.1</version>
+            <version>1.6.7</version>
         </dependency>
 
         <dependency>
@@ -300,6 +300,25 @@
             <artifactId>jans-doc</artifactId>
             <version>${jans.version}</version>
         </dependency>
+
+        <!-- Bouncycastle -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcutil-jdk18on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcmail-jdk18on</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -317,6 +336,12 @@
                             <Implementation-Build>${buildNumber}</Implementation-Build>
                         </manifestEntries>
                     </archive>
+                    <packagingExcludes>
+                        WEB-INF/lib/bcpkix-jdk15on-*.jar,
+                        WEB-INF/lib/bcprov-jdk15on-*.jar,
+                        WEB-INF/lib/bcutil-jdk15on-*.jar,
+                        WEB-INF/lib/bcmail-jdk15on-*.jar
+                    </packagingExcludes>
                 </configuration>
             </plugin>
             <!-- Build number plugin -->
