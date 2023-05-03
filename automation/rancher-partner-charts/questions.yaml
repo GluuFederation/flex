@@ -1,5 +1,16 @@
 questions:
 # ==================
+# License SSA group
+# ==================
+- variable: global.licenseSsa
+  default: ""
+  required: true
+  type: string
+  label: License SSA
+  description: "Before initiating the setup, please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded."
+  group: "License SSA"
+
+# ==================
 # Distribution group
 # ==================
 - variable: global.distribution
@@ -536,6 +547,126 @@ questions:
     group: "Configuration"
     label: Migration Directory
     description: "Directory holding all migration files"
+
+# Configmap
+- variable: global.configAdapterName
+  default: "kubernetes"
+  required: true
+  type: enum
+  group: "Configuration"
+  label: Gluu configuration backend
+  description: "The config backend adapter that will hold Gluu configuration layer. aws|google|kubernetes"
+  options:
+    - "aws"
+    - "google"
+    - "kubernetes"
+
+# Secret
+- variable: global.configSecretAdapter
+  default: "kubernetes"
+  required: true
+  type: enum
+  group: "Configuration"
+  label: Gluu secret backend
+  description: "The config backend adapter that will hold Gluu secret layer. aws|google|kubernetes"
+  options:
+    - "aws"
+    - "google"
+    - "kubernetes"
+
+
+# Google
+- variable: config.configmap.cnGoogleSecretManagerServiceAccount
+  default: ""
+  type: string
+  group: "Configuration"
+  required: true
+  label: Service account base64 encoded
+  description: "Service account with roles roles/secretmanager.admin base64 encoded string. This is used often inside the services to reach the configuration layer."
+  show_if: "global.configAdapterName=google||global.configSecretAdapter=google"
+
+- variable: config.configmap.cnGoogleProjectId
+  default: ""
+  type: string
+  group: "Configuration"
+  required: true
+  label: Project ID 
+  description: "Project id of the Google project the secret manager belongs to"
+  show_if: "global.configAdapterName=google||global.configSecretAdapter=google"
+
+- variable: config.configmap.cnGoogleSecretVersionId
+  default: "latest"
+  type: string
+  group: "Configuration"
+  required: true
+  label: Secrets version
+  description: "Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way."
+  show_if: "global.configAdapterName=google||global.configSecretAdapter=google"
+
+- variable: config.configmap.cnGoogleSecretNamePrefix
+  default: "gluu"
+  type: string
+  group: "Configuration"
+  required: true
+  label: Secrets name prefix
+  description: "Prefix for Gluu secret in Google Secret Manager. Defaults to gluu"
+  show_if: "global.configAdapterName=google||global.configSecretAdapter=google"
+
+# AWS
+- variable: config.configmap.cnAwsAccessKeyId
+  default: ""
+  type: string
+  group: "Configuration"
+  required: true
+  label: AWS IAM Account Access Key ID
+  description: "AWS Access key id that belongs to an IAM user with SecretsManagerReadWrite policy"
+  show_if: "global.configAdapterName=aws||global.configSecretAdapter=aws"
+
+- variable: config.configmap.cnAwsSecretAccessKey
+  default: ""
+  type: string
+  group: "Configuration"
+  required: true
+  label: AWS IAM Secret Access Key
+  description: "AWS Secret Access key that belongs to an IAM user with SecretsManagerReadWrite policy"
+  show_if: "global.configAdapterName=aws||global.configSecretAdapter=aws"
+
+- variable: config.configmap.cnAwsSecretsNamePrefix
+  default: "gluu"
+  type: string
+  group: "Configuration"
+  required: true
+  label: Secrets name prefix
+  description: "Prefix for Gluu secret in AWS Secrets Manager. Defaults to gluu"
+  show_if: "global.configAdapterName=aws||global.configSecretAdapter=aws"
+
+- variable: config.configmap.cnAwsProfile
+  default: "gluu"
+  type: string
+  group: "Configuration"
+  required: true
+  label: AWS named profile
+  description: "The aws named profile to use. Has to be created first. This is a sensible default and it's good to leave it as is. https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html"
+  show_if: "global.configAdapterName=aws||global.configSecretAdapter=aws"
+
+- variable: config.configmap.cnAwsDefaultRegion
+  default: "us-west-1"
+  type: string
+  group: "Configuration"
+  required: true
+  label: Default region
+  description: "The default AWS Region to use, for example, `us-west-1` or `us-west-2`"
+  show_if: "global.configAdapterName=aws||global.configSecretAdapter=aws"
+
+- variable: config.configmap.cnAwsSecretsEndpointUrl
+  default: ""
+  type: string
+  group: "Configuration"
+  required: false
+  label: Secrets Manager Endpoint URL
+  description: "The URL of AWS secretsmanager service. If omitted, it will use the one in the specified default region. Example: https://secretsmanager.us-west-1.amazonaws.com"
+  show_if: "global.configAdapterName=aws||global.configSecretAdapter=aws"
+
 
 # ===========================
 # Ingress group(Istio, NGINX)
