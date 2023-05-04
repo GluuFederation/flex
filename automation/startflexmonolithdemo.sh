@@ -61,8 +61,6 @@ if [[ "$FLEX_BUILD_COMMIT" ]]; then
 
   python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['FLEX_SOURCE_VERSION'] = '$FLEX_BUILD_COMMIT'"
 
-  python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['CN_GLUU_LICENSE_SSA'] = '$GLUU_LICENSE_SSA'"
-
   # as FLEX_SOURCE_VERSION is changed, allow docker compose to rebuild image on-the-fly
   # and use the respective image instead of the default image
   python3 -c "from pathlib import Path ; import ruamel.yaml ; compose = Path('/tmp/flex/docker-flex-monolith/flex-mysql-compose.yml') ; yaml = ruamel.yaml.YAML() ; data = yaml.load(compose) ; data['services']['flex']['build'] = '.' ; del data['services']['flex']['image'] ; yaml.dump(data, compose)"
@@ -71,6 +69,8 @@ if [[ "$FLEX_BUILD_COMMIT" ]]; then
 
   python3 -c "from pathlib import Path ; import ruamel.yaml ; compose = Path('/tmp/flex/docker-flex-monolith/flex-ldap-compose.yml') ; yaml = ruamel.yaml.YAML() ; data = yaml.load(compose) ; data['services']['flex']['build'] = '.' ; del data['services']['flex']['image'] ; yaml.dump(data, compose)"
 fi
+
+python3 -c "from dockerfile_parse import DockerfileParser ; dfparser = DockerfileParser('/tmp/flex/docker-flex-monolith') ; dfparser.envs['CN_GLUU_LICENSE_SSA'] = '$GLUU_LICENSE_SSA'"
 # --
 if [[ $GLUU_PERSISTENCE == "MYSQL" ]]; then
   docker compose -f /tmp/flex/docker-flex-monolith/flex-mysql-compose.yml up -d
