@@ -29,7 +29,9 @@ import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
  * @author jgomer
  */
 @ApplicationScoped
+@ProtectedApi(scopes = "https://jans.io/casa.enroll")
 @Path("/enrollment/" + OTPExtension.ACR)
+@Produces(MediaType.APPLICATION_JSON)
 public class OTPEnrollingWS {
 
     private static final String KEY_EXTERNALUID_MAPPING_PREFIX = "casa_kemp_";
@@ -43,11 +45,9 @@ public class OTPEnrollingWS {
 
     @Inject
     private OTPService otpService;
-
+    
     @GET
     @Path("qr-request")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response computeRequest(@QueryParam("displayName") String name,
                                    @QueryParam("mode") String mode) {
 
@@ -61,21 +61,21 @@ public class OTPEnrollingWS {
                 byte[] secretKey = as.generateSecretKey();
                 String request = as.generateSecretKeyUri(secretKey, name);
 
-                return ComputeRequestCode.SUCCESS.getResponse(Base64.getEncoder().encodeToString(secretKey), request);
+                return ComputeRequestCode.SUCCESS.getResponse(
+                            Base64.getEncoder().encodeToString(secretKey), request);
             } catch (Exception e) {
+                logger.error(e.getMessage(), e);
                 return ComputeRequestCode.INVALID_MODE.getResponse();
             }
         }
 
     }
 
-    @GET
+    @POST
     @Path("validate-code")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
-    public Response validateCode(@QueryParam("code") String code,
-                                 @QueryParam("key") String key,
-                                 @QueryParam("mode") String mode) {
+    public Response validateCode(@FormParam("code") String code,
+                                 @FormParam("key") String key,
+                                 @FormParam("mode") String mode) {
 
         ValidateCode result;
         logger.trace("validateCode WS operation called");
@@ -86,7 +86,7 @@ public class OTPEnrollingWS {
             try {
                 IOTPAlgorithm as = otpService.getAlgorithmService(OTPType.valueOf(mode.toUpperCase()));
                 try {
-                    String uid = as.getExternalUid(Base64.getDecoder().decode(key), code);
+                    String uid = as.getExternalUid(key, code);
                     if (uid == null) {
                         result = ValidateCode.NO_MATCH;
                     } else {
@@ -94,9 +94,11 @@ public class OTPEnrollingWS {
                         result = ValidateCode.MATCH;
                     }
                 } catch (Exception e) {
+                    logger.error(e.getMessage(), e);                  
                     result = ValidateCode.FAILURE;
                 }
             } catch (Exception e) {
+                logger.error(e.getMessage(), e);
                 result = ValidateCode.INVALID_MODE;
             }
         }
@@ -106,49 +108,53 @@ public class OTPEnrollingWS {
 
     @GET
     @Path("creds/{userid}/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response getEnrollments() {
         return Response.status(Response.Status.NOT_IMPLEMENTED).build();
     }
 
     @POST
     @Path("creds/{userid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response finishEnrollment(NamedCredential credential,
                                      @PathParam("userid") String userId) {
 
         logger.trace("finishEnrollment WS operation called");
-        String nickName = Optional.ofNullable(credential).map(NamedCredential::getNickName).orElse(null);
-        String key = Optional.ofNullable(credential).map(NamedCredential::getKey).orElse(null);
-
         FinishCode result;
         OTPDevice device = null;
-
-        if (Stream.of(nickName, key).anyMatch(Utils::isEmpty)) {
-            result = FinishCode.MISSING_PARAMS;
-        } else {
-            key  = KEY_EXTERNALUID_MAPPING_PREFIX  + key;
-            long now = System.currentTimeMillis();
-            Object value = cacheProvider.get(key);
-            if (value == null) {
-                result = FinishCode.NO_MATCH_OR_EXPIRED;
+            
+        try {
+            String nickName = Optional.ofNullable(credential).map(NamedCredential::getNickName).orElse(null);
+            String key = Optional.ofNullable(credential).map(NamedCredential::getKey).orElse(null);
+    
+            if (Stream.of(nickName, key).anyMatch(Utils::isEmpty)) {
+                result = FinishCode.MISSING_PARAMS;
             } else {
-                device = new OTPDevice();
-                device.setUid(value.toString());
-                device.setAddedOn(now);
-                device.setNickName(nickName);
-                device.setSoft(true);
-
-                if (otpService.addDevice(userId, device)) {
-                    result = FinishCode.SUCCESS;
-                    cacheProvider.remove(key);
+            
+                key  = KEY_EXTERNALUID_MAPPING_PREFIX  + key;
+                long now = System.currentTimeMillis();
+                Object value = cacheProvider.get(key);
+    
+                if (value == null) {
+                    result = FinishCode.NO_MATCH_OR_EXPIRED;
                 } else {
-                    result = FinishCode.FAILED;
-                    device = null;
-                }
+                    device = new OTPDevice();
+                    device.setUid(value.toString());
+                    device.setAddedOn(now);
+                    device.setNickName(nickName);
+                    device.setSoft(true);
+    
+                    if (otpService.addDevice(userId, device)) {
+                        result = FinishCode.SUCCESS;
+                        cacheProvider.remove(key);
+                    } else {
+                        result = FinishCode.FAILED;
+                        device = null;
+                    }
+                }            
             }
+        
+        } catch (Exception e) {
+            result = FinishCode.FAILED;
+            logger.error(e.getMessage(), e);
         }
         return result.getResponse(device);
 

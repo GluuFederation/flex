@@ -2,13 +2,11 @@ import React, { useState, useEffect, useContext } from 'react'
 import { subMonths } from 'date-fns'
 import moment from 'moment'
 import ActiveUsersGraph from 'Routes/Dashboards/Grapths/ActiveUsersGraph'
-import Grid from '@material-ui/core/Grid'
+import Grid from '@mui/material/Grid'
 import 'react-datepicker/dist/react-datepicker.css'
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers'
-import DateFnsUtils from '@date-io/date-fns'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import { getMau } from 'Redux/actions/MauActions'
@@ -35,13 +33,14 @@ import { connect } from 'react-redux'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
+import dayjs from 'dayjs'
 
 function MauGraph({ statData, permissions, clients, loading, dispatch }) {
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
-  const [startDate, setStartDate] = useState(subMonths(new Date(), 3))
-  const [endDate, setEndDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(dayjs().subtract(3, "months"))
+  const [endDate, setEndDate] = useState(dayjs())
   const userAction = {}
   const options = {}
   useEffect(() => {
@@ -62,8 +61,8 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
 
   function search() {
     // options['month'] = getFormattedMonth()
-    options['startMonth'] = getYearMonth(startDate)
-    options['endMonth'] = getYearMonth(endDate)
+    options['startMonth'] = getYearMonth(startDate.toDate())
+    options['endMonth'] = getYearMonth(endDate.toDate())
     buildPayload(userAction, 'GET MAU', options)
     dispatch(getMau(userAction))
   }
@@ -72,7 +71,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
     const stat = input
     if (stat && stat.length >= 1) {
       const flattendStat = stat.map((entry) => entry['month'])
-      const aRange = generateDateRange(startDate, endDate)
+      const aRange = generateDateRange(startDate.toDate(), endDate.toDate())
       for (const ele of aRange) {
         const currentMonth = getYearMonth(new Date(ele))
         if (flattendStat.indexOf(parseInt(currentMonth, 10)) === -1) {
@@ -93,9 +92,6 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
   }
   function getYearMonth(date) {
     return date.getFullYear() + getMonth(date)
-  }
-  function getFormattedMonth() {
-    return getYearMonth(startDate) + '%' + getYearMonth(endDate)
   }
   function getMonth(aDate) {
     const value = String(aDate.getMonth() + 1)
@@ -140,38 +136,24 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
             <Row>
               <Col sm={5}>
                 <GluuLabel label={t('fields.select_date_range')} size="4" style={{ minWidth: '200px' }} />
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <Grid container justifyContent="space-around">
-                    <KeyboardDatePicker
-                      disableToolbar
-                      variant="inline"
-                      format="MM/dd/yyyy"
-                      margin="normal"
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Grid container gap={2} justifyContent="space-around">
+                    <DatePicker
+                      format="MM/DD/YYYY"
                       id="date-picker-inline"
                       label={t('dashboard.start_date')}
                       value={startDate}
                       onChange={(date) => setStartDate(date)}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                      }}
-                      autoOk={true}
                     />
-                    <KeyboardDatePicker
-                      disableToolbar
-                      variant="inline"
-                      format="MM/dd/yyyy"
-                      margin="normal"
+                    <DatePicker
+                      format="MM/DD/YYYY"
                       id="date-picker-inline"
                       label={t('dashboard.end_date')}
                       value={endDate}
                       onChange={(date) => setEndDate(date)}
-                      KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                      }}
-                      autoOk={true}
                     />
                   </Grid>
-                </MuiPickersUtilsProvider>
+                </LocalizationProvider>
               </Col>
               <Col sm={2}>
                 <Button
@@ -179,7 +161,7 @@ function MauGraph({ statData, permissions, clients, loading, dispatch }) {
                   color={`primary-${selectedTheme}`}
                   onClick={search}
                 >
-                  <i className="fa fa-search mr-2"></i>
+                  <i className="fa fa-search me-2"></i>
                   {t('actions.view')}
                 </Button>
               </Col>

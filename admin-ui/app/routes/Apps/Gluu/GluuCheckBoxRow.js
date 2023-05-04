@@ -14,21 +14,19 @@ function GluuCheckBoxRow({
   doc_category,
 }) {
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
-      <FormGroup row>
-        <GluuLabel label={label} size={lsize} required={required} />
-        <Col sm={rsize}>
-          <Input
-            id={name}
-            type="checkbox"
-            name={name}
-            data-testid={name}
-            defaultChecked={value}
-            onChange={handleOnChange}
-          />
-        </Col>
-      </FormGroup>
-    </GluuTooltip>
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} required={required} doc_category={doc_category} doc_entry={name}/>
+      <Col sm={rsize}>
+        <Input
+          id={name}
+          type="checkbox"
+          name={name}
+          data-testid={name}
+          defaultChecked={value}
+          onChange={handleOnChange}
+        />
+      </Col>
+    </FormGroup>
   )
 }
 

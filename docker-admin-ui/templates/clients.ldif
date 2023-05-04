@@ -28,7 +28,7 @@ jansScope: inum=6D90,ou=scopes,o=jans
 jansScope: inum=764C,ou=scopes,o=jans
 jansSubjectTyp: pairwise
 jansTknEndpointAuthMethod: client_secret_basic
-jansTrustedClnt: false
+jansTrustedClnt: true
 jansSignedRespAlg: RS256
 
 dn: inum=%(token_server_admin_ui_client_id)s,ou=clients,o=jans
@@ -57,4 +57,4 @@ jansRptAsJwt: false
 jansScope: inum=F0C4,ou=scopes,o=jans
 jansSubjectTyp: pairwise
 jansTknEndpointAuthMethod: client_secret_basic
-jansTrustedClnt: false
+jansTrustedClnt: true

@@ -41,7 +41,7 @@ EXPOSE 443 8080 1636
 # flex-linux-setup
 # =====================
 
-ENV FLEX_SOURCE_VERSION=a0de091ca26f2c38378e5b0252ab680cb1e3cd88
+ENV FLEX_SOURCE_VERSION=c90d88950f062899445192ebe5cbc91ed96d8aa2
 # cleanup
 RUN rm -rf /tmp/jans
 
@@ -55,36 +55,42 @@ COPY LICENSE /licenses/LICENSE
 # SETUP ENVS
 # ==========
 
-ENV CN_HOSTNAME="demoexample.gluu.org" \
+ENV CN_GLUU_LICENSE_SSA="" \
+    CN_HOSTNAME="demoexample.gluu.org" \
     CN_ADMIN_PASS="" \
-    CN_ORG_NAME="Janssen" \
+    CN_ORG_NAME="Gluu" \
     CN_EMAIL="support.gluu.org" \
     CN_CITY="Austin" \
     CN_STATE="TX" \
     CN_COUNTRY="US" \
+    TEST_CLIENT_ID="9876baac-de39-4c23-8a78-674b59df8c09" \
+    TEST_CLIENT_SECRET="" \
+    TEST_CLIENT_TRUSTED="true" \
     IS_FQDN_REGISTERED="false" \
     # Install with local mysql by default
-    INSTALL_LDAP="false" \
+    CN_INSTALL_LDAP="false" \
+    CN_INSTALL_MYSQL="false" \
+    CN_INSTALL_PGSQL="false" \
     CN_INSTALL_CONFIG_API="true" \
     CN_INSTALL_SCIM="true" \
     CN_INSTALL_FIDO2="true" \
     CN_INSTALL_CASA="true" \
     CN_INSTALL_ADMIN_UI="true" \
-    MYSQL_DATABASE="gluu" \
-    MYSQL_USER="gluu" \
-    MYSQL_PASSWORD=""
+    RDBMS_DATABASE="gluu" \
+    RDBMS_USER="gluu" \
+    RDBMS_PASSWORD="" \
+    RDBMS_HOST=""
 
 # ==========
 # misc stuff
 # ==========
 
-LABEL name="gluufederation/monolith" \
-    maintainer="GluuFederation <support@gluu.org>" \
-    vendor="GluuFederation" \
-    version="5.0.0" \
-    release="dev" \
-    summary="GluuFederation Flex Monolith Image" \
-    description="Janssen Authorization server + Casa + AdminUI"
+LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/monolith" \
+    org.opencontainers.image.authors="GluuFederation <support@gluu.org>" \
+    org.opencontainers.image.vendor="GluuFederation" \
+    org.opencontainers.image.version="1.0.13" \
+    org.opencontainers.image.title="GluuFederation Flex Monolith Image" \
+    org.opencontainers.image.description="Janssen Authorization server + Casa + AdminUI"
 
 COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh

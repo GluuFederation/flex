@@ -407,7 +407,7 @@ paths:
                 description: Possible values for code&#58; NO_DISPLAY_NAME, INVALID_MODE
 
   /enrollment/otp/validate-code:
-    get:
+    post:
       tags:
         - otp
 
@@ -417,11 +417,14 @@ paths:
 
       security:
         - casa_auth: ['https://jans.io/casa.enroll']
+        
+      consumes:
+        - application/x-www-form-urlencoded
 
       parameters:
         -
           name: code
-          in: query
+          in: formData
           description: |
             An code obtained after scanning a QR code generated using `qr-request`
             by means of an OTP mobile application
@@ -429,13 +432,13 @@ paths:
           type: string
         -
           name: key
-          in: query
+          in: formData
           description: The key returned as response of a `qr-request` call
           required: true
           type: string
         -
           name: mode
-          in: query
+          in: formData
           description: The OTP mode being used for the enrollment, HOTP (event based) or TOTP (time based)
           required: true
           type: string
@@ -716,6 +719,13 @@ paths:
           description: Identifier (inum) of the user attempting the enrollment
           required: true
           type: string
+        -
+          name: platformAuthn
+          in: query
+          description: If the evaluation of PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable in the client is positive
+          required: false
+          type: boolean
+          
 
       responses:
         200:

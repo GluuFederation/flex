@@ -56,7 +56,7 @@ public class SecurityKey2Extension implements AuthnMethod {
     public List<BasicCredential> getEnrolledCreds(String id) {
 
         try {
-            return fido2Service.getDevices(id, true).stream()
+            return fido2Service.getDevices(id, new java.net.URI(fido2Service.getScriptPropertyValue("fido2_server_uri")).getHost() , true).stream()
                     .map(dev -> new BasicCredential(dev.getNickName(), dev.getCreationDate().getTime())).collect(Collectors.toList());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -65,7 +65,13 @@ public class SecurityKey2Extension implements AuthnMethod {
     }
 
     public int getTotalUserCreds(String id) {
-        return fido2Service.getDevicesTotal(id, true);
+		try {
+			return fido2Service.getDevicesTotal(id,
+					new java.net.URI(fido2Service.getScriptPropertyValue("fido2_server_uri")).getHost(), true);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return 0;
+		}
     }
 
     public boolean mayBe2faActivationRequisite() {

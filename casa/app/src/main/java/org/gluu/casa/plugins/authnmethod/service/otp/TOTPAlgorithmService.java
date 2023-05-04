@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
@@ -57,10 +59,10 @@ public class TOTPAlgorithmService implements IOTPAlgorithm {
 
     }
 
-    public String getExternalUid(byte[] secretKey, String code) {
+    public String getExternalUid(String secretKey, String code) {
 
-        return validateKey(secretKey, code)
-                ? String.format("%s:%s", OTPType.TOTP.getName().toLowerCase(), BaseEncoding.base64Url().encode(secretKey))
+        return validateKey(Base64.getDecoder().decode(secretKey), code)
+                ? String.format("%s:%s", OTPType.TOTP.getName().toLowerCase(), secretKey)
                 : null;
     }
 

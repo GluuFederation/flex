@@ -308,7 +308,7 @@ class PersonAuthentication(PersonAuthenticationType):
         config = ApplicationConfiguration()
         config = entryManager.find(config.getClass(), "ou=casa,ou=configuration,o=jans")
         settings = config.getSettings()
-        
+
         if settings == None:
             print "Casa. getSettings. Failed to parse casa settings from DB"
         return settings
@@ -369,26 +369,26 @@ class PersonAuthentication(PersonAuthenticationType):
 
 
     def prepareUIParams(self, identity):
-        
+
         print "Casa. prepareUIParams. Reading UI branding params"
         cacheService = CdiUtil.bean(CacheService)
         casaAssets = cacheService.get("casa_assets")
-            
+
         if casaAssets == None:
-            #This may happen when cache type is IN_MEMORY, where actual cache is merely a local variable 
+            #This may happen when cache type is IN_MEMORY, where actual cache is merely a local variable
             #(a expiring map) living inside Casa webapp, not oxAuth webapp
-            
+
             sets = self.getSettings()
-            
+
             custPrefix = "/custom"
             logoUrl = "/images/logo.png"
             faviconUrl = "/images/favicon.ico"
             if (sets.getExtraCssSnippet() != None) or sets.isUseExternalBranding():
                 logoUrl = custPrefix + logoUrl
                 faviconUrl = custPrefix + faviconUrl
-            
+
             prefix = custPrefix if sets.isUseExternalBranding() else ""
-            
+
             casaAssets = {
                 "contextPath": "/casa",
                 "prefix" : prefix,
@@ -396,7 +396,7 @@ class PersonAuthentication(PersonAuthenticationType):
                 "extraCss": sets.getExtraCssSnippet(),
                 "logoUrl": logoUrl
             }
-        
+
         #Setting a single variable with the whole map does not work...
         identity.setWorkingParameter("casa_contextPath", casaAssets['contextPath'])
         identity.setWorkingParameter("casa_prefix", casaAssets['prefix'])
@@ -654,7 +654,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
         return None
 
-        
+
     def getLogoutExternalUrl(self, configurationAttributes, requestParameters):
         print "Get external logout URL call"
         return None

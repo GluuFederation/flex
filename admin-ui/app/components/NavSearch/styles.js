@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from "tss-react/mui";
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles()((theme) => ({
   root: {
     padding: '1px 10px 1px 10px',
     display: 'flex',

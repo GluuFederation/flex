@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import BlockUi from 'react-block-ui'
+import BlockUi from "../../../../app/components/BlockUi/BlockUi";
 import { Formik } from 'formik'
 import { Form, Container, Card, CardBody } from 'Components'
 import GluuFooter from 'Routes/Apps/Gluu/GluuFooter'

@@ -121,14 +121,10 @@ module.exports = {
             loader: 'css-loader',
             options: {
               modules: true,
-              importLoaders: 1,
             },
           },
-          'postcss-loader',
-          {
-            loader: 'sass-loader',
-            options: {},
-          },
+          { loader: 'postcss-loader' },
+          'sass-loader',
         ],
         exclude: [path.resolve(config.srcDir, 'styles')],
         include: [config.srcDir],
@@ -152,6 +148,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: '/fonts/[name].[ext]',
+          esModule: false,
         },
       },
       // Files
@@ -160,6 +157,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: '/static/[name].[ext]',
+          esModule: false,
         },
       },
     ],

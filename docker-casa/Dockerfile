@@ -15,7 +15,7 @@ RUN apk update \
 # Jetty
 # =====
 
-ARG JETTY_VERSION=11.0.11
+ARG JETTY_VERSION=11.0.15
 ARG JETTY_HOME=/opt/jetty
 ARG JETTY_BASE=/opt/jans/jetty
 ARG JETTY_USER_HOME_LIB=/home/jetty/lib
@@ -35,7 +35,7 @@ EXPOSE 8080
 # ====
 
 ENV GLUU_VERSION=5.0.0-SNAPSHOT
-ENV GLUU_BUILD_DATE='2022-11-07 18:32'
+ENV GLUU_BUILD_DATE='2023-04-10 15:24'
 ENV GLUU_SOURCE_URL=https://jenkins.gluu.org/maven/org/gluu/casa/${GLUU_VERSION}/casa-${GLUU_VERSION}.war
 
 # Install Casa
@@ -46,7 +46,7 @@ RUN mkdir -p ${JETTY_BASE}/casa/webapps \
     && zip -d casa.war WEB-INF/jetty-web.xml \
     && zip -r casa.war WEB-INF/jetty-env.xml \
     && cp casa.war ${JETTY_BASE}/casa/webapps/casa.war \
-    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/casa --add-module=server,deploy,resources,http,jsp,cdi-decorate \
+    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/casa --add-module=server,deploy,resources,http,jsp,cdi-decorate,jmx,stats,logging-log4j2 --approve-all-licenses \
     && rm -rf /tmp/casa.war /tmp/WEB-INF
 
 # ======
@@ -55,7 +55,7 @@ RUN mkdir -p ${JETTY_BASE}/casa/webapps \
 
 COPY requirements.txt /app/requirements.txt
 RUN python3 -m ensurepip \
-    && pip3 install --no-cache-dir -U pip wheel \
+    && pip3 install --no-cache-dir -U pip wheel setuptools \
     && pip3 install --no-cache-dir -r /app/requirements.txt \
     && pip3 uninstall -y pip wheel
 
@@ -63,18 +63,13 @@ RUN python3 -m ensurepip \
 # Prometheus
 # ==========
 
-ARG PROMETHEUS_JAVAAGENT_VERSION=0.17.0
 COPY conf/prometheus-config.yaml /opt/prometheus/
-RUN mkdir -p /opt/prometheus \
-    && wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${PROMETHEUS_JAVAAGENT_VERSION}/jmx_prometheus_javaagent-${PROMETHEUS_JAVAAGENT_VERSION}.jar -O /opt/prometheus/jmx_prometheus_javaagent.jar \
-    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/casa --add-module=jmx,stats
-
 
 # =====================
 # jans-linux-setup sync
 # =====================
 
-ENV JANS_SOURCE_VERSION=d794504fc371eac8ab2377b4828040bd73099ec4
+ENV JANS_SOURCE_VERSION=2fda83f8e40420eb3d1266c98aab2f325355e5ef
 ARG JANS_SETUP_DIR=jans-linux-setup/jans_setup
 
 # note that as we're pulling from a monorepo (with multiple project in it)
@@ -101,7 +96,7 @@ RUN cd /tmp/jans \
 # flex setup sync
 # ===============
 
-ENV FLEX_VERSION=01e306ad4cc4695b105d57ea1bcd864544edfad3
+ENV FLEX_VERSION=96d82038fe752cfff4e722113c757978b2b39119
 ARG FLEX_SETUP_DIR=flex-linux-setup/flex_linux_setup
 ARG CASA_EXTRAS_DIR=casa/extras
 
@@ -114,7 +109,8 @@ RUN git clone --filter blob:none --no-checkout https://github.com/GluuFederation
     && git sparse-checkout add ${FLEX_SETUP_DIR} \
     && cp ${FLEX_SETUP_DIR}/templates/casa_*.ldif /app/templates \
     && git sparse-checkout add ${CASA_EXTRAS_DIR} \
-    && cp ${CASA_EXTRAS_DIR}/Casa.py /app/static/extension/person_authentication/
+    && cp ${CASA_EXTRAS_DIR}/Casa.py /app/static/extension/person_authentication/ \
+    && cp ${FLEX_SETUP_DIR}/templates/casa_scopes.json /app/static
 
 # =======
 # Cleanup
@@ -148,9 +144,7 @@ ENV CN_CONFIG_ADAPTER=consul \
     CN_CONFIG_CONSUL_NAMESPACE=jans \
     CN_CONFIG_KUBERNETES_NAMESPACE=default \
     CN_CONFIG_KUBERNETES_CONFIGMAP=jans \
-    CN_CONFIG_KUBERNETES_USE_KUBE_CONFIG=false \
-    CN_CONFIG_GOOGLE_SECRET_VERSION_ID=latest \
-    CN_CONFIG_GOOGLE_SECRET_NAME_PREFIX=jans
+    CN_CONFIG_KUBERNETES_USE_KUBE_CONFIG=false
 
 # ==========
 # Secret ENV
@@ -169,10 +163,7 @@ ENV CN_SECRET_ADAPTER=vault \
     CN_SECRET_VAULT_NAMESPACE=jans \
     CN_SECRET_KUBERNETES_NAMESPACE=default \
     CN_SECRET_KUBERNETES_SECRET=jans \
-    CN_SECRET_KUBERNETES_USE_KUBE_CONFIG=false \
-    CN_SECRET_GOOGLE_SECRET_MANAGER_PASSPHRASE=secret \
-    CN_SECRET_GOOGLE_SECRET_VERSION_ID=latest \
-    CN_SECRET_GOOGLE_SECRET_NAME_PREFIX=jans
+    CN_SECRET_KUBERNETES_USE_KUBE_CONFIG=false
 
 # ===============
 # Persistence ENV
@@ -210,51 +201,65 @@ ENV CN_MAX_RAM_PERCENTAGE=75.0 \
     CN_JAVA_OPTIONS="" \
     CN_SSL_CERT_FROM_SECRETS=false \
     GOOGLE_PROJECT_ID="" \
-    GOOGLE_APPLICATION_CREDENTIALS=/etc/jans/conf/google-credentials.json \
+    CN_GOOGLE_SECRET_MANAGER_PASSPHRASE=secret \
+    CN_GOOGLE_SECRET_VERSION_ID=latest \
+    CN_GOOGLE_SECRET_NAME_PREFIX=jans \
     GLUU_CASA_ADMIN_LOCK_FILE=/opt/jans/jetty/casa/resources/.administrable \
-    CN_PROMETHEUS_PORT=""
+    CN_PROMETHEUS_PORT="" \
+    CN_VERSION=1.0.13-SNAPSHOT \
+    GLUU_CASA_JWKS_SIZE_LIMIT=100000
 
 # ==========
 # misc stuff
 # ==========
 
-LABEL name="gluufederation/casa" \
-    maintainer="Gluu Inc. <support@gluu.org>" \
-    vendor="Gluu Federation" \
-    version="5.0.0" \
-    release="dev" \
-    summary="Gluu Casa" \
-    description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
+LABEL org.opencontainers.image.url="ghcr.io/gluufederation/flex/casa" \
+    org.opencontainers.image.authors="Gluu Inc. <support@gluu.org>" \
+    org.opencontainers.image.vendor="Gluu Federation" \
+    org.opencontainers.image.version="1.0.13" \
+    org.opencontainers.image.title="Gluu Flex Casa" \
+    org.opencontainers.image.description="Self-service portal for people to manage their account security preferences in the Gluu Server, like 2FA"
 
 RUN mkdir -p /etc/certs \
     /etc/jans/conf/casa \
     /opt/jans/python/libs \
     /opt/jans/jetty/casa/static \
     /opt/jans/jetty/casa/plugins \
-    /opt/jans/jetty/casa/logs
+    /opt/jans/jetty/casa/logs \
+    /opt/jans/jetty/common/libs/spanner \
+    /opt/jans/jetty/common/libs/couchbase \
+    /usr/share/java
 
-COPY jetty/casa.xml ${JETTY_BASE}/casa/webapps/
-COPY jetty/log4j2.xml ${JETTY_BASE}/casa/resources/
+COPY jetty/log4j2.xml /app/templates/
 COPY jetty/casa_web_resources.xml ${JETTY_BASE}/casa/webapps/
 COPY conf/*.tmpl /app/templates/
 COPY scripts /app/scripts
 RUN chmod +x /app/scripts/entrypoint.sh
 
 # create non-root user
-RUN adduser -s /bin/sh -D -G root -u 1000 jetty
+RUN adduser -s /bin/sh -h /home/1000 -D -G root -u 1000 jetty
+
+COPY --chown=1000:0 jetty/casa.xml ${JETTY_BASE}/casa/webapps/
 
 # adjust ownership
 RUN chmod -R g=u ${JETTY_BASE}/casa/static \
     && chmod -R g=u ${JETTY_BASE}/casa/plugins \
-    && chmod -R g=u ${JETTY_BASE}/casa/resources \
+    && chown -R 1000:0 ${JETTY_BASE}/casa/resources \
+    && chmod 664 ${JETTY_BASE}/casa/resources/log4j2.xml \
     && chmod -R g=u ${JETTY_BASE}/casa/logs \
     && chmod -R g=u /etc/certs \
     && chmod -R g=u /etc/jans \
     && chmod 664 /usr/java/latest/jre/lib/security/cacerts \
     && chmod 664 /opt/jetty/etc/jetty.xml \
-    && chmod 664 /opt/jetty/etc/webdefault.xml
+    && chmod 664 /opt/jetty/etc/webdefault.xml \
+    && chown -R 1000:0 ${JETTY_BASE}/common/libs \
+    && chown -R 1000:0 /usr/share/java \
+    && chown -R 1000:0 /opt/prometheus \
+    && chmod -R g=u /app/templates
 
 USER 1000
+
+RUN mkdir -p $HOME/.config/gcloud
 
 ENTRYPOINT ["tini", "-e", "143", "-g", "--"]
 CMD ["sh", "/app/scripts/entrypoint.sh"]

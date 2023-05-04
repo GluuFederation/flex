@@ -31,6 +31,8 @@ import acrSaga from './redux/sagas/AcrsSaga'
 import loggingSaga from './redux/sagas/LoggingSaga'
 import umaResourceSaga from './redux/sagas/UMAResourceSaga'
 import sessionSaga from './redux/sagas/SessionSaga'
+import agamaSaga from './redux/sagas/AgamaSaga'
+import authnSaga from './redux/sagas/AuthnSaga'
 
 import {
   ACR_READ,
@@ -41,8 +43,14 @@ import {
   JWKS_READ,
   SESSION_READ,
   PROPERTIES_READ,
-  LOGGING_READ
+  LOGGING_READ,
+  AGAMA_READ,
 } from 'Utils/PermChecker'
+import AgamaListPage from './components/Agama/AgamaListPage'
+import agamaReducer from './redux/reducers/AgamaReducer'
+import AuthNListPage from './components/AuthN/AuthNListPage'
+import authNReducer from './redux/reducers/AuthNReducer'
+import AuthNEditPage from './components/AuthN/AuthNEditPage'
 
 const PLUGIN_BASE_APTH = '/auth-server'
 
@@ -87,6 +95,16 @@ const pluginMetadata = {
           path: PLUGIN_BASE_APTH + '/scopes',
           permission: SCOPE_READ,
         },
+        {
+          title: 'menus.authn',
+          path: PLUGIN_BASE_APTH + '/authn',
+          permission: SCOPE_READ,
+        },
+        {
+          title: 'menus.agama',
+          path: PLUGIN_BASE_APTH + '/agama',
+          permission: AGAMA_READ,
+        },
       ],
     },
   ],
@@ -108,12 +126,22 @@ const pluginMetadata = {
     },
     {
       component: ClientEditPage,
-      path: PLUGIN_BASE_APTH + '/client/edit:id',
+      path: PLUGIN_BASE_APTH + '/client/edit/:id',
       permission: CLIENT_WRITE,
     },
     {
       component: ScopeListPage,
       path: PLUGIN_BASE_APTH + '/scopes',
+      permission: SCOPE_READ,
+    },
+    {
+      component: AuthNEditPage,
+      path: PLUGIN_BASE_APTH + '/authn/edit/:id',
+      permission: SCOPE_READ,
+    },
+    {
+      component: AuthNListPage,
+      path: PLUGIN_BASE_APTH + '/authn',
       permission: SCOPE_READ,
     },
     {
@@ -123,7 +151,7 @@ const pluginMetadata = {
     },
     {
       component: ScopeEditPage,
-      path: PLUGIN_BASE_APTH + '/scope/edit:id',
+      path: PLUGIN_BASE_APTH + '/scope/edit/:id',
       permission: SCOPE_WRITE,
     },
     {
@@ -146,6 +174,16 @@ const pluginMetadata = {
       path: PLUGIN_BASE_APTH + '/reports',
       permission: ACR_READ,
     },
+    {
+      component: AgamaListPage,
+      path: PLUGIN_BASE_APTH + '/agama',
+      permission: AGAMA_READ,
+    },
+    // {
+    //   component: AgamaAddPage,
+    //   path: PLUGIN_BASE_APTH + '/agama/new',
+    //   permission: AGAMA_WRITE,
+    // },
   ],
   reducers: [
     { name: 'scopeReducer', reducer: scopeReducer },
@@ -156,6 +194,8 @@ const pluginMetadata = {
     { name: 'loggingReducer', reducer: loggingReducer },
     { name: 'umaResourceReducer', reducer: umaResourceReducer },
     { name: 'sessionReducer', reducer: sessionReducer },
+    { name: 'agamaReducer', reducer: agamaReducer },
+    { name: 'authNReducer', reducer: authNReducer },
   ],
   sagas: [
     scopesSaga(),
@@ -165,7 +205,9 @@ const pluginMetadata = {
     acrSaga(),
     loggingSaga(),
     umaResourceSaga(),
-    sessionSaga()
+    sessionSaga(),
+    agamaSaga(),
+    authnSaga()
   ],
 }
 

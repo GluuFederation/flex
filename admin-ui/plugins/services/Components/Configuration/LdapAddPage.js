@@ -32,6 +32,7 @@ function LdapAddPage({ dispatch }) {
             <LdapForm 
               item={defautConfigurations} 
               handleSubmit={handleSubmit} 
+              createLdap={true}
             />
           </CardBody>
         </Card>

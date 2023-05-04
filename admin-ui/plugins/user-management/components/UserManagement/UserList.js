@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import MaterialTable from '@material-table/core'
-import { DeleteOutlined } from '@material-ui/icons'
-import { Paper, TablePagination } from '@material-ui/core'
+import { DeleteOutlined } from '@mui/icons-material'
+import { Paper, TablePagination } from '@mui/material'
 import UserDetailViewPage from './UserDetailViewPage'
 import {
   getUsers,
@@ -36,7 +36,7 @@ function UserList(props) {
   const opt = {}
   useEffect(() => {
     opt['limit'] = 10
-    dispatch(getUsers({}))
+    dispatch(getUsers(opt))
     dispatch(getAttributesRoot(opt))
     dispatch(getRoles())
   }, [])
@@ -75,7 +75,7 @@ function UserList(props) {
   }
   function handleGoToUserEditPage(row) {
     dispatch(setSelectedUserData(row))
-    return navigate(`/user/usermanagement/edit:` + row.tableData.uuid)
+    return navigate(`/user/usermanagement/edit/:` + row.tableData.uuid)
   }
   const [limit, setLimit] = useState(10)
   const [pattern, setPattern] = useState(null)
@@ -162,7 +162,7 @@ function UserList(props) {
 
   const onPageChangeClick = (page) => {
     let startCount = page * limit
-    options['startIndex'] = parseInt(startCount) + 1
+    options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     options['pattern'] = pattern
     setPageNumber(page)
@@ -191,14 +191,12 @@ function UserList(props) {
       dispatch(getAttributesRoot({pattern:usedAttributes.toString(), limit:100}))
     }
   },[usersList])
-  console.log("USER READ",USER_READ)
-  console.log("USER PERM",permissions)
   return (
     <GluuLoader blocking={loading}>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
           <GluuViewWrapper canShow={hasPermission(permissions, USER_READ)}>
-            {usersList.length > 0 && (
+            {usersList?.length > 0 && (
               <MaterialTable
                 key={limit}
                 components={{

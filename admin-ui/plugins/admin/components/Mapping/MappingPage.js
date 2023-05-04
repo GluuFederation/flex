@@ -10,7 +10,7 @@ import {
   FormGroup,
   Button,
 } from 'Components'
-import Box from '@material-ui/core/Box'
+import Box from '@mui/material/Box'
 import GluuViewWrapper from 'Routes/Apps/Gluu/GluuViewWrapper'
 import GluuLoader from 'Routes/Apps/Gluu/GluuLoader'
 import {
@@ -92,7 +92,7 @@ function MappingPage({
                     style={applicationStyle.buttonStyle}
                     onClick={showMappingDialog}
                   >
-                    <i className="fa fa-plus mr-2"></i>
+                    <i className="fa fa-plus me-2"></i>
                     {t('actions.add_mapping')}
                   </Button>
                 </Box>

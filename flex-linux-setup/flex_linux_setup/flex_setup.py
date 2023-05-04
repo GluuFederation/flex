@@ -11,12 +11,22 @@ import configparser
 import subprocess
 import shutil
 import tempfile
+import json
+import uuid
 
 from pathlib import Path
 from urllib import request
 from urllib.parse import urljoin
 
+
+argsp = None
 cur_dir = os.path.dirname(__file__)
+jans_installer_downloaded = False
+flex_installer_downloaded = False
+install_py_path = os.path.join(cur_dir, 'jans_install.py')
+installed_components = {'admin_ui': False, 'casa': False, 'ssa_decoded': {}}
+ssa_json = {}
+jans_config_properties = '/etc/jans/conf/jans.properties'
 
 if '--remove-flex' in sys.argv:
 
@@ -43,8 +53,10 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-setup-branch', help="Jannsen setup github branch", default='main')
     parser.add_argument('--flex-branch', help="Jannsen flex setup github branch", default='main')
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
-    parser.add_argument('--flex-non-interactive', help="Non interactive mode", action='store_true')
+    parser.add_argument('--node-modules-branch', help="Node modules branch. Default to flex setup github branch")
+    parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
     parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
+    parser.add_argument('-admin-ui-ssa', help="Admin-ui SSA file")
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
     parser.add_argument('--remove-flex', help="Removes flex components", action='store_true')
@@ -55,45 +67,43 @@ def get_flex_setup_parser():
 
 __STATIC_SETUP_DIR__ = '/opt/jans/jans-setup/'
 
-if os.path.exists(__STATIC_SETUP_DIR__):
-    os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
+if os.path.join(__STATIC_SETUP_DIR__, 'flex/flex-linux-setup') == cur_dir:
+    jans_installer_downloaded = True
+    flex_installer_downloaded = True
 
-installed_components = {'admin_ui': False, 'casa': False}
-argsp = None
-jans_installer_downloaded = False
-install_py_path = os.path.join(cur_dir, 'jans_install.py')
+if not jans_installer_downloaded and os.path.exists(__STATIC_SETUP_DIR__):
+    print("Backing up old Janssen setup directory")
+    os.system('mv {} {}-{}'.format(__STATIC_SETUP_DIR__, __STATIC_SETUP_DIR__.rstrip('/'), time.ctime().replace(' ', '_')))
+else:
+    sys.path.append(__STATIC_SETUP_DIR__)
 
 def download_jans_install_py(setup_branch):
     print("Downloading", os.path.basename(install_py_path))
     install_url = 'https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-linux-setup/jans_setup/install.py'.format(setup_branch)
     request.urlretrieve(install_url, install_py_path)
 
-try:
-    import jans_setup
-    path_ = list(jans_setup.__path__)
-    sys.path.append(path_[0])
-except ModuleNotFoundError:
-    if not os.path.exists('/etc/jans/conf/jans.properties'):
-        argsp, nargs = get_flex_setup_parser().parse_known_args()
-        print("Unable to locate jans-setup, installing ...")
-        setup_branch = argsp.jans_setup_branch or 'main'
-        download_jans_install_py(setup_branch)
-        install_cmd = '{} {} --setup-branch={}'.format(sys.executable, install_py_path, setup_branch)
 
-        if argsp.download_exit:
-            nargs.append('--download-exit')
-            argsp.flex_non_interactive = True
+if not (jans_installer_downloaded or os.path.exists(jans_config_properties)):
+    argsp, nargs = get_flex_setup_parser().parse_known_args()
+    print("Unable to locate jans-setup, installing ...")
+    setup_branch = argsp.jans_setup_branch or 'main'
+    download_jans_install_py(setup_branch)
+    install_cmd = '{} {} --setup-branch={}'.format(sys.executable, install_py_path, setup_branch)
 
-        if argsp.flex_non_interactive:
-            nargs.append('-n')
-            install_cmd += ' -yes'
+    if argsp.download_exit:
+        nargs.append('--download-exit')
+        argsp.flex_non_interactive = True
 
-        if nargs:
-            install_cmd += ' --args="{}"'.format(subprocess.list2cmdline(nargs))
+    if argsp.flex_non_interactive:
+        nargs.append('-n')
+        install_cmd += ' -yes'
 
-        print("Executing", install_cmd)
-        os.system(install_cmd)
-        jans_installer_downloaded = True
+    if nargs:
+        install_cmd += ' --args="{}"'.format(subprocess.list2cmdline(nargs))
+
+    print("Executing", install_cmd)
+    os.system(install_cmd)
+    jans_installer_downloaded = True
 
 if not argsp:
     argsp, nargs = get_flex_setup_parser().parse_known_args()
@@ -104,7 +114,11 @@ if not jans_installer_downloaded:
         jans_zip_file = os.path.join(tmp_dir, os.path.basename(jans_archieve_url))
         print("Downloading {} as {}".format(jans_archieve_url, jans_zip_file))
         request.urlretrieve(jans_archieve_url, jans_zip_file)
-
+        if argsp.download_exit:
+            dist_dir = '/opt/dist/jans/'
+            if not os.path.exists(dist_dir):
+                os.makedirs(dist_dir)
+            shutil.copyfile(jans_zip_file, os.path.join(dist_dir, 'jans.zip'))
         print("Extracting jans-setup package")
         jans_zip = zipfile.ZipFile(jans_zip_file)
         parent_dir = jans_zip.filelist[0].orig_filename
@@ -116,9 +130,13 @@ if not jans_installer_downloaded:
     sys.path.append(__STATIC_SETUP_DIR__)
     from setup_app import downloads
     from setup_app.utils import base
+    from setup_app.utils import arg_parser
+    base.argsp = arg_parser.get_parser()
     downloads.base.current_app.app_info = base.readJsonFile(os.path.join(__STATIC_SETUP_DIR__, 'app_info.json'))
     downloads.download_sqlalchemy()
-    downloads.download_gcs()
+    downloads.download_cryptography()
+    downloads.download_pyjwt()
+
 
 install_components = {
         'admin_ui': argsp.install_admin_ui,
@@ -149,7 +167,8 @@ from setup_app.utils import arg_parser
 arg_parser.add_to_me(parser)
 installed = False
 
-if not (os.path.exists('/etc/jans/conf/jans.properties') or argsp.download_exit):
+
+if not (os.path.exists(jans_config_properties) or argsp.download_exit):
     installed = True
     try:
         from jans_setup import jans_setup
@@ -183,6 +202,7 @@ sys.path.insert(0, base.pylib_dir)
 sys.path.insert(0, os.path.join(base.pylib_dir, 'gcs'))
 
 from setup_app.pylib.jproperties import Properties
+from setup_app.pylib import jwt
 from setup_app.pylib.ldif4.ldif import LDIFWriter
 from setup_app.utils.package_utils import packageUtils
 from setup_app.config import Config
@@ -198,7 +218,7 @@ from setup_app.utils.ldif_utils import myLdifParser
 
 
 Config.outputFolder = os.path.join(__STATIC_SETUP_DIR__, 'output')
-if not os.path.join(Config.outputFolder):
+if not os.path.exists(Config.outputFolder):
     os.makedirs(Config.outputFolder)
 
 
@@ -222,11 +242,11 @@ app_versions = {
   "SETUP_BRANCH": argsp.jans_setup_branch,
   "FLEX_BRANCH": argsp.flex_branch,
   "JANS_BRANCH": argsp.jans_branch,
-  "JANS_APP_VERSION": "1.0.6",
-  "JANS_BUILD": "-SNAPSHOT", 
-  "NODE_VERSION": "v14.18.2",
+  "JANS_APP_VERSION": "1.0.13",
+  "JANS_BUILD": "-SNAPSHOT",
+  "NODE_VERSION": "v18.16.0",
   "CASA_VERSION": "5.0.0-SNAPSHOT",
-  "TWILIO_VERSION": "7.17.0",
+  "NODE_MODULES_BRANCH": argsp.node_modules_branch or argsp.flex_branch
 }
 
 node_installer = NodeInstaller()
@@ -238,7 +258,6 @@ setup_properties = base.read_properties_file(argsp.f) if argsp.f else {}
 
 
 class flex_installer(JettyInstaller):
-
 
     def __init__(self):
 
@@ -253,11 +272,19 @@ class flex_installer(JettyInstaller):
         self.source_dir = os.path.join(Config.install_dir, 'flex')
         self.flex_setup_dir = os.path.join(self.source_dir, 'flex-linux-setup')
         self.templates_dir = os.path.join(self.flex_setup_dir, 'templates')
+
+        self.admin_ui_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/node_modules/admin-ui-{0}-node_modules.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
+        self.config_api_node_modules_url = 'https://jenkins.gluu.org/npm/admin_ui/{0}/OpenApi/jans_config_api/admin-ui-{0}-jans_config_api.tar.gz'.format(app_versions['NODE_MODULES_BRANCH'])
+
+        self.admin_ui_node_modules_path = os.path.join(Config.dist_jans_dir, os.path.basename(self.admin_ui_node_modules_url))
+        self.config_api_node_modules_path = os.path.join(Config.dist_jans_dir, os.path.basename(self.config_api_node_modules_url))
+
         self.admin_ui_config_properties_path = os.path.join(self.templates_dir, 'auiConfiguration.json')
         self.casa_dist_dir = os.path.join(Config.dist_jans_dir, 'gluu-casa')
         self.casa_web_resources_fn = os.path.join(self.casa_dist_dir, 'casa_web_resources.xml')
         self.casa_war_fn = os.path.join(self.casa_dist_dir, 'casa.war')
         self.casa_config_fn = os.path.join(self.casa_dist_dir,'casa-config.jar')
+        self.casa_scopes_fn = os.path.join(self.templates_dir,'casa_scopes.json')
 
         self.twillo_fn = os.path.join(self.casa_dist_dir,'twilio.jar')
         self.py_lib_dir = os.path.join(Config.jansOptPythonFolder, 'libs')
@@ -271,20 +298,20 @@ class flex_installer(JettyInstaller):
         Config.templateRenderingDict['casa_web_port'] = '8080'
         self.simple_auth_scr_inum = 'A51E-76DA'
         self.casa_python_libs = ['Casa.py', 'casa-external_fido2.py', 'casa-external_otp.py', 'casa-external_super_gluu.py', 'casa-external_twilio_sms.py']
-        self.casa_script_fn = os.path.join(self.casa_dist_dir, self.casa_python_libs[0])
+        self.casa_script_fn = os.path.join(self.casa_dist_dir, 'pylib', self.casa_python_libs[0])
         self.casa_client_id_prefix = '3000.'
 
         self.admin_ui_plugin_path = os.path.join(config_api_installer.libDir, os.path.basename(self.admin_ui_plugin_source_path))
 
-        if os.path.exists(self.source_dir):
-            os.rename(self.source_dir, self.source_dir+'-'+time.ctime().replace(' ', '_'))
+        if not flex_installer_downloaded and os.path.exists(self.source_dir):
+            os.rename(self.source_dir, self.source_dir + '-' + time.ctime().replace(' ', '_'))
 
 
     def download_files(self, force=False):
         print("Downloading Gluu Flex components")
         download_url, target = ('https://github.com/GluuFederation/flex/archive/refs/heads/{}.zip'.format(app_versions['FLEX_BRANCH']), self.flex_path)
 
-        if force or not os.path.exists(target):
+        if not flex_installer_downloaded:
             base.download(download_url, target, verbose=True)
 
         print("Extracting", self.flex_path)
@@ -298,6 +325,8 @@ class flex_installer(JettyInstaller):
                     (urljoin(maven_base_url, 'jans-config-api/plugins/admin-ui-plugin/{0}{1}/admin-ui-plugin-{0}{1}-distribution.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.admin_ui_plugin_source_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/server/src/main/resources/log4j2.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_path),
                     ('https://raw.githubusercontent.com/JanssenProject/jans/{}/jans-config-api/plugins/admin-ui-plugin/config/log4j2-adminui.xml'.format(app_versions['JANS_BRANCH']), self.log4j2_adminui_path),
+                    (self.admin_ui_node_modules_url, self.admin_ui_node_modules_path),
+                    (self.config_api_node_modules_url, self.config_api_node_modules_path),
                     ]
 
         if install_components['casa'] or argsp.download_exit:
@@ -305,9 +334,8 @@ class flex_installer(JettyInstaller):
                     ('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/casa_web_resources.xml', self.casa_web_resources_fn),
                     ('https://maven.gluu.org/maven/org/gluu/casa/{0}/casa-{0}.war'.format(app_versions['CASA_VERSION']), self.casa_war_fn),
                     ('https://maven.gluu.org/maven/org/gluu/casa-config/{0}/casa-config-{0}.jar'.format(app_versions['CASA_VERSION']), self.casa_config_fn),
-                    ('https://repo1.maven.org/maven2/com/twilio/sdk/twilio/{0}/twilio-{0}.jar'.format(app_versions['TWILIO_VERSION']), self.twillo_fn),
-                    ('https://raw.githubusercontent.com/GluuFederation/flex/main/casa/extras/Casa.py', self.casa_script_fn),
-                    ('https://maven.jans.io/maven/io/jans/jans-fido2-client/{0}{1}/jans-fido2-client-{0}{1}.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD']), self.fido2_client_jar_fn),
+                    (os.path.join(base.current_app.app_info['TWILIO_MAVEN'], '{0}/twilio-{0}.jar'.format(base.current_app.app_info['TWILIO_VERSION'])), self.twillo_fn),
+                    (os.path.join(base.current_app.app_info['JANS_MAVEN'], 'maven/io/jans/jans-fido2-client/{0}{1}/jans-fido2-client-{0}{1}.jar'.format(app_versions['JANS_APP_VERSION'], app_versions['JANS_BUILD'])), self.fido2_client_jar_fn),
                 ]
 
             for plib in self.casa_python_libs:
@@ -317,6 +345,8 @@ class flex_installer(JettyInstaller):
             if force or not os.path.exists(target):
                 base.download(download_url, target, verbose=True)
 
+        if argsp.download_exit:
+            sys.exit()
 
     def add_apache_directive(self, check_str, template):
         print("Updating apache configuration")
@@ -402,9 +432,12 @@ class flex_installer(JettyInstaller):
 
             ldif_parser.entries[0][1]['inum'] = ['%(admin_ui_client_id)s']
             ldif_parser.entries[0][1]['jansClntSecret'] = ['%(admin_ui_client_encoded_pw)s']
-            ldif_parser.entries[0][1]['displayName'] = ['Gluu Flex Admin UI Client']
+            ldif_parser.entries[0][1]['displayName'] = ['Admin UI Client {}'.format(ssa_json.get('org_id', ''))]
 
             client_tmp_fn = os.path.join(self.templates_dir, 'admin_ui_client.ldif')
+
+            print("\033[1mAdmin UI Client ID:\033[0m", Config.admin_ui_client_id)
+            print("\033[1mAdmin UI Client Secret:\033[0m", Config.admin_ui_client_pw)
 
             with open(client_tmp_fn, 'wb') as w:
                 ldif_writer = LDIFWriter(w)
@@ -417,10 +450,15 @@ class flex_installer(JettyInstaller):
         print("env_tmp", env_tmp)
         config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
         config_api_installer.copyFile(os.path.join(self.source_dir, '.env.tmp'), os.path.join(self.source_dir, '.env'))
+
+        for module_pack in (self.admin_ui_node_modules_path, self.config_api_node_modules_path):
+            print("Unpacking", module_pack)
+            shutil.unpack_archive(module_pack, self.source_dir)
+
         config_api_installer.run([paths.cmd_chown, '-R', 'node:node', self.source_dir])
         cmd_path = 'PATH=$PATH:{}/bin:{}/bin'.format(Config.jre_home, Config.node_home)
 
-        for cmd in ('npm install @openapitools/openapi-generator-cli', 'npm install openapi-merge-cli', 'npm run api', 'npm install', 'npm run build:prod'):
+        for cmd in ('npm run build:prod',):
             print("Executing `{}`".format(cmd))
             run_cmd = '{} {}'.format(cmd_path, cmd)
             config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)
@@ -430,6 +468,13 @@ class flex_installer(JettyInstaller):
         print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
         config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
+        oidc_client = installed_components.get('oidc_client', {})
+        Config.templateRenderingDict['ssa'] = installed_components['ssa']
+        Config.templateRenderingDict['op_host'] = ssa_json.get('iss', '')
+        Config.templateRenderingDict['oidc_client_id'] = oidc_client.get('client_id', '')
+        Config.templateRenderingDict['oidc_client_secret'] = oidc_client.get('client_secret', '')
+        Config.templateRenderingDict['license_hardware_key'] = str(uuid.uuid4())
+        Config.templateRenderingDict['scan_license_api_hostname'] =  Config.templateRenderingDict['op_host'].replace('account', 'cloud')
         Config.templateRenderingDict['adminui_authentication_mode'] = argsp.adminui_authentication_mode
 
         config_api_installer.renderTemplateInOut(self.admin_ui_config_properties_path, self.templates_dir, self.source_dir)
@@ -448,22 +493,27 @@ class flex_installer(JettyInstaller):
 
         self.source_files = [(self.casa_war_fn,)]
 
-        print("Adding twillo and casa config to jans-auth")
+        casa_scopes = self.create_casa_scopes()
+
+        print("Adding casa config to jans-auth")
         self.copyFile(self.casa_config_fn, self.jans_auth_custom_lib_dir)
-        self.copyFile(self.twillo_fn, self.jans_auth_custom_lib_dir)
-        class_path = '{},{}'.format(
-            os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn)),
-            os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn)),
-            )
-        jansAuthInstaller.add_extra_class(class_path)
+        casa_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn))
+        jansAuthInstaller.add_extra_class(casa_config_class_path)
 
-        print("Adding Fido2 Client lib to jans-auth")
-        self.copyFile(self.fido2_client_jar_fn, self.jans_auth_custom_lib_dir)
-        class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.fido2_client_jar_fn))
-        jansAuthInstaller.add_extra_class(class_path)
+        print("jansAuthInstaller.web_app_xml_fn:", jansAuthInstaller.web_app_xml_fn)
+        jans_auth_web_app_xml = jansAuthInstaller.readFile(jansAuthInstaller.web_app_xml_fn)
 
-        print("Enabling script", self.simple_auth_scr_inum)
-        self.dbUtils.enable_script(self.simple_auth_scr_inum)
+        if os.path.basename(self.twillo_fn) not in jans_auth_web_app_xml:
+            print("Adding twillo to jans-auth")
+            self.copyFile(self.twillo_fn, self.jans_auth_custom_lib_dir)
+            twillo_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.twillo_fn))
+            jansAuthInstaller.add_extra_class(twillo_config_class_path)
+
+        if os.path.basename(self.fido2_client_jar_fn) not in jans_auth_web_app_xml:
+            print("Adding Fido2 Client lib to jans-auth")
+            self.copyFile(self.fido2_client_jar_fn, self.jans_auth_custom_lib_dir)
+            fido2_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.fido2_client_jar_fn))
+            jansAuthInstaller.add_extra_class(fido2_class_path)
 
         # copy casa scripts
         if not os.path.exists(self.py_lib_dir):
@@ -498,15 +548,25 @@ class flex_installer(JettyInstaller):
         if not Config.get('casa_client_encoded_pw'):
             Config.casa_client_encoded_pw = jansAuthInstaller.obscure(Config.casa_client_pw)
 
-        print("Casa client id", Config.casa_client_id)
-        print("Casa client encoded password", Config.casa_client_encoded_pw)
+        print("\033[1mCasa Client ID:\033[0m", Config.casa_client_id)
+        print("\033[1mCasa Client Secret:\033[0m", Config.casa_client_pw)
 
         print("Importing LDIF Files")
 
         self.renderTemplateInOut(self.casa_client_fn, self.templates_dir, self.source_dir)
         self.renderTemplateInOut(self.casa_config_fn, self.templates_dir, self.source_dir)
+        casa_client_output_fn = os.path.join(self.source_dir, os.path.basename(self.casa_client_fn))
+
+        casa_client_ldif_parser = myLdifParser(casa_client_output_fn)
+        casa_client_ldif_parser.parse()
+
+        casa_client_ldif_parser.entries[0][1]['jansScope'] += casa_scopes
+        with open(casa_client_output_fn, 'wb') as w:
+            casa_client_ldif_writer = LDIFWriter(w)
+            casa_client_ldif_writer.unparse(casa_client_ldif_parser.entries[0][0], casa_client_ldif_parser.entries[0][1])
+
         self.dbUtils.import_ldif([
-                os.path.join(self.source_dir, os.path.basename(self.casa_client_fn)),
+                casa_client_output_fn,
                 os.path.join(self.source_dir, os.path.basename(self.casa_config_fn)),
                 os.path.join(self.source_dir, os.path.basename(casa_auth_script_fn)),
                 ])
@@ -565,6 +625,39 @@ class flex_installer(JettyInstaller):
 
         self.enable()
 
+
+    def create_casa_scopes(self):
+
+        print("Creating Casa client scopes")
+        scopes = base.readJsonFile(self.casa_scopes_fn)
+        casa_scopes_ldif_fn = os.path.join(self.source_dir, 'casa_scopes.ldif')
+        scope_ldif_fd = open(casa_scopes_ldif_fn, 'wb')
+        scopes_list = []
+
+        ldif_scopes_writer = LDIFWriter(scope_ldif_fd, cols=1000)
+
+        for scope in scopes:
+            scope_dn = 'inum={},ou=scopes,o=jans'.format(scope['inum'])
+            scopes_list.append(scope_dn)
+            ldif_dict = {
+                        'objectClass': ['top', 'jansScope'],
+                        'description': [scope['description']],
+                        'displayName': [scope['displayName']],
+                        'inum': [scope['inum']],
+                        'jansDefScope': [str(scope['jansDefScope'])],
+                        'jansId': [scope['jansId']],
+                        'jansScopeTyp': [scope['jansScopeTyp']],
+                        'jansAttrs': [json.dumps({"spontaneousClientId":None, "spontaneousClientScopes":[], "showInConfigurationEndpoint": False})],
+                    }
+            ldif_scopes_writer.unparse(scope_dn, ldif_dict)
+
+        scope_ldif_fd.close()
+
+        self.dbUtils.import_ldif([casa_scopes_ldif_fn])
+
+        return scopes_list
+
+
     def save_properties(self):
         fn = Config.savedProperties
         print("Saving properties", fn)
@@ -572,7 +665,7 @@ class flex_installer(JettyInstaller):
             p = Properties()
             with open(fn, 'rb') as f:
                 p.load(f, 'utf-8')
-            for prop in ('casa_client_id', 'casa_client_pw', 'casa_client_encoded_pw'):
+            for prop in ('casa_client_id', 'casa_client_pw', 'casa_client_encoded_pw', 'admin_ui_client_id', 'admin_ui_client_pw'):
                 if Config.get(prop):
                     p[prop] = Config.get(prop)
             with open(fn, 'wb') as f:
@@ -616,30 +709,19 @@ class flex_installer(JettyInstaller):
         print("  - Removing casa directives from apache configuration")
         self.remove_apache_directive('<Location /casa>')
 
-        write_jans_auth_config = False
+
         jans_auth_plugins = jansAuthInstaller.get_plugins(paths=True)
 
-        for casa_plugin in (self.fido2_client_jar_fn, self.twillo_fn):
+        casa_config_class_path = os.path.join(self.jans_auth_custom_lib_dir, os.path.basename(self.casa_config_fn))
 
-            plugin_jar_fn = os.path.join(
-                                        self.jans_auth_custom_lib_dir,
-                                        os.path.basename(casa_plugin)
-                                        )
+        if os.path.exists(casa_config_class_path):
+            print(del_msg, casa_config_class_path)
+            self.run(['rm', '-f', casa_config_class_path])
 
-            if os.path.exists(plugin_jar_fn):
-                print(del_msg, plugin_jar_fn)
-                self.run(['rm', '-f', plugin_jar_fn])
-
-            if plugin_jar_fn in jans_auth_plugins:
-                print("  - Removing plugin {} from Jans Auth Configuration".format(plugin_jar_fn))
-                jans_auth_plugins.remove(plugin_jar_fn)
-                write_jans_auth_config = True
-
-        if write_jans_auth_config:
+        if casa_config_class_path in jans_auth_plugins:
+            print("  - Removing plugin {} from Jans Auth Configuration".format(casa_config_class_path))
+            jans_auth_plugins.remove(casa_config_class_path)
             jansAuthInstaller.set_class_path(jans_auth_plugins)
-
-        print("  - Disabling script", self.simple_auth_scr_inum)
-        self.dbUtils.enable_script(self.simple_auth_scr_inum, enable=False)
 
         for plib in self.casa_python_libs:
             plib_path = os.path.join(self.py_lib_dir, plib)
@@ -651,6 +733,12 @@ class flex_installer(JettyInstaller):
         if result:
             print("  - Deleting casa client from db backend")
             self.dbUtils.delete_dn(result['dn'])
+
+        result = self.dbUtils.search('ou=scopes,o=jans', '(&(inum=3000.*)(objectClass=jansScope))', fetchmany=True)
+        if result:
+            print("  - Deleting casa client scopes from db backend")
+            for scope in result:
+                self.dbUtils.delete_dn(scope[1]['dn'])
 
         print("  - Deleting casa configuration from db backend")
         self.dbUtils.delete_dn('ou=casa,ou=configuration,o=jans')
@@ -721,12 +809,54 @@ class flex_installer(JettyInstaller):
                         store_type='PKCS12'
                         )
 
+def decode_ssa_jwt():
+    ssa_fn = argsp.admin_ui_ssa
+
+    print("Decoding {}".format(ssa_fn))
+
+    with open(ssa_fn) as f:
+        ssa_jwt = f.read().strip()
+
+    ssa_decoded = jwt.decode(
+        ssa_jwt,
+        options={
+                'verify_signature': False,
+                'verify_exp': True,
+                'verify_aud': False
+                }
+        )
+
+    ssa_json.update(ssa_decoded)
+
+
 def prompt_for_installation():
 
     if not os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
         prompt_admin_ui_install = input("Install Admin UI [Y/n]: ")
         if not prompt_admin_ui_install.lower().startswith('n'):
             install_components['admin_ui'] = True
+            if argsp.admin_ui_ssa:
+                try:
+                    decode_ssa_jwt()
+                except Exception:
+                    argsp.admin_ui_ssa = None
+                    print("\033[31mSSA you provided via argument is not valid.\033[0m")
+            while not argsp.admin_ui_ssa:
+                ssa_fn = input("Please enter path of file containing SSA (q to exit): ")
+                if ssa_fn.strip().lower() == 'q':
+                    print("Can't continue without SSA. Exiting...")
+                    sys.exit()
+                if os.path.isfile(ssa_fn):
+                    try:
+                        argsp.admin_ui_ssa = ssa_fn
+                        decode_ssa_jwt()
+                    except Exception as e:
+                        argsp.admin_ui_ssa = None
+                        print("Error decoding {}".format(ssa_fn))
+                        print(e)
+                else:
+                    print("{} is not a file".format(ssa_fn))
+
     else:
         print("Admin UI is allready installed on this system")
         install_components['admin_ui'] = False
@@ -774,11 +904,49 @@ def get_components_from_setup_properties():
         if not (argsp.install_admin_ui or install_components['admin_ui']):
             install_components['admin_ui'] = base.as_bool(setup_properties.get('install-admin-ui'))
 
+        if not argsp.admin_ui_ssa and install_components['admin_ui']:
+            argsp.admin_ui_ssa = setup_properties.get('admin-ui-ssa')
+            decode_ssa_jwt()
+
         if not (argsp.install_casa or install_components['casa']):
             install_components['casa'] = base.as_bool(setup_properties.get('install-casa'))
 
         if 'adminui-authentication-mode' in setup_properties:
             argsp.adminui_authentication_mode = setup_properties['adminui-authentication-mode']
+
+
+def obtain_oidc_client_credidentials():
+    with open(argsp.admin_ui_ssa) as f:
+        ssa = f.read().strip()
+
+    installed_components['ssa'] = ssa
+
+    data = {
+        "software_statement": ssa,
+        "response_types": ["token"],
+        "redirect_uris": ["{}".format(ssa_json['iss'])],
+        "client_name": "test-ui-client"
+    }
+
+    registration_url = urljoin(ssa_json['iss'], 'jans-auth/restv1/register')
+
+    req = request.Request(registration_url)
+    req.add_header('Content-Type', 'application/json')
+    jsondata = json.dumps(data)
+    jsondataasbytes = jsondata.encode('utf-8')
+    req.add_header('Content-Length', len(jsondataasbytes))
+
+    print("Requesting OIDC Client from", registration_url)
+
+    try:
+        response = request.urlopen(req, jsondataasbytes)
+        result = response.read()
+        installed_components['oidc_client'] = json.loads(result.decode())
+        print("OIDC Client ID is", installed_components['oidc_client']['client_id'])
+    except Exception as e:
+        print("Error sending request to {}".format(registration_url))
+        print(e)
+        sys.exit()
 
 
 def main(uninstall):
@@ -791,11 +959,23 @@ def main(uninstall):
     installer_obj = flex_installer()
 
     if uninstall:
+        config_api_installer.stop('casa')
         installer_obj.uninstall_casa()
         installer_obj.uninstall_admin_ui()
+        print("Disabling script", installer_obj.simple_auth_scr_inum)
+        installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum, enable=False)
 
     else:
-        installer_obj.download_files()
+
+        if install_components['admin_ui'] and argsp.admin_ui_ssa:
+            obtain_oidc_client_credidentials()
+
+        if not flex_installer_downloaded or argsp.download_exit:
+            installer_obj.download_files(argsp.download_exit)
+
+        print("Enabling script", installer_obj.simple_auth_scr_inum)
+        installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum)
+
         if install_components['admin_ui']:
             if not node_installer.installed():
                 print("Installing node")

@@ -42,7 +42,7 @@ function ClientAddPage({
       navigate('/auth-server/clients')
   }, [saveOperationFlag])
 
-  scopes = scopes.map((item) => ({ dn: item.dn, name: item.id }))
+  scopes = scopes?.map((item) => ({ dn: item.dn, name: item.id }))
   function handleSubmit(data) {
     if (data) {
       const postBody = {}

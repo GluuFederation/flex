@@ -1,0 +1,7 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: flex
+Source: https://www.gluu.org
+
+Files:     *
+Copyright: 2023 Gluu,inc. support@gluu.org
+License:   Apache-2.0

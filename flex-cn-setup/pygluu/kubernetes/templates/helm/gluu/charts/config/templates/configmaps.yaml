@@ -1,6 +1,6 @@
 apiVersion: v1
 kind: ConfigMap
-metadata: 
+metadata:
   name: {{ .Release.Name }}-config-cm
   namespace: {{ .Release.Namespace }}
   labels:
@@ -26,25 +26,35 @@ data:
   # force the AS to use a specific signing key
   CN_OB_STATIC_KID: {{ .Values.global.cnObStaticSigningKeyKid | quote }}
   {{- end }}
-  {{ if or (eq .Values.global.configSecretAdapter "google") (eq .Values.global.cnPersistenceType "spanner") }}
+  {{ if or (eq .Values.global.configAdapterName "google") (eq .Values.global.configSecretAdapter "google") (eq .Values.global.cnPersistenceType "spanner") }}
   # [google_envs] Envs related to using Google
   GOOGLE_APPLICATION_CREDENTIALS: {{ .Values.global.cnGoogleApplicationCredentials | quote }}
   GOOGLE_PROJECT_ID: {{ .Values.configmap.cnGoogleProjectId | quote }}
   {{- end }}
   {{ if eq .Values.global.cnPersistenceType "spanner" }}
-  # [google_spanner_envs] Envs related to using Google Secret Manager to store config and secret layer
+  # [google_spanner_envs] Envs related to using Google Cloud Spanner
   CN_GOOGLE_SPANNER_INSTANCE_ID: {{ .Values.configmap.cnGoogleSpannerInstanceId | quote }}
   CN_GOOGLE_SPANNER_DATABASE_ID: {{ .Values.configmap.cnGoogleSpannerDatabaseId | quote }}
   # [google_spanner_envs] END
   {{- end }}
-  {{ if eq .Values.global.configSecretAdapter "google" }}
+  {{ if or (eq .Values.global.configSecretAdapter "google") (eq .Values.global.configAdapterName "google") }}
   # [google_secret_manager_envs] Envs related to using Google Secret Manager to store config and secret layer
-  CN_SECRET_GOOGLE_SECRET_VERSION_ID: {{ .Values.configmap.cnSecretGoogleSecretVersionId | quote }}
-  CN_SECRET_GOOGLE_SECRET_MANAGER_PASSPHRASE: {{ .Values.configmap.cnGoogleSecretManagerPassPhrase | quote }}
-  CN_SECRET_GOOGLE_SECRET_NAME_PREFIX: {{ .Values.configmap.cnSecretGoogleSecretNamePrefix | quote }}
-  CN_CONFIG_GOOGLE_SECRET_VERSION_ID: {{ .Values.configmap.cnConfigGoogleSecretVersionId | quote }}
-  CN_CONFIG_GOOGLE_SECRET_NAME_PREFIX: {{ .Values.configmap.cnConfigGoogleSecretNamePrefix | quote }}
+  CN_GOOGLE_SECRET_VERSION_ID: {{ .Values.configmap.cnGoogleSecretVersionId | quote }}
+  CN_GOOGLE_SECRET_NAME_PREFIX: {{ .Values.configmap.cnGoogleSecretNamePrefix | quote }}
   # [google_secret_manager_envs] END
+  {{- end }}
+  {{ if or (eq .Values.global.configSecretAdapter "aws") (eq .Values.global.configAdapterName "aws") }}
+  # [aws_envs] Envs related to using AWS
+  {{- if .Values.configmap.cnAwsSecretsEndpointUrl }}  
+  CN_AWS_SECRETS_ENDPOINT_URL: {{ .Values.configmap.cnAwsSecretsEndpointUrl }}
+  {{- end }}
+  CN_AWS_SECRETS_PREFIX: {{ .Values.configmap.cnAwsSecretsNamePrefix }}
+  CN_AWS_SECRETS_REPLICA_FILE: {{ .Values.global.cnAwsSecretsReplicaRegionsFile }}
+  AWS_DEFAULT_REGION: {{ .Values.configmap.cnAwsDefaultRegion }}
+  AWS_SHARED_CREDENTIALS_FILE: {{ .Values.global.cnAwsSharedCredentialsFile }}
+  AWS_CONFIG_FILE: {{ .Values.global.cnAwsConfigFile }}
+  #AWS_PROFILE
+  # [aws_envs] END
   {{- end }}
   CN_SQL_DB_SCHEMA: {{ .Values.configmap.cnSqlDbSchema | quote }}
   CN_SQL_DB_DIALECT: {{ .Values.configmap.cnSqlDbDialect }}
@@ -81,6 +91,7 @@ data:
   | replace "scriptLogLevel" "script_log_level"
   | replace "auditStatsLogTarget" "audit_log_target"
   | replace "auditStatsLogLevel" "audit_log_level"
+  | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
   {{- if index .Values "global" "config-api" "enabled" }}
@@ -96,6 +107,7 @@ data:
   | replace "ldapStatsLogLevel" "ldap_stats_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
+  | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
   {{- end }}
@@ -164,6 +176,7 @@ data:
   | replace "ldapStatsLogLevel" "ldap_stats_log_level"
   | replace "scriptLogTarget" "script_log_target"
   | replace "scriptLogLevel" "script_log_level"
+  | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
   {{- end }}
@@ -174,6 +187,11 @@ data:
   | replace "fido2LogLevel" "fido2_log_level"
   | replace "persistenceLogTarget" "persistence_log_target"
   | replace "persistenceLogLevel" "persistence_log_level"
+  | replace "persistenceDurationLogTarget" "persistence_duration_log_target"
+  | replace "persistenceDurationLogLevel" "persistence_duration_log_level"
+  | replace "scriptLogTarget" "script_log_target"
+  | replace "scriptLogLevel" "script_log_level"
+  | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
   {{- end }}
@@ -187,6 +205,19 @@ data:
   | replace "adminUiLogLevel" "admin_ui_log_level"
   | replace "adminUiAuditLogTarget" "admin_ui_audit_log_target"
   | replace "adminUiAuditLogLevel" "admin_ui_audit_log_level"
+  | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
+  | squote
+  }}
+  {{- end }}
+  {{- if .Values.global.casa.enabled }}
+  # CASA
+  GLUU_CASA_APP_LOGGERS: {{ .Values.global.casa
+  | toJson
+  | replace "casaLogTarget" "casa_log_target"
+  | replace "casaLogLevel" "casa_log_level"
+  | replace "timerLogTarget" "timer_log_target"
+  | replace "timerLogLevel" "timer_log_level"
+  | replace "enableStdoutLogPrefix" "enable_stdout_log_prefix"
   | squote
   }}
   {{- end }}

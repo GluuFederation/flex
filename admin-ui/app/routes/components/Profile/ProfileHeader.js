@@ -20,11 +20,11 @@ const ProfileHeader = () => {
     <React.Fragment>
       { /* START Header */}
       <Media className="mb-3">
-        <Media left middle className="mr-3 align-self-center">
+        <Media left middle className="me-3 align-self-center">
           <Avatar.Image
             size="lg"
             src={ randomAvatar() }
-            className="mr-2"
+            className="me-2"
             addOns={[
               <AvatarAddOn.Icon 
                 className="fa fa-circle"
@@ -45,7 +45,7 @@ const ProfileHeader = () => {
               { 'faker.name.firstName()' } { 'faker.name.lastName()' }
             </Link> <span className="text-muted mx-1"> / </span> {t("Profile Edit")}
           </h5>
-          <Badge color={`primary-${selectedTheme}`} pill className="mr-2">{t("Premium")}</Badge> 
+          <Badge color={`primary-${selectedTheme}`} pill className="me-2">{t("Premium")}</Badge> 
           <span className="text-muted">{t("Edit Your Name, Avatar, etc.")}</span>
         </Media>
       </Media>

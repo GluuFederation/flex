@@ -5,14 +5,15 @@ import { Container, CardBody, Card } from 'Components'
 import LdapForm from './LdapForm'
 import { editLdap } from 'Plugins/services/redux/actions/LdapActions'
 import { buildPayload } from 'Utils/PermChecker'
+import { isEmpty } from 'lodash'
 
 function LdapEditPage({ item, dispatch }) {
   const userAction = {}
   const navigate =useNavigate()
   function handleSubmit(data) {
-    if (data) {
-      const message = data.ldap.action_message
-      delete data.ldap.action_message
+    if (!isEmpty(data)) {
+      const message = data.action_message
+      delete data.action_message
       buildPayload(userAction, message, data)
       dispatch(editLdap(userAction))
       navigate('/config/ldap')

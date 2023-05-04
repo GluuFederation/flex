@@ -1,7 +1,10 @@
 # Gluu Flex Documentation
 
 ## Introduction
-The Gluu Server is a container distribution of free open source software (FOSS) for identity and access management (IAM). SaaS, custom, open source and commercial web and mobile applications can leverage a Gluu Server for user authentication, identity information, and policy decisions.
+
+Designed from the ground up to support cloud-native deployments, Gluu Flex is a self-hosted software stack to enable your organization to build a world-class digital identity platform to authenticate both people and software.
+
+With Helm charts available out of the box, Gluu Flex can handle the most demanding requirements for concurrency. Thanks to cloud-native auto-scaling and zero downtime updates, you can build a robust, multi-datacenter topology. You can take advantage of new cloud databases like Amazon Aurora and Google Spanner–say goodbye to those old LDAP servers that waste the precious time of your DevOps team.
 
 Common use cases include:
 
@@ -12,25 +15,14 @@ Common use cases include:
 - Customer identity and access management (CIAM)   
 - Identity federation      
 
-### Open Web Standards
-The Gluu Server can be deployed to support the following open standards for authentication, authorization, federated identity, and identity management:
+## Built on Janssen
 
-- OAuth 2.0    
-- OpenID Connect    
-- User Managed Access 2.0 (UMA)    
-- SAML 2.0   
-- System for Cross-domain Identity Management (SCIM)    
-- FIDO Universal 2nd Factor (U2F)
-- FIDO 2.0 / WebAuthn
-- Lightweight Directory Access Protocol (LDAP)   
-- Remote Authentication Dial-In User Service (RADIUS) 
+Gluu Flex is a downstream product of the Linux Foundation [Janssen Project](https://jans.io). It was created for enterprise customers who want a commercially supported distribution, plus some additional tools to ease administration.
+
+## Harness Low Code Authentication Flows with Agama
+
+Gluu Flex uses Agama to offer an alternative way to build web-based authentication flows. Traditionally, person authentication flows are defined in the server with jython scripts that adhere to a predefined API. With Agama, flows are coded using a DSL (domain specific language) designed for the sole purpose of writing web flows. Agama flows are simpler, more intuitive, and quicker to build.
 
 ## Support
 
 The Gluu Flex contract includes guaranteed response times and consultative support via our [support portal](https://support.gluu.org).
-
-## Contribute 
-We want to keep improving our docs. Please help us improve by submitting any improvements to our [Github](https://github.com/GluuFederation/flex/docs. If you're a Github pro, submit a pull request. If not, just open an issue on any typos, bugs, or improvements you'd like to see addressed. We need your help... even if you're not a coder, you can contribute! 
-
-## License
-

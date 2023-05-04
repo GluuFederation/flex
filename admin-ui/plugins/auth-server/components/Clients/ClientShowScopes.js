@@ -32,7 +32,7 @@ function ClientShowScopes({ handler, data, isOpen }) {
       </ModalBody>
       <ModalFooter>
         <Button color={`primary-${selectedTheme}`} onClick={handler}>
-          Close
+          {t('actions.close')}
         </Button>
       </ModalFooter>
     </Modal>

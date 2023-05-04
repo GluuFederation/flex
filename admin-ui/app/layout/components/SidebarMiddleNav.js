@@ -65,7 +65,7 @@ export const SidebarMiddleNav = () => (
       to="/settings"
     />
     <SidebarMenu.Item
-      icon={<i className="fa fa-fw fa-sign-out mr-2"></i>}
+      icon={<i className="fa fa-fw fa-sign-out me-2"></i>}
       title="Sign out"
       to="/logout"
     />

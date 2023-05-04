@@ -32,7 +32,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
               color={`primary-${selectedTheme}`}
               onClick={goBack}
             >
-              <i className="fa fa-arrow-circle-left mr-2"></i>
+              <i className="fa fa-arrow-circle-left me-2"></i>
               {t('actions.cancel')}
             </Button>
           </Col>
@@ -46,7 +46,7 @@ function GluuFooter({ extraOnClick, extraLabel, hideButtons }) {
               color={`primary-${selectedTheme}`}
               type="submit"
             >
-              <i className="fa fa-check-circle mr-2"></i>
+              <i className="fa fa-check-circle me-2"></i>
               {t('actions.save')}
             </Button>
           </Col>

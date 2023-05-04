@@ -158,12 +158,12 @@
                      "type":"string",
                      "pattern":"^[a-z0-9\\-]*$"
                   },
-                  "cnSecretGoogleSecretVersionId":{
+                  "cnGoogleSecretVersionId":{
                      "description":"Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when global.configAdapterName and global.configSecretAdapter is set to google.",
                      "type":"string",
                      "pattern":"^([0-9]|latest)*$"
                   },
-                  "cnSecretGoogleSecretNamePrefix":{
+                  "cnGoogleSecretNamePrefix":{
                      "description":"Prefix for Gluu secret in Google Secret Manager. Defaults to gluu. If left gluu-secret secret will be created. Used only when global.configAdapterName and global.configSecretAdapter is set to google.",
                      "type":"string",
                      "pattern":"^[a-z]+$"
@@ -171,15 +171,6 @@
                   "cnGoogleSecretManagerPassPhrase":{
                      "description":"Passphrase for Gluu secret in Google Secret Manager. This is used for encrypting and decrypting data from the Google Secret Manager. Used only when global.configAdapterName and global.configSecretAdapter is set to google.",
                      "$ref":"#/definitions/password"
-                  },
-                  "cnConfigGoogleSecretVersionId":{
-                     "description":"Secret version to be used for configuration. Defaults to latest and should normally always stay that way. Used only when global.configAdapterName and global.configSecretAdapter is set to google. Used only when global.configAdapterName and global.configSecretAdapter is set to google.",
-                     "type":"string",
-                     "pattern":"^([0-9]|latest)*$"
-                  },
-                  "cnConfigGoogleSecretNamePrefix":{
-                     "description":"Prefix for Gluu configuration secret in Google Secret Manager. Defaults to gluu. If left intact gluu-configuration secret will be created. Used only when global.configAdapterName and global.configSecretAdapter is set to google.",
-                     "type":"string"
                   },
                   "cnLdapUrl":{
                      "description":"OpenDJ internal address. Leave as default. Used when `global.cnPersistenceType` is set to `ldap`.",
@@ -246,8 +237,7 @@
                "properties":{
                   "repository":{
                      "description":"Image  to use for deploying",
-                     "type":"string",
-                     "pattern":"^[a-z0-9-_/]+$"
+                     "type":"string"
                   },
                   "tag":{
                      "description":"Image  tag to use for deploying.",
@@ -330,6 +320,11 @@
          "description":"Parameters used globally across all services helm charts.",
          "type":"object",
          "properties":{
+            "licenseSsa":{
+               "description":"Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded.",
+               "type":"string",
+               "pattern":"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+            },
             "alb":{
                "type":"object",
                "properties":{
@@ -986,15 +981,6 @@
                      "type":"string"
                   }
                }
-            },
-            "upgrade":{
-               "type":"object",
-               "properties":{
-                  "enabled":{
-                     "description":"Boolean flag used when running helm upgrade command. This allows upgrading the chart without immutable objects errors.",
-                     "type":"boolean"
-                  }
-               }
             }
          }
       },
@@ -1239,8 +1225,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1379,8 +1364,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1488,8 +1472,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1633,8 +1616,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1774,8 +1756,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -1876,8 +1857,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2154,8 +2134,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2413,8 +2392,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2565,8 +2543,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2689,8 +2666,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",
@@ -2827,8 +2803,7 @@
                            },
                            "repository":{
                               "description":"Image  to use for deploying",
-                              "type":"string",
-                              "pattern":"^[a-z0-9-_/]+$"
+                              "type":"string"
                            },
                            "tag":{
                               "description":"Image  tag to use for deploying.",

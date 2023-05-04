@@ -8,7 +8,7 @@ import {
   select,
 } from 'redux-saga/effects'
 import { getAPIAccessToken } from '../actions/AuthActions'
-import {updateToast} from 'Redux/actions/ToastAction'
+import { updateToast } from 'Redux/actions/ToastAction'
 import {
   getScopesResponse,
   getScopeByPatternResponse,
@@ -17,6 +17,7 @@ import {
   deleteScopeResponse,
   getScopeByCreatorResponse,
   setCurrentItem,
+  getClientScopesResponse,
 } from '../actions/ScopeActions'
 import {
   GET_SCOPES,
@@ -27,6 +28,7 @@ import {
   DELETE_SCOPE,
   GET_SCOPE_BY_PATTERN,
   GET_SCOPE_BY_CREATOR,
+  GET_CLIENT_SCOPES,
 } from '../actions/types'
 import { SCOPE } from '../audit/Resources'
 import {
@@ -100,6 +102,24 @@ export function* getScopes({ payload }) {
     }
   }
 }
+
+export function* getClientScopes({ payload }) {
+  const audit = yield* initAudit()
+  try {
+    addAdditionalData(audit, FETCH, SCOPE, payload)
+    const scopeApi = yield* newFunction()
+    const data = yield call(scopeApi.getAllScopes, payload.action)
+    yield put(getClientScopesResponse(data))
+    yield call(postUserAction, audit)
+  } catch (e) {
+    yield put(getClientScopesResponse(null))
+    if (isFourZeroOneError(e)) {
+      const jwt = yield select((state) => state.authReducer.userinfo_jwt)
+      yield put(getAPIAccessToken(jwt))
+    }
+  }
+}
+
 export function* getScopeBasedOnOpts({ payload }) {
   const audit = yield* initAudit()
   try {
@@ -183,6 +203,9 @@ export function* watchGetScopeByCreator() {
 export function* watchGetScopes() {
   yield takeLatest(GET_SCOPES, getScopes)
 }
+export function* watchGetClientScopes() {
+  yield takeLatest(GET_CLIENT_SCOPES, getClientScopes)
+}
 export function* watchSearchScopes() {
   yield takeLatest(SEARCH_SCOPES, getScopes)
 }
@@ -209,5 +232,6 @@ export default function* rootSaga() {
     fork(watchEditScope),
     fork(watchDeleteScope),
     fork(watchGetScopeByCreator),
+    fork(watchGetClientScopes)
   ])
 }

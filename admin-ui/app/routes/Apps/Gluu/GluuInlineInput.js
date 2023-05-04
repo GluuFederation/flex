@@ -35,11 +35,22 @@ function GluuInlineInput({
   const [show, setShow] = useState(false)
   const [correctValue, setCorrectValue] = useState([])
   const [data, setData] = useState(value)
-  const onValueChanged = () => {
+  const onValueChanged = (e) => {
+    if(isBoolean){
+      setData(e.target.checked)
+    }else{
+      setData(e.target.value)
+    }
     setShow(true)
   }
   const handleTypeAheadChange = (selectedOptions) => {
-    setCorrectValue(selectedOptions)
+    const object = selectedOptions.filter((data) => typeof data == 'object')
+    const arrayItems = selectedOptions.filter((data) => typeof data != 'object')
+
+    for(const i in object){
+      arrayItems.push(object[i]['tokenEndpointAuthMethodsSupported'])
+    }
+    setCorrectValue(arrayItems)
     setShow(true)
   }
   const onAccept = () => {
@@ -48,12 +59,11 @@ function GluuInlineInput({
     if (isArray) {
       patch[VALUE] = correctValue
     } else {
-      patch[VALUE] = document.getElementById(name).value
+      patch[VALUE] = data
     }
     patch['op'] = 'replace'
     handler(patch)
     setShow(!show)
-    setData(document.getElementById(name).value)
   }
   const onCancel = () => {
     setCorrectValue([])
@@ -62,51 +72,51 @@ function GluuInlineInput({
   return (
     <FormGroup row>
       <Col sm={10}>
-        <GluuTooltip doc_category="json_properties" doc_entry={name}>
-          <FormGroup row>
-            <GluuLabel
-              label={label}
-              size={lsize}
-              required={required}
-              withTooltip={false}
+        <FormGroup row>
+          <GluuLabel
+            label={label}
+            size={lsize}
+            required={required}
+            withTooltip={false}
+            doc_category="json_properties" 
+            doc_entry={name}
+          />
+          <Col sm={rsize}>
+            {!isBoolean && !isArray && (
+            <Input
+              id={name}
+              data-testid={name}
+              name={name}
+              type={type}
+              defaultValue={data}
+              onChange={onValueChanged}
             />
-            <Col sm={rsize}>
-              {!isBoolean && !isArray && (
-                <Input
-                  id={name}
-                  data-testid={name}
-                  name={name}
-                  type={type}
-                  defaultValue={data}
-                  onChange={onValueChanged}
-                />
-              )}
-              {isBoolean && (
-                <GluuToogle
-                  id={name}
-                  data-testid={name}
-                  name={name}
-                  onChange={onValueChanged}
-                  value={value}
-                />
-              )}
-              {isArray && (
-                <Typeahead
-                  id={name}
-                  data-testid={name}
-                  name={name}
-                  allowNew
-                  emptyLabel=""
-                  labelKey={name}
-                  onChange={handleTypeAheadChange}
-                  multiple={true}
-                  defaultSelected={value}
-                  options={options}
-                />
-              )}
-            </Col>
-          </FormGroup>
-        </GluuTooltip>
+            )}
+            {isBoolean && (
+            <GluuToogle
+              id={name}
+              data-testid={name}
+              name={name}
+              handler={onValueChanged}
+              value={value}
+            />
+            )}
+            {isArray && (
+            <Typeahead
+              id={name}
+              data-testid={name}
+              name={name}
+              allowNew
+              emptyLabel=""
+              labelKey={name}
+              onChange={handleTypeAheadChange}
+              multiple={true}
+              defaultSelected={value}
+              options={options}
+            />
+            )}
+          </Col>
+        </FormGroup>
       </Col>
       <Col sm={2}>
         {show && (
@@ -117,10 +127,10 @@ function GluuInlineInput({
               size="sm"
               onClick={onAccept}
             >
-              <i className="fa fa-check mr-2"></i>
+              <i className="fa fa-check me-2"></i>
             </Button>{' '}
             <Button color="danger" size="sm" onClick={onCancel}>
-              <i className="fa fa-times mr-2"></i>
+              <i className="fa fa-times me-2"></i>
             </Button>
           </>
         )}

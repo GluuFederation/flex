@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
-import { DeleteOutlined } from '@material-ui/icons'
+import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { Paper, TablePagination } from '@material-ui/core'
+import { Paper, TablePagination } from '@mui/material'
 import { Card, CardBody, Badge } from 'Components'
 import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
 import { resetUMAResources } from 'Plugins/auth-server/redux/actions/UMAResourceActions'
@@ -133,7 +133,7 @@ function ClientListPage() {
         return rowData?.grantTypes?.map((data) => {
           return (
             // eslint-disable-next-line react/jsx-key
-            <div style={{ maxWidth: 120, overflow: 'auto' }}>
+            <div style={{ maxWidth: 140, overflow: 'auto' }}>
               <Badge color={`primary-${selectedTheme}`}>{data}</Badge>
             </div>
           )
@@ -212,7 +212,7 @@ function ClientListPage() {
   function handleGoToClientEditPage(row, edition) {
     dispatch(viewOnly(edition))
     dispatch(setCurrentItem(row))
-    return navigate(`/auth-server/client/edit:` + row.inum.substring(0, 4))
+    return navigate(`/auth-server/client/edit/:` + row.inum.substring(0, 4))
   }
   function handleGoToClientAddPage() {
     return navigate('/auth-server/client/new')
@@ -325,7 +325,7 @@ function ClientListPage() {
   const onPageChangeClick = (page) => {
     makeOptions()
     let startCount = page * limit
-    options['startIndex'] = parseInt(startCount) + 1
+    options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
     console.log(options)

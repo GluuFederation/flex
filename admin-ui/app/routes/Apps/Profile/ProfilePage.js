@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Container,
   Row,
@@ -17,9 +17,16 @@ import GluuErrorFallBack from '../Gluu/GluuErrorFallBack'
 import { Profile } from 'Routes/components/Profile'
 import { connect } from 'react-redux'
 import { useTranslation } from 'react-i18next'
+import { ThemeContext } from '../../../context/theme/themeContext'
+import getThemeColor from '../../../context/theme/config'
+import { Box } from '@mui/material'
 
 const ProfileDetails = ({ userinfo }) => {
   const { t } = useTranslation()
+  const theme = useContext(ThemeContext)
+  const selectedTheme = theme.state.theme
+  const themeColors = getThemeColor(theme.state.theme)
+
   return (
     <React.Fragment>
       <ErrorBoundary FallbackComponent={GluuErrorFallBack}>
@@ -39,19 +46,19 @@ const ProfileDetails = ({ userinfo }) => {
                       {t('titles.detail_information')}
                     </span>
                   </div>
-                  <div className="text-left mb-4">
-                    <Badge pill color="info" className="mr-1">
-                      {userinfo.family_name}
-                    </Badge>
-                    <Badge pill color="info" className="mr-1">
-                      {userinfo.nickname}
-                    </Badge>
-                    <Badge pill color="info" className="mr-1">
-                      {userinfo.name}
-                    </Badge>
-                    <Badge pill color="info" className="mr-1">
-                      {userinfo.middle_name}
-                    </Badge>
+                  <div className="text-start mb-4">
+                    {userinfo.family_name ? <Badge pill color="info" className="me-1">
+                      <span style={{ color: themeColors.fontColor }}>{userinfo.family_name}</span>
+                    </Badge> : null}
+                    {userinfo.nickname ? <Badge pill color="info" className="me-1">
+                      <span style={{ color: themeColors.fontColor }}>{userinfo.nickname}</span>
+                    </Badge> : null}
+                    {userinfo.name ? <Badge pill color="info" className="me-1">
+                      <span style={{ color: themeColors.fontColor }}>{userinfo.name}</span>
+                    </Badge> : null}
+                    {userinfo.middle_name ? <Badge pill color="info" className="me-1">
+                      <span style={{ color: themeColors.fontColor }}>{userinfo.middle_name}</span>
+                    </Badge> : null}
                   </div>
                 </CardBody>
               </Card>
@@ -76,35 +83,37 @@ const ProfileDetails = ({ userinfo }) => {
                           {t('titles.config_api_roles')}
                         </span>
                       </div>
+                      <Box display="flex" alignItems="center">
                       {userinfo.jansAdminUIRole &&
                         userinfo.jansAdminUIRole.map((role, index) => (
                           <Badge
                             style={{ width: '100px' }}
-                            color="info"
-                            className="mr-1"
+                            color={`primary-${selectedTheme}`}
+                            className="me-1"
                             key={index}
                           >
-                            {role}
+                            <span style={{ color: themeColors.fontColor }}>{role}</span>
                           </Badge>
                         ))}
+                      </Box>
                       <div className="mt-4 mb-2">
                         <span className="small">
                           {t('titles.detail_information')}
                         </span>
                       </div>
-                      <div className="text-left mb-4">
-                        <Badge pill color="info" className="mr-1">
-                          {userinfo.family_name}
-                        </Badge>
-                        <Badge pill color="info" className="mr-1">
-                          {userinfo.nickname}
-                        </Badge>
-                        <Badge pill color="info" className="mr-1">
-                          {userinfo.name}
-                        </Badge>
-                        <Badge pill color="info" className="mr-1">
-                          {userinfo.middle_name}
-                        </Badge>
+                      <div className="text-start mb-4">
+                        {userinfo.family_name ? <Badge pill color="info" className="me-1">
+                          <span style={{ color: themeColors.fontColor }}>{userinfo.family_name}</span>
+                        </Badge> : null}
+                        {userinfo.nickname ? <Badge pill color="info" className="me-1">
+                          <span style={{ color: themeColors.fontColor }}>{userinfo.nickname}</span>
+                        </Badge> : null}
+                        {userinfo.name ? <Badge pill color="info" className="me-1">
+                          <span style={{ color: themeColors.fontColor }}>{userinfo.name}</span>
+                        </Badge> : null}
+                        {userinfo.middle_name ? <Badge pill color="info" className="me-1">
+                          <span style={{ color: themeColors.fontColor }}>{userinfo.middle_name}</span>
+                        </Badge> : null}
                       </div>
                     </Card>
                   </TabPane>

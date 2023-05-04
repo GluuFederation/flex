@@ -91,6 +91,10 @@ export const USER_READ = BASE_URL + '/config/user.readonly'
 export const USER_WRITE = BASE_URL + '/config/user.write'
 export const USER_DELETE = BASE_URL + '/config/user.delete'
 
+export const AGAMA_READ = BASE_URL + '/config/agama.readonly'
+export const AGAMA_WRITE = BASE_URL + '/config/agama.write'
+export const AGAMA_DELETE = BASE_URL + '/config/agama.delete'
+
 export const SESSION_READ = BASE_URL + '/jans-auth-server/session.readonly'
 export const SESSION_DELETE = BASE_URL + '/jans-auth-server/session.delete'
 

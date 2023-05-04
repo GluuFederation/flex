@@ -47,14 +47,14 @@ function ClientEditPage({
     dispatch(getOidcDiscovery())
   }, [])
   useEffect(() => {
-    if (saveOperationFlag && !errorInSaveOperationFlag)
+    if (saveOperationFlag)
       navigate('/auth-server/clients')
   }, [saveOperationFlag])
 
   if (!clientData.attributes) {
     clientData.attributes = {}
   }
-  scopes = scopes.map((item) => ({ 
+  scopes = scopes?.map((item) => ({
     ...item,
     name: item.id,
   }))

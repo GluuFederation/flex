@@ -53,7 +53,7 @@ const GluuCommitDialog = ({
   }
 
   return (
-    <Modal isOpen={modal} toggle={closeModal} className="modal-outline-primary">
+    <Modal isOpen={modal} size={'lg'} toggle={closeModal} className="modal-outline-primary">
       <ModalHeader toggle={closeModal}>
         <i
           style={{ color: 'green' }}
@@ -67,14 +67,25 @@ const GluuCommitDialog = ({
           operations.map((item, key) => (
             <FormGroup row key={key}>
               <Col sm={1}>Set</Col>
-              <Col sm={7}>
+              <Col sm={5} style={{ overflow:"auto" }}>
                 <Badge color={`primary-${selectedTheme}`}>{item.path}</Badge>
               </Col>
               <Col sm={1}>to</Col>
-              <Col sm={3}>
-                <Badge color={`primary-${selectedTheme}`}>
-                  {String(item.value)}
-                </Badge>
+              <Col sm={5} style={{ overflow:"auto" }}>
+                {Array.isArray(item.value) ? 
+                  <>
+                    {
+                      item.value.map((data, index) => 
+                        <Badge color={`primary-${selectedTheme}`} key={index}>
+                          {String(data)}
+                        </Badge>
+                      )
+                    }
+                  </>:
+                  <Badge color={`primary-${selectedTheme}`}>
+                    {String(item.value)}
+                  </Badge>
+                }
               </Col>
             </FormGroup>
           ))}
@@ -104,12 +115,12 @@ const GluuCommitDialog = ({
       <ModalFooter>
         {active && (
           <Button color={`primary-${selectedTheme}`} onClick={handleAccept}>
-            <i className="fa fa-check-circle mr-2"></i>
+            <i className="fa fa-check-circle me-2"></i>
             {t('actions.accept')}
           </Button>
         )}{' '}
         <Button style={applicationStyle.buttonStyle} onClick={closeModal}>
-          <i className="fa fa-remove mr-2"></i>
+          <i className="fa fa-remove me-2"></i>
           {t('actions.no')}
         </Button>
       </ModalFooter>

@@ -31,7 +31,9 @@ import org.slf4j.Logger;
  * @author jgomer
  */
 @ApplicationScoped
+@ProtectedApi(scopes = "https://jans.io/casa.enroll")
 @Path("/enrollment/" + SecurityKey2Extension.ACR)
+@Produces(MediaType.APPLICATION_JSON)
 public class SecurityKey2EnrollingWS {
 
     private static final String USERS_PENDING_REG_PREFIX = "casa_upreg_";    //Users with pending registrations
@@ -54,9 +56,8 @@ public class SecurityKey2EnrollingWS {
 
     @GET
     @Path("attestation")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
-    public Response getAttestationMessage(@QueryParam("userid") String userId) {
+    public Response getAttestationMessage(@QueryParam("userid") String userId,
+                                          @QueryParam("platformAuthn") boolean platformAuthenticatorAvailable) {
 
         String request = null;
         RegisterMessageCode result;
@@ -71,7 +72,8 @@ public class SecurityKey2EnrollingWS {
             } else {
                 try {
                     String userName = person.getUid();
-                    request = fido2Service.doRegister(userName, Optional.ofNullable(person.getGivenName()).orElse(userName),false);
+                    request = fido2Service.doRegister(userName,
+                                Optional.ofNullable(person.getGivenName()).orElse(userName), platformAuthenticatorAvailable);
                     result = RegisterMessageCode.SUCCESS;
                     cacheProvider.put(EXPIRATION, USERS_PENDING_REG_PREFIX + userId, "");
                 } catch (Exception e) {
@@ -86,8 +88,6 @@ public class SecurityKey2EnrollingWS {
 
     @POST
     @Path("registration/{userid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response sendRegistrationResult(String body, @PathParam("userid") String userId) {
 
         RegistrationCode result;
@@ -132,8 +132,6 @@ public class SecurityKey2EnrollingWS {
 
     @POST
     @Path("creds/{userid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @ProtectedApi
     public Response nameEnrollment(NamedCredential credential,
                                    @PathParam("userid") String userId) {
 

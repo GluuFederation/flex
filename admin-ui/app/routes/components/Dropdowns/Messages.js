@@ -20,7 +20,7 @@ const Messages = () => {
   return (
     <React.Fragment>
       <Media>
-        <Media left className="mr-4">
+        <Media left className="me-4">
           <Avatar.Image
             size="md"
             src={ randomAvatar() }
@@ -38,14 +38,14 @@ const Messages = () => {
             ]}
           />
         </Media>
-        <Media body className="text-left">
+        <Media body className="text-start">
           <span className="d-flex justify-content-start">
             <span className="h6 pb-0 mb-0 d-flex align-items-center">
               { 'faker.name.firstName()' } { 'faker.name.lastName()' }
             </span>
                       
-            <span className="ml-1 small">(23)</span>
-            <span className="ml-auto small">{t("Now")}</span>
+            <span className="ms-1 small">(23)</span>
+            <span className="ms-auto small">{t("Now")}</span>
           </span>
           <p className="mt-2 mb-1">
             { 'faker.name.firstName()' }

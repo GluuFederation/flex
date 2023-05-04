@@ -81,15 +81,7 @@ function UserAddPage() {
       navigate('/user/usersmanagement')
     }
   }, [redirectToUserListPage])
-  const formik = useFormik({
-    initialValues: {},
-    onSubmit: (values) => {
-      submitData(values)
-    },
-    setFieldValue: (field) => {
-      delete values[field]
-    },
-  })
+ 
   return (
     <React.Fragment>
       <GluuAlert
@@ -100,7 +92,7 @@ function UserAddPage() {
       <Container>
         <Card className="mb-3">
           <CardBody>
-            <UserForm formik={formik} />
+            <UserForm onSubmitData={submitData} />
           </CardBody>
         </Card>
       </Container>

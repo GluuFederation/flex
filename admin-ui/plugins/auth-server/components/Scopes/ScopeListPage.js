@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
-import { DeleteOutlined } from '@material-ui/icons'
-import { Paper, TablePagination } from '@material-ui/core'
+import { DeleteOutlined } from '@mui/icons-material'
+import { Paper, TablePagination } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Badge } from 'reactstrap'
@@ -134,7 +134,7 @@ function ScopeListPage() {
   }
   function handleGoToScopeEditPage(row) {
     dispatch(setCurrentItem(row))
-    return navigate(`/auth-server/scope/edit:` + row.inum)
+    return navigate(`/auth-server/scope/edit/:` + row.inum)
   }
 
   function handleScopeDelete(row) {
@@ -220,7 +220,7 @@ function ScopeListPage() {
   const onPageChangeClick = (page) => {
     makeOptions()
     let startCount = page * limit
-    options['startIndex'] = parseInt(startCount) + 1
+    options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
     dispatch(getScopes(options))
@@ -264,8 +264,7 @@ function ScopeListPage() {
             actions={myActions}
             options={{
               columnsButton: true,
-              search: true,
-              searchFieldAlignment: 'left',
+              search: false,
               selection: false,
               pageSize: limit,
               headerStyle: {

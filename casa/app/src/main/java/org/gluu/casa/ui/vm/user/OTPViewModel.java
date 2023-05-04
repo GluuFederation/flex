@@ -25,6 +25,7 @@ import org.zkoss.zk.ui.select.annotation.WireVariable;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -238,7 +239,7 @@ public class OTPViewModel extends UserViewModel {
             }
             //Determines if numeric code is valid with respect to secret key
             IOTPAlgorithm service = otpService.getAlgorithmService(getApplicableAlgorithmType());
-            uid = service.getExternalUid(secretKey, code);
+            uid = service.getExternalUid(Base64.getEncoder().encodeToString(secretKey), code);
             if (uid != null) {
 
                 //User may have entered the same key manually in the past

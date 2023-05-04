@@ -137,7 +137,7 @@ public class SecurityKey2ViewModel extends UserViewModel {
 		mapper = new ObjectMapper();
 		newDevice = new SecurityKey();
 		newTouchId = new PlatformAuthenticator();
-		devices = fido2Service.getDevices(user.getId(), true);
+		devices = fido2Service.getDevices(user.getId(),new java.net.URI(fido2Service.getScriptPropertyValue("fido2_server_uri")).getHost(), true);
 		checkFido2Support();
 
 	}

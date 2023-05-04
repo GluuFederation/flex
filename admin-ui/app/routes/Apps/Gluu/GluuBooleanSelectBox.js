@@ -19,40 +19,40 @@ function GluuBooleanSelectBox({
 }) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
-      <FormGroup row>
-        <GluuLabel label={label} size={lsize} />
-        <Col sm={rsize}>
-          {!toToggle && (
-            <InputGroup>
-              <CustomInput
-                type="select"
-                id={name}
-                name={name}
-                data-testid={name}
-                defaultValue={value}
-                onChange={formik.handleChange}
-                disabled={disabled}
-              >
-                <option value="false">{t('options.false')}</option>
-                <option value="true">{t('options.true')}</option>
-              </CustomInput>
-            </InputGroup>
-          )}
-          {toToggle && (
-            <GluuToogle
-              id={name}
-              data-testid={name}
-              name={name}
-              handler={handler}
-              formik={formik}
-              value={value}
-              disabled={disabled}
-            />
-          )}
-        </Col>
-      </FormGroup>
-    </GluuTooltip>
+    
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name}/>
+      <Col sm={rsize}>
+        {!toToggle && (
+        <InputGroup>
+          <CustomInput
+            type="select"
+            id={name}
+            name={name}
+            data-testid={name}
+            defaultValue={value}
+            onChange={formik.handleChange}
+            disabled={disabled}
+          >
+            <option value="false">{t('options.false')}</option>
+            <option value="true">{t('options.true')}</option>
+          </CustomInput>
+        </InputGroup>
+        )}
+        {toToggle && (
+        <GluuToogle
+          id={name}
+          data-testid={name}
+          name={name}
+          handler={handler}
+          formik={formik}
+          value={value}
+          disabled={disabled}
+        />
+        )}
+      </Col>
+    </FormGroup>
+    
   )
 }
 

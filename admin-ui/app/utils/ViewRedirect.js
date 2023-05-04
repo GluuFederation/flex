@@ -5,6 +5,7 @@ import { Container } from 'Components'
 import GluuNotification from 'Routes/Apps/Gluu/GluuNotification'
 import GluuCommitDialog from 'Routes/Apps/Gluu/GluuCommitDialog'
 import { useTranslation } from 'react-i18next'
+import GluuErrorModal from '../routes/Apps/Gluu/GluuErrorModal'
 
 function ViewRedirect({
   backendIsUp,
@@ -49,23 +50,15 @@ function ViewRedirect({
             Redirecting...
           </div>
           {!backendIsUp && (
-            <GluuNotification
-              type="error"
-              message={t('The UI backend service is down')}
-              description={t(
-                'Please contact the side administrator or make sure it is up and running.',
-              )}
-              show={true}
+            <GluuErrorModal 
+              message={'The UI backend service is down'}
+              description={'It may due to any of the following reason <br/>1. Admin UI Backend is down. <br/>2. Unable to get license credentials from Gluu server.<br/>Please contact the site administrator or check server logs.'}
             />
           )}
           {isLicenseActivationResultLoaded && !isLicenseValid && (
-            <GluuNotification
-              type="error"
+            <GluuErrorModal 
               message={t('Invalid License')}
-              description={t(
-                'License has been not enabled for this application. Please contact support and confirm if license-key is correct.',
-              )}
-              show={true}
+              description={'License has been not enabled for this application. Please contact support and confirm if license-key is correct.'}
             />
           )}
           <GluuCommitDialog

@@ -17,9 +17,9 @@ set -e
 # CN_INSTALL_SCIM
 # CN_INSTALL_CASA
 # CN_INSTALL_ADMIN_UI
-# MYSQL_DATABASE
-# MYSQL_USER
-# MYSQL_PASSWORD
+# RDBMS_DATABASE
+# RDBMS_USER
+# RDBMS_PASSWORD
 # ======================================================================================================================
 
 IS_FLEX_DEPLOYED=/flex/deployed
@@ -36,27 +36,41 @@ install_flex() {
   echo "countryCode=${CN_COUNTRY}" | tee -a setup.properties > /dev/null
   # shellcheck disable=SC2016
   echo "ldapPass=${CN_ADMIN_PASS}" | tee -a setup.properties > /dev/null
-  echo "installLdap=""$([[ ${INSTALL_LDAP} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
+  echo "installLdap=""$([[ ${CN_INSTALL_LDAP} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install_config_api=""$([[ ${CN_INSTALL_CONFIG_API} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install_scim_server=""$([[ ${CN_INSTALL_SCIM} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "installFido2=""$([[ ${CN_INSTALL_FIDO2} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install-admin-ui=""$([[ ${CN_INSTALL_ADMIN_UI} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "install-casa=""$([[ ${CN_INSTALL_CASA} == true ]] && echo True || echo False)" | tee -a setup.properties > /dev/null
   echo "adminui-authentication-mode=casa" | tee -a setup.properties > /dev/null
-
-  if [[ "${INSTALL_LDAP}" == "false" ]]; then
+  echo "test_client_id=${TEST_CLIENT_ID}"| tee -a setup.properties > /dev/null
+  echo "test_client_pw=${TEST_CLIENT_SECRET}" | tee -a setup.properties > /dev/null
+  echo "test_client_trusted=""$([[ ${TEST_CLIENT_TRUSTED} == true ]] && echo True || echo True)" | tee -a setup.properties > /dev/null
+  echo "admin-ui-ssa=/opt/ssa.txt" | tee -a setup.properties > /dev/null
+  if [[ "${CN_INSTALL_MYSQL}" == "true" ]] || [[ "${CN_INSTALL_PGSQL}" == "true" ]]; then
+    echo "Installing with RDBMS"
     echo "rdbm_install=2" | tee -a setup.properties > /dev/null
     echo "rdbm_install_type=2" | tee -a setup.properties > /dev/null
-    echo "rdbm_db=${MYSQL_DATABASE}" | tee -a setup.properties > /dev/null
-    echo "rdbm_user=${MYSQL_USER}" | tee -a setup.properties > /dev/null
-    echo "rdbm_password=${MYSQL_PASSWORD}" | tee -a setup.properties > /dev/null
-    echo "rdbm_type=mysql" | tee -a setup.properties > /dev/null
-    echo "rdbm_host=${MYSQL_HOST}" | tee -a setup.properties > /dev/null
+    echo "rdbm_db=${RDBMS_DATABASE}" | tee -a setup.properties > /dev/null
+    echo "rdbm_user=${RDBMS_USER}" | tee -a setup.properties > /dev/null
+    echo "rdbm_password=${RDBMS_PASSWORD}" | tee -a setup.properties > /dev/null
+    echo "rdbm_host=${RDBMS_HOST}" | tee -a setup.properties > /dev/null
   fi
+  if [[ "${CN_INSTALL_MYSQL}" == "true" ]]; then
+    echo "Installing with MySql"
+    echo "rdbm_type=mysql" | tee -a setup.properties > /dev/null
+    echo "rdbm_port=3306" | tee -a setup.properties > /dev/null
+  elif [[ "${CN_INSTALL_PGSQL}" == "true" ]]; then
+    echo "Installing with Postgres"
+    echo "rdbm_type=pgsql" | tee -a setup.properties > /dev/null
+    echo "rdbm_port=5432" | tee -a setup.properties > /dev/null
+  fi
+
 
   echo "*****   Running the setup script for ${CN_ORG_NAME}!!   *****"
   echo "*****   PLEASE NOTE THAT THIS MAY TAKE A WHILE TO FINISH. PLEASE BE PATIENT!!   *****"
   echo "*****   Installing Gluu Flex..."
+  echo "$CN_GLUU_LICENSE_SSA" | tee -a /opt/ssa.txt > /dev/null
   curl https://raw.githubusercontent.com/GluuFederation/flex/"${FLEX_SOURCE_VERSION}"/flex-linux-setup/flex_linux_setup/flex_setup.py > flex_setup.py
   python3 flex_setup.py -f setup.properties --flex-non-interactive
   echo "*****   Setup script completed!!    *****"

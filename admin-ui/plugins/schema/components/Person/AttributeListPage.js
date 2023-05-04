@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import MaterialTable from '@material-table/core'
-import { DeleteOutlined } from '@material-ui/icons'
+import { DeleteOutlined } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
-import { Paper, TablePagination } from '@material-ui/core'
+import { Paper, TablePagination } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
 import { Badge } from 'reactstrap'
 import { Card, CardBody } from 'Components'
@@ -74,7 +74,7 @@ function AttributeListPage() {
   const onPageChangeClick = (page) => {
     makeOptions()
     let startCount = page * limit
-    options['startIndex'] = parseInt(startCount) + 1
+    options['startIndex'] = parseInt(startCount)
     options['limit'] = limit
     setPageNumber(page)
     dispatch(getAttributes(options))
@@ -97,11 +97,11 @@ function AttributeListPage() {
   }
   function handleGoToAttributeEditPage(row) {
     dispatch(setCurrentItem(row))
-    return navigate(`/attribute/edit:` + row.inum)
+    return navigate(`/attribute/edit/:` + row.inum)
   }
   function handleGoToAttributeViewPage(row) {
     dispatch(setCurrentItem(row))
-    return navigate(`/attribute/view:` + row.inum)
+    return navigate(`/attribute/view/:` + row.inum)
   }
   function handleAttribueDelete(row) {
     setItem(row)

@@ -11,7 +11,7 @@
         "email"
       ],
       "acrValues": [
-        "basic"
+        "%(adminui_authentication_mode)s"
       ],
       "redirectUri": "https://%(hostname)s/admin",
       "postLogoutUri": "https://%(hostname)s/admin",
@@ -28,6 +28,22 @@
         "user_name",
         "email"
       ]
+    }
+  },
+  "licenseConfig": {
+    "ssa": "%(ssa)s",
+    "scanLicenseApiHostname": "%(scan_license_api_hostname)s",
+    "licenseHardwareKey": "%(license_hardware_key)s",
+    "oidcClient": {
+      "opHost": "%(op_host)s",
+      "clientId": "%(oidc_client_id)s",
+      "clientSecret": "%(oidc_client_secret)s",
+      "tokenEndpoint": null,
+      "redirectUri": null,
+      "postLogoutUri": null,
+      "frontchannelLogoutUri": null,
+      "scopes": null,
+      "acrValues": null
     }
   }
 }

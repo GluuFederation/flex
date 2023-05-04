@@ -13,6 +13,8 @@ import org.zkoss.util.Pair;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.Base64;
+
 import static com.lochbridge.oath.otp.keyprovisioning.OTPKey.OTPType;
 
 /**
@@ -54,10 +56,10 @@ public class HOTPAlgorithmService implements IOTPAlgorithm {
 
     }
 
-    public String getExternalUid(byte[] secretKey, String code) {
-        Pair<Boolean, Long> result = validateKey(secretKey, code);
+    public String getExternalUid(String secretKey, String code) {
+        Pair<Boolean, Long> result = validateKey(Base64.getDecoder().decode(secretKey), code);
         return result.getX()
-                ? String.format("%s:%s;%s", OTPType.HOTP.getName().toLowerCase(), BaseEncoding.base64Url().encode(secretKey), result.getY())
+                ? String.format("%s:%s;%s", OTPType.HOTP.getName().toLowerCase(), secretKey, result.getY())
                 : null;
     }
 

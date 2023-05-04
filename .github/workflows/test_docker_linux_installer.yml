@@ -1,5 +1,4 @@
 name: Test Linux installer
-
 on:
   workflow_dispatch:
   push:
@@ -14,21 +13,42 @@ on:
       - "flex-linux-setup/**"
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       max-parallel: 6
       matrix:
         # add '"pgsql" when supported
-        persistence-backends: ["MYSQL"]
+        persistence-backends: ["MYSQL", "PGSQL", "LDAP"]
         python-version: ["3.7"]
+      fail-fast: false
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python3
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+
     - name: Test Flex monolith demo
       run: |
         ip=$(ifconfig eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
         sudo chmod u+x automation/startflexmonolithdemo.sh
-        sudo bash ./automation/startflexmonolithdemo.sh demoexample.gluu.org ${{ matrix.persistence-backends }} $ip ${{ github.sha }}
+        sudo bash ./automation/startflexmonolithdemo.sh demoexample.gluu.org ${{ matrix.persistence-backends }} $ip ${{ github.sha }} ${{ secrets.LICENSE_SSA }}
+        
+        echo "echo setup.properties"
+        docker exec docker-flex-monolith-flex-1 cat setup.properties
+        echo "echo setup.properties.last"
+        docker exec docker-flex-monolith-flex-1 cat /opt/jans/jans-setup/setup.properties.last
+        
+        export JANS_URL=https://demoexample.gluu.org
+        export JANS_CLIENT_ID=9876baac-de39-4c23-8a78-674b59df8c09
+        export JANS_CLIENT_SECRET=1t5Fin3#security
+        export JANS_INSECURE_CLIENT=true
+        export TF_ACC=1
+        git clone https://github.com/JanssenProject/jans.git
+        cd jans/terraform-provider-jans
+        go test -v ./... || exit 0

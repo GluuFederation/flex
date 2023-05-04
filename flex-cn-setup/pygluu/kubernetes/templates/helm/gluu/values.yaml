@@ -1,11 +1,6 @@
 # -- Only used by the installer. These settings do not affect nor are used by the chart
 installer-settings:
   currentVersion: ""
-  upgrade:
-    targetVersion: ""
-    image:
-      repository: ""
-      tag: ""
   acceptLicense: ""
   namespace: ""
   releaseName: ""
@@ -109,9 +104,9 @@ admin-ui:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: gluufederation/admin-ui
+    repository: ghcr.io/gluufederation/flex/admin-ui
     # -- Image  tag to use for deploying.
-    tag: 1.0.5-1
+    tag: 1.0.13_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -120,14 +115,14 @@ admin-ui:
   resources:
     limits:
       # -- CPU limit.
-      cpu: 2500m
+      cpu: 2000m
       # -- Memory limit.
-      memory: 2500Mi
+      memory: 2000Mi
     requests:
       # -- CPU request.
-      cpu: 2500m
+      cpu: 2000m
       # -- Memory request.
-      memory: 2500Mi
+      memory: 2000Mi
   # -- Configure the liveness healthcheck for the admin ui if needed.
   livenessProbe:
     tcpSocket:
@@ -148,7 +143,13 @@ admin-ui:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
-
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
@@ -200,9 +201,9 @@ auth-server:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: janssenproject/auth-server
+    repository: ghcr.io/janssenproject/jans/auth-server
     # -- Image  tag to use for deploying.
-    tag: 1.0.5-1
+    tag: 1.0.13_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -244,7 +245,13 @@ auth-server:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
-
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
@@ -267,9 +274,9 @@ auth-server-key-rotation:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: janssenproject/certmanager
+    repository: ghcr.io/janssenproject/jans/certmanager
     # -- Image  tag to use for deploying.
-    tag: 1.0.5-1
+    tag: 1.0.13_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Auth server key rotation keys life in hours
@@ -290,7 +297,13 @@ auth-server-key-rotation:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
-
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
@@ -342,9 +355,9 @@ casa:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: gluufederation/casa
+    repository: ghcr.io/gluufederation/flex/casa
     # -- Image  tag to use for deploying.
-    tag: 5.0.0-4
+    tag: 5.0.0_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -383,6 +396,13 @@ casa:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
 
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
@@ -414,9 +434,9 @@ config:
     # -- SQL database port.
     cnSqlDbPort: 3306
     # -- SQL database name.
-    cnSqlDbName: jans
+    cnSqlDbName: gluu
     # -- SQL database username.
-    cnSqlDbUser: jans
+    cnSqlDbUser: gluu
     # -- SQL database timezone.
     cnSqlDbTimezone: UTC
     # -- SQL password  injected the secrets .
@@ -454,15 +474,9 @@ config:
     # [google_spanner_envs] END
     # [google_secret_manager_envs] Envs related to using Google Secret Manager to store config and secret layer
     # -- Secret version to be used for secret configuration. Defaults to latest and should normally always stay that way. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
-    cnSecretGoogleSecretVersionId: "latest"
+    cnGoogleSecretVersionId: "latest"
     # -- Prefix for Gluu secret in Google Secret Manager. Defaults to gluu. If left gluu-secret secret will be created. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
-    cnSecretGoogleSecretNamePrefix: gluu
-    # -- Passphrase for Gluu secret in Google Secret Manager. This is used for encrypting and decrypting data from the Google Secret Manager. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
-    cnGoogleSecretManagerPassPhrase: Test1234#
-    # -- Secret version to be used for configuration. Defaults to latest and should normally always stay that way. Used only when global.configAdapterName and global.configSecretAdapter is set to google. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
-    cnConfigGoogleSecretVersionId: "latest"
-    # -- Prefix for Gluu configuration secret in Google Secret Manager. Defaults to gluu. If left intact gluu-configuration secret will be created. Used only when global.configAdapterName and global.configSecretAdapter is set to google.
-    cnConfigGoogleSecretNamePrefix: gluu
+    cnGoogleSecretNamePrefix: gluu
     # [google_secret_manager_envs] END
     # [google_envs] END
     # [aws_envs] Envs related to using AWS
@@ -471,14 +485,14 @@ config:
     cnAwsAccessKeyId: ""
     # AWS Secret Access key that belong to a user/id with SecretsManagerReadWrite policy
     cnAwsSecretAccessKey: ""
-    # The URL of AWS secretsmanager service (if omitted, will use the one in specified region). Used only when global.configAdapterName and global.configSecretAdapter is set to aws.
+    #The URL of AWS secretsmanager service (if omitted, will use the one in the specified default region. Example: https://secretsmanager.us-west-1.amazonaws.com). Used only when global.configAdapterName and global.configSecretAdapter is set to aws.
     cnAwsSecretsEndpointUrl: ""
     # The prefix name of the secrets. Used only when global.configAdapterName and global.configSecretAdapter is set to aws.
     cnAwsSecretsNamePrefix: gluu
     # The default AWS Region to use, for example, `us-west-1` or `us-west-2`.
     cnAwsDefaultRegion: us-west-1
-    # The default profile to use.
-    cnAwsProfile: "gluu"
+    # The aws named profile to use. Has to be created first. This is a sensible default and it's good to leave it as is. https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
+    cnAwsProfile: gluu
     # Example replicated region [{"Region": "us-west-1"}, {"Region": "us-west-2"}]
     cnAwsSecretsReplicaRegions: []
     # [aws_secret_manager_envs] END
@@ -519,9 +533,9 @@ config:
   email: support@gluu.org
   image:
     # -- Image  to use for deploying.
-    repository: janssenproject/configurator
+    repository: ghcr.io/janssenproject/jans/configurator
     # -- Image  tag to use for deploying.
-    tag: 1.0.5-1
+    tag: 1.0.13_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- LDAP admin password if OpenDJ is used for persistence.
@@ -548,6 +562,13 @@ config:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
   # -- Add custom dns policy
   dnsPolicy: ""
   # -- Add custom dns config
@@ -613,9 +634,9 @@ config-api:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: janssenproject/config-api
+    repository: ghcr.io/janssenproject/jans/config-api
     # -- Image  tag to use for deploying.
-    tag: 1.0.5-1
+    tag: 1.0.13_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -626,12 +647,12 @@ config-api:
       # -- CPU limit.
       cpu: 1000m
       # -- Memory limit.
-      memory: 400Mi
+      memory: 1000Mi
     requests:
       # -- CPU request.
       cpu: 1000m
       # -- Memory request.
-      memory: 400Mi
+      memory: 1000Mi
   # -- Configure the liveness healthcheck for the auth server if needed.
   livenessProbe:
     # -- http liveness probe endpoint
@@ -653,6 +674,13 @@ config-api:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
 
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
@@ -705,9 +733,9 @@ fido2:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: janssenproject/fido2
+    repository: ghcr.io/janssenproject/jans/fido2
     # -- Image  tag to use for deploying.
-    tag: 1.0.5-1
+    tag: 1.0.13_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -750,6 +778,13 @@ fido2:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
 
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
@@ -769,7 +804,8 @@ global:
   alb:
     # -- Activates ALB ingress
     ingress: false
-
+  # -- Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded.
+  licenseSsa: ""
   admin-ui:
     # -- Boolean flag to enable/disable the admin-ui chart and admin ui config api plugin.
     enabled: true
@@ -786,6 +822,8 @@ global:
     enabled: true
     # -- App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed.
     appLoggers:
+      # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e auth-server-script ===> 2022-12-20 17:49:55,744 INFO
+      enableStdoutLogPrefix: "true"
       # -- jans-auth.log target
       authLogTarget: "STDOUT"
       # -- jans-auth.log level
@@ -850,6 +888,18 @@ global:
   # -- Azure storage kind if using Azure disks
   azureStorageKind: Managed
   casa:
+    # -- App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed.
+    appLoggers:
+      # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e casa ===> 2022-12-20 17:49:55,744 INFO
+      enableStdoutLogPrefix: "true"
+      # -- casa.log target
+      casaLogTarget: "STDOUT"
+      # -- casa.log level
+      casaLogLevel: "INFO"
+      # -- casa timer log target
+      timerLogTarget: "FILE"
+      # -- casa timer log level
+      timerLogLevel: "INFO"
     # -- Name of the casa service. Please keep it as default.
     casaServiceName: casa
     # -- Boolean flag to enable/disable the casa chart.
@@ -913,13 +963,15 @@ global:
     enabled: true
     # -- App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed.
     appLoggers:
+      # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e config-api_persistence ===> 2022-12-20 17:49:55,744 INFO
+      enableStdoutLogPrefix: "true"
       # -- configapi.log target
       configApiLogTarget: "STDOUT"
       # -- configapi.log level
       configApiLogLevel: "INFO"
       # -- config-api_persistence.log target
       persistenceLogTarget: "FILE"
-      # -- jans-auth_persistence.log level
+      # -- config-api_persistence.log level
       persistenceLogLevel: "INFO"
       # -- config-api_persistence_duration.log target
       persistenceDurationLogTarget: "FILE"
@@ -934,6 +986,8 @@ global:
       # -- config-api_script.log level
       scriptLogLevel: "INFO"
     adminUiAppLoggers:
+      # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e config-api_persistence ===> 2022-12-20 17:49:55,744 INFO
+      enableStdoutLogPrefix: "true"
       # -- config-api admin-ui plugin log level
       adminUiLogTarget: "FILE"
       # -- config-api admin-ui plugin log target
@@ -955,6 +1009,8 @@ global:
     enabled: true
     # -- App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed.
     appLoggers:
+      # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e fido2 ===> 2022-12-20 17:49:55,744 INFO
+      enableStdoutLogPrefix: "true"
       # -- fido2.log target
       fido2LogTarget: "STDOUT"
       # -- fido2.log level
@@ -963,6 +1019,14 @@ global:
       persistenceLogTarget: "FILE"
       # -- fido2_persistence.log level
       persistenceLogLevel: "INFO"
+      # -- fido2_persistence_duration.log target
+      persistenceDurationLogTarget: "FILE"
+      # -- fido2_persistence_duration.log level
+      persistenceDurationLogLevel: "INFO"
+      # -- fido2_script.log target
+      scriptLogTarget: "FILE"
+      # -- fido2_script.log level
+      scriptLogLevel: "INFO"
     # -- Enable endpoints in either istio or nginx ingress depending on users choice
     ingress:
       # -- Enable endpoint /.well-known/fido2-configuration
@@ -1047,6 +1111,8 @@ global:
     enabled: true
     # -- App loggers can be configured to define where the logs will be redirected to and the level of each in which it should be displayed.
     appLoggers:
+      # -- Enable log prefixing which enables prepending the STDOUT logs with the file name. i.e jans-scim ===> 2022-12-20 17:49:55,744 INFO
+      enableStdoutLogPrefix: "true"
       # -- jans-scim.log target
       scimLogTarget: "STDOUT"
       # -- jans-scim.log level
@@ -1089,9 +1155,6 @@ global:
     provisioner: microk8s.io/hostpath
     reclaimPolicy: Retain
     volumeBindingMode: WaitForFirstConsumer
-  upgrade:
-    # -- Boolean flag used when running upgrading through versions command. Used when upgrading with LDAP as the persistence to load the 101x ldif.
-    enabled: false
 
 # -- Nginx ingress definitions chart
 nginx-ingress:
@@ -1242,7 +1305,7 @@ opendj:
     # -- Image  to use for deploying.
     repository: gluufederation/opendj
     # -- Image  tag to use for deploying.
-    tag: 5.0.0_dev
+    tag: 5.0.0-12
     # -- Image Pull Secrets
     pullSecrets: [ ]
 
@@ -1319,7 +1382,10 @@ opendj:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
-
+  lifecycle:
+      preStop:
+          exec:
+            command: ["/bin/sh", "-c", "python3 /app/scripts/deregister_peer.py 1>&/proc/1/fd/1"]
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}
@@ -1373,7 +1439,7 @@ oxpassport:
     # -- Image  to use for deploying.
     repository: gluufederation/oxpassport
     # -- Image  tag to use for deploying.
-    tag: 5.0.0_dev
+    tag: 5.0.0-12
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number
@@ -1414,6 +1480,13 @@ oxpassport:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
 
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
@@ -1468,7 +1541,7 @@ oxshibboleth:
     # -- Image  to use for deploying.
     repository: gluufederation/oxshibboleth
     # -- Image  tag to use for deploying.
-    tag: 5.0.0_dev
+    tag: 5.0.0-12
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -1485,28 +1558,41 @@ oxshibboleth:
       cpu: 1000m
       # -- Memory request.
       memory: 1000Mi
-  # -- Configure the liveness healthcheck for the oxShibboleth if needed.
+  # -- Configure the liveness healthcheck for oxshibboleth if needed.
+  # https://github.com/GluuFederation/docker-oxshibboleth/blob/master/scripts/healthcheck.py
   livenessProbe:
-    httpGet:
-      # -- http liveness probe endpoint
-      path: /idp
-      port: http-oxshib
+    # -- Executes the python3 healthcheck.
+    exec:
+      command:
+      - python3
+      - /app/scripts/healthcheck.py
     initialDelaySeconds: 30
     periodSeconds: 30
     timeoutSeconds: 5
+    failureThreshold: 20
   # -- Configure the readiness healthcheck for the casa if needed.
   readinessProbe:
-    httpGet:
-      # -- http liveness probe endpoint
-      path: /idp
-      port: http-oxshib
-    initialDelaySeconds: 25
-    periodSeconds: 25
+  # https://github.com/GluuFederation/docker-oxshibboleth/blob/master/scripts/healthcheck.py
+  # -- Executes the python3 healthcheck.
+    exec:
+      command:
+      - python3
+      - /app/scripts/healthcheck.py
+    initialDelaySeconds: 30
+    periodSeconds: 30
     timeoutSeconds: 5
+    failureThreshold: 20
   # -- Configure any additional volumes that need to be attached to the pod
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
 
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
@@ -1530,9 +1616,9 @@ persistence:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: janssenproject/persistence-loader
+    repository: ghcr.io/janssenproject/jans/persistence-loader
     # -- Image  tag to use for deploying.
-    tag: 1.0.5-1
+    tag: 1.0.13_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Resource specs.
@@ -1551,6 +1637,13 @@ persistence:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
 
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
@@ -1603,9 +1696,9 @@ scim:
     # -- Image pullPolicy to use for deploying.
     pullPolicy: IfNotPresent
     # -- Image  to use for deploying.
-    repository: janssenproject/scim
+    repository: ghcr.io/janssenproject/jans/scim
     # -- Image  tag to use for deploying.
-    tag: 1.0.5-1
+    tag: 1.0.13_dev
     # -- Image Pull Secrets
     pullSecrets: [ ]
   # -- Service replica number.
@@ -1648,7 +1741,13 @@ scim:
   volumes: []
   # -- Configure any additional volumesMounts that need to be attached to the containers
   volumeMounts: []
-
+  # Actions on lifecycle events such as postStart and preStop
+  # Example
+  # lifecycle:
+  #   postStart:
+  #     exec:
+  #       command: ["sh", "-c", "mkdir /opt/jans/jetty/jans-auth/custom/static/stylesheet/"]
+  lifecycle: {}
   # -- Additional labels that will be added across the gateway in the format of {mylabel: "myapp"}
   additionalLabels: { }
   # -- Additional annotations that will be added across the gateway in the format of {cert-manager.io/issuer: "letsencrypt-prod"}

@@ -23,12 +23,12 @@ const pluginMetadata = {
   routes: [
     {
       component: AttributeEditPage,
-      path: '/attribute/edit:gid',
+      path: '/attribute/edit/:gid',
       permission: ATTRIBUTE_WRITE,
     },
     {
       component: AttributeViewPage,
-      path: '/attribute/view:gid',
+      path: '/attribute/view/:gid',
       permission: ATTRIBUTE_READ,
     },
     {

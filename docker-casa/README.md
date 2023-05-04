@@ -68,11 +68,15 @@ The following environment variables are supported by the container:
 - `CN_SQL_DB_USER`: Username to interact with SQL backend (default to `jans`).
 - `CN_GOOGLE_SPANNER_INSTANCE_ID`: Instance ID of Google Spanner (default to empty string).
 - `CN_GOOGLE_SPANNER_DATABASE_ID`: Database ID of Google Spanner (default to empty string).
-- `GOOGLE_APPLICATION_CREDENTIALS`: Path to Google credentials JSON file (default to `/etc/jans/conf/google-credentials.json`).
-- `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string).
+- `GOOGLE_APPLICATION_CREDENTIALS`: Optional JSON file (contains Google credentials) that can be injected into container for authentication. Refer to https://cloud.google.com/docs/authentication/provide-credentials-adc#how-to for supported credentials.
+- `GOOGLE_PROJECT_ID`: ID of Google project.
+- `CN_GOOGLE_SECRET_VERSION_ID`: Janssen secret version ID in Google Secret Manager. Defaults to `latest`, which is recommended.
+- `CN_GOOGLE_SECRET_NAME_PREFIX`: Prefix for Janssen secret in Google Secret Manager. Defaults to `jans`. If left `jans-secret` secret will be created.
+- `CN_GOOGLE_SECRET_MANAGER_PASSPHRASE`: Passphrase for Janssen secret in Google Secret Manager. This is recommended to be changed and defaults to `secret`.
 - `GLUU_CASA_APP_LOGGERS`: Custom logging configuration in JSON-string format with hash type (see [Configure app loggers](#configure-app-loggers) section for details).
 - `GLUU_CASA_ADMIN_LOCK_FILE`: Path to lock file to enable/disable administration feature (default to `/opt/jans/jetty/casa/resources/.administrable`). If file is not exist, the feature is disabled.
 - `CN_PROMETHEUS_PORT`: Port used by Prometheus JMX agent (default to empty string). To enable Prometheus JMX agent, set the value to a number. See [Exposing metrics](#exposing-metrics) for details.
+- `GLUU_CASA_JWKS_SIZE_LIMIT`: Default HTTP size limit (in bytes) when retrieving remote JWKS (default to `100000`).
 
 ### Configure app loggers
 
@@ -102,6 +106,12 @@ The following key-value pairs are the defaults:
     "timer_log_target": "FILE",
     "timer_log_level": "INFO"
 }
+```
+
+To enable prefix on `STDOUT` logging, set the `enable_stdout_log_prefix` key. Example:
+
+```
+{"casa_log_target":"STDOUT","timer_log_target":"STDOUT","enable_stdout_log_prefix":true}
 ```
 
 ### Exposing metrics
@@ -145,4 +155,3 @@ Hybrid persistence supports all available persistence types. To configure hybrid
         "session": "spanner",
     }
     ```
-

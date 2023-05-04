@@ -1,4 +1,4 @@
-@import '~@miltonbo/dashboard-style-airframe/scss/style';
+@import './miltonbo/scss/style.scss';
 @import '~pretty-checkbox/src/pretty-checkbox.scss';
 @import './custom/layout.scss';
 @import './custom/navbar.scss';
@@ -8,9 +8,13 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  font-size: 14px !important;
 }
 
 .mau-graph {
@@ -341,4 +345,52 @@ body {
 
 .bg-secondary {
   color: #FFF;
+}
+//* Overrider bootstrap styles
+
+nav .container-fluid {
+  width: 100% !important;
+  padding: 0 30px;
+}
+
+@media (max-width: 767.98px) {
+  nav .container-fluid {
+    padding: 0;
+  } 
+}
+
+nav .container-fluid .container {
+  max-width: none !important;
+}
+
+.btn-link {
+  text-decoration: none !important;
+  color: #3f4651 !important;
+}
+
+.sidebar-submenu__entry__link {
+  text-decoration: none;
+}
+
+.sidebar-menu__entry--nested a, .sidebar-menu__entry a {
+  text-decoration: none;
+}
+.dropdown-toggle::after {
+  color: #fff !important;
+}
+
+#page-title, h3, h4, h5.d-flex {
+  font-weight: 400 !important;
+}
+
+div.text-info {
+  color: #33ae9a !important;
+}
+
+p {
+  color: #8493a5 !important
+}
+
+label {
+  font-size: 14px !important;
 }

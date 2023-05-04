@@ -1,3 +1,4 @@
+import json
 import logging.config
 import os
 from uuid import uuid4
@@ -10,9 +11,12 @@ from jans.pycloudlib.persistence import CouchbaseClient
 from jans.pycloudlib.persistence import LdapClient
 from jans.pycloudlib.persistence import SpannerClient
 from jans.pycloudlib.persistence import SqlClient
+from jans.pycloudlib.persistence import doc_id_from_dn
+from jans.pycloudlib.persistence import id_from_dn
 from jans.pycloudlib.persistence.utils import PersistenceMapper
 
 from settings import LOGGING_CONFIG
+from ssa import get_license_config
 
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger("entrypoint")
@@ -45,18 +49,12 @@ def render_nginx_conf(manager):
 def main():
     manager = get_manager()
 
-    # if not os.path.isfile("/etc/certs/web_https.crt"):
-    #     manager.secret.to_file("ssl_cert", "/etc/certs/web_https.crt")
-
-    # if not os.path.isfile("/etc/certs/web_https.key"):
-    #     manager.secret.to_file("ssl_key", "/etc/certs/web_https.key")
-
     render_env(manager)
     render_nginx_conf(manager)
 
     persistence_setup = PersistenceSetup(manager)
     persistence_setup.import_ldif_files()
-    persistence_setup.export_plugin_properties()
+    persistence_setup.save_config()
 
 
 def read_from_file(path):
@@ -99,7 +97,7 @@ class PersistenceSetup:
         if not os.path.isfile(pw_file):
             self.manager.secret.to_file("token_server_admin_ui_client_pw", pw_file)
 
-        ctx = {
+        return {
             "token_server_admin_ui_client_id": os.environ.get("CN_TOKEN_SERVER_CLIENT_ID") or self.manager.config.get("token_server_admin_ui_client_id"),
             "token_server_admin_ui_client_pw": read_from_file(pw_file),
             "token_server_authz_url": f"https://{hostname}{authz_endpoint}",
@@ -107,7 +105,6 @@ class PersistenceSetup:
             "token_server_introspection_url": f"https://{hostname}{introspection_endpoint}",
             "token_server_userinfo_url": f"https://{hostname}{userinfo_endpoint}",
         }
-        return ctx
 
     @cached_property
     def ctx(self):
@@ -152,14 +149,10 @@ class PersistenceSetup:
 
         ctx.update(self.get_token_server_ctx())
 
+        ctx.update(get_license_config(self.manager))
+
         # finalized contexts
         return ctx
-
-    def export_plugin_properties(self):
-        with open("/app/templates/auiConfiguration.properties.tmpl") as f:
-            txt = f.read() % self.ctx
-            logger.info("Creating/updating plugins_admin_ui_properties secrets")
-            self.manager.secret.set("plugins_admin_ui_properties", txt)
 
     @cached_property
     def ldif_files(self):
@@ -170,6 +163,120 @@ class PersistenceSetup:
         for file_ in self.ldif_files:
             logger.info(f"Importing {file_}")
             self.client.create_from_ldif(file_, self.ctx)
+
+    def save_config(self):
+        logger.info("Updating admin-ui config in persistence (if required).")
+
+        with open("/app/templates/auiConfiguration.json") as f:
+            conf_from_file = f.read() % self.ctx
+
+        dn = "ou=admin-ui,ou=configuration,o=jans"
+
+        if self.persistence_type in ("sql", "spanner"):
+            dn = doc_id_from_dn(dn)
+            table_name = "jansAppConf"
+
+            entry = self.client.get(table_name, dn)
+            conf = entry.get("jansConfApp") or "{}"
+
+            should_update, merged_conf = resolve_conf_app(
+                json.loads(conf),
+                json.loads(conf_from_file),
+            )
+
+            if should_update:
+                logger.info("Updating admin-ui config app")
+                entry["jansConfApp"] = json.dumps(merged_conf)
+                entry["jansRevision"] += 1
+                self.client.update(table_name, dn, entry)
+
+        elif self.persistence_type == "couchbase":
+            bucket = os.environ.get("CN_COUCHBASE_BUCKET_PREFIX", "jans")
+            dn = id_from_dn(dn)
+
+            req = self.client.exec_query(f"SELECT META().id, {bucket}.* FROM {bucket} USE KEYS '{dn}'")
+            entry = req.json()["results"][0]
+
+            conf = entry.get("jansConfApp") or {}
+
+            should_update, merged_conf = resolve_conf_app(
+                conf,
+                json.loads(conf_from_file),
+            )
+
+            if should_update:
+                logger.info("Updating admin-ui config app")
+                rev = entry["jansRevision"] + 1
+                self.client.exec_query(f"UPDATE {bucket} USE KEYS '{dn}' SET jansConfApp={json.dumps(merged_conf)}, jansRevision={rev}")
+
+        else:
+            entry = self.client.get(dn)
+            attrs = entry.entry_attributes_as_dict
+
+            try:
+                conf = attrs.get("jansConfApp", [])[0]
+            except IndexError:
+                conf = "{}"
+
+            should_update, merged_conf = resolve_conf_app(
+                json.loads(conf),
+                json.loads(conf_from_file),
+            )
+
+            if should_update:
+                logger.info("Updating admin-ui config app")
+                self.client.modify(
+                    dn,
+                    {
+                        "jansRevision": [(self.client.MODIFY_REPLACE, attrs["jansRevision"][0] + 1)],
+                        "jansConfApp": [(self.client.MODIFY_REPLACE, json.dumps(merged_conf))],
+                    }
+                )
+
+
+def resolve_conf_app(old_conf, new_conf):
+    should_update = False
+
+    # old_conf may still empty; replace with new_conf
+    if not old_conf:
+        return True, new_conf
+
+    # licenseConfig is new property added after v1.0.9 release
+    if "licenseConfig" not in old_conf:
+        old_conf["licenseConfig"] = new_conf["licenseConfig"]
+        should_update = True
+
+    # there are various attributes need to be updated in the config
+    else:
+        if any([
+            # licenseConfig.ssa is added as per v1.0.11
+            "ssa" not in old_conf["licenseConfig"],
+            # SSA may be changed
+            new_conf["licenseConfig"]["ssa"] != old_conf["licenseConfig"].get("ssa", ""),
+        ]):
+            old_conf["licenseConfig"]["ssa"] = new_conf["licenseConfig"]["ssa"]
+            should_update = True
+
+        if "opHost" not in old_conf["licenseConfig"]["oidcClient"]:
+            old_conf["licenseConfig"]["oidcClient"]["opHost"] = old_conf["licenseConfig"].pop(
+                "scanLicenseAuthServerHostname",
+                new_conf["licenseConfig"]["oidcClient"]["opHost"],
+            )
+            should_update = True
+
+        # credentialsEncryptionKey is removed post 1.0.12
+        if "credentialsEncryptionKey" in old_conf["licenseConfig"]:
+            old_conf["licenseConfig"].pop("credentialsEncryptionKey", None)
+            should_update = True
+
+        # check client ID and secret
+        for attr in ["clientId", "clientSecret"]:
+            if new_conf["licenseConfig"]["oidcClient"][attr] != old_conf["licenseConfig"]["oidcClient"][attr]:
+                old_conf["licenseConfig"]["oidcClient"][attr] = new_conf["licenseConfig"]["oidcClient"][attr]
+                should_update = True
+
+    # finalized status and conf
+    return should_update, old_conf
 
 
 if __name__ == "__main__":

@@ -50,7 +50,11 @@ function JsonPropertyBuilder({
     )
   }
   function isObject(item) {
-    return typeof item === 'object'
+    if(item != null){
+      return typeof item === 'object'
+    }else{
+      return false;
+    }
   }
 
   function generateLabel(name) {
@@ -130,7 +134,7 @@ function JsonPropertyBuilder({
           {propKey.toUpperCase()}{' '}
         </Accordion.Header>
         <Accordion.Body>
-          {Object.keys(propValue).map((item, idx) => (
+          {Object.keys(propValue)?.map((item, idx) => (
             <JsonPropertyBuilder
               key={idx}
               propKey={item}
@@ -164,7 +168,7 @@ function JsonPropertyBuilder({
                       style={{ float: 'right' }}
                       onClick={removeHandler}
                     >
-                      <i className="fa fa-remove mr-2"></i>
+                      <i className="fa fa-remove me-2"></i>
                       {'  '}
                       {t('actions.remove')}
                       {'  '}
@@ -172,7 +176,7 @@ function JsonPropertyBuilder({
                   </Col>
                 </FormGroup>
               )}
-              {Object.keys(propValue).map((objKey, idx) => (
+              {Object.keys(propValue)?.map((objKey, idx) => (
                 <JsonPropertyBuilder
                   key={idx}
                   propKey={objKey}

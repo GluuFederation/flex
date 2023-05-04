@@ -47,12 +47,11 @@ function DefaultAcrInput({
     if (isArray) {
       put[VALUE] = correctValue
     } else {
-      put[VALUE] = document.getElementById(name).value
+      put[VALUE] = data
     }
     put['op'] = 'replace'
     handler(put)
     setShow(!show)
-    setData(document.getElementById(name).value)
   }
   const onCancel = () => {
     setCorrectValue([])
@@ -61,13 +60,14 @@ function DefaultAcrInput({
   return (
     <FormGroup row>
       <Col sm={10}>
-        <GluuTooltip doc_category="json_properties" doc_entry={name}>
           <FormGroup row>
             <GluuLabel
               label={label}
               size={lsize}
               required={required}
               withTooltip={false}
+              doc_category="json_properties" 
+              doc_entry={name}
             />
             <Col sm={rsize}>
               <InputGroup>
@@ -89,7 +89,6 @@ function DefaultAcrInput({
               </InputGroup>
             </Col>
           </FormGroup>
-        </GluuTooltip>
       </Col>
       <Col sm={2}>
         {show && (
@@ -100,10 +99,10 @@ function DefaultAcrInput({
               size="sm"
               onClick={onAccept}
             >
-              <i className="fa fa-check mr-2"></i>
+              <i className="fa fa-check me-2"></i>
             </Button>{' '}
             <Button color="danger" size="sm" onClick={onCancel}>
-              <i className="fa fa-times mr-2"></i>
+              <i className="fa fa-times me-2"></i>
             </Button>
           </>
         )}

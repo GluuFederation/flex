@@ -9,10 +9,10 @@ import { useTranslation } from 'react-i18next'
 
 /*eslint-disable */
 const status = [
-    <td className="text-right">
+    <td className="text-end">
         Healthly <i className="fa fa-fw fa-check-circle text-success"></i>
     </td>,
-    <td className="text-right">
+    <td className="text-end">
         Degraded <i className="fa fa-fw fa-exclamation-circle text-danger"></i>
     </td>
 ];
@@ -37,7 +37,7 @@ const TrTableMonitor = () => {
               <span className="text-inverse">HDD1</span> <span className="small">(ada0)</span>
             </td>
             <td className="align-middle">
-              {t("Mirror")} <Badge color="secondary" pill className="ml-2">/mtn/volume1</Badge>
+              {t("Mirror")} <Badge color="secondary" pill className="ms-2">/mtn/volume1</Badge>
             </td>
             <td className="align-middle">
               <Progress value={ tasksCompleted[index%4] } style={{ height: "5px" }} />

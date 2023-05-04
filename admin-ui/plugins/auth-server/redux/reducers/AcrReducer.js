@@ -3,15 +3,16 @@ import {
   GET_ACRS_RESPONSE,
   PUT_ACRS,
   PUT_ACRS_RESPONSE,
-} from '../actions/types'
+} from "../actions/types"
 
 const INIT_STATE = {
   acrs: {},
   scripts: [],
   loading: true,
+  acrReponse: {},
 }
 
-const reducerName = 'acrReducer'
+const reducerName = "acrReducer"
 
 export default function acrReducer(state = INIT_STATE, action) {
   switch (action.type) {
@@ -24,7 +25,7 @@ export default function acrReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          acrs: action.payload.data,
+          acrReponse: action.payload.data,
           loading: false,
         }
       } else {
@@ -40,7 +41,7 @@ export default function acrReducer(state = INIT_STATE, action) {
       if (action.payload.data) {
         return {
           ...state,
-          acrs: action.payload.data,
+          acrReponse: action.payload.data,
           loading: false,
         }
       } else {

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import { Wizard, Card, CardFooter, CardBody, Form, Button } from 'Components'
 import ClientBasic from './ClientBasicPanel'
 import ClientAdvanced from './ClientAdvancedPanel'
@@ -14,7 +14,7 @@ import ClientLogoutPanel from './ClientLogoutPanel'
 import ClientSoftwarePanel from './ClientSoftwarePanel'
 import ClientCibaParUmaPanel from './ClientCibaParUmaPanel'
 import ClientEncryptionSigningPanel from './ClientEncryptionSigningPanel'
-
+import {toast} from 'react-toastify'
 const sequence = [
   'Basic',
   'Tokens',
@@ -37,6 +37,7 @@ function ClientWizardForm({
   oidcConfiguration,
   umaResources,
 }) {
+  const formRef = useRef();
   const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
@@ -74,6 +75,18 @@ function ClientWizardForm({
   function toggle() {
     setModal(!modal)
   }
+  function validateFinish(){
+    
+    if(formRef.current.values.grantTypes.includes('authorization_code') || formRef.current.values.grantTypes.includes('implicit') || formRef.current.values.grantTypes.length == 0){
+      if(formRef && formRef.current && formRef.current.values.redirectUris.length > 0){
+        toggle()
+      }else{
+        toast.info("Please add atleast 1 redirect URL");
+      }
+    }else{
+      toggle()
+    }
+  }
   function setId(index) {
     return sequence[index]
   }
@@ -81,7 +94,15 @@ function ClientWizardForm({
     setCurrentStep(sequence[sequence.indexOf(currentStep) - 1])
   }
   function nextStep() {
-    setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+    if(formRef.current.values.grantTypes.includes('authorization_code') || formRef.current.values.grantTypes.includes('implicit')){
+      if(formRef && formRef.current && formRef.current.values.redirectUris.length > 0){
+        setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+      }else{
+        toast.info("Please add atleast 1 redirect URL");
+      }
+    }else{
+      setCurrentStep(sequence[sequence.indexOf(currentStep) + 1])
+    }
   }
   function isComplete(stepId) {
     return sequence.indexOf(stepId) < sequence.indexOf(currentStep)
@@ -210,6 +231,7 @@ function ClientWizardForm({
     <React.Fragment>
       <Card style={applicationStyle.mainCard}>
         <Formik
+          innerRef={formRef}
           initialValues={initialValues}
           onSubmit={(values) => {
             values['action_message'] = commitMessage
@@ -416,43 +438,45 @@ function ClientWizardForm({
                 </CardBody>
                 <CardFooter className="p-4 bt-0">
                   <div className="d-flex">
+                    <div style={{flex:1}}>
                     {currentStep !== sequence[0] && (
                       <Button
                         type="button"
                         onClick={prevStep}
-                        style={applicationStyle.buttonStyle}
-                        color="link"
-                        className="mr-3"
+                        style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
+                        className="me-3"
                       >
-                        <i className="fa fa-angle-left mr-2"></i>
+                        <i className="fa fa-angle-left me-2"></i>
                         {t('actions.previous')}
                       </Button>
                     )}
+                    </div>
+                    <div style={{flex:1, justifyContent:"flex-end", display:"flex", gap: '8px'}}>
                     {currentStep !== sequence[sequence.length - 1] && (
                       <Button
                         type="button"
                         color={`primary-${selectedTheme}`}
                         onClick={nextStep}
-                        style={applicationStyle.buttonStyle}
-                        className="ml-auto px-4"
+                        style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
+                        className="px-4"
                       >
                         {t('actions.next')}
-                        <i className="fa fa-angle-right ml-2"></i>
+                        <i className="fa fa-angle-right ms-2"></i>
                       </Button>
                     )}
-                    {currentStep === sequence[sequence.length - 1] &&
-                      !viewOnly &&
+                    {!viewOnly &&
                       hasPermission(permissions, CLIENT_WRITE) && (
                         <Button
                           type="button"
                           color={`primary-${selectedTheme}`}
-                          className="ml-auto px-4"
-                          onClick={toggle}
-                          style={applicationStyle.buttonStyle}
+                          className="px-4 ms-2"
+                          onClick={validateFinish}
+                          style={{ ...applicationStyle.buttonStyle, ...applicationStyle.buttonFlexIconStyles }}
                         >
-                          {t('actions.apply')}
+                          {t('actions.finish')}
                         </Button>
                     )}
+                    </div>
                   </div>
                 </CardFooter>
                 <Button

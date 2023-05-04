@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
   Col,
   Container,
@@ -7,9 +7,9 @@ import {
   InputGroup,
   CustomInput,
 } from 'Components'
-import IconButton from '@material-ui/core/IconButton'
-import Visibility from '@material-ui/icons/Visibility'
-import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import IconButton from '@mui/material/IconButton'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import GluuLabel from 'Routes/Apps/Gluu/GluuLabel'
 import GluuInputRow from 'Routes/Apps/Gluu/GluuInputRow'
 import GluuToogleRow from 'Routes/Apps/Gluu/GluuToogleRow'
@@ -19,6 +19,13 @@ import GluuTypeAheadWithAdd from 'Routes/Apps/Gluu/GluuTypeAheadWithAdd'
 import GluuTooltip from 'Routes/Apps/Gluu/GluuTooltip'
 import GluuSelectRow from 'Routes/Apps/Gluu/GluuSelectRow'
 import { useTranslation } from 'react-i18next'
+import { getClientScopeByInum } from '../../../../app/utils/Util'
+import { useDispatch, useSelector } from 'react-redux'
+import { PER_PAGE_SCOPES } from '../../common/Constants'
+import { getClientScopes } from '../../redux/actions/ScopeActions'
+import { isEmpty } from 'lodash'
+import _debounce from 'lodash/debounce'
+import { getScopes } from 'Plugins/auth-server/redux/actions/ScopeActions'
 const DOC_CATEGORY = 'openid_client'
 
 const ClientBasicPanel = ({
@@ -28,6 +35,13 @@ const ClientBasicPanel = ({
   oidcConfiguration,
   viewOnly,
 }) => {
+  const dispatch = useDispatch()
+  const totalItems = useSelector((state) => state.scopeReducer.totalItems)
+  const clientScopes = useSelector((state) => state.scopeReducer.clientScopes)?.map((item) => ({ dn: item.dn, name: item.id }))
+  const isLoading = useSelector((state) => state.scopeReducer.loadingClientScopes)
+  const scopeLoading = useSelector((state) => state.scopeReducer.loading)
+  const clientScopeOptions = scopes?.filter(o1 => !clientScopes?.some(o2 => o1.dn === o2.dn))
+  const scopeOptions = client.scopes?.length ? clientScopeOptions : scopes
   const { t } = useTranslation()
   const uri_id = 'redirect_uri'
   const post_uri_id = 'post_uri_id'
@@ -52,13 +66,11 @@ const ClientBasicPanel = ({
     client.expirationDate ? new Date(client.expirationDate) : new Date(),
   )
   const [showClientSecret, setShowClientSecret] = useState(false)
-
-  function getScopeMapping(exitingScopes, scopes) {
-    if (!exitingScopes) {
-      exitingScopes = []
-    }
-    return scopes.filter((item) => exitingScopes.includes(item.dn))
-  }
+  const [userScopeAction] = useState({
+    limit: PER_PAGE_SCOPES,
+    pattern: "",
+    startIndex: 0,
+  })
 
   function uriValidator(uri) {
     return uri
@@ -70,7 +82,47 @@ const ClientBasicPanel = ({
   function handleMouseDownClientSecret(event) {
     event.preventDefault()
   }
-  
+
+  useEffect(() => {
+    const scopeInums = [];
+    if (client.inum) {
+      let userAction = {}
+      for (const scope of client.scopes) {
+        scopeInums.push(getClientScopeByInum(scope))
+      }
+      userAction["pattern"] = scopeInums.join(",")
+      userAction["limit"] = PER_PAGE_SCOPES
+      dispatch(getClientScopes(userAction))
+    }
+  }, [])
+
+  const handlePagination = async (event, shownResults) => {
+    userScopeAction['limit'] = PER_PAGE_SCOPES
+    userScopeAction['startIndex'] = (userScopeAction['startIndex'] ?? 0) + 10
+    if(!userScopeAction.pattern) {
+      delete userScopeAction.pattern
+    }
+    if(!userScopeAction.startIndex) {
+      delete userScopeAction.startIndex
+    }
+    if (totalItems + PER_PAGE_SCOPES > userScopeAction.limit) {
+      dispatch(getScopes(userScopeAction))
+    }
+  };
+
+  const debounceFn = useCallback(_debounce((query) => {
+    const searchedScope = scopeOptions?.find((scope) => scope.name.includes(query))
+    if (isEmpty(searchedScope)) {
+      query && handleDebounceFn(query)
+    }
+  }, 500), [scopeOptions])
+
+  function handleDebounceFn(inputValue) {
+    userScopeAction['pattern'] = inputValue
+    delete userScopeAction.startIndex
+    dispatch(getScopes(userScopeAction))
+  }
+
   return (
     <Container>
       {client.inum && (
@@ -93,40 +145,36 @@ const ClientBasicPanel = ({
         label="fields.client_name"
         name="clientName"
         formik={formik}
-        value={client.displayName}
+        value={client.clientName}
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
-      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="clientSecret">
-        <FormGroup row>
-          <GluuLabel label="fields.client_secret" />
-          <Col sm={9}>
-            <div
-              style={{
-                height: '0.01em',
-                display: 'flex',
-                maxHeight: '2em',
-                whiteSpace: 'nowrap',
-              }}
+      <FormGroup row>
+        <GluuLabel label="fields.client_secret" doc_category={DOC_CATEGORY} doc_entry="clientSecret" />
+        <Col sm={9}>
+          <div
+            style={{
+              display: 'flex',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Input
+              id="clientSecret"
+              name="clientSecret"
+              type={showClientSecret ? 'text' : 'password'}
+              value={client.clientSecret}
+              onChange={formik.handleChange}
+              disabled={viewOnly}
+            />
+            <IconButton
+              onClick={handleClickShowClientSecret}
+              onMouseDown={handleMouseDownClientSecret}
             >
-              <Input
-                id="clientSecret"
-                name="clientSecret"
-                type={showClientSecret ? 'text' : 'password'}
-                value={client.clientSecret}
-                onChange={formik.handleChange}
-                disabled={viewOnly}
-              />
-              <IconButton
-                onClick={handleClickShowClientSecret}
-                onMouseDown={handleMouseDownClientSecret}
-              >
-                {showClientSecret ? <Visibility /> : <VisibilityOff />}
-              </IconButton>
-            </div>
-          </Col>
-        </FormGroup>
-      </GluuTooltip>
+              {showClientSecret ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </div>
+        </Col>
+      </FormGroup>
       <GluuInputRow
         label="fields.description"
         name="description"
@@ -147,27 +195,26 @@ const ClientBasicPanel = ({
         disabled={viewOnly}
       />
 
-      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="subjectType">
-        <FormGroup row>
-          <GluuLabel label="fields.subject_type_basic" />
-          <Col sm={9}>
-            <InputGroup>
-              <CustomInput
-                type="select"
-                id="subjectType"
-                name="subjectType"
-                disabled={viewOnly}
-                defaultValue={client.subjectType}
-                onChange={formik.handleChange}
-              >
-                <option value="">{t('actions.choose')}...</option>
-                <option>pairwise</option>
-                <option>public</option>
-              </CustomInput>
-            </InputGroup>
-          </Col>
-        </FormGroup>
-      </GluuTooltip>
+
+      <FormGroup row>
+        <GluuLabel label="fields.subject_type_basic" doc_category={DOC_CATEGORY} doc_entry="subjectType" />
+        <Col sm={9}>
+          <InputGroup>
+            <CustomInput
+              type="select"
+              id="subjectType"
+              name="subjectType"
+              disabled={viewOnly}
+              defaultValue={client.subjectType}
+              onChange={formik.handleChange}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              <option>pairwise</option>
+              <option>public</option>
+            </CustomInput>
+          </InputGroup>
+        </Col>
+      </FormGroup>
       <GluuInputRow
         label="fields.sector_uri"
         name="sectorIdentifierUri"
@@ -224,27 +271,25 @@ const ClientBasicPanel = ({
           />
         </Col>
       </FormGroup>
-      <GluuTooltip doc_category={DOC_CATEGORY} doc_entry="applicationType">
-        <FormGroup row>
-          <GluuLabel label="fields.application_type" />
-          <Col sm={9}>
-            <InputGroup>
-              <CustomInput
-                type="select"
-                id="applicationType"
-                name="applicationType"
-                defaultValue={client.applicationType}
-                onChange={formik.handleChange}
-                disabled={viewOnly}
-              >
-                <option value="">{t('actions.choose')}...</option>
-                <option>web</option>
-                <option>native</option>
-              </CustomInput>
-            </InputGroup>
-          </Col>
-        </FormGroup>
-      </GluuTooltip>
+      <FormGroup row>
+        <GluuLabel label="fields.application_type" doc_category={DOC_CATEGORY} doc_entry="applicationType" />
+        <Col sm={9}>
+          <InputGroup>
+            <CustomInput
+              type="select"
+              id="applicationType"
+              name="applicationType"
+              defaultValue={client.applicationType}
+              onChange={formik.handleChange}
+              disabled={viewOnly}
+            >
+              <option value="">{t('actions.choose')}...</option>
+              <option>web</option>
+              <option>native</option>
+            </CustomInput>
+          </InputGroup>
+        </Col>
+      </FormGroup>
       <GluuTypeAheadWithAdd
         name="redirectUris"
         label="fields.redirect_uris"
@@ -268,17 +313,25 @@ const ClientBasicPanel = ({
         doc_category={DOC_CATEGORY}
         disabled={viewOnly}
       />
-      <GluuTypeAheadForDn
-        name="scopes"
-        label="fields.scopes"
-        formik={formik}
-        value={getScopeMapping(client.scopes, scopes)}
-        options={scopes}
-        doc_category={DOC_CATEGORY}
-        lsize={3}
-        rsize={9}
-        disabled={viewOnly}
-      ></GluuTypeAheadForDn>
+      {isLoading ? "Fetching Scopes..." :
+        <GluuTypeAheadForDn
+          name="scopes"
+          label="fields.scopes"
+          formik={formik}
+          value={client.scopes?.length ? clientScopes : []}
+          options={scopeOptions}
+          doc_category={DOC_CATEGORY}
+          lsize={3}
+          rsize={9}
+          disabled={viewOnly}
+          paginate={totalItems >= PER_PAGE_SCOPES}
+          onSearch={debounceFn}
+          onPaginate={handlePagination}
+          maxResults={scopeOptions?.length ? scopeOptions.length - 1 : undefined}
+          isLoading={scopeLoading}
+          placeholder="Search for a scope..."
+        ></GluuTypeAheadForDn>
+      }
     </Container>
   )
 }

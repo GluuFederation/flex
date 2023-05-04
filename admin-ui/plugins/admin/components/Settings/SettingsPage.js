@@ -13,7 +13,6 @@ import {
   InputGroup,
   CustomInput,
 } from 'Components'
-import GluuDarkModeToggle from 'Routes/Apps/Gluu/GluuDarkModeToggle'
 import SetTitle from 'Utils/SetTitle'
 import applicationStyle from 'Routes/Apps/Gluu/styles/applicationstyle'
 import { ThemeContext } from 'Context/theme/themeContext'
@@ -32,9 +31,9 @@ function SettingsPage() {
     <React.Fragment>
       <Card style={applicationStyle.mainCard}>
         <CardBody>
-          <GluuTooltip doc_category={SETTINGS} doc_entry="pageSize">
+          
             <FormGroup row>
-              <GluuLabel label={t('fields.list_paging_size')} size={4} />
+              <GluuLabel label={t('fields.list_paging_size')} size={4} doc_category={SETTINGS} doc_entry="pageSize"/>
               <Col sm={8}>
                 <InputGroup>
                   <CustomInput
@@ -63,26 +62,9 @@ function SettingsPage() {
                 </InputGroup>
               </Col>
             </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={SETTINGS} doc_entry="darkMode">
+          
             <FormGroup row style={{ justifyContent: 'space-between' }}>
-              <GluuLabel label={t('fields.dark_mode')} />
-              <div
-                className="toggle-container"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  padding: '0px 15px 0px 15px',
-                }}
-              >
-                <GluuDarkModeToggle />
-              </div>
-            </FormGroup>
-          </GluuTooltip>
-          <GluuTooltip doc_category={SETTINGS} doc_entry="configApiUrl">
-            <FormGroup row style={{ justifyContent: 'space-between' }}>
-              <GluuLabel label={t('fields.config_api_url')} />
+              <GluuLabel label={t('fields.config_api_url')} doc_category={SETTINGS} doc_entry="configApiUrl" />
               <Label
                 style={{
                   display: 'flex',
@@ -99,7 +81,6 @@ function SettingsPage() {
                 </h3>
               </Label>
             </FormGroup>
-          </GluuTooltip>
         </CardBody>
       </Card>
     </React.Fragment>

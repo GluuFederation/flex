@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Col, FormGroup, Input } from 'Components'
-import { Visibility, VisibilityOff } from '@material-ui/icons'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 import GluuLabel from './GluuLabel'
 import GluuTooltip from './GluuTooltip'
 function GluuInputRow({
@@ -14,6 +14,8 @@ function GluuInputRow({
   rsize,
   doc_category,
   disabled,
+  showError = false,
+  errorMessage = ''
 }) {
   const [customType, setCustomType] = useState(null)
 
@@ -25,31 +27,30 @@ function GluuInputRow({
     }
   }
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
-      <FormGroup row>
-        <GluuLabel label={label} size={lsize} required={required} />
-        <Col sm={rsize}>
-          <Input
-            id={name}
-            data-testid={name}
-            type={customType || type}
-            name={name}
-            defaultValue={value}
-            onChange={formik.handleChange}
-            disabled={disabled}
-          />
-          {type == 'password' && (
-            <div style={{ position: 'absolute', right: 20, top: 7 }}>
-              {customType == 'text' ? (
-                <Visibility onClick={() => setVisivility()} />
-              ) : (
-                <VisibilityOff onClick={() => setVisivility()} />
-              )}
-            </div>
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} required={required} doc_entry={name} />
+      <Col sm={rsize} style={{ position: 'relative' }}>
+        <Input
+          id={name}
+          data-testid={name}
+          type={customType || type}
+          name={name}
+          defaultValue={value}
+          onChange={formik.handleChange}
+          disabled={disabled}
+        />
+        {type == 'password' && (
+        <div style={{ position: 'absolute', right: 20, top: 7 }}>
+          {customType == 'text' ? (
+            <Visibility onClick={() => setVisivility()} />
+          ) : (
+            <VisibilityOff onClick={() => setVisivility()} />
           )}
-        </Col>
-      </FormGroup>
-    </GluuTooltip>
+        </div>
+        )}
+        {showError ? <div style={{ color:"red" }}>{errorMessage}</div> : null }
+      </Col>
+    </FormGroup>
   )
 }
 

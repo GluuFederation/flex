@@ -49,8 +49,8 @@ const LockScreen = () => {
           <Link to="/pages/login" className="text-decoration-none">
             {t("Sign as Diffrent User")}
           </Link>
-          <Link to="/" className="ml-auto text-decoration-none">
-            <i className="fa fa-angle-left mr-2"></i> {t("Back to Home")}
+          <Link to="/" className="ms-auto text-decoration-none">
+            <i className="fa fa-angle-left me-2"></i> {t("Back to Home")}
           </Link>
         </div>
         { /* END Bottom Links */}

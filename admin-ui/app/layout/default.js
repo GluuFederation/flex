@@ -1,6 +1,5 @@
 import React from "react"
 import PropTypes from "prop-types"
-import useDarkMode from 'use-dark-mode'
 import { Layout, ThemeProvider } from "Components"
 
 import "Styles/bootstrap.scss"
@@ -39,10 +38,9 @@ const favIcons = [
 
 const AppLayout = (prop) => {
   const { children } = prop
-  const darkMode = useDarkMode(false)
-  const initialMode = darkMode.value?"dark":"light"
+
   return (
-    <ThemeProvider initialStyle={initialMode} initialColor="primary">
+    <ThemeProvider initialStyle={'light'} initialColor="primary">
       <Layout sidebarSlim favIcons={ favIcons }>
         {/* --------- Navbar ----------- */}
         <Layout.Navbar>

@@ -24,8 +24,6 @@ The following environment variables are supported by the container:
 - `CN_CONFIG_KUBERNETES_NAMESPACE`: Kubernetes namespace (default to `default`).
 - `CN_CONFIG_KUBERNETES_CONFIGMAP`: Kubernetes configmaps name (default to `jans`).
 - `CN_CONFIG_KUBERNETES_USE_KUBE_CONFIG`: Load credentials from `$HOME/.kube/config`, only useful for non-container environment (default to `false`).
-- `CN_CONFIG_GOOGLE_SECRET_VERSION_ID`: Janssen configuration secret version ID in Google Secret Manager. Defaults to `latest`, which is recommended.
-- `CN_CONFIG_GOOGLE_SECRET_NAME_PREFIX`: Prefix for Janssen configuration secret in Google Secret Manager. Defaults to `jans`. If left intact `jans-configuration` secret will be created.
 - `CN_SECRET_ADAPTER`: The secrets' adapter, can be `vault` (default), `kubernetes`, or `google`.
 - `CN_SECRET_VAULT_SCHEME`: supported Vault scheme (`http` or `https`).
 - `CN_SECRET_VAULT_HOST`: hostname or IP of Vault (default to `localhost`).
@@ -39,13 +37,13 @@ The following environment variables are supported by the container:
 - `CN_SECRET_KUBERNETES_NAMESPACE`: Kubernetes namespace (default to `default`).
 - `CN_SECRET_KUBERNETES_CONFIGMAP`: Kubernetes secrets name (default to `jans`).
 - `CN_SECRET_KUBERNETES_USE_KUBE_CONFIG`: Load credentials from `$HOME/.kube/config`, only useful for non-container environment (default to `false`).
-- `CN_SECRET_GOOGLE_SECRET_VERSION_ID`:  Janssen secret version ID in Google Secret Manager. Defaults to `latest`, which is recommended.
-- `CN_SECRET_GOOGLE_SECRET_MANAGER_PASSPHRASE`: Passphrase for Janssen secret in Google Secret Manager. This is recommended to be changed and defaults to `secret`.
-- `CN_SECRET_GOOGLE_SECRET_NAME_PREFIX`: Prefix for Janssen secret in Google Secret Manager. Defaults to `jans`. If left `jans-secret` secret will be created.
 - `CN_WAIT_MAX_TIME`: How long the startup "health checks" should run (default to `300` seconds).
 - `CN_WAIT_SLEEP_DURATION`: Delay between startup "health checks" (default to `10` seconds).
 - `GOOGLE_PROJECT_ID`: Google Project ID (default to empty string). Used when `CN_CONFIG_ADAPTER` or `CN_SECRET_ADAPTER` set to `google`.
-- `GOOGLE_APPLICATION_CREDENTIALS`: Path to Google credentials JSON file (default to `/etc/jans/conf/google-credentials.json`). Used when `CN_CONFIG_ADAPTER` or `CN_SECRET_ADAPTER` set to `google`.
+- `GOOGLE_APPLICATION_CREDENTIALS`: Optional JSON file (contains Google credentials) that can be injected into container for authentication. Refer to https://cloud.google.com/docs/authentication/provide-credentials-adc#how-to for supported credentials.
+- `CN_GOOGLE_SECRET_VERSION_ID`: Janssen secret version ID in Google Secret Manager. Defaults to `latest`, which is recommended.
+- `CN_GOOGLE_SECRET_NAME_PREFIX`: Prefix for Janssen secret in Google Secret Manager. Defaults to `jans`. If left `jans-secret` secret will be created.
+- `CN_GOOGLE_SECRET_MANAGER_PASSPHRASE`: Passphrase for Janssen secret in Google Secret Manager. This is recommended to be changed and defaults to `secret`.
 - `CN_TOKEN_SERVER_BASE_HOSTNAME`: Hostname of token server (default to `localhost`).
 - `CN_TOKEN_SERVER_AUTHZ_ENDPOINT`: Authorization endpoint at token server (default to `/jans-auth/authorize.htm`).
 - `CN_TOKEN_SERVER_TOKEN_ENDPOINT`: Token endpoint at token server (default to `/jans-auth/restv1/token`).
@@ -83,6 +81,8 @@ The following environment variables are supported by the container:
 - `CN_GOOGLE_SPANNER_DATABASE_ID`: Google Spanner database ID.
 - `GLUU_ADMIN_UI_PLUGINS`: Comma-separated additional plugins to be enabled (default to empty string). See [Adding plugins](#adding-plugins) for details.
 - `GLUU_ADMIN_UI_AUTH_METHOD`: Authentication method for admin-ui (one of `basic` or `casa`; default to `basic`). Note, changing the value require restart to jans-config-api.
+- `GLUU_SCAN_AUTH_URL`: Base URL to auth server to register license client (i.e. `https://account-dev.gluu.cloud`; default to empty string). If omitted or use default value, the URL will be pre-populated from `iss` claim included in SSA file.
+- `GLUU_SCAN_API_URL`: Base URL to SCAN API host (i.e. `https://cloud-dev.gluu.cloud`; default to empty string). If omitted or use default value, the URL will be pre-populated and modified based on `iss` claim included in SSA file.
 
 ### Hybrid mapping
 
@@ -122,3 +122,4 @@ To add plugins to AdminUI, for example `myplugin.zip`
 
 1. Set the name of the plugin (without the extension name) in environment variable `GLUU_ADMIN_UI_PLUGINS`, for example: `GLUU_ADMIN_UI_PLUGINS=myplugin`.
 2. Mount `myplugin.zip` to `/app/plugins/myplugin.zip` inside the pod/container. Note that if `/app/plugins/myplugin.zip` is not exist, plugin will be ignored.
+

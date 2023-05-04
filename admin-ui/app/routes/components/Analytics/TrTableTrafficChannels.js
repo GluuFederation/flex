@@ -35,10 +35,10 @@ const TrTableTrafficChannels = () => (
           <td className="align-middle">
             { 'faker.finance.amount()' }
           </td>
-          <td className="align-middle text-right">
-            { randomArray(change) } <i className="fa fa-caret-down text-danger ml-1"></i>
+          <td className="align-middle text-end">
+            { randomArray(change) } <i className="fa fa-caret-down text-danger ms-1"></i>
           </td>
-          <td className="text-right align-middle">
+          <td className="text-end align-middle">
             <TinyAreaChart />
           </td>
         </tr>

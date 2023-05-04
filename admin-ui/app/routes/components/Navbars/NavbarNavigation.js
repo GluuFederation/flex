@@ -21,7 +21,7 @@ const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {
     <Nav navbar accent={ accent } pills={ pills } { ...navbarProps }>
       <NavItem>
         <NavLink tag={ Link } to="/interface/navbars">
-          <span className={ classNames({ 'mr-3': !(pills || accent) }) }>
+          <span className={ classNames({ 'me-3': !(pills || accent) }) }>
             <i className="fa fa-fw fa-home d-none d-md-inline"></i>
             <span className="d-md-none">
               {t("Home")}
@@ -32,7 +32,7 @@ const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {
       <UncontrolledDropdown nav inNavbar>
         <DropdownToggle nav>
           {t("Dashboards")}
-          <i className="fa fa-angle-down fa-fw ml-1"></i>
+          <i className="fa fa-angle-down fa-fw ms-1"></i>
         </DropdownToggle>
         <DropdownMenu>
           <DropdownItem tag={ Link } to="/dashboards/analytics">{t("Analytics")}</DropdownItem>
@@ -43,7 +43,7 @@ const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {
       <UncontrolledDropdown nav inNavbar>
         <DropdownToggle nav>
           {t("Interface")}
-          <i className="fa fa-angle-down fa-fw ml-1"></i>
+          <i className="fa fa-angle-down fa-fw ms-1"></i>
         </DropdownToggle>
         <DropdownMenu>
           <DropdownItem tag={ Link } to="/interface/colors">{t("Colors")}</DropdownItem>
@@ -70,7 +70,7 @@ const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {
       <NestedDropdown nav inNavbar>
         <DropdownToggle nav>
           {t("Apps")}
-          <i className="fa fa-angle-down fa-fw ml-1"></i>
+          <i className="fa fa-angle-down fa-fw ms-1"></i>
         </DropdownToggle>
         <DropdownMenu>
           <NestedDropdown.Submenu title={t("Projects")}>
@@ -122,7 +122,7 @@ const NavbarNavigation = ({ accent, pills, ...navbarProps }) => {
       <UncontrolledDropdown nav inNavbar>
         <DropdownToggle nav>
           {t("Layouts")}                                 
-          <i className="fa fa-angle-down fa-fw ml-1"></i>
+          <i className="fa fa-angle-down fa-fw ms-1"></i>
         </DropdownToggle>
         <DropdownMenu>
           <DropdownItem tag={ Link } to="/layouts/navbar">{t("Navbar")}</DropdownItem>

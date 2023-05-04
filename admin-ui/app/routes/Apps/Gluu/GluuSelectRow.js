@@ -17,31 +17,29 @@ function GluuSelectRow({
 }) {
   const { t } = useTranslation()
   return (
-    <GluuTooltip doc_category={doc_category} doc_entry={name}>
-      <FormGroup row>
-        <GluuLabel label={label} size={lsize} />
-        <Col sm={rsize}>
-          <InputGroup>
-            <CustomInput
-              type="select"
-              id={name}
-              data-testid={name}
-              name={name}
-              defaultValue={value}
-              onChange={formik.handleChange}
-              disabled={disabled}
-            >
-              <option value="">{t('actions.choose')}...</option>
-              {values.map((item, key) => (
-                <option value={item} key={key}>
-                  {item}
-                </option>
-              ))}
-            </CustomInput>
-          </InputGroup>
-        </Col>
-      </FormGroup>
-    </GluuTooltip>
+    <FormGroup row>
+      <GluuLabel label={label} size={lsize} doc_category={doc_category} doc_entry={name} />
+      <Col sm={rsize}>
+        <InputGroup>
+          <CustomInput
+            type="select"
+            id={name}
+            data-testid={name}
+            name={name}
+            defaultValue={value}
+            onChange={formik.handleChange}
+            disabled={disabled}
+          >
+            <option value="">{t('actions.choose')}...</option>
+            {values.map((item, key) => (
+              <option value={item} key={key}>
+                {item}
+              </option>
+            ))}
+          </CustomInput>
+        </InputGroup>
+      </Col>
+    </FormGroup>
   )
 }
 

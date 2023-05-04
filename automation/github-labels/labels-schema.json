@@ -1,0 +1,416 @@
+{
+  "1.0": {
+    "color": "0a8455",
+    "description": "Address in branch 1.0",
+    "auto-label": {
+      "branch": "1.0",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "area-CI": {
+    "color": "0052CC",
+    "description": "Issue or changes required in automatic builds or CI infrastructure",
+    "auto-label": {
+      "branch": "",
+      "paths": [".github/workflows", ".github/dependabot.yml", "automation",  ".github/CODEOWNERS"],
+      "title-prefixes": ["ci", "test"]
+    }
+  },
+  "area-documentation": {
+    "color": "0052CC",
+    "description": "Documentation needs to change as part of issue or PR",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": ["docs"]
+    }
+  },
+  "autorelease: pending": {
+    "color": "ededed",
+    "description": "Used by Google Release Please flow. This should not be set by anyone!",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "autorelease: tagged": {
+    "color": "ededed",
+    "description": "Used by Google Release Please flow. This should not be set by anyone!",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "bot": {
+    "color": "ededed",
+    "description": "Created, modified or reviewed by bot",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "backport/v5.0.0": {
+    "color": "E86DDD",
+    "description": "Backport to version 5.0.0",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "comp-charts-flex": {
+    "color": "0052CC",
+    "description": "Touching folder /flex-cn-setup/pygluu/kubernetes/templates/helm",
+    "auto-label": {
+      "branch": "",
+      "paths": ["flex-cn-setup/pygluu/kubernetes/templates/helm"],
+      "title-prefixes": []
+    }
+  },
+  "comp-docker-casa": {
+    "color": "0052CC",
+    "description": "Touching folder /docker-casa",
+    "auto-label": {
+      "branch": "",
+      "paths": ["docker-casa"],
+      "title-prefixes": []
+    }
+  },
+  "comp-docker-flex-monolith": {
+    "color": "0052CC",
+    "description": "Touching folder /docker-flex-monolith",
+    "auto-label": {
+      "branch": "",
+      "paths": ["docker-flex-monolith"],
+      "title-prefixes": []
+    }
+  },
+  "comp-docker-admin-ui": {
+    "color": "0052CC",
+    "description": "Touching folder /docker-admin-ui",
+    "auto-label": {
+      "branch": "",
+      "paths": ["docker-admin-ui"],
+      "title-prefixes": []
+    }
+  },
+  "comp-casa": {
+    "color": "0052CC",
+    "description": "Touching folder /casa",
+    "auto-label": {
+      "branch": "",
+      "paths": ["casa"],
+      "title-prefixes": []
+    }
+  },
+  "comp-admin-ui": {
+    "color": "0052CC",
+    "description": "Touching folder /admin-ui",
+    "auto-label": {
+      "branch": "",
+      "paths": ["admin-ui"],
+      "title-prefixes": []
+    }
+  },
+  "comp-flex-cn-setup": {
+    "color": "0052CC",
+    "description": "Touching folder /flex-cn-setup",
+    "auto-label": {
+      "branch": "",
+      "paths": ["flex-cn-setup"],
+      "title-prefixes": []
+    }
+  },
+  "comp-flex-linux-setup": {
+    "color": "0052CC",
+    "description": "Touching folder /flex-linux-setup",
+    "auto-label": {
+      "branch": "",
+      "paths": ["flex-linux-setup"],
+      "title-prefixes": []
+    }
+  },
+  "effort-1": {
+    "color": "FEF2C0",
+    "description": "Relative effort required for completion of issue or PR",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "effort-2": {
+    "color": "FEF2C0",
+    "description": "Relative effort required for completion of issue or PR",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "effort-3": {
+    "color": "FEF2C0",
+    "description": "Relative effort required for completion of issue or PR",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "effort-5": {
+    "color": "FBCA04",
+    "description": "Relative effort required for completion of issue or PR",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "effort-8": {
+    "color": "FBCA04",
+    "description": "Relative effort required for completion of issue or PR",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "effort-13": {
+    "color": "D93F0B",
+    "description": "Relative effort required for completion of issue or PR",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "effort-21": {
+    "color": "D93F0B",
+    "description": "Relative effort required for completion of issue or PR",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "enhancement": {
+    "color": "ededed",
+    "description": "Default label by Github",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "github_actions": {
+    "color": "000000",
+    "description": "Pull requests that update Github_actions code",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "good first issue": {
+    "color": "7057ff",
+    "description": "Good for newcomers",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "help wanted": {
+    "color": "008672",
+    "description": "Extra attention is needed",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "invalid": {
+    "color": "e4e669",
+    "description": " This doesn't seem right",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "java": {
+    "color": "ffa221",
+    "description": "Pull requests that update Java code. This is currently assigned and created by GitHub",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "kind-bug": {
+    "color": "800080",
+    "description": "Issue or PR is a bug in existing functionality",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": ["fix"]
+    }
+  },
+  "kind-duplicate": {
+    "color": "800080",
+    "description": "This issue or pull request already exists",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "kind-dependencies": {
+    "color": "800080",
+    "description": "This issue or pull request already exists",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": ["build", "chore", "Snyk"]
+    }
+  },
+  "kind-enhancement": {
+    "color": "800080",
+    "description": "Issue or PR is an enhancement to an existing functionality",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": ["refactor", "perf", "style"]
+    }
+  },
+  "kind-feature": {
+    "color": "800080",
+    "description": "Issue or PR is a new feature request",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": ["feat"]
+    }
+  },
+  "kind-question": {
+    "color": "800080",
+    "description": "Issue is a question that can be addressed via pointers to documentation or user education",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "needs-discussion": {
+    "color": "D93F0B",
+    "description": "Issue or PR needs discussion during triage meeting",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "needs-information": {
+    "color": "D93F0B",
+    "description": "Creator of the issue or PR needs to add more information in order to be meaningfully triaged",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "needs-triage": {
+    "color": "D93F0B",
+    "description": "Issue or PR yet to be triaged. Add more labels or details that will help during triage review",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "priority-0": {
+    "color": "B60205",
+    "description": "Causes full outage, breakage, or major function unavailability for everyone, without a workaround",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "priority-1": {
+    "color": "B60205",
+    "description": "Issue or PR significantly impacts majority of users; Workaround is partial or overly painful",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "priority-2": {
+    "color": "FBCA04",
+    "description": "Issue or PR is important to majority of users, Currently workaround exists",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "priority-3": {
+    "color": "FBCA04",
+    "description": "Issue or PR is relevant to core functions, but does not impede progress. Important, but not urgent",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "priority-4": {
+    "color": "FEF2C0",
+    "description": "Minor issue or PR is not relevant to core functions, or relates to the usability of system",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "priority-5": {
+    "color": "FEF2C0",
+    "description": "Issue or PR addresses a very minor concern. Not planned for active development. Will not be fixed.",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "ready-for-triage": {
+    "color": "FBCA04",
+    "description": "Issue or PR has sufficient details and it is ready for triage review",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "triaged": {
+    "color": "0E8A16",
+    "description": "Issue or PR is fully triaged",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  },
+  "wontfix": {
+    "color": "ffffff",
+    "description": "This will not be worked on",
+    "auto-label": {
+      "branch": "",
+      "paths": [],
+      "title-prefixes": []
+    }
+  }
+}

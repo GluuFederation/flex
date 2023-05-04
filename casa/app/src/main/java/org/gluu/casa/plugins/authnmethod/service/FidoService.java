@@ -6,6 +6,7 @@ import io.jans.orm.search.filter.Filter;
 
 import org.gluu.casa.conf.MainSettings;
 import org.gluu.casa.core.model.DeviceRegistration;
+import org.gluu.casa.core.model.Fido2RegistrationEntry;
 import org.gluu.casa.core.pojo.FidoDevice;
 import org.gluu.casa.core.pojo.SuperGluuDevice;
 import org.slf4j.Logger;
@@ -29,12 +30,12 @@ public class FidoService extends BaseService {
     @Inject
     MainSettings settings;
 
-    private static final String U2F_OU = "fido";
+    private static final String U2F_OU = "fido2_register";
 
-    public boolean updateDevice(FidoDevice device) {
+    public boolean updateDevice(FidoDevice device, String userInum) {
 
         boolean success = false;
-        DeviceRegistration deviceRegistration = getDeviceRegistrationFor(device);
+        Fido2RegistrationEntry deviceRegistration = getDeviceRegistrationFor(device, userInum);
         if (deviceRegistration != null) {
             deviceRegistration.setDisplayName(device.getNickName());
             success = persistenceService.modify(deviceRegistration);
@@ -43,10 +44,10 @@ public class FidoService extends BaseService {
 
     }
 
-    public boolean removeDevice(FidoDevice device) {
+    public boolean removeDevice(FidoDevice device, String userId) {
 
         boolean success = false;
-        DeviceRegistration deviceRegistration = getDeviceRegistrationFor(device);
+        Fido2RegistrationEntry deviceRegistration = getDeviceRegistrationFor(device, userId);
         if (deviceRegistration != null) {
             success = persistenceService.delete(deviceRegistration);
         }
@@ -64,29 +65,30 @@ public class FidoService extends BaseService {
         return getRecentlyCreatedDevice(list, time);
     }
 
-    private DeviceRegistration getDeviceRegistrationFor(FidoDevice device) {
+    private Fido2RegistrationEntry getDeviceRegistrationFor(FidoDevice device, String userId) {
 
         String id = device.getId();
-        DeviceRegistration deviceRegistration = new DeviceRegistration();
-        deviceRegistration.setBaseDn(persistenceService.getPeopleDn());
-        deviceRegistration.setJansId(id);
-
-        List<DeviceRegistration> list = persistenceService.find(deviceRegistration);
+        String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));
+        Fido2RegistrationEntry deviceRegistration = new Fido2RegistrationEntry();
+        deviceRegistration.setBaseDn(parentDn);
+        deviceRegistration.setId(id);
+        
+        List<Fido2RegistrationEntry> list = persistenceService.find(deviceRegistration);
         if (list.size() == 1) {
             return list.get(0);
         } else {
-            logger.warn("Search for fido device registration with oxId {} returned {} results!", id, list.size());
+            logger.warn("Search for fido 2 device registration with jansId {} returned {} results!", id, list.size());
             return null;
         }
 
     }
-
-    private List<DeviceRegistration> getRegistrations(String appId, String userId, boolean active) {
+    
+    private List<Fido2RegistrationEntry> getRegistrations(String appId, String userId, boolean active) {
 
         String parentDn = String.format("ou=%s,%s", U2F_OU, persistenceService.getPersonDn(userId));
         logger.trace("Finding {}active U2F devices for user={}", active ? "" : "in", userId);
                         
-        Filter statusFilter = Filter.createEqualityFilter("jansStatus", DeviceRegistrationStatus.ACTIVE.getValue());
+        //Filter statusFilter = Filter.createEqualityFilter("jansStatus", "");
         
         //This filters allows to account old enrollments that don't have personInum set (they are LDAP-based)
         Filter personInumFilter = Filter.createORFilter(
@@ -98,12 +100,12 @@ public class FidoService extends BaseService {
         //Starting with 4.1 in CB the ou=fido branch does not exist
         //See https://github.com/GluuFederation/oxAuth/commit/7e5606e0ef51dfbea3a17ff3a2516f9e97f9b35a
         Filter filter = Filter.createANDFilter(
-                active ? statusFilter : Filter.createNOTFilter(statusFilter),
+          //      active ? statusFilter : Filter.createNOTFilter(statusFilter),
                 Filter.createEqualityFilter("jansApp", appId),
                 personInumFilter);
 
         try {
-            return persistenceService.find(DeviceRegistration.class, parentDn, filter);
+            return persistenceService.find(Fido2RegistrationEntry.class, parentDn, filter);
         } catch (Exception e) {
             logger.warn(e.getMessage());
             return Collections.emptyList();
@@ -123,22 +125,22 @@ public class FidoService extends BaseService {
     private <T extends FidoDevice> List<T> getDevices(String userId, boolean active, String oxApplication, Class<T> clazz) throws Exception {
 
         List<T> devices = new ArrayList<>();
-        List<DeviceRegistration> list = getRegistrations(oxApplication, userId, active);
+        List<Fido2RegistrationEntry> list = getRegistrations(oxApplication, userId, active);
 
-        for (DeviceRegistration deviceRegistration : list) {
+        for (Fido2RegistrationEntry deviceRegistration : list) {
             T device = clazz.getConstructor().newInstance();
 
             if (clazz.equals(SuperGluuDevice.class)) {
-                DeviceData data = mapper.readValue(deviceRegistration.getDeviceData(), DeviceData.class);
-                ((SuperGluuDevice) device).setDeviceData(data);
+                ((SuperGluuDevice) device).setDeviceData(deviceRegistration.getDeviceData());
             }
-            device.setApplication(deviceRegistration.getJansApp());
+            device.setApplication(deviceRegistration.getApplication());
             device.setNickName(deviceRegistration.getDisplayName());
-            device.setStatus(deviceRegistration.getJansStatus());
-            device.setId(deviceRegistration.getJansId());
+            device.setStatus(deviceRegistration.getRegistrationStatus());
+            device.setId(deviceRegistration.getId());
             device.setCreationDate(deviceRegistration.getCreationDate());
-            device.setCounter(deviceRegistration.getJansCounter());
-            device.setLastAccessTime(deviceRegistration.getLastAccessTime());
+            device.setCounter(deviceRegistration.getCounter());
+            
+            //device.setLastAccessTime(deviceRegistration.getLastAccessTime());
 
             devices.add(device);
         }

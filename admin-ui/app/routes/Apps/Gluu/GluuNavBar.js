@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import Box from '@material-ui/core/Box'
+import Box from '@mui/material/Box'
 import {
   Avatar,
   AvatarAddOn,
@@ -35,14 +35,14 @@ function GluuNavBar({ userinfo }) {
       <Navbar expand="lg" themed>
         <Nav>
           {showCollapse && (
-            <NavItem className="mr-3">
+            <NavItem className="me-3">
               <SidebarTrigger id="navToggleBtn" />
             </NavItem>
           )}
         </Nav>
         <Box display="flex" justifyContent="space-between" width="100%">
           <h3 className="page-title" id="page-title">Dashboard</h3>
-          <Nav className="ml-auto" pills>
+          <Nav className="ms-auto" pills>
             <Notifications />
             <LanguageMenu userInfo={userInfo} />
             <ThemeSetting userInfo={userInfo} />

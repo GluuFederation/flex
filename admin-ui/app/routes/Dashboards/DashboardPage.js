@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { subMonths } from 'date-fns'
-import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
-import Box from '@material-ui/core/Box'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import Box from '@mui/material/Box'
 import { useMediaQuery } from 'react-responsive'
 import 'react-datepicker/dist/react-datepicker.css'
 import GluuLoader from '../Apps/Gluu/GluuLoader'
@@ -53,7 +53,7 @@ function DashboardPage({
   const theme = useContext(ThemeContext)
   const selectedTheme = theme.state.theme
   const themeColors = getThemeColor(selectedTheme)
-  const classes = styles()
+  const { classes } = styles()
   const FETCHING_LICENSE_DETAILS = 'Fetch license details'
   const [mauCount, setMauCount] = useState(null)
   const [tokenCount, setTokenCount] = useState(null)
@@ -195,8 +195,8 @@ function DashboardPage({
 
   const StatusCard = () => {
     return (
-      <Grid xs={12}>
-        <Paper className={`${classes.statusContainer} ml-20`} elevation={3}>
+      <Grid xs={12} item>
+        <Paper className={`${classes.statusContainer} ms-20`} elevation={3}>
           <div className={classes.userInfoText}>
             <div className={classes.statusText}>
               <Box display="flex" justifyContent="flex-start">
@@ -302,7 +302,7 @@ function DashboardPage({
           >
             <div className={classes.textVertical}>WORLD</div>
             <div className={`${classes.textVertical} text-center`}>WIDE</div>
-            <div className={`${classes.textVertical} text-right`}>
+            <div className={`${classes.textVertical} text-end`}>
               SU<span className={`${classes.redText}`}>PP</span>ORT
             </div>
           </div>
@@ -391,7 +391,7 @@ function DashboardPage({
             </Grid>
           </Grid>
           <Grid container className={`px-40`}>
-            <Grid lg={12} xs={12}>
+            <Grid lg={12} xs={12} item>
               <h3 className="text-white">
                 {t('dashboard.access_tokens_graph')}
               </h3>
@@ -449,6 +449,7 @@ function DashboardPage({
             {/* TODO: Implement support Card later */}
             {/* <Grid
               lg={3}
+              item
               xs={isTabletOrMobile ? 5 : 3}
               className={`${classes.bannerContainer} top-minus-40`}
             >
@@ -457,19 +458,19 @@ function DashboardPage({
             {isTabletOrMobile && !isMobile && <StatusCard />} */}
           </Grid>
           <Grid container className={`${classes.flex} px-40`}>
-            <Grid xs={12}>
+            <Grid xs={12} item>
               <Grid
                 xs={12}
                 item
                 className={`${isMobile ? classes.block : classes.flex} mt-20`}
               >
                 {isMobile && <StatusCard />}
-                <ul className="mr-40">
+                <ul className="me-40">
                   <li className={classes.orange}>
                     {t('dashboard.client_credentials_access_token')}
                   </li>
                 </ul>
-                <ul className="mr-40">
+                <ul className="me-40">
                   <li className={classes.lightBlue}>
                     {t('dashboard.authorization_code_access_token')}
                   </li>

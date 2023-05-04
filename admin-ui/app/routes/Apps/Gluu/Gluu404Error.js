@@ -16,7 +16,7 @@ function Gluu404Error() {
         />
         <div className="d-flex mb-5">
           <Link to="/">{t('actions.back_home')}</Link>
-          <Link to="/" className="ml-auto text-decoration-none">
+          <Link to="/" className="ms-auto text-decoration-none">
             {t('links.support')}
           </Link>
         </div>
