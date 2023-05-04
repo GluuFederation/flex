@@ -103,17 +103,19 @@ start_services() {
   /opt/dist/scripts/jans-config-api start
   /opt/dist/scripts/jans-fido2 start
   /opt/dist/scripts/jans-scim start
-  /opt/dist/scripts/casa start
+
+  # if there's issue while installing admin-ui (for example, missing ssa file),
+  # casa won't be installed, hence the script is missing
+  /opt/dist/scripts/casa start ||:  # no-op if script is missing
 }
 
 check_installed_flex
 start_services
 register_fqdn
 
-tail -f /opt/jans/jetty/jans-auth/logs/*.log \
--f /opt/jans/jetty/jans-config-api/logs/*.log \
--f /opt/jans/jetty/jans-fido2/logs/*.log \
--f /opt/jans/jetty/jans-scim/logs/*.log \
--f /opt/jans/jetty/casa/logs/*.log
-
-
+# use -F option to follow (and retry) logs
+tail -F /opt/jans/jetty/jans-auth/logs/*.log \
+  /opt/jans/jetty/jans-config-api/logs/*.log \
+  /opt/jans/jetty/jans-fido2/logs/*.log \
+  /opt/jans/jetty/jans-scim/logs/*.log \
+  /opt/jans/jetty/casa/logs/*.log
