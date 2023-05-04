@@ -1,23 +1,25 @@
-from org.gluu.oxauth.service import AuthenticationService
-from org.gluu.oxauth.service import UserService
-from org.gluu.oxauth.auth import Authenticator
-from org.gluu.oxauth.security import Identity
-from org.gluu.model.custom.script.type.auth import PersonAuthenticationType
-from org.gluu.model import SmtpConnectProtectionType
+from io.jans.as.server.service import AuthenticationService
+from io.jans.as.server.service import UserService
+from io.jans.as.server.auth import Authenticator
+from io.jans.as.server.security import Identity
+from io.jans.model.custom.script.type.auth import PersonAuthenticationType
+from io.jans.model import SmtpConnectProtectionType
 
-from org.gluu.service.cdi.util import CdiUtil
-from org.gluu.service import CacheService
-from org.gluu.util import StringHelper
-from org.gluu.oxauth.util import ServerUtil
-from org.gluu.oxauth.service.common import ConfigurationService
-from org.gluu.oxauth.service.common import EncryptionService
-from org.gluu.jsf2.message import FacesMessages
-from org.gluu.model.casa import ApplicationConfiguration
-from org.gluu.persist.exception import AuthenticationException
-from org.gluu.persist import PersistenceEntryManager
-from org.gluu.util.security import SecurityProviderUtility
+from io.jans.service.cdi.util import CdiUtil
+from io.jans.service import CacheService
+from io.jans.util import StringHelper
+from io.jans.as.server.util import ServerUtil
 
-from javax.faces.application import FacesMessage
+from io.jans.as.common.service.common import ConfigurationService
+from io.jans.util.security import EncryptionService
+from io.jans.jsf2.message import FacesMessages
+#from org.gluu.casa.model import ApplicationConfiguration
+from io.jans.orm.exception import AuthenticationException
+
+from io.jans.orm import PersistenceEntryManager
+from io.jans.util.security import SecurityProviderUtility
+
+from jakarta.faces.application import FacesMessage
 from datetime import datetime, timedelta
 from java.util import GregorianCalendar, TimeZone
 from java.io import File
@@ -420,18 +422,20 @@ class PersonAuthentication(PersonAuthenticationType):
         identity.setWorkingParameter("casa_logoUrl", email2FaAssets['contextPath'] + email2FaAssets['logoUrl'])
 
     def getSettings(self):
-        entryManager = CdiUtil.bean(PersistenceEntryManager)
-        config = ApplicationConfiguration()
-        try:
-            config = entryManager.find(config.getClass(), "ou=casa,ou=configuration,o=jans")
-        except:
-            print "getSettings. Error reading casa settings from DB"
-        settings = None
-        try:
-            settings = json.loads(config.getSettings())
-        except:
-            print "getSettings. Error parsing casa settings from DB"
-        return settings
+        return None
+    
+#        entryManager = CdiUtil.bean(PersistenceEntryManager)
+#        config = ApplicationConfiguration()
+#        try:
+#            config = entryManager.find(config.getClass(), "ou=casa,ou=configuration,o=jans")
+#        except:
+#            print "getSettings. Error reading casa settings from DB"
+#        settings = None
+#        try:
+#            settings = json.loads(config.getSettings())
+#        except:
+#            print "getSettings. Error parsing casa settings from DB"
+#        return settings
 
     def hasEnrollments(self, configurationAttributes, user):
         values = user.getAttributeValues("oxEmailAlternate")

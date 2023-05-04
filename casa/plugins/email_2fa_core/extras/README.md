@@ -17,7 +17,7 @@ Incase you are installing casa plugin for EMail OTP on Gluu Server version under
 
 1. Copy this image file `https://github.com/GluuFederation/oxAuth/blob/master/Server/src/main/webapp/img/email-ver.png` to the location  `/opt/gluu/jetty/oxauth/custom/static/img`
 
-Name of the script in **oxTrust** (**identity**) *Configuration*/*Person Authentication Scripts*: **email_2fa_core**.
+Name of the script in Janssen *Configuration*/*Person Authentication Scripts*: **email_2fa_core**.
 
 Parameters of the script:
 
