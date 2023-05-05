@@ -46,7 +46,7 @@ install_flex() {
   echo "test_client_id=${TEST_CLIENT_ID}"| tee -a setup.properties > /dev/null
   echo "test_client_pw=${TEST_CLIENT_SECRET}" | tee -a setup.properties > /dev/null
   echo "test_client_trusted=""$([[ ${TEST_CLIENT_TRUSTED} == true ]] && echo True || echo True)" | tee -a setup.properties > /dev/null
-  echo "admin-ui-ssa=/opt/ssa.txt" | tee -a setup.properties > /dev/null
+  echo "admin-ui-ssa=/opt/ssa.jwt" | tee -a setup.properties > /dev/null
   if [[ "${CN_INSTALL_MYSQL}" == "true" ]] || [[ "${CN_INSTALL_PGSQL}" == "true" ]]; then
     echo "Installing with RDBMS"
     echo "rdbm_install=2" | tee -a setup.properties > /dev/null
@@ -70,7 +70,12 @@ install_flex() {
   echo "*****   Running the setup script for ${CN_ORG_NAME}!!   *****"
   echo "*****   PLEASE NOTE THAT THIS MAY TAKE A WHILE TO FINISH. PLEASE BE PATIENT!!   *****"
   echo "*****   Installing Gluu Flex..."
-  echo "$CN_GLUU_LICENSE_SSA" | tee -a /opt/ssa.txt > /dev/null
+
+  # create new ssa.jwt if mounted file doesn't exist
+  if [[ ! -f /opt/ssa.jwt ]]; then
+    echo "$CN_GLUU_LICENSE_SSA" | tee -a /opt/ssa.jwt > /dev/null
+  fi
+
   curl https://raw.githubusercontent.com/GluuFederation/flex/"${FLEX_SOURCE_VERSION}"/flex-linux-setup/flex_linux_setup/flex_setup.py > flex_setup.py
   python3 flex_setup.py -f setup.properties --flex-non-interactive
   echo "*****   Setup script completed!!    *****"
@@ -98,17 +103,19 @@ start_services() {
   /opt/dist/scripts/jans-config-api start
   /opt/dist/scripts/jans-fido2 start
   /opt/dist/scripts/jans-scim start
-  /opt/dist/scripts/casa start
+
+  # if there's issue while installing admin-ui (for example, missing ssa file),
+  # casa won't be installed, hence the script is missing
+  /opt/dist/scripts/casa start ||:  # no-op if script is missing
 }
 
 check_installed_flex
 start_services
 register_fqdn
 
-tail -f /opt/jans/jetty/jans-auth/logs/*.log \
--f /opt/jans/jetty/jans-config-api/logs/*.log \
--f /opt/jans/jetty/jans-fido2/logs/*.log \
--f /opt/jans/jetty/jans-scim/logs/*.log \
--f /opt/jans/jetty/casa/logs/*.log
-
-
+# use -F option to follow (and retry) logs
+tail -F /opt/jans/jetty/jans-auth/logs/*.log \
+  /opt/jans/jetty/jans-config-api/logs/*.log \
+  /opt/jans/jetty/jans-fido2/logs/*.log \
+  /opt/jans/jetty/jans-scim/logs/*.log \
+  /opt/jans/jetty/casa/logs/*.log

@@ -50,7 +50,7 @@ services:
       - ./jans-config-api-custom:/opt/jans/jetty/jans-config-api/custom
       - ./jans-fido2-custom:/opt/jans/jetty/jans-fido2/custom
       - ./jans-scim-custom:/opt/jans/jetty/jans-scim/custom
-      - ./flex-casa:/opt/jans/jetty/casa/customk
+      - ./flex-casa-custom:/opt/jans/jetty/casa/custom
 volumes:
   db-data:
 networks:
