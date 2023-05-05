@@ -55,7 +55,8 @@ def get_flex_setup_parser():
     parser.add_argument('--jans-branch', help="Jannsen github branch", default='main')
     parser.add_argument('--node-modules-branch', help="Node modules branch. Default to flex setup github branch")
     parser.add_argument('--flex-non-interactive', help="Non interactive setup mode", action='store_true')
-    parser.add_argument('--install-admin-ui', help="Installs admin-ui", action='store_true')
+    parser.add_argument('--install-admin-ui', help="Installs Gluu Flex Admin UI", action='store_true')
+    parser.add_argument('--update-admin-ui', help="Updates Gluu Flex Admin UI", action='store_true')
     parser.add_argument('-admin-ui-ssa', help="Admin-ui SSA file")
     parser.add_argument('--adminui_authentication_mode', help="Set authserver.acrValues", default='basic', choices=['basic', 'casa'])
     parser.add_argument('--install-casa', help="Installs casa", action='store_true')
@@ -411,15 +412,36 @@ class flex_installer(JettyInstaller):
             cli_config.chmod(0o600)
 
 
+    def build_gluu_admin_ui(self):
+        print("Extracting admin-ui from", self.flex_path)
+        base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
+
+        print("Building luu Admin UI Frontend")
+        env_tmp = os.path.join(self.source_dir, '.env.tmp')
+        config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
+        config_api_installer.copyFile(os.path.join(self.source_dir, '.env.tmp'), os.path.join(self.source_dir, '.env'))
+
+        for module_pack in (self.admin_ui_node_modules_path, self.config_api_node_modules_path):
+            print("Unpacking", module_pack)
+            shutil.unpack_archive(module_pack, self.source_dir)
+
+        config_api_installer.run([paths.cmd_chown, '-R', 'node:node', self.source_dir])
+        cmd_path = 'PATH=$PATH:{}/bin:{}/bin'.format(Config.jre_home, Config.node_home)
+
+        for cmd in ('npm run build:prod',):
+            print("Executing `{}`".format(cmd))
+            run_cmd = '{} {}'.format(cmd_path, cmd)
+            config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)
+
+
+        print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
+        config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
+
+
     def install_gluu_admin_ui(self):
 
         print("Installing Gluu Admin UI Frontend")
-
-        print("Extracting admin-ui from", self.flex_path)
-
-        base.extract_from_zip(self.flex_path, 'admin-ui', self.source_dir)
-
-        print("Source directory:", self.source_dir)
+        self.build_gluu_admin_ui()
 
         print("Creating Gluu Flex Admin UI Client")
 
@@ -446,27 +468,7 @@ class flex_installer(JettyInstaller):
             config_api_installer.renderTemplateInOut(client_tmp_fn, self.templates_dir, self.source_dir)
             self.dbUtils.import_ldif([os.path.join(self.source_dir, os.path.basename(client_tmp_fn))])
 
-        env_tmp = os.path.join(self.source_dir, '.env.tmp')
-        print("env_tmp", env_tmp)
-        config_api_installer.renderTemplateInOut(env_tmp, self.source_dir, self.source_dir)
-        config_api_installer.copyFile(os.path.join(self.source_dir, '.env.tmp'), os.path.join(self.source_dir, '.env'))
-
-        for module_pack in (self.admin_ui_node_modules_path, self.config_api_node_modules_path):
-            print("Unpacking", module_pack)
-            shutil.unpack_archive(module_pack, self.source_dir)
-
-        config_api_installer.run([paths.cmd_chown, '-R', 'node:node', self.source_dir])
-        cmd_path = 'PATH=$PATH:{}/bin:{}/bin'.format(Config.jre_home, Config.node_home)
-
-        for cmd in ('npm run build:prod',):
-            print("Executing `{}`".format(cmd))
-            run_cmd = '{} {}'.format(cmd_path, cmd)
-            config_api_installer.run(['/bin/su', 'node','-c', run_cmd], self.source_dir)
-
         self.add_apache_directive(Config.templateRenderingDict['admin_ui_apache_root'], 'admin_ui_apache_directive')
-
-        print("Copying files to",  Config.templateRenderingDict['admin_ui_apache_root'])
-        config_api_installer.copy_tree(os.path.join(self.source_dir, 'dist'),  Config.templateRenderingDict['admin_ui_apache_root'])
 
         oidc_client = installed_components.get('oidc_client', {})
         Config.templateRenderingDict['ssa'] = installed_components['ssa']
@@ -953,10 +955,17 @@ def main(uninstall):
 
     get_components_from_setup_properties()
 
-    if not uninstall:
-        prepare_for_installation()
-
     installer_obj = flex_installer()
+
+    if argsp.update_admin_ui:
+        if os.path.exists(os.path.join(httpd_installer.server_root, 'admin')):
+            installer_obj.build_gluu_admin_ui()
+        else:
+            print("Gluu Flex Admin UI was not installed on this system. Update not possible.")
+        sys.exit()
+
+    elif not uninstall:
+        prepare_for_installation()
 
     if uninstall:
         config_api_installer.stop('casa')
@@ -966,7 +975,6 @@ def main(uninstall):
         installer_obj.dbUtils.enable_script(installer_obj.simple_auth_scr_inum, enable=False)
 
     else:
-
         if install_components['admin_ui'] and argsp.admin_ui_ssa:
             obtain_oidc_client_credidentials()
 
