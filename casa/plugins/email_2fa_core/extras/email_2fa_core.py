@@ -11,7 +11,7 @@ from io.jans.util import StringHelper
 from io.jans.as.server.util import ServerUtil
 
 from io.jans.as.common.service.common import ConfigurationService
-from io.jans.util.security import EncryptionService
+from io.jans.as.common.service.common import EncryptionService
 from io.jans.jsf2.message import FacesMessages
 #from org.gluu.casa.model import ApplicationConfiguration
 from io.jans.orm.exception import AuthenticationException
@@ -178,7 +178,7 @@ class PersonAuthentication(PersonAuthenticationType):
                         logged_in = authenticationService.authenticate(user_name, user_password)
                         if logged_in is True:
                             user2 = authenticationService.getAuthenticatedUser()
-                            emailIds = user2.getAttribute("oxEmailAlternate")
+                            emailIds = user2.getAttribute("jansEmail")
                             if StringHelper.isEmptyString(emailIds):
                                 emailIds = '{ "email-ids":[{ "email":"%s","addedOn":0,"nickName":"%s" }]}' % ( user2.getAttribute("mail"), user2.getAttribute("mail") )
                             data = json.loads(emailIds)
@@ -201,7 +201,7 @@ class PersonAuthentication(PersonAuthenticationType):
             multipleEmails = []
             token = identity.getWorkingParameter("token")
             
-            emailIds = user2.getAttribute("oxEmailAlternate")
+            emailIds = user2.getAttribute("jansEmail")
             if StringHelper.isEmptyString(emailIds):
                 emailIds = '{ "email-ids":[{ "email":"%s","addedOn":0,"nickName":"%s" }]}' % ( user2.getAttribute("mail"), user2.getAttribute("mail") )
 
@@ -314,7 +314,7 @@ class PersonAuthentication(PersonAuthenticationType):
             body = "Here is your token: %s" % token
 
             sender = EmailSender(self.jks_keystore, self.keystore_password, self.alias, self.sign_alg)
-            emailIds = user2.getAttribute("oxEmailAlternate")
+            emailIds = user2.getAttribute("jansEmail")
             
             if StringHelper.isEmptyString(emailIds):
                 emailIds = '{ "email-ids":[{ "email":"%s","addedOn":0,"nickName":"%s" }]}' % ( user2.getAttribute("mail"), user2.getAttribute("mail") )            
@@ -438,7 +438,7 @@ class PersonAuthentication(PersonAuthenticationType):
 #        return settings
 
     def hasEnrollments(self, configurationAttributes, user):
-        values = user.getAttributeValues("oxEmailAlternate")
+        values = user.getAttributeValues("jansEmail")
         if values != None:
             return True
         else:
@@ -477,10 +477,10 @@ class EmailSender():
             smtp_config = {
                 'host' : smtpconfig.getHost(),
                 'port' : smtpconfig.getPort(),
-                'user' : smtpconfig.getUserName(),
+                'user' : smtpconfig.getSmtpAuthenticationAccountUsername(),
                 'from' : smtpconfig.getFromEmailAddress(),
                 'from_name' : smtpconfig.getFromName(),
-                'pwd_decrypted' : encryption_service.decrypt(smtpconfig.getPassword()),
+                'pwd_decrypted' : encryption_service.decrypt(smtpconfig.getSmtpAuthenticationAccountPassword()),
                 'connect_protection' : smtpconfig.getConnectProtection(),
                 'requires_authentication' : smtpconfig.isRequiresAuthentication(),
                 'server_trust' : smtpconfig.isServerTrust(),
