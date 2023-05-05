@@ -13,6 +13,7 @@ import SchemaIcon from "Components/SVG/menu/Schema"
 import ServicesIcon from "Components/SVG/menu/Services"
 import UsersIcon from "Components/SVG/menu/Users"
 import StmpIcon from "Components/SVG/menu/Smtp"
+import FidoIcon from "Components/SVG/menu/Fido"
 import { ThemeContext } from 'Context/theme/themeContext'
 import Wave from 'Components/SVG/SidebarWave'
 import getThemeColor from 'Context/theme/config'
@@ -48,9 +49,11 @@ function GluuAppSidebar({ scopes }) {
       case 'usersmanagement':
         return <UsersIcon className="menu-icon" style={{ top: '-2px' }} />
 
-        case 'stmpmanagement':
+      case 'stmpmanagement':
         return <StmpIcon className="menu-icon" style={{ top: '-2px' }} />
-  
+
+      case 'fidomanagement':
+        return <FidoIcon className="menu-icon" style={{ top: '-2px' }} />
       default:
         return null
     }

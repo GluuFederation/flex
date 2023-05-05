@@ -22,5 +22,9 @@
   {
     "key": "smtp",
     "metadataFile": "./smtp-management/plugin-metadata"
+  },
+  {
+    "key": "fido",
+    "metadataFile": "./fido/plugin-metadata"
   }
 ]
