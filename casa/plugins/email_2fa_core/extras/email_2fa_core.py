@@ -13,9 +13,8 @@ from io.jans.as.server.util import ServerUtil
 from io.jans.as.common.service.common import ConfigurationService
 from io.jans.as.common.service.common import EncryptionService
 from io.jans.jsf2.message import FacesMessages
-#from org.gluu.casa.model import ApplicationConfiguration
+from org.gluu.casa.model import ApplicationConfiguration
 from io.jans.orm.exception import AuthenticationException
-
 from io.jans.orm import PersistenceEntryManager
 from io.jans.util.security import SecurityProviderUtility
 
@@ -392,6 +391,8 @@ class PersonAuthentication(PersonAuthenticationType):
             #(a expiring map) living inside Casa webapp, not oxAuth webapp
             
             sets = self.getSettings()
+            
+            print "EmailOTP. prepareUIParams. sets = %s" % sets
 
             custPrefix = "/custom"
             logoUrl = "/images/logo.png"
@@ -422,20 +423,18 @@ class PersonAuthentication(PersonAuthenticationType):
         identity.setWorkingParameter("casa_logoUrl", email2FaAssets['contextPath'] + email2FaAssets['logoUrl'])
 
     def getSettings(self):
-        return None
-    
-#        entryManager = CdiUtil.bean(PersistenceEntryManager)
-#        config = ApplicationConfiguration()
-#        try:
-#            config = entryManager.find(config.getClass(), "ou=casa,ou=configuration,o=jans")
-#        except:
-#            print "getSettings. Error reading casa settings from DB"
-#        settings = None
-#        try:
-#            settings = json.loads(config.getSettings())
-#        except:
-#            print "getSettings. Error parsing casa settings from DB"
-#        return settings
+        entryManager = CdiUtil.bean(PersistenceEntryManager)
+        config = ApplicationConfiguration()
+        try:
+            config = entryManager.find(config.getClass(), "ou=casa,ou=configuration,o=gluu")
+        except:
+            print "getSettings. Error reading casa settings from DB"
+        settings = None
+        try:
+            settings = json.loads(config.getSettings())
+        except:
+            print "getSettings. Error parsing casa settings from DB"
+        return settings
 
     def hasEnrollments(self, configurationAttributes, user):
         values = user.getAttributeValues("jansEmail")
