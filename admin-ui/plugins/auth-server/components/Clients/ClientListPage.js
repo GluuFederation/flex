@@ -48,7 +48,7 @@ function ClientListPage() {
   const scopes = useSelector((state) => state.scopeReducer.items)
   const loading = useSelector((state) => state.oidcReducer.loading)
   const permissions = useSelector((state) => state.authReducer.permissions)
-  clients = clients.map(addOrg)
+  clients = clients?.map(addOrg)
   const userAction = {}
   const options = {}
   const myActions = []
@@ -100,7 +100,7 @@ function ClientListPage() {
   }
 
   function shouldHideOrgColumn(clients) {
-    return !clients.some((client) => client.organization != '-')
+    return !clients?.some((client) => client.organization != '-')
   }
 
   const handler = () => {

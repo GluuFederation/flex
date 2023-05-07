@@ -5,7 +5,7 @@ import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
-import scopes from './scopes'
+import scopes from './scopes.test'
 
 const permissions = [
   'https://jans.io/oauth/config/scopes.readonly',

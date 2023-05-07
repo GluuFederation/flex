@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import ScopeListPage from './ScopeListPage'
 import { createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import scopes from './scopes'
+import scopes from './scopes.test'
 import i18n from '../../../../app/i18n'
 import { I18nextProvider } from 'react-i18next'
 
