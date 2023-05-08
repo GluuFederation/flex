@@ -1,26 +1,11 @@
-Incase you are installing casa plugin for EMail OTP on Gluu Server version under 4.3.1, follow the steps below: [ WORK IN PROGRESS... ]
+If you are installing casa plugin for EMail OTP (**EMail 2FA**, **email_2fa_core**) in the **Jassen Server**, follow the steps below:
 
-1. Copy this to the script on oxTrust - `https://github.com/GluuFederation/casa/blob/master/plugins/emailotp/extras/email_2fa_core.py`
-1. Under `/opt/gluu/jetty/oxauth/custom/pages/casa/` copy 2 files    
-   - `https://raw.githubusercontent.com/GluuFederation/casa/master/plugins/email_2fa_core/extras/otp_email.xhtml`   
-   - `https://raw.githubusercontent.com/GluuFederation/casa/master/plugins/email_2fa_core/extras/otp_email_prompt.xhtml`
-1. Under `/opt/gluu/jetty/oxauth/custom/i18n/` create a file `oxauth.properties` with the following content
-   ```
-    #casa plugin - email otp
-    casa.email_2fa.title= Email OTP
-    casa.email_2fa.text=The Email OTP method enables you to authenticate using the one-time password (OTP) that is sent to the registered email address.
-    casa.email.enter=Enter the code sent via Email
-    casa.email.choose=Choose an email-id to send an OTP to
-    casa.email.send=Send
-   ```
-1. Under  `/opt/gluu/jetty/oxauth/custom/pages/casa/` copy the latest casa.xhtml `(https://github.com/GluuFederation/oxAuth/blob/master/Server/src/main/webapp/casa/casa.xhtml)` containing an entry for `email_2fa `
+1. Use file **email_2fa_core.py** as jython sources, during creating of the **email_2fa_core** custom script;
+1. Add/create **email_2fa_core** custom script in **janssen**,
 
-1. Copy this image file `https://github.com/GluuFederation/oxAuth/blob/master/Server/src/main/webapp/img/email-ver.png` to the location  `/opt/gluu/jetty/oxauth/custom/static/img`
+Parameters: **Script Type**: **Person Authentication**, use follow **configuration properties** of the **email_2fa_core** custom script:
 
-Name of the script in Janssen *Configuration*/*Person Authentication Scripts*: **email_2fa_core**.
-
-Parameters of the script:
-
+Parameters of the script:  
 - **token_length**:     It determines the length of the characters of the One time Password sent to the user:
     + required parameter;
     + default value: not defined;
@@ -44,3 +29,7 @@ Parameters of the script:
     + default value: value, defined in **oxTrust** (**identity**): *Configuration*/*Organization Configuration*/*SMTP Server Configuration*/*Signing Algorithm*;
     + by default algirithm is used by signing of certificate from the Keystore;
         * for example: *SHA256withECDSA*
+
+3. Create directory: **/opt/jans/jetty/jans-auth/custom/pages/casa**, copy to this directory follow files: **otp_email.xhtml**, **otp_email_prompt.xhtml**; 
+1. Create directory: **/opt/jans/jetty/jans-auth/custom/i18n**, copy to this directory file **jans-auth_en.properties**;
+1. Create directory: **/opt/jans/jetty/jans-auth/custom/static/img**, copy to this directory file **email-ver.png**.
