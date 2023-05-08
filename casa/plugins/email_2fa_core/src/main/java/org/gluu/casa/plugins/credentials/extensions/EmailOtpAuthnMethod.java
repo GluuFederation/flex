@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.gluu.casa.credential.BasicCredential;
 import org.gluu.casa.extension.AuthnMethod;
 import org.gluu.casa.misc.Utils;
-import org.gluu.casa.plugins.emailotp.EmailOTPService;
+import org.gluu.casa.plugins.emailotp.EmailOtpService;
 import org.gluu.casa.service.ISessionContext;
 import org.pf4j.Extension;
 import org.slf4j.Logger;
@@ -34,19 +34,19 @@ public class EmailOtpAuthnMethod implements AuthnMethod {
 	@Override
 	public boolean mayBe2faActivationRequisite() {
 		return Boolean.parseBoolean(Optional
-				.ofNullable(EmailOTPService.getInstance().getScriptPropertyValue("2fa_requisite")).orElse("false"));
+				.ofNullable(EmailOtpService.getInstance().getScriptPropertyValue("2fa_requisite")).orElse("false"));
 
 	}
 
 	@Override
 	public String getAcr() {
-		return EmailOTPService.ACR;
+		return EmailOtpService.ACR;
 	}
 
 	@Override
 	public List<BasicCredential> getEnrolledCreds(String arg0) {
 		try {
-			return EmailOTPService.getInstance().getCredentials(sessionContext.getLoggedUser().getId())
+			return EmailOtpService.getInstance().getCredentials(sessionContext.getLoggedUser().getId())
 					.stream().map(dev -> new BasicCredential(dev.getNickName(), 0)).collect(Collectors.toList());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -76,7 +76,7 @@ public class EmailOtpAuthnMethod implements AuthnMethod {
 
 	@Override
 	public int getTotalUserCreds(String arg0) {
-		return EmailOTPService.getInstance().getCredentialsTotal( sessionContext.getLoggedUser().getId());
+		return EmailOtpService.getInstance().getCredentialsTotal( sessionContext.getLoggedUser().getId());
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class EmailOtpAuthnMethod implements AuthnMethod {
 
 	@Override
 	public void reloadConfiguration() {
-	    EmailOTPService.getInstance().reloadConfiguration();
+	    EmailOtpService.getInstance().reloadConfiguration();
 	}
 
 }

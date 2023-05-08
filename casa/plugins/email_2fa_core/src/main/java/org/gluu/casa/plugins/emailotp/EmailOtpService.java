@@ -66,11 +66,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-public class EmailOTPService {
+public class EmailOtpService {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailOTPService.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmailOtpService.class);
 
-    private static EmailOTPService singleInstance = null;
+    private static EmailOtpService singleInstance = null;
 
     public static final String ACR = "email_2fa_core";
 
@@ -108,7 +108,7 @@ public class EmailOTPService {
     /**
      * 
      */
-	private EmailOTPService() {
+	private EmailOtpService() {
         MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap(); 
         mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html"); 
         mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml"); 
@@ -121,10 +121,10 @@ public class EmailOTPService {
 	 * 
 	 * @return
 	 */
-	public static EmailOTPService getInstance() {
+	public static EmailOtpService getInstance() {
 		if (singleInstance == null) {
-			synchronized (EmailOTPService.class) {
-				singleInstance = new EmailOTPService();
+			synchronized (EmailOtpService.class) {
+				singleInstance = new EmailOtpService();
 			}
 		}
 		return singleInstance;
@@ -132,8 +132,6 @@ public class EmailOTPService {
 
 	public void init() {
         persistenceService = Utils.managedBean(IPersistenceService.class);
-
-//        persistenceService.initialize();
 
         reloadConfiguration();
         mapper = new ObjectMapper();

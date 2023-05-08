@@ -32,20 +32,6 @@ public class VerifiedEmail implements Comparable<VerifiedEmail> {
 	}
 	
     @Override
-    public boolean equals(java.lang.Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        VerifiedEmail verObj = (VerifiedEmail) obj;
-        return email.equals(verObj.email)
-                && addedOn == verObj.addedOn
-                && nickName.equals(verObj.nickName);
-    }
-    
-    @Override
     public int hashCode() {
       return Objects.hash(addedOn, email, nickName);
     }

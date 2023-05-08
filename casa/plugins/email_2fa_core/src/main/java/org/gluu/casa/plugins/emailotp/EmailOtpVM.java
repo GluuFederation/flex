@@ -27,7 +27,7 @@ import org.zkoss.zul.Messagebox;
 public class EmailOtpVM {
     private static Logger logger = LoggerFactory.getLogger(EmailOtpVM.class);
 
-	private EmailOTPService emailOtpService;
+	private EmailOtpService emailOtpService;
 
 	private boolean emailCodesMatch;
 	private boolean uiEmailDelivered;
@@ -99,7 +99,7 @@ public class EmailOtpVM {
 	}
 
 	public EmailOtpVM() {
-		emailOtpService = EmailOTPService.getInstance();
+		emailOtpService = EmailOtpService.getInstance();
 	}
 
 	@Init(superclass = true)
@@ -178,7 +178,7 @@ public class EmailOtpVM {
 			if (emailOtpService.updateEmailIdAdd(user.getId(), emailIds, newEmail)) {
 				UIUtils.showMessageUI(true, Labels.getLabel("usr.enroll.success"));
 				
-				sndFactorUtils.notifyEnrollment(user, EmailOTPService.ACR);
+				sndFactorUtils.notifyEnrollment(user, EmailOtpService.ACR);
 				// trigger refresh (this method is asynchronous...)
 				BindUtils.postNotifyChange(EmailOtpVM.this, "emailIds");
 				BindUtils.postNotifyChange(EmailOtpVM.this, "newEmail");
@@ -201,7 +201,7 @@ public class EmailOtpVM {
 
 	public void delete(VerifiedEmail email) {
 
-		String resetMessages = sndFactorUtils.removalConflict(EmailOTPService.ACR, 1, user).getY();
+		String resetMessages = sndFactorUtils.removalConflict(EmailOtpService.ACR, 1, user).getY();
 		boolean reset = resetMessages != null;
 		Pair<String, String> delMessages = getDeleteMessages(email.getEmail(), resetMessages);
 

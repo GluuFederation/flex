@@ -70,6 +70,7 @@
         <module>plugins/custom-branding</module>
         <module>plugins/strong-authn-settings</module>
         <!--module>plugins/cert-authn</module-->
+        <module>plugins/email_2fa_core</module>
     </modules>
 
     <dependencyManagement>
