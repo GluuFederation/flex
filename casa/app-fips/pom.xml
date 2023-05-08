@@ -286,7 +286,7 @@
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
-            <version>2.0.1</version>
+            <version>1.6.7</version>
         </dependency>
 
         <dependency>
@@ -364,10 +364,10 @@
                         </manifestEntries>
                     </archive>
                     <packagingExcludes>
-                        WEB-INF/lib/bcpkix-jdk15on-*.jar,
-                        WEB-INF/lib/bcprov-jdk15on-*.jar,
-                        WEB-INF/lib/bcutil-jdk15on-*.jar,
-                        WEB-INF/lib/bcmail-jdk15on-*.jar
+                        WEB-INF/lib/bcpkix-jdk*.jar,
+                        WEB-INF/lib/bcprov-jdk*.jar,
+                        WEB-INF/lib/bcutil-jdk*.jar,
+                        WEB-INF/lib/bcmail-jdk*.jar
                     </packagingExcludes>
                 </configuration>
             </plugin>

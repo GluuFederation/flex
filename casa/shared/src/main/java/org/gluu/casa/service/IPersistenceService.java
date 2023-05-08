@@ -1,5 +1,6 @@
 package org.gluu.casa.service;
 
+import io.jans.orm.model.SearchScope;
 import io.jans.orm.search.filter.Filter;
 
 import java.util.List;
@@ -56,6 +57,21 @@ public interface IPersistenceService extends LocalDirectoryInfo2 {
      * @return A List of matching objects. Empty if no matches
      */
     <T> List<T> find(T object);
+
+    /**
+     * Performs a search as method {@link #find(Class, String, Filter)} does except the first <code>start</code> elements
+     * are skipped and at most <code>count</code> results are included in the returned list
+     * @param clazz A class to which the search objects must belong to
+     * @param baseDn Search base DN
+     * @param filter Filter to constrain the search (supply null to returned ALL entries under the base DN that can be
+     *               associated to Class clazz)
+     * @param start Zero-based index at which the search starts
+     * @param count Maximum number of results to return
+     * @param <T> Type parameter of clazz
+     * @param searchScope LDAP search scope (if LDAP DB is used) 
+     * @return A List of matching objects according to the rules specified above. Empty if no matches
+     */
+    <T> List<T> find(Class<T> clazz, String baseDn, Filter filter, int start, int count, SearchScope searchScope);
 
     /**
      * Similar to {@link #find(Object)} search except it only returns the amount of matching objects.

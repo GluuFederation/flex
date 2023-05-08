@@ -109,6 +109,17 @@ public class PersistenceService implements IPersistenceService {
 
     }
 
+    public <T> List<T> find(Class<T> clazz, String baseDn, Filter filter, int start, int count, SearchScope searchScope) {
+
+        try {
+            return entryManager.findEntries(baseDn, clazz, filter, searchScope, null, null, start, count, 0);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return Collections.emptyList();
+        }
+
+    }
+
     public <T> List<T> find(T object) {
 
         try {
