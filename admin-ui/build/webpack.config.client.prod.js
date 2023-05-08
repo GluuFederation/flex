@@ -113,7 +113,7 @@ module.exports = {
         SESSION_TIMEOUT_IN_MINUTES: JSON.stringify(SESSION_TIMEOUT_IN_MINUTES),
       },
     }),
-    new BundleAnalyzerPlugin(),
+    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }), //* switch mode to server to active  BundleAnalyzerPlugin
     new PurgeCSSPlugin({ paths: glob.sync(`${path.resolve(__dirname, '../app')}/**/*`,  { nodir: true }) }),
   ],
   module: {
