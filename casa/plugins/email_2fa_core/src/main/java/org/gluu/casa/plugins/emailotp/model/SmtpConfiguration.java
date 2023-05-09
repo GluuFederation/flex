@@ -15,7 +15,7 @@ import jakarta.persistence.Transient;
 public class SmtpConfiguration implements java.io.Serializable {
 
     private static final long serialVersionUID = -5675038049444038755L;
-    
+
     @JsonProperty("host")
     private String host = null;
 
@@ -192,12 +192,35 @@ public class SmtpConfiguration implements java.io.Serializable {
     public void setSigningAlgorithm(String signingAlgorithm) {
         this.signingAlgorithm = signingAlgorithm;
     }
-    
+
+    @Override
+    public boolean equals(java.lang.Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        SmtpConfiguration smtpConfiguration = (SmtpConfiguration) obj;
+        return Objects.equals(this.host, smtpConfiguration.host) &&
+                Objects.equals(this.port, smtpConfiguration.port) &&
+                Objects.equals(this.connectProtection, smtpConfiguration.connectProtection) &&
+                Objects.equals(this.serverTrust, smtpConfiguration.serverTrust) &&
+                Objects.equals(this.fromName, smtpConfiguration.fromName) &&
+                Objects.equals(this.fromEmailAddress, smtpConfiguration.fromEmailAddress) &&
+                Objects.equals(this.requiresAuthentication, smtpConfiguration.requiresAuthentication) &&
+                Objects.equals(this.smtpAuthenticationAccountUsername, smtpConfiguration.smtpAuthenticationAccountUsername) &&
+                Objects.equals(this.smtpAuthenticationAccountPassword, smtpConfiguration.smtpAuthenticationAccountPassword) &&
+                Objects.equals(this.keyStore, smtpConfiguration.keyStore) &&
+                Objects.equals(this.keyStorePassword, smtpConfiguration.keyStorePassword) &&
+                Objects.equals(this.keyStoreAlias, smtpConfiguration.keyStoreAlias) &&
+                Objects.equals(this.signingAlgorithm, smtpConfiguration.signingAlgorithm);
+    }
+
     @Override
     public int hashCode() {
-      return Objects.hash(host, port, connectProtection, serverTrust, fromName, fromEmailAddress,
-    		  requiresAuthentication, smtpAuthenticationAccountUsername, smtpAuthenticationAccountPassword,
-    		  keyStore, keyStorePassword, keyStoreAlias, signingAlgorithm);
-    }    
+        return Objects.hash(host, port, connectProtection, serverTrust, fromName, fromEmailAddress,
+                requiresAuthentication, smtpAuthenticationAccountUsername, smtpAuthenticationAccountPassword,
+                keyStore, keyStorePassword, keyStoreAlias, signingAlgorithm);
+    }
 }
-
