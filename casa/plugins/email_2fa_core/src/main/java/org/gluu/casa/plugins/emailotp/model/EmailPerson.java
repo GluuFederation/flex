@@ -47,8 +47,8 @@ public class EmailPerson extends BasePerson {
             return false;
         }
         EmailPerson emailPersonObj = (EmailPerson) obj;
-        return mail.equals(emailPersonObj.mail) &&
-        		jansEmail.equals(emailPersonObj.jansEmail);
+        return Objects.equals(this.mail, emailPersonObj.mail) &&
+                Objects.equals(this.jansEmail, emailPersonObj.jansEmail);
     }
 
     @Override
