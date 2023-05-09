@@ -87,6 +87,7 @@
     "babel-plugin-styled-components": "^2.0.7",
     "circular-dependency-plugin": "^5.2.2",
     "commander": "^10.0.0",
+    "compression-webpack-plugin": "^10.0.0",
     "css-loader": "^6.7.3",
     "css-minimizer-webpack-plugin": "^5.0.0",
     "eslint": "^8.37.0",

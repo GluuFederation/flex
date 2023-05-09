@@ -1,23 +1,24 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 // ----------- Pages Imports ---------------
-const DashboardPage = lazy(() => import('./Dashboards/DashboardPage'))
-const HealthPage = lazy(() => import('./Health/HealthPage'))
-const LicenseDetailsPage = lazy(() => import('./License/LicenseDetailsPage'))
-const NavbarOnly = lazy(() => import('./Layouts/NavbarOnly'))
-const SidebarDefault = lazy(() => import('./Layouts/SidebarDefault'))
-const SidebarA = lazy(() => import('./Layouts/SidebarA'))
-const SidebarWithNavbar = lazy(() => import('./Layouts/SidebarWithNavbar'))
+import Reports from './Dashboards/Reports'
+import DashboardPage from './Dashboards/DashboardPage'
+import HealthPage from './Health/HealthPage'
+import LicenseDetailsPage from './License/LicenseDetailsPage'
+import NavbarOnly from './Layouts/NavbarOnly'
+import SidebarDefault from './Layouts/SidebarDefault'
+import SidebarA from './Layouts/SidebarA'
+import SidebarWithNavbar from './Layouts/SidebarWithNavbar'
 
-const ProfilePage = lazy(() => import('./Apps/Profile/ProfilePage'))
+import ProfilePage from './Apps/Profile/ProfilePage'
 // ----------- Layout Imports ---------------
-const DefaultSidebar = lazy(() => import('./../layout/components/DefaultSidebar').then(module => ({ default: module.DefaultSidebar })))
-const ByeBye = lazy(() => import('./Pages/ByeBye'))
+import { DefaultSidebar } from './../layout/components/DefaultSidebar'
+import ByeBye from './Pages/ByeBye'
 
-const Gluu404Error = lazy(() => import('./Apps/Gluu/Gluu404Error'))
-const GluuNavBar = lazy(() => import('./Apps/Gluu/GluuNavBar'))
+import Gluu404Error from './Apps/Gluu/Gluu404Error'
+import GluuNavBar from './Apps/Gluu/GluuNavBar'
 import { processRoutes } from 'Plugins/PluginMenuResolver'
 import { hasPermission } from 'Utils/PermChecker'
 
@@ -33,38 +34,35 @@ export const RoutedContent = () => {
   }, [])
 
   return (
-    <Suspense fallback={<>Loading...</>}>
-      <Routes>
-        <Route path="/home/dashboard" element={<Suspense fallback={<>Loading...</>}><DashboardPage /></Suspense>} />
-        <Route path="/" element={<Navigate to="/home/dashboard" />} />
-        <Route path="/home/health" element={<Suspense fallback={<>Loading...</>}><HealthPage /></Suspense>} />
-        <Route path="/home/licenseDetails" element={<Suspense fallback={<>Loading...</>}><LicenseDetailsPage /></Suspense>} />
-        {/*    Layouts     */}
-        <Route path="/layouts/navbar" element={<Suspense fallback={<>Loading...</>}><NavbarOnly /></Suspense>} />
-        <Route path="/layouts/sidebar" element={<Suspense fallback={<>Loading...</>}><SidebarDefault /></Suspense>} />
-        <Route path="/layouts/sidebar-a" element={<Suspense fallback={<>Loading...</>}><SidebarA /></Suspense>} />
-        <Route
-          path="/layouts/sidebar-with-navbar"
-          element={<Suspense fallback={<>Loading...</>}><SidebarWithNavbar /></Suspense>}
-        />
+    <Routes>
+      <Route path="/home/dashboard" element={<DashboardPage />} />
+      <Route path="/" element={ <Navigate to="/home/dashboard" /> } />
+      <Route path="/home/health" element={<HealthPage />} />
+      <Route path="/home/licenseDetails" element={<LicenseDetailsPage />} />
+      {/*    Layouts     */}
+      <Route path="/layouts/navbar" element={<NavbarOnly />} />
+      <Route path="/layouts/sidebar" element={<SidebarDefault />} />
+      <Route path="/layouts/sidebar-a" element={<SidebarA />} />
+      <Route
+        path="/layouts/sidebar-with-navbar"
+        element={<SidebarWithNavbar />}
+      />
 
-        {/* -------- Plugins ---------*/}
-        {pluginMenus.map(
-          (item, key) =>
-            hasPermission(scopes, item.permission) && (
-              <Route key={key} path={item.path} element={<item.component />} />
-            ),
-        )}
+      {/* -------- Plugins ---------*/}
+      {pluginMenus.map(
+        (item, key) =>
+          hasPermission(scopes, item.permission) && (
+            <Route key={key} path={item.path} element={<item.component />} />
+          ),
+      )}
+      {/*    Pages Routes    */}
+      <Route element={<ProfilePage />} path="/profile" />
+      <Route element={<ByeBye />} path="/logout" />
+      <Route element={<Gluu404Error />} path="/error-404" />
 
-        {/*    Pages Routes    */}
-        <Route element={<Suspense fallback={<>Loading...</>}><ProfilePage /></Suspense>} path="/profile" />
-        <Route element={<Suspense fallback={<>Loading...</>}><ByeBye /></Suspense>} path="/logout" />
-        <Route element={<Suspense fallback={<>Loading...</>}><Gluu404Error /></Suspense>} path="/error-404" />
-
-        {/*    404    */}
-        <Route path="*" element={<Navigate to="/error-404" />} />
-      </Routes>
-    </Suspense>
+      {/*    404    */}
+      <Route path="*" element={ <Navigate to="/error-404" /> } />
+    </Routes>
   )
 }
 
@@ -74,7 +72,7 @@ export const RoutedNavbars = () => (
     <Route
       path="/*"
       element={
-        <Suspense fallback={<>Loading...</>}><GluuNavBar themeStyle="color" themeColor="primary" navStyle="accent" /></Suspense>
+        <GluuNavBar themeStyle="color" themeColor="primary" navStyle="accent" />
       }
     />
   </Routes>
@@ -82,6 +80,6 @@ export const RoutedNavbars = () => (
 
 export const RoutedSidebars = () => (
   <Routes>
-    <Route path="/*" element={<Suspense fallback={<>Loading...</>}><DefaultSidebar /></Suspense>} />
+    <Route path="/*" element={<DefaultSidebar />} />
   </Routes>
 )

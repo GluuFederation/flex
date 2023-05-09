@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 const config = require('./../config')
 require('dotenv').config({
@@ -113,7 +114,10 @@ module.exports = {
         SESSION_TIMEOUT_IN_MINUTES: JSON.stringify(SESSION_TIMEOUT_IN_MINUTES),
       },
     }),
-    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }), //* switch mode to server to active  BundleAnalyzerPlugin
+    new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }), //* switch mode to "server" to activate BundleAnalyzerPlugin
+    new CompressionPlugin({
+      algorithm: "gzip",
+    }),
     new PurgeCSSPlugin({ paths: glob.sync(`${path.resolve(__dirname, '../app')}/**/*`,  { nodir: true }) }),
   ],
   module: {
