@@ -6,8 +6,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
-const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
-const CompressionPlugin = require("compression-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin")
 
 const config = require('./../config')
 require('dotenv').config({
@@ -117,8 +116,7 @@ module.exports = {
     new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }), //* switch mode to "server" to activate BundleAnalyzerPlugin
     new CompressionPlugin({
       algorithm: "gzip",
-    }),
-    new PurgeCSSPlugin({ paths: glob.sync(`${path.resolve(__dirname, '../app')}/**/*`,  { nodir: true }) }),
+    })
   ],
   module: {
     rules: [
@@ -137,7 +135,7 @@ module.exports = {
       // Modular Styles
       {
         test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, "style-loader", "css-loader", "postcss-loader"]
+        use: ["style-loader", "css-loader", "postcss-loader"]
       },
       {
         test: /\.scss$/,
