@@ -4,7 +4,7 @@ Steps:
 - Tune **SMTP** configuration of **janssen** (for example, using **/opt/jans/jans-cli/config-cli.py** or **/opt/jans/jans-cli/config-cli-tui.py**):  
 ![SMTP Tuning](./img/01.smtp.png)  
 ;
-- Enable **email_2fa_core** custom script in **janssen**, parameters: **Script Tyoe**: **Person Authentication**, example of configuration:  
+- Enable **email_2fa_core** custom script in **janssen**, parameters: **Script Type**: **Person Authentication**, example of configuration:  
 ![email_2fa_core script](./img/02.script.png)  
 ![email_2fa_core jython](./img/03.script.png)  
 ;
