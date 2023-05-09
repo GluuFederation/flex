@@ -41,7 +41,7 @@ const ClientBasicPanel = ({
   const isLoading = useSelector((state) => state.scopeReducer.loadingClientScopes)
   const scopeLoading = useSelector((state) => state.scopeReducer.loading)
   const clientScopeOptions = scopes?.filter(o1 => !clientScopes?.some(o2 => o1.dn === o2.dn))
-  const scopeOptions = client.scopes?.length ? clientScopeOptions : scopes
+  const scopeOptions = client?.scopes?.length ? clientScopeOptions : scopes
   const { t } = useTranslation()
   const uri_id = 'redirect_uri'
   const post_uri_id = 'post_uri_id'
@@ -87,8 +87,10 @@ const ClientBasicPanel = ({
     const scopeInums = [];
     if (client.inum) {
       let userAction = {}
-      for (const scope of client.scopes) {
-        scopeInums.push(getClientScopeByInum(scope))
+      if(client?.scopes?.length) {
+        for (const scope of client.scopes) {
+          scopeInums.push(getClientScopeByInum(scope))
+        }
       }
       userAction["pattern"] = scopeInums.join(",")
       userAction["limit"] = PER_PAGE_SCOPES
@@ -318,7 +320,7 @@ const ClientBasicPanel = ({
           name="scopes"
           label="fields.scopes"
           formik={formik}
-          value={client.scopes?.length ? clientScopes : []}
+          value={client?.scopes?.length ? clientScopes : []}
           options={scopeOptions}
           doc_category={DOC_CATEGORY}
           lsize={3}
