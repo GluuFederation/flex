@@ -6,6 +6,7 @@
     "add_ldap_configuration": "Add LDAP Configuration",
     "add_mapping": "Add Mapping",
     "add_property": "Add property",
+    "add_party": "Add party",
     "apply": "Apply",
     "back_home": "Back Home",
     "cancel": "Cancel",
@@ -365,7 +366,8 @@
     "server_metadata_folder": "Server Metadata Folder",
     "user_auto_enrollment": "User Auto Enrollment",
     "requested_credential_types": "Requested Credential Types",
-    "requested_parties_name": "Requested Parties Name"
+    "requested_parties_name": "Requested Parties Name",
+    "domain":"Domain"
   },
   "languages": {
     "french": "French",
@@ -498,6 +500,7 @@
     "ldap_primary_key": "Enter the ldap Primary Key",
     "logo_uri": "Enter the logo URI",
     "name": "Enter the name",
+    "value": "Enter the value",
     "policy_uri": "Enter the policy URI",
     "post_logout_redirect_uris": "Enter a post redirect URI in format (e.g. https:// or schema://) ",
     "redirect_uri": "Enter a redirect URI",

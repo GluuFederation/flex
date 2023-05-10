@@ -16,16 +16,17 @@ import {
   PUT_FIDO_CONFIGURATION,
 } from '../actions/types'
 import { getClient } from '../../../../app/redux/api/base'
-const JansConfigApi = require('jans_config_api')
 import { initAudit } from '../../../../app/redux/sagas/SagaUtils'
 import { updateToast } from 'Redux/actions/ToastAction'
 import { postUserAction } from '../../../../app/redux/api/backend-api'
 import FidoApi from '../api/FidoApi'
 import { getFidoConfiguration, getFidoConfigurationResponse } from '../actions/FidoActions'
+
+const JansConfigApi = require('jans_config_api')
 function* newFunction() {
   const token = yield select((state) => state.authReducer.token.access_token)
   const issuer = yield select((state) => state.authReducer.issuer)
-  const api = new JansConfigApi.ConfigurationSMTPApi(
+  const api = new JansConfigApi.Fido2ConfigurationApi(
     getClient(JansConfigApi, token, issuer),
   )
   return new FidoApi(api)
@@ -35,7 +36,7 @@ export function* updateFidoSaga({ payload }) {
   const audit = yield* initAudit()
   try {
     const fidoApi = yield* newFunction()
-    const data = yield call(fidoApi.updateSmtpConfig, payload)
+    const data = yield call(fidoApi.putPropertiesFido2, payload)
     yield put(updateToast(true, 'success'))
     yield put(getFidoConfiguration())
     yield call(postUserAction, audit)
@@ -52,7 +53,7 @@ export function* getFidoSaga() {
   const audit = yield* initAudit()
   try {
     const fidoApi = yield* newFunction()
-    const data = yield call(fidoApi.getSmtpConfig);
+    const data = yield call(fidoApi.getPropertiesFido2);
     yield put(getFidoConfigurationResponse(data))
     yield call(postUserAction, audit)
   } catch (e) {

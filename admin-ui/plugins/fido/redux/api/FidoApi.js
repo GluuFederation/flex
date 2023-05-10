@@ -5,18 +5,18 @@ export default class FigoApi {
     this.api = api
   }
   // Get SMTP Config
-  getSmtpConfig = () => {
+  getPropertiesFido2 = () => {
     return new Promise((resolve, reject) => {
-      this.api.getConfigSmtp((error, data) => {
+      this.api.getPropertiesFido2((error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
   }
 
   // update SMTP Config
-  updateSmtpConfig = (input) => {
+  putPropertiesFido2 = (input) => {
     return new Promise((resolve, reject) => {
-      this.api.putConfigSmtp(input, (error, data) => {
+      this.api.putPropertiesFido2(input, (error, data) => {
         handleResponse(error, reject, resolve, data)
       })
     })
