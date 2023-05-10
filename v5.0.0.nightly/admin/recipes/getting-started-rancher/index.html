@@ -1739,8 +1739,8 @@ helm install nginx ingress-nginx/ingress-nginx
 <li>Click on <code>Install</code> on the right side of the window. </li>
 <li>Change the namespace from <code>default</code> to <code>gluu</code>, then click on <code>Next</code>.</li>
 <li>Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.</li>
-<li>From the default opened tab <code>Edit Options</code>, click on the <code>Persistence</code> section.</li>
-<li>Change <code>SQL database host uri</code> to <code>postgresql.postgres.svc.cluster.local</code> in the case of <code>PostgreSQL</code> or <code>my-release-mysql.gluu.svc.cluster.local</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
+<li>Add <code>License SSA</code>. Before initiating the setup, please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded.</li>
+<li>Click on the <code>Persistence</code> section. Change <code>SQL database host uri</code> to <code>postgresql.postgres.svc.cluster.local</code> in the case of <code>PostgreSQL</code> or <code>my-release-mysql.gluu.svc.cluster.local</code> in the case of <code>MySQL</code>. Also set <code>SQL database username</code>,<code>SQL password</code>, and <code>SQL database name</code> to the values you used during the database installation.</li>
 <li>To pass your <code>FQDN</code> or <code>Domain</code> that is intended to serve the Gluu Flex IDP, head to the <code>Configuration</code> section:<ol>
 <li>Add your <code>FQDN</code> and check the box <code>Is the FQDN globally resolvable</code>.</li>
 <li>Click on the <code>Edit YAML</code> tab and add your <code>FQDN</code> to <code>nginx-ingress.ingress.hosts</code> and <code>nginx-ingress.ingress.tls.hosts</code>.</li>
@@ -2303,7 +2303,7 @@ docker run -dit -p 8111:80 \
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-02-03T18:18:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-02-03</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-05-10T16:56:01+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-05-10</span>
       
         <br>
         Created:
