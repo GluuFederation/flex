@@ -226,8 +226,8 @@ kubectl get secret cn -o json -n <namespace>
     - Click on `Install` on the right side of the window. 
     - Change the namespace from `default` to `gluu`, then click on `Next`.
     - Scroll through the sections to get familiar with the options. For minimal setup follow with the next instructions.
-    - From the default opened tab `Edit Options`, click on the `Persistence` section.
-    - Change `SQL database host uri` to `postgresql.postgres.svc.cluster.local` in the case of `PostgreSQL` or `my-release-mysql.gluu.svc.cluster.local` in the case of `MySQL`. Also set `SQL database username`,`SQL password`, and `SQL database name` to the values you used during the database installation.
+    - Add `License SSA`. Before initiating the setup, please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT placed here in which you can use to install. This must be base64 encoded.
+    - Click on the `Persistence` section. Change `SQL database host uri` to `postgresql.postgres.svc.cluster.local` in the case of `PostgreSQL` or `my-release-mysql.gluu.svc.cluster.local` in the case of `MySQL`. Also set `SQL database username`,`SQL password`, and `SQL database name` to the values you used during the database installation.
     - To pass your `FQDN` or `Domain` that is intended to serve the Gluu Flex IDP, head to the `Configuration` section:
         1.  Add your `FQDN` and check the box `Is the FQDN globally resolvable`.
         2.  Click on the `Edit YAML` tab and add your `FQDN` to `nginx-ingress.ingress.hosts` and `nginx-ingress.ingress.tls.hosts`.
