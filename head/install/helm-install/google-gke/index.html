@@ -1151,25 +1151,28 @@
 <h2 id="initial-setup">Initial Setup<a class="headerlink" href="#initial-setup" title="Permanent link">#</a></h2>
 <ol>
 <li>
-<p>Before initiating the setup please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT in base64 format that you can use to install, specified by the <code>.global.licenseSsa</code> key in the <code>values.yaml</code> of Gluus Chart.</p>
+<p>Before initiating the setup, please contact Gluu to obtain a valid license or trial license. Your organization needs to register with Gluu to trial Flex, after which you are issued a JWT in base64 format that you can use to install, specified by the <code>.global.licenseSsa</code> key in the <code>values.yaml</code> of Gluu's Chart.</p>
 </li>
 <li>
-<p>If you are using Cloud Shell, you can skip to step 4.</p>
+<p>Enable <a href="https://console.cloud.google.com/kubernetes">GKE API</a> if not enabled yet.</p>
 </li>
 <li>
-<p>Install <a href="https://cloud.google.com/sdk/docs/quickstarts">gcloud</a></p>
+<p>If you are using <code>Cloud Shell</code>, you can skip to step 7.</p>
 </li>
 <li>
-<p>Install kubectl using <code>gcloud components install kubectl</code> command</p>
+<p>Install <a href="https://cloud.google.com/sdk/docs/quickstarts">gcloud</a>.</p>
+</li>
+<li>
+<p>Install <code>kubectl</code> using <code>gcloud components install kubectl</code> command.</p>
+</li>
+<li>
+<p>Install <a href="https://helm.sh/docs/intro/install/">Helm3</a>.</p>
 </li>
 <li>
 <p>Create cluster using a command such as the following example:</p>
 <p><div class="highlight"><pre><span></span><code>gcloud container clusters create gluu-cluster --num-nodes 2 --machine-type e2-highcpu-8 --zone us-west1-a
 </code></pre></div>
-You can adjust <code>num-nodes</code> and <code>machine-type</code> as per your desired cluster size</p>
-</li>
-<li>
-<p>Install <a href="https://helm.sh/docs/intro/install/">Helm3</a>    </p>
+You can adjust <code>num-nodes</code> and <code>machine-type</code> as per your desired cluster size    </p>
 </li>
 <li>
 <p>Create <code>gluu</code> namespace where our resources will reside
@@ -1312,7 +1315,7 @@ helm install gluu gluu-flex/gluu -n gluu -f override.yaml
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-03-14T12:43:54+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-03-14</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-05-10T16:56:01+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-05-10</span>
       
         <br>
         Created:
