@@ -251,19 +251,22 @@ function DynamicConfiguration({ fidoConfiguration, handleSubmit }) {
           />
         </Col>
 
+      <Col sm={8}>
         <Row>
-          <GluuLabel label='fields.person_custom_object_classes' size={2} />
-          <Col sm={5} style={{ marginLeft: "70px" }}>
+          <GluuLabel label='fields.person_custom_object_classes' size={4} />
+          <Col sm={8}>
             <GluuProperties
               compName='personCustomObjectClassList'
               isInputLables={true}
               formik={formik}
               options={formik?.values?.personCustomObjectClassList ? formik?.values?.personCustomObjectClassList.map(item => ({ key: "", value: item })) : []}
               isKeys={false}
+              buttonText="actions.add_classes"
 
             ></GluuProperties>
           </Col>
         </Row>
+        </Col>
         <Col sm={8} className='mt-2'>
           <GluuSelectRow
             label="fields.enable_super_gluu"

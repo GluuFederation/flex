@@ -191,23 +191,29 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
             errorMessage={formik.errors.userAutoEnrollment}
           />
         </Col>
-        <Row>
-        <GluuLabel label='fields.requested_credential_types' size={2} />
-          <Col sm={5} style={{ marginLeft: "70px" }}>
+
+        <Col sm={8}>
+         <Row>
+          <GluuLabel label='fields.requested_credential_types' size={4} />
+          <Col sm={8}>
             <GluuProperties
               compName='requestedCredentialTypes'
               isInputLables={true}
               formik={formik}
               options={formik?.values?.requestedCredentialTypes ? formik?.values?.requestedCredentialTypes.map(item => ({ key: "", value: item })) : []}
               isKeys={false}
+              buttonText="actions.add_types"
+
             ></GluuProperties>
 
           </Col>
         </Row>
-
+      </Col>
+      
+      <Col sm={8}>
         <Row className='mt-2'>
-          <GluuLabel label='fields.requested_parties_name' size={2} />
-          <Col sm={5} style={{ marginLeft: "70px" }}>
+          <GluuLabel label='fields.requested_parties_name' size={4} />
+          <Col sm={8}>
             <GluuProperties
               compName='requestedParties'
               isInputLables={true}
@@ -221,6 +227,7 @@ function StaticConfiguration({ fidoConfiguration, handleSubmit }) {
             ></GluuProperties>
           </Col>
         </Row>
+        </Col>
       </FormGroup>
 
 
