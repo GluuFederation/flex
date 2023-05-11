@@ -13,6 +13,13 @@ function GluuProperties({
   valuePlaceholder,
   options,
   disabled = false,
+  buttonText = null,
+  isInputLables = false,
+  keyLabel = "",
+  valueLabel = "",
+  isAddButton = true,
+  isRemoveButton = true,
+  isKeys=true,
 }) {
   const [properties, setProperties] = useState(options)
   const { t } = useTranslation()
@@ -45,10 +52,9 @@ function GluuProperties({
     <Accordion className="mb-2 b-primary" initialOpen>
       <Accordion.Header>{t(label).toUpperCase()}</Accordion.Header>
       <Accordion.Body>
-        <Button
+        {isAddButton && <Button
           style={{
             float: 'right',
-            marginTop: -40,
           }}
           type="button"
           color={`primary-${selectedTheme}`}
@@ -56,8 +62,8 @@ function GluuProperties({
           disabled={disabled}
         >
           <i className="fa fa-fw fa-plus me-2"></i>
-          {t('actions.add_property')}
-        </Button>
+          {buttonText ? t(buttonText) : t('actions.add_property')}
+        </Button>}
         <FormGroup row>
           <Col sm={12}>
             <FormGroup row></FormGroup>
@@ -73,6 +79,11 @@ function GluuProperties({
                     disabled={disabled}
                     onPropertyChange={changeProperty}
                     onPropertyRemove={removeProperty}
+                    isInputLables={isInputLables}
+                    keyLabel={keyLabel}
+                    valueLabel={valueLabel}
+                    isRemoveButton={isRemoveButton}
+                    isKeys={isKeys}
                   ></GluuPropertyItem>
                 )}
               </div>
