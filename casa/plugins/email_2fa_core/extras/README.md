@@ -31,5 +31,5 @@ Parameters of the script:
         * for example: *SHA256withECDSA*
 
 3. Create directory: **/opt/jans/jetty/jans-auth/custom/pages/casa**, copy to this directory follow files: **otp_email.xhtml**, **otp_email_prompt.xhtml**; 
-1. Create directory: **/opt/jans/jetty/jans-auth/custom/i18n**, copy to this directory file **jans-auth_en.properties**;
+1. Create directory: **/opt/jans/jetty/jans-auth/custom/i18n**, copy to this directory file **jans-auth.properties**;
 1. Create directory: **/opt/jans/jetty/jans-auth/custom/static/img**, copy to this directory file **email-ver.png**.
