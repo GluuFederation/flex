@@ -8,5 +8,5 @@ else
         RELEASE="$REL.suse15"
 fi
 pushd rpmbuild/RPMS/x86_64
-sha256sum flex-$VERSION-$RELEASE-x86_64.rpm > flex-$VERSION-$RELEASE.x86_64.rpm.sha256sum
+sha256sum flex-$VERSION-$RELEASE.x86_64.rpm > flex-$VERSION-$RELEASE.x86_64.rpm.sha256sum
 popd
