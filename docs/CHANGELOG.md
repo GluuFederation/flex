@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.0.0-13](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-12...docs-v5.0.0-13) (2023-05-12)
+
+
+### Bug Fixes
+
+* **admin-ui:** add apply button ([d334103](https://github.com/GluuFederation/flex/commit/d3341031c9b198bf7849ad2f88193c99b7f74c80))
+* blockUI converted to functional component ([4b8e7bd](https://github.com/GluuFederation/flex/commit/4b8e7bd35331512f1181614fd692da923bd48a34))
+* email_2fa_core/install.bat has been removed; ([f27e461](https://github.com/GluuFederation/flex/commit/f27e4613c23a7243a3adb6c433cd7a422facc851))
+* prepare for 5.0.13 release ([8578827](https://github.com/GluuFederation/flex/commit/85788276444c5015378120b5801a8848d225b02f))
+* profile details is distorted when multiple roles assigned to the user ([e4603d8](https://github.com/GluuFederation/flex/commit/e4603d862a5728faa283ee4b3e60866face5b8db))
+* revert prod webpack config of static & fonts files ([96fa135](https://github.com/GluuFederation/flex/commit/96fa1354790e17467231d3931f9887a93d1f2b90))
+
 ## [5.0.0-12](https://github.com/GluuFederation/flex/compare/docs-v5.0.0-11...docs-v5.0.0-12) (2023-04-18)
 
 
