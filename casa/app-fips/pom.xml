@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.gluu</groupId>
         <artifactId>casa-base</artifactId>
-        <version>5.0.0-12</version>
+        <version>5.0.1-12-SNAPSHOT</version>
     </parent>
         
     <dependencies>
@@ -333,12 +333,12 @@
                         <phase>process-sources</phase>
                         <configuration>
                             <target>
-                                <property name="server.webapp.dir" value="${project.basedir}/../app/target/casa-${project.version}" />
-                                <property name="dest.webapp.dir" value="${project.build.directory}/${project.artifactId}-${project.version}" />
-                                <delete dir="${dest.webapp.dir}" />
-                                <mkdir dir="${dest.webapp.dir}" />
+                                <property name="server.webapp.dir" value="${project.basedir}/../app/target/casa-${project.version}"/>
+                                <property name="dest.webapp.dir" value="${project.build.directory}/${project.artifactId}-${project.version}"/>
+                                <delete dir="${dest.webapp.dir}"/>
+                                <mkdir dir="${dest.webapp.dir}"/>
                                 <copy todir="${dest.webapp.dir}" preservelastmodified="true" overwrite="true">
-                                    <fileset dir="${server.webapp.dir}" includes="**/*" />
+                                    <fileset dir="${server.webapp.dir}" includes="**/*"/>
                                 </copy>
                             </target>
                         </configuration>
