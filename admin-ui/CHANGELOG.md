@@ -1,5 +1,43 @@
 # Changelog
 
+## [1.0.13](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.12...admin-ui-v1.0.13) (2023-05-12)
+
+
+### Features
+
+* **admin-ui:** create fido configurations page ([aa1024e](https://github.com/GluuFederation/flex/commit/aa1024ecec7f3148ae9e07aa5ba6d2c3fe9186b0))
+* **admin-ui:** create smtp management page ([bf99334](https://github.com/GluuFederation/flex/commit/bf993343e57dae502b6933eee1421ca03f8d0555))
+* **admin-ui:** update fido configuration ([3c53c2c](https://github.com/GluuFederation/flex/commit/3c53c2cd1ed4cdcfeeea7426d7e055aecc9b6b87))
+* **admin-ui:** update fido configuration icon ([389f822](https://github.com/GluuFederation/flex/commit/389f822583ec75258c5b74e2a6def73a4766fc82))
+* manage agama project configuration ([34ec2f3](https://github.com/GluuFederation/flex/commit/34ec2f3517e1e8aec880e2c6ef599b7a1a957055))
+
+
+### Bug Fixes
+
+* **admin ui:** edit auth n feature ([645c251](https://github.com/GluuFederation/flex/commit/645c251bf67b234e4e8535b471cb012c0c366161))
+* **admin-ui-scripts:** populate location type ([e9612f4](https://github.com/GluuFederation/flex/commit/e9612f4bc65c9798818bc373a041b8c44c1df613))
+* **admin-ui:** add apply button ([d334103](https://github.com/GluuFederation/flex/commit/d3341031c9b198bf7849ad2f88193c99b7f74c80))
+* **admin-ui:** changed input & button layout ([a36f293](https://github.com/GluuFederation/flex/commit/a36f293c7d41ed70819b74d337be8e31ebca3dc2))
+* **admin-ui:** code formatting ([f71e01a](https://github.com/GluuFederation/flex/commit/f71e01aec4c4adbfaf532b1ead64947dde069b9e))
+* **admin-ui:** code formatting ([259d08f](https://github.com/GluuFederation/flex/commit/259d08fef5e9de5f9385cefc8b9e0ee88b098d49))
+* **admin-ui:** edit auth n default feature ([b54dd20](https://github.com/GluuFederation/flex/commit/b54dd201099fe18fd4ac73fc5cf64712caa9dd36))
+* **admin-ui:** set default value in config properties ([846a489](https://github.com/GluuFederation/flex/commit/846a489aaceb122d0fe8e83acc3550ef9c4074f7))
+* **admin-ui:** updated bootstrap to latest & removed build warnings ([d45087c](https://github.com/GluuFederation/flex/commit/d45087c99d6d5cf04b7bf47b085278c3b6c50d7d))
+* blockUI converted to functional component ([4b8e7bd](https://github.com/GluuFederation/flex/commit/4b8e7bd35331512f1181614fd692da923bd48a34))
+* box import changes ([297b82e](https://github.com/GluuFederation/flex/commit/297b82ed8e9659499077b8a5054bcbdf23ce24dc))
+* ldap update not working [#957](https://github.com/GluuFederation/flex/issues/957) ([450e30e](https://github.com/GluuFederation/flex/commit/450e30e4e5b3b447ba28588d590e204732369db2))
+* minor css fixes ([53fcffe](https://github.com/GluuFederation/flex/commit/53fcffe896a10360a1f8ca367be3eed04ec754eb))
+* overrider bootstrap font styles ([c82fd6d](https://github.com/GluuFederation/flex/commit/c82fd6dbe7e1bcd96409ea08cb9da0dfcc262d0f))
+* prepare for 5.0.13 release ([8578827](https://github.com/GluuFederation/flex/commit/85788276444c5015378120b5801a8848d225b02f))
+* prod webpack config changes to support updated packages ([81db353](https://github.com/GluuFederation/flex/commit/81db353b513b0ca70c459ac3c9b1533c4186bcbd))
+* profile details is distorted when multiple roles assigned to the user ([e4603d8](https://github.com/GluuFederation/flex/commit/e4603d862a5728faa283ee4b3e60866face5b8db))
+* removed @mui/lab & fixed design issues ([b39d61d](https://github.com/GluuFederation/flex/commit/b39d61d51b0175f2f2b19eabe2ff4a4aafad84c8))
+* removed & replaced unmaintained packages ([c379cdb](https://github.com/GluuFederation/flex/commit/c379cdb8811a9d68ab47212626110b3a57a2d8db))
+* removed material-ui imports in project ([e9c3d32](https://github.com/GluuFederation/flex/commit/e9c3d32e3d9939ac580a4fc0701c38f9a414e656))
+* revert config.dev changes ([09789a9](https://github.com/GluuFederation/flex/commit/09789a94adb888e7481a95ec25a4d09e98accfe2))
+* revert prod webpack config of static & fonts files ([96fa135](https://github.com/GluuFederation/flex/commit/96fa1354790e17467231d3931f9887a93d1f2b90))
+* typography changes ([c8e9e2f](https://github.com/GluuFederation/flex/commit/c8e9e2f03ac22d51e4309ffc15f3cd2031494432))
+
 ## [1.0.12](https://github.com/GluuFederation/flex/compare/admin-ui-v1.0.11...admin-ui-v1.0.12) (2023-04-18)
 
 
