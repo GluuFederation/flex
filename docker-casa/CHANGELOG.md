@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.0.0-13](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-12...docker-casa-v5.0.0-13) (2023-05-12)
+
+
+### Bug Fixes
+
+* **docker:** incorrect version, docs, and upstream source in the images ([#989](https://github.com/GluuFederation/flex/issues/989)) ([3a8b1c1](https://github.com/GluuFederation/flex/commit/3a8b1c1615e524d51346da31223f9e8743dd5722))
+* ensure google libs support all possible credentials ([#983](https://github.com/GluuFederation/flex/issues/983)) ([4d72fba](https://github.com/GluuFederation/flex/commit/4d72fba032099e1a5eca5672d95b024e5ea9e68c))
+* prepare for 5.0.13 release ([8578827](https://github.com/GluuFederation/flex/commit/85788276444c5015378120b5801a8848d225b02f))
+
 ## [5.0.0-12](https://github.com/GluuFederation/flex/compare/docker-casa-v5.0.0-11...docker-casa-v5.0.0-12) (2023-04-18)
 
 
