@@ -1,4 +1,4 @@
-GLUU_VERSION?=1.0.13
+GLUU_VERSION?=1.0.13-SNAPSHOT
 IMAGE_NAME=ghcr.io/gluufederation/flex/admin-ui
 DEV_VERSION?=$(shell echo ${GLUU_VERSION} | cut -d '-' -f 1)_dev
 
