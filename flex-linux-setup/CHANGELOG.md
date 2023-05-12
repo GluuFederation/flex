@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.0.13](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.12...flex-linux-setup-v1.0.13) (2023-05-12)
+
+
+### Features
+
+* **flex-linux-setup:** add org_id to client display name ([#946](https://github.com/GluuFederation/flex/issues/946)) ([ad605dd](https://github.com/GluuFederation/flex/commit/ad605dd391e77a69cf3faaf3c1e9019edcf78e89))
+* **flex-linux-setup:** node version 18.16.0 ([2e9d88f](https://github.com/GluuFederation/flex/commit/2e9d88fb6e9cc013e97da43768fa6c145638c51d))
+* **flex-linux-setup:** upgrade admin-ui ([5479a6a](https://github.com/GluuFederation/flex/commit/5479a6a91530217373478ebbd6cbd9df0b28f85b))
+
+
+### Bug Fixes
+
+* flex_setup: stopping casa before uninstalling has been added; ([3c715a7](https://github.com/GluuFederation/flex/commit/3c715a7ed4eee18973fd974d703f1b5153023aca))
+* **flex-linux-setup:** set redirect_uris as AS for client registration ([52d187b](https://github.com/GluuFederation/flex/commit/52d187b359523f0fedc299664dfc93ccabc61a8e))
+* **flex-linux-setup:** set redirect_uris to iss ([9b9b9ff](https://github.com/GluuFederation/flex/commit/9b9b9ff93a204c7675fd8c601162b19bdc64060e))
+* prepare for 5.0.13 release ([8578827](https://github.com/GluuFederation/flex/commit/85788276444c5015378120b5801a8848d225b02f))
+
 ## [1.0.12](https://github.com/GluuFederation/flex/compare/flex-linux-setup-v1.0.11...flex-linux-setup-v1.0.12) (2023-04-18)
 
 
